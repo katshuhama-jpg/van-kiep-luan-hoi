@@ -99,3 +99,24 @@ export function luck(c: Character, base: number): number {
 export function fmt(n: number) {
   return Math.round(n).toLocaleString('vi-VN');
 }
+
+/**
+ * Lựa chọn chí mạng: có tỉ lệ chết ngay. Khí vận cao giảm nhẹ rủi ro,
+ * ngọc bội hộ thân đỡ được một lần.
+ */
+export function fatal(c: Character, ctx: EffectCtx, chance: number, cause: string): string | null {
+  const p = clamp(chance - (c.stats.khiVan - 50) / 500, 0.01, 0.95);
+  if (ctx.rnd() >= p) return null;
+  if (c.equipped.phu_kien === 'ngoc_boi') {
+    c.equipped.phu_kien = undefined;
+    c.inventory = c.inventory.filter((i) => i !== 'ngoc_boi');
+    c.stats.sucKhoe = 20;
+    ctx.fx('heal', 'Ngọc bội vỡ');
+    return ' Đúng lúc tưởng chết, ngọc bội hộ thân vỡ tan, giữ lại cho bạn một hơi thở.';
+  }
+  c.dead = true;
+  c.cause = cause;
+  c.stats.sucKhoe = 0;
+  ctx.fx('death');
+  return ' ' + cause;
+}

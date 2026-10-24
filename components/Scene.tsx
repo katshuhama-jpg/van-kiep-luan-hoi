@@ -115,7 +115,7 @@ function Background({ focus }: { focus: string }) {
 const FX_TEXT: Partial<Record<Fx['kind'], string>> = {
   breakthrough: 'ĐỘT PHÁ!',
   lightning: 'THIÊN KIẾP',
-  death: '',
+  death: 'BỎ MẠNG',
 };
 
 export default function Scene({ c, fx, paused, season }: { c: Character; fx: Fx[]; paused: boolean; season: number }) {
