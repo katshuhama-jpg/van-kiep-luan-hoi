@@ -3,6 +3,8 @@
 import { useState, type ReactNode } from 'react';
 import { FOCUS, ITEMS, PATHS, PILLS, REALMS, SEASONS, TALENTS, realmLabel, type Item } from '@/lib/game/data';
 import { describeLean } from '@/lib/game/engine';
+import { DANGER_TEXT, MONSTERS, combatLevel, dangerOf, killExp, playerStats } from '@/lib/game/combat';
+import { MonsterSprite } from './Battle';
 import { cultPct, fmt, needFor } from '@/lib/game/helpers';
 import type { Character, Focus, LogEntry, Meta, PendingEvent } from '@/lib/game/types';
 
@@ -296,7 +298,7 @@ export function BeQuanSheet({ c, onGo, onClose }: { c: Character; onGo: (years: 
         <p className="note">Phải nhập đạo (Luyện Khí) mới bế quan được.</p>
       ) : (
         <div className="choice-row">
-          {[10, 30, 100].map((y) => (
+          {[5, 10, 20].map((y) => (
             <button key={y} className="btn btn-big" onClick={() => onGo(y)} disabled={y > left}>
               {y} năm
             </button>
@@ -335,7 +337,7 @@ export function FocusGrid({ c, onPick }: { c: Character; onPick: (f: Focus) => v
 /* ---------------- Màn luân hồi (đầu thai) ---------------- */
 export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talents: string[], yearSec: number) => void; busy?: boolean }) {
   const [picked, setPicked] = useState<string[]>([]);
-  const [yearSec, setYearSec] = useState(30);
+  const [yearSec, setYearSec] = useState(20);
   const spent = picked.reduce((s, id) => s + (TALENTS.find((t) => t.id === id)?.cost ?? 0), 0);
   const left = meta.phucDuyen - spent;
   return (
@@ -379,9 +381,9 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
         <h2>Độ dài một năm</h2>
         <div className="choice-row">
           {[
-            [15, 'Ngắn'],
-            [30, 'Vừa'],
-            [45, 'Dài'],
+            [10, 'Nhanh'],
+            [20, 'Vừa'],
+            [30, 'Chậm'],
           ].map(([s, label]) => (
             <button key={s} className={`btn ${yearSec === s ? 'on' : ''}`} onClick={() => setYearSec(s as number)} aria-pressed={yearSec === s}>
               {label}
@@ -507,6 +509,7 @@ export function FocusIcon({ f }: { f: Focus }) {
     luyen_dan: [[3, 0, 2, 1, '#c9c4ff'], [1, 2, 6, 1, '#3e3228'], [1, 3, 6, 4, '#7a5f44'], [3, 5, 2, 1, '#ff8a3d'], [1, 7, 1, 1, '#3e3228'], [6, 7, 1, 1, '#3e3228']],
     du_ngoan: [[0, 5, 8, 3, '#5fbf95'], [2, 2, 2, 3, '#8fb3a6'], [3, 1, 2, 2, '#8fb3a6'], [5, 3, 2, 2, '#6b9a8a'], [6, 0, 2, 2, '#fff6a8']],
     kiem_tien: [[2, 1, 4, 6, '#ffcf6e'], [1, 2, 6, 4, '#ffcf6e'], [3, 3, 2, 2, '#8a6a1a'], [2, 1, 1, 1, '#fff6d0']],
+    tru_yeu: [[6, 0, 2, 1, '#e6eaf6'], [5, 1, 2, 1, '#e6eaf6'], [4, 2, 2, 1, '#d9e6ff'], [3, 3, 2, 1, '#d9e6ff'], [1, 4, 3, 1, '#ffd36b'], [2, 3, 1, 3, '#ffd36b'], [0, 6, 2, 2, '#7a5a3a'], [5, 5, 3, 3, '#e0402e'], [6, 6, 1, 1, '#ffffff']],
     ket_duyen: [[1, 1, 2, 1, '#e0507a'], [5, 1, 2, 1, '#e0507a'], [0, 2, 8, 2, '#e0507a'], [1, 4, 6, 1, '#e0507a'], [2, 5, 4, 1, '#e0507a'], [3, 6, 2, 1, '#e0507a'], [1, 2, 1, 1, '#ffb3c6']],
   };
   return (
@@ -515,5 +518,43 @@ export function FocusIcon({ f }: { f: Focus }) {
         <rect key={i} x={x} y={y} width={w} height={h} fill={c} />
       ))}
     </svg>
+  );
+}
+
+
+/* ---------------- Chọn quái để trừ yêu ---------------- */
+export function HuntSheet({ c, onPick, onToggleFlee, onClose }: { c: Character; onPick: (id: string) => void; onToggleFlee: (v: boolean) => void; onClose: () => void }) {
+  const L = combatLevel(c);
+  const me = playerStats(c);
+  return (
+    <Sheet title="Trừ yêu luyện công" onClose={onClose}>
+      <p style={{ marginTop: 0 }}>
+        Cấp chiến đấu của bạn: <b style={{ fontWeight: 400, color: 'var(--red-d)' }}>Lv{L}</b> · Công {fmt(me.atk)} · Thủ {fmt(me.def)} · Máu {fmt(me.hp)}
+      </p>
+      <p className="note" style={{ marginTop: 0 }}>Quái càng mạnh càng nhiều tu vi, nhưng thua là có thể bỏ mạng. Ngọc bội hộ thân đỡ được một lần.</p>
+      <label className="toggle">
+        <input type="checkbox" checked={c.autoFlee !== false} onChange={(e) => onToggleFlee(e.target.checked)} />
+        Tự rút lui khi máu dưới 30%
+      </label>
+      <div className="items">
+        {MONSTERS.map((m) => {
+          const hidden = !m.boss && m.lv > L + 6;
+          const d = dangerOf(c, m);
+          const on = c.huntTarget === m.id;
+          return (
+            <button key={m.id} className={`hunt-item ${on ? 'on' : ''}`} disabled={hidden || c.dead} onClick={() => onPick(m.id)} aria-pressed={on}>
+              <span className="item-icon" style={{ width: 48, height: 48 }}>
+                {hidden ? <span style={{ fontSize: 26 }}>?</span> : <MonsterSprite m={m} size={42} />}
+              </span>
+              <span>
+                {hidden ? '??? (chưa đủ tầm để biết)' : m.boss ? `BOSS ${m.boss === 'ta' ? 'Tà phái' : 'Chính phái'} · ${m.name}` : `${m.name} · Lv${m.lv}`}
+                <small>{hidden ? m.place : m.boss ? `${m.place} · ${m.desc} Chưa từng ai thắng.` : `${m.place} · ~${fmt(killExp(c, m))} tu vi/con · ${c.kills?.[m.id] ?? 0} đã trảm`}</small>
+              </span>
+              {!hidden && <span className={`danger ${d}`}>{DANGER_TEXT[d]}</span>}
+            </button>
+          );
+        })}
+      </div>
+    </Sheet>
   );
 }

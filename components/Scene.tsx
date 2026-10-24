@@ -2,6 +2,7 @@
 
 import type { CSSProperties } from 'react';
 import Sprite, { auraColor, lookOf } from './Sprite';
+import { BattleOverlay, type BattleView } from './Battle';
 import type { Character, Fx } from '@/lib/game/types';
 import { REALMS } from '@/lib/game/data';
 
@@ -118,13 +119,13 @@ const FX_TEXT: Partial<Record<Fx['kind'], string>> = {
   death: 'BỎ MẠNG',
 };
 
-export default function Scene({ c, fx, paused, season }: { c: Character; fx: Fx[]; paused: boolean; season: number }) {
+export default function Scene({ c, fx, paused, season, battle }: { c: Character; fx: Fx[]; paused: boolean; season: number; battle?: BattleView | null }) {
   const focus = c.age < 6 ? 'tu_luyen' : c.focus;
   const aura = auraColor(lookOf(c)) ?? '#9ff0c8';
   const shaking = fx.some((f) => f.kind === 'breakthrough' || f.kind === 'hurt' || f.kind === 'lightning');
   const particles = Array.from({ length: 10 }, (_, i) => i);
   return (
-    <div className={`scene ${paused ? 'paused' : ''} ${shaking ? 'shake' : ''} ${c.dead ? 'scene-dead' : ''}`} style={{ ['--aura' as string]: aura } as CSSProperties}>
+    <div className={`scene ${paused ? 'paused' : ''} ${shaking ? 'shake' : ''} ${c.dead ? 'scene-dead' : ''} ${battle ? 'in-battle' : ''}`} style={{ ['--aura' as string]: aura } as CSSProperties}>
       <Background focus={focus} />
 
       <div className={`season ${SEASON_CLASS[season]}`} aria-hidden="true">
@@ -168,8 +169,10 @@ export default function Scene({ c, fx, paused, season }: { c: Character; fx: Fx[
         </div>
       )}
 
-      <div className="sprite-wrap">
-        <Sprite c={c} size={176} focus={focus} />
+      {battle && !c.dead && <BattleOverlay b={battle} />}
+
+      <div className={`sprite-wrap ${battle && battle.last.length && battle.last[battle.last.length - 1].side === 'p' ? 'lunge' : ''}`} key={battle?.last[battle.last.length - 1]?.id ?? 'idle'}>
+        <Sprite c={c} size={176} focus={battle ? 'tu_luyen' : focus} />
       </div>
 
       {c.dead && (

@@ -3,17 +3,22 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Scene from '@/components/Scene';
-import { BagSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, LogPanel, SEASONS, ShopSheet, Sheet, StageStrip } from '@/components/Panels';
+import MusicToggle from '@/components/MusicToggle';
+import { BagSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, HuntSheet, LogPanel, SEASONS, ShopSheet, Sheet, StageStrip } from '@/components/Panels';
+import type { BattleView } from '@/components/Battle';
+import { MONSTERS, fleeChance, hit, killExp, killReward, loseFight, monsterStats, playerStats, type Fighter } from '@/lib/game/combat';
 import { signOut } from '@/lib/auth';
 import { ITEMS, PATHS, PILLS, TALENTS, realmLabel } from '@/lib/game/data';
-import { closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, seasonOf, usePillNow, yearTick } from '@/lib/game/engine';
+import { checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick } from '@/lib/game/engine';
 import { addPill, fmt, giveItem, money } from '@/lib/game/helpers';
 import type { Character, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
 import { addMemorial, displayName, loadAll, saveLocal, saveMeta, saveRemote, type SaveState } from '@/lib/storage';
 import { useAuth } from '@/lib/useAuth';
 
 const SPEEDS = [1, 2, 4, 8, 16];
-type SheetName = null | 'shop' | 'bag' | 'bequan' | 'menu';
+type SheetName = null | 'shop' | 'bag' | 'bequan' | 'menu' | 'hunt';
+
+type Battle = BattleView & { t: number; rest: number; ps: Fighter; ms: Fighter };
 
 export default function PlayPage() {
   const { user, ready } = useAuth();
@@ -32,6 +37,7 @@ export default function PlayPage() {
   const lastRemote = useRef(0);
   const userRef = useRef(user);
   userRef.current = user;
+  const battleRef = useRef<Battle | null>(null);
 
   const rerender = useCallback(() => setFrame((f) => f + 1), []);
 
@@ -89,6 +95,98 @@ export default function PlayPage() {
   const activeRef = useRef(false);
   activeRef.current = running && sheet === null && phase === 'play';
 
+  /** Trận đánh tự động kiểu idle: mỗi lượt bạn đánh một đòn, quái đánh trả một đòn */
+  function newFight(c: Character, mId: string, kills: number): Battle | null {
+    const m = MONSTERS.find((x) => x.id === mId);
+    if (!m) return null;
+    const ps = playerStats(c);
+    // boss: không thể gây sát thương, mỗi đòn của nó lấy khoảng 1/3 máu
+    const ms = m.boss ? { hp: 1e9, atk: Math.round(ps.hp * 0.38 + ps.def * 0.5), def: 1e12 } : monsterStats(m);
+    return { m, pHp: ps.hp, pMax: ps.hp, mHp: ms.hp, mMax: ms.hp, phase: 'fight', last: [], kills, t: 0, rest: 0, ps, ms };
+  }
+
+  function stepBattle(c: Character, dtGame: number): boolean {
+    let b = battleRef.current;
+    if (!b || b.m.id !== c.huntTarget) {
+      b = newFight(c, c.huntTarget!, 0);
+      battleRef.current = b;
+      if (!b) return false;
+    }
+    const turn = yearSecRef.current * 0.015;
+    b.t += dtGame;
+    let changed = false;
+    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string) => {
+      b!.last = [...b!.last.slice(-4), { id: Math.random(), side, dmg, crit, text }];
+    };
+    while (b.t >= turn) {
+      b.t -= turn;
+      changed = true;
+      if (b.phase === 'rest') {
+        b.rest -= 1;
+        if (b.rest <= 0) {
+          const nb = newFight(c, b.m.id, b.kills);
+          if (!nb) return changed;
+          battleRef.current = b = nb;
+        }
+        continue;
+      }
+      // bạn ra đòn
+      const h1 = hit(b.ps.atk, b.ms.def, rnd);
+      b.mHp = Math.max(0, b.mHp - h1.dmg);
+      push('p', h1.dmg, h1.crit, b.m.boss ? 'Vô hiệu' : undefined);
+      if (b.mHp <= 0) {
+        const out: Fx[] = [];
+        const ctx = makeCtx(c, out);
+        const exp = killExp(c, b.m);
+        killReward(c, b.m, ctx).forEach((n) => ctx.log(n, 'good'));
+        b.kills += 1;
+        b.phase = 'rest';
+        b.rest = 3;
+        b.outcome = 'win';
+        push('p', 0, false, `+${exp} tu vi`);
+        const p = checkProgress(c, ctx, talentsRef.current);
+        pushFx(out);
+        if (p || c.dead) {
+          pendingRef.current = p;
+          persist(true);
+          break;
+        }
+        persist();
+        continue;
+      }
+      // quái đánh trả
+      const h2 = hit(b.ms.atk, b.ps.def, rnd);
+      b.pHp = Math.max(0, b.pHp - h2.dmg);
+      push('m', h2.dmg, h2.crit);
+      if (b.pHp <= 0) {
+        const out: Fx[] = [];
+        const ctx = makeCtx(c, out);
+        const text = loseFight(c, b.m, ctx);
+        ctx.log(text, c.dead ? 'big' : 'bad');
+        b.phase = 'rest';
+        b.rest = 8;
+        b.outcome = 'lose';
+        if (!c.dead) {
+          c.focus = 'tu_luyen';
+          ctx.log('Bạn về động phủ dưỡng thương, tạm gác việc trừ yêu.', 'normal');
+        }
+        pushFx(out);
+        persist(true);
+        break;
+      }
+      // tự rút lui khi máu thấp
+      if (c.autoFlee !== false && b.pHp < b.pMax * 0.3) {
+        if (rnd() < fleeChance(c, b.m)) {
+          b.phase = 'rest';
+          b.rest = 5;
+          b.outcome = 'flee';
+          push('m', 0, false, 'Rút lui!');
+        }
+      }
+    }
+    return changed;
+  }
+
   useEffect(() => {
     if (phase !== 'play') return;
     let raf = 0;
@@ -98,6 +196,9 @@ export default function PlayPage() {
       const dt = Math.min(0.25, (t - last) / 1000);
       last = t;
       const c = charRef.current;
+      if (c && activeRef.current && !pendingRef.current && !c.dead && c.focus === 'tru_yeu' && c.age >= 10 && c.huntTarget) {
+        if (stepBattle(c, dt * speedRef.current)) rerender();
+      }
       if (c && activeRef.current && !pendingRef.current && !c.dead) {
         const before = Math.floor(c.age);
         c.age += (dt / yearSecRef.current) * speedRef.current;
@@ -174,7 +275,24 @@ export default function PlayPage() {
       setRunning(true);
     });
 
-  const pickFocus = (f: Focus) => act((c) => (c.focus = f));
+  const pickFocus = (f: Focus) => {
+    if (f === 'tru_yeu') {
+      setSheet('hunt');
+      return;
+    }
+    act((c) => (c.focus = f));
+  };
+
+  const pickMonster = (id: string) => {
+    battleRef.current = null;
+    setSheet(null);
+    act((c) => {
+      c.huntTarget = id;
+      c.focus = 'tru_yeu';
+    });
+  };
+
+  const toggleFlee = (v: boolean) => act((c) => (c.autoFlee = v));
 
   const buyItem = (id: string) =>
     act((c, out) => {
@@ -321,6 +439,7 @@ export default function PlayPage() {
             <br />
             <b>{fmt(c.linhThach)}</b> linh thạch · 1 năm ≈ {Math.round(yearSecRef.current / speed)}s
           </span>
+          <MusicToggle battle={c.focus === 'tru_yeu' && c.age >= 10 && !!c.huntTarget && !c.dead} />
           <button className="icon-btn" onClick={() => setSheet('menu')} aria-label="Mở menu">
             ≡
           </button>
@@ -352,7 +471,7 @@ export default function PlayPage() {
       </header>
 
       <section className="stage">
-        <Scene c={c} fx={fx} paused={paused} season={season} />
+        <Scene c={c} fx={fx} paused={paused} season={season} battle={c.focus === 'tru_yeu' && c.age >= 10 && battleRef.current?.m.id === c.huntTarget ? battleRef.current : null} />
         <StageStrip c={c} compact={!!pending && !c.dead} />
       </section>
 
@@ -384,6 +503,7 @@ export default function PlayPage() {
       {sheet === 'shop' && <ShopSheet c={c} onBuyItem={buyItem} onBuyPill={buyPill} onClose={() => setSheet(null)} />}
       {sheet === 'bag' && <BagSheet c={c} onEquip={equip} onUsePill={takePill} onClose={() => setSheet(null)} />}
       {sheet === 'bequan' && <BeQuanSheet c={c} onGo={beQuan} onClose={() => setSheet(null)} />}
+      {sheet === 'hunt' && <HuntSheet c={c} onPick={pickMonster} onToggleFlee={toggleFlee} onClose={() => setSheet(null)} />}
       {sheet === 'menu' && (
         <Sheet title="Menu" onClose={() => setSheet(null)}>
           <div className="menu">

@@ -38,7 +38,7 @@ export function addCult(c: Character, amount: number) {
   c.cultivation = Math.max(0, c.cultivation + amount);
 }
 
-const BASE_YEAR = [6, 30, 24, 26, 28, 30, 32, 34];
+const BASE_YEAR = [6, 30, 30, 34, 38, 42, 46, 50];
 
 /** Phần thưởng tu vi: x tầng ở cảnh giới thấp, nhưng ở cảnh giới cao chỉ bằng khoảng x*3 năm tu luyện */
 export function reward(c: Character, x: number): number {

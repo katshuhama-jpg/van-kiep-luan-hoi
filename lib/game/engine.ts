@@ -1,11 +1,11 @@
-import { FOCUS, HAIR_COLORS, HAIR_STYLES, HO, LIFE_FATES, LINH_CAN, ORIGINS, PATHS, PILLS, REALMS, TEN_NAM, TEN_NU, realmLabel } from './data';
+import { FOCUS, MAX_LIFE, HAIR_COLORS, HAIR_STYLES, HO, HO_KEP, TEN_NAM_1, TEN_NAM_2, TEN_NU_1, TEN_NU_2, LIFE_FATES, LINH_CAN, ORIGINS, PATHS, PILLS, REALMS, TEN_NAM, TEN_NU, realmLabel } from './data';
 import { BREAK_EVENT_ID, EVENTS, PATH_EVENT_ID, pathChoices } from './events';
 import { addCult, addPill, clamp, reward, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
 import type { Character, Choice, EffectCtx, Fx, FxKind, GameEvent, Meta, PendingEvent, Tone } from './types';
 
 export const rnd = () => Math.random();
 
-const GAIN = [6, 30, 24, 26, 28, 30, 32, 34];
+const GAIN = [6, 30, 30, 34, 38, 42, 46, 50];
 
 export function emptyMeta(): Meta {
   return { phucDuyen: 0, nghiep: 0, lives: 0, talents: [], enemy: null };
@@ -17,6 +17,16 @@ function lifeMult(c: Character, talents: string[] = []) {
   if (c.path === 'phat') m *= 1.3;
   if (c.race === 'yeu') m *= 1.1;
   return m;
+}
+
+export function genName(gender: 'nam' | 'nu'): string {
+  const ho = rnd() < 0.15 ? pick(rnd, HO_KEP) : pick(rnd, HO);
+  const r = rnd();
+  let ten: string;
+  if (r < 0.2) ten = pick(rnd, gender === 'nam' ? TEN_NAM : TEN_NU);
+  else if (r < 0.35) ten = pick(rnd, gender === 'nam' ? TEN_NAM_2 : TEN_NU_1);
+  else ten = gender === 'nam' ? `${pick(rnd, TEN_NAM_1)} ${pick(rnd, TEN_NAM_2)}` : `${pick(rnd, TEN_NU_1)} ${pick(rnd, TEN_NU_2)}`;
+  return `${ho} ${ten}`;
 }
 
 export function newCharacter(meta: Meta): Character {
@@ -36,7 +46,7 @@ export function newCharacter(meta: Meta): Character {
   const lifeMul = Math.round((fate.lo + rnd() * (fate.hi - fate.lo)) * 100) / 100;
   const r = (lo: number, hi: number) => Math.round(lo + rnd() * (hi - lo));
   const c: Character = {
-    name: `${pick(rnd, HO)} ${pick(rnd, gender === 'nam' ? TEN_NAM : TEN_NU)}`,
+    name: genName(gender),
     gender,
     race,
     origin: origin.name,
@@ -119,7 +129,7 @@ function enterRealm(c: Character, realm: number, ctx: EffectCtx, talents: string
   c.layer = 1;
   c.cultivation = 0;
   const base = REALMS[realm]?.life ?? c.lifespan;
-  c.lifespan = Math.max(c.lifespan, Math.round(base * lifeMult(c, talents) * (0.9 + rnd() * 0.2)));
+  c.lifespan = Math.min(MAX_LIFE, Math.max(c.lifespan, Math.round(base * lifeMult(c, talents) * (0.9 + rnd() * 0.2))));
 }
 
 export function gearMul(c: Character) {
@@ -149,35 +159,35 @@ export function yearlyGain(c: Character) {
   return base * c.linhCanMul * (0.6 + c.stats.ngoTinh / 100) * pathMul(c) * gearMul(c) * (c.stats.tamMa > 70 ? 0.8 : 1);
 }
 
-const FLAVOR: Record<string, string[]> = {
-  tu_luyen: [
-    'Bạn tĩnh tọa dưới thác, linh khí cuồn cuộn nhập thể.',
-    'Một đêm trăng tròn, kinh mạch thông thêm một đoạn.',
-    'Bạn luyện công đến quên ăn, sáng ra thấy tóc dài thêm một gang.',
-    'Gió núi lạnh buốt, nhưng đan điền ấm áp lạ thường.',
-  ],
-  luyen_dan: [
-    'Lò đan nổ tung, tóc bạn cháy xém một mảng.',
-    'Ra lò ba viên đan, một viên có vân mây.',
-    'Bạn thức trắng canh lửa, mùi thuốc thơm khắp động phủ.',
-  ],
-  du_ngoan: [
-    'Bạn ngồi thuyền xuôi Thanh Giang, hoa đào nở hai bờ.',
-    'Lên đỉnh Vân Vụ Sơn ngắm biển mây, lòng rộng mở.',
-    'Bạn ghé một quán trà ven đường, nghe kể chuyện kiếm tiên.',
-    'Đi qua sa mạc Hoàng Sa, suýt chết khát.',
-  ],
-  kiem_tien: [
-    'Bán được một lô linh thảo giá hời.',
-    'Làm thuê cho tiệm thuốc, ông chủ keo nhưng trả đủ.',
-    'Bạn bày sạp bán phù chú ở phường thị.',
-  ],
-  ket_duyen: [
-    'Uống trà luận đạo với bạn cũ đến tận khuya.',
-    'Bạn tham dự hội thơ của các tu sĩ trẻ.',
-    'Kết giao thêm vài đạo hữu ở Lạc Hà trấn.',
-  ],
+
+// Câu chuyện thường ngày ghép ngẫu nhiên từ nhiều mảnh để hiếm khi lặp lại
+const WHEN = ['Đầu xuân,', 'Giữa hè,', 'Cuối thu,', 'Đêm đông,', 'Một đêm trăng tròn,', 'Sau cơn mưa rào,', 'Sáng sớm sương mù,', 'Lúc hoàng hôn,', 'Ngày tuyết đầu mùa,', 'Tiết Thanh Minh,', 'Đêm Trung Thu,', 'Mùa hoa đào nở,'];
+const WHERE = ['dưới thác Bạch Long', 'trên đỉnh Vân Vụ', 'bên bờ Thanh Giang', 'trong rừng trúc tím', 'ở hậu sơn', 'trong động phủ', 'dưới gốc tùng ngàn năm', 'trên thuyền giữa hồ Kính Nguyệt', 'ở thạch đình bỏ hoang', 'trên vách đá Tuyệt Bích', 'trong ngôi miếu đổ nát', 'giữa thảo nguyên Bắc Mạc'];
+const DOING: Record<string, string[]> = {
+  tu_luyen: ['bạn ngồi thiền vận chuyển chu thiên', 'bạn luyện đi luyện lại một chiêu kiếm', 'bạn hấp thụ linh khí nhật nguyệt', 'bạn nghiền ngẫm bộ công pháp cũ', 'bạn thử đả thông một huyệt đạo khó', 'bạn luyện công đến quên ăn'],
+  luyen_dan: ['bạn canh lò đan suốt bảy ngày', 'bạn thử một đan phương mới', 'bạn đi hái thảo dược', 'bạn ghi chép lại các lần nổ lò', 'bạn phơi thảo dược trên mái nhà'],
+  du_ngoan: ['bạn dừng chân ngắm cảnh', 'bạn nghe người kể chuyện giang hồ', 'bạn vẽ lại phong cảnh', 'bạn uống rượu với một khách lạ', 'bạn lạc đường mất ba ngày'],
+  kiem_tien: ['bạn bày sạp bán phù chú', 'bạn nhận làm thuê cho thương hội', 'bạn đi buôn linh thảo', 'bạn chép kinh thuê cho chùa', 'bạn đòi nợ giúp một lão chủ tiệm'],
+  ket_duyen: ['bạn uống trà luận đạo với bạn cũ', 'bạn dự hội thơ của tu sĩ trẻ', 'bạn giúp một người lạ sửa xe', 'bạn viết thư cho cố nhân', 'bạn kết giao thêm vài đạo hữu'],
+  tru_yeu: ['bạn lau sạch máu yêu thú trên vũ khí', 'bạn băng bó vết cào trên tay', 'bạn đếm lại chiến lợi phẩm', 'bạn nghe tiếng sói tru vọng về'],
 };
+const RESULT: Record<string, string[]> = {
+  tu_luyen: ['chân khí lưu chuyển thêm một vòng.', 'trong đầu chợt sáng ra một điều.', 'không thu được gì, nhưng lòng bình thản.', 'mồ hôi ướt đẫm, tu vi nhích thêm một chút.', 'suýt nữa thì khí huyết nghịch hành.'],
+  luyen_dan: ['mùi thuốc thơm khắp núi.', 'lò đan nổ, tóc cháy xém một mảng.', 'ra lò mấy viên đan có vân mây.', 'cuối cùng cũng hiểu vì sao lần trước hỏng.'],
+  du_ngoan: ['lòng rộng mở hơn hẳn.', 'nhớ nhà da diết.', 'học được vài câu tiếng địa phương.', 'thấy thiên hạ rộng lớn hơn mình tưởng.'],
+  kiem_tien: ['kiếm được kha khá linh thạch.', 'bị quỵt mất một nửa tiền công.', 'gặp được một mối làm ăn lâu dài.', 'mệt rã rời nhưng túi rủng rỉnh.'],
+  ket_duyen: ['cười nói đến tận khuya.', 'thấy lòng ấm áp lạ thường.', 'nghe được tin đồn thú vị trên giang hồ.', 'hẹn năm sau gặp lại.'],
+  tru_yeu: ['tay vẫn còn run.', 'thấy mình mạnh hơn hôm qua.', 'nhớ lại trận đánh suýt mất mạng.'],
+};
+
+function flavorLine(c: Character, focus: string): string {
+  const extra: string[] = [];
+  if (c.pet) extra.push('Tiểu hồ ly cuộn tròn ngủ bên cạnh.');
+  if (c.partner) extra.push(`${c.partner} ở bên pha trà.`);
+  if (c.enemy) extra.push(`Bạn chợt nghĩ đến ${c.enemy}.`);
+  const tail = extra.length && rnd() < 0.25 ? ' ' + pick(rnd, extra) : '';
+  return `${pick(rnd, WHEN)} ${pick(rnd, DOING[focus] ?? DOING.tu_luyen)} ${pick(rnd, WHERE)}, ${pick(rnd, RESULT[focus] ?? RESULT.tu_luyen)}${tail}`;
+}
 
 const CHILD: Record<number, string> = {
   1: 'Bạn biết đi rồi, chập chững khắp sân.',
@@ -229,6 +239,9 @@ function eligible(c: Character, e: GameEvent): boolean {
   if (e.minRealm !== undefined && c.realm < e.minRealm) return false;
   if (e.maxRealm !== undefined && c.realm > e.maxRealm) return false;
   const seen = c.seenEvents[e.id];
+  // một sự kiện gặp tối đa 2 lần mỗi kiếp (oan gia, tâm ma 3 lần) để đỡ lặp
+  const cap = e.id === 'tam_ma' || e.id === 'ke_thu' ? 3 : 2;
+  if ((c.evCount?.[e.id] ?? 0) >= cap) return false;
   if (seen !== undefined) {
     if (e.once) return false;
     if (a - seen < (e.cooldown ?? 10)) return false;
@@ -239,6 +252,8 @@ function eligible(c: Character, e: GameEvent): boolean {
 
 function buildPending(c: Character, e: GameEvent): PendingEvent {
   c.seenEvents[e.id] = Math.floor(c.age);
+  c.evCount = c.evCount ?? {};
+  c.evCount[e.id] = (c.evCount[e.id] ?? 0) + 1;
   return {
     id: e.id,
     title: e.title,
@@ -308,7 +323,7 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
   if (c.partner) stat(c, 'tamCanh', 1);
 
   // Thọ nguyên không vượt quá 1.4 lần mức chuẩn của cảnh giới
-  const cap = Math.round((REALMS[c.realm]?.life ?? 70) * 1.4 * lifeMult(c, talents));
+  const cap = Math.min(MAX_LIFE, Math.round((REALMS[c.realm]?.life ?? 70) * 1.25 * lifeMult(c, talents)));
   if (c.lifespan > cap) c.lifespan = cap;
 
   // Sự kiện tuổi thơ cố định
@@ -327,7 +342,7 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
     const e = pickEvent(c);
     if (e) return buildPending(c, e);
   }
-  if (age >= 6 && rnd() < 0.45 && focus) ctx.log(pick(rnd, FLAVOR[focus]));
+  if (age >= 6 && rnd() < 0.35 && focus) ctx.log(flavorLine(c, focus));
   return null;
 }
 
@@ -485,7 +500,7 @@ export function usePillNow(c: Character, id: string, ctx: EffectCtx, talents: st
     addCult(c, reward(c, 0.25));
     ctx.fx('layer', '+tu vi');
   } else if (id === 'dien_tho') {
-    c.lifespan += Math.round(20 + c.lifespan * 0.1);
+    c.lifespan = Math.min(MAX_LIFE, c.lifespan + 8);
     ctx.fx('heal', '+thọ nguyên');
   } else if (id === 'thanh_tam') {
     stat(c, 'tamMa', -25);
@@ -500,6 +515,16 @@ export function usePillNow(c: Character, id: string, ctx: EffectCtx, talents: st
   }
   ctx.log(`Bạn uống ${PILLS.find((p) => p.id === id)?.name}.`, 'good');
   return progress(c, ctx, talents);
+}
+
+/** Sau khi được cộng tu vi ngoài vòng năm (đánh quái...): lên tầng, đột phá, chọn đường, kiểm tra chết */
+export function checkProgress(c: Character, ctx: EffectCtx, talents: string[] = []): PendingEvent | null {
+  checkDeath(c, ctx);
+  if (c.dead) return null;
+  const brk = progress(c, ctx, talents);
+  if (brk) return brk;
+  if (c.realm >= 2 && !c.path) return buildPending(c, pathEvent(c));
+  return null;
 }
 
 export function karmaOf(c: Character) {

@@ -1,15 +1,18 @@
 import type { Focus, PathId, Slot, Talent } from './types';
 
 export const REALMS = [
-  { name: 'Phàm Nhân', layers: 1, life: 70, need: 0 },
-  { name: 'Luyện Khí', layers: 9, life: 120, need: 60 },
-  { name: 'Trúc Cơ', layers: 3, life: 200, need: 260 },
-  { name: 'Kim Đan', layers: 3, life: 350, need: 700 },
-  { name: 'Nguyên Anh', layers: 3, life: 600, need: 2400 },
-  { name: 'Hóa Thần', layers: 3, life: 1000, need: 6000 },
-  { name: 'Luyện Hư', layers: 3, life: 1600, need: 14000 },
-  { name: 'Độ Kiếp', layers: 3, life: 2500, need: 30000 },
+  { name: 'Phàm Nhân', layers: 1, life: 65, need: 0 },
+  { name: 'Luyện Khí', layers: 9, life: 80, need: 60 },
+  { name: 'Trúc Cơ', layers: 3, life: 92, need: 220 },
+  { name: 'Kim Đan', layers: 3, life: 102, need: 380 },
+  { name: 'Nguyên Anh', layers: 3, life: 110, need: 600 },
+  { name: 'Hóa Thần', layers: 3, life: 116, need: 900 },
+  { name: 'Luyện Hư', layers: 3, life: 120, need: 1300 },
+  { name: 'Độ Kiếp', layers: 3, life: 120, need: 1800 },
 ] as const;
+
+/** Thọ nguyên tối đa của mọi kiếp, để kiếp nào cũng sớm đến lúc luân hồi */
+export const MAX_LIFE = 120;
 
 export const STAGE3 = ['Sơ kỳ', 'Trung kỳ', 'Hậu kỳ'];
 
@@ -55,7 +58,14 @@ export const ORIGINS = [
   { id: 'yeu', name: 'Tiểu yêu sinh ra ở Vạn Yêu Lâm', money: 15, w: 4 },
 ];
 
-export const HO = ['Lâm', 'Diệp', 'Tô', 'Hàn', 'Lý', 'Mộ Dung', 'Thẩm', 'Bạch', 'Giang', 'Vân', 'Tiêu', 'Lạc', 'Hoa', 'Đường', 'Tần'];
+/** Tên ghép từ hai âm tiết, hàng nghìn tổ hợp */
+export const TEN_NAM_1 = ['Thanh', 'Huyền', 'Thiên', 'Vô', 'Trường', 'Lăng', 'Kiếm', 'Vân', 'Hạo', 'Tử', 'Mặc', 'Dạ', 'Phong', 'Cảnh', 'Tinh', 'Nhất', 'Thừa', 'Bách', 'Lạc', 'Tiêu'];
+export const TEN_NAM_2 = ['Phong', 'Vân', 'Hà', 'Trần', 'Ngôn', 'Tiêu', 'Dật', 'Khuyết', 'Thần', 'Sơn', 'Hải', 'Uyên', 'Hàn', 'Lâm', 'Kỳ', 'Hành', 'Nhai', 'Viễn', 'Chi', 'Tuyệt'];
+export const TEN_NU_1 = ['Tuyết', 'Nguyệt', 'Uyển', 'Linh', 'Thanh', 'Tử', 'Băng', 'Vũ', 'Ngưng', 'Tiểu', 'Lạc', 'Dao', 'Mộng', 'Hàm', 'Thi', 'Như', 'Ỷ', 'Khinh', 'Vãn', 'Tố'];
+export const TEN_NU_2 = ['Nhi', 'Hoa', 'Y', 'Yên', 'Tâm', 'Đồng', 'Sương', 'Điệp', 'Dao', 'Âm', 'Ly', 'Vân', 'Tuyết', 'Nguyệt', 'Lan', 'Hương', 'Ca', 'Linh', 'Thường', 'Cầm'];
+export const HO_KEP = ['Âu Dương', 'Thượng Quan', 'Tư Mã', 'Nam Cung', 'Độc Cô', 'Lệnh Hồ', 'Hoàng Phủ', 'Mộ Dung', 'Đông Phương', 'Tây Môn', 'Gia Cát', 'Công Tôn'];
+
+export const HO = ['Tạ', 'Phương', 'Chu', 'Ôn', 'Cố', 'Liễu', 'Kỷ', 'Sở', 'Yến', 'Mạc', 'Thôi', 'Lục', 'Lâm', 'Diệp', 'Tô', 'Hàn', 'Lý', 'Thẩm', 'Bạch', 'Giang', 'Vân', 'Tiêu', 'Lạc', 'Hoa', 'Đường', 'Tần'];
 export const TEN_NAM = ['Thanh Vân', 'Phàm', 'Trường Sinh', 'Dật', 'Mặc', 'Huyền', 'Thần', 'Vô Kỵ', 'Phong', 'Thiên Hành', 'Tử Kỳ', 'Hạo'];
 export const TEN_NU = ['Tuyết Nhi', 'Nguyệt Hoa', 'Uyển', 'Linh Nhi', 'Thanh Y', 'Tử Yên', 'Băng Tâm', 'Vũ Đồng', 'Ngưng Sương', 'Tiểu Điệp'];
 export const DAO_LU = ['Diệp Ngưng Sương', 'Tô Vũ Đồng', 'Hàn Mặc', 'Bạch Tử Kỳ', 'Giang Nguyệt Hoa', 'Lý Huyền', 'Vân Băng Tâm', 'Tiêu Hạo'];
@@ -66,6 +76,7 @@ export const FOCUS: Record<Focus, { name: string; desc: string; minAge: number }
   du_ngoan: { name: 'Du ngoạn', desc: 'Nhiều kỳ ngộ', minAge: 10 },
   kiem_tien: { name: 'Kiếm tiền', desc: 'Linh thạch', minAge: 8 },
   ket_duyen: { name: 'Kết duyên', desc: 'Tâm cảnh, đạo lữ', minAge: 16 },
+  tru_yeu: { name: 'Trừ yêu', desc: 'Đánh quái lên cấp', minAge: 10 },
 };
 
 export interface Item {
@@ -100,7 +111,7 @@ export const ITEMS: Item[] = [
 export const PILLS = [
   { id: 'tu_khi', name: 'Tụ Khí Đan', price: 30, desc: '+tu vi ngay lập tức' },
   { id: 'truc_co', name: 'Trúc Cơ Đan', price: 200, desc: 'Tăng tỉ lệ đột phá đại cảnh giới' },
-  { id: 'dien_tho', name: 'Diên Thọ Đan', price: 500, desc: '+thọ nguyên' },
+  { id: 'dien_tho', name: 'Diên Thọ Đan', price: 500, desc: '+8 năm thọ nguyên (tối đa 120)' },
   { id: 'thanh_tam', name: 'Thanh Tâm Đan', price: 90, desc: '-tâm ma' },
   { id: 'hoi_xuan', name: 'Hồi Xuân Đan', price: 60, desc: 'Hồi sức khỏe' },
 ];

@@ -1,6 +1,6 @@
 export type Gender = 'nam' | 'nu';
 export type Race = 'nhan' | 'yeu';
-export type Focus = 'tu_luyen' | 'luyen_dan' | 'du_ngoan' | 'kiem_tien' | 'ket_duyen';
+export type Focus = 'tu_luyen' | 'luyen_dan' | 'du_ngoan' | 'kiem_tien' | 'ket_duyen' | 'tru_yeu';
 export type PathId = 'kiem' | 'dan' | 'tran' | 'phat' | 'ma' | 'yeu';
 export type Slot = 'ao' | 'vu_khi' | 'phu_kien';
 export type Tone = 'normal' | 'good' | 'bad' | 'big' | 'chinh' | 'ta';
@@ -76,6 +76,10 @@ export interface Character {
   lifeMul?: number; // thọ mệnh bẩm sinh: <1 đoản thọ, >1 trường thọ
   outfitTone?: number; // phối màu áo bẩm sinh
   outfitCut?: number; // kiểu dáng áo 0-3
+  huntTarget?: string; // quái đang chọn đánh
+  autoFlee?: boolean; // tự rút lui khi máu thấp
+  kills?: Record<string, number>;
+  evCount?: Record<string, number>; // số lần đã gặp mỗi sự kiện trong kiếp này
 }
 
 export interface Choice {

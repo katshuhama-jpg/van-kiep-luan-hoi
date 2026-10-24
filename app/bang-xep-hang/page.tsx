@@ -119,15 +119,16 @@ export default function RankPage() {
               <li key={r.username} className={`rank-row ${mine ? 'mine' : ''} ${i < 3 ? 'top' : ''}`}>
                 <Medal rank={i + 1} />
                 <div className="rank-sprite">
-                  <Sprite c={c} size={58} />
+                  <Sprite c={c} size={64} />
                 </div>
                 <div className="rank-body">
-                  <span className="rank-name">
-                    {c.name}
+                  <span className="rank-name">{c.name}</span>
+                  <span className="rank-owner">
+                    @{r.username}
                     {mine && <span className="badge">Bạn</span>}
                   </span>
                   <small>
-                    {r.username} · {Math.floor(c.age)} tuổi · {c.path ? PATHS[c.path].name : 'chưa chọn đường'} · {describeLean(c.daoTam)}
+                    {Math.floor(c.age)} tuổi · {c.path ? PATHS[c.path].name : 'chưa chọn đường'} · {describeLean(c.daoTam)}
                   </small>
                 </div>
                 <div className="rank-val">

@@ -12,6 +12,11 @@ Game pixel trùng sinh tu tiên, chơi trên trình duyệt điện thoại. L�
 - **Nhân vật pixel ghép lớp:** đổi theo tuổi (bé, thiếu niên, trung niên, già tóc bạc chống gậy), cảnh giới (hào quang), con đường (đầu trọc Phật tu, mắt đỏ Ma tu, tai đuôi Yêu tu), quần áo và vũ khí mua ở phường thị.
 - **Animation:** thở, chớp mắt, hào quang, linh khí bay lên, kiếm bay quanh người, linh thú nhảy, mùa xuân hạ thu đông, đột phá (chớp sáng, vòng sóng, rung màn hình), thiên kiếp (sét), bị thương, kết đạo lữ, chết (linh hồn bay lên).
 - **Luân hồi:** chết xong lập bia ở nghĩa trang chung, nhận phúc duyên (hoặc nghiệp) để mua thiên phú cho kiếp sau.
+- **Trừ yêu (kiểu Task Bar Hero):** chọn trọng tâm Trừ yêu, chọn 1 trong 15 loại quái theo cấp, nhân vật tự đánh liên tục để lấy tu vi, linh thạch, đan dược, yêu đan. Quái quá mạnh có thể giết chết nhân vật; có tùy chọn tự rút lui khi máu dưới 30%. Thêm 2 boss không thể thắng: Huyết Ma Lão Tổ (Tà) và Thái Thượng Kiếm Tôn (Chính) - đánh vào là trọng thương hoặc chết.
+- **Lựa chọn chí mạng:** nhiều lựa chọn kiểu kiếm hiệp có thể chết ngay (canh độc, tẩu hỏa nhập ma, rơi vực, rắn độc, sát thủ...). Ngọc bội hộ thân đỡ một lần.
+- **Thọ nguyên tối đa 120 năm**, mỗi sự kiện gặp tối đa 2 lần mỗi kiếp, câu chuyện thường ngày ghép ngẫu nhiên để ít lặp.
+- **Bảng xếp hạng** năng lực và phú hào, lọc theo phái và con đường.
+- **Nhạc nền 8-bit** tự sinh (ngũ cung), đổi nhịp khi đánh quái, có nút bật/tắt.
 - **Tài khoản:** tên đăng nhập + mật khẩu 3-6 ký tự. Chưa đăng nhập vẫn chơi được, lưu trên máy.
 
 ## Chạy trên máy
