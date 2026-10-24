@@ -5,7 +5,7 @@ Game pixel trùng sinh tu tiên, chơi trên trình duyệt điện thoại. L�
 ## Có gì trong game
 
 - **Đầu thai ngẫu nhiên:** linh căn, xuất thân, giới tính, nhân tộc hay yêu tộc.
-- **Thời gian chỉnh được:** chọn độ dài một năm (15/30/45 giây), tốc độ 1× đến 16×, nút » tua tới sự kiện kế tiếp, bế quan 10/30/100 năm.
+- **Thời gian chỉnh được:** chọn độ dài một năm (10/20/30 giây), tốc độ 1× đến 16×, nút » tua tới sự kiện kế tiếp, bế quan 5/10/20 năm.
 - **Cảnh giới:** Phàm nhân → Luyện Khí (9 tầng) → Trúc Cơ → Kim Đan → Nguyên Anh → Hóa Thần → Luyện Hư → Độ Kiếp → Phi thăng. Từ Kim Đan trở lên có thiên kiếp.
 - **Đạo tâm Chính ↔ Tà:** mỗi sự kiện có 4 lựa chọn, được tô màu theo hướng Chính/Tà.
 - **Con đường tu tập** (chọn khi lên Trúc Cơ): Kiếm tu, Đan tu, Trận tu, Phật tu (cần nghiêng Chính), Ma tu (cần nghiêng Tà), Yêu tu (chỉ yêu tộc).
