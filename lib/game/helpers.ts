@@ -139,7 +139,8 @@ export function fmt(n: number) {
  */
 export function fatal(c: Character, ctx: EffectCtx, chance: number, cause: string): string | null {
   // trẻ con được trời thương hơn một chút
-  const p = clamp(chance * (c.age < 13 && chance < 1 ? 0.6 : 1) - (c.stats.khiVan - 50) / 500, 0.01, chance >= 1 ? 1 : 0.95);
+  const tough = c.gifts?.includes('g_menh_cung') && chance < 1 ? 0.7 : 1;
+  const p = clamp(chance * tough * (c.age < 13 && chance < 1 ? 0.6 : 1) - (c.stats.khiVan - 50) / 500, 0.01, chance >= 1 ? 1 : 0.95);
   if (ctx.rnd() >= p) return null;
   if (c.equipped.phu_kien === 'ngoc_boi') {
     c.equipped.phu_kien = undefined;

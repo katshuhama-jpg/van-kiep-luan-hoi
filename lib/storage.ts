@@ -2,7 +2,8 @@
 
 import { dropSession, type Player } from './auth';
 import { emptyMeta } from './game/engine';
-import type { Character, Meta, PendingEvent } from './game/types';
+import type { Character, Grave, Meta, PendingEvent, WorldEcho } from './game/types';
+import { REALMS, realmLabel } from './game/data';
 import { supabase } from './supabase';
 
 export interface SaveState {
@@ -136,4 +137,30 @@ export async function leaderboard(kind: RankKind, lean: RankLean, path: string, 
       inventory: [],
     } as Character,
   }));
+}
+
+// tài khoản thử nghiệm không xuất hiện trong thế giới
+const isTest = (n: string) => /^(test|ui)_/.test(n);
+
+/** Dấu vết của người chơi khác để đưa vào kiếp mới: mộ, ma đầu, minh chủ */
+export async function fetchWorld(user: Player | null): Promise<WorldEcho | null> {
+  const sb = supabase();
+  if (!sb) return null;
+  const me = user?.username ?? null;
+  const [{ data: lives }, ma, chinh] = await Promise.all([
+    sb.from('vkl_lives').select('player_name, char_name, age, realm, cause, epitaph, dao_tam').order('created_at', { ascending: false }).limit(80),
+    leaderboard('power', 'ta', 'all', 'all').catch(() => null),
+    leaderboard('power', 'chinh', 'all', 'all').catch(() => null),
+  ]);
+  const rows = ((lives as { player_name: string; char_name: string; age: number; realm: string; cause: string | null; epitaph: string | null; dao_tam: number }[] | null) ?? []).filter((r) => r.player_name !== me && r.player_name !== 'Khách' && !isTest(r.player_name));
+  for (let i = rows.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [rows[i], rows[j]] = [rows[j], rows[i]];
+  }
+  const graves: Grave[] = rows.slice(0, 6).map((r) => ({ char: r.char_name, player: r.player_name, age: r.age, realm: r.realm, cause: r.cause, epitaph: r.epitaph, dao: r.dao_tam }));
+  const top = (list: { username: string; c: Character }[] | null) => {
+    const r = list?.find((x) => x.username !== me && !isTest(x.username) && (x.c.realm ?? 0) >= 1);
+    return r ? { name: r.c.name, player: r.username, realm: r.c.realm, realmName: realmLabel(r.c.realm, r.c.layer ?? 1) || REALMS[r.c.realm]?.name || '' } : null;
+  };
+  return { graves, ma: top(ma), chinh: top(chinh) };
 }

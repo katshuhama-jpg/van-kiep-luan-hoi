@@ -110,6 +110,9 @@ export function playerStats(c: Character): Fighter {
   if (c.path === 'yeu') hp *= 1.25;
   if (c.path === 'tran') def *= 1.4;
   if (c.path === 'phat') (hp *= 1.15), (def *= 1.15);
+  if (c.gifts?.includes('g_than_luc')) atk *= 1.25;
+  if (c.gifts?.includes('g_kiem_cot')) atk *= 1.1;
+  if (c.mount === 'rong') (atk *= 1.2), (hp *= 1.2);
   const w = c.equipped.vu_khi;
   if (w === 'moc_kiem') atk *= 1.05;
   if (w === 'thanh_phong') atk *= 1.2;

@@ -1,6 +1,9 @@
 'use client';
 
-import { useState, type ReactNode } from 'react';
+import Link from 'next/link';
+import { useState, type CSSProperties, type ReactNode } from 'react';
+import { ENDINGS, RARE_COLOR, endingOf } from '@/lib/game/endings';
+import { GachaPanel, ShareCard } from './Extras';
 import { FOCUS, ITEMS, PATHS, PILLS, REALMS, SEASONS, TALENTS, realmLabel, type Item } from '@/lib/game/data';
 import { describeLean } from '@/lib/game/engine';
 import { DANGER_TEXT, MONSTERS, combatLevel, dangerOf, effLv, killExp, monsterName, playerStats, tierOf } from '@/lib/game/combat';
@@ -337,10 +340,12 @@ export function FocusGrid({ c, onPick }: { c: Character; onPick: (f: Focus) => v
 }
 
 /* ---------------- Màn luân hồi (đầu thai) ---------------- */
-export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talents: string[], yearSec: number) => void; busy?: boolean }) {
+export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talents: string[], yearSec: number, gifts: string[], gachaSpent: number) => void; busy?: boolean }) {
   const [picked, setPicked] = useState<string[]>([]);
   const [yearSec, setYearSec] = useState(20);
-  const spent = picked.reduce((s, id) => s + (TALENTS.find((t) => t.id === id)?.cost ?? 0), 0);
+  const [gifts, setGifts] = useState<string[]>([]);
+  const [gSpent, setGSpent] = useState(0);
+  const spent = picked.reduce((s, id) => s + (TALENTS.find((t) => t.id === id)?.cost ?? 0), 0) + gSpent;
   const left = meta.phucDuyen - spent;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -356,7 +361,23 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
           )}
         </p>
         {meta.nghiep >= 10 && <p className="note" style={{ margin: 0 }}>Nghiệp nặng: kiếp sau khí vận giảm và có oan gia tìm tới.</p>}
+        {meta.past && (
+          <p className="note" style={{ margin: '4px 0 0' }}>
+            Kiếp trước: <b style={{ fontWeight: 400 }}>{meta.past.name}</b>, {meta.past.age} tuổi, {meta.past.realmName}.{meta.stash ? ' Kiếp trước có chôn lại một chiếc rương...' : ''}
+          </p>
+        )}
+        <Link href="/so-sinh-tu" className="btn" style={{ display: 'block', textAlign: 'center', textDecoration: 'none', marginTop: 8 }}>
+          Sổ Sinh Tử ({Object.keys(meta.endings ?? {}).length}/{ENDINGS.length} kết cục)
+        </Link>
       </section>
+
+      <GachaPanel
+        phuc={left}
+        onChange={(g, s) => {
+          setGifts(g);
+          setGSpent(s);
+        }}
+      />
 
       <section className="panel">
         <h2>Thiên phú cho kiếp này</h2>
@@ -397,7 +418,7 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
         <p className="note" style={{ marginBottom: 0 }}>Trong lúc chơi vẫn chỉnh được tốc độ 1× đến 16×.</p>
       </section>
 
-      <button className="btn btn-red btn-big" disabled={busy} onClick={() => onBorn(picked, yearSec)}>
+      <button className="btn btn-red btn-big" disabled={busy} onClick={() => onBorn(picked, yearSec, gifts, gSpent)}>
         Đầu thai
       </button>
     </div>
@@ -405,9 +426,13 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
 }
 
 /* ---------------- Màn chết ---------------- */
-export function DeathSheet({ c, karma, onDone }: { c: Character; karma: { phuc: number; nghiep: number }; onDone: (epitaph: string) => void }) {
+export function DeathSheet({ c, karma, isNew, onDone }: { c: Character; karma: { phuc: number; nghiep: number }; isNew: boolean; onDone: (epitaph: string, note: string, bury: boolean) => void }) {
   const [text, setText] = useState('');
+  const [note, setNote] = useState('');
+  const [bury, setBury] = useState(true);
   const [busy, setBusy] = useState(false);
+  const ending = endingOf(c);
+  const buryMoney = Math.round(c.linhThach * 0.3);
   return (
     <Sheet title={c.ascended ? 'Phi thăng!' : 'Một kiếp đã hết'}>
       <p style={{ marginTop: 0 }}>
@@ -417,6 +442,11 @@ export function DeathSheet({ c, karma, onDone }: { c: Character; karma: { phuc: 
         {c.path ? ` · ${PATHS[c.path].name}` : ''} · {describeLean(c.daoTam)}
       </p>
       <p className="note">{c.cause}</p>
+      <div className={`ending-box r${ending.rare}`} style={{ ['--rc' as string]: RARE_COLOR[ending.rare] } as CSSProperties}>
+        <small>Kết cục {['phàm', 'linh', 'huyền', 'địa', 'thiên'][ending.rare]} phẩm{isNew ? ' · MỚI MỞ!' : ''}</small>
+        <b>{ending.name}</b>
+        <span>{ending.desc}</span>
+      </div>
       <p>
         Mang sang kiếp sau: <b style={{ fontWeight: 400, color: 'var(--jade)' }}>+{karma.phuc} phúc duyên</b>
         {karma.nghiep > 0 && (
@@ -431,13 +461,30 @@ export function DeathSheet({ c, karma, onDone }: { c: Character; karma: { phuc: 
         <span>Khắc lên bia mộ (không bắt buộc)</span>
         <input value={text} maxLength={120} onChange={(e) => setText(e.target.value)} placeholder="vd: Kiếp này không phụ kiếm trong tay" />
       </label>
+      {!c.ascended && c.endTag !== 'xuyen_khong' && (
+        <>
+          <label className="toggle" style={{ marginTop: 8 }}>
+            <input type="checkbox" checked={bury} onChange={(e) => setBury(e.target.checked)} />
+            Chôn rương cho kiếp sau ({buryMoney} linh thạch{c.equipped.vu_khi || c.equipped.phu_kien ? ' và một món đồ' : ''})
+          </label>
+          {bury && (
+            <label className="field">
+              <span>Lời nhắn bỏ vào rương</span>
+              <input value={note} maxLength={100} onChange={(e) => setNote(e.target.value)} placeholder="vd: Kiếp sau đừng tin ai họ Mộ Dung" />
+            </label>
+          )}
+        </>
+      )}
+      <div style={{ marginTop: 10 }}>
+        <ShareCard c={c} ending={ending} epitaph={text.trim()} />
+      </div>
       <button
         className="btn btn-red btn-big"
         style={{ width: '100%', marginTop: 10 }}
         disabled={busy}
         onClick={() => {
           setBusy(true);
-          onDone(text.trim());
+          onDone(text.trim(), note.trim(), bury);
         }}
       >
         Lập bia và luân hồi

@@ -2356,3 +2356,77 @@ button:disabled {
 .focus-grid button.tired { animation: tiredPulse 1.2s steps(2) infinite; }
 .focus-grid button.tired .streak { color: #e0202e; }
 @keyframes tiredPulse { 50% { box-shadow: 0 0 0 2px #e0202e inset; } }
+
+/* ===== Gieo quẻ thiên phú ===== */
+.gacha-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 6px; }
+.gacha-card { position: relative; display: flex; flex-direction: column; gap: 2px; text-align: left; padding: 6px 6px 8px; border: 3px solid var(--rc); background: #fbf3dc; color: var(--ink); font: inherit; font-size: 15px; line-height: 1.05; cursor: pointer; animation: cardFlip 0.45s steps(5) both; box-shadow: 3px 3px 0 var(--ink-dark); }
+.gacha-card b { font-weight: 400; font-size: 18px; color: var(--rc); }
+.gacha-card small { color: #6a5a44; font-size: 14px; }
+.gacha-card .gc-rare { font-size: 13px; color: #fff8e6; background: var(--rc); align-self: flex-start; padding: 0 4px; }
+.gacha-card .gc-bad { position: absolute; top: 4px; right: 4px; font-size: 12px; color: var(--ta); }
+.gacha-card.on { background: #fff; outline: 3px solid var(--ink); transform: translate(-1px, -2px); }
+.gacha-card.r3, .gacha-card.r4 { background: linear-gradient(160deg, #fff6d0, #fbf3dc 60%); }
+.gacha-card.r4 { animation: cardFlip 0.45s steps(5) both, rareGlow 1s steps(2) 0.5s infinite; }
+.gacha-row.gold { animation: shakeMini 0.4s steps(3) 0.6s 2; }
+@keyframes cardFlip { from { transform: rotateY(90deg) scale(0.8); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes rareGlow { 50% { box-shadow: 0 0 0 3px #ffd36b, 3px 3px 0 var(--ink-dark); } }
+@keyframes shakeMini { 33% { transform: translateX(-3px); } 66% { transform: translateX(3px); } }
+
+/* ===== Kết cục ===== */
+.ending-box { display: flex; flex-direction: column; border: 3px solid var(--rc); background: #fbf3dc; padding: 6px 10px; margin: 6px 0 10px; box-shadow: 3px 3px 0 var(--ink-dark); }
+.ending-box small { color: var(--rc); font-size: 15px; }
+.ending-box b { font-weight: 400; font-size: 26px; color: var(--rc); line-height: 1; }
+.ending-box span { font-size: 16px; color: #6a5a44; }
+.ending-box.r3, .ending-box.r4 { animation: rareGlow 1s steps(2) infinite; }
+.share-card { display: flex; flex-direction: column; gap: 8px; }
+.share-preview { width: 100%; max-width: 320px; align-self: center; image-rendering: pixelated; border: 3px solid var(--ink); }
+
+/* ===== Sổ Sinh Tử ===== */
+.ss-progress { height: 10px; border: 3px solid var(--ink); background: #e4d2a6; margin: 8px 0; }
+.ss-progress span { display: block; height: 100%; background: var(--red-d); }
+.ss-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.ss-card { display: flex; flex-direction: column; gap: 2px; padding: 8px; border: 3px solid var(--rc); background: #fbf3dc; box-shadow: 3px 3px 0 var(--ink-dark); min-height: 112px; }
+.ss-card small { color: var(--rc); font-size: 14px; }
+.ss-card b { font-weight: 400; font-size: 21px; line-height: 1; color: var(--ink); }
+.ss-card.open b { color: var(--rc); }
+.ss-card span { font-size: 15px; color: #6a5a44; line-height: 1.05; }
+.ss-card em { margin-top: auto; font-style: normal; font-size: 14px; color: var(--jade); }
+.ss-card.locked { background: #e9dcb8; border-style: dashed; }
+.ss-gifts { display: flex; flex-wrap: wrap; gap: 10px; font-size: 17px; }
+
+/* ===== Rồng ===== */
+.dragon { position: absolute; z-index: 3; pointer-events: none; animation: dragonFloat 2.4s steps(6) infinite; }
+.dragon.baby { left: 60%; bottom: 18%; }
+.dragon.big { right: 4%; top: 18%; }
+.dragon svg { transform: scaleX(-1); filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.35)); }
+@keyframes dragonFloat { 50% { transform: translateY(-8px); } }
+
+/* ===== Thiên kiếp ===== */
+.kiep { position: fixed; inset: 0; z-index: 80; background: #0e0a1a; color: #fff6d0; display: flex; flex-direction: column; align-items: center; justify-content: center; touch-action: manipulation; user-select: none; -webkit-user-select: none; overflow: hidden; }
+.kiep-sky { position: absolute; inset: 0 0 auto 0; height: 40%; }
+.kiep-sky .cloud { position: absolute; top: 4%; width: 46%; height: 70px; background: #2a2440; box-shadow: 0 16px 0 #1f1a32, 24px 8px 0 #2a2440; animation: cloudDrift 6s steps(8) infinite alternate; }
+.kiep-sky .c1 { left: -6%; }
+.kiep-sky .c2 { left: 30%; top: 0; animation-delay: -2s; }
+.kiep-sky .c3 { right: -8%; top: 10%; animation-delay: -4s; }
+.kiep-warn .kiep-sky .cloud { background: #4a3a7a; }
+@keyframes cloudDrift { to { transform: translateX(20px); } }
+.kiep-hit { animation: kiepShake 0.3s steps(3); background: #3a0a14; }
+.kiep-block { background: #0a2a24; }
+@keyframes kiepShake { 33% { transform: translate(-8px, 4px); } 66% { transform: translate(8px, -4px); } }
+.kiep-bolt { position: absolute; top: 0; left: calc(50% - 30px); width: 60px; height: 62%; filter: drop-shadow(0 0 8px #fff6a8); animation: boltIn 0.25s steps(2); }
+@keyframes boltIn { from { opacity: 0; } }
+.kiep-hud { position: absolute; top: max(10px, env(safe-area-inset-top)); left: 16px; right: 16px; display: flex; justify-content: space-between; font-size: 20px; }
+.kiep-hud b { font-weight: 400; }
+.kiep-center { position: relative; z-index: 2; text-align: center; padding: 0 20px; font-size: 20px; max-width: 420px; }
+.kiep-center p { margin: 6px 0; }
+.kiep-big { font-size: 34px; color: #ffd36b; }
+.kiep-tap { animation: blinkTap 1s steps(2) infinite; color: #9ff0c8; }
+@keyframes blinkTap { 50% { opacity: 0.2; } }
+.kiep-mid { font-size: 32px; color: #8a80b0; }
+.kiep-mid.ok { color: #9ff0c8; }
+.kiep-mid.bad { color: #ff6a5a; }
+.kiep-ring { width: 160px; height: 160px; margin: 0 auto; display: grid; place-items: center; border: 6px solid #ffd36b; border-radius: 50%; animation: ringShrink linear forwards; box-shadow: 0 0 24px #ffd36b; }
+.kiep-ring span { font-size: 44px; color: #fff6a8; animation: none; }
+@keyframes ringShrink { from { transform: scale(1.25); } to { transform: scale(0.45); border-color: #ff6a5a; } }
+.kiep-skip { position: absolute; bottom: max(16px, env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); background: transparent; border: 2px solid #6a5a8a; color: #b8aee0; font: inherit; font-size: 18px; padding: 4px 12px; cursor: pointer; }
+@media (prefers-reduced-motion: reduce) { .kiep-hit, .dragon, .gacha-card, .gacha-row.gold { animation: none; } }

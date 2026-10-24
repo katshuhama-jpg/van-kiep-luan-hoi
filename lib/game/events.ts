@@ -1,6 +1,7 @@
 import { DAO_LU, ITEMS, PATHS } from './data';
 import { addCult, addPill, dao, fatal, giveItem, hasItem, hurt, luck, money, pick, reward, sample, stat, usePill } from './helpers';
 import type { Character, Choice, GameEvent } from './types';
+import { EVENTS2 } from './events2';
 
 
 export const EVENTS: GameEvent[] = [
@@ -1203,6 +1204,7 @@ export const EVENTS: GameEvent[] = [
       { label: 'Hỏi vì sao hắn đi trộm', lean: 'chinh', run: (c) => { dao(c, 8); money(c, -20); return 'Hắn có mẹ già ốm nặng. Bạn cho hắn ít tiền rồi tha.'; } },
     ],
   },
+  ...EVENTS2,
 ];
 
 // ---------------- Sự kiện do engine kích hoạt ----------------

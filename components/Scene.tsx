@@ -2,7 +2,8 @@
 
 import type { CSSProperties } from 'react';
 import Sprite, { auraColor, lookOf } from './Sprite';
-import { BattleOverlay, type BattleView } from './Battle';
+import { BattleOverlay, MonsterSprite, type BattleView } from './Battle';
+import type { Monster } from '@/lib/game/combat';
 import type { Character, Fx } from '@/lib/game/types';
 import { REALMS } from '@/lib/game/data';
 
@@ -119,6 +120,8 @@ const FX_TEXT: Partial<Record<Fx['kind'], string>> = {
   death: 'BỎ MẠNG',
 };
 
+const DRAGON: Monster = { id: 'rong_nha', name: 'Rồng nhà', lv: 1, place: '', shape: 'rong', body: '#5fbf95', accent: '#ffd36b', eye: '#1a1a1a', desc: '' };
+
 export default function Scene({ c, fx, paused, season, battle }: { c: Character; fx: Fx[]; paused: boolean; season: number; battle?: BattleView | null }) {
   const focus = c.age < 6 ? 'tu_luyen' : c.focus;
   const aura = auraColor(lookOf(c)) ?? '#9ff0c8';
@@ -170,6 +173,12 @@ export default function Scene({ c, fx, paused, season, battle }: { c: Character;
       )}
 
       {battle && !c.dead && <BattleOverlay b={battle} />}
+
+      {!c.dead && !battle && (c.mount === 'rong' || (c.arcs?.rong && c.arcs.rong.s >= 2 && c.arcs.rong.s < 9)) && (
+        <div className={`dragon ${c.mount === 'rong' ? 'big' : 'baby'}`} aria-hidden="true">
+          <MonsterSprite m={DRAGON} size={c.mount === 'rong' ? 96 : 46} tier={c.arcs?.rong?.v === 'ma' ? 1 : 0} />
+        </div>
+      )}
 
       <div className={`sprite-wrap ${battle && battle.last.length && battle.last[battle.last.length - 1].side === 'p' ? 'lunge' : ''}`} key={battle?.last[battle.last.length - 1]?.id ?? 'idle'}>
         <Sprite c={c} size={176} focus={battle ? 'tu_luyen' : focus} />

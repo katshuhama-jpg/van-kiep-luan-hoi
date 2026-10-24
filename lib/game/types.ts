@@ -87,6 +87,51 @@ export interface Character {
   familyTier?: number; // gia cảnh lúc sinh 0-4
   streak?: { f: string; n: number }; // số năm liên tiếp làm cùng một việc
   lastClosed?: number; // tuổi lần xuất quan gần nhất
+  gifts?: string[]; // thiên phú rút được lúc đầu thai
+  past?: PastLife | null; // kiếp trước của chính mình
+  stash?: Stash | null; // rương kiếp trước chôn lại, chưa tìm thấy
+  world?: WorldEcho; // dấu vết của người chơi khác
+  arcs?: Record<string, { s: number; at: number; v?: string }>; // chuỗi sự kiện nhiều năm
+  endTag?: string; // đánh dấu kết cục đặc biệt
+  kiepBonus?: number; // thưởng/phạt từ mini-game thiên kiếp
+  mount?: string | null; // tọa kỵ (rồng)
+}
+
+export interface PastLife {
+  name: string;
+  lifeNo: number;
+  age: number;
+  realm: number;
+  realmName: string;
+  daoTam: number;
+  cause: string | null;
+  path: string | null;
+  partner: string | null;
+}
+
+export interface Stash {
+  from: string; // tên kiếp trước
+  lifeNo: number;
+  money: number;
+  item: string | null;
+  note: string;
+  place: string;
+}
+
+export interface Grave {
+  char: string;
+  player: string;
+  age: number;
+  realm: string;
+  cause: string | null;
+  epitaph: string | null;
+  dao: number;
+}
+
+export interface WorldEcho {
+  graves: Grave[];
+  ma?: { name: string; player: string; realm: number; realmName: string } | null;
+  chinh?: { name: string; player: string; realm: number; realmName: string } | null;
 }
 
 export interface Choice {
@@ -138,4 +183,7 @@ export interface Meta {
   lives: number;
   talents: string[]; // thiên phú đã mua cho kiếp sau
   enemy: string | null; // kẻ thù kiếp trước
+  past?: PastLife | null;
+  stash?: Stash | null;
+  endings?: Record<string, number>; // Sổ Sinh Tử: kết cục đã mở
 }

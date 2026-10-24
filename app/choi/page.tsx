@@ -4,15 +4,18 @@ import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Scene from '@/components/Scene';
 import MusicToggle from '@/components/MusicToggle';
+import { TribulationOverlay } from '@/components/Extras';
+import { BREAK_EVENT_ID } from '@/lib/game/events';
+import { endingOf } from '@/lib/game/endings';
 import { BagSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, HuntSheet, LogPanel, SEASONS, ShopSheet, Sheet, StageStrip } from '@/components/Panels';
 import type { BattleView } from '@/components/Battle';
 import { MONSTERS, effLv, fleeChance, hit, killExp, killReward, loseFight, monsterName, monsterStats, playerStats, tierOf, type Fighter } from '@/lib/game/combat';
 import { signOut } from '@/lib/auth';
-import { ITEMS, PATHS, PILLS, TALENTS, realmLabel } from '@/lib/game/data';
+import { ITEMS, PATHS, PILLS, REALMS, TALENTS, realmLabel } from '@/lib/game/data';
 import { checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick } from '@/lib/game/engine';
 import { addPill, fmt, giveItem, money, wealthTier } from '@/lib/game/helpers';
 import type { Character, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
-import { addMemorial, displayName, loadAll, saveLocal, saveMeta, saveRemote, type SaveState } from '@/lib/storage';
+import { addMemorial, displayName, fetchWorld, loadAll, saveLocal, saveMeta, saveRemote, type SaveState } from '@/lib/storage';
 import { useAuth } from '@/lib/useAuth';
 
 const SPEEDS = [1, 2, 4, 8, 16];
@@ -29,6 +32,7 @@ export default function PlayPage() {
   const [sheet, setSheet] = useState<SheetName>(null);
   const [speed, setSpeed] = useState(1);
   const [running, setRunning] = useState(true);
+  const [kiep, setKiep] = useState<number | null>(null); // lựa chọn đang chờ mini-game thiên kiếp
 
   const charRef = useRef<Character | null>(null);
   const pendingRef = useRef<PendingEvent | null>(null);
@@ -81,6 +85,7 @@ export default function PlayPage() {
         pendingRef.current = save.pending;
         yearSecRef.current = save.yearSec || 30;
         talentsRef.current = save.talents ?? [];
+        if (!save.char.world) fetchWorld(user).then((w) => { if (charRef.current === save.char && w) save.char.world = w; }).catch(() => {});
         setPhase('play');
       } else setPhase('birth');
     })();
@@ -93,7 +98,7 @@ export default function PlayPage() {
   const speedRef = useRef(speed);
   speedRef.current = speed;
   const activeRef = useRef(false);
-  activeRef.current = running && sheet === null && phase === 'play';
+  activeRef.current = running && sheet === null && phase === 'play' && kiep === null;
 
   /** Trận đánh tự động kiểu idle: mỗi lượt bạn đánh một đòn, quái đánh trả một đòn */
   function newFight(c: Character, mId: string, kills: number): Battle | null {
@@ -253,13 +258,34 @@ export default function PlayPage() {
     [persist, pushFx, rerender],
   );
 
-  const choose = (i: number) =>
+  const resolveNow = (i: number) =>
     act((c, out) => {
       const p = pendingRef.current;
       if (!p) return;
       pendingRef.current = null;
       pendingRef.current = resolveChoice(c, p, i, makeCtx(c, out), talentsRef.current);
     });
+
+  const choose = (i: number) => {
+    const p = pendingRef.current;
+    const c = charRef.current;
+    // đột phá có thiên kiếp: chơi mini-game đỡ sấm trước
+    if (p && c && p.id === BREAK_EVENT_ID && c.realm + 1 >= 3 && !p.choices[i]?.label.startsWith('Củng cố')) {
+      setKiep(i);
+      return;
+    }
+    resolveNow(i);
+  };
+
+  const afterKiep = (bonus: number, blocked: number) => {
+    const i = kiep;
+    setKiep(null);
+    const c = charRef.current;
+    if (i === null || !c) return;
+    c.kiepBonus = bonus;
+    if (blocked >= 0) c.log.push({ age: Math.floor(c.age), tone: bonus >= 0 ? 'good' : 'bad', text: `Bạn vận công đỡ được ${blocked}/9 đạo thiên lôi.` });
+    resolveNow(i);
+  };
 
   const skipAhead = () =>
     act((c, out) => {
@@ -338,13 +364,20 @@ export default function PlayPage() {
     });
   };
 
-  const born = async (talents: string[], yearSec: number) => {
+  const born = async (talents: string[], yearSec: number, gifts: string[] = [], gachaSpent = 0) => {
     if (!meta) return;
-    const cost = talents.reduce((s, id) => s + (TALENTS.find((t) => t.id === id)?.cost ?? 0), 0);
-    const m2: Meta = { ...meta, phucDuyen: meta.phucDuyen - cost, talents };
-    const c = newCharacter(m2);
+    const cost = talents.reduce((s, id) => s + (TALENTS.find((t) => t.id === id)?.cost ?? 0), 0) + gachaSpent;
+    const m2: Meta = { ...meta, phucDuyen: Math.max(0, meta.phucDuyen - cost), talents };
+    const c = newCharacter(m2, gifts);
     talentsRef.current = talents;
-    const m3: Meta = { ...m2, talents: [] };
+    // rương kiếp trước chỉ có một cơ hội tìm thấy
+    const m3: Meta = { ...m2, talents: [], stash: null };
+    // dấu vết người chơi khác: tải nền, không chặn việc đầu thai
+    fetchWorld(user)
+      .then((w) => {
+        if (charRef.current === c && w) c.world = w;
+      })
+      .catch(() => {});
     setMeta(m3);
     saveMeta(user, m3).catch(() => {});
     charRef.current = c;
@@ -358,10 +391,11 @@ export default function PlayPage() {
     window.scrollTo(0, 0);
   };
 
-  const finishLife = async (epitaph: string) => {
+  const finishLife = async (epitaph: string, note = '', bury = false) => {
     const c = charRef.current;
     if (!c || !meta) return;
     const k = karmaOf(c);
+    const ending = endingOf(c);
     await addMemorial(user, {
       player_name: displayName(user),
       char_name: c.name,
@@ -396,6 +430,19 @@ export default function PlayPage() {
       lives: meta.lives + 1,
       talents: [],
       enemy: c.daoTam < -30 ? c.enemy : null,
+      endings: { ...(meta.endings ?? {}), [ending.id]: (meta.endings?.[ending.id] ?? 0) + 1 },
+      past: { name: c.name, lifeNo: c.lifeNo, age: Math.floor(c.age), realm: c.realm, realmName: c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer), daoTam: c.daoTam, cause: c.cause, path: c.path ? PATHS[c.path].name : null, partner: c.partner },
+      stash:
+        bury && !c.ascended && c.endTag !== 'xuyen_khong'
+          ? {
+              from: c.name,
+              lifeNo: c.lifeNo,
+              money: Math.round(c.linhThach * 0.3),
+              item: c.equipped.phu_kien ?? c.equipped.vu_khi ?? null,
+              note,
+              place: rnd() < 0.5 ? 'gốc đa đầu làng' : rnd() < 0.5 ? 'dưới nền ngôi miếu cũ' : 'bên bờ suối sau núi',
+            }
+          : null,
     };
     setMeta(m);
     await saveMeta(user, m).catch(() => {});
@@ -534,6 +581,9 @@ export default function PlayPage() {
             <Link className="btn" href="/nghia-trang" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
               Nghĩa trang
             </Link>
+            <Link className="btn" href="/so-sinh-tu" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
+              Sổ Sinh Tử
+            </Link>
             {user ? (
               <button
                 className="btn"
@@ -553,7 +603,8 @@ export default function PlayPage() {
           </div>
         </Sheet>
       )}
-      {c.dead && <DeathSheet c={c} karma={karmaOf(c)} onDone={finishLife} />}
+      {c.dead && <DeathSheet c={c} karma={karmaOf(c)} isNew={!meta.endings?.[endingOf(c).id]} onDone={finishLife} />}
+      {kiep !== null && !c.dead && <TribulationOverlay realmName={REALMS[c.realm + 1]?.name ?? 'Phi Thăng'} onDone={afterKiep} />}
     </main>
   );
 }

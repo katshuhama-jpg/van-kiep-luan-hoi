@@ -43,3 +43,14 @@ Import repo vào Vercel, thêm 2 biến môi trường `NEXT_PUBLIC_SUPABASE_URL
 - `components/Sprite.tsx` - nhân vật pixel ghép lớp.
 - `components/Scene.tsx` - sân khấu, nền theo trọng tâm, mùa và hiệu ứng.
 - `app/choi` - màn chơi chính. `app/dang-nhap`, `app/nghia-trang` - đăng nhập, nghĩa trang.
+
+## Cơ chế "wow"
+
+- **Nhân quả xuyên kiếp:** chôn rương + lời nhắn cho kiếp sau, gặp mộ kiếp trước, ân nhân/oan hồn kiếp trước tìm đến.
+- **Người chơi khác:** mộ của người chơi khác, ma đầu Tà phái và minh chủ Chính phái lấy từ bảng xếp hạng thật.
+- **Sổ Sinh Tử** (`/so-sinh-tu`): 18 kết cục, có kết cục ẩn (Xuyên Không, Long Kỵ Sĩ, Hệ Thống...).
+- **Gieo quẻ thiên phú:** 24 thiên phú, 5 phẩm, Thiên phẩm 0.1%, có thiên phú mang họa.
+- **Thẻ chia sẻ kết cục:** ảnh PNG pixel để khoe.
+- **Thiên kiếp mini-game:** chạm đúng lúc để đỡ 9 đạo lôi.
+- **Chuỗi sự kiện:** trứng rồng → long kỵ, đồ đệ phản sư, từ hôn - ước hẹn ba năm, Hệ Thống.
+- **Quá độ:** làm một việc quá lâu hoặc bế quan quá lâu đều có cái giá.

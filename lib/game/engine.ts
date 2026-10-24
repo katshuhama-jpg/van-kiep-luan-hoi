@@ -2,6 +2,7 @@ import { FAMILY_TIERS, REGIONS, FOCUS, MAX_LIFE, HAIR_COLORS, HAIR_STYLES, HO, H
 import { BREAK_EVENT_ID, EVENTS, PATH_EVENT_ID, pathChoices } from './events';
 import { addCult, addPill, clamp, fatal, reward, wealthTier, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
 import type { Character, Choice, EffectCtx, Fx, FxKind, GameEvent, Meta, PendingEvent, Tone } from './types';
+import { applyGifts, giftOf, hasGift } from './gacha';
 
 export const rnd = () => Math.random();
 
@@ -29,7 +30,7 @@ export function genName(gender: 'nam' | 'nu'): string {
   return `${ho} ${ten}`;
 }
 
-export function newCharacter(meta: Meta): Character {
+export function newCharacter(meta: Meta, gifts: string[] = []): Character {
   const gender = rnd() < 0.5 ? 'nam' : 'nu';
   let origin = weighted(rnd, ORIGINS);
   let lc = weighted(rnd, LINH_CAN);
@@ -127,6 +128,14 @@ export function newCharacter(meta: Meta): Character {
     text: `Tóc ${HAIR_COLORS[hairColor].name}, lớn lên sẽ để ${HAIR_STYLES[gender][hairStyle]}. Bà mụ xem tướng bảo: mệnh ${fate.name}.`,
   });
   if (c.enemy && meta.nghiep >= 10) c.log.push({ age: 0, tone: 'ta', text: 'Ngày bạn sinh ra, quạ đen đậu kín mái nhà. Nghiệp kiếp trước vẫn chưa trả hết.' });
+  c.past = meta.past ?? null;
+  c.stash = meta.stash ?? null;
+  if (gifts.length) {
+    applyGifts(c, gifts);
+    c.log.push({ age: 0, tone: 'good', text: `Thiên phú bẩm sinh: ${gifts.map((g) => giftOf(g)?.name).join(', ')}.` });
+    if (hasGift(c, 'g_trung_sinh') && c.past) c.log.push({ age: 0, tone: 'big', text: `Vừa mở mắt, bạn đã nhớ ra: kiếp trước mình là ${c.past.name}, ${c.past.realmName}, chết năm ${c.past.age} tuổi.` });
+    if (hasGift(c, 'g_hop')) c.log.push({ age: 0, tone: 'normal', text: 'Trong tay bạn nắm chặt một chiếc hộp nhỏ, không ai cạy ra được.' });
+  }
   return c;
 }
 
@@ -178,7 +187,7 @@ function pathMul(c: Character) {
 
 export function yearlyGain(c: Character) {
   const base = GAIN[c.realm] ?? 90;
-  return base * c.linhCanMul * (0.6 + c.stats.ngoTinh / 100) * pathMul(c) * gearMul(c) * (c.stats.tamMa > 70 ? 0.8 : 1);
+  return base * c.linhCanMul * (0.6 + c.stats.ngoTinh / 100) * pathMul(c) * gearMul(c) * (c.stats.tamMa > 70 ? 0.8 : 1) * (hasGift(c, 'g_doan_menh') ? 1.3 : 1);
 }
 
 
@@ -290,6 +299,8 @@ function pickEvent(c: Character): GameEvent | null {
   const list = EVENTS.filter((e) => eligible(c, e)).map((e) => {
     let w = e.weight ?? 5;
     if (e.id === 'dao_lu' && c.focus === 'ket_duyen') w *= 4;
+    if (e.id === 'dao_lu' && hasGift(c, 'g_dao_hoa')) w *= 3;
+    if (e.id === 'he_thong' && hasGift(c, 'g_he_thong')) w *= 300;
     return { e, w };
   });
   if (!list.length) return null;
@@ -350,7 +361,7 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
     money(c, FAMILY_TIERS[c.familyTier ?? 1]?.allowance ?? 3);
   } else {
     // sinh hoạt phí, càng lên cảnh giới càng tốn
-    const cost = 3 + c.realm * 5 + (c.partner ? 3 : 0);
+    const cost = 3 + c.realm * 5 + (c.partner ? 3 : 0) + (hasGift(c, 'g_an') ? 3 : 0);
     if (c.linhThach >= cost) money(c, -cost);
     else {
       money(c, -c.linhThach);
@@ -362,6 +373,19 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
   if (c.income) money(c, c.income * (0.7 + rnd() * 0.6));
   if (tier.id >= 3) stat(c, 'sucKhoe', 1); // ăn ngon mặc ấm
   if (tier.id === 0 && age >= 16) stat(c, 'tamMa', 1);
+
+  // ---- Thiên phú có mặt trái ----
+  if (hasGift(c, 'g_tham') && age === 20) {
+    const lost = Math.round(c.linhThach * 0.8);
+    money(c, -lost);
+    stat(c, 'ngoTinh', -5);
+    ctx.log(`Tham một mối làm ăn "lời gấp mười", bạn bị lừa mất ${lost} linh thạch. Tham thì thâm.`, 'bad');
+  }
+  if (hasGift(c, 'g_co_tinh') && c.partner && rnd() < 0.05) {
+    ctx.log(`Mệnh thiên sát cô tinh. ${c.partner} lâm bệnh nặng rồi qua đời.`, 'bad');
+    c.partner = null;
+    stat(c, 'tamMa', 15);
+  }
 
   // ---- Trẻ con chết yểu ----
   if (age >= 1 && age <= 12 && !opts.closed) {
@@ -438,7 +462,7 @@ function pathEvent(c: Character): GameEvent {
 
 function breakChance(c: Character) {
   return clamp(
-    0.42 - Math.max(0, c.realm - 2) * 0.07 + c.stats.ngoTinh / 450 + c.stats.tamCanh / 500 - c.stats.tamMa / 200 + (c.stats.khiVan - 50) / 500 + c.linhCanMul * 0.05,
+    (hasGift(c, 'g_thien_menh') ? 0.15 : 0) + 0.42 - Math.max(0, c.realm - 2) * 0.07 + c.stats.ngoTinh / 450 + c.stats.tamCanh / 500 - c.stats.tamMa / 200 + (c.stats.khiVan - 50) / 500 + c.linhCanMul * 0.05,
     0.08,
     0.9,
   );
@@ -464,7 +488,9 @@ function attempt(c: Character, ctx: EffectCtx, bonus: number): string {
   const name = REALMS[target]?.name ?? 'Phi Thăng';
   const kiep = target >= 3;
   if (kiep) ctx.fx('lightning');
-  const ok = rnd() < clamp(breakChance(c) + bonus, 0.05, 0.97);
+  const kb = kiep ? c.kiepBonus ?? 0 : 0;
+  c.kiepBonus = 0;
+  const ok = rnd() < clamp(breakChance(c) + bonus + kb, 0.05, 0.97);
   if (ok) {
     if (target >= REALMS.length) {
       c.ascended = true;
@@ -571,7 +597,10 @@ export function closedDoor(c: Character, years: number, ctx: EffectCtx, talents:
     if (c.dead) break;
     // tẩu hỏa nhập ma khi bế quan, càng lâu càng dễ, bế quan dồn dập càng nguy
     const f = fatal(c, ctx, (rushed ? 0.012 : 0.005) + c.stats.tamMa / 4000, 'Bế quan quá lâu, một mình đối diện tâm ma. Người ta phá cửa động phủ thì bạn đã hóa thành bộ xương khô.');
-    if (c.dead) break;
+    if (c.dead) {
+      c.endTag = 'be_quan';
+      break;
+    }
     if (f) ctx.log(f.trim(), 'good');
     if (pending) break;
   }
@@ -695,6 +724,7 @@ function overwork(c: Character, ctx: EffectCtx, focus: string, n: number) {
   if (rnd() >= chance) return;
   const hit = weighted(rnd, o.hits.map((h) => ({ ...h, w: h.p + (n > 10 && h.p === 1 ? 1 : 0) })));
   const text = hit.run(c, ctx);
+  if (c.dead) c.endTag = 'qua_do';
   ctx.log(`${n} năm liền không nghỉ. ${text}`, c.dead ? 'big' : 'bad');
 }
 
