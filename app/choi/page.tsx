@@ -6,11 +6,11 @@ import Scene from '@/components/Scene';
 import MusicToggle from '@/components/MusicToggle';
 import { BagSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, HuntSheet, LogPanel, SEASONS, ShopSheet, Sheet, StageStrip } from '@/components/Panels';
 import type { BattleView } from '@/components/Battle';
-import { MONSTERS, fleeChance, hit, killExp, killReward, loseFight, monsterStats, playerStats, type Fighter } from '@/lib/game/combat';
+import { MONSTERS, effLv, fleeChance, hit, killExp, killReward, loseFight, monsterName, monsterStats, playerStats, tierOf, type Fighter } from '@/lib/game/combat';
 import { signOut } from '@/lib/auth';
 import { ITEMS, PATHS, PILLS, TALENTS, realmLabel } from '@/lib/game/data';
 import { checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick } from '@/lib/game/engine';
-import { addPill, fmt, giveItem, money } from '@/lib/game/helpers';
+import { addPill, fmt, giveItem, money, wealthTier } from '@/lib/game/helpers';
 import type { Character, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
 import { addMemorial, displayName, loadAll, saveLocal, saveMeta, saveRemote, type SaveState } from '@/lib/storage';
 import { useAuth } from '@/lib/useAuth';
@@ -101,8 +101,8 @@ export default function PlayPage() {
     if (!m) return null;
     const ps = playerStats(c);
     // boss: không thể gây sát thương, mỗi đòn của nó lấy khoảng 1/3 máu
-    const ms = m.boss ? { hp: 1e9, atk: Math.round(ps.hp * 0.38 + ps.def * 0.5), def: 1e12 } : monsterStats(m);
-    return { m, pHp: ps.hp, pMax: ps.hp, mHp: ms.hp, mMax: ms.hp, phase: 'fight', last: [], kills, t: 0, rest: 0, ps, ms };
+    const ms = m.boss ? { hp: 1e9, atk: Math.round(ps.hp * 0.38 + ps.def * 0.5), def: 1e12 } : monsterStats(m, effLv(c, m));
+    return { m, name: monsterName(c, m), lv: m.boss ? 99 : effLv(c, m), tier: m.boss ? 0 : tierOf(c, m), pHp: ps.hp, pMax: ps.hp, mHp: ms.hp, mMax: ms.hp, phase: 'fight', last: [], kills, t: 0, rest: 0, ps, ms };
   }
 
   function stepBattle(c: Character, dtGame: number): boolean {
@@ -373,6 +373,22 @@ export default function PlayPage() {
       cause: c.cause,
       epitaph: epitaph || null,
       ascended: c.ascended,
+      realm_no: c.realm,
+      layer_no: c.layer,
+      wealth: Math.round(c.linhThach),
+      look: {
+        gender: c.gender,
+        race: c.race,
+        path: c.path,
+        lifespan: c.lifespan,
+        hairColor: c.hairColor,
+        hairStyle: c.hairStyle,
+        outfitTone: c.outfitTone,
+        outfitCut: c.outfitCut,
+        equipped: c.equipped,
+        pet: c.pet,
+        sect: c.sect,
+      },
     }).catch(() => {});
     const m: Meta = {
       phucDuyen: meta.phucDuyen + k.phuc,
@@ -436,8 +452,10 @@ export default function PlayPage() {
           <span className="age-big">{Math.floor(c.age)}</span>
           <span className="meta">
             tuổi · {SEASONS[season]} · Kiếp {c.lifeNo}
+            {c.birthPlace ? ` · ${c.birthPlace.split(', ').pop()}` : ''}
             <br />
-            <b>{fmt(c.linhThach)}</b> linh thạch · 1 năm ≈ {Math.round(yearSecRef.current / speed)}s
+            <b>{fmt(c.linhThach)}</b> linh thạch · {wealthTier(c).name}
+            {c.income ? ` · +${c.income}/năm` : ''}
           </span>
           <MusicToggle battle={c.focus === 'tru_yeu' && c.age >= 10 && !!c.huntTarget && !c.dead} />
           <button className="icon-btn" onClick={() => setSheet('menu')} aria-label="Mở menu">

@@ -80,6 +80,11 @@ export interface Character {
   autoFlee?: boolean; // tự rút lui khi máu thấp
   kills?: Record<string, number>;
   evCount?: Record<string, number>; // số lần đã gặp mỗi sự kiện trong kiếp này
+  income?: number; // thu nhập thụ động mỗi năm (ruộng, cửa tiệm, cho vay)
+  monLv?: Record<string, number>;
+  region?: string; // vùng đất nơi sinh
+  birthPlace?: string; // làng/trấn nơi sinh
+  familyTier?: number; // gia cảnh lúc sinh 0-4 // cấp tăng thêm của từng loài quái do bị săn nhiều
 }
 
 export interface Choice {
@@ -101,11 +106,12 @@ export interface GameEvent {
   when?: (c: Character) => boolean;
   title: string;
   text: (c: Character) => string;
-  choices: (c: Character) => Choice[];
+  choices: (c: Character, seed: number) => Choice[];
 }
 
 export interface PendingEvent {
   id: string;
+  seed?: number; // để bộ lựa chọn ngẫu nhiên giữ nguyên khi chọn
   title: string;
   text: string;
   choices: { label: string; hint?: string; lean: Lean }[];

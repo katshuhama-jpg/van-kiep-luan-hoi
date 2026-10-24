@@ -3,7 +3,7 @@
 import { useState, type ReactNode } from 'react';
 import { FOCUS, ITEMS, PATHS, PILLS, REALMS, SEASONS, TALENTS, realmLabel, type Item } from '@/lib/game/data';
 import { describeLean } from '@/lib/game/engine';
-import { DANGER_TEXT, MONSTERS, combatLevel, dangerOf, killExp, playerStats } from '@/lib/game/combat';
+import { DANGER_TEXT, MONSTERS, combatLevel, dangerOf, effLv, killExp, monsterName, playerStats, tierOf } from '@/lib/game/combat';
 import { MonsterSprite } from './Battle';
 import { cultPct, fmt, needFor } from '@/lib/game/helpers';
 import type { Character, Focus, LogEntry, Meta, PendingEvent } from '@/lib/game/types';
@@ -538,16 +538,18 @@ export function HuntSheet({ c, onPick, onToggleFlee, onClose }: { c: Character; 
       </label>
       <div className="items">
         {MONSTERS.map((m) => {
-          const hidden = !m.boss && m.lv > L + 6;
+          const elv = effLv(c, m);
+          const hidden = !m.boss && elv > L + 6;
           const d = dangerOf(c, m);
           const on = c.huntTarget === m.id;
           return (
             <button key={m.id} className={`hunt-item ${on ? 'on' : ''}`} disabled={hidden || c.dead} onClick={() => onPick(m.id)} aria-pressed={on}>
               <span className="item-icon" style={{ width: 48, height: 48 }}>
-                {hidden ? <span style={{ fontSize: 26 }}>?</span> : <MonsterSprite m={m} size={42} />}
+                {hidden ? <span style={{ fontSize: 26 }}>?</span> : <MonsterSprite m={m} size={42} tier={tierOf(c, m)} />}
               </span>
               <span>
-                {hidden ? '??? (chưa đủ tầm để biết)' : m.boss ? `BOSS ${m.boss === 'ta' ? 'Tà phái' : 'Chính phái'} · ${m.name}` : `${m.name} · Lv${m.lv}`}
+                {hidden ? '??? (chưa đủ tầm để biết)' : m.boss ? `BOSS ${m.boss === 'ta' ? 'Tà phái' : 'Chính phái'} · ${m.name}` : `${monsterName(c, m)} · Lv${elv}${elv > m.lv ? ` (gốc ${m.lv})` : ''}`}
+                {!hidden && m.human && !m.boss && <span className="badge" style={{ marginLeft: 4 }}>Cao thủ</span>}
                 <small>{hidden ? m.place : m.boss ? `${m.place} · ${m.desc} Chưa từng ai thắng.` : `${m.place} · ~${fmt(killExp(c, m))} tu vi/con · ${c.kills?.[m.id] ?? 0} đã trảm`}</small>
               </span>
               {!hidden && <span className={`danger ${d}`}>{DANGER_TEXT[d]}</span>}

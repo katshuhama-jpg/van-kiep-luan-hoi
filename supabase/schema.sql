@@ -280,3 +280,83 @@ language sql stable security definer set search_path = '' as $$
   limit 50;
 $$;
 grant execute on function public.vkl_leaderboard(text, text, text) to anon, authenticated;
+
+-- ---------- v2: bảng xếp hạng tính cả các kiếp đã mất ----------
+alter table public.vkl_lives add column if not exists realm_no int;
+alter table public.vkl_lives add column if not exists layer_no int;
+alter table public.vkl_lives add column if not exists wealth bigint not null default 0;
+alter table public.vkl_lives add column if not exists look jsonb;
+
+create or replace function public.vkl_add_life(p_token uuid, p_life jsonb)
+returns void language plpgsql security definer set search_path = '' as $$
+declare
+  v_id uuid := public.vkl_player(p_token);
+  v_name text;
+begin
+  if v_id is null then raise exception 'NOT_LOGGED_IN'; end if;
+  select username into v_name from public.vkl_players where id = v_id;
+  insert into public.vkl_lives (player_id, player_name, char_name, life_no, age, realm, path, dao_tam, cause, epitaph, ascended, realm_no, layer_no, wealth, look)
+  values (v_id, v_name, left(p_life->>'char_name', 40), coalesce((p_life->>'life_no')::int, 1), coalesce((p_life->>'age')::int, 0),
+          left(p_life->>'realm', 40), left(p_life->>'path', 20), coalesce((p_life->>'dao_tam')::int, 0),
+          left(p_life->>'cause', 160), left(p_life->>'epitaph', 120), coalesce((p_life->>'ascended')::boolean, false),
+          (p_life->>'realm_no')::int, (p_life->>'layer_no')::int, coalesce((p_life->>'wealth')::numeric, 0)::bigint,
+          case when jsonb_typeof(p_life->'look') = 'object' then p_life->'look' else null end);
+end;
+$$;
+
+-- p_scope: 'all' | 'alive' | 'dead'
+create or replace function public.vkl_leaderboard(p_kind text, p_lean text default 'all', p_path text default 'all', p_scope text default 'all')
+returns table (username text, c jsonb, alive boolean)
+language sql stable security definer set search_path = '' as $$
+  with live as (
+    select p.username,
+      ((s.state->'char') - 'log'::text - 'seenEvents'::text - 'pills'::text - 'inventory'::text - 'evCount'::text - 'kills'::text) as ch,
+      true as alive
+    from public.vkl_saves s
+    join public.vkl_players p on p.id = s.player_id
+    where jsonb_typeof(s.state) = 'object'
+      and jsonb_typeof(s.state->'char') = 'object'
+      and coalesce((s.state->'char'->>'dead')::boolean, false) = false
+  ),
+  dead as (
+    select l.player_name as username,
+      coalesce(l.look, '{}'::jsonb) || jsonb_build_object(
+        'name', l.char_name,
+        'age', l.age,
+        'lifespan', greatest(l.age, coalesce((l.look->>'lifespan')::int, l.age)),
+        'realm', coalesce(l.realm_no, case
+          when l.realm like 'Độ Kiếp%' then 7 when l.realm like 'Luyện Hư%' then 6 when l.realm like 'Hóa Thần%' then 5
+          when l.realm like 'Nguyên Anh%' then 4 when l.realm like 'Kim Đan%' then 3 when l.realm like 'Trúc Cơ%' then 2
+          when l.realm like 'Luyện Khí%' then 1 else 0 end),
+        'layer', coalesce(l.layer_no, 1),
+        'linhThach', l.wealth,
+        'daoTam', l.dao_tam,
+        'lifeNo', l.life_no,
+        'dead', true,
+        'ascended', l.ascended,
+        'cause', l.cause
+      ) as ch,
+      false as alive
+    from public.vkl_lives l
+  ),
+  allrows as (
+    select * from live where p_scope in ('all', 'alive')
+    union all
+    select * from dead where p_scope in ('all', 'dead')
+  )
+  select username, ch as c, alive
+  from allrows
+  where (p_lean = 'all'
+         or (p_lean = 'chinh' and (ch->>'daoTam')::int >= 20)
+         or (p_lean = 'ta' and (ch->>'daoTam')::int <= -20)
+         or (p_lean = 'trung' and (ch->>'daoTam')::int between -19 and 19))
+    and (p_path = 'all' or coalesce(ch->>'path', 'none') = p_path)
+  order by
+    case when p_kind = 'wealth' then (ch->>'linhThach')::numeric end desc nulls last,
+    case when p_kind <> 'wealth' then coalesce((ch->>'ascended')::boolean, false)::int end desc nulls last,
+    case when p_kind <> 'wealth' then (ch->>'realm')::int end desc nulls last,
+    case when p_kind <> 'wealth' then (ch->>'layer')::int end desc nulls last,
+    case when p_kind <> 'wealth' then coalesce((ch->>'cultivation')::numeric, 0) end desc nulls last
+  limit 60;
+$$;
+grant execute on function public.vkl_leaderboard(text, text, text, text) to anon, authenticated;

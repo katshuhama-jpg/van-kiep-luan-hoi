@@ -151,3 +151,25 @@ export const LIFE_FATES = [
   { name: 'thọ mệnh bình thường', lo: 0.88, hi: 1.12, w: 62 },
   { name: 'trường thọ', lo: 1.18, hi: 1.45, w: 20 },
 ];
+
+/** Vùng đất nơi sinh, mỗi vùng có ảnh hưởng riêng */
+export const REGIONS = [
+  { id: 'thanh_chau', name: 'Thanh Châu', desc: 'đồng bằng trù phú', w: 22, places: ['thôn Hạnh Hoa', 'trấn Lạc Hà', 'làng Đào Nguyên', 'bến Thanh Thủy'], mod: { money: 1.3 } },
+  { id: 'trung_chau', name: 'Trung Châu', desc: 'đất kinh kỳ phồn hoa', w: 12, places: ['kinh thành Thiên Khải', 'phủ Vạn An', 'phố Tây Thị'], mod: { money: 1.8, tamMa: 6 } },
+  { id: 'bac_mac', name: 'Bắc Mạc', desc: 'sa mạc gió cát khắc nghiệt', w: 12, places: ['ốc đảo Lục Châu', 'thành Hoàng Sa', 'trạm ngựa Bạch Đà'], mod: { sucKhoe: 12, khiVan: -6 } },
+  { id: 'nam_cuong', name: 'Nam Cương', desc: 'rừng thiêng nhiều độc trùng', w: 12, places: ['bản Miêu Cổ', 'trại Thạch Đầu', 'động Bách Độc'], mod: { ngoTinh: 4, sucKhoe: -4 } },
+  { id: 'dong_hai', name: 'Đông Hải', desc: 'miền biển sóng gió', w: 14, places: ['làng chài Vọng Hải', 'đảo Bồng Lai ngoại vi', 'cảng Minh Châu'], mod: { ngoTinh: 6 } },
+  { id: 'tay_vuc', name: 'Tây Vực', desc: 'Phật quốc vạn chùa', w: 10, places: ['thành Đại Lôi Âm', 'chùa Tu Di', 'làng Tháp Trắng'], mod: { daoTam: 12, tamCanh: 6 } },
+  { id: 'tuyet_vuc', name: 'Tuyết Vực', desc: 'băng nguyên ngàn năm tuyết phủ', w: 8, places: ['bộ lạc Băng Lang', 'thành Hàn Nguyệt'], mod: { lifeMul: 1.06, khiVan: -3 } },
+  { id: 'ma_vuc', name: 'Ma Vực', desc: 'vùng đất ma khí bao phủ', w: 6, places: ['thành Huyết Nguyệt', 'trấn Hắc Thủy'], mod: { daoTam: -15, ngoTinh: 6, tamMa: 10 } },
+  { id: 'van_yeu', name: 'Vạn Yêu Lâm', desc: 'rừng của yêu tộc', w: 0, places: ['hang Thanh Khâu', 'cây Thiên Niên Tùng'], mod: {} },
+] as const;
+
+/** Gia cảnh lúc sinh: tiền khởi đầu và tiền gia đình chu cấp mỗi năm đến 16 tuổi */
+export const FAMILY_TIERS = [
+  { name: 'bần hàn', money: 3, allowance: 0, w: 30 },
+  { name: 'bình dân', money: 20, allowance: 3, w: 38 },
+  { name: 'khá giả', money: 90, allowance: 10, w: 20 },
+  { name: 'phú hộ', money: 320, allowance: 30, w: 9 },
+  { name: 'đại phú', money: 1200, allowance: 80, w: 3 },
+];

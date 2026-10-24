@@ -2311,3 +2311,40 @@ button:disabled {
   font-size: 17px;
   color: var(--red-d);
 }
+
+.rank-row.gone {
+  background: #e6dcc4;
+}
+
+.rank-row.gone .rank-sprite {
+  filter: grayscale(0.85);
+}
+
+.gone-badge {
+  background: #5a4a44;
+  color: #f3e6c4;
+}
+
+.mon.tier-1 {
+  filter: drop-shadow(0 0 2px #ff6a2a);
+}
+
+.mon.tier-2 {
+  filter: drop-shadow(0 0 3px #c0202e) drop-shadow(0 0 1px #1a0008);
+}
+
+.mon.tier-3 {
+  filter: drop-shadow(0 0 4px #ffd36b) drop-shadow(0 0 8px #ff6a2a);
+}
+
+.mon.boss-ta {
+  filter: drop-shadow(0 0 4px #ff2a3a) drop-shadow(0 0 10px #7a0a1e);
+  transform-origin: bottom center;
+  scale: 1.25;
+}
+
+.mon.boss-chinh {
+  filter: drop-shadow(0 0 4px #ffffff) drop-shadow(0 0 10px #7fc8ff);
+  transform-origin: bottom center;
+  scale: 1.25;
+}

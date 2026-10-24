@@ -83,7 +83,7 @@ export async function saveRemote(user: Player | null, state: SaveState | null) {
   await sb.rpc('vkl_save_game', { p_token: user.token, p_state: state });
 }
 
-export async function addMemorial(user: Player | null, m: Omit<Memorial, 'id' | 'incense' | 'created_at'>) {
+export async function addMemorial(user: Player | null, m: Omit<Memorial, 'id' | 'incense' | 'created_at'> & { realm_no?: number; layer_no?: number; wealth?: number; look?: Record<string, unknown> }) {
   const sb = supabase();
   if (user && sb) {
     await sb.rpc('vkl_add_life', { p_token: user.token, p_life: m });
@@ -116,14 +116,24 @@ export async function thapHuong(user: Player | null, id: number | string): Promi
 
 export type RankKind = 'power' | 'wealth';
 export type RankLean = 'all' | 'chinh' | 'trung' | 'ta';
+export type RankScope = 'all' | 'alive' | 'dead';
 
-export async function leaderboard(kind: RankKind, lean: RankLean, path: string): Promise<{ username: string; c: Character }[] | null> {
+export async function leaderboard(kind: RankKind, lean: RankLean, path: string, scope: RankScope = 'all'): Promise<{ username: string; c: Character; alive: boolean }[] | null> {
   const sb = supabase();
   if (!sb) return null;
-  const { data, error } = await sb.rpc('vkl_leaderboard', { p_kind: kind, p_lean: lean, p_path: path });
+  const { data, error } = await sb.rpc('vkl_leaderboard', { p_kind: kind, p_lean: lean, p_path: path, p_scope: scope });
   if (error) return null;
-  return ((data as { username: string; c: Character }[] | null) ?? []).map((r) => ({
+  return ((data as { username: string; c: Character; alive: boolean }[] | null) ?? []).map((r) => ({
     username: r.username,
-    c: { ...r.c, log: [], seenEvents: {}, pills: {}, inventory: [] } as Character,
+    alive: r.alive,
+    c: {
+      ...r.c,
+      stats: r.c.stats ?? { tamCanh: 50, ngoTinh: 50, khiVan: 50, tamMa: 0, sucKhoe: 80 },
+      equipped: r.c.equipped ?? {},
+      log: [],
+      seenEvents: {},
+      pills: {},
+      inventory: [],
+    } as Character,
   }));
 }

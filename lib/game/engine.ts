@@ -1,6 +1,6 @@
-import { FOCUS, MAX_LIFE, HAIR_COLORS, HAIR_STYLES, HO, HO_KEP, TEN_NAM_1, TEN_NAM_2, TEN_NU_1, TEN_NU_2, LIFE_FATES, LINH_CAN, ORIGINS, PATHS, PILLS, REALMS, TEN_NAM, TEN_NU, realmLabel } from './data';
+import { FAMILY_TIERS, REGIONS, FOCUS, MAX_LIFE, HAIR_COLORS, HAIR_STYLES, HO, HO_KEP, TEN_NAM_1, TEN_NAM_2, TEN_NU_1, TEN_NU_2, LIFE_FATES, LINH_CAN, ORIGINS, PATHS, PILLS, REALMS, TEN_NAM, TEN_NU, realmLabel } from './data';
 import { BREAK_EVENT_ID, EVENTS, PATH_EVENT_ID, pathChoices } from './events';
-import { addCult, addPill, clamp, reward, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
+import { addCult, addPill, clamp, fatal, reward, wealthTier, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
 import type { Character, Choice, EffectCtx, Fx, FxKind, GameEvent, Meta, PendingEvent, Tone } from './types';
 
 export const rnd = () => Math.random();
@@ -43,6 +43,15 @@ export function newCharacter(meta: Meta): Character {
   const hairColor = weighted(rnd, hairList).id;
   const hairStyle = Math.floor(rnd() * 3);
   const fate = weighted(rnd, LIFE_FATES);
+  // nơi sinh và gia cảnh
+  const region = race === 'yeu' ? REGIONS.find((r) => r.id === 'van_yeu')! : weighted(rnd, REGIONS.filter((r) => r.w > 0));
+  const birthPlace = pick(rnd, region.places);
+  let famTier = FAMILY_TIERS.indexOf(weighted(rnd, FAMILY_TIERS));
+  if (origin.id === 'the_gia') famTier = Math.max(famTier, 2);
+  if (origin.id === 'co_nhi' || origin.id === 'chua') famTier = 0;
+  if (origin.id === 'yeu') famTier = Math.min(famTier, 1);
+  const fam = FAMILY_TIERS[famTier];
+  const mod = region.mod as { money?: number; tamMa?: number; sucKhoe?: number; khiVan?: number; ngoTinh?: number; daoTam?: number; tamCanh?: number; lifeMul?: number };
   const lifeMul = Math.round((fate.lo + rnd() * (fate.hi - fate.lo)) * 100) / 100;
   const r = (lo: number, hi: number) => Math.round(lo + rnd() * (hi - lo));
   const c: Character = {
@@ -63,7 +72,7 @@ export function newCharacter(meta: Meta): Character {
     daoTam: 0,
     path: null,
     sect: null,
-    linhThach: origin.money,
+    linhThach: Math.round((origin.money * 0.3 + fam.money) * (mod.money ?? 1)),
     inventory: ['ao_vai'],
     equipped: { ao: 'ao_vai' },
     pills: {},
@@ -82,7 +91,20 @@ export function newCharacter(meta: Meta): Character {
     lifeMul,
     outfitTone: Math.floor(rnd() * 5),
     outfitCut: Math.floor(rnd() * 4),
+    region: region.id,
+    birthPlace: `${birthPlace}, ${region.name}`,
+    familyTier: famTier,
   };
+  if (mod.sucKhoe) stat(c, 'sucKhoe', mod.sucKhoe);
+  if (mod.khiVan) stat(c, 'khiVan', mod.khiVan);
+  if (mod.ngoTinh) stat(c, 'ngoTinh', mod.ngoTinh);
+  if (mod.tamMa) stat(c, 'tamMa', mod.tamMa);
+  if (mod.tamCanh) stat(c, 'tamCanh', mod.tamCanh);
+  if (mod.daoTam) dao(c, mod.daoTam);
+  if (mod.lifeMul) {
+    c.lifeMul = Math.round((c.lifeMul ?? 1) * mod.lifeMul * 100) / 100;
+    c.lifespan = Math.round(c.lifespan * mod.lifeMul);
+  }
   if (origin.id === 'chua') c.daoTam = 15;
   const t = meta.talents;
   if (t.includes('ky_uc')) stat(c, 'ngoTinh', 20);
@@ -97,7 +119,7 @@ export function newCharacter(meta: Meta): Character {
   c.log.push({
     age: 0,
     tone: 'big',
-    text: `Kiếp thứ ${c.lifeNo}. Bạn chào đời là ${gender === 'nam' ? 'một bé trai' : 'một bé gái'}, ${origin.name.toLowerCase()}. Thầy bói nói bạn mang ${lc.name}.`,
+    text: `Kiếp thứ ${c.lifeNo}. Bạn chào đời là ${gender === 'nam' ? 'một bé trai' : 'một bé gái'} ở ${birthPlace}, ${region.name} (${region.desc}), ${origin.name.toLowerCase()}, gia cảnh ${fam.name}. Thầy bói nói bạn mang ${lc.name}.`,
   });
   c.log.push({
     age: 0,
@@ -251,14 +273,16 @@ function eligible(c: Character, e: GameEvent): boolean {
 }
 
 function buildPending(c: Character, e: GameEvent): PendingEvent {
+  const seed = Math.floor(rnd() * 2147483647);
   c.seenEvents[e.id] = Math.floor(c.age);
   c.evCount = c.evCount ?? {};
   c.evCount[e.id] = (c.evCount[e.id] ?? 0) + 1;
   return {
     id: e.id,
+    seed,
     title: e.title,
     text: e.text(c),
-    choices: e.choices(c).map((ch) => ({ label: ch.label, hint: ch.hint, lean: ch.lean })),
+    choices: e.choices(c, seed).map((ch) => ({ label: ch.label, hint: ch.hint, lean: ch.lean })),
   };
 }
 
@@ -310,6 +334,53 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
     stat(c, 'tamCanh', 2);
     stat(c, 'tamMa', -2);
   }
+
+  // ---- Giàu nghèo ----
+  const tier = wealthTier(c);
+  if (age < 16) {
+    // gia đình nuôi
+    money(c, FAMILY_TIERS[c.familyTier ?? 1]?.allowance ?? 3);
+  } else {
+    // sinh hoạt phí, càng lên cảnh giới càng tốn
+    const cost = 3 + c.realm * 5 + (c.partner ? 3 : 0);
+    if (c.linhThach >= cost) money(c, -cost);
+    else {
+      money(c, -c.linhThach);
+      stat(c, 'sucKhoe', -4);
+      stat(c, 'tamCanh', -3);
+      if (rnd() < 0.3) ctx.log('Túng quẫn, bạn phải nhịn đói mấy ngày liền.', 'bad');
+    }
+  }
+  if (c.income) money(c, c.income * (0.7 + rnd() * 0.6));
+  if (tier.id >= 3) stat(c, 'sucKhoe', 1); // ăn ngon mặc ấm
+  if (tier.id === 0 && age >= 16) stat(c, 'tamMa', 1);
+
+  // ---- Trẻ con chết yểu ----
+  if (age >= 1 && age <= 12 && !opts.closed) {
+    const risk = 0.003 + (tier.id === 0 ? 0.004 : tier.id === 1 ? 0.0015 : 0) + (c.originId === 'the_gia' ? 0.002 : 0);
+    if (rnd() < risk) {
+      const causes = [
+        `Một trận sốt cao cướp đi bạn khi mới ${age} tuổi.`,
+        'Bạn trượt chân ngã xuống giếng sau nhà.',
+        `Dịch tả tràn qua làng. Bạn mất năm ${age} tuổi.`,
+        'Bạn bị rắn độc cắn khi đi chăn trâu, không kịp cứu.',
+        'Bạn đuối nước ở khúc sông đầu làng.',
+        'Bạn ngã từ trên cây cao xuống, không bao giờ tỉnh lại.',
+        ...(tier.id === 0 ? ['Năm mất mùa, bạn chết đói khi chưa kịp lớn.', 'Mùa đông rét đậm, bạn không qua khỏi vì không có áo ấm.'] : []),
+        ...(c.originId === 'the_gia' ? ['Thích khách của chi trưởng đột nhập, bạn chết trong giấc ngủ.', 'Có kẻ bỏ độc vào bát chè sen của bạn.'] : []),
+        ...(c.race === 'yeu' ? ['Thợ săn yêu bắt được bạn, lột da bán ở phường thị.'] : []),
+      ];
+      const f = fatal(c, ctx, 1, pick(rnd, causes));
+      if (c.dead) {
+        ctx.log(c.cause ?? '', 'big');
+        return null;
+      }
+      if (f) ctx.log(f.trim(), 'good');
+    }
+  }
+
+  // ---- Quái vật hồi sức khi lâu không bị săn ----
+  if (c.monLv) for (const k of Object.keys(c.monLv)) if (c.focus !== 'tru_yeu' || c.huntTarget !== k) c.monLv[k] = Math.max(0, c.monLv[k] - 0.5);
 
   // Trạng thái thường niên
   const ratio = c.age / c.lifespan;
@@ -466,7 +537,7 @@ function findEvent(c: Character, id: string): GameEvent | null {
 export function resolveChoice(c: Character, p: PendingEvent, idx: number, ctx: EffectCtx, talents: string[] = []): PendingEvent | null {
   const e = findEvent(c, p.id);
   if (!e) return null;
-  const choice = e.choices(c)[idx];
+  const choice = e.choices(c, p.seed ?? 0)[idx];
   if (!choice) return null;
   const result = choice.run(c, ctx);
   const tone: Tone = choice.lean === 'chinh' ? 'chinh' : choice.lean === 'ta' ? 'ta' : 'normal';

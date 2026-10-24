@@ -7,7 +7,7 @@ import { PATHS, realmLabel } from '@/lib/game/data';
 import { describeLean } from '@/lib/game/engine';
 import { fmt } from '@/lib/game/helpers';
 import type { Character } from '@/lib/game/types';
-import { leaderboard, type RankKind, type RankLean } from '@/lib/storage';
+import { leaderboard, type RankKind, type RankLean, type RankScope } from '@/lib/storage';
 import { useAuth } from '@/lib/useAuth';
 
 const LEANS: { id: RankLean; name: string }[] = [
@@ -15,6 +15,12 @@ const LEANS: { id: RankLean; name: string }[] = [
   { id: 'chinh', name: 'Chính phái' },
   { id: 'trung', name: 'Trung lập' },
   { id: 'ta', name: 'Tà phái' },
+];
+
+const SCOPES: { id: RankScope; name: string }[] = [
+  { id: 'all', name: 'Mọi kiếp' },
+  { id: 'alive', name: 'Đang sống' },
+  { id: 'dead', name: 'Đã mất' },
 ];
 
 const PATH_FILTERS: { id: string; name: string }[] = [
@@ -45,14 +51,15 @@ export default function RankPage() {
   const [kind, setKind] = useState<RankKind>('power');
   const [lean, setLean] = useState<RankLean>('all');
   const [path, setPath] = useState('all');
-  const [rows, setRows] = useState<{ username: string; c: Character }[] | null>(null);
+  const [scope, setScope] = useState<RankScope>('all');
+  const [rows, setRows] = useState<{ username: string; c: Character; alive: boolean }[] | null>(null);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     if (!ready) return;
     let cancel = false;
     setRows(null);
-    leaderboard(kind, lean, path).then((r) => {
+    leaderboard(kind, lean, path, scope).then((r) => {
       if (cancel) return;
       setFailed(r === null);
       setRows(r ?? []);
@@ -60,7 +67,7 @@ export default function RankPage() {
     return () => {
       cancel = true;
     };
-  }, [ready, kind, lean, path]);
+  }, [ready, kind, lean, path, scope]);
 
   return (
     <main className="app">
@@ -69,7 +76,7 @@ export default function RankPage() {
           <span className="age-big" style={{ fontSize: 28 }}>
             Xếp hạng
           </span>
-          <span className="meta">Tu sĩ đang tại thế</span>
+          <span className="meta">Anh hùng các đời</span>
           <Link href="/choi" className="icon-btn" style={{ textDecoration: 'none', display: 'grid', placeItems: 'center' }} aria-label="Quay lại game">
             ‹
           </Link>
@@ -85,6 +92,13 @@ export default function RankPage() {
         </button>
       </div>
 
+      <div className="chips" role="radiogroup" aria-label="Lọc theo sống chết">
+        {SCOPES.map((x) => (
+          <button key={x.id} role="radio" aria-checked={scope === x.id} className={`chip-btn ${scope === x.id ? 'on' : ''}`} onClick={() => setScope(x.id)}>
+            {x.name}
+          </button>
+        ))}
+      </div>
       <div className="chips" role="radiogroup" aria-label="Lọc theo phái">
         {LEANS.map((l) => (
           <button key={l.id} role="radio" aria-checked={lean === l.id} className={`chip-btn ${l.id} ${lean === l.id ? 'on' : ''}`} onClick={() => setLean(l.id)}>
@@ -116,7 +130,7 @@ export default function RankPage() {
             const c = r.c;
             const mine = user?.username === r.username;
             return (
-              <li key={r.username} className={`rank-row ${mine ? 'mine' : ''} ${i < 3 ? 'top' : ''}`}>
+              <li key={`${r.username}-${c.lifeNo}-${r.alive}-${i}`} className={`rank-row ${mine ? 'mine' : ''} ${i < 3 ? 'top' : ''} ${r.alive ? '' : 'gone'}`}>
                 <Medal rank={i + 1} />
                 <div className="rank-sprite">
                   <Sprite c={c} size={64} />
@@ -126,8 +140,10 @@ export default function RankPage() {
                   <span className="rank-owner">
                     @{r.username}
                     {mine && <span className="badge">Bạn</span>}
+                    {!r.alive && <span className="badge gone-badge">{c.ascended ? 'Phi thăng' : 'Đã mất'}</span>}
                   </span>
                   <small>
+                    {r.alive ? '' : `Kiếp ${c.lifeNo} · `}
                     {Math.floor(c.age)} tuổi · {c.path ? PATHS[c.path].name : 'chưa chọn đường'} · {describeLean(c.daoTam)}
                   </small>
                 </div>

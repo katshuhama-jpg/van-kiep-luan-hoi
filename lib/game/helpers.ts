@@ -1,6 +1,39 @@
 import { ITEMS, REALMS } from './data';
 import type { Character, EffectCtx, Stats } from './types';
 
+/** Bộ sinh số ngẫu nhiên có hạt giống (mulberry32) */
+export function seeded(seed: number): () => number {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** Chọn ngẫu nhiên n phần tử (giữ nguyên theo hạt giống) */
+export function sample<T>(seed: number, arr: readonly T[], n: number): T[] {
+  const r = seeded(seed);
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(r() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a.slice(0, n);
+}
+
+/** Bậc gia cảnh theo linh thạch và thu nhập */
+export function wealthTier(c: { linhThach: number; income?: number }): { id: number; name: string } {
+  const w = c.linhThach + (c.income ?? 0) * 10;
+  if (w < 50) return { id: 0, name: 'Bần hàn' };
+  if (w < 300) return { id: 1, name: 'Bình dân' };
+  if (w < 1500) return { id: 2, name: 'Khá giả' };
+  if (w < 6000) return { id: 3, name: 'Phú hộ' };
+  return { id: 4, name: 'Đại phú hào' };
+}
+
 export const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
 export function pick<T>(rnd: () => number, arr: readonly T[]): T {
@@ -105,7 +138,8 @@ export function fmt(n: number) {
  * ngọc bội hộ thân đỡ được một lần.
  */
 export function fatal(c: Character, ctx: EffectCtx, chance: number, cause: string): string | null {
-  const p = clamp(chance - (c.stats.khiVan - 50) / 500, 0.01, 0.95);
+  // trẻ con được trời thương hơn một chút
+  const p = clamp(chance * (c.age < 13 && chance < 1 ? 0.6 : 1) - (c.stats.khiVan - 50) / 500, 0.01, chance >= 1 ? 1 : 0.95);
   if (ctx.rnd() >= p) return null;
   if (c.equipped.phu_kien === 'ngoc_boi') {
     c.equipped.phu_kien = undefined;
