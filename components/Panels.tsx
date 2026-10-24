@@ -315,18 +315,20 @@ export function FocusGrid({ c, onPick }: { c: Character; onPick: (f: Focus) => v
     <div className="focus-grid" role="radiogroup" aria-label="Trọng tâm năm nay">
       {(Object.keys(FOCUS) as Focus[]).map((f) => {
         const locked = c.age < FOCUS[f].minAge;
+        const n = c.focus === f && c.streak?.f === f ? c.streak.n : 0;
         return (
           <button
             key={f}
             role="radio"
             aria-checked={c.focus === f}
-            className={c.focus === f ? 'on' : ''}
+            className={`${c.focus === f ? 'on' : ''} ${n >= 6 ? 'tired' : n >= 4 ? 'warm' : ''}`}
             disabled={locked || c.dead}
             onClick={() => onPick(f)}
             title={locked ? `Mở khi ${FOCUS[f].minAge} tuổi` : FOCUS[f].desc}
           >
             <FocusIcon f={f} />
             <span>{locked ? `${FOCUS[f].minAge}t` : FOCUS[f].name}</span>
+            {n >= 2 && <i className="streak">{n >= 6 ? `Quá độ ${n}n` : `${n} năm`}</i>}
           </button>
         );
       })}

@@ -335,6 +335,14 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
     stat(c, 'tamMa', -2);
   }
 
+  // ---- Quá độ: làm một việc quá lâu ----
+  if (!opts.closed && focus && age >= 10) {
+    if (c.streak?.f === focus) c.streak.n += 1;
+    else c.streak = { f: focus, n: 1 };
+    overwork(c, ctx, focus, c.streak.n);
+    if (c.dead) return null;
+  }
+
   // ---- Giàu nghèo ----
   const tier = wealthTier(c);
   if (age < 16) {
@@ -552,17 +560,142 @@ export function resolveChoice(c: Character, p: PendingEvent, idx: number, ctx: E
 
 /** Tua nhiều năm khi bế quan. Dừng khi tới bình cảnh hoặc chết. */
 export function closedDoor(c: Character, years: number, ctx: EffectCtx, talents: string[] = []): { pending: PendingEvent | null; done: number } {
-  ctx.log(`Bạn đóng cửa động phủ, bế quan ${years} năm.`, 'normal');
+  const rushed = c.lastClosed !== undefined && c.age - c.lastClosed < 3;
+  ctx.log(rushed ? `Vừa xuất quan chưa bao lâu, bạn lại bế quan ${years} năm. Cơ thể chưa kịp hồi phục.` : `Bạn đóng cửa động phủ, bế quan ${years} năm.`, rushed ? 'bad' : 'normal');
   let done = 0;
+  let pending: PendingEvent | null = null;
   for (let i = 0; i < years; i++) {
     c.age = Math.floor(c.age) + 1;
     done++;
-    const p = yearTick(c, ctx, { closed: true, talents });
+    pending = yearTick(c, ctx, { closed: true, talents });
     if (c.dead) break;
-    if (p) return { pending: p, done };
+    // tẩu hỏa nhập ma khi bế quan, càng lâu càng dễ, bế quan dồn dập càng nguy
+    const f = fatal(c, ctx, (rushed ? 0.012 : 0.005) + c.stats.tamMa / 4000, 'Bế quan quá lâu, một mình đối diện tâm ma. Người ta phá cửa động phủ thì bạn đã hóa thành bộ xương khô.');
+    if (c.dead) break;
+    if (f) ctx.log(f.trim(), 'good');
+    if (pending) break;
   }
-  if (!c.dead) ctx.log(`Xuất quan sau ${done} năm.`, 'good');
-  return { pending: null, done };
+  if (c.dead) return { pending: null, done };
+  c.lastClosed = Math.floor(c.age);
+  c.streak = { f: 'be_quan', n: 0 };
+  ctx.log(`Xuất quan sau ${done} năm.`, 'good');
+  closedDoorLosses(c, ctx, done, rushed);
+  return { pending, done };
+}
+
+/** Bế quan lâu, thế gian bên ngoài đã đổi khác */
+function closedDoorLosses(c: Character, ctx: EffectCtx, years: number, rushed: boolean) {
+  const r = (p: number) => rnd() < Math.min(0.9, p * (rushed ? 1.5 : 1));
+  const notes: string[] = [];
+  if (r(years * 0.03)) {
+    const lost = Math.round(c.linhThach * (0.1 + rnd() * 0.3));
+    if (lost > 0) {
+      money(c, -lost);
+      notes.push(`Kẻ trộm đào được vào kho, lấy mất ${lost} linh thạch.`);
+    }
+  }
+  if (c.partner && r(years * 0.035)) {
+    notes.push(`${c.partner} đợi mãi không thấy bạn, đã bỏ đi theo người khác.`);
+    c.partner = null;
+    stat(c, 'tamMa', 12);
+  }
+  if (c.pet && r(years * 0.025)) {
+    c.pet = false;
+    notes.push('Tiểu hồ ly không ai cho ăn, bỏ vào rừng không trở lại.');
+  }
+  if (c.sect && r(years * 0.02)) {
+    notes.push(`${c.sect} gặp đại nạn khi bạn bế quan. Sư môn tan tác, không còn chốn về.`);
+    c.sect = null;
+    stat(c, 'tamCanh', -8);
+  }
+  if ((c.income ?? 0) > 0 && r(years * 0.03)) {
+    c.income = Math.round((c.income ?? 0) / 2);
+    notes.push('Ruộng đất, cửa tiệm không người trông coi, bị kẻ khác chiếm mất một nửa.');
+  }
+  if (r(years * 0.03)) {
+    notes.push('Người thân trong nhà đã lần lượt qua đời. Không ai đợi bạn xuất quan.');
+    stat(c, 'tamMa', 8);
+  }
+  if (r(years * 0.025) && !c.enemy) {
+    c.enemy = 'kẻ đã nhòm ngó động phủ của bạn bao năm';
+    notes.push('Có kẻ đã rình rập động phủ suốt những năm bạn bế quan.');
+  }
+  // ngồi yên quá lâu, cơ thể suy kiệt
+  const atrophy = Math.round(years * (rushed ? 1.6 : 0.8));
+  if (atrophy >= 4) {
+    stat(c, 'sucKhoe', -atrophy);
+    notes.push(`Ngồi bất động quá lâu, cơ thể suy kiệt (-${atrophy} sức khỏe).`);
+  }
+  if (notes.length) {
+    ctx.fx('hurt', 'Thế sự đổi thay');
+    for (const n of notes) ctx.log(n, 'bad');
+  } else if (years >= 10) ctx.log('Bước ra khỏi động phủ, cảnh vật vẫn y nguyên. Thật may mắn.', 'good');
+}
+
+/** Hậu quả khi làm một việc quá nhiều năm liền */
+const OVERWORK: Record<string, { warn: string; hits: { p: number; run: (c: Character, ctx: EffectCtx) => string }[] }> = {
+  tu_luyen: {
+    warn: 'Bạn khổ tu liền mấy năm không nghỉ. Kinh mạch bắt đầu căng như dây đàn.',
+    hits: [
+      { p: 3, run: (c, ctx) => { stat(c, 'sucKhoe', -18); c.cultivation = Math.round(c.cultivation * 0.85); ctx.fx('hurt', 'Kinh mạch tổn thương'); return 'Khổ tu quá độ, kinh mạch rạn nứt. Phải nằm liệt mấy tháng, tu vi tụt một đoạn.'; } },
+      { p: 2, run: (c) => { stat(c, 'tamMa', 14); stat(c, 'tamCanh', -8); return 'Đêm nào cũng nghe tiếng thì thầm trong đầu. Tu luyện không ngơi nghỉ khiến tâm ma lớn dần.'; } },
+      { p: 1, run: (c, ctx) => { const f = fatal(c, ctx, 0.35, 'Luyện công không ngơi nghỉ, chân khí nghịch chuyển. Bạn tẩu hỏa nhập ma giữa đêm.'); return f ? `Chân khí đột nhiên chạy loạn...${f}` : 'Chân khí đột nhiên chạy loạn, bạn suýt tẩu hỏa nhập ma.'; } },
+    ],
+  },
+  luyen_dan: {
+    warn: 'Ngày nào cũng hít khói lò đan, bạn bắt đầu ho khan.',
+    hits: [
+      { p: 3, run: (c, ctx) => { stat(c, 'sucKhoe', -15); ctx.fx('hurt', 'Trúng đan độc'); return 'Đan độc tích tụ trong phổi, bạn ho ra máu đen.'; } },
+      { p: 2, run: (c, ctx) => { const lost = Math.round(c.linhThach * 0.25); money(c, -lost); ctx.fx('hurt', 'Nổ lò'); return `Mệt mỏi lơ đãng, lò đan nổ tung, thiêu rụi ${lost} linh thạch dược liệu.` + hurt(c, 15, ctx); } },
+      { p: 1, run: (c, ctx) => { const f = fatal(c, ctx, 0.3, 'Lò đan phát nổ trong lúc bạn ngủ gục bên cạnh. Động phủ sập xuống.'); return f ? `Đêm ấy lửa lò bùng lên dữ dội...${f}` : 'Lò đan phát nổ, bạn kịp lăn ra ngoài trong gang tấc.'; } },
+    ],
+  },
+  du_ngoan: {
+    warn: 'Bạn đã phiêu bạt nhiều năm, chân đã mỏi, túi đã nhẹ.',
+    hits: [
+      { p: 3, run: (c, ctx) => { stat(c, 'sucKhoe', -14); ctx.fx('hurt', 'Bệnh xứ lạ'); return 'Bạn mắc bệnh lạ ở xứ người, sốt li bì không ai chăm.'; } },
+      { p: 2, run: (c) => { const lost = Math.round(c.linhThach * 0.3); money(c, -lost); return `Ngủ quên ở quán trọ, bị lục sạch ${lost} linh thạch.`; } },
+      { p: 1, run: (c, ctx) => { const f = fatal(c, ctx, 0.3, 'Bạn lạc vào chướng khí rừng thiêng, ngã xuống không bao giờ tỉnh dậy.'); return f ? `Mải đi, bạn lạc vào vùng chướng khí...${f}` : 'Bạn lạc vào chướng khí, bò được ra ngoài khi chỉ còn thoi thóp.'; } },
+    ],
+  },
+  kiem_tien: {
+    warn: 'Bạn làm lụng quần quật quanh năm, chẳng có ngày nghỉ.',
+    hits: [
+      { p: 3, run: (c, ctx) => { stat(c, 'sucKhoe', -16); stat(c, 'tamCanh', -6); ctx.fx('hurt', 'Kiệt sức'); return 'Lao lực quá độ, bạn ngã quỵ giữa phường thị.'; } },
+      { p: 2, run: (c) => { const lost = Math.round(c.linhThach * 0.35); money(c, -lost); return `Tham làm thêm một mối, bạn bị lừa mất ${lost} linh thạch. Tham thì thâm.`; } },
+      { p: 1, run: (c, ctx) => { const f = fatal(c, ctx, 0.25, 'Mang nhiều tiền đi đêm quá thường xuyên, bạn bị cướp giết bên bờ sông.'); return f ? `Lại một chuyến hàng đêm...${f}` : 'Bị cướp chặn đường lúc đêm khuya, bạn bỏ của chạy lấy người.'; } },
+    ],
+  },
+  ket_duyen: {
+    warn: 'Rượu chè, hội hè liên miên. Tu luyện bỏ bê đã lâu.',
+    hits: [
+      { p: 3, run: (c, ctx) => { stat(c, 'sucKhoe', -12); c.cultivation = Math.round(c.cultivation * 0.9); ctx.fx('hurt', 'Tửu sắc quá độ'); return 'Tửu sắc quá độ, thân thể hao mòn, tu vi sa sút.'; } },
+      { p: 2, run: (c) => { const lost = Math.round(c.linhThach * 0.3); money(c, -lost); stat(c, 'tamMa', 8); return `Người tri kỷ hóa ra là kẻ lừa tình, cuỗm đi ${lost} linh thạch.`; } },
+      { p: 1, run: (c, ctx) => { const f = fatal(c, ctx, 0.25, 'Bạn bị chồng của người tình đâm chết trong đêm.'); return f ? `Dan díu quá nhiều nơi...${f}` : 'Bị đánh ghen một trận thừa sống thiếu chết.' + hurt(c, 25, ctx); } },
+    ],
+  },
+  tru_yeu: {
+    warn: 'Bạn giết yêu thú liên miên, trên người nồng nặc mùi máu.',
+    hits: [
+      { p: 3, run: (c, ctx) => { stat(c, 'sucKhoe', -15); ctx.fx('hurt', 'Thương tích dồn'); return 'Vết thương cũ chưa lành đã thêm vết mới. Bạn gục xuống giữa rừng.'; } },
+      { p: 2, run: (c) => { stat(c, 'tamMa', 12); dao(c, -4); return 'Sát khí nhập tâm. Bạn bắt đầu thấy khoái cảm mỗi khi giết chóc.'; } },
+      { p: 1, run: (c, ctx) => { const f = fatal(c, ctx, 0.3, 'Yêu tộc kết bầy báo thù. Bạn bị vây giết giữa rừng sâu.'); return f ? `Đêm ấy cả rừng rộ lên tiếng gầm...${f}` : 'Yêu tộc kết bầy báo thù, bạn chạy thoát trong gang tấc.' + hurt(c, 25, ctx); } },
+    ],
+  },
+};
+
+const SAFE_YEARS = 6;
+
+function overwork(c: Character, ctx: EffectCtx, focus: string, n: number) {
+  const o = OVERWORK[focus];
+  if (!o) return;
+  if (n === SAFE_YEARS - 1) ctx.log(`${o.warn} Nên đổi việc khác cho thân tâm nghỉ ngơi.`, 'bad');
+  if (n < SAFE_YEARS) return;
+  const chance = Math.min(0.4, 0.07 + (n - SAFE_YEARS) * 0.04);
+  if (rnd() >= chance) return;
+  const hit = weighted(rnd, o.hits.map((h) => ({ ...h, w: h.p + (n > 10 && h.p === 1 ? 1 : 0) })));
+  const text = hit.run(c, ctx);
+  ctx.log(`${n} năm liền không nghỉ. ${text}`, c.dead ? 'big' : 'bad');
 }
 
 export function usePillNow(c: Character, id: string, ctx: EffectCtx, talents: string[] = []): PendingEvent | null {

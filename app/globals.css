@@ -2348,3 +2348,11 @@ button:disabled {
   transform-origin: bottom center;
   scale: 1.25;
 }
+
+/* Quá độ: làm một việc quá lâu */
+.focus-grid button { position: relative; }
+.focus-grid .streak { position: absolute; top: 1px; right: 2px; font-style: normal; font-size: 13px; line-height: 1; color: var(--ink-soft, #7a5a3a); }
+.focus-grid button.warm .streak { color: #c9962e; }
+.focus-grid button.tired { animation: tiredPulse 1.2s steps(2) infinite; }
+.focus-grid button.tired .streak { color: #e0202e; }
+@keyframes tiredPulse { 50% { box-shadow: 0 0 0 2px #e0202e inset; } }

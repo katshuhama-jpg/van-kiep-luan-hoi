@@ -81,10 +81,12 @@ export interface Character {
   kills?: Record<string, number>;
   evCount?: Record<string, number>; // số lần đã gặp mỗi sự kiện trong kiếp này
   income?: number; // thu nhập thụ động mỗi năm (ruộng, cửa tiệm, cho vay)
-  monLv?: Record<string, number>;
+  monLv?: Record<string, number>; // cấp tăng thêm của từng loài quái do bị săn nhiều
   region?: string; // vùng đất nơi sinh
   birthPlace?: string; // làng/trấn nơi sinh
-  familyTier?: number; // gia cảnh lúc sinh 0-4 // cấp tăng thêm của từng loài quái do bị săn nhiều
+  familyTier?: number; // gia cảnh lúc sinh 0-4
+  streak?: { f: string; n: number }; // số năm liên tiếp làm cùng một việc
+  lastClosed?: number; // tuổi lần xuất quan gần nhất
 }
 
 export interface Choice {
