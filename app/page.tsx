@@ -38,6 +38,9 @@ export default function Home() {
         <Link href="/choi" className="btn btn-red btn-big" style={link}>
           Vào luân hồi
         </Link>
+        <Link href="/bang-xep-hang" className="btn" style={link}>
+          Bảng xếp hạng
+        </Link>
         <Link href="/nghia-trang" className="btn" style={link}>
           Nghĩa trang tu sĩ
         </Link>

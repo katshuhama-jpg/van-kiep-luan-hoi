@@ -250,3 +250,33 @@ grant execute on function public.vkl_save_game(uuid, jsonb) to anon, authenticat
 grant execute on function public.vkl_add_life(uuid, jsonb) to anon, authenticated;
 grant execute on function public.vkl_my_lives(uuid) to anon, authenticated;
 grant execute on function public.vkl_thap_huong(uuid, bigint) to anon, authenticated;
+
+-- ---------- Bảng xếp hạng (nhân vật đang sống) ----------
+-- p_kind: 'power' (năng lực) | 'wealth' (phú hào)
+-- p_lean: 'all' | 'chinh' | 'trung' | 'ta'   p_path: 'all' | 'none' | kiem | dan | tran | phat | ma | yeu
+create or replace function public.vkl_leaderboard(p_kind text, p_lean text default 'all', p_path text default 'all')
+returns table (username text, c jsonb)
+language sql stable security definer set search_path = '' as $$
+  with live as (
+    select p.username, s.state->'char' as ch
+    from public.vkl_saves s
+    join public.vkl_players p on p.id = s.player_id
+    where jsonb_typeof(s.state) = 'object'
+      and jsonb_typeof(s.state->'char') = 'object'
+      and coalesce((s.state->'char'->>'dead')::boolean, false) = false
+  )
+  select username, (ch - 'log' - 'seenEvents' - 'pills' - 'inventory') as c
+  from live
+  where (p_lean = 'all'
+         or (p_lean = 'chinh' and (ch->>'daoTam')::int >= 20)
+         or (p_lean = 'ta' and (ch->>'daoTam')::int <= -20)
+         or (p_lean = 'trung' and (ch->>'daoTam')::int between -19 and 19))
+    and (p_path = 'all' or coalesce(ch->>'path', 'none') = p_path)
+  order by
+    case when p_kind = 'wealth' then (ch->>'linhThach')::numeric end desc nulls last,
+    case when p_kind <> 'wealth' then (ch->>'realm')::int end desc nulls last,
+    case when p_kind <> 'wealth' then (ch->>'layer')::int end desc nulls last,
+    case when p_kind <> 'wealth' then (ch->>'cultivation')::numeric end desc nulls last
+  limit 50;
+$$;
+grant execute on function public.vkl_leaderboard(text, text, text) to anon, authenticated;

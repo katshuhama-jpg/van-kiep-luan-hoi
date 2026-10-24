@@ -71,6 +71,11 @@ export interface Character {
   ascended: boolean;
   enemy: string | null;
   breakDelay: number; // số năm còn phải chờ trước khi thử đột phá lại
+  hairColor?: string; // khóa màu tóc bẩm sinh (HAIR_COLORS)
+  hairStyle?: number; // 0-2 kiểu tóc
+  lifeMul?: number; // thọ mệnh bẩm sinh: <1 đoản thọ, >1 trường thọ
+  outfitTone?: number; // phối màu áo bẩm sinh
+  outfitCut?: number; // kiểu dáng áo 0-3
 }
 
 export interface Choice {

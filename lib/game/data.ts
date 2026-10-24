@@ -115,3 +115,28 @@ export const TALENTS: Talent[] = [
 ];
 
 export const SEASONS = ['Xuân', 'Hạ', 'Thu', 'Đông'];
+
+/** Màu tóc bẩm sinh. w = độ hiếm */
+export const HAIR_COLORS: Record<string, { name: string; hex: string; w: number; yeu?: boolean }> = {
+  den: { name: 'đen tuyền', hex: '#2a1f3d', w: 42 },
+  nau: { name: 'nâu sẫm', hex: '#4a2e22', w: 20 },
+  hat_de: { name: 'màu hạt dẻ', hex: '#7a4a2a', w: 12 },
+  do: { name: 'đỏ rượu', hex: '#8a2a1e', w: 8 },
+  lam: { name: 'lam đen', hex: '#2a3a6a', w: 7 },
+  tim: { name: 'tím than', hex: '#5a2a6a', w: 4 },
+  bac: { name: 'bạc trắng từ lúc lọt lòng', hex: '#c8ccd8', w: 3 },
+  hoa_ly: { name: 'cam lửa hồ ly', hex: '#c96a2a', w: 6, yeu: true },
+  tuyet_ly: { name: 'trắng tuyết hồ ly', hex: '#eceaf2', w: 3, yeu: true },
+};
+
+export const HAIR_STYLES = {
+  nam: ['búi tóc đạo sĩ', 'tóc đuôi ngựa dài', 'tóc ngắn rối'],
+  nu: ['tóc dài buông xõa', 'búi đôi', 'tóc tết bím'],
+};
+
+/** Thọ mệnh bẩm sinh */
+export const LIFE_FATES = [
+  { name: 'đoản thọ', lo: 0.6, hi: 0.82, w: 18 },
+  { name: 'thọ mệnh bình thường', lo: 0.88, hi: 1.12, w: 62 },
+  { name: 'trường thọ', lo: 1.18, hi: 1.45, w: 20 },
+];

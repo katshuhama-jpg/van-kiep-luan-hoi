@@ -1,4 +1,4 @@
-import { FOCUS, HO, LINH_CAN, ORIGINS, PATHS, PILLS, REALMS, TEN_NAM, TEN_NU, realmLabel } from './data';
+import { FOCUS, HAIR_COLORS, HAIR_STYLES, HO, LIFE_FATES, LINH_CAN, ORIGINS, PATHS, PILLS, REALMS, TEN_NAM, TEN_NU, realmLabel } from './data';
 import { BREAK_EVENT_ID, EVENTS, PATH_EVENT_ID, pathChoices } from './events';
 import { addCult, addPill, clamp, reward, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
 import type { Character, Choice, EffectCtx, Fx, FxKind, GameEvent, Meta, PendingEvent, Tone } from './types';
@@ -12,7 +12,7 @@ export function emptyMeta(): Meta {
 }
 
 function lifeMult(c: Character, talents: string[] = []) {
-  let m = 1;
+  let m = c.lifeMul ?? 1;
   if (talents.includes('tho')) m *= 1.2;
   if (c.path === 'phat') m *= 1.3;
   if (c.race === 'yeu') m *= 1.1;
@@ -27,6 +27,13 @@ export function newCharacter(meta: Meta): Character {
     while (lc.mul < 1.2) lc = weighted(rnd, LINH_CAN);
   }
   const race = origin.id === 'yeu' ? 'yeu' : 'nhan';
+  const hairList = Object.entries(HAIR_COLORS)
+    .filter(([, h]) => (race === 'yeu' ? h.yeu || h.w <= 4 : !h.yeu))
+    .map(([id, h]) => ({ id, w: h.w }));
+  const hairColor = weighted(rnd, hairList).id;
+  const hairStyle = Math.floor(rnd() * 3);
+  const fate = weighted(rnd, LIFE_FATES);
+  const lifeMul = Math.round((fate.lo + rnd() * (fate.hi - fate.lo)) * 100) / 100;
   const r = (lo: number, hi: number) => Math.round(lo + rnd() * (hi - lo));
   const c: Character = {
     name: `${pick(rnd, HO)} ${pick(rnd, gender === 'nam' ? TEN_NAM : TEN_NU)}`,
@@ -38,7 +45,7 @@ export function newCharacter(meta: Meta): Character {
     linhCanMul: lc.mul,
     lifeNo: meta.lives + 1,
     age: 0,
-    lifespan: r(62, 80),
+    lifespan: Math.round(r(60, 82) * lifeMul),
     realm: 0,
     layer: 1,
     cultivation: 0,
@@ -60,6 +67,11 @@ export function newCharacter(meta: Meta): Character {
     ascended: false,
     enemy: meta.enemy,
     breakDelay: 0,
+    hairColor,
+    hairStyle,
+    lifeMul,
+    outfitTone: Math.floor(rnd() * 5),
+    outfitCut: Math.floor(rnd() * 4),
   };
   if (origin.id === 'chua') c.daoTam = 15;
   const t = meta.talents;
@@ -76,6 +88,11 @@ export function newCharacter(meta: Meta): Character {
     age: 0,
     tone: 'big',
     text: `Kiếp thứ ${c.lifeNo}. Bạn chào đời là ${gender === 'nam' ? 'một bé trai' : 'một bé gái'}, ${origin.name.toLowerCase()}. Thầy bói nói bạn mang ${lc.name}.`,
+  });
+  c.log.push({
+    age: 0,
+    tone: fate.lo < 0.85 ? 'bad' : fate.lo > 1.1 ? 'good' : 'normal',
+    text: `Tóc ${HAIR_COLORS[hairColor].name}, lớn lên sẽ để ${HAIR_STYLES[gender][hairStyle]}. Bà mụ xem tướng bảo: mệnh ${fate.name}.`,
   });
   if (c.enemy && meta.nghiep >= 10) c.log.push({ age: 0, tone: 'ta', text: 'Ngày bạn sinh ra, quạ đen đậu kín mái nhà. Nghiệp kiếp trước vẫn chưa trả hết.' });
   return c;

@@ -113,3 +113,17 @@ export async function thapHuong(user: Player | null, id: number | string): Promi
   const { data } = await sb.rpc('vkl_thap_huong', { p_token: user.token, p_life_id: id });
   return typeof data === 'number' ? data : null;
 }
+
+export type RankKind = 'power' | 'wealth';
+export type RankLean = 'all' | 'chinh' | 'trung' | 'ta';
+
+export async function leaderboard(kind: RankKind, lean: RankLean, path: string): Promise<{ username: string; c: Character }[] | null> {
+  const sb = supabase();
+  if (!sb) return null;
+  const { data, error } = await sb.rpc('vkl_leaderboard', { p_kind: kind, p_lean: lean, p_path: path });
+  if (error) return null;
+  return ((data as { username: string; c: Character }[] | null) ?? []).map((r) => ({
+    username: r.username,
+    c: { ...r.c, log: [], seenEvents: {}, pills: {}, inventory: [] } as Character,
+  }));
+}

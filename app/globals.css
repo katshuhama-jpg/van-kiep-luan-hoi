@@ -1903,3 +1903,130 @@ button:disabled {
     box-shadow: 6px 6px 0 var(--shadow);
   }
 }
+
+.badge.sex.nam {
+  background: #d6e4f6;
+  color: #1e3a66;
+}
+
+.badge.sex.nu {
+  background: #f8dbe6;
+  color: #7a1e44;
+}
+
+/* --------- Bảng xếp hạng --------- */
+.chips {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.chips.scroll {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.chip-btn {
+  --notch: 3px;
+  flex: none;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  padding: 3px 10px;
+  min-height: 36px;
+  font-size: 18px;
+  white-space: nowrap;
+  clip-path: polygon(0 var(--notch), var(--notch) var(--notch), var(--notch) 0, calc(100% - var(--notch)) 0, calc(100% - var(--notch)) var(--notch), 100% var(--notch), 100% calc(100% - var(--notch)), calc(100% - var(--notch)) calc(100% - var(--notch)), calc(100% - var(--notch)) 100%, var(--notch) 100%, var(--notch) calc(100% - var(--notch)), 0 calc(100% - var(--notch)));
+}
+
+.chip-btn.on {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.chip-btn.chinh.on {
+  background: var(--chinh);
+}
+
+.chip-btn.ta.on {
+  background: var(--ta);
+}
+
+.ranks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rank-row {
+  display: grid;
+  grid-template-columns: 34px 58px 1fr auto;
+  align-items: center;
+  gap: 6px;
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  padding: 4px 8px 4px 4px;
+}
+
+.rank-row.top {
+  background: #fff3cf;
+}
+
+.rank-row.mine {
+  box-shadow: inset 0 0 0 2px var(--red);
+}
+
+.rank-no {
+  text-align: center;
+  font-size: 24px;
+  color: var(--muted);
+}
+
+.rank-medal {
+  justify-self: center;
+}
+
+.rank-sprite {
+  width: 58px;
+  height: 58px;
+  overflow: hidden;
+}
+
+.rank-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.05;
+}
+
+.rank-name {
+  font-size: 21px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rank-body small {
+  font-size: 15px;
+  color: var(--muted);
+}
+
+.rank-val {
+  text-align: right;
+  font-size: 19px;
+  color: var(--red-d);
+  line-height: 1;
+}
+
+.rank-val small {
+  display: block;
+  font-size: 14px;
+  color: var(--muted);
+}

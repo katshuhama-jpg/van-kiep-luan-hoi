@@ -3,6 +3,9 @@
 import type { CSSProperties } from 'react';
 import Sprite, { auraColor, lookOf } from './Sprite';
 import type { Character, Fx } from '@/lib/game/types';
+import { REALMS } from '@/lib/game/data';
+
+const REALM_NAMES: string[] = REALMS.map((r) => r.name);
 
 const SEASON_CLASS = ['xuan', 'ha', 'thu', 'dong'];
 
@@ -221,7 +224,7 @@ export default function Scene({ c, fx, paused, season }: { c: Character; fx: Fx[
               <div className={`fx-label ${f.kind === 'breakthrough' || f.kind === 'lightning' ? 'big' : ''}`} style={f.kind === 'breakthrough' || f.kind === 'lightning' ? undefined : { top: `${20 + (idx % 4) * 11}%` }}>
                 {f.kind === 'breakthrough' && f.label ? (
                   <>
-                    <small>ĐỘT PHÁ</small>
+                    <small>{REALM_NAMES.includes(f.label) || f.label === 'PHI THĂNG' ? 'ĐỘT PHÁ' : 'NHẬP ĐẠO'}</small>
                     {f.label}
                   </>
                 ) : (

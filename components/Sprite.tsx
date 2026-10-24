@@ -1,19 +1,53 @@
 'use client';
 
-import { PATHS } from '@/lib/game/data';
+import { HAIR_COLORS, PATHS } from '@/lib/game/data';
 import { equippedLook } from '@/lib/game/helpers';
 import type { Character } from '@/lib/game/types';
 
 type R = [number, number, number, number, string];
 
-const ROBES: Record<string, { body: string; dark: string; trim: string }> = {
-  vai: { body: '#a08060', dark: '#7a5f44', trim: '#5a4128' },
-  thanh: { body: '#3fa58a', dark: '#2d7a66', trim: '#e9fff6' },
-  bach: { body: '#f2f6ff', dark: '#c9d6f0', trim: '#6fb8ff' },
-  huyet: { body: '#1e1a24', dark: '#141217', trim: '#c0202e' },
-  tukim: { body: '#7a4ab0', dark: '#5a3488', trim: '#ffc23d' },
-  casa: { body: '#e0902a', dark: '#b8702a', trim: '#b8432f' },
+type Robe = { body: string; dark: string; trim: string; alt: string };
+
+/** Mỗi loại áo có vài phối màu, nhân vật bốc ngẫu nhiên một phối từ lúc sinh */
+const ROBES: Record<string, Robe[]> = {
+  vai: [
+    { body: '#a08060', dark: '#7a5f44', trim: '#5a4128', alt: '#c9b08a' },
+    { body: '#7d8590', dark: '#5c636c', trim: '#3e434a', alt: '#b4bac2' },
+    { body: '#4f5f8a', dark: '#3a4768', trim: '#e6dcc4', alt: '#7a8ab4' },
+    { body: '#7a7a4a', dark: '#5a5a34', trim: '#3e3e22', alt: '#a8a874' },
+    { body: '#9a5a4a', dark: '#74423a', trim: '#e6cfa4', alt: '#c48a74' },
+  ],
+  thanh: [
+    { body: '#3fa58a', dark: '#2d7a66', trim: '#e9fff6', alt: '#7fd8b8' },
+    { body: '#3a8fb0', dark: '#2a6a86', trim: '#eaf6ff', alt: '#7cc4e0' },
+    { body: '#5a9a4a', dark: '#427234', trim: '#f2ffe6', alt: '#98cc84' },
+    { body: '#2f8a8a', dark: '#216464', trim: '#ffe7a8', alt: '#6cc0c0' },
+  ],
+  bach: [
+    { body: '#f2f6ff', dark: '#c9d6f0', trim: '#6fb8ff', alt: '#ffffff' },
+    { body: '#fbf6ec', dark: '#e2d6bc', trim: '#c0402e', alt: '#ffffff' },
+    { body: '#f4f4f8', dark: '#cfd0dc', trim: '#c9962e', alt: '#ffffff' },
+    { body: '#eef8f2', dark: '#c4dccc', trim: '#3fa58a', alt: '#ffffff' },
+  ],
+  huyet: [
+    { body: '#1e1a24', dark: '#141217', trim: '#c0202e', alt: '#3a2030' },
+    { body: '#22182e', dark: '#140e1c', trim: '#9a3ad0', alt: '#3a2650' },
+    { body: '#2a1414', dark: '#1a0a0a', trim: '#ff6a2a', alt: '#4a1e1e' },
+  ],
+  tukim: [
+    { body: '#7a4ab0', dark: '#5a3488', trim: '#ffc23d', alt: '#a07ad0' },
+    { body: '#a8303a', dark: '#7e2028', trim: '#ffc23d', alt: '#d0606a' },
+    { body: '#2a3a7a', dark: '#1c285a', trim: '#ffc23d', alt: '#5a6ab0' },
+    { body: '#1e5a4a', dark: '#123e32', trim: '#ffd36b', alt: '#4a8a76' },
+  ],
+  casa: [
+    { body: '#e0902a', dark: '#b8702a', trim: '#b8432f', alt: '#f0b45a' },
+    { body: '#a8432f', dark: '#80301f', trim: '#e0b02a', alt: '#c86a54' },
+    { body: '#c9a24a', dark: '#9a7a30', trim: '#7a2a1e', alt: '#e0c47a' },
+  ],
 };
+
+export const OUTFIT_CUTS = ['áo dài thẳng', 'áo thắt đai tua', 'áo khoác choàng vai', 'áo ngắn quần túm'];
 
 export interface Look {
   stage: 'baby' | 'child' | 'adult';
@@ -28,6 +62,26 @@ export interface Look {
   acc: string | null;
   pet: boolean;
   dead: boolean;
+  hair: string; // màu tóc bẩm sinh (hex)
+  hairStyle: number;
+  tone: number; // phối màu áo
+  cut: number; // kiểu dáng áo
+}
+
+function mix(a: string, b: string, t: number) {
+  const pa = [1, 3, 5].map((i) => parseInt(a.slice(i, i + 2), 16));
+  const pb = [1, 3, 5].map((i) => parseInt(b.slice(i, i + 2), 16));
+  return '#' + pa.map((v, i) => Math.round(v + (pb[i] - v) * t).toString(16).padStart(2, '0')).join('');
+}
+
+/** Màu tóc hiện tại: bẩm sinh, rồi bạc dần theo tuổi, nhuốm đỏ khi nhập ma, ánh tiên khí ở cảnh giới cao */
+export function hairNow(l: Look): string {
+  let h = l.hair;
+  if (l.path === 'ma' || l.dao <= -60) h = mix(h, '#7a0a1e', 0.55);
+  else if (l.realm >= 5) h = mix(h, auraColor(l) ?? '#ffe27a', 0.3);
+  if (l.aging === 1) h = mix(h, '#a8a6b6', 0.45);
+  if (l.aging === 2) h = mix(h, '#eeeef4', 0.85);
+  return h;
 }
 
 export function lookOf(c: Character): Look {
@@ -45,6 +99,10 @@ export function lookOf(c: Character): Look {
     acc: equippedLook(c, 'phu_kien'),
     pet: c.pet,
     dead: c.dead,
+    hair: HAIR_COLORS[c.hairColor ?? (c.race === 'yeu' ? 'hoa_ly' : 'den')]?.hex ?? '#2a1f3d',
+    hairStyle: c.hairStyle ?? 0,
+    tone: c.outfitTone ?? 0,
+    cut: c.outfitCut ?? 0,
   };
 }
 
@@ -68,10 +126,14 @@ function build(l: Look) {
 
   const skin = l.aging === 2 ? '#e2b896' : '#f2c9a0';
   const bald = l.path === 'phat';
-  const hair = l.aging === 2 ? '#e6e6ee' : l.aging === 1 ? '#5a5468' : l.yeu ? '#c96a2a' : '#2a1f3d';
+  const hair = hairNow(l);
+  const hairDark = mix(hair, '#000000', 0.25);
+  const st = l.hairStyle % 3;
   const red = l.path === 'ma' || l.dao <= -60;
   const eye = red ? '#ff2a3a' : l.yeu ? '#ffc23d' : '#1a1a2e';
-  const robe = ROBES[l.robe] ?? ROBES.vai;
+  const tones = ROBES[l.robe] ?? ROBES.vai;
+  const robe = tones[l.tone % tones.length];
+  const cut = l.stage === 'baby' ? 0 : l.cut % 4;
 
   const back: R[] = [];
   const body: R[] = [];
@@ -88,20 +150,45 @@ function build(l: Look) {
     }
   }
 
-  // Tóc dài phía sau (nữ)
-  if (l.gender === 'nu' && !bald && l.stage !== 'baby') {
-    back.push([4, y0 + 3, 8, l.stage === 'adult' ? 9 : 6, hair]);
+  // Tóc phía sau theo kiểu tóc
+  if (!bald && l.stage !== 'baby') {
+    const long = l.stage === 'adult' ? 9 : 6;
+    if (l.gender === 'nu' && st === 0) back.push([4, y0 + 3, 8, long, hair], [4, y0 + 3 + long - 1, 8, 1, hairDark]);
+    if (l.gender === 'nu' && st === 1) back.push([4, y0 + 3, 8, 4, hair]);
+    if (l.gender === 'nu' && st === 2) back.push([4, y0 + 3, 8, Math.max(4, long - 3), hair]);
+    if (l.gender === 'nam' && st === 1) back.push([11, y0 + 2, 2, 2, hair], [12, y0 + 4, 2, long - 1, hair], [12, y0 + 4, 1, long - 1, hairDark]);
   }
 
-  // Thân áo
-  body.push([4, robeTop, 8, robeH, robe.body]);
+  // Thân áo theo kiểu dáng
+  const shortTop = cut === 3 && l.stage === 'adult' ? 2 : 0; // áo ngắn: lộ quần
+  body.push([4, robeTop, 8, robeH - shortTop, robe.body]);
+  if (cut === 2) {
+    // áo choàng: hai vạt ngoài màu đậm, áo trong sáng
+    body.push([4, robeTop, 2, robeH - shortTop, robe.dark], [10, robeTop, 2, robeH - shortTop, robe.dark], [6, robeTop, 4, robeH - shortTop, robe.alt]);
+    body.push([3, robeTop, 10, 1, robe.dark]);
+  }
   body.push([7, robeTop, 2, Math.min(3, robeH), robe.trim]);
   if (robeH >= 5) body.push([4, robeTop + 4, 8, 1, robe.trim]);
+  if (cut === 1 && robeH >= 5) {
+    // đai thắt nơ có tua rủ
+    body.push([8, robeTop + 4, 2, 1, robe.dark], [8, robeTop + 5, 1, 2, robe.trim], [9, robeTop + 5, 1, 3, robe.trim]);
+    body.push([4, robeTop + 1, 1, 3, robe.alt]);
+  }
+  if (cut === 0 && robeH >= 6) body.push([5, robeTop + 5, 1, robeH - 5, robe.alt], [10, robeTop + 5, 1, robeH - 5, robe.alt]);
   if (l.robe === 'casa') body.push([5, robeTop, 1, 1, robe.trim], [6, robeTop + 1, 1, 1, robe.trim], [8, robeTop + 2, 1, 1, robe.trim], [9, robeTop + 3, 1, 1, robe.trim], [10, robeTop + 4, 1, 1, robe.trim]);
-  // Tay áo
-  body.push([2, robeTop + 1, 2, armH, robe.body], [12, robeTop + 1, 2, armH, robe.body]);
+  // Tay áo: áo choàng tay rộng, áo ngắn tay bó
+  const sleeve = cut === 2 ? robe.dark : robe.body;
+  if (cut === 3) body.push([3, robeTop + 1, 1, armH, sleeve], [12, robeTop + 1, 1, armH, sleeve], [2, robeTop + 1, 1, armH - 1, skin], [13, robeTop + 1, 1, armH - 1, skin]);
+  else body.push([2, robeTop + 1, 2, armH, sleeve], [12, robeTop + 1, 2, armH, sleeve]);
+  if (cut === 2) body.push([1, robeTop + armH - 1, 1, 2, sleeve], [14, robeTop + armH - 1, 1, 2, sleeve]);
   body.push([2, robeTop + 1 + armH, 2, 1, skin], [12, robeTop + 1 + armH, 2, 1, skin]);
-  if (skirtH) body.push([3, robeTop + robeH, 10, skirtH, robe.dark]);
+  if (shortTop) {
+    // quần túm ống
+    body.push([4, robeTop + robeH - 2, 3, skirtH + 2, robe.dark], [9, robeTop + robeH - 2, 3, skirtH + 2, robe.dark], [4, feetY - 1, 3, 1, robe.trim], [9, feetY - 1, 3, 1, robe.trim]);
+  } else if (skirtH) {
+    body.push([3, robeTop + robeH, 10, skirtH, robe.dark]);
+    if (cut === 1) body.push([3, robeTop + robeH + skirtH - 1, 10, 1, robe.trim]);
+  }
   // Chân
   if (l.stage !== 'baby') body.push([5, feetY, 2, 1, '#2a1f2a'], [9, feetY, 2, 1, '#2a1f2a']);
   else body.push([5, feetY, 2, 1, skin], [9, feetY, 2, 1, skin]);
@@ -114,9 +201,21 @@ function build(l: Look) {
     head.push([5, y0 + 1, 6, 1, skin], [4, y0 + 2, 8, 2, skin], [6, y0 + 2, 1, 1, '#c4874a'], [8, y0 + 2, 1, 1, '#c4874a'], [7, y0 + 1, 1, 1, '#c4874a'], [9, y0 + 1, 1, 1, '#c4874a']);
   } else {
     head.push([5, y0 + 1, 6, 1, hair], [4, y0 + 2, 8, 2, hair], [4, y0 + 4, 1, 3, hair], [11, y0 + 4, 1, 3, hair]);
+    const tie = l.dao <= -40 ? '#c0202e' : '#ffd36b';
     if (l.stage !== 'baby') {
-      if (l.gender === 'nam') head.push([6, y0, 4, 1, hair], [7, y0 - 1, 2, 1, hair], [7, y0, 2, 1, l.dao <= -40 ? '#c0202e' : '#ffd36b']);
-      else head.push([10, y0 + 1, 2, 1, l.dao <= -40 ? '#c0202e' : '#ff8fb1'], [11, y0, 1, 1, '#ffd36b']);
+      if (l.gender === 'nam') {
+        if (st === 0) head.push([6, y0, 4, 1, hair], [7, y0 - 1, 2, 1, hair], [7, y0, 2, 1, tie]);
+        if (st === 1) head.push([11, y0 + 2, 1, 1, tie], [5, y0 + 4, 2, 1, hair]);
+        if (st === 2) head.push([5, y0 + 4, 1, 1, hair], [7, y0 + 4, 1, 1, hair], [9, y0 + 4, 2, 1, hair], [3, y0 + 2, 1, 1, hair], [12, y0 + 1, 1, 2, hair], [6, y0, 2, 1, hair]);
+      } else {
+        if (st === 0) head.push([10, y0 + 1, 2, 1, l.dao <= -40 ? '#c0202e' : '#ff8fb1'], [11, y0, 1, 1, '#ffd36b']);
+        if (st === 1) head.push([2, y0, 3, 3, hair], [11, y0, 3, 3, hair], [3, y0 + 1, 1, 1, hairDark], [12, y0 + 1, 1, 1, hairDark], [4, y0 + 2, 1, 1, '#ff8fb1'], [11, y0 + 2, 1, 1, '#ff8fb1']);
+        if (st === 2) {
+          const n = l.stage === 'adult' ? 4 : 2;
+          for (let i = 0; i < n; i++) head.push([3, y0 + 7 + i * 2, 2, 1, hair], [3, y0 + 8 + i * 2, 2, 1, hairDark]);
+          head.push([3, y0 + 7 + n * 2, 2, 1, '#ff8fb1']);
+        }
+      }
     }
   }
   if (l.yeu) head.push([4, y0, 2, 2, '#ff9a4a'], [10, y0, 2, 2, '#ff9a4a'], [4, y0 - 1, 1, 1, '#ff9a4a'], [11, y0 - 1, 1, 1, '#ff9a4a']);

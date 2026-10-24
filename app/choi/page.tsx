@@ -390,7 +390,10 @@ export default function PlayPage() {
             <Link className="btn" href="/" style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
               Trang đầu
             </Link>
-            <Link className="btn" href="/nghia-trang" style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
+            <Link className="btn btn-red" href="/bang-xep-hang" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
+              Bảng xếp hạng
+            </Link>
+            <Link className="btn" href="/nghia-trang" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
               Nghĩa trang
             </Link>
             {user ? (

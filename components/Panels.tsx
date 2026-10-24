@@ -465,6 +465,7 @@ export function StageStrip({ c, compact }: { c: Character; compact: boolean }) {
     <div className="strip">
       <div className="strip-who">
         <span className="strip-name">{c.name}</span>
+        <span className={`badge sex ${c.gender}`}>{c.gender === 'nam' ? 'Nam' : 'Nữ'}</span>
         {c.path && <span className="badge path">{PATHS[c.path].short}</span>}
         <span className="strip-realm">{c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer)}</span>
       </div>
