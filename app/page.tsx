@@ -51,6 +51,9 @@ export default function Home() {
         <Link href="/gop-y" className="btn" style={link}>
           Góp ý tính năng
         </Link>
+        <Link href="/tac-gia" className="btn" style={link}>
+          Tác giả hình ảnh
+        </Link>
         {ready && enabled && !user && (
           <Link href="/dang-nhap" className="btn btn-dark" style={link}>
             Đăng nhập / Đăng ký

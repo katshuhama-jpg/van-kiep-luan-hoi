@@ -1,6 +1,8 @@
 'use client';
 
+import { useEffect, useState, type CSSProperties } from 'react';
 import { HAIR_COLORS, ITEMS, PATHS, type RobeDeco, type WeaponKind } from '@/lib/game/data';
+import { ANIM, composeStrip, readyStrip, type Anim, type Layer } from '@/lib/lpc';
 import { equippedLook } from '@/lib/game/helpers';
 import type { Character } from '@/lib/game/types';
 
@@ -292,7 +294,8 @@ function rects(list: R[], keyPrefix: string) {
   return list.map(([x, y, w, h, f], i) => <rect key={keyPrefix + i} x={x} y={y} width={w} height={h} fill={f} />);
 }
 
-export default function Sprite({ c, size = 140, focus }: { c: Character; size?: number; focus?: string }) {
+/** Bản vẽ pixel cũ bằng SVG: dùng tạm khi ảnh LPC chưa tải xong */
+export function PixelSprite({ c, size = 140, focus }: { c: Character; size?: number; focus?: string }) {
   const l = lookOf(c);
   const { back, body, head, eyes, front } = build(l);
   const aura = auraColor(l);
@@ -342,5 +345,132 @@ export default function Sprite({ c, size = 140, focus }: { c: Character; size?: 
         </g>
       )}
     </svg>
+  );
+}
+
+/* ================= Nhân vật LPC ================= */
+function robeOf(l: Look): Robe {
+  const tones = ROBES[l.robe] ?? ROBES.vai;
+  return l.robeColors ? { body: l.robeColors[0], dark: l.robeColors[1], trim: l.robeColors[2], alt: l.robeColors[3] } : tones[l.tone % tones.length];
+}
+
+const HAIR_LPC = { nam: ['high_ponytail', 'long_tied', 'xlong'], nu: ['xlong', 'bunches', 'high_ponytail'] } as const;
+const HAIR_CHILD = ['relm_short', 'parted_side_bangs', 'wavy'];
+
+function weaponLayers(l: Look): { bg?: string; fg?: string } {
+  const k = l.wpn?.k ?? l.weapon;
+  if (!k) return {};
+  if (['kiem', 'mockiem', 'song', 'dao'].includes(k)) return { bg: 'w_katana_bg', fg: 'w_katana' };
+  if (k === 'thuong') return { bg: 'w_spear_bg', fg: 'w_spear' };
+  if (['truong', 'cuoc', 'phattran', 'but'].includes(k)) return { bg: 'w_staff_bg', fg: 'w_staff' };
+  if (k === 'chuy' || k === 'quyen') return { fg: 'w_mace' };
+  if (k === 'liem') return { fg: 'w_scythe' };
+  return {};
+}
+
+/** Danh sách lớp ảnh theo ngoại hình hiện tại của nhân vật */
+export function lpcLayers(c: Character, hideWeapon = false): Layer[] {
+  const l = lookOf(c);
+  const robe = robeOf(l);
+  const hair = hairNow(l);
+  const st = l.hairStyle % 3;
+  const eye = l.path === 'ma' || l.dao <= -60 ? 'red' : l.yeu ? 'orange' : ['brown', 'brown', 'gray', 'blue'][c.name.length % 4];
+  if (l.stage !== 'adult') {
+    return [
+      { key: 'body_child' },
+      { key: 'head_c' },
+      { key: 'eyes_c' },
+      { key: 'pants_c', tint: robe.dark },
+      { key: 'shirt_c', tint: robe.body },
+      ...(l.path === 'phat' ? [] : [{ key: `hairc_${HAIR_CHILD[st]}`, tint: hair }]),
+    ];
+  }
+  const elder = l.aging === 2;
+  const head = l.gender === 'nam' ? (elder ? 'head_me' : 'head_m') : elder ? 'head_fe' : 'head_f';
+  const hs = HAIR_LPC[l.gender === 'nam' ? 'nam' : 'nu'][st];
+  const bald = l.path === 'phat';
+  const w = weaponLayers(l);
+  const cut = l.cut % 4;
+  const kim = cut === 3 ? 'kimono_split' : 'kimono_normal';
+  const out: Layer[] = [];
+  if (l.yeu) out.push({ key: 'tail_bg' });
+  if (!bald) out.push({ key: `hair_${hs}_bg`, tint: hair });
+  const showW = !c.dead && !hideWeapon;
+  if (w.bg && showW) out.push({ key: w.bg });
+  out.push({ key: 'body_adult' }, { key: head }, { key: `eyes_${eye}` });
+  out.push({ key: 'pants', tint: robe.dark }, { key: 'shoes' });
+  out.push({ key: kim, tint: robe.body }, { key: `${kim}_trim`, tint: robe.trim });
+  if (cut === 2) out.push({ key: 'kimono_sleeves_oversize', tint: robe.alt }, { key: 'kimono_sleeves_oversize_trim', tint: robe.trim });
+  out.push({ key: 'obi', tint: cut === 1 ? robe.trim : robe.dark });
+  if (elder && l.gender === 'nam') out.push({ key: 'beard', tint: hair });
+  if (!bald) out.push({ key: `hair_${hs}_fg`, tint: hair });
+  if (l.dao <= -80) out.push({ key: 'horns_bg', tint: '#3a0a10' }, { key: 'horns_fg', tint: '#3a0a10' });
+  if (l.yeu) out.push({ key: 'tail_fg' });
+  if (w.fg && showW) out.push({ key: w.fg });
+  return out;
+}
+
+/** Động tác mặc định theo việc đang làm */
+export function animFor(c: Character, focus?: string): { anim: Anim; dir: number } {
+  if (c.dead) return { anim: 'hurt', dir: 2 };
+  if (focus === 'du_ngoan') return { anim: 'walk', dir: 3 };
+  if (focus === 'tu_luyen' && c.age >= 6) return { anim: 'spellcast', dir: 2 };
+  return { anim: 'idle', dir: 2 };
+}
+
+export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Character; size?: number; focus?: string; anim?: Anim; dir?: number }) {
+  const l = lookOf(c);
+  const def = animFor(c, focus);
+  const a = anim ?? def.anim;
+  const d = dir ?? def.dir;
+  const layers = lpcLayers(c, a === 'spellcast' || a === 'hurt');
+  const key = JSON.stringify([layers, a, d]);
+  const [strip, setStrip] = useState<{ key: string; url: string } | null>(() => {
+    const u = typeof window !== 'undefined' ? readyStrip(layers, a, d) : undefined;
+    return u ? { key, url: u } : null;
+  });
+  useEffect(() => {
+    let live = true;
+    composeStrip(layers, a, d).then((url) => live && setStrip({ key, url }));
+    return () => {
+      live = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
+  const meta = ANIM[a];
+  const aura = auraColor(l);
+  const scale = l.stage === 'baby' ? 0.75 : 1;
+  const box = size;
+  const cell = box * 2 * scale; // khung 128 = gấp đôi khung người 64
+  const url = strip?.key === key ? strip.url : strip?.url; // giữ hình cũ trong lúc ghép hình mới
+  const once = a === 'hurt';
+  const style: CSSProperties = {
+    width: cell,
+    height: cell,
+    left: (box - cell) / 2,
+    top: box - cell * 0.82,
+    backgroundImage: url ? `url(${url})` : undefined,
+    backgroundSize: `${meta.frames * cell}px ${cell}px`,
+    ['--lpc-end' as string]: `-${meta.frames * cell}px`,
+    animation: once ? `lpc-play ${meta.frames / meta.fps}s steps(${meta.frames}) 1 forwards` : `lpc-play ${meta.frames / meta.fps}s steps(${meta.frames}) infinite`,
+  };
+  return (
+    <div className={`lpc ${l.dead ? 'is-dead' : ''}`} style={{ width: box, height: box }} role="img" aria-label={`${c.name}, ${c.age < 13 ? 'trẻ con' : 'người lớn'}${l.path ? ', ' + PATHS[l.path].name : ''}`}>
+      {aura && !l.dead && <span className="lpc-aura" style={{ ['--aura' as string]: aura, width: box * (0.6 + Math.min(l.realm, 7) * 0.05), height: box * (0.6 + Math.min(l.realm, 7) * 0.05) }} />}
+      {l.path === 'phat' && !l.dead && <span className="lpc-halo" style={{ width: box * 0.26, height: box * 0.26, top: box * 0.06 }} />}
+      {url ? <span className="lpc-strip" style={style} /> : <PixelSprite c={c} size={box} focus={focus} />}
+      {l.acc === 'kiembay' && !l.dead && <span className="lpc-orbit" aria-hidden="true" />}
+      {l.pet && l.stage !== 'baby' && (
+        <svg className="lpc-pet pet-hop" viewBox="-7 14 10 8" width={box * 0.3} height={box * 0.24} shapeRendering="crispEdges" aria-hidden="true">
+          <rect x={-6} y={15} width={1} height={2} fill="#ff9a4a" />
+          <rect x={-3} y={15} width={1} height={2} fill="#ff9a4a" />
+          <rect x={-6} y={17} width={4} height={2} fill="#ff9a4a" />
+          <rect x={-5} y={18} width={1} height={1} fill="#2b2235" />
+          <rect x={-3} y={18} width={1} height={1} fill="#2b2235" />
+          <rect x={-5} y={19} width={5} height={2} fill="#ff9a4a" />
+          <rect x={0} y={17} width={2} height={3} fill="#fff4e0" />
+        </svg>
+      )}
+    </div>
   );
 }

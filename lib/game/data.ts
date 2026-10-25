@@ -248,8 +248,8 @@ export const HAIR_COLORS: Record<string, { name: string; hex: string; w: number;
 };
 
 export const HAIR_STYLES = {
-  nam: ['búi tóc đạo sĩ', 'tóc đuôi ngựa dài', 'tóc ngắn rối'],
-  nu: ['tóc dài buông xõa', 'búi đôi', 'tóc tết bím'],
+  nam: ['búi tóc cao', 'tóc buộc dài sau gáy', 'tóc dài xõa vai'],
+  nu: ['tóc dài buông xõa', 'búi đôi', 'đuôi ngựa cao'],
 };
 
 /** Thọ mệnh bẩm sinh */

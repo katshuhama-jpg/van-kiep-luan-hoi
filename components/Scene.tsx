@@ -270,12 +270,12 @@ export default function Scene({ c, fx, paused, season, battle }: { c: Character;
       )}
 
       <div className={`sprite-wrap ${battle && battle.last.length && battle.last[battle.last.length - 1].side === 'p' ? 'lunge' : ''}`} key={battle?.last[battle.last.length - 1]?.id ?? 'idle'}>
-        <Sprite c={c} size={176} focus={battle ? 'tu_luyen' : focus} />
+        <Sprite c={c} size={150} focus={focus} anim={battle && !c.dead ? (battle.phase === 'fight' ? 'slash' : 'idle') : undefined} dir={battle && !c.dead ? 3 : undefined} />
       </div>
 
       {c.dead && (
         <div className="ghost" aria-hidden="true">
-          <Sprite c={{ ...c, dead: false, pet: false }} size={120} />
+          <Sprite c={{ ...c, dead: false, pet: false }} size={110} anim="idle" />
         </div>
       )}
 

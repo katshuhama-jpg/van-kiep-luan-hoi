@@ -1,0 +1,283 @@
+{
+"body_adult": {
+"walk": "body/bodies/female/walk.png",
+"idle": "body/bodies/female/idle.png",
+"slash": "body/bodies/female/slash.png",
+"spellcast": "body/bodies/female/spellcast.png",
+"hurt": "body/bodies/female/hurt.png"
+},
+"head_m": {
+"walk": "head/heads/human/male/walk.png",
+"idle": "head/heads/human/male/idle.png",
+"slash": "head/heads/human/male/slash.png",
+"spellcast": "head/heads/human/male/spellcast.png",
+"hurt": "head/heads/human/male/hurt.png"
+},
+"head_f": {
+"walk": "head/heads/human/female/walk.png",
+"idle": "head/heads/human/female/idle.png",
+"slash": "head/heads/human/female/slash.png",
+"spellcast": "head/heads/human/female/spellcast.png",
+"hurt": "head/heads/human/female/hurt.png"
+},
+"head_me": {
+"walk": "head/heads/human/male_elderly/walk.png",
+"idle": "head/heads/human/male_elderly/idle.png",
+"slash": "head/heads/human/male_elderly/slash.png",
+"spellcast": "head/heads/human/male_elderly/spellcast.png",
+"hurt": "head/heads/human/male_elderly/hurt.png"
+},
+"head_fe": {
+"walk": "head/heads/human/female_elderly/walk.png",
+"idle": "head/heads/human/female_elderly/idle.png",
+"slash": "head/heads/human/female_elderly/slash.png",
+"spellcast": "head/heads/human/female_elderly/spellcast.png",
+"hurt": "head/heads/human/female_elderly/hurt.png"
+},
+"eyes_brown": {
+"walk": "eyes/human/adult/default/walk/brown.png",
+"idle": "eyes/human/adult/default/idle/brown.png",
+"slash": "eyes/human/adult/default/slash/brown.png",
+"spellcast": "eyes/human/adult/default/spellcast/brown.png",
+"hurt": "eyes/human/adult/default/hurt/brown.png"
+},
+"eyes_blue": {
+"walk": "eyes/human/adult/default/walk/blue.png",
+"idle": "eyes/human/adult/default/idle/blue.png",
+"slash": "eyes/human/adult/default/slash/blue.png",
+"spellcast": "eyes/human/adult/default/spellcast/blue.png",
+"hurt": "eyes/human/adult/default/hurt/blue.png"
+},
+"eyes_red": {
+"walk": "eyes/human/adult/default/walk/red.png",
+"idle": "eyes/human/adult/default/idle/red.png",
+"slash": "eyes/human/adult/default/slash/red.png",
+"spellcast": "eyes/human/adult/default/spellcast/red.png",
+"hurt": "eyes/human/adult/default/hurt/red.png"
+},
+"eyes_orange": {
+"walk": "eyes/human/adult/default/walk/orange.png",
+"idle": "eyes/human/adult/default/idle/orange.png",
+"slash": "eyes/human/adult/default/slash/orange.png",
+"spellcast": "eyes/human/adult/default/spellcast/orange.png",
+"hurt": "eyes/human/adult/default/hurt/orange.png"
+},
+"eyes_gray": {
+"walk": "eyes/human/adult/default/walk/gray.png",
+"idle": "eyes/human/adult/default/idle/gray.png",
+"slash": "eyes/human/adult/default/slash/gray.png",
+"spellcast": "eyes/human/adult/default/spellcast/gray.png",
+"hurt": "eyes/human/adult/default/hurt/gray.png"
+},
+"hair_long_tied_bg": {
+"walk": "hair/long_tied/adult/bg/walk.png",
+"idle": "hair/long_tied/adult/bg/idle.png",
+"slash": "hair/long_tied/adult/bg/slash.png",
+"spellcast": "hair/long_tied/adult/bg/spellcast.png",
+"hurt": "hair/long_tied/adult/bg/hurt.png"
+},
+"hair_long_tied_fg": {
+"walk": "hair/long_tied/adult/fg/walk.png",
+"idle": "hair/long_tied/adult/fg/idle.png",
+"slash": "hair/long_tied/adult/fg/slash.png",
+"spellcast": "hair/long_tied/adult/fg/spellcast.png",
+"hurt": "hair/long_tied/adult/fg/hurt.png"
+},
+"hair_high_ponytail_bg": {
+"walk": "hair/high_ponytail/adult/bg/walk.png",
+"idle": "hair/high_ponytail/adult/bg/idle.png",
+"slash": "hair/high_ponytail/adult/bg/slash.png",
+"spellcast": "hair/high_ponytail/adult/bg/spellcast.png",
+"hurt": "hair/high_ponytail/adult/bg/hurt.png"
+},
+"hair_high_ponytail_fg": {
+"walk": "hair/high_ponytail/adult/fg/walk.png",
+"idle": "hair/high_ponytail/adult/fg/idle.png",
+"slash": "hair/high_ponytail/adult/fg/slash.png",
+"spellcast": "hair/high_ponytail/adult/fg/spellcast.png",
+"hurt": "hair/high_ponytail/adult/fg/hurt.png"
+},
+"hair_xlong_bg": {
+"walk": "hair/xlong/adult/bg/walk.png",
+"idle": "hair/xlong/adult/bg/idle.png",
+"slash": "hair/xlong/adult/bg/slash.png",
+"spellcast": "hair/xlong/adult/bg/spellcast.png",
+"hurt": "hair/xlong/adult/bg/hurt.png"
+},
+"hair_xlong_fg": {
+"walk": "hair/xlong/adult/fg/walk.png",
+"idle": "hair/xlong/adult/fg/idle.png",
+"slash": "hair/xlong/adult/fg/slash.png",
+"spellcast": "hair/xlong/adult/fg/spellcast.png",
+"hurt": "hair/xlong/adult/fg/hurt.png"
+},
+"hair_bunches_bg": {
+"walk": "hair/bunches/adult/bg/walk.png",
+"idle": "hair/bunches/adult/bg/idle.png",
+"slash": "hair/bunches/adult/bg/slash.png",
+"spellcast": "hair/bunches/adult/bg/spellcast.png",
+"hurt": "hair/bunches/adult/bg/hurt.png"
+},
+"hair_bunches_fg": {
+"walk": "hair/bunches/adult/fg/walk.png",
+"idle": "hair/bunches/adult/fg/idle.png",
+"slash": "hair/bunches/adult/fg/slash.png",
+"spellcast": "hair/bunches/adult/fg/spellcast.png",
+"hurt": "hair/bunches/adult/fg/hurt.png"
+},
+"hair_bangs_bun_fg": {
+"walk": "hair/bangs_bun/adult/walk.png",
+"idle": "hair/bangs_bun/adult/idle.png",
+"slash": "hair/bangs_bun/adult/slash.png",
+"spellcast": "hair/bangs_bun/adult/spellcast.png",
+"hurt": "hair/bangs_bun/adult/hurt.png"
+},
+"kimono_normal": {
+"walk": "dress/kimono/normal/universal/female/walk/white.png",
+"idle": "dress/kimono/normal/universal/female/idle/white.png",
+"slash": "dress/kimono/normal/universal/female/slash/white.png",
+"spellcast": "dress/kimono/normal/universal/female/spellcast/white.png",
+"hurt": "dress/kimono/normal/universal/female/hurt/white.png"
+},
+"kimono_normal_trim": {
+"walk": "dress/kimono/normal/trim/universal/female/walk/white.png",
+"idle": "dress/kimono/normal/trim/universal/female/idle/white.png",
+"slash": "dress/kimono/normal/trim/universal/female/slash/white.png",
+"spellcast": "dress/kimono/normal/trim/universal/female/spellcast/white.png",
+"hurt": "dress/kimono/normal/trim/universal/female/hurt/white.png"
+},
+"kimono_sleeves_oversize": {
+"walk": "dress/kimono/sleeves_oversize/universal/female/walk/white.png",
+"idle": "dress/kimono/sleeves_oversize/universal/female/idle/white.png",
+"slash": "dress/kimono/sleeves_oversize/universal/female/slash/white.png",
+"spellcast": "dress/kimono/sleeves_oversize/universal/female/spellcast/white.png",
+"hurt": "dress/kimono/sleeves_oversize/universal/female/hurt/white.png"
+},
+"kimono_sleeves_oversize_trim": {
+"walk": "dress/kimono/sleeves_oversize/trim/universal/female/walk/white.png",
+"idle": "dress/kimono/sleeves_oversize/trim/universal/female/idle/white.png",
+"slash": "dress/kimono/sleeves_oversize/trim/universal/female/slash/white.png",
+"spellcast": "dress/kimono/sleeves_oversize/trim/universal/female/spellcast/white.png",
+"hurt": "dress/kimono/sleeves_oversize/trim/universal/female/hurt/white.png"
+},
+"kimono_split": {
+"walk": "dress/kimono/split/universal/female/walk/white.png",
+"idle": "dress/kimono/split/universal/female/idle/white.png",
+"slash": "dress/kimono/split/universal/female/slash/white.png",
+"spellcast": "dress/kimono/split/universal/female/spellcast/white.png",
+"hurt": "dress/kimono/split/universal/female/hurt/white.png"
+},
+"kimono_split_trim": {
+"walk": "dress/kimono/split/trim/universal/female/walk/white.png",
+"idle": "dress/kimono/split/trim/universal/female/idle/white.png",
+"slash": "dress/kimono/split/trim/universal/female/slash/white.png",
+"spellcast": "dress/kimono/split/trim/universal/female/spellcast/white.png",
+"hurt": "dress/kimono/split/trim/universal/female/hurt/white.png"
+},
+"obi": {
+"walk": "torso/waist/obi/thin/walk/white.png",
+"idle": "torso/waist/obi/thin/idle/white.png",
+"slash": "torso/waist/obi/thin/slash/white.png",
+"spellcast": "torso/waist/obi/thin/spellcast/white.png",
+"hurt": "torso/waist/obi/thin/hurt/white.png"
+},
+"pants": {
+"walk": "legs/pants/thin/walk.png",
+"idle": "legs/pants/thin/idle.png",
+"slash": "legs/pants/thin/slash.png",
+"spellcast": "legs/pants/thin/spellcast.png",
+"hurt": "legs/pants/thin/hurt.png"
+},
+"shoes": {
+"walk": "feet/shoes/basic/thin/walk.png",
+"idle": "feet/shoes/basic/thin/idle.png",
+"slash": "feet/shoes/basic/thin/slash.png",
+"spellcast": "feet/shoes/basic/thin/spellcast.png",
+"hurt": "feet/shoes/basic/thin/hurt.png"
+},
+"beard": {
+"walk": "beards/beard/winter/female/walk.png",
+"idle": "beards/beard/winter/female/idle.png",
+"slash": "beards/beard/winter/female/slash.png",
+"spellcast": "beards/beard/winter/female/spellcast.png",
+"hurt": "beards/beard/winter/female/hurt.png"
+},
+"tail_bg": {
+"walk": "body/tail/fluffy/adult/bg/walk/carrot.png",
+"idle": "body/tail/fluffy/adult/bg/idle/carrot.png",
+"slash": "body/tail/fluffy/adult/bg/slash/carrot.png",
+"spellcast": "body/tail/fluffy/adult/bg/spellcast/carrot.png",
+"hurt": "body/tail/fluffy/adult/bg/hurt/carrot.png"
+},
+"tail_fg": {
+"walk": "body/tail/fluffy/adult/fg/walk/carrot.png",
+"idle": "body/tail/fluffy/adult/fg/idle/carrot.png",
+"slash": "body/tail/fluffy/adult/fg/slash/carrot.png",
+"spellcast": "body/tail/fluffy/adult/fg/spellcast/carrot.png",
+"hurt": "body/tail/fluffy/adult/fg/hurt/carrot.png"
+},
+"horns_bg": {
+"walk": "hat/accessory/horns_short/bg/adult/walk.png",
+"idle": "hat/accessory/horns_short/bg/adult/idle.png",
+"slash": "hat/accessory/horns_short/bg/adult/slash.png",
+"spellcast": "hat/accessory/horns_short/bg/adult/spellcast.png",
+"hurt": "hat/accessory/horns_short/bg/adult/hurt.png"
+},
+"horns_fg": {
+"walk": "hat/accessory/horns_short/fg/adult/walk.png",
+"idle": "hat/accessory/horns_short/fg/adult/idle.png",
+"slash": "hat/accessory/horns_short/fg/adult/slash.png",
+"spellcast": "hat/accessory/horns_short/fg/adult/spellcast.png",
+"hurt": "hat/accessory/horns_short/fg/adult/hurt.png"
+},
+"body_child": {
+"walk": "body/bodies/child/walk.png"
+},
+"head_c": {
+"walk": "head/heads/human/child/walk.png"
+},
+"hairc_relm_short": {
+"walk": "hair/relm_short/child/walk.png"
+},
+"hairc_parted_side_bangs": {
+"walk": "hair/parted_side_bangs/child/walk.png"
+},
+"hairc_wavy": {
+"walk": "hair/wavy/child/walk.png"
+},
+"shirt_c": {
+"walk": "torso/clothes/shirt/child/walk/white.png"
+},
+"pants_c": {
+"walk": "legs/pants/child/walk/white.png"
+},
+"eyes_c": {
+"walk": "eyes/human/child/walk/brown.png"
+},
+"w_katana": {
+"walk": "weapon/sword/katana/walk/katana.png",
+"slash": "weapon/sword/katana/slash/katana.png"
+},
+"w_katana_bg": {
+"walk": "weapon/sword/katana/walk/behind/katana.png",
+"slash": "weapon/sword/katana/slash/behind/katana.png"
+},
+"w_spear_bg": {
+"walk": "weapon/polearm/longspear/background/walk/steel.png"
+},
+"w_spear": {
+"walk": "weapon/polearm/longspear/foreground/walk/steel.png"
+},
+"w_staff_bg": {
+"walk": "weapon/magic/gnarled/universal/background/walk/gnarled.png"
+},
+"w_staff": {
+"walk": "weapon/magic/gnarled/universal/foreground/walk/gnarled.png"
+},
+"w_mace": {
+"walk": "weapon/blunt/mace/walk/mace.png"
+},
+"w_scythe": {
+"walk": "weapon/polearm/scythe/walk/scythe.png"
+}
+}

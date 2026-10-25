@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import Sprite from './Sprite';
+import Sprite, { lpcLayers } from './Sprite';
+import { composeFrame } from '@/lib/lpc';
 import Radar, { charAxes, wealthScore } from './Radar';
 import { GIFTS, RARE_NAME, applyGifts, drawGifts, giftOf } from '@/lib/game/gacha';
 import { RARE_COLOR, type Ending } from '@/lib/game/endings';
@@ -329,12 +330,12 @@ export async function makeCard(c: Character, ending: Ending, epitaph: string, sv
   x.strokeStyle = RARE_COLOR[ending.rare];
   x.lineWidth = 6;
   x.strokeRect(W / 2 - 130, 126, 260, 260);
-  if (svg) {
-    try {
-      const img = await svgToImage(svg, 240);
-      x.drawImage(img, W / 2 - 120, 136, 240, 240);
-    } catch {}
-  }
+  try {
+    // khung 128 ảnh LPC, người nằm giữa 64 điểm: phóng to 4 lần, cắt lấy phần giữa
+    const img = await composeFrame(lpcLayers({ ...c, dead: false }), 'idle', 2, 0);
+    x.drawImage(img, 24, 20, 80, 90, W / 2 - 120, 136, 240, 270 * 0.89);
+  } catch {}
+  void svg;
   x.fillStyle = '#2a2018';
   x.font = font(52);
   x.fillText(c.name, W / 2, 440);
@@ -399,9 +400,7 @@ export function ShareCard({ c, ending, epitaph }: { c: Character; ending: Ending
   };
   return (
     <div className="share-card">
-      <div ref={ref} style={{ position: 'absolute', left: -9999, top: 0 }} aria-hidden="true">
-        <Sprite c={{ ...c, dead: false }} size={240} />
-      </div>
+
       {url ? (
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
