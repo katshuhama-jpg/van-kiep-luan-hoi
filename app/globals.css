@@ -2634,3 +2634,81 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .shop-filter .chips { margin: 0; }
 .fit-toggle { display: flex; align-items: center; gap: 6px; font-size: 16px; color: var(--muted); }
 .fit-toggle input { width: 18px; height: 18px; accent-color: var(--red); }
+
+/* ===== Kỳ ngộ giang hồ: cảnh báo trước trận ===== */
+.duel-warn { position: fixed; inset: 0; z-index: 75; display: flex; align-items: center; justify-content: center; padding: 16px; background: radial-gradient(circle at 50% 40%, rgba(40, 20, 10, 0.75), rgba(8, 4, 2, 0.94)); animation: duelIn 0.35s steps(4); }
+.duel-warn.dich_thu { background: radial-gradient(circle at 50% 40%, rgba(110, 10, 20, 0.8), rgba(10, 2, 4, 0.95)); }
+.duel-warn.kiep_truoc { background: radial-gradient(circle at 50% 40%, rgba(40, 60, 90, 0.8), rgba(4, 8, 16, 0.95)); }
+.duel-flash { position: absolute; inset: 0; background: #fff; opacity: 0; animation: duelFlash 0.6s ease-out; pointer-events: none; }
+.duel-warn.dich_thu .duel-flash { background: #ff2a3a; }
+.duel-card { position: relative; width: 100%; max-width: 380px; max-height: calc(100dvh - 32px); overflow-y: auto; text-align: center; color: #fff3dc; border: 3px solid #c9962e; background: rgba(31, 22, 13, 0.92); padding: 16px 16px 14px; box-shadow: 0 0 0 3px #1f160d, 0 0 30px rgba(201, 150, 46, 0.35); }
+.duel-warn.dich_thu .duel-card { border-color: #e0402e; box-shadow: 0 0 0 3px #1f160d, 0 0 34px rgba(224, 64, 46, 0.5); animation: duelShake 0.5s steps(5) 2; }
+.duel-warn.kiep_truoc .duel-card { border-color: #7ac8ff; box-shadow: 0 0 0 3px #1f160d, 0 0 34px rgba(122, 200, 255, 0.4); }
+.duel-kicker { margin: 0; font-size: 15px; letter-spacing: 0.15em; color: #ffcf6e; text-transform: uppercase; }
+.duel-warn.dich_thu .duel-kicker { color: #ff6a5a; animation: duelBlink 0.6s steps(2) infinite; }
+.duel-warn.kiep_truoc .duel-kicker { color: #9fd8ff; }
+.duel-card h2 { margin: 2px 0 6px; font-size: 28px; color: #fff3dc; }
+.duel-foe { display: flex; justify-content: center; height: 120px; margin: 0 auto; filter: drop-shadow(0 0 10px rgba(255, 207, 110, 0.45)); }
+.duel-warn.dich_thu .duel-foe { filter: drop-shadow(0 0 10px rgba(255, 42, 58, 0.7)); }
+.duel-foe.ghost, .foe-wrap.ghost { opacity: 0.82; filter: grayscale(0.5) sepia(0.3) hue-rotate(180deg) drop-shadow(0 0 10px #7ac8ff); }
+.duel-name { margin: 4px 0 0; font-size: 24px; font-weight: 700; }
+.duel-meta { margin: 2px 0 6px; font-size: 16px; color: #e6d6b4; line-height: 1.3; }
+.duel-rel { display: inline-block; padding: 2px 10px; font-size: 16px; font-weight: 700; border: 2px solid #1f160d; }
+.duel-rel.yeu { background: #4ccf6a; color: #10200f; }
+.duel-rel.ngang { background: #ffcf6e; color: #2a1e0a; }
+.duel-rel.manh { background: #e0402e; color: #fff3dc; animation: duelBlink 0.8s steps(2) infinite; }
+.duel-text { margin: 10px 0 12px; font-size: 17px; line-height: 1.35; color: #f3e6c4; }
+.duel-actions { display: grid; gap: 8px; }
+@keyframes duelIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes duelFlash { 0% { opacity: 0.7; } 100% { opacity: 0; } }
+@keyframes duelShake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+@keyframes duelBlink { 50% { opacity: 0.4; } }
+
+/* ===== Sân đấu riêng cho từng loại kỳ ngộ ===== */
+.duel-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; background: linear-gradient(#f4a85a 0%, #e8784a 38%, #6a3a5a 75%); }
+.duel-bg i { position: absolute; display: block; }
+.duel-bg .duel-moon { right: 18%; top: 10%; width: 34px; height: 34px; border-radius: 50%; background: #fff3c4; box-shadow: 0 0 24px #ffe27a; }
+.duel-bg .duel-hills { left: -5%; right: -5%; bottom: 22%; height: 42%; background: #4a2a3a; clip-path: polygon(0 100%, 0 60%, 12% 30%, 22% 55%, 35% 15%, 48% 50%, 60% 25%, 72% 55%, 85% 20%, 100% 50%, 100% 100%); opacity: 0.85; }
+.duel-bg .duel-floor { left: 0; right: 0; bottom: 0; height: 24%; background: repeating-linear-gradient(90deg, #8a7a6a 0 30px, #7a6a5a 30px 32px), #8a7a6a; border-top: 3px solid #c9b89a; }
+.duel-bg .duel-flag { bottom: 24%; width: 4px; height: 46%; background: #3a2a1a; }
+.duel-bg .duel-flag::after { content: ''; position: absolute; left: 4px; top: 4px; width: 26px; height: 40px; background: #c83a2a; clip-path: polygon(0 0, 100% 0, 100% 80%, 50% 100%, 0 80%); animation: flagWave 1.2s steps(3) infinite alternate; }
+.duel-bg .duel-flag.l { left: 6%; }
+.duel-bg .duel-flag.r { right: 6%; }
+.duel-bg .duel-flag.r::after { background: #2a6ab0; }
+@keyframes flagWave { to { transform: skewY(8deg) scaleX(0.9); } }
+/* địch thủ: trời máu, sấm chớp */
+.duel-bg.duel-dich_thu { background: linear-gradient(#2a0a10 0%, #7a1020 45%, #2a0a10 80%); }
+.duel-bg.duel-dich_thu .duel-moon { background: #ff4a4a; box-shadow: 0 0 30px #ff2a3a; }
+.duel-bg.duel-dich_thu .duel-hills { background: #14060a; }
+.duel-bg.duel-dich_thu .duel-floor { background: repeating-linear-gradient(90deg, #3a2a2a 0 30px, #2a1e1e 30px 32px), #3a2a2a; border-top-color: #6a2a2a; }
+.duel-bg .duel-bolt { inset: 0; background: rgba(255, 255, 255, 0.0); animation: bolt 4s steps(1) infinite; }
+@keyframes bolt { 0%, 92%, 96%, 100% { background: rgba(255, 255, 255, 0); } 94% { background: rgba(255, 220, 220, 0.35); } }
+/* tâm ma kiếp trước: tâm cảnh mờ sương, mặt hồ như gương */
+.duel-bg.duel-kiep_truoc { background: linear-gradient(#1a2a44 0%, #3a5a7a 50%, #1a2a44 78%); }
+.duel-bg.duel-kiep_truoc .duel-moon { background: #e0f0ff; box-shadow: 0 0 30px #9fd8ff; }
+.duel-bg.duel-kiep_truoc .duel-hills { background: #142238; opacity: 0.7; }
+.duel-bg.duel-kiep_truoc .duel-floor { background: linear-gradient(#5a8ab0, #2a4a6a); border-top-color: #bce0ff; }
+.duel-mist { position: absolute; inset: 0; }
+.duel-mist i { bottom: 10%; width: 60px; height: 14px; border-radius: 50%; background: rgba(220, 240, 255, 0.35); filter: blur(3px); animation: mistDrift 6s linear infinite; }
+@keyframes mistDrift { 0% { transform: translateX(-30px); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateX(60px); opacity: 0; } }
+/* đối thủ là người: đứng bên phải, quay mặt sang trái */
+.foe-wrap { position: absolute; right: 8%; bottom: 6px; width: 150px; height: 150px; }
+.foe-wrap.got-hit .lpc-strip { animation-play-state: paused; filter: brightness(2.5) saturate(0); }
+.foe-wrap.attacking { animation: mon-lunge 0.35s steps(3); }
+.duel-tag { position: absolute; right: 8px; top: 34px; font-size: 14px; color: #fff3dc; background: rgba(31, 22, 13, 0.75); padding: 1px 6px; border: 2px solid #c9962e; }
+.duel-turn.dich_thu { background: #7a1020; }
+.duel-turn.kiep_truoc { background: #2a4a6a; }
+.duel-turn.dong_dao { background: #8a5a2a; }
+.chuong.foe { left: auto; right: 34%; transform: scaleX(-1); }
+
+/* ngũ hành trong màn cảnh báo */
+.duel-elem { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; padding: 6px; border: 2px dashed rgba(255, 243, 220, 0.35); }
+.duel-elem .el { width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #1f160d; border: 2px solid #1f160d; }
+.duel-elem .vs { font-size: 18px; }
+.duel-elem small { flex-basis: 100%; font-size: 15px; line-height: 1.3; }
+.duel-elem.good small { color: #8af09a; }
+.duel-elem.bad small { color: #ff8a7a; }
+/* thanh máu, số sát thương nổi trên nền sân đấu */
+.battle > .hpbox, .battle > .dmg, .battle > .kill-count, .battle > .skill-name, .battle > .chuong, .battle > .duel-tag { z-index: 2; }
+
+.duel-risk { margin: -4px 0 10px; font-size: 15px; color: #ffb0a0; line-height: 1.3; }

@@ -3,6 +3,7 @@ export type Race = 'nhan' | 'yeu';
 export type Focus = 'tu_luyen' | 'luyen_dan' | 'du_ngoan' | 'kiem_tien' | 'ket_duyen' | 'tru_yeu';
 export type PathId = 'kiem' | 'dan' | 'tran' | 'phat' | 'ma' | 'yeu';
 export type Slot = 'ao' | 'vu_khi' | 'phu_kien';
+export type Element = 'kim' | 'moc' | 'thuy' | 'hoa' | 'tho'; // ngũ hành bản mệnh
 export type Tone = 'normal' | 'good' | 'bad' | 'big' | 'chinh' | 'ta';
 export type Lean = 'chinh' | 'trung' | 'ta';
 
@@ -93,6 +94,7 @@ export interface Character {
   world?: WorldEcho; // dấu vết của người chơi khác
   arcs?: Record<string, { s: number; at: number; v?: string }>; // chuỗi sự kiện nhiều năm
   endTag?: string; // đánh dấu kết cục đặc biệt
+  element?: Element; // ngũ hành bản mệnh
   danDoc?: { y: number; n: number }; // số viên đan đã uống trong năm (đan độc)
   petKind?: string; // loại thú cưng (xem lib/game/pets.ts)
   lookSeed?: number; // nét riêng của ngoại hình: da, khuôn mặt, râu, trang sức
@@ -133,7 +135,31 @@ export interface Grave {
   dao: number;
 }
 
+/** Nhân vật của người chơi khác (rút gọn) để gặp trong giang hồ */
+export interface RivalChar {
+  player: string;
+  name: string;
+  gender: 'nam' | 'nu';
+  race?: 'nhan' | 'yeu';
+  realm: number;
+  layer: number;
+  path: PathId | null;
+  daoTam: number;
+  age: number;
+  lifespan?: number;
+  hairColor?: string;
+  hairStyle?: number;
+  outfitTone?: number;
+  outfitCut?: number;
+  equipped?: Partial<Record<Slot, string>>;
+  lookSeed?: number;
+  element?: Element;
+  alive: boolean;
+}
+
 export interface WorldEcho {
+  rivals?: RivalChar[]; // nhân vật người chơi khác, để gặp đồng đạo, địch thủ
+  past?: RivalChar | null; // chính mình kiếp trước
   graves: Grave[];
   ma?: { name: string; player: string; realm: number; realmName: string } | null;
   chinh?: { name: string; player: string; realm: number; realmName: string } | null;

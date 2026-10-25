@@ -11,12 +11,15 @@ import { BagSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, Hu
 import Radar, { charAxes, wealthScore } from '@/components/Radar';
 import { giftOf } from '@/lib/game/gacha';
 import type { BattleView } from '@/components/Battle';
-import { MONSTERS, chuongOf, effLv, fleeChance, hit, killExp, killReward, loseFight, monsterName, monsterStats, playerStats, tierOf, type Fighter } from '@/lib/game/combat';
+import { MONSTERS, chuongOf, combatLevel, effLv, fleeChance, hit, killExp, killReward, loseFight, monsterName, monsterStats, playerStats, tierOf, type Fighter } from '@/lib/game/combat';
 import { signOut } from '@/lib/auth';
 import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, realmLabel } from '@/lib/game/data';
 import { genName, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick } from '@/lib/game/engine';
-import { addPill, fmt, giveItem, money, wealthTier } from '@/lib/game/helpers';
+import { addPill, fatal, fmt, giveItem, money, stat, wealthTier } from '@/lib/game/helpers';
 import type { Character, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
+import DuelWarning from '@/components/Duel';
+import { ELEMENTS, elemMul, elemRel, elementOf } from '@/lib/game/nguhanh';
+import { DUEL_INFO, DUEL_PER_YEAR, DUEL_TURNS, finishDuel, foeChar, foeStats, pickDuel, type DuelFoe } from '@/lib/game/duel';
 import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, pickAmbush } from '@/lib/game/ambush';
 import { addMemorial, displayName, fetchWorld, loadAll, saveLocal, saveMeta, saveRemote, type SaveState } from '@/lib/storage';
 import { useAuth } from '@/lib/useAuth';
@@ -39,6 +42,8 @@ export default function PlayPage() {
   const [running, setRunning] = useState(true);
   const [kiep, setKiep] = useState<number | null>(null); // lựa chọn đang chờ mini-game thiên kiếp
   const [tut, setTut] = useState(false); // hướng dẫn lần đầu
+  const [duelWarn, setDuelWarn] = useState<DuelFoe | null>(null); // cảnh báo kỳ ngộ giang hồ
+  const duelOpen = useRef(false);
 
   const charRef = useRef<Character | null>(null);
   const pendingRef = useRef<PendingEvent | null>(null);
@@ -49,6 +54,7 @@ export default function PlayPage() {
   userRef.current = user;
   const battleRef = useRef<Battle | null>(null);
   const ambushRef = useRef<(Battle & { sub: number }) | null>(null); // quái chặn đường
+  const duelRef = useRef<(Battle & { sub: number; foe: DuelFoe; fs: Fighter }) | null>(null); // đấu với người chơi khác
 
   const rerender = useCallback(() => setFrame((f) => f + 1), []);
 
@@ -92,7 +98,7 @@ export default function PlayPage() {
         pendingRef.current = save.pending;
         yearSecRef.current = save.yearSec || 30;
         talentsRef.current = save.talents ?? [];
-        if (!save.char.world) fetchWorld(user).then((w) => { if (charRef.current === save.char && w) save.char.world = w; }).catch(() => {});
+        if (!save.char.world || !save.char.world.rivals) fetchWorld(user).then((w) => { if (charRef.current === save.char && w) save.char.world = w; }).catch(() => {});
         setPhase('play');
       } else setPhase('birth');
     })();
@@ -105,7 +111,7 @@ export default function PlayPage() {
   const speedRef = useRef(speed);
   speedRef.current = speed;
   const activeRef = useRef(false);
-  activeRef.current = running && sheet === null && phase === 'play' && kiep === null && !tut;
+  activeRef.current = running && sheet === null && phase === 'play' && kiep === null && !tut && duelWarn === null;
 
   /** Trận đánh tự động kiểu idle: mỗi lượt bạn đánh một đòn, quái đánh trả một đòn */
   function newFight(c: Character, mId: string, kills: number): Battle | null {
@@ -198,6 +204,153 @@ export default function PlayPage() {
     }
     return changed;
   }
+
+  /** Kỳ ngộ giang hồ: đấu với nhân vật người chơi khác hoặc chính mình kiếp trước, tối đa 5 hiệp */
+  function startDuel(c: Character, f: DuelFoe, ambushed: boolean) {
+    const ps = playerStats(c);
+    const fs = foeStats(f.rival);
+    const fc = foeChar(f.rival);
+    duelRef.current = {
+      m: { ...MONSTERS[0], id: 'duel', name: f.rival.name },
+      name: f.rival.name,
+      lv: combatLevel(fc),
+      tier: 0,
+      pHp: ambushed ? Math.round(ps.hp * 0.8) : ps.hp,
+      pMax: ps.hp,
+      mHp: fs.hp,
+      mMax: fs.hp,
+      phase: 'fight',
+      last: [{ id: Math.random(), side: 'm', dmg: 0, crit: false, text: ambushed ? 'Bị chặn lại!' : 'Xuất chiêu!' }],
+      kills: 0,
+      t: -0.9,
+      rest: 0,
+      ps,
+      ms: fs,
+      fs,
+      sub: 0,
+      foe: f,
+      duel: { kind: f.kind, foe: fc, tag: `${DUEL_INFO[f.kind].tag} · ${ELEMENTS[elementOf(fc)].sym}`, player: f.kind === 'kiep_truoc' ? '' : f.rival.player, turn: 0, max: DUEL_TURNS },
+    };
+    rerender();
+  }
+
+  function stepDuel(c: Character, dtReal: number): boolean {
+    const b = duelRef.current;
+    if (!b || !b.duel) return false;
+    const half = 0.65;
+    b.t += dtReal;
+    let changed = false;
+    const fc = b.duel.foe;
+    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string, skill?: string | null) => {
+      const qi = side === 'p' ? qiColor(c) : fc.path ? PATHS[fc.path].aura : '#ff6a5a';
+      b.last = [...b.last.slice(-4), { id: Math.random(), side, dmg, crit, text, skill: skill ?? undefined, qi: skill ? qi : undefined }];
+    };
+    const end = (result: 'win' | 'lose' | 'draw') => {
+      const out: Fx[] = [];
+      const ctx = makeCtx(c, out);
+      const notes = finishDuel(c, b.foe, result, 1 - b.pHp / b.pMax, ctx);
+      notes.forEach((n, i) => ctx.log(n, c.dead ? 'big' : i === 0 ? (result === 'win' ? 'good' : result === 'lose' ? 'bad' : 'normal') : 'good'));
+      b.phase = 'rest';
+      b.rest = 4;
+      b.outcome = result === 'win' ? 'win' : result === 'lose' ? 'lose' : 'flee';
+      if (result === 'draw') push('m', 0, false, 'Bất phân thắng bại');
+      if (!c.dead) {
+        const p = checkProgress(c, ctx, talentsRef.current);
+        if (p) pendingRef.current = p;
+      }
+      pushFx(out);
+      persist(true);
+    };
+    while (b.t >= half) {
+      b.t -= half;
+      changed = true;
+      if (b.phase === 'rest') {
+        b.rest -= 1;
+        if (b.rest <= 0) {
+          duelRef.current = null;
+          return true;
+        }
+        continue;
+      }
+      if (b.sub === 0) {
+        b.duel.turn += 1;
+        const h = hit(b.ps.atk, b.fs.def, rnd, 0.15 + gearFx(c.equipped).crit / 100);
+        h.dmg = Math.round(h.dmg * elemMul(elementOf(c), elementOf(fc)));
+        b.mHp = Math.max(0, b.mHp - h.dmg);
+        push('p', h.dmg, h.crit, undefined, chuongOf(c, rnd));
+        b.sub = 1;
+        if (b.mHp <= 0) {
+          end('win');
+          break;
+        }
+      } else {
+        const h = hit(b.fs.atk, b.ps.def, rnd, 0.15 + gearFx(fc.equipped).crit / 100);
+        h.dmg = Math.round(h.dmg * elemMul(elementOf(fc), elementOf(c)));
+        b.pHp = Math.max(0, b.pHp - h.dmg);
+        push('m', h.dmg, h.crit, undefined, rnd() < 0.4 ? chuongOf({ ...fc, equipped: {} }, rnd) : null);
+        b.sub = 0;
+        if (b.pHp <= 0) {
+          end('lose');
+          break;
+        }
+        if (b.duel.turn >= b.duel.max) {
+          end(b.mHp / b.mMax < b.pHp / b.pMax - 0.25 ? 'win' : 'draw');
+          break;
+        }
+      }
+    }
+    return changed;
+  }
+
+  /** Tỉ lệ bỏ chạy khỏi địch thủ: kẻ yếu hơn thì chạy chắc chắn được */
+  const duelFlee = (c: Character, f: DuelFoe) => (f.rel === 'yeu' ? 1 : Math.max(0.1, Math.min(0.85, 0.45 + gearFx(c.equipped).flee / 100 + (f.rel === 'manh' ? -0.15 : 0))));
+
+  /** Không đánh mà rời đi khi đối thủ ngang hoặc mạnh hơn: có thể bị đánh lén trọng thương, thậm chí mất mạng */
+  const declineRisk = (c: Character, f: DuelFoe, ctx: ReturnType<typeof makeCtx>, how: 'leave' | 'flee'): string => {
+    if (f.rel === 'yeu') return '';
+    const who = f.rival.name;
+    const hurtP = f.rel === 'manh' ? 0.5 : 0.35;
+    const dieP = (f.rel === 'manh' ? 0.1 : 0.04) * (f.kind === 'dong_dao' ? 0.5 : 1);
+    if (ctx.rnd() >= hurtP) return '';
+    const fl = fatal(c, ctx, dieP / hurtP, how === 'flee' ? `Vừa quay lưng, một đạo kình lực của ${who} đánh xuyên tâm mạch. Bạn ngã xuống giữa đường chạy.` : `${who} cười lạnh: "Muốn đi dễ vậy sao?" Một chưởng sau lưng, bạn không bao giờ đứng dậy nữa.`);
+    if (c.dead) return ' ' + (fl ?? '').trim();
+    stat(c, 'sucKhoe', f.rel === 'manh' ? -35 : -22);
+    ctx.fx('hurt');
+    return how === 'flee' ? ` Chạy thoát nhưng lưng trúng một chưởng của ${who}, trọng thương.${fl ?? ''}` : ` ${who} không vui, tiễn bạn bằng một chưởng. Bạn trọng thương.${fl ?? ''}`;
+  };
+
+  const pickDuelAction = (a: 'fight' | 'befriend' | 'leave' | 'flee') => {
+    const f = duelWarn;
+    const c = charRef.current;
+    setDuelWarn(null);
+    duelOpen.current = false;
+    if (!f || !c) return;
+    const who = f.rival.player ? `${f.rival.name} (@${f.rival.player})` : f.rival.name;
+    if (a === 'fight') startDuel(c, f, false);
+    else if (a === 'flee') {
+      if (rnd() < duelFlee(c, f))
+        act((ch, out) => {
+          const extra = declineRisk(ch, f, makeCtx(ch, out), 'flee');
+          ch.log.push({ age: Math.floor(ch.age), tone: ch.dead ? 'big' : extra ? 'bad' : 'normal', text: `Bạn thi triển khinh công thoát khỏi ${who}.${extra}` });
+        });
+      else {
+        c.log.push({ age: Math.floor(c.age), tone: 'bad', text: `Bỏ chạy không thành, ${who} chặn đầu đánh úp.` });
+        startDuel(c, f, true);
+      }
+    } else if (a === 'befriend')
+      act((ch) => {
+        const er = elemRel(elementOf(ch), elementOf(f.rival));
+        stat(ch, 'khiVan', er === 'duoc_sinh' ? 5 : er === 'sinh' ? 3 : 2);
+        stat(ch, 'tamCanh', 4);
+        if (er === 'duoc_sinh' || er === 'sinh') ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: 'Ngũ hành tương sinh, hai người càng nói càng hợp. Khí vận của bạn khởi sắc.' });
+        ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: `Bạn cùng ${who} uống trà luận đạo suốt đêm, kết làm bằng hữu giang hồ.` });
+      });
+    else
+      act((ch, out) => {
+        const extra = declineRisk(ch, f, makeCtx(ch, out), 'leave');
+        ch.log.push({ age: Math.floor(ch.age), tone: ch.dead ? 'big' : extra ? 'bad' : 'normal', text: `Bạn chắp tay cáo từ ${who}.${extra || ' Núi xanh còn đó, ngày sau gặp lại.'}` });
+      });
+  };
 
   /** Quái chặn đường: bắt buộc đánh, tối đa 3 hiệp, thời gian dừng trong lúc đánh */
   function startAmbush(c: Character) {
@@ -299,6 +452,11 @@ export default function PlayPage() {
       const dt = Math.min(0.25, (t - last) / 1000);
       last = t;
       const c = charRef.current;
+      if (c && activeRef.current && duelRef.current) {
+        if (stepDuel(c, dt)) rerender();
+        raf = requestAnimationFrame(step);
+        return;
+      }
       if (c && activeRef.current && ambushRef.current) {
         // đang bị quái chặn đường: thời gian đứng yên cho tới khi đánh xong
         if (stepAmbush(c, dt)) rerender();
@@ -310,6 +468,16 @@ export default function PlayPage() {
       }
       if (c && activeRef.current && !pendingRef.current && !c.dead) {
         const dYear = (dt / yearSecRef.current) * speedRef.current;
+        if (c.realm >= 1 && c.age >= 15 && c.focus !== 'tru_yeu' && !duelOpen.current && rnd() < DUEL_PER_YEAR * dYear) {
+          const f = pickDuel(c, rnd);
+          if (f) {
+            duelOpen.current = true;
+            activeRef.current = false;
+            setDuelWarn(f);
+            raf = requestAnimationFrame(step);
+            return;
+          }
+        }
         if (c.age >= 10 && c.focus !== 'tru_yeu' && rnd() < AMBUSH_PER_YEAR * dYear) {
           startAmbush(c);
           rerender();
@@ -537,6 +705,9 @@ export default function PlayPage() {
         equipped: c.equipped,
         pet: c.pet,
         sect: c.sect,
+        lookSeed: c.lookSeed,
+        petKind: c.petKind,
+        element: c.element,
       },
     }).catch(() => {});
     const m: Meta = {
@@ -619,7 +790,7 @@ export default function PlayPage() {
             <b>{fmt(c.linhThach)}</b> linh thạch · {wealthTier(c).name}
             {c.income ? ` · +${c.income}/năm` : ''}
           </span>
-          <MusicToggle battle={!!ambushRef.current || (c.focus === 'tru_yeu' && c.age >= 10 && !!c.huntTarget && !c.dead)} />
+          <MusicToggle battle={!!duelRef.current || !!ambushRef.current || (c.focus === 'tru_yeu' && c.age >= 10 && !!c.huntTarget && !c.dead)} />
           <button className="icon-btn" onClick={() => setSheet('menu')} aria-label="Mở menu">
             ≡
           </button>
@@ -651,7 +822,7 @@ export default function PlayPage() {
       </header>
 
       <section className="stage">
-        <Scene c={c} fx={fx} paused={paused} season={season} battle={ambushRef.current ?? (c.focus === 'tru_yeu' && c.age >= 10 && battleRef.current?.m.id === c.huntTarget ? battleRef.current : null)} />
+        <Scene c={c} fx={fx} paused={paused} season={season} battle={duelRef.current ?? ambushRef.current ?? (c.focus === 'tru_yeu' && c.age >= 10 && battleRef.current?.m.id === c.huntTarget ? battleRef.current : null)} />
         <button className="strip-btn" onClick={() => setSheet('info')} aria-label="Xem bảng chỉ số nhân vật">
           <StageStrip c={c} compact={!!pending && !c.dead} />
         </button>
@@ -755,6 +926,7 @@ export default function PlayPage() {
           }}
         />
       )}
+      {duelWarn && !c.dead && <DuelWarning me={c} foe={duelWarn} fleeChance={duelFlee(c, duelWarn)} canBefriend={duelWarn.rel === 'yeu' || ['sinh', 'duoc_sinh'].includes(elemRel(elementOf(c), elementOf(duelWarn.rival)))} onPick={pickDuelAction} />}
       {kiep !== null && !c.dead && <TribulationOverlay realmName={REALMS[c.realm + 1]?.name ?? 'Phi Thăng'} onDone={afterKiep} />}
     </main>
   );

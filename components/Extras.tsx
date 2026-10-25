@@ -9,6 +9,7 @@ import { RARE_COLOR, type Ending } from '@/lib/game/endings';
 import { FAMILY_TIERS, PATHS, realmLabel } from '@/lib/game/data';
 import { rollBase } from '@/lib/game/engine';
 import type { Character } from '@/lib/game/types';
+import { ELEMENTS, elementOf } from '@/lib/game/nguhanh';
 
 /* ================= Gieo quẻ: lá số nhân vật + thiên phú ================= */
 export function GachaPanel({ phuc, onChange, onBorn, busy }: { phuc: number; onChange: (gifts: string[], spent: number, base: Character | null) => void; onBorn: () => void; busy?: boolean }) {
@@ -112,6 +113,12 @@ function BirthCard({ c }: { c: Character }) {
           </li>
           <li>
             Tướng số: {c.fateName} · thọ khoảng {c.lifespan}
+          </li>
+          <li>
+            Bản mệnh:{' '}
+            <b style={{ color: ELEMENTS[elementOf(c)].color, textShadow: '1px 1px 0 #1f160d' }}>
+              {ELEMENTS[elementOf(c)].name} {ELEMENTS[elementOf(c)].sym}
+            </b>
           </li>
         </ul>
       </div>

@@ -6,6 +6,7 @@ import { applyGifts, giftOf, hasGift } from './gacha';
 import { afterChoice, beforeChoice, righteousPeril } from './fate';
 import { childLine } from './childhood';
 import { petName } from './pets';
+import { ELEMENTS } from './nguhanh';
 
 export const rnd = () => Math.random();
 
@@ -91,6 +92,7 @@ export function rollBase(): Character {
     hairColor,
     hairStyle,
     lookSeed: Math.floor(rnd() * 2 ** 31),
+    element: (['kim', 'moc', 'thuy', 'hoa', 'tho'] as const)[Math.floor(rnd() * 5)],
     lifeMul,
     outfitTone: Math.floor(rnd() * 5),
     outfitCut: Math.floor(rnd() * 4),
@@ -111,7 +113,7 @@ export function rollBase(): Character {
   }
   if (origin.id === 'chua') c.daoTam = 15;
   c.log.push({ age: 0, tone: 'big', text: `__KIEP__ Bạn chào đời là ${gender === 'nam' ? 'một bé trai' : 'một bé gái'} ở ${birthPlace}, ${region.name} (${region.desc}), ${origin.name.toLowerCase()}, gia cảnh ${fam.name}. Thầy bói nói bạn mang ${lc.name}.` });
-  c.log.push({ age: 0, tone: fate.lo < 0.85 ? 'bad' : fate.lo > 1.1 ? 'good' : 'normal', text: `Tóc ${HAIR_COLORS[hairColor].name}, lớn lên sẽ để ${HAIR_STYLES[gender][hairStyle]}. Bà mụ xem tướng bảo: mệnh ${fate.name}.` });
+  c.log.push({ age: 0, tone: fate.lo < 0.85 ? 'bad' : fate.lo > 1.1 ? 'good' : 'normal', text: `Tóc ${HAIR_COLORS[hairColor].name}, lớn lên sẽ để ${HAIR_STYLES[gender][hairStyle]}. Bà mụ xem tướng bảo: mệnh ${fate.name}, bản mệnh ngũ hành thuộc ${ELEMENTS[c.element ?? 'kim'].name}.` });
   return c;
 }
 

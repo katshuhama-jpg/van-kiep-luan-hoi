@@ -2,7 +2,7 @@
 
 import { dropSession, type Player } from './auth';
 import { emptyMeta } from './game/engine';
-import type { Character, Grave, Meta, PendingEvent, WorldEcho } from './game/types';
+import type { Character, Grave, Meta, PendingEvent, WorldEcho, RivalChar } from './game/types';
 import { REALMS, realmLabel } from './game/data';
 import { supabase } from './supabase';
 
@@ -156,10 +156,12 @@ export async function fetchWorld(user: Player | null): Promise<WorldEcho | null>
   const sb = supabase();
   if (!sb) return null;
   const me = user?.username ?? null;
-  const [{ data: lives }, ma, chinh] = await Promise.all([
+  const [{ data: lives }, ma, chinh, all, mine] = await Promise.all([
     sb.from('vkl_lives').select('player_name, char_name, age, realm, cause, epitaph, dao_tam').order('created_at', { ascending: false }).limit(80),
     leaderboard('power', 'ta', 'all', 'all').catch(() => null),
     leaderboard('power', 'chinh', 'all', 'all').catch(() => null),
+    leaderboard('power', 'all', 'all', 'all').catch(() => null),
+    me ? sb.from('vkl_lives').select('char_name, age, realm_no, layer_no, dao_tam, look').eq('player_name', me).order('created_at', { ascending: false }).limit(1) : Promise.resolve({ data: null }),
   ]);
   const rows = ((lives as { player_name: string; char_name: string; age: number; realm: string; cause: string | null; epitaph: string | null; dao_tam: number }[] | null) ?? []).filter((r) => r.player_name !== me && r.player_name !== 'Khách' && !isTest(r.player_name));
   for (let i = rows.length - 1; i > 0; i--) {
@@ -171,7 +173,32 @@ export async function fetchWorld(user: Player | null): Promise<WorldEcho | null>
     const r = list?.find((x) => x.username !== me && !isTest(x.username) && (x.c.realm ?? 0) >= 1);
     return r ? { name: r.c.name, player: r.username, realm: r.c.realm, realmName: realmLabel(r.c.realm, r.c.layer ?? 1) || REALMS[r.c.realm]?.name || '' } : null;
   };
-  return { graves, ma: top(ma), chinh: top(chinh) };
+  // nhân vật người chơi khác để gặp trong giang hồ (đồng đạo, địch thủ)
+  const toRival = (u: string, c: Character, alive: boolean): RivalChar => ({
+    player: u,
+    name: c.name,
+    gender: c.gender === 'nu' ? 'nu' : 'nam',
+    race: c.race,
+    realm: c.realm ?? 0,
+    layer: c.layer ?? 1,
+    path: c.path ?? null,
+    daoTam: c.daoTam ?? 0,
+    age: Math.floor(c.age ?? 30),
+    lifespan: c.lifespan,
+    hairColor: c.hairColor,
+    hairStyle: c.hairStyle,
+    outfitTone: c.outfitTone,
+    outfitCut: c.outfitCut,
+    equipped: c.equipped,
+    lookSeed: c.lookSeed,
+    element: c.element,
+    alive,
+  });
+  const rivals = (all ?? []).filter((x) => x.username !== me && !isTest(x.username) && (x.c.realm ?? 0) >= 1).slice(0, 40).map((x) => toRival(x.username, x.c, x.alive));
+  type PastRow = { char_name: string; age: number; realm_no: number | null; layer_no: number | null; dao_tam: number; look: Record<string, unknown> | null };
+  const pr = ((mine as { data: PastRow[] | null }).data ?? [])[0];
+  const past = pr && me ? toRival(me, { ...(pr.look ?? {}), name: pr.char_name, age: pr.age, realm: pr.realm_no ?? 1, layer: pr.layer_no ?? 1, daoTam: pr.dao_tam } as unknown as Character, false) : null;
+  return { graves, ma: top(ma), chinh: top(chinh), rivals, past };
 }
 
 // ---------- Góp ý tính năng ----------

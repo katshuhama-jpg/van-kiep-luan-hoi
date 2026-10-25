@@ -2,6 +2,8 @@
 import type { CSSProperties } from 'react';
 
 import type { Monster } from '@/lib/game/combat';
+import type { Character } from '@/lib/game/types';
+import Sprite from './Sprite';
 import MonsterLpc from './MonsterLpc';
 import { MONSTER_LOOK } from '@/lib/game/monsterLook';
 
@@ -197,6 +199,8 @@ export interface BattleView {
   kills: number;
   /** quái chặn đường: đếm hiệp */
   ambush?: { turn: number; max: number; kind: 'kem' | 'bang' | 'hon' };
+  /** kỳ ngộ giang hồ: đối thủ là người */
+  duel?: { kind: 'dong_dao' | 'dich_thu' | 'kiep_truoc'; foe: Character; tag: string; player: string; turn: number; max: number };
 }
 
 /** Lớp phủ trận đánh trên sân khấu: quái, thanh máu, số sát thương */
@@ -220,11 +224,52 @@ export function BattleOverlay({ b }: { b: BattleView }) {
           <div style={{ width: `${(b.mHp / b.mMax) * 100}%` }} />
         </div>
       </div>
-      <div className={`mon-wrap ${lastHit?.side === 'p' && b.phase === 'fight' ? 'got-hit' : ''} ${lastHit?.side === 'm' ? 'attacking' : ''}`} key={lastHit?.id ?? 0}>
-        <MonsterSprite m={b.m} size={136} tier={b.tier} dead={b.phase === 'rest' && b.outcome === 'win'} attacking={b.phase === 'fight' && lastHit?.side === 'm'} />
-      </div>
+      {b.duel ? (
+        <>
+          <div className={`duel-bg duel-${b.duel.kind}`} aria-hidden="true">
+            <i className="duel-moon" />
+            <i className="duel-hills" />
+            <i className="duel-floor" />
+            {b.duel.kind === 'dong_dao' && (
+              <>
+                <i className="duel-flag l" />
+                <i className="duel-flag r" />
+              </>
+            )}
+            {b.duel.kind === 'dich_thu' && <i className="duel-bolt" />}
+            {b.duel.kind === 'kiep_truoc' && (
+              <span className="duel-mist">
+                {Array.from({ length: 8 }, (_, i) => (
+                  <i key={i} style={{ left: `${(i * 37) % 100}%`, animationDelay: `${-i * 0.7}s` }} />
+                ))}
+              </span>
+            )}
+          </div>
+          <div className={`foe-wrap ${lastHit?.side === 'p' && b.phase === 'fight' ? 'got-hit' : ''} ${lastHit?.side === 'm' ? 'attacking' : ''} ${b.duel.kind === 'kiep_truoc' ? 'ghost' : ''}`} key={lastHit?.id ?? 0}>
+            <Sprite
+              c={b.phase === 'rest' && b.outcome === 'win' ? { ...b.duel.foe, dead: true } : b.duel.foe}
+              size={150}
+              anim={b.phase === 'rest' && b.outcome === 'win' ? 'hurt' : lastHit?.side === 'm' && b.phase === 'fight' ? (lastHit.skill ? 'spellcast' : 'slash') : 'idle'}
+              dir={1}
+            />
+          </div>
+          <span className="duel-tag">
+            {b.duel.tag}
+            {b.duel.player ? ` · @${b.duel.player}` : ''}
+          </span>
+        </>
+      ) : (
+        <div className={`mon-wrap ${lastHit?.side === 'p' && b.phase === 'fight' ? 'got-hit' : ''} ${lastHit?.side === 'm' ? 'attacking' : ''}`} key={lastHit?.id ?? 0}>
+          <MonsterSprite m={b.m} size={136} tier={b.tier} dead={b.phase === 'rest' && b.outcome === 'win'} attacking={b.phase === 'fight' && lastHit?.side === 'm'} />
+        </div>
+      )}
       {lastP?.skill && (
         <span key={`q${lastP.id}`} className="chuong" style={{ ['--qi' as string]: lastP.qi ?? '#9ff0c8' } as CSSProperties} aria-hidden="true">
+          <i />
+        </span>
+      )}
+      {lastHit?.side === 'm' && lastHit.skill && (
+        <span key={`fs${lastHit.id}`} className="chuong foe" style={{ ['--qi' as string]: lastHit.qi ?? '#ff6a5a' } as CSSProperties} aria-hidden="true">
           <i />
         </span>
       )}
@@ -238,7 +283,11 @@ export function BattleOverlay({ b }: { b: BattleView }) {
           {h.text ?? `-${h.dmg}`}
         </span>
       ))}
-      {b.ambush ? (
+      {b.duel ? (
+        <span className={`kill-count ambush-tag duel-turn ${b.duel.kind}`}>
+          Hiệp {Math.max(1, b.duel.turn)}/{b.duel.max}
+        </span>
+      ) : b.ambush ? (
         <span className={`kill-count ambush-tag ${b.ambush.kind}`}>
           Chặn đường · Hiệp {Math.max(1, b.ambush.turn)}/{b.ambush.max}
         </span>
