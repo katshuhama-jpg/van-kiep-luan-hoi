@@ -291,20 +291,4 @@ export function fleeChance(c: Character, m: Monster): number {
   return clamp(0.85 - Math.max(0, d) * 0.12 + gearFx(c.equipped).flee / 100, 0.15, 0.95);
 }
 
-/** Chưởng pháp: tay không hoặc vận khí xuất chưởng, tên theo con đường tu luyện */
-const CHUONG: Record<string, string[]> = {
-  _: ['Thiết Sa Chưởng', 'Bát Quái Chưởng', 'Miên Chưởng', 'Phách Không Chưởng', 'Hàng Long Chưởng', 'Thái Cực Chưởng'],
-  kiem: ['Kiếm Khí Chưởng', 'Phách Không Chưởng', 'Lục Mạch Chỉ'],
-  dan: ['Liệt Hỏa Chưởng', 'Đan Hỏa Chưởng', 'Thiết Sa Chưởng'],
-  tran: ['Bát Quái Chưởng', 'Cửu Cung Chưởng', 'Thái Cực Chưởng'],
-  phat: ['Như Lai Thần Chưởng', 'Đại Lực Kim Cương Chưởng', 'Bàn Nhược Chưởng'],
-  ma: ['Huyền Minh Thần Chưởng', 'Hóa Cốt Miên Chưởng', 'Huyết Ảnh Chưởng', 'Hấp Tinh Đại Pháp'],
-  yeu: ['Yêu Lang Trảo', 'Hồ Vĩ Chưởng', 'Vạn Yêu Chưởng'],
-};
-/** Lượt này có xuất chưởng không: tay không thì luôn dùng chưởng, có vũ khí thì thỉnh thoảng (từ Luyện Khí) */
-export function chuongOf(c: Character, rnd: () => number): string | null {
-  const bare = !c.equipped.vu_khi;
-  if (!bare && (c.realm < 1 || rnd() > 0.35)) return null;
-  const list = [...(CHUONG[c.path ?? ''] ?? []), ...CHUONG._];
-  return list[Math.floor(rnd() * list.length)];
-}
+

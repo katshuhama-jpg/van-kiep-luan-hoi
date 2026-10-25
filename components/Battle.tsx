@@ -196,7 +196,7 @@ export interface BattleView {
   mHp: number;
   mMax: number;
   phase: 'fight' | 'rest';
-  last: { id: number; side: 'p' | 'm'; dmg: number; crit: boolean; text?: string; skill?: string; qi?: string; tag?: string }[];
+  last: { id: number; side: 'p' | 'm'; dmg: number; crit: boolean; text?: string; skill?: string; palm?: boolean; qi?: string; tag?: string }[];
   outcome?: 'win' | 'lose' | 'flee';
   kills: number;
   /** quái chặn đường: đếm hiệp */
@@ -209,7 +209,7 @@ export interface BattleView {
 function ElemBanner({ e }: { e: { me: Element; foe: Element; rel: ElemRel } }) {
   const A = ELEMENTS[e.me];
   const B = ELEMENTS[e.foe];
-  const txt = e.rel === 'khac' ? 'Bạn khắc chế · đòn +50%' : e.rel === 'bi_khac' ? 'Bị khắc chế · đòn -30%' : e.rel === 'duoc_sinh' ? `${B.name} sinh ${A.name} · đòn +10%` : e.rel === 'sinh' ? `${A.name} sinh ${B.name}` : 'Cùng mệnh, không ai khắc ai';
+  const txt = e.rel === 'khac' ? 'Khắc chế · +50%' : e.rel === 'bi_khac' ? 'Bị khắc · -30%' : e.rel === 'duoc_sinh' ? `Được sinh · +10%` : e.rel === 'sinh' ? `${A.name} sinh ${B.name}` : 'Cùng mệnh';
   return (
     <div className={`elem-banner ${e.rel}`}>
       <span className="el" style={{ background: A.color }}>{A.sym}</span>
@@ -266,7 +266,7 @@ export function BattleOverlay({ b }: { b: BattleView }) {
             <Sprite
               c={b.phase === 'rest' && b.outcome === 'win' ? { ...b.duel.foe, dead: true } : b.duel.foe}
               size={150}
-              anim={b.phase === 'rest' && b.outcome === 'win' ? 'hurt' : lastHit?.side === 'm' && b.phase === 'fight' ? (lastHit.skill ? 'spellcast' : 'slash') : 'idle'}
+              anim={b.phase === 'rest' && b.outcome === 'win' ? 'hurt' : lastHit?.side === 'm' && b.phase === 'fight' ? (lastHit.palm ? 'spellcast' : 'slash') : 'idle'}
               dir={1}
             />
           </div>
@@ -281,12 +281,12 @@ export function BattleOverlay({ b }: { b: BattleView }) {
           <MonsterSprite m={b.m} size={136} tier={b.tier} dead={b.phase === 'rest' && b.outcome === 'win'} attacking={b.phase === 'fight' && lastHit?.side === 'm'} />
         </div>
       )}
-      {lastP?.skill && (
+      {lastP?.palm && (
         <span key={`q${lastP.id}`} className="chuong" style={{ ['--qi' as string]: lastP.qi ?? '#9ff0c8' } as CSSProperties} aria-hidden="true">
           <i />
         </span>
       )}
-      {lastHit?.side === 'm' && lastHit.skill && (
+      {lastHit?.side === 'm' && lastHit.palm && (
         <span key={`fs${lastHit.id}`} className="chuong foe" style={{ ['--qi' as string]: lastHit.qi ?? '#ff6a5a' } as CSSProperties} aria-hidden="true">
           <i />
         </span>
@@ -294,6 +294,11 @@ export function BattleOverlay({ b }: { b: BattleView }) {
       {lastP?.skill && (
         <span key={`s${lastP.id}`} className="skill-name">
           {lastP.skill}!
+        </span>
+      )}
+      {lastHit?.side === 'm' && lastHit.skill && (
+        <span key={`fsn${lastHit.id}`} className="skill-name foe">
+          {lastHit.skill}!
         </span>
       )}
       {b.last.map((h) => (

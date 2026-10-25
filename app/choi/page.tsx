@@ -11,13 +11,14 @@ import { BagSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, Hu
 import Radar, { charAxes, wealthScore } from '@/components/Radar';
 import { giftOf } from '@/lib/game/gacha';
 import type { BattleView } from '@/components/Battle';
-import { MONSTERS, chuongOf, combatLevel, effLv, fleeChance, hit, killExp, killReward, loseFight, monsterName, monsterStats, playerStats, tierOf, type Fighter } from '@/lib/game/combat';
+import { MONSTERS, combatLevel, effLv, fleeChance, hit, killExp, killReward, loseFight, monsterName, monsterStats, playerStats, tierOf, type Fighter } from '@/lib/game/combat';
 import { signOut } from '@/lib/auth';
 import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, realmLabel } from '@/lib/game/data';
 import { genName, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick } from '@/lib/game/engine';
 import { addPill, fatal, fmt, giveItem, money, stat, wealthTier } from '@/lib/game/helpers';
 import type { Character, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
 import DuelWarning from '@/components/Duel';
+import { artOf } from '@/lib/game/vocong';
 import { ELEMENTS, elemHitTag, elemMul, elemRel, elementOf } from '@/lib/game/nguhanh';
 import { DUEL_INFO, DUEL_PER_YEAR, DUEL_TURNS, finishDuel, foeChar, foeStats, pickDuel, type DuelFoe } from '@/lib/game/duel';
 import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, pickAmbush } from '@/lib/game/ambush';
@@ -133,8 +134,8 @@ export default function PlayPage() {
     const turn = yearSecRef.current * 0.015;
     b.t += dtGame;
     let changed = false;
-    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string, skill?: string | null) => {
-      b!.last = [...b!.last.slice(-4), { id: Math.random(), side, dmg, crit, text, skill: skill ?? undefined, qi: skill ? qiColor(c) : undefined }];
+    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string, art?: { name: string; palm: boolean } | null) => {
+      b!.last = [...b!.last.slice(-4), { id: Math.random(), side, dmg, crit, text, skill: art?.name, palm: art?.palm, qi: art?.palm ? qiColor(c) : undefined }];
     };
     while (b.t >= turn) {
       b.t -= turn;
@@ -151,7 +152,7 @@ export default function PlayPage() {
       // bạn ra đòn
       const h1 = hit(b.ps.atk, b.ms.def, rnd, 0.15 + gearFx(c.equipped).crit / 100);
       b.mHp = Math.max(0, b.mHp - h1.dmg);
-      push('p', h1.dmg, h1.crit, b.m.boss ? 'Vô hiệu' : undefined, chuongOf(c, rnd));
+      push('p', h1.dmg, h1.crit, b.m.boss ? 'Vô hiệu' : undefined, artOf(c, rnd));
       if (b.mHp <= 0) {
         const out: Fx[] = [];
         const ctx = makeCtx(c, out);
@@ -243,11 +244,11 @@ export default function PlayPage() {
     const fc = b.duel.foe;
     const eMe = elementOf(c);
     const eFoe = elementOf(fc);
-    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string, skill?: string | null) => {
+    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string, art?: { name: string; palm: boolean } | null) => {
       // chưởng mang màu bản mệnh, đòn khắc chế có chữ riêng
       const qi = ELEMENTS[side === 'p' ? eMe : eFoe].color;
       const tag = text ? undefined : side === 'p' ? elemHitTag(eMe, eFoe) : elemHitTag(eFoe, eMe);
-      b.last = [...b.last.slice(-4), { id: Math.random(), side, dmg, crit, text, skill: skill ?? undefined, qi: skill ? qi : undefined, tag }];
+      b.last = [...b.last.slice(-4), { id: Math.random(), side, dmg, crit, text, skill: art?.name, palm: art?.palm, qi: art?.palm ? qi : undefined, tag }];
     };
     const end = (result: 'win' | 'lose' | 'draw') => {
       const out: Fx[] = [];
@@ -281,7 +282,7 @@ export default function PlayPage() {
         const h = hit(b.ps.atk, b.fs.def, rnd, 0.15 + gearFx(c.equipped).crit / 100);
         h.dmg = Math.round(h.dmg * elemMul(elementOf(c), elementOf(fc)));
         b.mHp = Math.max(0, b.mHp - h.dmg);
-        push('p', h.dmg, h.crit, undefined, chuongOf(c, rnd));
+        push('p', h.dmg, h.crit, undefined, artOf(c, rnd));
         b.sub = 1;
         if (b.mHp <= 0) {
           end('win');
@@ -291,7 +292,7 @@ export default function PlayPage() {
         const h = hit(b.fs.atk, b.ps.def, rnd, 0.15 + gearFx(fc.equipped).crit / 100);
         h.dmg = Math.round(h.dmg * elemMul(elementOf(fc), elementOf(c)));
         b.pHp = Math.max(0, b.pHp - h.dmg);
-        push('m', h.dmg, h.crit, undefined, rnd() < 0.4 ? chuongOf({ ...fc, equipped: {} }, rnd) : null);
+        push('m', h.dmg, h.crit, undefined, artOf(fc, rnd));
         b.sub = 0;
         if (b.pHp <= 0) {
           end('lose');
@@ -389,8 +390,8 @@ export default function PlayPage() {
     const half = 0.6; // mỗi đòn 0,6 giây thật, không phụ thuộc tốc độ
     b.t += dtReal;
     let changed = false;
-    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string, skill?: string | null) => {
-      b.last = [...b.last.slice(-4), { id: Math.random(), side, dmg, crit, text, skill: skill ?? undefined, qi: skill ? qiColor(c) : undefined }];
+    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string, art?: { name: string; palm: boolean } | null) => {
+      b.last = [...b.last.slice(-4), { id: Math.random(), side, dmg, crit, text, skill: art?.name, palm: art?.palm, qi: art?.palm ? qiColor(c) : undefined }];
     };
     const end = (result: 'win' | 'lose' | 'draw') => {
       const out: Fx[] = [];
@@ -423,7 +424,7 @@ export default function PlayPage() {
         b.ambush!.turn += 1;
         const h = hit(b.ps.atk, b.ms.def, rnd, 0.15 + gearFx(c.equipped).crit / 100);
         b.mHp = Math.max(0, b.mHp - h.dmg);
-        push('p', h.dmg, h.crit, undefined, chuongOf(c, rnd));
+        push('p', h.dmg, h.crit, undefined, artOf(c, rnd));
         b.sub = 1;
         if (b.mHp <= 0) {
           end('win');
