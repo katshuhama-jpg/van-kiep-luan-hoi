@@ -64,8 +64,8 @@ type S = { sucKhoe: number; tamCanh: number; ngoTinh: number; khiVan: number; ta
 
 /** Trục chỉ số chuẩn cho một nhân vật */
 export function charAxes(s: S, life: number, wealth: number, base?: { s: S; life: number; wealth: number }): RadarAxis[] {
-  // thọ: số năm sống được so với mức tối đa 150
-  const lifeV = (l: number) => Math.max(0, Math.min(100, (l / 150) * 100));
+  // thọ: số năm sống được so với mức tối đa 200
+  const lifeV = (l: number) => Math.max(0, Math.min(100, (l / 200) * 100));
   return [
     { label: 'Khỏe', value: s.sucKhoe, base: base?.s.sucKhoe },
     { label: 'Tâm', value: s.tamCanh, base: base?.s.tamCanh },

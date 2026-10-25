@@ -451,7 +451,7 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
   }
   if (c.partner) stat(c, 'tamCanh', 1);
 
-  // Thọ nguyên không vượt quá 1.4 lần mức chuẩn của cảnh giới
+  // Thọ nguyên không vượt quá 1.15 lần mức chuẩn của cảnh giới
   const cap = Math.min(MAX_LIFE, Math.round((REALMS[c.realm]?.life ?? 70) * 1.15 * lifeMult(c, talents)));
   if (c.lifespan > cap) c.lifespan = cap;
 
@@ -790,8 +790,18 @@ function overwork(c: Character, ctx: EffectCtx, focus: string, n: number) {
 
 export function usePillNow(c: Character, id: string, ctx: EffectCtx, talents: string[] = []): PendingEvent | null {
   if (!usePill(c, id)) return null;
+  // đan độc: uống dồn trong một năm thì dược lực giảm dần, quá 3 viên tích độc trong người
+  const yr = Math.floor(c.age);
+  if (!c.danDoc || c.danDoc.y !== yr) c.danDoc = { y: yr, n: 0 };
+  const nth = c.danDoc.n++;
+  const potency = [1, 0.6, 0.4, 0.25, 0.15][nth] ?? 0.1;
+  if ((id === 'tu_khi' || id === 'truc_co') && nth >= 3) {
+    stat(c, 'tamMa', 4);
+    stat(c, 'sucKhoe', -5);
+    if (nth === 3) ctx.log('Uống đan quá nhiều trong một năm, đan độc tích lại trong kinh mạch. Dược lực giảm hẳn, người nóng ran.', 'bad');
+  }
   if (id === 'tu_khi') {
-    addCult(c, reward(c, 0.25));
+    addCult(c, reward(c, 0.25 * potency));
     ctx.fx('layer', '+tu vi');
   } else if (id === 'dien_tho') {
     c.lifespan = Math.min(MAX_LIFE, c.lifespan + 8);
@@ -804,7 +814,7 @@ export function usePillNow(c: Character, id: string, ctx: EffectCtx, talents: st
     ctx.fx('heal', '+sức khỏe');
   } else if (id === 'truc_co') {
     // dùng khi đột phá; uống lúc thường chỉ tăng chút tu vi
-    addCult(c, reward(c, 0.15));
+    addCult(c, reward(c, 0.15 * potency));
     ctx.fx('layer');
   }
   ctx.log(`Bạn uống ${PILLS.find((p) => p.id === id)?.name}.`, 'good');

@@ -171,7 +171,7 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx): string[] {
   const n = (c.kills[m.id] = (c.kills[m.id] ?? 0) + 1);
   if (n === 1) {
     // lần đầu trảm: thưởng lớn
-    const bonus = killExp(c, m) * 3;
+    const bonus = killExp(c, m) * 2;
     addCult(c, bonus);
     notes.push(`Lần đầu hạ được ${m.name} ở ${m.place}. Lĩnh ngộ được cách đánh của nó (+${bonus} tu vi).`);
   }
@@ -211,8 +211,8 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx): string[] {
   if (m.human && (m.id === 'son_tac' || m.id === 'thich_khach' || m.id === 'doc_vuong')) c.daoTam = Math.min(100, c.daoTam + 1);
   if (n === 100) notes.push(`Đã trảm 100 con ${m.name}. Giang hồ gọi bạn là khắc tinh của chúng.`);
   const r = ctx.rnd();
-  if (r < 0.03) {
-    addCult(c, killExp(c, m) * 8);
+  if (r < 0.02) {
+    addCult(c, killExp(c, m) * 6);
     ctx.fx('layer', 'Yêu đan!');
     notes.push(`${m.name} rơi ra một viên yêu đan, nuốt vào tu vi tăng vọt.`);
   } else if (r < 0.1) {
