@@ -13,7 +13,7 @@ import { giftOf } from '@/lib/game/gacha';
 import type { BattleView } from '@/components/Battle';
 import { MONSTERS, combatLevel, effLv, fleeChance, hit, killExp, killReward, loseFight, monsterName, monsterStats, playerStats, tierOf, type Fighter } from '@/lib/game/combat';
 import { signOut } from '@/lib/auth';
-import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, realmLabel } from '@/lib/game/data';
+import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, realmLabel, realmName } from '@/lib/game/data';
 import { genName, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick } from '@/lib/game/engine';
 import { addCult, addPill, dao, fatal, fmt, giveItem, money, reward, stat, wealthTier } from '@/lib/game/helpers';
 import type { Character, Element, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
@@ -27,6 +27,7 @@ import { daiBiDue, rankName, sectCultMul } from '@/lib/game/sect';
 import { bountyClaim, khieuDone, loadSocial, payoutClaim } from '@/lib/social';
 import { GiangHoSheet, type GiangHoApi } from '@/components/GiangHo';
 import { HIDDEN_ITEMS, collectStats, markSeen, newFinds, unseen } from '@/lib/game/collect';
+import { newLore } from '@/lib/game/lore';
 import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, pickAmbush } from '@/lib/game/ambush';
 import { titleKey, addMemorial, displayName, fetchWorld, listMail, loadAll, saveLocal, saveMeta, saveRemote, sendMail, unreadMail, weeklyTitles, type Mail, type SaveState } from '@/lib/storage';
 import { updateCareer, bumpStreak, evalQuests, omenIs, qmark, questName, streakGift, vnDay } from '@/lib/game/hook';
@@ -63,6 +64,7 @@ export default function PlayPage() {
   const [titles, setTitles] = useState<Record<string, string[]>>({});
   const [questNews, setQuestNews] = useState<string[]>([]); // nhiệm vụ vừa xong ở đời trước
   const [achNews, setAchNews] = useState<string[]>([]); // thành tựu vừa đạt
+  const [loreNews, setLoreNews] = useState<string[]>([]); // mảnh Thiên thư vừa mở
 
   const charRef = useRef<Character | null>(null);
   const pendingRef = useRef<PendingEvent | null>(null);
@@ -1042,7 +1044,7 @@ export default function PlayPage() {
       char_name: c.name,
       life_no: c.lifeNo,
       age: Math.floor(c.age),
-      realm: realmLabel(c.realm, c.layer),
+      realm: realmLabel(c.realm, c.layer, c.cosmos),
       path: c.path ? PATHS[c.path].name : null,
       dao_tam: c.daoTam,
       cause: c.cause,
@@ -1073,6 +1075,7 @@ export default function PlayPage() {
         ascended: c.ascended,
         endTag: c.endTag,
         ending: endingOf(c).id,
+        cosmos: c.cosmos ?? null,
       },
     }).catch(() => {});
     const m: Meta = {
@@ -1093,7 +1096,7 @@ export default function PlayPage() {
         lifeNo: c.lifeNo,
         age: Math.floor(c.age),
         realm: c.realm,
-        realmName: c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer),
+        realmName: c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer, c.cosmos),
         daoTam: c.daoTam,
         cause: c.cause,
         path: c.path ? PATHS[c.path].name : null,
@@ -1119,6 +1122,10 @@ export default function PlayPage() {
       m.phucDuyen += car.newly.reduce((x, a) => x + a.reward, 0);
     }
     setAchNews(car.newly.map((a) => `${a.name} (+${a.reward} phúc)`));
+    // Thiên thư: mảnh ký ức mới
+    const lore = newLore(m, c, car.career);
+    if (lore.length) m.lore = [...(m.lore ?? []), ...lore.map((f) => f.id)];
+    setLoreNews(lore.map((f) => f.title));
     setMeta(m);
     await saveMeta(user, m).catch(() => {});
     charRef.current = null;
@@ -1155,6 +1162,11 @@ export default function PlayPage() {
           <p className="note" style={{ margin: 0 }}>
             Chế độ khách chỉ lưu trên máy này. <Link href="/dang-nhap">Đăng nhập</Link> để lưu và lập bia ở nghĩa trang chung.
           </p>
+        )}
+        {loreNews.length > 0 && (
+          <Link href="/so-sinh-tu#thien-thu" className="quest-news lore" style={{ display: 'block', textDecoration: 'none' }}>
+            📜 Thiên thư mở thêm: <b>{loreNews.join(', ')}</b> · chạm để đọc
+          </Link>
         )}
         {achNews.length > 0 && (
           <p className="quest-news ach">
@@ -1423,7 +1435,12 @@ export default function PlayPage() {
           onPick={pickDuelAction}
         />
       )}
-      {kiep !== null && !c.dead && <TribulationOverlay realmName={REALMS[c.realm + 1]?.name ?? 'Phi Thăng'} onDone={afterKiep} />}
+      {kiep !== null && !c.dead && (
+        <TribulationOverlay
+          realmName={c.realm + 1 > 11 ? 'Chứng Đạo' : c.realm + 1 === 8 ? (c.daoTam <= -40 || c.path === 'ma' ? 'Ma Giới' : 'Phi Thăng') : realmName(c.realm + 1, c.cosmos)}
+          onDone={afterKiep}
+        />
+      )}
     </main>
   );
 }

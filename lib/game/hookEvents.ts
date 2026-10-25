@@ -8,6 +8,40 @@ import type { Character, GameEvent } from './types';
  */
 export const HOOK_EVENTS: GameEvent[] = [
   {
+    id: 'van_kiep_quy_nhat',
+    minAge: 30,
+    once: true,
+    weight: 400,
+    when: (c) => !!c.loreDone,
+    title: 'Vạn Kiếp Quy Nhất',
+    text: () =>
+      'Đêm ấy bạn không mơ. Bạn tỉnh giấc trên đỉnh núi tuyết, và người kia đã quay mặt lại, mỉm cười bằng khuôn mặt của bạn: "Vạn kiếp đã đủ. Ngươi muốn dừng lại, hay đi thêm một kiếp nữa?"',
+    choices: () => [
+      {
+        label: 'Buông bỏ, thoát khỏi Vạn Kiếp',
+        hint: 'kết thúc mọi luân hồi',
+        lean: 'chinh',
+        run: (c, ctx) => {
+          c.dead = true;
+          c.endTag = 'thoat_van_kiep';
+          c.cause = 'Gom lại vạn mảnh của chính mình, mỉm cười bước ra khỏi luân hồi';
+          ctx.fx('breakthrough', 'VẠN KIẾP QUY NHẤT');
+          return 'Bạn bước tới, hai bóng người hòa làm một. Tiếng chuông vang lên lần cuối, rồi im lặng. Lần đầu tiên sau vạn kiếp, bạn không cần câu trả lời nữa.';
+        },
+      },
+      {
+        label: 'Ở lại, sống trọn kiếp này đã',
+        hint: 'tâm cảnh, khí vận +20',
+        lean: 'trung',
+        run: (c) => {
+          c.stats.tamCanh = Math.min(100, c.stats.tamCanh + 20);
+          c.stats.khiVan = Math.min(100, c.stats.khiVan + 20);
+          return 'Người kia gật đầu: "Cũng là một câu trả lời." Bạn tỉnh dậy, thấy nắng sớm đẹp hơn mọi buổi sáng trước đây.';
+        },
+      },
+    ],
+  },
+  {
     id: 'tien_duyen_dau',
     minAge: 6,
     maxAge: 15,

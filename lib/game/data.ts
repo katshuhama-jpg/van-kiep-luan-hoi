@@ -11,18 +11,42 @@ export const REALMS = [
   { name: 'Hóa Thần', layers: 3, life: 160, need: 900 },
   { name: 'Luyện Hư', layers: 3, life: 180, need: 1300 },
   { name: 'Độ Kiếp', layers: 3, life: 200, need: 1800 },
+  // Tiên giới (ma tu thì là Ma giới, cùng bậc nhưng tên khác, xem MA_REALMS)
+  { name: 'Chân Tiên', layers: 3, life: 320, need: 2600 },
+  { name: 'Huyền Tiên', layers: 3, life: 420, need: 3600 },
+  { name: 'Kim Tiên', layers: 3, life: 540, need: 5000 },
+  { name: 'Đại La Kim Tiên', layers: 3, life: 700, need: 7000 },
 ] as const;
+
+/** Cảnh giới đầu tiên sau phi thăng */
+export const ASCEND_REALM = 8;
+/** Cảnh giới cao nhất */
+export const TOP_REALM = 11;
+/** Tên cảnh giới Ma giới, cùng bậc với tiên giới 8..11 */
+export const MA_REALMS = ['Ma Tướng', 'Ma Vương', 'Ma Hoàng', 'Ma Đế'];
+export type Cosmos = 'tien' | 'ma';
+
+/** Tên cảnh giới, theo tiên giới hay ma giới */
+export function realmName(realm: number, cosmos?: Cosmos | null): string {
+  if (realm >= ASCEND_REALM && cosmos === 'ma') return MA_REALMS[realm - ASCEND_REALM] ?? 'Ma Đế';
+  return REALMS[realm]?.name ?? 'Phi Thăng';
+}
+
+/** Thọ nguyên tối đa: phàm giới 200, tiên giới, ma giới theo cảnh giới */
+export function lifeCap(realm: number): number {
+  return realm >= ASCEND_REALM ? (REALMS[realm]?.life ?? 700) + 120 : MAX_LIFE;
+}
 
 /** Thọ nguyên tối đa của mọi kiếp, để kiếp nào cũng sớm đến lúc luân hồi */
 export const MAX_LIFE = 200;
 
 export const STAGE3 = ['Sơ kỳ', 'Trung kỳ', 'Hậu kỳ'];
 
-export function realmLabel(realm: number, layer: number): string {
-  const r = REALMS[realm];
+export function realmLabel(realm: number, layer: number, cosmos?: Cosmos | null): string {
+  const r = REALMS[realm] ?? REALMS[REALMS.length - 1];
   if (realm === 0) return r.name;
   if (r.layers === 9) return `${r.name} tầng ${layer}`;
-  return `${r.name} ${STAGE3[layer - 1] ?? ''}`.trim();
+  return `${realmName(realm, cosmos)} ${STAGE3[layer - 1] ?? ''}`.trim();
 }
 
 export interface PathInfo {

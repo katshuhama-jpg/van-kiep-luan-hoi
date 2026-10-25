@@ -125,7 +125,7 @@ function npcRival(c: Character, realm: number, sign: number, rnd: () => number):
 /** Đổi cấp chiến đấu ra cảnh giới và tầng: Luyện Khí 1-9, từ Trúc Cơ mỗi cảnh giới 3 tầng */
 function clToRealm(cl: number): { realm: number; layer: number } {
   if (cl <= 9) return { realm: 1, layer: Math.max(1, cl) };
-  const realm = Math.min(7, 2 + Math.floor((cl - 10) / 3));
+  const realm = Math.min(11, 2 + Math.floor((cl - 10) / 3));
   return { realm, layer: Math.min(3, cl - (9 + (realm - 2) * 3)) };
 }
 
@@ -232,7 +232,7 @@ function pickDuel0(c: Character, rnd: () => number): DuelFoe | null {
     };
   }
   // đệ tử tông môn: 25% gặp đồng môn tỷ thí
-  if (c.sect && rnd() < 0.25) return dongMon(c, rnd, false);
+  if (c.sect && !c.cosmos && rnd() < 0.25) return dongMon(c, rnd, false);
   const past = w?.past ?? null;
   const kinds: [DuelKind, number][] = [
     ['dong_dao', 45],
@@ -256,7 +256,7 @@ function pickDuel0(c: Character, rnd: () => number): DuelFoe | null {
   const r = rnd();
   const ri = (a: number, b: number) => a + Math.floor(rnd() * (b - a + 1));
   const delta = r < pw ? -ri(3, 6) : r < pw + pn ? ri(-1, 1) : ri(3, 6);
-  const targetCl = Math.max(1, Math.min(27, me0 + delta));
+  const targetCl = Math.max(1, Math.min(39, me0 + delta));
   const tgt = clToRealm(targetCl);
 
   let rival: RivalChar | null = null;
@@ -272,7 +272,8 @@ function pickDuel0(c: Character, rnd: () => number): DuelFoe | null {
     rival = { ...past, realm: t2.realm, layer: t2.layer, lifeNo: Math.max(1, c.lifeNo - 1) };
   } else {
     const mine = lean(c.daoTam);
-    const pool = (w?.rivals ?? []).filter((v) => v.realm >= 1 && Math.abs(combatLevel(foeChar(v)) - targetCl) <= 1);
+    // sau phi thăng chỉ gặp người cùng giới
+    const pool = (w?.rivals ?? []).filter((v) => v.realm >= 1 && (c.cosmos ? v.cosmos === c.cosmos : !v.cosmos) && Math.abs(combatLevel(foeChar(v)) - targetCl) <= 1);
     const side = pool.filter((v) => (kind === 'dong_dao' ? lean(v.daoTam) === mine || lean(v.daoTam) === 0 : lean(v.daoTam) !== mine || mine === 0));
     const list0 = side.length ? side : pool;
     // ưu tiên đúng quan hệ ngũ hành đã bốc; không có ai hợp thì lấy cả danh sách
@@ -283,7 +284,7 @@ function pickDuel0(c: Character, rnd: () => number): DuelFoe | null {
     } else {
       npc = true;
       const sign = kind === 'dong_dao' ? mine || 1 : mine > 0 ? -1 : mine < 0 ? 1 : rnd() < 0.5 ? 1 : -1;
-      rival = { ...npcRival(c, tgt.realm, sign, rnd), layer: tgt.layer, element: ELEMENT_IDS.find((e) => elemRel(myEl, e) === wantRel) };
+      rival = { ...npcRival(c, tgt.realm, sign, rnd), layer: tgt.layer, cosmos: c.cosmos ?? null, element: ELEMENT_IDS.find((e) => elemRel(myEl, e) === wantRel) };
     }
   }
   if (!rival) return null;
@@ -295,7 +296,7 @@ function pickDuel0(c: Character, rnd: () => number): DuelFoe | null {
 
 export function foeLabel(f: DuelFoe): string {
   const r = f.rival;
-  return `${r.name}${r.player ? ` (@${r.player})` : ''} · ${r.realm === 0 ? 'Phàm nhân' : realmLabel(r.realm, r.layer)}`;
+  return `${r.name}${r.player ? ` (@${r.player})` : ''} · ${r.realm === 0 ? 'Phàm nhân' : realmLabel(r.realm, r.layer, r.cosmos)}`;
 }
 
 const RARE_NAME = ['Phàm', 'Tốt', 'Hiếm', 'Cực phẩm'];
@@ -657,6 +658,7 @@ export function toRival(player: string, c: Character): RivalChar {
     lifeNo: c.lifeNo,
     sect: c.sect,
     sectRank: c.sectRank,
+    cosmos: c.cosmos ?? null,
     alive: !c.dead,
   };
 }

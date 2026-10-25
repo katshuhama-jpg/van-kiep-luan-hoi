@@ -359,7 +359,7 @@ export async function makeCard(c: Character, ending: Ending, epitaph: string, sv
   x.fillText(c.name, W / 2, 440);
   x.font = font(26);
   x.fillStyle = '#4a3a2a';
-  x.fillText(`${Math.floor(c.age)} tuổi · ${c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer)}${c.path ? ' · ' + PATHS[c.path].name : ''}`, W / 2, 474);
+  x.fillText(`${Math.floor(c.age)} tuổi · ${c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer, c.cosmos)}${c.path ? ' · ' + PATHS[c.path].name : ''}`, W / 2, 474);
   // kết cục
   x.fillStyle = RARE_COLOR[ending.rare];
   x.fillRect(60, 500, W - 120, 64);

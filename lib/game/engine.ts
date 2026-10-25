@@ -1,4 +1,5 @@
 import { applyProphecy, omenIs } from './hook';
+import { LORE_TOTAL } from './lore';
 import { CHAN_TRUYEN_BREAK, promoteByRealm, rankOf, sectCultMul } from './sect';
 import {
   ITEMS,
@@ -8,6 +9,10 @@ import {
   REGIONS,
   FOCUS,
   MAX_LIFE,
+  ASCEND_REALM,
+  TOP_REALM,
+  lifeCap,
+  realmName,
   HAIR_COLORS,
   HAIR_STYLES,
   HO,
@@ -37,7 +42,7 @@ import { ELEMENTS } from './nguhanh';
 
 export const rnd = () => Math.random();
 
-const GAIN = [6, 30, 30, 34, 38, 42, 46, 50];
+const GAIN = [6, 30, 30, 34, 38, 42, 46, 50, 70, 85, 100, 120];
 
 export function emptyMeta(): Meta {
   return { phucDuyen: 0, nghiep: 0, lives: 0, talents: [], enemy: null };
@@ -184,6 +189,7 @@ export function newCharacter(meta: Meta, gifts: string[] = [], base?: Character)
     c.log.push({ age: 0, tone: 'ta', text: 'Ngày bạn sinh ra, quạ đen đậu kín mái nhà. Nghiệp kiếp trước vẫn chưa trả hết.' });
   }
   c.past = meta.past ?? null;
+  c.loreDone = (meta.lore?.length ?? 0) >= LORE_TOTAL;
   c.stash = meta.stash ?? null;
   c.legend = meta.legend ?? null;
   c.vendettas = meta.vendettas ?? [];
@@ -277,7 +283,7 @@ function enterRealm(c: Character, realm: number, ctx: EffectCtx, talents: string
   c.layer = 1;
   c.cultivation = 0;
   const base = REALMS[realm]?.life ?? c.lifespan;
-  c.lifespan = Math.min(MAX_LIFE, Math.max(c.lifespan, Math.round(base * lifeMult(c, talents) * (0.9 + rnd() * 0.2))));
+  c.lifespan = Math.min(lifeCap(realm), Math.max(c.lifespan, Math.round(base * lifeMult(c, talents) * (0.9 + rnd() * 0.2))));
   const up = promoteByRealm(c, ctx);
   if (up) ctx.log(up, 'good');
 }
@@ -404,8 +410,8 @@ function progress(c: Character, ctx: EffectCtx, talents: string[]): PendingEvent
     if (c.layer < R.layers) {
       c.cultivation -= needFor(c);
       c.layer += 1;
-      ctx.fx('layer', realmLabel(c.realm, c.layer));
-      ctx.log(`Lên ${realmLabel(c.realm, c.layer)}.`, 'good');
+      ctx.fx('layer', realmLabel(c.realm, c.layer, c.cosmos));
+      ctx.log(`Lên ${realmLabel(c.realm, c.layer, c.cosmos)}.`, 'good');
     } else {
       c.cultivation = needFor(c);
       if (c.breakDelay > 0) return null;
@@ -438,10 +444,23 @@ function checkDeath(c: Character, ctx: EffectCtx) {
       ctx.log('Tâm ma bùng phát, bạn hộc máu ngã quỵ, tu vi tụt mất một đoạn. May mà gượng giữ được linh đài.', 'bad');
       if (c.stats.sucKhoe <= 0) die(c, 'Tâm ma phản phệ cộng thêm trọng thương, bạn không qua khỏi.', ctx);
     }
-  } else if (c.age >= c.lifespan) die(c, `Thọ nguyên cạn kiệt. Bạn tọa hóa ở tuổi ${Math.floor(c.age)}.`, ctx);
+  } else if (c.age >= c.lifespan)
+    die(
+      c,
+      c.cosmos === 'ma'
+        ? `Ma thể mục ruỗng, ma hồn tan vào huyết hải. Ma giới mất một vị ${realmName(c.realm, 'ma')} ở tuổi ${Math.floor(c.age)}.`
+        : c.cosmos === 'tien'
+          ? `Thiên nhân ngũ suy: áo tiên bám bụi, hoa trên đầu héo úa, thân không còn tỏa sáng. Bạn tọa hóa giữa tiên giới ở tuổi ${Math.floor(c.age)}.`
+          : `Thọ nguyên cạn kiệt. Bạn tọa hóa ở tuổi ${Math.floor(c.age)}.`,
+      ctx,
+    );
 }
 
 function eligible(c: Character, e: GameEvent): boolean {
+  // sau phi thăng chỉ còn sự kiện tiên giới, ma giới; trước phi thăng không gặp sự kiện của các giới đó
+  if (c.cosmos) {
+    if (!e.cosmos || (e.cosmos !== 'both' && e.cosmos !== c.cosmos)) return false;
+  } else if (e.cosmos) return false;
   const a = c.age;
   if (e.minAge !== undefined && a < e.minAge) return false;
   if (e.maxAge !== undefined && a > e.maxAge) return false;
@@ -545,7 +564,8 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
     money(c, FAMILY_TIERS[c.familyTier ?? 1]?.allowance ?? 3);
   } else {
     // sinh hoạt phí, càng lên cảnh giới càng tốn
-    const cost = 4 + c.realm * 7 + (c.partner ? 4 : 0) + (hasGift(c, 'g_an') ? 3 : 0);
+    // tiên nhân, ma nhân không cần ăn uống
+    const cost = c.cosmos ? 0 : 4 + c.realm * 7 + (c.partner ? 4 : 0) + (hasGift(c, 'g_an') ? 3 : 0);
     if (c.linhThach >= cost) money(c, -cost);
     else {
       money(c, -c.linhThach);
@@ -643,7 +663,7 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
   if (c.partner) stat(c, 'tamCanh', 1);
 
   // Thọ nguyên không vượt quá 1.15 lần mức chuẩn của cảnh giới
-  const cap = Math.min(MAX_LIFE, Math.round((REALMS[c.realm]?.life ?? 70) * 1.15 * lifeMult(c, talents)));
+  const cap = Math.min(lifeCap(c.realm), Math.round((REALMS[c.realm]?.life ?? 70) * 1.15 * lifeMult(c, talents)));
   if (c.lifespan > cap) c.lifespan = cap;
 
   // Sự kiện tuổi thơ cố định
@@ -723,11 +743,14 @@ function breakChance(c: Character) {
       // tà tu ở cảnh giới cao quen sát khí, vượt kiếp cũng vững không kém chính đạo
       (c.daoTam <= -40 && c.realm >= 5 ? 0.06 : 0) +
       (c.path === 'phat' ? 0.05 : 0) +
+      // kiếp chứng đạo cuối cùng: khó hơn hẳn
+      (c.realm >= TOP_REALM ? -0.25 : 0) +
       (rankOf(c) === 3 ? CHAN_TRUYEN_BREAK : 0) +
       (omenIs('loi_van') ? 0.06 : 0) +
       (hasGift(c, 'g_thien_menh') ? 0.15 : 0) +
       0.39 -
-      Math.max(0, c.realm - 2) * 0.07 +
+      // tiên giới, ma giới tính lại từ đầu: Chân Tiên khó như Trúc Cơ, càng lên càng khó
+      Math.max(0, (c.realm >= ASCEND_REALM ? c.realm - ASCEND_REALM + 2 : c.realm) - 2) * 0.07 +
       c.stats.ngoTinh / 450 +
       c.stats.tamCanh / 500 -
       c.stats.tamMa / 200 +
@@ -740,7 +763,7 @@ function breakChance(c: Character) {
 
 function breakEvent(c: Character): GameEvent {
   const target = c.realm + 1;
-  const name = REALMS[target]?.name ?? 'Phi Thăng';
+  const name = target > TOP_REALM ? 'Chứng Đạo' : target === ASCEND_REALM ? 'Phi Thăng' : realmName(target, c.cosmos);
   const kiep = target >= 3;
   return {
     id: BREAK_EVENT_ID,
@@ -755,34 +778,51 @@ function breakEvent(c: Character): GameEvent {
 
 function attempt(c: Character, ctx: EffectCtx, bonus: number): string {
   const target = c.realm + 1;
-  const name = REALMS[target]?.name ?? 'Phi Thăng';
+  const name = realmName(target, c.cosmos);
   const kiep = target >= 3;
   if (kiep) ctx.fx('lightning');
   const kb = kiep ? (c.kiepBonus ?? 0) : 0;
   c.kiepBonus = 0;
   const ok = rnd() < clamp(breakChance(c) + bonus + kb, 0.05, 0.97);
   if (ok) {
-    if (target >= REALMS.length) {
-      c.ascended = true;
+    // vượt kiếp cuối của Đại La Kim Tiên, Ma Đế: chứng đạo, thoát khỏi mọi giới
+    if (target > TOP_REALM) {
       c.dead = true;
-      // tà tu không lên tiên giới mà vượt huyết kiếp, thành Ma Tôn
-      if (c.daoTam <= -40) {
-        c.cause = 'Vượt huyết kiếp, thành Ma Tôn';
+      c.endTag = 'chung_dao';
+      c.cause = c.cosmos === 'ma' ? 'Vượt Diệt Thế Ma Kiếp, chứng đạo Ma Thần bất diệt' : 'Vượt Hỗn Nguyên Đại Kiếp, chứng đạo vĩnh hằng';
+      ctx.fx('breakthrough', 'CHỨNG ĐẠO');
+      return c.cosmos === 'ma'
+        ? 'Ma kiếp cuối cùng nổ tung cả ma giới. Khi khói máu tan đi, bạn đã không còn là ma, cũng không còn là người. Bạn chứng đạo Ma Thần, đứng ngoài mọi luân hồi.'
+        : 'Hỗn Nguyên Đại Kiếp giáng xuống chín chín tám mươi mốt ngày. Ngày cuối cùng, bạn mỉm cười bước vào ánh sáng. Bạn chứng đạo, vĩnh viễn đứng ngoài luân hồi.';
+    }
+    // phi thăng: không còn là hồi kết, mà mở ra tiên giới (hoặc ma giới cho tà tu)
+    if (target === ASCEND_REALM) {
+      c.ascended = true;
+      c.ascendAge = Math.floor(c.age);
+      // tà tu không lên tiên giới mà vượt huyết kiếp, thành Ma Tôn, mở ra ma giới
+      if (c.daoTam <= -40 || c.path === 'ma') {
+        c.cosmos = 'ma';
         c.endTag = 'ma_ton_do_kiep';
+        enterRealm(c, ASCEND_REALM, ctx, []);
+        stat(c, 'sucKhoe', 40);
         ctx.fx('breakthrough', 'MA TÔN');
-        return 'Chín đạo huyết lôi giáng xuống, bạn nuốt trọn từng đạo một. Trời đất nhuộm đỏ, vạn ma quỳ lạy. Bạn bước lên ngai Ma Tôn, vĩnh viễn không còn bị luân hồi trói buộc!';
+        return `Chín đạo huyết lôi giáng xuống, bạn nuốt trọn từng đạo một. Trời đất nhuộm đỏ, vạn ma quỳ lạy. Bạn bước qua cửa Ma giới, thành ${realmName(ASCEND_REALM, 'ma')}. Thọ nguyên lên tới ${c.lifespan} năm. Ở đây chỉ có một luật: kẻ mạnh nuốt kẻ yếu.`;
       }
-      c.cause = 'Phi thăng tiên giới';
+      c.cosmos = 'tien';
+      enterRealm(c, ASCEND_REALM, ctx, []);
+      stat(c, 'sucKhoe', 40);
       ctx.fx('breakthrough', 'PHI THĂNG');
-      return 'Chín đạo lôi kiếp tan biến, tiên quang giáng xuống. Bạn phi thăng tiên giới!';
+      return `Chín đạo lôi kiếp tan biến, tiên quang giáng xuống. Bạn phi thăng tiên giới, thành ${realmName(ASCEND_REALM, 'tien')}! Thọ nguyên lên tới ${c.lifespan} năm. Tiên giới rộng lớn, con đường còn dài.`;
     }
     enterRealm(c, target, ctx, []);
     ctx.fx('breakthrough', name);
+    if (target > ASCEND_REALM) stat(c, 'sucKhoe', 10);
     stat(c, 'sucKhoe', 20);
     return `Đột phá thành công! Bạn bước vào ${name}. Thọ nguyên tăng lên ${c.lifespan} năm.`;
   }
   c.cultivation = Math.round(c.cultivation * 0.6);
-  c.breakDelay = 3;
+  // kiếp chứng đạo thất bại thì phải chờ rất lâu mới thử lại
+  c.breakDelay = c.realm >= TOP_REALM ? 30 : 3;
   stat(c, 'tamMa', 8);
   const t = hurt(c, kiep ? 40 + (target - 3) * 12 : 25, ctx);
   if (c.stats.sucKhoe <= 0) {
@@ -1160,7 +1200,7 @@ export function usePillNow(c: Character, id: string, ctx: EffectCtx, talents: st
     addCult(c, reward(c, 0.25 * potency));
     ctx.fx('layer', '+tu vi');
   } else if (id === 'dien_tho') {
-    c.lifespan = Math.min(MAX_LIFE, c.lifespan + 8);
+    c.lifespan = Math.min(lifeCap(c.realm), c.lifespan + 8);
     ctx.fx('heal', '+thọ nguyên');
   } else if (id === 'thanh_tam') {
     stat(c, 'tamMa', -25);

@@ -28,7 +28,7 @@ export function pickAmbush(c: Character, rnd: () => number): { m: Monster; tier:
   // đệ tử tông môn: 30% là quái thí luyện trong môn
   const side = sectSide(c);
   const inSect = !!side && rnd() < 0.3;
-  const pool = MONSTERS.filter((m) => !m.boss && (inSect ? m.sect === side : !m.sect));
+  const pool = c.cosmos ? MONSTERS.filter((m) => m.cosmos === c.cosmos) : MONSTERS.filter((m) => !m.boss && !m.cosmos && (inSect ? m.sect === side : !m.sect));
   const cl = combatLevel(c);
   const r = rnd();
   const tier: AmbushTier = r < 0.3 ? 'kem' : r < 0.9 ? 'bang' : 'hon';

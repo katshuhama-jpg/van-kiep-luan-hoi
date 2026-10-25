@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import Scene from './Scene';
 import Sprite from './Sprite';
 import { demoChar } from '@/lib/game/demo';
-import { REALMS, realmLabel } from '@/lib/game/data';
+import { REALMS, realmLabel, realmName } from '@/lib/game/data';
 import { pickStory } from '@/lib/game/miles';
 import { condolences, type Condolence } from '@/lib/social';
 import type { Character, Focus, Fx, FxKind, Mile, PathId } from '@/lib/game/types';
@@ -111,6 +111,7 @@ export default function LifeStory({
     sect?: string | null;
     equipped?: Record<string, string>;
     element?: string;
+    cosmos?: 'tien' | 'ma' | null;
   };
   const finalRealm = r.realm_no ?? 0;
   const maTon = look.endTag === 'ma_ton_do_kiep' || (r.cause ?? '').includes('Ma Tôn');
@@ -202,7 +203,7 @@ export default function LifeStory({
               <small className="ls-kicker">Một kiếp người</small>
               <h2>{r.char_name}</h2>
               <p className="ls-sub">
-                {r.age} năm dương thế · {finalRealm === 0 ? 'Phàm nhân' : realmLabel(finalRealm, r.layer_no ?? 1)}
+                {r.age} năm dương thế · {finalRealm === 0 ? 'Phàm nhân' : realmLabel(finalRealm, r.layer_no ?? 1, look.cosmos)}
                 {r.path ? ` · ${r.path}` : ''}
               </p>
               <div className="ls-hero">
@@ -325,7 +326,7 @@ function MileSlide({ r, m, n }: { r: LifeRecord; m: Mile; n: number }) {
         <SceneAt r={r} age={m.age} realm={realm} kind={m.kind} />
         <span className="ls-chap">Hồi thứ {HOI[n] ?? n + 1}</span>
         <span className="ls-kind">{k.label}</span>
-        {m.kind === 'realm' && realm >= 1 && <span className="ls-realm">{REALMS[realm]?.name}</span>}
+        {m.kind === 'realm' && realm >= 1 && <span className="ls-realm">{realmName(realm, (r.look as { cosmos?: 'tien' | 'ma' } | null)?.cosmos)}</span>}
         {m.kind === 'path' && r.path && <span className="ls-realm">{r.path}</span>}
       </div>
       <div className="ls-cap">

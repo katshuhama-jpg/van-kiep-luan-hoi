@@ -10,6 +10,7 @@ import { endingStats, loadAll } from '@/lib/storage';
 import { PETS, PET_IDS } from '@/lib/game/pets';
 import { ACHIEVEMENTS } from '@/lib/game/hook';
 import { useAuth } from '@/lib/useAuth';
+import { LORE, LORE_TOTAL } from '@/lib/game/lore';
 
 export default function SoSinhTu() {
   const { user, ready } = useAuth();
@@ -42,6 +43,33 @@ export default function SoSinhTu() {
           <BackButton fallback="/choi" />
         </div>
       </header>
+      <section className="panel thien-thu" id="thien-thu" style={{ marginBottom: 10 }}>
+        <h2>Thiên thư · Vạn Kiếp</h2>
+        <p className="note" style={{ marginTop: 0 }}>
+          Vì sao bạn cứ phải luân hồi mãi? Mỗi mảnh ký ức mở khi đạt một cột mốc lớn qua các kiếp. Đã mở {(meta?.lore ?? []).length}/{LORE_TOTAL}.
+          {(meta?.lore ?? []).length >= LORE_TOTAL ? ' Đã đủ: kiếp sau, bạn sẽ gặp lại chính mình.' : ''}
+        </p>
+        <ol className="tt-list">
+          {LORE.map((f, i) => {
+            const has = meta?.lore?.includes(f.id);
+            const last = has && !LORE.slice(i + 1).some((x) => meta?.lore?.includes(x.id));
+            return (
+              <li key={f.id} className={has ? 'has' : ''}>
+                {has ? (
+                  <details open={last}>
+                    <summary>{f.title}</summary>
+                    <p>{f.text}</p>
+                  </details>
+                ) : (
+                  <>
+                    <b>{f.title.split('.')[0] + '. ???'}</b> <small>{f.hint}</small>
+                  </>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </section>
       <div className="ss-progress" aria-hidden="true">
         <span style={{ width: `${(n / ENDINGS.length) * 100}%` }} />
       </div>

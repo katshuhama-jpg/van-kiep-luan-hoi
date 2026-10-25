@@ -151,6 +151,16 @@ export interface Prophecy {
 }
 export const PROPHECIES: Prophecy[] = [
   {
+    id: 'tien_nhan',
+    text: 'Tiên tịch đã bị tước, nhưng ký ức tiên nhân vẫn còn. Kiếp sau, ngươi sẽ nhớ.',
+    done: 'Lời tiên tri ứng nghiệm: bạn sinh ra với ký ức của một vị tiên bị giáng trần (ngộ tính +25, khí vận +15, tu luyện nhanh từ nhỏ).',
+    apply: (c) => {
+      c.stats.ngoTinh = Math.min(100, c.stats.ngoTinh + 25);
+      c.stats.khiVan = Math.min(100, c.stats.khiVan + 15);
+      c.linhCanMul = Math.max(c.linhCanMul, 1.6);
+    },
+  },
+  {
     id: 'tho',
     text: 'Kiếp sau, ngươi sẽ sống lâu hơn người thường.',
     done: 'Lời tiên tri ứng nghiệm: thọ nguyên của bạn dài hơn người thường.',
@@ -192,7 +202,9 @@ export const PROPHECIES: Prophecy[] = [
 
 /** Bốc lời tiên tri lúc chết; tà nhiều thì dễ ra điềm dữ */
 export function pickProphecy(c: Character, rnd: () => number): { id: string; text: string } {
-  const pool = c.daoTam <= -40 && rnd() < 0.5 ? PROPHECIES.filter((p) => p.id === 'hung') : PROPHECIES.filter((p) => p.id !== 'hung' && (p.id !== 'kiep' || !!c.vendettas?.length));
+  if (c.endTag === 'giang_tran') return { id: 'tien_nhan', text: PROPHECIES[0].text };
+  const pool =
+    c.daoTam <= -40 && rnd() < 0.5 ? PROPHECIES.filter((p) => p.id === 'hung') : PROPHECIES.filter((p) => p.id !== 'hung' && p.id !== 'tien_nhan' && (p.id !== 'kiep' || !!c.vendettas?.length));
   const p = pool[Math.floor(rnd() * pool.length)];
   return { id: p.id, text: p.text };
 }

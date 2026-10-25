@@ -91,6 +91,9 @@ export interface Character {
   legend?: Legend | null; // thần binh truyền kiếp đang mang
   vendettas?: Vendetta[];
   hunt?: { rival: RivalChar; at: number } | null;
+  loreDone?: boolean; // đã gom đủ Thiên thư: kiếp này sẽ gặp lại chính mình
+  cosmos?: 'tien' | 'ma' | null; // đã phi thăng lên tiên giới hay ma giới
+  ascendAge?: number; // tuổi lúc phi thăng
   sectRank?: number; // bậc trong tông môn: 0 tạp dịch, 1 ngoại môn, 2 nội môn, 3 chân truyền
   daiBiAt?: number; // tuổi tới kỳ Đại bỉ tông môn kế tiếp
   sectSaved?: boolean; // chân truyền đã được sư phụ cứu một lần // truy sát: thuê người dò tung tích, năm sau chạm mặt
@@ -162,6 +165,7 @@ export interface RivalChar {
   lifeNo?: number; // kiếp thứ mấy của người chơi đó
   sect?: string | null;
   sectRank?: number;
+  cosmos?: 'tien' | 'ma' | null;
   alive: boolean;
 }
 
@@ -182,6 +186,7 @@ export interface Choice {
 
 export interface GameEvent {
   id: string;
+  cosmos?: 'tien' | 'ma' | 'both'; // sự kiện chỉ có ở tiên giới, ma giới; sự kiện phàm giới không xảy ra sau phi thăng
   minAge?: number;
   maxAge?: number;
   minRealm?: number;
@@ -232,6 +237,7 @@ export interface Meta {
   legend?: Legend | null; // thần binh truyền kiếp
   vendettas?: Vendetta[]; // kẻ thù là người chơi thật, để báo thù
   feud?: Record<string, number[]>;
+  lore?: string[]; // Thiên thư: các mảnh ký ức đã mở
   itemBook?: string[]; // Bảo khố: đồ ẩn đã từng có được
   seenBook?: { e: number; i: number }; // số kết cục, đồ ẩn đã xem (để báo mục mới) // huyết hải thâm thù: các kiếp đã giao đấu với từng người chơi
   petBook?: string[]; // các loài linh thú đã từng nuôi

@@ -20,6 +20,7 @@ export interface Monster {
   human?: { weapon: 'kiem' | 'dao' | 'quyen' | 'quat'; hat?: boolean; mask?: boolean };
   el?: Element; // ngũ hành của loài quái
   sect?: 'chinh' | 'ta'; // quái trong tông môn: chỉ đệ tử môn đó mới gặp
+  cosmos?: 'tien' | 'ma'; // quái tiên giới, ma giới: chỉ gặp sau phi thăng
 }
 
 /** 15 loại quái, xếp theo cấp. Cấp người chơi: Luyện Khí 1-9, Trúc Cơ 10-12, Kim Đan 13-15... */
@@ -363,6 +364,113 @@ export const MONSTERS: Monster[] = [
     el: 'hoa',
     sect: 'ta',
   },
+  // Tiên giới
+  {
+    id: 'thien_binh',
+    name: 'Thiên Binh Tuần Tra',
+    lv: 28,
+    place: 'Nam Thiên Môn',
+    shape: 'vo_lam',
+    body: '#e6d8a8',
+    accent: '#c8302a',
+    eye: '#1a1a1a',
+    desc: 'Lính tuần của Thiên đình, thấy tiên nhân mới lên là hạch hỏi.',
+    human: { weapon: 'kiem', hat: true },
+    el: 'kim',
+    cosmos: 'tien',
+  },
+  {
+    id: 'loi_thu',
+    name: 'Cửu Thiên Lôi Thú',
+    lv: 31,
+    place: 'Lôi Trì',
+    shape: 'thu',
+    body: '#5a7ad0',
+    accent: '#ffe27a',
+    eye: '#ffffff',
+    desc: 'Thú nuôi của Lôi Bộ, lông dựng lên là sét giáng.',
+    el: 'moc',
+    cosmos: 'tien',
+  },
+  {
+    id: 'thien_bang',
+    name: 'Côn Bằng Thiên Ngoại',
+    lv: 34,
+    place: 'Bắc Minh Thiên Hải',
+    shape: 'chim',
+    body: '#3a6a9a',
+    accent: '#c8e0ff',
+    eye: '#ffd36b',
+    desc: 'Cá Côn hóa chim Bằng, một cánh che nửa bầu trời tiên giới.',
+    el: 'thuy',
+    cosmos: 'tien',
+  },
+  {
+    id: 'kim_long',
+    name: 'Thái Cổ Kim Long',
+    lv: 37,
+    place: 'Long Cung Thiên Thượng',
+    shape: 'rong',
+    body: '#e0b030',
+    accent: '#fff4c0',
+    eye: '#c8302a',
+    desc: 'Kim long từ thuở khai thiên, vảy rụng một mảnh cũng thành thần binh.',
+    el: 'kim',
+    cosmos: 'tien',
+  },
+  // Ma giới
+  {
+    id: 'ma_binh',
+    name: 'Huyết Ma Binh',
+    lv: 28,
+    place: 'Ma Thành Ngoại Ô',
+    shape: 'nguoi',
+    body: '#5a1a24',
+    accent: '#1e0a0e',
+    eye: '#ff2a3a',
+    desc: 'Lính ma sinh ra từ huyết hải, chết rồi lại mọc lên.',
+    el: 'hoa',
+    cosmos: 'ma',
+  },
+  {
+    id: 'dia_nguc_khuyen',
+    name: 'Địa Ngục Tam Đầu Khuyển',
+    lv: 31,
+    place: 'Cửa Cửu U',
+    shape: 'thu',
+    body: '#2a1a1a',
+    accent: '#ff6a2a',
+    eye: '#ffd36b',
+    desc: 'Chó ba đầu canh cửa Cửu U, đầu nào cũng phun lửa.',
+    el: 'hoa',
+    cosmos: 'ma',
+  },
+  {
+    id: 'ma_bang',
+    name: 'Cửu U Ma Bằng',
+    lv: 34,
+    place: 'Bầu trời Ma giới',
+    shape: 'chim',
+    body: '#1e1a2e',
+    accent: '#9a3ad0',
+    eye: '#ff2a3a',
+    desc: 'Chim ma cánh đen, bay qua đâu ma khí phủ đó.',
+    el: 'thuy',
+    cosmos: 'ma',
+  },
+  {
+    id: 'diet_the_long',
+    name: 'Diệt Thế Ma Long',
+    lv: 37,
+    place: 'Đáy Huyết Hải',
+    shape: 'rong',
+    body: '#3a0a14',
+    accent: '#ff2a3a',
+    eye: '#ffffff',
+    desc: 'Ma long nuốt ba thế giới, Ma Đế cũng phải kiêng dè.',
+    el: 'tho',
+    cosmos: 'ma',
+  },
   // Boss: không thể thắng
   {
     id: 'boss_ta',
@@ -392,7 +500,7 @@ export const MONSTERS: Monster[] = [
   },
 ];
 
-const REALM_BASE = [0, 0, 9, 12, 15, 18, 21, 24];
+const REALM_BASE = [0, 0, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36];
 
 /** Cấp chiến đấu của nhân vật: Phàm 0, Luyện Khí 1-9, Trúc Cơ 10-12, Kim Đan 13-15, ... Độ Kiếp 25-27 */
 export function combatLevel(c: Character): number {
@@ -580,7 +688,13 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance 
 export function monsterRealm(lv: number): number {
   if (lv <= 0) return 0;
   if (lv <= 9) return 1;
-  return Math.min(7, 2 + Math.floor((lv - 10) / 3));
+  return Math.min(11, 2 + Math.floor((lv - 10) / 3));
+}
+
+/** Loài quái người chơi gặp được ở giới hiện tại: phàm giới, tiên giới hay ma giới, cộng quái thí luyện tông môn */
+export function monstersFor(c: Character, sectSide: 'chinh' | 'ta' | null): Monster[] {
+  if (c.cosmos) return MONSTERS.filter((m) => m.cosmos === c.cosmos);
+  return MONSTERS.filter((m) => !m.cosmos && (!m.sect || m.sect === sectSide));
 }
 
 /**

@@ -6,6 +6,7 @@ import { EVENTS3 } from './events3';
 import { HOOK_EVENTS } from './hookEvents';
 import { TA_EVENTS } from './taEvents';
 import { SECT_EVENTS } from './sectEvents';
+import { COSMOS_EVENTS } from './cosmosEvents';
 import { joinSect, rankByRoot, rankName } from './sect';
 import { CHILD_EVENTS } from './childhood';
 import { PET_EVENT, PET_STORIES } from './pets';
@@ -2763,6 +2764,7 @@ export const EVENTS: GameEvent[] = [
   ...HOOK_EVENTS,
   ...TA_EVENTS,
   ...SECT_EVENTS,
+  ...COSMOS_EVENTS,
   ...CHILD_EVENTS,
   PET_EVENT,
   ...PET_STORIES,

@@ -255,9 +255,9 @@ export default function RankPage() {
                         {kind === 'power'
                           ? c.realm === 0
                             ? 'Phàm nhân'
-                            : realmLabel(c.realm, c.layer)
+                            : realmLabel(c.realm, c.layer, c.cosmos)
                           : kind === 'age'
-                            ? `Thọ ${Math.floor(c.age)} tuổi · ${c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer)}`
+                            ? `Thọ ${Math.floor(c.age)} tuổi · ${c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer, c.cosmos)}`
                             : `${fmt(c.linhThach)} linh thạch`}
                       </span>
                       <span className="rank-owner">
@@ -266,7 +266,11 @@ export default function RankPage() {
                         {coll[r.username] && <span className="title-badge collector">{collectorTitle(coll[r.username])}</span>}
                         {mine && <span className="badge">Bạn</span>}
                         <RelChips player={r.username} s={social} />
-                        {!r.alive && <span className="badge gone-badge">{c.ascended ? (c.cause?.includes('Ma Tôn') ? 'Ma Tôn' : 'Phi thăng') : 'Đã mất'}</span>}
+                        {!r.alive && (
+                          <span className="badge gone-badge">
+                            {c.endTag === 'chung_dao' ? 'Chứng đạo' : c.cosmos === 'ma' ? 'Ma giới' : c.cosmos === 'tien' || c.ascended ? 'Tiên giới' : 'Đã mất'}
+                          </span>
+                        )}
                       </span>
                       <small>
                         {r.alive ? '' : `Kiếp ${c.lifeNo} · `}

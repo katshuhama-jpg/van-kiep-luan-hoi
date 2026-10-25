@@ -7,13 +7,14 @@ import { GachaPanel, ShareCard } from './Extras';
 import ItemIconImg from './ItemIcon';
 import { FOCUS, ITEMS, PATHS, PILLS, REALMS, SEASONS, TALENTS, fxText, gearFx, realmLabel, type Item } from '@/lib/game/data';
 import { describeLean } from '@/lib/game/engine';
-import { DANGER_TEXT, MONSTERS, combatLevel, dangerOf, dropFactor, effLv, killExp, monsterName, playerStats, tierOf } from '@/lib/game/combat';
+import { DANGER_TEXT, MONSTERS, combatLevel, dangerOf, dropFactor, monstersFor, effLv, killExp, monsterName, playerStats, tierOf } from '@/lib/game/combat';
 import { MonsterSprite } from './Battle';
 import { cultPct, fmt, needFor } from '@/lib/game/helpers';
 import type { Character, Focus, LogEntry, Meta, PendingEvent, Slot } from '@/lib/game/types';
 import { evalQuests, nearEndings, pickProphecy, questName } from '@/lib/game/hook';
 import { HIDDEN_ITEMS, collectStats, isHidden, itemHint } from '@/lib/game/collect';
 import { sectSide, rankName, rankShort } from '@/lib/game/sect';
+import { LORE_TOTAL } from '@/lib/game/lore';
 import { ELEMENTS } from '@/lib/game/nguhanh';
 import { TodayScroll } from './Hook';
 import { useAuth } from '@/lib/useAuth';
@@ -61,7 +62,7 @@ export function StatsPanel({ c }: { c: Character }) {
       <div className="stats">
         <Bar
           wide
-          label={c.realm === 0 ? 'Tu vi (chưa nhập đạo)' : `Tu vi · ${realmLabel(c.realm, c.layer)}`}
+          label={c.realm === 0 ? 'Tu vi (chưa nhập đạo)' : `Tu vi · ${realmLabel(c.realm, c.layer, c.cosmos)}`}
           value={c.realm === 0 ? `${fmt(c.cultivation)}/40` : `${fmt(c.cultivation)}/${fmt(needFor(c))}`}
           pct={c.realm === 0 ? c.cultivation / 40 : cultPct(c)}
           color="#2f6b5a"
@@ -753,6 +754,15 @@ export function BirthPanel({
               <i style={{ width: `${(cs.endings / cs.endingsTotal) * 100}%` }} />
             </span>
           </Link>
+          <Link href="/so-sinh-tu#thien-thu" className="cs-item cs-lore">
+            <small>Thiên thư</small>
+            <b>
+              {(meta.lore ?? []).length}/{LORE_TOTAL}
+            </b>
+            <span className="bk-bar" aria-hidden="true">
+              <i style={{ width: `${((meta.lore ?? []).length / LORE_TOTAL) * 100}%` }} />
+            </span>
+          </Link>
           <button className="cs-item" onClick={onKho}>
             <small>Bảo khố</small>
             <b>
@@ -894,7 +904,10 @@ function LifeFeedback({ c }: { c: Character }) {
               const err = await addFeedback(
                 user,
                 'khac',
-                `[Đánh giá kiếp ${c.lifeNo}] ${'★'.repeat(star)} ${text.trim() || '(không ghi chú)'} · ${Math.floor(c.age)} tuổi, ${realmLabel(c.realm, c.layer)}, ${c.cause ?? ''}`.slice(0, 480),
+                `[Đánh giá kiếp ${c.lifeNo}] ${'★'.repeat(star)} ${text.trim() || '(không ghi chú)'} · ${Math.floor(c.age)} tuổi, ${realmLabel(c.realm, c.layer, c.cosmos)}, ${c.cause ?? ''}`.slice(
+                  0,
+                  480,
+                ),
               );
               setSent(err ?? 'Cảm ơn bạn! Góp ý đã được ghi lại.');
             }}
@@ -934,11 +947,23 @@ export function DeathSheet({
   const ending = endingOf(c);
   const buryMoney = Math.round(c.linhThach * 0.3);
   return (
-    <Sheet title={c.endTag === 'ma_ton_do_kiep' ? 'Thành Ma Tôn!' : c.ascended ? 'Phi thăng!' : 'Một kiếp đã hết'}>
+    <Sheet
+      title={
+        c.endTag === 'chung_dao'
+          ? 'Chứng đạo!'
+          : c.endTag === 'giang_tran'
+            ? 'Bị giáng trần'
+            : c.cosmos === 'ma'
+              ? 'Ma hồn tan biến'
+              : c.cosmos === 'tien'
+                ? 'Tọa hóa nơi tiên giới'
+                : 'Một kiếp đã hết'
+      }
+    >
       <p style={{ marginTop: 0 }}>
         <b style={{ fontWeight: 700, color: 'var(--red-d)', fontSize: 24 }}>{c.name}</b>
         <br />
-        {Math.floor(c.age)} tuổi · {realmLabel(c.realm, c.layer)}
+        {Math.floor(c.age)} tuổi · {realmLabel(c.realm, c.layer, c.cosmos)}
         {c.path ? ` · ${PATHS[c.path].name}` : ''} · {describeLean(c.daoTam)}
       </p>
       <p className="note">{c.cause}</p>
@@ -1073,12 +1098,12 @@ export function StageStrip({ c, compact }: { c: Character; compact: boolean }) {
         <span className="strip-name">{c.name}</span>
         <span className={`badge sex ${c.gender}`}>{c.gender === 'nam' ? 'Nam' : 'Nữ'}</span>
         {c.path && <span className="badge path">{PATHS[c.path].short}</span>}
-        {c.sect && (
+        {c.sect && !c.cosmos && (
           <span className={`badge sect-badge ${sectSide(c) ?? ''}`} title={`${rankName(c)} ${c.sect}`}>
             {rankShort(c)}
           </span>
         )}
-        <span className="strip-realm">{c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer)}</span>
+        <span className="strip-realm">{c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer, c.cosmos)}</span>
       </div>
       <div className="cult" role="progressbar" aria-label="Tu vi" aria-valuenow={Math.round(cult * 100)} aria-valuemin={0} aria-valuemax={100}>
         <span className="cult-fill" style={{ width: `${Math.min(1, cult) * 100}%` }} />
@@ -1188,7 +1213,7 @@ export function HuntSheet({ c, onPick, onToggleFlee, onClose }: { c: Character; 
         Tự rút lui khi máu dưới 30%
       </label>
       <div className="items">
-        {MONSTERS.filter((m) => !m.sect || m.sect === sectSide(c)).map((m) => {
+        {monstersFor(c, sectSide(c)).map((m) => {
           const elv = effLv(c, m);
           const hidden = !m.boss && elv > L + 6;
           const d = dangerOf(c, m);

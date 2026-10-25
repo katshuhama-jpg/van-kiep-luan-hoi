@@ -147,7 +147,7 @@ export function beforeChoice(): number {
  * Trả về câu chuyện xảy ra (nếu có) để ghi vào nhật ký.
  */
 export function afterChoice(c: Character, choice: Choice, mark: number, ctx: EffectCtx): string | null {
-  if (c.dead || c.age < 6) return null;
+  if (c.dead || c.age < 6 || c.cosmos) return null;
   const risky = riskMeter.n > mark || RISKY_HINT.test(choice.hint ?? '') || choice.lean === 'ta';
   if (risky) {
     c.timid = Math.max(0, (c.timid ?? 0) - 3);
@@ -197,7 +197,8 @@ const PERILS: ((c: Character, ctx: EffectCtx) => string)[] = [
 ];
 
 export function righteousPeril(c: Character, ctx: EffectCtx): string | null {
-  if (c.dead || c.age < 16) return null;
+  // chuyện giang hồ phàm giới không còn đuổi theo tiên nhân
+  if (c.dead || c.age < 16 || c.cosmos) return null;
   const p = c.daoTam >= 70 ? 0.03 : c.daoTam >= 40 ? 0.018 : 0;
   if (!p || ctx.rnd() >= p) return null;
   ctx.fx('hurt');

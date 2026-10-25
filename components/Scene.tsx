@@ -215,6 +215,7 @@ function preloadBg() {
   if (preloaded || typeof window === 'undefined') return;
   preloaded = true;
   for (const sc of BG_SCENES) for (let i = 0; i < 4; i++) new Image().src = `/bg/${sc}-${i}.png`;
+  for (const sc of ['tien', 'ma']) new Image().src = `/bg/${sc}-0.png`;
 }
 
 function SeasonFx({ season, cls }: { season: number; cls: string }) {
@@ -238,7 +239,8 @@ export default function Scene({ c, fx, paused, season, battle, quiet }: { c: Cha
   const aura = auraColor(lookOf(c)) ?? '#9ff0c8';
   const shaking = fx.some((f) => f.kind === 'breakthrough' || f.kind === 'hurt' || f.kind === 'lightning');
   const particles = Array.from({ length: 10 }, (_, i) => i);
-  const bgUrl = `/bg/${BG_SCENES.includes(focus) ? focus : 'tu_luyen'}-${season}.png`;
+  // sau phi thăng: nền tiên giới hay ma giới, không còn bốn mùa
+  const bgUrl = c.cosmos ? `/bg/${c.cosmos}-0.png` : `/bg/${BG_SCENES.includes(focus) ? focus : 'tu_luyen'}-${season}.png`;
   // chuyển mùa / đổi cảnh: giữ cảnh cũ đè lên rồi mờ dần, tránh nhảy hình
   const cur = useRef({ bg: bgUrl, season, k: 0 });
   const [prev, setPrev] = useState<{ bg: string; season: number; k: number } | null>(null);
@@ -255,10 +257,17 @@ export default function Scene({ c, fx, paused, season, battle, quiet }: { c: Cha
     <div className={`scene ${paused ? 'paused' : ''} ${shaking ? 'shake' : ''} ${c.dead ? 'scene-dead' : ''} ${battle ? 'in-battle' : ''}`} style={{ ['--aura' as string]: aura } as CSSProperties}>
       <div className="bg bg-img" style={{ backgroundImage: `url(${bgUrl})` }} aria-hidden="true" />
       {prev && prev.bg !== bgUrl && <div key={prev.k} className="bg bg-img fade-out" style={{ backgroundImage: `url(${prev.bg})` }} aria-hidden="true" />}
-      {(focus === 'tu_luyen' || !BG_SCENES.includes(focus)) && season !== 3 && <div className="bg-fall" aria-hidden="true" />}
+      {!c.cosmos && (focus === 'tu_luyen' || !BG_SCENES.includes(focus)) && season !== 3 && <div className="bg-fall" aria-hidden="true" />}
+      {c.cosmos && (
+        <div className={`cosmos-fx ${c.cosmos}`} aria-hidden="true">
+          {particles.map((i) => (
+            <i key={i} style={{ left: `${(i * 41) % 100}%`, animationDelay: `${-i * 0.9}s`, animationDuration: `${6 + (i % 4)}s` }} />
+          ))}
+        </div>
+      )}
 
-      {prev && prev.season !== season && <SeasonFx key={`o${prev.k}`} season={prev.season} cls="fade-out" />}
-      <SeasonFx key={`s${season}`} season={season} cls={prev && prev.season !== season ? 'fade-in' : ''} />
+      {!c.cosmos && prev && prev.season !== season && <SeasonFx key={`o${prev.k}`} season={prev.season} cls="fade-out" />}
+      {!c.cosmos && <SeasonFx key={`s${season}`} season={season} cls={prev && prev.season !== season ? 'fade-in' : ''} />}
 
       {!c.dead && focus === 'tu_luyen' && c.age >= 6 && (
         <div className="amb qi" aria-hidden="true">

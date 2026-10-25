@@ -63,7 +63,7 @@ export default function DuelWarning({
           {foe.kind === 'kiep_truoc' ? 'Chính bạn, kiếp trước' : r.player ? `@${r.player}` : 'Giang hồ vô danh'}
           {!r.alive && r.player && foe.kind !== 'kiep_truoc' ? ' · đã khuất' : ''}
           <br />
-          {realmLabel(r.realm, r.layer)}
+          {realmLabel(r.realm, r.layer, r.cosmos)}
           {r.path ? ` · ${PATHS[r.path]?.name ?? ''}` : ''}
         </p>
         {foe.kind !== 'kiep_truoc' && r.player && !foe.npc && (

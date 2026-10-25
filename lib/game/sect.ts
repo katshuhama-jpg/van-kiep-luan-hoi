@@ -95,7 +95,7 @@ export function promoteByRealm(c: Character, ctx: EffectCtx): string | null {
 
 /** Đến kỳ Đại bỉ tông môn chưa (mỗi 5-8 năm, chỉ khi chưa là chân truyền) */
 export function daiBiDue(c: Character): boolean {
-  return !!c.sect && rankOf(c) < 3 && c.realm >= 1 && c.age >= (c.daiBiAt ?? 0) && c.age >= 12;
+  return !!c.sect && !c.cosmos && rankOf(c) < 3 && c.realm >= 1 && c.age >= (c.daiBiAt ?? 0) && c.age >= 12;
 }
 
 /** Chân truyền: sư phụ cứu một lần khi sắp chết */
