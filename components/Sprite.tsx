@@ -514,8 +514,8 @@ export function lpcLayers(c: Character, hideWeapon = false): Layer[] {
   // áo choàng: do đồ (lông vũ, áo rách) hoặc từ Kim Đan trở lên
   const cape = deco === 'vu' ? robe.alt : deco === 'manh' ? '#5a4a3a' : realm >= 3 ? robe.dark : null;
   const tattered = deco === 'manh';
-  // Luyện Hư trở lên mọc cánh: ma tu cánh dơi, còn lại cánh trắng
-  const wings = realm >= 6 ? (ma ? 'bwings' : 'wings') : null;
+  // bỏ cánh (trông Tây quá); hiệu ứng cảnh giới cao vẽ ở PathAura theo từng đạo
+  const wings: string | null = null;
   const out: Layer[] = [];
   if (wings) out.push({ key: `${wings}_bg` });
   if (cape) out.push({ key: tattered ? 'capet_bg' : 'cape_bg', tint: cape });
@@ -608,6 +608,153 @@ function PetRoam({ id, box }: { id: string; box: number }) {
  * 1 tỏa sáng mờ, 2 thêm linh khí bay lên, 3 thêm vòng pháp trận dưới chân,
  * 4 vòng đôi và nhiều linh khí, 5 thêm cột sáng, 6 thêm tinh quang bay quanh, 7+ thêm hào quang tỏa tia.
  */
+function ma0(l: { path?: string | null; dao: number }): boolean {
+  return l.path === 'ma' || l.dao <= -60;
+}
+
+/**
+ * Dị tượng theo đạo, từ Nguyên Anh (mờ) đến Luyện Hư, Độ Kiếp (rõ, đầy đủ):
+ * kiếm tu kiếm luân sau lưng, Phật tu đài sen và Phật quang, trận tu bát quái dưới chân,
+ * đan tu tam muội chân hỏa và đan hoàn, ma tu huyết nguyệt và ma khí, yêu tu cửu vĩ, tán tu dải lụa tiên.
+ */
+function PathAura({ path, ma, yeu, realm, color, box }: { path?: string | null; ma: boolean; yeu: boolean; realm: number; color: string; box: number }) {
+  const full = realm >= 6;
+  const op = realm >= 6 ? 1 : realm === 5 ? 0.75 : 0.5;
+  const kind = ma ? 'ma' : yeu || path === 'yeu' ? 'yeu' : path === 'kiem' ? 'kiem' : path === 'phat' ? 'phat' : path === 'tran' ? 'tran' : path === 'dan' ? 'dan' : 'tien';
+  const st = { opacity: op, ['--aura' as string]: color } as CSSProperties;
+  if (kind === 'kiem') {
+    const n = full ? (realm >= 7 ? 9 : 7) : 5;
+    return (
+      <span className="pa pa-kiem" style={{ ...st, width: box * 0.95, height: box * 0.95 }} aria-hidden="true">
+        <svg viewBox="-50 -50 100 100">
+          <g className="pa-spin">
+            {Array.from({ length: n }, (_, i) => (
+              <g key={i} transform={`rotate(${(360 / n) * i}) translate(0 -34)`}>
+                <polygon points="0,-13 2.2,-8 2.2,8 0,10 -2.2,8 -2.2,-8" fill="#eef4ff" stroke={color} strokeWidth="0.8" />
+                <rect x="-4" y="8" width="8" height="1.6" fill={color} />
+                <rect x="-0.9" y="9.6" width="1.8" height="4" fill="#8a6a3a" />
+              </g>
+            ))}
+          </g>
+        </svg>
+      </span>
+    );
+  }
+  if (kind === 'phat') {
+    return (
+      <>
+        <span className="pa pa-phatquang" style={{ ...st, width: box * 0.62, height: box * 0.62 }} aria-hidden="true">
+          <svg viewBox="-50 -50 100 100">
+            <g className="pa-spin slow">
+              {Array.from({ length: 24 }, (_, i) => (
+                <rect key={i} x="-1" y="-48" width="2" height={i % 2 ? 8 : 13} fill="#ffe27a" opacity="0.8" transform={`rotate(${i * 15})`} />
+              ))}
+            </g>
+            <circle r="34" fill="none" stroke="#ffe27a" strokeWidth="2.5" />
+            <circle r="30" fill="#ffe9a0" opacity="0.18" />
+          </svg>
+        </span>
+        <span className="pa pa-sen" style={{ ...st, width: box * 0.62, height: box * 0.22 }} aria-hidden="true">
+          <svg viewBox="-50 -18 100 36">
+            {[-36, -24, -12, 0, 12, 24, 36].map((x, i) => (
+              <path key={i} d={`M${x} 10 Q${x - 9} -2 ${x} -14 Q${x + 9} -2 ${x} 10Z`} fill={i % 2 ? '#ff9ac0' : '#ffc4d8'} stroke="#c0507a" strokeWidth="0.8" />
+            ))}
+            <ellipse cx="0" cy="11" rx="44" ry="6" fill="#4a9a5a" stroke="#2a6a3a" strokeWidth="0.8" />
+          </svg>
+        </span>
+      </>
+    );
+  }
+  if (kind === 'tran') {
+    const tri = ['111', '110', '101', '100', '011', '010', '001', '000'];
+    return (
+      <span className="pa pa-batquai" style={{ ...st, width: box * 0.9, height: box * 0.9 }} aria-hidden="true">
+        <svg viewBox="-50 -50 100 100">
+          <g className="pa-spin slow">
+            <circle r="46" fill="none" stroke={color} strokeWidth="1.2" />
+            <circle r="30" fill="none" stroke={color} strokeWidth="0.8" strokeDasharray="2 2" />
+            {tri.map((t, i) => (
+              <g key={i} transform={`rotate(${i * 45}) translate(0 -38)`}>
+                {t.split('').map((b, j) =>
+                  b === '1' ? <rect key={j} x="-7" y={-5 + j * 3.6} width="14" height="2.2" fill={color} /> : (
+                    <g key={j}>
+                      <rect x="-7" y={-5 + j * 3.6} width="5.6" height="2.2" fill={color} />
+                      <rect x="1.4" y={-5 + j * 3.6} width="5.6" height="2.2" fill={color} />
+                    </g>
+                  ),
+                )}
+              </g>
+            ))}
+            <circle r="12" fill="#f6f0e0" />
+            <path d="M0 -12 A12 12 0 0 1 0 12 A6 6 0 0 1 0 0 A6 6 0 0 0 0 -12Z" fill="#1f160d" />
+            <circle cy="-6" r="1.8" fill="#1f160d" />
+            <circle cy="6" r="1.8" fill="#f6f0e0" />
+          </g>
+        </svg>
+      </span>
+    );
+  }
+  if (kind === 'dan') {
+    return (
+      <>
+        <span className="pa pa-lua" style={{ ...st, width: box * 0.6, height: box * 0.3 }} aria-hidden="true">
+          {Array.from({ length: full ? 7 : 5 }, (_, i) => (
+            <i key={i} style={{ left: `${8 + i * (84 / (full ? 6 : 4))}%`, animationDelay: `${-i * 0.23}s` }} />
+          ))}
+        </span>
+        {full && (
+          <span className="pa pa-danhoan" style={{ ...st, width: box * 0.66, height: box * 0.66 }} aria-hidden="true">
+            <i />
+            <i />
+            <i />
+          </span>
+        )}
+      </>
+    );
+  }
+  if (kind === 'ma') {
+    return (
+      <>
+        <span className="pa pa-huyetnguyet" style={{ ...st, width: box * 0.44, height: box * 0.44 }} aria-hidden="true" />
+        <span className="pa pa-makhi" style={{ ...st, width: box * 0.7, height: box * 0.8 }} aria-hidden="true">
+          {Array.from({ length: full ? 8 : 5 }, (_, i) => (
+            <i key={i} style={{ left: `${10 + ((i * 29) % 80)}%`, animationDelay: `${-i * 0.4}s` }} />
+          ))}
+        </span>
+      </>
+    );
+  }
+  if (kind === 'yeu') {
+    const n = full ? 9 : realm === 5 ? 6 : 3;
+    return (
+      <span className="pa pa-cuuvi" style={{ ...st, width: box * 1.1, height: box * 0.75 }} aria-hidden="true">
+        <svg viewBox="-50 -40 100 60">
+          {Array.from({ length: n }, (_, i) => {
+            const a = -70 + (140 / Math.max(1, n - 1)) * i;
+            return (
+              <g key={i} transform={`rotate(${a} 0 14)`}>
+                <g className="pa-tail" style={{ animationDelay: `${-i * 0.3}s` }}>
+                  <path d="M0 14 C-8 -2 8 -14 0 -34 C10 -18 12 0 0 14Z" fill="#ff8a2a" stroke="#7a2a08" strokeWidth="1" />
+                  <path d="M0 -34 C4 -28 5 -24 3 -20 C1 -24 0 -28 0 -34Z" fill="#fff4e0" />
+                </g>
+              </g>
+            );
+          })}
+        </svg>
+      </span>
+    );
+  }
+  // tán tu, tiên đạo: dải lụa tiên vắt sau vai, bay phấp phới
+  return (
+    <span className="pa pa-lua-tien" style={{ ...st, width: box * 0.95, height: box * 0.6 }} aria-hidden="true">
+      <svg viewBox="-50 -30 100 60">
+        <path className="pa-wave" d="M-46 18 C-36 -6 -22 -18 0 -14 C22 -18 36 -6 46 18" fill="none" stroke={color} strokeWidth="5" strokeLinecap="round" opacity="0.85" />
+        <path className="pa-wave two" d="M-46 18 C-36 -6 -22 -18 0 -14 C22 -18 36 -6 46 18" fill="none" stroke="#fff8e6" strokeWidth="1.6" strokeLinecap="round" />
+      </svg>
+    </span>
+  );
+}
+
 function Aura({ color, realm, layer, box }: { color: string; realm: number; layer: number; box: number }) {
   const r = Math.min(realm, 8);
   // mạnh dần trong cùng cảnh giới theo tầng
@@ -705,6 +852,7 @@ export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Charact
   return (
     <div className={`lpc ${l.dead ? 'is-dead' : ''}`} style={{ width: box, height: box }} role="img" aria-label={`${c.name}, ${c.age < 13 ? 'trẻ con' : 'người lớn'}${l.path ? ', ' + PATHS[l.path].name : ''}`}>
       {aura && !l.dead && <Aura color={aura} realm={l.realm} layer={c.layer} box={box} />}
+      {aura && !l.dead && l.realm >= 4 && <PathAura path={l.path} ma={ma0(l)} yeu={!!l.yeu} realm={l.realm} color={aura} box={box} />}
       {l.path === 'phat' && !l.dead && <span className="lpc-halo" style={{ width: box * 0.26, height: box * 0.26, top: box * 0.06 }} />}
       {l.pet && l.stage !== 'baby' && !l.dead && <PetRoam id={petOf(c)} box={box} />}
       {url &&

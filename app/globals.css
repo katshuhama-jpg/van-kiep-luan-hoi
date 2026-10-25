@@ -2753,3 +2753,35 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 }
 .aura-ring.still { animation: none; border-style: dotted; opacity: calc(var(--k) * 0.7); }
 @media (prefers-reduced-motion: reduce) { .lpc-glow { animation: none; } }
+
+/* dị tượng theo đạo (thay cho cánh) */
+.pa { position: absolute; left: 50%; pointer-events: none; transform: translate(-50%, -50%); }
+.pa svg { width: 100%; height: 100%; overflow: visible; display: block; }
+.pa-spin { animation: paSpin 9s linear infinite; transform-origin: 0 0; }
+.pa-spin.slow { animation-duration: 24s; }
+@keyframes paSpin { to { transform: rotate(360deg); } }
+.pa-kiem { top: 50%; filter: drop-shadow(0 0 3px var(--aura)); }
+.pa-phatquang { top: 26%; filter: drop-shadow(0 0 6px #ffe27a); }
+.pa-sen { top: 93%; z-index: 0; }
+.pa-batquai { top: 92%; transform: translate(-50%, -50%) perspective(300px) rotateX(70deg); filter: drop-shadow(0 0 4px var(--aura)); }
+.pa-lua { top: 86%; }
+.pa-lua i { position: absolute; bottom: 0; width: 14%; height: 70%; margin-left: -7%; border-radius: 50% 50% 40% 40% / 70% 70% 30% 30%; background: radial-gradient(ellipse at 50% 80%, #fff6b0 0 20%, #ffb02a 45%, #e8401a 75%, transparent 80%); filter: blur(0.5px) drop-shadow(0 0 4px #ff7a2a); transform-origin: 50% 100%; animation: flame 0.9s ease-in-out infinite alternate; }
+@keyframes flame { 0% { transform: scaleY(0.75) scaleX(1); opacity: 0.85; } 100% { transform: scaleY(1.15) scaleX(0.85); opacity: 1; } }
+.pa-danhoan { top: 55%; animation: paSpin 3.2s linear infinite; }
+.pa-danhoan i { position: absolute; width: 9px; height: 9px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #fff 0 15%, #ffcf3e 40%, #c06a1a 80%); box-shadow: 0 0 8px #ffb02a; }
+.pa-danhoan i:nth-child(1) { left: 50%; top: 0; }
+.pa-danhoan i:nth-child(2) { left: 6%; top: 70%; }
+.pa-danhoan i:nth-child(3) { left: 88%; top: 70%; }
+.pa-huyetnguyet { top: 24%; border-radius: 50%; background: radial-gradient(circle at 40% 40%, #ff6a5a, #a01020 60%, #5a0a14); box-shadow: 0 0 16px #c0202e, 0 0 32px #7a0a1e; animation: moonPulse 3s ease-in-out infinite; }
+@keyframes moonPulse { 50% { box-shadow: 0 0 24px #e0202e, 0 0 48px #7a0a1e; } }
+.pa-makhi { top: 55%; }
+.pa-makhi i { position: absolute; bottom: 0; width: 22%; height: 30%; border-radius: 50%; background: radial-gradient(circle, rgba(40, 0, 20, 0.75), rgba(120, 10, 40, 0.35) 55%, transparent 70%); filter: blur(2px); animation: maRise 2.8s ease-in infinite; }
+@keyframes maRise { 0% { transform: translateY(0) scale(0.6); opacity: 0; } 25% { opacity: 1; } 100% { transform: translateY(-140%) scale(1.4); opacity: 0; } }
+.pa-cuuvi { top: 52%; filter: drop-shadow(0 0 3px #ffb060); }
+.pa-tail { animation: tailSway 2.6s ease-in-out infinite alternate; transform-box: view-box; transform-origin: 0 14px; }
+@keyframes tailSway { 0% { transform: rotate(-6deg); } 100% { transform: rotate(6deg); } }
+.pa-lua-tien { top: 52%; }
+.pa-wave { animation: wave 3s ease-in-out infinite alternate; transform-origin: 50% 50%; }
+.pa-wave.two { animation-delay: -0.4s; }
+@keyframes wave { 0% { transform: translateY(-2px) scaleY(0.9); } 100% { transform: translateY(3px) scaleY(1.1); } }
+@media (prefers-reduced-motion: reduce) { .pa, .pa * { animation: none !important; } }
