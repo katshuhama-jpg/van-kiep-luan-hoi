@@ -20,7 +20,7 @@ import type { Character, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types'
 import DuelWarning from '@/components/Duel';
 import { artOf } from '@/lib/game/vocong';
 import { ELEMENTS, elemHitTag, elemMul, elemRel, elementOf } from '@/lib/game/nguhanh';
-import { DUEL_INFO, DUEL_PER_YEAR, DUEL_TURNS, finishDuel, foeChar, foeStats, pickDuel, type DuelFoe } from '@/lib/game/duel';
+import { DUEL_INFO, DUEL_PER_YEAR, DUEL_TURNS, finishDuel, foeChar, foeStats, pickDuel, teaTrap, type DuelFoe } from '@/lib/game/duel';
 import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, pickAmbush } from '@/lib/game/ambush';
 import { addMemorial, displayName, fetchWorld, loadAll, saveLocal, saveMeta, saveRemote, type SaveState } from '@/lib/storage';
 import { useAuth } from '@/lib/useAuth';
@@ -342,15 +342,32 @@ export default function PlayPage() {
         c.log.push({ age: Math.floor(c.age), tone: 'bad', text: `Bỏ chạy không thành, ${who} chặn đầu đánh úp.` });
         startDuel(c, f, true);
       }
-    } else if (a === 'befriend')
+    } else if (a === 'befriend') {
+      // lòng người khó đoán: 40% ám toán, 40% trở mặt ra tay, 20% thật lòng
+      const out0: Fx[] = [];
+      const tr = teaTrap(c, f, makeCtx(c, out0));
+      if (tr.kind === 'tro_mat') {
+        c.log.push({ age: Math.floor(c.age), tone: 'bad', text: tr.text });
+        pushFx(out0);
+        // trở mặt thành địch thủ, bạn bị đánh úp (mất trước một phần máu)
+        startDuel(c, { ...f, kind: 'dich_thu' }, true);
+        return;
+      }
+      if (tr.kind === 'am_toan') {
+        c.log.push({ age: Math.floor(c.age), tone: c.dead ? 'big' : 'bad', text: tr.text });
+        pushFx(out0);
+        persist(true);
+        rerender();
+        return;
+      }
       act((ch) => {
         const er = elemRel(elementOf(ch), elementOf(f.rival));
         stat(ch, 'khiVan', er === 'duoc_sinh' ? 5 : er === 'sinh' ? 3 : 2);
         stat(ch, 'tamCanh', 4);
         if (er === 'duoc_sinh' || er === 'sinh') ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: 'Ngũ hành tương sinh, hai người càng nói càng hợp. Khí vận của bạn khởi sắc.' });
-        ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: `Bạn cùng ${who} uống trà luận đạo suốt đêm, kết làm bằng hữu giang hồ.` });
+        ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: `Trà thật, người cũng thật. Bạn cùng ${who} uống trà luận đạo suốt đêm, kết làm bằng hữu giang hồ.` });
       });
-    else
+    } else
       act((ch, out) => {
         const extra = declineRisk(ch, f, makeCtx(ch, out), 'leave');
         ch.log.push({ age: Math.floor(ch.age), tone: ch.dead ? 'big' : extra ? 'bad' : 'normal', text: `Bạn chắp tay cáo từ ${who}.${extra || ' Núi xanh còn đó, ngày sau gặp lại.'}` });

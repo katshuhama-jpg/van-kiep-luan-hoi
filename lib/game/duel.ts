@@ -207,7 +207,7 @@ function rivalLoot(c: Character, r: RivalChar, ctx: EffectCtx, chance: number, s
 }
 
 /** Bị lột n món đang mặc (bỏ qua áo vải khởi đầu). Mặc từ 2 món trở lên thì luôn chừa lại ít nhất một món. */
-function robGear(c: Character, ctx: EffectCtx, n: number): string[] {
+export function robGear(c: Character, ctx: EffectCtx, n: number): string[] {
   const worn = (Object.entries(c.equipped) as [Slot, string | undefined][]).filter(([, id]) => id && id !== 'ao_vai') as [Slot, string][];
   const k = Math.min(n, worn.length <= 1 ? worn.length : worn.length - 1);
   const names: string[] = [];
@@ -351,4 +351,58 @@ function reasonFor(c: Character, kind: DuelKind, r: RivalChar, rnd: () => number
     );
   }
   return pool[Math.floor(rnd() * pool.length)];
+}
+
+/**
+ * Kết giao uống trà với đồng đạo: lòng người khó đoán.
+ * 40% bị ám toán ngầm (độc, thuốc mê, cổ trùng...), 40% trở mặt ra tay (đánh lén, phục binh...), 20% là thật lòng.
+ */
+export type TeaResult = { kind: 'am_toan'; text: string } | { kind: 'tro_mat'; text: string } | { kind: 'that_long' };
+
+const AM_TOAN: ((w: string, h: string) => string)[] = [
+  (w, h) => `Chén trà của ${w} có vị đắng lạ. Uống xong, bụng bạn quặn thắt: trà có độc.`,
+  (w, h) => `${w} đốt một nén "an thần hương". Bạn ngửi một lúc thì mê man, tỉnh dậy đã nằm giữa bãi cỏ.`,
+  (w, h) => `Rượu ${w} mời ngấm Thập Hương Nhuyễn Cân Tán, gân cốt bạn mềm nhũn như bún.`,
+  (w, h) => `Trong ấm trà của ${w} có thả cổ trùng. Mấy ngày sau bạn mới thấy nó cựa quậy trong bụng.`,
+  (w, h) => `${w} rót trà bằng chiếc ấm hai ngăn: chén của ${h} trà thường, chén của bạn trà độc.`,
+  (w, h) => `Đang luận đạo say sưa, ${w} vỗ vai thân thiết. Trên tay ${h} dính kim độc mảnh như lông trâu.`,
+  (w, h) => `Bánh ngọt ${w} mời có trộn Tán Công Tán. Bạn vận khí thì thấy chân khí tán loạn.`,
+  (w, h) => `${w} dùng "Tỏa Hồn Khúc" thổi sáo giúp vui. Bạn nghe xong đầu óc quay cuồng, ngã gục.`,
+];
+const TRO_MAT: ((w: string, h: string) => string)[] = [
+  (w, h) => `Chén trà vừa nâng lên, ${w} đã rút kiếm đâm thẳng tới: "Đồng đạo? Giang hồ làm gì có đồng đạo!"`,
+  (w, h) => `Uống được nửa chén, từ bụi rậm nhảy ra ba tên phục binh. ${w} cười nhạt rồi cùng xông vào.`,
+  (w, h) => `${w} thấy túi đồ của bạn căng phồng, bỗng nổi lòng tham, hất bàn trà ra tay.`,
+  (w, h) => `Hóa ra ${w} nhận tiền thưởng truy nã cái đầu của bạn. Ấm trà chỉ là cái cớ để lại gần.`,
+  (w, h) => `${w} nhắc chuyện cũ, càng nói càng cay: hóa ra sư phụ ${h} từng chết dưới tay người cùng môn với bạn.`,
+  (w, h) => `Bàn tới công pháp, ${w} đòi bạn đưa bí kíp ra xem. Bạn chưa kịp từ chối, ${h} đã ra tay cướp.`,
+  (w, h) => `${w} uống say, tâm ma nổi dậy, mắt đỏ ngầu, quay sang đánh bạn như đánh kẻ thù.`,
+  (w, h) => `Ấm trà vỡ tan, bên trong giấu một con dao găm. ${w} đã chuẩn bị từ trước.`,
+];
+
+export function teaTrap(c: Character, f: DuelFoe, ctx: EffectCtx): TeaResult {
+  const who = f.rival.name;
+  const h = f.rival.gender === 'nu' ? 'ả' : 'hắn';
+  const r = ctx.rnd();
+  if (r < 0.4) {
+    const pick = AM_TOAN[Math.floor(ctx.rnd() * AM_TOAN.length)];
+    let text = pick(who, h);
+    const hurt = 18 + Math.floor(ctx.rnd() * 14);
+    stat(c, 'sucKhoe', -hurt);
+    c.cultivation = Math.max(0, Math.round(c.cultivation * 0.95));
+    ctx.fx('hurt', 'Trúng ám toán');
+    text += ` (-${hurt} sức khỏe, tu vi tổn hao).`;
+    // lúc bạn mê man, hắn lục túi
+    if (ctx.rnd() < 0.5) {
+      const taken = robGear(c, ctx, 1);
+      const lost = Math.round(c.linhThach * 0.15);
+      money(c, -lost);
+      text += ` Lúc bạn mê man, ${h} lấy mất ${taken.length ? taken.join(', ') + ' và ' : ''}${lost} linh thạch.`;
+    }
+    const fl = fatal(c, ctx, 0.06, `Độc trong chén trà của ${who} ngấm vào tâm mạch. Bạn chết bên bàn trà còn ấm.`);
+    if (fl) text += fl;
+    return { kind: 'am_toan', text };
+  }
+  if (r < 0.8) return { kind: 'tro_mat', text: TRO_MAT[Math.floor(ctx.rnd() * TRO_MAT.length)](who, h) };
+  return { kind: 'that_long' };
 }
