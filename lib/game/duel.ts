@@ -4,7 +4,7 @@ import { demoChar } from './demo';
 import { ELEMENT_IDS, elemRel, elementOf, type ElemRel } from './nguhanh';
 import { genName } from './engine';
 import { addCult, fatal, giveItem, money, reward, stat } from './helpers';
-import type { Character, EffectCtx, RivalChar, Slot } from './types';
+import type { Character, EffectCtx, RivalChar, Slot, Vendetta } from './types';
 
 /**
  * Kỳ ngộ giang hồ: gặp nhân vật của người chơi khác (hoặc chính mình kiếp trước).
@@ -25,6 +25,7 @@ export interface DuelFoe {
   rel: 'yeu' | 'ngang' | 'manh';
   reason: string; // lý do gặp, mỗi lần một khác
   betray?: boolean; // đồng đạo trở mặt khi uống trà
+  revenge?: Vendetta; // gặp lại kẻ thù cũ để báo thù
 }
 
 export const DUEL_INFO: Record<DuelKind, { title: string; tag: string; warn: string }> = {
@@ -121,6 +122,16 @@ function clToRealm(cl: number): { realm: number; layer: number } {
 /** Chọn cuộc gặp năm nay. null nếu không có gì hợp lý. */
 export function pickDuel(c: Character, rnd: () => number): DuelFoe | null {
   const w = c.world;
+  // oan gia ngõ hẹp: có thù với người chơi thật thì 35% gặp lại họ
+  for (const v of c.vendettas ?? []) {
+    const cands = (w?.rivals ?? []).filter((x) => x.player === v.player);
+    if (!cands.length || rnd() >= 0.35) continue;
+    const rival = cands.find((x) => x.name === v.name) ?? cands[0];
+    const me = combatLevel(c);
+    const foe = combatLevel(foeChar(rival));
+    const rel = foe <= me - 2 ? 'yeu' : foe >= me + 2 ? 'manh' : 'ngang';
+    return { kind: 'dich_thu', rival, npc: false, rel, revenge: v, reason: `Oan gia ngõ hẹp! Bạn chưa quên: ${v.why}. Nay người của @${v.player} lại xuất hiện trước mặt. Báo thù được thưởng gấp đôi và lấy lại đồ đã mất.` };
+  }
   const past = w?.past ?? null;
   const kinds: [DuelKind, number][] = [
     ['dong_dao', 45],
@@ -208,7 +219,7 @@ function rivalLoot(c: Character, r: RivalChar, ctx: EffectCtx, chance: number, s
 }
 
 /** Bị lột n món đang mặc (bỏ qua áo vải khởi đầu). Mặc từ 2 món trở lên thì luôn chừa lại ít nhất một món. */
-export function robGear(c: Character, ctx: EffectCtx, n: number): string[] {
+export function robGear(c: Character, ctx: EffectCtx, n: number, ids?: string[]): string[] {
   const worn = (Object.entries(c.equipped) as [Slot, string | undefined][]).filter(([, id]) => id && id !== 'ao_vai') as [Slot, string][];
   const k = Math.min(n, worn.length <= 1 ? worn.length : worn.length - 1);
   const names: string[] = [];
@@ -217,10 +228,19 @@ export function robGear(c: Character, ctx: EffectCtx, n: number): string[] {
     const [slot, id] = worn.splice(j, 1)[0];
     c.equipped[slot] = slot === 'ao' ? 'ao_vai' : undefined;
     c.inventory = c.inventory.filter((x) => x !== id);
+    ids?.push(id);
     names.push(ITEMS.find((it) => it.id === id)?.name ?? 'một món đồ');
   }
   if (names.length) ctx.fx('hurt', 'Bị lột đồ');
   return names;
+}
+
+/** Ghi thù với người chơi thật để kiếp này hoặc kiếp sau báo thù (giữ tối đa 3 mối thù) */
+export function addVendetta(c: Character, f: DuelFoe, items: string[], why: string) {
+  if (!f.rival.player || f.npc || f.kind === 'kiep_truoc') return;
+  const rest = (c.vendettas ?? []).filter((v) => v.player !== f.rival.player);
+  const old = (c.vendettas ?? []).find((v) => v.player === f.rival.player);
+  c.vendettas = [...rest, { player: f.rival.player, name: f.rival.name, items: [...(old?.items ?? []), ...items].slice(-4), why }].slice(-3);
 }
 
 /** Kết thúc trận: thưởng phạt theo loại cuộc gặp */
@@ -249,7 +269,9 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
       out.push(`${who} hơn bạn một bậc. Thua tâm phục khẩu phục, bạn học được không ít (+${exp} tu vi).`);
       // đồng đạo cũng có kẻ giả nhân giả nghĩa: thắng xong trở mặt lột đồ (người nghiêng tà dễ trở mặt hơn)
       if (ctx.rnd() < (r.daoTam < 0 ? 0.35 : 0.15)) {
-        const taken = robGear(c, ctx, ctx.rnd() < 0.3 ? 2 : 1);
+        const ids: string[] = [];
+        const taken = robGear(c, ctx, ctx.rnd() < 0.3 ? 2 : 1, ids);
+        if (taken.length) addVendetta(c, f, ids, `${r.name} giả nhân giả nghĩa lột đồ bạn`);
         if (taken.length) out.push(`Nào ngờ ${r.name} là kẻ giả nhân giả nghĩa. Thấy bạn kiệt sức, hắn trở mặt lột mất ${taken.join(' và ')} rồi cười lớn bỏ đi.`);
       }
     }
@@ -257,11 +279,18 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
   }
   if (f.kind === 'dich_thu') {
     if (result === 'win') {
-      const exp = Math.round(reward(c, 0.6) * harder);
+      const rv = f.revenge ? 2 : 1; // báo thù được thưởng gấp đôi
+      const exp = Math.round(reward(c, 0.6) * harder * rv);
       addCult(c, exp);
-      const loot = Math.round(40 + r.realm * 60 * harder);
+      const loot = Math.round((40 + r.realm * 60 * harder) * rv);
       money(c, loot);
-      out.push(`Bạn đánh bại địch thủ ${who} (+${exp} tu vi, +${loot} linh thạch).`);
+      out.push(f.revenge ? `Đại thù đã báo! Bạn hạ được ${who} (+${exp} tu vi, +${loot} linh thạch, gấp đôi).` : `Bạn đánh bại địch thủ ${who} (+${exp} tu vi, +${loot} linh thạch).`);
+      if (f.revenge) {
+        const back = f.revenge.items.filter((id) => ITEMS.some((i) => i.id === id));
+        back.forEach((id) => giveItem(c, id, false));
+        if (back.length) out.push(`Bạn lấy lại ${back.map((id) => ITEMS.find((i) => i.id === id)?.name).join(', ')} từng bị cướp.`);
+        c.vendettas = (c.vendettas ?? []).filter((v) => v.player !== f.revenge!.player);
+      }
       // thắng địch thủ: lấy 1 món, 30% lấy được 2 món, không bao giờ lấy hết
       const g = rivalLoot(c, r, ctx, 0.7, (n) => `Bạn lột được ${n} của ${r.name} làm chiến lợi phẩm.`);
       if (g) {
@@ -276,14 +305,19 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
     } else {
       // bị đồng đạo trở mặt đánh úp thì càng dễ chết
       const fl = fatal(c, ctx, f.betray ? 0.45 : 0.25, f.betray ? `Bạn tin nhầm ${who}. Chén trà còn chưa nguội, người đã thành thi thể.` : `Bạn bại dưới tay địch thủ ${who}. Giang hồ lại thêm một nấm mồ.`);
-      if (c.dead) return [fl ?? ''];
+      if (c.dead) {
+        addVendetta(c, f, [], f.betray ? `${r.name} trở mặt giết bạn bên bàn trà` : `${r.name} đã giết bạn`);
+        return [fl ?? ''];
+      }
       stat(c, 'sucKhoe', -35);
       const lost = Math.round(c.linhThach * 0.2);
       money(c, -lost);
       out.push(`Bạn thua ${who}, bị cướp ${lost} linh thạch, lết về trong trọng thương.${fl ?? ''}`);
       // bị lột 1-2 món đang mặc, không bao giờ mất hết
-      const taken = robGear(c, ctx, ctx.rnd() < 0.3 ? 2 : 1);
+      const ids: string[] = [];
+      const taken = robGear(c, ctx, ctx.rnd() < 0.3 ? 2 : 1, ids);
       if (taken.length) out.push(`${r.name} còn lột mất ${taken.join(' và ')} của bạn.`);
+      addVendetta(c, f, ids, f.betray ? `${r.name} trở mặt đánh úp bạn` : `${r.name} đánh bại và cướp của bạn`);
     }
     return out;
   }
@@ -396,7 +430,9 @@ export function teaTrap(c: Character, f: DuelFoe, ctx: EffectCtx): TeaResult {
     text += ` (-${hurt} sức khỏe, tu vi tổn hao).`;
     // lúc bạn mê man, hắn lục túi
     if (ctx.rnd() < 0.5) {
-      const taken = robGear(c, ctx, 1);
+      const ids: string[] = [];
+      const taken = robGear(c, ctx, 1, ids);
+      addVendetta(c, f, ids, `${who} bỏ độc vào trà rồi lục túi bạn`);
       const lost = Math.round(c.linhThach * 0.15);
       money(c, -lost);
       text += ` Lúc bạn mê man, ${h} lấy mất ${taken.length ? taken.join(', ') + ' và ' : ''}${lost} linh thạch.`;

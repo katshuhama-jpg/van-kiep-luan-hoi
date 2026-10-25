@@ -1,3 +1,4 @@
+import { applyProphecy, omenIs } from './hook';
 import { ITEMS, fxText, gearFx, FAMILY_TIERS, REGIONS, FOCUS, MAX_LIFE, HAIR_COLORS, HAIR_STYLES, HO, HO_KEP, TEN_NAM_1, TEN_NAM_2, TEN_NU_1, TEN_NU_2, LIFE_FATES, LINH_CAN, ORIGINS, PATHS, PILLS, REALMS, TEN_NAM, TEN_NU, realmLabel } from './data';
 import { BREAK_EVENT_ID, EVENTS, PATH_EVENT_ID, pathChoices } from './events';
 import { addCult, addPill, clamp, fatal, reward, wealthTier, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
@@ -143,6 +144,10 @@ export function newCharacter(meta: Meta, gifts: string[] = [], base?: Character)
   }
   c.past = meta.past ?? null;
   c.stash = meta.stash ?? null;
+  c.legend = meta.legend ?? null;
+  c.vendettas = meta.vendettas ?? [];
+  applyProphecy(c, meta.prophecy);
+  if (c.lifeNo === 1) c.log.push({ age: 0, tone: 'good', text: 'Kiếp đầu tiên, trời cao thương đứa trẻ mới đến: trước 16 tuổi bạn sẽ không chết.' });
   if (gifts.length) {
     applyGifts(c, gifts);
     c.log.push({ age: 0, tone: 'good', text: `Thiên phú bẩm sinh: ${gifts.map((g) => giftOf(g)?.name).join(', ')}.` });
@@ -162,6 +167,14 @@ export function makeCtx(c: Character, fxOut: Fx[]): EffectCtx {
 
 function die(c: Character, cause: string, ctx: EffectCtx) {
   if (c.dead) return;
+  // kiếp đầu được trời thương đến 16 tuổi
+  if (c.lifeNo === 1 && c.age < 16) {
+    c.stats.sucKhoe = Math.max(c.stats.sucKhoe, 15);
+    c.stats.tamMa = Math.min(c.stats.tamMa, 60);
+    ctx.log('Tưởng đã mất mạng, nhưng trời cao như còn thương đứa trẻ này. Bạn thoát chết trong gang tấc.', 'good');
+    ctx.fx('heal', 'Trời thương');
+    return;
+  }
   c.dead = true;
   c.cause = cause;
   ctx.fx('death');
@@ -533,6 +546,7 @@ function breakChance(c: Character) {
   return clamp(
     // chính đạo đạo tâm vững, đột phá dễ hơn chút
     (c.daoTam >= 40 ? 0.06 : 0) +
+    (omenIs('loi_van') ? 0.06 : 0) +
     (hasGift(c, 'g_thien_menh') ? 0.15 : 0) + 0.39 - Math.max(0, c.realm - 2) * 0.07 + c.stats.ngoTinh / 450 + c.stats.tamCanh / 500 - c.stats.tamMa / 200 + (c.stats.khiVan - 50) / 500 + c.linhCanMul * 0.05,
     0.08,
     0.9,

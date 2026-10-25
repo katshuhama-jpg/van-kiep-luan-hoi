@@ -1,3 +1,4 @@
+import { omenCultMul, omenIs } from './hook';
 import { ITEMS, REALMS } from './data';
 import type { Character, EffectCtx, Stats } from './types';
 
@@ -53,6 +54,7 @@ export function weighted<T extends { w: number }>(rnd: () => number, arr: readon
 export function stat(c: Character, key: keyof Stats, delta: number) {
   // kẻ đã quen đường tà thì tâm ma dâng chậm hơn (lòng đã chai)
   if (key === 'tamMa' && delta > 0 && c.daoTam <= -40) delta *= 0.7;
+  if (key === 'tamMa' && delta > 0 && omenIs('phat_quang')) delta *= 0.6;
   // càng cao càng khó lên: khí vận, tâm cảnh, ngộ tính trên 80 chỉ tăng nửa
   if (delta > 0 && key !== 'tamMa' && key !== 'sucKhoe' && c.stats[key] >= 80) delta *= 0.5;
   c.stats[key] = clamp(Math.round(c.stats[key] + delta), 0, 100);
@@ -72,6 +74,8 @@ export function needFor(c: Character): number {
 }
 
 export function addCult(c: Character, amount: number) {
+  // thiên tượng hôm nay làm tu vi nhanh hay chậm
+  if (amount > 0) amount *= omenCultMul(c);
   c.cultivation = Math.max(0, c.cultivation + amount);
 }
 
@@ -160,6 +164,12 @@ export function fatal(c: Character, ctx: EffectCtx, chance: number, cause: strin
   const luckMul = 1 - clamp((c.stats.khiVan - 50) / 250, -0.2, 0.2);
   const p = clamp(chance * hard * tough * (chance < 1 ? youngMul(c.age) : 1) * (chance < 1 ? luckMul : 1), 0.01, chance >= 1 ? 1 : 0.95);
   if (ctx.rnd() >= p) return null;
+  // kiếp đầu tiên được trời thương: chưa đủ 16 tuổi thì không chết, chỉ bị thương
+  if (c.lifeNo === 1 && c.age < 16) {
+    c.stats.sucKhoe = Math.max(10, c.stats.sucKhoe - 20);
+    ctx.fx('heal', 'Trời thương');
+    return ' Tưởng đã mất mạng, nhưng trời cao như còn thương đứa trẻ này. Bạn tỉnh lại, người đầy thương tích.';
+  }
   if (c.equipped.phu_kien === 'ngoc_boi') {
     c.equipped.phu_kien = undefined;
     c.inventory = c.inventory.filter((i) => i !== 'ngoc_boi');

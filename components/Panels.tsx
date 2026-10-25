@@ -11,6 +11,8 @@ import { DANGER_TEXT, MONSTERS, combatLevel, dangerOf, effLv, killExp, monsterNa
 import { MonsterSprite } from './Battle';
 import { cultPct, fmt, needFor } from '@/lib/game/helpers';
 import type { Character, Focus, LogEntry, Meta, PendingEvent, Slot } from '@/lib/game/types';
+import { evalQuests, nearEndings, pickProphecy, questName } from '@/lib/game/hook';
+import { TodayCard } from './Hook';
 
 /* ---------------- Khung hộp thoại ---------------- */
 export function Sheet({ title, onClose, children }: { title: string; onClose?: () => void; children: ReactNode }) {
@@ -354,7 +356,7 @@ export function BagSheet({ c, onEquip, onUsePill, onClose }: { c: Character; onE
               </div>
               <div className="item-body">
                 <span>
-                  {it.name} {it.rare ? <em className={`rare-tag r${it.rare}`}>{RARE_TXT[it.rare]}</em> : null}
+                  {c.legend?.item === it.id ? <b className="legend-name">★ {c.legend.name} ({it.name}, {c.legend.lv} kiếp)</b> : it.name} {it.rare ? <em className={`rare-tag r${it.rare}`}>{RARE_TXT[it.rare]}</em> : null}
                 </span>
                 {it.fx && <small className="fx-line">{fxText(it.fx)}</small>}
                 <small>{it.desc}</small>
@@ -478,6 +480,8 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
         </p>
       )}
 
+      <TodayCard meta={meta} compact />
+
       <GachaPanel
         phuc={left}
         busy={busy}
@@ -534,7 +538,14 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
 }
 
 /* ---------------- Màn chết ---------------- */
-export function DeathSheet({ c, karma, isNew, onDone }: { c: Character; karma: { phuc: number; nghiep: number }; isNew: boolean; onDone: (epitaph: string, note: string, bury: boolean) => void }) {
+export function DeathSheet({ c, meta, karma, isNew, onDone }: { c: Character; meta: Meta; karma: { phuc: number; nghiep: number }; isNew: boolean; onDone: (epitaph: string, note: string, bury: boolean, extra: { prophecy: { id: string; text: string }; legendName: string | null }) => void }) {
+  const [prophecy] = useState(() => pickProphecy(c, Math.random));
+  const weapon = c.equipped.vu_khi ? ITEMS.find((i) => i.id === c.equipped.vu_khi) : null;
+  const sameLegend = !!weapon && c.legend?.item === weapon.id;
+  const [passOn, setPassOn] = useState(sameLegend);
+  const [legendName, setLegendName] = useState(sameLegend ? c.legend!.name : weapon ? weapon.name : '');
+  const near = nearEndings(c, meta.endings);
+  const q = evalQuests(meta, c, isNew);
   const [text, setText] = useState('');
   const [note, setNote] = useState('');
   const [bury, setBury] = useState(true);
@@ -565,6 +576,30 @@ export function DeathSheet({ c, karma, isNew, onDone }: { c: Character; karma: {
         )}
         .
       </p>
+      {q.newly.length > 0 && (
+        <p className="death-quests">
+          Nhiệm vụ hôm nay hoàn thành: <b>{q.newly.map(questName).join(', ')}</b> (+{q.reward} phúc duyên)
+        </p>
+      )}
+      <div className="prophecy">
+        <small>Lời tiên tri cho kiếp sau</small>
+        <b>“{prophecy.text}”</b>
+      </div>
+      {near.length > 0 && (
+        <div className="near-endings">
+          <small>Kết cục chưa mở trong Sổ Sinh Tử</small>
+          {near.map((e) => (
+            <span key={e.name}>
+              <b>{e.name}</b>: {e.hint}
+            </span>
+          ))}
+        </div>
+      )}
+      {!!c.vendettas?.length && (
+        <p className="note" style={{ margin: '6px 0' }}>
+          Mối thù mang theo: {c.vendettas.map((v) => `@${v.player} (${v.name})`).join(', ')}. Kiếp sau gặp lại có thể báo thù.
+        </p>
+      )}
       <label className="field">
         <span>Khắc lên bia mộ (không bắt buộc)</span>
         <input value={text} maxLength={120} onChange={(e) => setText(e.target.value)} placeholder="vd: Kiếp này không phụ kiếm trong tay" />
@@ -583,6 +618,20 @@ export function DeathSheet({ c, karma, isNew, onDone }: { c: Character; karma: {
           )}
         </>
       )}
+      {weapon && !c.ascended && c.endTag !== 'xuyen_khong' && (
+        <>
+          <label className="toggle" style={{ marginTop: 8 }}>
+            <input type="checkbox" checked={passOn} onChange={(e) => setPassOn(e.target.checked)} />
+            Truyền {weapon.name} thành thần binh cho kiếp sau{sameLegend ? ` (đời thứ ${c.legend!.lv + 1}, công +${Math.min(10, c.legend!.lv + 1) * 8}%)` : ' (công +8%, mỗi kiếp truyền tiếp mạnh thêm)'}
+          </label>
+          {passOn && (
+            <label className="field">
+              <span>Tên thần binh</span>
+              <input value={legendName} maxLength={40} onChange={(e) => setLegendName(e.target.value)} placeholder="vd: Thanh Minh Kiếm" />
+            </label>
+          )}
+        </>
+      )}
       <div style={{ marginTop: 10 }}>
         <ShareCard c={c} ending={ending} epitaph={text.trim()} />
       </div>
@@ -592,7 +641,7 @@ export function DeathSheet({ c, karma, isNew, onDone }: { c: Character; karma: {
         disabled={busy}
         onClick={() => {
           setBusy(true);
-          onDone(text.trim(), note.trim(), bury);
+          onDone(text.trim(), note.trim(), bury, { prophecy, legendName: passOn && weapon ? legendName.trim() || weapon.name : null });
         }}
       >
         Lập bia và luân hồi

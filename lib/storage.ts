@@ -126,7 +126,7 @@ export async function thapHuong(user: Player | null, id: number | string): Promi
 
 export type RankKind = 'power' | 'wealth' | 'age';
 export type RankLean = 'all' | 'chinh' | 'trung' | 'ta';
-export type RankScope = 'all' | 'alive' | 'dead';
+export type RankScope = 'all' | 'alive' | 'dead' | 'week';
 
 export async function leaderboard(kind: RankKind, lean: RankLean, path: string, scope: RankScope = 'all'): Promise<{ username: string; c: Character; alive: boolean }[] | null> {
   const sb = supabase();
@@ -244,4 +244,66 @@ export async function voteFeedback(user: Player | null, id: number): Promise<num
   if (!sb || !user) return null;
   const { data, error } = await sb.rpc('vkl_feedback_vote', { p_token: user.token, p_id: id });
   return error ? null : (data as number);
+}
+
+// ---------- Hộp thư giang hồ ----------
+export interface Mail {
+  id: number;
+  from_player: string | null;
+  kind: string;
+  body: string;
+  read: boolean;
+  created_at: string;
+}
+
+/** Gửi thư cho người chơi khác (kết quả kỳ ngộ với bóng nhân vật của họ). Lỗi thì bỏ qua. */
+export async function sendMail(user: Player | null, to: string, kind: string, body: string) {
+  const sb = supabase();
+  if (!sb || !user || !to || to === user.username || isTest(to)) return;
+  await sb.rpc('vkl_mail_send', { p_token: user.token, p_to: to, p_kind: kind, p_body: body });
+}
+
+export async function listMail(user: Player | null): Promise<Mail[]> {
+  const sb = supabase();
+  if (!sb || !user) return [];
+  const { data, error } = await sb.rpc('vkl_mail_list', { p_token: user.token });
+  return error ? [] : ((data as Mail[]) ?? []);
+}
+
+export async function unreadMail(user: Player | null): Promise<number> {
+  const sb = supabase();
+  if (!sb || !user) return 0;
+  const { data, error } = await sb.rpc('vkl_mail_unread', { p_token: user.token });
+  return error ? 0 : ((data as number) ?? 0);
+}
+
+// ---------- Danh hiệu tuần, thống kê kết cục ----------
+const TITLE_ORDER = ['Thiên Hạ Đệ Nhất', 'Võ Lâm Minh Chủ', 'Đệ Nhất Ma Đầu', 'Đệ Nhị Cao Thủ', 'Đệ Tam Cao Thủ'];
+let titlesCache: Promise<Record<string, string>> | null = null;
+
+/** Danh hiệu tuần này theo tên người chơi (mỗi người lấy danh hiệu cao nhất) */
+export function weeklyTitles(): Promise<Record<string, string>> {
+  if (titlesCache) return titlesCache;
+  titlesCache = (async () => {
+    const sb = supabase();
+    if (!sb) return {};
+    const { data, error } = await sb.rpc('vkl_titles');
+    if (error || !data) return {};
+    const out: Record<string, string> = {};
+    for (const r of data as { username: string; title: string }[]) {
+      const cur = out[r.username];
+      if (!cur || TITLE_ORDER.indexOf(r.title) < TITLE_ORDER.indexOf(cur)) out[r.username] = r.title;
+    }
+    return out;
+  })();
+  // làm mới sau 5 phút
+  setTimeout(() => (titlesCache = null), 5 * 60 * 1000);
+  return titlesCache;
+}
+
+export async function endingStats(): Promise<{ total: number; counts: Record<string, number> } | null> {
+  const sb = supabase();
+  if (!sb) return null;
+  const { data, error } = await sb.rpc('vkl_ending_stats');
+  return error ? null : (data as { total: number; counts: Record<string, number> });
 }

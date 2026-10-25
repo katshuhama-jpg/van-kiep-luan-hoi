@@ -6,7 +6,8 @@ import { useEffect, useState, type CSSProperties } from 'react';
 import { ENDINGS, RARE_COLOR } from '@/lib/game/endings';
 import { GIFTS, RARE_NAME } from '@/lib/game/gacha';
 import type { Meta } from '@/lib/game/types';
-import { loadAll } from '@/lib/storage';
+import { endingStats, loadAll } from '@/lib/storage';
+import { PETS, PET_IDS } from '@/lib/game/pets';
 import { useAuth } from '@/lib/useAuth';
 
 export default function SoSinhTu() {
@@ -16,6 +17,12 @@ export default function SoSinhTu() {
     if (!ready) return;
     loadAll(user).then((r) => setMeta(r.meta));
   }, [ready, user?.token]);
+  const [stats, setStats] = useState<{ total: number; counts: Record<string, number> } | null>(null);
+  useEffect(() => {
+    endingStats().then(setStats).catch(() => {});
+  }, []);
+  const pct = (id: string) => (stats && stats.total ? Math.round(((stats.counts[id] ?? 0) / stats.total) * 100) : null);
+  const book = meta?.petBook ?? [];
   const got = meta?.endings ?? {};
   const n = Object.keys(got).length;
   return (
@@ -44,10 +51,33 @@ export default function SoSinhTu() {
               <b>{k ? e.name : '???'}</b>
               <span>{k ? e.desc : `Gợi ý: ${e.hint}`}</span>
               {k ? <em>Đã gặp {k} lần</em> : null}
+              {stats && <i className="ss-rarity">{(stats.counts[e.id] ?? 0) === 0 ? 'Chưa ai đạt được' : `${pct(e.id)}% người chơi đã mở`}</i>}
             </article>
           );
         })}
       </div>
+      <section className="panel" style={{ marginTop: 10 }}>
+        <h2>Sổ linh thú</h2>
+        <p className="note" style={{ marginTop: 0 }}>
+          Đã từng nuôi {book.length}/{PET_IDS.length} loài. Linh thú được ghi vào sổ khi một kiếp kết thúc mà nó còn theo bạn.
+        </p>
+        <div className="pet-book">
+          {PET_IDS.map((id) => {
+            const p = PETS[id];
+            const has = book.includes(id);
+            const z = 40 / Math.max(p.w, p.h);
+            return (
+              <span key={id} className={`pet-cell ${has ? 'has' : ''}`} title={has ? p.name : '???'}>
+                <span
+                  className="pet-thumb"
+                  style={{ width: p.w * z, height: p.h * z, backgroundImage: `url(/lpc/pets/${id}.png)`, backgroundSize: `${p.n * p.w * z}px ${2 * p.h * z}px`, filter: has ? p.filter : 'brightness(0) opacity(0.35)' }}
+                />
+                <small>{has ? p.name : '???'}</small>
+              </span>
+            );
+          })}
+        </div>
+      </section>
       <section className="panel" style={{ marginTop: 10 }}>
         <h2>Thiên phú có thể gieo được</h2>
         <p className="note" style={{ marginTop: 0 }}>

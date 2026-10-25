@@ -1,3 +1,4 @@
+import { omenIs } from './hook';
 import { ITEMS, REALMS, fxText, gearFx } from './data';
 import { addCult, addPill, clamp, fatal, giveItem, money, needFor, stat } from './helpers';
 import type { Character, EffectCtx } from './types';
@@ -118,6 +119,8 @@ export function playerStats(c: Character): Fighter {
   atk *= 1 + g.atk / 100;
   def *= 1 + g.def / 100;
   hp *= 1 + g.hp / 100;
+  // thần binh truyền kiếp: mỗi đời truyền qua +8% công (tối đa 10 đời)
+  if (c.legend && c.equipped.vu_khi === c.legend.item) atk *= 1 + Math.min(10, c.legend.lv) * 0.08;
   // tuổi già sức yếu
   if (c.age / c.lifespan > 0.85) (atk *= 0.85), (hp *= 0.85);
   return { hp: Math.round(hp), atk: Math.round(atk), def: Math.round(def) };
@@ -159,7 +162,7 @@ export function killExp(c: Character, m: Monster): number {
   const base = Math.max((REALMS[c.realm]?.need ?? 60) * 0.03, yearly * 0.35);
   const factor = d <= -4 ? 0.15 : clamp(1 + 0.35 * d, 0.3, 2.4);
   // quái tiến hóa cho nhiều tu vi hơn
-  const tierBonus = 1 + tierOf(c, m) * 0.25;
+  const tierBonus = (1 + tierOf(c, m) * 0.25) * (omenIs('yeu_trieu') ? 1.25 : 1);
   return Math.max(1, Math.round(base * factor * tierBonus * c.linhCanMul * (1 + gearFx(c.equipped).exp / 100)));
 }
 
@@ -238,7 +241,7 @@ const RARE_SELL = [15, 60, 220, 800];
  */
 export function lootDrop(c: Character, m: Monster, ctx: EffectCtx): string | null {
   const g = gearFx(c.equipped);
-  const luck = (1 + Math.max(0, c.stats.khiVan - 50) / 100) * (1 + g.drop / 100) * (1 + tierOf(c, m) * 0.3);
+  const luck = (1 + Math.max(0, c.stats.khiVan - 50) / 100) * (1 + g.drop / 100) * (1 + tierOf(c, m) * 0.3) * (omenIs('cat_tinh') ? 1.5 : 1);
   const r = ctx.rnd();
   const rare = r < 0.02 * luck ? 3 : r < 0.1 * luck ? 2 : r < 0.4 * luck ? 1 : 0;
   const lo = Math.max(0, c.realm - 2);

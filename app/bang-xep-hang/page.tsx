@@ -8,7 +8,8 @@ import { PATHS, realmLabel } from '@/lib/game/data';
 import { describeLean } from '@/lib/game/engine';
 import { fmt } from '@/lib/game/helpers';
 import type { Character } from '@/lib/game/types';
-import { leaderboard, type RankKind, type RankLean, type RankScope } from '@/lib/storage';
+import { TitleBadge } from '@/components/Hook';
+import { leaderboard, weeklyTitles, type RankKind, type RankLean, type RankScope } from '@/lib/storage';
 import { useAuth } from '@/lib/useAuth';
 
 const LEANS: { id: RankLean; name: string }[] = [
@@ -19,6 +20,7 @@ const LEANS: { id: RankLean; name: string }[] = [
 ];
 
 const SCOPES: { id: RankScope; name: string }[] = [
+  { id: 'week', name: 'Tuần này' },
   { id: 'all', name: 'Mọi kiếp' },
   { id: 'alive', name: 'Đang sống' },
   { id: 'dead', name: 'Đã mất' },
@@ -55,6 +57,10 @@ export default function RankPage() {
   const [scope, setScope] = useState<RankScope>('all');
   const [rows, setRows] = useState<{ username: string; c: Character; alive: boolean }[] | null>(null);
   const [failed, setFailed] = useState(false);
+  const [titles, setTitles] = useState<Record<string, string>>({});
+  useEffect(() => {
+    weeklyTitles().then(setTitles).catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (!ready) return;
@@ -101,6 +107,11 @@ export default function RankPage() {
           </button>
         ))}
       </div>
+      {scope === 'week' && (
+        <p className="note" style={{ margin: '0 0 6px' }}>
+          Bảng tuần tính lại từ thứ Hai hằng tuần. Ba người mạnh nhất tuần, cùng người mạnh nhất chính phái và tà phái, được treo danh hiệu: Thiên Hạ Đệ Nhất, Đệ Nhị Cao Thủ, Đệ Tam Cao Thủ, Võ Lâm Minh Chủ, Đệ Nhất Ma Đầu.
+        </p>
+      )}
       <div className="chips" role="radiogroup" aria-label="Lọc theo phái">
         {LEANS.map((l) => (
           <button key={l.id} role="radio" aria-checked={lean === l.id} className={`chip-btn ${l.id} ${lean === l.id ? 'on' : ''}`} onClick={() => setLean(l.id)}>
@@ -145,6 +156,7 @@ export default function RankPage() {
                   </span>
                   <span className="rank-owner">
                     <span className="rank-user">@{r.username}</span>
+                    <TitleBadge title={titles[r.username]} />
                     {mine && <span className="badge">Bạn</span>}
                     {!r.alive && <span className="badge gone-badge">{c.ascended ? 'Phi thăng' : 'Đã mất'}</span>}
                   </span>

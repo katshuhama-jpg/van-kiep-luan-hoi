@@ -516,7 +516,7 @@ export function lpcLayers(c: Character, hideWeapon = false): Layer[] {
   const cape = deco === 'vu' ? robe.alt : deco === 'manh' ? '#5a4a3a' : realm >= 3 ? robe.dark : null;
   const tattered = deco === 'manh';
   // Luyện Hư trở lên: tà mọc cánh dơi, chính mọc cánh chim; trung lập không cánh mà cưỡi tường vân (vẽ ở TuongVan)
-  const wings = realm >= 6 ? (ma || l.dao <= -15 ? 'bwings' : l.dao >= 15 ? 'wings' : null) : null;
+  const wings = realm >= 5 ? (ma || l.dao <= -15 ? 'bwings' : l.dao >= 15 ? 'wings' : null) : null;
   const out: Layer[] = [];
   if (wings) out.push({ key: `${wings}_bg` });
   if (cape) out.push({ key: tattered ? 'capet_bg' : 'cape_bg', tint: cape });
@@ -744,7 +744,7 @@ export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Charact
       {/* chưa ghép xong hình thì hiện bóng chờ, chưa hiện hiệu ứng để khỏi thấy hào quang mà không thấy người */}
       {!url && <span className="lpc-wait" style={{ width: box * 0.36, height: box * 0.62, left: box * 0.32, top: box * 0.2 }} />}
       {url && aura && !l.dead && <Aura color={aura} realm={l.realm} layer={c.layer} box={box} />}
-      {url && aura && !l.dead && l.realm >= 6 && !ma0(l) && Math.abs(l.dao) < 15 && <TuongVan box={box} />}
+      {url && aura && !l.dead && l.realm >= 5 && !ma0(l) && Math.abs(l.dao) < 15 && <TuongVan box={box} />}
       {url && aura && !l.dead && l.realm >= 2 && <PathAura path={l.path} ma={ma0(l)} yeu={!!l.yeu} realm={l.realm} color={aura} box={box} />}
       {url && l.path === 'phat' && !l.dead && <span className="lpc-halo" style={{ width: box * 0.26, height: box * 0.26, top: box * 0.06 }} />}
       {url && l.pet && l.stage !== 'baby' && !l.dead && <PetRoam id={petOf(c)} box={box} />}

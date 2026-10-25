@@ -92,7 +92,7 @@ export const PET_EVENT: GameEvent = {
 };
 
 // ---------- Kịch bản nhận thú cưng ----------
-function adopt(ch: Character, id: string, ctx: EffectCtx): string {
+export function adopt(ch: Character, id: string, ctx: EffectCtx): string {
   const old = ch.pet ? PETS[petOf(ch)]?.name : null;
   ch.pet = true;
   ch.petKind = id;

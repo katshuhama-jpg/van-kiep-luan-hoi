@@ -98,6 +98,10 @@ export interface Character {
   danDoc?: { y: number; n: number }; // số viên đan đã uống trong năm (đan độc)
   petKind?: string; // loại thú cưng (xem lib/game/pets.ts)
   lookSeed?: number; // nét riêng của ngoại hình: da, khuôn mặt, râu, trang sức
+  legend?: Legend | null; // thần binh truyền kiếp đang mang
+  vendettas?: Vendetta[];
+  qf?: Record<string, number>; // đếm việc làm trong đời cho nhiệm vụ ngày
+  firstLifeGrace?: boolean;
   ambushSeen?: string[]; // mấy loài quái chặn đường gần nhất, để không lặp lại
   timid?: number; // số lựa chọn an toàn liên tiếp gần đây: hiền quá dễ bị bắt nạt
   kiepBonus?: number; // thưởng/phạt từ mini-game thiên kiếp
@@ -219,4 +223,23 @@ export interface Meta {
   past?: PastLife | null;
   stash?: Stash | null;
   endings?: Record<string, number>; // Sổ Sinh Tử: kết cục đã mở
+  daily?: { day: string; quests: string[]; done: string[] }; // nhiệm vụ ngày
+  streak?: { day: string; n: number; giftDay?: string }; // chuỗi ngày tu luyện
+  prophecy?: { id: string; text: string } | null; // lời tiên tri cho kiếp sau
+  legend?: Legend | null; // thần binh truyền kiếp
+  vendettas?: Vendetta[]; // kẻ thù là người chơi thật, để báo thù
+  petBook?: string[]; // các loài linh thú đã từng nuôi
+}
+
+export interface Legend {
+  item: string; // id món vũ khí gốc
+  name: string; // tên người chơi đặt
+  lv: number; // số đời đã truyền
+}
+
+export interface Vendetta {
+  player: string;
+  name: string; // tên nhân vật kẻ thù
+  items: string[]; // đồ bị cướp
+  why: string;
 }
