@@ -2785,3 +2785,6 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .pa-wave.two { animation-delay: -0.4s; }
 @keyframes wave { 0% { transform: translateY(-2px) scaleY(0.9); } 100% { transform: translateY(3px) scaleY(1.1); } }
 @media (prefers-reduced-motion: reduce) { .pa, .pa * { animation: none !important; } }
+.tuong-van { position: absolute; left: 50%; top: 92%; transform: translate(-50%, -50%); pointer-events: none; filter: drop-shadow(0 0 4px #cfe0ff); animation: vanBob 3s ease-in-out infinite; }
+.tuong-van svg { width: 100%; height: 100%; overflow: visible; display: block; }
+@keyframes vanBob { 50% { transform: translate(-50%, -58%); } }
