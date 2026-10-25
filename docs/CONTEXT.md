@@ -2,7 +2,7 @@
 
 Tài liệu này dành cho người và AI agent cần hiểu game: cốt truyện, cách chơi, luật và con số, dữ liệu, quy ước. Đọc file này trước khi đọc code.
 
-- Game: https://kiep-luan-hoi.vercel.app
+- Game: https://van-kiep-luan-hoi.vercel.app
 - Code: https://github.com/katshuhama-jpg/van-kiep-luan-hoi
 - Chủ dự án: Tyler. Mọi quyết định thiết kế hỏi Tyler.
 - Cập nhật lần cuối: 25/10/2026.
@@ -374,6 +374,7 @@ select count(*) from vkl_bounty; select status, count(*) from vkl_challenge grou
 
 ## 14. Nhật ký thay đổi gần đây (25/10/2026)
 
+- Sửa link game hiện hành: `https://van-kiep-luan-hoi.vercel.app` (link cũ `kiep-luan-hoi.vercel.app` đã ngừng).
 - Hồi ký nghĩa trang 7-10 cảnh pixel, thêm mốc bái sư, phát tài, bảo vật, trừ yêu.
 - Giang hồ: kết nghĩa, hòa giải, ghi thù, khiêu khích, treo thưởng, chiến thư, truy sát, Kẻ né chiến, Oan gia, Báo thù 3 đời, lời viếng.
 - Sưu tầm: Bảo khố, báo mở khóa, chấm đỏ menu, tiến độ ở màn đầu thai và màn chết, lời đồn trên Thiên tượng, danh hiệu Kỳ Văn Khách và Bách Hiểu Sinh, kết cục trên bia mộ, cách mở chi tiết cho 21 kết cục.
