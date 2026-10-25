@@ -6,7 +6,7 @@ import Radar, { charAxes, wealthScore } from './Radar';
 import { GIFTS, RARE_NAME, applyGifts, drawGifts, giftOf } from '@/lib/game/gacha';
 import { RARE_COLOR, type Ending } from '@/lib/game/endings';
 import { FAMILY_TIERS, PATHS, realmLabel } from '@/lib/game/data';
-import { genName, rollBase } from '@/lib/game/engine';
+import { rollBase } from '@/lib/game/engine';
 import type { Character } from '@/lib/game/types';
 
 /* ================= Gieo quẻ: lá số nhân vật + thiên phú ================= */
@@ -35,18 +35,12 @@ export function GachaPanel({ phuc, onChange }: { phuc: number; onChange: (gifts:
     setPicked(next);
     emit(next, spent, base);
   };
-  const rename = (name: string) => {
-    if (!base) return;
-    const b = { ...base, name };
-    setBase(b);
-    emit(picked, spent, b);
-  };
   const best = cards.reduce((m, id) => Math.max(m, giftOf(id)?.rare ?? 0), 0);
   return (
     <section className="panel">
       <h2>Gieo quẻ đầu thai</h2>
-      <p className="note" style={{ marginTop: 0 }}>Mỗi lần gieo ra một lá số mới: thân phận, tên, tướng mạo, nơi sinh, và 5 lá thiên phú (chọn tối đa 2). Hai lần đầu miễn phí, sau đó 5 phúc mỗi lần.</p>
-      {base && <BirthCard key={'b' + flip} c={base} onRename={rename} />}
+      <p className="note" style={{ marginTop: 0 }}>Mỗi lần gieo ra một lá số mới do trời định: tên, giới tính, tướng mạo, thân phận, và 5 lá thiên phú (chọn tối đa 2). Hai lần đầu miễn phí, sau đó 5 phúc mỗi lần.</p>
+      {base && <BirthCard key={'b' + flip} c={base} />}
       {cards.length > 0 && (
         <div className={`gacha-row ${best >= 3 ? 'gold' : ''}`} key={flip}>
           {cards.map((id, i) => {
@@ -75,7 +69,7 @@ export function GachaPanel({ phuc, onChange }: { phuc: number; onChange: (gifts:
 }
 
 /** Lá số nhân vật: hình lúc trưởng thành, tên đổi được, thân phận */
-function BirthCard({ c, onRename }: { c: Character; onRename: (name: string) => void }) {
+function BirthCard({ c }: { c: Character }) {
   const fam = FAMILY_TIERS[c.familyTier ?? 1];
   const grown = { ...c, age: 22, lifespan: 90 };
   return (
@@ -85,12 +79,7 @@ function BirthCard({ c, onRename }: { c: Character; onRename: (name: string) => 
         <small>{c.gender === 'nam' ? 'Nam' : 'Nữ'} · lớn lên sẽ thế này</small>
       </div>
       <div className="bc-info">
-        <label className="bc-name">
-          <input value={c.name} maxLength={18} onChange={(e) => onRename(e.target.value)} aria-label="Tên nhân vật" />
-          <button type="button" className="btn" onClick={() => onRename(genName(c.gender))} aria-label="Đổi tên ngẫu nhiên">
-            Đổi tên
-          </button>
-        </label>
+        <b className="bc-title">{c.name}</b>
         <ul>
           <li>{c.origin}</li>
           <li>{c.birthPlace}</li>
