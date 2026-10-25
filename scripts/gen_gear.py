@@ -399,12 +399,16 @@ for slot, table in (('vu_khi', W), ('ao', O), ('phu_kien', A)):
                 _, cat, desc = entry
                 it['desc'] = desc
                 src = take(BUA.get(g, BUA['_']), 'bua_' + g) if cat == 'bua' else take(APOOL[cat], 'a_' + cat)
-                it['icon'] = True; it['_icon'] = src
+                it['icon'] = True; it['_icon'] = src; it['_cat'] = cat
             items.append(it)
 
+# icon vẽ riêng kiểu kiếm hiệp bằng scripts/draw_icons.py (không dùng icon kiểu châu Âu nữa)
+cats = {}
 for it in items:
-    src = it.pop('_icon', None)
-    if src: shutil.copyfile(os.path.join(ICONS, src), OUT_ICON + it['id'] + '.png')
+    it.pop('_icon', None)
+    c = it.pop('_cat', None)
+    if c: cats[it['id']] = c
+json.dump(cats, open('/home/claude/vkl/scripts/acc_cats.json', 'w'), ensure_ascii=False, indent=0)
 
 order = ['id', 'name', 'icon', 'slot', 'price', 'minRealm', 'path', 'lean', 'desc', 'look', 'fx', 'src', 'from', 'rare', 'robe', 'deco', 'wpn']
 lines = []
