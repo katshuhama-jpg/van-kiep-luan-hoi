@@ -2829,3 +2829,4 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .life-fb-stars button.on { color: #e0a020; }
 .life-fb-row { display: flex; gap: 6px; }
 .life-fb-row input { flex: 1; min-width: 0; font: inherit; padding: 4px 6px; border: 2px solid var(--ink); background: #fffaf0; }
+.omen-strip { margin-bottom: 8px; }

@@ -12,7 +12,7 @@ import { MonsterSprite } from './Battle';
 import { cultPct, fmt, needFor } from '@/lib/game/helpers';
 import type { Character, Focus, LogEntry, Meta, PendingEvent, Slot } from '@/lib/game/types';
 import { evalQuests, nearEndings, pickProphecy, questName } from '@/lib/game/hook';
-import { TodayCard } from './Hook';
+import { OmenStrip, TodayCard } from './Hook';
 import { useAuth } from '@/lib/useAuth';
 import { addFeedback } from '@/lib/storage';
 
@@ -453,6 +453,7 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
   const first = meta.lives === 0;
   return (
     <div className="birth-flow">
+      <OmenStrip />
       {first ? (
         <section className="panel howto">
           <h2>Cách chơi</h2>
@@ -493,7 +494,7 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
         }}
       />
 
-      <TodayCard meta={meta} compact />
+      <TodayCard meta={meta} compact noOmen />
 
       {!first && (
         <details className="more talent-shop">
