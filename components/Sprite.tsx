@@ -4,6 +4,7 @@ import { useEffect, useState, type CSSProperties } from 'react';
 import { HAIR_COLORS, ITEMS, PATHS, type RobeDeco, type WeaponKind } from '@/lib/game/data';
 import { ANIM, composeStrip, readyStrip, type Anim, type Layer } from '@/lib/lpc';
 import { equippedLook } from '@/lib/game/helpers';
+import { PETS, petOf } from '@/lib/game/pets';
 import type { Character } from '@/lib/game/types';
 
 type R = [number, number, number, number, string];
@@ -498,7 +499,9 @@ export function lpcLayers(c: Character, hideWeapon = false): Layer[] {
   const ft = featOf(l);
   const head = l.gender === 'nam' ? (elder ? 'head_me' : ft.head ?? 'head_m') : elder ? 'head_fe' : 'head_f';
   const list = HAIR_LPC[l.gender === 'nam' ? 'nam' : 'nu'];
-  const hs = list[l.hairStyle % list.length];
+  let hs: string = list[l.hairStyle % list.length];
+  // hói đỉnh chỉ xuất hiện từ trung niên, lúc trẻ để đầu cạo sát
+  if (hs === 'balding' && l.aging === 0) hs = 'buzzcut';
   const monk = l.path === 'phat';
   // đầu trọc: Phật tu cạo tóc, hoặc người thường sinh ra đã chọn kiểu đầu trọc
   const bald = monk || hs === 'bald';
@@ -541,7 +544,8 @@ export function lpcLayers(c: Character, hideWeapon = false): Layer[] {
   if (realm >= 5 || deco === 'giap') out.push({ key: 'pauldrons', tint: realm >= 5 ? '#e0b02a' : robe.trim });
   else if (deco === 'long_thu' || realm >= 2) out.push({ key: 'mantal', tint: robe.trim });
   // râu nhuộm theo màu tóc hiện tại nên cũng bạc dần khi già
-  if (ft.beard) out.push({ key: ft.beard, tint: hair });
+  // râu chỉ mọc từ tuổi 20 trở đi
+  if (ft.beard && c.age >= 20) out.push({ key: ft.beard, tint: hair });
   if (!bald) out.push({ key: `hair_${hs}_fg`, tint: hair });
   // phụ kiện cổ, tai
   if (ft.neck.key && ft.neck.key !== 'backpack' && ft.neck.key !== 'quiver') out.push({ key: ft.neck.key, tint: accTint(ft.neck) });
@@ -573,6 +577,29 @@ export function animFor(c: Character, focus?: string): { anim: Anim; dir: number
   if (focus === 'du_ngoan') return { anim: 'walk', dir: 3 };
   if (focus === 'tu_luyen' && c.age >= 6) return { anim: 'spellcast', dir: 2 };
   return { anim: 'idle', dir: 2 };
+}
+
+/** Thú cưng chạy qua chạy lại phía sau nhân vật (ở xa hơn nên nhỏ hơn một chút) */
+function PetRoam({ id, box }: { id: string; box: number }) {
+  const p = PETS[id];
+  const px = (box / 64) * p.s;
+  const w = p.w * px;
+  const h = p.h * px;
+  const wrap = { bottom: box * (p.fly ? 0.62 : 0.16), marginLeft: -w / 2, ['--roam' as string]: `${box * 0.62}px`, animationDuration: `${p.dur}s` } as CSSProperties;
+  const img = {
+    width: w,
+    height: h,
+    backgroundImage: `url(/lpc/pets/${id}.png)`,
+    backgroundSize: `${p.n * w}px ${2 * h}px`,
+    ['--lpc-end' as string]: `-${p.n * w}px`,
+    ['--pet-h' as string]: `-${h}px`,
+    animation: `lpc-play ${p.n / p.fps}s steps(${p.n}) infinite, petDir ${p.dur}s linear infinite`,
+  } as CSSProperties;
+  return (
+    <span className={`pet-roam ${p.fly ? 'fly' : ''}`} style={wrap} aria-hidden="true">
+      <span className="pet-img" style={img} />
+    </span>
+  );
 }
 
 /**
@@ -611,31 +638,57 @@ function Aura({ color, realm, layer, box }: { color: string; realm: number; laye
   );
 }
 
+/** Hình đã hiện gần nhất theo bộ lớp ảnh, dùng tạm khi đổi dáng mà hình mới chưa ghép xong */
+const LAST_SHOWN = new Map<string, { key: string; url: string; frames: number }>();
+const PREFETCH: [Anim, number][] = [
+  ['idle', 2],
+  ['slash', 3],
+  ['spellcast', 3],
+  ['idle', 3],
+  ['spellcast', 2],
+  ['walk', 3],
+];
+
 export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Character; size?: number; focus?: string; anim?: Anim; dir?: number }) {
   const l = lookOf(c);
   const def = animFor(c, focus);
   const a = anim ?? def.anim;
   const d = dir ?? def.dir;
   const layers = lpcLayers(c, a === 'hurt');
+  const lkey = JSON.stringify(layers);
   const key = JSON.stringify([layers, a, d]);
-  const [strip, setStrip] = useState<{ key: string; url: string } | null>(() => {
+  type Shown = { key: string; url: string; frames: number };
+  const [strip, setStrip] = useState<Shown | null>(() => {
     const u = typeof window !== 'undefined' ? readyStrip(layers, a, d) : undefined;
-    return u ? { key, url: u } : null;
+    return u ? { key, url: u, frames: ANIM[a].frames } : null;
   });
   useEffect(() => {
     let live = true;
-    composeStrip(layers, a, d).then((url) => live && setStrip({ key, url }));
+    composeStrip(layers, a, d).then((url) => {
+      if (!live) return;
+      const s2 = { key, url, frames: ANIM[a].frames };
+      LAST_SHOWN.set(lkey, s2);
+      setStrip(s2);
+      // ghép sẵn các dáng hay dùng (đánh nhau, vận công) để khi chuyển cảnh không bị khựng
+      setTimeout(() => {
+        for (const [pa, pd] of PREFETCH) if (pa !== a || pd !== d) void composeStrip(layers, pa, pd);
+      }, 400);
+    });
     return () => {
       live = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
-  const meta = ANIM[a];
   const aura = auraColor(l);
   const scale = l.stage === 'baby' ? 0.75 : 1;
   const box = size;
   const cell = box * 2 * scale; // khung 128 = gấp đôi khung người 64
-  const url = strip?.key === key ? strip.url : strip?.url; // giữ hình cũ trong lúc ghép hình mới
+  // đang ghép hình mới thì giữ tạm hình đã có (đứng yên ở khung đầu), không hiện bản vẽ cũ
+  const ready = strip?.key === key ? strip : null;
+  const shown = ready ?? strip ?? LAST_SHOWN.get(lkey) ?? null;
+  const url = shown?.url;
+  const frames = shown?.frames ?? ANIM[a].frames;
+  const meta = ANIM[a];
   const once = a === 'hurt';
   const style: CSSProperties = {
     width: cell,
@@ -643,32 +696,19 @@ export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Charact
     left: (box - cell) / 2,
     top: box - cell * 0.82,
     backgroundImage: url ? `url(${url})` : undefined,
-    backgroundSize: `${meta.frames * cell}px ${cell}px`,
+    backgroundSize: `${frames * cell}px ${cell}px`,
     // chạy một lần (ngã xuống) thì dừng ở khung cuối, không trượt ra ô trống
     ['--lpc-end' as string]: `-${(once ? meta.frames - 1 : meta.frames) * cell}px`,
-    animation: once ? `lpc-play ${(meta.frames - 1) / meta.fps}s steps(${meta.frames - 1}) 1 forwards` : `lpc-play ${meta.frames / meta.fps}s steps(${meta.frames}) infinite`,
+    animation: !ready ? 'none' : once ? `lpc-play ${(meta.frames - 1) / meta.fps}s steps(${meta.frames - 1}) 1 forwards` : `lpc-play ${meta.frames / meta.fps}s steps(${meta.frames}) infinite`,
   };
   return (
     <div className={`lpc ${l.dead ? 'is-dead' : ''}`} style={{ width: box, height: box }} role="img" aria-label={`${c.name}, ${c.age < 13 ? 'trẻ con' : 'người lớn'}${l.path ? ', ' + PATHS[l.path].name : ''}`}>
       {aura && !l.dead && <Aura color={aura} realm={l.realm} layer={c.layer} box={box} />}
       {l.path === 'phat' && !l.dead && <span className="lpc-halo" style={{ width: box * 0.26, height: box * 0.26, top: box * 0.06 }} />}
-      {url ? <span className="lpc-strip" style={style} /> : <PixelSprite c={c} size={box} focus={focus} />}
+      {l.pet && l.stage !== 'baby' && !l.dead && <PetRoam id={petOf(c)} box={box} />}
+      {url && <span className="lpc-strip" style={style} />}
       {l.acc === 'kiembay' && !l.dead && <span className="lpc-orbit" aria-hidden="true" />}
-      {l.pet && l.stage !== 'baby' && (
-        <span
-          className={`lpc-pet ${l.dead ? '' : 'hop'}`}
-          aria-hidden="true"
-          style={{
-            // cáo 32px vẽ sẵn của LPC, phóng cùng tỉ lệ điểm ảnh với nhân vật (1 điểm ảnh = box/64)
-            width: (box / 2) * scale,
-            height: (box / 2) * scale,
-            left: -box * 0.2 * scale,
-            bottom: box * 0.03,
-            backgroundImage: 'url(/lpc/beasts/fox_s.png)',
-            backgroundSize: '100% 100%',
-          }}
-        />
-      )}
+
     </div>
   );
 }

@@ -5,6 +5,7 @@ import type { Character, Choice, EffectCtx, Fx, FxKind, GameEvent, Meta, Pending
 import { applyGifts, giftOf, hasGift } from './gacha';
 import { afterChoice, beforeChoice } from './fate';
 import { childLine } from './childhood';
+import { petName } from './pets';
 
 export const rnd = () => Math.random();
 
@@ -220,7 +221,7 @@ const RESULT: Record<string, string[]> = {
 
 function flavorLine(c: Character, focus: string): string {
   const extra: string[] = [];
-  if (c.pet) extra.push('Tiểu hồ ly cuộn tròn ngủ bên cạnh.');
+  if (c.pet) extra.push(`Con ${petName(c)} quanh quẩn bên cạnh.`);
   if (c.partner) extra.push(`${c.partner} ở bên pha trà.`);
   if (c.enemy) extra.push(`Bạn chợt nghĩ đến ${c.enemy}.`);
   const tail = extra.length && rnd() < 0.25 ? ' ' + pick(rnd, extra) : '';
@@ -674,7 +675,7 @@ function closedDoorLosses(c: Character, ctx: EffectCtx, years: number, rushed: b
   }
   if (c.pet && r(years * 0.025)) {
     c.pet = false;
-    notes.push('Tiểu hồ ly không ai cho ăn, bỏ vào rừng không trở lại.');
+    notes.push(`Con ${petName(c)} không ai cho ăn, bỏ đi không trở lại.`);
   }
   if (c.sect && r(years * 0.02)) {
     notes.push(`${c.sect} gặp đại nạn khi bạn bế quan. Sư môn tan tác, không còn chốn về.`);

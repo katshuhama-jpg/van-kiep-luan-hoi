@@ -1,4 +1,5 @@
 'use client';
+import type { CSSProperties } from 'react';
 
 import type { Monster } from '@/lib/game/combat';
 import MonsterLpc from './MonsterLpc';
@@ -191,7 +192,7 @@ export interface BattleView {
   mHp: number;
   mMax: number;
   phase: 'fight' | 'rest';
-  last: { id: number; side: 'p' | 'm'; dmg: number; crit: boolean; text?: string }[];
+  last: { id: number; side: 'p' | 'm'; dmg: number; crit: boolean; text?: string; skill?: string; qi?: string }[];
   outcome?: 'win' | 'lose' | 'flee';
   kills: number;
   /** quái chặn đường: đếm hiệp */
@@ -201,6 +202,8 @@ export interface BattleView {
 /** Lớp phủ trận đánh trên sân khấu: quái, thanh máu, số sát thương */
 export function BattleOverlay({ b }: { b: BattleView }) {
   const lastHit = b.last[b.last.length - 1];
+  // đòn gần nhất của mình (quái thường đánh trả ngay sau trong cùng lượt)
+  const lastP = [...b.last].reverse().find((h) => h.side === 'p');
   return (
     <div className="battle" aria-live="off">
       <div className="hpbox p">
@@ -220,6 +223,16 @@ export function BattleOverlay({ b }: { b: BattleView }) {
       <div className={`mon-wrap ${lastHit?.side === 'p' && b.phase === 'fight' ? 'got-hit' : ''} ${lastHit?.side === 'm' ? 'attacking' : ''}`} key={lastHit?.id ?? 0}>
         <MonsterSprite m={b.m} size={136} tier={b.tier} dead={b.phase === 'rest' && b.outcome === 'win'} attacking={b.phase === 'fight' && lastHit?.side === 'm'} />
       </div>
+      {lastP?.skill && (
+        <span key={`q${lastP.id}`} className="chuong" style={{ ['--qi' as string]: lastP.qi ?? '#9ff0c8' } as CSSProperties} aria-hidden="true">
+          <i />
+        </span>
+      )}
+      {lastP?.skill && (
+        <span key={`s${lastP.id}`} className="skill-name">
+          {lastP.skill}!
+        </span>
+      )}
       {b.last.map((h) => (
         <span key={h.id} className={`dmg ${h.side} ${h.crit ? 'crit' : ''}`}>
           {h.text ?? `-${h.dmg}`}

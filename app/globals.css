@@ -2587,9 +2587,15 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .lpc-halo { position: absolute; left: 50%; transform: translateX(-50%); border: 2px solid #ffe27a; border-radius: 50%; box-shadow: 0 0 8px #ffe27a; }
 .lpc-orbit { position: absolute; left: 50%; top: 40%; width: 6px; height: 24px; margin-left: 42%; background: linear-gradient(#ffffff, #d9e6ff 70%, #ffd36b 70%); transform: rotate(35deg); animation: orbitFly 3s steps(12) infinite; }
 @keyframes orbitFly { 50% { transform: translate(-80px, -10px) rotate(-35deg); } }
-.lpc-pet { position: absolute; image-rendering: pixelated; background-repeat: no-repeat; }
-.lpc-pet.hop { animation: petHop 0.9s steps(2) infinite; }
-@keyframes petHop { 50% { transform: translateY(-6%); } }
+.pet-roam { position: absolute; left: 50%; pointer-events: none; animation: petRoam 8s linear infinite; }
+.pet-roam.fly .pet-img { margin-top: 0; }
+.pet-roam.fly { animation-name: petRoam, petBob; }
+.pet-img { display: block; image-rendering: pixelated; background-repeat: no-repeat; }
+/* nửa đầu chạy sang phải (hàng quay phải), nửa sau chạy về trái */
+@keyframes petRoam { 0% { transform: translateX(calc(var(--roam) * -1)); } 50% { transform: translateX(var(--roam)); } 100% { transform: translateX(calc(var(--roam) * -1)); } }
+@keyframes petDir { 0%, 49.9% { background-position-y: var(--pet-h); } 50%, 100% { background-position-y: 0; } }
+@keyframes petBob { 0%, 100% { margin-bottom: 0; } 25% { margin-bottom: 8px; } 75% { margin-bottom: -6px; } }
+@media (prefers-reduced-motion: reduce) { .pet-roam, .pet-img { animation: none !important; } }
 .lpc.is-dead .lpc-strip { filter: grayscale(0.6) brightness(0.9); }
 @media (prefers-reduced-motion: reduce) { .lpc-strip { animation: none !important; } }
 .credit-h { margin: 10px 0 4px; font-size: 20px; color: var(--red-d); }
@@ -2614,3 +2620,11 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .kill-count.ambush-tag.kem { background: #5a4128; }
 .kill-count.ambush-tag.hon { background: #5a0a6a; }
 @keyframes ambushBlink { 50% { opacity: 0.35; } }
+
+/* chưởng pháp: luồng chưởng lực bay từ người sang quái */
+.chuong { position: absolute; left: 34%; bottom: 30%; width: 34%; height: 40px; pointer-events: none; }
+.chuong i { position: absolute; left: 0; top: 50%; width: 40px; height: 40px; margin-top: -20px; border-radius: 50%; background: radial-gradient(circle, #fff 0 18%, var(--qi) 40%, color-mix(in srgb, var(--qi) 40%, transparent) 62%, transparent 72%); box-shadow: 0 0 14px var(--qi), 0 0 28px var(--qi); animation: chuongFly 0.42s ease-in forwards; }
+.chuong i::after { content: ''; position: absolute; right: 60%; top: 30%; width: 70px; height: 40%; border-radius: 50%; background: linear-gradient(to left, color-mix(in srgb, var(--qi) 70%, transparent), transparent); }
+@keyframes chuongFly { 0% { transform: translateX(0) scale(0.4); opacity: 0.4; } 70% { opacity: 1; } 100% { transform: translateX(calc(100% + 120px)) scale(1.25); opacity: 0; } }
+.skill-name { position: absolute; left: 50%; top: 24%; transform: translateX(-50%); white-space: nowrap; font-size: 20px; font-weight: 700; color: #fff3c4; text-shadow: 2px 2px 0 #1f160d, -1px -1px 0 #1f160d, 0 0 8px #ffcf3e; animation: skillPop 0.9s ease-out forwards; pointer-events: none; }
+@keyframes skillPop { 0% { opacity: 0; transform: translateX(-50%) scale(0.6); } 20% { opacity: 1; transform: translateX(-50%) scale(1.1); } 80% { opacity: 1; } 100% { opacity: 0; transform: translateX(-50%) translateY(-10px); } }

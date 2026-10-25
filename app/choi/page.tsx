@@ -11,7 +11,7 @@ import { BagSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, Hu
 import Radar, { charAxes, wealthScore } from '@/components/Radar';
 import { giftOf } from '@/lib/game/gacha';
 import type { BattleView } from '@/components/Battle';
-import { MONSTERS, effLv, fleeChance, hit, killExp, killReward, loseFight, monsterName, monsterStats, playerStats, tierOf, type Fighter } from '@/lib/game/combat';
+import { MONSTERS, chuongOf, effLv, fleeChance, hit, killExp, killReward, loseFight, monsterName, monsterStats, playerStats, tierOf, type Fighter } from '@/lib/game/combat';
 import { signOut } from '@/lib/auth';
 import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, realmLabel } from '@/lib/game/data';
 import { genName, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick } from '@/lib/game/engine';
@@ -22,6 +22,8 @@ import { addMemorial, displayName, fetchWorld, loadAll, saveLocal, saveMeta, sav
 import { useAuth } from '@/lib/useAuth';
 
 const SPEEDS = [1, 2, 4, 8, 16];
+/** màu chưởng lực theo con đường tu luyện */
+const qiColor = (c: Character) => (c.path ? PATHS[c.path].aura : c.daoTam <= -40 ? '#ff3448' : '#9ff0c8');
 type SheetName = null | 'shop' | 'bag' | 'bequan' | 'menu' | 'hunt' | 'info';
 
 type Battle = BattleView & { t: number; rest: number; ps: Fighter; ms: Fighter };
@@ -125,8 +127,8 @@ export default function PlayPage() {
     const turn = yearSecRef.current * 0.015;
     b.t += dtGame;
     let changed = false;
-    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string) => {
-      b!.last = [...b!.last.slice(-4), { id: Math.random(), side, dmg, crit, text }];
+    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string, skill?: string | null) => {
+      b!.last = [...b!.last.slice(-4), { id: Math.random(), side, dmg, crit, text, skill: skill ?? undefined, qi: skill ? qiColor(c) : undefined }];
     };
     while (b.t >= turn) {
       b.t -= turn;
@@ -143,7 +145,7 @@ export default function PlayPage() {
       // bạn ra đòn
       const h1 = hit(b.ps.atk, b.ms.def, rnd, 0.15 + gearFx(c.equipped).crit / 100);
       b.mHp = Math.max(0, b.mHp - h1.dmg);
-      push('p', h1.dmg, h1.crit, b.m.boss ? 'Vô hiệu' : undefined);
+      push('p', h1.dmg, h1.crit, b.m.boss ? 'Vô hiệu' : undefined, chuongOf(c, rnd));
       if (b.mHp <= 0) {
         const out: Fx[] = [];
         const ctx = makeCtx(c, out);
@@ -230,8 +232,8 @@ export default function PlayPage() {
     const half = 0.6; // mỗi đòn 0,6 giây thật, không phụ thuộc tốc độ
     b.t += dtReal;
     let changed = false;
-    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string) => {
-      b.last = [...b.last.slice(-4), { id: Math.random(), side, dmg, crit, text }];
+    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string, skill?: string | null) => {
+      b.last = [...b.last.slice(-4), { id: Math.random(), side, dmg, crit, text, skill: skill ?? undefined, qi: skill ? qiColor(c) : undefined }];
     };
     const end = (result: 'win' | 'lose' | 'draw') => {
       const out: Fx[] = [];
@@ -264,7 +266,7 @@ export default function PlayPage() {
         b.ambush!.turn += 1;
         const h = hit(b.ps.atk, b.ms.def, rnd, 0.15 + gearFx(c.equipped).crit / 100);
         b.mHp = Math.max(0, b.mHp - h.dmg);
-        push('p', h.dmg, h.crit);
+        push('p', h.dmg, h.crit, undefined, chuongOf(c, rnd));
         b.sub = 1;
         if (b.mHp <= 0) {
           end('win');

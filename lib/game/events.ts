@@ -4,6 +4,7 @@ import type { Character, Choice, GameEvent } from './types';
 import { EVENTS2 } from './events2';
 import { EVENTS3 } from './events3';
 import { CHILD_EVENTS } from './childhood';
+import { PET_EVENT } from './pets';
 
 
 export const EVENTS: GameEvent[] = [
@@ -234,7 +235,7 @@ export const EVENTS: GameEvent[] = [
       sample<Choice>(seed, [
         { label: 'Đi theo đàn đom đóm', lean: 'trung', run: (c, ctx) => { if (ctx.rnd() < 0.5) { addCult(c, 15); return 'Đom đóm dẫn bạn tới một hồ nước phát sáng. Bạn uống một ngụm, người nhẹ bẫng.'; } return 'Đom đóm dẫn bạn ra tới bìa rừng. Cả làng đang đốt đuốc tìm.'; } },
         { label: 'Leo lên cây đợi trời sáng', lean: 'trung', run: (c) => { stat(c, 'tamCanh', 5); return 'Bạn ôm cành cây cả đêm, nghe sói đi qua dưới gốc.'; } },
-        { label: 'Đi về phía tiếng hú', lean: 'trung', run: (c, ctx) => { const f = fatal(c, ctx, 0.4, 'Đó là bầy sói đói. Sáng hôm sau người ta chỉ tìm thấy chiếc dép nhỏ.'); if (c.dead) return 'Bạn tò mò đi tới...' + f; c.pet = true; return 'Hóa ra là một con sói con bị thương. Bạn băng bó cho nó, nó đi theo bạn về làng.' + (f ?? ''); } },
+        { label: 'Đi về phía tiếng hú', lean: 'trung', run: (c, ctx) => { const f = fatal(c, ctx, 0.4, 'Đó là bầy sói đói. Sáng hôm sau người ta chỉ tìm thấy chiếc dép nhỏ.'); if (c.dead) return 'Bạn tò mò đi tới...' + f; c.pet = true; c.petKind = 'soi_con'; return 'Hóa ra là một con sói con bị thương. Bạn băng bó cho nó, nó đi theo bạn về làng.' + (f ?? ''); } },
         { label: 'Gào khóc gọi cha mẹ', lean: 'trung', run: (c, ctx) => { if (ctx.rnd() < 0.7) return 'Cha nghe tiếng, tìm được bạn lúc nửa đêm.'; return 'Tiếng khóc dẫn tới một con hổ. May mà tiều phu bắn đuổi kịp.' + hurt(c, 25, ctx); } },
         { label: 'Đốt lửa ngồi chờ', lean: 'trung', run: (c, ctx) => { const f = fatal(c, ctx, 0.08, 'Lửa bén vào cỏ khô. Cháy rừng.'); if (c.dead) return 'Bạn nhóm lửa...' + f; return 'Ánh lửa giúp dân làng tìm thấy bạn.' + (f ?? ''); } },
       ], 4),
@@ -560,7 +561,7 @@ export const EVENTS: GameEvent[] = [
     title: 'Yêu thú nhỏ',
     text: () => 'Trong bụi rậm, một con hồ ly trắng bé xíu bị kẹp chân, rên ư ử nhìn bạn.',
     choices: () => [
-      { label: 'Nhận nuôi', lean: 'chinh', run: (c, ctx) => { c.pet = true; dao(c, 6); stat(c, 'tamCanh', 6); ctx.fx('love', 'Có linh thú'); return 'Tiểu hồ ly liếm tay bạn. Từ đó nó đi theo bạn khắp nơi.'; } },
+      { label: 'Nhận nuôi', lean: 'chinh', run: (c, ctx) => { c.pet = true; c.petKind = 'tuyet_ho'; dao(c, 6); stat(c, 'tamCanh', 6); ctx.fx('love', 'Có linh thú'); return 'Tiểu hồ ly liếm tay bạn. Từ đó nó đi theo bạn khắp nơi.'; } },
       { label: 'Gỡ bẫy rồi thả đi', lean: 'chinh', run: (c) => { dao(c, 4); stat(c, 'khiVan', 6); return 'Nó chạy mất, ngoái lại nhìn bạn một lần. Bạn có cảm giác sẽ gặp lại.'; } },
       { label: 'Bắt mang bán', lean: 'trung', run: (c) => { money(c, 90); dao(c, -3); return 'Thương nhân trả 90 linh thạch cho một con hồ ly trắng hiếm.'; } },
       { label: 'Giết lấy yêu đan', lean: 'ta', run: (c, ctx) => { dao(c, -10); addCult(c, reward(c, 0.35)); ctx.fx('evil'); return 'Yêu đan nhỏ xíu nhưng tinh thuần. Bạn nuốt nó.'; } },
@@ -1209,6 +1210,7 @@ export const EVENTS: GameEvent[] = [
   ...EVENTS2,
   ...EVENTS3,
   ...CHILD_EVENTS,
+  PET_EVENT,
 ];
 
 // ---------------- Sự kiện do engine kích hoạt ----------------
