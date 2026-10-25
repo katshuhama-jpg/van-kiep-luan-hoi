@@ -21,6 +21,7 @@ export const ANIM: Record<Anim, { frames: number; rows: number; fps: number; fro
 export interface Layer {
   key: string; // thư mục trong /public/lpc
   tint?: string; // màu nhuộm #rrggbb
+  dy?: number; // dịch xuống (px trong khung 64), dùng cho vũ khí khi cầm ở dáng trẻ con
 }
 
 const imgCache = new Map<string, Promise<HTMLImageElement | null>>();
@@ -61,7 +62,7 @@ function tintCanvas(cv: HTMLCanvasElement, hex: string) {
 }
 
 /** Lấy 1 hàng hướng của động tác, chuẩn hóa về khung 128x128 (người nằm giữa) */
-async function rowOf(key: string, anim: Anim, dir: number): Promise<HTMLCanvasElement | null> {
+async function rowOf(key: string, anim: Anim, dir: number, dy = 0): Promise<HTMLCanvasElement | null> {
   const meta = ANIM[anim];
   // vũ khí chỉ có dáng đi (riêng kiếm có cả chém); động tác khác dùng tạm dáng đi khung đầu
   let src = anim;
@@ -88,7 +89,7 @@ async function rowOf(key: string, anim: Anim, dir: number): Promise<HTMLCanvasEl
   for (let i = 0; i < n; i++) {
     const col = src === anim ? Math.min(avail - 1, from + i) : 0;
     const off = (128 - cell) / 2;
-    ctx.drawImage(im, col * cell, row * cell, cell, cell, i * 128 + off, off, cell, cell);
+    ctx.drawImage(im, col * cell, row * cell, cell, cell, i * 128 + off, off + dy, cell, cell);
   }
   return cv;
 }
@@ -113,7 +114,7 @@ export function composeStrip(layers: Layer[], anim: Anim, dir: number): Promise<
       out.height = 128;
       const ctx = out.getContext('2d')!;
       ctx.imageSmoothingEnabled = false;
-      const parts = await Promise.all(layers.map((l) => rowOf(l.key, anim, dir)));
+      const parts = await Promise.all(layers.map((l) => rowOf(l.key, anim, dir, l.dy)));
       parts.forEach((cv, i) => {
         if (!cv) return;
         const t = layers[i].tint;

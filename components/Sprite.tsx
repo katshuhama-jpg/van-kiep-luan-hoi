@@ -386,13 +386,18 @@ export function lpcLayers(c: Character, hideWeapon = false): Layer[] {
   const st = l.hairStyle % 3;
   const eye = l.path === 'ma' || l.dao <= -60 ? 'red' : l.yeu ? 'orange' : ['brown', 'brown', 'gray', 'blue'][c.name.length % 4];
   if (l.stage !== 'adult') {
+    // trẻ con cũng cầm vũ khí: hạ thấp xuống tay trẻ, thu nhỏ bớt không được nên chỉ dịch vị trí
+    const cw = l.stage === 'child' && !c.dead && !hideWeapon ? weaponLayers(l) : {};
+    const DY = 7;
     return [
+      ...(cw.bg ? [{ key: cw.bg, tint: cw.tint, dy: DY }] : []),
       { key: 'body_child' },
       { key: 'head_c' },
       { key: 'eyes_c' },
       { key: 'pants_c', tint: robe.dark },
       { key: 'shirt_c', tint: robe.body },
       ...(l.path === 'phat' ? [] : [{ key: `hairc_${HAIR_CHILD[st]}`, tint: hair }]),
+      ...(cw.fg ? [{ key: cw.fg, tint: cw.tint, dy: DY }] : []),
     ];
   }
   const elder = l.aging === 2;
@@ -461,7 +466,7 @@ export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Charact
   const def = animFor(c, focus);
   const a = anim ?? def.anim;
   const d = dir ?? def.dir;
-  const layers = lpcLayers(c, a === 'spellcast' || a === 'hurt');
+  const layers = lpcLayers(c, a === 'hurt');
   const key = JSON.stringify([layers, a, d]);
   const [strip, setStrip] = useState<{ key: string; url: string } | null>(() => {
     const u = typeof window !== 'undefined' ? readyStrip(layers, a, d) : undefined;
