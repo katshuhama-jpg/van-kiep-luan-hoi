@@ -163,7 +163,7 @@ export function killExp(c: Character, m: Monster): number {
   return Math.max(1, Math.round(base * factor * tierBonus * c.linhCanMul * (1 + gearFx(c.equipped).exp / 100)));
 }
 
-export function killReward(c: Character, m: Monster, ctx: EffectCtx): string[] {
+export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance = 0.12): string[] {
   const notes: string[] = [];
   addCult(c, killExp(c, m));
   money(c, Math.round((2 + m.lv * 3) * (0.7 + ctx.rnd() * 0.6)));
@@ -200,6 +200,10 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx): string[] {
       }
     }
   }
+  if (ctx.rnd() < lootChance) {
+    const l = lootDrop(c, m, ctx);
+    if (l) notes.push(l);
+  }
   const tierBefore = tierOf(c, m);
   if (growMonster(c, m)) {
     const t = tierOf(c, m);
@@ -222,6 +226,40 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx): string[] {
   }
   if (m.lv >= 11 && ctx.rnd() < 0.02) stat(c, 'khiVan', 1);
   return notes;
+}
+
+const RARE_NAME = ['Phàm', 'Tốt', 'Hiếm', 'Cực phẩm'];
+const RARE_SELL = [15, 60, 220, 800];
+
+/**
+ * Chiến lợi phẩm ngẫu nhiên khi hạ quái: phần lớn là đồ lởm, thỉnh thoảng ra đồ xịn.
+ * Tỉ lệ độ hiếm: phàm 60%, tốt 30%, hiếm 8%, cực phẩm 2% (khí vận, đồ tăng rơi đồ, quái tiến hóa nâng tỉ lệ đồ tốt).
+ * Đồ hợp cảnh giới hiện tại (lệch xuống tối đa 2 cảnh giới). Trùng đồ đã có thì bán lấy linh thạch.
+ */
+export function lootDrop(c: Character, m: Monster, ctx: EffectCtx): string | null {
+  const g = gearFx(c.equipped);
+  const luck = (1 + Math.max(0, c.stats.khiVan - 50) / 100) * (1 + g.drop / 100) * (1 + tierOf(c, m) * 0.3);
+  const r = ctx.rnd();
+  const rare = r < 0.02 * luck ? 3 : r < 0.1 * luck ? 2 : r < 0.4 * luck ? 1 : 0;
+  const lo = Math.max(0, c.realm - 2);
+  let pool = ITEMS.filter((i) => i.src !== 'event' && (i.rare ?? 0) === rare && i.minRealm <= c.realm && i.minRealm >= lo);
+  if (!pool.length) pool = ITEMS.filter((i) => i.src !== 'event' && (i.rare ?? 0) === rare && i.minRealm <= c.realm);
+  if (!pool.length) return null;
+  const fresh = pool.filter((i) => !c.inventory.includes(i.id));
+  // 80% ưu tiên món chưa có
+  const src = fresh.length && ctx.rnd() < 0.8 ? fresh : pool;
+  const it = src[Math.floor(ctx.rnd() * src.length)];
+  const tag = `[${RARE_NAME[rare]}]`;
+  if (c.inventory.includes(it.id)) {
+    const sell = Math.round(RARE_SELL[rare] * (1 + c.realm * 0.5));
+    money(c, sell);
+    return `${m.name} rơi ra ${tag} ${it.name}, bạn đã có rồi nên đem bán được ${sell} linh thạch.`;
+  }
+  giveItem(c, it.id, false);
+  if (rare >= 3) ctx.fx('layer', `Cực phẩm: ${it.name}`);
+  else ctx.fx('buy', it.name);
+  if (rare === 0) return `Lục được trên xác ${m.name} một ${it.name} cũ kỹ ${tag}. (${fxText(it.fx)})`;
+  return `${m.name} rơi ra ${tag} ${it.name}${rare >= 2 ? '!' : '.'} (${fxText(it.fx)}) Mở Túi đồ để mặc.`;
 }
 
 /** Thua trận: có thể chết. Trả về câu mô tả. */

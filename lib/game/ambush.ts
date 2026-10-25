@@ -64,7 +64,8 @@ export function finishAmbush(c: Character, m: Monster, result: 'win' | 'lose' | 
   const danger = tier === 'hon' ? 1.6 : tier === 'kem' ? 0.6 : 1;
   if (result === 'win') {
     const notes = [`Bạn hạ được ${m.name} chặn đường (+${killExp(c, m)} tu vi).`];
-    notes.push(...killReward(c, m, ctx));
+    // quái chặn đường thắng xong gần như chắc chắn có chiến lợi phẩm
+    notes.push(...killReward(c, m, ctx, 0.75));
     const hurt = Math.round(pLoss * 25);
     if (hurt >= 3) {
       stat(c, 'sucKhoe', -hurt);
