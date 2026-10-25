@@ -14,7 +14,7 @@ import type { Character, EffectCtx, RivalChar } from './types';
  */
 
 export type DuelKind = 'dong_dao' | 'dich_thu' | 'kiep_truoc';
-export const DUEL_PER_YEAR = 0.05;
+export const DUEL_PER_YEAR = 0.15;
 export const DUEL_TURNS = 5;
 
 export interface DuelFoe {

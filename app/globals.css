@@ -1332,11 +1332,33 @@ button:disabled {
 }
 
 .sheet-head {
+  /* dính trên đầu khi cuộn danh sách dài, nút Đóng luôn trong tầm tay */
+  position: sticky;
+  top: -14px;
+  z-index: 3;
+  background: var(--paper);
+  margin: -14px -14px 8px;
+  padding: 14px 14px 8px;
+  border-bottom: 2px solid rgba(31, 22, 13, 0.12);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  margin-bottom: 8px;
+}
+
+/* nút Đóng thứ hai dính dưới đáy, ngón cái với tới dễ trên điện thoại */
+.sheet-foot {
+  position: sticky;
+  bottom: calc(-16px - env(safe-area-inset-bottom));
+  z-index: 3;
+  margin: 12px -14px calc(-16px - env(safe-area-inset-bottom));
+  padding: 10px 14px calc(12px + env(safe-area-inset-bottom));
+  background: var(--paper);
+  border-top: 2px solid rgba(31, 22, 13, 0.12);
+}
+
+.sheet-foot .btn {
+  width: 100%;
 }
 
 .sheet-head h2 {
