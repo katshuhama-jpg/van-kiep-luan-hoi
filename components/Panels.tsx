@@ -453,6 +453,7 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
   const left = meta.phucDuyen - spent;
   const leftTa = meta.nghiep - picked.filter((id) => tal(id)?.ta).reduce((s, id) => s + (tal(id)?.cost ?? 0), 0);
   const first = meta.lives === 0;
+  const cheapest = Math.min(...TALENTS.filter((t) => !t.ta).map((t) => t.cost));
   return (
     <div className="birth-flow">
       <TodayScroll meta={meta} />
@@ -497,9 +498,9 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
       />
 
       {!first && (
-        <details className="more talent-shop">
+        <details className="more talent-shop" open={meta.phucDuyen >= cheapest}>
           <summary>
-            Tiêu phúc duyên <span className="jade">({left} phúc)</span>
+            Chọn thiên phú <span className="jade">({left} phúc duyên)</span>
             {picked.length > 0 ? ` · đã chọn ${picked.length}` : ''}
           </summary>
           <div className="more-body">
@@ -528,7 +529,7 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
       {meta.nghiep > 0 && (
         <details className="more talent-shop ta-shop">
           <summary>
-            Tiêu nghiệp lực <span className="ta">({leftTa} nghiệp)</span>
+            Thiên phú tà đạo <span className="ta">({leftTa} nghiệp lực)</span>
           </summary>
           <div className="more-body">
             <p className="note" style={{ marginTop: 0 }}>

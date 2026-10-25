@@ -3009,3 +3009,8 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .top-icons .icon-btn svg { width: 15px; height: 15px; }
 .top-icons .mail-btn .dot { top: 0; right: 0; min-width: 14px; height: 14px; line-height: 14px; font-size: 10px; padding: 0 3px; }
 .game .topbar .meta { flex: 1; }
+/* thiên phú: nổi bật hơn khung "tùy chỉnh thêm" */
+.talent-shop { border-color: var(--jade); box-shadow: 3px 3px 0 var(--ink-dark); }
+.talent-shop > summary { font-weight: 700; color: var(--jade); background: #eef6e6; }
+.talent-shop.ta-shop { border-color: var(--ta); }
+.talent-shop.ta-shop > summary { color: var(--ta); background: #f8e6e6; }
