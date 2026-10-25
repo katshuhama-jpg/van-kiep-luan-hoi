@@ -1,6 +1,7 @@
 import { combatLevel, playerStats, type Fighter } from './combat';
 import { ITEMS, REALMS, fxText, realmLabel } from './data';
 import { demoChar } from './demo';
+import { ELEMENT_IDS, elemRel, elementOf, type ElemRel } from './nguhanh';
 import { genName } from './engine';
 import { addCult, fatal, giveItem, money, reward, stat } from './helpers';
 import type { Character, EffectCtx, RivalChar, Slot } from './types';
@@ -143,6 +144,11 @@ export function pickDuel(c: Character, rnd: () => number): DuelFoe | null {
 
   let rival: RivalChar | null = null;
   let npc = false;
+  // quan hệ ngũ hành mong muốn: bị khắc 30%, khắc 20%, cùng mệnh 15%, sinh 17,5%, được sinh 17,5%
+  // (để ngẫu nhiên thì khắc + cùng mệnh chiếm 40%, bị khắc chỉ 20%: người chơi thấy quá dễ)
+  const myEl = elementOf(c);
+  const er = rnd();
+  const wantRel: ElemRel = er < 0.3 ? 'bi_khac' : er < 0.5 ? 'khac' : er < 0.65 ? 'dong' : er < 0.825 ? 'sinh' : 'duoc_sinh';
   if (kind === 'kiep_truoc' && past) {
     // bóng kiếp trước: dáng hình kiếp trước, sức mạnh do tâm ma quyết định; tâm ma lớn thì mạnh thêm
     const t2 = c.stats.tamMa >= 50 && delta > 0 ? clToRealm(Math.min(27, targetCl + 2)) : tgt;
@@ -151,13 +157,16 @@ export function pickDuel(c: Character, rnd: () => number): DuelFoe | null {
     const mine = lean(c.daoTam);
     const pool = (w?.rivals ?? []).filter((v) => v.realm >= 1 && Math.abs(combatLevel(foeChar(v)) - targetCl) <= 1);
     const side = pool.filter((v) => (kind === 'dong_dao' ? lean(v.daoTam) === mine || lean(v.daoTam) === 0 : lean(v.daoTam) !== mine || mine === 0));
-    const list = side.length ? side : pool;
+    const list0 = side.length ? side : pool;
+    // ưu tiên đúng quan hệ ngũ hành đã bốc; không có ai hợp thì lấy cả danh sách
+    const byElem = list0.filter((v) => elemRel(myEl, elementOf(v)) === wantRel);
+    const list = byElem.length ? byElem : list0;
     if (list.length) {
       rival = list[Math.floor(rnd() * list.length)];
     } else {
       npc = true;
       const sign = kind === 'dong_dao' ? (mine || 1) : mine > 0 ? -1 : mine < 0 ? 1 : rnd() < 0.5 ? 1 : -1;
-      rival = { ...npcRival(c, tgt.realm, sign, rnd), layer: tgt.layer };
+      rival = { ...npcRival(c, tgt.realm, sign, rnd), layer: tgt.layer, element: ELEMENT_IDS.find((e) => elemRel(myEl, e) === wantRel) };
     }
   }
   if (!rival) return null;
