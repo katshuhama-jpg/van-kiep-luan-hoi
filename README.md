@@ -1,5 +1,7 @@
 # Vạn Kiếp Luân Hồi
 
+> Tài liệu ngữ cảnh đầy đủ (cốt truyện, cách chơi, luật và con số, dữ liệu, quy ước): [docs/CONTEXT.md](docs/CONTEXT.md)
+
 Game pixel trùng sinh tu tiên, chơi trên trình duyệt điện thoại. Lấy cảm hứng từ 1in8b.life: đầu thai ngẫu nhiên, thời gian tự trôi, mỗi năm chọn một trọng tâm, gặp kỳ ngộ thì chọn 1 trong 4 hướng, sống đến hết thọ nguyên rồi luân hồi.
 
 ## Có gì trong game
