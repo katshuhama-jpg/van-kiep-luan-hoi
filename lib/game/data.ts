@@ -1,3 +1,4 @@
+import { GEAR } from './gear';
 import type { Focus, PathId, Slot, Talent } from './types';
 
 export const REALMS = [
@@ -189,6 +190,7 @@ export const ITEMS: Item[] = [
   { id: 'ngoc_boi', name: 'Ngọc bội hộ thân', icon: true, slot: 'phu_kien', price: 120, minRealm: 0, desc: 'Đỡ một lần chí mạng.', look: 'ngoc' },
   { id: 'ho_lo', name: 'Hồ lô rượu', icon: true, slot: 'phu_kien', price: 80, minRealm: 0, desc: 'Ung dung tự tại.', look: 'holo', fx: { tamCanh: 1, hp: 5 } },
   { id: 'kiem_bay', name: 'Bản mệnh phi kiếm', icon: true, slot: 'phu_kien', price: 1400, minRealm: 3, path: 'kiem', desc: 'Kiếm bay vòng quanh chủ.', look: 'kiembay', fx: { cult: 20, atk: 25 } },
+  ...GEAR,
 ];
 
 /** Tổng chỉ số từ đồ đang mặc */

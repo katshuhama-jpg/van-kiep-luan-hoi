@@ -10,7 +10,7 @@ import { describeLean } from '@/lib/game/engine';
 import { DANGER_TEXT, MONSTERS, combatLevel, dangerOf, effLv, killExp, monsterName, playerStats, tierOf } from '@/lib/game/combat';
 import { MonsterSprite } from './Battle';
 import { cultPct, fmt, needFor } from '@/lib/game/helpers';
-import type { Character, Focus, LogEntry, Meta, PendingEvent } from '@/lib/game/types';
+import type { Character, Focus, LogEntry, Meta, PendingEvent, Slot } from '@/lib/game/types';
 
 /* ---------------- Khung hộp thoại ---------------- */
 export function Sheet({ title, onClose, children }: { title: string; onClose?: () => void; children: ReactNode }) {
@@ -224,6 +224,31 @@ function lockReason(c: Character, it: Item): string | null {
 
 export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; onBuyItem: (id: string) => void; onBuyPill: (id: string) => void; onClose: () => void }) {
   const [tab, setTab] = useState<'do' | 'dan' | 'kho'>('do');
+  const [slot, setSlot] = useState<'all' | Slot>('all');
+  const [fit, setFit] = useState(true);
+  // lọc theo loại đồ và "hợp với mình": đúng phái (hoặc đồ chung), cảnh giới hiện tại hoặc cao hơn một bậc
+  const pass = (it: Item) => (slot === 'all' || it.slot === slot) && (!fit || ((!it.path || it.path === c.path) && it.minRealm <= c.realm + 1));
+  const filters = (
+    <div className="shop-filter">
+      <div className="chips">
+        {(
+          [
+            ['all', 'Tất cả'],
+            ['vu_khi', 'Vũ khí'],
+            ['ao', 'Pháp y'],
+            ['phu_kien', 'Phụ kiện'],
+          ] as const
+        ).map(([k, t]) => (
+          <button key={k} className={`chip-btn ${slot === k ? 'on' : ''}`} onClick={() => setSlot(k)}>
+            {t}
+          </button>
+        ))}
+      </div>
+      <label className="fit-toggle">
+        <input type="checkbox" checked={fit} onChange={(e) => setFit(e.target.checked)} /> Chỉ hiện đồ hợp với mình
+      </label>
+    </div>
+  );
   return (
     <Sheet title="Phường thị" onClose={onClose}>
       <p className="note" style={{ marginTop: 0 }}>
@@ -241,8 +266,11 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; 
         </button>
       </div>
       <div className="items">
+        {tab !== 'dan' && filters}
         {tab === 'do' &&
-          ITEMS.filter((i) => i.price > 0 && i.src !== 'drop' && i.src !== 'event').map((it) => {
+          ITEMS.filter((i) => i.price > 0 && i.src !== 'drop' && i.src !== 'event' && pass(i))
+            .sort((x, y) => x.minRealm - y.minRealm || x.price - y.price)
+            .map((it) => {
             const owned = c.inventory.includes(it.id);
             const lock = lockReason(c, it);
             return (
@@ -264,7 +292,9 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; 
         {tab === 'kho' && (
           <>
             <p className="note" style={{ margin: 0 }}>Không bán ở đâu cả. Phải trừ yêu hoặc gặp cơ duyên trong đời mới có. Đã có {ITEMS.filter((i) => (i.src === 'drop' || i.src === 'event') && i.id !== 'ao_vai' && c.inventory.includes(i.id)).length}/{ITEMS.filter((i) => (i.src === 'drop' || i.src === 'event') && i.id !== 'ao_vai').length}.</p>
-            {ITEMS.filter((i) => (i.src === 'drop' || i.src === 'event') && i.id !== 'ao_vai').map((it) => {
+            {ITEMS.filter((i) => (i.src === 'drop' || i.src === 'event') && i.id !== 'ao_vai' && pass(i))
+              .sort((x, y) => x.minRealm - y.minRealm || (x.rare ?? 0) - (y.rare ?? 0))
+              .map((it) => {
               const owned = c.inventory.includes(it.id);
               return (
                 <div key={it.id} className={`item rare-${it.rare ?? 0} ${owned ? '' : 'unknown'}`}>

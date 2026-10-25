@@ -2628,3 +2628,9 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 @keyframes chuongFly { 0% { transform: translateX(0) scale(0.4); opacity: 0.4; } 70% { opacity: 1; } 100% { transform: translateX(calc(100% + 120px)) scale(1.25); opacity: 0; } }
 .skill-name { position: absolute; left: 50%; top: 24%; transform: translateX(-50%); white-space: nowrap; font-size: 20px; font-weight: 700; color: #fff3c4; text-shadow: 2px 2px 0 #1f160d, -1px -1px 0 #1f160d, 0 0 8px #ffcf3e; animation: skillPop 0.9s ease-out forwards; pointer-events: none; }
 @keyframes skillPop { 0% { opacity: 0; transform: translateX(-50%) scale(0.6); } 20% { opacity: 1; transform: translateX(-50%) scale(1.1); } 80% { opacity: 1; } 100% { opacity: 0; transform: translateX(-50%) translateY(-10px); } }
+
+/* lọc đồ ở phường thị */
+.shop-filter { display: flex; flex-direction: column; gap: 6px; margin-bottom: 4px; }
+.shop-filter .chips { margin: 0; }
+.fit-toggle { display: flex; align-items: center; gap: 6px; font-size: 16px; color: var(--muted); }
+.fit-toggle input { width: 18px; height: 18px; accent-color: var(--red); }
