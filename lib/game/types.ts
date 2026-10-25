@@ -93,6 +93,7 @@ export interface Character {
   world?: WorldEcho; // dấu vết của người chơi khác
   arcs?: Record<string, { s: number; at: number; v?: string }>; // chuỗi sự kiện nhiều năm
   endTag?: string; // đánh dấu kết cục đặc biệt
+  timid?: number; // số lựa chọn an toàn liên tiếp gần đây: hiền quá dễ bị bắt nạt
   kiepBonus?: number; // thưởng/phạt từ mini-game thiên kiếp
   mount?: string | null; // tọa kỵ (rồng)
   fateName?: string; // tướng số lúc sinh

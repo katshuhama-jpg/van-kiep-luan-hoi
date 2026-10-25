@@ -110,8 +110,12 @@ export function usePill(c: Character, id: string): boolean {
   return true;
 }
 
+/** Đếm số lần một lựa chọn có dính rủi ro (bị thương, hiểm cảnh) để biết người chơi đang chọn an toàn hay liều */
+export const riskMeter = { n: 0 };
+
 /** Bị thương. Ngọc bội hộ thân đỡ một đòn chí mạng. */
 export function hurt(c: Character, amount: number, ctx: EffectCtx): string {
+  riskMeter.n++;
   c.stats.sucKhoe = clamp(c.stats.sucKhoe - amount, 0, 100);
   ctx.fx('hurt', `-${amount}`);
   if (c.stats.sucKhoe <= 0 && c.equipped.phu_kien === 'ngoc_boi') {
@@ -138,6 +142,7 @@ export function fmt(n: number) {
  * ngọc bội hộ thân đỡ được một lần.
  */
 export function fatal(c: Character, ctx: EffectCtx, chance: number, cause: string): string | null {
+  riskMeter.n++;
   // trẻ con được trời thương hơn một chút
   const tough = c.gifts?.includes('g_menh_cung') && chance < 1 ? 0.7 : 1;
   // độ khó: mọi hiểm cảnh nguy như gốc (trước tăng 25%, người chơi kêu chết nhiều quá)

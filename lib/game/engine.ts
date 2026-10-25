@@ -3,6 +3,7 @@ import { BREAK_EVENT_ID, EVENTS, PATH_EVENT_ID, pathChoices } from './events';
 import { addCult, addPill, clamp, fatal, reward, wealthTier, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
 import type { Character, Choice, EffectCtx, Fx, FxKind, GameEvent, Meta, PendingEvent, Tone } from './types';
 import { applyGifts, giftOf, hasGift } from './gacha';
+import { afterChoice, beforeChoice } from './fate';
 
 export const rnd = () => Math.random();
 
@@ -607,9 +608,12 @@ export function resolveChoice(c: Character, p: PendingEvent, idx: number, ctx: E
   if (!e) return null;
   const choice = e.choices(c, p.seed ?? 0)[idx];
   if (!choice) return null;
+  const mark = beforeChoice();
   const result = choice.run(c, ctx);
   const tone: Tone = choice.lean === 'chinh' ? 'chinh' : choice.lean === 'ta' ? 'ta' : 'normal';
   ctx.log(`${p.title}: ${choice.label}. ${result}`, c.dead ? 'big' : tone);
+  const mishap = afterChoice(c, choice, mark, ctx);
+  if (mishap) ctx.log(mishap, c.dead ? 'big' : 'bad');
   checkDeath(c, ctx);
   if (c.dead) return null;
   const brk = progress(c, ctx, talents);
