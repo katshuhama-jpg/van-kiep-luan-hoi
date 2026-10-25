@@ -35,7 +35,7 @@ export const MONSTERS: Monster[] = [
   { id: 'hac_hung', name: 'Hắc Hùng Tinh', lv: 15, place: 'Hắc Phong Sơn', shape: 'thu', body: '#2a2228', accent: '#7a5a3a', eye: '#ffd36b', desc: 'Gấu đen tu luyện ngàn năm, sức mạnh vô song.' },
   { id: 'doc_vuong', name: 'Độc Thủ Dược Vương', lv: 16, place: 'Vạn Độc Cốc', shape: 'vo_lam', body: '#3a6a3a', accent: '#9a3ad0', eye: '#9ff0c8', desc: 'Phẩy quạt là độc bay mười dặm.', human: { weapon: 'quat', hat: true } },
   { id: 'ngan_giac', name: 'Ngân Giác Mãng', lv: 17, place: 'Vạn Xà Cốc', shape: 'ran', body: '#9aa6c0', accent: '#e6eaf6', eye: '#e0202e', desc: 'Mãng xà có sừng bạc, sắp hóa giao.' },
-  { id: 'dai_bang', name: 'Kim Sí Thần Bức', lv: 19, place: 'Đỉnh Vân Tiêu', shape: 'chim', body: '#e0a030', accent: '#ffe27a', eye: '#e0202e', desc: 'Dơi thần cánh vàng, một cái vỗ cánh chín vạn dặm.' },
+  { id: 'dai_bang', name: 'Kim Sí Đại Bằng', lv: 19, place: 'Đỉnh Vân Tiêu', shape: 'chim', body: '#e0a030', accent: '#ffe27a', eye: '#e0202e', desc: 'Chim thần cánh vàng, một cái vỗ cánh chín vạn dặm.' },
   { id: 'cuong_dao', name: 'Cuồng Đao Khách', lv: 20, place: 'Đoạn Hồn Nhai', shape: 'vo_lam', body: '#8a1a24', accent: '#1a1a1a', eye: '#ffd36b', desc: 'Đao chưa ra khỏi vỏ đã có người chết.', human: { weapon: 'dao', hat: true } },
   { id: 'huyet_ma', name: 'Huyết Ma', lv: 21, place: 'Huyết Hải', shape: 'nguoi', body: '#7a0a1e', accent: '#1e1a24', eye: '#ff2a3a', desc: 'Ma đầu sinh ra từ biển máu.' },
   { id: 'bang_giao', name: 'Băng Giao', lv: 23, place: 'Bắc Hải Băng Nguyên', shape: 'rong', body: '#7fc8ff', accent: '#eaf6ff', eye: '#2a3a6a', desc: 'Giao long băng giá, hơi thở đóng băng vạn vật.' },

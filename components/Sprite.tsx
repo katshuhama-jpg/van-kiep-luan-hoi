@@ -367,10 +367,13 @@ function weaponLayers(l: Look): { bg?: string; fg?: string; tint?: string } {
   if (k === 'dao' || k === 'song') return { bg: 'w_katana_bg', fg: 'w_katana', tint: red };
   if (k === 'thuong') return { bg: 'w_spear_bg', fg: 'w_spear' };
   if (k === 'cung') return { bg: 'w_bow_bg', fg: 'w_bow' };
-  if (k === 'roi') return { bg: 'w_flail_bg', fg: 'w_flail' };
-  if (['truong', 'cuoc'].includes(k)) return { bg: 'w_staff_bg', fg: 'w_staff' };
+  if (k === 'roi') return { bg: 'w_whip_bg', fg: 'w_whip', tint: a };
+  if (k === 'can') return { bg: 'w_rod_bg', fg: 'w_rod' };
+  if (k === 'cuoc') return { bg: 'w_pick_bg', fg: 'w_pick' };
+  if (k === 'truong') return { bg: 'w_staff_bg', fg: 'w_staff' };
   if (['phattran', 'but', 'tieu', 'quat'].includes(k)) return { fg: 'w_cane', tint: a };
-  if (k === 'chuy' || k === 'quyen') return { fg: 'w_mace' };
+  if (k === 'quyen') return { fg: 'gloves', tint: a };
+  if (k === 'chuy') return { fg: 'w_mace' };
   if (k === 'liem') return { fg: 'w_scythe', tint: red };
   return {};
 }
@@ -496,15 +499,18 @@ export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Charact
       {url ? <span className="lpc-strip" style={style} /> : <PixelSprite c={c} size={box} focus={focus} />}
       {l.acc === 'kiembay' && !l.dead && <span className="lpc-orbit" aria-hidden="true" />}
       {l.pet && l.stage !== 'baby' && (
-        <svg className="lpc-pet pet-hop" viewBox="-7 14 10 8" width={box * 0.3} height={box * 0.24} shapeRendering="crispEdges" aria-hidden="true">
-          <rect x={-6} y={15} width={1} height={2} fill="#ff9a4a" />
-          <rect x={-3} y={15} width={1} height={2} fill="#ff9a4a" />
-          <rect x={-6} y={17} width={4} height={2} fill="#ff9a4a" />
-          <rect x={-5} y={18} width={1} height={1} fill="#2b2235" />
-          <rect x={-3} y={18} width={1} height={1} fill="#2b2235" />
-          <rect x={-5} y={19} width={5} height={2} fill="#ff9a4a" />
-          <rect x={0} y={17} width={2} height={3} fill="#fff4e0" />
-        </svg>
+        <span
+          className="lpc-pet"
+          aria-hidden="true"
+          style={{
+            width: box * 0.4,
+            height: box * 0.4,
+            backgroundImage: 'url(/lpc/beasts/fox_r.png)',
+            backgroundSize: `${box * 0.4 * 4}px ${box * 0.4}px`,
+            ['--lpc-end' as string]: `-${box * 0.4 * 4}px`,
+            animation: l.dead ? 'none' : 'lpc-play 0.6s steps(4) infinite',
+          }}
+        />
       )}
     </div>
   );

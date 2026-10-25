@@ -37,21 +37,22 @@ function HumanStrip({ layers, anim, size, scale }: { layers: Layer[]; anim: Anim
 }
 
 function BeastStrip({ look, size, dead }: { look: Extract<MonsterLook, { kind: 'beast' }>; size: number; dead?: boolean }) {
-  const px = (size / 64) * look.scale * (64 / look.cell) * (look.cell / 64);
   const cell = look.cell * (size / 64) * look.scale;
+  const cols = look.frames + (look.sheet === 'slime' ? 1 : 0);
+  const fps = look.fps ?? 8;
   const style: CSSProperties = {
     width: cell,
     height: cell,
     left: (size - cell) / 2,
     top: size - cell * 0.9,
     backgroundImage: `url(/lpc/beasts/${look.sheet}.png)`,
-    backgroundSize: `${(look.frames + (look.sheet === 'slime' ? 1 : 0)) * cell}px ${cell * 4}px`,
-    backgroundPositionY: `-${cell}px`,
+    backgroundSize: `${cols * cell}px ${look.strip ? cell : cell * 4}px`,
+    backgroundPositionY: look.strip ? 0 : `-${cell}px`,
+    filter: look.filter,
     ['--lpc-end' as string]: `-${look.frames * cell}px`,
-    animation: dead ? 'none' : `lpc-play ${look.frames / 8}s steps(${look.frames}) infinite`,
+    animation: dead ? 'none' : `lpc-play ${look.frames / fps}s steps(${look.frames}) infinite`,
     transform: dead ? 'rotate(90deg) translateX(30%)' : undefined,
   };
-  void px;
   return <span className="lpc-strip" style={style} />;
 }
 
