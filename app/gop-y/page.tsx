@@ -1,5 +1,6 @@
 'use client';
 
+import BackButton from '@/components/BackButton';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { addFeedback, listFeedback, voteFeedback, type Feedback, type FeedbackKind } from '@/lib/storage';
@@ -69,9 +70,7 @@ export default function GopY() {
             Góp ý
           </span>
           <span className="meta">Muốn game có gì, cứ viết. Nhiều người đồng ý sẽ được làm trước.</span>
-          <Link href="/choi" className="icon-btn" style={{ textDecoration: 'none', display: 'grid', placeItems: 'center' }} aria-label="Quay lại">
-            ‹
-          </Link>
+          <BackButton fallback="/" />
         </div>
       </header>
 

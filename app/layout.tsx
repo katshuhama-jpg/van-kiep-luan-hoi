@@ -1,3 +1,4 @@
+import { NavTracker } from '@/components/BackButton';
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
@@ -22,7 +23,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet" />
       </head>
-      <body>{children}</body>
+      <body>
+        <NavTracker />
+        {children}
+      </body>
     </html>
   );
 }

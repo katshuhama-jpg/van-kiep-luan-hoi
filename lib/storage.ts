@@ -12,6 +12,7 @@ export interface SaveState {
   pending: PendingEvent | null;
   yearSec: number;
   talents?: string[];
+  t?: number; // thời điểm lưu, để chọn bản mới hơn giữa máy và mây
 }
 
 export interface Memorial {
@@ -61,7 +62,11 @@ export async function loadAll(user: Player | null): Promise<{ meta: Meta; save: 
     const { data, error } = await sb.rpc('vkl_me', { p_token: user.token });
     if (!error && data) {
       const d = data as { meta: Partial<Meta> | null; state: SaveState | null };
-      return { meta: { ...emptyMeta(), ...(d.meta ?? {}) }, save: d.state };
+      // bản lưu trên máy có thể mới hơn bản trên mây (mây lưu chậm hơn, hoặc bị ngắt khi chuyển trang)
+      const local = readLocal<SaveState>(userKey(user));
+      const remote = d.state;
+      const save = local && (local.t ?? 0) > (remote?.t ?? 0) ? local : remote;
+      return { meta: { ...emptyMeta(), ...(d.meta ?? {}) }, save };
     }
     if (!error && !data) dropSession();
   }
@@ -74,14 +79,18 @@ export async function saveMeta(user: Player | null, meta: Meta) {
   if (user && sb) await sb.rpc('vkl_save_meta', { p_token: user.token, p_meta: meta });
 }
 
+const userKey = (user: Player) => `vkl.save.u.${user.username}`;
+
+/** Lưu trên máy. Người đăng nhập cũng giữ một bản trên máy để chuyển trang không mất tiến độ. */
 export function saveLocal(user: Player | null, state: SaveState | null) {
-  if (!user) writeLocal(K.save, state);
+  const v = state ? { ...state, t: Date.now() } : null;
+  writeLocal(user ? userKey(user) : K.save, v);
 }
 
 export async function saveRemote(user: Player | null, state: SaveState | null) {
   const sb = supabase();
   if (!user || !sb) return;
-  await sb.rpc('vkl_save_game', { p_token: user.token, p_state: state });
+  await sb.rpc('vkl_save_game', { p_token: user.token, p_state: state ? { ...state, t: Date.now() } : null });
 }
 
 export async function addMemorial(user: Player | null, m: Omit<Memorial, 'id' | 'incense' | 'created_at'> & { realm_no?: number; layer_no?: number; wealth?: number; look?: Record<string, unknown> }) {

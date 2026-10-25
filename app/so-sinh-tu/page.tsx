@@ -1,5 +1,6 @@
 'use client';
 
+import BackButton from '@/components/BackButton';
 import Link from 'next/link';
 import { useEffect, useState, type CSSProperties } from 'react';
 import { ENDINGS, RARE_COLOR } from '@/lib/game/endings';
@@ -28,9 +29,7 @@ export default function SoSinhTu() {
             Đã mở {n}/{ENDINGS.length} kết cục
             {meta ? ` · ${meta.lives} kiếp` : ''}
           </span>
-          <Link href="/choi" className="icon-btn" style={{ textDecoration: 'none', display: 'grid', placeItems: 'center' }} aria-label="Quay lại">
-            ‹
-          </Link>
+          <BackButton fallback="/choi" />
         </div>
       </header>
       <div className="ss-progress" aria-hidden="true">

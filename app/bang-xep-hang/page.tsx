@@ -1,5 +1,6 @@
 'use client';
 
+import BackButton from '@/components/BackButton';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import Sprite from '@/components/Sprite';
@@ -77,9 +78,7 @@ export default function RankPage() {
             Xếp hạng
           </span>
           <span className="meta">Anh hùng các đời</span>
-          <Link href="/choi" className="icon-btn" style={{ textDecoration: 'none', display: 'grid', placeItems: 'center' }} aria-label="Quay lại game">
-            ‹
-          </Link>
+          <BackButton fallback="/choi" />
         </div>
       </header>
 

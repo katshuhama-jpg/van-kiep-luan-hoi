@@ -1,5 +1,6 @@
 'use client';
 
+import BackButton from '@/components/BackButton';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { listMemorials, thapHuong, type Memorial } from '@/lib/storage';
@@ -50,9 +51,7 @@ export default function Graveyard() {
             Nghĩa trang
           </span>
           <span className="meta">Nơi các kiếp đã qua yên nghỉ</span>
-          <Link href="/" className="icon-btn" style={{ textDecoration: 'none', display: 'grid', placeItems: 'center' }} aria-label="Về trang đầu">
-            ‹
-          </Link>
+          <BackButton fallback="/" />
         </div>
       </header>
 
