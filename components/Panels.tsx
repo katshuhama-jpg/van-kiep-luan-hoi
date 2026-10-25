@@ -448,8 +448,10 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
   const [gifts, setGifts] = useState<string[]>([]);
   const [gSpent, setGSpent] = useState(0);
   const [base, setBase] = useState<Character | null>(null);
-  const spent = picked.reduce((s, id) => s + (TALENTS.find((t) => t.id === id)?.cost ?? 0), 0) + gSpent;
+  const tal = (id: string) => TALENTS.find((t) => t.id === id);
+  const spent = picked.filter((id) => !tal(id)?.ta).reduce((s, id) => s + (tal(id)?.cost ?? 0), 0) + gSpent;
   const left = meta.phucDuyen - spent;
+  const leftTa = meta.nghiep - picked.filter((id) => tal(id)?.ta).reduce((s, id) => s + (tal(id)?.cost ?? 0), 0);
   const first = meta.lives === 0;
   return (
     <div className="birth-flow">
@@ -504,7 +506,7 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
           <p className="note" style={{ marginTop: 0 }}>Chọn phúc lợi cho kiếp này rồi bấm Đầu thai.</p>
           {meta.phucDuyen <= 0 && <p className="note" style={{ margin: 0 }}>Chưa có phúc duyên. Sống tốt một kiếp, chết đi sẽ được phúc duyên để mua ở đây.</p>}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {TALENTS.map((t) => {
+            {TALENTS.filter((t) => !t.ta).map((t) => {
               const on = picked.includes(t.id);
               const can = on || left >= t.cost;
               return (
@@ -519,6 +521,35 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
               );
             })}
           </div>
+          </div>
+        </details>
+      )}
+
+      {meta.nghiep > 0 && (
+        <details className="more talent-shop ta-shop">
+          <summary>
+            Tiêu nghiệp lực <span className="ta">({leftTa} nghiệp)</span>
+          </summary>
+          <div className="more-body">
+            <p className="note" style={{ marginTop: 0 }}>
+              Nghiệp lực tích từ những kiếp đi tà. Tiêu vào thiên phú tà đạo; tích quá {150} nghiệp mà không tiêu thì kiếp sau bị trời phạt.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {TALENTS.filter((t) => t.ta).map((t) => {
+                const on = picked.includes(t.id);
+                const can = on || leftTa >= t.cost;
+                return (
+                  <button key={t.id} className={`talent ta ${on ? 'on' : ''}`} disabled={!can} aria-pressed={on} onClick={() => setPicked(on ? picked.filter((x) => x !== t.id) : [...picked, t.id])}>
+                    <span>
+                      {t.name}
+                      <br />
+                      <small className="note">{t.desc}</small>
+                    </span>
+                    <span className="cost">{t.cost} nghiệp</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </details>
       )}
@@ -602,7 +633,7 @@ export function DeathSheet({ c, meta, karma, isNew, onDone }: { c: Character; me
   const ending = endingOf(c);
   const buryMoney = Math.round(c.linhThach * 0.3);
   return (
-    <Sheet title={c.ascended ? 'Phi thăng!' : 'Một kiếp đã hết'}>
+    <Sheet title={c.endTag === 'ma_ton_do_kiep' ? 'Thành Ma Tôn!' : c.ascended ? 'Phi thăng!' : 'Một kiếp đã hết'}>
       <p style={{ marginTop: 0 }}>
         <b style={{ fontWeight: 700, color: 'var(--red-d)', fontSize: 24 }}>{c.name}</b>
         <br />
@@ -620,7 +651,7 @@ export function DeathSheet({ c, meta, karma, isNew, onDone }: { c: Character; me
         {karma.nghiep > 0 && (
           <>
             {' '}
-            và <b style={{ fontWeight: 700, color: 'var(--ta)' }}>+{karma.nghiep} nghiệp</b>
+            và <b style={{ fontWeight: 700, color: 'var(--ta)' }}>+{karma.nghiep} nghiệp lực</b> (tiêu được cho thiên phú tà đạo)
           </>
         )}
         .

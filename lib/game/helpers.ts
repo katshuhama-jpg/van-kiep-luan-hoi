@@ -55,6 +55,7 @@ export function stat(c: Character, key: keyof Stats, delta: number) {
   // kẻ đã quen đường tà thì tâm ma dâng chậm hơn (lòng đã chai)
   if (key === 'tamMa' && delta > 0 && c.daoTam <= -40) delta *= 0.7;
   if (key === 'tamMa' && delta > 0 && omenIs('phat_quang')) delta *= 0.6;
+  if (key === 'tamMa' && delta > 0 && c.maKien) delta *= 0.65;
   // càng cao càng khó lên: khí vận, tâm cảnh, ngộ tính trên 80 chỉ tăng nửa
   if (delta > 0 && key !== 'tamMa' && key !== 'sucKhoe' && c.stats[key] >= 80) delta *= 0.5;
   c.stats[key] = clamp(Math.round(c.stats[key] + delta), 0, 100);
@@ -164,6 +165,12 @@ export function fatal(c: Character, ctx: EffectCtx, chance: number, cause: strin
   const luckMul = 1 - clamp((c.stats.khiVan - 50) / 250, -0.2, 0.2);
   const p = clamp(chance * hard * tough * (chance < 1 ? youngMul(c.age) : 1) * (chance < 1 ? luckMul : 1), 0.01, chance >= 1 ? 1 : 0.95);
   if (ctx.rnd() >= p) return null;
+  if (c.oanHon) {
+    c.oanHon = false;
+    c.stats.sucKhoe = Math.max(20, c.stats.sucKhoe);
+    ctx.fx('heal', 'Oan hồn hộ thể');
+    return ' Một bóng oan hồn từ kiếp trước lao ra chắn đòn rồi tan biến. Bạn thoát chết trong gang tấc.';
+  }
   // kiếp đầu tiên được trời thương: chưa đủ 16 tuổi thì không chết, chỉ bị thương
   if ((c.lifeNo === 1 || c.grace16) && c.age < 16) {
     c.stats.sucKhoe = Math.max(10, c.stats.sucKhoe - 20);

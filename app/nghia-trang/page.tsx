@@ -15,7 +15,7 @@ function Tomb({ m, canIncense, onIncense }: { m: Memorial; canIncense: boolean; 
         {m.age} tuổi · {m.realm}
         {m.path ? ` · ${m.path}` : ''}
       </small>
-      {m.ascended ? <small style={{ color: 'var(--jade)' }}>Đã phi thăng</small> : m.cause && <small>{m.cause}</small>}
+      {m.ascended ? <small style={{ color: m.cause?.includes('Ma Tôn') ? 'var(--ta)' : 'var(--jade)' }}>{m.cause?.includes('Ma Tôn') ? 'Đã thành Ma Tôn' : 'Đã phi thăng'}</small> : m.cause && <small>{m.cause}</small>}
       {m.epitaph && <span className="epitaph">“{m.epitaph}”</span>}
       <button className="btn" style={{ marginTop: 'auto', fontSize: 17 }} disabled={!canIncense} onClick={onIncense} aria-label={`Thắp hương cho ${m.char_name}`}>
         Thắp hương · {m.incense}

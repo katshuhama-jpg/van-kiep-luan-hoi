@@ -14,6 +14,7 @@ const cause = (c: Character) => (c.cause ?? '').toLowerCase();
 
 export const ENDINGS: Ending[] = [
   { id: 'xuyen_khong', name: 'Xuyên Không', desc: 'Bước qua khe nứt không gian, tỉnh dậy giữa phố Hà Nội năm 2026.', hint: 'Có những khe nứt không nên bước vào... hoặc nên.', rare: 4, test: (c) => c.endTag === 'xuyen_khong' },
+  { id: 'ma_ton_do_kiep', name: 'Ma Tôn Độ Kiếp', desc: 'Nuốt trọn chín đạo huyết lôi, bước lên ngai Ma Tôn, thoát khỏi luân hồi.', hint: 'Tà đạo đi đến tận cùng, vượt kiếp cuối cùng.', rare: 4, test: (c) => c.endTag === 'ma_ton_do_kiep' },
   { id: 'phi_thang', name: 'Phi Thăng Tiên Giới', desc: 'Vượt chín đạo lôi kiếp, bước lên tiên giới.', hint: 'Đi đến tận cùng con đường tu tiên.', rare: 4, test: (c) => c.ascended },
   { id: 'ma_ton', name: 'Ma Tôn Giáng Thế', desc: 'Tà đạo đến cực điểm, thiên hạ nghe tên đã run sợ.', hint: 'Đạo tâm đen như mực, tu vi cao ngất.', rare: 3, test: (c) => c.daoTam <= -80 && c.realm >= 5 },
   { id: 'thanh_phat', name: 'Lập Địa Thành Phật', desc: 'Tọa hóa để lại xá lợi bảy màu, muôn dân lập miếu thờ.', hint: 'Từ bi tột cùng, đi đường Phật.', rare: 3, test: (c) => c.daoTam >= 70 && (c.path === 'phat' || c.realm >= 4) && cause(c).includes('thọ nguyên') },

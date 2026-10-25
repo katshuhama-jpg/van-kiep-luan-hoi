@@ -730,8 +730,11 @@ export default function PlayPage() {
 
   const born = async (talents: string[], yearSec: number, gifts: string[] = [], gachaSpent = 0, base: Character | null = null) => {
     if (!meta) return;
-    const cost = talents.reduce((s, id) => s + (TALENTS.find((t) => t.id === id)?.cost ?? 0), 0) + gachaSpent;
-    const m2: Meta = { ...meta, phucDuyen: Math.max(0, meta.phucDuyen - cost), talents };
+    // thiên phú thường trả bằng phúc duyên, thiên phú tà trả bằng nghiệp lực
+    const tal = (id: string) => TALENTS.find((t) => t.id === id);
+    const cost = talents.filter((id) => !tal(id)?.ta).reduce((s, id) => s + (tal(id)?.cost ?? 0), 0) + gachaSpent;
+    const costTa = talents.filter((id) => tal(id)?.ta).reduce((s, id) => s + (tal(id)?.cost ?? 0), 0);
+    const m2: Meta = { ...meta, phucDuyen: Math.max(0, meta.phucDuyen - cost), nghiep: Math.max(0, meta.nghiep - costTa), talents };
     if (base && !base.name.trim()) base = { ...base, name: genName(base.gender) };
     const c = newCharacter(m2, gifts, base ?? undefined);
     talentsRef.current = talents;

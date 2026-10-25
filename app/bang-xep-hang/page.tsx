@@ -158,7 +158,7 @@ export default function RankPage() {
                     <span className="rank-user">@{r.username}</span>
                     <TitleBadge title={titles[titleKey(r.username, c.lifeNo)]} />
                     {mine && <span className="badge">Bạn</span>}
-                    {!r.alive && <span className="badge gone-badge">{c.ascended ? 'Phi thăng' : 'Đã mất'}</span>}
+                    {!r.alive && <span className="badge gone-badge">{c.ascended ? (c.cause?.includes('Ma Tôn') ? 'Ma Tôn' : 'Phi thăng') : 'Đã mất'}</span>}
                   </span>
                   <small>
                     {r.alive ? '' : `Kiếp ${c.lifeNo} · `}

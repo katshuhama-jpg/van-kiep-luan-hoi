@@ -4,6 +4,7 @@ import type { Character, Choice, GameEvent } from './types';
 import { EVENTS2 } from './events2';
 import { EVENTS3 } from './events3';
 import { HOOK_EVENTS } from './hookEvents';
+import { TA_EVENTS } from './taEvents';
 import { CHILD_EVENTS } from './childhood';
 import { PET_EVENT, PET_STORIES } from './pets';
 
@@ -1211,6 +1212,7 @@ export const EVENTS: GameEvent[] = [
   ...EVENTS2,
   ...EVENTS3,
   ...HOOK_EVENTS,
+  ...TA_EVENTS,
   ...CHILD_EVENTS,
   PET_EVENT,
   ...PET_STORIES,

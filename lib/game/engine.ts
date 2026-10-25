@@ -137,8 +137,9 @@ export function newCharacter(meta: Meta, gifts: string[] = [], base?: Character)
   if (t.includes('gia_tai')) money(c, 300);
   if (t.includes('phuc')) stat(c, 'khiVan', 25);
   if (t.includes('kiem_tam')) giveItem(c, 'moc_kiem');
-  if (meta.nghiep >= 10) {
-    stat(c, 'khiVan', -Math.min(20, Math.round(meta.nghiep / 2)));
+  // nghiệp lực giờ là thứ tà tu tiêu được; chỉ khi tích quá nặng (từ 150) mới bị trời phạt
+  if (meta.nghiep >= 150) {
+    stat(c, 'khiVan', -Math.min(20, 5 + Math.round((meta.nghiep - 150) / 10)));
     c.enemy = c.enemy ?? 'oan hồn đòi nợ từ kiếp trước';
     c.log.push({ age: 0, tone: 'ta', text: 'Ngày bạn sinh ra, quạ đen đậu kín mái nhà. Nghiệp kiếp trước vẫn chưa trả hết.' });
   }
@@ -170,6 +171,24 @@ export function newCharacter(meta: Meta, gifts: string[] = [], base?: Character)
     c.linhCan = 'Thiên linh căn';
     c.linhCanMul = 2.2;
   }
+  // thiên phú tà đạo (trả bằng nghiệp lực)
+  if (t.includes('ta_huyet')) {
+    dao(c, -30);
+    stat(c, 'ngoTinh', 10);
+  }
+  if (t.includes('ta_dao')) giveItem(c, 'huyet_dao', false);
+  if (t.includes('ta_kien')) c.maKien = true;
+  if (t.includes('ta_cong')) {
+    c.linhCanMul = Math.min(2.2, Math.round(c.linhCanMul * 1.2 * 100) / 100);
+    stat(c, 'tamMa', 10);
+  }
+  if (t.includes('ta_hon')) c.oanHon = true;
+  if (t.includes('ta_ton')) {
+    dao(c, -60);
+    stat(c, 'khiVan', 15);
+    c.maTon = true;
+    c.log.push({ age: 0, tone: 'ta', text: 'Ma tôn chuyển thế: ngày bạn ra đời, trời đỏ như máu, chó trong làng tru suốt đêm.' });
+  }
   if (t.includes('linh_thu')) {
     const rare = ['tuyet_ho', 'bach_xa', 'hoa_ho', 'bang_phong', 'kim_thu', 'mai_loc', 'linh_loc', 'thu_vuong'];
     c.pet = true;
@@ -189,6 +208,15 @@ export function makeCtx(c: Character, fxOut: Fx[]): EffectCtx {
 
 function die(c: Character, cause: string, ctx: EffectCtx) {
   if (c.dead) return;
+  // oan hồn hộ thể: đỡ một lần chết
+  if (c.oanHon) {
+    c.oanHon = false;
+    c.stats.sucKhoe = Math.max(c.stats.sucKhoe, 20);
+    c.stats.tamMa = Math.min(c.stats.tamMa, 70);
+    ctx.log('Một bóng oan hồn từ kiếp trước lao ra chắn trước mặt bạn rồi tan biến. Bạn thoát chết trong gang tấc.', 'ta');
+    ctx.fx('heal', 'Oan hồn hộ thể');
+    return;
+  }
   // kiếp đầu được trời thương đến 16 tuổi
   if ((c.lifeNo === 1 || c.grace16) && c.age < 16) {
     c.stats.sucKhoe = Math.max(c.stats.sucKhoe, 15);
@@ -234,7 +262,7 @@ export function yearlyGain(c: Character) {
   const base = GAIN[c.realm] ?? 90;
   // tà đạo tu nhanh hơn (đổi lại nhiều tâm ma, nhiều kẻ thù)
   const lean = c.daoTam <= -40 ? 1.22 : c.daoTam <= -15 ? 1.08 : 1;
-  return base * c.linhCanMul * (0.6 + c.stats.ngoTinh / 100) * pathMul(c) * gearMul(c) * (c.stats.tamMa > 70 ? 0.8 : 1) * (hasGift(c, 'g_doan_menh') ? 1.3 : 1) * lean;
+  return base * (c.maTon ? 1.15 : 1) * c.linhCanMul * (0.6 + c.stats.ngoTinh / 100) * pathMul(c) * gearMul(c) * (c.stats.tamMa > 70 ? 0.8 : 1) * (hasGift(c, 'g_doan_menh') ? 1.3 : 1) * lean;
 }
 
 
@@ -591,6 +619,8 @@ function breakChance(c: Character) {
   return clamp(
     // chính đạo đạo tâm vững, đột phá dễ hơn chút
     (c.daoTam >= 40 ? 0.06 : 0) +
+    // tà tu ở cảnh giới cao quen sát khí, vượt kiếp cũng vững không kém chính đạo
+    (c.daoTam <= -40 && c.realm >= 5 ? 0.06 : 0) +
     (c.path === 'phat' ? 0.05 : 0) +
     (omenIs('loi_van') ? 0.06 : 0) +
     (hasGift(c, 'g_thien_menh') ? 0.15 : 0) + 0.39 - Math.max(0, c.realm - 2) * 0.07 + c.stats.ngoTinh / 450 + c.stats.tamCanh / 500 - c.stats.tamMa / 200 + (c.stats.khiVan - 50) / 500 + c.linhCanMul * 0.05,
@@ -626,6 +656,13 @@ function attempt(c: Character, ctx: EffectCtx, bonus: number): string {
     if (target >= REALMS.length) {
       c.ascended = true;
       c.dead = true;
+      // tà tu không lên tiên giới mà vượt huyết kiếp, thành Ma Tôn
+      if (c.daoTam <= -40) {
+        c.cause = 'Vượt huyết kiếp, thành Ma Tôn';
+        c.endTag = 'ma_ton_do_kiep';
+        ctx.fx('breakthrough', 'MA TÔN');
+        return 'Chín đạo huyết lôi giáng xuống, bạn nuốt trọn từng đạo một. Trời đất nhuộm đỏ, vạn ma quỳ lạy. Bạn bước lên ngai Ma Tôn, vĩnh viễn không còn bị luân hồi trói buộc!';
+      }
       c.cause = 'Phi thăng tiên giới';
       ctx.fx('breakthrough', 'PHI THĂNG');
       return 'Chín đạo lôi kiếp tan biến, tiên quang giáng xuống. Bạn phi thăng tiên giới!';
@@ -883,6 +920,16 @@ export function usePillNow(c: Character, id: string, ctx: EffectCtx, talents: st
   } else if (id === 'thanh_tam') {
     stat(c, 'tamMa', -25);
     ctx.fx('heal', 'Thanh tâm');
+  } else if (id === 'huyet_sat') {
+    // tà tu luyện hóa tâm ma bằng máu; chính đạo uống vào thì phản tác dụng
+    if (c.daoTam <= -20) {
+      stat(c, 'tamMa', -40);
+      stat(c, 'sucKhoe', -12);
+      ctx.fx('evil', 'Huyết sát luyện tâm');
+    } else {
+      stat(c, 'tamMa', 10);
+      ctx.fx('hurt', 'Huyết khí nghịch');
+    }
   } else if (id === 'hoi_xuan') {
     stat(c, 'sucKhoe', 40);
     ctx.fx('heal', '+sức khỏe');
@@ -908,7 +955,8 @@ export function checkProgress(c: Character, ctx: EffectCtx, talents: string[] = 
 export function karmaOf(c: Character) {
   const points = 5 + c.realm * 8 + Math.floor(c.age / 20) + (c.ascended ? 100 : 0);
   const phuc = points + Math.max(0, Math.round(c.daoTam / 4));
-  const nghiep = c.daoTam < -30 ? Math.round(-c.daoTam / 4) : 0;
+  // tà tu tích nghiệp lực theo độ tà và cảnh giới, dùng để mua thiên phú tà đạo ở kiếp sau
+  const nghiep = c.daoTam < -30 ? Math.round(-c.daoTam / 4 + c.realm * 4 + (c.ascended ? 60 : 0)) : 0;
   return { phuc, nghiep };
 }
 

@@ -101,6 +101,9 @@ export interface Character {
   legend?: Legend | null; // thần binh truyền kiếp đang mang
   vendettas?: Vendetta[];
   qf?: Record<string, number>; // đếm việc làm trong đời cho nhiệm vụ ngày
+  maKien?: boolean; // tâm ma tăng chậm
+  oanHon?: boolean; // oan hồn đỡ một lần chết
+  maTon?: boolean; // ma tôn chuyển thế: tu nhanh hơn
   grace16?: boolean; // được trời thương đến 16 tuổi
   hpWarnAt?: number; // năm gần nhất đã cảnh báo sức khỏe
   ambushSeen?: string[]; // mấy loài quái chặn đường gần nhất, để không lặp lại
@@ -213,6 +216,7 @@ export interface Talent {
   name: string;
   desc: string;
   cost: number;
+  ta?: boolean; // trả bằng nghiệp lực thay vì phúc duyên
 }
 
 export interface Meta {

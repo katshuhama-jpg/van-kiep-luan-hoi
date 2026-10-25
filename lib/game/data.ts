@@ -224,6 +224,7 @@ export const PILLS = [
   { id: 'dien_tho', name: 'Diên Thọ Đan', icon: true, price: 500, desc: '+8 năm thọ nguyên (tối đa 200)' },
   { id: 'thanh_tam', name: 'Thanh Tâm Đan', icon: true, price: 90, desc: '-tâm ma' },
   { id: 'hoi_xuan', name: 'Hồi Xuân Đan', icon: true, price: 60, desc: 'Hồi sức khỏe' },
+  { id: 'huyet_sat', name: 'Huyết Sát Đan', icon: true, price: 50, desc: 'Tà tu: -tâm ma mạnh, đổi bằng máu. Chính đạo uống vào thì tâm ma tăng' },
 ];
 
 export const TALENTS: Talent[] = [
@@ -238,6 +239,13 @@ export const TALENTS: Talent[] = [
   { id: 'van_kiep', name: 'Vạn kiếp bất diệt', desc: 'Trời thương như kiếp đầu: trước 16 tuổi không chết', cost: 70 },
   { id: 'thien_menh', name: 'Thiên mệnh chi tử', desc: 'Khí vận tối đa, linh căn biến dị, đột phá dễ hơn 15%', cost: 150 },
   { id: 'tien_cot', name: 'Tiên cốt trời sinh', desc: 'Chắc chắn mang Thiên linh căn, tu luyện nhanh gấp đôi', cost: 200 },
+  // thiên phú của tà đạo, trả bằng nghiệp lực
+  { id: 'ta_huyet', name: 'Huyết mạch ma tộc', desc: 'Sinh ra đã nghiêng về tà (đạo tâm -30), ngộ tính +10', cost: 30, ta: true },
+  { id: 'ta_dao', name: 'Huyết Ma Đao chờ chủ', desc: 'Huyết Ma Đao nằm sẵn trong túi, đủ Trúc Cơ là cầm được', cost: 40, ta: true },
+  { id: 'ta_kien', name: 'Ma tâm kiên cố', desc: 'Tâm ma tăng chậm hơn 35% suốt kiếp này', cost: 45, ta: true },
+  { id: 'ta_cong', name: 'Ma công nhập thể', desc: 'Linh căn mạnh hơn 20%, đổi lại tâm ma khởi đầu +10', cost: 50, ta: true },
+  { id: 'ta_hon', name: 'Oan hồn hộ thể', desc: 'Oan hồn kiếp trước đỡ cho một lần chết', cost: 70, ta: true },
+  { id: 'ta_ton', name: 'Ma tôn chuyển thế', desc: 'Đạo tâm -60, khí vận +15, tu luyện nhanh hơn 15%', cost: 120, ta: true },
 ];
 
 export const SEASONS = ['Xuân', 'Hạ', 'Thu', 'Đông'];
