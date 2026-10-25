@@ -2587,7 +2587,9 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .lpc-halo { position: absolute; left: 50%; transform: translateX(-50%); border: 2px solid #ffe27a; border-radius: 50%; box-shadow: 0 0 8px #ffe27a; }
 .lpc-orbit { position: absolute; left: 50%; top: 40%; width: 6px; height: 24px; margin-left: 42%; background: linear-gradient(#ffffff, #d9e6ff 70%, #ffd36b 70%); transform: rotate(35deg); animation: orbitFly 3s steps(12) infinite; }
 @keyframes orbitFly { 50% { transform: translate(-80px, -10px) rotate(-35deg); } }
-.lpc-pet { position: absolute; left: -6%; bottom: 0; }
+.lpc-pet { position: absolute; image-rendering: pixelated; background-repeat: no-repeat; }
+.lpc-pet.hop { animation: petHop 0.9s steps(2) infinite; }
+@keyframes petHop { 50% { transform: translateY(-6%); } }
 .lpc.is-dead .lpc-strip { filter: grayscale(0.6) brightness(0.9); }
 @media (prefers-reduced-motion: reduce) { .lpc-strip { animation: none !important; } }
 .credit-h { margin: 10px 0 4px; font-size: 20px; color: var(--red-d); }

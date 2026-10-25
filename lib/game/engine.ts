@@ -4,6 +4,7 @@ import { addCult, addPill, clamp, fatal, reward, wealthTier, dao, giveItem, hurt
 import type { Character, Choice, EffectCtx, Fx, FxKind, GameEvent, Meta, PendingEvent, Tone } from './types';
 import { applyGifts, giftOf, hasGift } from './gacha';
 import { afterChoice, beforeChoice } from './fate';
+import { childLine } from './childhood';
 
 export const rnd = () => Math.random();
 
@@ -226,13 +227,6 @@ function flavorLine(c: Character, focus: string): string {
   return `${pick(rnd, WHEN)} ${pick(rnd, DOING[focus] ?? DOING.tu_luyen)} ${pick(rnd, WHERE)}, ${pick(rnd, RESULT[focus] ?? RESULT.tu_luyen)}${tail}`;
 }
 
-const CHILD: Record<number, string> = {
-  1: 'Bạn biết đi rồi, chập chững khắp sân.',
-  2: 'Bạn bập bẹ gọi được tiếng "mẹ".',
-  3: 'Bạn lên cơn sốt cao, cả nhà thức trắng đêm.',
-  4: 'Bạn thích ngồi nghe ông kể chuyện tiên nhân bay trên mây.',
-  5: 'Bạn tự trèo lên được cây ổi sau nhà.',
-};
 
 /** Lên tầng nhỏ, hoặc trả về sự kiện đột phá nếu đã đầy tầng cuối */
 function progress(c: Character, ctx: EffectCtx, talents: string[]): PendingEvent | null {
@@ -446,7 +440,11 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
   if (c.lifespan > cap) c.lifespan = cap;
 
   // Sự kiện tuổi thơ cố định
-  if (!opts.closed && CHILD[age]) ctx.log(CHILD[age]);
+  // kỷ niệm tuổi thơ, mỗi người một khác
+  if (!opts.closed && age >= 1 && age <= 5 && rnd() < 0.85) {
+    const t = childLine(c, age, rnd);
+    if (t) ctx.log(t);
+  }
 
   // Tầng / cảnh giới
   const brk = progress(c, ctx, talents);
@@ -460,6 +458,13 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
   if (rnd() < chance) {
     const e = pickEvent(c);
     if (e) return buildPending(c, e);
+  }
+  if (age >= 6 && age <= 12 && rnd() < 0.5) {
+    const t = childLine(c, age, rnd);
+    if (t) {
+      ctx.log(t);
+      return null;
+    }
   }
   if (age >= 6 && rnd() < 0.35 && focus) ctx.log(flavorLine(c, focus));
   return null;

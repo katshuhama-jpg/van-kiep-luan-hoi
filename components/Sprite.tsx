@@ -656,15 +656,16 @@ export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Charact
       {l.acc === 'kiembay' && !l.dead && <span className="lpc-orbit" aria-hidden="true" />}
       {l.pet && l.stage !== 'baby' && (
         <span
-          className="lpc-pet"
+          className={`lpc-pet ${l.dead ? '' : 'hop'}`}
           aria-hidden="true"
           style={{
-            width: box * 0.4,
-            height: box * 0.4,
-            backgroundImage: 'url(/lpc/beasts/fox_r.png)',
-            backgroundSize: `${box * 0.4 * 4}px ${box * 0.4}px`,
-            ['--lpc-end' as string]: `-${box * 0.4 * 4}px`,
-            animation: l.dead ? 'none' : 'lpc-play 0.6s steps(4) infinite',
+            // cáo 32px vẽ sẵn của LPC, phóng cùng tỉ lệ điểm ảnh với nhân vật (1 điểm ảnh = box/64)
+            width: (box / 2) * scale,
+            height: (box / 2) * scale,
+            left: -box * 0.2 * scale,
+            bottom: box * 0.03,
+            backgroundImage: 'url(/lpc/beasts/fox_s.png)',
+            backgroundSize: '100% 100%',
           }}
         />
       )}

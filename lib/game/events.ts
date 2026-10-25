@@ -3,6 +3,7 @@ import { addCult, addPill, dao, fatal, giveItem, hasItem, hurt, luck, money, pic
 import type { Character, Choice, GameEvent } from './types';
 import { EVENTS2 } from './events2';
 import { EVENTS3 } from './events3';
+import { CHILD_EVENTS } from './childhood';
 
 
 export const EVENTS: GameEvent[] = [
@@ -55,7 +56,7 @@ export const EVENTS: GameEvent[] = [
     minAge: 1,
     maxAge: 8,
     once: true,
-    weight: 14,
+    weight: 4,
     title: 'Trận sốt đậu mùa',
     text: () => 'Làng có dịch đậu mùa. Bạn sốt mê man ba ngày, người nổi đầy mụn đỏ.',
     choices: (c) => [
@@ -1207,6 +1208,7 @@ export const EVENTS: GameEvent[] = [
   },
   ...EVENTS2,
   ...EVENTS3,
+  ...CHILD_EVENTS,
 ];
 
 // ---------------- Sự kiện do engine kích hoạt ----------------
