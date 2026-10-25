@@ -279,5 +279,301 @@
 },
 "w_scythe": {
 "walk": "weapon/polearm/scythe/walk/scythe.png"
+},
+"armour_plate": {
+"walk": "torso/armour/plate/female/walk.png",
+"idle": "torso/armour/plate/female/idle.png",
+"slash": "torso/armour/plate/female/slash.png",
+"spellcast": "torso/armour/plate/female/spellcast.png",
+"hurt": "torso/armour/plate/female/hurt.png"
+},
+"armour_leather": {
+"walk": "torso/armour/leather/female/walk.png",
+"idle": "torso/armour/leather/female/idle.png",
+"slash": "torso/armour/leather/female/slash.png",
+"spellcast": "torso/armour/leather/female/spellcast.png",
+"hurt": "torso/armour/leather/female/hurt.png"
+},
+"chainmail": {
+"walk": "torso/chainmail/female/walk.png",
+"idle": "torso/chainmail/female/idle.png",
+"slash": "torso/chainmail/female/slash.png",
+"spellcast": "torso/chainmail/female/spellcast.png",
+"hurt": "torso/chainmail/female/hurt.png"
+},
+"cape_bg": {
+"walk": "cape/solid/bg/walk.png",
+"idle": "cape/solid/bg/idle.png",
+"slash": "cape/solid/bg/slash.png",
+"spellcast": "cape/solid/bg/spellcast.png",
+"hurt": "cape/solid/bg/hurt.png"
+},
+"cape_fg": {
+"walk": "cape/solid/fg/walk.png",
+"idle": "cape/solid/fg/idle.png",
+"slash": "cape/solid/fg/slash.png",
+"spellcast": "cape/solid/fg/spellcast.png",
+"hurt": "cape/solid/fg/hurt.png"
+},
+"capet_bg": {
+"walk": "cape/tattered/bg/walk.png",
+"idle": "cape/tattered/bg/idle.png",
+"slash": "cape/tattered/bg/slash.png",
+"spellcast": "cape/tattered/bg/spellcast.png",
+"hurt": "cape/tattered/bg/hurt.png"
+},
+"capet_fg": {
+"walk": "cape/tattered/fg/walk.png",
+"idle": "cape/tattered/fg/idle.png",
+"slash": "cape/tattered/fg/slash.png",
+"spellcast": "cape/tattered/fg/spellcast.png",
+"hurt": "cape/tattered/fg/hurt.png"
+},
+"mantal": {
+"walk": "shoulders/mantal/thin/walk.png",
+"idle": "shoulders/mantal/thin/idle.png",
+"slash": "shoulders/mantal/thin/slash.png",
+"spellcast": "shoulders/mantal/thin/spellcast.png",
+"hurt": "shoulders/mantal/thin/hurt.png"
+},
+"pauldrons": {
+"walk": "shoulders/pauldrons/thin/walk.png",
+"idle": "shoulders/pauldrons/thin/idle.png",
+"slash": "shoulders/pauldrons/thin/slash.png",
+"spellcast": "shoulders/pauldrons/thin/spellcast.png",
+"hurt": "shoulders/pauldrons/thin/hurt.png"
+},
+"tiara_silver": {
+"walk": "hat/formal/tiara/adult/walk/tiara_silver.png",
+"idle": "hat/formal/tiara/adult/idle/tiara_silver.png",
+"slash": "hat/formal/tiara/adult/slash/tiara_silver.png",
+"spellcast": "hat/formal/tiara/adult/spellcast/tiara_silver.png",
+"hurt": "hat/formal/tiara/adult/hurt/tiara_silver.png"
+},
+"tiara_gold": {
+"walk": "hat/formal/tiara/adult/walk/tiara_gold.png",
+"idle": "hat/formal/tiara/adult/idle/tiara_gold.png",
+"slash": "hat/formal/tiara/adult/slash/tiara_gold.png",
+"spellcast": "hat/formal/tiara/adult/spellcast/tiara_gold.png",
+"hurt": "hat/formal/tiara/adult/hurt/tiara_gold.png"
+},
+"crown_gold": {
+"walk": "hat/formal/crown/adult/walk/crown_gold.png",
+"idle": "hat/formal/crown/adult/idle/crown_gold.png",
+"slash": "hat/formal/crown/adult/slash/crown_gold.png",
+"spellcast": "hat/formal/crown/adult/spellcast/crown_gold.png",
+"hurt": "hat/formal/crown/adult/hurt/crown_gold.png"
+},
+"wings_bg": {
+"walk": "body/wings/feathered/adult/bg/walk/white.png",
+"idle": "body/wings/feathered/adult/bg/idle/white.png",
+"slash": "body/wings/feathered/adult/bg/slash/white.png",
+"spellcast": "body/wings/feathered/adult/bg/spellcast/white.png",
+"hurt": "body/wings/feathered/adult/bg/hurt/white.png"
+},
+"wings_fg": {
+"walk": "body/wings/feathered/adult/fg/walk/white.png",
+"idle": "body/wings/feathered/adult/fg/idle/white.png",
+"slash": "body/wings/feathered/adult/fg/slash/white.png",
+"spellcast": "body/wings/feathered/adult/fg/spellcast/white.png",
+"hurt": "body/wings/feathered/adult/fg/hurt/white.png"
+},
+"bwings_bg": {
+"walk": "body/wings/bat/adult/bg/walk/black.png",
+"idle": "body/wings/bat/adult/bg/idle/black.png",
+"slash": "body/wings/bat/adult/bg/slash/black.png",
+"spellcast": "body/wings/bat/adult/bg/spellcast/black.png",
+"hurt": "body/wings/bat/adult/bg/hurt/black.png"
+},
+"bwings_fg": {
+"walk": "body/wings/bat/adult/fg/walk/black.png",
+"idle": "body/wings/bat/adult/fg/idle/black.png",
+"slash": "body/wings/bat/adult/fg/slash/black.png",
+"spellcast": "body/wings/bat/adult/fg/spellcast/black.png",
+"hurt": "body/wings/bat/adult/fg/hurt/black.png"
+},
+"body_male": {
+"walk": "body/bodies/male/walk.png",
+"idle": "body/bodies/male/idle.png",
+"slash": "body/bodies/male/slash.png",
+"spellcast": "body/bodies/male/spellcast.png",
+"hurt": "body/bodies/male/hurt.png"
+},
+"body_musc": {
+"walk": "body/bodies/muscular/walk.png",
+"idle": "body/bodies/muscular/idle.png",
+"slash": "body/bodies/muscular/slash.png",
+"spellcast": "body/bodies/muscular/spellcast.png",
+"hurt": "body/bodies/muscular/hurt.png"
+},
+"body_skel": {
+"walk": "body/bodies/skeleton/walk.png",
+"idle": "body/bodies/skeleton/idle.png",
+"slash": "body/bodies/skeleton/slash.png",
+"spellcast": "body/bodies/skeleton/spellcast.png",
+"hurt": "body/bodies/skeleton/hurt.png"
+},
+"body_zombie": {
+"walk": "body/bodies/zombie/walk/zombie.png",
+"slash": "body/bodies/zombie/slash/zombie.png",
+"spellcast": "body/bodies/zombie/spellcast/zombie.png",
+"hurt": "body/bodies/zombie/hurt/zombie.png"
+},
+"mh_wolf": {
+"walk": "head/heads/wolf/male/walk.png",
+"idle": "head/heads/wolf/male/idle.png",
+"slash": "head/heads/wolf/male/slash.png",
+"spellcast": "head/heads/wolf/male/spellcast.png",
+"hurt": "head/heads/wolf/male/hurt.png"
+},
+"mh_wolff": {
+"walk": "head/heads/wolf/female/walk.png",
+"idle": "head/heads/wolf/female/idle.png",
+"slash": "head/heads/wolf/female/slash.png",
+"spellcast": "head/heads/wolf/female/spellcast.png",
+"hurt": "head/heads/wolf/female/hurt.png"
+},
+"mh_boar": {
+"walk": "head/heads/boarman/adult/walk.png",
+"idle": "head/heads/boarman/adult/idle.png",
+"slash": "head/heads/boarman/adult/slash.png",
+"spellcast": "head/heads/boarman/adult/spellcast.png",
+"hurt": "head/heads/boarman/adult/hurt.png"
+},
+"mh_lizard": {
+"walk": "head/heads/lizard/male/walk.png",
+"idle": "head/heads/lizard/male/idle.png",
+"slash": "head/heads/lizard/male/slash.png",
+"spellcast": "head/heads/lizard/male/spellcast.png",
+"hurt": "head/heads/lizard/male/hurt.png"
+},
+"mh_goblin": {
+"walk": "head/heads/goblin/adult/walk.png",
+"idle": "head/heads/goblin/adult/idle.png",
+"slash": "head/heads/goblin/adult/slash.png",
+"spellcast": "head/heads/goblin/adult/spellcast.png",
+"hurt": "head/heads/goblin/adult/hurt.png"
+},
+"mh_orc": {
+"walk": "head/heads/orc/male/walk.png",
+"idle": "head/heads/orc/male/idle.png",
+"slash": "head/heads/orc/male/slash.png",
+"spellcast": "head/heads/orc/male/spellcast.png",
+"hurt": "head/heads/orc/male/hurt.png"
+},
+"mh_troll": {
+"walk": "head/heads/troll/adult/walk.png",
+"idle": "head/heads/troll/adult/idle.png",
+"slash": "head/heads/troll/adult/slash.png",
+"spellcast": "head/heads/troll/adult/spellcast.png",
+"hurt": "head/heads/troll/adult/hurt.png"
+},
+"mh_mino": {
+"walk": "head/heads/minotaur/male/walk.png",
+"idle": "head/heads/minotaur/male/idle.png",
+"slash": "head/heads/minotaur/male/slash.png",
+"spellcast": "head/heads/minotaur/male/spellcast.png",
+"hurt": "head/heads/minotaur/male/hurt.png"
+},
+"mh_vamp": {
+"walk": "head/heads/vampire/adult/walk.png",
+"idle": "head/heads/vampire/adult/idle.png",
+"slash": "head/heads/vampire/adult/slash.png",
+"spellcast": "head/heads/vampire/adult/spellcast.png",
+"hurt": "head/heads/vampire/adult/hurt.png"
+},
+"mh_skull": {
+"walk": "head/heads/skeleton/adult/walk.png",
+"idle": "head/heads/skeleton/adult/idle.png",
+"slash": "head/heads/skeleton/adult/slash.png",
+"spellcast": "head/heads/skeleton/adult/spellcast.png",
+"hurt": "head/heads/skeleton/adult/hurt.png"
+},
+"mh_zombieh": {
+"walk": "head/heads/zombie/adult/walk.png",
+"idle": "head/heads/zombie/adult/idle.png",
+"slash": "head/heads/zombie/adult/slash.png",
+"spellcast": "head/heads/zombie/adult/spellcast.png",
+"hurt": "head/heads/zombie/adult/hurt.png"
+},
+"mh_rabbit": {
+"walk": "head/heads/rabbit/adult/walk.png",
+"idle": "head/heads/rabbit/adult/idle.png",
+"slash": "head/heads/rabbit/adult/slash.png",
+"spellcast": "head/heads/rabbit/adult/spellcast.png",
+"hurt": "head/heads/rabbit/adult/hurt.png"
+},
+"pants_m": {
+"walk": "legs/pants/male/walk.png",
+"idle": "legs/pants/male/idle.png",
+"slash": "legs/pants/male/slash.png",
+"spellcast": "legs/pants/male/spellcast.png",
+"hurt": "legs/pants/male/hurt.png"
+},
+"leather_m": {
+"walk": "torso/armour/leather/male/walk.png",
+"idle": "torso/armour/leather/male/idle.png",
+"slash": "torso/armour/leather/male/slash.png",
+"spellcast": "torso/armour/leather/male/spellcast.png",
+"hurt": "torso/armour/leather/male/hurt.png"
+},
+"plate_m": {
+"walk": "torso/armour/plate/male/walk.png",
+"idle": "torso/armour/plate/male/idle.png",
+"slash": "torso/armour/plate/male/slash.png",
+"spellcast": "torso/armour/plate/male/spellcast.png",
+"hurt": "torso/armour/plate/male/hurt.png"
+},
+"hood": {
+"walk": "hat/cloth/hood/adult/walk.png",
+"idle": "hat/cloth/hood/adult/idle.png",
+"slash": "hat/cloth/hood/adult/slash.png",
+"spellcast": "hat/cloth/hood/adult/spellcast.png",
+"hurt": "hat/cloth/hood/adult/hurt.png"
+},
+"bandana": {
+"walk": "hat/cloth/bandana/adult/walk.png",
+"idle": "hat/cloth/bandana/adult/idle.png",
+"slash": "hat/cloth/bandana/adult/slash.png",
+"spellcast": "hat/cloth/bandana/adult/spellcast.png",
+"hurt": "hat/cloth/bandana/adult/hurt.png"
+},
+"horns_up_bg": {
+"walk": "hat/accessory/horns_upward/bg/adult/walk.png",
+"idle": "hat/accessory/horns_upward/bg/adult/idle.png",
+"slash": "hat/accessory/horns_upward/bg/adult/slash.png",
+"spellcast": "hat/accessory/horns_upward/bg/adult/spellcast.png",
+"hurt": "hat/accessory/horns_upward/bg/adult/hurt.png"
+},
+"horns_up_fg": {
+"walk": "hat/accessory/horns_upward/fg/adult/walk.png",
+"idle": "hat/accessory/horns_upward/fg/adult/idle.png",
+"slash": "hat/accessory/horns_upward/fg/adult/slash.png",
+"spellcast": "hat/accessory/horns_upward/fg/adult/spellcast.png"
+},
+"w_sword_bg": {
+"walk": "weapon/sword/arming/universal/bg/walk/steel.png",
+"idle": "weapon/sword/arming/universal/bg/idle/steel.png",
+"slash": "weapon/sword/arming/attack_slash/bg/steel.png"
+},
+"w_sword": {
+"walk": "weapon/sword/arming/universal/fg/walk/steel.png",
+"idle": "weapon/sword/arming/universal/fg/idle/steel.png",
+"slash": "weapon/sword/arming/attack_slash/fg/steel.png"
+},
+"w_bow_bg": {
+"walk": "weapon/ranged/bow/normal/walk/background.png"
+},
+"w_bow": {
+"walk": "weapon/ranged/bow/normal/walk/foreground.png"
+},
+"w_flail": {
+"walk": "weapon/blunt/flail/walk/flail.png"
+},
+"w_flail_bg": {
+"walk": "weapon/blunt/flail/behind/walk/flail.png"
+},
+"w_cane": {
+"walk": "weapon/polearm/cane/female/walk/cane.png"
 }
 }

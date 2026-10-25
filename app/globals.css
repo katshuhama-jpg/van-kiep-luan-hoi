@@ -2558,3 +2558,10 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 /* nước thác chảy: vệt sáng trượt xuống trên vùng thác */
 .bg-fall { position: absolute; left: 76.6%; width: 25%; top: 15%; height: 66%; background: repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0 3px, transparent 3px 14px); animation: fallFlow 0.7s steps(4) infinite; pointer-events: none; mix-blend-mode: screen; }
 @keyframes fallFlow { to { background-position-y: 14px; } }
+.lpc-mon.still .lpc-strip { animation: none !important; }
+.mon-dead-lpc { opacity: 0.6; transition: opacity 0.6s steps(3); }
+.px-icon { image-rendering: pixelated; display: block; }
+.hunt-item .item-icon { overflow: hidden; }
+.mon-wrap.got-hit .lpc-mon { animation: lpcHit 0.3s steps(3); }
+@keyframes lpcHit { 33% { filter: brightness(2.2); transform: translateX(6px); } 66% { transform: translateX(-3px); } }
+.mon-wrap .lpc-mon { animation: mon-idle 1.2s steps(2) infinite; }

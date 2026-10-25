@@ -268,7 +268,7 @@ export default function Scene({ c, fx, paused, season, battle }: { c: Character;
 
       {!c.dead && !battle && (c.mount === 'rong' || (c.arcs?.rong && c.arcs.rong.s >= 2 && c.arcs.rong.s < 9)) && (
         <div className={`dragon ${c.mount === 'rong' ? 'big' : 'baby'}`} aria-hidden="true">
-          <MonsterSprite m={DRAGON} size={c.mount === 'rong' ? 96 : 46} tier={c.arcs?.rong?.v === 'ma' ? 1 : 0} />
+          <MonsterSprite m={DRAGON} size={c.mount === 'rong' ? 96 : 46} tier={c.arcs?.rong?.v === 'ma' ? 1 : 0} pixel />
         </div>
       )}
 

@@ -1,6 +1,8 @@
 'use client';
 
 import type { Monster } from '@/lib/game/combat';
+import MonsterLpc from './MonsterLpc';
+import { MONSTER_LOOK } from '@/lib/game/monsterLook';
 
 type R = [number, number, number, number, string];
 
@@ -167,7 +169,9 @@ function shapeRects(m: Monster, b: string, a: string, e: string): R[] {
   }
 }
 
-export function MonsterSprite({ m, size = 48, dead, tier = 0 }: { m: Monster; size?: number; dead?: boolean; tier?: number }) {
+export function MonsterSprite({ m, size = 48, dead, tier = 0, attacking, still, pixel }: { m: Monster; size?: number; dead?: boolean; tier?: number; attacking?: boolean; still?: boolean; pixel?: boolean }) {
+  const look = pixel ? undefined : MONSTER_LOOK[m.id];
+  if (look) return <MonsterLpc look={look} size={size} tier={tier} dead={dead} attacking={attacking} still={still} />;
   return (
     <svg viewBox="-2 -5 20 21" width={size} height={size} shapeRendering="crispEdges" role="img" aria-label={m.name} className={`mon tier-${tier} ${m.boss ? 'boss-' + m.boss : ''} ${dead ? 'mon-dead' : ''}`}>
       {monsterRects(m, tier).map(([x, y, w, h, f], i) => (
@@ -212,7 +216,7 @@ export function BattleOverlay({ b }: { b: BattleView }) {
         </div>
       </div>
       <div className={`mon-wrap ${lastHit?.side === 'p' && b.phase === 'fight' ? 'got-hit' : ''} ${lastHit?.side === 'm' ? 'attacking' : ''}`} key={lastHit?.id ?? 0}>
-        <MonsterSprite m={b.m} size={112} tier={b.tier} dead={b.phase === 'rest' && b.outcome === 'win'} />
+        <MonsterSprite m={b.m} size={136} tier={b.tier} dead={b.phase === 'rest' && b.outcome === 'win'} attacking={b.phase === 'fight' && lastHit?.side === 'm'} />
       </div>
       {b.last.map((h) => (
         <span key={h.id} className={`dmg ${h.side} ${h.crit ? 'crit' : ''}`}>

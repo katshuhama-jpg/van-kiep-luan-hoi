@@ -17,8 +17,6 @@ export const ANIM: Record<Anim, { frames: number; rows: number; fps: number; fro
   hurt: { frames: 6, rows: 1, fps: 8 },
 };
 
-/** Vũ khí là tấm 128px mỗi khung (vũ khí to vượt khung người) */
-const BIG = new Set(['w_katana', 'w_katana_bg', 'w_spear', 'w_spear_bg', 'w_staff', 'w_staff_bg', 'w_mace', 'w_scythe']);
 
 export interface Layer {
   key: string; // thư mục trong /public/lpc
@@ -65,7 +63,6 @@ function tintCanvas(cv: HTMLCanvasElement, hex: string) {
 /** Lấy 1 hàng hướng của động tác, chuẩn hóa về khung 128x128 (người nằm giữa) */
 async function rowOf(key: string, anim: Anim, dir: number): Promise<HTMLCanvasElement | null> {
   const meta = ANIM[anim];
-  const big = BIG.has(key);
   // vũ khí chỉ có dáng đi (riêng kiếm có cả chém); động tác khác dùng tạm dáng đi khung đầu
   let src = anim;
   const im0 = await loadImg(`/lpc/${key}/${anim}.png`);
@@ -76,8 +73,9 @@ async function rowOf(key: string, anim: Anim, dir: number): Promise<HTMLCanvasEl
     src = 'walk';
     if (!im) return null;
   }
-  const cell = big ? 128 : 64;
   const rows = src === 'hurt' ? 1 : 4;
+  // cỡ khung suy từ chiều cao ảnh: người 64px, vũ khí to 128px
+  const cell = Math.round(im.height / rows);
   const row = rows === 1 ? 0 : dir;
   const n = meta.frames;
   const from = src === anim ? meta.from ?? 0 : 0;
@@ -89,7 +87,7 @@ async function rowOf(key: string, anim: Anim, dir: number): Promise<HTMLCanvasEl
   const avail = Math.floor(im.width / cell);
   for (let i = 0; i < n; i++) {
     const col = src === anim ? Math.min(avail - 1, from + i) : 0;
-    const off = big ? 0 : 32;
+    const off = (128 - cell) / 2;
     ctx.drawImage(im, col * cell, row * cell, cell, cell, i * 128 + off, off, cell, cell);
   }
   return cv;

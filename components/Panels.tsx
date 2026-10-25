@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState, type CSSProperties, type ReactNode } from 'react';
 import { ENDINGS, RARE_COLOR, endingOf } from '@/lib/game/endings';
 import { GachaPanel, ShareCard } from './Extras';
+import ItemIconImg from './ItemIcon';
 import { FOCUS, ITEMS, PATHS, PILLS, REALMS, SEASONS, TALENTS, fxText, gearFx, realmLabel, type Item } from '@/lib/game/data';
 import { describeLean } from '@/lib/game/engine';
 import { DANGER_TEXT, MONSTERS, combatLevel, dangerOf, effLv, killExp, monsterName, playerStats, tierOf } from '@/lib/game/combat';
@@ -137,6 +138,7 @@ const ICON_COLOR: Record<string, [string, string]> = {
 };
 
 export function ItemIcon({ item, pill }: { item?: Item; pill?: string }) {
+  if (pill || item?.icon || item?.slot === 'ao') return <ItemIconImg item={item} pill={pill} />;
   if (pill) {
     const col = { tu_khi: '#7fc8ff', truc_co: '#ffc23d', dien_tho: '#ff8fb1', thanh_tam: '#9ff0c8', hoi_xuan: '#ff7a5a' }[pill] ?? '#fff';
     return (
@@ -149,7 +151,7 @@ export function ItemIcon({ item, pill }: { item?: Item; pill?: string }) {
   }
   if (!item) return null;
   if (item.wpn) return <WeaponIcon k={item.wpn.k} a={item.wpn.a} b={item.wpn.b} />;
-  if (item.slot === 'ao') {
+  if ((item.slot as string) === 'ao') {
     const [a, b] = item.robe ? [item.robe[0], item.robe[2]] : ICON_COLOR[item.look] ?? ICON_COLOR.vai;
     return (
       <svg viewBox="0 0 8 8" width="32" height="32" shapeRendering="crispEdges" aria-hidden="true">

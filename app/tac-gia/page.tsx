@@ -37,6 +37,12 @@ export default function TacGia() {
         </details>
       </section>
       <section className="panel">
+        <h2>Quái vật và vật phẩm</h2>
+        <p style={{ margin: 0 }}>
+          Quái thú (rắn, dơi, ong) từ <a href="https://opengameart.org/content/lpc-monsters">[LPC] Monsters</a> của Charles Sanchez (CharlesGabriel), bagzie và bluecarrot16, giấy phép CC-BY-SA 3.0 / GPL 3.0. Quái hình người và boss ghép từ bộ nhân vật LPC ở trên. Biểu tượng vật phẩm từ <a href="https://opengameart.org/content/496-pixel-art-icons-for-medievalfantasy-rpg">496 pixel art icons</a> của Henrique Lazarini (7Soul1), giấy phép CC0.
+        </p>
+      </section>
+      <section className="panel">
         <h2>Nền cảnh</h2>
         <p style={{ margin: 0 }}>
           Cây, đá, thác nước, tường, đồ vật lấy từ <a href="https://opengameart.org/content/lpc-tile-atlas">LPC Tile Atlas</a> (Liberated Pixel Cup: Lanea Zimmerman (Sharm), Daniel Cook, Casper Nilsson, Daniel Armstrong, Johann Charlot, Guido Bos, Barbara Rivera và nhiều họa sĩ khác), giấy phép CC-BY-SA 3.0 / GPL 3.0. Trời, núi và mùa được vẽ thêm trong game.

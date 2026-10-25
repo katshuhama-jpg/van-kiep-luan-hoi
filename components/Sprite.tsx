@@ -357,18 +357,25 @@ function robeOf(l: Look): Robe {
 const HAIR_LPC = { nam: ['high_ponytail', 'long_tied', 'xlong'], nu: ['xlong', 'bunches', 'high_ponytail'] } as const;
 const HAIR_CHILD = ['relm_short', 'parted_side_bangs', 'wavy'];
 
-function weaponLayers(l: Look): { bg?: string; fg?: string } {
+function weaponLayers(l: Look): { bg?: string; fg?: string; tint?: string } {
   const k = l.wpn?.k ?? l.weapon;
   if (!k) return {};
-  if (['kiem', 'mockiem', 'song', 'dao'].includes(k)) return { bg: 'w_katana_bg', fg: 'w_katana' };
+  const a = l.wpn?.a;
+  const red = a && parseInt(a.slice(1, 3), 16) > parseInt(a.slice(3, 5), 16) + 70 ? a : undefined;
+  if (k === 'mockiem') return { bg: 'w_sword_bg', fg: 'w_sword', tint: '#a0703a' };
+  if (k === 'kiem') return { bg: 'w_sword_bg', fg: 'w_sword', tint: red };
+  if (k === 'dao' || k === 'song') return { bg: 'w_katana_bg', fg: 'w_katana', tint: red };
   if (k === 'thuong') return { bg: 'w_spear_bg', fg: 'w_spear' };
-  if (['truong', 'cuoc', 'phattran', 'but'].includes(k)) return { bg: 'w_staff_bg', fg: 'w_staff' };
+  if (k === 'cung') return { bg: 'w_bow_bg', fg: 'w_bow' };
+  if (k === 'roi') return { bg: 'w_flail_bg', fg: 'w_flail' };
+  if (['truong', 'cuoc'].includes(k)) return { bg: 'w_staff_bg', fg: 'w_staff' };
+  if (['phattran', 'but', 'tieu', 'quat'].includes(k)) return { fg: 'w_cane', tint: a };
   if (k === 'chuy' || k === 'quyen') return { fg: 'w_mace' };
-  if (k === 'liem') return { fg: 'w_scythe' };
+  if (k === 'liem') return { fg: 'w_scythe', tint: red };
   return {};
 }
 
-/** Danh sách lớp ảnh theo ngoại hình hiện tại của nhân vật */
+/** Danh sách lớp ảnh theo ngoại hình hiện tại: tuổi, cảnh giới, đồ đang mặc, đạo tâm */
 export function lpcLayers(c: Character, hideWeapon = false): Layer[] {
   const l = lookOf(c);
   const robe = robeOf(l);
@@ -390,23 +397,51 @@ export function lpcLayers(c: Character, hideWeapon = false): Layer[] {
   const hs = HAIR_LPC[l.gender === 'nam' ? 'nam' : 'nu'][st];
   const bald = l.path === 'phat';
   const w = weaponLayers(l);
+  const showW = !c.dead && !hideWeapon;
   const cut = l.cut % 4;
-  const kim = cut === 3 ? 'kimono_split' : 'kimono_normal';
+  const deco = l.deco;
+  const realm = l.realm;
+  const ma = l.path === 'ma' || l.dao <= -60;
+  // áo choàng: do đồ (lông vũ, áo rách) hoặc từ Kim Đan trở lên
+  const cape = deco === 'vu' ? robe.alt : deco === 'manh' ? '#5a4a3a' : realm >= 3 ? robe.dark : null;
+  const tattered = deco === 'manh';
+  // Luyện Hư trở lên mọc cánh: ma tu cánh dơi, còn lại cánh trắng
+  const wings = realm >= 6 ? (ma ? 'bwings' : 'wings') : null;
   const out: Layer[] = [];
+  if (wings) out.push({ key: `${wings}_bg` });
+  if (cape) out.push({ key: tattered ? 'capet_bg' : 'cape_bg', tint: cape });
   if (l.yeu) out.push({ key: 'tail_bg' });
   if (!bald) out.push({ key: `hair_${hs}_bg`, tint: hair });
-  const showW = !c.dead && !hideWeapon;
-  if (w.bg && showW) out.push({ key: w.bg });
+  if (w.bg && showW) out.push({ key: w.bg, tint: w.tint });
   out.push({ key: 'body_adult' }, { key: head }, { key: `eyes_${eye}` });
   out.push({ key: 'pants', tint: robe.dark }, { key: 'shoes' });
-  out.push({ key: kim, tint: robe.body }, { key: `${kim}_trim`, tint: robe.trim });
-  if (cut === 2) out.push({ key: 'kimono_sleeves_oversize', tint: robe.alt }, { key: 'kimono_sleeves_oversize_trim', tint: robe.trim });
-  out.push({ key: 'obi', tint: cut === 1 ? robe.trim : robe.dark });
+  // thân áo theo loại đồ
+  if (deco === 'giap') {
+    out.push({ key: 'armour_plate', tint: robe.body });
+  } else if (deco === 'vay') {
+    out.push({ key: 'kimono_split', tint: robe.dark }, { key: 'chainmail', tint: robe.body });
+  } else {
+    const kim = deco === 'manh' || cut === 3 ? 'kimono_split' : 'kimono_normal';
+    out.push({ key: kim, tint: robe.body }, { key: `${kim}_trim`, tint: robe.trim });
+    if (cut === 2 || deco === 'long') out.push({ key: 'kimono_sleeves_oversize', tint: deco === 'long' ? robe.body : robe.alt }, { key: 'kimono_sleeves_oversize_trim', tint: robe.trim });
+  }
+  out.push({ key: 'obi', tint: cut === 1 || deco === 'long' ? robe.trim : robe.dark });
+  // vai: Hóa Thần mặc giáp vai vàng, Trúc Cơ khoác khăn vai, áo lông có cổ lông
+  if (realm >= 5 || deco === 'giap') out.push({ key: 'pauldrons', tint: realm >= 5 ? '#e0b02a' : robe.trim });
+  else if (deco === 'long_thu' || realm >= 2) out.push({ key: 'mantal', tint: robe.trim });
   if (elder && l.gender === 'nam') out.push({ key: 'beard', tint: hair });
   if (!bald) out.push({ key: `hair_${hs}_fg`, tint: hair });
+  // mũ miện theo cảnh giới (Phật tu đầu trọc, chỉ có hào quang)
+  if (!bald) {
+    if (realm >= 7) out.push({ key: 'crown_gold' });
+    else if (realm >= 4) out.push({ key: 'tiara_gold' });
+    else if (realm >= 3) out.push({ key: 'tiara_silver' });
+  }
   if (l.dao <= -80) out.push({ key: 'horns_bg', tint: '#3a0a10' }, { key: 'horns_fg', tint: '#3a0a10' });
+  if (cape) out.push({ key: tattered ? 'capet_fg' : 'cape_fg', tint: cape });
+  if (wings) out.push({ key: `${wings}_fg` });
   if (l.yeu) out.push({ key: 'tail_fg' });
-  if (w.fg && showW) out.push({ key: w.fg });
+  if (w.fg && showW) out.push({ key: w.fg, tint: w.tint });
   return out;
 }
 
@@ -473,4 +508,19 @@ export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Charact
       )}
     </div>
   );
+}
+
+/** Lớp áo để vẽ biểu tượng pháp y trong phường thị / túi đồ */
+export function robeIconLayers(item: { look: string; robe?: [string, string, string, string]; deco?: RobeDeco }): Layer[] {
+  const tones = ROBES[item.look] ?? ROBES.vai;
+  const r: Robe = item.robe ? { body: item.robe[0], dark: item.robe[1], trim: item.robe[2], alt: item.robe[3] } : tones[0];
+  const d = item.deco;
+  if (d === 'giap') return [{ key: 'armour_plate', tint: r.body }, { key: 'pauldrons', tint: r.trim }];
+  if (d === 'vay') return [{ key: 'kimono_split', tint: r.dark }, { key: 'chainmail', tint: r.body }];
+  const kim = d === 'manh' ? 'kimono_split' : 'kimono_normal';
+  const out: Layer[] = [{ key: kim, tint: r.body }, { key: `${kim}_trim`, tint: r.trim }];
+  if (d === 'long' || item.look === 'casa') out.push({ key: 'kimono_sleeves_oversize', tint: r.body }, { key: 'kimono_sleeves_oversize_trim', tint: r.trim });
+  out.push({ key: 'obi', tint: d === 'long' ? r.trim : r.dark });
+  if (d === 'long_thu') out.push({ key: 'mantal', tint: r.trim });
+  return out;
 }
