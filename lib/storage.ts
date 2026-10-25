@@ -124,7 +124,7 @@ export async function thapHuong(user: Player | null, id: number | string): Promi
   return typeof data === 'number' ? data : null;
 }
 
-export type RankKind = 'power' | 'wealth';
+export type RankKind = 'power' | 'wealth' | 'age';
 export type RankLean = 'all' | 'chinh' | 'trung' | 'ta';
 export type RankScope = 'all' | 'alive' | 'dead';
 

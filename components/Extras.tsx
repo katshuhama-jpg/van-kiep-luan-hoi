@@ -189,7 +189,7 @@ export function TribulationOverlay({ realmName, onDone }: { realmName: string; o
     }
   };
 
-  const bonus = Math.round(((blocked - 4.5) / TOTAL) * 0.4 * 100) / 100;
+  const bonus = Math.round(((blocked - 4.5) / TOTAL) * 0.3 * 100) / 100;
   return (
     <div className={`kiep kiep-${phase}`} role="dialog" aria-label="Thiên kiếp" onPointerDown={phase === 'done' ? undefined : tap}>
       <div className="kiep-sky" aria-hidden="true">

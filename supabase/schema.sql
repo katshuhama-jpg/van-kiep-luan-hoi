@@ -360,3 +360,5 @@ language sql stable security definer set search_path = '' as $$
   limit 60;
 $$;
 grant execute on function public.vkl_leaderboard(text, text, text, text) to anon, authenticated;
+
+-- Bảng xếp hạng thêm loại 'age' (Trường thọ): sắp theo tuổi giảm dần, xem migration vkl_leaderboard_age

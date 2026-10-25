@@ -18,7 +18,7 @@ export function emptyMeta(): Meta {
 function lifeMult(c: Character, talents: string[] = []) {
   let m = c.lifeMul ?? 1;
   if (talents.includes('tho')) m *= 1.2;
-  if (c.path === 'phat') m *= 1.3;
+  if (c.path === 'phat') m *= 1.2;
   if (c.race === 'yeu') m *= 1.1;
   return m;
 }
@@ -195,7 +195,9 @@ function pathMul(c: Character) {
 
 export function yearlyGain(c: Character) {
   const base = GAIN[c.realm] ?? 90;
-  return base * c.linhCanMul * (0.6 + c.stats.ngoTinh / 100) * pathMul(c) * gearMul(c) * (c.stats.tamMa > 70 ? 0.8 : 1) * (hasGift(c, 'g_doan_menh') ? 1.3 : 1);
+  // tà đạo tu nhanh hơn (đổi lại nhiều tâm ma, nhiều kẻ thù), chính đạo chậm mà chắc
+  const lean = c.daoTam <= -40 ? 1.22 : c.daoTam <= -15 ? 1.08 : c.daoTam >= 40 ? 0.92 : 1;
+  return base * c.linhCanMul * (0.6 + c.stats.ngoTinh / 100) * pathMul(c) * gearMul(c) * (c.stats.tamMa > 70 ? 0.8 : 1) * (hasGift(c, 'g_doan_menh') ? 1.3 : 1) * lean;
 }
 
 
@@ -260,7 +262,18 @@ function progress(c: Character, ctx: EffectCtx, talents: string[]): PendingEvent
 function checkDeath(c: Character, ctx: EffectCtx) {
   if (c.dead) return;
   if (c.stats.sucKhoe <= 0) die(c, 'Thương thế quá nặng, bạn trút hơi thở cuối cùng.', ctx);
-  else if (c.stats.tamMa >= 100) die(c, 'Tâm ma phản phệ. Bạn tẩu hỏa nhập ma, kinh mạch nổ tung.', ctx);
+  else if (c.stats.tamMa >= 100) {
+    // tâm ma đầy chưa chắc đã chết: 40% tẩu hỏa nhập ma, còn lại trọng thương, rớt tu vi rồi gượng lại được
+    if (rnd() < 0.4) die(c, 'Tâm ma phản phệ. Bạn tẩu hỏa nhập ma, kinh mạch nổ tung.', ctx);
+    else {
+      c.stats.tamMa = 65;
+      stat(c, 'sucKhoe', -35);
+      c.cultivation = Math.round(c.cultivation * 0.85);
+      ctx.fx('hurt', 'Tâm ma');
+      ctx.log('Tâm ma bùng phát, bạn hộc máu ngã quỵ, tu vi tụt mất một đoạn. May mà gượng giữ được linh đài.', 'bad');
+      if (c.stats.sucKhoe <= 0) die(c, 'Tâm ma phản phệ cộng thêm trọng thương, bạn không qua khỏi.', ctx);
+    }
+  }
   else if (c.age >= c.lifespan) die(c, `Thọ nguyên cạn kiệt. Bạn tọa hóa ở tuổi ${Math.floor(c.age)}.`, ctx);
 }
 
@@ -419,6 +432,8 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
   const ratio = c.age / c.lifespan;
   if (ratio > 0.85) { if (c.stats.sucKhoe > 12) stat(c, 'sucKhoe', -3); } else stat(c, 'sucKhoe', ratio > 0.7 ? 1 : 3);
   if (c.stats.tamCanh > 60) stat(c, 'tamMa', -1);
+  // tâm ma tự lắng xuống một chút mỗi năm (ma tu thì không)
+  if (c.path !== 'ma') stat(c, 'tamMa', -1);
   if (c.path === 'ma') stat(c, 'tamMa', 2);
   if (c.path === 'phat') stat(c, 'tamMa', -2);
   const gf = gearFx(c.equipped);
@@ -437,7 +452,7 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
   if (c.partner) stat(c, 'tamCanh', 1);
 
   // Thọ nguyên không vượt quá 1.4 lần mức chuẩn của cảnh giới
-  const cap = Math.min(MAX_LIFE, Math.round((REALMS[c.realm]?.life ?? 70) * 1.25 * lifeMult(c, talents)));
+  const cap = Math.min(MAX_LIFE, Math.round((REALMS[c.realm]?.life ?? 70) * 1.15 * lifeMult(c, talents)));
   if (c.lifespan > cap) c.lifespan = cap;
 
   // Sự kiện tuổi thơ cố định

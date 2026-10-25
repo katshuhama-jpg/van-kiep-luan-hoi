@@ -51,6 +51,10 @@ export function weighted<T extends { w: number }>(rnd: () => number, arr: readon
 }
 
 export function stat(c: Character, key: keyof Stats, delta: number) {
+  // kẻ đã quen đường tà thì tâm ma dâng chậm hơn (lòng đã chai)
+  if (key === 'tamMa' && delta > 0 && c.daoTam <= -40) delta *= 0.7;
+  // càng cao càng khó lên: khí vận, tâm cảnh, ngộ tính trên 80 chỉ tăng nửa
+  if (delta > 0 && key !== 'tamMa' && key !== 'sucKhoe' && c.stats[key] >= 80) delta *= 0.5;
   c.stats[key] = clamp(Math.round(c.stats[key] + delta), 0, 100);
 }
 
@@ -147,7 +151,9 @@ export function fatal(c: Character, ctx: EffectCtx, chance: number, cause: strin
   const tough = c.gifts?.includes('g_menh_cung') && chance < 1 ? 0.7 : 1;
   // độ khó: mọi hiểm cảnh nguy như gốc (trước tăng 25%, người chơi kêu chết nhiều quá)
   const hard = 1;
-  const p = clamp(chance * hard * tough * (c.age < 13 && chance < 1 ? 0.6 : 1) - (c.stats.khiVan - 50) / 500, 0.01, chance >= 1 ? 1 : 0.95);
+  // khí vận chỉ giảm rủi ro theo tỉ lệ (tối đa 20%), không còn trừ thẳng làm hiểm cảnh nhỏ gần như vô hại
+  const luckMul = 1 - clamp((c.stats.khiVan - 50) / 250, -0.2, 0.2);
+  const p = clamp(chance * hard * tough * (c.age < 13 && chance < 1 ? 0.6 : 1) * (chance < 1 ? luckMul : 1), 0.01, chance >= 1 ? 1 : 0.95);
   if (ctx.rnd() >= p) return null;
   if (c.equipped.phu_kien === 'ngoc_boi') {
     c.equipped.phu_kien = undefined;

@@ -89,6 +89,9 @@ export default function RankPage() {
         <button role="tab" aria-selected={kind === 'wealth'} className={kind === 'wealth' ? 'on' : ''} onClick={() => setKind('wealth')}>
           Phú hào
         </button>
+        <button role="tab" aria-selected={kind === 'age'} className={kind === 'age' ? 'on' : ''} onClick={() => setKind('age')}>
+          Trường thọ
+        </button>
       </div>
 
       <div className="chips" role="radiogroup" aria-label="Lọc theo sống chết">
@@ -138,7 +141,7 @@ export default function RankPage() {
                 <div className="rank-body">
                   <span className="rank-name">{c.name}</span>
                   <span className="rank-val">
-                    {kind === 'power' ? (c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer)) : `${fmt(c.linhThach)} linh thạch`}
+                    {kind === 'power' ? (c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer)) : kind === 'age' ? `Thọ ${Math.floor(c.age)} tuổi · ${c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer)}` : `${fmt(c.linhThach)} linh thạch`}
                   </span>
                   <span className="rank-owner">
                     <span className="rank-user">@{r.username}</span>
