@@ -216,7 +216,7 @@ export default function PlayPage() {
       name: f.rival.name,
       lv: combatLevel(fc),
       tier: 0,
-      pHp: ambushed ? Math.round(ps.hp * 0.8) : ps.hp,
+      pHp: ambushed ? Math.round(ps.hp * (f.betray ? 0.6 : 0.8)) : ps.hp,
       pMax: ps.hp,
       mHp: fs.hp,
       mMax: fs.hp,
@@ -350,7 +350,7 @@ export default function PlayPage() {
         c.log.push({ age: Math.floor(c.age), tone: 'bad', text: tr.text });
         pushFx(out0);
         // trở mặt thành địch thủ, bạn bị đánh úp (mất trước một phần máu)
-        startDuel(c, { ...f, kind: 'dich_thu' }, true);
+        startDuel(c, { ...f, kind: 'dich_thu', betray: true }, true);
         return;
       }
       if (tr.kind === 'am_toan') {

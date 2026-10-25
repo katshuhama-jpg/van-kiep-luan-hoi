@@ -24,6 +24,7 @@ export interface DuelFoe {
   npc: boolean; // không có người chơi thật phù hợp, giang hồ vô danh thay thế
   rel: 'yeu' | 'ngang' | 'manh';
   reason: string; // lý do gặp, mỗi lần một khác
+  betray?: boolean; // đồng đạo trở mặt khi uống trà
 }
 
 export const DUEL_INFO: Record<DuelKind, { title: string; tag: string; warn: string }> = {
@@ -273,7 +274,8 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
       stat(c, 'sucKhoe', -Math.round(pLoss * 25));
       out.push(`Năm hiệp chưa phân thắng bại, ${who} hừ lạnh rồi bỏ đi: "Lần sau gặp lại, ta lấy mạng ngươi."`);
     } else {
-      const fl = fatal(c, ctx, 0.25, `Bạn bại dưới tay địch thủ ${who}. Giang hồ lại thêm một nấm mồ.`);
+      // bị đồng đạo trở mặt đánh úp thì càng dễ chết
+      const fl = fatal(c, ctx, f.betray ? 0.45 : 0.25, f.betray ? `Bạn tin nhầm ${who}. Chén trà còn chưa nguội, người đã thành thi thể.` : `Bạn bại dưới tay địch thủ ${who}. Giang hồ lại thêm một nấm mồ.`);
       if (c.dead) return [fl ?? ''];
       stat(c, 'sucKhoe', -35);
       const lost = Math.round(c.linhThach * 0.2);
@@ -399,7 +401,7 @@ export function teaTrap(c: Character, f: DuelFoe, ctx: EffectCtx): TeaResult {
       money(c, -lost);
       text += ` Lúc bạn mê man, ${h} lấy mất ${taken.length ? taken.join(', ') + ' và ' : ''}${lost} linh thạch.`;
     }
-    const fl = fatal(c, ctx, 0.06, `Độc trong chén trà của ${who} ngấm vào tâm mạch. Bạn chết bên bàn trà còn ấm.`);
+    const fl = fatal(c, ctx, 0.3, `Độc trong chén trà của ${who} ngấm vào tâm mạch. Bạn chết bên bàn trà còn ấm.`);
     if (fl) text += fl;
     return { kind: 'am_toan', text };
   }
