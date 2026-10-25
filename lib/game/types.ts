@@ -14,17 +14,7 @@ export interface LogEntry {
 }
 
 /** Hiệu ứng hình ảnh tạm thời phát trên nhân vật */
-export type FxKind =
-  | 'breakthrough'
-  | 'layer'
-  | 'lightning'
-  | 'buy'
-  | 'heal'
-  | 'hurt'
-  | 'love'
-  | 'coin'
-  | 'death'
-  | 'evil';
+export type FxKind = 'breakthrough' | 'layer' | 'lightning' | 'buy' | 'heal' | 'hurt' | 'love' | 'coin' | 'death' | 'evil';
 
 export interface Fx {
   kind: FxKind;
@@ -100,7 +90,10 @@ export interface Character {
   lookSeed?: number; // nét riêng của ngoại hình: da, khuôn mặt, râu, trang sức
   legend?: Legend | null; // thần binh truyền kiếp đang mang
   vendettas?: Vendetta[];
-  hunt?: { rival: RivalChar; at: number } | null; // truy sát: thuê người dò tung tích, năm sau chạm mặt
+  hunt?: { rival: RivalChar; at: number } | null;
+  sectRank?: number; // bậc trong tông môn: 0 tạp dịch, 1 ngoại môn, 2 nội môn, 3 chân truyền
+  daiBiAt?: number; // tuổi tới kỳ Đại bỉ tông môn kế tiếp
+  sectSaved?: boolean; // chân truyền đã được sư phụ cứu một lần // truy sát: thuê người dò tung tích, năm sau chạm mặt
   qf?: Record<string, number>; // đếm việc làm trong đời cho nhiệm vụ ngày
   miles?: Mile[]; // cột mốc chính của đời, để xem lại ở nghĩa trang
   mileSnap?: { realm: number; path: string | null; partner: string | null; pet: string | null; mount: string | null; sect?: string | null; wealth?: number; rare?: string[]; kills?: number };
@@ -167,6 +160,8 @@ export interface RivalChar {
   lookSeed?: number;
   element?: Element;
   lifeNo?: number; // kiếp thứ mấy của người chơi đó
+  sect?: string | null;
+  sectRank?: number;
   alive: boolean;
 }
 

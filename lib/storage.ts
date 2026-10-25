@@ -225,6 +225,8 @@ export async function fetchWorld(user: Player | null): Promise<WorldEcho | null>
     lookSeed: c.lookSeed,
     element: c.element,
     lifeNo: c.lifeNo ?? 1,
+    sect: c.sect ?? null,
+    sectRank: c.sectRank,
     alive,
   });
   const rivals = (all ?? [])

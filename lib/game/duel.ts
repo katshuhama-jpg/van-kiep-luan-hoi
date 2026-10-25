@@ -7,6 +7,7 @@ import { ELEMENT_IDS, elemMul, elemRel, elementOf, type ElemRel } from './nguhan
 import { genName } from './engine';
 import { addCult, fatal, giveItem, money, reward, stat } from './helpers';
 import { PROVOKE_MUL, SOCIAL } from './social';
+import { daiBiDue, promote, sectSide } from './sect';
 import type { Character, EffectCtx, RivalChar, Slot, Vendetta } from './types';
 
 /**
@@ -17,7 +18,7 @@ import type { Character, EffectCtx, RivalChar, Slot, Vendetta } from './types';
  * Có màn cảnh báo trước khi vào trận, nền sân đấu riêng, đánh tối đa 5 hiệp.
  */
 
-export type DuelKind = 'dong_dao' | 'dich_thu' | 'kiep_truoc';
+export type DuelKind = 'dong_dao' | 'dich_thu' | 'kiep_truoc' | 'dong_mon';
 export const DUEL_PER_YEAR = 0.1; // trung bình khoảng 10 năm gặp một lần
 export const DUEL_TURNS = 5;
 
@@ -33,11 +34,13 @@ export interface DuelFoe {
   sworn?: boolean; // gặp huynh đệ kết nghĩa
   provoke?: boolean; // từng khiêu khích nhau: thắng thua đều gấp rưỡi
   bounty?: number; // tiền truy nã trên đầu đối thủ
+  daiBi?: boolean; // trận Đại bỉ tông môn: thắng thì thăng bậc
 }
 
 export const DUEL_INFO: Record<DuelKind, { title: string; tag: string; warn: string }> = {
   dong_dao: { title: 'Gặp đồng đạo', tag: 'Đồng đạo', warn: 'Một tu sĩ cùng chí hướng chắn đường, chắp tay thi lễ: "Nghe danh đã lâu, xin được lĩnh giáo vài chiêu."' },
   dich_thu: { title: 'Địch thủ xuất hiện!', tag: 'Địch thủ', warn: 'Sát khí ập tới. Kẻ khác đạo đã đợi bạn ở đây từ lâu. Hôm nay chỉ một người được rời đi.' },
+  dong_mon: { title: 'Đồng môn tỷ thí', tag: 'Đồng môn', warn: 'Một đồng môn chặn bạn ở diễn võ trường: "Sư môn dạy ta, hôm nay xem ai học giỏi hơn."' },
   kiep_truoc: { title: 'Tâm ma kiếp trước', tag: 'Kiếp trước', warn: 'Mặt hồ phẳng lặng bỗng in bóng một người. Đó là bạn, của một kiếp đã qua. Muốn đi tiếp, phải vượt qua chính mình.' },
 };
 
@@ -133,13 +136,39 @@ export function pickDuel(c: Character, rnd: () => number): DuelFoe | null {
   // gắn quan hệ giang hồ với người chơi thật
   const S = SOCIAL.cur;
   const p = f.rival.player;
-  if (S.sworn.includes(p) && !f.revenge && !f.hunt) {
+  if (S.sworn.includes(p) && !f.revenge && !f.hunt && f.kind !== 'dong_mon') {
     f.kind = 'dong_dao';
     f.sworn = true;
   }
   if (S.provoke.includes(p)) f.provoke = true;
   if (S.bounty[p]) f.bounty = S.bounty[p];
   return f;
+}
+
+/**
+ * Đồng môn tỷ thí: ưu tiên bóng người chơi thật cùng tông môn, không có thì một sư huynh, sư tỷ vô danh.
+ * Luôn cùng cấp với bạn, ngũ hành rút ngẫu nhiên đều cả năm hệ để mỗi trận một khác.
+ */
+function dongMon(c: Character, rnd: () => number, daiBi: boolean): DuelFoe {
+  const pool = (c.world?.rivals ?? []).filter((v) => v.sect && v.sect === c.sect);
+  const element = ELEMENT_IDS[Math.floor(rnd() * ELEMENT_IDS.length)];
+  const side = sectSide(c);
+  let rival: RivalChar;
+  let npc = false;
+  if (pool.length) rival = { ...pool[Math.floor(rnd() * pool.length)] };
+  else {
+    npc = true;
+    rival = { ...npcRival(c, Math.max(1, c.realm), side === 'ta' ? -1 : 1, rnd), sect: c.sect };
+  }
+  rival = { ...rival, realm: Math.max(1, c.realm), layer: c.layer, element };
+  const g = rival.gender === 'nu' ? 'Sư tỷ' : 'Sư huynh';
+  const n = rival.name + (rival.player ? ` (@${rival.player})` : '');
+  const reason = daiBi
+    ? `Đại bỉ ${c.sect} khai mạc! Bốc thăm trúng ${g.toLowerCase()} ${n}. Thắng trận này, bạn được thăng bậc ngay trước mặt các trưởng lão.`
+    : side === 'ta'
+      ? `${g} ${n} chặn bạn trong hang tối: "Ở Huyết Sát Môn, muốn lên thì phải giẫm lên đầu người khác."`
+      : `${g} ${n} gặp bạn ở diễn võ trường ${c.sect}: "Lâu rồi chưa luận kiếm, đấu một trận chứ?"`;
+  return { kind: 'dong_mon', rival, npc, rel: 'ngang', reason, daiBi };
 }
 
 /** Mức chênh lệch sức mạnh giữa hai bên */
@@ -164,6 +193,11 @@ function pickDuel0(c: Character, rnd: () => number): DuelFoe | null {
       hunt: true,
       reason: `Người bạn thuê đã dò ra tung tích của @${rival.player}. ${rival.name} đang đứng ngay trước mặt, không còn đường lui. Thắng được thưởng gấp đôi và lấy lại đồ từng bị cướp.`,
     };
+  }
+  // Đại bỉ tông môn: tới kỳ thì chắc chắn đấu với một đồng môn
+  if (daiBiDue(c)) {
+    c.daiBiAt = Math.floor(c.age) + 5 + Math.floor(rnd() * 4);
+    return dongMon(c, rnd, true);
   }
   // ghi thù trong sổ (cả từ thư giang hồ) cũng tính là oan gia
   const foesV: Vendetta[] = [
@@ -197,6 +231,8 @@ function pickDuel0(c: Character, rnd: () => number): DuelFoe | null {
       reason: `Giữa đường gặp lại huynh đệ kết nghĩa ${rival.name} (@${rival.player}). Hai người mừng rỡ, rủ nhau luận võ một trận cho đã tay.`,
     };
   }
+  // đệ tử tông môn: 25% gặp đồng môn tỷ thí
+  if (c.sect && rnd() < 0.25) return dongMon(c, rnd, false);
   const past = w?.past ?? null;
   const kinds: [DuelKind, number][] = [
     ['dong_dao', 45],
@@ -215,7 +251,7 @@ function pickDuel0(c: Character, rnd: () => number): DuelFoe | null {
   // cấp độ đối thủ theo cấp chiến đấu, chia ba bậc rõ ràng để ít gặp người ngang cấp:
   // đồng đạo: yếu 45%, ngang 25%, mạnh 30%; địch thủ: 25/25/50; tâm ma kiếp trước: 20/20/60
   const me0 = combatLevel(c);
-  const W: Record<DuelKind, [number, number]> = { dong_dao: [0.45, 0.25], dich_thu: [0.25, 0.25], kiep_truoc: [0.2, 0.2] };
+  const W: Record<DuelKind, [number, number]> = { dong_dao: [0.45, 0.25], dich_thu: [0.25, 0.25], kiep_truoc: [0.2, 0.2], dong_mon: [0, 1] };
   const [pw, pn] = W[kind];
   const r = rnd();
   const ri = (a: number, b: number) => a + Math.floor(rnd() * (b - a + 1));
@@ -319,6 +355,40 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
   const harder = (f.rel === 'manh' ? 1.6 : f.rel === 'yeu' ? 0.5 : 1) * (f.provoke ? PROVOKE_MUL : 1);
   const out: string[] = [];
   if (f.provoke) out.push('Hai bên từng khiêu khích nhau, trận này thắng thua đều gấp rưỡi.');
+  if (f.kind === 'dong_mon') {
+    const ta = sectSide(c) === 'ta';
+    if (result === 'win') {
+      const exp = Math.round(reward(c, f.daiBi ? 0.8 : 0.4) * harder);
+      addCult(c, exp);
+      stat(c, 'khiVan', 2);
+      out.push(f.daiBi ? `Bạn thắng ${who} ở Đại bỉ tông môn, cả diễn võ trường vỡ òa (+${exp} tu vi).` : `Bạn thắng đồng môn ${who} một chiêu (+${exp} tu vi).`);
+      if (f.daiBi) {
+        const up = promote(c, ctx, 'Chưởng môn gật đầu tán thưởng.');
+        if (up) out.push(up);
+      }
+      if (ta) {
+        const g = rivalLoot(c, r, ctx, 0.4, (n) => `Theo luật ma môn, kẻ thua phải nộp ${n} cho bạn.`);
+        if (g) out.push(g);
+      }
+    } else if (result === 'draw') {
+      const exp = Math.round(reward(c, 0.25) * harder);
+      addCult(c, exp);
+      out.push(`Hòa với ${who}. Trưởng lão đứng xem khẽ gật đầu (+${exp} tu vi).${f.daiBi ? ' Đại bỉ lần này bạn chưa được thăng bậc.' : ''}`);
+    } else {
+      stat(c, 'sucKhoe', -10);
+      stat(c, 'tamCanh', -3);
+      out.push(`Bạn thua đồng môn ${who}.${f.daiBi ? ' Đại bỉ lần này đành chờ kỳ sau.' : ' Về luyện thêm thôi.'}`);
+      if (ta) {
+        // ma môn: đồng môn cũng chẳng nương tay
+        const fl = fatal(c, ctx, 0.08, `Đồng môn ${who} ra tay tàn độc giữa hang tối. Ở Huyết Sát Môn, kẻ yếu không có quyền sống.`);
+        if (c.dead) return [fl ?? ''];
+        const ids: string[] = [];
+        const taken = ctx.rnd() < 0.3 ? robGear(c, ctx, 1, ids) : [];
+        if (taken.length) out.push(`${r.name} còn lột mất ${taken.join(', ')} của bạn.${fl ?? ''}`);
+      }
+    }
+    return out;
+  }
   if (f.kind === 'dong_dao' && f.sworn) {
     // huynh đệ luận võ: không ai lột đồ ai, cả hai cùng tiến
     const exp = Math.round(reward(c, result === 'win' ? 0.45 : result === 'draw' ? 0.35 : 0.25) * Math.max(1, harder));
@@ -585,6 +655,8 @@ export function toRival(player: string, c: Character): RivalChar {
     lookSeed: c.lookSeed,
     element: c.element,
     lifeNo: c.lifeNo,
+    sect: c.sect,
+    sectRank: c.sectRank,
     alive: !c.dead,
   };
 }

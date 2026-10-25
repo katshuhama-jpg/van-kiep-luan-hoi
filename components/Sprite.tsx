@@ -79,7 +79,16 @@ export interface Look {
 function mix(a: string, b: string, t: number) {
   const pa = [1, 3, 5].map((i) => parseInt(a.slice(i, i + 2), 16));
   const pb = [1, 3, 5].map((i) => parseInt(b.slice(i, i + 2), 16));
-  return '#' + pa.map((v, i) => Math.round(v + (pb[i] - v) * t).toString(16).padStart(2, '0')).join('');
+  return (
+    '#' +
+    pa
+      .map((v, i) =>
+        Math.round(v + (pb[i] - v) * t)
+          .toString(16)
+          .padStart(2, '0'),
+      )
+      .join('')
+  );
 }
 
 /** Màu tóc hiện tại: bẩm sinh, rồi bạc dần theo tuổi, nhuốm đỏ khi nhập ma, ánh tiên khí ở cảnh giới cao */
@@ -193,14 +202,25 @@ function build(l: Look) {
     body.push([4, robeTop + 1, 1, 3, robe.alt]);
   }
   if (cut === 0 && robeH >= 6) body.push([5, robeTop + 5, 1, robeH - 5, robe.alt], [10, robeTop + 5, 1, robeH - 5, robe.alt]);
-  if (l.robe === 'casa') body.push([5, robeTop, 1, 1, robe.trim], [6, robeTop + 1, 1, 1, robe.trim], [8, robeTop + 2, 1, 1, robe.trim], [9, robeTop + 3, 1, 1, robe.trim], [10, robeTop + 4, 1, 1, robe.trim]);
+  if (l.robe === 'casa')
+    body.push([5, robeTop, 1, 1, robe.trim], [6, robeTop + 1, 1, 1, robe.trim], [8, robeTop + 2, 1, 1, robe.trim], [9, robeTop + 3, 1, 1, robe.trim], [10, robeTop + 4, 1, 1, robe.trim]);
   // Họa tiết áo đặc biệt
   if (l.deco && l.stage !== 'baby') {
     const d = l.deco;
     if (d === 'van') body.push([5, robeTop + 2, 1, 1, robe.trim], [10, robeTop + 3, 1, 1, robe.trim], [5, robeTop + robeH - 1, 2, 1, robe.trim], [9, robeTop + robeH - 2, 2, 1, robe.trim]);
     if (d === 'giap') body.push([3, robeTop, 3, 2, robe.trim], [10, robeTop, 3, 2, robe.trim], [4, robeTop + 2, 8, 1, robe.dark], [5, robeTop + 3, 6, 1, robe.alt]);
-    if (d === 'vay') for (let yy = 0; yy < robeH - 1; yy += 2) body.push([4 + (yy % 4 ? 1 : 0), robeTop + yy, 1, 1, robe.alt], [6 + (yy % 4 ? 1 : 0), robeTop + yy + 1, 1, 1, robe.alt], [10 - (yy % 4 ? 1 : 0), robeTop + yy, 1, 1, robe.alt]);
-    if (d === 'long') body.push([5, robeTop + 1, 1, 1, robe.trim], [6, robeTop + 2, 1, 1, robe.trim], [5, robeTop + 3, 1, 1, robe.trim], [10, robeTop + 2, 1, 2, robe.trim], [9, robeTop + 4, 2, 1, robe.trim], [4, robeTop, 8, 1, robe.trim]);
+    if (d === 'vay')
+      for (let yy = 0; yy < robeH - 1; yy += 2)
+        body.push([4 + (yy % 4 ? 1 : 0), robeTop + yy, 1, 1, robe.alt], [6 + (yy % 4 ? 1 : 0), robeTop + yy + 1, 1, 1, robe.alt], [10 - (yy % 4 ? 1 : 0), robeTop + yy, 1, 1, robe.alt]);
+    if (d === 'long')
+      body.push(
+        [5, robeTop + 1, 1, 1, robe.trim],
+        [6, robeTop + 2, 1, 1, robe.trim],
+        [5, robeTop + 3, 1, 1, robe.trim],
+        [10, robeTop + 2, 1, 2, robe.trim],
+        [9, robeTop + 4, 2, 1, robe.trim],
+        [4, robeTop, 8, 1, robe.trim],
+      );
     if (d === 'hoa') body.push([5, robeTop + 2, 1, 1, robe.alt], [10, robeTop + 3, 1, 1, robe.alt], [6, robeTop + robeH - 2, 1, 1, robe.alt], [9, robeTop + 1, 1, 1, robe.alt]);
     if (d === 'vu') body.push([2, robeTop - 1, 2, 2, robe.alt], [12, robeTop - 1, 2, 2, robe.alt], [1, robeTop, 1, 2, robe.alt], [14, robeTop, 1, 2, robe.alt]);
     if (d === 'manh') body.push([5, robeTop + 1, 2, 2, '#6a8a5a'], [9, robeTop + 3, 2, 2, '#9a5a4a'], [6, robeTop + robeH - 2, 2, 1, '#5a6a8a']);
@@ -275,20 +295,48 @@ function build(l: Look) {
   if (W && l.stage !== 'baby') {
     const { a, b } = W;
     switch (W.k) {
-      case 'kiem': front.push([1, hy - 9, 1, 9, a], [0, hy - 1, 3, 1, b], [1, hy, 1, 1, b]); break;
-      case 'dao': front.push([0, hy - 8, 2, 8, a], [1, hy - 8, 1, 7, mix(a, '#000000', 0.2)], [0, hy, 3, 1, b]); break;
-      case 'thuong': front.push([1, hy - 12, 1, 16, b], [0, hy - 14, 3, 2, a], [1, hy - 15, 1, 1, a], [0, hy - 11, 3, 1, '#c0202e']); break;
-      case 'cung': front.push([0, hy - 8, 1, 2, a], [-1, hy - 6, 1, 8, a], [0, hy + 2, 1, 2, a], [1, hy - 7, 1, 10, b]); break;
-      case 'quat': front.push([-1, hy - 5, 4, 4, a], [0, hy - 6, 2, 1, a], [0, hy - 4, 1, 3, b], [2, hy - 4, 1, 3, b], [1, hy - 1, 1, 1, b]); break;
-      case 'truong': front.push([1, hy - 11, 1, 14, a], [0, hy - 12, 3, 1, b], [1, hy - 13, 1, 1, b]); break;
-      case 'chuy': front.push([1, hy - 5, 1, 6, b], [-1, hy - 9, 5, 4, a], [0, hy - 10, 3, 1, a], [1, hy - 7, 1, 1, '#ffffff']); break;
-      case 'tieu': front.push([0, hy - 6, 1, 7, a], [0, hy - 4, 1, 1, b], [0, hy - 2, 1, 1, b], [0, hy, 1, 1, b]); break;
-      case 'roi': front.push([1, hy - 3, 1, 4, b], [0, hy - 5, 1, 2, a], [-1, hy - 7, 1, 2, a], [-2, hy - 8, 1, 1, a]); break;
-      case 'song': front.push([1, hy - 8, 1, 8, a], [0, hy, 3, 1, b], [14, hy - 8, 1, 8, b], [13, hy, 3, 1, a]); break;
-      case 'liem': front.push([1, hy - 10, 1, 13, b], [-3, hy - 11, 5, 1, a], [-3, hy - 10, 1, 2, a], [-2, hy - 9, 1, 1, a]); break;
-      case 'but': front.push([1, hy - 6, 1, 6, b], [1, hy - 8, 1, 2, a], [0, hy - 7, 1, 1, a]); break;
-      case 'cuoc': front.push([1, hy - 9, 1, 11, b], [-1, hy - 10, 3, 2, a]); break;
-      case 'quyen': front.push([1, hy - 1, 3, 2, a], [12, hy - 1, 3, 2, a], [1, hy - 1, 3, 1, b], [12, hy - 1, 3, 1, b]); break;
+      case 'kiem':
+        front.push([1, hy - 9, 1, 9, a], [0, hy - 1, 3, 1, b], [1, hy, 1, 1, b]);
+        break;
+      case 'dao':
+        front.push([0, hy - 8, 2, 8, a], [1, hy - 8, 1, 7, mix(a, '#000000', 0.2)], [0, hy, 3, 1, b]);
+        break;
+      case 'thuong':
+        front.push([1, hy - 12, 1, 16, b], [0, hy - 14, 3, 2, a], [1, hy - 15, 1, 1, a], [0, hy - 11, 3, 1, '#c0202e']);
+        break;
+      case 'cung':
+        front.push([0, hy - 8, 1, 2, a], [-1, hy - 6, 1, 8, a], [0, hy + 2, 1, 2, a], [1, hy - 7, 1, 10, b]);
+        break;
+      case 'quat':
+        front.push([-1, hy - 5, 4, 4, a], [0, hy - 6, 2, 1, a], [0, hy - 4, 1, 3, b], [2, hy - 4, 1, 3, b], [1, hy - 1, 1, 1, b]);
+        break;
+      case 'truong':
+        front.push([1, hy - 11, 1, 14, a], [0, hy - 12, 3, 1, b], [1, hy - 13, 1, 1, b]);
+        break;
+      case 'chuy':
+        front.push([1, hy - 5, 1, 6, b], [-1, hy - 9, 5, 4, a], [0, hy - 10, 3, 1, a], [1, hy - 7, 1, 1, '#ffffff']);
+        break;
+      case 'tieu':
+        front.push([0, hy - 6, 1, 7, a], [0, hy - 4, 1, 1, b], [0, hy - 2, 1, 1, b], [0, hy, 1, 1, b]);
+        break;
+      case 'roi':
+        front.push([1, hy - 3, 1, 4, b], [0, hy - 5, 1, 2, a], [-1, hy - 7, 1, 2, a], [-2, hy - 8, 1, 1, a]);
+        break;
+      case 'song':
+        front.push([1, hy - 8, 1, 8, a], [0, hy, 3, 1, b], [14, hy - 8, 1, 8, b], [13, hy, 3, 1, a]);
+        break;
+      case 'liem':
+        front.push([1, hy - 10, 1, 13, b], [-3, hy - 11, 5, 1, a], [-3, hy - 10, 1, 2, a], [-2, hy - 9, 1, 1, a]);
+        break;
+      case 'but':
+        front.push([1, hy - 6, 1, 6, b], [1, hy - 8, 1, 2, a], [0, hy - 7, 1, 1, a]);
+        break;
+      case 'cuoc':
+        front.push([1, hy - 9, 1, 11, b], [-1, hy - 10, 3, 2, a]);
+        break;
+      case 'quyen':
+        front.push([1, hy - 1, 3, 2, a], [12, hy - 1, 3, 2, a], [1, hy - 1, 3, 1, b], [12, hy - 1, 3, 1, b]);
+        break;
     }
   }
   // Gậy chống khi già
@@ -367,7 +415,24 @@ function robeOf(l: Look): Robe {
 // 3 kiểu đầu giữ nguyên thứ tự cũ để nhân vật đang chơi không đổi tóc
 export const HAIR_LPC = {
   nam: ['high_ponytail', 'long_tied', 'xlong', 'long_messy', 'ponytail', 'long_band', 'relm_xlong', 'unkempt', 'long_center_part', 'bald', 'buzzcut', 'balding'],
-  nu: ['xlong', 'bunches', 'high_ponytail', 'braid', 'princess', 'single', 'half_up', 'bangs_bun', 'xlong_wavy', 'pigtails', 'long_straight', 'curtains_long', 'long_center_part', 'loose', 'shoulderl', 'relm_xlong'],
+  nu: [
+    'xlong',
+    'bunches',
+    'high_ponytail',
+    'braid',
+    'princess',
+    'single',
+    'half_up',
+    'bangs_bun',
+    'xlong_wavy',
+    'pigtails',
+    'long_straight',
+    'curtains_long',
+    'long_center_part',
+    'loose',
+    'shoulderl',
+    'relm_xlong',
+  ],
 } as const;
 
 /** Nét riêng của từng người: màu da, khuôn mặt, râu, đồ trang sức. Suy ra từ hạt giống nên luôn cố định. */
@@ -498,7 +563,7 @@ export function lpcLayers(c: Character, hideWeapon = false): Layer[] {
   }
   const elder = l.aging === 2;
   const ft = featOf(l);
-  const head = l.gender === 'nam' ? (elder ? 'head_me' : ft.head ?? 'head_m') : elder ? 'head_fe' : 'head_f';
+  const head = l.gender === 'nam' ? (elder ? 'head_me' : (ft.head ?? 'head_m')) : elder ? 'head_fe' : 'head_f';
   const list = HAIR_LPC[l.gender === 'nam' ? 'nam' : 'nu'];
   let hs: string = list[l.hairStyle % list.length];
   // hói đỉnh chỉ xuất hiện từ trung niên, lúc trẻ để đầu cạo sát
@@ -740,7 +805,12 @@ export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Charact
     animation: !ready ? 'none' : once ? `lpc-play ${(meta.frames - 1) / meta.fps}s steps(${meta.frames - 1}) 1 forwards` : `lpc-play ${meta.frames / meta.fps}s steps(${meta.frames}) infinite`,
   };
   return (
-    <div className={`lpc ${l.dead ? 'is-dead' : ''}`} style={{ width: box, height: box }} role="img" aria-label={`${c.name}, ${c.age < 13 ? 'trẻ con' : 'người lớn'}${l.path ? ', ' + PATHS[l.path].name : ''}`}>
+    <div
+      className={`lpc ${l.dead ? 'is-dead' : ''}`}
+      style={{ width: box, height: box }}
+      role="img"
+      aria-label={`${c.name}, ${c.age < 13 ? 'trẻ con' : 'người lớn'}${l.path ? ', ' + PATHS[l.path].name : ''}`}
+    >
       {/* chưa ghép xong hình thì hiện bóng chờ, chưa hiện hiệu ứng để khỏi thấy hào quang mà không thấy người */}
       {!url && <span className="lpc-wait" style={{ width: box * 0.36, height: box * 0.62, left: box * 0.32, top: box * 0.2 }} />}
       {url && aura && !l.dead && <Aura color={aura} realm={l.realm} layer={c.layer} box={box} />}
@@ -758,7 +828,6 @@ export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Charact
           <span className="lpc-strip" style={style} />
         ))}
       {l.acc === 'kiembay' && !l.dead && <span className="lpc-orbit" aria-hidden="true" />}
-
     </div>
   );
 }
@@ -768,10 +837,21 @@ export function robeIconLayers(item: { look: string; robe?: [string, string, str
   const tones = ROBES[item.look] ?? ROBES.vai;
   const r: Robe = item.robe ? { body: item.robe[0], dark: item.robe[1], trim: item.robe[2], alt: item.robe[3] } : tones[0];
   const d = item.deco;
-  if (d === 'giap') return [{ key: 'armour_plate', tint: r.body }, { key: 'pauldrons', tint: r.trim }];
-  if (d === 'vay') return [{ key: 'kimono_split', tint: r.dark }, { key: 'chainmail', tint: r.body }];
+  if (d === 'giap')
+    return [
+      { key: 'armour_plate', tint: r.body },
+      { key: 'pauldrons', tint: r.trim },
+    ];
+  if (d === 'vay')
+    return [
+      { key: 'kimono_split', tint: r.dark },
+      { key: 'chainmail', tint: r.body },
+    ];
   const kim = d === 'manh' ? 'kimono_split' : 'kimono_normal';
-  const out: Layer[] = [{ key: kim, tint: r.body }, { key: `${kim}_trim`, tint: r.trim }];
+  const out: Layer[] = [
+    { key: kim, tint: r.body },
+    { key: `${kim}_trim`, tint: r.trim },
+  ];
   if (d === 'long' || item.look === 'casa') out.push({ key: 'kimono_sleeves_oversize', tint: r.body }, { key: 'kimono_sleeves_oversize_trim', tint: r.trim });
   out.push({ key: 'obi', tint: d === 'long' ? r.trim : r.dark });
   if (d === 'long_thu') out.push({ key: 'mantal', tint: r.trim });

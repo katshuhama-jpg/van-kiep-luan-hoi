@@ -7,12 +7,14 @@ import { GachaPanel, ShareCard } from './Extras';
 import ItemIconImg from './ItemIcon';
 import { FOCUS, ITEMS, PATHS, PILLS, REALMS, SEASONS, TALENTS, fxText, gearFx, realmLabel, type Item } from '@/lib/game/data';
 import { describeLean } from '@/lib/game/engine';
-import { DANGER_TEXT, MONSTERS, combatLevel, dangerOf, effLv, killExp, monsterName, playerStats, tierOf } from '@/lib/game/combat';
+import { DANGER_TEXT, MONSTERS, combatLevel, dangerOf, dropFactor, effLv, killExp, monsterName, playerStats, tierOf } from '@/lib/game/combat';
 import { MonsterSprite } from './Battle';
 import { cultPct, fmt, needFor } from '@/lib/game/helpers';
 import type { Character, Focus, LogEntry, Meta, PendingEvent, Slot } from '@/lib/game/types';
 import { evalQuests, nearEndings, pickProphecy, questName } from '@/lib/game/hook';
 import { HIDDEN_ITEMS, collectStats, isHidden, itemHint } from '@/lib/game/collect';
+import { sectSide, rankName, rankShort } from '@/lib/game/sect';
+import { ELEMENTS } from '@/lib/game/nguhanh';
 import { TodayScroll } from './Hook';
 import { useAuth } from '@/lib/useAuth';
 import { addFeedback } from '@/lib/storage';
@@ -1071,6 +1073,11 @@ export function StageStrip({ c, compact }: { c: Character; compact: boolean }) {
         <span className="strip-name">{c.name}</span>
         <span className={`badge sex ${c.gender}`}>{c.gender === 'nam' ? 'Nam' : 'Nữ'}</span>
         {c.path && <span className="badge path">{PATHS[c.path].short}</span>}
+        {c.sect && (
+          <span className={`badge sect-badge ${sectSide(c) ?? ''}`} title={`${rankName(c)} ${c.sect}`}>
+            {rankShort(c)}
+          </span>
+        )}
         <span className="strip-realm">{c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer)}</span>
       </div>
       <div className="cult" role="progressbar" aria-label="Tu vi" aria-valuenow={Math.round(cult * 100)} aria-valuemin={0} aria-valuemax={100}>
@@ -1181,7 +1188,7 @@ export function HuntSheet({ c, onPick, onToggleFlee, onClose }: { c: Character; 
         Tự rút lui khi máu dưới 30%
       </label>
       <div className="items">
-        {MONSTERS.map((m) => {
+        {MONSTERS.filter((m) => !m.sect || m.sect === sectSide(c)).map((m) => {
           const elv = effLv(c, m);
           const hidden = !m.boss && elv > L + 6;
           const d = dangerOf(c, m);
@@ -1197,6 +1204,16 @@ export function HuntSheet({ c, onPick, onToggleFlee, onClose }: { c: Character; 
                   : m.boss
                     ? `BOSS ${m.boss === 'ta' ? 'Tà phái' : 'Chính phái'} · ${m.name}`
                     : `${monsterName(c, m)} · Lv${elv}${elv > m.lv ? ` (gốc ${m.lv})` : ''}`}
+                {!hidden && m.el && (
+                  <span className="badge el-badge" style={{ marginLeft: 4, background: ELEMENTS[m.el].color }}>
+                    {ELEMENTS[m.el].name}
+                  </span>
+                )}
+                {!hidden && m.sect && (
+                  <span className="badge" style={{ marginLeft: 4 }}>
+                    Thí luyện
+                  </span>
+                )}
                 {!hidden && m.human && !m.boss && (
                   <span className="badge" style={{ marginLeft: 4 }}>
                     Cao thủ
@@ -1205,13 +1222,8 @@ export function HuntSheet({ c, onPick, onToggleFlee, onClose }: { c: Character; 
                 <small>{hidden ? m.place : m.boss ? `${m.place} · ${m.desc} Chưa từng ai thắng.` : `${m.place} · ~${fmt(killExp(c, m))} tu vi/con · ${c.kills?.[m.id] ?? 0} đã trảm`}</small>
                 {!hidden && !m.boss && ITEMS.some((i) => i.from?.includes(m.id)) && (
                   <small className="drop-line">
-                    Rơi:{' '}
-                    {ITEMS.filter((i) => i.from?.includes(m.id)).map((i, k) => (
-                      <span key={i.id}>
-                        {k > 0 && ' · '}
-                        <b className={c.inventory.includes(i.id) ? 'have' : ''}>{i.name}</b>
-                      </span>
-                    ))}
+                    Rơi {ITEMS.filter((i) => i.from?.includes(m.id)).length} món · đã có {ITEMS.filter((i) => i.from?.includes(m.id) && c.inventory.includes(i.id)).length} · xem trong Bảo khố
+                    {dropFactor(c, m) < 1 && <b className="drop-warn"> · {dropFactor(c, m) === 0 ? 'quá yếu, không rơi đồ' : 'yếu hơn bạn, ít rơi đồ'}</b>}
                   </small>
                 )}
               </span>

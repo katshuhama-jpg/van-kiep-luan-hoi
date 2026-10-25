@@ -58,7 +58,8 @@ export const HOOK_EVENTS: GameEvent[] = [
     weight: 500,
     when: (c) => !!c.legend,
     title: 'Thần binh nhận chủ',
-    text: (c) => `Đêm ấy, ngoài sân có tiếng ngân dài như rồng ngâm. Một thanh binh khí cắm thẳng xuống đất, chuôi còn rung: chính là ${c.legend!.name}, thần binh bạn đã mang qua ${c.legend!.lv} kiếp.`,
+    text: (c) =>
+      `Đêm ấy, ngoài sân có tiếng ngân dài như rồng ngâm. Một thanh binh khí cắm thẳng xuống đất, chuôi còn rung: chính là ${c.legend!.name}, thần binh bạn đã mang qua ${c.legend!.lv} kiếp.`,
     choices: (c) => [
       {
         label: 'Rút thần binh lên',

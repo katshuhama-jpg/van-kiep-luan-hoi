@@ -89,10 +89,14 @@ function Background({ focus, season = 0 }: { focus: string; season?: number }) {
         <rect width="90" height="54" fill={P.sky} />
         <rect y="22" width="90" height="10" fill={P.haze} />
         <g className="drift-slow">
-          <rect x="10" y="6" width="12" height="3" fill="#fff6e6" /><rect x="8" y="7" width="16" height="2" fill="#fff6e6" />
-          <rect x="60" y="10" width="10" height="2" fill="#fff6e6" /><rect x="58" y="11" width="14" height="2" fill="#fff6e6" />
-          <rect x="100" y="6" width="12" height="3" fill="#fff6e6" /><rect x="98" y="7" width="16" height="2" fill="#fff6e6" />
-          <rect x="150" y="10" width="10" height="2" fill="#fff6e6" /><rect x="148" y="11" width="14" height="2" fill="#fff6e6" />
+          <rect x="10" y="6" width="12" height="3" fill="#fff6e6" />
+          <rect x="8" y="7" width="16" height="2" fill="#fff6e6" />
+          <rect x="60" y="10" width="10" height="2" fill="#fff6e6" />
+          <rect x="58" y="11" width="14" height="2" fill="#fff6e6" />
+          <rect x="100" y="6" width="12" height="3" fill="#fff6e6" />
+          <rect x="98" y="7" width="16" height="2" fill="#fff6e6" />
+          <rect x="150" y="10" width="10" height="2" fill="#fff6e6" />
+          <rect x="148" y="11" width="14" height="2" fill="#fff6e6" />
         </g>
         <g className="drift-mid">
           <polygon points="0,36 12,24 22,32 34,20 48,34 60,26 76,34 90,26 102,24 112,32 124,20 138,34 150,26 166,34 180,26 180,54 0,54" fill={P.far} />
@@ -222,7 +226,7 @@ function SeasonFx({ season, cls }: { season: number; cls: string }) {
         <span
           key={i}
           className={`p${i % 3}`}
-          style={{ left: `${(i * 37 + (i % 5) * 7) % 104 - 2}%`, animationDelay: `${-((i * 0.83) % 7)}s`, animationDuration: `${(season === 3 ? 6 : 5) + (i % 5) * 0.9}s` }}
+          style={{ left: `${((i * 37 + (i % 5) * 7) % 104) - 2}%`, animationDelay: `${-((i * 0.83) % 7)}s`, animationDuration: `${(season === 3 ? 6 : 5) + (i % 5) * 0.9}s` }}
         />
       ))}
     </div>
@@ -280,7 +284,9 @@ export default function Scene({ c, fx, paused, season, battle, quiet }: { c: Cha
       {!c.dead && focus === 'ket_duyen' && (
         <div className="amb hearts" aria-hidden="true">
           {particles.slice(0, 4).map((i) => (
-            <span key={i} style={{ left: `${38 + i * 7}%`, animationDelay: `${i * 0.9}s` }}>♥</span>
+            <span key={i} style={{ left: `${38 + i * 7}%`, animationDelay: `${i * 0.9}s` }}>
+              ♥
+            </span>
           ))}
         </div>
       )}
@@ -300,7 +306,13 @@ export default function Scene({ c, fx, paused, season, battle, quiet }: { c: Cha
       )}
 
       <div className={`sprite-wrap ${battle && battle.last.length && battle.last[battle.last.length - 1].side === 'p' ? 'lunge' : ''}`} key={battle?.last[battle.last.length - 1]?.id ?? 'idle'}>
-        <Sprite c={c} size={150} focus={focus} anim={battle && !c.dead ? (battle.phase === 'fight' ? ([...battle.last].reverse().find((h) => h.side === 'p')?.palm ? 'spellcast' : 'slash') : 'idle') : undefined} dir={battle && !c.dead ? 3 : undefined} />
+        <Sprite
+          c={c}
+          size={150}
+          focus={focus}
+          anim={battle && !c.dead ? (battle.phase === 'fight' ? ([...battle.last].reverse().find((h) => h.side === 'p')?.palm ? 'spellcast' : 'slash') : 'idle') : undefined}
+          dir={battle && !c.dead ? 3 : undefined}
+        />
       </div>
 
       {c.dead && (
@@ -323,8 +335,12 @@ export default function Scene({ c, fx, paused, season, battle, quiet }: { c: Cha
             {f.kind === 'lightning' && (
               <>
                 <div className="flash dark" />
-                <svg className="bolt" viewBox="0 0 20 60" aria-hidden="true"><polyline points="12,0 6,24 12,24 4,60" fill="none" stroke="#fff6a8" strokeWidth="3" /></svg>
-                <svg className="bolt b2" viewBox="0 0 20 60" aria-hidden="true"><polyline points="10,0 14,20 8,22 14,60" fill="none" stroke="#c9b8ff" strokeWidth="2" /></svg>
+                <svg className="bolt" viewBox="0 0 20 60" aria-hidden="true">
+                  <polyline points="12,0 6,24 12,24 4,60" fill="none" stroke="#fff6a8" strokeWidth="3" />
+                </svg>
+                <svg className="bolt b2" viewBox="0 0 20 60" aria-hidden="true">
+                  <polyline points="10,0 14,20 8,22 14,60" fill="none" stroke="#c9b8ff" strokeWidth="2" />
+                </svg>
               </>
             )}
             {(f.kind === 'layer' || f.kind === 'buy') && (
@@ -344,7 +360,9 @@ export default function Scene({ c, fx, paused, season, battle, quiet }: { c: Cha
             {f.kind === 'love' && (
               <div className="burst loveb">
                 {particles.slice(0, 6).map((i) => (
-                  <span key={i} style={{ ['--a' as string]: `${i * 60}deg` } as CSSProperties}>♥</span>
+                  <span key={i} style={{ ['--a' as string]: `${i * 60}deg` } as CSSProperties}>
+                    ♥
+                  </span>
                 ))}
               </div>
             )}
@@ -352,7 +370,10 @@ export default function Scene({ c, fx, paused, season, battle, quiet }: { c: Cha
             {f.kind === 'hurt' && <div className="flash red" />}
             {f.kind === 'heal' && <div className="plus">+</div>}
             {!quiet && (f.label || FX_TEXT[f.kind]) && (
-              <div className={`fx-label ${f.kind === 'breakthrough' || f.kind === 'lightning' ? 'big' : ''}`} style={f.kind === 'breakthrough' || f.kind === 'lightning' ? undefined : { top: `${20 + (idx % 4) * 11}%` }}>
+              <div
+                className={`fx-label ${f.kind === 'breakthrough' || f.kind === 'lightning' ? 'big' : ''}`}
+                style={f.kind === 'breakthrough' || f.kind === 'lightning' ? undefined : { top: `${20 + (idx % 4) * 11}%` }}
+              >
                 {f.kind === 'breakthrough' && f.label ? (
                   <>
                     <small>{REALM_NAMES.includes(f.label) || f.label === 'PHI THĂNG' ? 'ĐỘT PHÁ' : 'NHẬP ĐẠO'}</small>

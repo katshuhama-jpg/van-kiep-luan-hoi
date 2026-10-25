@@ -1,6 +1,7 @@
 import { MONSTERS, combatLevel, effLv, growth, killExp, killReward, monsterStats, type Fighter, type Monster } from './combat';
 import { addCult, fatal, money, stat } from './helpers';
 import type { Character, EffectCtx } from './types';
+import { sectSide } from './sect';
 
 /**
  * Quái chặn đường: bất chợt bắt người chơi phải đánh, không được từ chối.
@@ -24,7 +25,10 @@ export type AmbushTier = 'kem' | 'bang' | 'hon';
  * Trả về bản sao quái đã chỉnh cấp, để tu vi, tên, chỉ số đều theo cấp mới.
  */
 export function pickAmbush(c: Character, rnd: () => number): { m: Monster; tier: AmbushTier } {
-  const pool = MONSTERS.filter((m) => !m.boss);
+  // đệ tử tông môn: 30% là quái thí luyện trong môn
+  const side = sectSide(c);
+  const inSect = !!side && rnd() < 0.3;
+  const pool = MONSTERS.filter((m) => !m.boss && (inSect ? m.sect === side : !m.sect));
   const cl = combatLevel(c);
   const r = rnd();
   const tier: AmbushTier = r < 0.3 ? 'kem' : r < 0.9 ? 'bang' : 'hon';

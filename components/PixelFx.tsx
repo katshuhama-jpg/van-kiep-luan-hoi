@@ -74,7 +74,13 @@ function render(spec: FxSpec): Promise<string> {
 
 function hex(c: string): [number, number, number] {
   const m = c.replace('#', '');
-  const v = m.length === 3 ? m.split('').map((x) => x + x).join('') : m;
+  const v =
+    m.length === 3
+      ? m
+          .split('')
+          .map((x) => x + x)
+          .join('')
+      : m;
   return [parseInt(v.slice(0, 2), 16), parseInt(v.slice(2, 4), 16), parseInt(v.slice(4, 6), 16)];
 }
 
@@ -193,7 +199,10 @@ export function fxBatQuai(color: string): FxSpec {
         g += `<g transform="rotate(${i * 45}) translate(0 -22)">`;
         t.split('').forEach((b, j) => {
           const y = -3 + j * 2.4;
-          g += b === '1' ? `<rect x="-4.5" y="${y}" width="9" height="1.6" fill="${color}"/>` : `<rect x="-4.5" y="${y}" width="3.6" height="1.6" fill="${color}"/><rect x="0.9" y="${y}" width="3.6" height="1.6" fill="${color}"/>`;
+          g +=
+            b === '1'
+              ? `<rect x="-4.5" y="${y}" width="9" height="1.6" fill="${color}"/>`
+              : `<rect x="-4.5" y="${y}" width="3.6" height="1.6" fill="${color}"/><rect x="0.9" y="${y}" width="3.6" height="1.6" fill="${color}"/>`;
         });
         g += '</g>';
       });
@@ -259,7 +268,8 @@ export function fxHuyetNguyet(): FxSpec {
     h: 36,
     frames: 1,
     outline: '#3a0610',
-    draw: () => `<circle cx="18" cy="18" r="16" fill="#a01424"/><circle cx="16" cy="16" r="12" fill="#d8303a"/><circle cx="21" cy="12" r="3" fill="#b01828"/><rect x="9" y="20" width="4" height="3" fill="#8a1020"/><rect x="24" y="22" width="3" height="2" fill="#8a1020"/><rect x="5" y="12" width="2" height="4" fill="#ff6a5a"/>`,
+    draw: () =>
+      `<circle cx="18" cy="18" r="16" fill="#a01424"/><circle cx="16" cy="16" r="12" fill="#d8303a"/><circle cx="21" cy="12" r="3" fill="#b01828"/><rect x="9" y="20" width="4" height="3" fill="#8a1020"/><rect x="24" y="22" width="3" height="2" fill="#8a1020"/><rect x="5" y="12" width="2" height="4" fill="#ff6a5a"/>`,
   };
 }
 
@@ -343,7 +353,11 @@ export function fxTuongVan(): FxSpec {
     outline: '#5a78b0',
     draw: () => {
       let out = '';
-      [[13, 9], [29, 6], [45, 9]].forEach(([x, y]) => {
+      [
+        [13, 9],
+        [29, 6],
+        [45, 9],
+      ].forEach(([x, y]) => {
         out += `<g transform="translate(${x} ${y})"><path d="M-11 4 Q-13 -1 -8 -2 Q-7 -7 -1 -6 Q3 -9 7 -5 Q13 -5 11 1 Q14 4 9 5Z" fill="#f6f8ff"/><path d="M-4 1 q2 -3 4 -1 q1 2 -1 2" fill="none" stroke="#9ab4e0" stroke-width="1"/></g>`;
       });
       return out;

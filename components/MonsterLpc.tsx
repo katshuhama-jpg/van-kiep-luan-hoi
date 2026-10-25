@@ -59,11 +59,16 @@ function BeastStrip({ look, size, dead }: { look: Extract<MonsterLook, { kind: '
 export default function MonsterLpc({ look, size = 112, tier = 0, dead, attacking, still }: { look: MonsterLook; size?: number; tier?: number; dead?: boolean; attacking?: boolean; still?: boolean }) {
   const t = Math.max(0, Math.min(3, tier));
   const wrap: CSSProperties = { width: size, height: size, filter: [TIER_FX[t], dead ? 'grayscale(0.7) brightness(0.8)' : ''].filter(Boolean).join(' ') || undefined };
-  const sc = (look.kind === 'human' ? look.scale ?? 1 : 1) * TIER_SCALE[t];
+  const sc = (look.kind === 'human' ? (look.scale ?? 1) : 1) * TIER_SCALE[t];
   return (
     <div className={`lpc lpc-mon ${still ? 'still' : ''} ${dead ? 'mon-dead-lpc' : ''}`} style={wrap} aria-hidden="true">
       {look.kind === 'human' ? (
-        <HumanStrip layers={t >= 2 ? [...look.layers, { key: t >= 3 ? 'crown_gold' : 'horns_up_fg', tint: t >= 3 ? undefined : '#3a0a10' }] : look.layers} anim={dead ? 'hurt' : attacking ? 'slash' : 'idle'} size={size} scale={sc} />
+        <HumanStrip
+          layers={t >= 2 ? [...look.layers, { key: t >= 3 ? 'crown_gold' : 'horns_up_fg', tint: t >= 3 ? undefined : '#3a0a10' }] : look.layers}
+          anim={dead ? 'hurt' : attacking ? 'slash' : 'idle'}
+          size={size}
+          scale={sc}
+        />
       ) : (
         <BeastStrip look={{ ...look, scale: look.scale * TIER_SCALE[t] }} size={size} dead={dead} />
       )}

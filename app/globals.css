@@ -3075,3 +3075,7 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .game.has-event .game-bottom { flex: 0 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
 .game.has-event .game-scroll { min-height: 0; }
 .game-bottom .dialog { max-height: none; overflow: visible; }
+.el-badge { color: #1f160d; border: 2px solid #1f160d; }
+.drop-warn { color: var(--red-d); font-weight: 700; }
+.sect-badge { background: #2f6b5a; color: #fff3dc; white-space: nowrap; }
+.sect-badge.ta { background: #7a0a1e; }

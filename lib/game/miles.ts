@@ -92,8 +92,14 @@ export function pickStory(miles: Mile[] | undefined, fb: StoryFallback, max = 8)
 
   // đời ít biến cố: kể thêm vài chuyện đời thường từ những gì đã biết
   const fill: Mile[] = [];
-  if (fb.element && ELEMENTS[fb.element as keyof typeof ELEMENTS]) fill.push({ age: 6, kind: 'fate', text: `Thầy bói xem tướng, phán bản mệnh thuộc ${ELEMENTS[fb.element as keyof typeof ELEMENTS].name}`, realm: 0 });
-  fill.push({ age: 16, kind: 'journey', text: fb.birthPlace ? `Rời ${fb.birthPlace.split(', ')[0]}, khăn gói lên đường xông pha giang hồ` : 'Khăn gói rời nhà, lên đường xông pha giang hồ', realm: Math.min(1, fb.realm) });
+  if (fb.element && ELEMENTS[fb.element as keyof typeof ELEMENTS])
+    fill.push({ age: 6, kind: 'fate', text: `Thầy bói xem tướng, phán bản mệnh thuộc ${ELEMENTS[fb.element as keyof typeof ELEMENTS].name}`, realm: 0 });
+  fill.push({
+    age: 16,
+    kind: 'journey',
+    text: fb.birthPlace ? `Rời ${fb.birthPlace.split(', ')[0]}, khăn gói lên đường xông pha giang hồ` : 'Khăn gói rời nhà, lên đường xông pha giang hồ',
+    realm: Math.min(1, fb.realm),
+  });
   const wp = ITEMS.find((i) => i.id === fb.equipped?.vu_khi);
   if (wp && !has('treasure')) fill.push({ age: Math.max(14, Math.round(fb.age * 0.45)), kind: 'treasure', text: `Có được ${wp.name}, từ đó không rời tay`, realm: fb.realm });
   const robe = ITEMS.find((i) => i.id === fb.equipped?.ao && i.id !== 'ao_vai');

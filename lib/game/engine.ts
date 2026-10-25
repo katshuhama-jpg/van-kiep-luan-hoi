@@ -1,5 +1,31 @@
 import { applyProphecy, omenIs } from './hook';
-import { ITEMS, fxText, gearFx, FAMILY_TIERS, REGIONS, FOCUS, MAX_LIFE, HAIR_COLORS, HAIR_STYLES, HO, HO_KEP, TEN_NAM_1, TEN_NAM_2, TEN_NU_1, TEN_NU_2, LIFE_FATES, LINH_CAN, ORIGINS, PATHS, PILLS, REALMS, TEN_NAM, TEN_NU, realmLabel } from './data';
+import { CHAN_TRUYEN_BREAK, promoteByRealm, rankOf, sectCultMul } from './sect';
+import {
+  ITEMS,
+  fxText,
+  gearFx,
+  FAMILY_TIERS,
+  REGIONS,
+  FOCUS,
+  MAX_LIFE,
+  HAIR_COLORS,
+  HAIR_STYLES,
+  HO,
+  HO_KEP,
+  TEN_NAM_1,
+  TEN_NAM_2,
+  TEN_NU_1,
+  TEN_NU_2,
+  LIFE_FATES,
+  LINH_CAN,
+  ORIGINS,
+  PATHS,
+  PILLS,
+  REALMS,
+  TEN_NAM,
+  TEN_NU,
+  realmLabel,
+} from './data';
 import { BREAK_EVENT_ID, EVENTS, PATH_EVENT_ID, pathChoices } from './events';
 import { addCult, addPill, clamp, fatal, reward, wealthTier, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
 import type { Character, Choice, EffectCtx, Fx, FxKind, GameEvent, Meta, PendingEvent, Tone } from './types';
@@ -48,7 +74,13 @@ export function rollBase(): Character {
   const hairStyle = Math.floor(rnd() * HAIR_STYLES[gender].length);
   const fate = weighted(rnd, LIFE_FATES);
   // nơi sinh và gia cảnh
-  const region = race === 'yeu' ? REGIONS.find((r) => r.id === 'van_yeu')! : weighted(rnd, REGIONS.filter((r) => r.w > 0));
+  const region =
+    race === 'yeu'
+      ? REGIONS.find((r) => r.id === 'van_yeu')!
+      : weighted(
+          rnd,
+          REGIONS.filter((r) => r.w > 0),
+        );
   const birthPlace = pick(rnd, region.places);
   let famTier = FAMILY_TIERS.indexOf(weighted(rnd, FAMILY_TIERS));
   if (origin.id === 'the_gia') famTier = Math.max(famTier, 2);
@@ -113,8 +145,16 @@ export function rollBase(): Character {
     c.lifespan = Math.round(c.lifespan * mod.lifeMul);
   }
   if (origin.id === 'chua') c.daoTam = 15;
-  c.log.push({ age: 0, tone: 'big', text: `__KIEP__ Bạn chào đời là ${gender === 'nam' ? 'một bé trai' : 'một bé gái'} ở ${birthPlace}, ${region.name} (${region.desc}), ${origin.name.toLowerCase()}, gia cảnh ${fam.name}. Thầy bói nói bạn mang ${lc.name}.` });
-  c.log.push({ age: 0, tone: fate.lo < 0.85 ? 'bad' : fate.lo > 1.1 ? 'good' : 'normal', text: `Tóc ${HAIR_COLORS[hairColor].name}, lớn lên sẽ để ${HAIR_STYLES[gender][hairStyle]}. Bà mụ xem tướng bảo: mệnh ${fate.name}, bản mệnh ngũ hành thuộc ${ELEMENTS[c.element ?? 'kim'].name}.` });
+  c.log.push({
+    age: 0,
+    tone: 'big',
+    text: `__KIEP__ Bạn chào đời là ${gender === 'nam' ? 'một bé trai' : 'một bé gái'} ở ${birthPlace}, ${region.name} (${region.desc}), ${origin.name.toLowerCase()}, gia cảnh ${fam.name}. Thầy bói nói bạn mang ${lc.name}.`,
+  });
+  c.log.push({
+    age: 0,
+    tone: fate.lo < 0.85 ? 'bad' : fate.lo > 1.1 ? 'good' : 'normal',
+    text: `Tóc ${HAIR_COLORS[hairColor].name}, lớn lên sẽ để ${HAIR_STYLES[gender][hairStyle]}. Bà mụ xem tướng bảo: mệnh ${fate.name}, bản mệnh ngũ hành thuộc ${ELEMENTS[c.element ?? 'kim'].name}.`,
+  });
   return c;
 }
 
@@ -152,7 +192,8 @@ export function newCharacter(meta: Meta, gifts: string[] = [], base?: Character)
   if (gifts.length) {
     applyGifts(c, gifts);
     c.log.push({ age: 0, tone: 'good', text: `Thiên phú bẩm sinh: ${gifts.map((g) => giftOf(g)?.name).join(', ')}.` });
-    if (hasGift(c, 'g_trung_sinh') && c.past) c.log.push({ age: 0, tone: 'big', text: `Vừa mở mắt, bạn đã nhớ ra: kiếp trước mình là ${c.past.name}, ${c.past.realmName}, chết năm ${c.past.age} tuổi.` });
+    if (hasGift(c, 'g_trung_sinh') && c.past)
+      c.log.push({ age: 0, tone: 'big', text: `Vừa mở mắt, bạn đã nhớ ra: kiếp trước mình là ${c.past.name}, ${c.past.realmName}, chết năm ${c.past.age} tuổi.` });
     if (hasGift(c, 'g_hop')) c.log.push({ age: 0, tone: 'normal', text: 'Trong tay bạn nắm chặt một chiếc hộp nhỏ, không ai cạy ra được.' });
   }
   // thiên phú mua bằng phúc duyên (áp sau thiên phú bẩm sinh để không bị ghi đè)
@@ -237,6 +278,8 @@ function enterRealm(c: Character, realm: number, ctx: EffectCtx, talents: string
   c.cultivation = 0;
   const base = REALMS[realm]?.life ?? c.lifespan;
   c.lifespan = Math.min(MAX_LIFE, Math.max(c.lifespan, Math.round(base * lifeMult(c, talents) * (0.9 + rnd() * 0.2))));
+  const up = promoteByRealm(c, ctx);
+  if (up) ctx.log(up, 'good');
 }
 
 export function gearMul(c: Character) {
@@ -262,15 +305,58 @@ export function yearlyGain(c: Character) {
   const base = GAIN[c.realm] ?? 90;
   // tà đạo tu nhanh hơn (đổi lại nhiều tâm ma, nhiều kẻ thù)
   const lean = c.daoTam <= -40 ? 1.22 : c.daoTam <= -15 ? 1.08 : 1;
-  return base * (c.maTon ? 1.15 : 1) * c.linhCanMul * (0.6 + c.stats.ngoTinh / 100) * pathMul(c) * gearMul(c) * (c.stats.tamMa > 70 ? 0.8 : 1) * (hasGift(c, 'g_doan_menh') ? 1.3 : 1) * lean;
+  return (
+    base *
+    sectCultMul(c) *
+    (c.maTon ? 1.15 : 1) *
+    c.linhCanMul *
+    (0.6 + c.stats.ngoTinh / 100) *
+    pathMul(c) *
+    gearMul(c) *
+    (c.stats.tamMa > 70 ? 0.8 : 1) *
+    (hasGift(c, 'g_doan_menh') ? 1.3 : 1) *
+    lean
+  );
 }
 
-
 // Câu chuyện thường ngày ghép ngẫu nhiên từ nhiều mảnh để hiếm khi lặp lại
-const WHEN = ['Đầu xuân,', 'Giữa hè,', 'Cuối thu,', 'Đêm đông,', 'Một đêm trăng tròn,', 'Sau cơn mưa rào,', 'Sáng sớm sương mù,', 'Lúc hoàng hôn,', 'Ngày tuyết đầu mùa,', 'Tiết Thanh Minh,', 'Đêm Trung Thu,', 'Mùa hoa đào nở,'];
-const WHERE = ['dưới thác Bạch Long', 'trên đỉnh Vân Vụ', 'bên bờ Thanh Giang', 'trong rừng trúc tím', 'ở hậu sơn', 'trong động phủ', 'dưới gốc tùng ngàn năm', 'trên thuyền giữa hồ Kính Nguyệt', 'ở thạch đình bỏ hoang', 'trên vách đá Tuyệt Bích', 'trong ngôi miếu đổ nát', 'giữa thảo nguyên Bắc Mạc'];
+const WHEN = [
+  'Đầu xuân,',
+  'Giữa hè,',
+  'Cuối thu,',
+  'Đêm đông,',
+  'Một đêm trăng tròn,',
+  'Sau cơn mưa rào,',
+  'Sáng sớm sương mù,',
+  'Lúc hoàng hôn,',
+  'Ngày tuyết đầu mùa,',
+  'Tiết Thanh Minh,',
+  'Đêm Trung Thu,',
+  'Mùa hoa đào nở,',
+];
+const WHERE = [
+  'dưới thác Bạch Long',
+  'trên đỉnh Vân Vụ',
+  'bên bờ Thanh Giang',
+  'trong rừng trúc tím',
+  'ở hậu sơn',
+  'trong động phủ',
+  'dưới gốc tùng ngàn năm',
+  'trên thuyền giữa hồ Kính Nguyệt',
+  'ở thạch đình bỏ hoang',
+  'trên vách đá Tuyệt Bích',
+  'trong ngôi miếu đổ nát',
+  'giữa thảo nguyên Bắc Mạc',
+];
 const DOING: Record<string, string[]> = {
-  tu_luyen: ['bạn ngồi thiền vận chuyển chu thiên', 'bạn luyện đi luyện lại một chiêu kiếm', 'bạn hấp thụ linh khí nhật nguyệt', 'bạn nghiền ngẫm bộ công pháp cũ', 'bạn thử đả thông một huyệt đạo khó', 'bạn luyện công đến quên ăn'],
+  tu_luyen: [
+    'bạn ngồi thiền vận chuyển chu thiên',
+    'bạn luyện đi luyện lại một chiêu kiếm',
+    'bạn hấp thụ linh khí nhật nguyệt',
+    'bạn nghiền ngẫm bộ công pháp cũ',
+    'bạn thử đả thông một huyệt đạo khó',
+    'bạn luyện công đến quên ăn',
+  ],
   luyen_dan: ['bạn canh lò đan suốt bảy ngày', 'bạn thử một đan phương mới', 'bạn đi hái thảo dược', 'bạn ghi chép lại các lần nổ lò', 'bạn phơi thảo dược trên mái nhà'],
   du_ngoan: ['bạn dừng chân ngắm cảnh', 'bạn nghe người kể chuyện giang hồ', 'bạn vẽ lại phong cảnh', 'bạn uống rượu với một khách lạ', 'bạn lạc đường mất ba ngày'],
   kiem_tien: ['bạn bày sạp bán phù chú', 'bạn nhận làm thuê cho thương hội', 'bạn đi buôn linh thảo', 'bạn chép kinh thuê cho chùa', 'bạn đòi nợ giúp một lão chủ tiệm'],
@@ -278,7 +364,13 @@ const DOING: Record<string, string[]> = {
   tru_yeu: ['bạn lau sạch máu yêu thú trên vũ khí', 'bạn băng bó vết cào trên tay', 'bạn đếm lại chiến lợi phẩm', 'bạn nghe tiếng sói tru vọng về'],
 };
 const RESULT: Record<string, string[]> = {
-  tu_luyen: ['chân khí lưu chuyển thêm một vòng.', 'trong đầu chợt sáng ra một điều.', 'không thu được gì, nhưng lòng bình thản.', 'mồ hôi ướt đẫm, tu vi nhích thêm một chút.', 'suýt nữa thì khí huyết nghịch hành.'],
+  tu_luyen: [
+    'chân khí lưu chuyển thêm một vòng.',
+    'trong đầu chợt sáng ra một điều.',
+    'không thu được gì, nhưng lòng bình thản.',
+    'mồ hôi ướt đẫm, tu vi nhích thêm một chút.',
+    'suýt nữa thì khí huyết nghịch hành.',
+  ],
   luyen_dan: ['mùi thuốc thơm khắp núi.', 'lò đan nổ, tóc cháy xém một mảng.', 'ra lò mấy viên đan có vân mây.', 'cuối cùng cũng hiểu vì sao lần trước hỏng.'],
   du_ngoan: ['lòng rộng mở hơn hẳn.', 'nhớ nhà da diết.', 'học được vài câu tiếng địa phương.', 'thấy thiên hạ rộng lớn hơn mình tưởng.'],
   kiem_tien: ['kiếm được kha khá linh thạch.', 'bị quỵt mất một nửa tiền công.', 'gặp được một mối làm ăn lâu dài.', 'mệt rã rời nhưng túi rủng rỉnh.'],
@@ -294,7 +386,6 @@ function flavorLine(c: Character, focus: string): string {
   const tail = extra.length && rnd() < 0.25 ? ' ' + pick(rnd, extra) : '';
   return `${pick(rnd, WHEN)} ${pick(rnd, DOING[focus] ?? DOING.tu_luyen)} ${pick(rnd, WHERE)}, ${pick(rnd, RESULT[focus] ?? RESULT.tu_luyen)}${tail}`;
 }
-
 
 /** Lên tầng nhỏ, hoặc trả về sự kiện đột phá nếu đã đầy tầng cuối */
 function progress(c: Character, ctx: EffectCtx, talents: string[]): PendingEvent | null {
@@ -347,8 +438,7 @@ function checkDeath(c: Character, ctx: EffectCtx) {
       ctx.log('Tâm ma bùng phát, bạn hộc máu ngã quỵ, tu vi tụt mất một đoạn. May mà gượng giữ được linh đài.', 'bad');
       if (c.stats.sucKhoe <= 0) die(c, 'Tâm ma phản phệ cộng thêm trọng thương, bạn không qua khỏi.', ctx);
     }
-  }
-  else if (c.age >= c.lifespan) die(c, `Thọ nguyên cạn kiệt. Bạn tọa hóa ở tuổi ${Math.floor(c.age)}.`, ctx);
+  } else if (c.age >= c.lifespan) die(c, `Thọ nguyên cạn kiệt. Bạn tọa hóa ở tuổi ${Math.floor(c.age)}.`, ctx);
 }
 
 function eligible(c: Character, e: GameEvent): boolean {
@@ -434,6 +524,12 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
     stat(c, 'tamMa', -2);
   }
 
+  // ---- Tông môn: thăng bậc theo cảnh giới hay độ tàn nhẫn (ma môn) ----
+  if (c.sect) {
+    const up = promoteByRealm(c, ctx);
+    if (up) ctx.log(up, 'good');
+  }
+
   // ---- Quá độ: làm một việc quá lâu ----
   if (!opts.closed && focus && age >= 10) {
     if (c.streak?.f === focus) c.streak.n += 1;
@@ -514,7 +610,9 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
 
   // Trạng thái thường niên
   const ratio = c.age / c.lifespan;
-  if (ratio > 0.85) { if (c.stats.sucKhoe > 12) stat(c, 'sucKhoe', -3); } else stat(c, 'sucKhoe', ratio > 0.7 ? 1 : 3);
+  if (ratio > 0.85) {
+    if (c.stats.sucKhoe > 12) stat(c, 'sucKhoe', -3);
+  } else stat(c, 'sucKhoe', ratio > 0.7 ? 1 : 3);
   if (c.stats.tamCanh > 60) stat(c, 'tamMa', -1);
   // tâm ma tự lắng xuống một chút mỗi năm (ma tu thì không)
   if (c.path !== 'ma') stat(c, 'tamMa', -1);
@@ -610,7 +708,10 @@ function pathEvent(c: Character): GameEvent {
   return {
     id: PATH_EVENT_ID,
     title: 'Chọn con đường tu tập',
-    text: () => (c.realm >= 2 ? 'Trúc Cơ đã thành, đạo cơ vững chắc. Đã đến lúc chọn con đường sẽ đi suốt phần đời còn lại.' : 'Luyện Khí đã qua nửa chặng, chân khí bắt đầu có tính khí riêng. Đã đến lúc chọn con đường sẽ đi suốt phần đời còn lại.'),
+    text: () =>
+      c.realm >= 2
+        ? 'Trúc Cơ đã thành, đạo cơ vững chắc. Đã đến lúc chọn con đường sẽ đi suốt phần đời còn lại.'
+        : 'Luyện Khí đã qua nửa chặng, chân khí bắt đầu có tính khí riêng. Đã đến lúc chọn con đường sẽ đi suốt phần đời còn lại.',
     choices: pathChoices,
   };
 }
@@ -619,11 +720,19 @@ function breakChance(c: Character) {
   return clamp(
     // chính đạo đạo tâm vững, đột phá dễ hơn chút
     (c.daoTam >= 40 ? 0.06 : 0) +
-    // tà tu ở cảnh giới cao quen sát khí, vượt kiếp cũng vững không kém chính đạo
-    (c.daoTam <= -40 && c.realm >= 5 ? 0.06 : 0) +
-    (c.path === 'phat' ? 0.05 : 0) +
-    (omenIs('loi_van') ? 0.06 : 0) +
-    (hasGift(c, 'g_thien_menh') ? 0.15 : 0) + 0.39 - Math.max(0, c.realm - 2) * 0.07 + c.stats.ngoTinh / 450 + c.stats.tamCanh / 500 - c.stats.tamMa / 200 + (c.stats.khiVan - 50) / 500 + c.linhCanMul * 0.05,
+      // tà tu ở cảnh giới cao quen sát khí, vượt kiếp cũng vững không kém chính đạo
+      (c.daoTam <= -40 && c.realm >= 5 ? 0.06 : 0) +
+      (c.path === 'phat' ? 0.05 : 0) +
+      (rankOf(c) === 3 ? CHAN_TRUYEN_BREAK : 0) +
+      (omenIs('loi_van') ? 0.06 : 0) +
+      (hasGift(c, 'g_thien_menh') ? 0.15 : 0) +
+      0.39 -
+      Math.max(0, c.realm - 2) * 0.07 +
+      c.stats.ngoTinh / 450 +
+      c.stats.tamCanh / 500 -
+      c.stats.tamMa / 200 +
+      (c.stats.khiVan - 50) / 500 +
+      c.linhCanMul * 0.05,
     0.08,
     0.9,
   );
@@ -649,7 +758,7 @@ function attempt(c: Character, ctx: EffectCtx, bonus: number): string {
   const name = REALMS[target]?.name ?? 'Phi Thăng';
   const kiep = target >= 3;
   if (kiep) ctx.fx('lightning');
-  const kb = kiep ? c.kiepBonus ?? 0 : 0;
+  const kb = kiep ? (c.kiepBonus ?? 0) : 0;
   c.kiepBonus = 0;
   const ok = rnd() < clamp(breakChance(c) + bonus + kb, 0.05, 0.97);
   if (ok) {
@@ -701,7 +810,15 @@ function breakChoices(c: Character): Choice[] {
       : c.partner
         ? { label: `Nhờ ${c.partner} hộ pháp`, hint: '+15%', lean: 'chinh', run: (ch, ctx) => attempt(ch, ctx, 0.15) }
         : c.sect
-          ? { label: 'Xin sư môn hộ pháp', hint: '-300 linh thạch, +20%', lean: 'chinh', run: (ch, ctx) => { money(ch, -300); return attempt(ch, ctx, 0.2); } }
+          ? {
+              label: 'Xin sư môn hộ pháp',
+              hint: '-300 linh thạch, +20%',
+              lean: 'chinh',
+              run: (ch, ctx) => {
+                money(ch, -300);
+                return attempt(ch, ctx, 0.2);
+              },
+            }
           : { label: 'Chọn ngày lành, cầu trời', hint: '+8%', lean: 'trung', run: (ch, ctx) => attempt(ch, ctx, 0.08) };
   return [
     {
@@ -837,49 +954,174 @@ const OVERWORK: Record<string, { warn: string; hits: { p: number; run: (c: Chara
   tu_luyen: {
     warn: 'Bạn khổ tu liền mấy năm không nghỉ. Kinh mạch bắt đầu căng như dây đàn.',
     hits: [
-      { p: 3, run: (c, ctx) => { stat(c, 'sucKhoe', -18); c.cultivation = Math.round(c.cultivation * 0.85); ctx.fx('hurt', 'Kinh mạch tổn thương'); return 'Khổ tu quá độ, kinh mạch rạn nứt. Phải nằm liệt mấy tháng, tu vi tụt một đoạn.'; } },
-      { p: 2, run: (c) => { stat(c, 'tamMa', 14); stat(c, 'tamCanh', -8); return 'Đêm nào cũng nghe tiếng thì thầm trong đầu. Tu luyện không ngơi nghỉ khiến tâm ma lớn dần.'; } },
-      { p: 1, run: (c, ctx) => { const f = fatal(c, ctx, 0.35, 'Luyện công không ngơi nghỉ, chân khí nghịch chuyển. Bạn tẩu hỏa nhập ma giữa đêm.'); return f ? `Chân khí đột nhiên chạy loạn...${f}` : 'Chân khí đột nhiên chạy loạn, bạn suýt tẩu hỏa nhập ma.'; } },
+      {
+        p: 3,
+        run: (c, ctx) => {
+          stat(c, 'sucKhoe', -18);
+          c.cultivation = Math.round(c.cultivation * 0.85);
+          ctx.fx('hurt', 'Kinh mạch tổn thương');
+          return 'Khổ tu quá độ, kinh mạch rạn nứt. Phải nằm liệt mấy tháng, tu vi tụt một đoạn.';
+        },
+      },
+      {
+        p: 2,
+        run: (c) => {
+          stat(c, 'tamMa', 14);
+          stat(c, 'tamCanh', -8);
+          return 'Đêm nào cũng nghe tiếng thì thầm trong đầu. Tu luyện không ngơi nghỉ khiến tâm ma lớn dần.';
+        },
+      },
+      {
+        p: 1,
+        run: (c, ctx) => {
+          const f = fatal(c, ctx, 0.35, 'Luyện công không ngơi nghỉ, chân khí nghịch chuyển. Bạn tẩu hỏa nhập ma giữa đêm.');
+          return f ? `Chân khí đột nhiên chạy loạn...${f}` : 'Chân khí đột nhiên chạy loạn, bạn suýt tẩu hỏa nhập ma.';
+        },
+      },
     ],
   },
   luyen_dan: {
     warn: 'Ngày nào cũng hít khói lò đan, bạn bắt đầu ho khan.',
     hits: [
-      { p: 3, run: (c, ctx) => { stat(c, 'sucKhoe', -15); ctx.fx('hurt', 'Trúng đan độc'); return 'Đan độc tích tụ trong phổi, bạn ho ra máu đen.'; } },
-      { p: 2, run: (c, ctx) => { const lost = Math.round(c.linhThach * 0.25); money(c, -lost); ctx.fx('hurt', 'Nổ lò'); return `Mệt mỏi lơ đãng, lò đan nổ tung, thiêu rụi ${lost} linh thạch dược liệu.` + hurt(c, 15, ctx); } },
-      { p: 1, run: (c, ctx) => { const f = fatal(c, ctx, 0.3, 'Lò đan phát nổ trong lúc bạn ngủ gục bên cạnh. Động phủ sập xuống.'); return f ? `Đêm ấy lửa lò bùng lên dữ dội...${f}` : 'Lò đan phát nổ, bạn kịp lăn ra ngoài trong gang tấc.'; } },
+      {
+        p: 3,
+        run: (c, ctx) => {
+          stat(c, 'sucKhoe', -15);
+          ctx.fx('hurt', 'Trúng đan độc');
+          return 'Đan độc tích tụ trong phổi, bạn ho ra máu đen.';
+        },
+      },
+      {
+        p: 2,
+        run: (c, ctx) => {
+          const lost = Math.round(c.linhThach * 0.25);
+          money(c, -lost);
+          ctx.fx('hurt', 'Nổ lò');
+          return `Mệt mỏi lơ đãng, lò đan nổ tung, thiêu rụi ${lost} linh thạch dược liệu.` + hurt(c, 15, ctx);
+        },
+      },
+      {
+        p: 1,
+        run: (c, ctx) => {
+          const f = fatal(c, ctx, 0.3, 'Lò đan phát nổ trong lúc bạn ngủ gục bên cạnh. Động phủ sập xuống.');
+          return f ? `Đêm ấy lửa lò bùng lên dữ dội...${f}` : 'Lò đan phát nổ, bạn kịp lăn ra ngoài trong gang tấc.';
+        },
+      },
     ],
   },
   du_ngoan: {
     warn: 'Bạn đã phiêu bạt nhiều năm, chân đã mỏi, túi đã nhẹ.',
     hits: [
-      { p: 3, run: (c, ctx) => { stat(c, 'sucKhoe', -14); ctx.fx('hurt', 'Bệnh xứ lạ'); return 'Bạn mắc bệnh lạ ở xứ người, sốt li bì không ai chăm.'; } },
-      { p: 2, run: (c) => { const lost = Math.round(c.linhThach * 0.3); money(c, -lost); return `Ngủ quên ở quán trọ, bị lục sạch ${lost} linh thạch.`; } },
-      { p: 1, run: (c, ctx) => { const f = fatal(c, ctx, 0.3, 'Bạn lạc vào chướng khí rừng thiêng, ngã xuống không bao giờ tỉnh dậy.'); return f ? `Mải đi, bạn lạc vào vùng chướng khí...${f}` : 'Bạn lạc vào chướng khí, bò được ra ngoài khi chỉ còn thoi thóp.'; } },
+      {
+        p: 3,
+        run: (c, ctx) => {
+          stat(c, 'sucKhoe', -14);
+          ctx.fx('hurt', 'Bệnh xứ lạ');
+          return 'Bạn mắc bệnh lạ ở xứ người, sốt li bì không ai chăm.';
+        },
+      },
+      {
+        p: 2,
+        run: (c) => {
+          const lost = Math.round(c.linhThach * 0.3);
+          money(c, -lost);
+          return `Ngủ quên ở quán trọ, bị lục sạch ${lost} linh thạch.`;
+        },
+      },
+      {
+        p: 1,
+        run: (c, ctx) => {
+          const f = fatal(c, ctx, 0.3, 'Bạn lạc vào chướng khí rừng thiêng, ngã xuống không bao giờ tỉnh dậy.');
+          return f ? `Mải đi, bạn lạc vào vùng chướng khí...${f}` : 'Bạn lạc vào chướng khí, bò được ra ngoài khi chỉ còn thoi thóp.';
+        },
+      },
     ],
   },
   kiem_tien: {
     warn: 'Bạn làm lụng quần quật quanh năm, chẳng có ngày nghỉ.',
     hits: [
-      { p: 3, run: (c, ctx) => { stat(c, 'sucKhoe', -16); stat(c, 'tamCanh', -6); ctx.fx('hurt', 'Kiệt sức'); return 'Lao lực quá độ, bạn ngã quỵ giữa phường thị.'; } },
-      { p: 2, run: (c) => { const lost = Math.round(c.linhThach * 0.35); money(c, -lost); return `Tham làm thêm một mối, bạn bị lừa mất ${lost} linh thạch. Tham thì thâm.`; } },
-      { p: 1, run: (c, ctx) => { const f = fatal(c, ctx, 0.25, 'Mang nhiều tiền đi đêm quá thường xuyên, bạn bị cướp giết bên bờ sông.'); return f ? `Lại một chuyến hàng đêm...${f}` : 'Bị cướp chặn đường lúc đêm khuya, bạn bỏ của chạy lấy người.'; } },
+      {
+        p: 3,
+        run: (c, ctx) => {
+          stat(c, 'sucKhoe', -16);
+          stat(c, 'tamCanh', -6);
+          ctx.fx('hurt', 'Kiệt sức');
+          return 'Lao lực quá độ, bạn ngã quỵ giữa phường thị.';
+        },
+      },
+      {
+        p: 2,
+        run: (c) => {
+          const lost = Math.round(c.linhThach * 0.35);
+          money(c, -lost);
+          return `Tham làm thêm một mối, bạn bị lừa mất ${lost} linh thạch. Tham thì thâm.`;
+        },
+      },
+      {
+        p: 1,
+        run: (c, ctx) => {
+          const f = fatal(c, ctx, 0.25, 'Mang nhiều tiền đi đêm quá thường xuyên, bạn bị cướp giết bên bờ sông.');
+          return f ? `Lại một chuyến hàng đêm...${f}` : 'Bị cướp chặn đường lúc đêm khuya, bạn bỏ của chạy lấy người.';
+        },
+      },
     ],
   },
   ket_duyen: {
     warn: 'Rượu chè, hội hè liên miên. Tu luyện bỏ bê đã lâu.',
     hits: [
-      { p: 3, run: (c, ctx) => { stat(c, 'sucKhoe', -12); c.cultivation = Math.round(c.cultivation * 0.9); ctx.fx('hurt', 'Tửu sắc quá độ'); return 'Tửu sắc quá độ, thân thể hao mòn, tu vi sa sút.'; } },
-      { p: 2, run: (c) => { const lost = Math.round(c.linhThach * 0.3); money(c, -lost); stat(c, 'tamMa', 8); return `Người tri kỷ hóa ra là kẻ lừa tình, cuỗm đi ${lost} linh thạch.`; } },
-      { p: 1, run: (c, ctx) => { const f = fatal(c, ctx, 0.25, 'Bạn bị chồng của người tình đâm chết trong đêm.'); return f ? `Dan díu quá nhiều nơi...${f}` : 'Bị đánh ghen một trận thừa sống thiếu chết.' + hurt(c, 25, ctx); } },
+      {
+        p: 3,
+        run: (c, ctx) => {
+          stat(c, 'sucKhoe', -12);
+          c.cultivation = Math.round(c.cultivation * 0.9);
+          ctx.fx('hurt', 'Tửu sắc quá độ');
+          return 'Tửu sắc quá độ, thân thể hao mòn, tu vi sa sút.';
+        },
+      },
+      {
+        p: 2,
+        run: (c) => {
+          const lost = Math.round(c.linhThach * 0.3);
+          money(c, -lost);
+          stat(c, 'tamMa', 8);
+          return `Người tri kỷ hóa ra là kẻ lừa tình, cuỗm đi ${lost} linh thạch.`;
+        },
+      },
+      {
+        p: 1,
+        run: (c, ctx) => {
+          const f = fatal(c, ctx, 0.25, 'Bạn bị chồng của người tình đâm chết trong đêm.');
+          return f ? `Dan díu quá nhiều nơi...${f}` : 'Bị đánh ghen một trận thừa sống thiếu chết.' + hurt(c, 25, ctx);
+        },
+      },
     ],
   },
   tru_yeu: {
     warn: 'Bạn giết yêu thú liên miên, trên người nồng nặc mùi máu.',
     hits: [
-      { p: 3, run: (c, ctx) => { stat(c, 'sucKhoe', -15); ctx.fx('hurt', 'Thương tích dồn'); return 'Vết thương cũ chưa lành đã thêm vết mới. Bạn gục xuống giữa rừng.'; } },
-      { p: 2, run: (c) => { stat(c, 'tamMa', 12); dao(c, -4); return 'Sát khí nhập tâm. Bạn bắt đầu thấy khoái cảm mỗi khi giết chóc.'; } },
-      { p: 1, run: (c, ctx) => { const f = fatal(c, ctx, 0.3, 'Yêu tộc kết bầy báo thù. Bạn bị vây giết giữa rừng sâu.'); return f ? `Đêm ấy cả rừng rộ lên tiếng gầm...${f}` : 'Yêu tộc kết bầy báo thù, bạn chạy thoát trong gang tấc.' + hurt(c, 25, ctx); } },
+      {
+        p: 3,
+        run: (c, ctx) => {
+          stat(c, 'sucKhoe', -15);
+          ctx.fx('hurt', 'Thương tích dồn');
+          return 'Vết thương cũ chưa lành đã thêm vết mới. Bạn gục xuống giữa rừng.';
+        },
+      },
+      {
+        p: 2,
+        run: (c) => {
+          stat(c, 'tamMa', 12);
+          dao(c, -4);
+          return 'Sát khí nhập tâm. Bạn bắt đầu thấy khoái cảm mỗi khi giết chóc.';
+        },
+      },
+      {
+        p: 1,
+        run: (c, ctx) => {
+          const f = fatal(c, ctx, 0.3, 'Yêu tộc kết bầy báo thù. Bạn bị vây giết giữa rừng sâu.');
+          return f ? `Đêm ấy cả rừng rộ lên tiếng gầm...${f}` : 'Yêu tộc kết bầy báo thù, bạn chạy thoát trong gang tấc.' + hurt(c, 25, ctx);
+        },
+      },
     ],
   },
 };
@@ -893,7 +1135,10 @@ function overwork(c: Character, ctx: EffectCtx, focus: string, n: number) {
   if (n < SAFE_YEARS) return;
   const chance = Math.min(0.4, 0.07 + (n - SAFE_YEARS) * 0.04);
   if (rnd() >= chance) return;
-  const hit = weighted(rnd, o.hits.map((h) => ({ ...h, w: h.p + (n > 10 && h.p === 1 ? 1 : 0) })));
+  const hit = weighted(
+    rnd,
+    o.hits.map((h) => ({ ...h, w: h.p + (n > 10 && h.p === 1 ? 1 : 0) })),
+  );
   const text = hit.run(c, ctx);
   if (c.dead) c.endTag = 'qua_do';
   ctx.log(`${n} năm liền không nghỉ. ${text}`, c.dead ? 'big' : 'bad');

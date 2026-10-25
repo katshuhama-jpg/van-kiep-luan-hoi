@@ -15,8 +15,14 @@ interface Line {
 
 const poor = (c: Character) => (c.familyTier ?? 1) <= 1;
 const rich = (c: Character) => (c.familyTier ?? 1) >= 3;
-const reg = (...ids: string[]) => (c: Character) => ids.includes(c.region ?? '');
-const ori = (...ids: string[]) => (c: Character) => ids.includes(c.originId);
+const reg =
+  (...ids: string[]) =>
+  (c: Character) =>
+    ids.includes(c.region ?? '');
+const ori =
+  (...ids: string[]) =>
+  (c: Character) =>
+    ids.includes(c.originId);
 const boy = (c: Character) => c.gender === 'nam';
 const girl = (c: Character) => c.gender !== 'nam';
 
@@ -115,13 +121,57 @@ export const CHILD_EVENTS: GameEvent[] = [
     title: 'Phiên chợ Tết',
     text: () => 'Mẹ dắt bạn đi chợ phiên cuối năm. Mẹ dúi vào tay bạn mấy đồng: "Thích gì thì mua."',
     choices: (_c, seed) =>
-      sample<Choice>(seed, [
-        { label: 'Mua con tò he hình Tôn Ngộ Không', lean: 'trung', run: (c) => { stat(c, 'tamCanh', 3); return 'Bạn tiếc không dám ăn, để đến khi nó khô cong.'; } },
-        { label: 'Mua cuốn truyện tranh kiếm hiệp', lean: 'trung', run: (c) => { stat(c, 'ngoTinh', 3); return 'Bạn đọc đến thuộc lòng, đêm mơ thấy mình là đại hiệp.'; } },
-        { label: 'Mua bánh cho bà cụ ăn xin ở cổng chợ', lean: 'chinh', run: (c) => { dao(c, 5); stat(c, 'khiVan', 2); return 'Bà cụ cười móm mém, xoa đầu bạn mãi.'; } },
-        { label: 'Giữ tiền lại, bỏ ống heo', lean: 'trung', run: (c) => { money(c, 8); return 'Mẹ khen bạn biết lo xa.'; } },
-        { label: 'Đánh bạc với đám trẻ ở góc chợ', lean: 'ta', run: (c, ctx) => { dao(c, -3); if (ctx.rnd() < 0.5) { money(c, 15); return 'Bạn thắng gấp đôi, về nhà giấu biệt.'; } return 'Bạn thua sạch, về nhà nói dối là đánh rơi.'; } },
-      ], 4),
+      sample<Choice>(
+        seed,
+        [
+          {
+            label: 'Mua con tò he hình Tôn Ngộ Không',
+            lean: 'trung',
+            run: (c) => {
+              stat(c, 'tamCanh', 3);
+              return 'Bạn tiếc không dám ăn, để đến khi nó khô cong.';
+            },
+          },
+          {
+            label: 'Mua cuốn truyện tranh kiếm hiệp',
+            lean: 'trung',
+            run: (c) => {
+              stat(c, 'ngoTinh', 3);
+              return 'Bạn đọc đến thuộc lòng, đêm mơ thấy mình là đại hiệp.';
+            },
+          },
+          {
+            label: 'Mua bánh cho bà cụ ăn xin ở cổng chợ',
+            lean: 'chinh',
+            run: (c) => {
+              dao(c, 5);
+              stat(c, 'khiVan', 2);
+              return 'Bà cụ cười móm mém, xoa đầu bạn mãi.';
+            },
+          },
+          {
+            label: 'Giữ tiền lại, bỏ ống heo',
+            lean: 'trung',
+            run: (c) => {
+              money(c, 8);
+              return 'Mẹ khen bạn biết lo xa.';
+            },
+          },
+          {
+            label: 'Đánh bạc với đám trẻ ở góc chợ',
+            lean: 'ta',
+            run: (c, ctx) => {
+              dao(c, -3);
+              if (ctx.rnd() < 0.5) {
+                money(c, 15);
+                return 'Bạn thắng gấp đôi, về nhà giấu biệt.';
+              }
+              return 'Bạn thua sạch, về nhà nói dối là đánh rơi.';
+            },
+          },
+        ],
+        4,
+      ),
   },
   {
     id: 'chim_non',
@@ -132,10 +182,37 @@ export const CHILD_EVENTS: GameEvent[] = [
     title: 'Con chim non',
     text: () => 'Sau trận bão, bạn thấy một con chim non rơi khỏi tổ, run rẩy dưới gốc cây.',
     choices: () => [
-      { label: 'Nhặt về nuôi', lean: 'chinh', run: (c, ctx) => { dao(c, 4); if (ctx.rnd() < 0.5) { stat(c, 'khiVan', 3); return 'Nó lớn lên, bay đi rồi mùa xuân năm sau quay lại đậu trên mái nhà bạn.'; } stat(c, 'tamCanh', 2); return 'Nó chết sau ba ngày. Bạn chôn nó dưới gốc khế, khóc một trận.'; } },
-      { label: 'Trèo lên đặt lại vào tổ', lean: 'chinh', run: (c) => { dao(c, 5); stat(c, 'sucKhoe', 2); return 'Chim mẹ kêu ríu rít. Bạn thấy mình như anh hùng.'; } },
+      {
+        label: 'Nhặt về nuôi',
+        lean: 'chinh',
+        run: (c, ctx) => {
+          dao(c, 4);
+          if (ctx.rnd() < 0.5) {
+            stat(c, 'khiVan', 3);
+            return 'Nó lớn lên, bay đi rồi mùa xuân năm sau quay lại đậu trên mái nhà bạn.';
+          }
+          stat(c, 'tamCanh', 2);
+          return 'Nó chết sau ba ngày. Bạn chôn nó dưới gốc khế, khóc một trận.';
+        },
+      },
+      {
+        label: 'Trèo lên đặt lại vào tổ',
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 5);
+          stat(c, 'sucKhoe', 2);
+          return 'Chim mẹ kêu ríu rít. Bạn thấy mình như anh hùng.';
+        },
+      },
       { label: 'Để mặc nó', lean: 'trung', run: () => 'Chiều về, gốc cây chỉ còn vài sợi lông.' },
-      { label: 'Mang về cho mèo ăn', lean: 'ta', run: (c) => { dao(c, -4); return 'Con mèo ăn xong liếm mép nhìn bạn.'; } },
+      {
+        label: 'Mang về cho mèo ăn',
+        lean: 'ta',
+        run: (c) => {
+          dao(c, -4);
+          return 'Con mèo ăn xong liếm mép nhìn bạn.';
+        },
+      },
     ],
   },
   {
@@ -147,13 +224,56 @@ export const CHILD_EVENTS: GameEvent[] = [
     title: 'Trường làng',
     text: () => 'Thầy đồ ra câu đối, ai đối được thì được về sớm: "Mưa rơi trên mái tranh."',
     choices: (_c, seed) =>
-      sample<Choice>(seed, [
-        { label: '"Gió thổi dưới rặng tre"', lean: 'trung', run: (c) => { stat(c, 'ngoTinh', 3); return 'Thầy gật gù: "Được." Bạn về sớm đi bắt châu chấu.'; } },
-        { label: '"Kiếm sáng giữa trời mây"', lean: 'trung', run: (c) => { stat(c, 'ngoTinh', 2); addCult(c, 3); return 'Thầy nhíu mày: "Không chỉnh, nhưng có khí phách." Cả lớp vỗ tay.'; } },
-        { label: 'Chép bài của đứa ngồi bên', lean: 'ta', run: (c) => { dao(c, -3); return 'Thầy phát hiện, bắt cả hai ở lại quét lớp.'; } },
-        { label: 'Ngủ gật', lean: 'trung', run: (c) => { stat(c, 'sucKhoe', 2); return 'Bạn mơ thấy cá chép hóa rồng. Tỉnh dậy lớp đã về hết.'; } },
-        { label: 'Đứng lên cãi thầy rằng câu này dở', lean: 'trung', run: (c, ctx) => { if (ctx.rnd() < 0.5) { stat(c, 'ngoTinh', 4); return 'Thầy bật cười, cho bạn ra đề lại. Từ đó thầy để ý bạn.'; } return 'Bị năm roi vào lòng bàn tay.' + hurt(c, 3, ctx); } },
-      ], 4),
+      sample<Choice>(
+        seed,
+        [
+          {
+            label: '"Gió thổi dưới rặng tre"',
+            lean: 'trung',
+            run: (c) => {
+              stat(c, 'ngoTinh', 3);
+              return 'Thầy gật gù: "Được." Bạn về sớm đi bắt châu chấu.';
+            },
+          },
+          {
+            label: '"Kiếm sáng giữa trời mây"',
+            lean: 'trung',
+            run: (c) => {
+              stat(c, 'ngoTinh', 2);
+              addCult(c, 3);
+              return 'Thầy nhíu mày: "Không chỉnh, nhưng có khí phách." Cả lớp vỗ tay.';
+            },
+          },
+          {
+            label: 'Chép bài của đứa ngồi bên',
+            lean: 'ta',
+            run: (c) => {
+              dao(c, -3);
+              return 'Thầy phát hiện, bắt cả hai ở lại quét lớp.';
+            },
+          },
+          {
+            label: 'Ngủ gật',
+            lean: 'trung',
+            run: (c) => {
+              stat(c, 'sucKhoe', 2);
+              return 'Bạn mơ thấy cá chép hóa rồng. Tỉnh dậy lớp đã về hết.';
+            },
+          },
+          {
+            label: 'Đứng lên cãi thầy rằng câu này dở',
+            lean: 'trung',
+            run: (c, ctx) => {
+              if (ctx.rnd() < 0.5) {
+                stat(c, 'ngoTinh', 4);
+                return 'Thầy bật cười, cho bạn ra đề lại. Từ đó thầy để ý bạn.';
+              }
+              return 'Bị năm roi vào lòng bàn tay.' + hurt(c, 3, ctx);
+            },
+          },
+        ],
+        4,
+      ),
   },
   {
     id: 'lao_cau_ca',
@@ -164,10 +284,40 @@ export const CHILD_EVENTS: GameEvent[] = [
     title: 'Lão câu cá',
     text: () => 'Bên hồ có lão già câu cá bằng lưỡi câu thẳng, ngồi cả ngày không được con nào.',
     choices: () => [
-      { label: 'Ngồi xuống câu cùng lão', lean: 'trung', run: (c) => { stat(c, 'tamCanh', 5); return 'Lão chẳng nói gì. Chiều tối lão bảo: "Người câu, cá câu, ai câu ai?" Bạn nghĩ mãi.'; } },
-      { label: 'Chỉ cho lão uốn cong lưỡi câu', lean: 'chinh', run: (c) => { stat(c, 'ngoTinh', 2); dao(c, 2); return 'Lão cười ha hả, xoa đầu bạn: "Thằng bé tốt bụng." Rồi lão biến mất trong sương.'; } },
-      { label: 'Ném đá cho cá chạy hết', lean: 'ta', run: (c) => { dao(c, -2); return 'Lão chẳng giận, chỉ thở dài: "Duyên chưa tới."'; } },
-      { label: 'Mang cơm cho lão', lean: 'chinh', run: (c) => { dao(c, 4); stat(c, 'khiVan', 3); return 'Lão ăn xong, để lại một hòn đá cuội trơn bóng. Cầm vào thấy ấm.'; } },
+      {
+        label: 'Ngồi xuống câu cùng lão',
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'tamCanh', 5);
+          return 'Lão chẳng nói gì. Chiều tối lão bảo: "Người câu, cá câu, ai câu ai?" Bạn nghĩ mãi.';
+        },
+      },
+      {
+        label: 'Chỉ cho lão uốn cong lưỡi câu',
+        lean: 'chinh',
+        run: (c) => {
+          stat(c, 'ngoTinh', 2);
+          dao(c, 2);
+          return 'Lão cười ha hả, xoa đầu bạn: "Thằng bé tốt bụng." Rồi lão biến mất trong sương.';
+        },
+      },
+      {
+        label: 'Ném đá cho cá chạy hết',
+        lean: 'ta',
+        run: (c) => {
+          dao(c, -2);
+          return 'Lão chẳng giận, chỉ thở dài: "Duyên chưa tới."';
+        },
+      },
+      {
+        label: 'Mang cơm cho lão',
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 4);
+          stat(c, 'khiVan', 3);
+          return 'Lão ăn xong, để lại một hòn đá cuội trơn bóng. Cầm vào thấy ấm.';
+        },
+      },
     ],
   },
   {
@@ -179,13 +329,57 @@ export const CHILD_EVENTS: GameEvent[] = [
     title: 'Đêm hè',
     text: () => 'Đêm hè oi ả, cả xóm trải chiếu ra sân hóng mát. Lũ trẻ rủ nhau...',
     choices: (_c, seed) =>
-      sample<Choice>(seed, [
-        { label: 'Bắt đom đóm bỏ vào lọ làm đèn', lean: 'trung', run: (c) => { stat(c, 'tamCanh', 3); return 'Đèn đom đóm chập chờn bên gối. Bạn ngủ ngon nhất mùa hè.'; } },
-        { label: 'Nằm đếm sao với ông', lean: 'trung', run: (c) => { stat(c, 'ngoTinh', 2); return 'Ông chỉ cho bạn sao Bắc Đẩu: "Lạc đường thì nhìn nó mà về."'; } },
-        { label: 'Kể chuyện ma dọa đứa nhỏ nhất', lean: 'ta', run: (c) => { dao(c, -2); return 'Nó khóc ré lên. Cả xóm biết bạn là đứa đầu têu.'; } },
-        { label: 'Nghe bà kể chuyện Tấm Cám', lean: 'chinh', run: (c) => { dao(c, 2); stat(c, 'tamCanh', 2); return 'Bạn ghét mụ dì ghẻ đến nghiến răng.'; } },
-        { label: 'Rủ nhau ra nghĩa địa thử gan', lean: 'trung', run: (c, ctx) => { if (ctx.rnd() < 0.3) { stat(c, 'tamMa', 4); return 'Có đốm lửa xanh lơ lửng trên một ngôi mộ. Cả bọn chạy không kịp thở.'; } stat(c, 'khiVan', 2); return 'Chẳng có ma nào. Bạn trở thành đứa gan nhất xóm.'; } },
-      ], 4),
+      sample<Choice>(
+        seed,
+        [
+          {
+            label: 'Bắt đom đóm bỏ vào lọ làm đèn',
+            lean: 'trung',
+            run: (c) => {
+              stat(c, 'tamCanh', 3);
+              return 'Đèn đom đóm chập chờn bên gối. Bạn ngủ ngon nhất mùa hè.';
+            },
+          },
+          {
+            label: 'Nằm đếm sao với ông',
+            lean: 'trung',
+            run: (c) => {
+              stat(c, 'ngoTinh', 2);
+              return 'Ông chỉ cho bạn sao Bắc Đẩu: "Lạc đường thì nhìn nó mà về."';
+            },
+          },
+          {
+            label: 'Kể chuyện ma dọa đứa nhỏ nhất',
+            lean: 'ta',
+            run: (c) => {
+              dao(c, -2);
+              return 'Nó khóc ré lên. Cả xóm biết bạn là đứa đầu têu.';
+            },
+          },
+          {
+            label: 'Nghe bà kể chuyện Tấm Cám',
+            lean: 'chinh',
+            run: (c) => {
+              dao(c, 2);
+              stat(c, 'tamCanh', 2);
+              return 'Bạn ghét mụ dì ghẻ đến nghiến răng.';
+            },
+          },
+          {
+            label: 'Rủ nhau ra nghĩa địa thử gan',
+            lean: 'trung',
+            run: (c, ctx) => {
+              if (ctx.rnd() < 0.3) {
+                stat(c, 'tamMa', 4);
+                return 'Có đốm lửa xanh lơ lửng trên một ngôi mộ. Cả bọn chạy không kịp thở.';
+              }
+              stat(c, 'khiVan', 2);
+              return 'Chẳng có ma nào. Bạn trở thành đứa gan nhất xóm.';
+            },
+          },
+        ],
+        4,
+      ),
   },
   {
     id: 'ban_than',
@@ -196,10 +390,39 @@ export const CHILD_EVENTS: GameEvent[] = [
     title: 'Bạn thân',
     text: (c) => `Đứa bạn thân nhất của bạn sắp theo gia đình chuyển ${c.region === 'dong_hai' ? 'vào đất liền' : 'đi phương xa'}.`,
     choices: () => [
-      { label: 'Tặng nó món đồ quý nhất của mình', lean: 'chinh', run: (c) => { dao(c, 4); stat(c, 'tamCanh', 3); return 'Nó khóc, hứa lớn lên sẽ quay về tìm bạn.'; } },
-      { label: 'Hẹn mười năm sau gặp lại dưới gốc đa', lean: 'trung', run: (c) => { stat(c, 'khiVan', 2); return 'Hai đứa móc ngoéo. Không biết lời hẹn trẻ con có thành không.'; } },
-      { label: 'Giận dỗi không ra tiễn', lean: 'trung', run: (c) => { stat(c, 'tamMa', 3); return 'Đêm đó bạn trùm chăn khóc. Sau này nghĩ lại vẫn thấy tiếc.'; } },
-      { label: 'Trốn nhà đi theo nó', lean: 'trung', run: (c, ctx) => { if (ctx.rnd() < 0.6) return 'Đi được nửa ngày thì bị cha đuổi kịp, xách tai lôi về.'; return 'Bạn lạc trong rừng một đêm, sáng ra mới mò được về nhà.' + hurt(c, 6, ctx); } },
+      {
+        label: 'Tặng nó món đồ quý nhất của mình',
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 4);
+          stat(c, 'tamCanh', 3);
+          return 'Nó khóc, hứa lớn lên sẽ quay về tìm bạn.';
+        },
+      },
+      {
+        label: 'Hẹn mười năm sau gặp lại dưới gốc đa',
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'khiVan', 2);
+          return 'Hai đứa móc ngoéo. Không biết lời hẹn trẻ con có thành không.';
+        },
+      },
+      {
+        label: 'Giận dỗi không ra tiễn',
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'tamMa', 3);
+          return 'Đêm đó bạn trùm chăn khóc. Sau này nghĩ lại vẫn thấy tiếc.';
+        },
+      },
+      {
+        label: 'Trốn nhà đi theo nó',
+        lean: 'trung',
+        run: (c, ctx) => {
+          if (ctx.rnd() < 0.6) return 'Đi được nửa ngày thì bị cha đuổi kịp, xách tai lôi về.';
+          return 'Bạn lạc trong rừng một đêm, sáng ra mới mò được về nhà.' + hurt(c, 6, ctx);
+        },
+      },
     ],
   },
   {
@@ -212,9 +435,30 @@ export const CHILD_EVENTS: GameEvent[] = [
     title: 'Thanh kiếm gỗ của ông',
     text: () => 'Dọn gác xép, bạn tìm thấy thanh kiếm gỗ cũ của ông nội, cán đã mòn nhẵn.',
     choices: () => [
-      { label: 'Xin ông cho mình', lean: 'trung', run: (c) => { giveItem(c, 'moc_kiem', false); return 'Ông cười: "Ngày xưa ông cũng mơ làm kiếm khách." Ông trao kiếm cho bạn.'; } },
-      { label: 'Hỏi ông về ngày xưa', lean: 'trung', run: (c) => { stat(c, 'ngoTinh', 3); return 'Ông kể về một giang hồ đã mất. Đêm ấy ông kể đến khi ngủ quên.'; } },
-      { label: 'Cất lại chỗ cũ', lean: 'trung', run: (c) => { stat(c, 'tamCanh', 2); return 'Có những thứ nên để yên.'; } },
+      {
+        label: 'Xin ông cho mình',
+        lean: 'trung',
+        run: (c) => {
+          giveItem(c, 'moc_kiem', false);
+          return 'Ông cười: "Ngày xưa ông cũng mơ làm kiếm khách." Ông trao kiếm cho bạn.';
+        },
+      },
+      {
+        label: 'Hỏi ông về ngày xưa',
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'ngoTinh', 3);
+          return 'Ông kể về một giang hồ đã mất. Đêm ấy ông kể đến khi ngủ quên.';
+        },
+      },
+      {
+        label: 'Cất lại chỗ cũ',
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'tamCanh', 2);
+          return 'Có những thứ nên để yên.';
+        },
+      },
     ],
   },
   {
@@ -226,10 +470,40 @@ export const CHILD_EVENTS: GameEvent[] = [
     title: 'Mùa nước lên',
     text: () => 'Nước sông dâng ngập ruộng. Cả làng dọn đồ lên chỗ cao.',
     choices: () => [
-      { label: 'Giúp hàng xóm khiêng đồ', lean: 'chinh', run: (c) => { dao(c, 4); stat(c, 'sucKhoe', 2); return 'Người lớn khen bạn khỏe như con nghé.'; } },
-      { label: 'Chèo chậu gỗ đi vớt cá', lean: 'trung', run: (c) => { money(c, 6); return 'Bạn vớt được cả giỏ cá rô. Mẹ kho mặn ăn cả tuần.'; } },
-      { label: 'Vớt đồ trôi về làm của riêng', lean: 'ta', run: (c) => { dao(c, -3); money(c, 12); return 'Bạn vớt được cái rương gỗ, trong có mấy món đồ đồng.'; } },
-      { label: 'Ngồi trên mái nhà ngắm nước', lean: 'trung', run: (c) => { stat(c, 'tamCanh', 3); return 'Cả cánh đồng biến thành biển. Bạn thấy đất trời thật rộng.'; } },
+      {
+        label: 'Giúp hàng xóm khiêng đồ',
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 4);
+          stat(c, 'sucKhoe', 2);
+          return 'Người lớn khen bạn khỏe như con nghé.';
+        },
+      },
+      {
+        label: 'Chèo chậu gỗ đi vớt cá',
+        lean: 'trung',
+        run: (c) => {
+          money(c, 6);
+          return 'Bạn vớt được cả giỏ cá rô. Mẹ kho mặn ăn cả tuần.';
+        },
+      },
+      {
+        label: 'Vớt đồ trôi về làm của riêng',
+        lean: 'ta',
+        run: (c) => {
+          dao(c, -3);
+          money(c, 12);
+          return 'Bạn vớt được cái rương gỗ, trong có mấy món đồ đồng.';
+        },
+      },
+      {
+        label: 'Ngồi trên mái nhà ngắm nước',
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'tamCanh', 3);
+          return 'Cả cánh đồng biến thành biển. Bạn thấy đất trời thật rộng.';
+        },
+      },
     ],
   },
 ];

@@ -150,14 +150,44 @@ export interface Prophecy {
   apply: (c: Character) => void;
 }
 export const PROPHECIES: Prophecy[] = [
-  { id: 'tho', text: 'Kiếp sau, ngươi sẽ sống lâu hơn người thường.', done: 'Lời tiên tri ứng nghiệm: thọ nguyên của bạn dài hơn người thường.', apply: (c) => (c.lifespan = Math.round(c.lifespan * 1.15)) },
-  { id: 'ngo', text: 'Kiếp sau, ngươi vừa sinh ra đã thông tuệ hơn người.', done: 'Lời tiên tri ứng nghiệm: bạn sáng dạ lạ thường (ngộ tính +15).', apply: (c) => (c.stats.ngoTinh = Math.min(100, c.stats.ngoTinh + 15)) },
-  { id: 'van', text: 'Kiếp sau, sao lành sẽ chiếu mệnh ngươi.', done: 'Lời tiên tri ứng nghiệm: sao lành chiếu mệnh (khí vận +15).', apply: (c) => (c.stats.khiVan = Math.min(100, c.stats.khiVan + 15)) },
+  {
+    id: 'tho',
+    text: 'Kiếp sau, ngươi sẽ sống lâu hơn người thường.',
+    done: 'Lời tiên tri ứng nghiệm: thọ nguyên của bạn dài hơn người thường.',
+    apply: (c) => (c.lifespan = Math.round(c.lifespan * 1.15)),
+  },
+  {
+    id: 'ngo',
+    text: 'Kiếp sau, ngươi vừa sinh ra đã thông tuệ hơn người.',
+    done: 'Lời tiên tri ứng nghiệm: bạn sáng dạ lạ thường (ngộ tính +15).',
+    apply: (c) => (c.stats.ngoTinh = Math.min(100, c.stats.ngoTinh + 15)),
+  },
+  {
+    id: 'van',
+    text: 'Kiếp sau, sao lành sẽ chiếu mệnh ngươi.',
+    done: 'Lời tiên tri ứng nghiệm: sao lành chiếu mệnh (khí vận +15).',
+    apply: (c) => (c.stats.khiVan = Math.min(100, c.stats.khiVan + 15)),
+  },
   { id: 'phu', text: 'Kiếp sau, ngươi sinh ra trong nhung lụa.', done: 'Lời tiên tri ứng nghiệm: nhà bạn có của ăn của để (+400 linh thạch).', apply: (c) => (c.linhThach += 400) },
   { id: 'kiep', text: 'Kiếp sau, ngươi sẽ gặp lại kẻ đã giết ngươi.', done: 'Lời tiên tri ứng nghiệm: trong mơ bạn thấy lại kẻ thù kiếp trước. Hắn vẫn còn ở giang hồ.', apply: () => {} },
-  { id: 'tam_ma', text: 'Kiếp sau, tâm ngươi sẽ tĩnh như mặt hồ.', done: 'Lời tiên tri ứng nghiệm: tâm bạn tĩnh lặng lạ thường (tâm cảnh +15, tâm ma giảm).', apply: (c) => ((c.stats.tamCanh = Math.min(100, c.stats.tamCanh + 15)), (c.stats.tamMa = Math.max(0, c.stats.tamMa - 10))) },
-  { id: 'than_luc', text: 'Kiếp sau, ngươi sinh ra đã có sức trâu.', done: 'Lời tiên tri ứng nghiệm: bạn khỏe như trâu từ nhỏ (sức khỏe +15).', apply: (c) => (c.stats.sucKhoe = Math.min(100, c.stats.sucKhoe + 15)) },
-  { id: 'hung', text: 'Kiếp sau, ngươi sẽ trả nợ cho những gì đã làm. Hãy cẩn thận.', done: 'Lời tiên tri ứng nghiệm: nghiệp cũ đeo bám (khí vận -10), nhưng ý chí bạn sắt đá hơn (tâm cảnh +10).', apply: (c) => ((c.stats.khiVan = Math.max(0, c.stats.khiVan - 10)), (c.stats.tamCanh = Math.min(100, c.stats.tamCanh + 10))) },
+  {
+    id: 'tam_ma',
+    text: 'Kiếp sau, tâm ngươi sẽ tĩnh như mặt hồ.',
+    done: 'Lời tiên tri ứng nghiệm: tâm bạn tĩnh lặng lạ thường (tâm cảnh +15, tâm ma giảm).',
+    apply: (c) => ((c.stats.tamCanh = Math.min(100, c.stats.tamCanh + 15)), (c.stats.tamMa = Math.max(0, c.stats.tamMa - 10))),
+  },
+  {
+    id: 'than_luc',
+    text: 'Kiếp sau, ngươi sinh ra đã có sức trâu.',
+    done: 'Lời tiên tri ứng nghiệm: bạn khỏe như trâu từ nhỏ (sức khỏe +15).',
+    apply: (c) => (c.stats.sucKhoe = Math.min(100, c.stats.sucKhoe + 15)),
+  },
+  {
+    id: 'hung',
+    text: 'Kiếp sau, ngươi sẽ trả nợ cho những gì đã làm. Hãy cẩn thận.',
+    done: 'Lời tiên tri ứng nghiệm: nghiệp cũ đeo bám (khí vận -10), nhưng ý chí bạn sắt đá hơn (tâm cảnh +10).',
+    apply: (c) => ((c.stats.khiVan = Math.max(0, c.stats.khiVan - 10)), (c.stats.tamCanh = Math.min(100, c.stats.tamCanh + 10))),
+  },
 ];
 
 /** Bốc lời tiên tri lúc chết; tà nhiều thì dễ ra điềm dữ */

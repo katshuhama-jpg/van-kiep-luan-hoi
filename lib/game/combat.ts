@@ -1,7 +1,7 @@
 import { omenIs } from './hook';
 import { ITEMS, REALMS, fxText, gearFx } from './data';
 import { addCult, addPill, clamp, fatal, giveItem, money, needFor, stat } from './helpers';
-import type { Character, EffectCtx } from './types';
+import type { Character, EffectCtx, Element } from './types';
 
 /** Dáng quái dùng để vẽ pixel */
 export type MonsterShape = 'thu' | 'ran' | 'nguoi' | 'chim' | 'rong' | 'bo' | 'vo_lam';
@@ -18,34 +18,378 @@ export interface Monster {
   desc: string;
   boss?: 'chinh' | 'ta';
   human?: { weapon: 'kiem' | 'dao' | 'quyen' | 'quat'; hat?: boolean; mask?: boolean };
+  el?: Element; // ngũ hành của loài quái
+  sect?: 'chinh' | 'ta'; // quái trong tông môn: chỉ đệ tử môn đó mới gặp
 }
 
 /** 15 loại quái, xếp theo cấp. Cấp người chơi: Luyện Khí 1-9, Trúc Cơ 10-12, Kim Đan 13-15... */
 export const MONSTERS: Monster[] = [
-  { id: 'tho_yeu', name: 'Thỏ Yêu', lv: 1, place: 'Bãi cỏ đầu làng', shape: 'thu', body: '#f2f2f6', accent: '#ffb3c6', eye: '#e0202e', desc: 'Thỏ mới khai linh trí, cắn hơi đau.' },
-  { id: 'soi_xam', name: 'Sói Xám Thành Tinh', lv: 2, place: 'Rừng Thanh Tùng', shape: 'thu', body: '#7d8590', accent: '#4a4f58', eye: '#ffd36b', desc: 'Đi theo bầy, đêm trăng rất hung.' },
-  { id: 'ran_hoa', name: 'Hoa Văn Mãng', lv: 3, place: 'Đầm Lầy Xanh', shape: 'ran', body: '#5fbf6a', accent: '#ffd36b', eye: '#e0202e', desc: 'Rắn lớn hoa văn, có độc nhẹ.' },
-  { id: 'khi_ac', name: 'Ác Hầu', lv: 5, place: 'Hoa Quả Sơn', shape: 'nguoi', body: '#a0704a', accent: '#e0b48a', eye: '#ffd36b', desc: 'Khỉ yêu tinh ranh, thích cướp đồ.' },
-  { id: 'heo_rung', name: 'Thiết Nha Trư', lv: 7, place: 'Rừng Hắc Mộc', shape: 'thu', body: '#5a4a44', accent: '#e6e6ee', eye: '#ff6a2a', desc: 'Heo rừng nanh sắt, da dày như giáp.' },
-  { id: 'son_tac', name: 'Sơn Tặc Đầu Lĩnh', lv: 4, place: 'Hắc Phong Trại', shape: 'vo_lam', body: '#5a4a3a', accent: '#8a2a1e', eye: '#1a1a1a', desc: 'Trùm cướp núi, đao pháp thô bạo.', human: { weapon: 'dao' } },
-  { id: 'thich_khach', name: 'Hắc Y Thích Khách', lv: 8, place: 'Ám Ảnh Lâu', shape: 'vo_lam', body: '#1e1e2a', accent: '#3a3a4a', eye: '#e0202e', desc: 'Sát thủ đến không tiếng, đi không dấu.', human: { weapon: 'kiem', mask: true } },
-  { id: 'bo_cap', name: 'Huyết Phong Vương', lv: 9, place: 'Sa Mạc Hoàng Sa', shape: 'bo', body: '#b8302a', accent: '#5a1a1a', eye: '#ffd36b', desc: 'Ong chúa khổng lồ, kim chích chứa kịch độc.' },
-  { id: 'ho_yeu', name: 'Cửu Vĩ Hồ Yêu', lv: 11, place: 'Thanh Khâu', shape: 'thu', body: '#ff9a4a', accent: '#fff4e0', eye: '#9a3ad0', desc: 'Hồ ly mê hoặc lòng người.' },
-  { id: 'thiet_chuong', name: 'Thiết Chưởng Bang Chủ', lv: 12, place: 'Thiết Chưởng Bang', shape: 'vo_lam', body: '#7a5a2a', accent: '#3a2a1a', eye: '#1a1a1a', desc: 'Một chưởng đánh vỡ tảng đá ngàn cân.', human: { weapon: 'quyen' } },
-  { id: 'cuong_thi', name: 'Thiết Giáp Cương Thi', lv: 13, place: 'Nghĩa Trang Cổ', shape: 'nguoi', body: '#6a8a7a', accent: '#2a3a4a', eye: '#9ff0c8', desc: 'Xác chết ngàn năm, đao kiếm khó chém.' },
-  { id: 'hac_hung', name: 'Hắc Hùng Tinh', lv: 15, place: 'Hắc Phong Sơn', shape: 'thu', body: '#2a2228', accent: '#7a5a3a', eye: '#ffd36b', desc: 'Gấu đen tu luyện ngàn năm, sức mạnh vô song.' },
-  { id: 'doc_vuong', name: 'Độc Thủ Dược Vương', lv: 16, place: 'Vạn Độc Cốc', shape: 'vo_lam', body: '#3a6a3a', accent: '#9a3ad0', eye: '#9ff0c8', desc: 'Phẩy quạt là độc bay mười dặm.', human: { weapon: 'quat', hat: true } },
-  { id: 'ngan_giac', name: 'Ngân Giác Mãng', lv: 17, place: 'Vạn Xà Cốc', shape: 'ran', body: '#9aa6c0', accent: '#e6eaf6', eye: '#e0202e', desc: 'Mãng xà có sừng bạc, sắp hóa giao.' },
-  { id: 'dai_bang', name: 'Kim Sí Đại Bằng', lv: 19, place: 'Đỉnh Vân Tiêu', shape: 'chim', body: '#e0a030', accent: '#ffe27a', eye: '#e0202e', desc: 'Chim thần cánh vàng, một cái vỗ cánh chín vạn dặm.' },
-  { id: 'cuong_dao', name: 'Cuồng Đao Khách', lv: 20, place: 'Đoạn Hồn Nhai', shape: 'vo_lam', body: '#8a1a24', accent: '#1a1a1a', eye: '#ffd36b', desc: 'Đao chưa ra khỏi vỏ đã có người chết.', human: { weapon: 'dao', hat: true } },
-  { id: 'huyet_ma', name: 'Huyết Ma', lv: 21, place: 'Huyết Hải', shape: 'nguoi', body: '#7a0a1e', accent: '#1e1a24', eye: '#ff2a3a', desc: 'Ma đầu sinh ra từ biển máu.' },
-  { id: 'bang_giao', name: 'Băng Giao', lv: 23, place: 'Bắc Hải Băng Nguyên', shape: 'rong', body: '#7fc8ff', accent: '#eaf6ff', eye: '#2a3a6a', desc: 'Giao long băng giá, hơi thở đóng băng vạn vật.' },
-  { id: 'kiem_si', name: 'Kiếm Si Vô Danh', lv: 24, place: 'Kiếm Trủng', shape: 'vo_lam', body: '#e6e6ee', accent: '#3d6fb0', eye: '#1a1a1a', desc: 'Cả đời chỉ luyện một kiếm. Một kiếm ấy chưa từng thua.', human: { weapon: 'kiem', hat: true } },
-  { id: 'ky_lan', name: 'Hỏa Kỳ Lân', lv: 25, place: 'Hỏa Diệm Sơn', shape: 'thu', body: '#e0502a', accent: '#ffd36b', eye: '#ffffff', desc: 'Thần thú lửa, giẫm đâu cháy đó.' },
-  { id: 'hac_long', name: 'Thượng Cổ Hắc Long', lv: 27, place: 'Vực Vô Tận', shape: 'rong', body: '#1e1a2e', accent: '#9a3ad0', eye: '#ffd36b', desc: 'Long tộc thượng cổ. Phi thăng giả cũng phải dè chừng.' },
+  { id: 'tho_yeu', name: 'Thỏ Yêu', lv: 1, place: 'Bãi cỏ đầu làng', shape: 'thu', body: '#f2f2f6', accent: '#ffb3c6', eye: '#e0202e', desc: 'Thỏ mới khai linh trí, cắn hơi đau.', el: 'moc' },
+  { id: 'soi_xam', name: 'Sói Xám Thành Tinh', lv: 2, place: 'Rừng Thanh Tùng', shape: 'thu', body: '#7d8590', accent: '#4a4f58', eye: '#ffd36b', desc: 'Đi theo bầy, đêm trăng rất hung.', el: 'kim' },
+  { id: 'ran_hoa', name: 'Hoa Văn Mãng', lv: 3, place: 'Đầm Lầy Xanh', shape: 'ran', body: '#5fbf6a', accent: '#ffd36b', eye: '#e0202e', desc: 'Rắn lớn hoa văn, có độc nhẹ.', el: 'moc' },
+  { id: 'khi_ac', name: 'Ác Hầu', lv: 5, place: 'Hoa Quả Sơn', shape: 'nguoi', body: '#a0704a', accent: '#e0b48a', eye: '#ffd36b', desc: 'Khỉ yêu tinh ranh, thích cướp đồ.', el: 'tho' },
+  { id: 'heo_rung', name: 'Thiết Nha Trư', lv: 7, place: 'Rừng Hắc Mộc', shape: 'thu', body: '#5a4a44', accent: '#e6e6ee', eye: '#ff6a2a', desc: 'Heo rừng nanh sắt, da dày như giáp.', el: 'tho' },
+  {
+    id: 'son_tac',
+    name: 'Sơn Tặc Đầu Lĩnh',
+    lv: 4,
+    place: 'Hắc Phong Trại',
+    shape: 'vo_lam',
+    body: '#5a4a3a',
+    accent: '#8a2a1e',
+    eye: '#1a1a1a',
+    desc: 'Trùm cướp núi, đao pháp thô bạo.',
+    human: { weapon: 'dao' },
+    el: 'kim',
+  },
+  {
+    id: 'thich_khach',
+    name: 'Hắc Y Thích Khách',
+    lv: 8,
+    place: 'Ám Ảnh Lâu',
+    shape: 'vo_lam',
+    body: '#1e1e2a',
+    accent: '#3a3a4a',
+    eye: '#e0202e',
+    desc: 'Sát thủ đến không tiếng, đi không dấu.',
+    human: { weapon: 'kiem', mask: true },
+    el: 'thuy',
+  },
+  {
+    id: 'bo_cap',
+    name: 'Huyết Phong Vương',
+    lv: 9,
+    place: 'Sa Mạc Hoàng Sa',
+    shape: 'bo',
+    body: '#b8302a',
+    accent: '#5a1a1a',
+    eye: '#ffd36b',
+    desc: 'Ong chúa khổng lồ, kim chích chứa kịch độc.',
+    el: 'hoa',
+  },
+  { id: 'ho_yeu', name: 'Cửu Vĩ Hồ Yêu', lv: 11, place: 'Thanh Khâu', shape: 'thu', body: '#ff9a4a', accent: '#fff4e0', eye: '#9a3ad0', desc: 'Hồ ly mê hoặc lòng người.', el: 'hoa' },
+  {
+    id: 'thiet_chuong',
+    name: 'Thiết Chưởng Bang Chủ',
+    lv: 12,
+    place: 'Thiết Chưởng Bang',
+    shape: 'vo_lam',
+    body: '#7a5a2a',
+    accent: '#3a2a1a',
+    eye: '#1a1a1a',
+    desc: 'Một chưởng đánh vỡ tảng đá ngàn cân.',
+    human: { weapon: 'quyen' },
+    el: 'kim',
+  },
+  {
+    id: 'cuong_thi',
+    name: 'Thiết Giáp Cương Thi',
+    lv: 13,
+    place: 'Nghĩa Trang Cổ',
+    shape: 'nguoi',
+    body: '#6a8a7a',
+    accent: '#2a3a4a',
+    eye: '#9ff0c8',
+    desc: 'Xác chết ngàn năm, đao kiếm khó chém.',
+    el: 'tho',
+  },
+  {
+    id: 'hac_hung',
+    name: 'Hắc Hùng Tinh',
+    lv: 15,
+    place: 'Hắc Phong Sơn',
+    shape: 'thu',
+    body: '#2a2228',
+    accent: '#7a5a3a',
+    eye: '#ffd36b',
+    desc: 'Gấu đen tu luyện ngàn năm, sức mạnh vô song.',
+    el: 'tho',
+  },
+  {
+    id: 'doc_vuong',
+    name: 'Độc Thủ Dược Vương',
+    lv: 16,
+    place: 'Vạn Độc Cốc',
+    shape: 'vo_lam',
+    body: '#3a6a3a',
+    accent: '#9a3ad0',
+    eye: '#9ff0c8',
+    desc: 'Phẩy quạt là độc bay mười dặm.',
+    human: { weapon: 'quat', hat: true },
+    el: 'moc',
+  },
+  { id: 'ngan_giac', name: 'Ngân Giác Mãng', lv: 17, place: 'Vạn Xà Cốc', shape: 'ran', body: '#9aa6c0', accent: '#e6eaf6', eye: '#e0202e', desc: 'Mãng xà có sừng bạc, sắp hóa giao.', el: 'thuy' },
+  {
+    id: 'dai_bang',
+    name: 'Kim Sí Đại Bằng',
+    lv: 19,
+    place: 'Đỉnh Vân Tiêu',
+    shape: 'chim',
+    body: '#e0a030',
+    accent: '#ffe27a',
+    eye: '#e0202e',
+    desc: 'Chim thần cánh vàng, một cái vỗ cánh chín vạn dặm.',
+    el: 'kim',
+  },
+  {
+    id: 'cuong_dao',
+    name: 'Cuồng Đao Khách',
+    lv: 20,
+    place: 'Đoạn Hồn Nhai',
+    shape: 'vo_lam',
+    body: '#8a1a24',
+    accent: '#1a1a1a',
+    eye: '#ffd36b',
+    desc: 'Đao chưa ra khỏi vỏ đã có người chết.',
+    human: { weapon: 'dao', hat: true },
+    el: 'kim',
+  },
+  { id: 'huyet_ma', name: 'Huyết Ma', lv: 21, place: 'Huyết Hải', shape: 'nguoi', body: '#7a0a1e', accent: '#1e1a24', eye: '#ff2a3a', desc: 'Ma đầu sinh ra từ biển máu.', el: 'hoa' },
+  {
+    id: 'bang_giao',
+    name: 'Băng Giao',
+    lv: 23,
+    place: 'Bắc Hải Băng Nguyên',
+    shape: 'rong',
+    body: '#7fc8ff',
+    accent: '#eaf6ff',
+    eye: '#2a3a6a',
+    desc: 'Giao long băng giá, hơi thở đóng băng vạn vật.',
+    el: 'thuy',
+  },
+  {
+    id: 'kiem_si',
+    name: 'Kiếm Si Vô Danh',
+    lv: 24,
+    place: 'Kiếm Trủng',
+    shape: 'vo_lam',
+    body: '#e6e6ee',
+    accent: '#3d6fb0',
+    eye: '#1a1a1a',
+    desc: 'Cả đời chỉ luyện một kiếm. Một kiếm ấy chưa từng thua.',
+    human: { weapon: 'kiem', hat: true },
+    el: 'kim',
+  },
+  { id: 'ky_lan', name: 'Hỏa Kỳ Lân', lv: 25, place: 'Hỏa Diệm Sơn', shape: 'thu', body: '#e0502a', accent: '#ffd36b', eye: '#ffffff', desc: 'Thần thú lửa, giẫm đâu cháy đó.', el: 'hoa' },
+  {
+    id: 'hac_long',
+    name: 'Thượng Cổ Hắc Long',
+    lv: 27,
+    place: 'Vực Vô Tận',
+    shape: 'rong',
+    body: '#1e1a2e',
+    accent: '#9a3ad0',
+    eye: '#ffd36b',
+    desc: 'Long tộc thượng cổ. Phi thăng giả cũng phải dè chừng.',
+    el: 'thuy',
+  },
+  // Quái thêm
+  {
+    id: 'nhen_doc',
+    name: 'Độc Nhện Tinh',
+    lv: 6,
+    place: 'Bàn Ti Động',
+    shape: 'bo',
+    body: '#3a2a4a',
+    accent: '#9a3ad0',
+    eye: '#ff2a3a',
+    desc: 'Nhện tinh giăng tơ độc khắp động, con mồi dính vào là xong.',
+    el: 'moc',
+  },
+  {
+    id: 'lang_vuong',
+    name: 'Huyết Lang Vương',
+    lv: 10,
+    place: 'Bắc Mạc Hoang Nguyên',
+    shape: 'thu',
+    body: '#5a3a3a',
+    accent: '#b8302a',
+    eye: '#ffd36b',
+    desc: 'Sói chúa đầu đàn, hú một tiếng trăm sói kéo về.',
+    el: 'kim',
+  },
+  {
+    id: 'am_quy',
+    name: 'Âm Hồn Quỷ Tướng',
+    lv: 14,
+    place: 'Quỷ Môn Quan',
+    shape: 'nguoi',
+    body: '#3a4a5a',
+    accent: '#9ff0c8',
+    eye: '#9ff0c8',
+    desc: 'Tướng quân chết trận không siêu thoát, dẫn âm binh đi tuần.',
+    el: 'thuy',
+  },
+  {
+    id: 'huyet_y',
+    name: 'Huyết Y Lão Quái',
+    lv: 18,
+    place: 'Hắc Thủy Trại',
+    shape: 'vo_lam',
+    body: '#7a1a24',
+    accent: '#2a1a1a',
+    eye: '#ffd36b',
+    desc: 'Lão ma đầu áo đỏ, sống nhờ hút máu người luyện công.',
+    human: { weapon: 'quyen', hat: true },
+    el: 'hoa',
+  },
+  {
+    id: 'xich_long',
+    name: 'Xích Diễm Giao Long',
+    lv: 22,
+    place: 'Nham Tương Hải',
+    shape: 'rong',
+    body: '#c8402a',
+    accent: '#ffd36b',
+    eye: '#ffffff',
+    desc: 'Giao long tắm trong dung nham, vảy nóng chảy sắt.',
+    el: 'hoa',
+  },
+  {
+    id: 'kim_thiem',
+    name: 'Bích Nhãn Kim Thiềm',
+    lv: 26,
+    place: 'Kim Thiềm Động',
+    shape: 'thu',
+    body: '#d8b030',
+    accent: '#3a8a5a',
+    eye: '#5ac86a',
+    desc: 'Cóc vàng ngậm tiền, nuốt cả linh bảo của tu sĩ.',
+    el: 'tho',
+  },
+  // Quái trong tông môn: thí luyện của đệ tử
+  {
+    id: 'dong_nhan',
+    name: 'Đồng Nhân Khôi Lỗi',
+    lv: 3,
+    place: 'Thí Luyện Đường Thanh Vân',
+    shape: 'nguoi',
+    body: '#b8803a',
+    accent: '#6a4a2a',
+    eye: '#ffd36b',
+    desc: 'Người đồng trăm khớp, ngoại môn đệ tử nào cũng phải qua.',
+    el: 'kim',
+    sect: 'chinh',
+  },
+  {
+    id: 'tien_hac',
+    name: 'Hộ Sơn Tiên Hạc',
+    lv: 9,
+    place: 'Hậu sơn Thanh Vân',
+    shape: 'chim',
+    body: '#f2f2f6',
+    accent: '#e0202e',
+    eye: '#1a1a1a',
+    desc: 'Hạc giữ núi, chỉ chịu nhường đường cho người thắng được nó.',
+    el: 'moc',
+    sect: 'chinh',
+  },
+  {
+    id: 'kiem_linh',
+    name: 'Kiếm Linh Thí Luyện',
+    lv: 15,
+    place: 'Kiếm Các Thanh Vân',
+    shape: 'vo_lam',
+    body: '#cfe0ff',
+    accent: '#3d6fb0',
+    eye: '#7fc8ff',
+    desc: 'Kiếm ý của tổ sư hóa hình, thử lòng đệ tử chân truyền.',
+    human: { weapon: 'kiem' },
+    el: 'kim',
+    sect: 'chinh',
+  },
+  {
+    id: 'toa_yeu_giao',
+    name: 'Tỏa Yêu Tháp Thủ Giao',
+    lv: 21,
+    place: 'Tỏa Yêu Tháp',
+    shape: 'rong',
+    body: '#3a6a8a',
+    accent: '#c8d8f0',
+    eye: '#ffd36b',
+    desc: 'Giao long bị trấn dưới tháp ngàn năm, canh giữ tầng cuối.',
+    el: 'thuy',
+    sect: 'chinh',
+  },
+  {
+    id: 'huyet_khoi',
+    name: 'Huyết Khôi',
+    lv: 3,
+    place: 'Huyết Trì Ngoại Đường',
+    shape: 'nguoi',
+    body: '#8a2a2a',
+    accent: '#3a1a1a',
+    eye: '#ff2a3a',
+    desc: 'Xác người luyện thành khôi lỗi, huyết nô dùng để tập giết.',
+    el: 'hoa',
+    sect: 'ta',
+  },
+  {
+    id: 'thi_lang',
+    name: 'Thi Lang',
+    lv: 9,
+    place: 'Bãi Xương Huyết Sát',
+    shape: 'thu',
+    body: '#4a4a3a',
+    accent: '#8a2a2a',
+    eye: '#9ff0c8',
+    desc: 'Sói ăn xác chết trong môn, đói thì cắn cả đệ tử.',
+    el: 'tho',
+    sect: 'ta',
+  },
+  {
+    id: 'co_trung',
+    name: 'Cổ Trùng Vương',
+    lv: 15,
+    place: 'Vạn Cổ Quật',
+    shape: 'bo',
+    body: '#3a5a2a',
+    accent: '#c8302a',
+    eye: '#ffd36b',
+    desc: 'Con cổ sống sót sau khi ăn hết vạn con cổ khác.',
+    el: 'moc',
+    sect: 'ta',
+  },
+  {
+    id: 'huyet_giao',
+    name: 'Huyết Trì Ma Giao',
+    lv: 21,
+    place: 'Đáy Huyết Trì',
+    shape: 'rong',
+    body: '#5a0a14',
+    accent: '#ff2a3a',
+    eye: '#ffffff',
+    desc: 'Giao long nuôi bằng máu ba nghìn người, Thánh tử phải giết nó mới được công nhận.',
+    el: 'hoa',
+    sect: 'ta',
+  },
   // Boss: không thể thắng
-  { id: 'boss_ta', name: 'Huyết Ma Lão Tổ', lv: 40, place: 'Tổng đàn Huyết Sát Môn', shape: 'nguoi', body: '#e8d0c0', accent: '#5a0a14', eye: '#ff2a3a', desc: 'Ma đầu sống qua ba lần thiên kiếp, giết người như ngóe.', boss: 'ta' },
-  { id: 'boss_chinh', name: 'Thái Thượng Kiếm Tôn', lv: 40, place: 'Đỉnh Thanh Vân', shape: 'nguoi', body: '#f2e6d0', accent: '#eef2ff', eye: '#3d6fb0', desc: 'Đệ nhất kiếm tiên chính đạo, một kiếm phá vạn pháp.', boss: 'chinh' },
+  {
+    id: 'boss_ta',
+    name: 'Huyết Ma Lão Tổ',
+    lv: 40,
+    place: 'Tổng đàn Huyết Sát Môn',
+    shape: 'nguoi',
+    body: '#e8d0c0',
+    accent: '#5a0a14',
+    eye: '#ff2a3a',
+    desc: 'Ma đầu sống qua ba lần thiên kiếp, giết người như ngóe.',
+    boss: 'ta',
+    el: 'hoa',
+  },
+  {
+    id: 'boss_chinh',
+    name: 'Thái Thượng Kiếm Tôn',
+    lv: 40,
+    place: 'Đỉnh Thanh Vân',
+    shape: 'nguoi',
+    body: '#f2e6d0',
+    accent: '#eef2ff',
+    eye: '#3d6fb0',
+    desc: 'Đệ nhất kiếm tiên chính đạo, một kiếm phá vạn pháp.',
+    boss: 'chinh',
+    el: 'kim',
+  },
 ];
 
 const REALM_BASE = [0, 0, 9, 12, 15, 18, 21, 24];
@@ -110,10 +454,10 @@ export function playerStats(c: Character): Fighter {
   if (c.path === 'ma') atk *= 1.25;
   if (c.path === 'yeu') hp *= 1.25;
   if (c.path === 'tran') def *= 1.4;
-  if (c.path === 'phat') (hp *= 1.3), (def *= 1.3), (atk *= 1.1);
+  if (c.path === 'phat') ((hp *= 1.3), (def *= 1.3), (atk *= 1.1));
   if (c.gifts?.includes('g_than_luc')) atk *= 1.25;
   if (c.gifts?.includes('g_kiem_cot')) atk *= 1.1;
-  if (c.mount === 'rong') (atk *= 1.2), (hp *= 1.2);
+  if (c.mount === 'rong') ((atk *= 1.2), (hp *= 1.2));
   // trang bị
   const g = gearFx(c.equipped);
   atk *= 1 + g.atk / 100;
@@ -122,7 +466,7 @@ export function playerStats(c: Character): Fighter {
   // thần binh truyền kiếp: mỗi đời truyền qua +8% công (tối đa 10 đời)
   if (c.legend && c.equipped.vu_khi === c.legend.item) atk *= 1 + Math.min(10, c.legend.lv) * 0.08;
   // tuổi già sức yếu
-  if (c.age / c.lifespan > 0.85) (atk *= 0.85), (hp *= 0.85);
+  if (c.age / c.lifespan > 0.85) ((atk *= 0.85), (hp *= 0.85));
   return { hp: Math.round(hp), atk: Math.round(atk), def: Math.round(def) };
 }
 
@@ -185,11 +529,12 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance 
     ctx.fx('layer', `Trảm ${n}`);
     notes.push(`Đã trảm ${n} ${m.name}. Chiến kỹ tinh thông hơn (+${bonus} tu vi).`);
   }
-  // rơi đồ độc quyền của loài quái
+  // rơi đồ độc quyền của loài quái (đánh quái quá yếu thì gần như không rơi, chống farm)
   const drops = ITEMS.filter((i) => i.from?.includes(m.id));
-  if (drops.length) {
+  const df = dropFactor(c, m);
+  if (drops.length && df > 0) {
     const g = gearFx(c.equipped);
-    const p = (0.05 + (c.stats.khiVan - 50) / 2500) * (1 + tierOf(c, m) * 0.5) * (1 + g.drop / 100);
+    const p = (0.05 + (c.stats.khiVan - 50) / 2500) * (1 + tierOf(c, m) * 0.5) * (1 + g.drop / 100) * df;
     if (ctx.rnd() < p) {
       const it = drops[Math.floor(ctx.rnd() * drops.length)];
       if (c.inventory.includes(it.id)) {
@@ -203,7 +548,7 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance 
       }
     }
   }
-  if (ctx.rnd() < lootChance) {
+  if (ctx.rnd() < lootChance * df) {
     const l = lootDrop(c, m, ctx);
     if (l) notes.push(l);
   }
@@ -217,7 +562,7 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance 
   }
   if (m.human && (m.id === 'son_tac' || m.id === 'thich_khach' || m.id === 'doc_vuong')) c.daoTam = Math.min(100, c.daoTam + 1);
   if (n === 100) notes.push(`Đã trảm 100 con ${m.name}. Giang hồ gọi bạn là khắc tinh của chúng.`);
-  const r = ctx.rnd();
+  const r = ctx.rnd() / Math.max(0.05, df);
   if (r < 0.02) {
     addCult(c, killExp(c, m) * 6);
     ctx.fx('layer', 'Yêu đan!');
@@ -231,7 +576,25 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance 
   return notes;
 }
 
+/** Cảnh giới tương ứng cấp quái: Lv1-9 Luyện Khí, 10-12 Trúc Cơ, 13-15 Kim Đan... */
+export function monsterRealm(lv: number): number {
+  if (lv <= 0) return 0;
+  if (lv <= 9) return 1;
+  return Math.min(7, 2 + Math.floor((lv - 10) / 3));
+}
+
+/**
+ * Hệ số rơi đồ theo chênh lệch cấp: đánh quái quá yếu để farm thì gần như không rơi.
+ * Yếu hơn 6 cấp trở lên: 0; 4-5 cấp: 25%; 2-3 cấp: 60%; ngang: 100%; mạnh hơn từ 2 cấp: 130%.
+ */
+export function dropFactor(c: Character, m: Monster): number {
+  const d = effLv(c, m) - combatLevel(c);
+  return d <= -6 ? 0 : d <= -4 ? 0.25 : d <= -2 ? 0.6 : d >= 2 ? 1.3 : 1;
+}
+
 const RARE_NAME = ['Phàm', 'Tốt', 'Hiếm', 'Cực phẩm'];
+/** đồ chỉ rơi từ quái thí luyện trong tông môn, không rơi ngẫu nhiên ngoài giang hồ */
+const SECT_ONLY = new Set(ITEMS.filter((i) => i.from?.length && i.from.every((id) => MONSTERS.find((m) => m.id === id)?.sect)).map((i) => i.id));
 const RARE_SELL = [15, 60, 220, 800];
 
 /**
@@ -243,10 +606,16 @@ export function lootDrop(c: Character, m: Monster, ctx: EffectCtx): string | nul
   const g = gearFx(c.equipped);
   const luck = (1 + Math.max(0, c.stats.khiVan - 50) / 100) * (1 + g.drop / 100) * (1 + tierOf(c, m) * 0.3) * (omenIs('cat_tinh') ? 1.5 : 1);
   const r = ctx.rnd();
-  const rare = r < 0.02 * luck ? 3 : r < 0.1 * luck ? 2 : r < 0.4 * luck ? 1 : 0;
-  const lo = Math.max(0, c.realm - 2);
-  let pool = ITEMS.filter((i) => i.src !== 'event' && (i.rare ?? 0) === rare && i.minRealm <= c.realm && i.minRealm >= lo);
-  if (!pool.length) pool = ITEMS.filter((i) => i.src !== 'event' && (i.rare ?? 0) === rare && i.minRealm <= c.realm);
+  // quái yếu hơn mình từ 3 cấp chỉ rơi đồ phàm, tốt; cực phẩm chỉ ở quái ngang hoặc mạnh hơn
+  const gap = effLv(c, m) - combatLevel(c);
+  const cap = gap <= -3 ? 1 : gap <= -1 ? 2 : 3;
+  const rare = Math.min(cap, r < 0.02 * luck ? 3 : r < 0.1 * luck ? 2 : r < 0.4 * luck ? 1 : 0);
+  // đồ theo cấp của quái chứ không theo cảnh giới người chơi
+  const mr = Math.min(c.realm, monsterRealm(effLv(c, m)));
+  const lo = Math.max(0, mr - 2);
+  const ok = (i: (typeof ITEMS)[number]) => i.src !== 'event' && !SECT_ONLY.has(i.id) && (i.rare ?? 0) === rare && i.minRealm <= mr;
+  let pool = ITEMS.filter((i) => ok(i) && i.minRealm >= lo);
+  if (!pool.length) pool = ITEMS.filter(ok);
   if (!pool.length) return null;
   const fresh = pool.filter((i) => !c.inventory.includes(i.id));
   // 80% ưu tiên món chưa có
@@ -293,5 +662,3 @@ export function fleeChance(c: Character, m: Monster): number {
   const d = effLv(c, m) - combatLevel(c);
   return clamp(0.85 - Math.max(0, d) * 0.12 + gearFx(c.equipped).flee / 100, 0.15, 0.95);
 }
-
-

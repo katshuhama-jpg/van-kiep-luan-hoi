@@ -15,7 +15,16 @@ type R = [number, number, number, number, string];
 function mix(x: string, y: string, t: number) {
   const px = [1, 3, 5].map((i) => parseInt(x.slice(i, i + 2), 16));
   const py = [1, 3, 5].map((i) => parseInt(y.slice(i, i + 2), 16));
-  return '#' + px.map((v, i) => Math.round(v + (py[i] - v) * t).toString(16).padStart(2, '0')).join('');
+  return (
+    '#' +
+    px
+      .map((v, i) =>
+        Math.round(v + (py[i] - v) * t)
+          .toString(16)
+          .padStart(2, '0'),
+      )
+      .join('')
+  );
 }
 
 /** Vị trí đầu của từng dáng quái, để gắn sừng/vương miện khi tiến hóa */
@@ -174,11 +183,35 @@ function shapeRects(m: Monster, b: string, a: string, e: string): R[] {
   }
 }
 
-export function MonsterSprite({ m, size = 48, dead, tier = 0, attacking, still, pixel }: { m: Monster; size?: number; dead?: boolean; tier?: number; attacking?: boolean; still?: boolean; pixel?: boolean }) {
+export function MonsterSprite({
+  m,
+  size = 48,
+  dead,
+  tier = 0,
+  attacking,
+  still,
+  pixel,
+}: {
+  m: Monster;
+  size?: number;
+  dead?: boolean;
+  tier?: number;
+  attacking?: boolean;
+  still?: boolean;
+  pixel?: boolean;
+}) {
   const look = pixel ? undefined : MONSTER_LOOK[m.id];
   if (look) return <MonsterLpc look={look} size={size} tier={tier} dead={dead} attacking={attacking} still={still} />;
   return (
-    <svg viewBox="-2 -5 20 21" width={size} height={size} shapeRendering="crispEdges" role="img" aria-label={m.name} className={`mon tier-${tier} ${m.boss ? 'boss-' + m.boss : ''} ${dead ? 'mon-dead' : ''}`}>
+    <svg
+      viewBox="-2 -5 20 21"
+      width={size}
+      height={size}
+      shapeRendering="crispEdges"
+      role="img"
+      aria-label={m.name}
+      className={`mon tier-${tier} ${m.boss ? 'boss-' + m.boss : ''} ${dead ? 'mon-dead' : ''}`}
+    >
       {monsterRects(m, tier).map(([x, y, w, h, f], i) => (
         <rect key={i} x={x} y={y} width={w} height={h} fill={f} />
       ))}
@@ -201,8 +234,10 @@ export interface BattleView {
   kills: number;
   /** quái chặn đường: đếm hiệp */
   ambush?: { turn: number; max: number; kind: 'kem' | 'bang' | 'hon' };
+  /** ngũ hành giữa bạn và quái */
+  melem?: { me: Element; foe: Element; rel: ElemRel };
   /** kỳ ngộ giang hồ: đối thủ là người */
-  duel?: { kind: 'dong_dao' | 'dich_thu' | 'kiep_truoc'; foe: Character; tag: string; player: string; turn: number; max: number; elem?: { me: Element; foe: Element; rel: ElemRel } };
+  duel?: { kind: 'dong_dao' | 'dich_thu' | 'kiep_truoc' | 'dong_mon'; foe: Character; tag: string; player: string; turn: number; max: number; elem?: { me: Element; foe: Element; rel: ElemRel } };
 }
 
 /** Dải ngũ hành giữa sân đấu: bản mệnh hai bên và ai khắc ai */
@@ -212,9 +247,13 @@ function ElemBanner({ e }: { e: { me: Element; foe: Element; rel: ElemRel } }) {
   const txt = e.rel === 'khac' ? 'Khắc chế · +50%' : e.rel === 'bi_khac' ? 'Bị khắc · -30%' : e.rel === 'duoc_sinh' ? `Được sinh · +10%` : e.rel === 'sinh' ? `${A.name} sinh ${B.name}` : 'Cùng mệnh';
   return (
     <div className={`elem-banner ${e.rel}`}>
-      <span className="el" style={{ background: A.color }}>{A.sym}</span>
+      <span className="el" style={{ background: A.color }}>
+        {A.sym}
+      </span>
       <span className="arrow">{e.rel === 'khac' ? '▶' : e.rel === 'bi_khac' ? '◀' : '·'}</span>
-      <span className="el" style={{ background: B.color }}>{B.sym}</span>
+      <span className="el" style={{ background: B.color }}>
+        {B.sym}
+      </span>
       <small>{txt}</small>
     </div>
   );
@@ -262,7 +301,10 @@ export function BattleOverlay({ b }: { b: BattleView }) {
               </span>
             )}
           </div>
-          <div className={`foe-wrap ${lastHit?.side === 'p' && b.phase === 'fight' ? 'got-hit' : ''} ${lastHit?.side === 'm' ? 'attacking' : ''} ${b.duel.kind === 'kiep_truoc' ? 'ghost' : ''}`} key={lastHit?.id ?? 0}>
+          <div
+            className={`foe-wrap ${lastHit?.side === 'p' && b.phase === 'fight' ? 'got-hit' : ''} ${lastHit?.side === 'm' ? 'attacking' : ''} ${b.duel.kind === 'kiep_truoc' ? 'ghost' : ''}`}
+            key={lastHit?.id ?? 0}
+          >
             <Sprite
               c={b.phase === 'rest' && b.outcome === 'win' ? { ...b.duel.foe, dead: true } : b.duel.foe}
               size={150}
@@ -281,6 +323,7 @@ export function BattleOverlay({ b }: { b: BattleView }) {
           <MonsterSprite m={b.m} size={136} tier={b.tier} dead={b.phase === 'rest' && b.outcome === 'win'} attacking={b.phase === 'fight' && lastHit?.side === 'm'} />
         </div>
       )}
+      {!b.duel && b.melem && <ElemBanner e={b.melem} />}
       {lastP?.palm && (
         <span key={`q${lastP.id}`} className="chuong" style={{ ['--qi' as string]: lastP.qi ?? '#9ff0c8' } as CSSProperties} aria-hidden="true">
           <i />

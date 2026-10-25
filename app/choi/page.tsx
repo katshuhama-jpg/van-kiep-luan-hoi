@@ -16,13 +16,14 @@ import { signOut } from '@/lib/auth';
 import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, realmLabel } from '@/lib/game/data';
 import { genName, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick } from '@/lib/game/engine';
 import { addCult, addPill, dao, fatal, fmt, giveItem, money, reward, stat, wealthTier } from '@/lib/game/helpers';
-import type { Character, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
+import type { Character, Element, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
 import DuelWarning from '@/components/Duel';
 import { artOf } from '@/lib/game/vocong';
 import { trackMiles } from '@/lib/game/miles';
 import { ELEMENTS, elemHitTag, elemMul, elemRel, elementOf } from '@/lib/game/nguhanh';
 import { DUEL_INFO, DUEL_PER_YEAR, DUEL_TURNS, finishDuel, foeChar, foeStats, pickDuel, teaTrap, toRival, type DuelFoe } from '@/lib/game/duel';
 import { SOCIAL } from '@/lib/game/social';
+import { daiBiDue, rankName, sectCultMul } from '@/lib/game/sect';
 import { bountyClaim, khieuDone, loadSocial, payoutClaim } from '@/lib/social';
 import { GiangHoSheet, type GiangHoApi } from '@/components/GiangHo';
 import { HIDDEN_ITEMS, collectStats, markSeen, newFinds, unseen } from '@/lib/game/collect';
@@ -199,6 +200,13 @@ export default function PlayPage() {
   const activeRef = useRef(false);
   activeRef.current = running && sheet === null && phase === 'play' && kiep === null && !tut && duelWarn === null;
 
+  /** Ngũ hành giữa bạn và loài quái */
+  function monElem(c: Character, m: { el?: Element }) {
+    const me = elementOf(c);
+    const foe = m.el ?? 'tho';
+    return { me, foe, rel: elemRel(me, foe) };
+  }
+
   /** Trận đánh tự động kiểu idle: mỗi lượt bạn đánh một đòn, quái đánh trả một đòn */
   function newFight(c: Character, mId: string, kills: number): Battle | null {
     const m = MONSTERS.find((x) => x.id === mId);
@@ -222,6 +230,7 @@ export default function PlayPage() {
       rest: 0,
       ps,
       ms,
+      melem: m.boss ? undefined : monElem(c, m),
     };
   }
 
@@ -236,7 +245,9 @@ export default function PlayPage() {
     b.t += dtGame;
     let changed = false;
     const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string, art?: { name: string; palm: boolean } | null) => {
-      b!.last = [...b!.last.slice(-4), { id: Math.random(), side, dmg, crit, text, skill: art?.name, palm: art?.palm, qi: art?.palm ? qiColor(c) : undefined }];
+      const me = b!.melem;
+      const tag = text || !me || !dmg ? undefined : side === 'p' ? elemHitTag(me.me, me.foe) : elemHitTag(me.foe, me.me);
+      b!.last = [...b!.last.slice(-4), { id: Math.random(), side, dmg, crit, text, skill: art?.name, palm: art?.palm, qi: art?.palm ? qiColor(c) : undefined, tag }];
     };
     while (b.t >= turn) {
       b.t -= turn;
@@ -251,7 +262,7 @@ export default function PlayPage() {
         continue;
       }
       // bạn ra đòn
-      const h1 = hit(b.ps.atk, b.ms.def, rnd, 0.15 + gearFx(c.equipped).crit / 100);
+      const h1 = hit(b.ps.atk * (b.melem ? elemMul(b.melem.me, b.melem.foe) : 1), b.ms.def, rnd, 0.15 + gearFx(c.equipped).crit / 100);
       b.mHp = Math.max(0, b.mHp - h1.dmg);
       push('p', h1.dmg, h1.crit, b.m.boss ? 'Vô hiệu' : undefined, artOf(c, rnd));
       if (b.mHp <= 0) {
@@ -275,7 +286,7 @@ export default function PlayPage() {
         continue;
       }
       // quái đánh trả
-      const h2 = hit(b.ms.atk, b.ps.def, rnd);
+      const h2 = hit(b.ms.atk * (b.melem ? elemMul(b.melem.foe, b.melem.me) : 1), b.ps.def, rnd);
       b.pHp = Math.max(0, b.pHp - h2.dmg);
       push('m', h2.dmg, h2.crit);
       if (b.pHp <= 0) {
@@ -474,7 +485,7 @@ export default function PlayPage() {
 
   /** Không đánh mà rời đi khi đối thủ ngang hoặc mạnh hơn: có thể bị đánh lén trọng thương, thậm chí mất mạng */
   const declineRisk = (c: Character, f: DuelFoe, ctx: ReturnType<typeof makeCtx>, how: 'leave' | 'flee'): string => {
-    if (f.rel === 'yeu') return '';
+    if (f.rel === 'yeu' || f.kind === 'dong_mon') return '';
     const who = f.rival.name;
     const hurtP = f.rel === 'manh' ? 0.5 : 0.35;
     const dieP = (f.rel === 'manh' ? 0.1 : 0.04) * (f.kind === 'dong_dao' ? 0.5 : 1);
@@ -578,8 +589,13 @@ export default function PlayPage() {
       ms,
       sub: 0,
       ambush: { turn: 0, max: AMBUSH_TURNS, kind: tier },
+      melem: monElem(c, m),
     };
-    c.log.push({ age: Math.floor(c.age), tone: 'bad', text: `${AMBUSH_INTRO[tier]} (${monsterName(c, m)}, Lv${effLv(c, m)})` });
+    c.log.push({
+      age: Math.floor(c.age),
+      tone: 'bad',
+      text: `${m.sect ? `Thí luyện tông môn: ${m.name} ở ${m.place} chặn đường, đệ tử nào cũng phải qua.` : AMBUSH_INTRO[tier]} (${monsterName(c, m)}, Lv${effLv(c, m)}, hệ ${ELEMENTS[m.el ?? 'tho'].name})`,
+    });
   }
 
   function stepAmbush(c: Character, dtReal: number): boolean {
@@ -589,7 +605,9 @@ export default function PlayPage() {
     b.t += dtReal;
     let changed = false;
     const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string, art?: { name: string; palm: boolean } | null) => {
-      b.last = [...b.last.slice(-4), { id: Math.random(), side, dmg, crit, text, skill: art?.name, palm: art?.palm, qi: art?.palm ? qiColor(c) : undefined }];
+      const me = b.melem;
+      const tag = text || !me || !dmg ? undefined : side === 'p' ? elemHitTag(me.me, me.foe) : elemHitTag(me.foe, me.me);
+      b.last = [...b.last.slice(-4), { id: Math.random(), side, dmg, crit, text, skill: art?.name, palm: art?.palm, qi: art?.palm ? qiColor(c) : undefined, tag }];
     };
     const end = (result: 'win' | 'lose' | 'draw') => {
       const out: Fx[] = [];
@@ -621,7 +639,7 @@ export default function PlayPage() {
       }
       if (b.sub === 0) {
         b.ambush!.turn += 1;
-        const h = hit(b.ps.atk, b.ms.def, rnd, 0.15 + gearFx(c.equipped).crit / 100);
+        const h = hit(b.ps.atk * (b.melem ? elemMul(b.melem.me, b.melem.foe) : 1), b.ms.def, rnd, 0.15 + gearFx(c.equipped).crit / 100);
         b.mHp = Math.max(0, b.mHp - h.dmg);
         push('p', h.dmg, h.crit, undefined, artOf(c, rnd));
         b.sub = 1;
@@ -630,7 +648,7 @@ export default function PlayPage() {
           break;
         }
       } else {
-        const h = hit(b.ms.atk, b.ps.def, rnd);
+        const h = hit(b.ms.atk * (b.melem ? elemMul(b.melem.foe, b.melem.me) : 1), b.ps.def, rnd);
         b.pHp = Math.max(0, b.pHp - h.dmg);
         push('m', h.dmg, h.crit);
         b.sub = 0;
@@ -672,7 +690,13 @@ export default function PlayPage() {
       }
       if (c && activeRef.current && !pendingRef.current && !c.dead) {
         const dYear = (dt / yearSecRef.current) * speedRef.current;
-        if (c.realm >= 1 && c.age >= 15 && c.focus !== 'tru_yeu' && !duelOpen.current && ((c.hunt && c.age >= c.hunt.at) || rnd() < DUEL_PER_YEAR * (omenIs('giang_ho_loan') ? 2 : 1) * dYear)) {
+        if (
+          c.realm >= 1 &&
+          (c.age >= 15 || daiBiDue(c)) &&
+          c.focus !== 'tru_yeu' &&
+          !duelOpen.current &&
+          ((c.hunt && c.age >= c.hunt.at) || daiBiDue(c) || rnd() < DUEL_PER_YEAR * (omenIs('giang_ho_loan') ? 2 : 1) * dYear)
+        ) {
           const f = pickDuel(c, rnd);
           if (f) {
             duelOpen.current = true;
@@ -1287,6 +1311,7 @@ export default function PlayPage() {
           <p className="note" style={{ textAlign: 'center', marginTop: 0 }}>
             {c.linhCan} · {c.origin} · {c.birthPlace}
             {c.gifts?.length ? ` · Thiên phú: ${c.gifts.map((g) => giftOf(g)?.name).join(', ')}` : ''}
+            {c.sect ? ` · ${rankName(c)} ${c.sect} (tu luyện +${Math.round((sectCultMul(c) - 1) * 100)}%)` : ''}
           </p>
           <StatsPanel c={c} />
         </Sheet>

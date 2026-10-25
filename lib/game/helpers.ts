@@ -1,5 +1,6 @@
 import { omenCultMul, omenIs } from './hook';
 import { swornCultMul } from './social';
+import { masterSaves } from './sect';
 import { ITEMS, REALMS } from './data';
 import type { Character, EffectCtx, Stats } from './types';
 
@@ -171,6 +172,12 @@ export function fatal(c: Character, ctx: EffectCtx, chance: number, cause: strin
     c.stats.sucKhoe = Math.max(20, c.stats.sucKhoe);
     ctx.fx('heal', 'Oan hồn hộ thể');
     return ' Một bóng oan hồn từ kiếp trước lao ra chắn đòn rồi tan biến. Bạn thoát chết trong gang tấc.';
+  }
+  // chân truyền chính phái: sư phụ cứu một lần
+  const saved = masterSaves(c);
+  if (saved) {
+    ctx.fx('heal', 'Sư phụ cứu');
+    return saved;
   }
   // kiếp đầu tiên được trời thương: chưa đủ 16 tuổi thì không chết, chỉ bị thương
   if ((c.lifeNo === 1 || c.grace16) && c.age < 16) {

@@ -59,13 +59,21 @@ export function GachaPanel({ phuc, onChange, onBorn, busy }: { phuc: number; onC
       {cards.length > 0 && (
         <section className="panel">
           <h2>Chọn thiên phú</h2>
-          <p className="note" style={{ marginTop: 0 }}>Không bắt buộc. Chọn tối đa 2 lá. Lá ghi &quot;có họa&quot; vừa có lợi vừa có hại.</p>
+          <p className="note" style={{ marginTop: 0 }}>
+            Không bắt buộc. Chọn tối đa 2 lá. Lá ghi &quot;có họa&quot; vừa có lợi vừa có hại.
+          </p>
           <div className={`gacha-row ${best >= 3 ? 'gold' : ''}`} key={flip}>
             {cards.map((id, i) => {
               const g = giftOf(id)!;
               const on = picked.includes(id);
               return (
-                <button key={id} className={`gacha-card r${g.rare} ${on ? 'on' : ''}`} style={{ animationDelay: `${0.3 + i * 0.12}s`, ['--rc' as string]: RARE_COLOR[g.rare] }} onClick={() => toggle(id)} aria-pressed={on}>
+                <button
+                  key={id}
+                  className={`gacha-card r${g.rare} ${on ? 'on' : ''}`}
+                  style={{ animationDelay: `${0.3 + i * 0.12}s`, ['--rc' as string]: RARE_COLOR[g.rare] }}
+                  onClick={() => toggle(id)}
+                  aria-pressed={on}
+                >
                   <span className="gc-rare">{RARE_NAME[g.rare]}</span>
                   <b>{g.name}</b>
                   <small>{g.desc}</small>
@@ -168,16 +176,19 @@ export function TribulationOverlay({ realmName, onDone }: { realmName: string; o
     setPhase('calm');
     const w = Math.round(800 - idx * 40);
     setWin(w);
-    timer.current = setTimeout(() => {
-      setPhase('warn');
-      timer.current = setTimeout(() => {
-        setPhase('hit');
-        try {
-          navigator.vibrate?.(120);
-        } catch {}
-        timer.current = setTimeout(() => nextBolt(idx + 1), 550);
-      }, w);
-    }, 500 + Math.random() * 1100);
+    timer.current = setTimeout(
+      () => {
+        setPhase('warn');
+        timer.current = setTimeout(() => {
+          setPhase('hit');
+          try {
+            navigator.vibrate?.(120);
+          } catch {}
+          timer.current = setTimeout(() => nextBolt(idx + 1), 550);
+        }, w);
+      },
+      500 + Math.random() * 1100,
+    );
   };
 
   const tap = () => {
@@ -407,7 +418,6 @@ export function ShareCard({ c, ending, epitaph }: { c: Character; ending: Ending
   };
   return (
     <div className="share-card">
-
       {url ? (
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -465,7 +475,10 @@ export function Tutorial({ onDone }: { onDone: () => void }) {
   return (
     <div className="tut" role="dialog" aria-modal="true" aria-label={`Hướng dẫn: ${step.title}`}>
       {rect ? <div className="tut-hole" style={{ left: rect.left - 4, top: rect.top - 4, width: rect.width + 8, height: rect.height + 8 }} /> : <div className="tut-dim" />}
-      <div className="tut-card" style={rect ? (below ? { top: Math.min(window.innerHeight - 200, rect.bottom + 12) } : { bottom: Math.min(window.innerHeight - 200, window.innerHeight - rect.top + 12) }) : { top: '35%' }}>
+      <div
+        className="tut-card"
+        style={rect ? (below ? { top: Math.min(window.innerHeight - 200, rect.bottom + 12) } : { bottom: Math.min(window.innerHeight - 200, window.innerHeight - rect.top + 12) }) : { top: '35%' }}
+      >
         <small>
           {i + 1}/{TUT_STEPS.length}
         </small>

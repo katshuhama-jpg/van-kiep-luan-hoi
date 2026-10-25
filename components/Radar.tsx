@@ -17,12 +17,26 @@ export default function Radar({ axes, size = 220, color = '#b8432f' }: { axes: R
     const r = (Math.max(0, Math.min(140, v)) / 100) * R;
     return [cx + Math.cos(a) * r, cy + Math.sin(a) * r];
   };
-  const poly = (vals: number[]) => vals.map((v, i) => pt(i, v).map((x) => x.toFixed(1)).join(',')).join(' ');
+  const poly = (vals: number[]) =>
+    vals
+      .map((v, i) =>
+        pt(i, v)
+          .map((x) => x.toFixed(1))
+          .join(','),
+      )
+      .join(' ');
   const hasBase = axes.some((a) => a.base !== undefined);
   return (
     <svg viewBox="0 0 120 120" width={size} height={size} className="radar" role="img" aria-label={'Biểu đồ chỉ số: ' + axes.map((a) => `${a.label} ${Math.round(a.value)}`).join(', ')}>
       {[25, 50, 75, 100].map((lv) => (
-        <polygon key={lv} points={poly(axes.map(() => lv))} fill={lv === 100 ? '#fbf3dc' : 'none'} stroke="#c9b48a" strokeWidth={lv === 100 ? 1.2 : 0.6} strokeDasharray={lv === 100 ? undefined : '2 1.5'} />
+        <polygon
+          key={lv}
+          points={poly(axes.map(() => lv))}
+          fill={lv === 100 ? '#fbf3dc' : 'none'}
+          stroke="#c9b48a"
+          strokeWidth={lv === 100 ? 1.2 : 0.6}
+          strokeDasharray={lv === 100 ? undefined : '2 1.5'}
+        />
       ))}
       {axes.map((_, i) => {
         const [x, y] = pt(i, 100);

@@ -6,16 +6,25 @@ import type { Character } from './types';
  * Tên lấy từ truyện kiếm hiệp Kim Dung, Cổ Long, Lương Vũ Sinh, Hoàn Châu Lâu Chủ, Thủy Hử, Tam Quốc,
  * pha thêm vài tên tự đặt theo đúng lối Hán Việt để danh sách không lặp.
  */
-export type WeaponKind =
-  | 'kiem' | 'song' | 'dao' | 'thuong' | 'truong' | 'cung' | 'tieu' | 'sao' | 'quat' | 'but'
-  | 'chuy' | 'roi' | 'can' | 'liem' | 'phattran' | 'cuoc' | 'lodan' | 'quyen';
+export type WeaponKind = 'kiem' | 'song' | 'dao' | 'thuong' | 'truong' | 'cung' | 'tieu' | 'sao' | 'quat' | 'but' | 'chuy' | 'roi' | 'can' | 'liem' | 'phattran' | 'cuoc' | 'lodan' | 'quyen';
 
 export const VO_CONG: Record<WeaponKind, string[]> = {
   // Kiếm: Tiếu Ngạo, Thần Điêu, Ỷ Thiên, Bích Huyết Kiếm, Việt Nữ Kiếm, Cổ Long, Thục Sơn
   kiem: [
-    'Độc Cô Cửu Kiếm', 'Tịch Tà Kiếm Pháp', 'Thái Cực Kiếm', 'Ngọc Nữ Kiếm Pháp', 'Toàn Chân Kiếm Pháp',
-    'Hoa Sơn Kiếm Pháp', 'Thái Nhạc Tam Thanh Phong', 'Hồi Phong Phất Liễu Kiếm', 'Kim Xà Kiếm Pháp', 'Việt Nữ Kiếm',
-    'Thiên Ngoại Phi Tiên', 'Đoạt Mệnh Thập Tam Kiếm', 'Vạn Kiếm Quy Tông', 'Nhất Kiếm Đông Lai',
+    'Độc Cô Cửu Kiếm',
+    'Tịch Tà Kiếm Pháp',
+    'Thái Cực Kiếm',
+    'Ngọc Nữ Kiếm Pháp',
+    'Toàn Chân Kiếm Pháp',
+    'Hoa Sơn Kiếm Pháp',
+    'Thái Nhạc Tam Thanh Phong',
+    'Hồi Phong Phất Liễu Kiếm',
+    'Kim Xà Kiếm Pháp',
+    'Việt Nữ Kiếm',
+    'Thiên Ngoại Phi Tiên',
+    'Đoạt Mệnh Thập Tam Kiếm',
+    'Vạn Kiếm Quy Tông',
+    'Nhất Kiếm Đông Lai',
   ],
   // Song kiếm: Thần Điêu (Ngọc Nữ - Toàn Chân hợp bích), Ỷ Thiên (Lưỡng Nghi), truyền thuyết Can Tương - Mạc Tà
   song: ['Song Kiếm Hợp Bích', 'Lưỡng Nghi Kiếm Pháp', 'Thư Hùng Song Kiếm', 'Âm Dương Song Sát', 'Uyên Ương Song Phi', 'Nhật Nguyệt Đồng Huy'],
@@ -51,9 +60,21 @@ export const VO_CONG: Record<WeaponKind, string[]> = {
   lodan: ['Bát Quái Lô Hỏa', 'Đan Hỏa Phần Thiên', 'Tam Muội Chân Hỏa', 'Cửu Chuyển Kim Đan'],
   // Quyền, chưởng, trảo (thủ sáo hoặc tay không): Thiên Long, Xạ Điêu, Thần Điêu, Ỷ Thiên, Hoàng Phi Hồng
   quyen: [
-    'Hàng Long Thập Bát Chưởng', 'Kháng Long Hữu Hối', 'Thần Long Bãi Vĩ', 'Thất Thương Quyền', 'Không Minh Quyền',
-    'Thái Tổ Trường Quyền', 'Cửu Âm Bạch Cốt Trảo', 'Hổ Trảo Công', 'Ưng Trảo Công', 'Thiên Sơn Lục Dương Chưởng',
-    'Ảm Nhiên Tiêu Hồn Chưởng', 'Bàn Nhược Chưởng', 'Hàm Mô Công', 'Phật Sơn Vô Ảnh Cước', 'La Hán Quyền',
+    'Hàng Long Thập Bát Chưởng',
+    'Kháng Long Hữu Hối',
+    'Thần Long Bãi Vĩ',
+    'Thất Thương Quyền',
+    'Không Minh Quyền',
+    'Thái Tổ Trường Quyền',
+    'Cửu Âm Bạch Cốt Trảo',
+    'Hổ Trảo Công',
+    'Ưng Trảo Công',
+    'Thiên Sơn Lục Dương Chưởng',
+    'Ảm Nhiên Tiêu Hồn Chưởng',
+    'Bàn Nhược Chưởng',
+    'Hàm Mô Công',
+    'Phật Sơn Vô Ảnh Cước',
+    'La Hán Quyền',
   ],
 };
 

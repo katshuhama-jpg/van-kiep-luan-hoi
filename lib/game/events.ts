@@ -5,9 +5,10 @@ import { EVENTS2 } from './events2';
 import { EVENTS3 } from './events3';
 import { HOOK_EVENTS } from './hookEvents';
 import { TA_EVENTS } from './taEvents';
+import { SECT_EVENTS } from './sectEvents';
+import { joinSect, rankByRoot, rankName } from './sect';
 import { CHILD_EVENTS } from './childhood';
 import { PET_EVENT, PET_STORIES } from './pets';
-
 
 export const EVENTS: GameEvent[] = [
   // ---------------- Tuổi thơ: mỗi người một bộ lựa chọn khác nhau ----------------
@@ -20,18 +21,97 @@ export const EVENTS: GameEvent[] = [
     title: 'Lễ thôi nôi',
     text: () => 'Cả nhà bày đồ vật ra chiếu. Bạn bò tới và chộp lấy...',
     choices: (_c, seed) =>
-      sample<Choice>(seed, [
-        { label: 'Cuốn sách cũ', lean: 'trung', run: (c) => { stat(c, 'ngoTinh', 8); return 'Bạn ôm cuốn sách không buông. Ông bà nói sau này hẳn là người đọc sách.'; } },
-        { label: 'Thanh kiếm gỗ', lean: 'trung', run: (c) => { giveItem(c, 'moc_kiem'); stat(c, 'sucKhoe', 6); return 'Bạn vung kiếm gỗ trúng đầu chú họ. Cả nhà cười ầm.'; } },
-        { label: 'Viên linh thạch', lean: 'trung', run: (c) => { money(c, 20); stat(c, 'khiVan', 4); return 'Bạn ngậm viên linh thạch vào miệng. Bà nội nói đứa này có tướng giàu.'; } },
-        { label: 'Con rắn nhỏ lạc vào nhà', lean: 'ta', run: (c) => { dao(c, -4); stat(c, 'khiVan', 6); return 'Bạn bóp chặt con rắn tới khi nó bất động. Không ai dám nói gì.'; } },
-        { label: 'Cây bút lông', lean: 'chinh', run: (c) => { stat(c, 'ngoTinh', 5); stat(c, 'tamCanh', 3); return 'Bạn quẹt mực lên mặt cả nhà. Ông đồ hàng xóm bảo nét bút có thần.'; } },
-        { label: 'Con ấn ngọc của cha', lean: 'trung', run: (c) => { stat(c, 'khiVan', 8); return 'Bạn cầm ấn ngọc đập xuống chiếu. Thầy bói đi ngang qua giật mình nhìn lại.'; } },
-        { label: 'Bình rượu của ông nội', lean: 'trung', run: (c) => { stat(c, 'sucKhoe', -4); stat(c, 'tamCanh', 6); return 'Bạn tu một ngụm rồi ngủ li bì hai ngày. Ông nội cười: "Có khí phách tửu tiên!"'; } },
-        { label: 'Lá bùa vàng trên vách', lean: 'trung', run: (c) => { addCult(c, 6); return 'Lá bùa bốc cháy trong tay bạn mà không bỏng. Cả nhà sợ hãi.'; } },
-        { label: 'Chiếc gương đồng', lean: 'trung', run: (c) => { stat(c, 'tamCanh', 5); return 'Bạn nhìn vào gương, cười khanh khách với chính mình cả buổi.'; } },
-        { label: 'Cái bánh bao', lean: 'trung', run: (c) => { stat(c, 'sucKhoe', 8); return 'Bạn chọn ngay cái bánh bao. Người lớn thở dài, nhưng bạn lớn rất nhanh.'; } },
-      ], 4),
+      sample<Choice>(
+        seed,
+        [
+          {
+            label: 'Cuốn sách cũ',
+            lean: 'trung',
+            run: (c) => {
+              stat(c, 'ngoTinh', 8);
+              return 'Bạn ôm cuốn sách không buông. Ông bà nói sau này hẳn là người đọc sách.';
+            },
+          },
+          {
+            label: 'Thanh kiếm gỗ',
+            lean: 'trung',
+            run: (c) => {
+              giveItem(c, 'moc_kiem');
+              stat(c, 'sucKhoe', 6);
+              return 'Bạn vung kiếm gỗ trúng đầu chú họ. Cả nhà cười ầm.';
+            },
+          },
+          {
+            label: 'Viên linh thạch',
+            lean: 'trung',
+            run: (c) => {
+              money(c, 20);
+              stat(c, 'khiVan', 4);
+              return 'Bạn ngậm viên linh thạch vào miệng. Bà nội nói đứa này có tướng giàu.';
+            },
+          },
+          {
+            label: 'Con rắn nhỏ lạc vào nhà',
+            lean: 'ta',
+            run: (c) => {
+              dao(c, -4);
+              stat(c, 'khiVan', 6);
+              return 'Bạn bóp chặt con rắn tới khi nó bất động. Không ai dám nói gì.';
+            },
+          },
+          {
+            label: 'Cây bút lông',
+            lean: 'chinh',
+            run: (c) => {
+              stat(c, 'ngoTinh', 5);
+              stat(c, 'tamCanh', 3);
+              return 'Bạn quẹt mực lên mặt cả nhà. Ông đồ hàng xóm bảo nét bút có thần.';
+            },
+          },
+          {
+            label: 'Con ấn ngọc của cha',
+            lean: 'trung',
+            run: (c) => {
+              stat(c, 'khiVan', 8);
+              return 'Bạn cầm ấn ngọc đập xuống chiếu. Thầy bói đi ngang qua giật mình nhìn lại.';
+            },
+          },
+          {
+            label: 'Bình rượu của ông nội',
+            lean: 'trung',
+            run: (c) => {
+              stat(c, 'sucKhoe', -4);
+              stat(c, 'tamCanh', 6);
+              return 'Bạn tu một ngụm rồi ngủ li bì hai ngày. Ông nội cười: "Có khí phách tửu tiên!"';
+            },
+          },
+          {
+            label: 'Lá bùa vàng trên vách',
+            lean: 'trung',
+            run: (c) => {
+              addCult(c, 6);
+              return 'Lá bùa bốc cháy trong tay bạn mà không bỏng. Cả nhà sợ hãi.';
+            },
+          },
+          {
+            label: 'Chiếc gương đồng',
+            lean: 'trung',
+            run: (c) => {
+              stat(c, 'tamCanh', 5);
+              return 'Bạn nhìn vào gương, cười khanh khách với chính mình cả buổi.';
+            },
+          },
+          {
+            label: 'Cái bánh bao',
+            lean: 'trung',
+            run: (c) => {
+              stat(c, 'sucKhoe', 8);
+              return 'Bạn chọn ngay cái bánh bao. Người lớn thở dài, nhưng bạn lớn rất nhanh.';
+            },
+          },
+        ],
+        4,
+      ),
   },
   {
     id: 'tuoi_tho',
@@ -42,17 +122,95 @@ export const EVENTS: GameEvent[] = [
     title: 'Những ngày bé',
     text: () => 'Mùa hè năm ấy dài lê thê. Bạn dành phần lớn thời gian để...',
     choices: (_c, seed) =>
-      sample<Choice>(seed, [
-        { label: 'Học chữ với thầy đồ', lean: 'chinh', run: (c) => { stat(c, 'ngoTinh', 6); dao(c, 3); return 'Thầy đồ khen bạn chữ đẹp, đọc một hiểu mười.'; } },
-        { label: 'Tập võ với ông lão đầu làng', lean: 'trung', run: (c) => { stat(c, 'sucKhoe', 10); return 'Ông lão dạy bạn mấy thế quyền. Người rắn rỏi hẳn ra.'; } },
-        { label: 'Chăn trâu, nằm ngắm mây', lean: 'trung', run: (c) => { stat(c, 'tamCanh', 10); return 'Nằm trên lưng trâu nhìn mây trôi, lòng bạn tĩnh lặng lạ thường.'; } },
-        { label: 'Đi trộm gà nhà hàng xóm', lean: 'ta', run: (c, ctx) => { dao(c, -6); if (ctx.rnd() < 0.5) { stat(c, 'khiVan', 5); return 'Bạn trộm được cả con gà béo. Không ai phát hiện.'; } stat(c, 'sucKhoe', -8); return 'Bị chó đuổi cắn một miếng, về nhà còn bị đòn.'; } },
-        { label: 'Leo vách đá bắt tổ chim', lean: 'trung', run: (c, ctx) => { const f = fatal(c, ctx, 0.08, 'Bạn trượt tay rơi từ vách đá xuống. Năm ấy bạn mới lên bảy.'); if (c.dead) return 'Gần tới tổ chim rồi...' + f; stat(c, 'sucKhoe', 6); return 'Bạn mang về ba quả trứng chim, mẹ mắng nhưng vẫn luộc cho ăn.' + (f ?? ''); } },
-        { label: 'Theo cha ra chợ bán hàng', lean: 'trung', run: (c) => { money(c, 15); return 'Bạn học được cách mặc cả. Cha khen đứa này có đầu óc buôn bán.'; } },
-        { label: 'Nghe ông kể chuyện tiên nhân', lean: 'trung', run: (c) => { addCult(c, 5); stat(c, 'ngoTinh', 3); return 'Đêm nào bạn cũng mơ thấy mình bay trên mây.'; } },
-        { label: 'Bắt nạt đứa bé hàng xóm', lean: 'ta', run: (c) => { dao(c, -5); stat(c, 'tamMa', 4); return 'Đứa bé khóc chạy về nhà. Bạn thấy mình oai lắm.'; } },
-        { label: 'Giúp bà cụ mù gánh nước', lean: 'chinh', run: (c) => { dao(c, 6); stat(c, 'khiVan', 4); return 'Bà cụ sờ đầu bạn: "Đứa trẻ ngoan, trời sẽ thương con."'; } },
-      ], 4),
+      sample<Choice>(
+        seed,
+        [
+          {
+            label: 'Học chữ với thầy đồ',
+            lean: 'chinh',
+            run: (c) => {
+              stat(c, 'ngoTinh', 6);
+              dao(c, 3);
+              return 'Thầy đồ khen bạn chữ đẹp, đọc một hiểu mười.';
+            },
+          },
+          {
+            label: 'Tập võ với ông lão đầu làng',
+            lean: 'trung',
+            run: (c) => {
+              stat(c, 'sucKhoe', 10);
+              return 'Ông lão dạy bạn mấy thế quyền. Người rắn rỏi hẳn ra.';
+            },
+          },
+          {
+            label: 'Chăn trâu, nằm ngắm mây',
+            lean: 'trung',
+            run: (c) => {
+              stat(c, 'tamCanh', 10);
+              return 'Nằm trên lưng trâu nhìn mây trôi, lòng bạn tĩnh lặng lạ thường.';
+            },
+          },
+          {
+            label: 'Đi trộm gà nhà hàng xóm',
+            lean: 'ta',
+            run: (c, ctx) => {
+              dao(c, -6);
+              if (ctx.rnd() < 0.5) {
+                stat(c, 'khiVan', 5);
+                return 'Bạn trộm được cả con gà béo. Không ai phát hiện.';
+              }
+              stat(c, 'sucKhoe', -8);
+              return 'Bị chó đuổi cắn một miếng, về nhà còn bị đòn.';
+            },
+          },
+          {
+            label: 'Leo vách đá bắt tổ chim',
+            lean: 'trung',
+            run: (c, ctx) => {
+              const f = fatal(c, ctx, 0.08, 'Bạn trượt tay rơi từ vách đá xuống. Năm ấy bạn mới lên bảy.');
+              if (c.dead) return 'Gần tới tổ chim rồi...' + f;
+              stat(c, 'sucKhoe', 6);
+              return 'Bạn mang về ba quả trứng chim, mẹ mắng nhưng vẫn luộc cho ăn.' + (f ?? '');
+            },
+          },
+          {
+            label: 'Theo cha ra chợ bán hàng',
+            lean: 'trung',
+            run: (c) => {
+              money(c, 15);
+              return 'Bạn học được cách mặc cả. Cha khen đứa này có đầu óc buôn bán.';
+            },
+          },
+          {
+            label: 'Nghe ông kể chuyện tiên nhân',
+            lean: 'trung',
+            run: (c) => {
+              addCult(c, 5);
+              stat(c, 'ngoTinh', 3);
+              return 'Đêm nào bạn cũng mơ thấy mình bay trên mây.';
+            },
+          },
+          {
+            label: 'Bắt nạt đứa bé hàng xóm',
+            lean: 'ta',
+            run: (c) => {
+              dao(c, -5);
+              stat(c, 'tamMa', 4);
+              return 'Đứa bé khóc chạy về nhà. Bạn thấy mình oai lắm.';
+            },
+          },
+          {
+            label: 'Giúp bà cụ mù gánh nước',
+            lean: 'chinh',
+            run: (c) => {
+              dao(c, 6);
+              stat(c, 'khiVan', 4);
+              return 'Bà cụ sờ đầu bạn: "Đứa trẻ ngoan, trời sẽ thương con."';
+            },
+          },
+        ],
+        4,
+      ),
   },
   {
     id: 'sot_dau',
@@ -118,14 +276,68 @@ export const EVENTS: GameEvent[] = [
     title: 'Trốn tìm',
     text: () => 'Lũ trẻ trong làng chơi trốn tìm. Bạn phải tìm chỗ trốn thật nhanh.',
     choices: (_c, seed) =>
-      sample<Choice>(seed, [
-        { label: 'Nhảy qua miệng giếng cổ', lean: 'trung', run: (c, ctx) => { const f = fatal(c, ctx, 0.15, 'Bạn trượt chân rơi xuống giếng cổ. Ba ngày sau người ta mới vớt được.'); if (c.dead) return 'Bạn lấy đà...' + f; stat(c, 'khiVan', 4); return 'Bạn nhảy qua ngon lành, không ai tìm ra.' + (f ?? ''); } },
-        { label: 'Trèo lên ngọn cây đa', lean: 'trung', run: (c, ctx) => { const f = fatal(c, ctx, 0.08, 'Cành cây gãy. Bạn rơi xuống đất, không bao giờ tỉnh lại.'); if (c.dead) return 'Càng trèo càng cao...' + f; stat(c, 'sucKhoe', 4); return 'Bạn ngủ quên trên cây, cả làng đi tìm đến tối.' + (f ?? ''); } },
-        { label: 'Trốn trong kho thóc', lean: 'trung', run: (c) => { stat(c, 'tamCanh', 3); return 'Bạn ngủ thiếp đi trong đống thóc ấm áp.'; } },
-        { label: 'Trốn vào ngôi miếu hoang', lean: 'trung', run: (c, ctx) => { if (ctx.rnd() < 0.4) { addCult(c, 10); return 'Trong miếu có pho tượng phát sáng. Bạn chạm vào, người ấm lên lạ thường.'; } stat(c, 'tamMa', 5); return 'Trong miếu tối om, bạn sợ phát khóc.'; } },
-        { label: 'Lén nhốt đứa bạn vào chuồng heo', lean: 'ta', run: (c) => { dao(c, -4); return 'Đứa bạn kêu la cả buổi chiều. Bạn cười đau cả bụng.'; } },
-        { label: 'Bỏ cuộc, về nhà ăn cơm', lean: 'trung', run: (c) => { stat(c, 'sucKhoe', 3); return 'Mẹ nấu canh cua. Trò chơi gì cũng không bằng.'; } },
-      ], 4),
+      sample<Choice>(
+        seed,
+        [
+          {
+            label: 'Nhảy qua miệng giếng cổ',
+            lean: 'trung',
+            run: (c, ctx) => {
+              const f = fatal(c, ctx, 0.15, 'Bạn trượt chân rơi xuống giếng cổ. Ba ngày sau người ta mới vớt được.');
+              if (c.dead) return 'Bạn lấy đà...' + f;
+              stat(c, 'khiVan', 4);
+              return 'Bạn nhảy qua ngon lành, không ai tìm ra.' + (f ?? '');
+            },
+          },
+          {
+            label: 'Trèo lên ngọn cây đa',
+            lean: 'trung',
+            run: (c, ctx) => {
+              const f = fatal(c, ctx, 0.08, 'Cành cây gãy. Bạn rơi xuống đất, không bao giờ tỉnh lại.');
+              if (c.dead) return 'Càng trèo càng cao...' + f;
+              stat(c, 'sucKhoe', 4);
+              return 'Bạn ngủ quên trên cây, cả làng đi tìm đến tối.' + (f ?? '');
+            },
+          },
+          {
+            label: 'Trốn trong kho thóc',
+            lean: 'trung',
+            run: (c) => {
+              stat(c, 'tamCanh', 3);
+              return 'Bạn ngủ thiếp đi trong đống thóc ấm áp.';
+            },
+          },
+          {
+            label: 'Trốn vào ngôi miếu hoang',
+            lean: 'trung',
+            run: (c, ctx) => {
+              if (ctx.rnd() < 0.4) {
+                addCult(c, 10);
+                return 'Trong miếu có pho tượng phát sáng. Bạn chạm vào, người ấm lên lạ thường.';
+              }
+              stat(c, 'tamMa', 5);
+              return 'Trong miếu tối om, bạn sợ phát khóc.';
+            },
+          },
+          {
+            label: 'Lén nhốt đứa bạn vào chuồng heo',
+            lean: 'ta',
+            run: (c) => {
+              dao(c, -4);
+              return 'Đứa bạn kêu la cả buổi chiều. Bạn cười đau cả bụng.';
+            },
+          },
+          {
+            label: 'Bỏ cuộc, về nhà ăn cơm',
+            lean: 'trung',
+            run: (c) => {
+              stat(c, 'sucKhoe', 3);
+              return 'Mẹ nấu canh cua. Trò chơi gì cũng không bằng.';
+            },
+          },
+        ],
+        4,
+      ),
   },
   {
     id: 'ke_la',
@@ -136,10 +348,42 @@ export const EVENTS: GameEvent[] = [
     title: 'Người lạ cho kẹo',
     text: () => 'Một gã mặc áo xám đứng ở đầu ngõ, chìa ra gói kẹo mạch nha: "Theo chú, chú cho cả gói."',
     choices: () => [
-      { label: 'Cầm kẹo, đi theo', lean: 'trung', run: (c, ctx) => { const f = fatal(c, ctx, 0.5, 'Bạn bị bắt cóc, bán sang biên ải. Không ai còn thấy bạn nữa.'); if (c.dead) return 'Gã dắt tay bạn đi xa dần...' + f; stat(c, 'khiVan', 5); return 'Đi được nửa đường thì gặp tuần binh. Gã bỏ chạy, bạn được đưa về nhà.' + (f ?? ''); } },
-      { label: 'Lắc đầu, chạy về nhà', lean: 'chinh', run: (c) => { stat(c, 'tamCanh', 4); return 'Mẹ nghe chuyện, ôm bạn thật chặt.'; } },
-      { label: 'Hét to gọi người lớn', lean: 'chinh', run: (c) => { dao(c, 5); stat(c, 'khiVan', 3); return 'Cả xóm chạy ra, bắt được tên buôn người. Quan phủ khen bạn.'; } },
-      { label: 'Giật gói kẹo rồi bỏ chạy', lean: 'ta', run: (c, ctx) => { dao(c, -3); if (ctx.rnd() < 0.6) return 'Bạn chạy nhanh hơn hắn. Kẹo ngọt lắm.'; return 'Hắn tóm được cổ áo bạn, đánh cho một trận rồi bỏ đi.' + hurt(c, 15, ctx); } },
+      {
+        label: 'Cầm kẹo, đi theo',
+        lean: 'trung',
+        run: (c, ctx) => {
+          const f = fatal(c, ctx, 0.5, 'Bạn bị bắt cóc, bán sang biên ải. Không ai còn thấy bạn nữa.');
+          if (c.dead) return 'Gã dắt tay bạn đi xa dần...' + f;
+          stat(c, 'khiVan', 5);
+          return 'Đi được nửa đường thì gặp tuần binh. Gã bỏ chạy, bạn được đưa về nhà.' + (f ?? '');
+        },
+      },
+      {
+        label: 'Lắc đầu, chạy về nhà',
+        lean: 'chinh',
+        run: (c) => {
+          stat(c, 'tamCanh', 4);
+          return 'Mẹ nghe chuyện, ôm bạn thật chặt.';
+        },
+      },
+      {
+        label: 'Hét to gọi người lớn',
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 5);
+          stat(c, 'khiVan', 3);
+          return 'Cả xóm chạy ra, bắt được tên buôn người. Quan phủ khen bạn.';
+        },
+      },
+      {
+        label: 'Giật gói kẹo rồi bỏ chạy',
+        lean: 'ta',
+        run: (c, ctx) => {
+          dao(c, -3);
+          if (ctx.rnd() < 0.6) return 'Bạn chạy nhanh hơn hắn. Kẹo ngọt lắm.';
+          return 'Hắn tóm được cổ áo bạn, đánh cho một trận rồi bỏ đi.' + hurt(c, 15, ctx);
+        },
+      },
     ],
   },
   {
@@ -151,13 +395,62 @@ export const EVENTS: GameEvent[] = [
     title: 'Tắm sông',
     text: () => 'Trưa hè, lũ trẻ rủ nhau ra khúc sông đầu làng tắm. Nước năm nay chảy xiết.',
     choices: (_c, seed) =>
-      sample<Choice>(seed, [
-        { label: 'Thi lặn xem ai lâu nhất', lean: 'trung', run: (c, ctx) => { const f = fatal(c, ctx, 0.1, 'Bạn bị dòng xoáy kéo xuống. Khúc sông năm ấy cướp mất một đứa trẻ.'); if (c.dead) return 'Bạn hít một hơi thật sâu...' + f; stat(c, 'sucKhoe', 6); return 'Bạn thắng, lũ bạn phục sát đất.' + (f ?? ''); } },
-        { label: 'Lao ra cứu đứa bạn đuối nước', lean: 'chinh', run: (c, ctx) => { dao(c, 10); const f = fatal(c, ctx, 0.15, 'Bạn cứu được bạn mình, nhưng kiệt sức và bị nước cuốn đi.'); if (c.dead) return 'Bạn bơi ra giữa dòng...' + f; stat(c, 'khiVan', 6); return 'Bạn kéo được bạn vào bờ. Nhà nó mang gà sang cảm ơn.' + (f ?? ''); } },
-        { label: 'Ngồi trên bờ trông quần áo', lean: 'trung', run: (c) => { stat(c, 'tamCanh', 3); return 'Bạn ngồi trên bờ ngắm chuồn chuồn cả buổi trưa.'; } },
-        { label: 'Đẩy thằng hay bắt nạt xuống chỗ sâu', lean: 'ta', run: (c, ctx) => { dao(c, -10); stat(c, 'tamMa', 8); if (ctx.rnd() < 0.3) { c.enemy = c.enemy ?? 'gia đình đứa trẻ chết đuối năm xưa'; return 'Nó không nổi lên nữa. Bạn đứng chết lặng.'; } return 'Nó uống no nước, từ đó sợ bạn một phép.'; } },
-        { label: 'Bắt cá về cho mẹ', lean: 'trung', run: (c) => { money(c, 5); return 'Bạn bắt được con cá chép to. Mẹ nấu canh chua.'; } },
-      ], 4),
+      sample<Choice>(
+        seed,
+        [
+          {
+            label: 'Thi lặn xem ai lâu nhất',
+            lean: 'trung',
+            run: (c, ctx) => {
+              const f = fatal(c, ctx, 0.1, 'Bạn bị dòng xoáy kéo xuống. Khúc sông năm ấy cướp mất một đứa trẻ.');
+              if (c.dead) return 'Bạn hít một hơi thật sâu...' + f;
+              stat(c, 'sucKhoe', 6);
+              return 'Bạn thắng, lũ bạn phục sát đất.' + (f ?? '');
+            },
+          },
+          {
+            label: 'Lao ra cứu đứa bạn đuối nước',
+            lean: 'chinh',
+            run: (c, ctx) => {
+              dao(c, 10);
+              const f = fatal(c, ctx, 0.15, 'Bạn cứu được bạn mình, nhưng kiệt sức và bị nước cuốn đi.');
+              if (c.dead) return 'Bạn bơi ra giữa dòng...' + f;
+              stat(c, 'khiVan', 6);
+              return 'Bạn kéo được bạn vào bờ. Nhà nó mang gà sang cảm ơn.' + (f ?? '');
+            },
+          },
+          {
+            label: 'Ngồi trên bờ trông quần áo',
+            lean: 'trung',
+            run: (c) => {
+              stat(c, 'tamCanh', 3);
+              return 'Bạn ngồi trên bờ ngắm chuồn chuồn cả buổi trưa.';
+            },
+          },
+          {
+            label: 'Đẩy thằng hay bắt nạt xuống chỗ sâu',
+            lean: 'ta',
+            run: (c, ctx) => {
+              dao(c, -10);
+              stat(c, 'tamMa', 8);
+              if (ctx.rnd() < 0.3) {
+                c.enemy = c.enemy ?? 'gia đình đứa trẻ chết đuối năm xưa';
+                return 'Nó không nổi lên nữa. Bạn đứng chết lặng.';
+              }
+              return 'Nó uống no nước, từ đó sợ bạn một phép.';
+            },
+          },
+          {
+            label: 'Bắt cá về cho mẹ',
+            lean: 'trung',
+            run: (c) => {
+              money(c, 5);
+              return 'Bạn bắt được con cá chép to. Mẹ nấu canh chua.';
+            },
+          },
+        ],
+        4,
+      ),
   },
   {
     id: 'am_sat_the_gia',
@@ -169,10 +462,46 @@ export const EVENTS: GameEvent[] = [
     title: 'Tranh đoạt trong thế gia',
     text: () => 'Chi trưởng Lâm gia sợ chi thứ có người tài tranh quyền. Nửa đêm, bạn nghe tiếng bước chân lạ ngoài cửa sổ.',
     choices: () => [
-      { label: 'Trốn vào mật thất của cha', lean: 'trung', run: (c, ctx) => { const f = fatal(c, ctx, 0.15, 'Thích khách tìm ra mật thất. Bạn chết khi mới vài tuổi đầu.'); if (c.dead) return 'Bạn nín thở trong bóng tối...' + f; return 'Thích khách lục soát cả đêm không thấy. Từ đó bạn ngủ không yên.' + (f ?? ''); } },
-      { label: 'Chạy sang báo cho cha', lean: 'chinh', run: (c, ctx) => { const f = fatal(c, ctx, 0.2, 'Một mũi phi tiêu tẩm độc trúng lưng khi bạn băng qua sân.'); if (c.dead) return 'Bạn chạy băng qua sân...' + f; dao(c, 4); return 'Cha kịp đánh lui thích khách. Gia tộc rúng động.' + (f ?? ''); } },
-      { label: 'Giả vờ ngủ say', lean: 'trung', run: (c, ctx) => { const f = fatal(c, ctx, 0.35, 'Thích khách không cần biết bạn thức hay ngủ.'); if (c.dead) return 'Bạn nhắm mắt...' + f; stat(c, 'tamCanh', 8); return 'Hắn đứng nhìn bạn rất lâu, rồi lặng lẽ bỏ đi. Có lẽ hắn cũng có con.' + (f ?? ''); } },
-      { label: 'Ném đèn dầu đốt luôn căn phòng', lean: 'ta', run: (c, ctx) => { dao(c, -6); const f = fatal(c, ctx, 0.12, 'Lửa lan quá nhanh, bạn không thoát ra được.'); if (c.dead) return 'Ngọn lửa bùng lên...' + f; c.enemy = c.enemy ?? 'chi trưởng Lâm gia'; return 'Thích khách chết cháy, bạn nhảy qua cửa sổ thoát thân.' + (f ?? ''); } },
+      {
+        label: 'Trốn vào mật thất của cha',
+        lean: 'trung',
+        run: (c, ctx) => {
+          const f = fatal(c, ctx, 0.15, 'Thích khách tìm ra mật thất. Bạn chết khi mới vài tuổi đầu.');
+          if (c.dead) return 'Bạn nín thở trong bóng tối...' + f;
+          return 'Thích khách lục soát cả đêm không thấy. Từ đó bạn ngủ không yên.' + (f ?? '');
+        },
+      },
+      {
+        label: 'Chạy sang báo cho cha',
+        lean: 'chinh',
+        run: (c, ctx) => {
+          const f = fatal(c, ctx, 0.2, 'Một mũi phi tiêu tẩm độc trúng lưng khi bạn băng qua sân.');
+          if (c.dead) return 'Bạn chạy băng qua sân...' + f;
+          dao(c, 4);
+          return 'Cha kịp đánh lui thích khách. Gia tộc rúng động.' + (f ?? '');
+        },
+      },
+      {
+        label: 'Giả vờ ngủ say',
+        lean: 'trung',
+        run: (c, ctx) => {
+          const f = fatal(c, ctx, 0.35, 'Thích khách không cần biết bạn thức hay ngủ.');
+          if (c.dead) return 'Bạn nhắm mắt...' + f;
+          stat(c, 'tamCanh', 8);
+          return 'Hắn đứng nhìn bạn rất lâu, rồi lặng lẽ bỏ đi. Có lẽ hắn cũng có con.' + (f ?? '');
+        },
+      },
+      {
+        label: 'Ném đèn dầu đốt luôn căn phòng',
+        lean: 'ta',
+        run: (c, ctx) => {
+          dao(c, -6);
+          const f = fatal(c, ctx, 0.12, 'Lửa lan quá nhanh, bạn không thoát ra được.');
+          if (c.dead) return 'Ngọn lửa bùng lên...' + f;
+          c.enemy = c.enemy ?? 'chi trưởng Lâm gia';
+          return 'Thích khách chết cháy, bạn nhảy qua cửa sổ thoát thân.' + (f ?? '');
+        },
+      },
     ],
   },
   {
@@ -185,13 +514,62 @@ export const EVENTS: GameEvent[] = [
     title: 'Năm mất mùa',
     text: () => 'Hạn hán cả năm, ruộng nứt nẻ. Nhà không còn hạt gạo nào.',
     choices: (_c, seed) =>
-      sample<Choice>(seed, [
-        { label: 'Đào rễ cây trên núi ăn', lean: 'trung', run: (c, ctx) => { const f = fatal(c, ctx, 0.12, 'Bạn ăn nhầm rễ cây độc. Cả nhà khóc ngất.'); if (c.dead) return 'Bạn nhai rễ cây đắng ngắt...' + f; stat(c, 'sucKhoe', -6); return 'Đắng, nhưng sống qua được mùa đói.' + (f ?? ''); } },
-        { label: 'Theo mẹ đi ăn xin', lean: 'trung', run: (c) => { stat(c, 'tamMa', 4); stat(c, 'tamCanh', 4); return 'Bạn học được rằng lòng người có ấm có lạnh.'; } },
-        { label: 'Lẻn vào kho lương nhà quan', lean: 'ta', run: (c, ctx) => { dao(c, -6); const f = fatal(c, ctx, 0.18, 'Bạn bị lính canh bắt được, đánh chết ngay trước cổng kho.'); if (c.dead) return 'Bạn chui qua lỗ chó...' + f; money(c, 10); return 'Bạn vác về được nửa bao gạo. Cả nhà sống qua mùa đông.' + (f ?? ''); } },
-        { label: 'Xin làm đầy tớ cho địa chủ', lean: 'trung', run: (c) => { money(c, 15); stat(c, 'khiVan', -3); return 'Bạn được ăn no, nhưng ngày nào cũng bị roi vọt.'; } },
-        { label: 'Nhường phần ăn cho em', lean: 'chinh', run: (c, ctx) => { dao(c, 8); const f = fatal(c, ctx, 0.1, 'Bạn nhường hết phần ăn, rồi gầy dần và không qua khỏi mùa đông ấy.'); if (c.dead) return 'Bạn bảo mình không đói...' + f; stat(c, 'tamCanh', 8); return 'Em bạn sống. Bạn cũng sống, gầy trơ xương.' + (f ?? ''); } },
-      ], 4),
+      sample<Choice>(
+        seed,
+        [
+          {
+            label: 'Đào rễ cây trên núi ăn',
+            lean: 'trung',
+            run: (c, ctx) => {
+              const f = fatal(c, ctx, 0.12, 'Bạn ăn nhầm rễ cây độc. Cả nhà khóc ngất.');
+              if (c.dead) return 'Bạn nhai rễ cây đắng ngắt...' + f;
+              stat(c, 'sucKhoe', -6);
+              return 'Đắng, nhưng sống qua được mùa đói.' + (f ?? '');
+            },
+          },
+          {
+            label: 'Theo mẹ đi ăn xin',
+            lean: 'trung',
+            run: (c) => {
+              stat(c, 'tamMa', 4);
+              stat(c, 'tamCanh', 4);
+              return 'Bạn học được rằng lòng người có ấm có lạnh.';
+            },
+          },
+          {
+            label: 'Lẻn vào kho lương nhà quan',
+            lean: 'ta',
+            run: (c, ctx) => {
+              dao(c, -6);
+              const f = fatal(c, ctx, 0.18, 'Bạn bị lính canh bắt được, đánh chết ngay trước cổng kho.');
+              if (c.dead) return 'Bạn chui qua lỗ chó...' + f;
+              money(c, 10);
+              return 'Bạn vác về được nửa bao gạo. Cả nhà sống qua mùa đông.' + (f ?? '');
+            },
+          },
+          {
+            label: 'Xin làm đầy tớ cho địa chủ',
+            lean: 'trung',
+            run: (c) => {
+              money(c, 15);
+              stat(c, 'khiVan', -3);
+              return 'Bạn được ăn no, nhưng ngày nào cũng bị roi vọt.';
+            },
+          },
+          {
+            label: 'Nhường phần ăn cho em',
+            lean: 'chinh',
+            run: (c, ctx) => {
+              dao(c, 8);
+              const f = fatal(c, ctx, 0.1, 'Bạn nhường hết phần ăn, rồi gầy dần và không qua khỏi mùa đông ấy.');
+              if (c.dead) return 'Bạn bảo mình không đói...' + f;
+              stat(c, 'tamCanh', 8);
+              return 'Em bạn sống. Bạn cũng sống, gầy trơ xương.' + (f ?? '');
+            },
+          },
+        ],
+        4,
+      ),
   },
   {
     id: 'chua_tuoi_tho',
@@ -203,10 +581,41 @@ export const EVENTS: GameEvent[] = [
     title: 'Tiểu sa di',
     text: () => 'Bạn lớn lên trong chùa Vân Tịch. Mỗi sáng sư cụ bắt dậy từ canh tư.',
     choices: () => [
-      { label: 'Chăm chỉ tụng kinh', lean: 'chinh', run: (c) => { dao(c, 8); stat(c, 'tamCanh', 8); return 'Bạn thuộc lòng cả bộ Kim Cương Kinh.'; } },
-      { label: 'Trốn ra suối bắt cá', lean: 'trung', run: (c) => { stat(c, 'sucKhoe', 6); return 'Sư cụ biết hết, chỉ cười rồi phạt bạn quét sân.'; } },
-      { label: 'Hỏi sư tổ về đạo trường sinh', lean: 'trung', run: (c) => { addCult(c, 12); stat(c, 'ngoTinh', 4); return 'Sư tổ im lặng hồi lâu, rồi dạy bạn một câu khẩu quyết.'; } },
-      { label: 'Ăn vụng đồ cúng', lean: 'ta', run: (c) => { dao(c, -4); stat(c, 'sucKhoe', 4); return 'Xôi chè ngon tuyệt. Pho tượng Hộ Pháp như đang trừng mắt nhìn bạn.'; } },
+      {
+        label: 'Chăm chỉ tụng kinh',
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 8);
+          stat(c, 'tamCanh', 8);
+          return 'Bạn thuộc lòng cả bộ Kim Cương Kinh.';
+        },
+      },
+      {
+        label: 'Trốn ra suối bắt cá',
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'sucKhoe', 6);
+          return 'Sư cụ biết hết, chỉ cười rồi phạt bạn quét sân.';
+        },
+      },
+      {
+        label: 'Hỏi sư tổ về đạo trường sinh',
+        lean: 'trung',
+        run: (c) => {
+          addCult(c, 12);
+          stat(c, 'ngoTinh', 4);
+          return 'Sư tổ im lặng hồi lâu, rồi dạy bạn một câu khẩu quyết.';
+        },
+      },
+      {
+        label: 'Ăn vụng đồ cúng',
+        lean: 'ta',
+        run: (c) => {
+          dao(c, -4);
+          stat(c, 'sucKhoe', 4);
+          return 'Xôi chè ngon tuyệt. Pho tượng Hộ Pháp như đang trừng mắt nhìn bạn.';
+        },
+      },
     ],
   },
   {
@@ -219,10 +628,43 @@ export const EVENTS: GameEvent[] = [
     title: 'Lần đầu hóa hình',
     text: () => 'Đêm trăng tròn, bạn thấy mình có thể biến thành hình người. Ngoài rừng có tiếng chó săn sủa.',
     choices: () => [
-      { label: 'Hóa hình, xuống làng xem thử', lean: 'trung', run: (c, ctx) => { if (ctx.rnd() < 0.7) { stat(c, 'ngoTinh', 6); return 'Bạn lẫn vào chợ người, nếm được kẹo hồ lô lần đầu tiên.'; } return 'Cái đuôi lòi ra giữa chợ, bạn bị ném đá đuổi về rừng.' + hurt(c, 20, ctx); } },
-      { label: 'Ra xem chó săn', lean: 'trung', run: (c, ctx) => { const f = fatal(c, ctx, 0.3, 'Thợ săn bắn trúng bạn. Bộ da yêu hồ được bán giá cao ở phường thị.'); if (c.dead) return 'Bạn rón rén lại gần...' + f; return 'Bạn chạy thoát, mất một nhúm lông đuôi.' + (f ?? ''); } },
-      { label: 'Trốn sâu trong hang mẹ', lean: 'trung', run: (c) => { stat(c, 'tamCanh', 5); return 'Mẹ liếm đầu bạn, kể chuyện về Yêu Vương thời thượng cổ.'; } },
-      { label: 'Cắn chết chó săn, hút tinh huyết', lean: 'ta', run: (c) => { dao(c, -8); addCult(c, 12); return 'Lần đầu nếm máu, yêu tính trong người bạn trỗi dậy.'; } },
+      {
+        label: 'Hóa hình, xuống làng xem thử',
+        lean: 'trung',
+        run: (c, ctx) => {
+          if (ctx.rnd() < 0.7) {
+            stat(c, 'ngoTinh', 6);
+            return 'Bạn lẫn vào chợ người, nếm được kẹo hồ lô lần đầu tiên.';
+          }
+          return 'Cái đuôi lòi ra giữa chợ, bạn bị ném đá đuổi về rừng.' + hurt(c, 20, ctx);
+        },
+      },
+      {
+        label: 'Ra xem chó săn',
+        lean: 'trung',
+        run: (c, ctx) => {
+          const f = fatal(c, ctx, 0.3, 'Thợ săn bắn trúng bạn. Bộ da yêu hồ được bán giá cao ở phường thị.');
+          if (c.dead) return 'Bạn rón rén lại gần...' + f;
+          return 'Bạn chạy thoát, mất một nhúm lông đuôi.' + (f ?? '');
+        },
+      },
+      {
+        label: 'Trốn sâu trong hang mẹ',
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'tamCanh', 5);
+          return 'Mẹ liếm đầu bạn, kể chuyện về Yêu Vương thời thượng cổ.';
+        },
+      },
+      {
+        label: 'Cắn chết chó săn, hút tinh huyết',
+        lean: 'ta',
+        run: (c) => {
+          dao(c, -8);
+          addCult(c, 12);
+          return 'Lần đầu nếm máu, yêu tính trong người bạn trỗi dậy.';
+        },
+      },
     ],
   },
   {
@@ -234,13 +676,59 @@ export const EVENTS: GameEvent[] = [
     title: 'Lạc trong rừng',
     text: () => 'Đi hái nấm, bạn lạc sâu trong rừng già. Trời tối dần, xa xa có tiếng hú.',
     choices: (_c, seed) =>
-      sample<Choice>(seed, [
-        { label: 'Đi theo đàn đom đóm', lean: 'trung', run: (c, ctx) => { if (ctx.rnd() < 0.5) { addCult(c, 15); return 'Đom đóm dẫn bạn tới một hồ nước phát sáng. Bạn uống một ngụm, người nhẹ bẫng.'; } return 'Đom đóm dẫn bạn ra tới bìa rừng. Cả làng đang đốt đuốc tìm.'; } },
-        { label: 'Leo lên cây đợi trời sáng', lean: 'trung', run: (c) => { stat(c, 'tamCanh', 5); return 'Bạn ôm cành cây cả đêm, nghe sói đi qua dưới gốc.'; } },
-        { label: 'Đi về phía tiếng hú', lean: 'trung', run: (c, ctx) => { const f = fatal(c, ctx, 0.4, 'Đó là bầy sói đói. Sáng hôm sau người ta chỉ tìm thấy chiếc dép nhỏ.'); if (c.dead) return 'Bạn tò mò đi tới...' + f; c.pet = true; c.petKind = 'soi_con'; return 'Hóa ra là một con sói con bị thương. Bạn băng bó cho nó, nó đi theo bạn về làng.' + (f ?? ''); } },
-        { label: 'Gào khóc gọi cha mẹ', lean: 'trung', run: (c, ctx) => { if (ctx.rnd() < 0.7) return 'Cha nghe tiếng, tìm được bạn lúc nửa đêm.'; return 'Tiếng khóc dẫn tới một con hổ. May mà tiều phu bắn đuổi kịp.' + hurt(c, 25, ctx); } },
-        { label: 'Đốt lửa ngồi chờ', lean: 'trung', run: (c, ctx) => { const f = fatal(c, ctx, 0.08, 'Lửa bén vào cỏ khô. Cháy rừng.'); if (c.dead) return 'Bạn nhóm lửa...' + f; return 'Ánh lửa giúp dân làng tìm thấy bạn.' + (f ?? ''); } },
-      ], 4),
+      sample<Choice>(
+        seed,
+        [
+          {
+            label: 'Đi theo đàn đom đóm',
+            lean: 'trung',
+            run: (c, ctx) => {
+              if (ctx.rnd() < 0.5) {
+                addCult(c, 15);
+                return 'Đom đóm dẫn bạn tới một hồ nước phát sáng. Bạn uống một ngụm, người nhẹ bẫng.';
+              }
+              return 'Đom đóm dẫn bạn ra tới bìa rừng. Cả làng đang đốt đuốc tìm.';
+            },
+          },
+          {
+            label: 'Leo lên cây đợi trời sáng',
+            lean: 'trung',
+            run: (c) => {
+              stat(c, 'tamCanh', 5);
+              return 'Bạn ôm cành cây cả đêm, nghe sói đi qua dưới gốc.';
+            },
+          },
+          {
+            label: 'Đi về phía tiếng hú',
+            lean: 'trung',
+            run: (c, ctx) => {
+              const f = fatal(c, ctx, 0.4, 'Đó là bầy sói đói. Sáng hôm sau người ta chỉ tìm thấy chiếc dép nhỏ.');
+              if (c.dead) return 'Bạn tò mò đi tới...' + f;
+              c.pet = true;
+              c.petKind = 'soi_con';
+              return 'Hóa ra là một con sói con bị thương. Bạn băng bó cho nó, nó đi theo bạn về làng.' + (f ?? '');
+            },
+          },
+          {
+            label: 'Gào khóc gọi cha mẹ',
+            lean: 'trung',
+            run: (c, ctx) => {
+              if (ctx.rnd() < 0.7) return 'Cha nghe tiếng, tìm được bạn lúc nửa đêm.';
+              return 'Tiếng khóc dẫn tới một con hổ. May mà tiều phu bắn đuổi kịp.' + hurt(c, 25, ctx);
+            },
+          },
+          {
+            label: 'Đốt lửa ngồi chờ',
+            lean: 'trung',
+            run: (c, ctx) => {
+              const f = fatal(c, ctx, 0.08, 'Lửa bén vào cỏ khô. Cháy rừng.');
+              if (c.dead) return 'Bạn nhóm lửa...' + f;
+              return 'Ánh lửa giúp dân làng tìm thấy bạn.' + (f ?? '');
+            },
+          },
+        ],
+        4,
+      ),
   },
   {
     id: 'bat_nat',
@@ -251,10 +739,44 @@ export const EVENTS: GameEvent[] = [
     title: 'Bị bắt nạt',
     text: () => 'Thằng con trưởng thôn cùng đám bạn chặn bạn ở bờ ruộng, đòi bạn quỳ xuống.',
     choices: () => [
-      { label: 'Lao vào đánh', lean: 'trung', run: (c, ctx) => { if (ctx.rnd() < 0.45) { stat(c, 'tamCanh', 6); return 'Bạn đánh cho cả đám chạy tán loạn. Từ đó không ai dám động.'; } return 'Bạn bị đánh bầm dập.' + hurt(c, 15, ctx); } },
-      { label: 'Về mách người lớn', lean: 'chinh', run: (c) => { dao(c, 3); return 'Cha mẹ sang nói chuyện phải trái. Mọi chuyện êm xuôi.'; } },
-      { label: 'Nhịn, đi đường vòng', lean: 'trung', run: (c) => { stat(c, 'tamCanh', 4); stat(c, 'tamMa', 4); return 'Bạn nhịn. Nhưng có gì đó cứ âm ỉ trong lòng.'; } },
-      { label: 'Đêm đó đốt kho thóc nhà nó', lean: 'ta', run: (c) => { dao(c, -12); stat(c, 'tamMa', 8); stat(c, 'khiVan', 4); return 'Kho thóc cháy rụi. Bạn đứng xa nhìn ngọn lửa, thấy hả hê.'; } },
+      {
+        label: 'Lao vào đánh',
+        lean: 'trung',
+        run: (c, ctx) => {
+          if (ctx.rnd() < 0.45) {
+            stat(c, 'tamCanh', 6);
+            return 'Bạn đánh cho cả đám chạy tán loạn. Từ đó không ai dám động.';
+          }
+          return 'Bạn bị đánh bầm dập.' + hurt(c, 15, ctx);
+        },
+      },
+      {
+        label: 'Về mách người lớn',
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 3);
+          return 'Cha mẹ sang nói chuyện phải trái. Mọi chuyện êm xuôi.';
+        },
+      },
+      {
+        label: 'Nhịn, đi đường vòng',
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'tamCanh', 4);
+          stat(c, 'tamMa', 4);
+          return 'Bạn nhịn. Nhưng có gì đó cứ âm ỉ trong lòng.';
+        },
+      },
+      {
+        label: 'Đêm đó đốt kho thóc nhà nó',
+        lean: 'ta',
+        run: (c) => {
+          dao(c, -12);
+          stat(c, 'tamMa', 8);
+          stat(c, 'khiVan', 4);
+          return 'Kho thóc cháy rụi. Bạn đứng xa nhìn ngọn lửa, thấy hả hê.';
+        },
+      },
     ],
   },
   {
@@ -273,16 +795,22 @@ export const EVENTS: GameEvent[] = [
         hint: 'chính phái, cần linh căn tốt',
         lean: 'chinh',
         run: (c, ctx) => {
-          if (c.linhCanMul >= 0.8 || ctx.rnd() < 0.2) {
-            c.sect = 'Thanh Vân Tông';
-            dao(c, 10);
-            addCult(c, 25);
-            giveItem(c, 'thanh_sam');
-            ctx.fx('buy', 'Nhập môn');
-            return 'Đo linh căn đạt yêu cầu! Bạn trở thành đệ tử ngoại môn Thanh Vân Tông, được phát áo Thanh Sam.';
+          // bậc đệ tử theo căn cốt: Thiên linh căn chân truyền, Địa nội môn, Huyền và Tạp ngoại môn, Phế làm tạp dịch nếu may
+          const rank = rankByRoot(c.linhCanMul);
+          if (rank === 0 && ctx.rnd() >= 0.4) {
+            stat(c, 'tamMa', 10);
+            return 'Linh căn quá kém, bị đuổi về giữa tiếng cười của người khác.';
           }
-          stat(c, 'tamMa', 10);
-          return 'Linh căn quá kém, bị đuổi về giữa tiếng cười của người khác.';
+          joinSect(c, 'Thanh Vân Tông', rank);
+          dao(c, 10);
+          addCult(c, 25 + rank * 20);
+          giveItem(c, 'thanh_sam');
+          ctx.fx(rank >= 2 ? 'breakthrough' : 'buy', rankName(c));
+          if (rank === 3)
+            return `Đá đo linh căn sáng rực đến chói mắt, cả quảng trường im phăng phắc: ${c.linhCan}! Ba vị trưởng lão tranh nhau nhận bạn. Bạn trở thành Chân truyền đệ tử Thanh Vân Tông, tu luyện nhanh hơn 40%.`;
+          if (rank === 2) return `Đá đo linh căn sáng lên rực rỡ: ${c.linhCan}. Bạn được nhận thẳng vào Nội môn Thanh Vân Tông, được phát áo Thanh Sam, tu luyện nhanh hơn 25%.`;
+          if (rank === 1) return 'Đo linh căn đạt yêu cầu. Bạn trở thành Ngoại môn đệ tử Thanh Vân Tông, được phát áo Thanh Sam. Muốn lên nội môn, phải thắng ở Đại bỉ tông môn.';
+          return 'Linh căn quá kém, nhưng một vị chấp sự thương tình giữ lại làm Tạp dịch: quét lá, gánh nước. Ai biết được, biết đâu có ngày nghịch thiên.';
         },
       },
       {
@@ -290,12 +818,12 @@ export const EVENTS: GameEvent[] = [
         hint: 'ma môn, không kén linh căn',
         lean: 'ta',
         run: (c, ctx) => {
-          c.sect = 'Huyết Sát Môn';
+          joinSect(c, 'Huyết Sát Môn', Math.max(1, rankByRoot(c.linhCanMul)));
           dao(c, -15);
           addCult(c, 35);
           stat(c, 'tamMa', 10);
           ctx.fx('evil', 'Nhập ma môn');
-          return 'Ma môn không hỏi linh căn, chỉ hỏi bạn có dám uống chén máu kia không. Bạn uống cạn.';
+          return `Ma môn không hỏi linh căn, chỉ hỏi bạn có dám uống chén máu kia không. Bạn uống cạn, thành ${rankName(c)} Huyết Sát Môn. Ở đây muốn lên cao thì phải giẫm lên đồng môn.`;
         },
       },
       {
@@ -469,8 +997,24 @@ export const EVENTS: GameEvent[] = [
           return 'Bạn thua, bị lột sạch gần nửa gia tài.' + (f ?? '') + hurt(c, 25, ctx);
         },
       },
-      { label: 'Nộp tiền mua bình an', hint: `-${Math.round(c.linhThach * 0.3)} linh thạch`, lean: 'trung', run: (c) => { money(c, -c.linhThach * 0.3); stat(c, 'tamMa', 4); return 'Bạn ném túi linh thạch ra. Chúng cười khẩy rồi bỏ đi.'; } },
-      { label: 'Bỏ chạy', lean: 'trung', run: (c, ctx) => { if (ctx.rnd() < luck(c, 0.65)) return 'Bạn thi triển thân pháp chạy thoát.'; return 'Chạy không kịp, ăn trọn một chưởng sau lưng.' + hurt(c, 18, ctx); } },
+      {
+        label: 'Nộp tiền mua bình an',
+        hint: `-${Math.round(c.linhThach * 0.3)} linh thạch`,
+        lean: 'trung',
+        run: (c) => {
+          money(c, -c.linhThach * 0.3);
+          stat(c, 'tamMa', 4);
+          return 'Bạn ném túi linh thạch ra. Chúng cười khẩy rồi bỏ đi.';
+        },
+      },
+      {
+        label: 'Bỏ chạy',
+        lean: 'trung',
+        run: (c, ctx) => {
+          if (ctx.rnd() < luck(c, 0.65)) return 'Bạn thi triển thân pháp chạy thoát.';
+          return 'Chạy không kịp, ăn trọn một chưởng sau lưng.' + hurt(c, 18, ctx);
+        },
+      },
       {
         label: 'Giả hàng, dụ vào bẫy giết sạch',
         lean: 'ta',
@@ -508,8 +1052,23 @@ export const EVENTS: GameEvent[] = [
           return 'Người ấy mỉm cười từ chối. Đêm đó bạn không ngủ được.';
         },
       },
-      { label: 'Làm bạn đồng đạo', lean: 'trung', run: (c) => { stat(c, 'tamCanh', 6); stat(c, 'ngoTinh', 3); return 'Hai người hẹn gặp lại để luận đạo. Bạn thấy đầu óc sáng ra.'; } },
-      { label: 'Từ chối, chuyên tâm tu luyện', lean: 'trung', run: (c) => { addCult(c, reward(c, 0.2)); return 'Bạn lặng lẽ rời đi. Đại đạo không chỗ cho hồng trần.'; } },
+      {
+        label: 'Làm bạn đồng đạo',
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'tamCanh', 6);
+          stat(c, 'ngoTinh', 3);
+          return 'Hai người hẹn gặp lại để luận đạo. Bạn thấy đầu óc sáng ra.';
+        },
+      },
+      {
+        label: 'Từ chối, chuyên tâm tu luyện',
+        lean: 'trung',
+        run: (c) => {
+          addCult(c, reward(c, 0.2));
+          return 'Bạn lặng lẽ rời đi. Đại đạo không chỗ cho hồng trần.';
+        },
+      },
       {
         label: 'Lợi dụng song tu, hút công lực',
         lean: 'ta',
@@ -535,10 +1094,54 @@ export const EVENTS: GameEvent[] = [
     title: 'Tâm ma quấy nhiễu',
     text: () => 'Đang tĩnh tọa, bạn nghe thấy giọng nói của chính mình thì thầm: "Sao phải khổ thế? Buông ra đi..."',
     choices: (c) => [
-      { label: 'Đối mặt, trảm tâm ma', lean: 'chinh', run: (c, ctx) => { if (ctx.rnd() < 0.35 + c.stats.tamCanh / 200) { stat(c, 'tamMa', -30); stat(c, 'tamCanh', 10); ctx.fx('heal', 'Tâm sáng'); return 'Bạn nhìn thẳng vào nó. Nó tan biến như sương sớm.'; } stat(c, 'tamMa', 8); return 'Tâm ma mạnh hơn bạn nghĩ. Bạn nôn ra một ngụm máu.' + hurt(c, 15, ctx); } },
-      { label: 'Uống Thanh Tâm Đan', hint: (c.pills.thanh_tam ?? 0) > 0 ? `còn ${c.pills.thanh_tam}` : 'không có, mua gấp -150', lean: 'trung', run: (c, ctx) => { if (!usePill(c, 'thanh_tam')) money(c, -150); stat(c, 'tamMa', -25); ctx.fx('heal', 'Thanh tâm'); return 'Dược lực mát lạnh lan khắp người. Giọng nói kia im bặt.'; } },
-      { label: 'Tìm chùa nghe kinh', lean: 'chinh', run: (c) => { dao(c, 8); stat(c, 'tamMa', -18); return 'Bạn ở lại chùa Vân Tịch ba tháng. Tiếng chuông sớm làm lòng an.'; } },
-      { label: 'Buông theo nó', hint: 'tu vi tăng, tâm ma tăng, nguy hiểm', lean: 'ta', run: (c, ctx) => { const f = fatal(c, ctx, 0.15, 'Chân khí nghịch hành, kinh mạch nổ tung. Bạn tẩu hỏa nhập ma mà chết.'); if (c.dead) return 'Bạn buông lỏng tâm thần...' + f; dao(c, -12); stat(c, 'tamMa', 15); addCult(c, reward(c, 0.7)); ctx.fx('evil', 'Nhập ma'); return 'Bạn mở mắt. Đồng tử đỏ rực. Sức mạnh chưa bao giờ đến dễ như vậy.'; } },
+      {
+        label: 'Đối mặt, trảm tâm ma',
+        lean: 'chinh',
+        run: (c, ctx) => {
+          if (ctx.rnd() < 0.35 + c.stats.tamCanh / 200) {
+            stat(c, 'tamMa', -30);
+            stat(c, 'tamCanh', 10);
+            ctx.fx('heal', 'Tâm sáng');
+            return 'Bạn nhìn thẳng vào nó. Nó tan biến như sương sớm.';
+          }
+          stat(c, 'tamMa', 8);
+          return 'Tâm ma mạnh hơn bạn nghĩ. Bạn nôn ra một ngụm máu.' + hurt(c, 15, ctx);
+        },
+      },
+      {
+        label: 'Uống Thanh Tâm Đan',
+        hint: (c.pills.thanh_tam ?? 0) > 0 ? `còn ${c.pills.thanh_tam}` : 'không có, mua gấp -150',
+        lean: 'trung',
+        run: (c, ctx) => {
+          if (!usePill(c, 'thanh_tam')) money(c, -150);
+          stat(c, 'tamMa', -25);
+          ctx.fx('heal', 'Thanh tâm');
+          return 'Dược lực mát lạnh lan khắp người. Giọng nói kia im bặt.';
+        },
+      },
+      {
+        label: 'Tìm chùa nghe kinh',
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 8);
+          stat(c, 'tamMa', -18);
+          return 'Bạn ở lại chùa Vân Tịch ba tháng. Tiếng chuông sớm làm lòng an.';
+        },
+      },
+      {
+        label: 'Buông theo nó',
+        hint: 'tu vi tăng, tâm ma tăng, nguy hiểm',
+        lean: 'ta',
+        run: (c, ctx) => {
+          const f = fatal(c, ctx, 0.15, 'Chân khí nghịch hành, kinh mạch nổ tung. Bạn tẩu hỏa nhập ma mà chết.');
+          if (c.dead) return 'Bạn buông lỏng tâm thần...' + f;
+          dao(c, -12);
+          stat(c, 'tamMa', 15);
+          addCult(c, reward(c, 0.7));
+          ctx.fx('evil', 'Nhập ma');
+          return 'Bạn mở mắt. Đồng tử đỏ rực. Sức mạnh chưa bao giờ đến dễ như vậy.';
+        },
+      },
     ],
   },
   {
@@ -549,10 +1152,50 @@ export const EVENTS: GameEvent[] = [
     title: 'Phường thị',
     text: () => 'Một ông lão bày sạp, rao bán "tiên đan trường sinh" chỉ với 100 linh thạch một viên.',
     choices: () => [
-      { label: 'Mua một viên', hint: '-100', lean: 'trung', run: (c, ctx) => { money(c, -100); const f = fatal(c, ctx, 0.08, 'Viên đan là Hạc Đỉnh Hồng. Bạn thất khiếu chảy máu mà chết ngay giữa phường thị.'); if (c.dead) return 'Bạn nuốt viên đan...' + f; if (ctx.rnd() < 0.2) { c.lifespan += 15; ctx.fx('heal', '+15 thọ'); return 'Không ngờ là đan thật! Thọ nguyên tăng 15 năm.'; } return 'Viên đan là bột mì vo tròn. Bạn bị lừa.'; } },
-      { label: 'Mặc cả xuống 20', lean: 'trung', run: (c) => { money(c, -20); stat(c, 'khiVan', 2); return 'Ông lão chửi bạn keo kiệt nhưng vẫn bán. Viên đan ăn khá ngon.'; } },
-      { label: 'Vạch trần trước đám đông', lean: 'chinh', run: (c) => { dao(c, 6); stat(c, 'tamCanh', 4); money(c, 30); return 'Mọi người cảm ơn bạn, có người còn biếu bạn ít linh thạch.'; } },
-      { label: 'Lừa lại lão, đổi linh thạch giả', lean: 'ta', run: (c) => { dao(c, -6); money(c, 80); return 'Bạn trả bằng linh thạch giả rồi chuồn. Kẻ lừa đảo bị lừa.'; } },
+      {
+        label: 'Mua một viên',
+        hint: '-100',
+        lean: 'trung',
+        run: (c, ctx) => {
+          money(c, -100);
+          const f = fatal(c, ctx, 0.08, 'Viên đan là Hạc Đỉnh Hồng. Bạn thất khiếu chảy máu mà chết ngay giữa phường thị.');
+          if (c.dead) return 'Bạn nuốt viên đan...' + f;
+          if (ctx.rnd() < 0.2) {
+            c.lifespan += 15;
+            ctx.fx('heal', '+15 thọ');
+            return 'Không ngờ là đan thật! Thọ nguyên tăng 15 năm.';
+          }
+          return 'Viên đan là bột mì vo tròn. Bạn bị lừa.';
+        },
+      },
+      {
+        label: 'Mặc cả xuống 20',
+        lean: 'trung',
+        run: (c) => {
+          money(c, -20);
+          stat(c, 'khiVan', 2);
+          return 'Ông lão chửi bạn keo kiệt nhưng vẫn bán. Viên đan ăn khá ngon.';
+        },
+      },
+      {
+        label: 'Vạch trần trước đám đông',
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 6);
+          stat(c, 'tamCanh', 4);
+          money(c, 30);
+          return 'Mọi người cảm ơn bạn, có người còn biếu bạn ít linh thạch.';
+        },
+      },
+      {
+        label: 'Lừa lại lão, đổi linh thạch giả',
+        lean: 'ta',
+        run: (c) => {
+          dao(c, -6);
+          money(c, 80);
+          return 'Bạn trả bằng linh thạch giả rồi chuồn. Kẻ lừa đảo bị lừa.';
+        },
+      },
     ],
   },
   {
@@ -563,10 +1206,46 @@ export const EVENTS: GameEvent[] = [
     title: 'Yêu thú nhỏ',
     text: () => 'Trong bụi rậm, một con hồ ly trắng bé xíu bị kẹp chân, rên ư ử nhìn bạn.',
     choices: () => [
-      { label: 'Nhận nuôi', lean: 'chinh', run: (c, ctx) => { c.pet = true; c.petKind = 'tuyet_ho'; dao(c, 6); stat(c, 'tamCanh', 6); ctx.fx('love', 'Có linh thú'); return 'Tiểu hồ ly liếm tay bạn. Từ đó nó đi theo bạn khắp nơi.'; } },
-      { label: 'Gỡ bẫy rồi thả đi', lean: 'chinh', run: (c) => { dao(c, 4); stat(c, 'khiVan', 6); return 'Nó chạy mất, ngoái lại nhìn bạn một lần. Bạn có cảm giác sẽ gặp lại.'; } },
-      { label: 'Bắt mang bán', lean: 'trung', run: (c) => { money(c, 90); dao(c, -3); return 'Thương nhân trả 90 linh thạch cho một con hồ ly trắng hiếm.'; } },
-      { label: 'Giết lấy yêu đan', lean: 'ta', run: (c, ctx) => { dao(c, -10); addCult(c, reward(c, 0.35)); ctx.fx('evil'); return 'Yêu đan nhỏ xíu nhưng tinh thuần. Bạn nuốt nó.'; } },
+      {
+        label: 'Nhận nuôi',
+        lean: 'chinh',
+        run: (c, ctx) => {
+          c.pet = true;
+          c.petKind = 'tuyet_ho';
+          dao(c, 6);
+          stat(c, 'tamCanh', 6);
+          ctx.fx('love', 'Có linh thú');
+          return 'Tiểu hồ ly liếm tay bạn. Từ đó nó đi theo bạn khắp nơi.';
+        },
+      },
+      {
+        label: 'Gỡ bẫy rồi thả đi',
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 4);
+          stat(c, 'khiVan', 6);
+          return 'Nó chạy mất, ngoái lại nhìn bạn một lần. Bạn có cảm giác sẽ gặp lại.';
+        },
+      },
+      {
+        label: 'Bắt mang bán',
+        lean: 'trung',
+        run: (c) => {
+          money(c, 90);
+          dao(c, -3);
+          return 'Thương nhân trả 90 linh thạch cho một con hồ ly trắng hiếm.';
+        },
+      },
+      {
+        label: 'Giết lấy yêu đan',
+        lean: 'ta',
+        run: (c, ctx) => {
+          dao(c, -10);
+          addCult(c, reward(c, 0.35));
+          ctx.fx('evil');
+          return 'Yêu đan nhỏ xíu nhưng tinh thuần. Bạn nuốt nó.';
+        },
+      },
     ],
   },
   {
@@ -577,10 +1256,49 @@ export const EVENTS: GameEvent[] = [
     title: 'Ôn dịch',
     text: () => 'Một ngôi làng dưới núi bị ôn dịch. Người chết nằm la liệt, kẻ sống kêu cứu.',
     choices: () => [
-      { label: 'Ở lại chữa bệnh miễn phí', lean: 'chinh', run: (c, ctx) => { const f = fatal(c, ctx, c.realm >= 2 ? 0.03 : 0.12, 'Bạn cứu được nửa làng thì nhiễm ôn dịch. Dân làng chôn bạn dưới gốc đa đầu làng.'); if (c.dead) return 'Ngày thứ ba mươi, bạn bắt đầu sốt cao...' + f; dao(c, 15); money(c, -60); stat(c, 'tamCanh', 10); ctx.fx('heal', 'Công đức'); return 'Ba tháng không ngủ, bạn cứu được gần hết làng. Dân lập bia tạ ơn.'; } },
-      { label: 'Bán thuốc giá cao', lean: 'trung', run: (c) => { dao(c, -4); money(c, 200); return 'Người ta bán cả ruộng để mua thuốc của bạn.'; } },
-      { label: 'Đi đường vòng, tránh lây', lean: 'trung', run: (c) => { stat(c, 'tamMa', 3); return 'Bạn bịt mũi đi qua. Tiếng khóc đuổi theo cả đoạn đường.'; } },
-      { label: 'Gom người hấp hối luyện huyết đan', lean: 'ta', run: (c, ctx) => { dao(c, -25); stat(c, 'tamMa', 15); addCult(c, reward(c, 1.2)); addPill(c, 'tu_khi', 3); ctx.fx('evil', 'Huyết đan'); c.enemy = c.enemy ?? 'người sống sót ở làng dịch'; return 'Lò luyện cháy suốt bảy ngày. Tu vi bạn tăng vọt.'; } },
+      {
+        label: 'Ở lại chữa bệnh miễn phí',
+        lean: 'chinh',
+        run: (c, ctx) => {
+          const f = fatal(c, ctx, c.realm >= 2 ? 0.03 : 0.12, 'Bạn cứu được nửa làng thì nhiễm ôn dịch. Dân làng chôn bạn dưới gốc đa đầu làng.');
+          if (c.dead) return 'Ngày thứ ba mươi, bạn bắt đầu sốt cao...' + f;
+          dao(c, 15);
+          money(c, -60);
+          stat(c, 'tamCanh', 10);
+          ctx.fx('heal', 'Công đức');
+          return 'Ba tháng không ngủ, bạn cứu được gần hết làng. Dân lập bia tạ ơn.';
+        },
+      },
+      {
+        label: 'Bán thuốc giá cao',
+        lean: 'trung',
+        run: (c) => {
+          dao(c, -4);
+          money(c, 200);
+          return 'Người ta bán cả ruộng để mua thuốc của bạn.';
+        },
+      },
+      {
+        label: 'Đi đường vòng, tránh lây',
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'tamMa', 3);
+          return 'Bạn bịt mũi đi qua. Tiếng khóc đuổi theo cả đoạn đường.';
+        },
+      },
+      {
+        label: 'Gom người hấp hối luyện huyết đan',
+        lean: 'ta',
+        run: (c, ctx) => {
+          dao(c, -25);
+          stat(c, 'tamMa', 15);
+          addCult(c, reward(c, 1.2));
+          addPill(c, 'tu_khi', 3);
+          ctx.fx('evil', 'Huyết đan');
+          c.enemy = c.enemy ?? 'người sống sót ở làng dịch';
+          return 'Lò luyện cháy suốt bảy ngày. Tu vi bạn tăng vọt.';
+        },
+      },
     ],
   },
   {
@@ -591,10 +1309,53 @@ export const EVENTS: GameEvent[] = [
     title: 'Đấu giá hội',
     text: () => 'Vạn Bảo Lâu mở đấu giá. Món chốt là một viên Diên Thọ Đan và một pháp bảo cổ.',
     choices: (c) => [
-      { label: 'Đấu Diên Thọ Đan', hint: '-600', lean: 'trung', run: (c, ctx) => { if (c.linhThach < 600) return 'Không đủ linh thạch, bạn chỉ biết nhìn người khác giơ bảng.'; money(c, -600); c.lifespan += Math.round(c.lifespan * 0.12); ctx.fx('heal', '+thọ nguyên'); return 'Bạn thắng giá. Uống vào, tóc mai bạc trở lại đen nhánh.'; } },
-      { label: 'Đấu pháp bảo cổ', hint: '-800', lean: 'trung', run: (c, ctx) => { if (c.linhThach < 800) return 'Không đủ linh thạch.'; money(c, -800); stat(c, 'khiVan', 10); addCult(c, reward(c, 0.5)); ctx.fx('buy', 'Pháp bảo'); return 'Pháp bảo tự nhận chủ. Bạn cảm nhận được linh tính của nó.'; } },
-      { label: 'Chỉ xem, không mua', lean: 'trung', run: (c) => { stat(c, 'ngoTinh', 2); return 'Bạn mở mang tầm mắt, biết thêm vài loại thiên tài địa bảo.'; } },
-      { label: 'Theo dõi người thắng giá, cướp', lean: 'ta', run: (c, ctx) => { dao(c, -14); if (ctx.rnd() < luck(c, 0.45)) { c.lifespan += Math.round(c.lifespan * 0.12); ctx.fx('evil', 'Cướp đan'); return 'Bạn chặn hắn ở ngoài thành. Diên Thọ Đan giờ là của bạn.'; } c.enemy = c.enemy ?? 'Vạn Bảo Lâu'; return 'Hắn có hộ vệ Kim Đan. Bạn suýt chết.' + hurt(c, 50, ctx); } },
+      {
+        label: 'Đấu Diên Thọ Đan',
+        hint: '-600',
+        lean: 'trung',
+        run: (c, ctx) => {
+          if (c.linhThach < 600) return 'Không đủ linh thạch, bạn chỉ biết nhìn người khác giơ bảng.';
+          money(c, -600);
+          c.lifespan += Math.round(c.lifespan * 0.12);
+          ctx.fx('heal', '+thọ nguyên');
+          return 'Bạn thắng giá. Uống vào, tóc mai bạc trở lại đen nhánh.';
+        },
+      },
+      {
+        label: 'Đấu pháp bảo cổ',
+        hint: '-800',
+        lean: 'trung',
+        run: (c, ctx) => {
+          if (c.linhThach < 800) return 'Không đủ linh thạch.';
+          money(c, -800);
+          stat(c, 'khiVan', 10);
+          addCult(c, reward(c, 0.5));
+          ctx.fx('buy', 'Pháp bảo');
+          return 'Pháp bảo tự nhận chủ. Bạn cảm nhận được linh tính của nó.';
+        },
+      },
+      {
+        label: 'Chỉ xem, không mua',
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'ngoTinh', 2);
+          return 'Bạn mở mang tầm mắt, biết thêm vài loại thiên tài địa bảo.';
+        },
+      },
+      {
+        label: 'Theo dõi người thắng giá, cướp',
+        lean: 'ta',
+        run: (c, ctx) => {
+          dao(c, -14);
+          if (ctx.rnd() < luck(c, 0.45)) {
+            c.lifespan += Math.round(c.lifespan * 0.12);
+            ctx.fx('evil', 'Cướp đan');
+            return 'Bạn chặn hắn ở ngoài thành. Diên Thọ Đan giờ là của bạn.';
+          }
+          c.enemy = c.enemy ?? 'Vạn Bảo Lâu';
+          return 'Hắn có hộ vệ Kim Đan. Bạn suýt chết.' + hurt(c, 50, ctx);
+        },
+      },
     ],
   },
   {
@@ -606,10 +1367,51 @@ export const EVENTS: GameEvent[] = [
     title: 'Đồng môn hãm hại',
     text: (c) => `Một sư huynh trong ${c.sect} ghen tị, vu cho bạn trộm đan dược của trưởng lão.`,
     choices: () => [
-      { label: 'Trình bày, xin trưởng lão điều tra', lean: 'chinh', run: (c, ctx) => { if (ctx.rnd() < luck(c, 0.6)) { dao(c, 4); stat(c, 'tamCanh', 5); return 'Trưởng lão minh xét. Sư huynh kia bị phạt diện bích.'; } stat(c, 'tamMa', 8); addCult(c, -reward(c, 0.2)); return 'Không ai tin bạn. Bạn bị phạt quỳ ba ngày.'; } },
-      { label: 'Nhịn cho qua', lean: 'trung', run: (c) => { stat(c, 'tamMa', 8); stat(c, 'tamCanh', 3); return 'Bạn bị phạt thay. Nhẫn một chút sóng yên biển lặng.'; } },
-      { label: 'Thách đấu lôi đài', lean: 'trung', run: (c, ctx) => { if (ctx.rnd() < luck(c, 0.5)) { stat(c, 'tamCanh', 8); money(c, 100); return 'Bạn thắng đẹp trước mặt cả môn phái.'; } return 'Bạn thua.' + hurt(c, 20, ctx); } },
-      { label: 'Bỏ độc vào trà của hắn', lean: 'ta', run: (c, ctx) => { dao(c, -15); stat(c, 'tamMa', 8); ctx.fx('evil'); return 'Sư huynh "tẩu hỏa nhập ma" mà chết. Không ai nghi ngờ bạn.'; } },
+      {
+        label: 'Trình bày, xin trưởng lão điều tra',
+        lean: 'chinh',
+        run: (c, ctx) => {
+          if (ctx.rnd() < luck(c, 0.6)) {
+            dao(c, 4);
+            stat(c, 'tamCanh', 5);
+            return 'Trưởng lão minh xét. Sư huynh kia bị phạt diện bích.';
+          }
+          stat(c, 'tamMa', 8);
+          addCult(c, -reward(c, 0.2));
+          return 'Không ai tin bạn. Bạn bị phạt quỳ ba ngày.';
+        },
+      },
+      {
+        label: 'Nhịn cho qua',
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'tamMa', 8);
+          stat(c, 'tamCanh', 3);
+          return 'Bạn bị phạt thay. Nhẫn một chút sóng yên biển lặng.';
+        },
+      },
+      {
+        label: 'Thách đấu lôi đài',
+        lean: 'trung',
+        run: (c, ctx) => {
+          if (ctx.rnd() < luck(c, 0.5)) {
+            stat(c, 'tamCanh', 8);
+            money(c, 100);
+            return 'Bạn thắng đẹp trước mặt cả môn phái.';
+          }
+          return 'Bạn thua.' + hurt(c, 20, ctx);
+        },
+      },
+      {
+        label: 'Bỏ độc vào trà của hắn',
+        lean: 'ta',
+        run: (c, ctx) => {
+          dao(c, -15);
+          stat(c, 'tamMa', 8);
+          ctx.fx('evil');
+          return 'Sư huynh "tẩu hỏa nhập ma" mà chết. Không ai nghi ngờ bạn.';
+        },
+      },
     ],
   },
   {
@@ -621,10 +1423,55 @@ export const EVENTS: GameEvent[] = [
     title: 'Oan gia tìm tới',
     text: (c) => `Một bóng người chặn trước động phủ. Là ${c.enemy}. "Nợ cũ, hôm nay tính cho xong."`,
     choices: () => [
-      { label: 'Nhận lỗi, đền bù', hint: '-40% linh thạch', lean: 'chinh', run: (c) => { money(c, -c.linhThach * 0.4); dao(c, 10); c.enemy = null; stat(c, 'tamMa', -10); return 'Bạn cúi đầu nhận sai. Đối phương im lặng rất lâu, rồi quay đi.'; } },
-      { label: 'Quyết chiến', lean: 'trung', run: (c, ctx) => { if (ctx.rnd() < luck(c, 0.5)) { c.enemy = null; stat(c, 'tamCanh', 6); return 'Một trận long trời lở đất. Bạn thắng, ân oán chấm dứt.'; } const f = fatal(c, ctx, 0.3, `Bạn chết dưới tay ${c.enemy}. Nợ cũ, cuối cùng cũng trả bằng mạng.`); if (c.dead) return 'Một trận long trời lở đất...' + f; return 'Bạn thua, phải bỏ động phủ chạy trốn.' + (f ?? '') + hurt(c, 45, ctx); } },
-      { label: 'Bày trận rồi trốn đi xa', lean: 'trung', run: (c, ctx) => { if (ctx.rnd() < 0.7 || c.path === 'tran') return 'Bạn để lại trận pháp cầm chân rồi biến mất. Hắn sẽ còn tìm.'; return 'Trận bị phá.' + hurt(c, 25, ctx); } },
-      { label: 'Giết, rồi diệt cả sư môn hắn', lean: 'ta', run: (c, ctx) => { dao(c, -20); stat(c, 'tamMa', 12); if (ctx.rnd() < luck(c, 0.55)) { c.enemy = null; addCult(c, reward(c, 0.4)); ctx.fx('evil', 'Diệt môn'); return 'Đêm đó, cả một sơn môn chìm trong biển lửa.'; } return 'Hắn có viện binh.' + hurt(c, 55, ctx); } },
+      {
+        label: 'Nhận lỗi, đền bù',
+        hint: '-40% linh thạch',
+        lean: 'chinh',
+        run: (c) => {
+          money(c, -c.linhThach * 0.4);
+          dao(c, 10);
+          c.enemy = null;
+          stat(c, 'tamMa', -10);
+          return 'Bạn cúi đầu nhận sai. Đối phương im lặng rất lâu, rồi quay đi.';
+        },
+      },
+      {
+        label: 'Quyết chiến',
+        lean: 'trung',
+        run: (c, ctx) => {
+          if (ctx.rnd() < luck(c, 0.5)) {
+            c.enemy = null;
+            stat(c, 'tamCanh', 6);
+            return 'Một trận long trời lở đất. Bạn thắng, ân oán chấm dứt.';
+          }
+          const f = fatal(c, ctx, 0.3, `Bạn chết dưới tay ${c.enemy}. Nợ cũ, cuối cùng cũng trả bằng mạng.`);
+          if (c.dead) return 'Một trận long trời lở đất...' + f;
+          return 'Bạn thua, phải bỏ động phủ chạy trốn.' + (f ?? '') + hurt(c, 45, ctx);
+        },
+      },
+      {
+        label: 'Bày trận rồi trốn đi xa',
+        lean: 'trung',
+        run: (c, ctx) => {
+          if (ctx.rnd() < 0.7 || c.path === 'tran') return 'Bạn để lại trận pháp cầm chân rồi biến mất. Hắn sẽ còn tìm.';
+          return 'Trận bị phá.' + hurt(c, 25, ctx);
+        },
+      },
+      {
+        label: 'Giết, rồi diệt cả sư môn hắn',
+        lean: 'ta',
+        run: (c, ctx) => {
+          dao(c, -20);
+          stat(c, 'tamMa', 12);
+          if (ctx.rnd() < luck(c, 0.55)) {
+            c.enemy = null;
+            addCult(c, reward(c, 0.4));
+            ctx.fx('evil', 'Diệt môn');
+            return 'Đêm đó, cả một sơn môn chìm trong biển lửa.';
+          }
+          return 'Hắn có viện binh.' + hurt(c, 55, ctx);
+        },
+      },
     ],
   },
   {
@@ -635,10 +1482,46 @@ export const EVENTS: GameEvent[] = [
     title: 'Đứa trẻ lạc',
     text: () => 'Một đứa bé chừng năm tuổi lạc trong rừng, ôm chân bạn khóc gọi mẹ.',
     choices: (c) => [
-      { label: 'Đưa bé về tận nhà', lean: 'chinh', run: (c) => { dao(c, 8); stat(c, 'tamCanh', 5); stat(c, 'khiVan', 3); return 'Mẹ đứa bé quỳ lạy cảm tạ. Bạn thấy vui lạ.'; } },
-      { label: c.realm >= 3 ? 'Nhận làm đồ đệ' : 'Cho ít bánh rồi chỉ đường', lean: 'chinh', run: (c) => { dao(c, 5); if (c.realm >= 3) { stat(c, 'tamCanh', 10); return 'Đứa bé có linh căn không tệ. Bạn có đồ đệ đầu tiên.'; } return 'Đứa bé cầm bánh, đi theo hướng bạn chỉ.'; } },
-      { label: 'Kệ nó, đường ai nấy đi', lean: 'trung', run: (c) => { stat(c, 'tamMa', 4); return 'Tiếng khóc nhỏ dần sau lưng bạn.'; } },
-      { label: 'Bán cho ma môn làm dược nhân', lean: 'ta', run: (c) => { dao(c, -22); money(c, 300); stat(c, 'tamMa', 12); return 'Ma môn trả giá cao cho trẻ có thể chất thuần âm.'; } },
+      {
+        label: 'Đưa bé về tận nhà',
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 8);
+          stat(c, 'tamCanh', 5);
+          stat(c, 'khiVan', 3);
+          return 'Mẹ đứa bé quỳ lạy cảm tạ. Bạn thấy vui lạ.';
+        },
+      },
+      {
+        label: c.realm >= 3 ? 'Nhận làm đồ đệ' : 'Cho ít bánh rồi chỉ đường',
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 5);
+          if (c.realm >= 3) {
+            stat(c, 'tamCanh', 10);
+            return 'Đứa bé có linh căn không tệ. Bạn có đồ đệ đầu tiên.';
+          }
+          return 'Đứa bé cầm bánh, đi theo hướng bạn chỉ.';
+        },
+      },
+      {
+        label: 'Kệ nó, đường ai nấy đi',
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'tamMa', 4);
+          return 'Tiếng khóc nhỏ dần sau lưng bạn.';
+        },
+      },
+      {
+        label: 'Bán cho ma môn làm dược nhân',
+        lean: 'ta',
+        run: (c) => {
+          dao(c, -22);
+          money(c, 300);
+          stat(c, 'tamMa', 12);
+          return 'Ma môn trả giá cao cho trẻ có thể chất thuần âm.';
+        },
+      },
     ],
   },
   {
@@ -649,10 +1532,48 @@ export const EVENTS: GameEvent[] = [
     title: 'Lũ quét',
     text: () => 'Mưa liền bảy ngày. Đê vỡ, nước cuồn cuộn đổ về thị trấn dưới chân núi.',
     choices: (c) => [
-      { label: 'Lao xuống cứu người', lean: 'chinh', run: (c, ctx) => { dao(c, 12); stat(c, 'tamCanh', 8); if (ctx.rnd() < 0.35) return 'Bạn cứu được hàng chục người nhưng bị gỗ đập trúng.' + hurt(c, 25, ctx); return 'Bạn cứu được hàng chục người.'; } },
-      { label: c.realm >= 2 ? 'Bày trận chặn lũ' : 'Giúp đắp đê', lean: 'chinh', run: (c, ctx) => { dao(c, 10); if (c.realm >= 2) { addCult(c, reward(c, 0.3)); ctx.fx('layer', 'Ngộ trận đạo'); return 'Trận pháp chặn dòng nước. Giữa lúc ấy bạn ngộ ra điều gì đó.'; } stat(c, 'sucKhoe', 5); return 'Bạn cùng dân làng đắp đê suốt đêm.'; } },
-      { label: 'Chạy lên núi giữ mình', lean: 'trung', run: (c) => { stat(c, 'tamMa', 3); return 'Bạn an toàn. Thị trấn thì không.'; } },
-      { label: 'Nhân lúc hỗn loạn cướp kho lương', lean: 'ta', run: (c, ctx) => { dao(c, -12); money(c, 160); ctx.fx('coin', '+160'); return 'Bạn vác đi hai bao bạc của nhà quan. Không ai rảnh để đuổi theo.'; } },
+      {
+        label: 'Lao xuống cứu người',
+        lean: 'chinh',
+        run: (c, ctx) => {
+          dao(c, 12);
+          stat(c, 'tamCanh', 8);
+          if (ctx.rnd() < 0.35) return 'Bạn cứu được hàng chục người nhưng bị gỗ đập trúng.' + hurt(c, 25, ctx);
+          return 'Bạn cứu được hàng chục người.';
+        },
+      },
+      {
+        label: c.realm >= 2 ? 'Bày trận chặn lũ' : 'Giúp đắp đê',
+        lean: 'chinh',
+        run: (c, ctx) => {
+          dao(c, 10);
+          if (c.realm >= 2) {
+            addCult(c, reward(c, 0.3));
+            ctx.fx('layer', 'Ngộ trận đạo');
+            return 'Trận pháp chặn dòng nước. Giữa lúc ấy bạn ngộ ra điều gì đó.';
+          }
+          stat(c, 'sucKhoe', 5);
+          return 'Bạn cùng dân làng đắp đê suốt đêm.';
+        },
+      },
+      {
+        label: 'Chạy lên núi giữ mình',
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'tamMa', 3);
+          return 'Bạn an toàn. Thị trấn thì không.';
+        },
+      },
+      {
+        label: 'Nhân lúc hỗn loạn cướp kho lương',
+        lean: 'ta',
+        run: (c, ctx) => {
+          dao(c, -12);
+          money(c, 160);
+          ctx.fx('coin', '+160');
+          return 'Bạn vác đi hai bao bạc của nhà quan. Không ai rảnh để đuổi theo.';
+        },
+      },
     ],
   },
   {
@@ -663,10 +1584,51 @@ export const EVENTS: GameEvent[] = [
     title: 'Tửu tiên',
     text: () => 'Một gã say khướt ngồi trên mái quán rượu, ném cho bạn hồ lô: "Uống với ta một chén!"',
     choices: () => [
-      { label: 'Uống tới bến', lean: 'trung', run: (c, ctx) => { if (ctx.rnd() < luck(c, 0.5)) { stat(c, 'ngoTinh', 12); addCult(c, reward(c, 0.4)); giveItem(c, 'ho_lo'); ctx.fx('layer', 'Say mà ngộ'); return 'Say ba ngày ba đêm, tỉnh dậy thấy công pháp thông suốt. Gã kia để lại cho bạn cái hồ lô.'; } const f = fatal(c, ctx, 0.05, 'Rượu là Túy Tiên Nhưỡng ngàn năm, phàm thân không chịu nổi. Bạn say mà chết, mặt vẫn còn cười.'); if (c.dead) return 'Chén thứ chín...' + f; stat(c, 'sucKhoe', -10); return 'Bạn say mềm, tỉnh dậy không nhớ gì.'; } },
-      { label: 'Uống một chén lấy lệ', lean: 'trung', run: (c) => { stat(c, 'tamCanh', 4); return 'Rượu ngon. Gã cười ha hả, kể chuyện tu tiên ngàn năm trước.'; } },
-      { label: 'Từ chối, khuyên hắn bớt say', lean: 'chinh', run: (c) => { dao(c, 3); return 'Gã nhìn bạn như nhìn đứa ngốc rồi biến mất trong gió.'; } },
-      { label: 'Chuốc say rồi lục túi', lean: 'ta', run: (c, ctx) => { dao(c, -8); if (ctx.rnd() < 0.4) { money(c, 500); return 'Túi của hắn đầy linh thạch thượng phẩm!'; } return 'Hắn mở một mắt nhìn bạn rồi búng tay. Bạn bay xuống sông.' + hurt(c, 20, ctx); } },
+      {
+        label: 'Uống tới bến',
+        lean: 'trung',
+        run: (c, ctx) => {
+          if (ctx.rnd() < luck(c, 0.5)) {
+            stat(c, 'ngoTinh', 12);
+            addCult(c, reward(c, 0.4));
+            giveItem(c, 'ho_lo');
+            ctx.fx('layer', 'Say mà ngộ');
+            return 'Say ba ngày ba đêm, tỉnh dậy thấy công pháp thông suốt. Gã kia để lại cho bạn cái hồ lô.';
+          }
+          const f = fatal(c, ctx, 0.05, 'Rượu là Túy Tiên Nhưỡng ngàn năm, phàm thân không chịu nổi. Bạn say mà chết, mặt vẫn còn cười.');
+          if (c.dead) return 'Chén thứ chín...' + f;
+          stat(c, 'sucKhoe', -10);
+          return 'Bạn say mềm, tỉnh dậy không nhớ gì.';
+        },
+      },
+      {
+        label: 'Uống một chén lấy lệ',
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'tamCanh', 4);
+          return 'Rượu ngon. Gã cười ha hả, kể chuyện tu tiên ngàn năm trước.';
+        },
+      },
+      {
+        label: 'Từ chối, khuyên hắn bớt say',
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 3);
+          return 'Gã nhìn bạn như nhìn đứa ngốc rồi biến mất trong gió.';
+        },
+      },
+      {
+        label: 'Chuốc say rồi lục túi',
+        lean: 'ta',
+        run: (c, ctx) => {
+          dao(c, -8);
+          if (ctx.rnd() < 0.4) {
+            money(c, 500);
+            return 'Túi của hắn đầy linh thạch thượng phẩm!';
+          }
+          return 'Hắn mở một mắt nhìn bạn rồi búng tay. Bạn bay xuống sông.' + hurt(c, 20, ctx);
+        },
+      },
     ],
   },
   {
@@ -678,10 +1640,47 @@ export const EVENTS: GameEvent[] = [
     title: 'Thương đoàn',
     text: () => 'Một thương đoàn lớn thuê người hộ tống qua Hắc Phong Lĩnh, nơi nhiều yêu thú.',
     choices: () => [
-      { label: 'Nhận việc', hint: '+linh thạch', lean: 'trung', run: (c, ctx) => { money(c, 120 * (c.realm + 1)); if (ctx.rnd() < 0.25) return 'Gặp yêu thú, bạn bảo vệ thương đoàn an toàn nhưng bị thương.' + hurt(c, 15, ctx); return 'Chuyến đi êm xuôi. Ông chủ thưởng hậu.'; } },
-      { label: 'Đòi gấp đôi tiền công', lean: 'trung', run: (c, ctx) => { if (ctx.rnd() < 0.5) { money(c, 240 * (c.realm + 1)); return 'Ông chủ cắn răng đồng ý.'; } return 'Ông chủ thuê người khác.'; } },
-      { label: 'Giới thiệu bạn nghèo đi thay', lean: 'chinh', run: (c) => { dao(c, 5); stat(c, 'khiVan', 4); return 'Người bạn ấy kiếm được tiền chữa bệnh cho mẹ. Sau này nhớ ơn bạn.'; } },
-      { label: 'Nhận việc, giữa đường cướp luôn', lean: 'ta', run: (c, ctx) => { dao(c, -15); money(c, 500 * (c.realm + 1)); ctx.fx('coin', 'Cướp hàng'); c.enemy = c.enemy ?? 'thương hội Vạn Phúc'; return 'Đến giữa Hắc Phong Lĩnh, bạn ra tay. Hàng hóa giờ là của bạn.'; } },
+      {
+        label: 'Nhận việc',
+        hint: '+linh thạch',
+        lean: 'trung',
+        run: (c, ctx) => {
+          money(c, 120 * (c.realm + 1));
+          if (ctx.rnd() < 0.25) return 'Gặp yêu thú, bạn bảo vệ thương đoàn an toàn nhưng bị thương.' + hurt(c, 15, ctx);
+          return 'Chuyến đi êm xuôi. Ông chủ thưởng hậu.';
+        },
+      },
+      {
+        label: 'Đòi gấp đôi tiền công',
+        lean: 'trung',
+        run: (c, ctx) => {
+          if (ctx.rnd() < 0.5) {
+            money(c, 240 * (c.realm + 1));
+            return 'Ông chủ cắn răng đồng ý.';
+          }
+          return 'Ông chủ thuê người khác.';
+        },
+      },
+      {
+        label: 'Giới thiệu bạn nghèo đi thay',
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 5);
+          stat(c, 'khiVan', 4);
+          return 'Người bạn ấy kiếm được tiền chữa bệnh cho mẹ. Sau này nhớ ơn bạn.';
+        },
+      },
+      {
+        label: 'Nhận việc, giữa đường cướp luôn',
+        lean: 'ta',
+        run: (c, ctx) => {
+          dao(c, -15);
+          money(c, 500 * (c.realm + 1));
+          ctx.fx('coin', 'Cướp hàng');
+          c.enemy = c.enemy ?? 'thương hội Vạn Phúc';
+          return 'Đến giữa Hắc Phong Lĩnh, bạn ra tay. Hàng hóa giờ là của bạn.';
+        },
+      },
     ],
   },
   {
@@ -693,10 +1692,40 @@ export const EVENTS: GameEvent[] = [
     title: 'Lão tăng hóa duyên',
     text: () => 'Một lão tăng áo cà sa bạc màu dừng trước cửa, chắp tay xin một bát cơm.',
     choices: () => [
-      { label: 'Mời vào, dâng cơm chay', lean: 'chinh', run: (c) => { dao(c, 6); stat(c, 'tamMa', -10); return 'Lão tăng ăn xong, gõ nhẹ lên trán bạn ba cái rồi đi.'; } },
-      { label: 'Xin nghe giảng kinh', lean: 'chinh', run: (c) => { stat(c, 'ngoTinh', 5); stat(c, 'tamCanh', 6); return 'Lão giảng một đoạn kinh Kim Cương. Bạn nghe mà như mở cửa sổ trong lòng.'; } },
-      { label: 'Cho ít tiền rồi đóng cửa', lean: 'trung', run: (c) => { money(c, -10); return 'Lão nhận tiền, niệm một câu A Di Đà Phật.'; } },
-      { label: 'Đuổi đi', lean: 'ta', run: (c) => { dao(c, -5); return 'Lão tăng không giận, chỉ cười rồi bỏ đi.'; } },
+      {
+        label: 'Mời vào, dâng cơm chay',
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 6);
+          stat(c, 'tamMa', -10);
+          return 'Lão tăng ăn xong, gõ nhẹ lên trán bạn ba cái rồi đi.';
+        },
+      },
+      {
+        label: 'Xin nghe giảng kinh',
+        lean: 'chinh',
+        run: (c) => {
+          stat(c, 'ngoTinh', 5);
+          stat(c, 'tamCanh', 6);
+          return 'Lão giảng một đoạn kinh Kim Cương. Bạn nghe mà như mở cửa sổ trong lòng.';
+        },
+      },
+      {
+        label: 'Cho ít tiền rồi đóng cửa',
+        lean: 'trung',
+        run: (c) => {
+          money(c, -10);
+          return 'Lão nhận tiền, niệm một câu A Di Đà Phật.';
+        },
+      },
+      {
+        label: 'Đuổi đi',
+        lean: 'ta',
+        run: (c) => {
+          dao(c, -5);
+          return 'Lão tăng không giận, chỉ cười rồi bỏ đi.';
+        },
+      },
     ],
   },
   {
@@ -708,10 +1737,54 @@ export const EVENTS: GameEvent[] = [
     title: 'Huyết tế',
     text: () => 'Người áo đen trao cho bạn tấm thiệp đỏ: đêm trăng tròn, ma môn mở đại lễ huyết tế. Ai tham gia sẽ được chia huyết tinh.',
     choices: () => [
-      { label: 'Tham gia huyết tế', lean: 'ta', run: (c, ctx) => { dao(c, -20); stat(c, 'tamMa', 15); addCult(c, reward(c, 1.3)); ctx.fx('evil', 'Huyết tế'); return 'Máu chảy thành sông. Bạn hấp thụ phần huyết tinh của mình.'; } },
-      { label: 'Báo tin cho chính đạo', lean: 'chinh', run: (c, ctx) => { dao(c, 18); money(c, 300); if (ctx.rnd() < 0.3) { c.enemy = c.enemy ?? 'ma môn bị bạn phản bội'; return 'Chính đạo phá được buổi lễ. Ma môn biết kẻ báo tin là bạn.'; } return 'Chính đạo phá được buổi lễ và thưởng bạn hậu hĩnh.'; } },
-      { label: 'Từ chối khéo', lean: 'trung', run: (c) => { stat(c, 'tamMa', -3); return 'Bạn viện cớ bế quan. Người áo đen nhìn bạn đầy ý vị.'; } },
-      { label: 'Giả vờ tham gia rồi phá lễ', lean: 'chinh', run: (c, ctx) => { if (ctx.rnd() < luck(c, 0.45)) { dao(c, 25); addCult(c, reward(c, 0.5)); ctx.fx('heal', 'Cứu người'); return 'Bạn phá tế đàn, cứu được hàng trăm người bị bắt.'; } const f = fatal(c, ctx, 0.3, 'Bạn bị phát hiện, bị trói lên tế đàn và luyện thành huyết nô.'); if (c.dead) return 'Giữa buổi lễ...' + f; c.enemy = c.enemy ?? 'Huyết Sát Môn'; return 'Bạn bị phát hiện.' + (f ?? '') + hurt(c, 50, ctx); } },
+      {
+        label: 'Tham gia huyết tế',
+        lean: 'ta',
+        run: (c, ctx) => {
+          dao(c, -20);
+          stat(c, 'tamMa', 15);
+          addCult(c, reward(c, 1.3));
+          ctx.fx('evil', 'Huyết tế');
+          return 'Máu chảy thành sông. Bạn hấp thụ phần huyết tinh của mình.';
+        },
+      },
+      {
+        label: 'Báo tin cho chính đạo',
+        lean: 'chinh',
+        run: (c, ctx) => {
+          dao(c, 18);
+          money(c, 300);
+          if (ctx.rnd() < 0.3) {
+            c.enemy = c.enemy ?? 'ma môn bị bạn phản bội';
+            return 'Chính đạo phá được buổi lễ. Ma môn biết kẻ báo tin là bạn.';
+          }
+          return 'Chính đạo phá được buổi lễ và thưởng bạn hậu hĩnh.';
+        },
+      },
+      {
+        label: 'Từ chối khéo',
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'tamMa', -3);
+          return 'Bạn viện cớ bế quan. Người áo đen nhìn bạn đầy ý vị.';
+        },
+      },
+      {
+        label: 'Giả vờ tham gia rồi phá lễ',
+        lean: 'chinh',
+        run: (c, ctx) => {
+          if (ctx.rnd() < luck(c, 0.45)) {
+            dao(c, 25);
+            addCult(c, reward(c, 0.5));
+            ctx.fx('heal', 'Cứu người');
+            return 'Bạn phá tế đàn, cứu được hàng trăm người bị bắt.';
+          }
+          const f = fatal(c, ctx, 0.3, 'Bạn bị phát hiện, bị trói lên tế đàn và luyện thành huyết nô.');
+          if (c.dead) return 'Giữa buổi lễ...' + f;
+          c.enemy = c.enemy ?? 'Huyết Sát Môn';
+          return 'Bạn bị phát hiện.' + (f ?? '') + hurt(c, 50, ctx);
+        },
+      },
     ],
   },
   {
@@ -722,10 +1795,55 @@ export const EVENTS: GameEvent[] = [
     title: 'Chính tà đại chiến',
     text: () => 'Chính đạo và ma đạo khai chiến ở Đoạn Hồn Nhai. Tu sĩ khắp thiên hạ đều phải chọn phe.',
     choices: () => [
-      { label: 'Theo chính đạo xuất chiến', lean: 'chinh', run: (c, ctx) => { dao(c, 15); if (ctx.rnd() < luck(c, 0.6)) { addCult(c, reward(c, 0.8)); money(c, 1000); return 'Bạn lập công lớn, danh chấn thiên hạ.'; } const f = fatal(c, ctx, 0.3, 'Bạn tử trận ở Đoạn Hồn Nhai, thi thể vùi giữa vạn xác tu sĩ.'); if (c.dead) return 'Kiếm quang ngập trời...' + f; return 'Bạn trọng thương trong trận chiến.' + (f ?? '') + hurt(c, 60, ctx); } },
-      { label: 'Theo ma đạo', lean: 'ta', run: (c, ctx) => { dao(c, -15); stat(c, 'tamMa', 10); if (ctx.rnd() < luck(c, 0.6)) { addCult(c, reward(c, 1.0)); return 'Ma đạo đại thắng. Bạn được phong làm hộ pháp.'; } const f = fatal(c, ctx, 0.3, 'Bạn bị Tru Ma Kiếm Trận của chính đạo chém thành muôn mảnh.'); if (c.dead) return 'Chính đạo vây kín bốn phía...' + f; return 'Bạn bị chính đạo vây đánh.' + (f ?? '') + hurt(c, 60, ctx); } },
-      { label: 'Đứng ngoài, bế quan', lean: 'trung', run: (c) => { addCult(c, reward(c, 0.3)); stat(c, 'tamCanh', 5); return 'Thiên hạ đại loạn, bạn đóng cửa động phủ tu luyện.'; } },
-      { label: 'Nhặt bảo vật trên chiến trường', lean: 'ta', run: (c, ctx) => { dao(c, -6); money(c, 2000); ctx.fx('coin', 'Hôi của'); return 'Xác người khắp nơi, túi trữ vật cũng khắp nơi.'; } },
+      {
+        label: 'Theo chính đạo xuất chiến',
+        lean: 'chinh',
+        run: (c, ctx) => {
+          dao(c, 15);
+          if (ctx.rnd() < luck(c, 0.6)) {
+            addCult(c, reward(c, 0.8));
+            money(c, 1000);
+            return 'Bạn lập công lớn, danh chấn thiên hạ.';
+          }
+          const f = fatal(c, ctx, 0.3, 'Bạn tử trận ở Đoạn Hồn Nhai, thi thể vùi giữa vạn xác tu sĩ.');
+          if (c.dead) return 'Kiếm quang ngập trời...' + f;
+          return 'Bạn trọng thương trong trận chiến.' + (f ?? '') + hurt(c, 60, ctx);
+        },
+      },
+      {
+        label: 'Theo ma đạo',
+        lean: 'ta',
+        run: (c, ctx) => {
+          dao(c, -15);
+          stat(c, 'tamMa', 10);
+          if (ctx.rnd() < luck(c, 0.6)) {
+            addCult(c, reward(c, 1.0));
+            return 'Ma đạo đại thắng. Bạn được phong làm hộ pháp.';
+          }
+          const f = fatal(c, ctx, 0.3, 'Bạn bị Tru Ma Kiếm Trận của chính đạo chém thành muôn mảnh.');
+          if (c.dead) return 'Chính đạo vây kín bốn phía...' + f;
+          return 'Bạn bị chính đạo vây đánh.' + (f ?? '') + hurt(c, 60, ctx);
+        },
+      },
+      {
+        label: 'Đứng ngoài, bế quan',
+        lean: 'trung',
+        run: (c) => {
+          addCult(c, reward(c, 0.3));
+          stat(c, 'tamCanh', 5);
+          return 'Thiên hạ đại loạn, bạn đóng cửa động phủ tu luyện.';
+        },
+      },
+      {
+        label: 'Nhặt bảo vật trên chiến trường',
+        lean: 'ta',
+        run: (c, ctx) => {
+          dao(c, -6);
+          money(c, 2000);
+          ctx.fx('coin', 'Hôi của');
+          return 'Xác người khắp nơi, túi trữ vật cũng khắp nơi.';
+        },
+      },
     ],
   },
   {
@@ -737,10 +1855,45 @@ export const EVENTS: GameEvent[] = [
     title: 'Tin nhà',
     text: () => 'Thư nhà gửi đến: cha mẹ già yếu, mong được gặp bạn lần cuối.',
     choices: () => [
-      { label: 'Về ngay, ở bên tới phút cuối', lean: 'chinh', run: (c) => { dao(c, 8); stat(c, 'tamCanh', 10); stat(c, 'tamMa', -10); return 'Bạn về kịp. Mẹ nắm tay bạn, mỉm cười rồi nhắm mắt.'; } },
-      { label: 'Gửi Diên Thọ Đan về', hint: '-300', lean: 'chinh', run: (c) => { money(c, -300); dao(c, 5); return 'Cha mẹ sống thêm mười năm nữa, nhưng không gặp lại bạn.'; } },
-      { label: 'Đang bế quan, không về', lean: 'trung', run: (c) => { addCult(c, reward(c, 0.3)); stat(c, 'tamMa', 12); return 'Khi bạn xuất quan, mộ cha mẹ đã xanh cỏ.'; } },
-      { label: 'Đốt thư', lean: 'ta', run: (c) => { dao(c, -10); stat(c, 'tamMa', 6); stat(c, 'tamCanh', 4); return 'Tu tiên là đoạn tuyệt trần duyên. Bạn tự nhủ như vậy.'; } },
+      {
+        label: 'Về ngay, ở bên tới phút cuối',
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 8);
+          stat(c, 'tamCanh', 10);
+          stat(c, 'tamMa', -10);
+          return 'Bạn về kịp. Mẹ nắm tay bạn, mỉm cười rồi nhắm mắt.';
+        },
+      },
+      {
+        label: 'Gửi Diên Thọ Đan về',
+        hint: '-300',
+        lean: 'chinh',
+        run: (c) => {
+          money(c, -300);
+          dao(c, 5);
+          return 'Cha mẹ sống thêm mười năm nữa, nhưng không gặp lại bạn.';
+        },
+      },
+      {
+        label: 'Đang bế quan, không về',
+        lean: 'trung',
+        run: (c) => {
+          addCult(c, reward(c, 0.3));
+          stat(c, 'tamMa', 12);
+          return 'Khi bạn xuất quan, mộ cha mẹ đã xanh cỏ.';
+        },
+      },
+      {
+        label: 'Đốt thư',
+        lean: 'ta',
+        run: (c) => {
+          dao(c, -10);
+          stat(c, 'tamMa', 6);
+          stat(c, 'tamCanh', 4);
+          return 'Tu tiên là đoạn tuyệt trần duyên. Bạn tự nhủ như vậy.';
+        },
+      },
     ],
   },
   {
@@ -752,10 +1905,52 @@ export const EVENTS: GameEvent[] = [
     title: 'Đạo lữ gặp nạn',
     text: (c) => `${c.partner} bị kẻ thù bắt đi, chỉ để lại một vệt máu và mảnh ngọc vỡ.`,
     choices: () => [
-      { label: 'Một mình đi cứu', lean: 'chinh', run: (c, ctx) => { if (ctx.rnd() < luck(c, 0.55)) { stat(c, 'tamCanh', 12); dao(c, 6); ctx.fx('love', 'Đoàn tụ'); return 'Bạn xông vào hang ổ địch, mang người về.'; } const t = hurt(c, 40, ctx); c.partner = null; stat(c, 'tamMa', 20); return 'Bạn đến muộn.' + t; } },
-      { label: 'Nhờ sư môn ra tay', lean: 'chinh', run: (c) => { money(c, -200); stat(c, 'tamCanh', 4); return 'Sư môn ra tay, cứu được người nhưng bạn nợ một ân tình lớn.'; } },
-      { label: 'Chuộc bằng linh thạch', hint: '-50% linh thạch', lean: 'trung', run: (c) => { money(c, -c.linhThach * 0.5); return 'Bạn trả giá. Người được thả về.'; } },
-      { label: 'Bỏ mặc, đạo lữ chỉ là vướng bận', lean: 'ta', run: (c) => { const p = c.partner; c.partner = null; dao(c, -14); stat(c, 'tamMa', 10); addCult(c, reward(c, 0.4)); return `Bạn không đi. Từ đó không ai nhắc đến ${p} nữa.`; } },
+      {
+        label: 'Một mình đi cứu',
+        lean: 'chinh',
+        run: (c, ctx) => {
+          if (ctx.rnd() < luck(c, 0.55)) {
+            stat(c, 'tamCanh', 12);
+            dao(c, 6);
+            ctx.fx('love', 'Đoàn tụ');
+            return 'Bạn xông vào hang ổ địch, mang người về.';
+          }
+          const t = hurt(c, 40, ctx);
+          c.partner = null;
+          stat(c, 'tamMa', 20);
+          return 'Bạn đến muộn.' + t;
+        },
+      },
+      {
+        label: 'Nhờ sư môn ra tay',
+        lean: 'chinh',
+        run: (c) => {
+          money(c, -200);
+          stat(c, 'tamCanh', 4);
+          return 'Sư môn ra tay, cứu được người nhưng bạn nợ một ân tình lớn.';
+        },
+      },
+      {
+        label: 'Chuộc bằng linh thạch',
+        hint: '-50% linh thạch',
+        lean: 'trung',
+        run: (c) => {
+          money(c, -c.linhThach * 0.5);
+          return 'Bạn trả giá. Người được thả về.';
+        },
+      },
+      {
+        label: 'Bỏ mặc, đạo lữ chỉ là vướng bận',
+        lean: 'ta',
+        run: (c) => {
+          const p = c.partner;
+          c.partner = null;
+          dao(c, -14);
+          stat(c, 'tamMa', 10);
+          addCult(c, reward(c, 0.4));
+          return `Bạn không đi. Từ đó không ai nhắc đến ${p} nữa.`;
+        },
+      },
     ],
   },
   // ---------------- Kiếm hiệp: những lựa chọn có thể mất mạng ----------------
@@ -798,7 +1993,14 @@ export const EVENTS: GameEvent[] = [
           return 'Con chó ăn xong vẫy đuôi. Chủ quán nhìn bạn như nhìn kẻ điên.';
         },
       },
-      { label: 'Cảm ơn rồi đi luôn trong mưa', lean: 'trung', run: (c) => { stat(c, 'sucKhoe', -5); return 'Bạn đội mưa đi tiếp, ướt sũng nhưng sống sót.'; } },
+      {
+        label: 'Cảm ơn rồi đi luôn trong mưa',
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'sucKhoe', -5);
+          return 'Bạn đội mưa đi tiếp, ướt sũng nhưng sống sót.';
+        },
+      },
     ],
   },
   {
@@ -894,8 +2096,25 @@ export const EVENTS: GameEvent[] = [
           return 'Bạn chỉ luyện vài thức phòng thân. Tu vi nhích lên.' + (f ?? '');
         },
       },
-      { label: 'Đốt bí kíp, trừ hại cho đời', lean: 'chinh', run: (c) => { dao(c, 12); stat(c, 'tamCanh', 8); return 'Ngọn lửa xanh lè bùng lên. Bạn nghe như có tiếng gào thét trong đó.'; } },
-      { label: 'Bán cho ma môn', lean: 'ta', run: (c, ctx) => { dao(c, -8); money(c, 600); ctx.fx('coin', '+600'); return 'Ma môn trả giá cao không tưởng. Không biết ai sẽ là người luyện nó tiếp theo.'; } },
+      {
+        label: 'Đốt bí kíp, trừ hại cho đời',
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 12);
+          stat(c, 'tamCanh', 8);
+          return 'Ngọn lửa xanh lè bùng lên. Bạn nghe như có tiếng gào thét trong đó.';
+        },
+      },
+      {
+        label: 'Bán cho ma môn',
+        lean: 'ta',
+        run: (c, ctx) => {
+          dao(c, -8);
+          money(c, 600);
+          ctx.fx('coin', '+600');
+          return 'Ma môn trả giá cao không tưởng. Không biết ai sẽ là người luyện nó tiếp theo.';
+        },
+      },
     ],
   },
   {
@@ -924,7 +2143,14 @@ export const EVENTS: GameEvent[] = [
           return 'Bạn thua, được người ta khiêng xuống đài, sống sót trong gang tấc.' + (f ?? '') + hurt(c, 50, ctx);
         },
       },
-      { label: 'Từ chối, mặc người chê cười', lean: 'trung', run: (c) => { stat(c, 'tamMa', 6); return 'Thiên hạ cười bạn nhát gan. Nhưng bạn còn sống.'; } },
+      {
+        label: 'Từ chối, mặc người chê cười',
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'tamMa', 6);
+          return 'Thiên hạ cười bạn nhát gan. Nhưng bạn còn sống.';
+        },
+      },
       {
         label: 'Lên đài, lén dùng ám khí tẩm độc',
         lean: 'ta',
@@ -940,7 +2166,15 @@ export const EVENTS: GameEvent[] = [
           return 'Ám khí bị phát hiện, bạn liều mạng chạy thoát.' + (f ?? '') + hurt(c, 40, ctx);
         },
       },
-      { label: 'Mời hắn uống trà, kết bằng hữu', lean: 'chinh', run: (c) => { dao(c, 4); stat(c, 'ngoTinh', 5); return 'Hai người luận kiếm suốt đêm. Hóa ra hắn chỉ cô đơn vì quá giỏi.'; } },
+      {
+        label: 'Mời hắn uống trà, kết bằng hữu',
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 4);
+          stat(c, 'ngoTinh', 5);
+          return 'Hai người luận kiếm suốt đêm. Hóa ra hắn chỉ cô đơn vì quá giỏi.';
+        },
+      },
     ],
   },
   {
@@ -973,9 +2207,41 @@ export const EVENTS: GameEvent[] = [
           return 'Bạn rơi xuống vực, mắc vào cành cây giữa vách, gãy mấy cái xương sườn.' + (f ?? '') + hurt(c, 40, ctx);
         },
       },
-      { label: 'Dùng dây thừng và ngự kiếm', lean: 'trung', run: (c, ctx) => { if (c.realm >= 2) { addCult(c, reward(c, 0.6)); return 'Ngự kiếm phi hành, hái linh chi dễ như trở bàn tay.'; } const f = fatal(c, ctx, 0.1, 'Dây thừng đứt. Bạn rơi xuống vực.'); if (c.dead) return 'Bạn thả dây xuống...' + f; addCult(c, reward(c, 0.4)); return 'Chật vật nửa ngày, cuối cùng cũng hái được.' + (f ?? ''); } },
-      { label: 'Thuê đứa trẻ trong làng trèo xuống', lean: 'ta', run: (c, ctx) => { dao(c, -10); if (ctx.rnd() < 0.4) { stat(c, 'tamMa', 12); return 'Đứa trẻ trượt chân. Bạn nhìn xuống vực, rồi quay đi.'; } addCult(c, reward(c, 0.6)); return 'Đứa trẻ mang linh chi lên, bạn cho nó một đồng bạc.'; } },
-      { label: 'Thôi, mạng quan trọng hơn', lean: 'trung', run: (c) => { stat(c, 'tamCanh', 3); return 'Bạn ngắm cây linh chi một lúc rồi quay đi.'; } },
+      {
+        label: 'Dùng dây thừng và ngự kiếm',
+        lean: 'trung',
+        run: (c, ctx) => {
+          if (c.realm >= 2) {
+            addCult(c, reward(c, 0.6));
+            return 'Ngự kiếm phi hành, hái linh chi dễ như trở bàn tay.';
+          }
+          const f = fatal(c, ctx, 0.1, 'Dây thừng đứt. Bạn rơi xuống vực.');
+          if (c.dead) return 'Bạn thả dây xuống...' + f;
+          addCult(c, reward(c, 0.4));
+          return 'Chật vật nửa ngày, cuối cùng cũng hái được.' + (f ?? '');
+        },
+      },
+      {
+        label: 'Thuê đứa trẻ trong làng trèo xuống',
+        lean: 'ta',
+        run: (c, ctx) => {
+          dao(c, -10);
+          if (ctx.rnd() < 0.4) {
+            stat(c, 'tamMa', 12);
+            return 'Đứa trẻ trượt chân. Bạn nhìn xuống vực, rồi quay đi.';
+          }
+          addCult(c, reward(c, 0.6));
+          return 'Đứa trẻ mang linh chi lên, bạn cho nó một đồng bạc.';
+        },
+      },
+      {
+        label: 'Thôi, mạng quan trọng hơn',
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'tamCanh', 3);
+          return 'Bạn ngắm cây linh chi một lúc rồi quay đi.';
+        },
+      },
     ],
   },
   {
@@ -1110,9 +2376,38 @@ export const EVENTS: GameEvent[] = [
           return 'Bảy ngày bảy đêm, bạn bước ra. Từ nay bách độc bất xâm.' + (f ?? '');
         },
       },
-      { label: 'Dùng tù binh thử độc trước', lean: 'ta', run: (c, ctx) => { dao(c, -16); stat(c, 'tamMa', 10); addCult(c, reward(c, 0.6)); ctx.fx('evil'); return 'Mười tù binh chết, bạn tìm ra cách luyện an toàn hơn.'; } },
-      { label: 'Chỉ học phần giải độc', lean: 'trung', run: (c) => { addPill(c, 'hoi_xuan', 2); stat(c, 'ngoTinh', 4); return 'Bạn học cách giải độc, chế được hai viên Hồi Xuân Đan.'; } },
-      { label: 'Bỏ trốn khỏi ma môn', lean: 'chinh', run: (c, ctx) => { dao(c, 15); c.sect = null; const f = fatal(c, ctx, 0.15, 'Ma môn truy sát kẻ phản đồ. Bạn bị bắt lại và xử tử trước mặt mọi người.'); if (c.dead) return 'Bạn trốn đi trong đêm...' + f; c.enemy = c.enemy ?? 'ma môn truy sát kẻ phản đồ'; return 'Bạn trốn thoát. Từ nay ma môn treo thưởng cái đầu bạn.' + (f ?? ''); } },
+      {
+        label: 'Dùng tù binh thử độc trước',
+        lean: 'ta',
+        run: (c, ctx) => {
+          dao(c, -16);
+          stat(c, 'tamMa', 10);
+          addCult(c, reward(c, 0.6));
+          ctx.fx('evil');
+          return 'Mười tù binh chết, bạn tìm ra cách luyện an toàn hơn.';
+        },
+      },
+      {
+        label: 'Chỉ học phần giải độc',
+        lean: 'trung',
+        run: (c) => {
+          addPill(c, 'hoi_xuan', 2);
+          stat(c, 'ngoTinh', 4);
+          return 'Bạn học cách giải độc, chế được hai viên Hồi Xuân Đan.';
+        },
+      },
+      {
+        label: 'Bỏ trốn khỏi ma môn',
+        lean: 'chinh',
+        run: (c, ctx) => {
+          dao(c, 15);
+          c.sect = null;
+          const f = fatal(c, ctx, 0.15, 'Ma môn truy sát kẻ phản đồ. Bạn bị bắt lại và xử tử trước mặt mọi người.');
+          if (c.dead) return 'Bạn trốn đi trong đêm...' + f;
+          c.enemy = c.enemy ?? 'ma môn truy sát kẻ phản đồ';
+          return 'Bạn trốn thoát. Từ nay ma môn treo thưởng cái đầu bạn.' + (f ?? '');
+        },
+      },
     ],
   },
   // ---------------- Giàu nghèo ----------------
@@ -1125,10 +2420,62 @@ export const EVENTS: GameEvent[] = [
     title: 'Đổ thạch',
     text: () => 'Phường thị mở sòng đổ thạch: mua khối đá thô, bổ ra mới biết bên trong có linh ngọc hay chỉ là đá vụn.',
     choices: (c) => [
-      { label: 'Cược nhỏ cho vui', hint: '-50', lean: 'trung', run: (c, ctx) => { money(c, -50); if (ctx.rnd() < 0.35) { money(c, 150); ctx.fx('coin', '+150'); return 'Bổ ra một mảnh ngọc xanh, lãi gấp ba.'; } return 'Đá vụn. Coi như mua vui.'; } },
-      { label: 'Cược nửa gia tài', hint: `-${Math.round(c.linhThach / 2)}`, lean: 'trung', run: (c, ctx) => { const bet = Math.round(c.linhThach / 2); money(c, -bet); if (ctx.rnd() < 0.3) { money(c, bet * 3); ctx.fx('coin', `+${bet * 3}`); return 'Đá vỡ ra, ánh tím rực rỡ. Cả sòng xôn xao, bạn thành phú hộ sau một đêm.'; } stat(c, 'tamMa', 6); return 'Toàn đá vụn. Nửa gia tài bay theo gió.'; } },
-      { label: 'Tất tay một ván', hint: 'tất cả linh thạch', lean: 'trung', run: (c, ctx) => { const bet = c.linhThach; money(c, -bet); if (ctx.rnd() < 0.18) { money(c, bet * 5); ctx.fx('coin', 'ĐỔI ĐỜI'); return 'Bên trong là Hỗn Nguyên Linh Ngọc! Bạn đổi đời chỉ trong một nhát bổ.'; } stat(c, 'tamMa', 12); const f = fatal(c, ctx, 0.05, 'Trắng tay, bạn treo cổ sau sòng bạc.'); if (c.dead) return 'Đá vụn...' + f; return 'Đá vụn. Bạn bước ra khỏi sòng với hai bàn tay trắng.' + (f ?? ''); } },
-      { label: 'Đứng xem người khác cược', lean: 'trung', run: (c) => { stat(c, 'ngoTinh', 2); return 'Bạn thấy có người đổi đời, có người tán gia bại sản. Đổ thạch đúng là đánh cược với trời.'; } },
+      {
+        label: 'Cược nhỏ cho vui',
+        hint: '-50',
+        lean: 'trung',
+        run: (c, ctx) => {
+          money(c, -50);
+          if (ctx.rnd() < 0.35) {
+            money(c, 150);
+            ctx.fx('coin', '+150');
+            return 'Bổ ra một mảnh ngọc xanh, lãi gấp ba.';
+          }
+          return 'Đá vụn. Coi như mua vui.';
+        },
+      },
+      {
+        label: 'Cược nửa gia tài',
+        hint: `-${Math.round(c.linhThach / 2)}`,
+        lean: 'trung',
+        run: (c, ctx) => {
+          const bet = Math.round(c.linhThach / 2);
+          money(c, -bet);
+          if (ctx.rnd() < 0.3) {
+            money(c, bet * 3);
+            ctx.fx('coin', `+${bet * 3}`);
+            return 'Đá vỡ ra, ánh tím rực rỡ. Cả sòng xôn xao, bạn thành phú hộ sau một đêm.';
+          }
+          stat(c, 'tamMa', 6);
+          return 'Toàn đá vụn. Nửa gia tài bay theo gió.';
+        },
+      },
+      {
+        label: 'Tất tay một ván',
+        hint: 'tất cả linh thạch',
+        lean: 'trung',
+        run: (c, ctx) => {
+          const bet = c.linhThach;
+          money(c, -bet);
+          if (ctx.rnd() < 0.18) {
+            money(c, bet * 5);
+            ctx.fx('coin', 'ĐỔI ĐỜI');
+            return 'Bên trong là Hỗn Nguyên Linh Ngọc! Bạn đổi đời chỉ trong một nhát bổ.';
+          }
+          stat(c, 'tamMa', 12);
+          const f = fatal(c, ctx, 0.05, 'Trắng tay, bạn treo cổ sau sòng bạc.');
+          if (c.dead) return 'Đá vụn...' + f;
+          return 'Đá vụn. Bạn bước ra khỏi sòng với hai bàn tay trắng.' + (f ?? '');
+        },
+      },
+      {
+        label: 'Đứng xem người khác cược',
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'ngoTinh', 2);
+          return 'Bạn thấy có người đổi đời, có người tán gia bại sản. Đổ thạch đúng là đánh cược với trời.';
+        },
+      },
     ],
   },
   {
@@ -1140,9 +2487,41 @@ export const EVENTS: GameEvent[] = [
     title: 'Đầu tư',
     text: () => 'Có người rao bán ruộng linh điền và một cửa tiệm ở trấn Lạc Hà. Một gã chủ nợ cũng rủ bạn góp vốn cho vay.',
     choices: () => [
-      { label: 'Mua ruộng linh điền', hint: '-300, thu nhập ổn định', lean: 'trung', run: (c) => { money(c, -300); c.income = (c.income ?? 0) + 18; return 'Bạn có mấy mẫu ruộng. Năm nào cũng có thu.'; } },
-      { label: 'Mở tiệm thuốc', hint: '-600, lời nhiều hơn', lean: 'trung', run: (c, ctx) => { if (c.linhThach < 600) return 'Không đủ vốn, bạn đành thôi.'; money(c, -600); if (ctx.rnd() < 0.75) { c.income = (c.income ?? 0) + 45; return 'Tiệm thuốc đắt khách, tiền vào như nước.'; } return 'Tiệm mở được ba tháng thì cháy. Mất trắng.'; } },
-      { label: 'Góp vốn cho vay nặng lãi', lean: 'ta', run: (c, ctx) => { money(c, -300); dao(c, -10); c.income = (c.income ?? 0) + 60; if (ctx.rnd() < 0.3) c.enemy = c.enemy ?? 'con nợ bị bạn ép đến tan nhà nát cửa'; return 'Lãi mẹ đẻ lãi con. Có nhà con nợ treo cổ, bạn vẫn đến đòi.'; } },
+      {
+        label: 'Mua ruộng linh điền',
+        hint: '-300, thu nhập ổn định',
+        lean: 'trung',
+        run: (c) => {
+          money(c, -300);
+          c.income = (c.income ?? 0) + 18;
+          return 'Bạn có mấy mẫu ruộng. Năm nào cũng có thu.';
+        },
+      },
+      {
+        label: 'Mở tiệm thuốc',
+        hint: '-600, lời nhiều hơn',
+        lean: 'trung',
+        run: (c, ctx) => {
+          if (c.linhThach < 600) return 'Không đủ vốn, bạn đành thôi.';
+          money(c, -600);
+          if (ctx.rnd() < 0.75) {
+            c.income = (c.income ?? 0) + 45;
+            return 'Tiệm thuốc đắt khách, tiền vào như nước.';
+          }
+          return 'Tiệm mở được ba tháng thì cháy. Mất trắng.';
+        },
+      },
+      {
+        label: 'Góp vốn cho vay nặng lãi',
+        lean: 'ta',
+        run: (c, ctx) => {
+          money(c, -300);
+          dao(c, -10);
+          c.income = (c.income ?? 0) + 60;
+          if (ctx.rnd() < 0.3) c.enemy = c.enemy ?? 'con nợ bị bạn ép đến tan nhà nát cửa';
+          return 'Lãi mẹ đẻ lãi con. Có nhà con nợ treo cổ, bạn vẫn đến đòi.';
+        },
+      },
       { label: 'Giữ tiền trong túi', lean: 'trung', run: () => 'Tiền trong túi mình vẫn là chắc nhất.' },
     ],
   },
@@ -1155,10 +2534,47 @@ export const EVENTS: GameEvent[] = [
     title: 'Thương hội chèn ép',
     text: () => 'Vạn Phúc thương hội muốn nuốt trọn việc làm ăn của bạn. Kho hàng bị đốt, khách bị dọa không cho tới.',
     choices: () => [
-      { label: 'Bỏ tiền ra gỡ', hint: '-40% linh thạch', lean: 'trung', run: (c) => { money(c, -c.linhThach * 0.4); return 'Bạn cầm cự được, nhưng sứt mẻ không ít.'; } },
-      { label: 'Kiện lên quan phủ', lean: 'chinh', run: (c, ctx) => { if (ctx.rnd() < 0.5) { dao(c, 4); return 'Quan phủ xử bạn thắng, thương hội phải bồi thường.'; } c.income = Math.round((c.income ?? 0) / 2); return 'Quan phủ đã ăn tiền của thương hội. Bạn mất nửa việc làm ăn.'; } },
-      { label: 'Đốt kho trả đũa', lean: 'ta', run: (c, ctx) => { dao(c, -10); const f = fatal(c, ctx, 0.12, 'Người của thương hội chờ sẵn. Bạn bị đánh chết trong đám cháy.'); if (c.dead) return 'Đêm đó lửa cháy rực trời...' + f; c.enemy = c.enemy ?? 'Vạn Phúc thương hội'; return 'Kho của chúng cháy rụi. Chiến tranh thương trường bắt đầu.' + (f ?? ''); } },
-      { label: 'Bán lại cơ nghiệp, rút lui', lean: 'trung', run: (c) => { money(c, (c.income ?? 0) * 6); c.income = 0; return 'Bạn bán rẻ cơ nghiệp. Tiền ít, nhưng ngủ được.'; } },
+      {
+        label: 'Bỏ tiền ra gỡ',
+        hint: '-40% linh thạch',
+        lean: 'trung',
+        run: (c) => {
+          money(c, -c.linhThach * 0.4);
+          return 'Bạn cầm cự được, nhưng sứt mẻ không ít.';
+        },
+      },
+      {
+        label: 'Kiện lên quan phủ',
+        lean: 'chinh',
+        run: (c, ctx) => {
+          if (ctx.rnd() < 0.5) {
+            dao(c, 4);
+            return 'Quan phủ xử bạn thắng, thương hội phải bồi thường.';
+          }
+          c.income = Math.round((c.income ?? 0) / 2);
+          return 'Quan phủ đã ăn tiền của thương hội. Bạn mất nửa việc làm ăn.';
+        },
+      },
+      {
+        label: 'Đốt kho trả đũa',
+        lean: 'ta',
+        run: (c, ctx) => {
+          dao(c, -10);
+          const f = fatal(c, ctx, 0.12, 'Người của thương hội chờ sẵn. Bạn bị đánh chết trong đám cháy.');
+          if (c.dead) return 'Đêm đó lửa cháy rực trời...' + f;
+          c.enemy = c.enemy ?? 'Vạn Phúc thương hội';
+          return 'Kho của chúng cháy rụi. Chiến tranh thương trường bắt đầu.' + (f ?? '');
+        },
+      },
+      {
+        label: 'Bán lại cơ nghiệp, rút lui',
+        lean: 'trung',
+        run: (c) => {
+          money(c, (c.income ?? 0) * 6);
+          c.income = 0;
+          return 'Bạn bán rẻ cơ nghiệp. Tiền ít, nhưng ngủ được.';
+        },
+      },
     ],
   },
   {
@@ -1170,10 +2586,47 @@ export const EVENTS: GameEvent[] = [
     title: 'Nạn đói',
     text: () => 'Nạn đói tràn tới trấn. Dân đói kéo đến trước cửa nhà bạn, quỳ xin một bát cháo.',
     choices: () => [
-      { label: 'Mở kho phát chẩn', hint: '-30% linh thạch', lean: 'chinh', run: (c, ctx) => { money(c, -c.linhThach * 0.3); dao(c, 15); stat(c, 'khiVan', 6); ctx.fx('heal', 'Công đức'); return 'Cháo nấu không ngơi tay suốt một tháng. Dân lập bàn thờ sống cho bạn.'; } },
-      { label: 'Bán gạo giá gấp mười', lean: 'ta', run: (c, ctx) => { dao(c, -12); money(c, c.linhThach * 0.5); ctx.fx('coin', 'Phất to'); return 'Bạn giàu thêm một nửa. Dân trong trấn nguyền rủa tên bạn.'; } },
-      { label: 'Góp một ít cho có', lean: 'trung', run: (c) => { money(c, -50); dao(c, 2); return 'Bạn góp vài bao gạo, rồi đóng cửa lại.'; } },
-      { label: 'Thuê người đuổi đi', lean: 'ta', run: (c, ctx) => { dao(c, -8); const f = fatal(c, ctx, 0.06, 'Dân đói phá cổng xông vào. Bạn bị đám đông giẫm chết.'); if (c.dead) return 'Đám đông nổi giận...' + f; return 'Gia nhân xua dân đi. Có đứa trẻ chết ngay trước cổng.' + (f ?? ''); } },
+      {
+        label: 'Mở kho phát chẩn',
+        hint: '-30% linh thạch',
+        lean: 'chinh',
+        run: (c, ctx) => {
+          money(c, -c.linhThach * 0.3);
+          dao(c, 15);
+          stat(c, 'khiVan', 6);
+          ctx.fx('heal', 'Công đức');
+          return 'Cháo nấu không ngơi tay suốt một tháng. Dân lập bàn thờ sống cho bạn.';
+        },
+      },
+      {
+        label: 'Bán gạo giá gấp mười',
+        lean: 'ta',
+        run: (c, ctx) => {
+          dao(c, -12);
+          money(c, c.linhThach * 0.5);
+          ctx.fx('coin', 'Phất to');
+          return 'Bạn giàu thêm một nửa. Dân trong trấn nguyền rủa tên bạn.';
+        },
+      },
+      {
+        label: 'Góp một ít cho có',
+        lean: 'trung',
+        run: (c) => {
+          money(c, -50);
+          dao(c, 2);
+          return 'Bạn góp vài bao gạo, rồi đóng cửa lại.';
+        },
+      },
+      {
+        label: 'Thuê người đuổi đi',
+        lean: 'ta',
+        run: (c, ctx) => {
+          dao(c, -8);
+          const f = fatal(c, ctx, 0.06, 'Dân đói phá cổng xông vào. Bạn bị đám đông giẫm chết.');
+          if (c.dead) return 'Đám đông nổi giận...' + f;
+          return 'Gia nhân xua dân đi. Có đứa trẻ chết ngay trước cổng.' + (f ?? '');
+        },
+      },
     ],
   },
   {
@@ -1185,14 +2638,78 @@ export const EVENTS: GameEvent[] = [
     title: 'Túng quẫn',
     text: () => 'Trong túi không còn đồng nào. Bụng đói cồn cào, trời lại sắp vào đông.',
     choices: (_c, seed) =>
-      sample<Choice>(seed, [
-        { label: 'Đi khuân vác ở bến thuyền', lean: 'trung', run: (c) => { money(c, 35); stat(c, 'sucKhoe', -6); return 'Lưng còng xuống, nhưng có tiền mua gạo.'; } },
-        { label: 'Vay lãi của Hắc Hổ bang', lean: 'trung', run: (c, ctx) => { money(c, 120); if (ctx.rnd() < 0.5) c.enemy = c.enemy ?? 'Hắc Hổ bang đòi nợ'; return 'Có tiền rồi. Còn trả thế nào thì tính sau.'; } },
-        { label: 'Đi trộm nhà giàu', lean: 'ta', run: (c, ctx) => { dao(c, -8); const f = fatal(c, ctx, 0.12, 'Bạn bị gia đinh bắt được, đánh chết ngay trong sân.'); if (c.dead) return 'Bạn trèo tường vào...' + f; money(c, 80); return 'Bạn lấy được ít bạc vụn, chạy thoát trong đêm.' + (f ?? ''); } },
-        { label: 'Bán vũ khí đang dùng', lean: 'trung', run: (c) => { if (c.equipped.vu_khi) { const it = ITEMS.find((i) => i.id === c.equipped.vu_khi); c.inventory = c.inventory.filter((i) => i !== c.equipped.vu_khi); c.equipped.vu_khi = undefined; money(c, Math.round((it?.price ?? 20) * 0.5)); return `Bạn bán ${it?.name ?? 'vũ khí'} lấy nửa giá.`; } money(c, 5); return 'Không còn gì để bán, bạn bán đôi giày được vài đồng.'; } },
-        { label: 'Lên núi đào sâm', lean: 'trung', run: (c, ctx) => { if (ctx.rnd() < 0.3) { money(c, 150); return 'Bạn đào được củ sâm trăm năm!'; } const f = fatal(c, ctx, 0.05, 'Trượt chân xuống khe núi lúc đào sâm.'); if (c.dead) return 'Vách núi trơn...' + f; return 'Chẳng đào được gì, chỉ thêm đói.' + (f ?? ''); } },
-        { label: 'Đến chùa xin cơm', lean: 'chinh', run: (c) => { stat(c, 'tamCanh', 4); stat(c, 'sucKhoe', 4); return 'Sư cụ cho bạn bát cơm chay và một lời khuyên.'; } },
-      ], 4),
+      sample<Choice>(
+        seed,
+        [
+          {
+            label: 'Đi khuân vác ở bến thuyền',
+            lean: 'trung',
+            run: (c) => {
+              money(c, 35);
+              stat(c, 'sucKhoe', -6);
+              return 'Lưng còng xuống, nhưng có tiền mua gạo.';
+            },
+          },
+          {
+            label: 'Vay lãi của Hắc Hổ bang',
+            lean: 'trung',
+            run: (c, ctx) => {
+              money(c, 120);
+              if (ctx.rnd() < 0.5) c.enemy = c.enemy ?? 'Hắc Hổ bang đòi nợ';
+              return 'Có tiền rồi. Còn trả thế nào thì tính sau.';
+            },
+          },
+          {
+            label: 'Đi trộm nhà giàu',
+            lean: 'ta',
+            run: (c, ctx) => {
+              dao(c, -8);
+              const f = fatal(c, ctx, 0.12, 'Bạn bị gia đinh bắt được, đánh chết ngay trong sân.');
+              if (c.dead) return 'Bạn trèo tường vào...' + f;
+              money(c, 80);
+              return 'Bạn lấy được ít bạc vụn, chạy thoát trong đêm.' + (f ?? '');
+            },
+          },
+          {
+            label: 'Bán vũ khí đang dùng',
+            lean: 'trung',
+            run: (c) => {
+              if (c.equipped.vu_khi) {
+                const it = ITEMS.find((i) => i.id === c.equipped.vu_khi);
+                c.inventory = c.inventory.filter((i) => i !== c.equipped.vu_khi);
+                c.equipped.vu_khi = undefined;
+                money(c, Math.round((it?.price ?? 20) * 0.5));
+                return `Bạn bán ${it?.name ?? 'vũ khí'} lấy nửa giá.`;
+              }
+              money(c, 5);
+              return 'Không còn gì để bán, bạn bán đôi giày được vài đồng.';
+            },
+          },
+          {
+            label: 'Lên núi đào sâm',
+            lean: 'trung',
+            run: (c, ctx) => {
+              if (ctx.rnd() < 0.3) {
+                money(c, 150);
+                return 'Bạn đào được củ sâm trăm năm!';
+              }
+              const f = fatal(c, ctx, 0.05, 'Trượt chân xuống khe núi lúc đào sâm.');
+              if (c.dead) return 'Vách núi trơn...' + f;
+              return 'Chẳng đào được gì, chỉ thêm đói.' + (f ?? '');
+            },
+          },
+          {
+            label: 'Đến chùa xin cơm',
+            lean: 'chinh',
+            run: (c) => {
+              stat(c, 'tamCanh', 4);
+              stat(c, 'sucKhoe', 4);
+              return 'Sư cụ cho bạn bát cơm chay và một lời khuyên.';
+            },
+          },
+        ],
+        4,
+      ),
   },
   {
     id: 'trom_nha',
@@ -1203,16 +2720,49 @@ export const EVENTS: GameEvent[] = [
     title: 'Trộm đột nhập',
     text: () => 'Nửa đêm, bạn nghe tiếng sột soạt ở kho. Có kẻ đang cạy rương linh thạch.',
     choices: () => [
-      { label: 'Ra bắt trộm', lean: 'trung', run: (c, ctx) => { if (ctx.rnd() < luck(c, 0.65)) return 'Bạn tóm gọn tên trộm, giao cho quan phủ.'; const f = fatal(c, ctx, 0.08, 'Tên trộm rút dao đâm trúng tim bạn.'); if (c.dead) return 'Trong bóng tối...' + f; money(c, -c.linhThach * 0.2); return 'Hắn đâm bạn một nhát rồi ôm tiền chạy.' + (f ?? '') + hurt(c, 20, ctx); } },
-      { label: 'Mặc kệ, coi như của đi thay người', lean: 'trung', run: (c) => { money(c, -c.linhThach * 0.2); return 'Sáng ra mất một phần năm gia tài.'; } },
-      { label: 'Thả chó, bày bẫy', lean: 'ta', run: (c) => { dao(c, -5); return 'Tên trộm sa bẫy gãy chân. Bạn treo hắn trước cổng làm gương.'; } },
-      { label: 'Hỏi vì sao hắn đi trộm', lean: 'chinh', run: (c) => { dao(c, 8); money(c, -20); return 'Hắn có mẹ già ốm nặng. Bạn cho hắn ít tiền rồi tha.'; } },
+      {
+        label: 'Ra bắt trộm',
+        lean: 'trung',
+        run: (c, ctx) => {
+          if (ctx.rnd() < luck(c, 0.65)) return 'Bạn tóm gọn tên trộm, giao cho quan phủ.';
+          const f = fatal(c, ctx, 0.08, 'Tên trộm rút dao đâm trúng tim bạn.');
+          if (c.dead) return 'Trong bóng tối...' + f;
+          money(c, -c.linhThach * 0.2);
+          return 'Hắn đâm bạn một nhát rồi ôm tiền chạy.' + (f ?? '') + hurt(c, 20, ctx);
+        },
+      },
+      {
+        label: 'Mặc kệ, coi như của đi thay người',
+        lean: 'trung',
+        run: (c) => {
+          money(c, -c.linhThach * 0.2);
+          return 'Sáng ra mất một phần năm gia tài.';
+        },
+      },
+      {
+        label: 'Thả chó, bày bẫy',
+        lean: 'ta',
+        run: (c) => {
+          dao(c, -5);
+          return 'Tên trộm sa bẫy gãy chân. Bạn treo hắn trước cổng làm gương.';
+        },
+      },
+      {
+        label: 'Hỏi vì sao hắn đi trộm',
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 8);
+          money(c, -20);
+          return 'Hắn có mẹ già ốm nặng. Bạn cho hắn ít tiền rồi tha.';
+        },
+      },
     ],
   },
   ...EVENTS2,
   ...EVENTS3,
   ...HOOK_EVENTS,
   ...TA_EVENTS,
+  ...SECT_EVENTS,
   ...CHILD_EVENTS,
   PET_EVENT,
   ...PET_STORIES,

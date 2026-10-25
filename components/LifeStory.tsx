@@ -115,7 +115,19 @@ export default function LifeStory({
   const finalRealm = r.realm_no ?? 0;
   const maTon = look.endTag === 'ma_ton_do_kiep' || (r.cause ?? '').includes('Ma Tôn');
   const story = useMemo(
-    () => pickStory(look.miles, { age: r.age, realm: finalRealm, path: look.path, pet: look.pet, petKind: look.petKind, mount: look.mount, sect: look.sect, equipped: look.equipped, element: look.element, birthPlace: look.birthPlace }),
+    () =>
+      pickStory(look.miles, {
+        age: r.age,
+        realm: finalRealm,
+        path: look.path,
+        pet: look.pet,
+        petKind: look.petKind,
+        mount: look.mount,
+        sect: look.sect,
+        equipped: look.equipped,
+        element: look.element,
+        birthPlace: look.birthPlace,
+      }),
     [r, look.miles, finalRealm],
   );
   const slides: Slide[] = useMemo(
