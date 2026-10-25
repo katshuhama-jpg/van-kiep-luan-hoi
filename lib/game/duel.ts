@@ -59,8 +59,29 @@ export function foeChar(r: RivalChar): Character {
   });
 }
 
-export function foeStats(r: RivalChar): Fighter {
-  return playerStats(foeChar(r));
+export function foeStats(r: RivalChar, me?: Character): Fighter {
+  const s = playerStats(foeChar(r));
+  if (!me) return s;
+  // luân hồi nhiều kiếp hơn thì kinh nghiệm chiến đấu dày hơn: công và thủ theo hệ số kiếp
+  const m = lifeMul(r.lifeNo ?? 1, me.lifeNo);
+  return { ...s, atk: Math.round(s.atk * m), def: Math.round(s.def * m) };
+}
+
+/**
+ * Hệ số kiếp: đối thủ hơn mỗi kiếp +3% công và thủ, tối đa +30%;
+ * kém mỗi kiếp -3%, tối đa -20%.
+ */
+export function lifeMul(foeLife: number, myLife: number): number {
+  const d = foeLife - myLife;
+  return 1 + Math.max(-0.2, Math.min(0.3, d * 0.03));
+}
+
+export function lifeText(foeLife: number, myLife: number): { text: string; tone: 'good' | 'bad' | 'normal' } {
+  const d = foeLife - myLife;
+  const pct = Math.round((lifeMul(foeLife, myLife) - 1) * 100);
+  if (d > 0) return { text: `Đối thủ luân hồi nhiều hơn bạn ${d} kiếp, kinh nghiệm dày hơn: công và thủ +${pct}%.`, tone: 'bad' };
+  if (d < 0) return { text: `Bạn luân hồi nhiều hơn ${-d} kiếp, nhìn thấu chiêu thức: đối thủ công và thủ ${pct}%.`, tone: 'good' };
+  return { text: 'Cùng số kiếp luân hồi, không ai hơn ai.', tone: 'normal' };
 }
 
 function npcRival(c: Character, realm: number, sign: number, rnd: () => number): RivalChar {
@@ -83,6 +104,7 @@ function npcRival(c: Character, realm: number, sign: number, rnd: () => number):
     outfitCut: Math.floor(rnd() * 4),
     equipped: { ao: robes[Math.floor(rnd() * robes.length)]?.id ?? 'ao_vai', vu_khi: weapons[Math.floor(rnd() * weapons.length)]?.id },
     lookSeed: Math.floor(rnd() * 2 ** 31),
+    lifeNo: Math.max(1, c.lifeNo + Math.floor(rnd() * 9) - 3),
     alive: true,
   };
 }
@@ -124,7 +146,7 @@ export function pickDuel(c: Character, rnd: () => number): DuelFoe | null {
   if (kind === 'kiep_truoc' && past) {
     // bóng kiếp trước: dáng hình kiếp trước, sức mạnh do tâm ma quyết định; tâm ma lớn thì mạnh thêm
     const t2 = c.stats.tamMa >= 50 && delta > 0 ? clToRealm(Math.min(27, targetCl + 2)) : tgt;
-    rival = { ...past, realm: t2.realm, layer: t2.layer };
+    rival = { ...past, realm: t2.realm, layer: t2.layer, lifeNo: Math.max(1, c.lifeNo - 1) };
   } else {
     const mine = lean(c.daoTam);
     const pool = (w?.rivals ?? []).filter((v) => v.realm >= 1 && Math.abs(combatLevel(foeChar(v)) - targetCl) <= 1);
@@ -215,6 +237,11 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
       addCult(c, exp);
       stat(c, 'sucKhoe', -12);
       out.push(`${who} hơn bạn một bậc. Thua tâm phục khẩu phục, bạn học được không ít (+${exp} tu vi).`);
+      // đồng đạo cũng có kẻ giả nhân giả nghĩa: thắng xong trở mặt lột đồ (người nghiêng tà dễ trở mặt hơn)
+      if (ctx.rnd() < (r.daoTam < 0 ? 0.35 : 0.15)) {
+        const taken = robGear(c, ctx, ctx.rnd() < 0.3 ? 2 : 1);
+        if (taken.length) out.push(`Nào ngờ ${r.name} là kẻ giả nhân giả nghĩa. Thấy bạn kiệt sức, hắn trở mặt lột mất ${taken.join(' và ')} rồi cười lớn bỏ đi.`);
+      }
     }
     return out;
   }

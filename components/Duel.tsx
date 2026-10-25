@@ -2,7 +2,7 @@
 
 import Sprite from './Sprite';
 import { PATHS, realmLabel } from '@/lib/game/data';
-import { DUEL_INFO, foeChar, type DuelFoe } from '@/lib/game/duel';
+import { DUEL_INFO, foeChar, lifeText, type DuelFoe } from '@/lib/game/duel';
 import { ELEMENTS, elemText, elementOf } from '@/lib/game/nguhanh';
 import type { Character } from '@/lib/game/types';
 
@@ -16,6 +16,8 @@ export default function DuelWarning({ me, foe, fleeChance, canBefriend, onPick }
   const myEl = elementOf(me);
   const foeEl = elementOf(r);
   const et = elemText(myEl, foeEl);
+  const foeLife = r.lifeNo ?? 1;
+  const lt = lifeText(foeLife, me.lifeNo);
   return (
     <div className={`duel-warn ${foe.kind}`} role="dialog" aria-modal="true" aria-labelledby="duel-title">
       <div className="duel-flash" aria-hidden="true" />
@@ -39,6 +41,12 @@ export default function DuelWarning({ me, foe, fleeChance, canBefriend, onPick }
           <span className="vs">⚔</span>
           <span className="el" style={{ background: ELEMENTS[foeEl].color }}>{ELEMENTS[foeEl].sym}</span>
           <small>{et.text}</small>
+        </div>
+        <div className={`duel-elem duel-life ${lt.tone}`}>
+          <span className="kiep-no">Kiếp {me.lifeNo}</span>
+          <span className="vs">⚔</span>
+          <span className="kiep-no">Kiếp {foeLife}</span>
+          <small>{lt.text}</small>
         </div>
         <p className="duel-text">{foe.reason || info.warn}</p>
         {foe.rel !== 'yeu' && foe.kind !== 'kiep_truoc' && <p className="duel-risk">Đối thủ không yếu hơn bạn: không đánh mà rời đi thì có thể bị trọng thương, thậm chí mất mạng.</p>}

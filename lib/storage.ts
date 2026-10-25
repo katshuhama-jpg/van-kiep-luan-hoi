@@ -192,6 +192,7 @@ export async function fetchWorld(user: Player | null): Promise<WorldEcho | null>
     equipped: c.equipped,
     lookSeed: c.lookSeed,
     element: c.element,
+    lifeNo: c.lifeNo ?? 1,
     alive,
   });
   const rivals = (all ?? []).filter((x) => x.username !== me && !isTest(x.username) && (x.c.realm ?? 0) >= 1).slice(0, 40).map((x) => toRival(x.username, x.c, x.alive));

@@ -208,7 +208,7 @@ export default function PlayPage() {
   /** Kỳ ngộ giang hồ: đấu với nhân vật người chơi khác hoặc chính mình kiếp trước, tối đa 5 hiệp */
   function startDuel(c: Character, f: DuelFoe, ambushed: boolean) {
     const ps = playerStats(c);
-    const fs = foeStats(f.rival);
+    const fs = foeStats(f.rival, c);
     const fc = foeChar(f.rival);
     duelRef.current = {
       m: { ...MONSTERS[0], id: 'duel', name: f.rival.name },
@@ -229,7 +229,7 @@ export default function PlayPage() {
       fs,
       sub: 0,
       foe: f,
-      duel: { kind: f.kind, foe: fc, tag: DUEL_INFO[f.kind].tag, player: f.kind === 'kiep_truoc' ? '' : f.rival.player, turn: 0, max: DUEL_TURNS, elem: { me: elementOf(c), foe: elementOf(fc), rel: elemRel(elementOf(c), elementOf(fc)) } },
+      duel: { kind: f.kind, foe: fc, tag: `${DUEL_INFO[f.kind].tag} · Kiếp ${f.rival.lifeNo ?? 1}`, player: f.kind === 'kiep_truoc' ? '' : f.rival.player, turn: 0, max: DUEL_TURNS, elem: { me: elementOf(c), foe: elementOf(fc), rel: elemRel(elementOf(c), elementOf(fc)) } },
     };
     rerender();
   }

@@ -155,6 +155,7 @@ export interface RivalChar {
   equipped?: Partial<Record<Slot, string>>;
   lookSeed?: number;
   element?: Element;
+  lifeNo?: number; // kiếp thứ mấy của người chơi đó
   alive: boolean;
 }
 
