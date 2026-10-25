@@ -14,7 +14,7 @@ import type { BattleView } from '@/components/Battle';
 import { MONSTERS, effLv, fleeChance, hit, killExp, killReward, loseFight, monsterName, monsterStats, playerStats, tierOf, type Fighter } from '@/lib/game/combat';
 import { signOut } from '@/lib/auth';
 import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, realmLabel } from '@/lib/game/data';
-import { checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick } from '@/lib/game/engine';
+import { genName, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick } from '@/lib/game/engine';
 import { addPill, fmt, giveItem, money, wealthTier } from '@/lib/game/helpers';
 import type { Character, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
 import { addMemorial, displayName, fetchWorld, loadAll, saveLocal, saveMeta, saveRemote, type SaveState } from '@/lib/storage';
@@ -366,11 +366,12 @@ export default function PlayPage() {
     });
   };
 
-  const born = async (talents: string[], yearSec: number, gifts: string[] = [], gachaSpent = 0) => {
+  const born = async (talents: string[], yearSec: number, gifts: string[] = [], gachaSpent = 0, base: Character | null = null) => {
     if (!meta) return;
     const cost = talents.reduce((s, id) => s + (TALENTS.find((t) => t.id === id)?.cost ?? 0), 0) + gachaSpent;
     const m2: Meta = { ...meta, phucDuyen: Math.max(0, meta.phucDuyen - cost), talents };
-    const c = newCharacter(m2, gifts);
+    if (base && !base.name.trim()) base = { ...base, name: genName(base.gender) };
+    const c = newCharacter(m2, gifts, base ?? undefined);
     talentsRef.current = talents;
     // rương kiếp trước chỉ có một cơ hội tìm thấy
     const m3: Meta = { ...m2, talents: [], stash: null };

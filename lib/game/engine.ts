@@ -30,13 +30,11 @@ export function genName(gender: 'nam' | 'nu'): string {
   return `${ho} ${ten}`;
 }
 
-export function newCharacter(meta: Meta, gifts: string[] = []): Character {
+/** Gieo lá số đầu thai: giới tính, tên, xuất thân, linh căn, nơi sinh, gia cảnh, tướng mạo. Chưa tính thiên phú. */
+export function rollBase(): Character {
   const gender = rnd() < 0.5 ? 'nam' : 'nu';
-  let origin = weighted(rnd, ORIGINS);
-  let lc = weighted(rnd, LINH_CAN);
-  if (meta.talents.includes('linh_can')) {
-    while (lc.mul < 1.2) lc = weighted(rnd, LINH_CAN);
-  }
+  const origin = weighted(rnd, ORIGINS);
+  const lc = weighted(rnd, LINH_CAN);
   const race = origin.id === 'yeu' ? 'yeu' : 'nhan';
   const hairList = Object.entries(HAIR_COLORS)
     .filter(([, h]) => (race === 'yeu' ? h.yeu || h.w <= 4 : !h.yeu))
@@ -63,7 +61,7 @@ export function newCharacter(meta: Meta, gifts: string[] = []): Character {
     originId: origin.id,
     linhCan: lc.name,
     linhCanMul: lc.mul,
-    lifeNo: meta.lives + 1,
+    lifeNo: 1,
     age: 0,
     lifespan: Math.round(r(60, 82) * lifeMul),
     realm: 0,
@@ -85,7 +83,7 @@ export function newCharacter(meta: Meta, gifts: string[] = []): Character {
     cause: null,
     seenEvents: {},
     ascended: false,
-    enemy: meta.enemy,
+    enemy: null,
     breakDelay: 0,
     hairColor,
     hairStyle,
@@ -95,6 +93,7 @@ export function newCharacter(meta: Meta, gifts: string[] = []): Character {
     region: region.id,
     birthPlace: `${birthPlace}, ${region.name}`,
     familyTier: famTier,
+    fateName: fate.name,
   };
   if (mod.sucKhoe) stat(c, 'sucKhoe', mod.sucKhoe);
   if (mod.khiVan) stat(c, 'khiVan', mod.khiVan);
@@ -107,7 +106,25 @@ export function newCharacter(meta: Meta, gifts: string[] = []): Character {
     c.lifespan = Math.round(c.lifespan * mod.lifeMul);
   }
   if (origin.id === 'chua') c.daoTam = 15;
+  c.log.push({ age: 0, tone: 'big', text: `__KIEP__ Bạn chào đời là ${gender === 'nam' ? 'một bé trai' : 'một bé gái'} ở ${birthPlace}, ${region.name} (${region.desc}), ${origin.name.toLowerCase()}, gia cảnh ${fam.name}. Thầy bói nói bạn mang ${lc.name}.` });
+  c.log.push({ age: 0, tone: fate.lo < 0.85 ? 'bad' : fate.lo > 1.1 ? 'good' : 'normal', text: `Tóc ${HAIR_COLORS[hairColor].name}, lớn lên sẽ để ${HAIR_STYLES[gender][hairStyle]}. Bà mụ xem tướng bảo: mệnh ${fate.name}.` });
+  return c;
+}
+
+/** Đầu thai thật: lấy lá số đã gieo (hoặc gieo mới), cộng thiên phú mua bằng phúc duyên, nghiệp, kiếp trước, thiên phú rút. */
+export function newCharacter(meta: Meta, gifts: string[] = [], base?: Character): Character {
+  const c: Character = base ? structuredClone(base) : rollBase();
+  c.lifeNo = meta.lives + 1;
+  c.enemy = meta.enemy;
+  c.log = c.log.map((l) => ({ ...l, text: l.text.replace('__KIEP__', `Kiếp thứ ${c.lifeNo}.`) }));
   const t = meta.talents;
+  if (t.includes('linh_can') && c.linhCanMul < 1.2) {
+    let lc = weighted(rnd, LINH_CAN);
+    while (lc.mul < 1.2) lc = weighted(rnd, LINH_CAN);
+    c.log = c.log.map((l) => ({ ...l, text: l.text.replace(c.linhCan, lc.name) }));
+    c.linhCan = lc.name;
+    c.linhCanMul = lc.mul;
+  }
   if (t.includes('ky_uc')) stat(c, 'ngoTinh', 20);
   if (t.includes('tho')) c.lifespan = Math.round(c.lifespan * 1.2);
   if (t.includes('gia_tai')) money(c, 300);
@@ -116,18 +133,8 @@ export function newCharacter(meta: Meta, gifts: string[] = []): Character {
   if (meta.nghiep >= 10) {
     stat(c, 'khiVan', -Math.min(20, Math.round(meta.nghiep / 2)));
     c.enemy = c.enemy ?? 'oan hồn đòi nợ từ kiếp trước';
+    c.log.push({ age: 0, tone: 'ta', text: 'Ngày bạn sinh ra, quạ đen đậu kín mái nhà. Nghiệp kiếp trước vẫn chưa trả hết.' });
   }
-  c.log.push({
-    age: 0,
-    tone: 'big',
-    text: `Kiếp thứ ${c.lifeNo}. Bạn chào đời là ${gender === 'nam' ? 'một bé trai' : 'một bé gái'} ở ${birthPlace}, ${region.name} (${region.desc}), ${origin.name.toLowerCase()}, gia cảnh ${fam.name}. Thầy bói nói bạn mang ${lc.name}.`,
-  });
-  c.log.push({
-    age: 0,
-    tone: fate.lo < 0.85 ? 'bad' : fate.lo > 1.1 ? 'good' : 'normal',
-    text: `Tóc ${HAIR_COLORS[hairColor].name}, lớn lên sẽ để ${HAIR_STYLES[gender][hairStyle]}. Bà mụ xem tướng bảo: mệnh ${fate.name}.`,
-  });
-  if (c.enemy && meta.nghiep >= 10) c.log.push({ age: 0, tone: 'ta', text: 'Ngày bạn sinh ra, quạ đen đậu kín mái nhà. Nghiệp kiếp trước vẫn chưa trả hết.' });
   c.past = meta.past ?? null;
   c.stash = meta.stash ?? null;
   if (gifts.length) {

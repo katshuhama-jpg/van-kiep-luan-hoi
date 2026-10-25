@@ -95,6 +95,7 @@ export interface Character {
   endTag?: string; // đánh dấu kết cục đặc biệt
   kiepBonus?: number; // thưởng/phạt từ mini-game thiên kiếp
   mount?: string | null; // tọa kỵ (rồng)
+  fateName?: string; // tướng số lúc sinh
 }
 
 export interface PastLife {

@@ -57,7 +57,7 @@ export function StatsPanel({ c }: { c: Character }) {
         <Bar label="Tâm cảnh" value={`${s.tamCanh}`} pct={s.tamCanh / 100} color="#c9962e" />
         <Bar label="Tâm ma" value={`${s.tamMa}`} pct={s.tamMa / 100} color="#5a1a2a" />
         <Bar label="Ngộ tính" value={`${s.ngoTinh}`} pct={s.ngoTinh / 100} color="#5b6fb0" />
-        <Bar label="May mắn (khí vận)" value={`${s.khiVan}`} pct={s.khiVan / 100} color="#7a5ab0" />
+        <Bar label="Khí vận" value={`${s.khiVan}`} pct={s.khiVan / 100} color="#7a5ab0" />
         <div className="dao">
           <div className="row">
             <span style={{ color: 'var(--chinh)' }}>Chính</span>
@@ -406,11 +406,12 @@ export function FocusGrid({ c, onPick }: { c: Character; onPick: (f: Focus) => v
 }
 
 /* ---------------- Màn luân hồi (đầu thai) ---------------- */
-export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talents: string[], yearSec: number, gifts: string[], gachaSpent: number) => void; busy?: boolean }) {
+export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talents: string[], yearSec: number, gifts: string[], gachaSpent: number, base: Character | null) => void; busy?: boolean }) {
   const [picked, setPicked] = useState<string[]>([]);
   const [yearSec, setYearSec] = useState(20);
   const [gifts, setGifts] = useState<string[]>([]);
   const [gSpent, setGSpent] = useState(0);
+  const [base, setBase] = useState<Character | null>(null);
   const spent = picked.reduce((s, id) => s + (TALENTS.find((t) => t.id === id)?.cost ?? 0), 0) + gSpent;
   const left = meta.phucDuyen - spent;
   return (
@@ -439,9 +440,10 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
 
       <GachaPanel
         phuc={left}
-        onChange={(g, s) => {
+        onChange={(g, s, b) => {
           setGifts(g);
           setGSpent(s);
+          setBase(b);
         }}
       />
 
@@ -484,7 +486,7 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
         <p className="note" style={{ marginBottom: 0 }}>Trong lúc chơi vẫn chỉnh được tốc độ 1× đến 16×.</p>
       </section>
 
-      <button className="btn btn-red btn-big" disabled={busy} onClick={() => onBorn(picked, yearSec, gifts, gSpent)}>
+      <button className="btn btn-red btn-big" disabled={busy} onClick={() => onBorn(picked, yearSec, gifts, gSpent, base ? { ...base, name: base.name.trim() || base.name } : null)}>
         Đầu thai
       </button>
     </div>

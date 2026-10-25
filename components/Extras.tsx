@@ -5,43 +5,55 @@ import Sprite from './Sprite';
 import Radar, { charAxes, wealthScore } from './Radar';
 import { GIFTS, RARE_NAME, applyGifts, drawGifts, giftOf } from '@/lib/game/gacha';
 import { RARE_COLOR, type Ending } from '@/lib/game/endings';
-import { PATHS, realmLabel } from '@/lib/game/data';
+import { FAMILY_TIERS, PATHS, realmLabel } from '@/lib/game/data';
+import { genName, rollBase } from '@/lib/game/engine';
 import type { Character } from '@/lib/game/types';
 
-/* ================= Gieo quẻ thiên phú ================= */
-export function GachaPanel({ phuc, onChange }: { phuc: number; onChange: (gifts: string[], spent: number) => void }) {
+/* ================= Gieo quẻ: lá số nhân vật + thiên phú ================= */
+export function GachaPanel({ phuc, onChange }: { phuc: number; onChange: (gifts: string[], spent: number, base: Character | null) => void }) {
   const [cards, setCards] = useState<string[]>([]);
   const [picked, setPicked] = useState<string[]>([]);
   const [rolls, setRolls] = useState(0);
   const [flip, setFlip] = useState(0);
-  const cost = rolls === 0 ? 0 : rolls === 1 ? 0 : 5;
+  const [base, setBase] = useState<Character | null>(null);
+  const cost = rolls < 2 ? 0 : 5;
   const spent = Math.max(0, rolls - 2) * 5;
+  const emit = (g: string[], sp: number, b: Character | null) => onChange(g, sp, b);
   const roll = () => {
     const next = drawGifts(5);
+    const b = rollBase();
     setCards(next);
     setPicked([]);
+    setBase(b);
     setRolls(rolls + 1);
     setFlip((f) => f + 1);
-    onChange([], Math.max(0, rolls + 1 - 2) * 5);
+    emit([], Math.max(0, rolls + 1 - 2) * 5, b);
   };
   const toggle = (id: string) => {
     const on = picked.includes(id);
     const next = on ? picked.filter((x) => x !== id) : picked.length >= 2 ? [picked[1], id] : [...picked, id];
     setPicked(next);
-    onChange(next, spent);
+    emit(next, spent, base);
+  };
+  const rename = (name: string) => {
+    if (!base) return;
+    const b = { ...base, name };
+    setBase(b);
+    emit(picked, spent, b);
   };
   const best = cards.reduce((m, id) => Math.max(m, giftOf(id)?.rare ?? 0), 0);
   return (
     <section className="panel">
-      <h2>Gieo quẻ thiên phú</h2>
-      <p className="note" style={{ marginTop: 0 }}>Rút 5 lá số, chọn tối đa 2. Hai lần gieo đầu miễn phí, sau đó 5 phúc mỗi lần. Có lá rất hiếm, có lá mang họa.</p>
+      <h2>Gieo quẻ đầu thai</h2>
+      <p className="note" style={{ marginTop: 0 }}>Mỗi lần gieo ra một lá số mới: thân phận, tên, tướng mạo, nơi sinh, và 5 lá thiên phú (chọn tối đa 2). Hai lần đầu miễn phí, sau đó 5 phúc mỗi lần.</p>
+      {base && <BirthCard key={'b' + flip} c={base} onRename={rename} />}
       {cards.length > 0 && (
         <div className={`gacha-row ${best >= 3 ? 'gold' : ''}`} key={flip}>
           {cards.map((id, i) => {
             const g = giftOf(id)!;
             const on = picked.includes(id);
             return (
-              <button key={id} className={`gacha-card r${g.rare} ${on ? 'on' : ''}`} style={{ animationDelay: `${i * 0.12}s`, ['--rc' as string]: RARE_COLOR[g.rare] }} onClick={() => toggle(id)} aria-pressed={on}>
+              <button key={id} className={`gacha-card r${g.rare} ${on ? 'on' : ''}`} style={{ animationDelay: `${0.3 + i * 0.12}s`, ['--rc' as string]: RARE_COLOR[g.rare] }} onClick={() => toggle(id)} aria-pressed={on}>
                 <span className="gc-rare">{RARE_NAME[g.rare]}</span>
                 <b>{g.name}</b>
                 <small>{g.desc}</small>
@@ -51,29 +63,63 @@ export function GachaPanel({ phuc, onChange }: { phuc: number; onChange: (gifts:
           })}
         </div>
       )}
-      {cards.length > 0 && <GiftRadar picked={picked} />}
+      {base && <GiftRadar base={base} picked={picked} />}
       <button className="btn btn-jade" style={{ width: '100%', marginTop: 8 }} onClick={roll} disabled={cost > 0 && phuc < cost}>
         {cards.length === 0 ? 'Gieo quẻ' : `Gieo lại${cost ? ` (-${cost} phúc)` : ' (miễn phí)'}`}
       </button>
       <p className="note" style={{ marginBottom: 0 }}>
-        Có {GIFTS.length} loại thiên phú · Thiên phẩm chỉ 0.1%
+        {base ? 'Không gieo cũng được: bấm Đầu thai là trời tự định đoạt.' : `Có ${GIFTS.length} loại thiên phú · Thiên phẩm chỉ 0.1%`}
       </p>
     </section>
   );
 }
 
-/** Radar xem trước: thiên phú đã chọn đẩy chỉ số đi đâu so với người thường */
-function GiftRadar({ picked }: { picked: string[] }) {
-  const base = { sucKhoe: 80, tamCanh: 50, ngoTinh: 45, khiVan: 45, tamMa: 5 };
-  const dummy = { stats: { ...base }, lifeMul: 1, lifespan: 70, linhCanMul: 1, linhCan: '', linhThach: 100, inventory: [] as string[], equipped: {}, cultivation: 0, daoTam: 0 } as unknown as Character;
-  applyGifts(dummy, picked);
-  const axes = charAxes(dummy.stats, dummy.lifespan, wealthScore(dummy.linhThach), { s: base, life: 70, wealth: wealthScore(100) });
+/** Lá số nhân vật: hình lúc trưởng thành, tên đổi được, thân phận */
+function BirthCard({ c, onRename }: { c: Character; onRename: (name: string) => void }) {
+  const fam = FAMILY_TIERS[c.familyTier ?? 1];
+  const grown = { ...c, age: 22, lifespan: 90 };
+  return (
+    <div className="birth-card">
+      <div className="bc-sprite">
+        <Sprite c={grown} size={112} />
+        <small>{c.gender === 'nam' ? 'Nam' : 'Nữ'} · lớn lên sẽ thế này</small>
+      </div>
+      <div className="bc-info">
+        <label className="bc-name">
+          <input value={c.name} maxLength={18} onChange={(e) => onRename(e.target.value)} aria-label="Tên nhân vật" />
+          <button type="button" className="btn" onClick={() => onRename(genName(c.gender))} aria-label="Đổi tên ngẫu nhiên">
+            Đổi tên
+          </button>
+        </label>
+        <ul>
+          <li>{c.origin}</li>
+          <li>{c.birthPlace}</li>
+          <li>
+            Gia cảnh <b>{fam?.name}</b> · {c.linhThach} linh thạch
+          </li>
+          <li>
+            <b>{c.linhCan}</b>
+          </li>
+          <li>
+            Tướng số: {c.fateName} · thọ khoảng {c.lifespan}
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+/** Radar xem trước: chỉ số của lá số này trước và sau khi nhận thiên phú */
+function GiftRadar({ base, picked }: { base: Character; picked: string[] }) {
+  const after = structuredClone(base);
+  applyGifts(after, picked);
+  const axes = charAxes(after.stats, after.lifespan, wealthScore(after.linhThach), { s: base.stats, life: base.lifespan, wealth: wealthScore(base.linhThach) });
   return (
     <div className="gift-radar">
-      <Radar axes={axes} size={230} color={picked.length ? '#b8432f' : '#8a7a66'} />
+      <Radar axes={axes} size={230} color={picked.length ? '#b8432f' : '#2f6b5a'} />
       <p className="note" style={{ margin: 0, textAlign: 'center' }}>
-        {picked.length ? 'Vùng đỏ: chỉ số sau khi nhận thiên phú. Vùng xám: người thường.' : 'Chọn lá số để xem chỉ số thay đổi thế nào.'}
-        {dummy.linhCanMul > 1 ? ` Tu luyện x${dummy.linhCanMul.toFixed(1)}.` : ''}
+        {picked.length ? 'Vùng đỏ: chỉ số sau khi nhận thiên phú. Vùng xám: lá số gốc.' : 'Chỉ số của lá số này. Chọn thiên phú để xem thay đổi.'}
+        {after.linhCanMul !== base.linhCanMul ? ` Tu luyện x${after.linhCanMul.toFixed(1)}.` : ''}
       </p>
     </div>
   );
