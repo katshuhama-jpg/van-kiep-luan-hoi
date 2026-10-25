@@ -644,8 +644,9 @@ export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Charact
     top: box - cell * 0.82,
     backgroundImage: url ? `url(${url})` : undefined,
     backgroundSize: `${meta.frames * cell}px ${cell}px`,
-    ['--lpc-end' as string]: `-${meta.frames * cell}px`,
-    animation: once ? `lpc-play ${meta.frames / meta.fps}s steps(${meta.frames}) 1 forwards` : `lpc-play ${meta.frames / meta.fps}s steps(${meta.frames}) infinite`,
+    // chạy một lần (ngã xuống) thì dừng ở khung cuối, không trượt ra ô trống
+    ['--lpc-end' as string]: `-${(once ? meta.frames - 1 : meta.frames) * cell}px`,
+    animation: once ? `lpc-play ${(meta.frames - 1) / meta.fps}s steps(${meta.frames - 1}) 1 forwards` : `lpc-play ${meta.frames / meta.fps}s steps(${meta.frames}) infinite`,
   };
   return (
     <div className={`lpc ${l.dead ? 'is-dead' : ''}`} style={{ width: box, height: box }} role="img" aria-label={`${c.name}, ${c.age < 13 ? 'trẻ con' : 'người lớn'}${l.path ? ', ' + PATHS[l.path].name : ''}`}>

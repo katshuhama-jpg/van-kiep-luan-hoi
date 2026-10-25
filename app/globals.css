@@ -2314,7 +2314,7 @@ button:disabled {
 }
 
 .rank-row {
-  grid-template-columns: 34px 64px 1fr auto;
+  grid-template-columns: 34px 64px minmax(0, 1fr);
 }
 
 .rank-sprite {
@@ -2333,11 +2333,16 @@ button:disabled {
 
 .rank-owner {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 4px;
+  gap: 2px 4px;
   font-size: 17px;
   color: var(--red-d);
+  min-width: 0;
 }
+.rank-user { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+.rank-owner .badge { white-space: nowrap; flex: none; }
+.rank-body .rank-val { text-align: left; font-size: 18px; font-weight: 600; margin: 1px 0; }
 
 .rank-row.gone {
   background: #e6dcc4;

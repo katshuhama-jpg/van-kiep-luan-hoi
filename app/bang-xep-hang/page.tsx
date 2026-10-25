@@ -132,12 +132,16 @@ export default function RankPage() {
               <li key={`${r.username}-${c.lifeNo}-${r.alive}-${i}`} className={`rank-row ${mine ? 'mine' : ''} ${i < 3 ? 'top' : ''} ${r.alive ? '' : 'gone'}`}>
                 <Medal rank={i + 1} />
                 <div className="rank-sprite">
-                  <Sprite c={c} size={64} />
+                  {/* người đã mất vẫn vẽ dáng đứng (làm xám), dáng ngã nhìn từ trên xuống khó nhận ra */}
+                  <Sprite c={c.dead ? { ...c, dead: false } : c} size={64} />
                 </div>
                 <div className="rank-body">
                   <span className="rank-name">{c.name}</span>
+                  <span className="rank-val">
+                    {kind === 'power' ? (c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer)) : `${fmt(c.linhThach)} linh thạch`}
+                  </span>
                   <span className="rank-owner">
-                    @{r.username}
+                    <span className="rank-user">@{r.username}</span>
                     {mine && <span className="badge">Bạn</span>}
                     {!r.alive && <span className="badge gone-badge">{c.ascended ? 'Phi thăng' : 'Đã mất'}</span>}
                   </span>
@@ -145,16 +149,6 @@ export default function RankPage() {
                     {r.alive ? '' : `Kiếp ${c.lifeNo} · `}
                     {Math.floor(c.age)} tuổi · {c.path ? PATHS[c.path].name : 'chưa chọn đường'} · {describeLean(c.daoTam)}
                   </small>
-                </div>
-                <div className="rank-val">
-                  {kind === 'power' ? (
-                    <span>{c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer)}</span>
-                  ) : (
-                    <span>
-                      {fmt(c.linhThach)}
-                      <small>linh thạch</small>
-                    </span>
-                  )}
                 </div>
               </li>
             );

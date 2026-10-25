@@ -30,8 +30,8 @@ function HumanStrip({ layers, anim, size, scale }: { layers: Layer[]; anim: Anim
     top: size - cell * 0.82,
     backgroundImage: url ? `url(${url})` : undefined,
     backgroundSize: `${meta.frames * cell}px ${cell}px`,
-    ['--lpc-end' as string]: `-${meta.frames * cell}px`,
-    animation: `lpc-play ${meta.frames / meta.fps}s steps(${meta.frames}) ${once ? '1 forwards' : 'infinite'}`,
+    ['--lpc-end' as string]: `-${(once ? meta.frames - 1 : meta.frames) * cell}px`,
+    animation: once ? `lpc-play ${(meta.frames - 1) / meta.fps}s steps(${meta.frames - 1}) 1 forwards` : `lpc-play ${meta.frames / meta.fps}s steps(${meta.frames}) infinite`,
   };
   return <span className="lpc-strip" style={style} />;
 }
