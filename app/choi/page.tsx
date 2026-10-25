@@ -17,6 +17,8 @@ import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, realmLabel } from '@/lib/
 import { genName, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick } from '@/lib/game/engine';
 import { addPill, fmt, giveItem, money, wealthTier } from '@/lib/game/helpers';
 import type { Character, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
+import QuizOverlay from '@/components/Quiz';
+import { QUIZ_PER_YEAR, makeQuiz, quizReward, type QuizRun } from '@/lib/game/quiz';
 import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, pickAmbush } from '@/lib/game/ambush';
 import { addMemorial, displayName, fetchWorld, loadAll, saveLocal, saveMeta, saveRemote, type SaveState } from '@/lib/storage';
 import { useAuth } from '@/lib/useAuth';
@@ -37,6 +39,8 @@ export default function PlayPage() {
   const [running, setRunning] = useState(true);
   const [kiep, setKiep] = useState<number | null>(null); // lựa chọn đang chờ mini-game thiên kiếp
   const [tut, setTut] = useState(false); // hướng dẫn lần đầu
+  const [quiz, setQuiz] = useState<QuizRun | null>(null); // khảo thí kiếm hiệp
+  const quizOpen = useRef(false);
 
   const charRef = useRef<Character | null>(null);
   const pendingRef = useRef<PendingEvent | null>(null);
@@ -103,7 +107,7 @@ export default function PlayPage() {
   const speedRef = useRef(speed);
   speedRef.current = speed;
   const activeRef = useRef(false);
-  activeRef.current = running && sheet === null && phase === 'play' && kiep === null && !tut;
+  activeRef.current = running && sheet === null && phase === 'play' && kiep === null && !tut && quiz === null;
 
   /** Trận đánh tự động kiểu idle: mỗi lượt bạn đánh một đòn, quái đánh trả một đòn */
   function newFight(c: Character, mId: string, kills: number): Battle | null {
@@ -308,6 +312,14 @@ export default function PlayPage() {
       }
       if (c && activeRef.current && !pendingRef.current && !c.dead) {
         const dYear = (dt / yearSecRef.current) * speedRef.current;
+        if (c.age >= 8 && !quizOpen.current && rnd() < QUIZ_PER_YEAR * dYear) {
+          // trưởng lão Tàng Kinh Các chặn lại hỏi bài
+          quizOpen.current = true;
+          activeRef.current = false;
+          setQuiz(makeQuiz(rnd));
+          raf = requestAnimationFrame(step);
+          return;
+        }
         if (c.age >= 10 && c.focus !== 'tru_yeu' && rnd() < AMBUSH_PER_YEAR * dYear) {
           startAmbush(c);
           rerender();
@@ -750,6 +762,21 @@ export default function PlayPage() {
             try {
               localStorage.setItem('vkl.tut', '1');
             } catch {}
+          }}
+        />
+      )}
+      {quiz && !c.dead && (
+        <QuizOverlay
+          run={quiz}
+          onDone={(right) => {
+            act((ch, out) => {
+              const ctx = makeCtx(ch, out);
+              ctx.log(quizReward(ch, right, ctx), right >= 2 ? 'good' : 'bad');
+              const p = checkProgress(ch, ctx, talentsRef.current);
+              if (p && !pendingRef.current) pendingRef.current = p;
+            });
+            quizOpen.current = false;
+            setQuiz(null);
           }}
         />
       )}
