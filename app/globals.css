@@ -3014,3 +3014,60 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .talent-shop > summary { font-weight: 700; color: var(--jade); background: #eef6e6; }
 .talent-shop.ta-shop { border-color: var(--ta); }
 .talent-shop.ta-shop > summary { color: var(--ta); background: #f8e6e6; }
+
+/* ---------- Sưu tầm: Bảo khố, Sổ Sinh Tử ---------- */
+.bk-head { display: flex; align-items: center; gap: 8px; }
+.bk-head b { font-size: 20px; color: var(--red-d); }
+.bk-bar { flex: 1; display: block; height: 8px; background: #d8c79c; border: 2px solid var(--ink); }
+.bk-bar i { display: block; height: 100%; background: linear-gradient(90deg, #d9822b, #ffd36b); }
+.bk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(46px, 1fr)); gap: 4px; margin-top: 6px; }
+.bk-cell { position: relative; aspect-ratio: 1; display: grid; place-items: center; padding: 0; background: #fbf4e2; border: 2px solid #b9a77f; }
+.bk-cell.r2 { border-color: #8a3ad0; }
+.bk-cell.r3 { border-color: #d9822b; background: #fff1d6; }
+.bk-cell.on { outline: 3px solid var(--red-d); outline-offset: -1px; }
+.bk-cell.locked { background: #3b2a1a; border-color: #5a4128; }
+.bk-cell.locked .px-icon, .bk-cell.locked svg { filter: brightness(0) opacity(0.55); }
+.bk-q { position: absolute; right: 2px; bottom: 0; font-size: 13px; font-weight: 700; color: #ffd36b; }
+.bk-detail { display: flex; gap: 8px; padding: 8px; margin-top: 6px; border: 2px solid var(--ink); background: #fffaf0; }
+.bk-detail small { display: block; color: #6b5a40; }
+.bk-detail.locked { background: #f1e3c0; }
+.bk-detail.locked .bk-icon { filter: brightness(0) opacity(0.6); }
+.bk-icon { flex: none; width: 40px; display: grid; place-items: center; }
+
+.find-toast { position: fixed; left: 50%; top: calc(110px + env(safe-area-inset-top)); z-index: 60; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 1px; min-width: 200px; padding: 8px 16px; background: #1f160d; color: #fff3dc; border: 3px solid #ffd36b; box-shadow: 0 0 0 3px #1f160d, 0 0 22px rgba(255, 211, 107, 0.55); animation: findToast 2.8s steps(8) both; }
+.find-toast b { font-size: 19px; color: #ffd36b; }
+.find-toast small { font-size: 12px; color: #d9c69a; }
+.find-toast.r3 { border-color: #ff9a3c; }
+@keyframes findToast { 0% { opacity: 0; transform: translate(-50%, -12px) scale(1.4); } 12% { opacity: 1; transform: translate(-50%, 0) scale(1); } 85% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -8px); } }
+
+.menu-btn { position: relative; }
+.menu-btn .dot { position: absolute; top: 2px; right: 2px; width: 8px; height: 8px; background: #e0302e; box-shadow: 0 0 0 2px #1f160d; }
+.new-tag { display: inline-block; margin-left: 6px; padding: 0 5px; font-size: 12px; line-height: 16px; vertical-align: middle; background: #c0202e; color: #fff; }
+
+.ending-box { position: relative; }
+.new-stamp { position: absolute; top: -10px; right: -6px; padding: 2px 8px; font-size: 14px; font-weight: 700; color: #fff3dc; background: #a01424; border: 2px solid #ffd36b; transform: rotate(8deg); box-shadow: 2px 2px 0 #1f160d; animation: lsStamp2 0.6s steps(4) 0.3s both; }
+@keyframes lsStamp2 { 0% { transform: rotate(8deg) scale(2.2); opacity: 0; } 100% { transform: rotate(8deg) scale(1); opacity: 1; } }
+.sst-progress { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+.sst-progress small { white-space: nowrap; }
+
+.collect-strip { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.cs-item { display: grid; grid-template-columns: 1fr auto; gap: 2px 6px; align-items: center; padding: 6px 8px; background: var(--paper); border: 3px solid var(--ink); color: var(--ink); text-decoration: none; text-align: left; font: inherit; box-shadow: 2px 2px 0 var(--ink-dark); }
+.cs-item small { font-size: 14px; }
+.cs-item b { color: var(--red-d); }
+.cs-item .bk-bar { grid-column: 1 / -1; height: 6px; }
+
+.tt-rumor { margin: 0; padding: 4px 8px 6px; font-size: 14px; line-height: 1.3; border-top: 2px dotted rgba(31, 22, 13, 0.3); }
+.tt-rumor i { font-style: normal; font-weight: 700; padding: 0 4px; margin-right: 4px; background: #3b2a1a; color: #ffd36b; }
+.tt-rumor small { color: #8a7a62; }
+
+.title-badge.collector { background: #3d2a6b; color: #f3e6ff; }
+
+.tomb-ending { display: block; margin: 2px 0; font-size: 13px; color: var(--rc, #6b5a40); font-weight: 700; }
+.tomb-ending i { font-style: normal; font-weight: 400; color: #6b5a40; }
+.tomb-ending small { display: block; font-weight: 400; font-style: italic; color: #a01424; }
+.title-badge.phu { background: #ffe9a8; border-color: #8a5a10; color: #6b3a00; }
+.title-badge.tho { background: #d6f0d0; color: #1f4a28; }
+.ss-how i { font-style: normal; font-weight: 700; padding: 0 4px; margin-right: 3px; background: #2f6b5a; color: #fff3dc; }
+.ss-how.secret i { background: #3d2a6b; }
+.ss-how.secret { font-style: italic; }
+.ss-secret { color: #3d2a6b !important; }

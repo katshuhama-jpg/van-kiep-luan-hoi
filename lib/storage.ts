@@ -29,6 +29,10 @@ export interface Memorial {
   ascended: boolean;
   incense: number;
   created_at: string;
+  realm_no?: number | null;
+  wealth?: number | null;
+  ending?: string | null; // mã kết cục (mộ mới)
+  end_tag?: string | null;
 }
 
 const K = { save: 'vkl.save', meta: 'vkl.meta', lives: 'vkl.lives' };
@@ -104,7 +108,7 @@ export async function addMemorial(user: Player | null, m: Omit<Memorial, 'id' | 
   writeLocal(K.lives, [entry, ...local].slice(0, 100));
 }
 
-const COLS = 'id, player_name, char_name, life_no, age, realm, path, dao_tam, cause, epitaph, ascended, incense, created_at';
+const COLS = 'id, player_name, char_name, life_no, age, realm, path, dao_tam, cause, epitaph, ascended, incense, created_at, realm_no, wealth, ending:look->>ending, end_tag:look->>endTag';
 
 export async function listMemorials(user: Player | null): Promise<{ all: Memorial[]; mine: Memorial[] }> {
   const local = readLocal<Memorial[]>(K.lives) ?? [];
@@ -112,7 +116,15 @@ export async function listMemorials(user: Player | null): Promise<{ all: Memoria
   if (!sb) return { all: local, mine: local };
   const [{ data: all }, mine] = await Promise.all([
     sb.from('vkl_lives').select(COLS).order('created_at', { ascending: false }).limit(60),
-    user ? sb.rpc('vkl_my_lives', { p_token: user.token }).then((r) => (r.data as Memorial[] | null) ?? []) : Promise.resolve(local),
+    user
+      ? sb
+          .from('vkl_lives')
+          .select(COLS)
+          .eq('player_name', user.username)
+          .order('created_at', { ascending: false })
+          .limit(100)
+          .then((r) => (r.data as Memorial[] | null) ?? [])
+      : Promise.resolve(local),
   ]);
   return { all: (all as Memorial[] | null) ?? [], mine };
 }
@@ -181,7 +193,9 @@ export async function fetchWorld(user: Player | null): Promise<WorldEcho | null>
     leaderboard('power', 'all', 'all', 'all').catch(() => null),
     me ? sb.from('vkl_lives').select('char_name, age, realm_no, layer_no, dao_tam, look').eq('player_name', me).order('created_at', { ascending: false }).limit(1) : Promise.resolve({ data: null }),
   ]);
-  const rows = ((lives as { player_name: string; char_name: string; age: number; realm: string; cause: string | null; epitaph: string | null; dao_tam: number }[] | null) ?? []).filter((r) => r.player_name !== me && r.player_name !== 'Khách' && !isTest(r.player_name));
+  const rows = ((lives as { player_name: string; char_name: string; age: number; realm: string; cause: string | null; epitaph: string | null; dao_tam: number }[] | null) ?? []).filter(
+    (r) => r.player_name !== me && r.player_name !== 'Khách' && !isTest(r.player_name),
+  );
   for (let i = rows.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [rows[i], rows[j]] = [rows[j], rows[i]];
@@ -213,10 +227,14 @@ export async function fetchWorld(user: Player | null): Promise<WorldEcho | null>
     lifeNo: c.lifeNo ?? 1,
     alive,
   });
-  const rivals = (all ?? []).filter((x) => x.username !== me && !isTest(x.username) && (x.c.realm ?? 0) >= 1).slice(0, 40).map((x) => toRival(x.username, x.c, x.alive));
+  const rivals = (all ?? [])
+    .filter((x) => x.username !== me && !isTest(x.username) && (x.c.realm ?? 0) >= 1)
+    .slice(0, 40)
+    .map((x) => toRival(x.username, x.c, x.alive));
   type PastRow = { char_name: string; age: number; realm_no: number | null; layer_no: number | null; dao_tam: number; look: Record<string, unknown> | null };
   const pr = ((mine as { data: PastRow[] | null }).data ?? [])[0];
-  const past = pr && me ? toRival(me, { ...(pr.look ?? {}), name: pr.char_name, age: pr.age, realm: pr.realm_no ?? 1, layer: pr.layer_no ?? 1, daoTam: pr.dao_tam } as unknown as Character, false) : null;
+  const past =
+    pr && me ? toRival(me, { ...(pr.look ?? {}), name: pr.char_name, age: pr.age, realm: pr.realm_no ?? 1, layer: pr.layer_no ?? 1, daoTam: pr.dao_tam } as unknown as Character, false) : null;
   return { graves, ma: top(ma), chinh: top(chinh), rivals, past };
 }
 
@@ -297,22 +315,33 @@ export async function unreadMail(user: Player | null): Promise<number> {
 }
 
 // ---------- Danh hiệu tuần, thống kê kết cục ----------
-const TITLE_ORDER = ['Thiên Hạ Đệ Nhất', 'Võ Lâm Minh Chủ', 'Đệ Nhất Ma Đầu', 'Đệ Nhị Cao Thủ', 'Đệ Tam Cao Thủ'];
-let titlesCache: Promise<Record<string, string>> | null = null;
+const TITLE_ORDER = [
+  'Thiên Hạ Đệ Nhất',
+  'Võ Lâm Minh Chủ',
+  'Đệ Nhất Ma Đầu',
+  'Đệ Nhị Cao Thủ',
+  'Đệ Tam Cao Thủ',
+  'Phú Khả Địch Quốc',
+  'Thọ Tỷ Nam Sơn',
+  'Đệ Nhị Phú Hào',
+  'Đệ Nhị Thọ Tinh',
+  'Đệ Tam Phú Hào',
+  'Đệ Tam Thọ Tinh',
+];
+let titlesCache: Promise<Record<string, string[]>> | null = null;
 
-/** Danh hiệu tuần này gắn với từng nhân vật (người chơi + kiếp thứ mấy), không phải cả tài khoản */
-export function weeklyTitles(): Promise<Record<string, string>> {
+/** Danh hiệu tuần này gắn với từng nhân vật (người chơi + kiếp thứ mấy): năng lực, phú hào, trường thọ. Một nhân vật có thể giữ nhiều danh hiệu. */
+export function weeklyTitles(): Promise<Record<string, string[]>> {
   if (titlesCache) return titlesCache;
   titlesCache = (async () => {
     const sb = supabase();
     if (!sb) return {};
     const { data, error } = await sb.rpc('vkl_titles_char');
     if (error || !data) return {};
-    const out: Record<string, string> = {};
+    const out: Record<string, string[]> = {};
     for (const r of data as { username: string; life_no: number; title: string }[]) {
       const k = titleKey(r.username, r.life_no);
-      const cur = out[k];
-      if (!cur || TITLE_ORDER.indexOf(r.title) < TITLE_ORDER.indexOf(cur)) out[k] = r.title;
+      out[k] = [...(out[k] ?? []), r.title].sort((a, b) => TITLE_ORDER.indexOf(a) - TITLE_ORDER.indexOf(b));
     }
     return out;
   })();
@@ -328,4 +357,20 @@ export async function endingStats(): Promise<{ total: number; counts: Record<str
   if (!sb) return null;
   const { data, error } = await sb.rpc('vkl_ending_stats');
   return error ? null : (data as { total: number; counts: Record<string, number> });
+}
+
+// ---------- Danh hiệu sưu tầm ----------
+let collectorsCache: Promise<Record<string, number>> | null = null;
+/** Người chơi đã mở nhiều kết cục trong Sổ Sinh Tử: username -> số kết cục */
+export function collectors(min = 8): Promise<Record<string, number>> {
+  if (collectorsCache) return collectorsCache;
+  collectorsCache = (async () => {
+    const sb = supabase();
+    if (!sb) return {};
+    const { data, error } = await sb.rpc('vkl_collectors', { p_min: min });
+    if (error || !data) return {};
+    return Object.fromEntries((data as { username: string; endings: number }[]).map((r) => [r.username, r.endings]));
+  })();
+  setTimeout(() => (collectorsCache = null), 5 * 60 * 1000);
+  return collectorsCache;
 }

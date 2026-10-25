@@ -236,7 +236,9 @@ export interface Meta {
   prophecy?: { id: string; text: string } | null; // lời tiên tri cho kiếp sau
   legend?: Legend | null; // thần binh truyền kiếp
   vendettas?: Vendetta[]; // kẻ thù là người chơi thật, để báo thù
-  feud?: Record<string, number[]>; // huyết hải thâm thù: các kiếp đã giao đấu với từng người chơi
+  feud?: Record<string, number[]>;
+  itemBook?: string[]; // Bảo khố: đồ ẩn đã từng có được
+  seenBook?: { e: number; i: number }; // số kết cục, đồ ẩn đã xem (để báo mục mới) // huyết hải thâm thù: các kiếp đã giao đấu với từng người chơi
   petBook?: string[]; // các loài linh thú đã từng nuôi
   achievements?: string[]; // thành tựu dài hạn đã đạt
   career?: Career; // số liệu cộng dồn qua các kiếp

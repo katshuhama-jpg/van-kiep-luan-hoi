@@ -35,7 +35,7 @@ export default function DuelWarning({
   const et = elemText(myEl, foeEl);
   const foeLife = r.lifeNo ?? 1;
   const lt = lifeText(foeLife, me.lifeNo);
-  const [title, setTitle] = useState<string | null>(null);
+  const [title, setTitle] = useState<string[] | null>(null);
   useEffect(() => {
     if (r.player && foe.kind !== 'kiep_truoc')
       weeklyTitles()

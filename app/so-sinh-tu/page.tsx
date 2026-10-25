@@ -20,7 +20,9 @@ export default function SoSinhTu() {
   }, [ready, user?.token]);
   const [stats, setStats] = useState<{ total: number; counts: Record<string, number> } | null>(null);
   useEffect(() => {
-    endingStats().then(setStats).catch(() => {});
+    endingStats()
+      .then(setStats)
+      .catch(() => {});
   }, []);
   const pct = (id: string) => (stats && stats.total ? Math.round(((stats.counts[id] ?? 0) / stats.total) * 100) : null);
   const book = meta?.petBook ?? [];
@@ -34,7 +36,7 @@ export default function SoSinhTu() {
             Sổ Sinh Tử
           </span>
           <span className="meta">
-            Đã mở {n}/{ENDINGS.length} kết cục
+            Đã mở {n}/{ENDINGS.length} kết cục · {ENDINGS.filter((e) => !e.how).length} bí ẩn
             {meta ? ` · ${meta.lives} kiếp` : ''}
           </span>
           <BackButton fallback="/choi" />
@@ -50,7 +52,18 @@ export default function SoSinhTu() {
             <article key={e.id} className={`ss-card ${k ? 'open' : 'locked'}`} style={{ ['--rc' as string]: RARE_COLOR[e.rare] } as CSSProperties}>
               <small>{RARE_NAME[e.rare]} phẩm</small>
               <b>{k ? e.name : '???'}</b>
-              <span>{k ? e.desc : `Gợi ý: ${e.hint}`}</span>
+              {k ? (
+                <span>{e.desc}</span>
+              ) : e.how ? (
+                <span className="ss-how">
+                  <i>Cách mở</i> {e.how}
+                </span>
+              ) : (
+                <span className="ss-how secret">
+                  <i>Bí ẩn</i> {e.hint} Chưa ai tiết lộ cách mở, tự mình tìm hiểu.
+                </span>
+              )}
+              {k && !e.how && <em className="ss-secret">Kết cục bí ẩn</em>}
               {k ? <em>Đã gặp {k} lần</em> : null}
               {stats && <i className="ss-rarity">{(stats.counts[e.id] ?? 0) === 0 ? 'Chưa ai đạt được' : `${pct(e.id)}% người chơi đã mở`}</i>}
             </article>
@@ -93,7 +106,13 @@ export default function SoSinhTu() {
               <span key={id} className={`pet-cell ${has ? 'has' : ''}`} title={has ? p.name : '???'}>
                 <span
                   className="pet-thumb"
-                  style={{ width: p.w * z, height: p.h * z, backgroundImage: `url(/lpc/pets/${id}.png)`, backgroundSize: `${p.n * p.w * z}px ${2 * p.h * z}px`, filter: has ? p.filter : 'brightness(0) opacity(0.35)' }}
+                  style={{
+                    width: p.w * z,
+                    height: p.h * z,
+                    backgroundImage: `url(/lpc/pets/${id}.png)`,
+                    backgroundSize: `${p.n * p.w * z}px ${2 * p.h * z}px`,
+                    filter: has ? p.filter : 'brightness(0) opacity(0.35)',
+                  }}
                 />
                 <small>{has ? p.name : '???'}</small>
               </span>

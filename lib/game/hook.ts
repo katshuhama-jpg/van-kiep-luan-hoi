@@ -102,6 +102,7 @@ export const QUESTS: Quest[] = [
   { id: 'uong_tra', name: 'Uống trà với đồng đạo mà sống sót', check: (c) => (c.qf?.teaSurvive ?? 0) >= 1 },
   { id: 'chinh_dao', name: 'Đạo tâm chính trực từ 50 trở lên', check: (c) => c.daoTam >= 50 },
   { id: 'ta_dao', name: 'Đạo tâm tà ác từ -50 trở xuống', check: (c) => c.daoTam <= -50 },
+  { id: 'bao_vat_moi', name: 'Có được một món đồ ẩn chưa từng thấy', check: (c) => (c.qf?.newItem ?? 0) >= 1 },
 ];
 export const QUEST_REWARD = 4; // phúc duyên mỗi nhiệm vụ
 export const QUEST_BONUS = 6; // xong cả 3
@@ -187,7 +188,7 @@ export function nearEndings(c: Character, opened: Record<string, number> | undef
   };
   const want = [...(pref[c.path ?? ''] ?? []), ...(c.daoTam >= 40 ? ['dai_thien'] : []), ...(c.realm >= 5 ? ['phi_thang'] : []), ...(c.linhThach > 800 ? ['dai_phu'] : [])];
   const sorted = [...left].sort((a, b) => (want.includes(b.id) ? 1 : 0) - (want.includes(a.id) ? 1 : 0) || a.rare - b.rare);
-  return sorted.slice(0, 2).map((e) => ({ name: e.name, hint: e.hint }));
+  return sorted.slice(0, 2).map((e) => ({ name: e.name, hint: e.how ?? e.hint }));
 }
 
 // ---------------- Thành tựu dài hạn (mục tiêu sau vài kiếp đầu) ----------------

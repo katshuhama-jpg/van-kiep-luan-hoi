@@ -3,6 +3,7 @@
 import { Sheet } from './Panels';
 import { QUEST_BONUS, QUEST_REWARD, canChiDay, dailyOf, omenToday, questName, streakGift } from '@/lib/game/hook';
 import type { Meta } from '@/lib/game/types';
+import { rumorToday } from '@/lib/game/collect';
 
 /** Thẻ "Hôm nay": thiên tượng, chuỗi ngày, nhiệm vụ ngày */
 /** Biểu tượng pixel 10x10 cho từng thiên tượng (# = màu chính, o = màu phụ) */
@@ -34,6 +35,7 @@ export function TodayScroll({ meta }: { meta: Meta }) {
   const d = dailyOf(meta);
   const n = meta.streak?.n ?? 1;
   const next = streakGift(n + 1);
+  const rumor = rumorToday(meta);
   return (
     <section className={`thien-tuong o-${o.id}`} aria-label={`Thiên tượng hôm nay: ${o.name}`}>
       <div className="tt-head">
@@ -57,6 +59,11 @@ export function TodayScroll({ meta }: { meta: Meta }) {
           <i className="ky">Kiêng</i> {o.ky}
         </span>
       </div>
+      {rumor && (
+        <p className="tt-rumor">
+          <i>Lời đồn</i> {rumor.hint} <small>(một kết cục bạn chưa mở trong Sổ Sinh Tử)</small>
+        </p>
+      )}
       <div className="tt-daily">
         <div className="tt-streak">
           <b>Chuỗi tu luyện {n} ngày</b>
@@ -86,9 +93,20 @@ export function HookSheet({ meta, onClose }: { meta: Meta; onClose: () => void }
   );
 }
 
-/** Danh hiệu tuần trên đầu nhân vật */
-export function TitleBadge({ title }: { title?: string | null }) {
-  if (!title) return null;
-  const tone = title.includes('Ma Đầu') ? 'ta' : title.includes('Minh Chủ') ? 'chinh' : 'gold';
-  return <span className={`title-badge ${tone}`}>{title}</span>;
+/** Danh hiệu tuần trên đầu nhân vật (có thể nhiều danh hiệu) */
+export function TitleBadge({ title }: { title?: string | string[] | null }) {
+  const list = (Array.isArray(title) ? title : title ? [title] : []).filter(Boolean);
+  if (!list.length) return null;
+  return (
+    <>
+      {list.map((t) => {
+        const tone = t.includes('Ma Đầu') ? 'ta' : t.includes('Minh Chủ') ? 'chinh' : t.includes('Phú') ? 'phu' : t.includes('Thọ') ? 'tho' : 'gold';
+        return (
+          <span key={t} className={`title-badge ${tone}`}>
+            {t}
+          </span>
+        );
+      })}
+    </>
+  );
 }

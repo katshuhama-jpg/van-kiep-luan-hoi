@@ -3,13 +3,15 @@
 import BackButton from '@/components/BackButton';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { lifeDetail, listMemorials, thapHuong, topIncense, type Memorial } from '@/lib/storage';
+import { loadAll, lifeDetail, listMemorials, thapHuong, topIncense, type Memorial } from '@/lib/storage';
 import LifeStory, { type LifeRecord } from '@/components/LifeStory';
 import { useAuth } from '@/lib/useAuth';
 import { RelChips } from '@/components/GiangHo';
 import { SOCIAL, type SocialState } from '@/lib/game/social';
 import { condolenceAdd, condolenceCounts, loadSocial } from '@/lib/social';
 import type { Player } from '@/lib/auth';
+import { endingOfGrave } from '@/lib/game/collect';
+import { RARE_COLOR } from '@/lib/game/endings';
 
 type Condo = Record<string, { n: number; last: string }>;
 
@@ -22,6 +24,7 @@ function Tomb({
   social,
   user,
   onCondole,
+  mine,
 }: {
   m: Memorial;
   canIncense: boolean;
@@ -31,8 +34,11 @@ function Tomb({
   social: SocialState;
   user: Player | null;
   onCondole: (body: string) => void;
+  mine: Record<string, number> | null; // kết cục người xem đã mở
 }) {
   const [writing, setWriting] = useState(false);
+  const end = endingOfGrave(m);
+  const unseen = mine !== null && !mine[end.id];
   const [text, setText] = useState('');
   return (
     <article className={`grave ${m.ascended ? 'ascended' : ''}`}>
@@ -49,6 +55,10 @@ function Tomb({
       ) : (
         m.cause && <small>{m.cause}</small>
       )}
+      <span className={`tomb-ending ${unseen ? 'unseen' : ''}`} style={{ ['--rc' as string]: RARE_COLOR[end.rare] } as React.CSSProperties}>
+        <i>Kết cục</i> {end.name}
+        {unseen && <small>Bạn chưa từng chết như vậy</small>}
+      </span>
       {m.epitaph && <span className="epitaph">“{m.epitaph}”</span>}
       {condo && (
         <span className="tomb-condo">
@@ -97,8 +107,12 @@ export default function Graveyard() {
 
   const [condo, setCondo] = useState<Condo>({});
   const [social, setSocial] = useState<SocialState>(SOCIAL.cur);
+  const [mine, setMine] = useState<Record<string, number> | null>(null);
   useEffect(() => {
     if (!ready) return;
+    loadAll(user)
+      .then((x) => setMine(x.meta.endings ?? {}))
+      .catch(() => {});
     Promise.all([listMemorials(user), topIncense()]).then(([d, den]) => setData({ ...d, den }));
     loadSocial(user)
       .then((x) => setSocial({ ...x }))
@@ -183,6 +197,7 @@ export default function Graveyard() {
               social={social}
               user={user}
               onCondole={(b) => condole(m, b)}
+              mine={mine}
             />
           ))}
         </div>

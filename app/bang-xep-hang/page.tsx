@@ -9,9 +9,10 @@ import { describeLean } from '@/lib/game/engine';
 import { fmt } from '@/lib/game/helpers';
 import type { Character } from '@/lib/game/types';
 import { TitleBadge } from '@/components/Hook';
-import { leaderboard, titleKey, weeklyTitles, type RankKind, type RankLean, type RankScope } from '@/lib/storage';
+import { collectors, leaderboard, titleKey, weeklyTitles, type RankKind, type RankLean, type RankScope } from '@/lib/storage';
 import { useAuth } from '@/lib/useAuth';
 import { RelChips } from '@/components/GiangHo';
+import { collectorTitle } from '@/lib/game/collect';
 import { SOCIAL, type SocialState } from '@/lib/game/social';
 import { bountyBoard, loadSocial, oanGia, type BountyRow, type OanGia } from '@/lib/social';
 
@@ -56,14 +57,18 @@ export default function RankPage() {
   const [scope, setScope] = useState<RankScope>('all');
   const [rows, setRows] = useState<{ username: string; c: Character; alive: boolean }[] | null>(null);
   const [failed, setFailed] = useState(false);
-  const [titles, setTitles] = useState<Record<string, string>>({});
+  const [titles, setTitles] = useState<Record<string, string[]>>({});
   const [social, setSocial] = useState<SocialState>(SOCIAL.cur);
+  const [coll, setColl] = useState<Record<string, number>>({});
   const [truy, setTruy] = useState(false);
   const [board, setBoard] = useState<BountyRow[] | null>(null);
   const [pairs, setPairs] = useState<OanGia[]>([]);
   useEffect(() => {
     weeklyTitles()
       .then(setTitles)
+      .catch(() => {});
+    collectors()
+      .then(setColl)
       .catch(() => {});
   }, []);
   useEffect(() => {
@@ -258,6 +263,7 @@ export default function RankPage() {
                       <span className="rank-owner">
                         <span className="rank-user">@{r.username}</span>
                         <TitleBadge title={titles[titleKey(r.username, c.lifeNo)]} />
+                        {coll[r.username] && <span className="title-badge collector">{collectorTitle(coll[r.username])}</span>}
                         {mine && <span className="badge">Bạn</span>}
                         <RelChips player={r.username} s={social} />
                         {!r.alive && <span className="badge gone-badge">{c.ascended ? (c.cause?.includes('Ma Tôn') ? 'Ma Tôn' : 'Phi thăng') : 'Đã mất'}</span>}

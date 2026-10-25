@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
 import { ENDINGS, RARE_COLOR, endingOf } from '@/lib/game/endings';
 import { GachaPanel, ShareCard } from './Extras';
 import ItemIconImg from './ItemIcon';
@@ -12,6 +12,7 @@ import { MonsterSprite } from './Battle';
 import { cultPct, fmt, needFor } from '@/lib/game/helpers';
 import type { Character, Focus, LogEntry, Meta, PendingEvent, Slot } from '@/lib/game/types';
 import { evalQuests, nearEndings, pickProphecy, questName } from '@/lib/game/hook';
+import { HIDDEN_ITEMS, collectStats, isHidden, itemHint } from '@/lib/game/collect';
 import { TodayScroll } from './Hook';
 import { useAuth } from '@/lib/useAuth';
 import { addFeedback } from '@/lib/storage';
@@ -56,7 +57,13 @@ export function StatsPanel({ c }: { c: Character }) {
   return (
     <section className="panel" aria-label="Chỉ số">
       <div className="stats">
-        <Bar wide label={c.realm === 0 ? 'Tu vi (chưa nhập đạo)' : `Tu vi · ${realmLabel(c.realm, c.layer)}`} value={c.realm === 0 ? `${fmt(c.cultivation)}/40` : `${fmt(c.cultivation)}/${fmt(needFor(c))}`} pct={c.realm === 0 ? c.cultivation / 40 : cultPct(c)} color="#2f6b5a" />
+        <Bar
+          wide
+          label={c.realm === 0 ? 'Tu vi (chưa nhập đạo)' : `Tu vi · ${realmLabel(c.realm, c.layer)}`}
+          value={c.realm === 0 ? `${fmt(c.cultivation)}/40` : `${fmt(c.cultivation)}/${fmt(needFor(c))}`}
+          pct={c.realm === 0 ? c.cultivation / 40 : cultPct(c)}
+          color="#2f6b5a"
+        />
         <Bar label="Thọ nguyên" value={`${Math.floor(c.age)}/${c.lifespan}`} pct={c.age / c.lifespan} color="#b8432f" />
         <Bar label="Sức khỏe" value={`${s.sucKhoe}`} pct={s.sucKhoe / 100} color="#d96a4a" />
         <Bar label="Tâm cảnh" value={`${s.tamCanh}`} pct={s.tamCanh / 100} color="#c9962e" />
@@ -156,7 +163,7 @@ export function ItemIcon({ item, pill }: { item?: Item; pill?: string }) {
   if (!item) return null;
   if (item.wpn) return <WeaponIcon k={item.wpn.k} a={item.wpn.a} b={item.wpn.b} />;
   if ((item.slot as string) === 'ao') {
-    const [a, b] = item.robe ? [item.robe[0], item.robe[2]] : ICON_COLOR[item.look] ?? ICON_COLOR.vai;
+    const [a, b] = item.robe ? [item.robe[0], item.robe[2]] : (ICON_COLOR[item.look] ?? ICON_COLOR.vai);
     return (
       <svg viewBox="0 0 8 8" width="32" height="32" shapeRendering="crispEdges" aria-hidden="true">
         <rect x="2" y="1" width="4" height="7" fill={a} />
@@ -168,14 +175,63 @@ export function ItemIcon({ item, pill }: { item?: Item; pill?: string }) {
     );
   }
   const map: Record<string, ReactNode> = {
-    mockiem: <><rect x="4" y="0" width="1" height="6" fill="#b58a5a" /><rect x="2" y="6" width="5" height="1" fill="#7a5a3a" /><rect x="4" y="7" width="1" height="1" fill="#7a5a3a" /></>,
-    kiem: <><rect x="4" y="0" width="1" height="6" fill="#d9e6ff" /><rect x="2" y="6" width="5" height="1" fill="#ffd36b" /><rect x="4" y="7" width="1" height="1" fill="#5a4128" /></>,
-    dao: <><rect x="3" y="0" width="3" height="6" fill="#c0202e" /><rect x="2" y="6" width="5" height="1" fill="#141217" /><rect x="4" y="7" width="1" height="1" fill="#141217" /></>,
-    phattran: <><rect x="4" y="3" width="1" height="5" fill="#b58a5a" /><rect x="2" y="0" width="5" height="3" fill="#ffffff" /></>,
-    lodan: <><rect x="1" y="3" width="6" height="4" fill="#5a4a3a" /><rect x="0" y="2" width="8" height="1" fill="#3e3228" /><rect x="3" y="5" width="2" height="1" fill="#ff8a3d" /></>,
-    ngoc: <><rect x="2" y="2" width="4" height="4" fill="#5fd8a0" /><rect x="3" y="0" width="1" height="2" fill="#b8432f" /></>,
-    holo: <><rect x="2" y="4" width="4" height="4" fill="#e0a040" /><rect x="3" y="1" width="2" height="3" fill="#e0a040" /><rect x="3" y="0" width="2" height="1" fill="#8a5a2a" /></>,
-    kiembay: <><rect x="1" y="6" width="1" height="1" fill="#ffd36b" /><rect x="2" y="5" width="1" height="1" fill="#d9e6ff" /><rect x="3" y="4" width="1" height="1" fill="#d9e6ff" /><rect x="4" y="3" width="1" height="1" fill="#d9e6ff" /><rect x="5" y="2" width="1" height="1" fill="#d9e6ff" /><rect x="6" y="1" width="1" height="1" fill="#ffffff" /></>,
+    mockiem: (
+      <>
+        <rect x="4" y="0" width="1" height="6" fill="#b58a5a" />
+        <rect x="2" y="6" width="5" height="1" fill="#7a5a3a" />
+        <rect x="4" y="7" width="1" height="1" fill="#7a5a3a" />
+      </>
+    ),
+    kiem: (
+      <>
+        <rect x="4" y="0" width="1" height="6" fill="#d9e6ff" />
+        <rect x="2" y="6" width="5" height="1" fill="#ffd36b" />
+        <rect x="4" y="7" width="1" height="1" fill="#5a4128" />
+      </>
+    ),
+    dao: (
+      <>
+        <rect x="3" y="0" width="3" height="6" fill="#c0202e" />
+        <rect x="2" y="6" width="5" height="1" fill="#141217" />
+        <rect x="4" y="7" width="1" height="1" fill="#141217" />
+      </>
+    ),
+    phattran: (
+      <>
+        <rect x="4" y="3" width="1" height="5" fill="#b58a5a" />
+        <rect x="2" y="0" width="5" height="3" fill="#ffffff" />
+      </>
+    ),
+    lodan: (
+      <>
+        <rect x="1" y="3" width="6" height="4" fill="#5a4a3a" />
+        <rect x="0" y="2" width="8" height="1" fill="#3e3228" />
+        <rect x="3" y="5" width="2" height="1" fill="#ff8a3d" />
+      </>
+    ),
+    ngoc: (
+      <>
+        <rect x="2" y="2" width="4" height="4" fill="#5fd8a0" />
+        <rect x="3" y="0" width="1" height="2" fill="#b8432f" />
+      </>
+    ),
+    holo: (
+      <>
+        <rect x="2" y="4" width="4" height="4" fill="#e0a040" />
+        <rect x="3" y="1" width="2" height="3" fill="#e0a040" />
+        <rect x="3" y="0" width="2" height="1" fill="#8a5a2a" />
+      </>
+    ),
+    kiembay: (
+      <>
+        <rect x="1" y="6" width="1" height="1" fill="#ffd36b" />
+        <rect x="2" y="5" width="1" height="1" fill="#d9e6ff" />
+        <rect x="3" y="4" width="1" height="1" fill="#d9e6ff" />
+        <rect x="4" y="3" width="1" height="1" fill="#d9e6ff" />
+        <rect x="5" y="2" width="1" height="1" fill="#d9e6ff" />
+        <rect x="6" y="1" width="1" height="1" fill="#ffffff" />
+      </>
+    ),
   };
   return (
     <svg viewBox="0 0 8 8" width="32" height="32" shapeRendering="crispEdges" aria-hidden="true">
@@ -186,20 +242,77 @@ export function ItemIcon({ item, pill }: { item?: Item; pill?: string }) {
 
 function WeaponIcon({ k, a, b }: { k: string; a: string; b: string }) {
   const r: Record<string, [number, number, number, number, string][]> = {
-    kiem: [[4, 0, 1, 6, a], [2, 6, 5, 1, b], [4, 7, 1, 1, b]],
-    dao: [[3, 0, 3, 6, a], [2, 6, 5, 1, b], [4, 7, 1, 1, b]],
-    thuong: [[4, 2, 1, 6, b], [3, 0, 3, 2, a], [3, 2, 3, 1, '#c0202e']],
-    cung: [[2, 0, 1, 1, a], [1, 1, 1, 6, a], [2, 7, 1, 1, a], [3, 0, 1, 8, b]],
-    quat: [[1, 1, 6, 4, a], [2, 0, 4, 1, a], [3, 5, 2, 3, b]],
-    truong: [[4, 0, 1, 8, a], [3, 0, 3, 1, b]],
-    chuy: [[4, 4, 1, 4, b], [2, 0, 5, 4, a]],
-    tieu: [[4, 0, 1, 8, a], [4, 2, 1, 1, b], [4, 4, 1, 1, b], [4, 6, 1, 1, b]],
-    roi: [[5, 4, 1, 4, b], [4, 2, 1, 2, a], [3, 1, 1, 1, a], [2, 0, 1, 1, a]],
-    song: [[2, 0, 1, 6, a], [1, 6, 3, 1, b], [5, 0, 1, 6, b], [4, 6, 3, 1, a]],
-    liem: [[4, 1, 1, 7, b], [0, 0, 5, 1, a], [0, 1, 1, 2, a]],
-    but: [[4, 2, 1, 6, b], [4, 0, 1, 2, a], [3, 1, 1, 1, a]],
-    cuoc: [[4, 1, 1, 7, b], [2, 0, 3, 2, a]],
-    quyen: [[1, 2, 6, 4, a], [1, 2, 6, 1, b], [2, 6, 4, 2, a]],
+    kiem: [
+      [4, 0, 1, 6, a],
+      [2, 6, 5, 1, b],
+      [4, 7, 1, 1, b],
+    ],
+    dao: [
+      [3, 0, 3, 6, a],
+      [2, 6, 5, 1, b],
+      [4, 7, 1, 1, b],
+    ],
+    thuong: [
+      [4, 2, 1, 6, b],
+      [3, 0, 3, 2, a],
+      [3, 2, 3, 1, '#c0202e'],
+    ],
+    cung: [
+      [2, 0, 1, 1, a],
+      [1, 1, 1, 6, a],
+      [2, 7, 1, 1, a],
+      [3, 0, 1, 8, b],
+    ],
+    quat: [
+      [1, 1, 6, 4, a],
+      [2, 0, 4, 1, a],
+      [3, 5, 2, 3, b],
+    ],
+    truong: [
+      [4, 0, 1, 8, a],
+      [3, 0, 3, 1, b],
+    ],
+    chuy: [
+      [4, 4, 1, 4, b],
+      [2, 0, 5, 4, a],
+    ],
+    tieu: [
+      [4, 0, 1, 8, a],
+      [4, 2, 1, 1, b],
+      [4, 4, 1, 1, b],
+      [4, 6, 1, 1, b],
+    ],
+    roi: [
+      [5, 4, 1, 4, b],
+      [4, 2, 1, 2, a],
+      [3, 1, 1, 1, a],
+      [2, 0, 1, 1, a],
+    ],
+    song: [
+      [2, 0, 1, 6, a],
+      [1, 6, 3, 1, b],
+      [5, 0, 1, 6, b],
+      [4, 6, 3, 1, a],
+    ],
+    liem: [
+      [4, 1, 1, 7, b],
+      [0, 0, 5, 1, a],
+      [0, 1, 1, 2, a],
+    ],
+    but: [
+      [4, 2, 1, 6, b],
+      [4, 0, 1, 2, a],
+      [3, 1, 1, 1, a],
+    ],
+    cuoc: [
+      [4, 1, 1, 7, b],
+      [2, 0, 3, 2, a],
+    ],
+    quyen: [
+      [1, 2, 6, 4, a],
+      [1, 2, 6, 1, b],
+      [2, 6, 4, 2, a],
+    ],
   };
   return (
     <svg viewBox="0 0 8 8" width="32" height="32" shapeRendering="crispEdges" aria-hidden="true">
@@ -275,47 +388,51 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; 
           ITEMS.filter((i) => i.price > 0 && i.src !== 'drop' && i.src !== 'event' && pass(i))
             .sort((x, y) => x.minRealm - y.minRealm || x.price - y.price)
             .map((it) => {
-            const owned = c.inventory.includes(it.id);
-            const lock = lockReason(c, it);
-            return (
-              <div key={it.id} className="item">
-                <div className="item-icon">
-                  <ItemIcon item={it} />
-                </div>
-                <div className="item-body">
-                  <span>{it.name}</span>
-                  {it.fx && <small className="fx-line">{fxText(it.fx)}</small>}
-                  <small>{lock ?? it.desc}</small>
-                </div>
-                <button className="btn btn-red" disabled={owned || !!lock || c.linhThach < it.price} onClick={() => onBuyItem(it.id)}>
-                  {owned ? 'Đã có' : fmt(it.price)}
-                </button>
-              </div>
-            );
-          })}
-        {tab === 'kho' && (
-          <>
-            <p className="note" style={{ margin: 0 }}>Không bán ở đâu cả. Phải trừ yêu hoặc gặp cơ duyên trong đời mới có. Đã có {ITEMS.filter((i) => (i.src === 'drop' || i.src === 'event') && i.id !== 'ao_vai' && c.inventory.includes(i.id)).length}/{ITEMS.filter((i) => (i.src === 'drop' || i.src === 'event') && i.id !== 'ao_vai').length}.</p>
-            {ITEMS.filter((i) => (i.src === 'drop' || i.src === 'event') && i.id !== 'ao_vai' && pass(i))
-              .sort((x, y) => x.minRealm - y.minRealm || (x.rare ?? 0) - (y.rare ?? 0))
-              .map((it) => {
               const owned = c.inventory.includes(it.id);
+              const lock = lockReason(c, it);
               return (
-                <div key={it.id} className={`item rare-${it.rare ?? 0} ${owned ? '' : 'unknown'}`}>
+                <div key={it.id} className="item">
                   <div className="item-icon">
                     <ItemIcon item={it} />
                   </div>
                   <div className="item-body">
-                    <span>
-                      {it.name} {it.rare ? <em className={`rare-tag r${it.rare}`}>{RARE_TXT[it.rare]}</em> : null}
-                    </span>
+                    <span>{it.name}</span>
                     {it.fx && <small className="fx-line">{fxText(it.fx)}</small>}
-                    <small>{srcText(it)}</small>
+                    <small>{lock ?? it.desc}</small>
                   </div>
-                  <span className="owned-tag">{owned ? 'Đã có' : 'Chưa có'}</span>
+                  <button className="btn btn-red" disabled={owned || !!lock || c.linhThach < it.price} onClick={() => onBuyItem(it.id)}>
+                    {owned ? 'Đã có' : fmt(it.price)}
+                  </button>
                 </div>
               );
             })}
+        {tab === 'kho' && (
+          <>
+            <p className="note" style={{ margin: 0 }}>
+              Không bán ở đâu cả. Phải trừ yêu hoặc gặp cơ duyên trong đời mới có. Đã có{' '}
+              {ITEMS.filter((i) => (i.src === 'drop' || i.src === 'event') && i.id !== 'ao_vai' && c.inventory.includes(i.id)).length}/
+              {ITEMS.filter((i) => (i.src === 'drop' || i.src === 'event') && i.id !== 'ao_vai').length}.
+            </p>
+            {ITEMS.filter((i) => (i.src === 'drop' || i.src === 'event') && i.id !== 'ao_vai' && pass(i))
+              .sort((x, y) => x.minRealm - y.minRealm || (x.rare ?? 0) - (y.rare ?? 0))
+              .map((it) => {
+                const owned = c.inventory.includes(it.id);
+                return (
+                  <div key={it.id} className={`item rare-${it.rare ?? 0} ${owned ? '' : 'unknown'}`}>
+                    <div className="item-icon">
+                      <ItemIcon item={it} />
+                    </div>
+                    <div className="item-body">
+                      <span>
+                        {it.name} {it.rare ? <em className={`rare-tag r${it.rare}`}>{RARE_TXT[it.rare]}</em> : null}
+                      </span>
+                      {it.fx && <small className="fx-line">{fxText(it.fx)}</small>}
+                      <small>{srcText(it)}</small>
+                    </div>
+                    <span className="owned-tag">{owned ? 'Đã có' : 'Chưa có'}</span>
+                  </div>
+                );
+              })}
           </>
         )}
         {tab === 'dan' &&
@@ -341,52 +458,173 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; 
 }
 
 /* ---------------- Túi đồ ---------------- */
-export function BagSheet({ c, onEquip, onUsePill, onClose }: { c: Character; onEquip: (id: string) => void; onUsePill: (id: string) => void; onClose: () => void }) {
+export function BagSheet({
+  c,
+  onEquip,
+  onUsePill,
+  onClose,
+  book,
+  startTab = 'tui',
+  onSeen,
+}: {
+  c: Character;
+  onEquip: (id: string) => void;
+  onUsePill: (id: string) => void;
+  onClose: () => void;
+  book: string[];
+  startTab?: 'tui' | 'kho';
+  onSeen?: () => void;
+}) {
   const owned = ITEMS.filter((i) => c.inventory.includes(i.id));
   const pills = PILLS.filter((p) => (c.pills[p.id] ?? 0) > 0);
   const total = fxText(gearFx(c.equipped));
+  const [tab, setTab] = useState<'tui' | 'kho'>(startTab);
+  useEffect(() => {
+    if (tab === 'kho') onSeen?.();
+  }, [tab]);
+  const got = book.filter(isHidden).length;
   return (
     <Sheet title="Túi trữ vật" onClose={onClose}>
-      <p className="note" style={{ marginTop: 0 }}>Trang bị đang mặc: {total || 'chưa có chỉ số gì'}</p>
-      <div className="items">
-        {owned.map((it) => {
-          const on = c.equipped[it.slot] === it.id;
-          return (
-            <div key={it.id} className="item">
-              <div className="item-icon">
-                <ItemIcon item={it} />
-              </div>
-              <div className="item-body">
-                <span>
-                  {c.legend?.item === it.id ? <b className="legend-name">★ {c.legend.name} ({it.name}, {c.legend.lv} kiếp)</b> : it.name} {it.rare ? <em className={`rare-tag r${it.rare}`}>{RARE_TXT[it.rare]}</em> : null}
-                </span>
-                {it.fx && <small className="fx-line">{fxText(it.fx)}</small>}
-                <small>{it.desc}</small>
-              </div>
-              <button className={`btn ${on ? 'btn-jade' : ''}`} onClick={() => onEquip(it.id)}>
-                {on ? 'Đang dùng' : 'Dùng'}
-              </button>
-            </div>
-          );
-        })}
-        {pills.map((p) => (
-          <div key={p.id} className="item">
-            <div className="item-icon">
-              <ItemIcon pill={p.id} />
-            </div>
-            <div className="item-body">
-              <span>
-                {p.name} x{c.pills[p.id]}
-              </span>
-              <small>{p.desc}</small>
-            </div>
-            <button className="btn btn-red" onClick={() => onUsePill(p.id)}>
-              Uống
-            </button>
-          </div>
-        ))}
-        {!owned.length && !pills.length && <p className="note">Túi trống trơn.</p>}
+      <div className="tabs">
+        <button className={tab === 'tui' ? 'on' : ''} onClick={() => setTab('tui')}>
+          Túi đồ
+        </button>
+        <button className={tab === 'kho' ? 'on' : ''} onClick={() => setTab('kho')}>
+          Bảo khố {got}/{HIDDEN_ITEMS.length}
+        </button>
       </div>
+      {tab === 'kho' ? (
+        <BaoKho book={book} />
+      ) : (
+        <>
+          <p className="note" style={{ marginTop: 0 }}>
+            Trang bị đang mặc: {total || 'chưa có chỉ số gì'}
+          </p>
+          <div className="items">
+            {owned.map((it) => {
+              const on = c.equipped[it.slot] === it.id;
+              return (
+                <div key={it.id} className="item">
+                  <div className="item-icon">
+                    <ItemIcon item={it} />
+                  </div>
+                  <div className="item-body">
+                    <span>
+                      {c.legend?.item === it.id ? (
+                        <b className="legend-name">
+                          ★ {c.legend.name} ({it.name}, {c.legend.lv} kiếp)
+                        </b>
+                      ) : (
+                        it.name
+                      )}{' '}
+                      {it.rare ? <em className={`rare-tag r${it.rare}`}>{RARE_TXT[it.rare]}</em> : null}
+                    </span>
+                    {it.fx && <small className="fx-line">{fxText(it.fx)}</small>}
+                    <small>{it.desc}</small>
+                  </div>
+                  <button className={`btn ${on ? 'btn-jade' : ''}`} onClick={() => onEquip(it.id)}>
+                    {on ? 'Đang dùng' : 'Dùng'}
+                  </button>
+                </div>
+              );
+            })}
+            {pills.map((p) => (
+              <div key={p.id} className="item">
+                <div className="item-icon">
+                  <ItemIcon pill={p.id} />
+                </div>
+                <div className="item-body">
+                  <span>
+                    {p.name} x{c.pills[p.id]}
+                  </span>
+                  <small>{p.desc}</small>
+                </div>
+                <button className="btn btn-red" onClick={() => onUsePill(p.id)}>
+                  Uống
+                </button>
+              </div>
+            ))}
+            {!owned.length && !pills.length && <p className="note">Túi trống trơn.</p>}
+          </div>
+        </>
+      )}
+    </Sheet>
+  );
+}
+
+/* ---------------- Bảo khố: đồ ẩn đã từng có ---------------- */
+export function BaoKho({ book }: { book: string[] }) {
+  const has = new Set(book);
+  const [f, setF] = useState<'all' | 'co' | 'chua'>('all');
+  const [pick, setPick] = useState<string | null>(null);
+  const got = HIDDEN_ITEMS.filter((i) => has.has(i.id)).length;
+  const list = [...HIDDEN_ITEMS].sort((a, b) => (b.rare ?? 0) - (a.rare ?? 0) || a.minRealm - b.minRealm).filter((i) => (f === 'co' ? has.has(i.id) : f === 'chua' ? !has.has(i.id) : true));
+  const sel = HIDDEN_ITEMS.find((i) => i.id === pick);
+  return (
+    <div className="baokho">
+      <div className="bk-head">
+        <b>
+          {got}/{HIDDEN_ITEMS.length}
+        </b>
+        <span className="bk-bar" aria-hidden="true">
+          <i style={{ width: `${(got / HIDDEN_ITEMS.length) * 100}%` }} />
+        </span>
+      </div>
+      <p className="note" style={{ margin: '4px 0 6px' }}>
+        Đồ ẩn không bán ở phường thị, chỉ rơi từ yêu thú hoặc có được qua kỳ ngộ. Món nào từng có trong bất kỳ kiếp nào cũng được ghi lại mãi mãi.
+      </p>
+      <div className="chips" role="radiogroup" aria-label="Lọc Bảo khố">
+        {(
+          [
+            ['all', 'Tất cả'],
+            ['co', 'Đã có'],
+            ['chua', 'Chưa có'],
+          ] as const
+        ).map(([k, n]) => (
+          <button key={k} role="radio" aria-checked={f === k} className={`chip-btn ${f === k ? 'on' : ''}`} onClick={() => setF(k)}>
+            {n}
+          </button>
+        ))}
+      </div>
+      {sel && (
+        <div className={`bk-detail ${has.has(sel.id) ? '' : 'locked'}`}>
+          <span className="bk-icon">
+            <ItemIcon item={sel} />
+          </span>
+          <span>
+            <b>{has.has(sel.id) ? sel.name : '???'}</b> {sel.rare ? <em className={`rare-tag r${sel.rare}`}>{RARE_TXT[sel.rare]}</em> : null}
+            {has.has(sel.id) ? (
+              <>
+                {sel.fx && <small className="fx-line">{fxText(sel.fx)}</small>}
+                <small>{sel.desc}</small>
+              </>
+            ) : (
+              <small>Gợi ý: {itemHint(sel)}</small>
+            )}
+          </span>
+        </div>
+      )}
+      <div className="bk-grid">
+        {list.map((i) => (
+          <button
+            key={i.id}
+            className={`bk-cell r${i.rare ?? 0} ${has.has(i.id) ? '' : 'locked'} ${pick === i.id ? 'on' : ''}`}
+            onClick={() => setPick(i.id)}
+            aria-label={has.has(i.id) ? i.name : 'Chưa có, xem gợi ý'}
+          >
+            <ItemIcon item={i} />
+            {!has.has(i.id) && <span className="bk-q">?</span>}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function BaoKhoSheet({ book, onClose }: { book: string[]; onClose: () => void }) {
+  return (
+    <Sheet title="Bảo khố" onClose={onClose}>
+      <BaoKho book={book} />
     </Sheet>
   );
 }
@@ -397,7 +635,8 @@ export function BeQuanSheet({ c, onGo, onClose }: { c: Character; onGo: (years: 
   return (
     <Sheet title="Bế quan" onClose={onClose}>
       <p style={{ marginTop: 0 }}>
-        Đóng cửa động phủ, tu vi tăng gấp rưỡi nhưng không gặp kỳ ngộ nào. Sẽ tự xuất quan khi chạm bình cảnh. Thọ nguyên còn khoảng <b style={{ fontWeight: 700, color: 'var(--red-d)' }}>{left} năm</b>.
+        Đóng cửa động phủ, tu vi tăng gấp rưỡi nhưng không gặp kỳ ngộ nào. Sẽ tự xuất quan khi chạm bình cảnh. Thọ nguyên còn khoảng{' '}
+        <b style={{ fontWeight: 700, color: 'var(--red-d)' }}>{left} năm</b>.
       </p>
       {c.realm < 1 ? (
         <p className="note">Phải nhập đạo (Luyện Khí) mới bế quan được.</p>
@@ -442,7 +681,19 @@ export function FocusGrid({ c, onPick }: { c: Character; onPick: (f: Focus) => v
 }
 
 /* ---------------- Màn luân hồi (đầu thai) ---------------- */
-export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talents: string[], yearSec: number, gifts: string[], gachaSpent: number, base: Character | null) => void; busy?: boolean }) {
+export function BirthPanel({
+  meta,
+  onBorn,
+  busy,
+  onKho,
+  onSoSinhTu,
+}: {
+  meta: Meta;
+  onBorn: (talents: string[], yearSec: number, gifts: string[], gachaSpent: number, base: Character | null) => void;
+  busy?: boolean;
+  onKho?: () => void;
+  onSoSinhTu?: () => void;
+}) {
   const [picked, setPicked] = useState<string[]>([]);
   const [yearSec, setYearSec] = useState(20);
   const [gifts, setGifts] = useState<string[]>([]);
@@ -453,6 +704,7 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
   const left = meta.phucDuyen - spent;
   const leftTa = meta.nghiep - picked.filter((id) => tal(id)?.ta).reduce((s, id) => s + (tal(id)?.cost ?? 0), 0);
   const first = meta.lives === 0;
+  const cs = collectStats(meta);
   const cheapest = Math.min(...TALENTS.filter((t) => !t.ta).map((t) => t.cost));
   return (
     <div className="birth-flow">
@@ -461,7 +713,9 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
         <section className="panel howto">
           <h2>Cách chơi</h2>
           <ol>
-            <li>Trời đã gieo cho bạn một lá số: tên, tướng mạo, chỉ số. Không ưng thì bấm <b>Gieo lại</b>.</li>
+            <li>
+              Trời đã gieo cho bạn một lá số: tên, tướng mạo, chỉ số. Không ưng thì bấm <b>Gieo lại</b>.
+            </li>
             <li>
               Bấm <b>Đầu thai</b>. Thời gian tự trôi, bạn lớn lên từng năm.
             </li>
@@ -486,6 +740,29 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
         </p>
       )}
 
+      {!first && (
+        <div className="collect-strip">
+          <Link href="/so-sinh-tu" onClick={onSoSinhTu} className="cs-item">
+            <small>Sổ Sinh Tử</small>
+            <b>
+              {cs.endings}/{cs.endingsTotal}
+            </b>
+            <span className="bk-bar" aria-hidden="true">
+              <i style={{ width: `${(cs.endings / cs.endingsTotal) * 100}%` }} />
+            </span>
+          </Link>
+          <button className="cs-item" onClick={onKho}>
+            <small>Bảo khố</small>
+            <b>
+              {cs.items}/{cs.itemsTotal}
+            </b>
+            <span className="bk-bar" aria-hidden="true">
+              <i style={{ width: `${(cs.items / cs.itemsTotal) * 100}%` }} />
+            </span>
+          </button>
+        </div>
+      )}
+
       <GachaPanel
         phuc={left}
         busy={busy}
@@ -504,24 +781,30 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
             {picked.length > 0 ? ` · đã chọn ${picked.length}` : ''}
           </summary>
           <div className="more-body">
-          <p className="note" style={{ marginTop: 0 }}>Chọn phúc lợi cho kiếp này rồi bấm Đầu thai.</p>
-          {meta.phucDuyen <= 0 && <p className="note" style={{ margin: 0 }}>Chưa có phúc duyên. Sống tốt một kiếp, chết đi sẽ được phúc duyên để mua ở đây.</p>}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {TALENTS.filter((t) => !t.ta).map((t) => {
-              const on = picked.includes(t.id);
-              const can = on || left >= t.cost;
-              return (
-                <button key={t.id} className={`talent ${on ? 'on' : ''}`} disabled={!can} aria-pressed={on} onClick={() => setPicked(on ? picked.filter((x) => x !== t.id) : [...picked, t.id])}>
-                  <span>
-                    {t.name}
-                    <br />
-                    <small className="note">{t.desc}</small>
-                  </span>
-                  <span className="cost">{t.cost} phúc</span>
-                </button>
-              );
-            })}
-          </div>
+            <p className="note" style={{ marginTop: 0 }}>
+              Chọn phúc lợi cho kiếp này rồi bấm Đầu thai.
+            </p>
+            {meta.phucDuyen <= 0 && (
+              <p className="note" style={{ margin: 0 }}>
+                Chưa có phúc duyên. Sống tốt một kiếp, chết đi sẽ được phúc duyên để mua ở đây.
+              </p>
+            )}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {TALENTS.filter((t) => !t.ta).map((t) => {
+                const on = picked.includes(t.id);
+                const can = on || left >= t.cost;
+                return (
+                  <button key={t.id} className={`talent ${on ? 'on' : ''}`} disabled={!can} aria-pressed={on} onClick={() => setPicked(on ? picked.filter((x) => x !== t.id) : [...picked, t.id])}>
+                    <span>
+                      {t.name}
+                      <br />
+                      <small className="note">{t.desc}</small>
+                    </span>
+                    <span className="cost">{t.cost} phúc</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </details>
       )}
@@ -554,7 +837,6 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
           </div>
         </details>
       )}
-
 
       <details className="more">
         <summary>Tùy chỉnh thêm (không bắt buộc)</summary>
@@ -607,7 +889,11 @@ function LifeFeedback({ c }: { c: Character }) {
           <button
             className="btn"
             onClick={async () => {
-              const err = await addFeedback(user, 'khac', `[Đánh giá kiếp ${c.lifeNo}] ${'★'.repeat(star)} ${text.trim() || '(không ghi chú)'} · ${Math.floor(c.age)} tuổi, ${realmLabel(c.realm, c.layer)}, ${c.cause ?? ''}`.slice(0, 480));
+              const err = await addFeedback(
+                user,
+                'khac',
+                `[Đánh giá kiếp ${c.lifeNo}] ${'★'.repeat(star)} ${text.trim() || '(không ghi chú)'} · ${Math.floor(c.age)} tuổi, ${realmLabel(c.realm, c.layer)}, ${c.cause ?? ''}`.slice(0, 480),
+              );
               setSent(err ?? 'Cảm ơn bạn! Góp ý đã được ghi lại.');
             }}
           >
@@ -619,7 +905,19 @@ function LifeFeedback({ c }: { c: Character }) {
   );
 }
 
-export function DeathSheet({ c, meta, karma, isNew, onDone }: { c: Character; meta: Meta; karma: { phuc: number; nghiep: number }; isNew: boolean; onDone: (epitaph: string, note: string, bury: boolean, extra: { prophecy: { id: string; text: string }; legendName: string | null }) => void }) {
+export function DeathSheet({
+  c,
+  meta,
+  karma,
+  isNew,
+  onDone,
+}: {
+  c: Character;
+  meta: Meta;
+  karma: { phuc: number; nghiep: number };
+  isNew: boolean;
+  onDone: (epitaph: string, note: string, bury: boolean, extra: { prophecy: { id: string; text: string }; legendName: string | null }) => void;
+}) {
   const [prophecy] = useState(() => pickProphecy(c, Math.random));
   const weapon = c.equipped.vu_khi ? ITEMS.find((i) => i.id === c.equipped.vu_khi) : null;
   const sameLegend = !!weapon && c.legend?.item === weapon.id;
@@ -642,10 +940,25 @@ export function DeathSheet({ c, meta, karma, isNew, onDone }: { c: Character; me
         {c.path ? ` · ${PATHS[c.path].name}` : ''} · {describeLean(c.daoTam)}
       </p>
       <p className="note">{c.cause}</p>
-      <div className={`ending-box r${ending.rare}`} style={{ ['--rc' as string]: RARE_COLOR[ending.rare] } as CSSProperties}>
-        <small>Kết cục {['phàm', 'linh', 'huyền', 'địa', 'thiên'][ending.rare]} phẩm{isNew ? ' · MỚI MỞ!' : ''}</small>
+      <div className={`ending-box r${ending.rare} ${isNew ? 'is-new' : ''}`} style={{ ['--rc' as string]: RARE_COLOR[ending.rare] } as CSSProperties}>
+        {isNew && (
+          <span className="new-stamp" aria-hidden="true">
+            Kết cục mới
+          </span>
+        )}
+        <small>
+          Kết cục {['phàm', 'linh', 'huyền', 'địa', 'thiên'][ending.rare]} phẩm{isNew ? ' · MỚI MỞ!' : ''}
+        </small>
         <b>{ending.name}</b>
         <span>{ending.desc}</span>
+        <span className="sst-progress">
+          <span className="bk-bar" aria-hidden="true">
+            <i style={{ width: `${((Object.keys(meta.endings ?? {}).length + (isNew ? 1 : 0)) / ENDINGS.length) * 100}%` }} />
+          </span>
+          <small>
+            Sổ Sinh Tử {Object.keys(meta.endings ?? {}).length + (isNew ? 1 : 0)}/{ENDINGS.length}
+          </small>
+        </span>
       </div>
       <p>
         Mang sang kiếp sau: <b style={{ fontWeight: 700, color: 'var(--jade)' }}>+{karma.phuc} phúc duyên</b>
@@ -703,7 +1016,8 @@ export function DeathSheet({ c, meta, karma, isNew, onDone }: { c: Character; me
         <>
           <label className="toggle" style={{ marginTop: 8 }}>
             <input type="checkbox" checked={passOn} onChange={(e) => setPassOn(e.target.checked)} />
-            Truyền {weapon.name} thành thần binh cho kiếp sau{sameLegend ? ` (đời thứ ${c.legend!.lv + 1}, công +${Math.min(10, c.legend!.lv + 1) * 8}%)` : ' (công +8%, mỗi kiếp truyền tiếp mạnh thêm)'}
+            Truyền {weapon.name} thành thần binh cho kiếp sau
+            {sameLegend ? ` (đời thứ ${c.legend!.lv + 1}, công +${Math.min(10, c.legend!.lv + 1) * 8}%)` : ' (công +8%, mỗi kiếp truyền tiếp mạnh thêm)'}
           </label>
           {passOn && (
             <label className="field">
@@ -767,7 +1081,7 @@ export function StageStrip({ c, compact }: { c: Character; compact: boolean }) {
         <>
           <div className="minis">
             <Mini label="Thọ" value={`${Math.floor(c.age)}/${c.lifespan}`} pct={1 - c.age / c.lifespan} color="#b8432f" />
-            <Mini label={s.sucKhoe <= 25 ? "⚠ Khỏe" : "Khỏe"} value={s.sucKhoe} pct={s.sucKhoe / 100} color="#d96a4a" danger={s.sucKhoe <= 25} />
+            <Mini label={s.sucKhoe <= 25 ? '⚠ Khỏe' : 'Khỏe'} value={s.sucKhoe} pct={s.sucKhoe / 100} color="#d96a4a" danger={s.sucKhoe <= 25} />
             <Mini label="Tâm" value={s.tamCanh} pct={s.tamCanh / 100} color="#c9962e" />
             <Mini label="Ma" value={s.tamMa} pct={s.tamMa / 100} color="#6a1a2e" />
             <Mini label="Ngộ" value={s.ngoTinh} pct={s.ngoTinh / 100} color="#5b6fb0" />
@@ -793,12 +1107,53 @@ export function StageStrip({ c, compact }: { c: Character; compact: boolean }) {
 /* ---------------- Biểu tượng trọng tâm ---------------- */
 export function FocusIcon({ f }: { f: Focus }) {
   const px: Record<Focus, [number, number, number, number, string][]> = {
-    tu_luyen: [[3, 0, 2, 2, '#7fc8ff'], [2, 2, 4, 2, '#ffe27a'], [1, 4, 6, 2, '#ffe27a'], [0, 6, 8, 2, '#3fa58a']],
-    luyen_dan: [[3, 0, 2, 1, '#c9c4ff'], [1, 2, 6, 1, '#3e3228'], [1, 3, 6, 4, '#7a5f44'], [3, 5, 2, 1, '#ff8a3d'], [1, 7, 1, 1, '#3e3228'], [6, 7, 1, 1, '#3e3228']],
-    du_ngoan: [[0, 5, 8, 3, '#5fbf95'], [2, 2, 2, 3, '#8fb3a6'], [3, 1, 2, 2, '#8fb3a6'], [5, 3, 2, 2, '#6b9a8a'], [6, 0, 2, 2, '#fff6a8']],
-    kiem_tien: [[2, 1, 4, 6, '#ffcf6e'], [1, 2, 6, 4, '#ffcf6e'], [3, 3, 2, 2, '#8a6a1a'], [2, 1, 1, 1, '#fff6d0']],
-    tru_yeu: [[6, 0, 2, 1, '#e6eaf6'], [5, 1, 2, 1, '#e6eaf6'], [4, 2, 2, 1, '#d9e6ff'], [3, 3, 2, 1, '#d9e6ff'], [1, 4, 3, 1, '#ffd36b'], [2, 3, 1, 3, '#ffd36b'], [0, 6, 2, 2, '#7a5a3a'], [5, 5, 3, 3, '#e0402e'], [6, 6, 1, 1, '#ffffff']],
-    ket_duyen: [[1, 1, 2, 1, '#e0507a'], [5, 1, 2, 1, '#e0507a'], [0, 2, 8, 2, '#e0507a'], [1, 4, 6, 1, '#e0507a'], [2, 5, 4, 1, '#e0507a'], [3, 6, 2, 1, '#e0507a'], [1, 2, 1, 1, '#ffb3c6']],
+    tu_luyen: [
+      [3, 0, 2, 2, '#7fc8ff'],
+      [2, 2, 4, 2, '#ffe27a'],
+      [1, 4, 6, 2, '#ffe27a'],
+      [0, 6, 8, 2, '#3fa58a'],
+    ],
+    luyen_dan: [
+      [3, 0, 2, 1, '#c9c4ff'],
+      [1, 2, 6, 1, '#3e3228'],
+      [1, 3, 6, 4, '#7a5f44'],
+      [3, 5, 2, 1, '#ff8a3d'],
+      [1, 7, 1, 1, '#3e3228'],
+      [6, 7, 1, 1, '#3e3228'],
+    ],
+    du_ngoan: [
+      [0, 5, 8, 3, '#5fbf95'],
+      [2, 2, 2, 3, '#8fb3a6'],
+      [3, 1, 2, 2, '#8fb3a6'],
+      [5, 3, 2, 2, '#6b9a8a'],
+      [6, 0, 2, 2, '#fff6a8'],
+    ],
+    kiem_tien: [
+      [2, 1, 4, 6, '#ffcf6e'],
+      [1, 2, 6, 4, '#ffcf6e'],
+      [3, 3, 2, 2, '#8a6a1a'],
+      [2, 1, 1, 1, '#fff6d0'],
+    ],
+    tru_yeu: [
+      [6, 0, 2, 1, '#e6eaf6'],
+      [5, 1, 2, 1, '#e6eaf6'],
+      [4, 2, 2, 1, '#d9e6ff'],
+      [3, 3, 2, 1, '#d9e6ff'],
+      [1, 4, 3, 1, '#ffd36b'],
+      [2, 3, 1, 3, '#ffd36b'],
+      [0, 6, 2, 2, '#7a5a3a'],
+      [5, 5, 3, 3, '#e0402e'],
+      [6, 6, 1, 1, '#ffffff'],
+    ],
+    ket_duyen: [
+      [1, 1, 2, 1, '#e0507a'],
+      [5, 1, 2, 1, '#e0507a'],
+      [0, 2, 8, 2, '#e0507a'],
+      [1, 4, 6, 1, '#e0507a'],
+      [2, 5, 4, 1, '#e0507a'],
+      [3, 6, 2, 1, '#e0507a'],
+      [1, 2, 1, 1, '#ffb3c6'],
+    ],
   };
   return (
     <svg viewBox="0 0 8 8" width="22" height="22" shapeRendering="crispEdges" aria-hidden="true">
@@ -809,7 +1164,6 @@ export function FocusIcon({ f }: { f: Focus }) {
   );
 }
 
-
 /* ---------------- Chọn quái để trừ yêu ---------------- */
 export function HuntSheet({ c, onPick, onToggleFlee, onClose }: { c: Character; onPick: (id: string) => void; onToggleFlee: (v: boolean) => void; onClose: () => void }) {
   const L = combatLevel(c);
@@ -819,7 +1173,9 @@ export function HuntSheet({ c, onPick, onToggleFlee, onClose }: { c: Character; 
       <p style={{ marginTop: 0 }}>
         Cấp chiến đấu của bạn: <b style={{ fontWeight: 700, color: 'var(--red-d)' }}>Lv{L}</b> · Công {fmt(me.atk)} · Thủ {fmt(me.def)} · Máu {fmt(me.hp)}
       </p>
-      <p className="note" style={{ marginTop: 0 }}>Quái càng mạnh càng nhiều tu vi, nhưng thua là có thể bỏ mạng. Ngọc bội hộ thân đỡ được một lần.</p>
+      <p className="note" style={{ marginTop: 0 }}>
+        Quái càng mạnh càng nhiều tu vi, nhưng thua là có thể bỏ mạng. Ngọc bội hộ thân đỡ được một lần.
+      </p>
       <label className="toggle">
         <input type="checkbox" checked={c.autoFlee !== false} onChange={(e) => onToggleFlee(e.target.checked)} />
         Tự rút lui khi máu dưới 30%
@@ -836,8 +1192,16 @@ export function HuntSheet({ c, onPick, onToggleFlee, onClose }: { c: Character; 
                 {hidden ? <span style={{ fontSize: 26 }}>?</span> : <MonsterSprite m={m} size={42} tier={tierOf(c, m)} />}
               </span>
               <span>
-                {hidden ? '??? (chưa đủ tầm để biết)' : m.boss ? `BOSS ${m.boss === 'ta' ? 'Tà phái' : 'Chính phái'} · ${m.name}` : `${monsterName(c, m)} · Lv${elv}${elv > m.lv ? ` (gốc ${m.lv})` : ''}`}
-                {!hidden && m.human && !m.boss && <span className="badge" style={{ marginLeft: 4 }}>Cao thủ</span>}
+                {hidden
+                  ? '??? (chưa đủ tầm để biết)'
+                  : m.boss
+                    ? `BOSS ${m.boss === 'ta' ? 'Tà phái' : 'Chính phái'} · ${m.name}`
+                    : `${monsterName(c, m)} · Lv${elv}${elv > m.lv ? ` (gốc ${m.lv})` : ''}`}
+                {!hidden && m.human && !m.boss && (
+                  <span className="badge" style={{ marginLeft: 4 }}>
+                    Cao thủ
+                  </span>
+                )}
                 <small>{hidden ? m.place : m.boss ? `${m.place} · ${m.desc} Chưa từng ai thắng.` : `${m.place} · ~${fmt(killExp(c, m))} tu vi/con · ${c.kills?.[m.id] ?? 0} đã trảm`}</small>
                 {!hidden && !m.boss && ITEMS.some((i) => i.from?.includes(m.id)) && (
                   <small className="drop-line">

@@ -7,7 +7,7 @@ import MusicToggle from '@/components/MusicToggle';
 import { TribulationOverlay, Tutorial } from '@/components/Extras';
 import { BREAK_EVENT_ID } from '@/lib/game/events';
 import { endingOf } from '@/lib/game/endings';
-import { BagSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, HuntSheet, LogPanel, SEASONS, ShopSheet, Sheet, StageStrip, StatsPanel } from '@/components/Panels';
+import { BagSheet, BaoKhoSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, HuntSheet, LogPanel, SEASONS, ShopSheet, Sheet, StageStrip, StatsPanel } from '@/components/Panels';
 import Radar, { charAxes, wealthScore } from '@/components/Radar';
 import { giftOf } from '@/lib/game/gacha';
 import type { BattleView } from '@/components/Battle';
@@ -25,6 +25,7 @@ import { DUEL_INFO, DUEL_PER_YEAR, DUEL_TURNS, finishDuel, foeChar, foeStats, pi
 import { SOCIAL } from '@/lib/game/social';
 import { bountyClaim, khieuDone, loadSocial, payoutClaim } from '@/lib/social';
 import { GiangHoSheet, type GiangHoApi } from '@/components/GiangHo';
+import { HIDDEN_ITEMS, collectStats, markSeen, newFinds, unseen } from '@/lib/game/collect';
 import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, pickAmbush } from '@/lib/game/ambush';
 import { titleKey, addMemorial, displayName, fetchWorld, listMail, loadAll, saveLocal, saveMeta, saveRemote, sendMail, unreadMail, weeklyTitles, type Mail, type SaveState } from '@/lib/storage';
 import { updateCareer, bumpStreak, evalQuests, omenIs, qmark, questName, streakGift, vnDay } from '@/lib/game/hook';
@@ -35,7 +36,7 @@ import { useAuth } from '@/lib/useAuth';
 const SPEEDS = [1, 2, 4, 8, 16];
 /** màu chưởng lực theo con đường tu luyện */
 const qiColor = (c: Character) => (c.path ? PATHS[c.path].aura : c.daoTam <= -40 ? '#ff3448' : '#9ff0c8');
-type SheetName = null | 'shop' | 'bag' | 'bequan' | 'menu' | 'hunt' | 'info' | 'today' | 'mail';
+type SheetName = null | 'shop' | 'bag' | 'bequan' | 'menu' | 'hunt' | 'info' | 'today' | 'mail' | 'kho';
 
 type Battle = BattleView & { t: number; rest: number; ps: Fighter; ms: Fighter };
 
@@ -45,6 +46,8 @@ export default function PlayPage() {
   const [meta, setMeta] = useState<Meta | null>(null);
   const metaRef = useRef<Meta | null>(null);
   metaRef.current = meta;
+  const [find, setFind] = useState<{ id: string; name: string; n: number; rare: number } | null>(null); // vừa có đồ ẩn mới
+  const [bagTab, setBagTab] = useState<'tui' | 'kho'>('tui');
   const [, setFrame] = useState(0);
   const [fx, setFx] = useState<Fx[]>([]);
   const [sheet, setSheet] = useState<SheetName>(null);
@@ -56,7 +59,7 @@ export default function PlayPage() {
   const duelOpen = useRef(false);
   const [mail, setMail] = useState<Mail[] | null>(null); // hộp thư giang hồ
   const [unread, setUnread] = useState(0);
-  const [titles, setTitles] = useState<Record<string, string>>({});
+  const [titles, setTitles] = useState<Record<string, string[]>>({});
   const [questNews, setQuestNews] = useState<string[]>([]); // nhiệm vụ vừa xong ở đời trước
   const [achNews, setAchNews] = useState<string[]>([]); // thành tựu vừa đạt
 
@@ -89,6 +92,30 @@ export default function PlayPage() {
   const persist = useCallback(
     (forceRemote = false) => {
       trackMiles(charRef.current);
+      // Bảo khố: lần đầu có được đồ ẩn thì ghi lại mãi mãi và báo cho người chơi
+      const mm = metaRef.current;
+      const ch = charRef.current;
+      if (mm && ch && !ch.dead) {
+        const nf = newFinds(ch, mm.itemBook ?? []);
+        if (nf.length) {
+          const fresh = mm.itemBook !== undefined; // lần đầu có sổ thì ghi lặng lẽ những món đang có
+          const book = [...(mm.itemBook ?? []), ...nf];
+          const n = book.length;
+          if (fresh) {
+            qmark(ch, 'newItem', nf.length);
+            for (const id of nf) {
+              const it = HIDDEN_ITEMS.find((i) => i.id === id);
+              ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: `Lần đầu có được ${it?.name ?? 'một món đồ ẩn'}, đã ghi vào Bảo khố (${n}/${HIDDEN_ITEMS.length}).` });
+            }
+            const last = HIDDEN_ITEMS.find((i) => i.id === nf[nf.length - 1]);
+            if (last) setFind({ id: last.id, name: last.name, n, rare: last.rare ?? 0 });
+          }
+          const m2 = { ...mm, itemBook: book, seenBook: fresh ? mm.seenBook : { e: mm.seenBook?.e ?? 0, i: book.length } };
+          metaRef.current = m2;
+          setMeta(m2);
+          saveMeta(userRef.current, m2).catch(() => {});
+        }
+      }
       const s = snapshot();
       if (!s) return;
       saveLocal(userRef.current, s);
@@ -146,6 +173,12 @@ export default function PlayPage() {
       cancel = true;
     };
   }, [ready, user?.token]);
+
+  // vào màn chơi thì kiểm tra ngay đồ ẩn mới (Bảo khố)
+  useEffect(() => {
+    if (phase === 'play' && meta) persist();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, !!meta]);
 
   // thư giang hồ mới trong lúc chơi: kiểm tra mỗi 2 phút
   useEffect(() => {
@@ -956,6 +989,17 @@ export default function PlayPage() {
     };
   };
 
+  // đánh dấu đã xem mục mới trong Sổ Sinh Tử (e) hay Bảo khố (i)
+  function seeBook(w: 'e' | 'i') {
+    const m0 = metaRef.current;
+    if (!m0) return;
+    const m2 = markSeen(m0, w);
+    if (m2.seenBook?.e === m0.seenBook?.e && m2.seenBook?.i === m0.seenBook?.i) return;
+    metaRef.current = m2;
+    setMeta(m2);
+    saveMeta(user, m2).catch(() => {});
+  }
+
   const finishLife = async (epitaph: string, note = '', bury = false, extra: { prophecy?: { id: string; text: string } | null; legendName?: string | null } = {}) => {
     const c = charRef.current;
     if (!c || !meta) return;
@@ -1004,6 +1048,7 @@ export default function PlayPage() {
         origin: c.origin,
         ascended: c.ascended,
         endTag: c.endTag,
+        ending: endingOf(c).id,
       },
     }).catch(() => {});
     const m: Meta = {
@@ -1098,7 +1143,16 @@ export default function PlayPage() {
           </p>
         )}
         {sheet === 'mail' && mail && giangHo() && <GiangHoSheet mail={mail} api={giangHo()!} onClose={() => setSheet(null)} />}
-        <BirthPanel meta={meta} onBorn={born} />
+        {sheet === 'kho' && (
+          <BaoKhoSheet
+            book={meta.itemBook ?? []}
+            onClose={() => {
+              seeBook('i');
+              setSheet(null);
+            }}
+          />
+        )}
+        <BirthPanel meta={meta} onBorn={born} onKho={() => setSheet('kho')} onSoSinhTu={() => seeBook('e')} />
       </main>
     );
   }
@@ -1108,6 +1162,9 @@ export default function PlayPage() {
   const paused = !running || !!pending || sheet !== null || c.dead;
   const season = seasonOf(c.age);
   const omenIcon = omenToday().icon;
+  const stats = collectStats(meta);
+  const nb = unseen(meta);
+  const newBook = nb.endings || nb.items;
   const yearPct = (c.age % 1) * 100;
 
   return (
@@ -1143,8 +1200,8 @@ export default function PlayPage() {
               </button>
             )}
             <MusicToggle battle={!!duelRef.current || !!ambushRef.current || (c.focus === 'tru_yeu' && c.age >= 10 && !!c.huntTarget && !c.dead)} />
-            <button className="icon-btn" onClick={() => setSheet('menu')} aria-label="Mở menu">
-              ≡
+            <button className="icon-btn menu-btn" onClick={() => setSheet('menu')} aria-label={`Mở menu${newBook ? ', có mục mới trong Sổ Sinh Tử hoặc Bảo khố' : ''}`}>
+              ≡{newBook && <span className="dot" aria-hidden="true" />}
             </button>
           </div>
         </div>
@@ -1201,7 +1258,14 @@ export default function PlayPage() {
               <button className="btn btn-dark" onClick={() => setSheet('shop')} disabled={c.dead}>
                 Phường thị
               </button>
-              <button className="btn btn-dark" onClick={() => setSheet('bag')} disabled={c.dead}>
+              <button
+                className="btn btn-dark"
+                onClick={() => {
+                  setBagTab('tui');
+                  setSheet('bag');
+                }}
+                disabled={c.dead}
+              >
                 Túi đồ
               </button>
               <button className="btn btn-jade" onClick={() => setSheet('bequan')} disabled={c.dead}>
@@ -1213,7 +1277,7 @@ export default function PlayPage() {
       </footer>
 
       {sheet === 'shop' && <ShopSheet c={c} onBuyItem={buyItem} onBuyPill={buyPill} onClose={() => setSheet(null)} />}
-      {sheet === 'bag' && <BagSheet c={c} onEquip={equip} onUsePill={takePill} onClose={() => setSheet(null)} />}
+      {sheet === 'bag' && <BagSheet c={c} book={meta.itemBook ?? []} startTab={bagTab} onSeen={() => seeBook('i')} onEquip={equip} onUsePill={takePill} onClose={() => setSheet(null)} />}
       {sheet === 'bequan' && <BeQuanSheet c={c} onGo={beQuan} onClose={() => setSheet(null)} />}
       {sheet === 'info' && (
         <Sheet title={c.name} onClose={() => setSheet(null)}>
@@ -1242,9 +1306,29 @@ export default function PlayPage() {
             <Link className="btn" href="/nghia-trang" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
               Nghĩa trang
             </Link>
-            <Link className="btn" href="/so-sinh-tu" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
-              Sổ Sinh Tử
+            <Link
+              className="btn"
+              href="/so-sinh-tu"
+              onClick={() => {
+                seeBook('e');
+                persist(true);
+              }}
+              style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}
+            >
+              Sổ Sinh Tử {stats.endings}/{stats.endingsTotal}
+              {nb.endings && <span className="new-tag">mới</span>}
             </Link>
+            <button
+              className="btn"
+              onClick={() => {
+                setBagTab('kho');
+                setSheet('bag');
+              }}
+              disabled={c.dead}
+            >
+              Bảo khố {stats.items}/{stats.itemsTotal}
+              {nb.items && <span className="new-tag">mới</span>}
+            </button>
             <button
               className="btn"
               onClick={() => {
@@ -1286,6 +1370,24 @@ export default function PlayPage() {
             } catch {}
           }}
         />
+      )}
+      {find && (
+        <button
+          key={find.id + find.n}
+          className={`find-toast r${find.rare}`}
+          onAnimationEnd={() => setFind(null)}
+          onClick={() => {
+            setFind(null);
+            setBagTab('kho');
+            setSheet('bag');
+          }}
+        >
+          <small>Bảo khố +1</small>
+          <b>{find.name}</b>
+          <small>
+            {find.n}/{HIDDEN_ITEMS.length} · chạm để xem
+          </small>
+        </button>
       )}
       {duelWarn && !c.dead && (
         <DuelWarning
