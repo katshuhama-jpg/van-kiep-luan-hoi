@@ -8,7 +8,7 @@ import { TribulationOverlay } from '@/components/Extras';
 import { BREAK_EVENT_ID } from '@/lib/game/events';
 import { endingOf } from '@/lib/game/endings';
 import { BagSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, HuntSheet, LogPanel, SEASONS, ShopSheet, Sheet, StageStrip, StatsPanel } from '@/components/Panels';
-import Radar, { charAxes } from '@/components/Radar';
+import Radar, { charAxes, wealthScore } from '@/components/Radar';
 import { giftOf } from '@/lib/game/gacha';
 import type { BattleView } from '@/components/Battle';
 import { MONSTERS, effLv, fleeChance, hit, killExp, killReward, loseFight, monsterName, monsterStats, playerStats, tierOf, type Fighter } from '@/lib/game/combat';
@@ -575,7 +575,7 @@ export default function PlayPage() {
       {sheet === 'info' && (
         <Sheet title={c.name} onClose={() => setSheet(null)}>
           <div style={{ display: 'grid', placeItems: 'center' }}>
-            <Radar axes={charAxes(c.stats, c.lifespan)} size={250} color={c.daoTam <= -30 ? '#a8303a' : c.daoTam >= 30 ? '#3d6fb0' : '#2f6b5a'} />
+            <Radar axes={charAxes(c.stats, c.lifespan, wealthScore(c.linhThach, c.income))} size={250} color={c.daoTam <= -30 ? '#a8303a' : c.daoTam >= 30 ? '#3d6fb0' : '#2f6b5a'} />
           </div>
           <p className="note" style={{ textAlign: 'center', marginTop: 0 }}>
             {c.linhCan} · {c.origin} · {c.birthPlace}

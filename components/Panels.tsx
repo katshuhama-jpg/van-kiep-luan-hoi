@@ -57,7 +57,7 @@ export function StatsPanel({ c }: { c: Character }) {
         <Bar label="Tâm cảnh" value={`${s.tamCanh}`} pct={s.tamCanh / 100} color="#c9962e" />
         <Bar label="Tâm ma" value={`${s.tamMa}`} pct={s.tamMa / 100} color="#5a1a2a" />
         <Bar label="Ngộ tính" value={`${s.ngoTinh}`} pct={s.ngoTinh / 100} color="#5b6fb0" />
-        <Bar label="Khí vận" value={`${s.khiVan}`} pct={s.khiVan / 100} color="#7a5ab0" />
+        <Bar label="May mắn (khí vận)" value={`${s.khiVan}`} pct={s.khiVan / 100} color="#7a5ab0" />
         <div className="dao">
           <div className="row">
             <span style={{ color: 'var(--chinh)' }}>Chính</span>

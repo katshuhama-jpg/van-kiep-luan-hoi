@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Sprite from './Sprite';
-import Radar, { charAxes } from './Radar';
+import Radar, { charAxes, wealthScore } from './Radar';
 import { GIFTS, RARE_NAME, applyGifts, drawGifts, giftOf } from '@/lib/game/gacha';
 import { RARE_COLOR, type Ending } from '@/lib/game/endings';
 import { PATHS, realmLabel } from '@/lib/game/data';
@@ -67,7 +67,7 @@ function GiftRadar({ picked }: { picked: string[] }) {
   const base = { sucKhoe: 80, tamCanh: 50, ngoTinh: 45, khiVan: 45, tamMa: 5 };
   const dummy = { stats: { ...base }, lifeMul: 1, lifespan: 70, linhCanMul: 1, linhCan: '', linhThach: 100, inventory: [] as string[], equipped: {}, cultivation: 0, daoTam: 0 } as unknown as Character;
   applyGifts(dummy, picked);
-  const axes = charAxes(dummy.stats, dummy.lifespan, { s: base, life: 70 });
+  const axes = charAxes(dummy.stats, dummy.lifespan, wealthScore(dummy.linhThach), { s: base, life: 70, wealth: wealthScore(100) });
   return (
     <div className="gift-radar">
       <Radar axes={axes} size={230} color={picked.length ? '#b8432f' : '#8a7a66'} />

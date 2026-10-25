@@ -38,7 +38,7 @@ export default function Radar({ axes, size = 220, color = '#b8432f' }: { axes: R
         const [x, y] = pt(i, 140);
         const d = a.base !== undefined ? Math.round(a.value - a.base) : 0;
         return (
-          <text key={'t' + i} x={x} y={y} textAnchor="middle" dominantBaseline="middle" fontSize="7.5" fill="#3b2a1a" fontFamily="VT323, monospace">
+          <text key={'t' + i} x={x} y={y} textAnchor="middle" dominantBaseline="middle" fontSize="7" fill="#3b2a1a" fontFamily="VT323, monospace">
             {a.label} {Math.round(a.value)}
             {d !== 0 && (
               <tspan fill={d > 0 ? '#2f6b5a' : '#a8303a'}>
@@ -54,15 +54,24 @@ export default function Radar({ axes, size = 220, color = '#b8432f' }: { axes: R
   );
 }
 
+/** Điểm giàu sang 0-100 theo thang log: 0 linh thạch = 0, khoảng 20.000 = 100 */
+export function wealthScore(money: number, income = 0): number {
+  const w = Math.max(0, money + income * 10);
+  return Math.max(0, Math.min(100, (Math.log10(w + 1) / Math.log10(20000)) * 100));
+}
+
+type S = { sucKhoe: number; tamCanh: number; ngoTinh: number; khiVan: number; tamMa: number };
+
 /** Trục chỉ số chuẩn cho một nhân vật */
-export function charAxes(s: { sucKhoe: number; tamCanh: number; ngoTinh: number; khiVan: number; tamMa: number }, life: number, base?: { s: typeof s; life: number }): RadarAxis[] {
+export function charAxes(s: S, life: number, wealth: number, base?: { s: S; life: number; wealth: number }): RadarAxis[] {
   // thọ: số năm sống được so với mức tối đa 150
   const lifeV = (l: number) => Math.max(0, Math.min(100, (l / 150) * 100));
   return [
     { label: 'Khỏe', value: s.sucKhoe, base: base?.s.sucKhoe },
     { label: 'Tâm', value: s.tamCanh, base: base?.s.tamCanh },
     { label: 'Ngộ', value: s.ngoTinh, base: base?.s.ngoTinh },
-    { label: 'Vận', value: s.khiVan, base: base?.s.khiVan },
+    { label: 'May mắn', value: s.khiVan, base: base?.s.khiVan },
+    { label: 'Giàu sang', value: wealth, base: base?.wealth },
     { label: 'Định', value: 100 - s.tamMa, base: base ? 100 - base.s.tamMa : undefined },
     { label: 'Thọ', value: lifeV(life), base: base ? lifeV(base.life) : undefined },
   ];
