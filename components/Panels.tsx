@@ -482,14 +482,27 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
         </p>
       )}
 
+      <GachaPanel
+        phuc={left}
+        busy={busy}
+        onBorn={() => onBorn(picked, yearSec, gifts, gSpent, base)}
+        onChange={(g, s, b) => {
+          setGifts(g);
+          setGSpent(s);
+          setBase(b);
+        }}
+      />
+
       <TodayCard meta={meta} compact />
 
       {!first && (
-        <section className="panel talent-shop">
-          <h2>
+        <details className="more talent-shop">
+          <summary>
             Tiêu phúc duyên <span className="jade">({left} phúc)</span>
-          </h2>
-          <p className="note" style={{ marginTop: 0 }}>Phúc duyên chỉ có ích khi tiêu. Chọn phúc lợi cho kiếp này rồi bấm Đầu thai.</p>
+            {picked.length > 0 ? ` · đã chọn ${picked.length}` : ''}
+          </summary>
+          <div className="more-body">
+          <p className="note" style={{ marginTop: 0 }}>Chọn phúc lợi cho kiếp này rồi bấm Đầu thai.</p>
           {meta.phucDuyen <= 0 && <p className="note" style={{ margin: 0 }}>Chưa có phúc duyên. Sống tốt một kiếp, chết đi sẽ được phúc duyên để mua ở đây.</p>}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {TALENTS.map((t) => {
@@ -507,19 +520,10 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
               );
             })}
           </div>
-        </section>
+          </div>
+        </details>
       )}
 
-      <GachaPanel
-        phuc={left}
-        busy={busy}
-        onBorn={() => onBorn(picked, yearSec, gifts, gSpent, base)}
-        onChange={(g, s, b) => {
-          setGifts(g);
-          setGSpent(s);
-          setBase(b);
-        }}
-      />
 
       <details className="more">
         <summary>Tùy chỉnh thêm (không bắt buộc)</summary>
