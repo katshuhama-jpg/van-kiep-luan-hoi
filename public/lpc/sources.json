@@ -798,5 +798,175 @@
 "slash": "facial/patches/eyepatch/ambi/adult/slash/black.png",
 "spellcast": "facial/patches/eyepatch/ambi/adult/spellcast/black.png",
 "hurt": "facial/patches/eyepatch/ambi/adult/hurt/black.png"
+},
+"non_la": {
+"walk": "hat/helmet/kettle/adult/walk.png",
+"idle": "hat/helmet/kettle/adult/idle.png",
+"slash": "hat/helmet/kettle/adult/slash.png",
+"spellcast": "hat/helmet/kettle/adult/spellcast.png",
+"hurt": "hat/helmet/kettle/adult/hurt.png"
+},
+"bandana2": {
+"walk": "hat/cloth/bandana2/adult/walk.png",
+"idle": "hat/cloth/bandana2/adult/idle.png",
+"slash": "hat/cloth/bandana2/adult/slash.png",
+"spellcast": "hat/cloth/bandana2/adult/spellcast.png",
+"hurt": "hat/cloth/bandana2/adult/hurt.png"
+},
+"leather_cap": {
+"walk": "hat/cloth/leather_cap/adult/walk/base.png",
+"idle": "hat/cloth/leather_cap/adult/idle/base.png",
+"slash": "hat/cloth/leather_cap/adult/slash/base.png",
+"spellcast": "hat/cloth/leather_cap/adult/spellcast/base.png",
+"hurt": "hat/cloth/leather_cap/adult/hurt/base.png"
+},
+"hood_f": {
+"walk": "hat/cloth/hood/adult/walk.png",
+"idle": "hat/cloth/hood/adult/idle.png",
+"slash": "hat/cloth/hood/adult/slash.png",
+"spellcast": "hat/cloth/hood/adult/spellcast.png",
+"hurt": "hat/cloth/hood/adult/hurt.png"
+},
+"mask": {
+"walk": "facial/masks/plain/adult/walk/white.png",
+"idle": "facial/masks/plain/adult/idle/white.png",
+"slash": "facial/masks/plain/adult/slash/white.png",
+"spellcast": "facial/masks/plain/adult/spellcast/white.png",
+"hurt": "facial/masks/plain/adult/hurt/white.png"
+},
+"ear_stud": {
+"walk": "facial/earrings/stud/female/walk/silver.png",
+"slash": "facial/earrings/stud/female/slash/silver.png",
+"spellcast": "facial/earrings/stud/female/spellcast/silver.png",
+"hurt": "facial/earrings/stud/female/hurt/silver.png"
+},
+"ear_moon": {
+"walk": "facial/earrings/moon/female/walk/gold.png",
+"slash": "facial/earrings/moon/female/slash/gold.png",
+"spellcast": "facial/earrings/moon/female/spellcast/gold.png",
+"hurt": "facial/earrings/moon/female/hurt/gold.png"
+},
+"ear_pear": {
+"walk": "facial/earrings/pear/female/walk/green.png",
+"slash": "facial/earrings/pear/female/slash/green.png",
+"spellcast": "facial/earrings/pear/female/spellcast/green.png",
+"hurt": "facial/earrings/pear/female/hurt/green.png"
+},
+"amulet": {
+"walk": "neck/amulet/dangle/female/walk/brass_green.png",
+"idle": "neck/amulet/dangle/female/idle/brass_green.png",
+"slash": "neck/amulet/dangle/female/slash/brass_green.png",
+"spellcast": "neck/amulet/dangle/female/spellcast/brass_green.png",
+"hurt": "neck/amulet/dangle/female/hurt/brass_green.png"
+},
+"charm": {
+"walk": "neck/charm/box/female/walk/gold.png",
+"idle": "neck/charm/box/female/idle/gold.png",
+"slash": "neck/charm/box/female/slash/gold.png",
+"spellcast": "neck/charm/box/female/spellcast/gold.png",
+"hurt": "neck/charm/box/female/hurt/gold.png"
+},
+"gem": {
+"walk": "neck/gem/emerald/female/walk/green.png",
+"idle": "neck/gem/emerald/female/idle/green.png",
+"slash": "neck/gem/emerald/female/slash/green.png",
+"spellcast": "neck/gem/emerald/female/spellcast/green.png",
+"hurt": "neck/gem/emerald/female/hurt/green.png"
+},
+"beads": {
+"walk": "neck/necklace/beaded_large/female/walk/bronze.png",
+"idle": "neck/necklace/beaded_large/female/idle/bronze.png",
+"slash": "neck/necklace/beaded_large/female/slash/bronze.png",
+"spellcast": "neck/necklace/beaded_large/female/spellcast/bronze.png",
+"hurt": "neck/necklace/beaded_large/female/hurt/bronze.png"
+},
+"scarf": {
+"walk": "neck/scarf/walk/white.png",
+"idle": "neck/scarf/idle/white.png",
+"slash": "neck/scarf/slash/white.png",
+"spellcast": "neck/scarf/spellcast/white.png",
+"hurt": "neck/scarf/hurt/white.png"
+},
+"backpack": {
+"walk": "backpack/backpack/female/walk/leather.png",
+"slash": "backpack/backpack/female/slash/leather.png",
+"spellcast": "backpack/backpack/female/spellcast/leather.png",
+"hurt": "backpack/backpack/female/hurt/leather.png"
+},
+"quiver": {
+"walk": "quiver/walk/quiver.png",
+"slash": "quiver/slash/quiver.png",
+"spellcast": "quiver/spellcast/quiver.png",
+"hurt": "quiver/hurt/quiver.png"
+},
+"band_thick": {
+"walk": "hat/headband/thick/adult/walk.png",
+"idle": "hat/headband/thick/adult/idle.png",
+"slash": "hat/headband/thick/adult/slash.png",
+"spellcast": "hat/headband/thick/adult/spellcast.png",
+"hurt": "hat/headband/thick/adult/hurt.png"
+},
+"brow_thin": {
+"walk": "eyes/eyebrows/thin/adult/walk.png",
+"idle": "eyes/eyebrows/thin/adult/idle.png",
+"slash": "eyes/eyebrows/thin/adult/slash.png",
+"spellcast": "eyes/eyebrows/thin/adult/spellcast.png",
+"hurt": "eyes/eyebrows/thin/adult/hurt.png"
+},
+"brow_thick": {
+"walk": "eyes/eyebrows/thick/adult/walk.png",
+"idle": "eyes/eyebrows/thick/adult/idle.png",
+"slash": "eyes/eyebrows/thick/adult/slash.png",
+"spellcast": "eyes/eyebrows/thick/adult/spellcast.png",
+"hurt": "eyes/eyebrows/thick/adult/hurt.png"
+},
+"nose_button": {
+"walk": "head/nose/button/adult/walk.png",
+"idle": "head/nose/button/adult/idle.png",
+"slash": "head/nose/button/adult/slash.png",
+"spellcast": "head/nose/button/adult/spellcast.png",
+"hurt": "head/nose/button/adult/hurt.png"
+},
+"nose_straight": {
+"walk": "head/nose/straight/adult/walk.png",
+"idle": "head/nose/straight/adult/idle.png",
+"slash": "head/nose/straight/adult/slash.png",
+"spellcast": "head/nose/straight/adult/spellcast.png",
+"hurt": "head/nose/straight/adult/hurt.png"
+},
+"hair_long_straight_fg": {
+"walk": "hair/long_straight/adult/walk.png",
+"idle": "hair/long_straight/adult/idle.png",
+"slash": "hair/long_straight/adult/slash.png",
+"spellcast": "hair/long_straight/adult/spellcast.png",
+"hurt": "hair/long_straight/adult/hurt.png"
+},
+"hair_curtains_long_fg": {
+"walk": "hair/curtains_long/adult/walk.png",
+"idle": "hair/curtains_long/adult/idle.png",
+"slash": "hair/curtains_long/adult/slash.png",
+"spellcast": "hair/curtains_long/adult/spellcast.png",
+"hurt": "hair/curtains_long/adult/hurt.png"
+},
+"hair_loose_fg": {
+"walk": "hair/loose/adult/walk.png",
+"idle": "hair/loose/adult/idle.png",
+"slash": "hair/loose/adult/slash.png",
+"spellcast": "hair/loose/adult/spellcast.png",
+"hurt": "hair/loose/adult/hurt.png"
+},
+"hair_shoulderl_bg": {
+"walk": "hair/shoulderl/adult/bg/walk.png",
+"idle": "hair/shoulderl/adult/bg/idle.png",
+"slash": "hair/shoulderl/adult/bg/slash.png",
+"spellcast": "hair/shoulderl/adult/bg/spellcast.png",
+"hurt": "hair/shoulderl/adult/bg/hurt.png"
+},
+"hair_shoulderl_fg": {
+"walk": "hair/shoulderl/adult/fg/walk.png",
+"idle": "hair/shoulderl/adult/fg/idle.png",
+"slash": "hair/shoulderl/adult/fg/slash.png",
+"spellcast": "hair/shoulderl/adult/fg/spellcast.png",
+"hurt": "hair/shoulderl/adult/fg/hurt.png"
 }
 }

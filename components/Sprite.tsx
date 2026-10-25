@@ -365,7 +365,7 @@ function robeOf(l: Look): Robe {
 // 3 kiểu đầu giữ nguyên thứ tự cũ để nhân vật đang chơi không đổi tóc
 export const HAIR_LPC = {
   nam: ['high_ponytail', 'long_tied', 'xlong', 'long_messy', 'ponytail', 'long_band', 'relm_xlong', 'unkempt', 'long_center_part'],
-  nu: ['xlong', 'bunches', 'high_ponytail', 'braid', 'princess', 'single', 'half_up', 'bangs_bun', 'xlong_wavy', 'pigtails'],
+  nu: ['xlong', 'bunches', 'high_ponytail', 'braid', 'princess', 'single', 'half_up', 'bangs_bun', 'xlong_wavy', 'pigtails', 'long_straight', 'curtains_long', 'long_center_part', 'loose', 'shoulderl', 'relm_xlong'],
 } as const;
 
 /** Nét riêng của từng người: màu da, khuôn mặt, râu, đồ trang sức. Suy ra từ hạt giống nên luôn cố định. */
@@ -374,23 +374,79 @@ const BEARD_YOUNG = [null, null, null, 'stubble', 'stache', 'beard_trim', 'stach
 const BEARD_MID = [null, 'beard_trim', 'beard_med', 'stache', 'stache_hb', 'beard'];
 // về già: 70% để râu, râu bạc theo tóc
 const BEARD_OLD = ['beard', 'beard', 'beard', 'beard_med', 'beard_trim', 'stache_hb', 'stache', null, null, null];
+/** Phụ kiện trên đầu và ở cổ/tai, mỗi chỗ tối đa một món. [lớp ảnh, trọng số] */
+type Acc = { key: string | null; w: number; tint?: 'trim' | 'dark' | 'alt' | string };
+const HEAD_ACC: Record<'nam' | 'nu', Acc[]> = {
+  nam: [
+    { key: null, w: 44 },
+    { key: 'headband', w: 11, tint: 'trim' }, // khăn buộc trán
+    { key: 'non_la', w: 8, tint: '#ecd28c' }, // nón lá
+    { key: 'mask', w: 4, tint: '#2a2a33' }, // khăn đen của thích khách
+    { key: 'bandana2', w: 8, tint: 'trim' }, // khăn trùm đầu
+    { key: 'leather_cap', w: 6 }, // mũ da
+    { key: 'band_thick', w: 8, tint: 'trim' }, // đai trán dày
+    { key: 'hood_f', w: 4, tint: 'dark' }, // mũ trùm áo choàng
+    { key: 'eyepatch', w: 3 }, // bịt một mắt
+  ],
+  nu: [
+    { key: null, w: 42 },
+    { key: 'headband', w: 9, tint: 'trim' },
+    { key: 'non_la', w: 7, tint: '#ecd28c' },
+    { key: 'hairtie', w: 9, tint: '#c0303a' }, // dây buộc tóc đỏ
+    { key: 'band_thick', w: 6, tint: 'trim' },
+    { key: 'hood_f', w: 6, tint: 'dark' },
+    { key: 'bandana2', w: 6, tint: 'alt' },
+    { key: 'eyepatch', w: 2 },
+  ],
+};
+const NECK_ACC: Record<'nam' | 'nu', Acc[]> = {
+  nam: [
+    { key: null, w: 44 },
+    { key: 'ear_stud', w: 8 }, // khuyên tai
+    { key: 'amulet', w: 9 }, // bùa hộ mệnh
+    { key: 'beads', w: 10 }, // chuỗi hạt
+    { key: 'scarf', w: 9, tint: 'alt' }, // khăn quàng cổ
+    { key: 'backpack', w: 10 }, // tay nải
+    { key: 'quiver', w: 10 }, // ống tên sau lưng
+  ],
+  nu: [
+    { key: null, w: 38 },
+    { key: 'earrings', w: 8, tint: '#e0b02a' }, // hoa tai vàng
+    { key: 'ear_moon', w: 8 }, // hoa tai trăng khuyết
+    { key: 'ear_pear', w: 8 }, // hoa tai giọt ngọc
+    { key: 'ear_stud', w: 7 }, // khuyên tai nhỏ
+    { key: 'gem', w: 9 }, // dây chuyền ngọc
+    { key: 'charm', w: 8 }, // bùa hộ mệnh
+    { key: 'scarf', w: 9, tint: 'alt' }, // khăn quàng
+    { key: 'beads', w: 5 }, // chuỗi hạt
+  ],
+};
+const BROWS = [null, 'brow_thin', 'brow_thick'];
+const NOSES = [null, 'nose_button', 'nose_straight'];
+
 export function featOf(l: Look) {
   let x = l.seed >>> 0 || 1;
   const r = (n: number) => {
     x = (Math.imul(x ^ (x >>> 15), 2246822507) + 0x9e3779b9) >>> 0;
     return x % n;
   };
+  const pickW = (list: Acc[]) => {
+    let v = r(list.reduce((t, a) => t + a.w, 0));
+    for (const a of list) if ((v -= a.w) < 0) return a;
+    return list[0];
+  };
+  const g = l.gender === 'nam' ? 'nam' : 'nu';
   const skin = SKIN[r(SKIN.length)];
-  const face = r(10); // 0-6 thường, 7-8 gầy, 9 mập (nam)
+  const face = r(10); // 0-6 thường, 7-8 gầy, 9 đầy đặn (nam)
   const beard = [BEARD_YOUNG, BEARD_MID, BEARD_OLD][l.aging][r(10)] ?? null;
-  const acc = r(100);
   return {
     skin,
-    head: l.gender === 'nam' ? (face >= 9 ? 'head_mp' : face >= 7 ? 'head_mg' : null) : null,
-    beard: l.gender === 'nam' ? beard : null,
-    headband: acc < 14,
-    earrings: l.gender !== 'nam' && acc >= 60 && acc < 82,
-    eyepatch: acc >= 97,
+    head: g === 'nam' ? (face >= 9 ? 'head_mp' : face >= 7 ? 'head_mg' : null) : null,
+    beard: g === 'nam' ? beard : null,
+    brow: BROWS[r(3)],
+    nose: NOSES[r(3)],
+    hat: pickW(HEAD_ACC[g]),
+    neck: pickW(NECK_ACC[g]),
   };
 }
 const HAIR_CHILD = ['relm_short', 'parted_side_bangs', 'wavy'];
@@ -461,8 +517,12 @@ export function lpcLayers(c: Character, hideWeapon = false): Layer[] {
   if (l.yeu) out.push({ key: 'tail_bg' });
   if (!bald) out.push({ key: `hair_${hs}_bg`, tint: hair });
   if (w.bg && showW) out.push({ key: w.bg, tint: w.tint });
+  const accTint = (a: Acc) => (a.tint === 'trim' ? robe.trim : a.tint === 'dark' ? robe.dark : a.tint === 'alt' ? robe.alt : a.tint);
+  // tay nải, ống tên đeo sau lưng
+  if (ft.neck.key === 'backpack' || ft.neck.key === 'quiver') out.push({ key: ft.neck.key, tint: accTint(ft.neck) });
   out.push({ key: 'body_adult', tint: ft.skin ?? undefined }, { key: head, tint: ft.skin ?? undefined }, { key: `eyes_${eye}` });
-  if (ft.eyepatch) out.push({ key: 'eyepatch' });
+  if (ft.nose && !elder) out.push({ key: ft.nose, tint: ft.skin ?? undefined });
+  if (ft.brow) out.push({ key: ft.brow, tint: hair });
   out.push({ key: 'pants', tint: robe.dark }, { key: 'shoes' });
   // thân áo theo loại đồ
   if (deco === 'giap') {
@@ -481,8 +541,12 @@ export function lpcLayers(c: Character, hideWeapon = false): Layer[] {
   // râu nhuộm theo màu tóc hiện tại nên cũng bạc dần khi già
   if (ft.beard) out.push({ key: ft.beard, tint: hair });
   if (!bald) out.push({ key: `hair_${hs}_fg`, tint: hair });
-  if (ft.headband && !bald && realm < 4) out.push({ key: 'headband', tint: robe.trim });
-  if (ft.earrings) out.push({ key: 'earrings', tint: '#e0b02a' });
+  // phụ kiện cổ, tai
+  if (ft.neck.key && ft.neck.key !== 'backpack' && ft.neck.key !== 'quiver') out.push({ key: ft.neck.key, tint: accTint(ft.neck) });
+  // phụ kiện đầu: khi đã đội mũ miện (Nguyên Anh trở lên) thì bỏ nón, khăn; che mặt, bịt mắt vẫn giữ
+  const hk = ft.hat.key;
+  const faceAcc = hk === 'mask' || hk === 'eyepatch';
+  if (hk && (faceAcc || (realm < 4 && !(bald && hk === 'hairtie')))) out.push({ key: hk, tint: accTint(ft.hat) });
   // mũ miện theo cảnh giới (Phật tu đầu trọc, chỉ có hào quang)
   if (!bald) {
     if (realm >= 7) out.push({ key: 'crown_gold' });
