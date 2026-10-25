@@ -145,6 +145,11 @@ export function fmt(n: number) {
  * Lựa chọn chí mạng: có tỉ lệ chết ngay. Khí vận cao giảm nhẹ rủi ro,
  * ngọc bội hộ thân đỡ được một lần.
  */
+/** trẻ con và thiếu niên được trời thương: dưới 13 tuổi rủi ro chỉ còn 35%, 13-17 tuổi còn 65% */
+function youngMul(age: number): number {
+  return age < 13 ? 0.35 : age < 18 ? 0.65 : 1;
+}
+
 export function fatal(c: Character, ctx: EffectCtx, chance: number, cause: string): string | null {
   riskMeter.n++;
   // trẻ con được trời thương hơn một chút
@@ -153,7 +158,7 @@ export function fatal(c: Character, ctx: EffectCtx, chance: number, cause: strin
   const hard = 1;
   // khí vận chỉ giảm rủi ro theo tỉ lệ (tối đa 20%), không còn trừ thẳng làm hiểm cảnh nhỏ gần như vô hại
   const luckMul = 1 - clamp((c.stats.khiVan - 50) / 250, -0.2, 0.2);
-  const p = clamp(chance * hard * tough * (c.age < 13 && chance < 1 ? 0.6 : 1) * (chance < 1 ? luckMul : 1), 0.01, chance >= 1 ? 1 : 0.95);
+  const p = clamp(chance * hard * tough * (chance < 1 ? youngMul(c.age) : 1) * (chance < 1 ? luckMul : 1), 0.01, chance >= 1 ? 1 : 0.95);
   if (ctx.rnd() >= p) return null;
   if (c.equipped.phu_kien === 'ngoc_boi') {
     c.equipped.phu_kien = undefined;

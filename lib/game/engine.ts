@@ -405,7 +405,8 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
 
   // ---- Trẻ con chết yểu ----
   if (age >= 1 && age <= 12 && !opts.closed) {
-    const risk = 0.003 + (tier.id === 0 ? 0.004 : tier.id === 1 ? 0.0015 : 0) + (c.originId === 'the_gia' ? 0.002 : 0);
+    // chết yểu ngẫu nhiên: giảm còn khoảng một nửa (người chơi chưa kịp tu đã chết thì rất nản)
+    const risk = 0.0015 + (tier.id === 0 ? 0.002 : tier.id === 1 ? 0.0008 : 0) + (c.originId === 'the_gia' ? 0.001 : 0);
     if (rnd() < risk) {
       const causes = [
         `Một trận sốt cao cướp đi bạn khi mới ${age} tuổi.`,

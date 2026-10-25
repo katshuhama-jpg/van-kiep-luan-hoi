@@ -1,4 +1,4 @@
-import { MONSTERS, combatLevel, effLv, killExp, killReward, monsterStats, type Fighter, type Monster } from './combat';
+import { MONSTERS, combatLevel, effLv, growth, killExp, killReward, monsterStats, type Fighter, type Monster } from './combat';
 import { addCult, fatal, stat } from './helpers';
 import type { Character, EffectCtx } from './types';
 
@@ -11,30 +11,38 @@ import type { Character, EffectCtx } from './types';
 export const AMBUSH_TURNS = 3;
 /** xác suất bị chặn đường mỗi năm (khi không đi trừ yêu) */
 export const AMBUSH_PER_YEAR = 0.15;
-/** quái chặn đường là con lẻ, máu ít hơn quái trong ổ */
-const AMBUSH_HP = 0.35;
+/** quái chặn đường là con lẻ, máu ít hơn quái trong ổ (trước 0.35, người chơi thắng quá dễ) */
+const AMBUSH_HP = 0.6;
 
 export type AmbushTier = 'kem' | 'bang' | 'hon';
 
-function nearest(list: Monster[], target: number, c: Character): Monster[] {
-  return [...list].sort((a, b) => Math.abs(effLv(c, a) - target) - Math.abs(effLv(c, b) - target));
-}
-
+/**
+ * Chọn quái chặn đường.
+ * - Cấp quái tính theo cấp người chơi chứ không theo cấp gốc của loài, nên mỗi lần một khác:
+ *   kém cấp: thấp hơn 2-4 cấp; ngang cấp: lệch -1 đến +1; hơn cấp: cao hơn 2-4 cấp.
+ * - Loài quái chọn trong các loài có cấp gốc gần đó (±8), bỏ qua 3 loài vừa gặp gần nhất.
+ * Trả về bản sao quái đã chỉnh cấp, để tu vi, tên, chỉ số đều theo cấp mới.
+ */
 export function pickAmbush(c: Character, rnd: () => number): { m: Monster; tier: AmbushTier } {
   const pool = MONSTERS.filter((m) => !m.boss);
   const cl = combatLevel(c);
   const r = rnd();
   const tier: AmbushTier = r < 0.3 ? 'kem' : r < 0.9 ? 'bang' : 'hon';
-  let cands: Monster[];
-  if (tier === 'kem') cands = pool.filter((m) => effLv(c, m) < cl - 1 && effLv(c, m) >= cl - 6);
-  else if (tier === 'hon') cands = pool.filter((m) => effLv(c, m) >= cl + 2 && effLv(c, m) <= cl + 4);
-  else cands = pool.filter((m) => Math.abs(effLv(c, m) - cl) <= 1);
-  if (!cands.length) {
-    // không có loài đúng tầm thì lấy loài gần nhất theo hướng mong muốn
-    const target = tier === 'kem' ? cl - 3 : tier === 'hon' ? cl + 3 : cl;
-    cands = nearest(pool, target, c).slice(0, 2);
+  const ri = (a: number, b: number) => a + Math.floor(rnd() * (b - a + 1));
+  const delta = tier === 'kem' ? -ri(2, 4) : tier === 'hon' ? ri(2, 4) : ri(-1, 1);
+  const target = Math.max(1, cl + delta);
+  const seen = c.ambushSeen ?? [];
+  let cands = pool.filter((m) => Math.abs(m.lv - target) <= 8 && !seen.includes(m.id));
+  if (cands.length < 3) {
+    // ít loài quanh tầm này: lấy thêm các loài gần nhất chưa gặp
+    const rest = pool.filter((m) => !seen.includes(m.id)).sort((a, b) => Math.abs(a.lv - target) - Math.abs(b.lv - target));
+    cands = Array.from(new Set([...cands, ...rest.slice(0, 5)]));
   }
-  return { m: cands[Math.floor(rnd() * cands.length)], tier };
+  const base = cands[Math.floor(rnd() * cands.length)];
+  c.ambushSeen = [...seen, base.id].slice(-3);
+  // effLv = lv + growth, nên trừ growth để ra đúng cấp mong muốn
+  const m: Monster = { ...base, lv: Math.max(1, target - growth(c, base)) };
+  return { m, tier };
 }
 
 export function ambushMonsterStats(c: Character, m: Monster): Fighter {

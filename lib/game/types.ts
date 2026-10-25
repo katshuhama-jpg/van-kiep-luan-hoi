@@ -98,6 +98,7 @@ export interface Character {
   danDoc?: { y: number; n: number }; // số viên đan đã uống trong năm (đan độc)
   petKind?: string; // loại thú cưng (xem lib/game/pets.ts)
   lookSeed?: number; // nét riêng của ngoại hình: da, khuôn mặt, râu, trang sức
+  ambushSeen?: string[]; // mấy loài quái chặn đường gần nhất, để không lặp lại
   timid?: number; // số lựa chọn an toàn liên tiếp gần đây: hiền quá dễ bị bắt nạt
   kiepBonus?: number; // thưởng/phạt từ mini-game thiên kiếp
   mount?: string | null; // tọa kỵ (rồng)
