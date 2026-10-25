@@ -126,7 +126,7 @@ export function playerStats(c: Character): Fighter {
 export function monsterStats(m: Monster, lv: number = m.lv): Fighter {
   if (m.boss) return { hp: 9e15, atk: 9e12, def: 9e12 };
   const s = Math.pow(GROW, lv);
-  return { hp: Math.round(115 * s), atk: Math.round(14.5 * s), def: Math.round(4 * s) };
+  return { hp: Math.round(115 * s), atk: Math.round(13.8 * s), def: Math.round(4 * s) };
 }
 
 export type Danger = 'de' | 'vua' | 'nguy' | 'tu';

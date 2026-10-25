@@ -2220,10 +2220,20 @@ button:disabled {
 }
 
 .focus-grid button {
-  font-size: 13px;
+  font-size: clamp(10.5px, 3.1vw, 13.5px);
   letter-spacing: -0.01em;
-  padding-left: 0;
-  padding-right: 0;
+  padding-left: 2px;
+  padding-right: 2px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* màn hẹp: nhãn tự xuống dòng thay vì tràn ra ngoài nút */
+.focus-grid button span {
+  white-space: normal;
+  text-align: center;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
 }
 
 .hunt-item {

@@ -140,8 +140,8 @@ export function fmt(n: number) {
 export function fatal(c: Character, ctx: EffectCtx, chance: number, cause: string): string | null {
   // trẻ con được trời thương hơn một chút
   const tough = c.gifts?.includes('g_menh_cung') && chance < 1 ? 0.7 : 1;
-  // độ khó: mọi hiểm cảnh nguy hơn 25%
-  const hard = chance < 1 ? 1.25 : 1;
+  // độ khó: mọi hiểm cảnh nguy như gốc (trước tăng 25%, người chơi kêu chết nhiều quá)
+  const hard = 1;
   const p = clamp(chance * hard * tough * (c.age < 13 && chance < 1 ? 0.6 : 1) - (c.stats.khiVan - 50) / 500, 0.01, chance >= 1 ? 1 : 0.95);
   if (ctx.rnd() >= p) return null;
   if (c.equipped.phu_kien === 'ngoc_boi') {
