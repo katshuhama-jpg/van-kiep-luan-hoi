@@ -43,6 +43,12 @@ const KIND: Record<Mile['kind'], { label: string; focus: Focus; fx: FxKind[]; se
   mount: { label: 'Long kỵ', focus: 'du_ngoan', fx: ['breakthrough'], season: 1, tone: 'gold' },
   duel: { label: 'Giao đấu', focus: 'tu_luyen', fx: ['hurt'], season: 2, tone: 'blood' },
   revenge: { label: 'Báo thù', focus: 'tu_luyen', fx: ['evil'], season: 3, tone: 'blood' },
+  sect: { label: 'Bái sư', focus: 'tu_luyen', fx: ['heal'], season: 1, tone: 'jade' },
+  wealth: { label: 'Phát tài', focus: 'kiem_tien', fx: ['buy'], season: 0, tone: 'gold' },
+  treasure: { label: 'Bảo vật', focus: 'du_ngoan', fx: ['layer'], season: 2, tone: 'gold' },
+  hunt: { label: 'Trừ yêu', focus: 'tru_yeu', fx: ['hurt'], season: 2, tone: 'storm' },
+  journey: { label: 'Lên đường', focus: 'du_ngoan', fx: ['heal'], season: 1, tone: 'dawn' },
+  fate: { label: 'Mệnh số', focus: 'du_ngoan', fx: ['love'], season: 0, tone: 'dawn' },
   death: { label: 'Tạ thế', focus: 'tu_luyen', fx: ['death'], season: 3, tone: 'night' },
 };
 
@@ -93,10 +99,25 @@ export default function LifeStory({
         .then(setCondo)
         .catch(() => {});
   }, [lifeId]);
-  const look = (r.look ?? {}) as { miles?: Mile[]; birthPlace?: string; origin?: string; endTag?: string };
+  const look = (r.look ?? {}) as {
+    miles?: Mile[];
+    birthPlace?: string;
+    origin?: string;
+    endTag?: string;
+    path?: string | null;
+    pet?: boolean;
+    petKind?: string;
+    mount?: string | null;
+    sect?: string | null;
+    equipped?: Record<string, string>;
+    element?: string;
+  };
   const finalRealm = r.realm_no ?? 0;
   const maTon = look.endTag === 'ma_ton_do_kiep' || (r.cause ?? '').includes('Ma Tôn');
-  const story = useMemo(() => pickStory(look.miles, { age: r.age, realm: finalRealm }), [look.miles, r.age, finalRealm]);
+  const story = useMemo(
+    () => pickStory(look.miles, { age: r.age, realm: finalRealm, path: look.path, pet: look.pet, petKind: look.petKind, mount: look.mount, sect: look.sect, equipped: look.equipped, element: look.element, birthPlace: look.birthPlace }),
+    [r, look.miles, finalRealm],
+  );
   const slides: Slide[] = useMemo(
     () => [
       { t: 'title' },
@@ -272,7 +293,8 @@ function SceneAt({ r, age, realm, kind, ascended }: { r: LifeRecord; age: number
   const dead = kind === 'death' && !ascended;
   const c = charAt(r, age, realm, { focus: k.focus, dead, ascended: !!ascended, cause: dead ? r.cause : null });
   const fx: Fx[] = (kind === 'death' && ascended ? (['breakthrough', 'lightning'] as FxKind[]) : k.fx).map((f, j) => ({ kind: f, id: j + 1 }));
-  return <Scene c={c} fx={fx} paused={false} season={k.season} />;
+  // hồi ký có nhãn riêng, tắt chữ hiệu ứng của cảnh để không chồng lên nhau
+  return <Scene c={c} fx={fx} paused={false} season={k.season} quiet />;
 }
 
 function MileSlide({ r, m, n }: { r: LifeRecord; m: Mile; n: number }) {

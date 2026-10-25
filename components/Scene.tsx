@@ -229,7 +229,7 @@ function SeasonFx({ season, cls }: { season: number; cls: string }) {
   );
 }
 
-export default function Scene({ c, fx, paused, season, battle }: { c: Character; fx: Fx[]; paused: boolean; season: number; battle?: BattleView | null }) {
+export default function Scene({ c, fx, paused, season, battle, quiet }: { c: Character; fx: Fx[]; paused: boolean; season: number; battle?: BattleView | null; quiet?: boolean }) {
   const focus = c.age < 6 ? 'tu_luyen' : c.focus;
   const aura = auraColor(lookOf(c)) ?? '#9ff0c8';
   const shaking = fx.some((f) => f.kind === 'breakthrough' || f.kind === 'hurt' || f.kind === 'lightning');
@@ -351,7 +351,7 @@ export default function Scene({ c, fx, paused, season, battle }: { c: Character;
             {f.kind === 'evil' && <div className="smokeburst" />}
             {f.kind === 'hurt' && <div className="flash red" />}
             {f.kind === 'heal' && <div className="plus">+</div>}
-            {(f.label || FX_TEXT[f.kind]) && (
+            {!quiet && (f.label || FX_TEXT[f.kind]) && (
               <div className={`fx-label ${f.kind === 'breakthrough' || f.kind === 'lightning' ? 'big' : ''}`} style={f.kind === 'breakthrough' || f.kind === 'lightning' ? undefined : { top: `${20 + (idx % 4) * 11}%` }}>
                 {f.kind === 'breakthrough' && f.label ? (
                   <>

@@ -103,7 +103,7 @@ export interface Character {
   hunt?: { rival: RivalChar; at: number } | null; // truy sát: thuê người dò tung tích, năm sau chạm mặt
   qf?: Record<string, number>; // đếm việc làm trong đời cho nhiệm vụ ngày
   miles?: Mile[]; // cột mốc chính của đời, để xem lại ở nghĩa trang
-  mileSnap?: { realm: number; path: string | null; partner: string | null; pet: string | null; mount: string | null };
+  mileSnap?: { realm: number; path: string | null; partner: string | null; pet: string | null; mount: string | null; sect?: string | null; wealth?: number; rare?: string[]; kills?: number };
   maKien?: boolean; // tâm ma tăng chậm
   oanHon?: boolean; // oan hồn đỡ một lần chết
   maTon?: boolean; // ma tôn chuyển thế: tu nhanh hơn
@@ -251,7 +251,7 @@ export interface Career {
   revenges: number;
 }
 
-export type MileKind = 'birth' | 'path' | 'realm' | 'love' | 'pet' | 'mount' | 'duel' | 'revenge' | 'death';
+export type MileKind = 'birth' | 'path' | 'realm' | 'love' | 'pet' | 'mount' | 'duel' | 'revenge' | 'sect' | 'wealth' | 'treasure' | 'hunt' | 'journey' | 'fate' | 'death';
 export interface Mile {
   age: number;
   kind: MileKind;
