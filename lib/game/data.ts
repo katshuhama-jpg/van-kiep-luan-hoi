@@ -3,16 +3,16 @@ import type { Focus, PathId, Slot, Talent } from './types';
 export const REALMS = [
   { name: 'Phàm Nhân', layers: 1, life: 65, need: 0 },
   { name: 'Luyện Khí', layers: 9, life: 80, need: 60 },
-  { name: 'Trúc Cơ', layers: 3, life: 92, need: 220 },
-  { name: 'Kim Đan', layers: 3, life: 102, need: 380 },
-  { name: 'Nguyên Anh', layers: 3, life: 110, need: 600 },
-  { name: 'Hóa Thần', layers: 3, life: 116, need: 900 },
-  { name: 'Luyện Hư', layers: 3, life: 120, need: 1300 },
-  { name: 'Độ Kiếp', layers: 3, life: 120, need: 1800 },
+  { name: 'Trúc Cơ', layers: 3, life: 95, need: 220 },
+  { name: 'Kim Đan', layers: 3, life: 108, need: 380 },
+  { name: 'Nguyên Anh', layers: 3, life: 120, need: 600 },
+  { name: 'Hóa Thần', layers: 3, life: 132, need: 900 },
+  { name: 'Luyện Hư', layers: 3, life: 142, need: 1300 },
+  { name: 'Độ Kiếp', layers: 3, life: 150, need: 1800 },
 ] as const;
 
 /** Thọ nguyên tối đa của mọi kiếp, để kiếp nào cũng sớm đến lúc luân hồi */
-export const MAX_LIFE = 120;
+export const MAX_LIFE = 150;
 
 export const STAGE3 = ['Sơ kỳ', 'Trung kỳ', 'Hậu kỳ'];
 
@@ -218,7 +218,7 @@ export function fxText(fx?: ItemFx): string {
 export const PILLS = [
   { id: 'tu_khi', name: 'Tụ Khí Đan', price: 30, desc: '+tu vi ngay lập tức' },
   { id: 'truc_co', name: 'Trúc Cơ Đan', price: 200, desc: 'Tăng tỉ lệ đột phá đại cảnh giới' },
-  { id: 'dien_tho', name: 'Diên Thọ Đan', price: 500, desc: '+8 năm thọ nguyên (tối đa 120)' },
+  { id: 'dien_tho', name: 'Diên Thọ Đan', price: 500, desc: '+8 năm thọ nguyên (tối đa 150)' },
   { id: 'thanh_tam', name: 'Thanh Tâm Đan', price: 90, desc: '-tâm ma' },
   { id: 'hoi_xuan', name: 'Hồi Xuân Đan', price: 60, desc: 'Hồi sức khỏe' },
 ];

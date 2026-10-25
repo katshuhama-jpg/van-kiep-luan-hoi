@@ -24,6 +24,7 @@ export const ENDINGS: Ending[] = [
   { id: 'dai_phu', name: 'Phú Khả Địch Quốc', desc: 'Chết đi để lại núi linh thạch, con cháu tranh nhau chia gia tài.', hint: 'Tiền nhiều để làm gì?', rare: 2, test: (c) => c.linhThach >= 8000 },
   { id: 'tru_yeu_vuong', name: 'Trảm Yêu Vương', desc: 'Một đời giết quá trăm yêu ma.', hint: 'Giết, giết nữa, giết mãi.', rare: 2, test: (c) => Object.values(c.kills ?? {}).reduce((a, b) => a + b, 0) >= 100 },
   { id: 'phan_do', name: 'Chết Dưới Tay Đồ Đệ', desc: 'Dạy hết cho đồ đệ, rồi chết bởi chính chiêu mình dạy.', hint: 'Dạy học trò, chớ dạy hết.', rare: 2, test: (c) => c.endTag === 'phan_do' },
+  { id: 'lan_kha', name: 'Lạn Kha', desc: 'Xem một ván cờ của tiên nhân, xuống núi đã hết một đời.', hint: 'Một ván cờ trên đỉnh núi.', rare: 2, test: (c) => c.endTag === 'lan_kha' },
   { id: 'qua_do', name: 'Chết Vì Quá Độ', desc: 'Làm một việc quá nhiều năm liền, thân thể không chịu nổi.', hint: 'Cái gì nhiều quá cũng không tốt.', rare: 1, test: (c) => c.endTag === 'qua_do' },
   { id: 'be_quan', name: 'Bộ Xương Trong Động Phủ', desc: 'Bế quan mãi không ra, người ta chỉ tìm thấy bộ xương khô.', hint: 'Bế quan cũng cần biết điểm dừng.', rare: 1, test: (c) => c.endTag === 'be_quan' },
   { id: 'thien_kiep', name: 'Tro Bụi Dưới Thiên Kiếp', desc: 'Không vượt nổi lôi kiếp.', hint: 'Trời không dung.', rare: 1, test: (c) => cause(c).includes('thiên kiếp') || cause(c).includes('lôi') },

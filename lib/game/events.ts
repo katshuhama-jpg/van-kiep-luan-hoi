@@ -2,6 +2,7 @@ import { DAO_LU, ITEMS, PATHS } from './data';
 import { addCult, addPill, dao, fatal, giveItem, hasItem, hurt, luck, money, pick, reward, sample, stat, usePill } from './helpers';
 import type { Character, Choice, GameEvent } from './types';
 import { EVENTS2 } from './events2';
+import { EVENTS3 } from './events3';
 
 
 export const EVENTS: GameEvent[] = [
@@ -1205,6 +1206,7 @@ export const EVENTS: GameEvent[] = [
     ],
   },
   ...EVENTS2,
+  ...EVENTS3,
 ];
 
 // ---------------- Sự kiện do engine kích hoạt ----------------

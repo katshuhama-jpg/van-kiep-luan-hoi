@@ -391,7 +391,7 @@ export const EVENTS2: GameEvent[] = [
     title: 'Chiếc hộp bí ẩn',
     text: () => 'Năm nay bạn tròn bảy mươi. Chiếc hộp mang theo từ lúc lọt lòng bỗng tự phát sáng, nắp hé mở.',
     choices: () => [
-      { label: 'Mở hộp', lean: 'trung', run: (c, ctx) => { const r = ctx.rnd(); if (r < 0.45) { addCult(c, reward(c, 6)); c.lifespan = Math.min(120, c.lifespan + 30); ctx.fx('breakthrough', 'Tiên duyên'); return 'Trong hộp là một viên tiên đan cổ. Bạn trẻ lại ba mươi tuổi, tu vi tăng vọt.'; } if (r < 0.8) { money(c, 3000); ctx.fx('coin', '+3000'); return 'Trong hộp là một tấm bản đồ kho báu. Bạn trở thành phú ông.'; } return 'Trong hộp là một tờ giấy: "Cảm ơn đã chờ đợi. Đây chỉ là một cái hộp." Bạn cười đến chảy nước mắt.'; } },
+      { label: 'Mở hộp', lean: 'trung', run: (c, ctx) => { const r = ctx.rnd(); if (r < 0.45) { addCult(c, reward(c, 6)); c.lifespan = Math.min(150, c.lifespan + 30); ctx.fx('breakthrough', 'Tiên duyên'); return 'Trong hộp là một viên tiên đan cổ. Bạn trẻ lại ba mươi tuổi, tu vi tăng vọt.'; } if (r < 0.8) { money(c, 3000); ctx.fx('coin', '+3000'); return 'Trong hộp là một tấm bản đồ kho báu. Bạn trở thành phú ông.'; } return 'Trong hộp là một tờ giấy: "Cảm ơn đã chờ đợi. Đây chỉ là một cái hộp." Bạn cười đến chảy nước mắt.'; } },
       { label: 'Không mở, truyền lại cho con cháu', lean: 'chinh', run: (c) => { dao(c, 8); stat(c, 'tamCanh', 15); return 'Có những bí ẩn để dành mới đẹp.'; } },
     ],
   },
