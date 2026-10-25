@@ -3071,3 +3071,7 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .ss-how.secret i { background: #3d2a6b; }
 .ss-how.secret { font-style: italic; }
 .ss-secret { color: #3d2a6b !important; }
+/* sự kiện dài, nhiều lựa chọn: khung dưới được co lại và tự cuộn, không bị cắt mất lựa chọn cuối */
+.game.has-event .game-bottom { flex: 0 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+.game.has-event .game-scroll { min-height: 0; }
+.game-bottom .dialog { max-height: none; overflow: visible; }
