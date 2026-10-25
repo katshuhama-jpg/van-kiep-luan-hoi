@@ -268,7 +268,7 @@ export default function RankPage() {
                         <RelChips player={r.username} s={social} />
                         {!r.alive && (
                           <span className="badge gone-badge">
-                            {c.endTag === 'chung_dao' ? 'Chứng đạo' : c.cosmos === 'ma' ? 'Ma giới' : c.cosmos === 'tien' || c.ascended ? 'Tiên giới' : 'Đã mất'}
+                            {c.endTag === 'chung_dao' ? 'Chứng đạo' : c.cosmos === 'ma' ? 'Ma giới' : c.cosmos === 'hu' ? 'Thái Hư' : c.cosmos === 'tien' || c.ascended ? 'Tiên giới' : 'Đã mất'}
                           </span>
                         )}
                       </span>

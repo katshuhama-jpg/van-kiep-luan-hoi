@@ -19,8 +19,8 @@ export interface Monster {
   boss?: 'chinh' | 'ta';
   human?: { weapon: 'kiem' | 'dao' | 'quyen' | 'quat'; hat?: boolean; mask?: boolean };
   el?: Element; // ngũ hành của loài quái
-  sect?: 'chinh' | 'ta'; // quái trong tông môn: chỉ đệ tử môn đó mới gặp
-  cosmos?: 'tien' | 'ma'; // quái tiên giới, ma giới: chỉ gặp sau phi thăng
+  sect?: 'chinh' | 'ta' | 'trung'; // quái trong tông môn: chỉ đệ tử môn đó mới gặp
+  cosmos?: 'tien' | 'ma' | 'hu'; // quái tiên giới, ma giới: chỉ gặp sau phi thăng
 }
 
 /** 15 loại quái, xếp theo cấp. Cấp người chơi: Luyện Khí 1-9, Trúc Cơ 10-12, Kim Đan 13-15... */
@@ -364,6 +364,16 @@ export const MONSTERS: Monster[] = [
     el: 'hoa',
     sect: 'ta',
   },
+  // Thí luyện Thiên Cơ Các
+  { id: 'co_quan', name: 'Khôi Lỗi Cơ Quan', lv: 3, place: 'Cơ Quan Đường Thiên Cơ', shape: 'nguoi', body: '#8a7a5a', accent: '#3a5a8a', eye: '#7fc8ff', desc: 'Người gỗ bánh răng, mỗi khớp là một ám khí.', el: 'moc', sect: 'trung' },
+  { id: 'kinh_anh', name: 'Kính Ảnh Phân Thân', lv: 9, place: 'Kính Các Thiên Cơ', shape: 'vo_lam', body: '#c8d8f0', accent: '#5a7ab0', eye: '#ffffff', desc: 'Bóng của chính bạn bước ra từ gương, biết hết chiêu bạn sắp ra.', human: { weapon: 'quat' }, el: 'thuy', sect: 'trung' },
+  { id: 'tran_linh', name: 'Cửu Cung Trận Linh', lv: 15, place: 'Cửu Cung Trận Thiên Cơ', shape: 'nguoi', body: '#6a5aa0', accent: '#ffd36b', eye: '#ffd36b', desc: 'Linh hồn của đại trận, đi sai một ô là trận nuốt người.', el: 'tho', sect: 'trung' },
+  { id: 'thien_co_thach', name: 'Thiên Cơ Thạch Nhân', lv: 21, place: 'Đỉnh Quan Tinh Đài', shape: 'nguoi', body: '#5a5a6a', accent: '#c8b0ff', eye: '#7fe0e0', desc: 'Tượng đá canh đài xem sao, khắc đầy thiên văn, ai đọc sai bị đá nghiền.', el: 'kim', sect: 'trung' },
+  // Thái Hư giới
+  { id: 'hu_khong_thu', name: 'Hư Không Thú', lv: 28, place: 'Rìa Thái Hư', shape: 'thu', body: '#3a3a6a', accent: '#7fe0e0', eye: '#ffffff', desc: 'Thú sống trong khe nứt không gian, cắn một miếng là mất một khoảng trời.', el: 'thuy', cosmos: 'hu' },
+  { id: 'tinh_ha_kinh', name: 'Tinh Hà Cự Kình', lv: 31, place: 'Dải Ngân Hà', shape: 'ran', body: '#2a4a7a', accent: '#ffe27a', eye: '#7fe0e0', desc: 'Cá voi bơi giữa các vì sao, hát một tiếng sao rơi như mưa.', el: 'thuy', cosmos: 'hu' },
+  { id: 'hon_don_linh', name: 'Hỗn Độn Linh', lv: 34, place: 'Hỗn Độn Hải', shape: 'nguoi', body: '#4a3a5a', accent: '#c8b0ff', eye: '#ff6aff', desc: 'Sinh linh từ thuở chưa có trời đất, không hình không dạng.', el: 'tho', cosmos: 'hu' },
+  { id: 'thon_thien_thu', name: 'Thái Hư Thôn Thiên Thú', lv: 37, place: 'Tâm Thái Hư', shape: 'rong', body: '#1e2a3a', accent: '#7fe0e0', eye: '#ffd36b', desc: 'Con thú nuốt cả ngày lẫn đêm, Thái Hư sinh ra là để giam nó.', el: 'hoa', cosmos: 'hu' },
   // Tiên giới
   {
     id: 'thien_binh',
@@ -692,7 +702,7 @@ export function monsterRealm(lv: number): number {
 }
 
 /** Loài quái người chơi gặp được ở giới hiện tại: phàm giới, tiên giới hay ma giới, cộng quái thí luyện tông môn */
-export function monstersFor(c: Character, sectSide: 'chinh' | 'ta' | null): Monster[] {
+export function monstersFor(c: Character, sectSide: 'chinh' | 'ta' | 'trung' | null): Monster[] {
   if (c.cosmos) return MONSTERS.filter((m) => m.cosmos === c.cosmos);
   return MONSTERS.filter((m) => !m.cosmos && (!m.sect || m.sect === sectSide));
 }

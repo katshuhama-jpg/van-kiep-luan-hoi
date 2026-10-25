@@ -111,7 +111,7 @@ export default function LifeStory({
     sect?: string | null;
     equipped?: Record<string, string>;
     element?: string;
-    cosmos?: 'tien' | 'ma' | null;
+    cosmos?: 'tien' | 'ma' | 'hu' | null;
   };
   const finalRealm = r.realm_no ?? 0;
   const maTon = look.endTag === 'ma_ton_do_kiep' || (r.cause ?? '').includes('Ma Tôn');

@@ -3105,3 +3105,5 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .tt-list details[open] summary::before { content: '▾ '; }
 .tt-list li:not(.has) { display: flex; gap: 6px; align-items: baseline; padding: 4px 8px; }
 .tt-list li:not(.has) small { display: inline; }
+.cosmos-fx.hu i { background: #bff6ff; box-shadow: 0 0 4px #7fe0e0; }
+.sect-badge.trung { background: #3a3a6a; }

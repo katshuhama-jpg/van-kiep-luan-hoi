@@ -26,7 +26,7 @@ export function trackMiles(c: Character | null) {
   if (!c) return;
   const s = c.mileSnap ?? { realm: 0, path: null, partner: null, pet: null, mount: null };
   if (c.realm > s.realm && c.realm >= 1)
-    addMile(c, 'realm', c.realm === 8 ? (c.cosmos === 'ma' ? 'Vượt huyết kiếp, bước vào Ma giới' : 'Phi thăng tiên giới') : `Bước vào ${realmName(c.realm, c.cosmos)}`);
+    addMile(c, 'realm', c.realm === 8 ? (c.cosmos === 'ma' ? 'Vượt huyết kiếp, bước vào Ma giới' : c.cosmos === 'hu' ? 'Vượt lôi kiếp, bước vào Thái Hư giới' : 'Phi thăng tiên giới') : `Bước vào ${realmName(c.realm, c.cosmos)}`);
   if (c.path && c.path !== s.path) addMile(c, 'path', `Chọn con đường ${PATHS[c.path].name}`);
   if (c.sect && c.sect !== s.sect && s.sect !== undefined) addMile(c, 'sect', `Bái nhập ${c.sect}`);
   if (c.partner && c.partner !== s.partner) addMile(c, 'love', `Kết thành đạo lữ với ${c.partner}`);

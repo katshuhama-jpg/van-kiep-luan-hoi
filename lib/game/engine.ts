@@ -449,7 +449,9 @@ function checkDeath(c: Character, ctx: EffectCtx) {
       c,
       c.cosmos === 'ma'
         ? `Ma thể mục ruỗng, ma hồn tan vào huyết hải. Ma giới mất một vị ${realmName(c.realm, 'ma')} ở tuổi ${Math.floor(c.age)}.`
-        : c.cosmos === 'tien'
+        : c.cosmos === 'hu'
+          ? `Thân thể dần trong suốt rồi tan vào hư không, như chưa từng tồn tại. Thái Hư giới tiễn một vị ${realmName(c.realm, 'hu')} ở tuổi ${Math.floor(c.age)}.`
+          : c.cosmos === 'tien'
           ? `Thiên nhân ngũ suy: áo tiên bám bụi, hoa trên đầu héo úa, thân không còn tỏa sáng. Bạn tọa hóa giữa tiên giới ở tuổi ${Math.floor(c.age)}.`
           : `Thọ nguyên cạn kiệt. Bạn tọa hóa ở tuổi ${Math.floor(c.age)}.`,
       ctx,
@@ -807,6 +809,14 @@ function attempt(c: Character, ctx: EffectCtx, bonus: number): string {
         stat(c, 'sucKhoe', 40);
         ctx.fx('breakthrough', 'MA TÔN');
         return `Chín đạo huyết lôi giáng xuống, bạn nuốt trọn từng đạo một. Trời đất nhuộm đỏ, vạn ma quỳ lạy. Bạn bước qua cửa Ma giới, thành ${realmName(ASCEND_REALM, 'ma')}. Thọ nguyên lên tới ${c.lifespan} năm. Ở đây chỉ có một luật: kẻ mạnh nuốt kẻ yếu.`;
+      }
+      // trung lập: không lên tiên giới, không vào ma giới, mà bước vào Thái Hư
+      if (c.daoTam < 20) {
+        c.cosmos = 'hu';
+        enterRealm(c, ASCEND_REALM, ctx, []);
+        stat(c, 'sucKhoe', 40);
+        ctx.fx('breakthrough', 'THÁI HƯ');
+        return `Lôi kiếp tan, nhưng cửa trời không mở, cửa ma cũng không. Không thuộc về chính, cũng chẳng thuộc về tà, bạn bước vào Thái Hư giới, khoảng trống giữa hai cõi, thành ${realmName(ASCEND_REALM, 'hu')}. Thọ nguyên lên tới ${c.lifespan} năm. Ở đây không ai cai quản ai.`;
       }
       c.cosmos = 'tien';
       enterRealm(c, ASCEND_REALM, ctx, []);

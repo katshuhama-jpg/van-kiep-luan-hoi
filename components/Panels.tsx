@@ -955,7 +955,9 @@ export function DeathSheet({
             ? 'Bị giáng trần'
             : c.cosmos === 'ma'
               ? 'Ma hồn tan biến'
-              : c.cosmos === 'tien'
+              : c.cosmos === 'hu'
+                ? 'Tan vào hư không'
+                : c.cosmos === 'tien'
                 ? 'Tọa hóa nơi tiên giới'
                 : 'Một kiếp đã hết'
       }

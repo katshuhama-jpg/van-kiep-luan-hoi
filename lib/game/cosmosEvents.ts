@@ -197,7 +197,9 @@ export const COSMOS_EVENTS: GameEvent[] = [
     minAge: 0,
     title: 'Tiên Ma đại chiến',
     text: (c) =>
-      c.cosmos === 'ma'
+      c.cosmos === 'hu'
+        ? 'Tiên Ma giao chiến ngay rìa Thái Hư. Cả hai bên đều muốn kéo bạn vào. Bạn đứng giữa hai làn đạn.'
+        : c.cosmos === 'ma'
         ? 'Ma Đế hạ lệnh đánh lên Thiên đình. Trăm vạn ma binh đứng chờ ở Cửa Cửu U. Ngươi đi tiên phong chứ?'
         : 'Ma giới tràn qua giới tuyến. Thiên đình gióng trống tụ tướng, mọi tiên nhân phải ra trận.',
     choices: (c) => [

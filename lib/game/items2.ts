@@ -155,6 +155,20 @@ export const EXTRA_ITEMS: Item[] = [
     rare: 3,
     wpn: { k: 'dao', a: '#ff2a3a', b: '#3a0a14' },
   },
+  // Thiên Cơ Các (trung lập)
+  { id: 'tc_ky_danh_bao', name: 'Ký danh lam bào', slot: 'ao', price: 0, minRealm: 1, desc: 'Áo lam của đệ tử ký danh Thiên Cơ Các, tay áo thêu bát quái nhỏ.', look: 'x', fx: { cult: 8, flee: 6, tamCanh: 1 }, src: 'event', where: 'Thăng làm Ký danh đệ tử Thiên Cơ Các', rare: 1, robe: ['#5a7ab0', '#3a5a8a', '#e6eaf6', '#7a9ad0'], deco: 'van' },
+  { id: 'tc_than_truyen_bao', name: 'Tinh đồ đạo bào', slot: 'ao', price: 0, minRealm: 1, desc: 'Đạo bào dệt hình sao trời, đêm xuống tự phát sáng.', look: 'x', fx: { cult: 14, flee: 10, def: 8, tamCanh: 2 }, src: 'event', where: 'Thăng làm Thân truyền đệ tử Thiên Cơ Các', rare: 2, robe: ['#2a2a5a', '#1a1a3a', '#ffd36b', '#4a4a8a'], deco: 'hoa' },
+  { id: 'tc_truyen_nhan_bao', name: 'Thiên Cơ tử kim bào', slot: 'ao', price: 0, minRealm: 1, desc: 'Áo của người được truyền thuật xem thiên cơ, mặc vào thấy trước ba bước.', look: 'x', fx: { cult: 22, flee: 14, def: 12, drop: 8 }, src: 'event', where: 'Thăng làm Thiên Cơ truyền nhân', rare: 3, robe: ['#3a2a6a', '#22184a', '#ffe27a', '#6a5aa0'], deco: 'long' },
+  { id: 'tc_la_ban', name: 'Thiên Cơ la bàn', icon: true, slot: 'phu_kien', price: 0, minRealm: 1, desc: 'La bàn chỉ không phải hướng bắc mà hướng cơ duyên.', look: 'x', fx: { drop: 10, flee: 8, cult: 4 }, src: 'event', where: 'Thăng làm Thân truyền đệ tử Thiên Cơ Các', rare: 2 },
+  { id: 'co_quan_tam', name: 'Cơ quan tâm', icon: true, slot: 'phu_kien', price: 0, minRealm: 1, desc: 'Bánh răng lõi của khôi lỗi cơ quan, quay mãi không ngừng.', look: 'x', fx: { def: 6, flee: 6 }, src: 'drop', from: ['co_quan'], rare: 1 },
+  { id: 'kinh_anh_phien', name: 'Kính ảnh phiến', icon: true, slot: 'vu_khi', price: 0, minRealm: 1, desc: 'Quạt khảm mảnh gương phân thân, phẩy ra ba bóng người.', look: 'x', fx: { atk: 16, flee: 12, crit: 4 }, src: 'drop', from: ['kinh_anh'], rare: 2, wpn: { k: 'quat', a: '#c8d8f0', b: '#3a5a8a' } },
+  { id: 'cuu_cung_tran_ban', name: 'Cửu cung trận bàn', icon: true, slot: 'phu_kien', price: 0, minRealm: 3, desc: 'Trận bàn chín ô, đặt xuống là thành trận.', look: 'x', fx: { def: 14, flee: 10, cult: 6 }, src: 'drop', from: ['tran_linh'], rare: 2 },
+  { id: 'thien_co_kiem', name: 'Thiên Cơ toán kiếm', icon: true, slot: 'vu_khi', price: 0, minRealm: 4, desc: 'Kiếm tính trước đường đi của đối thủ, chém đâu trúng đó.', look: 'x', fx: { atk: 32, crit: 12, flee: 6 }, src: 'drop', from: ['thien_co_thach'], rare: 3, wpn: { k: 'kiem', a: '#c8b0ff', b: '#3a3a6a' } },
+  // Thái Hư giới
+  { id: 'hu_khong_y', name: 'Hư không y', slot: 'ao', price: 0, minRealm: 8, desc: 'Áo may bằng một mảnh hư không, đao kiếm chém qua như chém vào nước.', look: 'x', fx: { def: 30, flee: 18 }, src: 'drop', from: ['hu_khong_thu'], rare: 2, robe: ['#2a2a4a', '#14142a', '#7fe0e0', '#4a4a7a'], deco: 'van' },
+  { id: 'tinh_ha_chau', name: 'Tinh hà châu', icon: true, slot: 'phu_kien', price: 0, minRealm: 9, desc: 'Viên châu chứa cả một dải ngân hà thu nhỏ.', look: 'x', fx: { cult: 16, drop: 10, tamCanh: 2 }, src: 'drop', from: ['tinh_ha_kinh'], rare: 3 },
+  { id: 'hon_don_truong', name: 'Hỗn Độn trượng', icon: true, slot: 'vu_khi', price: 0, minRealm: 10, desc: 'Gậy đẽo từ cành cây mọc trong hỗn độn, gõ xuống đất trời lẫn lộn.', look: 'x', fx: { atk: 58, crit: 14, cult: 8 }, src: 'drop', from: ['hon_don_linh'], rare: 3, wpn: { k: 'truong', a: '#7fe0e0', b: '#2a2a4a' } },
+  { id: 'thon_thien_giap', name: 'Thôn Thiên giáp', slot: 'ao', price: 0, minRealm: 11, desc: 'Giáp vảy Thôn Thiên Thú, nuốt cả sấm sét đánh vào người.', look: 'x', fx: { def: 40, hp: 26, atk: 10 }, src: 'drop', from: ['thon_thien_thu'], rare: 3, robe: ['#1e2a3a', '#0e141e', '#7fe0e0', '#3a5a6a'], deco: 'giap' },
   // Đồ rơi từ quái thí luyện
   {
     id: 'dong_nhan_tam',
@@ -484,7 +498,8 @@ export const EXTRA_ITEMS: Item[] = [
 ];
 
 /** Đồ tông môn trao khi thăng bậc: [chính phái, ma môn] theo bậc 1..3 */
-export const SECT_GEAR: Record<'chinh' | 'ta', string[][]> = {
+export const SECT_GEAR: Record<'chinh' | 'ta' | 'trung', string[][]> = {
   chinh: [[], ['tv_ngoai_bao'], ['tv_noi_bao', 'tv_lenh'], ['tv_chan_bao']],
+  trung: [[], ['tc_ky_danh_bao'], ['tc_than_truyen_bao', 'tc_la_ban'], ['tc_truyen_nhan_bao']],
   ta: [[], ['hs_no_y'], ['hs_ho_phap_bao', 'hs_lenh'], ['hs_thanh_tu_bao']],
 };

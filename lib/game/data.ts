@@ -24,11 +24,15 @@ export const ASCEND_REALM = 8;
 export const TOP_REALM = 11;
 /** Tên cảnh giới Ma giới, cùng bậc với tiên giới 8..11 */
 export const MA_REALMS = ['Ma Tướng', 'Ma Vương', 'Ma Hoàng', 'Ma Đế'];
-export type Cosmos = 'tien' | 'ma';
+/** Thái Hư giới: cõi của người trung lập, không theo tiên cũng không theo ma */
+export const HU_REALMS = ['Hư Tiên', 'Huyền Tôn', 'Thái Hư Chân Quân', 'Hỗn Nguyên Đạo Tổ'];
+export type Cosmos = 'tien' | 'ma' | 'hu';
+export const COSMOS_NAME: Record<Cosmos, string> = { tien: 'Tiên giới', ma: 'Ma giới', hu: 'Thái Hư giới' };
 
 /** Tên cảnh giới, theo tiên giới hay ma giới */
 export function realmName(realm: number, cosmos?: Cosmos | null): string {
   if (realm >= ASCEND_REALM && cosmos === 'ma') return MA_REALMS[realm - ASCEND_REALM] ?? 'Ma Đế';
+  if (realm >= ASCEND_REALM && cosmos === 'hu') return HU_REALMS[realm - ASCEND_REALM] ?? 'Hỗn Nguyên Đạo Tổ';
   return REALMS[realm]?.name ?? 'Phi Thăng';
 }
 

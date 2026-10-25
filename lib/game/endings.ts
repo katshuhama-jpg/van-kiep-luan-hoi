@@ -50,6 +50,8 @@ export const ENDINGS: Ending[] = [
     rare: 4,
     test: (c) => c.cosmos === 'ma' && c.realm >= 11,
   },
+  { id: 'hon_nguyen', name: 'Hỗn Nguyên Đạo Tổ', desc: 'Không chính không tà, đứng giữa hư không mà ba giới phải nể.', hint: 'Giữa trời và vực còn một cõi khác.', how: 'Giữ đạo tâm trung lập (-39 đến 19) khi phi thăng để vào Thái Hư giới, tu tới Hỗn Nguyên Đạo Tổ rồi mới chết.', rare: 4, test: (c) => c.cosmos === 'hu' && c.realm >= 11 },
+  { id: 'tieu_dao', name: 'Tiêu Dao Thái Hư', desc: 'Không vào tiên tịch, không nhập ma môn, sống tự do giữa hư không đến hơi thở cuối.', hint: 'Không chọn phe cũng là một con đường.', how: 'Phi thăng khi đạo tâm trung lập (-39 đến 19) để vào Thái Hư giới, rồi chết ở đó.', rare: 3, test: (c) => c.cosmos === 'hu' },
   {
     id: 'giang_tran',
     name: 'Bị Giáng Trần',
@@ -81,7 +83,7 @@ export const ENDINGS: Ending[] = [
     name: 'Phi Thăng Tiên Giới',
     desc: 'Vượt chín đạo lôi kiếp, bước lên tiên giới.',
     hint: 'Đi đến tận cùng con đường tu tiên.',
-    how: 'Tu đến Độ Kiếp tầng cuối rồi vượt qua thiên kiếp cuối cùng (đạo tâm trên -40).',
+    how: 'Tu đến Độ Kiếp tầng cuối rồi vượt qua thiên kiếp cuối cùng (đạo tâm trên -40; trung lập thì vào Thái Hư giới).',
     rare: 4,
     test: (c) => c.ascended,
   },

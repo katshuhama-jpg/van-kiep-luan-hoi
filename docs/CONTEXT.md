@@ -70,33 +70,33 @@ Vòng chơi một kiếp:
 
 - Tà đạo tu nhanh hơn: đạo tâm từ -15 trở xuống x1.08, từ -40 trở xuống x1.22. Tâm ma trên 70 làm tu chậm 20%.
 
-## 4b. Tiên giới và Ma giới (sau phi thăng)
+## 4b. Tiên giới, Ma giới và Thái Hư giới (sau phi thăng)
 
-- Phi thăng xong vẫn chơi tiếp trong cùng kiếp. Đạo tâm trên -40 lên **Tiên giới**; đạo tâm từ -40 trở xuống hoặc Ma tu thì vượt huyết kiếp thành Ma Tôn và vào **Ma giới** (giới riêng).
+- Phi thăng xong vẫn chơi tiếp trong cùng kiếp. Đạo tâm trên -40 lên **Tiên giới**; đạo tâm từ -40 trở xuống hoặc Ma tu thì vượt huyết kiếp thành Ma Tôn và vào **Ma giới** (giới riêng). Đạo tâm trung lập (-39 đến 19, không phải Ma tu) thì lạc vào **Thái Hư giới** (giới trung lập, giữa trời và vực). Thứ tự xét: ma trước, rồi trung lập (đạo tâm dưới 20), còn lại lên tiên.
 - 4 cảnh giới mỗi giới, mỗi cảnh giới 3 tầng (Sơ, Trung, Hậu kỳ):
 
-| Bậc | Tiên giới | Ma giới | Thọ | Tu vi cần |
-|---|---|---|---|---|
-| 8 | Chân Tiên | Ma Tướng | 320 | 2600 |
-| 9 | Huyền Tiên | Ma Vương | 420 | 3600 |
-| 10 | Kim Tiên | Ma Hoàng | 540 | 5000 |
-| 11 | Đại La Kim Tiên | Ma Đế | 700 | 7000 |
+| Bậc | Tiên giới | Ma giới | Thái Hư giới | Thọ | Tu vi cần |
+|---|---|---|---|---|---|
+| 8 | Chân Tiên | Ma Tướng | Hư Tiên | 320 | 2600 |
+| 9 | Huyền Tiên | Ma Vương | Huyền Tôn | 420 | 3600 |
+| 10 | Kim Tiên | Ma Hoàng | Thái Hư Chân Quân | 540 | 5000 |
+| 11 | Đại La Kim Tiên | Ma Đế | Hỗn Nguyên Đạo Tổ | 700 | 7000 |
 
 - Độ khó đột phá tính lại từ đầu: Chân Tiên lên Huyền Tiên khó ngang Trúc Cơ lên Kim Đan, càng lên càng khó. Kiếp cuối từ bậc 11 là **Chứng Đạo** (-25% tỉ lệ, thất bại phải chờ 30 năm mới thử lại); thành công là kết cục Chứng Đạo Vĩnh Hằng.
-- Thọ hết thì **Thiên nhân ngũ suy** (tiên) hoặc ma thể mục ruỗng (ma).
-- Nền sân khấu riêng (vẽ bằng pxl, nguồn `scripts/cosmos.px.js`): tiên giới có đảo nổi, lầu các, Nam Thiên Môn, biển mây; ma giới có huyết nguyệt, ma thành, gai đá đen, khe dung nham. Không còn bốn mùa.
-- Chỉ còn sự kiện của giới đó (Nam Thiên Môn, Bàn Đào hội, Ngoảnh lại nhân gian, Thiên quy, Vảy rồng rơi; Bờ Huyết Hải, Tranh ngôi ma chúa, Tâm ma vạn kiếp, Ma binh làm phản; Tiên Ma đại chiến chung cả hai). Không còn hiểm họa phàm giới (sát thủ, bắt nạt), không tốn sinh hoạt phí.
-- Quái riêng mỗi giới (4 loài, Lv28-37), đồ riêng (minRealm 8-11). Chỉ gặp người chơi cùng giới.
+- Thọ hết thì **Thiên nhân ngũ suy** (tiên), ma thể mục ruỗng (ma) hoặc **tan vào hư không** (Thái Hư).
+- Nền sân khấu riêng `public/bg/{tien,ma,hu}-0.png`, sinh bằng `python3 scripts/gen_cosmos.py scripts` (cần `gen_bg.py` cùng thư mục). Ghép **ưu tiên từ ô gạch LPC** (tường lâu đài, cửa sổ vòm, chóp tháp, khối đá, nước, dung nham, đá cuội, cột, pha lê) rồi đổi màu bằng gradient map; chỉ vẽ tay (procedural) phần LPC không có: trời, mặt trời/huyết nguyệt, tinh vân, sao. Tiên giới: trời vàng, đảo lơ lửng có cung điện mái vàng, cây hoa đào, núi ngọc tím, biển mây. Ma giới: huyết nguyệt, núi đỏ đen, ma thành chóp đỏ, cây chết, nền đá đen có sông dung nham. Thái Hư: tinh không, tinh vân, hố hỗn độn, đảo đá tím trôi, cổng cột ngân hà, pha lê. Không còn bốn mùa. Quy tắc chọn nguồn ảnh: LPC trước, rồi các bộ tài nguyên miễn phí khác, pxl (`scripts/cosmos.px.js`, bản cũ) chỉ dùng khi không còn nguồn nào.
+- Chỉ còn sự kiện của giới đó (Nam Thiên Môn, Bàn Đào hội, Ngoảnh lại nhân gian, Thiên quy, Vảy rồng rơi; Bờ Huyết Hải, Tranh ngôi ma chúa, Tâm ma vạn kiếp, Ma binh làm phản; Tiên Ma đại chiến chung cả hai; Thái Hư: Bờ Thái Hư, Tinh hà luận đạo, Khe nứt hư không, Sứ giả hai giới, file `lib/game/huEvents.ts`). Không còn hiểm họa phàm giới (sát thủ, bắt nạt), không tốn sinh hoạt phí.
+- Quái riêng mỗi giới (4 loài, Lv28-37; Thái Hư: Hư Không Thú, Tinh Hà Kình, Hỗn Độn Linh, Thôn Thiên Thú), đồ riêng (minRealm 8-11; Thái Hư: Hư Không Y, Tinh Hà Châu, Hỗn Độn Trượng, Thôn Thiên Giáp). Chỉ gặp người chơi cùng giới.
 - Hạ phàm làm mưa có thể bị **giáng trần**: kiếp kết thúc, kiếp sau nhận lời tiên tri "ký ức tiên nhân" (ngộ tính +25, khí vận +15, linh căn ít nhất Địa).
 
 ## 4c. Tông môn
 
-- Sự kiện "Tông môn tuyển đệ tử" (9-16 tuổi). Thanh Vân Tông (chính) xếp bậc theo linh căn: Thiên linh căn **Chân truyền**, Địa **Nội môn**, Huyền và Tạp **Ngoại môn**, Phế 40% được nhận làm **Tạp dịch** (còn lại bị đuổi). Huyết Sát Môn (ma) không kén linh căn, ít nhất Ngoại đường; bậc ma môn tên khác: Huyết nô, Ngoại đường sát thủ, Nội đường hộ pháp, Huyết Sát Thánh tử.
+- Sự kiện "Tông môn tuyển đệ tử" (9-16 tuổi). Thanh Vân Tông (chính) xếp bậc theo linh căn: Thiên linh căn **Chân truyền**, Địa **Nội môn**, Huyền và Tạp **Ngoại môn**, Phế 40% được nhận làm **Tạp dịch** (còn lại bị đuổi). Huyết Sát Môn (ma) không kén linh căn, ít nhất Ngoại đường; bậc ma môn tên khác: Huyết nô, Ngoại đường sát thủ, Nội đường hộ pháp, Huyết Sát Thánh tử. **Thiên Cơ Các** (trung lập) kén người thông minh, xếp bậc theo ngộ tính: từ 70 **Thiên Cơ truyền nhân**, 50 **Thân truyền đệ tử**, 30 **Ký danh đệ tử**, dưới 30 là **Học đồ** và chỉ 50% được nhận (trượt thì làm tán tu). Truyền nhân Thiên Cơ được khí vận +10 và một tấm **bùa thế mạng** (cứu một lần như sư phụ chính phái). Có thêm lựa chọn "Ở nhà".
 - Tu luyện theo bậc: tạp dịch +0%, ngoại môn +10%, nội môn +25%, chân truyền +40%. Nội môn được ngộ tính +5. Chân truyền: đột phá +8%, chính phái được sư phụ cứu một lần khi sắp chết.
 - Thăng bậc: **Đại bỉ tông môn** 5-8 năm một lần (đấu một đồng môn, thắng thì lên một bậc); đột phá Trúc Cơ tự lên nội môn, Kim Đan tự lên chân truyền; ma môn còn thăng theo độ tàn nhẫn (đạo tâm -40 hộ pháp, -70 thánh tử). Mỗi bậc được ban áo bào (và lệnh bài ở bậc nội môn).
 - **Đồng môn tỷ thí:** đệ tử có 25% cuộc gặp giang hồ là đồng môn. Ưu tiên bóng người chơi thật cùng tông môn, không có thì sư huynh/sư tỷ vô danh. Luôn **cùng cấp**, ngũ hành **rút ngẫu nhiên đều 5 hệ**. Ma môn: thắng được lấy đồ, thua có 8% chết và 30% bị lột đồ.
 - Sự kiện theo bậc: tạp dịch quét lá (nghịch thiên), việc vặt ngoại môn, Tàng Kinh Các, sư phụ chỉ điểm.
-- Quái thí luyện trong môn (chỉ đệ tử môn đó gặp, 30% quái chặn đường là quái thí luyện): Đồng Nhân Khôi Lỗi, Hộ Sơn Tiên Hạc, Kiếm Linh Thí Luyện, Tỏa Yêu Tháp Thủ Giao (Thanh Vân); Huyết Khôi, Thi Lang, Cổ Trùng Vương, Huyết Trì Ma Giao (Huyết Sát).
+- Quái thí luyện trong môn (chỉ đệ tử môn đó gặp, 30% quái chặn đường là quái thí luyện): Đồng Nhân Khôi Lỗi, Hộ Sơn Tiên Hạc, Kiếm Linh Thí Luyện, Tỏa Yêu Tháp Thủ Giao (Thanh Vân); Huyết Khôi, Thi Lang, Cổ Trùng Vương, Huyết Trì Ma Giao (Huyết Sát); quái cơ quan của Thiên Cơ Các. Đồ môn phái riêng cho cả ba phe (`SECT_GEAR` trong `lib/game/items2.ts`, key `chinh`/`ta`/`trung`).
 
 ## 5. Trọng tâm mỗi năm
 
@@ -237,7 +237,7 @@ Mở từ nút thư (✉). Ba tab: Thư, Ân oán, Truy nã.
 - Có thù tất báo: Báo thù được một người chơi khác (+30 phúc)
 - Giang hồ sát thần: Thắng người chơi khác 10 lần (+50 phúc)
 
-### Sổ Sinh Tử - 31 kết cục
+### Sổ Sinh Tử - 33 kết cục
 Kết cục được xét theo thứ tự từ hiếm tới thường, lấy cái đầu tiên khớp. 5 kết cục cố ý để **bí ẩn** (không ghi cách mở trong game) để người chơi tự khám phá.
 
 |Kết cục|Phẩm|Cách mở|
@@ -246,10 +246,12 @@ Kết cục được xét theo thứ tự từ hiếm tới thường, lấy cá
 | Chứng Đạo Vĩnh Hằng (`chung_dao`) | Thiên | Phi thăng lên tiên giới (hoặc ma giới), tu tới Đại La Kim Tiên (hoặc Ma Đế) hậu kỳ rồi vượt kiếp cuối cùng. |
 | Đại La Kim Tiên (`dai_la`) | Thiên | Sau khi phi thăng, tu tới Đại La Kim Tiên rồi mới tọa hóa. |
 | Ma Đế Vĩnh Dạ (`ma_de`) | Thiên | Thành Ma Tôn, vào Ma giới, tu tới Ma Đế rồi mới chết. |
+| Hỗn Nguyên Đạo Tổ (`hon_nguyen`) | Thiên | Giữ đạo tâm trung lập (-39 đến 19) khi phi thăng để vào Thái Hư giới, tu tới Hỗn Nguyên Đạo Tổ rồi mới chết. |
+| Tiêu Dao Thái Hư (`tieu_dao`) | Địa | Phi thăng khi đạo tâm trung lập để vào Thái Hư giới, rồi chết ở đó. |
 | Bị Giáng Trần (`giang_tran`) | Địa | Sau khi phi thăng, hạ phàm cứu người mà bị Thiên đình phạt. |
 | Xuyên Không (`xuyen_khong`) | Thiên | **Bí ẩn** - gợi ý: Có những khe nứt không nên bước vào... hoặc nên. |
 | Ma Tôn Độ Kiếp (`ma_ton_do_kiep`) | Thiên | Giữ đạo tâm từ -40 trở xuống, tu đến Độ Kiếp tầng cuối rồi vượt qua thiên kiếp cuối cùng. |
-| Phi Thăng Tiên Giới (`phi_thang`) | Thiên | Tu đến Độ Kiếp tầng cuối rồi vượt qua thiên kiếp cuối cùng (đạo tâm trên -40). |
+| Phi Thăng Tiên Giới (`phi_thang`) | Thiên | Tu đến Độ Kiếp tầng cuối rồi vượt qua thiên kiếp cuối cùng (đạo tâm từ 20 trở lên lên Tiên giới, trung lập vào Thái Hư). |
 | Ma Tôn Giáng Thế (`ma_ton`) | Địa | Chết khi đạo tâm từ -80 trở xuống và đã đạt Hóa Thần trở lên. |
 | Lập Địa Thành Phật (`thanh_phat`) | Địa | Đạo tâm từ 70 trở lên, đi đường Phật tu hoặc đạt Nguyên Anh, rồi sống đến khi hết thọ nguyên. |
 | Long Kỵ Sĩ (`cuoi_rong`) | Địa | Chăm Du ngoạn để gặp quả trứng lạ, ấp đến khi nở rồng rồi thuần phục nó, giữ rồng bên mình đến cuối đời. |
@@ -274,7 +276,7 @@ Kết cục được xét theo thứ tự từ hiếm tới thường, lấy cá
 | Thọ Chung Chính Tẩm (`tho_tan`) | Phàm | Sống đến khi hết thọ nguyên. |
 | Chết Không Toàn Thây (`bat_dac`) | Phàm | Chết vì bất kỳ lý do nào khác: quái, kẻ thù, tai nạn giang hồ. |
 
-Danh hiệu sưu tầm: **Kỳ Văn Khách** khi mở từ 8 kết cục, **Bách Hiểu Sinh** khi mở một nửa (16/31).
+Danh hiệu sưu tầm: **Kỳ Văn Khách** khi mở từ 8 kết cục, **Bách Hiểu Sinh** khi mở một nửa (17/33, tự tính theo tổng số kết cục).
 
 ## 9. Giữ chân người chơi (hook)
 
@@ -417,14 +419,15 @@ select count(*) from vkl_bounty; select status, count(*) from vkl_challenge grou
 - Tông môn theo căn cốt (4 bậc), Đại bỉ, đồng môn tỷ thí cùng cấp hệ ngẫu nhiên, sự kiện tông môn, quái thí luyện.
 - Mọi quái có ngũ hành; thêm 6 quái phàm giới, 8 quái thí luyện, 8 quái tiên/ma; 32 món đồ mới.
 - Chống farm đồ theo chênh cấp; bảng trừ yêu gọn lại.
-- Phi thăng mở Tiên giới / Ma giới với 4 cảnh giới, sự kiện, quái, đồ, nền riêng; kết cục Chứng Đạo, Đại La Kim Tiên, Ma Đế, Bị Giáng Trần.
+- Phi thăng mở Tiên giới / Ma giới / Thái Hư giới với 4 cảnh giới, sự kiện, quái, đồ, nền riêng; kết cục Chứng Đạo, Đại La Kim Tiên, Ma Đế, Hỗn Nguyên Đạo Tổ, Tiêu Dao Thái Hư, Bị Giáng Trần.
+- Tông môn thứ ba Thiên Cơ Các (trung lập, xếp bậc theo ngộ tính).
 - Thiên thư: mạch truyện Vạn Kiếp 10 mảnh và kết cục Vạn Kiếp Quy Nhất.
 
 **25/10/2026**
 
 - Hồi ký nghĩa trang 7-10 cảnh pixel, thêm mốc bái sư, phát tài, bảo vật, trừ yêu.
 - Giang hồ: kết nghĩa, hòa giải, ghi thù, khiêu khích, treo thưởng, chiến thư, truy sát, Kẻ né chiến, Oan gia, Báo thù 3 đời, lời viếng.
-- Sưu tầm: Bảo khố, báo mở khóa, chấm đỏ menu, tiến độ ở màn đầu thai và màn chết, lời đồn trên Thiên tượng, danh hiệu Kỳ Văn Khách và Bách Hiểu Sinh, kết cục trên bia mộ, cách mở chi tiết cho 21 kết cục.
+- Sưu tầm: Bảo khố, báo mở khóa, chấm đỏ menu, tiến độ ở màn đầu thai và màn chết, lời đồn trên Thiên tượng, danh hiệu Kỳ Văn Khách và Bách Hiểu Sinh, kết cục trên bia mộ, cách mở chi tiết cho 28 kết cục.
 - Danh hiệu tuần thêm Phú hào và Trường thọ, một nhân vật giữ nhiều danh hiệu.
 - Giao diện: cụm nút trên đầu 2x2, mục Chọn thiên phú mở sẵn, khung sự kiện dài tự cuộn.
 - Trước đó: ngũ hành, tên chưởng pháp, lột đồ, hệ số kiếp, quái chặn đường, cánh theo phái, thiên tượng, chuỗi ngày, nhiệm vụ ngày, thành tựu, lời tiên tri, thần binh truyền kiếp.

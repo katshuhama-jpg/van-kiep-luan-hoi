@@ -313,9 +313,10 @@ def scene_luyen_dan(s):
 
 SCENES = {'tu_luyen': scene_tu_luyen, 'du_ngoan': scene_du_ngoan, 'kiem_tien': scene_kiem_tien, 'ket_duyen': scene_ket_duyen, 'luyen_dan': scene_luyen_dan}
 import os
-os.makedirs(OUT, exist_ok=True)
-for name, fn in SCENES.items():
-    for s in range(4):
-        im = fn(s).convert('RGB')
-        im.save(f'{OUT}/{name}-{s}.png', optimize=True)
-print('ok')
+if __name__ == '__main__':
+    os.makedirs(OUT, exist_ok=True)
+    for name, fn in SCENES.items():
+        for s in range(4):
+            im = fn(s).convert('RGB')
+            im.save(f'{OUT}/{name}-{s}.png', optimize=True)
+    print('ok')

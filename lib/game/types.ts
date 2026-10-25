@@ -92,7 +92,7 @@ export interface Character {
   vendettas?: Vendetta[];
   hunt?: { rival: RivalChar; at: number } | null;
   loreDone?: boolean; // đã gom đủ Thiên thư: kiếp này sẽ gặp lại chính mình
-  cosmos?: 'tien' | 'ma' | null; // đã phi thăng lên tiên giới hay ma giới
+  cosmos?: 'tien' | 'ma' | 'hu' | null; // đã phi thăng lên tiên giới hay ma giới
   ascendAge?: number; // tuổi lúc phi thăng
   sectRank?: number; // bậc trong tông môn: 0 tạp dịch, 1 ngoại môn, 2 nội môn, 3 chân truyền
   daiBiAt?: number; // tuổi tới kỳ Đại bỉ tông môn kế tiếp
@@ -165,7 +165,7 @@ export interface RivalChar {
   lifeNo?: number; // kiếp thứ mấy của người chơi đó
   sect?: string | null;
   sectRank?: number;
-  cosmos?: 'tien' | 'ma' | null;
+  cosmos?: 'tien' | 'ma' | 'hu' | null;
   alive: boolean;
 }
 
@@ -186,7 +186,7 @@ export interface Choice {
 
 export interface GameEvent {
   id: string;
-  cosmos?: 'tien' | 'ma' | 'both'; // sự kiện chỉ có ở tiên giới, ma giới; sự kiện phàm giới không xảy ra sau phi thăng
+  cosmos?: 'tien' | 'ma' | 'hu' | 'both'; // sự kiện chỉ có ở tiên giới, ma giới; sự kiện phàm giới không xảy ra sau phi thăng
   minAge?: number;
   maxAge?: number;
   minRealm?: number;

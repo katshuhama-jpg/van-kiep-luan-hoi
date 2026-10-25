@@ -7,7 +7,8 @@ import { HOOK_EVENTS } from './hookEvents';
 import { TA_EVENTS } from './taEvents';
 import { SECT_EVENTS } from './sectEvents';
 import { COSMOS_EVENTS } from './cosmosEvents';
-import { joinSect, rankByRoot, rankName } from './sect';
+import { HU_EVENTS } from './huEvents';
+import { joinSect, rankByRoot, rankByWit, rankName } from './sect';
 import { CHILD_EVENTS } from './childhood';
 import { PET_EVENT, PET_STORIES } from './pets';
 
@@ -828,13 +829,25 @@ export const EVENTS: GameEvent[] = [
         },
       },
       {
-        label: 'Làm tán tu, tự học sách cũ',
+        label: 'Lên Thiên Cơ Các',
+        hint: 'trung lập, kén người thông minh',
         lean: 'trung',
-        run: (c) => {
-          addCult(c, 15);
+        run: (c, ctx) => {
+          // Thiên Cơ Các không xem linh căn mà ra đề đố: ngộ tính càng cao bậc càng cao
+          const rank = rankByWit(c.stats.ngoTinh);
+          if (rank === 0 && ctx.rnd() >= 0.5) {
+            addCult(c, 15);
+            stat(c, 'ngoTinh', 5);
+            return 'Đề đố của Thiên Cơ Các bạn giải không nổi câu nào. Bạn về mua một cuốn công pháp rách ở chợ, tự mò mẫm làm tán tu.';
+          }
+          joinSect(c, 'Thiên Cơ Các', rank);
           stat(c, 'ngoTinh', 5);
-          stat(c, 'tamCanh', 4);
-          return 'Bạn mua lại một cuốn công pháp rách ở chợ, tự mò mẫm con đường riêng.';
+          addCult(c, 25 + rank * 20);
+          ctx.fx(rank >= 2 ? 'breakthrough' : 'buy', rankName(c));
+          if (rank === 3) return 'Bạn giải xong cả ba đề đố trước khi nén nhang tàn. Các chủ Thiên Cơ Các tự tay nhận bạn làm truyền nhân. Tu luyện nhanh hơn 40%.';
+          if (rank === 2) return 'Bạn giải được hai trong ba đề đố. Thiên Cơ Các nhận bạn làm Thân truyền đệ tử, tu luyện nhanh hơn 25%.';
+          if (rank === 1) return 'Bạn giải được một đề đố, thành Ký danh đệ tử Thiên Cơ Các. Ở đây không phân chính tà, chỉ hỏi bạn có đủ thông minh không.';
+          return 'Bạn không giải được đề nào, nhưng cách bạn nghĩ làm một trưởng lão để ý. Bạn được giữ lại làm Học đồ, quét bụi đài xem sao.';
         },
       },
       {
@@ -2765,6 +2778,7 @@ export const EVENTS: GameEvent[] = [
   ...TA_EVENTS,
   ...SECT_EVENTS,
   ...COSMOS_EVENTS,
+  ...HU_EVENTS,
   ...CHILD_EVENTS,
   PET_EVENT,
   ...PET_STORIES,
