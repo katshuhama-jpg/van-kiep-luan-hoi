@@ -2476,3 +2476,9 @@ button:disabled {
 .s-tu_choi { background: #8a7a66; }
 .fb-kinds .btn.on { background: var(--red); color: #fff8e6; border-color: var(--red-d); }
 .topbar .age-big { white-space: nowrap; }
+
+/* ===== Radar chỉ số ===== */
+.radar { display: block; overflow: visible; }
+.radar-shape { transition: all 0.35s steps(4); }
+.gift-radar { display: grid; place-items: center; margin-top: 8px; padding: 6px; border: 2px dashed #c9b48a; background: #fbf3dc; }
+.strip-btn { display: block; width: 100%; padding: 0; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; }

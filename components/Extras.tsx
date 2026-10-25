@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Sprite from './Sprite';
-import { GIFTS, RARE_NAME, drawGifts, giftOf } from '@/lib/game/gacha';
+import Radar, { charAxes } from './Radar';
+import { GIFTS, RARE_NAME, applyGifts, drawGifts, giftOf } from '@/lib/game/gacha';
 import { RARE_COLOR, type Ending } from '@/lib/game/endings';
 import { PATHS, realmLabel } from '@/lib/game/data';
 import type { Character } from '@/lib/game/types';
@@ -50,6 +51,7 @@ export function GachaPanel({ phuc, onChange }: { phuc: number; onChange: (gifts:
           })}
         </div>
       )}
+      {cards.length > 0 && <GiftRadar picked={picked} />}
       <button className="btn btn-jade" style={{ width: '100%', marginTop: 8 }} onClick={roll} disabled={cost > 0 && phuc < cost}>
         {cards.length === 0 ? 'Gieo quẻ' : `Gieo lại${cost ? ` (-${cost} phúc)` : ' (miễn phí)'}`}
       </button>
@@ -57,6 +59,23 @@ export function GachaPanel({ phuc, onChange }: { phuc: number; onChange: (gifts:
         Có {GIFTS.length} loại thiên phú · Thiên phẩm chỉ 0.1%
       </p>
     </section>
+  );
+}
+
+/** Radar xem trước: thiên phú đã chọn đẩy chỉ số đi đâu so với người thường */
+function GiftRadar({ picked }: { picked: string[] }) {
+  const base = { sucKhoe: 80, tamCanh: 50, ngoTinh: 45, khiVan: 45, tamMa: 5 };
+  const dummy = { stats: { ...base }, lifeMul: 1, lifespan: 70, linhCanMul: 1, linhCan: '', linhThach: 100, inventory: [] as string[], equipped: {}, cultivation: 0, daoTam: 0 } as unknown as Character;
+  applyGifts(dummy, picked);
+  const axes = charAxes(dummy.stats, dummy.lifespan, { s: base, life: 70 });
+  return (
+    <div className="gift-radar">
+      <Radar axes={axes} size={230} color={picked.length ? '#b8432f' : '#8a7a66'} />
+      <p className="note" style={{ margin: 0, textAlign: 'center' }}>
+        {picked.length ? 'Vùng đỏ: chỉ số sau khi nhận thiên phú. Vùng xám: người thường.' : 'Chọn lá số để xem chỉ số thay đổi thế nào.'}
+        {dummy.linhCanMul > 1 ? ` Tu luyện x${dummy.linhCanMul.toFixed(1)}.` : ''}
+      </p>
+    </div>
   );
 }
 

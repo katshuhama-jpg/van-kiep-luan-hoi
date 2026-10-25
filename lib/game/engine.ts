@@ -358,7 +358,7 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
     money(c, FAMILY_TIERS[c.familyTier ?? 1]?.allowance ?? 3);
   } else {
     // sinh hoạt phí, càng lên cảnh giới càng tốn
-    const cost = 3 + c.realm * 5 + (c.partner ? 3 : 0) + (hasGift(c, 'g_an') ? 3 : 0);
+    const cost = 4 + c.realm * 7 + (c.partner ? 4 : 0) + (hasGift(c, 'g_an') ? 3 : 0);
     if (c.linhThach >= cost) money(c, -cost);
     else {
       money(c, -c.linhThach);
@@ -413,7 +413,7 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
 
   // Trạng thái thường niên
   const ratio = c.age / c.lifespan;
-  if (ratio > 0.85) { if (c.stats.sucKhoe > 12) stat(c, 'sucKhoe', -3); } else stat(c, 'sucKhoe', ratio > 0.7 ? 0 : 3);
+  if (ratio > 0.85) { if (c.stats.sucKhoe > 12) stat(c, 'sucKhoe', -3); } else stat(c, 'sucKhoe', ratio > 0.7 ? 0 : 2);
   if (c.stats.tamCanh > 60) stat(c, 'tamMa', -1);
   if (c.path === 'ma') stat(c, 'tamMa', 2);
   if (c.path === 'phat') stat(c, 'tamMa', -2);
@@ -489,7 +489,7 @@ function pathEvent(c: Character): GameEvent {
 
 function breakChance(c: Character) {
   return clamp(
-    (hasGift(c, 'g_thien_menh') ? 0.15 : 0) + 0.42 - Math.max(0, c.realm - 2) * 0.07 + c.stats.ngoTinh / 450 + c.stats.tamCanh / 500 - c.stats.tamMa / 200 + (c.stats.khiVan - 50) / 500 + c.linhCanMul * 0.05,
+    (hasGift(c, 'g_thien_menh') ? 0.15 : 0) + 0.36 - Math.max(0, c.realm - 2) * 0.07 + c.stats.ngoTinh / 450 + c.stats.tamCanh / 500 - c.stats.tamMa / 200 + (c.stats.khiVan - 50) / 500 + c.linhCanMul * 0.05,
     0.08,
     0.9,
   );
@@ -740,7 +740,7 @@ const OVERWORK: Record<string, { warn: string; hits: { p: number; run: (c: Chara
   },
 };
 
-const SAFE_YEARS = 6;
+const SAFE_YEARS = 5;
 
 function overwork(c: Character, ctx: EffectCtx, focus: string, n: number) {
   const o = OVERWORK[focus];

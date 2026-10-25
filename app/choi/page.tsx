@@ -7,7 +7,9 @@ import MusicToggle from '@/components/MusicToggle';
 import { TribulationOverlay } from '@/components/Extras';
 import { BREAK_EVENT_ID } from '@/lib/game/events';
 import { endingOf } from '@/lib/game/endings';
-import { BagSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, HuntSheet, LogPanel, SEASONS, ShopSheet, Sheet, StageStrip } from '@/components/Panels';
+import { BagSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, HuntSheet, LogPanel, SEASONS, ShopSheet, Sheet, StageStrip, StatsPanel } from '@/components/Panels';
+import Radar, { charAxes } from '@/components/Radar';
+import { giftOf } from '@/lib/game/gacha';
 import type { BattleView } from '@/components/Battle';
 import { MONSTERS, effLv, fleeChance, hit, killExp, killReward, loseFight, monsterName, monsterStats, playerStats, tierOf, type Fighter } from '@/lib/game/combat';
 import { signOut } from '@/lib/auth';
@@ -19,7 +21,7 @@ import { addMemorial, displayName, fetchWorld, loadAll, saveLocal, saveMeta, sav
 import { useAuth } from '@/lib/useAuth';
 
 const SPEEDS = [1, 2, 4, 8, 16];
-type SheetName = null | 'shop' | 'bag' | 'bequan' | 'menu' | 'hunt';
+type SheetName = null | 'shop' | 'bag' | 'bequan' | 'menu' | 'hunt' | 'info';
 
 type Battle = BattleView & { t: number; rest: number; ps: Fighter; ms: Fighter };
 
@@ -537,7 +539,9 @@ export default function PlayPage() {
 
       <section className="stage">
         <Scene c={c} fx={fx} paused={paused} season={season} battle={c.focus === 'tru_yeu' && c.age >= 10 && battleRef.current?.m.id === c.huntTarget ? battleRef.current : null} />
-        <StageStrip c={c} compact={!!pending && !c.dead} />
+        <button className="strip-btn" onClick={() => setSheet('info')} aria-label="Xem bảng chỉ số nhân vật">
+          <StageStrip c={c} compact={!!pending && !c.dead} />
+        </button>
       </section>
 
       <div className="game-scroll">
@@ -568,6 +572,18 @@ export default function PlayPage() {
       {sheet === 'shop' && <ShopSheet c={c} onBuyItem={buyItem} onBuyPill={buyPill} onClose={() => setSheet(null)} />}
       {sheet === 'bag' && <BagSheet c={c} onEquip={equip} onUsePill={takePill} onClose={() => setSheet(null)} />}
       {sheet === 'bequan' && <BeQuanSheet c={c} onGo={beQuan} onClose={() => setSheet(null)} />}
+      {sheet === 'info' && (
+        <Sheet title={c.name} onClose={() => setSheet(null)}>
+          <div style={{ display: 'grid', placeItems: 'center' }}>
+            <Radar axes={charAxes(c.stats, c.lifespan)} size={250} color={c.daoTam <= -30 ? '#a8303a' : c.daoTam >= 30 ? '#3d6fb0' : '#2f6b5a'} />
+          </div>
+          <p className="note" style={{ textAlign: 'center', marginTop: 0 }}>
+            {c.linhCan} · {c.origin} · {c.birthPlace}
+            {c.gifts?.length ? ` · Thiên phú: ${c.gifts.map((g) => giftOf(g)?.name).join(', ')}` : ''}
+          </p>
+          <StatsPanel c={c} />
+        </Sheet>
+      )}
       {sheet === 'hunt' && <HuntSheet c={c} onPick={pickMonster} onToggleFlee={toggleFlee} onClose={() => setSheet(null)} />}
       {sheet === 'menu' && (
         <Sheet title="Menu" onClose={() => setSheet(null)}>
