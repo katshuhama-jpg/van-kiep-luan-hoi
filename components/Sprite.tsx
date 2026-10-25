@@ -1,6 +1,6 @@
 'use client';
 
-import { HAIR_COLORS, PATHS } from '@/lib/game/data';
+import { HAIR_COLORS, ITEMS, PATHS, type RobeDeco, type WeaponKind } from '@/lib/game/data';
 import { equippedLook } from '@/lib/game/helpers';
 import type { Character } from '@/lib/game/types';
 
@@ -66,6 +66,9 @@ export interface Look {
   hairStyle: number;
   tone: number; // phối màu áo
   cut: number; // kiểu dáng áo
+  robeColors?: [string, string, string, string];
+  deco?: RobeDeco;
+  wpn?: { k: WeaponKind; a: string; b: string };
 }
 
 function mix(a: string, b: string, t: number) {
@@ -103,6 +106,9 @@ export function lookOf(c: Character): Look {
     hairStyle: c.hairStyle ?? 0,
     tone: c.outfitTone ?? 0,
     cut: c.outfitCut ?? 0,
+    robeColors: ITEMS.find((i) => i.id === c.equipped.ao)?.robe,
+    deco: ITEMS.find((i) => i.id === c.equipped.ao)?.deco,
+    wpn: ITEMS.find((i) => i.id === c.equipped.vu_khi)?.wpn,
   };
 }
 
@@ -132,7 +138,7 @@ function build(l: Look) {
   const red = l.path === 'ma' || l.dao <= -60;
   const eye = red ? '#ff2a3a' : l.yeu ? '#ffc23d' : '#1a1a2e';
   const tones = ROBES[l.robe] ?? ROBES.vai;
-  const robe = tones[l.tone % tones.length];
+  const robe: Robe = l.robeColors ? { body: l.robeColors[0], dark: l.robeColors[1], trim: l.robeColors[2], alt: l.robeColors[3] } : tones[l.tone % tones.length];
   const cut = l.stage === 'baby' ? 0 : l.cut % 4;
 
   const back: R[] = [];
@@ -176,6 +182,18 @@ function build(l: Look) {
   }
   if (cut === 0 && robeH >= 6) body.push([5, robeTop + 5, 1, robeH - 5, robe.alt], [10, robeTop + 5, 1, robeH - 5, robe.alt]);
   if (l.robe === 'casa') body.push([5, robeTop, 1, 1, robe.trim], [6, robeTop + 1, 1, 1, robe.trim], [8, robeTop + 2, 1, 1, robe.trim], [9, robeTop + 3, 1, 1, robe.trim], [10, robeTop + 4, 1, 1, robe.trim]);
+  // Họa tiết áo đặc biệt
+  if (l.deco && l.stage !== 'baby') {
+    const d = l.deco;
+    if (d === 'van') body.push([5, robeTop + 2, 1, 1, robe.trim], [10, robeTop + 3, 1, 1, robe.trim], [5, robeTop + robeH - 1, 2, 1, robe.trim], [9, robeTop + robeH - 2, 2, 1, robe.trim]);
+    if (d === 'giap') body.push([3, robeTop, 3, 2, robe.trim], [10, robeTop, 3, 2, robe.trim], [4, robeTop + 2, 8, 1, robe.dark], [5, robeTop + 3, 6, 1, robe.alt]);
+    if (d === 'vay') for (let yy = 0; yy < robeH - 1; yy += 2) body.push([4 + (yy % 4 ? 1 : 0), robeTop + yy, 1, 1, robe.alt], [6 + (yy % 4 ? 1 : 0), robeTop + yy + 1, 1, 1, robe.alt], [10 - (yy % 4 ? 1 : 0), robeTop + yy, 1, 1, robe.alt]);
+    if (d === 'long') body.push([5, robeTop + 1, 1, 1, robe.trim], [6, robeTop + 2, 1, 1, robe.trim], [5, robeTop + 3, 1, 1, robe.trim], [10, robeTop + 2, 1, 2, robe.trim], [9, robeTop + 4, 2, 1, robe.trim], [4, robeTop, 8, 1, robe.trim]);
+    if (d === 'hoa') body.push([5, robeTop + 2, 1, 1, robe.alt], [10, robeTop + 3, 1, 1, robe.alt], [6, robeTop + robeH - 2, 1, 1, robe.alt], [9, robeTop + 1, 1, 1, robe.alt]);
+    if (d === 'vu') body.push([2, robeTop - 1, 2, 2, robe.alt], [12, robeTop - 1, 2, 2, robe.alt], [1, robeTop, 1, 2, robe.alt], [14, robeTop, 1, 2, robe.alt]);
+    if (d === 'manh') body.push([5, robeTop + 1, 2, 2, '#6a8a5a'], [9, robeTop + 3, 2, 2, '#9a5a4a'], [6, robeTop + robeH - 2, 2, 1, '#5a6a8a']);
+    if (d === 'long_thu') body.push([3, robeTop, 10, 1, robe.trim], [4, robeTop + 1, 1, 1, robe.trim], [11, robeTop + 1, 1, 1, robe.trim]);
+  }
   // Tay áo: áo choàng tay rộng, áo ngắn tay bó
   const sleeve = cut === 2 ? robe.dark : robe.body;
   if (cut === 3) body.push([3, robeTop + 1, 1, armH, sleeve], [12, robeTop + 1, 1, armH, sleeve], [2, robeTop + 1, 1, armH - 1, skin], [13, robeTop + 1, 1, armH - 1, skin]);
@@ -240,8 +258,29 @@ function build(l: Look) {
   if (l.weapon === 'dao') front.push([0, hy - 8, 2, 8, '#8a1a24'], [0, hy - 8, 1, 6, '#c0202e'], [0, hy, 3, 1, '#141217']);
   if (l.weapon === 'phattran') front.push([1, hy - 5, 1, 6, '#b58a5a'], [0, hy - 8, 3, 3, '#ffffff'], [0, hy - 5, 1, 2, '#ffffff']);
   if (l.weapon === 'lodan') front.push([13, feetY - 3, 4, 3, '#5a4a3a'], [12, feetY - 4, 6, 1, '#3e3228'], [14, feetY - 2, 2, 1, '#ff8a3d']);
+  // Vũ khí mới vẽ theo dáng + màu
+  const W = l.wpn;
+  if (W && l.stage !== 'baby') {
+    const { a, b } = W;
+    switch (W.k) {
+      case 'kiem': front.push([1, hy - 9, 1, 9, a], [0, hy - 1, 3, 1, b], [1, hy, 1, 1, b]); break;
+      case 'dao': front.push([0, hy - 8, 2, 8, a], [1, hy - 8, 1, 7, mix(a, '#000000', 0.2)], [0, hy, 3, 1, b]); break;
+      case 'thuong': front.push([1, hy - 12, 1, 16, b], [0, hy - 14, 3, 2, a], [1, hy - 15, 1, 1, a], [0, hy - 11, 3, 1, '#c0202e']); break;
+      case 'cung': front.push([0, hy - 8, 1, 2, a], [-1, hy - 6, 1, 8, a], [0, hy + 2, 1, 2, a], [1, hy - 7, 1, 10, b]); break;
+      case 'quat': front.push([-1, hy - 5, 4, 4, a], [0, hy - 6, 2, 1, a], [0, hy - 4, 1, 3, b], [2, hy - 4, 1, 3, b], [1, hy - 1, 1, 1, b]); break;
+      case 'truong': front.push([1, hy - 11, 1, 14, a], [0, hy - 12, 3, 1, b], [1, hy - 13, 1, 1, b]); break;
+      case 'chuy': front.push([1, hy - 5, 1, 6, b], [-1, hy - 9, 5, 4, a], [0, hy - 10, 3, 1, a], [1, hy - 7, 1, 1, '#ffffff']); break;
+      case 'tieu': front.push([0, hy - 6, 1, 7, a], [0, hy - 4, 1, 1, b], [0, hy - 2, 1, 1, b], [0, hy, 1, 1, b]); break;
+      case 'roi': front.push([1, hy - 3, 1, 4, b], [0, hy - 5, 1, 2, a], [-1, hy - 7, 1, 2, a], [-2, hy - 8, 1, 1, a]); break;
+      case 'song': front.push([1, hy - 8, 1, 8, a], [0, hy, 3, 1, b], [14, hy - 8, 1, 8, b], [13, hy, 3, 1, a]); break;
+      case 'liem': front.push([1, hy - 10, 1, 13, b], [-3, hy - 11, 5, 1, a], [-3, hy - 10, 1, 2, a], [-2, hy - 9, 1, 1, a]); break;
+      case 'but': front.push([1, hy - 6, 1, 6, b], [1, hy - 8, 1, 2, a], [0, hy - 7, 1, 1, a]); break;
+      case 'cuoc': front.push([1, hy - 9, 1, 11, b], [-1, hy - 10, 3, 2, a]); break;
+      case 'quyen': front.push([1, hy - 1, 3, 2, a], [12, hy - 1, 3, 2, a], [1, hy - 1, 3, 1, b], [12, hy - 1, 3, 1, b]); break;
+    }
+  }
   // Gậy chống khi già
-  if (l.aging === 2 && l.stage === 'adult' && !l.weapon) front.push([14, y0 + 6, 1, 14, '#8a5a2a'], [13, y0 + 6, 2, 1, '#6b4a2a']);
+  if (l.aging === 2 && l.stage === 'adult' && !l.weapon && !l.wpn) front.push([14, y0 + 6, 1, 14, '#8a5a2a'], [13, y0 + 6, 2, 1, '#6b4a2a']);
   // Phụ kiện
   if (l.acc === 'ngoc') front.push([5, robeTop + 5, 1, 2, '#5fd8a0']);
   if (l.acc === 'holo') front.push([11, robeTop + 4, 2, 2, '#e0a040'], [11, robeTop + 3, 1, 1, '#e0a040']);

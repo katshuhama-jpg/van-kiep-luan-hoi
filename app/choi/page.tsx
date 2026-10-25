@@ -11,7 +11,7 @@ import { BagSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, Hu
 import type { BattleView } from '@/components/Battle';
 import { MONSTERS, effLv, fleeChance, hit, killExp, killReward, loseFight, monsterName, monsterStats, playerStats, tierOf, type Fighter } from '@/lib/game/combat';
 import { signOut } from '@/lib/auth';
-import { ITEMS, PATHS, PILLS, REALMS, TALENTS, realmLabel } from '@/lib/game/data';
+import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, realmLabel } from '@/lib/game/data';
 import { checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick } from '@/lib/game/engine';
 import { addPill, fmt, giveItem, money, wealthTier } from '@/lib/game/helpers';
 import type { Character, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
@@ -136,7 +136,7 @@ export default function PlayPage() {
         continue;
       }
       // bạn ra đòn
-      const h1 = hit(b.ps.atk, b.ms.def, rnd);
+      const h1 = hit(b.ps.atk, b.ms.def, rnd, 0.15 + gearFx(c.equipped).crit / 100);
       b.mHp = Math.max(0, b.mHp - h1.dmg);
       push('p', h1.dmg, h1.crit, b.m.boss ? 'Vô hiệu' : undefined);
       if (b.mHp <= 0) {

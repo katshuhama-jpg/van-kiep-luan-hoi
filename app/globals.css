@@ -510,65 +510,68 @@ button:disabled {
   }
 }
 
-/* mùa */
-.season span {
-  position: absolute;
-  top: -10px;
-  width: 6px;
-  height: 6px;
-  animation: season-fall 6s linear infinite;
-}
+/* mùa: hạt rơi trên nền */
+.season { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.season span { position: absolute; top: -12px; width: 6px; height: 6px; animation: season-fall 6s linear infinite; }
 
-.season.xuan span {
-  background: #ffb3c6;
-}
+/* xuân: cánh đào lả lướt */
+.season.xuan span { background: #ffb3c6; width: 6px; height: 4px; animation-name: petal; box-shadow: 2px 2px 0 #ff8fb1; }
+.season.xuan span.p1 { background: #ffffff; box-shadow: 2px 2px 0 #ffd0de; width: 5px; height: 3px; }
+.season.xuan span.p2 { background: #ff8fb1; width: 4px; height: 4px; box-shadow: none; }
 
-.season.thu span {
-  background: #e08a3a;
-  width: 7px;
-  height: 5px;
-}
+/* hạ: đom đóm và nắng */
+.season.ha span { background: #fff6a8; width: 4px; height: 4px; top: auto; bottom: 20%; box-shadow: 0 0 6px #fff6a8; animation-name: firefly; }
+.season.ha span:nth-child(n + 12) { display: none; }
+.season.ha span.p1 { bottom: 40%; }
+.sunrays { position: absolute; inset: -20% -10% 30% 40%; background: repeating-linear-gradient(115deg, rgba(255, 246, 168, 0.22) 0 14px, transparent 14px 40px); animation: rays 6s steps(6) infinite alternate; }
 
-.season.dong span {
-  background: #ffffff;
-  width: 5px;
-  height: 5px;
-}
+/* thu: lá đỏ lá vàng xoay theo gió */
+.season.thu span { background: #e08a3a; width: 7px; height: 5px; animation-name: leaf; box-shadow: 2px 0 0 #a8481a; }
+.season.thu span.p1 { background: #d9442a; box-shadow: 2px 0 0 #8a2a1a; }
+.season.thu span.p2 { background: #f0c040; box-shadow: 2px 0 0 #b0841a; width: 6px; height: 4px; }
+.season.thu span:nth-child(n + 16) { display: none; }
 
-.season.ha span {
-  background: #fff6a8;
-  width: 4px;
-  height: 4px;
-  top: auto;
-  bottom: 30px;
-  box-shadow: 0 0 6px #fff6a8;
-  animation-name: firefly;
-}
+/* đông: tuyết dày, gió thổi, tuyết đọng dưới chân */
+.season.dong span { background: #ffffff; width: 4px; height: 4px; animation-name: snow; }
+.season.dong span.p1 { width: 3px; height: 3px; opacity: 0.8; }
+.season.dong span.p2 { width: 6px; height: 6px; box-shadow: 0 0 2px #dfe8f2; }
+.snowbank { position: absolute; left: 0; right: 0; bottom: 0; height: 10px; background: #ffffff; box-shadow: 0 -3px 0 #eef4fa, 0 -5px 0 rgba(255, 255, 255, 0.5); animation: bank 8s steps(4) infinite alternate; }
 
 @keyframes season-fall {
-  0% {
-    transform: translate(0, 0) rotate(0);
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-40px, 270px) rotate(360deg);
-    opacity: 0.8;
-  }
+  0% { transform: translate(0, 0) rotate(0); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translate(-40px, 270px) rotate(360deg); opacity: 0.8; }
 }
-
+@keyframes petal {
+  0% { transform: translate(0, 0) rotate(0); opacity: 0; }
+  10% { opacity: 1; }
+  25% { transform: translate(18px, 60px) rotate(90deg); }
+  50% { transform: translate(-6px, 130px) rotate(200deg); }
+  75% { transform: translate(14px, 200px) rotate(290deg); }
+  100% { transform: translate(-10px, 280px) rotate(380deg); opacity: 0.7; }
+}
+@keyframes leaf {
+  0% { transform: translate(0, 0) rotate(0) scaleX(1); opacity: 0; }
+  10% { opacity: 1; }
+  30% { transform: translate(-30px, 70px) rotate(140deg) scaleX(0.3); }
+  60% { transform: translate(-70px, 160px) rotate(300deg) scaleX(1); }
+  100% { transform: translate(-120px, 280px) rotate(520deg) scaleX(0.4); opacity: 0.8; }
+}
+@keyframes snow {
+  0% { transform: translate(0, 0); opacity: 0; }
+  8% { opacity: 1; }
+  50% { transform: translate(-14px, 140px); }
+  100% { transform: translate(-28px, 280px); opacity: 0.9; }
+}
 @keyframes firefly {
-  0%,
-  100% {
-    transform: translate(0, 0);
-    opacity: 0;
-  }
-  50% {
-    transform: translate(14px, -60px);
-    opacity: 1;
-  }
+  0%, 100% { transform: translate(0, 0); opacity: 0; }
+  50% { transform: translate(14px, -60px); opacity: 1; }
+}
+@keyframes rays { from { opacity: 0.5; } to { opacity: 1; } }
+@keyframes bank { from { height: 8px; } to { height: 12px; } }
+@media (prefers-reduced-motion: reduce) {
+  .season span, .sunrays, .snowbank { animation: none; }
+  .season span { display: none; }
 }
 
 /* hoạt cảnh theo trọng tâm */
@@ -2430,3 +2433,17 @@ button:disabled {
 @keyframes ringShrink { from { transform: scale(1.25); } to { transform: scale(0.45); border-color: #ff6a5a; } }
 .kiep-skip { position: absolute; bottom: max(16px, env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); background: transparent; border: 2px solid #6a5a8a; color: #b8aee0; font: inherit; font-size: 18px; padding: 4px 12px; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .kiep-hit, .dragon, .gacha-card, .gacha-row.gold { animation: none; } }
+
+/* ===== Trang bị: chỉ số, đồ hiếm ===== */
+.fx-line { color: var(--jade) !important; }
+.rare-tag { font-style: normal; font-size: 14px; padding: 0 4px; color: #fff8e6; vertical-align: middle; }
+.rare-tag.r1 { background: #3d6fb0; }
+.rare-tag.r2 { background: #8a3ad0; }
+.rare-tag.r3 { background: #d9822b; }
+.item.rare-3 { box-shadow: inset 0 0 0 2px #d9822b; }
+.item.rare-2 { box-shadow: inset 0 0 0 2px #8a3ad0; }
+.item.unknown .item-icon { filter: grayscale(1) brightness(0.6); }
+.owned-tag { font-size: 16px; color: var(--muted); white-space: nowrap; }
+.drop-line b { white-space: nowrap; }
+.drop-line b { font-weight: 400; color: #8a3ad0; }
+.drop-line b.have { color: var(--muted); text-decoration: line-through; }

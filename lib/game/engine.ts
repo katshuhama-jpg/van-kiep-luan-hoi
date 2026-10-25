@@ -1,4 +1,4 @@
-import { FAMILY_TIERS, REGIONS, FOCUS, MAX_LIFE, HAIR_COLORS, HAIR_STYLES, HO, HO_KEP, TEN_NAM_1, TEN_NAM_2, TEN_NU_1, TEN_NU_2, LIFE_FATES, LINH_CAN, ORIGINS, PATHS, PILLS, REALMS, TEN_NAM, TEN_NU, realmLabel } from './data';
+import { ITEMS, fxText, gearFx, FAMILY_TIERS, REGIONS, FOCUS, MAX_LIFE, HAIR_COLORS, HAIR_STYLES, HO, HO_KEP, TEN_NAM_1, TEN_NAM_2, TEN_NU_1, TEN_NU_2, LIFE_FATES, LINH_CAN, ORIGINS, PATHS, PILLS, REALMS, TEN_NAM, TEN_NU, realmLabel } from './data';
 import { BREAK_EVENT_ID, EVENTS, PATH_EVENT_ID, pathChoices } from './events';
 import { addCult, addPill, clamp, fatal, reward, wealthTier, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
 import type { Character, Choice, EffectCtx, Fx, FxKind, GameEvent, Meta, PendingEvent, Tone } from './types';
@@ -164,10 +164,7 @@ function enterRealm(c: Character, realm: number, ctx: EffectCtx, talents: string
 }
 
 export function gearMul(c: Character) {
-  let m = 1;
-  if (c.equipped.ao === 'huyet_bao') m *= 1.15;
-  if (c.equipped.phu_kien === 'kiem_bay') m *= 1.2;
-  return m;
+  return 1 + gearFx(c.equipped).cult / 100;
 }
 
 function pathMul(c: Character) {
@@ -329,7 +326,7 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
     else if (c.realm >= 1) addCult(c, g * 0.25);
   }
   if (focus === 'luyen_dan') {
-    const mul = (c.path === 'dan' ? 2 : 1) * (c.equipped.vu_khi === 'lo_dan' ? 2 : 1);
+    const mul = (c.path === 'dan' ? 2 : 1) * (1 + gearFx(c.equipped).dan / 100);
     money(c, (15 + 25 * c.realm) * mul * jitter);
     if (rnd() < 0.3 * (c.path === 'dan' ? 1.6 : 1)) {
       const p = c.path === 'dan' && rnd() < 0.25 ? 'truc_co' : pick(rnd, ['tu_khi', 'hoi_xuan', 'thanh_tam']);
@@ -337,7 +334,7 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
       ctx.log(`Luyện thành một viên ${PILLS.find((x) => x.id === p)?.name}.`, 'good');
     }
   } else if (focus === 'kiem_tien') {
-    money(c, (c.realm === 0 ? 12 : 10 + 30 * c.realm) * (0.6 + rnd() * 0.8));
+    money(c, (c.realm === 0 ? 12 : 10 + 30 * c.realm) * (0.6 + rnd() * 0.8) * (1 + gearFx(c.equipped).money / 100));
   } else if (focus === 'du_ngoan') {
     if (rnd() < 0.3) stat(c, 'khiVan', 1);
     stat(c, 'tamCanh', 1);
@@ -420,9 +417,19 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
   if (c.stats.tamCanh > 60) stat(c, 'tamMa', -1);
   if (c.path === 'ma') stat(c, 'tamMa', 2);
   if (c.path === 'phat') stat(c, 'tamMa', -2);
-  if (c.equipped.ao === 'huyet_bao') stat(c, 'tamMa', 1);
-  if (c.equipped.ao === 'ca_sa') stat(c, 'tamMa', -2);
-  if (c.equipped.ao === 'thanh_sam' || c.equipped.phu_kien === 'ho_lo' || c.equipped.vu_khi === 'phat_tran') stat(c, 'tamCanh', 1);
+  const gf = gearFx(c.equipped);
+  if (gf.tamMa) stat(c, 'tamMa', gf.tamMa);
+  if (gf.tamCanh) stat(c, 'tamCanh', gf.tamCanh);
+
+  // ---- Nhặt được đồ trong lúc sống ----
+  if (!opts.closed) {
+    const found = findLoot(c, focus, tier.id);
+    if (found) {
+      giveItem(c, found.id, false);
+      ctx.fx('buy', found.name);
+      ctx.log(`${found.text} Nhặt được ${found.name}! (${fxText(ITEMS.find((i) => i.id === found.id)?.fx)}) Mở Túi đồ để dùng.`, 'good');
+    }
+  }
   if (c.partner) stat(c, 'tamCanh', 1);
 
   // Thọ nguyên không vượt quá 1.4 lần mức chuẩn của cảnh giới
@@ -446,6 +453,26 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
     if (e) return buildPending(c, e);
   }
   if (age >= 6 && rnd() < 0.35 && focus) ctx.log(flavorLine(c, focus));
+  return null;
+}
+
+/** Đồ nhặt được theo việc đang làm. Mỗi món chỉ nhặt một lần. */
+const LOOT: { id: string; p: number; ok: (c: Character, focus: string | null, tier: number) => boolean; text: string }[] = [
+  { id: 'dao_phay', p: 0.04, ok: (c) => c.age >= 6 && c.age <= 14, text: 'Mẹ dúi cho bạn con dao bếp: "Ra đường phải biết tự vệ."' },
+  { id: 'roi_da', p: 0.04, ok: (c, f) => (c.age >= 6 && c.age <= 14) || f === 'kiem_tien', text: 'Ông lão chăn trâu tặng bạn chiếc roi cũ.' },
+  { id: 'ao_toi', p: 0.05, ok: (_c, f) => f === 'du_ngoan', text: 'Trú mưa trong miếu hoang, bạn thấy chiếc áo tơi treo trên vách.' },
+  { id: 'can_cau', p: 0.025, ok: (_c, f) => f === 'du_ngoan', text: 'Bên bờ Vị Thủy, một ông lão câu cá bằng lưỡi thẳng để lại cần câu rồi biến mất.' },
+  { id: 'kiem_gay', p: 0.02, ok: (_c, f) => f === 'du_ngoan' || f === 'tu_luyen', text: 'Trên một ngôi mộ cổ không tên cắm một thanh kiếm gãy, vẫn còn vang tiếng kiếm ngân.' },
+  { id: 'hi_phuc', p: 0.04, ok: (_c, f) => f === 'ket_duyen', text: 'Đám cưới tan, cô dâu bỏ trốn để lại bộ hỉ phục.' },
+  { id: 'ao_an_may', p: 0.05, ok: (c, _f, t) => t === 0 && c.age >= 14, text: 'Một lão ăn mày cởi áo khoác lên vai bạn: "Cái Bang không bỏ huynh đệ."' },
+  { id: 'long_bao_cu', p: 0.006, ok: (_c, f) => f === 'du_ngoan' || f === 'kiem_tien', text: 'Đào móng nhà, bạn chạm phải một chiếc rương sơn son: bên trong là long bào của vương triều đã mất.' },
+];
+
+function findLoot(c: Character, focus: string | null, tier: number) {
+  for (const l of LOOT) {
+    if (c.inventory.includes(l.id) || !l.ok(c, focus, tier)) continue;
+    if (rnd() < l.p) return { id: l.id, text: l.text, name: ITEMS.find((i) => i.id === l.id)?.name ?? l.id };
+  }
   return null;
 }
 

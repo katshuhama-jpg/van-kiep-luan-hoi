@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState, type CSSProperties, type ReactNode } from 'react';
 import { ENDINGS, RARE_COLOR, endingOf } from '@/lib/game/endings';
 import { GachaPanel, ShareCard } from './Extras';
-import { FOCUS, ITEMS, PATHS, PILLS, REALMS, SEASONS, TALENTS, realmLabel, type Item } from '@/lib/game/data';
+import { FOCUS, ITEMS, PATHS, PILLS, REALMS, SEASONS, TALENTS, fxText, gearFx, realmLabel, type Item } from '@/lib/game/data';
 import { describeLean } from '@/lib/game/engine';
 import { DANGER_TEXT, MONSTERS, combatLevel, dangerOf, effLv, killExp, monsterName, playerStats, tierOf } from '@/lib/game/combat';
 import { MonsterSprite } from './Battle';
@@ -148,8 +148,9 @@ export function ItemIcon({ item, pill }: { item?: Item; pill?: string }) {
     );
   }
   if (!item) return null;
+  if (item.wpn) return <WeaponIcon k={item.wpn.k} a={item.wpn.a} b={item.wpn.b} />;
   if (item.slot === 'ao') {
-    const [a, b] = ICON_COLOR[item.look] ?? ICON_COLOR.vai;
+    const [a, b] = item.robe ? [item.robe[0], item.robe[2]] : ICON_COLOR[item.look] ?? ICON_COLOR.vai;
     return (
       <svg viewBox="0 0 8 8" width="32" height="32" shapeRendering="crispEdges" aria-hidden="true">
         <rect x="2" y="1" width="4" height="7" fill={a} />
@@ -177,6 +178,39 @@ export function ItemIcon({ item, pill }: { item?: Item; pill?: string }) {
   );
 }
 
+function WeaponIcon({ k, a, b }: { k: string; a: string; b: string }) {
+  const r: Record<string, [number, number, number, number, string][]> = {
+    kiem: [[4, 0, 1, 6, a], [2, 6, 5, 1, b], [4, 7, 1, 1, b]],
+    dao: [[3, 0, 3, 6, a], [2, 6, 5, 1, b], [4, 7, 1, 1, b]],
+    thuong: [[4, 2, 1, 6, b], [3, 0, 3, 2, a], [3, 2, 3, 1, '#c0202e']],
+    cung: [[2, 0, 1, 1, a], [1, 1, 1, 6, a], [2, 7, 1, 1, a], [3, 0, 1, 8, b]],
+    quat: [[1, 1, 6, 4, a], [2, 0, 4, 1, a], [3, 5, 2, 3, b]],
+    truong: [[4, 0, 1, 8, a], [3, 0, 3, 1, b]],
+    chuy: [[4, 4, 1, 4, b], [2, 0, 5, 4, a]],
+    tieu: [[4, 0, 1, 8, a], [4, 2, 1, 1, b], [4, 4, 1, 1, b], [4, 6, 1, 1, b]],
+    roi: [[5, 4, 1, 4, b], [4, 2, 1, 2, a], [3, 1, 1, 1, a], [2, 0, 1, 1, a]],
+    song: [[2, 0, 1, 6, a], [1, 6, 3, 1, b], [5, 0, 1, 6, b], [4, 6, 3, 1, a]],
+    liem: [[4, 1, 1, 7, b], [0, 0, 5, 1, a], [0, 1, 1, 2, a]],
+    but: [[4, 2, 1, 6, b], [4, 0, 1, 2, a], [3, 1, 1, 1, a]],
+    cuoc: [[4, 1, 1, 7, b], [2, 0, 3, 2, a]],
+    quyen: [[1, 2, 6, 4, a], [1, 2, 6, 1, b], [2, 6, 4, 2, a]],
+  };
+  return (
+    <svg viewBox="0 0 8 8" width="32" height="32" shapeRendering="crispEdges" aria-hidden="true">
+      {(r[k] ?? r.kiem).map(([x, y, w, h, f], i) => (
+        <rect key={i} x={x} y={y} width={w} height={h} fill={f} />
+      ))}
+    </svg>
+  );
+}
+
+const RARE_TXT = ['', 'Tốt', 'Hiếm', 'Cực phẩm'];
+function srcText(it: Item): string {
+  if (it.src === 'drop') return 'Rơi từ: ' + (it.from ?? []).map((id) => MONSTERS.find((m) => m.id === id)?.name ?? id).join(', ');
+  if (it.src === 'event') return 'Nhặt được khi: ' + (it.where ?? 'đi khắp nơi');
+  return 'Bán ở phường thị';
+}
+
 /* ---------------- Phường thị ---------------- */
 function lockReason(c: Character, it: Item): string | null {
   if (c.realm < it.minRealm) return `Cần ${REALMS[it.minRealm].name}`;
@@ -187,7 +221,7 @@ function lockReason(c: Character, it: Item): string | null {
 }
 
 export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; onBuyItem: (id: string) => void; onBuyPill: (id: string) => void; onClose: () => void }) {
-  const [tab, setTab] = useState<'do' | 'dan'>('do');
+  const [tab, setTab] = useState<'do' | 'dan' | 'kho'>('do');
   return (
     <Sheet title="Phường thị" onClose={onClose}>
       <p className="note" style={{ marginTop: 0 }}>
@@ -200,10 +234,13 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; 
         <button className={tab === 'dan' ? 'on' : ''} onClick={() => setTab('dan')}>
           Đan dược
         </button>
+        <button className={tab === 'kho' ? 'on' : ''} onClick={() => setTab('kho')}>
+          Đồ hiếm
+        </button>
       </div>
       <div className="items">
         {tab === 'do' &&
-          ITEMS.filter((i) => i.price > 0).map((it) => {
+          ITEMS.filter((i) => i.price > 0 && i.src !== 'drop' && i.src !== 'event').map((it) => {
             const owned = c.inventory.includes(it.id);
             const lock = lockReason(c, it);
             return (
@@ -213,6 +250,7 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; 
                 </div>
                 <div className="item-body">
                   <span>{it.name}</span>
+                  {it.fx && <small className="fx-line">{fxText(it.fx)}</small>}
                   <small>{lock ?? it.desc}</small>
                 </div>
                 <button className="btn btn-red" disabled={owned || !!lock || c.linhThach < it.price} onClick={() => onBuyItem(it.id)}>
@@ -221,6 +259,29 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; 
               </div>
             );
           })}
+        {tab === 'kho' && (
+          <>
+            <p className="note" style={{ margin: 0 }}>Không bán ở đâu cả. Phải trừ yêu hoặc gặp cơ duyên trong đời mới có. Đã có {ITEMS.filter((i) => (i.src === 'drop' || i.src === 'event') && i.id !== 'ao_vai' && c.inventory.includes(i.id)).length}/{ITEMS.filter((i) => (i.src === 'drop' || i.src === 'event') && i.id !== 'ao_vai').length}.</p>
+            {ITEMS.filter((i) => (i.src === 'drop' || i.src === 'event') && i.id !== 'ao_vai').map((it) => {
+              const owned = c.inventory.includes(it.id);
+              return (
+                <div key={it.id} className={`item rare-${it.rare ?? 0} ${owned ? '' : 'unknown'}`}>
+                  <div className="item-icon">
+                    <ItemIcon item={it} />
+                  </div>
+                  <div className="item-body">
+                    <span>
+                      {it.name} {it.rare ? <em className={`rare-tag r${it.rare}`}>{RARE_TXT[it.rare]}</em> : null}
+                    </span>
+                    {it.fx && <small className="fx-line">{fxText(it.fx)}</small>}
+                    <small>{srcText(it)}</small>
+                  </div>
+                  <span className="owned-tag">{owned ? 'Đã có' : 'Chưa có'}</span>
+                </div>
+              );
+            })}
+          </>
+        )}
         {tab === 'dan' &&
           PILLS.map((p) => (
             <div key={p.id} className="item">
@@ -247,8 +308,10 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; 
 export function BagSheet({ c, onEquip, onUsePill, onClose }: { c: Character; onEquip: (id: string) => void; onUsePill: (id: string) => void; onClose: () => void }) {
   const owned = ITEMS.filter((i) => c.inventory.includes(i.id));
   const pills = PILLS.filter((p) => (c.pills[p.id] ?? 0) > 0);
+  const total = fxText(gearFx(c.equipped));
   return (
     <Sheet title="Túi trữ vật" onClose={onClose}>
+      <p className="note" style={{ marginTop: 0 }}>Trang bị đang mặc: {total || 'chưa có chỉ số gì'}</p>
       <div className="items">
         {owned.map((it) => {
           const on = c.equipped[it.slot] === it.id;
@@ -258,7 +321,10 @@ export function BagSheet({ c, onEquip, onUsePill, onClose }: { c: Character; onE
                 <ItemIcon item={it} />
               </div>
               <div className="item-body">
-                <span>{it.name}</span>
+                <span>
+                  {it.name} {it.rare ? <em className={`rare-tag r${it.rare}`}>{RARE_TXT[it.rare]}</em> : null}
+                </span>
+                {it.fx && <small className="fx-line">{fxText(it.fx)}</small>}
                 <small>{it.desc}</small>
               </div>
               <button className={`btn ${on ? 'btn-jade' : ''}`} onClick={() => onEquip(it.id)}>
@@ -600,6 +666,17 @@ export function HuntSheet({ c, onPick, onToggleFlee, onClose }: { c: Character; 
                 {hidden ? '??? (chưa đủ tầm để biết)' : m.boss ? `BOSS ${m.boss === 'ta' ? 'Tà phái' : 'Chính phái'} · ${m.name}` : `${monsterName(c, m)} · Lv${elv}${elv > m.lv ? ` (gốc ${m.lv})` : ''}`}
                 {!hidden && m.human && !m.boss && <span className="badge" style={{ marginLeft: 4 }}>Cao thủ</span>}
                 <small>{hidden ? m.place : m.boss ? `${m.place} · ${m.desc} Chưa từng ai thắng.` : `${m.place} · ~${fmt(killExp(c, m))} tu vi/con · ${c.kills?.[m.id] ?? 0} đã trảm`}</small>
+                {!hidden && !m.boss && ITEMS.some((i) => i.from?.includes(m.id)) && (
+                  <small className="drop-line">
+                    Rơi:{' '}
+                    {ITEMS.filter((i) => i.from?.includes(m.id)).map((i, k) => (
+                      <span key={i.id}>
+                        {k > 0 && ' · '}
+                        <b className={c.inventory.includes(i.id) ? 'have' : ''}>{i.name}</b>
+                      </span>
+                    ))}
+                  </small>
+                )}
               </span>
               {!hidden && <span className={`danger ${d}`}>{DANGER_TEXT[d]}</span>}
             </button>

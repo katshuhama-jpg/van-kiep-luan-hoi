@@ -79,34 +79,141 @@ export const FOCUS: Record<Focus, { name: string; desc: string; minAge: number }
   tru_yeu: { name: 'Trừ yêu', desc: 'Đánh quái lên cấp', minAge: 10 },
 };
 
+/** Chỉ số trang bị, đơn vị % (riêng tamCanh/tamMa là điểm mỗi năm) */
+export interface ItemFx {
+  atk?: number; // công khi trừ yêu
+  def?: number; // thủ
+  hp?: number; // máu
+  crit?: number; // tỉ lệ bạo kích (+ điểm %)
+  flee?: number; // tỉ lệ rút lui thành công
+  cult?: number; // tốc độ tu luyện
+  exp?: number; // tu vi khi trảm quái
+  drop?: number; // tỉ lệ rơi đồ
+  money?: number; // linh thạch khi kiếm tiền
+  dan?: number; // linh thạch + đan khi luyện đan
+  tamCanh?: number; // mỗi năm
+  tamMa?: number; // mỗi năm (âm là giảm)
+}
+
+export type WeaponKind = 'mockiem' | 'kiem' | 'dao' | 'thuong' | 'cung' | 'quat' | 'truong' | 'chuy' | 'tieu' | 'roi' | 'song' | 'liem' | 'but' | 'cuoc' | 'quyen' | 'phattran' | 'lodan';
+export type RobeDeco = 'van' | 'giap' | 'vay' | 'long' | 'hoa' | 'vu' | 'manh' | 'long_thu' | 'casa';
+
 export interface Item {
   id: string;
   name: string;
   slot: Slot;
-  price: number;
+  price: number; // 0 = không bán ở phường thị
   minRealm: number;
   path?: PathId;
   lean?: 'chinh' | 'ta';
   desc: string;
-  look: string; // khóa ngoại hình cho sprite
+  look: string; // khóa ngoại hình cho sprite (đồ cũ)
+  fx?: ItemFx;
+  src?: 'shop' | 'drop' | 'event'; // mặc định shop
+  from?: string[]; // quái rơi ra
+  where?: string; // gợi ý chỗ nhặt được
+  rare?: 0 | 1 | 2 | 3; // phàm, tốt, hiếm, cực phẩm
+  robe?: [string, string, string, string]; // màu áo: thân, đậm, viền, sáng
+  deco?: RobeDeco;
+  wpn?: { k: WeaponKind; a: string; b: string }; // dáng vũ khí + 2 màu
 }
 
 export const ITEMS: Item[] = [
-  { id: 'ao_vai', name: 'Áo vải thô', slot: 'ao', price: 0, minRealm: 0, desc: 'Áo mặc từ nhỏ.', look: 'vai' },
-  { id: 'thanh_sam', name: 'Thanh Sam', slot: 'ao', price: 60, minRealm: 1, desc: 'Áo xanh ngọc của đệ tử. +2 tâm cảnh mỗi năm.', look: 'thanh' },
-  { id: 'bach_y', name: 'Bạch Y Tuyết Văn', slot: 'ao', price: 220, minRealm: 2, lean: 'chinh', desc: 'Áo trắng thêu mây. Tà khí khó gần.', look: 'bach' },
-  { id: 'huyet_bao', name: 'Huyết Sát Bào', slot: 'ao', price: 220, minRealm: 2, lean: 'ta', desc: 'Áo đen viền máu. Tu vi +15%, tâm ma tăng.', look: 'huyet' },
-  { id: 'tu_kim_bao', name: 'Tử Kim Bào', slot: 'ao', price: 900, minRealm: 3, desc: 'Áo tím chỉ vàng của chân nhân. Khí vận +.', look: 'tukim' },
-  { id: 'ca_sa', name: 'Cà sa Kim Lan', slot: 'ao', price: 300, minRealm: 2, path: 'phat', desc: 'Cà sa của cao tăng. Tâm ma giảm mạnh.', look: 'casa' },
-  { id: 'moc_kiem', name: 'Mộc kiếm', slot: 'vu_khi', price: 15, minRealm: 0, desc: 'Kiếm gỗ tập võ.', look: 'mockiem' },
-  { id: 'thanh_phong', name: 'Thanh Phong Kiếm', slot: 'vu_khi', price: 380, minRealm: 1, desc: 'Phi kiếm cấp thấp. Thoát hiểm dễ hơn.', look: 'kiem' },
-  { id: 'huyet_dao', name: 'Huyết Ma Đao', slot: 'vu_khi', price: 520, minRealm: 2, lean: 'ta', desc: 'Đao uống máu. Thắng nhiều hơn, tà hơn.', look: 'dao' },
-  { id: 'phat_tran', name: 'Phất trần', slot: 'vu_khi', price: 260, minRealm: 2, desc: 'Phất trần của đạo nhân. Tâm cảnh +.', look: 'phattran' },
-  { id: 'lo_dan', name: 'Tử Kim Đan Lô', slot: 'vu_khi', price: 450, minRealm: 1, desc: 'Lò luyện đan mang theo người. Luyện đan x2.', look: 'lodan' },
+  // ======== Pháp y (áo) ========
+  { id: 'ao_vai', name: 'Áo vải thô', slot: 'ao', price: 0, minRealm: 0, desc: 'Áo mặc từ nhỏ.', look: 'vai', src: 'event', where: 'Có sẵn từ lúc sinh' },
+  { id: 'ao_da_thu', name: 'Áo da thú', slot: 'ao', price: 40, minRealm: 0, desc: 'Da thú may vụng, chắc chắn.', look: 'x', fx: { def: 8, hp: 5 }, robe: ['#8a6a4a', '#6a4e34', '#c9a77a', '#a8885e'], deco: 'long_thu' },
+  { id: 'ao_nho_y', name: 'Nho y thư sinh', slot: 'ao', price: 70, minRealm: 0, desc: 'Áo của người đọc sách.', look: 'x', fx: { cult: 5, tamCanh: 1 }, robe: ['#e6e0cc', '#c4bca4', '#3d6fb0', '#ffffff'] },
+  { id: 'thanh_sam', name: 'Thanh Sam', slot: 'ao', price: 60, minRealm: 1, desc: 'Áo xanh ngọc của đệ tử.', look: 'thanh', fx: { cult: 5, tamCanh: 1 } },
+  { id: 'ao_vo_si', name: 'Võ phục đỏ', slot: 'ao', price: 120, minRealm: 1, desc: 'Áo bó gọn của võ sinh.', look: 'x', fx: { atk: 8, hp: 5 }, robe: ['#b8302a', '#86201c', '#ffd36b', '#d8604a'] },
+  { id: 'ao_da_hanh', name: 'Dạ hành y', slot: 'ao', price: 180, minRealm: 1, desc: 'Đồ đen của kẻ đi đêm.', look: 'x', fx: { flee: 20, crit: 5 }, robe: ['#24242e', '#16161c', '#5a5a6a', '#3a3a48'] },
+  { id: 'ao_thuong_nhan', name: 'Gấm vóc thương nhân', slot: 'ao', price: 260, minRealm: 1, desc: 'Mặc vào ai cũng tin bạn có tiền.', look: 'x', fx: { money: 30, dan: 10 }, robe: ['#c9962e', '#9a7020', '#7a2a1e', '#ffd36b'], deco: 'hoa' },
+  { id: 'bach_y', name: 'Bạch Y Tuyết Văn', slot: 'ao', price: 220, minRealm: 2, lean: 'chinh', desc: 'Áo trắng thêu mây. Tà khí khó gần.', look: 'bach', fx: { def: 15, tamMa: -1 }, deco: 'van' },
+  { id: 'huyet_bao', name: 'Huyết Sát Bào', slot: 'ao', price: 220, minRealm: 2, lean: 'ta', desc: 'Áo đen viền máu.', look: 'huyet', fx: { cult: 15, atk: 10, tamMa: 1 } },
+  { id: 'ca_sa', name: 'Cà sa Kim Lan', slot: 'ao', price: 300, minRealm: 2, path: 'phat', desc: 'Cà sa của cao tăng.', look: 'casa', fx: { def: 10, tamMa: -2 } },
+  { id: 'dao_bao', name: 'Đạo bào Thái Cực', slot: 'ao', price: 400, minRealm: 2, desc: 'Áo đạo sĩ thêu âm dương.', look: 'x', fx: { cult: 12, tamMa: -1 }, robe: ['#3a3a4a', '#24242e', '#f2f2f6', '#5a5a6a'], deco: 'van' },
+  { id: 'dong_giap', name: 'Đồng giáp', slot: 'ao', price: 500, minRealm: 2, desc: 'Giáp đồng nặng trịch.', look: 'x', fx: { def: 22, hp: 12, flee: -10 }, robe: ['#a8703a', '#7a4e24', '#ffd36b', '#c99a5a'], deco: 'giap' },
+  { id: 'tu_kim_bao', name: 'Tử Kim Bào', slot: 'ao', price: 900, minRealm: 3, desc: 'Áo tím chỉ vàng của chân nhân.', look: 'tukim', fx: { cult: 10, def: 15, drop: 15 } },
+  { id: 'tien_y', name: 'Tiên y Lưu Vân', slot: 'ao', price: 1800, minRealm: 3, desc: 'Áo dệt từ mây, nhẹ như không.', look: 'x', fx: { cult: 20, flee: 20, tamCanh: 1 }, robe: ['#dff0ff', '#a8c8e6', '#ffd36b', '#ffffff'], deco: 'van' },
+  // nhặt được trong đời
+  { id: 'ao_toi', name: 'Áo tơi lá', slot: 'ao', price: 0, minRealm: 0, desc: 'Áo tơi của khách giang hồ.', look: 'x', fx: { flee: 15, tamCanh: 1 }, src: 'event', where: 'Du ngoạn', rare: 1, robe: ['#7a8a4a', '#5a6a34', '#c9b08a', '#9aaa6a'], deco: 'vu' },
+  { id: 'hi_phuc', name: 'Hỉ phục đỏ', slot: 'ao', price: 0, minRealm: 0, desc: 'Áo cưới của ai bỏ quên.', look: 'x', fx: { tamCanh: 2, money: 10 }, src: 'event', where: 'Kết duyên', rare: 1, robe: ['#d0202e', '#9a1420', '#ffd36b', '#ff6a6a'], deco: 'hoa' },
+  { id: 'ao_an_may', name: 'Áo trăm mảnh Cái Bang', slot: 'ao', price: 0, minRealm: 0, desc: 'Nghèo mà có khí tiết.', look: 'x', fx: { def: 12, drop: 20, money: -10 }, src: 'event', where: 'Khi túng quẫn', rare: 2, robe: ['#8a7a5a', '#6a5a3e', '#5a4128', '#a8987a'], deco: 'manh' },
+  { id: 'long_bao_cu', name: 'Long bào cũ', slot: 'ao', price: 0, minRealm: 0, desc: 'Áo rồng của một vị vua mất nước.', look: 'x', fx: { money: 30, drop: 15, def: 10 }, src: 'event', where: 'Du ngoạn, rất hiếm', rare: 3, robe: ['#e0b02a', '#b0841a', '#c0202e', '#ffd36b'], deco: 'long' },
+  // quái rơi
+  { id: 'ao_da_soi', name: 'Áo da sói', slot: 'ao', price: 0, minRealm: 0, desc: 'Lột từ sói xám thành tinh.', look: 'x', fx: { def: 10, atk: 5 }, src: 'drop', from: ['soi_xam'], rare: 1, robe: ['#7d8590', '#5c636c', '#e6e6ee', '#a4acb6'], deco: 'long_thu' },
+  { id: 'giap_vay_mang', name: 'Giáp vảy mãng', slot: 'ao', price: 0, minRealm: 0, desc: 'Ghép từ vảy mãng xà.', look: 'x', fx: { def: 18, hp: 8 }, src: 'drop', from: ['ran_hoa', 'ngan_giac'], rare: 2, robe: ['#5fbf6a', '#3f8a4a', '#ffd36b', '#8ad894'], deco: 'vay' },
+  { id: 'ao_cuu_vi', name: 'Cửu Vĩ hồ cừu', slot: 'ao', price: 0, minRealm: 0, desc: 'Áo lông hồ ly chín đuôi, mê hoặc lòng người.', look: 'x', fx: { crit: 10, flee: 15, tamCanh: 1 }, src: 'drop', from: ['ho_yeu'], rare: 2, robe: ['#ff9a4a', '#d06a2a', '#fff4e0', '#ffc28a'], deco: 'long_thu' },
+  { id: 'giap_hac_hung', name: 'Hắc Hùng trọng giáp', slot: 'ao', price: 0, minRealm: 0, desc: 'Da gấu ngàn năm, đao kiếm khó xuyên.', look: 'x', fx: { def: 30, hp: 20, flee: -15 }, src: 'drop', from: ['hac_hung'], rare: 2, robe: ['#2a2228', '#18141a', '#7a5a3a', '#4a3e44'], deco: 'giap' },
+  { id: 'kim_vu_y', name: 'Kim Vũ thần y', slot: 'ao', price: 0, minRealm: 0, desc: 'Dệt từ lông Kim Sí Đại Bằng.', look: 'x', fx: { flee: 40, atk: 12, cult: 8 }, src: 'drop', from: ['dai_bang'], rare: 3, robe: ['#e0a030', '#b07a1a', '#ffe27a', '#ffd36b'], deco: 'vu' },
+  { id: 'giap_bang_giao', name: 'Băng Giao lân giáp', slot: 'ao', price: 0, minRealm: 0, desc: 'Lạnh buốt, đóng băng kẻ dám chạm vào.', look: 'x', fx: { def: 35, hp: 25 }, src: 'drop', from: ['bang_giao'], rare: 3, robe: ['#7fc8ff', '#4a9ad0', '#eaf6ff', '#b4e0ff'], deco: 'vay' },
+  { id: 'hoa_lan_bao', name: 'Hỏa Lân chiến bào', slot: 'ao', price: 0, minRealm: 0, desc: 'Lửa kỳ lân cháy mãi không tắt.', look: 'x', fx: { atk: 25, hp: 15, exp: 10 }, src: 'drop', from: ['ky_lan'], rare: 3, robe: ['#e0502a', '#a8341a', '#ffd36b', '#ff8a5a'], deco: 'long' },
+  { id: 'hac_long_bao', name: 'Hắc Long đế bào', slot: 'ao', price: 0, minRealm: 0, desc: 'Áo của long tộc thượng cổ.', look: 'x', fx: { atk: 20, def: 20, hp: 20, cult: 20 }, src: 'drop', from: ['hac_long'], rare: 3, robe: ['#1e1a2e', '#120e1c', '#9a3ad0', '#3a2a5a'], deco: 'long' },
+  { id: 'huyet_ma_y', name: 'Huyết Ma y', slot: 'ao', price: 0, minRealm: 0, lean: 'ta', desc: 'Nhuộm từ biển máu.', look: 'x', fx: { atk: 20, exp: 20, tamMa: 2 }, src: 'drop', from: ['huyet_ma', 'cuong_thi'], rare: 2, robe: ['#7a0a1e', '#4a0612', '#1e1a24', '#a82a3a'], deco: 'giap' },
+  { id: 'vo_lam_bao', name: 'Minh chủ cẩm bào', slot: 'ao', price: 0, minRealm: 0, desc: 'Tước được từ cao thủ võ lâm.', look: 'x', fx: { atk: 10, def: 10, crit: 8 }, src: 'drop', from: ['thiet_chuong', 'kiem_si', 'cuong_dao'], rare: 2, robe: ['#3d6fb0', '#2a4e86', '#ffd36b', '#6a9ad8'], deco: 'van' },
+
+  // ======== Vũ khí ========
+  { id: 'moc_kiem', name: 'Mộc kiếm', slot: 'vu_khi', price: 15, minRealm: 0, desc: 'Kiếm gỗ tập võ.', look: 'mockiem', fx: { atk: 5 } },
+  { id: 'cuoc_sat', name: 'Cuốc sắt', slot: 'vu_khi', price: 10, minRealm: 0, desc: 'Làm lụng chăm chỉ.', look: 'x', fx: { money: 20 }, wpn: { k: 'cuoc', a: '#9aa6c0', b: '#8a5a2a' } },
+  { id: 'quat_giay', name: 'Quạt thư sinh', slot: 'vu_khi', price: 40, minRealm: 0, desc: 'Phe phẩy cho có phong thái.', look: 'x', fx: { cult: 5, tamCanh: 1 }, wpn: { k: 'quat', a: '#f2ead0', b: '#3d6fb0' } },
+  { id: 'thiet_kiem', name: 'Thiết kiếm', slot: 'vu_khi', price: 50, minRealm: 0, desc: 'Kiếm sắt rèn thường.', look: 'x', fx: { atk: 12 }, wpn: { k: 'kiem', a: '#c9ccd6', b: '#5a4128' } },
+  { id: 'cung_san', name: 'Cung săn', slot: 'vu_khi', price: 80, minRealm: 0, desc: 'Bắn từ xa, ít khi bị thương.', look: 'x', fx: { atk: 8, crit: 8, flee: 10 }, wpn: { k: 'cung', a: '#8a5a2a', b: '#f2f2f6' } },
+  { id: 'truong_thuong', name: 'Trường thương', slot: 'vu_khi', price: 160, minRealm: 1, desc: 'Một tấc dài, một tấc mạnh.', look: 'x', fx: { atk: 15, def: 5 }, wpn: { k: 'thuong', a: '#d9e6ff', b: '#8a5a2a' } },
+  { id: 'ngoc_tieu', name: 'Ngọc tiêu', slot: 'vu_khi', price: 220, minRealm: 1, desc: 'Tiếng tiêu trấn tâm ma.', look: 'x', fx: { tamMa: -2, tamCanh: 1, cult: 5 }, wpn: { k: 'tieu', a: '#7fd8b8', b: '#ffd36b' } },
+  { id: 'phat_tran', name: 'Phất trần', slot: 'vu_khi', price: 260, minRealm: 2, desc: 'Phất trần của đạo nhân.', look: 'phattran', fx: { def: 15, tamCanh: 1 } },
+  { id: 'phan_quan_but', name: 'Phán quan bút', slot: 'vu_khi', price: 300, minRealm: 1, desc: 'Điểm huyệt như viết chữ.', look: 'x', fx: { cult: 10, crit: 10 }, wpn: { k: 'but', a: '#2a1f2a', b: '#c9962e' } },
+  { id: 'thanh_phong', name: 'Thanh Phong Kiếm', slot: 'vu_khi', price: 380, minRealm: 1, desc: 'Phi kiếm cấp thấp.', look: 'kiem', fx: { atk: 20, flee: 15 } },
+  { id: 'bat_lang_chuy', name: 'Bát lăng chùy', slot: 'vu_khi', price: 450, minRealm: 2, desc: 'Nặng ngàn cân, một chùy vỡ đá.', look: 'x', fx: { atk: 25, crit: 5, flee: -10 }, wpn: { k: 'chuy', a: '#9aa6c0', b: '#5a4128' } },
+  { id: 'lo_dan', name: 'Tử Kim Đan Lô', slot: 'vu_khi', price: 450, minRealm: 1, desc: 'Lò luyện đan mang theo người.', look: 'lodan', fx: { dan: 100 } },
+  { id: 'huyet_dao', name: 'Huyết Ma Đao', slot: 'vu_khi', price: 520, minRealm: 2, lean: 'ta', desc: 'Đao uống máu.', look: 'dao', fx: { atk: 30, exp: 15, tamMa: 1 } },
+  { id: 'song_kiem', name: 'Âm Dương song kiếm', slot: 'vu_khi', price: 700, minRealm: 2, desc: 'Một âm một dương, công thủ vẹn toàn.', look: 'x', fx: { atk: 25, def: 10, crit: 5 }, wpn: { k: 'song', a: '#f2f2f6', b: '#2a1f2a' } },
+  // nhặt được
+  { id: 'dao_phay', name: 'Dao phay nhà bếp', slot: 'vu_khi', price: 0, minRealm: 0, desc: 'Đồ nghề của mẹ. Chém gì cũng ngọt.', look: 'x', fx: { atk: 8, money: 5 }, src: 'event', where: 'Tuổi thơ', rare: 1, wpn: { k: 'dao', a: '#c9ccd6', b: '#5a4128' } },
+  { id: 'roi_da', name: 'Roi da trâu', slot: 'vu_khi', price: 0, minRealm: 0, desc: 'Roi chăn trâu, quất kêu đét đét.', look: 'x', fx: { atk: 6, flee: 10 }, src: 'event', where: 'Tuổi thơ, kiếm tiền', rare: 1, wpn: { k: 'roi', a: '#6a4a2a', b: '#3e2a18' } },
+  { id: 'can_cau', name: 'Cần câu Khương Tử Nha', slot: 'vu_khi', price: 0, minRealm: 0, desc: 'Câu thẳng không mồi, kẻ nguyện mắc câu.', look: 'x', fx: { tamCanh: 2, drop: 15, cult: 5 }, src: 'event', where: 'Du ngoạn', rare: 2, wpn: { k: 'truong', a: '#9aaa5a', b: '#f2f2f6' } },
+  { id: 'kiem_gay', name: 'Kiếm gãy vô danh', slot: 'vu_khi', price: 0, minRealm: 0, desc: 'Kiếm gãy cắm trên mộ cổ. Vẫn còn kiếm ý.', look: 'x', fx: { atk: 22, crit: 12 }, src: 'event', where: 'Du ngoạn, tu luyện', rare: 2, wpn: { k: 'kiem', a: '#8a96a8', b: '#3e3228' } },
+  // quái rơi
+  { id: 'lang_nha_dao', name: 'Lang Nha đao', slot: 'vu_khi', price: 0, minRealm: 0, desc: 'Răng sói mài thành lưỡi đao.', look: 'x', fx: { atk: 15, crit: 5 }, src: 'drop', from: ['soi_xam', 'heo_rung'], rare: 1, wpn: { k: 'dao', a: '#f2f2f6', b: '#7d8590' } },
+  { id: 'nhu_y_con', name: 'Như Ý côn', slot: 'vu_khi', price: 0, minRealm: 0, desc: 'Cướp được từ Ác Hầu. Dài ngắn tùy ý.', look: 'x', fx: { atk: 15, flee: 15, drop: 10 }, src: 'drop', from: ['khi_ac'], rare: 2, wpn: { k: 'truong', a: '#c9962e', b: '#b8302a' } },
+  { id: 'son_tac_dao', name: 'Khai sơn đại đao', slot: 'vu_khi', price: 0, minRealm: 0, desc: 'Đao của trùm sơn tặc.', look: 'x', fx: { atk: 18, money: 10 }, src: 'drop', from: ['son_tac'], rare: 1, wpn: { k: 'dao', a: '#9aa6c0', b: '#8a2a1e' } },
+  { id: 'doc_hat_kiem', name: 'Độc Hạt kiếm', slot: 'vu_khi', price: 0, minRealm: 0, desc: 'Tẩm độc bọ cạp, trúng là tê liệt.', look: 'x', fx: { atk: 15, crit: 15 }, src: 'drop', from: ['bo_cap', 'thich_khach'], rare: 2, wpn: { k: 'kiem', a: '#7ad85a', b: '#5a1a1a' } },
+  { id: 'thiet_quyen', name: 'Thiết chưởng thủ sáo', slot: 'vu_khi', price: 0, minRealm: 0, desc: 'Găng sắt của bang chủ Thiết Chưởng.', look: 'x', fx: { atk: 22, def: 12 }, src: 'drop', from: ['thiet_chuong'], rare: 2, wpn: { k: 'quyen', a: '#5a5a6a', b: '#c9962e' } },
+  { id: 'van_doc_phien', name: 'Vạn Độc phiến', slot: 'vu_khi', price: 0, minRealm: 0, desc: 'Phẩy một cái, độc bay mười dặm.', look: 'x', fx: { atk: 22, crit: 10, dan: 30 }, src: 'drop', from: ['doc_vuong'], rare: 2, wpn: { k: 'quat', a: '#9ff0c8', b: '#9a3ad0' } },
+  { id: 'cuong_dao', name: 'Cuồng Đao', slot: 'vu_khi', price: 0, minRealm: 0, desc: 'Đao chưa ra khỏi vỏ đã có người chết.', look: 'x', fx: { atk: 40, def: -10 }, src: 'drop', from: ['cuong_dao'], rare: 3, wpn: { k: 'dao', a: '#e0e4ee', b: '#8a1a24' } },
+  { id: 'huyet_liem', name: 'Huyết Ma liêm', slot: 'vu_khi', price: 0, minRealm: 0, lean: 'ta', desc: 'Lưỡi hái gặt mạng người.', look: 'x', fx: { atk: 35, exp: 25, tamMa: 2 }, src: 'drop', from: ['huyet_ma'], rare: 3, wpn: { k: 'liem', a: '#c0202e', b: '#1e1a24' } },
+  { id: 'bang_giao_thuong', name: 'Băng Giao thương', slot: 'vu_khi', price: 0, minRealm: 0, desc: 'Mũi thương đóng băng máu kẻ địch.', look: 'x', fx: { atk: 30, def: 15 }, src: 'drop', from: ['bang_giao', 'ngan_giac'], rare: 3, wpn: { k: 'thuong', a: '#b4e0ff', b: '#4a9ad0' } },
+  { id: 'vo_danh_kiem', name: 'Vô Danh kiếm', slot: 'vu_khi', price: 0, minRealm: 0, desc: 'Kiếm của Kiếm Si. Chưa từng thua.', look: 'x', fx: { atk: 45, crit: 15, cult: 10 }, src: 'drop', from: ['kiem_si'], rare: 3, wpn: { k: 'kiem', a: '#ffffff', b: '#3d6fb0' } },
+  { id: 'hoa_lan_cung', name: 'Hỏa Lân cung', slot: 'vu_khi', price: 0, minRealm: 0, desc: 'Tên bắn ra cháy thành lửa.', look: 'x', fx: { atk: 30, crit: 12, flee: 15 }, src: 'drop', from: ['ky_lan', 'dai_bang'], rare: 3, wpn: { k: 'cung', a: '#e0502a', b: '#ffd36b' } },
+
+  // ======== Phụ kiện ========
   { id: 'ngoc_boi', name: 'Ngọc bội hộ thân', slot: 'phu_kien', price: 120, minRealm: 0, desc: 'Đỡ một lần chí mạng.', look: 'ngoc' },
-  { id: 'ho_lo', name: 'Hồ lô rượu', slot: 'phu_kien', price: 80, minRealm: 0, desc: 'Ung dung tự tại. Tâm cảnh +.', look: 'holo' },
-  { id: 'kiem_bay', name: 'Bản mệnh phi kiếm', slot: 'phu_kien', price: 1400, minRealm: 3, path: 'kiem', desc: 'Kiếm bay vòng quanh chủ. Tu vi +20%.', look: 'kiembay' },
+  { id: 'ho_lo', name: 'Hồ lô rượu', slot: 'phu_kien', price: 80, minRealm: 0, desc: 'Ung dung tự tại.', look: 'holo', fx: { tamCanh: 1, hp: 5 } },
+  { id: 'kiem_bay', name: 'Bản mệnh phi kiếm', slot: 'phu_kien', price: 1400, minRealm: 3, path: 'kiem', desc: 'Kiếm bay vòng quanh chủ.', look: 'kiembay', fx: { cult: 20, atk: 25 } },
 ];
+
+/** Tổng chỉ số từ đồ đang mặc */
+export function gearFx(equipped: Partial<Record<Slot, string>>): Required<ItemFx> {
+  const t: Required<ItemFx> = { atk: 0, def: 0, hp: 0, crit: 0, flee: 0, cult: 0, exp: 0, drop: 0, money: 0, dan: 0, tamCanh: 0, tamMa: 0 };
+  for (const id of Object.values(equipped)) {
+    const fx = ITEMS.find((i) => i.id === id)?.fx;
+    if (fx) for (const k of Object.keys(fx) as (keyof ItemFx)[]) t[k] += fx[k] ?? 0;
+  }
+  return t;
+}
+
+const FX_LABEL: Record<keyof ItemFx, string> = { atk: 'Công', def: 'Thủ', hp: 'Máu', crit: 'Bạo kích', flee: 'Rút lui', cult: 'Tu luyện', exp: 'Tu vi trảm yêu', drop: 'Rơi đồ', money: 'Kiếm tiền', dan: 'Luyện đan', tamCanh: 'Tâm cảnh/năm', tamMa: 'Tâm ma/năm' };
+
+/** Mô tả chỉ số ngắn gọn: "Công +12% · Bạo kích +8%" */
+export function fxText(fx?: ItemFx): string {
+  if (!fx) return '';
+  return (Object.keys(fx) as (keyof ItemFx)[])
+    .filter((k) => fx[k])
+    .map((k) => {
+      const v = fx[k]!;
+      const unit = k === 'tamCanh' || k === 'tamMa' ? '' : '%';
+      return `${FX_LABEL[k]} ${v > 0 ? '+' : ''}${v}${unit}`;
+    })
+    .join(' · ');
+}
 
 export const PILLS = [
   { id: 'tu_khi', name: 'Tụ Khí Đan', price: 30, desc: '+tu vi ngay lập tức' },

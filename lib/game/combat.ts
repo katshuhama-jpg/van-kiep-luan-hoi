@@ -1,5 +1,5 @@
-import { REALMS } from './data';
-import { addCult, addPill, clamp, fatal, money, needFor, stat } from './helpers';
+import { ITEMS, REALMS, fxText, gearFx } from './data';
+import { addCult, addPill, clamp, fatal, giveItem, money, needFor, stat } from './helpers';
 import type { Character, EffectCtx } from './types';
 
 /** Dáng quái dùng để vẽ pixel */
@@ -113,14 +113,11 @@ export function playerStats(c: Character): Fighter {
   if (c.gifts?.includes('g_than_luc')) atk *= 1.25;
   if (c.gifts?.includes('g_kiem_cot')) atk *= 1.1;
   if (c.mount === 'rong') (atk *= 1.2), (hp *= 1.2);
-  const w = c.equipped.vu_khi;
-  if (w === 'moc_kiem') atk *= 1.05;
-  if (w === 'thanh_phong') atk *= 1.2;
-  if (w === 'huyet_dao') atk *= 1.3;
-  if (w === 'phat_tran') def *= 1.15;
-  if (c.equipped.phu_kien === 'kiem_bay') atk *= 1.25;
-  if (c.equipped.ao === 'tu_kim_bao' || c.equipped.ao === 'bach_y') def *= 1.2;
-  if (c.equipped.ao === 'huyet_bao') atk *= 1.1;
+  // trang bị
+  const g = gearFx(c.equipped);
+  atk *= 1 + g.atk / 100;
+  def *= 1 + g.def / 100;
+  hp *= 1 + g.hp / 100;
   // tuổi già sức yếu
   if (c.age / c.lifespan > 0.85) (atk *= 0.85), (hp *= 0.85);
   return { hp: Math.round(hp), atk: Math.round(atk), def: Math.round(def) };
@@ -146,9 +143,9 @@ export function dangerOf(c: Character, m: Monster): Danger {
 export const DANGER_TEXT: Record<Danger, string> = { de: 'Dễ', vua: 'Vừa sức', nguy: 'Nguy hiểm', tu: 'Tử địa' };
 
 /** Sát thương một đòn */
-export function hit(atk: number, def: number, rnd: () => number): { dmg: number; crit: boolean } {
+export function hit(atk: number, def: number, rnd: () => number, critRate = 0.15): { dmg: number; crit: boolean } {
   if (rnd() < 0.12) return { dmg: 0, crit: false }; // né được
-  const crit = rnd() < 0.15;
+  const crit = rnd() < critRate;
   const raw = atk * (0.7 + rnd() * 0.6) * (crit ? 2 : 1);
   return { dmg: Math.max(1, Math.round(raw - def * 0.5)), crit };
 }
@@ -157,9 +154,13 @@ export function hit(atk: number, def: number, rnd: () => number): { dmg: number;
 export function killExp(c: Character, m: Monster): number {
   if (m.boss) return 0;
   const d = effLv(c, m) - combatLevel(c);
-  const base = (REALMS[c.realm]?.need ?? 60) * 0.055;
+  // mỗi con quái vừa sức cho khoảng 1/3 năm tu luyện, một năm trảm 4-6 con nên nhanh gấp 2-3 lần ngồi thiền
+  const yearly = ([6, 30, 30, 34, 38, 42, 46, 50][c.realm] ?? 50) * (0.6 + c.stats.ngoTinh / 100);
+  const base = Math.max((REALMS[c.realm]?.need ?? 60) * 0.03, yearly * 0.35);
   const factor = d <= -4 ? 0.15 : clamp(1 + 0.35 * d, 0.3, 2.4);
-  return Math.max(1, Math.round(base * factor * c.linhCanMul));
+  // quái tiến hóa cho nhiều tu vi hơn
+  const tierBonus = 1 + tierOf(c, m) * 0.25;
+  return Math.max(1, Math.round(base * factor * tierBonus * c.linhCanMul * (1 + gearFx(c.equipped).exp / 100)));
 }
 
 export function killReward(c: Character, m: Monster, ctx: EffectCtx): string[] {
@@ -168,7 +169,37 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx): string[] {
   money(c, Math.round((2 + m.lv * 3) * (0.7 + ctx.rnd() * 0.6)));
   c.kills = c.kills ?? {};
   const n = (c.kills[m.id] = (c.kills[m.id] ?? 0) + 1);
-  if (n === 1) notes.push(`Lần đầu hạ được ${m.name} ở ${m.place}.`);
+  if (n === 1) {
+    // lần đầu trảm: thưởng lớn
+    const bonus = killExp(c, m) * 3;
+    addCult(c, bonus);
+    notes.push(`Lần đầu hạ được ${m.name} ở ${m.place}. Lĩnh ngộ được cách đánh của nó (+${bonus} tu vi).`);
+  }
+  if (n === 10 || n === 50) {
+    const bonus = killExp(c, m) * (n === 10 ? 5 : 12);
+    addCult(c, bonus);
+    money(c, m.lv * (n === 10 ? 20 : 60));
+    ctx.fx('layer', `Trảm ${n}`);
+    notes.push(`Đã trảm ${n} ${m.name}. Chiến kỹ tinh thông hơn (+${bonus} tu vi).`);
+  }
+  // rơi đồ độc quyền của loài quái
+  const drops = ITEMS.filter((i) => i.from?.includes(m.id));
+  if (drops.length) {
+    const g = gearFx(c.equipped);
+    const p = (0.05 + (c.stats.khiVan - 50) / 2500) * (1 + tierOf(c, m) * 0.5) * (1 + g.drop / 100);
+    if (ctx.rnd() < p) {
+      const it = drops[Math.floor(ctx.rnd() * drops.length)];
+      if (c.inventory.includes(it.id)) {
+        const sell = 60 + m.lv * 25;
+        money(c, sell);
+        notes.push(`${m.name} rơi ra thêm một ${it.name}. Bạn đã có rồi nên bán được ${sell} linh thạch.`);
+      } else {
+        giveItem(c, it.id, false);
+        ctx.fx('buy', it.name);
+        notes.push(`${m.name} rơi ra ${it.name}! (${fxText(it.fx)}) Mở Túi đồ để mặc.`);
+      }
+    }
+  }
   const tierBefore = tierOf(c, m);
   if (growMonster(c, m)) {
     const t = tierOf(c, m);
@@ -219,5 +250,5 @@ export function loseFight(c: Character, m: Monster, ctx: EffectCtx): string {
 export function fleeChance(c: Character, m: Monster): number {
   if (m.boss) return 0.05;
   const d = effLv(c, m) - combatLevel(c);
-  return clamp(0.85 - Math.max(0, d) * 0.12, 0.25, 0.9);
+  return clamp(0.85 - Math.max(0, d) * 0.12 + gearFx(c.equipped).flee / 100, 0.15, 0.95);
 }
