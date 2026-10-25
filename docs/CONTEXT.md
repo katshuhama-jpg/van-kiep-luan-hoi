@@ -387,3 +387,13 @@ select count(*) from vkl_bounty; select status, count(*) from vkl_challenge grou
 - 10 người chơi từ 6 kiếp trở lên, 8 người 2-5 kiếp, 2 người 1 kiếp, 3 người chưa xong kiếp nào.
 - Người chơi nhiều nhất: lyn (36 kiếp), thien (31), lnquocdat432k2 (29), minimoni (22).
 - Giờ đông nhất 12h-18h. Người chơi nghiêng chính đạo nhiều hơn tà đạo.
+
+## 16. Cách cập nhật tài liệu này (dành cho AI agent)
+
+Khi được yêu cầu cập nhật tài liệu:
+1. Đọc các commit mới trên nhánh `main` kể từ lần cập nhật trước (dòng "Cập nhật lần cuối" ở đầu file), đọc phần code thay đổi.
+2. Sửa đúng mục liên quan. Con số lấy từ code, không đoán. Không chắc thì ghi "cần Tyler xác nhận" và hỏi Tyler, không tự quyết.
+3. Thêm một dòng vào mục 14 (Nhật ký thay đổi) theo ngày, sửa ngày "Cập nhật lần cuối".
+4. Chỉ sửa file `docs/CONTEXT.md`. Không sửa code, không xóa nội dung mục 13 (quy ước) nếu Tyler chưa đồng ý.
+5. Giữ quy ước viết: tiếng Việt tự nhiên, dùng "-" không dùng "—".
+6. Commit với message bắt đầu bằng `docs:`. Lưu ý mỗi lần đẩy lên `main` Vercel sẽ deploy lại (vô hại vì chỉ đổi tài liệu).
