@@ -395,12 +395,12 @@ export default function PlayPage() {
     const end = (result: 'win' | 'lose' | 'draw') => {
       const out: Fx[] = [];
       const ctx = makeCtx(c, out);
-      const notes = finishAmbush(c, b.m, result, 1 - b.pHp / b.pMax, 1 - b.mHp / b.mMax, ctx);
-      notes.forEach((n, i) => ctx.log(n, c.dead ? 'big' : i === 0 ? (result === 'win' ? 'good' : 'bad') : 'good'));
+      const notes = finishAmbush(c, b.m, result, 1 - b.pHp / b.pMax, 1 - b.mHp / b.mMax, ctx, b.ambush!.kind);
+      notes.forEach((n, i) => ctx.log(n, c.dead ? 'big' : result !== 'win' ? 'bad' : i === 0 ? 'good' : n.startsWith('Thắng nhưng') ? 'bad' : 'good'));
       b.phase = 'rest';
       b.rest = 3;
       b.outcome = result === 'win' ? 'win' : result === 'lose' ? 'lose' : 'flee';
-      if (result === 'draw') push('m', 0, false, 'Hết 3 hiệp');
+      if (result === 'draw') push('m', 0, false, b.mHp / b.mMax <= 0.5 && 1 - b.mHp / b.mMax > 1 - b.pHp / b.pMax ? 'Quái bỏ chạy' : 'Bỏ chạy!');
       if (!c.dead) {
         const p = checkProgress(c, ctx, talentsRef.current);
         if (p) pendingRef.current = p;

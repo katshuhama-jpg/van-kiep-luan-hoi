@@ -1,5 +1,5 @@
 import { MONSTERS, combatLevel, effLv, growth, killExp, killReward, monsterStats, type Fighter, type Monster } from './combat';
-import { addCult, fatal, stat } from './helpers';
+import { addCult, fatal, money, stat } from './helpers';
 import type { Character, EffectCtx } from './types';
 
 /**
@@ -56,27 +56,51 @@ export const AMBUSH_INTRO: Record<AmbushTier, string> = {
   hon: 'Một con quái mạnh hơn bạn chặn đường. Nguy rồi!',
 };
 
-/** Kết thúc trận chặn đường. pLoss: tỉ lệ máu bạn mất (0-1), mDealt: tỉ lệ máu quái mất (0-1) */
-export function finishAmbush(c: Character, m: Monster, result: 'win' | 'lose' | 'draw', pLoss: number, mDealt: number, ctx: EffectCtx): string[] {
-  const notes: string[] = [];
+/**
+ * Kết thúc trận chặn đường. pLoss: tỉ lệ máu bạn mất (0-1), mDealt: tỉ lệ máu quái mất (0-1).
+ * Không thắng thì luôn phải trả giá: bỏ chạy rơi linh thạch, bị thương, quái mạnh còn có thể giết người.
+ */
+export function finishAmbush(c: Character, m: Monster, result: 'win' | 'lose' | 'draw', pLoss: number, mDealt: number, ctx: EffectCtx, tier: AmbushTier = 'bang'): string[] {
+  const danger = tier === 'hon' ? 1.6 : tier === 'kem' ? 0.6 : 1;
   if (result === 'win') {
-    notes.push(`Bạn hạ được ${m.name} chặn đường (+${killExp(c, m)} tu vi).`);
+    const notes = [`Bạn hạ được ${m.name} chặn đường (+${killExp(c, m)} tu vi).`];
     notes.push(...killReward(c, m, ctx));
-    stat(c, 'sucKhoe', -Math.round(pLoss * 15));
+    const hurt = Math.round(pLoss * 25);
+    if (hurt >= 3) {
+      stat(c, 'sucKhoe', -hurt);
+      notes.push(`Thắng nhưng cũng mang thương tích (-${hurt} sức khỏe).`);
+    }
     return notes;
   }
+  ctx.fx('hurt', result === 'lose' ? 'Trọng thương' : 'Bị thương');
+  // rơi đồ khi chạy trốn hoặc gục ngã
+  const drop = Math.round(c.linhThach * (result === 'lose' ? 0.2 + ctx.rnd() * 0.15 : 0.05 + ctx.rnd() * 0.1));
+  const lost = drop > 0 ? ` Túi bị rách, rơi mất ${drop} linh thạch.` : '';
+  money(c, -drop);
   if (result === 'lose') {
-    const f = fatal(c, ctx, 0.3, `Bị ${m.name} chặn đường giữa nơi hoang vắng. Không ai tới cứu.`);
+    const f = fatal(c, ctx, 0.3 * danger, `Bị ${m.name} chặn đường giữa nơi hoang vắng. Không ai tới cứu.`);
     if (c.dead) return [`${m.name} chặn đường, bạn không địch nổi.${f ?? ''}`];
-    stat(c, 'sucKhoe', -30);
-    return [`${m.name} chặn đường đánh bạn trọng thương rồi bỏ đi.${f ?? ''}`];
+    stat(c, 'sucKhoe', -Math.round(35 * danger));
+    c.cultivation = Math.max(0, Math.round(c.cultivation * 0.93));
+    return [`${m.name} đánh bạn trọng thương rồi bỏ đi (-${Math.round(35 * danger)} sức khỏe, tu vi tổn hao).${lost}${f ?? ''}`];
   }
-  // hòa: hết 3 hiệp, quái bỏ chạy hoặc bạn thoát được
-  stat(c, 'sucKhoe', -Math.round(pLoss * 25));
-  if (mDealt >= 0.5) {
+  // hòa: hết 3 hiệp chưa phân thắng bại
+  if (mDealt >= 0.5 && mDealt > pLoss) {
+    const hurt = Math.round(pLoss * 30);
+    stat(c, 'sucKhoe', -hurt);
     const exp = Math.max(1, Math.round(killExp(c, m) * 0.3));
     addCult(c, exp);
-    return [`Ba hiệp chưa phân thắng bại, ${m.name} bị thương bỏ chạy. Bạn rút được chút kinh nghiệm (+${exp} tu vi).`];
+    return [`Ba hiệp chưa phân thắng bại, ${m.name} bị thương bỏ chạy. Bạn rút được chút kinh nghiệm (+${exp} tu vi, -${hurt} sức khỏe).`];
   }
-  return [`Ba hiệp chưa phân thắng bại, bạn tìm cách thoát khỏi ${m.name}.`];
+  // phải bỏ chạy: bị đánh sau lưng, rơi linh thạch, có thể trọng thương
+  const hurt = Math.round((12 + pLoss * 30) * danger);
+  stat(c, 'sucKhoe', -hurt);
+  const notes = [`Ba hiệp không hạ được ${m.name}, bạn đành bỏ chạy, trúng một đòn sau lưng (-${hurt} sức khỏe).${lost}`];
+  if (ctx.rnd() < 0.25 * danger) {
+    const f = fatal(c, ctx, 0.08 * danger, `Bỏ chạy khỏi ${m.name}, vết thương sau lưng nhiễm độc. Bạn gục xuống giữa đường.`);
+    if (c.dead) return [notes[0] + (f ?? '')];
+    stat(c, 'tamMa', 6);
+    notes.push(`Vết thương sau lưng mưng mủ mãi không lành, đêm nằm mơ thấy ${m.name} đuổi theo (+tâm ma).${f ?? ''}`);
+  }
+  return notes;
 }
