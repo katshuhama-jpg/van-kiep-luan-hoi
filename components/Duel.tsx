@@ -40,7 +40,7 @@ export default function DuelWarning({ me, foe, fleeChance, canBefriend, onPick }
           <span className="el" style={{ background: ELEMENTS[foeEl].color }}>{ELEMENTS[foeEl].sym}</span>
           <small>{et.text}</small>
         </div>
-        <p className="duel-text">{info.warn}</p>
+        <p className="duel-text">{foe.reason || info.warn}</p>
         {foe.rel !== 'yeu' && foe.kind !== 'kiep_truoc' && <p className="duel-risk">Đối thủ không yếu hơn bạn: không đánh mà rời đi thì có thể bị trọng thương, thậm chí mất mạng.</p>}
         <div className="duel-actions">
           {foe.kind === 'dong_dao' && (

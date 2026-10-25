@@ -594,6 +594,7 @@ function PetRoam({ id, box }: { id: string; box: number }) {
     ['--lpc-end' as string]: `-${p.n * w}px`,
     ['--pet-h' as string]: `-${h}px`,
     animation: `lpc-play ${p.n / p.fps}s steps(${p.n}) infinite, petDir ${p.dur}s linear infinite`,
+    filter: p.filter,
   } as CSSProperties;
   return (
     <span className={`pet-roam ${p.fly ? 'fly' : ''}`} style={wrap} aria-hidden="true">

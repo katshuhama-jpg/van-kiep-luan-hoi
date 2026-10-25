@@ -22,6 +22,7 @@ export interface DuelFoe {
   rival: RivalChar;
   npc: boolean; // không có người chơi thật phù hợp, giang hồ vô danh thay thế
   rel: 'yeu' | 'ngang' | 'manh';
+  reason: string; // lý do gặp, mỗi lần một khác
 }
 
 export const DUEL_INFO: Record<DuelKind, { title: string; tag: string; warn: string }> = {
@@ -131,7 +132,7 @@ export function pickDuel(c: Character, rnd: () => number): DuelFoe | null {
   const me = combatLevel(c);
   const foe = combatLevel(foeChar(rival));
   const rel = foe <= me - 2 ? 'yeu' : foe >= me + 2 ? 'manh' : 'ngang';
-  return { kind, rival, npc, rel };
+  return { kind, rival, npc, rel, reason: reasonFor(c, kind, rival, rnd) };
 }
 
 export function foeLabel(f: DuelFoe): string {
@@ -209,4 +210,49 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
     out.push(`Bạn thua chính mình kiếp trước. Tâm ma dâng lên, ngực đau như bị xé.${fl ?? ''}`);
   }
   return out;
+}
+
+/** Lý do gặp: rút ngẫu nhiên theo loại cuộc gặp và hoàn cảnh hai bên, để mỗi lần một khác */
+function reasonFor(c: Character, kind: DuelKind, r: RivalChar, rnd: () => number): string {
+  const n = r.name;
+  const pathName = r.path ? { kiem: 'kiếm', dan: 'đan', tran: 'trận', phat: 'Phật', ma: 'ma công', yeu: 'yêu thuật' }[r.path] : 'võ';
+  const pool: string[] = [];
+  if (kind === 'dong_dao') {
+    pool.push(
+      `${n} chắn đường, chắp tay thi lễ: "Nghe danh đã lâu, xin được lĩnh giáo vài chiêu."`,
+      `Trên đỉnh núi vắng, ${n} đang luyện ${pathName}. Thấy bạn, người ấy dừng tay mỉm cười: "Đến đúng lúc, cùng luận một trận chứ?"`,
+      `Hai người cùng nhắm một cây linh chi trên vách đá. ${n} cười: "Ai thắng thì người đó hái, thế nào?"`,
+      `Trong tửu lâu, ${n} nâng chén mời bạn. Uống đến chén thứ ba thì nói: "Rượu ngon phải có kiếm hay. Xin chỉ giáo!"`,
+      `Đại hội luận võ mở ở trấn bên. Bốc thăm thế nào lại trúng đúng ${n}.`,
+      `${n} được sư phụ dặn đi khắp thiên hạ tìm người ngang tài để mài giũa. Người ấy tìm đến bạn.`,
+      `Bến đò chỉ còn một chuyến cuối ngày. ${n} đề nghị: "Đấu một trận, ai thắng qua sông trước."`,
+      `${n} nhặt được bức thư bạn đánh rơi, trả lại rồi nói: "Coi như duyên phận, đấu với ta vài chiêu."`,
+    );
+    if (r.alive === false && r.player) pool.push(`Anh linh của ${n} chưa tan, vẫn ngồi bên bia mộ chờ người đáng mặt luận võ.`);
+  } else if (kind === 'dich_thu') {
+    pool.push(
+      `Sát khí ập tới. ${n} đã đợi bạn ở đây từ lâu. Hôm nay chỉ một người được rời đi.`,
+      `${n} nhận lệnh truy nã bạn với giá cao. "Đầu ngươi đáng giá lắm," hắn nói.`,
+      `Bạn vô tình giẫm vào lãnh địa của ${n}. Hắn không cần biết lý do.`,
+      `Hai người cùng phát hiện một bí cảnh vừa mở. Bí cảnh chỉ đủ cho một người vào.`,
+      `${n} tưởng bạn là kẻ đã giết đồng môn của hắn. Giải thích cũng vô ích.`,
+      `Giữa đường, ${n} chặn đoàn xe bạn đang hộ tống. "Để hàng lại, hoặc để mạng lại."`,
+      `Ở phường thị, bạn mua được món bảo vật ${n} để mắt từ lâu. Hắn theo bạn ra tận ngoài thành.`,
+      `${n} tuyên bố trước giang hồ: ai mạnh nhất vùng này thì hắn sẽ đến khiêu chiến. Hôm nay là lượt bạn.`,
+    );
+    if (c.daoTam >= 20 && r.daoTam <= -20) pool.push(`Ma đạo ${n} nghe tin bạn ra tay diệt ma, tìm đến báo thù cho đồng môn.`, `${n} cười gằn: "Chính đạo các ngươi giả nhân giả nghĩa, hôm nay ta lột mặt nạ."`);
+    if (c.daoTam <= -20 && r.daoTam >= 20) pool.push(`${n} của chính phái lần theo dấu máu bạn để lại. "Hôm nay thay trời hành đạo."`, `Chính phái treo thưởng đầu bạn. ${n} là người đầu tiên tìm tới.`);
+    if (c.enemy) pool.push(`${n} được ${c.enemy} thuê đến lấy mạng bạn.`);
+    if (c.partner) pool.push(`${n} từng thầm thương ${c.partner}. Thấy bạn, hắn rút vũ khí không nói một lời.`);
+  } else {
+    pool.push(
+      `Mặt hồ phẳng lặng bỗng in bóng một người. Đó là bạn, của một kiếp đã qua. Muốn đi tiếp, phải vượt qua chính mình.`,
+      `Đang tọa thiền, bạn rơi vào tâm cảnh. ${n} đứng trước mặt, hỏi: "Kiếp này ngươi có sống tốt hơn ta không?"`,
+      `Trong giấc mơ, ${n} cầm vũ khí cũ của kiếp trước chặn đường: "Nợ cũ chưa trả, đừng mong đi xa."`,
+      `Đột phá đến cửa ải, tâm ma hóa thành hình dáng kiếp trước. ${n} cười nhạt: "Ngươi vẫn yếu như ta năm xưa."`,
+      `Đi qua nơi kiếp trước từng chết, bóng ${n} hiện lên giữa sương mù, ánh mắt đầy tiếc nuối.`,
+      `Chiếc gương đồng trong miếu cổ phản chiếu không phải bạn, mà là ${n}. Bóng trong gương bước ra.`,
+    );
+  }
+  return pool[Math.floor(rnd() * pool.length)];
 }
