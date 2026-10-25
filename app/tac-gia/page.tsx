@@ -37,8 +37,14 @@ export default function TacGia() {
         </details>
       </section>
       <section className="panel">
+        <h2>Nền cảnh</h2>
+        <p style={{ margin: 0 }}>
+          Cây, đá, thác nước, tường, đồ vật lấy từ <a href="https://opengameart.org/content/lpc-tile-atlas">LPC Tile Atlas</a> (Liberated Pixel Cup: Lanea Zimmerman (Sharm), Daniel Cook, Casper Nilsson, Daniel Armstrong, Johann Charlot, Guido Bos, Barbara Rivera và nhiều họa sĩ khác), giấy phép CC-BY-SA 3.0 / GPL 3.0. Trời, núi và mùa được vẽ thêm trong game.
+        </p>
+      </section>
+      <section className="panel">
         <h2>Font chữ</h2>
-        <p style={{ margin: 0 }}>Handjet của Rosetta Type, giấy phép SIL Open Font License.</p>
+        <p style={{ margin: 0 }}>Handjet (Rosetta Type) cho chữ trong game, Protest Revolution (Octavio Pardo) cho logo. Cả hai theo giấy phép SIL Open Font License.</p>
       </section>
     </main>
   );

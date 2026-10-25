@@ -10,6 +10,7 @@ import { REALMS } from '@/lib/game/data';
 const REALM_NAMES: string[] = REALMS.map((r) => r.name);
 
 const SEASON_CLASS = ['xuan', 'ha', 'thu', 'dong'];
+const BG_SCENES = ['tu_luyen', 'du_ngoan', 'kiem_tien', 'ket_duyen', 'luyen_dan'];
 const SEASON_PARTS = Array.from({ length: 24 }, (_, i) => i);
 
 /** Bảng màu từng mùa: trời, sương, núi xa, đồi gần, đất, mép cỏ, tán lá, thân cây, nước */
@@ -47,6 +48,7 @@ function Tree({ x, y, s }: { x: number; y: number; s: number }) {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function Background({ focus, season = 0 }: { focus: string; season?: number }) {
   const P = PAL[season] ?? PAL[0];
   const snow = season === 3;
@@ -212,7 +214,8 @@ export default function Scene({ c, fx, paused, season, battle }: { c: Character;
   const particles = Array.from({ length: 10 }, (_, i) => i);
   return (
     <div className={`scene ${paused ? 'paused' : ''} ${shaking ? 'shake' : ''} ${c.dead ? 'scene-dead' : ''} ${battle ? 'in-battle' : ''}`} style={{ ['--aura' as string]: aura } as CSSProperties}>
-      <Background focus={focus} season={season} />
+      <div className="bg bg-img" style={{ backgroundImage: `url(/bg/${BG_SCENES.includes(focus) ? focus : 'tu_luyen'}-${season}.png)` }} aria-hidden="true" />
+      {(focus === 'tu_luyen' || !BG_SCENES.includes(focus)) && season !== 3 && <div className="bg-fall" aria-hidden="true" />}
 
       <div className={`season ${SEASON_CLASS[season]}`} aria-hidden="true">
         {season === 1 && <div className="sunrays" />}
