@@ -968,5 +968,19 @@
 "slash": "hair/shoulderl/adult/fg/slash.png",
 "spellcast": "hair/shoulderl/adult/fg/spellcast.png",
 "hurt": "hair/shoulderl/adult/fg/hurt.png"
+},
+"hair_buzzcut_fg": {
+"walk": "hair/buzzcut/adult/walk.png",
+"idle": "hair/buzzcut/adult/idle.png",
+"slash": "hair/buzzcut/adult/slash.png",
+"spellcast": "hair/buzzcut/adult/spellcast.png",
+"hurt": "hair/buzzcut/adult/hurt.png"
+},
+"hair_balding_fg": {
+"walk": "hair/balding/adult/walk.png",
+"idle": "hair/balding/adult/idle.png",
+"slash": "hair/balding/adult/slash.png",
+"spellcast": "hair/balding/adult/spellcast.png",
+"hurt": "hair/balding/adult/hurt.png"
 }
 }

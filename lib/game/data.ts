@@ -249,7 +249,7 @@ export const HAIR_COLORS: Record<string, { name: string; hex: string; w: number;
 };
 
 export const HAIR_STYLES = {
-  nam: ['búi tóc cao', 'tóc buộc dài sau gáy', 'tóc dài xõa vai', 'tóc dài rối kiểu lãng tử', 'tóc buộc thấp', 'tóc dài buộc khăn', 'tóc dài rẽ ngôi lệch', 'tóc bù xù', 'tóc rẽ ngôi giữa'],
+  nam: ['búi tóc cao', 'tóc buộc dài sau gáy', 'tóc dài xõa vai', 'tóc dài rối kiểu lãng tử', 'tóc buộc thấp', 'tóc dài buộc khăn', 'tóc dài rẽ ngôi lệch', 'tóc bù xù', 'tóc rẽ ngôi giữa', 'đầu cạo trọc', 'đầu cạo sát', 'đầu hói đỉnh'],
   nu: ['tóc dài buông xõa', 'búi đôi', 'đuôi ngựa cao', 'tóc tết bím dài', 'búi tóc cung đình', 'một bím tóc', 'nửa búi nửa xõa', 'búi tóc có mái', 'tóc dài gợn sóng', 'hai bím tóc', 'tóc dài suôn thẳng', 'tóc dài mái rủ', 'tóc dài rẽ ngôi giữa', 'tóc buông lơi', 'tóc vắt một bên vai', 'tóc dài rẽ ngôi lệch'],
 };
 

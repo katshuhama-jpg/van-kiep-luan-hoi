@@ -364,7 +364,7 @@ function robeOf(l: Look): Robe {
 
 // 3 kiểu đầu giữ nguyên thứ tự cũ để nhân vật đang chơi không đổi tóc
 export const HAIR_LPC = {
-  nam: ['high_ponytail', 'long_tied', 'xlong', 'long_messy', 'ponytail', 'long_band', 'relm_xlong', 'unkempt', 'long_center_part'],
+  nam: ['high_ponytail', 'long_tied', 'xlong', 'long_messy', 'ponytail', 'long_band', 'relm_xlong', 'unkempt', 'long_center_part', 'bald', 'buzzcut', 'balding'],
   nu: ['xlong', 'bunches', 'high_ponytail', 'braid', 'princess', 'single', 'half_up', 'bangs_bun', 'xlong_wavy', 'pigtails', 'long_straight', 'curtains_long', 'long_center_part', 'loose', 'shoulderl', 'relm_xlong'],
 } as const;
 
@@ -499,7 +499,9 @@ export function lpcLayers(c: Character, hideWeapon = false): Layer[] {
   const head = l.gender === 'nam' ? (elder ? 'head_me' : ft.head ?? 'head_m') : elder ? 'head_fe' : 'head_f';
   const list = HAIR_LPC[l.gender === 'nam' ? 'nam' : 'nu'];
   const hs = list[l.hairStyle % list.length];
-  const bald = l.path === 'phat';
+  const monk = l.path === 'phat';
+  // đầu trọc: Phật tu cạo tóc, hoặc người thường sinh ra đã chọn kiểu đầu trọc
+  const bald = monk || hs === 'bald';
   const w = weaponLayers(l);
   const showW = !c.dead && !hideWeapon;
   const cut = l.cut % 4;
@@ -546,9 +548,13 @@ export function lpcLayers(c: Character, hideWeapon = false): Layer[] {
   // phụ kiện đầu: khi đã đội mũ miện (Nguyên Anh trở lên) thì bỏ nón, khăn; che mặt, bịt mắt vẫn giữ
   const hk = ft.hat.key;
   const faceAcc = hk === 'mask' || hk === 'eyepatch';
-  if (hk && (faceAcc || (realm < 4 && !(bald && hk === 'hairtie')))) out.push({ key: hk, tint: accTint(ft.hat) });
+  // Phật tu không đội nón, khăn
+  // đầu trọc, đầu cạo: chỉ đeo đai/khăn buộc trán để còn thấy cái đầu
+  const shaved = bald || hs === 'buzzcut' || hs === 'balding';
+  const bandOnly = hk === 'headband' || hk === 'band_thick';
+  if (hk && (faceAcc || (realm < 4 && !monk && (!shaved || bandOnly)))) out.push({ key: hk, tint: accTint(ft.hat) });
   // mũ miện theo cảnh giới (Phật tu đầu trọc, chỉ có hào quang)
-  if (!bald) {
+  if (!monk) {
     if (realm >= 7) out.push({ key: 'crown_gold' });
     else if (realm >= 4) out.push({ key: 'tiara_gold' });
     else if (realm >= 3) out.push({ key: 'tiara_silver' });
