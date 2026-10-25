@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Scene from '@/components/Scene';
 import MusicToggle from '@/components/MusicToggle';
-import { TribulationOverlay } from '@/components/Extras';
+import { TribulationOverlay, Tutorial } from '@/components/Extras';
 import { BREAK_EVENT_ID } from '@/lib/game/events';
 import { endingOf } from '@/lib/game/endings';
 import { BagSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, HuntSheet, LogPanel, SEASONS, ShopSheet, Sheet, StageStrip, StatsPanel } from '@/components/Panels';
@@ -35,6 +35,7 @@ export default function PlayPage() {
   const [speed, setSpeed] = useState(1);
   const [running, setRunning] = useState(true);
   const [kiep, setKiep] = useState<number | null>(null); // lựa chọn đang chờ mini-game thiên kiếp
+  const [tut, setTut] = useState(false); // hướng dẫn lần đầu
 
   const charRef = useRef<Character | null>(null);
   const pendingRef = useRef<PendingEvent | null>(null);
@@ -100,7 +101,7 @@ export default function PlayPage() {
   const speedRef = useRef(speed);
   speedRef.current = speed;
   const activeRef = useRef(false);
-  activeRef.current = running && sheet === null && phase === 'play' && kiep === null;
+  activeRef.current = running && sheet === null && phase === 'play' && kiep === null && !tut;
 
   /** Trận đánh tự động kiểu idle: mỗi lượt bạn đánh một đòn, quái đánh trả một đòn */
   function newFight(c: Character, mId: string, kills: number): Battle | null {
@@ -392,6 +393,9 @@ export default function PlayPage() {
     setPhase('play');
     persist(true);
     window.scrollTo(0, 0);
+    try {
+      if (!localStorage.getItem('vkl.tut')) setTut(true);
+    } catch {}
   };
 
   const finishLife = async (epitaph: string, note = '', bury = false) => {
@@ -601,6 +605,15 @@ export default function PlayPage() {
             <Link className="btn" href="/so-sinh-tu" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
               Sổ Sinh Tử
             </Link>
+            <button
+              className="btn"
+              onClick={() => {
+                setSheet(null);
+                setTut(true);
+              }}
+            >
+              Hướng dẫn chơi
+            </button>
             <Link className="btn btn-jade" href="/gop-y" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
               Góp ý tính năng
             </Link>
@@ -624,6 +637,16 @@ export default function PlayPage() {
         </Sheet>
       )}
       {c.dead && <DeathSheet c={c} karma={karmaOf(c)} isNew={!meta.endings?.[endingOf(c).id]} onDone={finishLife} />}
+      {tut && !pending && !c.dead && (
+        <Tutorial
+          onDone={() => {
+            setTut(false);
+            try {
+              localStorage.setItem('vkl.tut', '1');
+            } catch {}
+          }}
+        />
+      )}
       {kiep !== null && !c.dead && <TribulationOverlay realmName={REALMS[c.realm + 1]?.name ?? 'Phi Thăng'} onDone={afterKiep} />}
     </main>
   );

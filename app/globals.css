@@ -2494,3 +2494,35 @@ button:disabled {
 .bc-info ul { list-style: none; margin: 0; padding: 0; font-size: 16px; line-height: 1.15; color: #4a3a2a; }
 .bc-info li b { font-weight: 400; color: var(--jade); }
 .bc-title { font-weight: 400; font-size: 24px; color: var(--red-d); line-height: 1; }
+
+/* ===== Màn đầu thai gọn ===== */
+.birth-flow { display: flex; flex-direction: column; gap: 10px; padding-bottom: 92px; }
+.howto ol { margin: 0; padding-left: 22px; font-size: 18px; line-height: 1.2; display: flex; flex-direction: column; gap: 4px; }
+.howto b, .birth-meta b { font-weight: 400; color: var(--red-d); }
+.birth-meta { margin: 0; font-size: 17px; line-height: 1.2; color: var(--muted); }
+.birth-meta .jade { color: var(--jade); }
+.birth-meta .ta { color: var(--ta); }
+.link-btn { background: none; border: 0; padding: 4px 0; font: inherit; font-size: 17px; color: var(--chinh); text-decoration: underline; cursor: pointer; }
+.gc-check { margin-top: auto; font-size: 14px; color: var(--jade); }
+.birth-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: flex; gap: 8px; padding: 10px 16px max(10px, env(safe-area-inset-bottom)); background: var(--ink); box-shadow: 0 -3px 0 var(--ink-dark); }
+.birth-bar .btn { display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; min-height: 52px; }
+.birth-bar .btn small { font-size: 13px; opacity: 0.8; }
+.birth-bar .btn:first-child { flex: 0 0 34%; }
+.birth-bar .btn-big { flex: 1; font-size: 26px; }
+@media (min-width: 560px) { .birth-bar { left: 50%; transform: translateX(-50%); max-width: 520px; } }
+.more { border: 3px solid var(--ink); background: var(--paper); }
+.more summary { padding: 10px 12px; font-size: 18px; cursor: pointer; list-style: none; }
+.more summary::before { content: '▸ '; }
+.more[open] summary::before { content: '▾ '; }
+.more-body { padding: 0 12px 12px; }
+.more-body h3 { margin: 10px 0 6px; font-weight: 400; font-size: 19px; color: var(--red-d); }
+
+/* ===== Hướng dẫn lần đầu ===== */
+.tut { position: fixed; inset: 0; z-index: 90; }
+.tut-dim { position: absolute; inset: 0; background: rgba(20, 14, 8, 0.72); }
+.tut-hole { position: absolute; border: 3px solid #ffd36b; box-shadow: 0 0 0 9999px rgba(20, 14, 8, 0.72); pointer-events: none; transition: all 0.25s steps(4); }
+.tut-card { position: absolute; left: 16px; right: 16px; max-width: 420px; margin: 0 auto; padding: 10px 12px; background: var(--paper-3); border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink-dark); display: flex; flex-direction: column; gap: 4px; }
+.tut-card small { color: var(--muted); font-size: 15px; }
+.tut-card b { font-weight: 400; font-size: 24px; color: var(--red-d); line-height: 1; }
+.tut-card p { margin: 0; font-size: 18px; line-height: 1.2; }
+.tut-btns { display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px; }

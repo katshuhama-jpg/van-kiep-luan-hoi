@@ -10,61 +10,81 @@ import { rollBase } from '@/lib/game/engine';
 import type { Character } from '@/lib/game/types';
 
 /* ================= Gieo quẻ: lá số nhân vật + thiên phú ================= */
-export function GachaPanel({ phuc, onChange }: { phuc: number; onChange: (gifts: string[], spent: number, base: Character | null) => void }) {
+export function GachaPanel({ phuc, onChange, onBorn, busy }: { phuc: number; onChange: (gifts: string[], spent: number, base: Character | null) => void; onBorn: () => void; busy?: boolean }) {
   const [cards, setCards] = useState<string[]>([]);
   const [picked, setPicked] = useState<string[]>([]);
   const [rolls, setRolls] = useState(0);
   const [flip, setFlip] = useState(0);
   const [base, setBase] = useState<Character | null>(null);
+  const [showRadar, setShowRadar] = useState(false);
+  // lần gieo đầu tiên và lần gieo lại kế tiếp miễn phí
   const cost = rolls < 2 ? 0 : 5;
   const spent = Math.max(0, rolls - 2) * 5;
-  const emit = (g: string[], sp: number, b: Character | null) => onChange(g, sp, b);
   const roll = () => {
     const next = drawGifts(5);
     const b = rollBase();
     setCards(next);
     setPicked([]);
     setBase(b);
-    setRolls(rolls + 1);
+    setRolls((r) => r + 1);
     setFlip((f) => f + 1);
-    emit([], Math.max(0, rolls + 1 - 2) * 5, b);
+    onChange([], Math.max(0, rolls + 1 - 2) * 5, b);
   };
+  // vào màn là trời đã gieo sẵn một lá số
+  useEffect(() => {
+    if (rolls === 0) roll();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const toggle = (id: string) => {
     const on = picked.includes(id);
     const next = on ? picked.filter((x) => x !== id) : picked.length >= 2 ? [picked[1], id] : [...picked, id];
     setPicked(next);
-    emit(next, spent, base);
+    onChange(next, spent, base);
   };
   const best = cards.reduce((m, id) => Math.max(m, giftOf(id)?.rare ?? 0), 0);
   return (
-    <section className="panel">
-      <h2>Gieo quẻ đầu thai</h2>
-      <p className="note" style={{ marginTop: 0 }}>Mỗi lần gieo ra một lá số mới do trời định: tên, giới tính, tướng mạo, thân phận, và 5 lá thiên phú (chọn tối đa 2). Hai lần đầu miễn phí, sau đó 5 phúc mỗi lần.</p>
-      {base && <BirthCard key={'b' + flip} c={base} />}
+    <>
+      <section className="panel">
+        <h2>Lá số kiếp này</h2>
+        {base && <BirthCard key={'b' + flip} c={base} />}
+        {base && (
+          <button className="link-btn" onClick={() => setShowRadar(!showRadar)} aria-expanded={showRadar}>
+            {showRadar ? 'Ẩn biểu đồ chỉ số' : 'Xem biểu đồ chỉ số'}
+          </button>
+        )}
+        {base && showRadar && <GiftRadar base={base} picked={picked} />}
+      </section>
       {cards.length > 0 && (
-        <div className={`gacha-row ${best >= 3 ? 'gold' : ''}`} key={flip}>
-          {cards.map((id, i) => {
-            const g = giftOf(id)!;
-            const on = picked.includes(id);
-            return (
-              <button key={id} className={`gacha-card r${g.rare} ${on ? 'on' : ''}`} style={{ animationDelay: `${0.3 + i * 0.12}s`, ['--rc' as string]: RARE_COLOR[g.rare] }} onClick={() => toggle(id)} aria-pressed={on}>
-                <span className="gc-rare">{RARE_NAME[g.rare]}</span>
-                <b>{g.name}</b>
-                <small>{g.desc}</small>
-                {g.bad && <span className="gc-bad">có họa</span>}
-              </button>
-            );
-          })}
-        </div>
+        <section className="panel">
+          <h2>Chọn thiên phú</h2>
+          <p className="note" style={{ marginTop: 0 }}>Không bắt buộc. Chọn tối đa 2 lá. Lá ghi &quot;có họa&quot; vừa có lợi vừa có hại.</p>
+          <div className={`gacha-row ${best >= 3 ? 'gold' : ''}`} key={flip}>
+            {cards.map((id, i) => {
+              const g = giftOf(id)!;
+              const on = picked.includes(id);
+              return (
+                <button key={id} className={`gacha-card r${g.rare} ${on ? 'on' : ''}`} style={{ animationDelay: `${0.3 + i * 0.12}s`, ['--rc' as string]: RARE_COLOR[g.rare] }} onClick={() => toggle(id)} aria-pressed={on}>
+                  <span className="gc-rare">{RARE_NAME[g.rare]}</span>
+                  <b>{g.name}</b>
+                  <small>{g.desc}</small>
+                  {g.bad && <span className="gc-bad">có họa</span>}
+                  {on && <span className="gc-check">✓ Đã chọn</span>}
+                </button>
+              );
+            })}
+          </div>
+        </section>
       )}
-      {base && <GiftRadar base={base} picked={picked} />}
-      <button className="btn btn-jade" style={{ width: '100%', marginTop: 8 }} onClick={roll} disabled={cost > 0 && phuc < cost}>
-        {cards.length === 0 ? 'Gieo quẻ' : `Gieo lại${cost ? ` (-${cost} phúc)` : ' (miễn phí)'}`}
-      </button>
-      <p className="note" style={{ marginBottom: 0 }}>
-        {base ? 'Không gieo cũng được: bấm Đầu thai là trời tự định đoạt.' : `Có ${GIFTS.length} loại thiên phú · Thiên phẩm chỉ 0.1%`}
-      </p>
-    </section>
+      <div className="birth-bar">
+        <button className="btn" onClick={roll} disabled={cost > 0 && phuc < cost}>
+          Gieo lại
+          <small>{cost ? `-${cost} phúc` : 'miễn phí'}</small>
+        </button>
+        <button className="btn btn-red btn-big" onClick={onBorn} disabled={busy || !base}>
+          Đầu thai ▶
+        </button>
+      </div>
+    </>
   );
 }
 
@@ -400,6 +420,60 @@ export function ShareCard({ c, ending, epitaph }: { c: Character; ending: Ending
           {busy ? 'Đang vẽ...' : 'Tạo thẻ khoe kết cục'}
         </button>
       )}
+    </div>
+  );
+}
+
+/* ================= Hướng dẫn lần đầu: khoét sáng từng vùng ================= */
+const TUT_STEPS: { sel: string; title: string; text: string }[] = [
+  { sel: '.stage', title: 'Đây là bạn', text: 'Thời gian tự trôi. Thanh vàng phía trên chạy hết là bạn thêm 1 tuổi.' },
+  { sel: '.focus-grid', title: 'Năm nay làm gì?', text: 'Chạm để chọn việc. Tu luyện để lên cảnh giới, Kiếm tiền để mua đồ, Trừ yêu để đánh quái. Làm một việc quá lâu sẽ bị quá độ, nhớ đổi việc.' },
+  { sel: '.speeds', title: 'Nhanh hay chậm', text: 'Tua 2× đến 16×. Nút ❚❚ để dừng, nút » để nhảy tới chuyện kế tiếp.' },
+  { sel: '.strip-btn', title: 'Chỉ số của bạn', text: 'Chạm vào tên để xem chỉ số. Sức khỏe về 0 hoặc tâm ma lên 100 là chết.' },
+  { sel: '.dock-actions', title: 'Mua đồ, bế quan', text: 'Phường thị bán áo, vũ khí, đan dược. Túi đồ để mặc đồ. Bế quan để tu nhanh nhưng xuất quan sẽ có mất mát.' },
+  { sel: '.game-scroll', title: 'Sắp có chuyện xảy ra', text: 'Khi gặp chuyện, game tự dừng và hiện 4 cách xử lý. Đọc kỹ, có cách khiến bạn chết. Chúc đạo hữu sống lâu!' },
+];
+
+export function Tutorial({ onDone }: { onDone: () => void }) {
+  const [i, setI] = useState(0);
+  const [rect, setRect] = useState<DOMRect | null>(null);
+  const step = TUT_STEPS[i];
+  useEffect(() => {
+    const el = document.querySelector(step.sel);
+    if (!el) {
+      setRect(null);
+      return;
+    }
+    el.scrollIntoView({ block: 'nearest' });
+    const update = () => setRect(el.getBoundingClientRect());
+    update();
+    window.addEventListener('resize', update);
+    const t = setTimeout(update, 250);
+    return () => {
+      window.removeEventListener('resize', update);
+      clearTimeout(t);
+    };
+  }, [step.sel]);
+  const last = i === TUT_STEPS.length - 1;
+  const below = rect ? rect.top + rect.height / 2 < window.innerHeight / 2 : true;
+  return (
+    <div className="tut" role="dialog" aria-modal="true" aria-label={`Hướng dẫn: ${step.title}`}>
+      {rect ? <div className="tut-hole" style={{ left: rect.left - 4, top: rect.top - 4, width: rect.width + 8, height: rect.height + 8 }} /> : <div className="tut-dim" />}
+      <div className="tut-card" style={rect ? (below ? { top: Math.min(window.innerHeight - 200, rect.bottom + 12) } : { bottom: Math.min(window.innerHeight - 200, window.innerHeight - rect.top + 12) }) : { top: '35%' }}>
+        <small>
+          {i + 1}/{TUT_STEPS.length}
+        </small>
+        <b>{step.title}</b>
+        <p>{step.text}</p>
+        <div className="tut-btns">
+          <button className="btn" onClick={onDone}>
+            Bỏ qua
+          </button>
+          <button className="btn btn-red" onClick={() => (last ? onDone() : setI(i + 1))}>
+            {last ? 'Bắt đầu!' : 'Tiếp'}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

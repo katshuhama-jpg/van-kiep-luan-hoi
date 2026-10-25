@@ -414,32 +414,42 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
   const [base, setBase] = useState<Character | null>(null);
   const spent = picked.reduce((s, id) => s + (TALENTS.find((t) => t.id === id)?.cost ?? 0), 0) + gSpent;
   const left = meta.phucDuyen - spent;
+  const first = meta.lives === 0;
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      <section className="panel">
-        <h2>Luân hồi đài</h2>
-        <p style={{ margin: '0 0 6px' }}>
-          {meta.lives === 0 ? 'Linh hồn mới tinh, chưa từng đầu thai.' : `Đã trải qua ${meta.lives} kiếp.`} Phúc duyên: <b style={{ fontWeight: 400, color: 'var(--jade)' }}>{left}</b>
+    <div className="birth-flow">
+      {first ? (
+        <section className="panel howto">
+          <h2>Cách chơi</h2>
+          <ol>
+            <li>Trời đã gieo cho bạn một lá số: tên, tướng mạo, chỉ số. Không ưng thì bấm <b>Gieo lại</b>.</li>
+            <li>
+              Bấm <b>Đầu thai</b>. Thời gian tự trôi, bạn lớn lên từng năm.
+            </li>
+            <li>Gặp chuyện thì chọn 1 trong 4 cách. Có cách giúp bạn mạnh lên, có cách khiến bạn chết.</li>
+          </ol>
+        </section>
+      ) : (
+        <p className="birth-meta">
+          Đã trải qua <b>{meta.lives}</b> kiếp · Phúc duyên <b className="jade">{left}</b>
           {meta.nghiep > 0 && (
             <>
               {' '}
-              · Nghiệp: <b style={{ fontWeight: 400, color: 'var(--ta)' }}>{meta.nghiep}</b>
+              · Nghiệp <b className="ta">{meta.nghiep}</b>
+            </>
+          )}
+          {meta.past && (
+            <>
+              <br />
+              Kiếp trước: {meta.past.name}, {meta.past.age} tuổi, {meta.past.realmName}.{meta.stash ? ' Có chôn lại một chiếc rương...' : ''}
             </>
           )}
         </p>
-        {meta.nghiep >= 10 && <p className="note" style={{ margin: 0 }}>Nghiệp nặng: kiếp sau khí vận giảm và có oan gia tìm tới.</p>}
-        {meta.past && (
-          <p className="note" style={{ margin: '4px 0 0' }}>
-            Kiếp trước: <b style={{ fontWeight: 400 }}>{meta.past.name}</b>, {meta.past.age} tuổi, {meta.past.realmName}.{meta.stash ? ' Kiếp trước có chôn lại một chiếc rương...' : ''}
-          </p>
-        )}
-        <Link href="/so-sinh-tu" className="btn" style={{ display: 'block', textAlign: 'center', textDecoration: 'none', marginTop: 8 }}>
-          Sổ Sinh Tử ({Object.keys(meta.endings ?? {}).length}/{ENDINGS.length} kết cục)
-        </Link>
-      </section>
+      )}
 
       <GachaPanel
         phuc={left}
+        busy={busy}
+        onBorn={() => onBorn(picked, yearSec, gifts, gSpent, base)}
         onChange={(g, s, b) => {
           setGifts(g);
           setGSpent(s);
@@ -447,48 +457,46 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
         }}
       />
 
-      <section className="panel">
-        <h2>Thiên phú cho kiếp này</h2>
-        <p className="note" style={{ marginTop: 0 }}>Dùng phúc duyên tích được từ các kiếp trước. Dùng xong là hết.</p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          {TALENTS.map((t) => {
-            const on = picked.includes(t.id);
-            const can = on || left >= t.cost;
-            return (
-              <button key={t.id} className={`talent ${on ? 'on' : ''}`} disabled={!can} aria-pressed={on} onClick={() => setPicked(on ? picked.filter((x) => x !== t.id) : [...picked, t.id])}>
-                <span>
-                  {t.name}
-                  <br />
-                  <small className="note">{t.desc}</small>
-                </span>
-                <span className="cost">{t.cost} phúc</span>
+      <details className="more">
+        <summary>Tùy chỉnh thêm (không bắt buộc)</summary>
+        <div className="more-body">
+          <h3>Tốc độ thời gian</h3>
+          <div className="choice-row">
+            {[
+              [10, 'Nhanh'],
+              [20, 'Vừa'],
+              [30, 'Chậm'],
+            ].map(([s, label]) => (
+              <button key={s} className={`btn ${yearSec === s ? 'on' : ''}`} onClick={() => setYearSec(s as number)} aria-pressed={yearSec === s}>
+                {label}
+                <br />
+                <small>1 năm ≈ {s}s</small>
               </button>
-            );
-          })}
+            ))}
+          </div>
+          <h3>Mua thêm phúc lợi (dùng phúc duyên)</h3>
+          {meta.phucDuyen <= 0 && <p className="note" style={{ margin: 0 }}>Chưa có phúc duyên. Sống tốt một kiếp, chết đi sẽ được phúc duyên để mua ở đây.</p>}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {TALENTS.map((t) => {
+              const on = picked.includes(t.id);
+              const can = on || left >= t.cost;
+              return (
+                <button key={t.id} className={`talent ${on ? 'on' : ''}`} disabled={!can} aria-pressed={on} onClick={() => setPicked(on ? picked.filter((x) => x !== t.id) : [...picked, t.id])}>
+                  <span>
+                    {t.name}
+                    <br />
+                    <small className="note">{t.desc}</small>
+                  </span>
+                  <span className="cost">{t.cost} phúc</span>
+                </button>
+              );
+            })}
+          </div>
+          <Link href="/so-sinh-tu" className="btn" style={{ display: 'block', textAlign: 'center', textDecoration: 'none', marginTop: 8 }}>
+            Sổ Sinh Tử ({Object.keys(meta.endings ?? {}).length}/{ENDINGS.length} kết cục)
+          </Link>
         </div>
-      </section>
-
-      <section className="panel">
-        <h2>Độ dài một năm</h2>
-        <div className="choice-row">
-          {[
-            [10, 'Nhanh'],
-            [20, 'Vừa'],
-            [30, 'Chậm'],
-          ].map(([s, label]) => (
-            <button key={s} className={`btn ${yearSec === s ? 'on' : ''}`} onClick={() => setYearSec(s as number)} aria-pressed={yearSec === s}>
-              {label}
-              <br />
-              <small>1 năm ≈ {s}s</small>
-            </button>
-          ))}
-        </div>
-        <p className="note" style={{ marginBottom: 0 }}>Trong lúc chơi vẫn chỉnh được tốc độ 1× đến 16×.</p>
-      </section>
-
-      <button className="btn btn-red btn-big" disabled={busy} onClick={() => onBorn(picked, yearSec, gifts, gSpent, base ? { ...base, name: base.name.trim() || base.name } : null)}>
-        Đầu thai
-      </button>
+      </details>
     </div>
   );
 }
