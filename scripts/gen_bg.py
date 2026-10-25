@@ -234,7 +234,6 @@ def scene_tu_luyen(s):
     img.alpha_composite(fall.crop((0, 0, 64, GROUND + 12 - top)), (196, top + 2))
     put(img, pine() if s != 3 else snow_cap(season_plants(pine(), 3), 3), -26, GROUND + 6)
     put(img, plant(pine(), s), 34, GROUND - 2) if False else None
-    put(img, plant(ROCK, s), 52, GROUND + 16)
     tufts(img, s, [20, 150, 168])
     return img
 
@@ -245,7 +244,6 @@ def scene_du_ngoan(s):
     ground(img, s, 'road')
     put(img, plant(ROUND, s, blossom=True), -30, GROUND + 4)
     put(img, plant(BUSH, s), 200, GROUND + 4)
-    put(img, plant(ROCK, s), 196, GROUND + 18)
     tufts(img, s, [60, 180])
     return img
 
