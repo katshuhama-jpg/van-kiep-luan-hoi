@@ -1123,28 +1123,30 @@ export default function PlayPage() {
             <b>{fmt(c.linhThach)}</b> linh thạch · {wealthTier(c).name}
             {c.income ? ` · +${c.income}/năm` : ''}
           </span>
-          <button className="icon-btn today-btn" onClick={() => setSheet('today')} aria-label="Thiên tượng và nhiệm vụ hôm nay">
-            {omenIcon}
-          </button>
-          {user && (
-            <button
-              className="icon-btn mail-btn"
-              onClick={() => {
-                listMail(user).then((ls) => {
-                  setMail(ls);
-                  setUnread(0);
-                });
-                setSheet('mail');
-              }}
-              aria-label={`Giang hồ${unread ? `, ${unread} thư mới` : ''}`}
-            >
-              ✉{unread > 0 && <span className="dot">{unread}</span>}
+          <div className="top-icons">
+            <button className="icon-btn today-btn" onClick={() => setSheet('today')} aria-label="Thiên tượng và nhiệm vụ hôm nay">
+              {omenIcon}
             </button>
-          )}
-          <MusicToggle battle={!!duelRef.current || !!ambushRef.current || (c.focus === 'tru_yeu' && c.age >= 10 && !!c.huntTarget && !c.dead)} />
-          <button className="icon-btn" onClick={() => setSheet('menu')} aria-label="Mở menu">
-            ≡
-          </button>
+            {user && (
+              <button
+                className="icon-btn mail-btn"
+                onClick={() => {
+                  listMail(user).then((ls) => {
+                    setMail(ls);
+                    setUnread(0);
+                  });
+                  setSheet('mail');
+                }}
+                aria-label={`Giang hồ${unread ? `, ${unread} thư mới` : ''}`}
+              >
+                ✉{unread > 0 && <span className="dot">{unread}</span>}
+              </button>
+            )}
+            <MusicToggle battle={!!duelRef.current || !!ambushRef.current || (c.focus === 'tru_yeu' && c.age >= 10 && !!c.huntTarget && !c.dead)} />
+            <button className="icon-btn" onClick={() => setSheet('menu')} aria-label="Mở menu">
+              ≡
+            </button>
+          </div>
         </div>
         <div className="year-bar" aria-hidden="true">
           <div style={{ width: `${yearPct}%` }} />
