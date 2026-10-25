@@ -50,7 +50,7 @@ export default function TacGia() {
       </section>
       <section className="panel">
         <h2>Font chữ</h2>
-        <p style={{ margin: 0 }}>Handjet (Rosetta Type) cho chữ trong game, Protest Revolution (Octavio Pardo) cho logo. Cả hai theo giấy phép SIL Open Font License.</p>
+        <p style={{ margin: 0 }}>Barlow Semi Condensed (Jeremy Tribby) cho chữ trong game, Protest Revolution (Octavio Pardo) cho logo. Cả hai theo giấy phép SIL Open Font License.</p>
       </section>
     </main>
   );

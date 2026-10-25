@@ -299,7 +299,7 @@ export async function makeCard(c: Character, ending: Ending, epitaph: string, sv
   const x = cv.getContext('2d');
   if (!x) return null;
   try {
-    await document.fonts.load('600 40px Handjet');
+    await document.fonts.load("600 40px 'Barlow Semi Condensed'");
   } catch {}
   x.imageSmoothingEnabled = false;
   // nền giấy da + viền pixel
@@ -312,7 +312,7 @@ export async function makeCard(c: Character, ending: Ending, epitaph: string, sv
   x.strokeStyle = '#3e3228';
   x.lineWidth = 4;
   x.strokeRect(24, 24, W - 48, H - 48);
-  const font = (px: number) => `600 ${px}px Handjet, monospace`;
+  const font = (px: number) => `600 ${px}px 'Barlow Semi Condensed', sans-serif`;
   x.textAlign = 'center';
   x.fillStyle = '#9a2a1e';
   x.font = font(44);

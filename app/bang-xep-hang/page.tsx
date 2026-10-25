@@ -40,7 +40,7 @@ function Medal({ rank }: { rank: number }) {
       <rect x="2" y="4" width="6" height="8" fill={col} />
       <rect x="1" y="5" width="8" height="6" fill={col} />
       <rect x="3" y="5" width="2" height="1" fill="#ffffff" />
-      <text x="5" y="10.2" fontSize="5" textAnchor="middle" fill="#3b2a1a" fontFamily="Handjet, monospace">
+      <text x="5" y="10.2" fontSize="5" textAnchor="middle" fill="#3b2a1a" fontFamily="'Barlow Semi Condensed', sans-serif">
         {rank}
       </text>
     </svg>

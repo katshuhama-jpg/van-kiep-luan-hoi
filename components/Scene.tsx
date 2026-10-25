@@ -1,6 +1,6 @@
 'use client';
 
-import type { CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import Sprite, { auraColor, lookOf } from './Sprite';
 import { BattleOverlay, type BattleView } from './Battle';
 import MonsterLpc from './MonsterLpc';
@@ -206,27 +206,55 @@ const FX_TEXT: Partial<Record<Fx['kind'], string>> = {
   death: 'BỎ MẠNG',
 };
 
+let preloaded = false;
+function preloadBg() {
+  if (preloaded || typeof window === 'undefined') return;
+  preloaded = true;
+  for (const sc of BG_SCENES) for (let i = 0; i < 4; i++) new Image().src = `/bg/${sc}-${i}.png`;
+}
+
+function SeasonFx({ season, cls }: { season: number; cls: string }) {
+  return (
+    <div className={`season ${SEASON_CLASS[season]} ${cls}`} aria-hidden="true">
+      {season === 1 && <div className="sunrays" />}
+      {season === 3 && <div className="snowbank" />}
+      {SEASON_PARTS.map((i) => (
+        <span
+          key={i}
+          className={`p${i % 3}`}
+          style={{ left: `${(i * 37 + (i % 5) * 7) % 104 - 2}%`, animationDelay: `${-((i * 0.83) % 7)}s`, animationDuration: `${(season === 3 ? 6 : 5) + (i % 5) * 0.9}s` }}
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function Scene({ c, fx, paused, season, battle }: { c: Character; fx: Fx[]; paused: boolean; season: number; battle?: BattleView | null }) {
   const focus = c.age < 6 ? 'tu_luyen' : c.focus;
   const aura = auraColor(lookOf(c)) ?? '#9ff0c8';
   const shaking = fx.some((f) => f.kind === 'breakthrough' || f.kind === 'hurt' || f.kind === 'lightning');
   const particles = Array.from({ length: 10 }, (_, i) => i);
+  const bgUrl = `/bg/${BG_SCENES.includes(focus) ? focus : 'tu_luyen'}-${season}.png`;
+  // chuyển mùa / đổi cảnh: giữ cảnh cũ đè lên rồi mờ dần, tránh nhảy hình
+  const cur = useRef({ bg: bgUrl, season, k: 0 });
+  const [prev, setPrev] = useState<{ bg: string; season: number; k: number } | null>(null);
+  useEffect(() => {
+    const c0 = cur.current;
+    if (c0.bg === bgUrl && c0.season === season) return;
+    setPrev(c0);
+    cur.current = { bg: bgUrl, season, k: c0.k + 1 };
+    const t = setTimeout(() => setPrev(null), 2200);
+    return () => clearTimeout(t);
+  }, [bgUrl, season]);
+  useEffect(() => preloadBg(), []);
   return (
     <div className={`scene ${paused ? 'paused' : ''} ${shaking ? 'shake' : ''} ${c.dead ? 'scene-dead' : ''} ${battle ? 'in-battle' : ''}`} style={{ ['--aura' as string]: aura } as CSSProperties}>
-      <div className="bg bg-img" style={{ backgroundImage: `url(/bg/${BG_SCENES.includes(focus) ? focus : 'tu_luyen'}-${season}.png)` }} aria-hidden="true" />
+      <div className="bg bg-img" style={{ backgroundImage: `url(${bgUrl})` }} aria-hidden="true" />
+      {prev && prev.bg !== bgUrl && <div key={prev.k} className="bg bg-img fade-out" style={{ backgroundImage: `url(${prev.bg})` }} aria-hidden="true" />}
       {(focus === 'tu_luyen' || !BG_SCENES.includes(focus)) && season !== 3 && <div className="bg-fall" aria-hidden="true" />}
 
-      <div className={`season ${SEASON_CLASS[season]}`} aria-hidden="true">
-        {season === 1 && <div className="sunrays" />}
-        {season === 3 && <div className="snowbank" />}
-        {SEASON_PARTS.map((i) => (
-          <span
-            key={i}
-            className={`p${i % 3}`}
-            style={{ left: `${(i * 37 + (i % 5) * 7) % 104 - 2}%`, animationDelay: `${-((i * 0.83) % 7)}s`, animationDuration: `${(season === 3 ? 6 : 5) + (i % 5) * 0.9}s` }}
-          />
-        ))}
-      </div>
+      {prev && prev.season !== season && <SeasonFx key={`o${prev.k}`} season={prev.season} cls="fade-out" />}
+      <SeasonFx key={`s${season}`} season={season} cls={prev && prev.season !== season ? 'fade-in' : ''} />
 
       {!c.dead && focus === 'tu_luyen' && c.age >= 6 && (
         <div className="amb qi" aria-hidden="true">
