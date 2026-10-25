@@ -9,7 +9,7 @@ import { describeLean } from '@/lib/game/engine';
 import { fmt } from '@/lib/game/helpers';
 import type { Character } from '@/lib/game/types';
 import { TitleBadge } from '@/components/Hook';
-import { leaderboard, weeklyTitles, type RankKind, type RankLean, type RankScope } from '@/lib/storage';
+import { leaderboard, titleKey, weeklyTitles, type RankKind, type RankLean, type RankScope } from '@/lib/storage';
 import { useAuth } from '@/lib/useAuth';
 
 const LEANS: { id: RankLean; name: string }[] = [
@@ -156,7 +156,7 @@ export default function RankPage() {
                   </span>
                   <span className="rank-owner">
                     <span className="rank-user">@{r.username}</span>
-                    <TitleBadge title={titles[r.username]} />
+                    <TitleBadge title={titles[titleKey(r.username, c.lifeNo)]} />
                     {mine && <span className="badge">Bạn</span>}
                     {!r.alive && <span className="badge gone-badge">{c.ascended ? 'Phi thăng' : 'Đã mất'}</span>}
                   </span>

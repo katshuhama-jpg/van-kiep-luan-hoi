@@ -290,18 +290,19 @@ export async function unreadMail(user: Player | null): Promise<number> {
 const TITLE_ORDER = ['Thiên Hạ Đệ Nhất', 'Võ Lâm Minh Chủ', 'Đệ Nhất Ma Đầu', 'Đệ Nhị Cao Thủ', 'Đệ Tam Cao Thủ'];
 let titlesCache: Promise<Record<string, string>> | null = null;
 
-/** Danh hiệu tuần này theo tên người chơi (mỗi người lấy danh hiệu cao nhất) */
+/** Danh hiệu tuần này gắn với từng nhân vật (người chơi + kiếp thứ mấy), không phải cả tài khoản */
 export function weeklyTitles(): Promise<Record<string, string>> {
   if (titlesCache) return titlesCache;
   titlesCache = (async () => {
     const sb = supabase();
     if (!sb) return {};
-    const { data, error } = await sb.rpc('vkl_titles');
+    const { data, error } = await sb.rpc('vkl_titles_char');
     if (error || !data) return {};
     const out: Record<string, string> = {};
-    for (const r of data as { username: string; title: string }[]) {
-      const cur = out[r.username];
-      if (!cur || TITLE_ORDER.indexOf(r.title) < TITLE_ORDER.indexOf(cur)) out[r.username] = r.title;
+    for (const r of data as { username: string; life_no: number; title: string }[]) {
+      const k = titleKey(r.username, r.life_no);
+      const cur = out[k];
+      if (!cur || TITLE_ORDER.indexOf(r.title) < TITLE_ORDER.indexOf(cur)) out[k] = r.title;
     }
     return out;
   })();
@@ -309,6 +310,8 @@ export function weeklyTitles(): Promise<Record<string, string>> {
   setTimeout(() => (titlesCache = null), 5 * 60 * 1000);
   return titlesCache;
 }
+
+export const titleKey = (username: string, lifeNo: number | undefined) => `${username}|${lifeNo ?? 1}`;
 
 export async function endingStats(): Promise<{ total: number; counts: Record<string, number> } | null> {
   const sb = supabase();

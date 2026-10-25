@@ -22,7 +22,7 @@ import { artOf } from '@/lib/game/vocong';
 import { ELEMENTS, elemHitTag, elemMul, elemRel, elementOf } from '@/lib/game/nguhanh';
 import { DUEL_INFO, DUEL_PER_YEAR, DUEL_TURNS, finishDuel, foeChar, foeStats, pickDuel, teaTrap, type DuelFoe } from '@/lib/game/duel';
 import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, pickAmbush } from '@/lib/game/ambush';
-import { addMemorial, displayName, fetchWorld, listMail, loadAll, saveLocal, saveMeta, saveRemote, sendMail, unreadMail, weeklyTitles, type Mail, type SaveState } from '@/lib/storage';
+import { titleKey, addMemorial, displayName, fetchWorld, listMail, loadAll, saveLocal, saveMeta, saveRemote, sendMail, unreadMail, weeklyTitles, type Mail, type SaveState } from '@/lib/storage';
 import { updateCareer, bumpStreak, evalQuests, omenIs, qmark, questName, streakGift, vnDay } from '@/lib/game/hook';
 import { HookSheet, MailSheet, TitleBadge } from '@/components/Hook';
 import { omenToday } from '@/lib/game/hook';
@@ -50,7 +50,7 @@ export default function PlayPage() {
   const duelOpen = useRef(false);
   const [mail, setMail] = useState<Mail[] | null>(null); // hộp thư giang hồ
   const [unread, setUnread] = useState(0);
-  const [myTitle, setMyTitle] = useState<string | null>(null);
+  const [titles, setTitles] = useState<Record<string, string>>({});
   const [questNews, setQuestNews] = useState<string[]>([]); // nhiệm vụ vừa xong ở đời trước
   const [achNews, setAchNews] = useState<string[]>([]); // thành tựu vừa đạt
 
@@ -118,7 +118,7 @@ export default function PlayPage() {
             setUnread(0);
           });
         });
-      if (user) weeklyTitles().then((t) => !cancel && setMyTitle(t[user.username] ?? null));
+      weeklyTitles().then((t) => !cancel && setTitles(t));
       if (save?.char && !save.char.dead) {
         charRef.current = save.char;
         pendingRef.current = save.pending;
@@ -925,7 +925,7 @@ export default function PlayPage() {
         <div className="topbar-row">
           <span className="age-big">{Math.floor(c.age)}</span>
           <span className="meta">
-            {myTitle && <TitleBadge title={myTitle} />}
+            {user && <TitleBadge title={titles[titleKey(user.username, c.lifeNo)]} />}
             tuổi · {SEASONS[season]} · Kiếp {c.lifeNo}
             {c.birthPlace ? ` · ${c.birthPlace.split(', ').pop()}` : ''}
             <br />

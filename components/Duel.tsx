@@ -3,7 +3,7 @@
 import Sprite from './Sprite';
 import { useEffect, useState } from 'react';
 import { TitleBadge } from './Hook';
-import { weeklyTitles } from '@/lib/storage';
+import { titleKey, weeklyTitles } from '@/lib/storage';
 import { PATHS, realmLabel } from '@/lib/game/data';
 import { DUEL_INFO, foeChar, lifeText, type DuelFoe } from '@/lib/game/duel';
 import { ELEMENTS, elemText, elementOf } from '@/lib/game/nguhanh';
@@ -23,8 +23,8 @@ export default function DuelWarning({ me, foe, fleeChance, canBefriend, onPick }
   const lt = lifeText(foeLife, me.lifeNo);
   const [title, setTitle] = useState<string | null>(null);
   useEffect(() => {
-    if (r.player && foe.kind !== 'kiep_truoc') weeklyTitles().then((t) => setTitle(t[r.player] ?? null)).catch(() => {});
-  }, [r.player, foe.kind]);
+    if (r.player && foe.kind !== 'kiep_truoc') weeklyTitles().then((t) => setTitle(t[titleKey(r.player, r.lifeNo)] ?? null)).catch(() => {});
+  }, [r.player, r.lifeNo, foe.kind]);
   return (
     <div className={`duel-warn ${foe.kind}`} role="dialog" aria-modal="true" aria-labelledby="duel-title">
       <div className="duel-flash" aria-hidden="true" />
