@@ -164,3 +164,47 @@ export async function fetchWorld(user: Player | null): Promise<WorldEcho | null>
   };
   return { graves, ma: top(ma), chinh: top(chinh) };
 }
+
+// ---------- Góp ý tính năng ----------
+export type FeedbackKind = 'tinh_nang' | 'loi' | 'can_bang' | 'khac';
+export interface Feedback {
+  id: number;
+  username: string;
+  kind: FeedbackKind;
+  content: string;
+  status: 'moi' | 'dang_lam' | 'da_xong' | 'tu_choi';
+  votes: number;
+  created_at: string;
+  voted: boolean;
+  mine: boolean;
+}
+
+export async function listFeedback(user: Player | null): Promise<Feedback[] | null> {
+  const sb = supabase();
+  if (!sb) return null;
+  const { data, error } = await sb.rpc('vkl_feedback_list', { p_token: user?.token ?? null });
+  if (error) return null;
+  return (data as Feedback[]) ?? [];
+}
+
+const FB_ERR: Record<string, string> = {
+  NOT_LOGGED_IN: 'Cần đăng nhập để góp ý.',
+  TOO_FAST: 'Chậm lại một chút, 30 giây mới gửi được một góp ý.',
+  TOO_MANY: 'Hôm nay bạn đã gửi đủ 20 góp ý rồi.',
+};
+
+export async function addFeedback(user: Player | null, kind: FeedbackKind, content: string): Promise<string | null> {
+  const sb = supabase();
+  if (!sb || !user) return FB_ERR.NOT_LOGGED_IN;
+  const { error } = await sb.rpc('vkl_feedback_add', { p_token: user.token, p_kind: kind, p_content: content });
+  if (!error) return null;
+  const code = Object.keys(FB_ERR).find((k) => error.message.includes(k));
+  return code ? FB_ERR[code] : 'Gửi chưa được, thử lại sau nhé.';
+}
+
+export async function voteFeedback(user: Player | null, id: number): Promise<number | null> {
+  const sb = supabase();
+  if (!sb || !user) return null;
+  const { data, error } = await sb.rpc('vkl_feedback_vote', { p_token: user.token, p_id: id });
+  return error ? null : (data as number);
+}

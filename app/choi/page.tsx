@@ -584,6 +584,9 @@ export default function PlayPage() {
             <Link className="btn" href="/so-sinh-tu" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
               Sổ Sinh Tử
             </Link>
+            <Link className="btn btn-jade" href="/gop-y" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
+              Góp ý tính năng
+            </Link>
             {user ? (
               <button
                 className="btn"
