@@ -100,6 +100,7 @@ export interface Character {
   lookSeed?: number; // nét riêng của ngoại hình: da, khuôn mặt, râu, trang sức
   legend?: Legend | null; // thần binh truyền kiếp đang mang
   vendettas?: Vendetta[];
+  hunt?: { rival: RivalChar; at: number } | null; // truy sát: thuê người dò tung tích, năm sau chạm mặt
   qf?: Record<string, number>; // đếm việc làm trong đời cho nhiệm vụ ngày
   miles?: Mile[]; // cột mốc chính của đời, để xem lại ở nghĩa trang
   mileSnap?: { realm: number; path: string | null; partner: string | null; pet: string | null; mount: string | null };
@@ -235,6 +236,7 @@ export interface Meta {
   prophecy?: { id: string; text: string } | null; // lời tiên tri cho kiếp sau
   legend?: Legend | null; // thần binh truyền kiếp
   vendettas?: Vendetta[]; // kẻ thù là người chơi thật, để báo thù
+  feud?: Record<string, number[]>; // huyết hải thâm thù: các kiếp đã giao đấu với từng người chơi
   petBook?: string[]; // các loài linh thú đã từng nuôi
   achievements?: string[]; // thành tựu dài hạn đã đạt
   career?: Career; // số liệu cộng dồn qua các kiếp

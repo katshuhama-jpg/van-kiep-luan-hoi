@@ -3,6 +3,8 @@
 import Sprite from './Sprite';
 import { useEffect, useState } from 'react';
 import { TitleBadge } from './Hook';
+import { RelChips } from './GiangHo';
+import { SOCIAL } from '@/lib/game/social';
 import { titleKey, weeklyTitles } from '@/lib/storage';
 import { PATHS, realmLabel } from '@/lib/game/data';
 import { DUEL_INFO, foeChar, lifeText, type DuelFoe } from '@/lib/game/duel';
@@ -12,7 +14,19 @@ import type { Character } from '@/lib/game/types';
 const REL_TXT = { yeu: 'Yếu hơn bạn', ngang: 'Ngang tài ngang sức', manh: 'Mạnh hơn bạn!' };
 
 /** Màn cảnh báo trước khi vào kỳ ngộ giang hồ: ai, mạnh yếu thế nào, chọn đánh hay tránh */
-export default function DuelWarning({ me, foe, fleeChance, canBefriend, onPick }: { me: Character; foe: DuelFoe; fleeChance: number; canBefriend: boolean; onPick: (a: 'fight' | 'befriend' | 'leave' | 'flee') => void }) {
+export default function DuelWarning({
+  me,
+  foe,
+  fleeChance,
+  canBefriend,
+  onPick,
+}: {
+  me: Character;
+  foe: DuelFoe;
+  fleeChance: number;
+  canBefriend: boolean;
+  onPick: (a: 'fight' | 'befriend' | 'leave' | 'flee') => void;
+}) {
   const info = DUEL_INFO[foe.kind];
   const r = foe.rival;
   const fc = foeChar(r);
@@ -23,7 +37,10 @@ export default function DuelWarning({ me, foe, fleeChance, canBefriend, onPick }
   const lt = lifeText(foeLife, me.lifeNo);
   const [title, setTitle] = useState<string | null>(null);
   useEffect(() => {
-    if (r.player && foe.kind !== 'kiep_truoc') weeklyTitles().then((t) => setTitle(t[titleKey(r.player, r.lifeNo)] ?? null)).catch(() => {});
+    if (r.player && foe.kind !== 'kiep_truoc')
+      weeklyTitles()
+        .then((t) => setTitle(t[titleKey(r.player, r.lifeNo)] ?? null))
+        .catch(() => {});
   }, [r.player, r.lifeNo, foe.kind]);
   return (
     <div className={`duel-warn ${foe.kind}`} role="dialog" aria-modal="true" aria-labelledby="duel-title">
@@ -47,11 +64,29 @@ export default function DuelWarning({ me, foe, fleeChance, canBefriend, onPick }
           {realmLabel(r.realm, r.layer)}
           {r.path ? ` · ${PATHS[r.path]?.name ?? ''}` : ''}
         </p>
+        {foe.kind !== 'kiep_truoc' && r.player && !foe.npc && (
+          <p className="duel-tags">
+            {foe.hunt && <span className="rel-chip r-thu">Bạn đang truy sát</span>}
+            {foe.revenge && !foe.hunt && !SOCIAL.cur.foes.includes(r.player) && <span className="rel-chip r-thu">Kẻ thù của bạn</span>}
+            <RelChips player={r.player} />
+          </p>
+        )}
         <span className={`duel-rel ${foe.rel}`}>{REL_TXT[foe.rel]}</span>
+        {(foe.sworn || foe.provoke || foe.bounty) && (
+          <p className="duel-social">
+            {foe.sworn && <span>Huynh đệ kết nghĩa: luận võ không ai lột đồ ai, trà luôn là trà thật.</span>}
+            {foe.provoke && <span>Hai bên từng khiêu khích nhau: thắng thua đều gấp rưỡi.</span>}
+            {!!foe.bounty && <span>Hạ được người này, lĩnh {foe.bounty} linh thạch tiền truy nã.</span>}
+          </p>
+        )}
         <div className={`duel-elem ${et.tone}`}>
-          <span className="el" style={{ background: ELEMENTS[myEl].color }}>{ELEMENTS[myEl].sym}</span>
+          <span className="el" style={{ background: ELEMENTS[myEl].color }}>
+            {ELEMENTS[myEl].sym}
+          </span>
           <span className="vs">⚔</span>
-          <span className="el" style={{ background: ELEMENTS[foeEl].color }}>{ELEMENTS[foeEl].sym}</span>
+          <span className="el" style={{ background: ELEMENTS[foeEl].color }}>
+            {ELEMENTS[foeEl].sym}
+          </span>
           <small>{et.text}</small>
         </div>
         <div className={`duel-elem duel-life ${lt.tone}`}>

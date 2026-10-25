@@ -6,6 +6,7 @@ import Sprite from './Sprite';
 import { demoChar } from '@/lib/game/demo';
 import { REALMS, realmLabel } from '@/lib/game/data';
 import { pickStory } from '@/lib/game/miles';
+import { condolences, type Condolence } from '@/lib/social';
 import type { Character, Focus, Fx, FxKind, Mile, PathId } from '@/lib/game/types';
 
 /**
@@ -31,10 +32,7 @@ export interface LifeRecord {
   look?: Record<string, unknown> | null;
 }
 
-type Slide =
-  | { t: 'title' }
-  | { t: 'mile'; m: Mile; n: number }
-  | { t: 'end' };
+type Slide = { t: 'title' } | { t: 'mile'; m: Mile; n: number } | { t: 'end' };
 
 const KIND: Record<Mile['kind'], { label: string; focus: Focus; fx: FxKind[]; season: number; tone: string }> = {
   birth: { label: 'Chào đời', focus: 'du_ngoan', fx: ['heal'], season: 0, tone: 'dawn' },
@@ -61,7 +59,7 @@ function charAt(r: LifeRecord, age: number, realm: number, extra: Partial<Charac
     age,
     lifespan: Math.max(r.age, (look.lifespan as number) ?? r.age),
     realm,
-    layer: realm === (r.realm_no ?? realm) ? r.layer_no ?? 1 : 1,
+    layer: realm === (r.realm_no ?? realm) ? (r.layer_no ?? 1) : 1,
     path: realm >= 1 ? ((look.path as PathId) ?? null) : null,
     daoTam: r.dao_tam,
     equipped: (look.equipped as Character['equipped']) ?? { ao: 'ao_vai' },
@@ -72,13 +70,48 @@ function charAt(r: LifeRecord, age: number, realm: number, extra: Partial<Charac
   });
 }
 
-export default function LifeStory({ r, onClose, onIncense, canIncense }: { r: LifeRecord; onClose: () => void; onIncense?: () => void; canIncense?: boolean }) {
+export default function LifeStory({
+  r,
+  onClose,
+  onIncense,
+  canIncense,
+  lifeId,
+  onCondole,
+}: {
+  r: LifeRecord;
+  onClose: () => void;
+  onIncense?: () => void;
+  canIncense?: boolean;
+  lifeId?: number;
+  onCondole?: (body: string) => void;
+}) {
+  const [condo, setCondo] = useState<Condolence[]>([]);
+  const [text, setText] = useState('');
+  useEffect(() => {
+    if (lifeId)
+      condolences(lifeId)
+        .then(setCondo)
+        .catch(() => {});
+  }, [lifeId]);
   const look = (r.look ?? {}) as { miles?: Mile[]; birthPlace?: string; origin?: string; endTag?: string };
   const finalRealm = r.realm_no ?? 0;
   const maTon = look.endTag === 'ma_ton_do_kiep' || (r.cause ?? '').includes('Ma Tôn');
   const story = useMemo(() => pickStory(look.miles, { age: r.age, realm: finalRealm }), [look.miles, r.age, finalRealm]);
   const slides: Slide[] = useMemo(
-    () => [{ t: 'title' }, { t: 'mile', n: 0, m: { age: 0, kind: 'birth', text: look.birthPlace ? `Chào đời ở ${look.birthPlace}${look.origin ? `, ${look.origin.toLowerCase()}` : ''}.` : 'Một tiếng khóc chào đời, một kiếp người bắt đầu.' } }, ...story.map((m, i) => ({ t: 'mile' as const, n: i + 1, m })), { t: 'end' }],
+    () => [
+      { t: 'title' },
+      {
+        t: 'mile',
+        n: 0,
+        m: {
+          age: 0,
+          kind: 'birth',
+          text: look.birthPlace ? `Chào đời ở ${look.birthPlace}${look.origin ? `, ${look.origin.toLowerCase()}` : ''}.` : 'Một tiếng khóc chào đời, một kiếp người bắt đầu.',
+        },
+      },
+      ...story.map((m, i) => ({ t: 'mile' as const, n: i + 1, m })),
+      { t: 'end' },
+    ],
     [story, look.birthPlace, look.origin],
   );
   const [i, setI] = useState(0);
@@ -118,7 +151,10 @@ export default function LifeStory({ r, onClose, onIncense, canIncense }: { r: Li
         </div>
         <div className="ls-top">
           <span>
-            Hồi ký · {r.char_name} <small>@{r.player_name} · Kiếp {r.life_no}</small>
+            Hồi ký · {r.char_name}{' '}
+            <small>
+              @{r.player_name} · Kiếp {r.life_no}
+            </small>
           </span>
           <button className="ls-x" onClick={onClose} aria-label="Đóng hồi ký">
             ✕
@@ -168,6 +204,32 @@ export default function LifeStory({ r, onClose, onIncense, canIncense }: { r: Li
                   <small>{r.incense} nén hương</small>
                 </div>
               </div>
+              {condo.length > 0 && (
+                <ul className="condo-list" aria-label="Lời viếng">
+                  {condo.slice(0, 4).map((x, k) => (
+                    <li key={k}>
+                      <b>@{x.from_player}</b>: {x.body}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {onCondole && (
+                <span className="condo-input">
+                  <input value={text} maxLength={120} onChange={(e) => setText(e.target.value)} placeholder="Để lại một lời viếng" aria-label="Lời viếng" />
+                  <button
+                    className="btn"
+                    disabled={!text.trim()}
+                    onClick={() => {
+                      const b = text.trim();
+                      onCondole(b);
+                      setCondo((x) => [{ from_player: 'bạn', body: b, created_at: new Date().toISOString() }, ...x]);
+                      setText('');
+                    }}
+                  >
+                    Viếng
+                  </button>
+                </span>
+              )}
               <div className="ls-actions">
                 <button className="btn" onClick={() => setI(0)}>
                   Xem lại từ đầu
@@ -242,4 +304,3 @@ function MileSlide({ r, m, n }: { r: LifeRecord; m: Mile; n: number }) {
     </div>
   );
 }
-

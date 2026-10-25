@@ -1,4 +1,5 @@
 import { omenCultMul, omenIs } from './hook';
+import { swornCultMul } from './social';
 import { ITEMS, REALMS } from './data';
 import type { Character, EffectCtx, Stats } from './types';
 
@@ -76,7 +77,7 @@ export function needFor(c: Character): number {
 
 export function addCult(c: Character, amount: number) {
   // thiên tượng hôm nay làm tu vi nhanh hay chậm
-  if (amount > 0) amount *= omenCultMul(c);
+  if (amount > 0) amount *= omenCultMul(c) * swornCultMul();
   c.cultivation = Math.max(0, c.cultivation + amount);
 }
 

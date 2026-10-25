@@ -15,17 +15,20 @@ import { MONSTERS, combatLevel, effLv, fleeChance, hit, killExp, killReward, los
 import { signOut } from '@/lib/auth';
 import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, realmLabel } from '@/lib/game/data';
 import { genName, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick } from '@/lib/game/engine';
-import { addPill, fatal, fmt, giveItem, money, stat, wealthTier } from '@/lib/game/helpers';
+import { addCult, addPill, dao, fatal, fmt, giveItem, money, reward, stat, wealthTier } from '@/lib/game/helpers';
 import type { Character, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
 import DuelWarning from '@/components/Duel';
 import { artOf } from '@/lib/game/vocong';
 import { trackMiles } from '@/lib/game/miles';
 import { ELEMENTS, elemHitTag, elemMul, elemRel, elementOf } from '@/lib/game/nguhanh';
-import { DUEL_INFO, DUEL_PER_YEAR, DUEL_TURNS, finishDuel, foeChar, foeStats, pickDuel, teaTrap, type DuelFoe } from '@/lib/game/duel';
+import { DUEL_INFO, DUEL_PER_YEAR, DUEL_TURNS, finishDuel, foeChar, foeStats, pickDuel, teaTrap, toRival, type DuelFoe } from '@/lib/game/duel';
+import { SOCIAL } from '@/lib/game/social';
+import { bountyClaim, khieuDone, loadSocial, payoutClaim } from '@/lib/social';
+import { GiangHoSheet, type GiangHoApi } from '@/components/GiangHo';
 import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, pickAmbush } from '@/lib/game/ambush';
 import { titleKey, addMemorial, displayName, fetchWorld, listMail, loadAll, saveLocal, saveMeta, saveRemote, sendMail, unreadMail, weeklyTitles, type Mail, type SaveState } from '@/lib/storage';
 import { updateCareer, bumpStreak, evalQuests, omenIs, qmark, questName, streakGift, vnDay } from '@/lib/game/hook';
-import { HookSheet, MailSheet, TitleBadge } from '@/components/Hook';
+import { HookSheet, TitleBadge } from '@/components/Hook';
 import { omenToday } from '@/lib/game/hook';
 import { useAuth } from '@/lib/useAuth';
 
@@ -40,6 +43,8 @@ export default function PlayPage() {
   const { user, ready } = useAuth();
   const [phase, setPhase] = useState<'loading' | 'birth' | 'play'>('loading');
   const [meta, setMeta] = useState<Meta | null>(null);
+  const metaRef = useRef<Meta | null>(null);
+  metaRef.current = meta;
   const [, setFrame] = useState(0);
   const [fx, setFx] = useState<Fx[]>([]);
   const [sheet, setSheet] = useState<SheetName>(null);
@@ -121,13 +126,20 @@ export default function PlayPage() {
           });
         });
       weeklyTitles().then((t) => !cancel && setTitles(t));
+      if (user) loadSocial(user).catch(() => {});
       if (save?.char && !save.char.dead) {
         charRef.current = save.char;
         pendingRef.current = save.pending;
         yearSecRef.current = save.yearSec || 30;
         talentsRef.current = save.talents ?? [];
-        if (!save.char.world || !save.char.world.rivals) fetchWorld(user).then((w) => { if (charRef.current === save.char && w) save.char.world = w; }).catch(() => {});
+        if (!save.char.world || !save.char.world.rivals)
+          fetchWorld(user)
+            .then((w) => {
+              if (charRef.current === save.char && w) save.char.world = w;
+            })
+            .catch(() => {});
         setPhase('play');
+        if (user) setTimeout(claimPayouts, 1500);
       } else setPhase('birth');
     })();
     return () => {
@@ -139,7 +151,11 @@ export default function PlayPage() {
   useEffect(() => {
     if (!user) return;
     const id = setInterval(() => {
-      unreadMail(user).then((n) => setUnread(n)).catch(() => {});
+      unreadMail(user)
+        .then((n) => setUnread(n))
+        .catch(() => {});
+      loadSocial(user).catch(() => {});
+      claimPayouts();
     }, 120000);
     return () => clearInterval(id);
   }, [user]);
@@ -157,7 +173,23 @@ export default function PlayPage() {
     const ps = playerStats(c);
     // boss: không thể gây sát thương, mỗi đòn của nó lấy khoảng 1/3 máu
     const ms = m.boss ? { hp: 1e9, atk: Math.round(ps.hp * 0.38 + ps.def * 0.5), def: 1e12 } : monsterStats(m, effLv(c, m));
-    return { m, name: monsterName(c, m), lv: m.boss ? 99 : effLv(c, m), tier: m.boss ? 0 : tierOf(c, m), pHp: ps.hp, pMax: ps.hp, mHp: ms.hp, mMax: ms.hp, phase: 'fight', last: [], kills, t: 0, rest: 0, ps, ms };
+    return {
+      m,
+      name: monsterName(c, m),
+      lv: m.boss ? 99 : effLv(c, m),
+      tier: m.boss ? 0 : tierOf(c, m),
+      pHp: ps.hp,
+      pMax: ps.hp,
+      mHp: ms.hp,
+      mMax: ms.hp,
+      phase: 'fight',
+      last: [],
+      kills,
+      t: 0,
+      rest: 0,
+      ps,
+      ms,
+    };
   }
 
   function stepBattle(c: Character, dtGame: number): boolean {
@@ -244,7 +276,19 @@ export default function PlayPage() {
 
   /** Kỳ ngộ giang hồ: đấu với nhân vật người chơi khác hoặc chính mình kiếp trước, tối đa 5 hiệp */
   function startDuel(c: Character, f: DuelFoe, ambushed: boolean) {
-    const ps = playerStats(c);
+    let ps = playerStats(c);
+    // huynh đệ kết nghĩa từ xa phóng tới trợ quyền khi bạn bị đánh úp hay gặp địch thủ
+    const bros = SOCIAL.cur.sworn.filter((p) => p !== f.rival.player);
+    if (!f.sworn && (ambushed || f.kind === 'dich_thu') && bros.length && rnd() < 0.35) {
+      const bro = bros[Math.floor(rnd() * bros.length)];
+      ps = { ...ps, hp: Math.round(ps.hp * 1.3), atk: Math.round(ps.atk * 1.15) };
+      c.log.push({
+        age: Math.floor(c.age),
+        tone: 'good',
+        text: `Huynh đệ kết nghĩa @${bro} nghe tin, từ xa phóng tới trợ quyền: "Đụng tới huynh đệ ta là đụng tới ta!" (sinh lực +30%, công +15% trận này)`,
+      });
+      if (userRef.current) sendMail(userRef.current, bro, 'nghia', `Bóng của bạn đã ra tay trợ quyền cho huynh đệ @${userRef.current.username} (${c.name}) trước ${f.rival.name}.`).catch(() => {});
+    }
     const fs = foeStats(f.rival, c);
     const fc = foeChar(f.rival);
     duelRef.current = {
@@ -266,7 +310,15 @@ export default function PlayPage() {
       fs,
       sub: 0,
       foe: f,
-      duel: { kind: f.kind, foe: fc, tag: `${DUEL_INFO[f.kind].tag} · Kiếp ${f.rival.lifeNo ?? 1}`, player: f.kind === 'kiep_truoc' ? '' : f.rival.player, turn: 0, max: DUEL_TURNS, elem: { me: elementOf(c), foe: elementOf(fc), rel: elemRel(elementOf(c), elementOf(fc)) } },
+      duel: {
+        kind: f.kind,
+        foe: fc,
+        tag: `${DUEL_INFO[f.kind].tag} · Kiếp ${f.rival.lifeNo ?? 1}`,
+        player: f.kind === 'kiep_truoc' ? '' : f.rival.player,
+        turn: 0,
+        max: DUEL_TURNS,
+        elem: { me: elementOf(c), foe: elementOf(fc), rel: elemRel(elementOf(c), elementOf(fc)) },
+      },
     };
     rerender();
   }
@@ -305,6 +357,32 @@ export default function PlayPage() {
               ? `${shadow[0].toUpperCase() + shadow.slice(1)} đã ${fo.betray ? 'trở mặt bên bàn trà, ' : ''}${c.dead ? 'giết chết' : 'hạ gục'} @${me} (${c.name}).${notes.some((n) => n.includes('lột mất')) ? ' Còn lột được đồ của họ.' : ''}`
               : `@${me} (${c.name}) đấu với ${shadow} năm hiệp, bất phân thắng bại.`;
         sendMail(userRef.current, fo.rival.player, result === 'win' ? 'thua' : result === 'lose' ? 'thang' : 'hoa', body).catch(() => {});
+        // huyết hải thâm thù: ghi lại các kiếp đã giao đấu với người này
+        const m0 = metaRef.current;
+        if (m0 && !fo.sworn && fo.kind === 'dich_thu') {
+          const fe = { ...(m0.feud ?? {}) };
+          const lives = Array.from(new Set([...(fe[fo.rival.player] ?? []), c.lifeNo])).slice(-12);
+          fe[fo.rival.player] = lives;
+          const m2 = { ...m0, feud: fe };
+          setMeta(m2);
+          saveMeta(userRef.current, m2).catch(() => {});
+          if (lives.length === 3 && result === 'win') ctx.log(`Ba kiếp ân oán với @${fo.rival.player}. Giang hồ gọi bạn là kẻ "Báo thù 3 đời".`, 'big');
+        }
+        if (fo.provoke) khieuDone(userRef.current, fo.rival.player).catch(() => {});
+        // lĩnh tiền truy nã
+        if (result === 'win' && fo.bounty) {
+          const who = fo.rival.player;
+          bountyClaim(userRef.current, who)
+            .then((n) => {
+              const ch = charRef.current;
+              if (!n || !ch || ch.dead) return;
+              money(ch, n);
+              ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: `Bạn mang thủ cấp bóng ${fo.rival.name} (@${who}) về lĩnh thưởng truy nã: +${n} linh thạch.` });
+              persist(true);
+              rerender();
+            })
+            .catch(() => {});
+        }
       }
       b.phase = 'rest';
       b.rest = 4;
@@ -368,7 +446,14 @@ export default function PlayPage() {
     const hurtP = f.rel === 'manh' ? 0.5 : 0.35;
     const dieP = (f.rel === 'manh' ? 0.1 : 0.04) * (f.kind === 'dong_dao' ? 0.5 : 1);
     if (ctx.rnd() >= hurtP) return '';
-    const fl = fatal(c, ctx, dieP / hurtP, how === 'flee' ? `Vừa quay lưng, một đạo kình lực của ${who} đánh xuyên tâm mạch. Bạn ngã xuống giữa đường chạy.` : `${who} cười lạnh: "Muốn đi dễ vậy sao?" Một chưởng sau lưng, bạn không bao giờ đứng dậy nữa.`);
+    const fl = fatal(
+      c,
+      ctx,
+      dieP / hurtP,
+      how === 'flee'
+        ? `Vừa quay lưng, một đạo kình lực của ${who} đánh xuyên tâm mạch. Bạn ngã xuống giữa đường chạy.`
+        : `${who} cười lạnh: "Muốn đi dễ vậy sao?" Một chưởng sau lưng, bạn không bao giờ đứng dậy nữa.`,
+    );
     if (c.dead) return ' ' + (fl ?? '').trim();
     stat(c, 'sucKhoe', f.rel === 'manh' ? -35 : -22);
     ctx.fx('hurt');
@@ -418,6 +503,12 @@ export default function PlayPage() {
       if (realP) sendMail(userRef.current, realP, 'tra', `${meName} cùng bóng ${f.rival.name} của bạn uống trà luận đạo suốt đêm, kết làm bằng hữu.`).catch(() => {});
       act((ch) => {
         qmark(ch, 'teaSurvive');
+        if (f.sworn) {
+          const exp = Math.round(reward(ch, 0.3));
+          addCult(ch, exp);
+          ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: `Huynh đệ gặp nhau, trà thật lòng thật. Hai người cùng luận đạo, cả hai cùng tiến (+${exp} tu vi).` });
+          return;
+        }
         const er = elemRel(elementOf(ch), elementOf(f.rival));
         stat(ch, 'khiVan', er === 'duoc_sinh' ? 5 : er === 'sinh' ? 3 : 2);
         stat(ch, 'tamCanh', 4);
@@ -548,7 +639,7 @@ export default function PlayPage() {
       }
       if (c && activeRef.current && !pendingRef.current && !c.dead) {
         const dYear = (dt / yearSecRef.current) * speedRef.current;
-        if (c.realm >= 1 && c.age >= 15 && c.focus !== 'tru_yeu' && !duelOpen.current && rnd() < DUEL_PER_YEAR * (omenIs('giang_ho_loan') ? 2 : 1) * dYear) {
+        if (c.realm >= 1 && c.age >= 15 && c.focus !== 'tru_yeu' && !duelOpen.current && ((c.hunt && c.age >= c.hunt.at) || rnd() < DUEL_PER_YEAR * (omenIs('giang_ho_loan') ? 2 : 1) * dYear)) {
           const f = pickDuel(c, rnd);
           if (f) {
             duelOpen.current = true;
@@ -787,6 +878,84 @@ export default function PlayPage() {
     }
   };
 
+  // tiền cược chiến thư được trả về: cộng vào nhân vật đang sống
+  function claimPayouts() {
+    const c = charRef.current;
+    if (!userRef.current || !c || c.dead) return;
+    payoutClaim(userRef.current)
+      .then((ps) => {
+        const ch = charRef.current;
+        if (!ps.length || !ch || ch.dead) return;
+        for (const p of ps) {
+          money(ch, p.amount);
+          ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: `${p.note}: +${p.amount} linh thạch.` });
+        }
+        persist(true);
+        rerender();
+      })
+      .catch(() => {});
+  }
+
+  const giangHo = (): GiangHoApi | null => {
+    if (!user) return null;
+    const c = charRef.current;
+    const alive = c && !c.dead ? c : null;
+    return {
+      user,
+      money: alive ? alive.linhThach : null,
+      spend: (n, why) => {
+        const ch = charRef.current;
+        if (!ch || ch.dead || ch.linhThach < n) return false;
+        if (n > 0) {
+          money(ch, -n);
+          ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: `${why}: -${n} linh thạch.` });
+          persist(true);
+          rerender();
+        }
+        return true;
+      },
+      gain: (n, why) => {
+        const ch = charRef.current;
+        if (!ch || ch.dead || n <= 0) return;
+        money(ch, n);
+        ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: `${why}: +${n} linh thạch.` });
+        persist(true);
+        rerender();
+      },
+      foe: challenge,
+      peace: (player) => {
+        const ch = charRef.current;
+        if (ch && !ch.dead) {
+          ch.vendettas = (ch.vendettas ?? []).filter((v) => v.player !== player);
+          dao(ch, 5);
+          ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: `Bạn gửi lời hòa giải tới @${player}. Buông được mối thù, đạo tâm sáng thêm (+5 đạo tâm).` });
+          persist(true);
+          rerender();
+        }
+        if (meta?.vendettas?.some((v) => v.player === player)) {
+          const m2 = { ...meta, vendettas: meta.vendettas.filter((v) => v.player !== player) };
+          setMeta(m2);
+          saveMeta(user, m2).catch(() => {});
+        }
+      },
+      hunt: (rival) => {
+        const ch = charRef.current;
+        if (!ch || ch.dead) return;
+        ch.hunt = { rival, at: ch.age + 0.3 + Math.random() * 0.7 };
+        ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: `Bạn thuê người dò tung tích ${rival.name} (@${rival.player}). Trong vòng một năm sẽ chạm mặt.` });
+        persist(true);
+        rerender();
+      },
+      hunting: alive?.hunt?.rival.player ?? null,
+      me: () => {
+        const ch = charRef.current;
+        return ch && !ch.dead ? toRival(user.username, ch) : null;
+      },
+      feud: meta?.feud ?? {},
+      vendettas: Array.from(new Set([...(alive?.vendettas ?? []), ...(meta?.vendettas ?? [])].map((v) => v.player))),
+    };
+  };
+
   const finishLife = async (epitaph: string, note = '', bury = false, extra: { prophecy?: { id: string; text: string } | null; legendName?: string | null } = {}) => {
     const c = charRef.current;
     if (!c || !meta) return;
@@ -850,7 +1019,17 @@ export default function PlayPage() {
       talents: [],
       enemy: c.daoTam < -30 ? c.enemy : null,
       endings: { ...(meta.endings ?? {}), [ending.id]: (meta.endings?.[ending.id] ?? 0) + 1 },
-      past: { name: c.name, lifeNo: c.lifeNo, age: Math.floor(c.age), realm: c.realm, realmName: c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer), daoTam: c.daoTam, cause: c.cause, path: c.path ? PATHS[c.path].name : null, partner: c.partner },
+      past: {
+        name: c.name,
+        lifeNo: c.lifeNo,
+        age: Math.floor(c.age),
+        realm: c.realm,
+        realmName: c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer),
+        daoTam: c.daoTam,
+        cause: c.cause,
+        path: c.path ? PATHS[c.path].name : null,
+        partner: c.partner,
+      },
       stash:
         bury && !c.ascended && c.endTag !== 'xuyen_khong'
           ? {
@@ -918,7 +1097,7 @@ export default function PlayPage() {
             Nhiệm vụ vừa hoàn thành: <b>{questNews.map(questName).join(', ')}</b>
           </p>
         )}
-        {sheet === 'mail' && mail && <MailSheet mail={mail} user={user} onChallenge={challenge} onClose={() => setSheet(null)} />}
+        {sheet === 'mail' && mail && giangHo() && <GiangHoSheet mail={mail} api={giangHo()!} onClose={() => setSheet(null)} />}
         <BirthPanel meta={meta} onBorn={born} />
       </main>
     );
@@ -957,7 +1136,7 @@ export default function PlayPage() {
                 });
                 setSheet('mail');
               }}
-              aria-label={`Thư giang hồ${unread ? `, ${unread} thư mới` : ''}`}
+              aria-label={`Giang hồ${unread ? `, ${unread} thư mới` : ''}`}
             >
               ✉{unread > 0 && <span className="dot">{unread}</span>}
             </button>
@@ -994,7 +1173,13 @@ export default function PlayPage() {
       </header>
 
       <section className="stage">
-        <Scene c={c} fx={fx} paused={paused} season={season} battle={duelRef.current ?? ambushRef.current ?? (c.focus === 'tru_yeu' && c.age >= 10 && battleRef.current?.m.id === c.huntTarget ? battleRef.current : null)} />
+        <Scene
+          c={c}
+          fx={fx}
+          paused={paused}
+          season={season}
+          battle={duelRef.current ?? ambushRef.current ?? (c.focus === 'tru_yeu' && c.age >= 10 && battleRef.current?.m.id === c.huntTarget ? battleRef.current : null)}
+        />
         <button className="strip-btn" onClick={() => setSheet('info')} aria-label="Xem bảng chỉ số nhân vật">
           <StageStrip c={c} compact={!!pending && !c.dead} />
         </button>
@@ -1041,7 +1226,7 @@ export default function PlayPage() {
         </Sheet>
       )}
       {sheet === 'today' && <HookSheet meta={meta} onClose={() => setSheet(null)} />}
-      {sheet === 'mail' && mail && <MailSheet mail={mail} user={user} onChallenge={challenge} onClose={() => setSheet(null)} />}
+      {sheet === 'mail' && mail && giangHo() && <GiangHoSheet mail={mail} api={giangHo()!} onClose={() => setSheet(null)} />}
       {sheet === 'hunt' && <HuntSheet c={c} onPick={pickMonster} onToggleFlee={toggleFlee} onClose={() => setSheet(null)} />}
       {sheet === 'menu' && (
         <Sheet title="Menu" onClose={() => setSheet(null)}>
@@ -1100,9 +1285,16 @@ export default function PlayPage() {
           }}
         />
       )}
-      {duelWarn && !c.dead && <DuelWarning me={c} foe={duelWarn} fleeChance={duelFlee(c, duelWarn)} canBefriend={duelWarn.rel === 'yeu' || ['sinh', 'duoc_sinh'].includes(elemRel(elementOf(c), elementOf(duelWarn.rival)))} onPick={pickDuelAction} />}
+      {duelWarn && !c.dead && (
+        <DuelWarning
+          me={c}
+          foe={duelWarn}
+          fleeChance={duelFlee(c, duelWarn)}
+          canBefriend={!!duelWarn.sworn || duelWarn.rel === 'yeu' || ['sinh', 'duoc_sinh'].includes(elemRel(elementOf(c), elementOf(duelWarn.rival)))}
+          onPick={pickDuelAction}
+        />
+      )}
       {kiep !== null && !c.dead && <TribulationOverlay realmName={REALMS[c.realm + 1]?.name ?? 'Phi Thăng'} onDone={afterKiep} />}
     </main>
   );
 }
-

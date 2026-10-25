@@ -1,11 +1,12 @@
 import { addMile } from './miles';
 import { qmark } from './hook';
-import { combatLevel, playerStats, type Fighter } from './combat';
+import { combatLevel, hit, playerStats, type Fighter } from './combat';
 import { ITEMS, REALMS, fxText, realmLabel } from './data';
 import { demoChar } from './demo';
-import { ELEMENT_IDS, elemRel, elementOf, type ElemRel } from './nguhanh';
+import { ELEMENT_IDS, elemMul, elemRel, elementOf, type ElemRel } from './nguhanh';
 import { genName } from './engine';
 import { addCult, fatal, giveItem, money, reward, stat } from './helpers';
+import { PROVOKE_MUL, SOCIAL } from './social';
 import type { Character, EffectCtx, RivalChar, Slot, Vendetta } from './types';
 
 /**
@@ -28,6 +29,10 @@ export interface DuelFoe {
   reason: string; // lý do gặp, mỗi lần một khác
   betray?: boolean; // đồng đạo trở mặt khi uống trà
   revenge?: Vendetta; // gặp lại kẻ thù cũ để báo thù
+  hunt?: boolean; // truy sát chủ động: tự bỏ tiền dò tung tích kẻ thù
+  sworn?: boolean; // gặp huynh đệ kết nghĩa
+  provoke?: boolean; // từng khiêu khích nhau: thắng thua đều gấp rưỡi
+  bounty?: number; // tiền truy nã trên đầu đối thủ
 }
 
 export const DUEL_INFO: Record<DuelKind, { title: string; tag: string; warn: string }> = {
@@ -123,16 +128,74 @@ function clToRealm(cl: number): { realm: number; layer: number } {
 
 /** Chọn cuộc gặp năm nay. null nếu không có gì hợp lý. */
 export function pickDuel(c: Character, rnd: () => number): DuelFoe | null {
+  const f = pickDuel0(c, rnd);
+  if (!f || f.npc || !f.rival.player || f.kind === 'kiep_truoc') return f;
+  // gắn quan hệ giang hồ với người chơi thật
+  const S = SOCIAL.cur;
+  const p = f.rival.player;
+  if (S.sworn.includes(p) && !f.revenge && !f.hunt) {
+    f.kind = 'dong_dao';
+    f.sworn = true;
+  }
+  if (S.provoke.includes(p)) f.provoke = true;
+  if (S.bounty[p]) f.bounty = S.bounty[p];
+  return f;
+}
+
+/** Mức chênh lệch sức mạnh giữa hai bên */
+function relOf(c: Character, rival: RivalChar): DuelFoe['rel'] {
+  const me = combatLevel(c);
+  const foe = combatLevel(foeChar(rival));
+  return foe <= me - 2 ? 'yeu' : foe >= me + 2 ? 'manh' : 'ngang';
+}
+
+function pickDuel0(c: Character, rnd: () => number): DuelFoe | null {
   const w = c.world;
+  const S = SOCIAL.cur;
+  // truy sát: người dò tin đã tìm ra kẻ thù, chạm mặt chắc chắn
+  if (c.hunt && c.age >= c.hunt.at) {
+    const rival = c.hunt.rival;
+    c.hunt = null;
+    return {
+      kind: 'dich_thu',
+      rival,
+      npc: false,
+      rel: relOf(c, rival),
+      hunt: true,
+      reason: `Người bạn thuê đã dò ra tung tích của @${rival.player}. ${rival.name} đang đứng ngay trước mặt, không còn đường lui. Thắng được thưởng gấp đôi và lấy lại đồ từng bị cướp.`,
+    };
+  }
+  // ghi thù trong sổ (cả từ thư giang hồ) cũng tính là oan gia
+  const foesV: Vendetta[] = [
+    ...(c.vendettas ?? []),
+    ...S.foes.filter((p) => !(c.vendettas ?? []).some((v) => v.player === p)).map((p) => ({ player: p, name: '', items: [], why: `@${p} có tên trong sổ thù của bạn` })),
+  ];
   // oan gia ngõ hẹp: có thù với người chơi thật thì 35% gặp lại họ
-  for (const v of c.vendettas ?? []) {
+  for (const v of foesV) {
     const cands = (w?.rivals ?? []).filter((x) => x.player === v.player);
     if (!cands.length || rnd() >= 0.35) continue;
     const rival = cands.find((x) => x.name === v.name) ?? cands[0];
-    const me = combatLevel(c);
-    const foe = combatLevel(foeChar(rival));
-    const rel = foe <= me - 2 ? 'yeu' : foe >= me + 2 ? 'manh' : 'ngang';
-    return { kind: 'dich_thu', rival, npc: false, rel, revenge: v, reason: `Oan gia ngõ hẹp! Bạn chưa quên: ${v.why}. Nay người của @${v.player} lại xuất hiện trước mặt. Báo thù được thưởng gấp đôi và lấy lại đồ đã mất.` };
+    return {
+      kind: 'dich_thu',
+      rival,
+      npc: false,
+      rel: relOf(c, rival),
+      revenge: v,
+      reason: `Oan gia ngõ hẹp! Bạn chưa quên: ${v.why}. Nay người của @${v.player} lại xuất hiện trước mặt. Báo thù được thưởng gấp đôi và lấy lại đồ đã mất.`,
+    };
+  }
+  // huynh đệ kết nghĩa: 30% gặp lại nhau trên đường
+  const bros = (w?.rivals ?? []).filter((x) => S.sworn.includes(x.player));
+  if (bros.length && rnd() < 0.3) {
+    const rival = bros[Math.floor(rnd() * bros.length)];
+    return {
+      kind: 'dong_dao',
+      rival,
+      npc: false,
+      rel: relOf(c, rival),
+      sworn: true,
+      reason: `Giữa đường gặp lại huynh đệ kết nghĩa ${rival.name} (@${rival.player}). Hai người mừng rỡ, rủ nhau luận võ một trận cho đã tay.`,
+    };
   }
   const past = w?.past ?? null;
   const kinds: [DuelKind, number][] = [
@@ -143,7 +206,11 @@ export function pickDuel(c: Character, rnd: () => number): DuelFoe | null {
   const tot = kinds.reduce((a, k) => a + k[1], 0);
   let x = rnd() * tot;
   let kind: DuelKind = 'dong_dao';
-  for (const [k, wt] of kinds) if ((x -= wt) < 0) { kind = k; break; }
+  for (const [k, wt] of kinds)
+    if ((x -= wt) < 0) {
+      kind = k;
+      break;
+    }
 
   // cấp độ đối thủ theo cấp chiến đấu, chia ba bậc rõ ràng để ít gặp người ngang cấp:
   // đồng đạo: yếu 45%, ngang 25%, mạnh 30%; địch thủ: 25/25/50; tâm ma kiếp trước: 20/20/60
@@ -179,7 +246,7 @@ export function pickDuel(c: Character, rnd: () => number): DuelFoe | null {
       rival = list[Math.floor(rnd() * list.length)];
     } else {
       npc = true;
-      const sign = kind === 'dong_dao' ? (mine || 1) : mine > 0 ? -1 : mine < 0 ? 1 : rnd() < 0.5 ? 1 : -1;
+      const sign = kind === 'dong_dao' ? mine || 1 : mine > 0 ? -1 : mine < 0 ? 1 : rnd() < 0.5 ? 1 : -1;
       rival = { ...npcRival(c, tgt.realm, sign, rnd), layer: tgt.layer, element: ELEMENT_IDS.find((e) => elemRel(myEl, e) === wantRel) };
     }
   }
@@ -249,8 +316,20 @@ export function addVendetta(c: Character, f: DuelFoe, items: string[], why: stri
 export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'draw', pLoss: number, ctx: EffectCtx): string[] {
   const r = f.rival;
   const who = r.player ? `${r.name} (@${r.player})` : r.name;
-  const harder = f.rel === 'manh' ? 1.6 : f.rel === 'yeu' ? 0.5 : 1;
+  const harder = (f.rel === 'manh' ? 1.6 : f.rel === 'yeu' ? 0.5 : 1) * (f.provoke ? PROVOKE_MUL : 1);
   const out: string[] = [];
+  if (f.provoke) out.push('Hai bên từng khiêu khích nhau, trận này thắng thua đều gấp rưỡi.');
+  if (f.kind === 'dong_dao' && f.sworn) {
+    // huynh đệ luận võ: không ai lột đồ ai, cả hai cùng tiến
+    const exp = Math.round(reward(c, result === 'win' ? 0.45 : result === 'draw' ? 0.35 : 0.25) * Math.max(1, harder));
+    addCult(c, exp);
+    stat(c, 'tamCanh', 3);
+    stat(c, 'khiVan', 2);
+    out.push(
+      `${result === 'win' ? 'Bạn thắng huynh đệ một chiêu' : result === 'draw' ? 'Hai huynh đệ bất phân thắng bại' : 'Huynh đệ hơn bạn một chiêu'}. ${r.name} cười lớn, chỉ ra chỗ hở trong chiêu thức của bạn. Cả hai cùng tiến (+${exp} tu vi).`,
+    );
+    return out;
+  }
   if (f.kind === 'dong_dao') {
     if (result === 'win') {
       const exp = Math.round(reward(c, 0.35) * harder);
@@ -281,18 +360,19 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
   }
   if (f.kind === 'dich_thu') {
     if (result === 'win') {
-      const rv = f.revenge ? 2 : 1; // báo thù được thưởng gấp đôi
+      const rv = f.revenge || f.hunt ? 2 : 1; // báo thù, truy sát được thưởng gấp đôi
+      const vend = f.revenge ?? (f.hunt ? (c.vendettas ?? []).find((v) => v.player === r.player) : undefined);
       const exp = Math.round(reward(c, 0.6) * harder * rv);
       addCult(c, exp);
       const loot = Math.round((40 + r.realm * 60 * harder) * rv);
       money(c, loot);
-      if (r.player && !f.npc) addMile(c, f.revenge ? 'revenge' : 'duel', f.revenge ? `Báo được đại thù với ${r.name} (@${r.player})` : `Đánh bại địch thủ ${r.name} (@${r.player})`);
-      out.push(f.revenge ? `Đại thù đã báo! Bạn hạ được ${who} (+${exp} tu vi, +${loot} linh thạch, gấp đôi).` : `Bạn đánh bại địch thủ ${who} (+${exp} tu vi, +${loot} linh thạch).`);
-      if (f.revenge) {
-        const back = f.revenge.items.filter((id) => ITEMS.some((i) => i.id === id));
+      if (r.player && !f.npc) addMile(c, f.revenge || f.hunt ? 'revenge' : 'duel', f.revenge ? `Báo được đại thù với ${r.name} (@${r.player})` : `Đánh bại địch thủ ${r.name} (@${r.player})`);
+      out.push(f.revenge || f.hunt ? `Đại thù đã báo! Bạn hạ được ${who} (+${exp} tu vi, +${loot} linh thạch, gấp đôi).` : `Bạn đánh bại địch thủ ${who} (+${exp} tu vi, +${loot} linh thạch).`);
+      if (vend) {
+        const back = vend.items.filter((id) => ITEMS.some((i) => i.id === id));
         back.forEach((id) => giveItem(c, id, false));
         if (back.length) out.push(`Bạn lấy lại ${back.map((id) => ITEMS.find((i) => i.id === id)?.name).join(', ')} từng bị cướp.`);
-        c.vendettas = (c.vendettas ?? []).filter((v) => v.player !== f.revenge!.player);
+        c.vendettas = (c.vendettas ?? []).filter((v) => v.player !== vend.player);
         qmark(c, 'revenge');
       }
       // thắng địch thủ: lấy 1 món, 30% lấy được 2 món, không bao giờ lấy hết
@@ -308,13 +388,18 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
       out.push(`Năm hiệp chưa phân thắng bại, ${who} hừ lạnh rồi bỏ đi: "Lần sau gặp lại, ta lấy mạng ngươi."`);
     } else {
       // bị đồng đạo trở mặt đánh úp thì càng dễ chết
-      const fl = fatal(c, ctx, f.betray ? 0.45 : 0.25, f.betray ? `Bạn tin nhầm ${who}. Chén trà còn chưa nguội, người đã thành thi thể.` : `Bạn bại dưới tay địch thủ ${who}. Giang hồ lại thêm một nấm mồ.`);
+      const fl = fatal(
+        c,
+        ctx,
+        f.betray ? 0.45 : 0.25,
+        f.betray ? `Bạn tin nhầm ${who}. Chén trà còn chưa nguội, người đã thành thi thể.` : `Bạn bại dưới tay địch thủ ${who}. Giang hồ lại thêm một nấm mồ.`,
+      );
       if (c.dead) {
         addVendetta(c, f, [], f.betray ? `${r.name} trở mặt giết bạn bên bàn trà` : `${r.name} đã giết bạn`);
         return [fl ?? ''];
       }
       stat(c, 'sucKhoe', -35);
-      const lost = Math.round(c.linhThach * 0.2);
+      const lost = Math.round(c.linhThach * (f.provoke ? 0.3 : 0.2));
       money(c, -lost);
       out.push(`Bạn thua ${who}, bị cướp ${lost} linh thạch, lết về trong trọng thương.${fl ?? ''}`);
       // bị lột 1-2 món đang mặc, không bao giờ mất hết
@@ -377,8 +462,10 @@ function reasonFor(c: Character, kind: DuelKind, r: RivalChar, rnd: () => number
       `Ở phường thị, bạn mua được món bảo vật ${n} để mắt từ lâu. Hắn theo bạn ra tận ngoài thành.`,
       `${n} tuyên bố trước giang hồ: ai mạnh nhất vùng này thì hắn sẽ đến khiêu chiến. Hôm nay là lượt bạn.`,
     );
-    if (c.daoTam >= 20 && r.daoTam <= -20) pool.push(`Ma đạo ${n} nghe tin bạn ra tay diệt ma, tìm đến báo thù cho đồng môn.`, `${n} cười gằn: "Chính đạo các ngươi giả nhân giả nghĩa, hôm nay ta lột mặt nạ."`);
-    if (c.daoTam <= -20 && r.daoTam >= 20) pool.push(`${n} của chính phái lần theo dấu máu bạn để lại. "Hôm nay thay trời hành đạo."`, `Chính phái treo thưởng đầu bạn. ${n} là người đầu tiên tìm tới.`);
+    if (c.daoTam >= 20 && r.daoTam <= -20)
+      pool.push(`Ma đạo ${n} nghe tin bạn ra tay diệt ma, tìm đến báo thù cho đồng môn.`, `${n} cười gằn: "Chính đạo các ngươi giả nhân giả nghĩa, hôm nay ta lột mặt nạ."`);
+    if (c.daoTam <= -20 && r.daoTam >= 20)
+      pool.push(`${n} của chính phái lần theo dấu máu bạn để lại. "Hôm nay thay trời hành đạo."`, `Chính phái treo thưởng đầu bạn. ${n} là người đầu tiên tìm tới.`);
     if (c.enemy) pool.push(`${n} được ${c.enemy} thuê đến lấy mạng bạn.`);
     if (c.partner) pool.push(`${n} từng thầm thương ${c.partner}. Thấy bạn, hắn rút vũ khí không nói một lời.`);
   } else {
@@ -424,6 +511,8 @@ const TRO_MAT: ((w: string, h: string) => string)[] = [
 export function teaTrap(c: Character, f: DuelFoe, ctx: EffectCtx): TeaResult {
   const who = f.rival.name;
   const h = f.rival.gender === 'nu' ? 'ả' : 'hắn';
+  // huynh đệ kết nghĩa thì trà luôn là trà thật
+  if (f.sworn) return { kind: 'that_long' };
   const r = ctx.rnd();
   if (r < 0.4) {
     const pick = AM_TOAN[Math.floor(ctx.rnd() * AM_TOAN.length)];
@@ -448,4 +537,54 @@ export function teaTrap(c: Character, f: DuelFoe, ctx: EffectCtx): TeaResult {
   }
   if (r < 0.8) return { kind: 'tro_mat', text: TRO_MAT[Math.floor(ctx.rnd() * TRO_MAT.length)](who, h) };
   return { kind: 'that_long' };
+}
+
+/**
+ * Chiến thư: hai bóng nhân vật tự đánh 5 hiệp (dùng cho trận hẹn đấu khi chủ nhân vắng mặt).
+ * Hết 5 hiệp ai còn nhiều máu hơn (theo phần trăm) thì thắng, chênh dưới 5% là hòa.
+ */
+export function simulateDuel(me: RivalChar, foe: RivalChar, rnd: () => number): { result: 'win' | 'lose' | 'draw'; hpMe: number; hpFoe: number; rounds: number } {
+  const a = foeStats(me);
+  const b = foeStats(foe);
+  const ma = lifeMul(me.lifeNo ?? 1, foe.lifeNo ?? 1);
+  const mb = lifeMul(foe.lifeNo ?? 1, me.lifeNo ?? 1);
+  const ea = elemMul(elementOf(me), elementOf(foe));
+  const eb = elemMul(elementOf(foe), elementOf(me));
+  let ha = a.hp;
+  let hb = b.hp;
+  let rounds = 0;
+  for (let t = 0; t < DUEL_TURNS * 2 && ha > 0 && hb > 0; t++) {
+    rounds = Math.floor(t / 2) + 1;
+    if (t % 2 === 0) hb -= Math.round(hit(a.atk * ma * ea, b.def * mb, rnd).dmg);
+    else ha -= Math.round(hit(b.atk * mb * eb, a.def * ma, rnd).dmg);
+  }
+  const pa = Math.max(0, ha) / a.hp;
+  const pb = Math.max(0, hb) / b.hp;
+  const result = hb <= 0 ? 'win' : ha <= 0 ? 'lose' : Math.abs(pa - pb) < 0.05 ? 'draw' : pa > pb ? 'win' : 'lose';
+  return { result, hpMe: Math.round(pa * 100), hpFoe: Math.round(pb * 100), rounds };
+}
+
+/** Rút gọn nhân vật đang chơi thành bóng để đem đi đấu */
+export function toRival(player: string, c: Character): RivalChar {
+  return {
+    player,
+    name: c.name,
+    gender: c.gender === 'nu' ? 'nu' : 'nam',
+    race: c.race,
+    realm: c.realm,
+    layer: c.layer,
+    path: c.path,
+    daoTam: c.daoTam,
+    age: Math.floor(c.age),
+    lifespan: c.lifespan,
+    hairColor: c.hairColor,
+    hairStyle: c.hairStyle,
+    outfitTone: c.outfitTone,
+    outfitCut: c.outfitCut,
+    equipped: c.equipped,
+    lookSeed: c.lookSeed,
+    element: c.element,
+    lifeNo: c.lifeNo,
+    alive: !c.dead,
+  };
 }
