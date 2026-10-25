@@ -5,6 +5,7 @@ import { HAIR_COLORS, ITEMS, PATHS, type RobeDeco, type WeaponKind } from '@/lib
 import { ANIM, composeStrip, readyStrip, type Anim, type Layer } from '@/lib/lpc';
 import { equippedLook } from '@/lib/game/helpers';
 import { PETS, petOf } from '@/lib/game/pets';
+import { PixelFx, fxBatQuai, fxCuuVi, fxDanHoan, fxHuyetNguyet, fxKiem, fxLua, fxLuaTien, fxMaKhi, fxPhatQuang, fxSen, fxTuongVan } from './PixelFx';
 import type { Character } from '@/lib/game/types';
 
 type R = [number, number, number, number, string];
@@ -610,18 +611,7 @@ function PetRoam({ id, box }: { id: string; box: number }) {
  */
 /** Tường vân: mây lành cuộn dưới chân, dành cho người trung lập ở Luyện Hư trở lên */
 function TuongVan({ box }: { box: number }) {
-  return (
-    <span className="tuong-van" style={{ width: box * 0.9, height: box * 0.26 }} aria-hidden="true">
-      <svg viewBox="-60 -16 120 32">
-        {[-34, 0, 34].map((x, i) => (
-          <g key={i} transform={`translate(${x} ${i === 1 ? -2 : 3})`}>
-            <path d="M-22 8 Q-26 -2 -16 -4 Q-14 -14 -2 -12 Q6 -18 14 -10 Q26 -10 22 2 Q28 8 18 10 Z" fill="#f6f8ff" stroke="#9ab4e0" strokeWidth="1.2" />
-            <path d="M-8 2 q4 -6 9 -2 q3 3 -1 5" fill="none" stroke="#9ab4e0" strokeWidth="1.2" strokeLinecap="round" />
-          </g>
-        ))}
-      </svg>
-    </span>
-  );
+  return <PixelFx spec={fxTuongVan()} scale={box / 64} dur={1} className="pa tuong-van" />;
 }
 
 function ma0(l: { path?: string | null; dao: number }): boolean {
@@ -629,148 +619,41 @@ function ma0(l: { path?: string | null; dao: number }): boolean {
 }
 
 /**
- * Dị tượng theo đạo, từ Nguyên Anh (mờ) đến Luyện Hư, Độ Kiếp (rõ, đầy đủ):
- * kiếm tu kiếm luân sau lưng, Phật tu đài sen và Phật quang, trận tu bát quái dưới chân,
+ * Dị tượng theo đạo, vẽ kiểu pixel cùng cỡ điểm ảnh với nhân vật. Hiện từ Trúc Cơ (mờ, ít) tới Độ Kiếp (rõ, đủ):
+ * kiếm tu kiếm luân sau lưng, Phật tu Phật quang và đài sen, trận tu bát quái dưới chân,
  * đan tu tam muội chân hỏa và đan hoàn, ma tu huyết nguyệt và ma khí, yêu tu cửu vĩ, tán tu dải lụa tiên.
  */
 function PathAura({ path, ma, yeu, realm, color, box }: { path?: string | null; ma: boolean; yeu: boolean; realm: number; color: string; box: number }) {
-  // lớn dần theo cảnh giới từ lúc chọn đạo (Trúc Cơ) tới Độ Kiếp
   const lv = Math.max(0, Math.min(5, realm - 2)); // 0..5
-  const op = [0.4, 0.55, 0.7, 0.85, 1, 1][lv];
-  const B = box * (0.72 + lv * 0.056);
+  const op = [0.55, 0.7, 0.8, 0.9, 1, 1][lv];
+  const sc = box / 64;
   const kind = ma ? 'ma' : yeu || path === 'yeu' ? 'yeu' : path === 'kiem' ? 'kiem' : path === 'phat' ? 'phat' : path === 'tran' ? 'tran' : path === 'dan' ? 'dan' : 'tien';
-  const st = { opacity: op, ['--aura' as string]: color } as CSSProperties;
-  if (kind === 'kiem') {
-    const n = [3, 4, 5, 6, 7, 9][lv];
-    return (
-      <span className="pa pa-kiem" style={{ ...st, width: B * 0.95, height: B * 0.95 }} aria-hidden="true">
-        <svg viewBox="-50 -50 100 100">
-          <g className="pa-spin">
-            {Array.from({ length: n }, (_, i) => (
-              <g key={i} transform={`rotate(${(360 / n) * i}) translate(0 -34)`}>
-                <polygon points="0,-13 2.2,-8 2.2,8 0,10 -2.2,8 -2.2,-8" fill="#eef4ff" stroke={color} strokeWidth="0.8" />
-                <rect x="-4" y="8" width="8" height="1.6" fill={color} />
-                <rect x="-0.9" y="9.6" width="1.8" height="4" fill="#8a6a3a" />
-              </g>
-            ))}
-          </g>
-        </svg>
-      </span>
-    );
-  }
-  if (kind === 'phat') {
+  const st = { opacity: op } as CSSProperties;
+  if (kind === 'kiem') return <PixelFx spec={fxKiem([3, 4, 5, 6, 7, 9][lv], color)} scale={sc} dur={2.4} className="pa pa-kiem" style={st} />;
+  if (kind === 'phat')
     return (
       <>
-        <span className="pa pa-phatquang" style={{ ...st, width: B * 0.62, height: B * 0.62 }} aria-hidden="true">
-          <svg viewBox="-50 -50 100 100">
-            <g className="pa-spin slow">
-              {Array.from({ length: 24 }, (_, i) => (
-                <rect key={i} x="-1" y="-48" width="2" height={i % 2 ? 8 : 13} fill="#ffe27a" opacity="0.8" transform={`rotate(${i * 15})`} />
-              ))}
-            </g>
-            <circle r="34" fill="none" stroke="#ffe27a" strokeWidth="2.5" />
-            <circle r="30" fill="#ffe9a0" opacity="0.18" />
-          </svg>
-        </span>
-        {realm >= 4 && <span className="pa pa-sen" style={{ ...st, width: B * 0.62, height: B * 0.22 }} aria-hidden="true">
-          <svg viewBox="-50 -18 100 36">
-            {[-36, -24, -12, 0, 12, 24, 36].map((x, i) => (
-              <path key={i} d={`M${x} 10 Q${x - 9} -2 ${x} -14 Q${x + 9} -2 ${x} 10Z`} fill={i % 2 ? '#ff9ac0' : '#ffc4d8'} stroke="#c0507a" strokeWidth="0.8" />
-            ))}
-            <ellipse cx="0" cy="11" rx="44" ry="6" fill="#4a9a5a" stroke="#2a6a3a" strokeWidth="0.8" />
-          </svg>
-        </span>}
+        <PixelFx spec={fxPhatQuang()} scale={sc} dur={3} className="pa pa-phatquang" style={st} />
+        {realm >= 4 && <PixelFx spec={fxSen()} scale={sc} dur={1} className="pa pa-sen" style={st} />}
       </>
     );
-  }
-  if (kind === 'tran') {
-    const tri = ['111', '110', '101', '100', '011', '010', '001', '000'];
-    return (
-      <span className="pa pa-batquai" style={{ ...st, width: B * 0.9, height: B * 0.9 }} aria-hidden="true">
-        <svg viewBox="-50 -50 100 100">
-          <g className="pa-spin slow">
-            <circle r="46" fill="none" stroke={color} strokeWidth="1.2" />
-            <circle r="30" fill="none" stroke={color} strokeWidth="0.8" strokeDasharray="2 2" />
-            {tri.map((t, i) => (
-              <g key={i} transform={`rotate(${i * 45}) translate(0 -38)`}>
-                {t.split('').map((b, j) =>
-                  b === '1' ? <rect key={j} x="-7" y={-5 + j * 3.6} width="14" height="2.2" fill={color} /> : (
-                    <g key={j}>
-                      <rect x="-7" y={-5 + j * 3.6} width="5.6" height="2.2" fill={color} />
-                      <rect x="1.4" y={-5 + j * 3.6} width="5.6" height="2.2" fill={color} />
-                    </g>
-                  ),
-                )}
-              </g>
-            ))}
-            <circle r="12" fill="#f6f0e0" />
-            <path d="M0 -12 A12 12 0 0 1 0 12 A6 6 0 0 1 0 0 A6 6 0 0 0 0 -12Z" fill="#1f160d" />
-            <circle cy="-6" r="1.8" fill="#1f160d" />
-            <circle cy="6" r="1.8" fill="#f6f0e0" />
-          </g>
-        </svg>
-      </span>
-    );
-  }
-  if (kind === 'dan') {
+  if (kind === 'tran') return <PixelFx spec={fxBatQuai(color)} scale={sc} dur={8} className="pa pa-batquai" style={st} />;
+  if (kind === 'dan')
     return (
       <>
-        <span className="pa pa-lua" style={{ ...st, width: B * 0.6, height: B * 0.3 }} aria-hidden="true">
-          {Array.from({ length: 3 + Math.min(4, lv) }, (_, i) => (
-            <i key={i} style={{ left: `${8 + i * (84 / (2 + Math.min(4, lv)))}%`, animationDelay: `${-i * 0.23}s` }} />
-          ))}
-        </span>
-        {realm >= 5 && (
-          <span className="pa pa-danhoan" style={{ ...st, width: B * 0.66, height: B * 0.66 }} aria-hidden="true">
-            <i />
-            <i />
-            <i />
-          </span>
-        )}
+        <PixelFx spec={fxLua(3 + Math.min(4, lv))} scale={sc} dur={0.6} className="pa pa-lua" style={st} />
+        {realm >= 5 && <PixelFx spec={fxDanHoan()} scale={sc} dur={2.4} className="pa pa-danhoan" style={st} />}
       </>
     );
-  }
-  if (kind === 'ma') {
+  if (kind === 'ma')
     return (
       <>
-        <span className="pa pa-huyetnguyet" style={{ ...st, width: B * 0.44, height: B * 0.44 }} aria-hidden="true" />
-        <span className="pa pa-makhi" style={{ ...st, width: B * 0.7, height: B * 0.8 }} aria-hidden="true">
-          {Array.from({ length: 3 + lv }, (_, i) => (
-            <i key={i} style={{ left: `${10 + ((i * 29) % 80)}%`, animationDelay: `${-i * 0.4}s` }} />
-          ))}
-        </span>
+        <PixelFx spec={fxHuyetNguyet()} scale={sc} dur={1} className="pa pa-huyetnguyet" style={st} />
+        <PixelFx spec={fxMaKhi(3 + lv)} scale={sc} dur={2.6} className="pa pa-makhi" style={st} />
       </>
     );
-  }
-  if (kind === 'yeu') {
-    const n = [1, 2, 3, 5, 7, 9][lv];
-    return (
-      <span className="pa pa-cuuvi" style={{ ...st, width: B * 1.1, height: B * 0.75 }} aria-hidden="true">
-        <svg viewBox="-50 -40 100 60">
-          {Array.from({ length: n }, (_, i) => {
-            const a = -70 + (140 / Math.max(1, n - 1)) * i;
-            return (
-              <g key={i} transform={`rotate(${a} 0 14)`}>
-                <g className="pa-tail" style={{ animationDelay: `${-i * 0.3}s` }}>
-                  <path d="M0 14 C-8 -2 8 -14 0 -34 C10 -18 12 0 0 14Z" fill="#ff8a2a" stroke="#7a2a08" strokeWidth="1" />
-                  <path d="M0 -34 C4 -28 5 -24 3 -20 C1 -24 0 -28 0 -34Z" fill="#fff4e0" />
-                </g>
-              </g>
-            );
-          })}
-        </svg>
-      </span>
-    );
-  }
-  // tán tu, tiên đạo: dải lụa tiên vắt sau vai, bay phấp phới
-  return (
-    <span className="pa pa-lua-tien" style={{ ...st, width: B * 0.95, height: B * 0.6 }} aria-hidden="true">
-      <svg viewBox="-50 -30 100 60">
-        <path className="pa-wave" d="M-46 18 C-36 -6 -22 -18 0 -14 C22 -18 36 -6 46 18" fill="none" stroke={color} strokeWidth="5" strokeLinecap="round" opacity="0.85" />
-        <path className="pa-wave two" d="M-46 18 C-36 -6 -22 -18 0 -14 C22 -18 36 -6 46 18" fill="none" stroke="#fff8e6" strokeWidth="1.6" strokeLinecap="round" />
-      </svg>
-    </span>
-  );
+  if (kind === 'yeu') return <PixelFx spec={fxCuuVi([1, 2, 3, 5, 7, 9][lv])} scale={sc} dur={2.4} className="pa pa-cuuvi" style={st} />;
+  return <PixelFx spec={fxLuaTien(color)} scale={sc} dur={2.4} className="pa pa-lua-tien" style={st} />;
 }
 
 function Aura({ color, realm, layer, box }: { color: string; realm: number; layer: number; box: number }) {
@@ -836,9 +719,11 @@ export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Charact
       LAST_SHOWN.set(lkey, s2);
       setStrip(s2);
       // ghép sẵn các dáng hay dùng (đánh nhau, vận công) để khi chuyển cảnh không bị khựng
-      setTimeout(() => {
-        for (const [pa, pd] of PREFETCH) if (pa !== a || pd !== d) void composeStrip(layers, pa, pd);
-      }, 400);
+      // chỉ nhân vật chính (cỡ lớn) mới cần; danh sách nhiều hình nhỏ mà ghép sẵn thì chậm cả trang
+      if (size >= 120)
+        setTimeout(() => {
+          for (const [pa, pd] of PREFETCH) if (pa !== a || pd !== d) void composeStrip(layers, pa, pd);
+        }, 400);
     });
     return () => {
       live = false;
@@ -869,11 +754,13 @@ export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Charact
   };
   return (
     <div className={`lpc ${l.dead ? 'is-dead' : ''}`} style={{ width: box, height: box }} role="img" aria-label={`${c.name}, ${c.age < 13 ? 'trẻ con' : 'người lớn'}${l.path ? ', ' + PATHS[l.path].name : ''}`}>
-      {aura && !l.dead && <Aura color={aura} realm={l.realm} layer={c.layer} box={box} />}
-      {aura && !l.dead && l.realm >= 6 && !ma0(l) && Math.abs(l.dao) < 15 && <TuongVan box={box} />}
-      {aura && !l.dead && l.realm >= 2 && <PathAura path={l.path} ma={ma0(l)} yeu={!!l.yeu} realm={l.realm} color={aura} box={box} />}
-      {l.path === 'phat' && !l.dead && <span className="lpc-halo" style={{ width: box * 0.26, height: box * 0.26, top: box * 0.06 }} />}
-      {l.pet && l.stage !== 'baby' && !l.dead && <PetRoam id={petOf(c)} box={box} />}
+      {/* chưa ghép xong hình thì hiện bóng chờ, chưa hiện hiệu ứng để khỏi thấy hào quang mà không thấy người */}
+      {!url && <span className="lpc-wait" style={{ width: box * 0.36, height: box * 0.62, left: box * 0.32, top: box * 0.2 }} />}
+      {url && aura && !l.dead && <Aura color={aura} realm={l.realm} layer={c.layer} box={box} />}
+      {url && aura && !l.dead && l.realm >= 6 && !ma0(l) && Math.abs(l.dao) < 15 && <TuongVan box={box} />}
+      {url && aura && !l.dead && l.realm >= 2 && <PathAura path={l.path} ma={ma0(l)} yeu={!!l.yeu} realm={l.realm} color={aura} box={box} />}
+      {url && l.path === 'phat' && !l.dead && <span className="lpc-halo" style={{ width: box * 0.26, height: box * 0.26, top: box * 0.06 }} />}
+      {url && l.pet && l.stage !== 'baby' && !l.dead && <PetRoam id={petOf(c)} box={box} />}
       {url &&
         (aura && !l.dead && l.realm >= 1 ? (
           // viền hào quang ôm sát dáng người, càng lên cảnh giới càng dày và sáng
