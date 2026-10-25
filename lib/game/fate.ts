@@ -168,3 +168,38 @@ export function afterChoice(c: Character, choice: Choice, mark: number, ctx: Eff
   ctx.fx('hurt');
   return m.run(c, ctx);
 }
+
+/**
+ * Cây cao đón gió: người nổi danh chính đạo bị ma đạo để mắt, hay ra tay trượng nghĩa nên dễ vạ lây.
+ * Cân với tâm ma của tà đạo, để chính đạo không phải con đường sống lâu chắc chắn.
+ */
+const PERILS: ((c: Character, ctx: EffectCtx) => string)[] = [
+  (c, ctx) => {
+    const f = fatal(c, ctx, 0.3, 'Ma đạo nghe danh bạn đã lâu. Đêm ấy bảy tên sát thủ cùng ra tay, bạn chết khi đang ngồi thiền.');
+    if (c.dead) return f ?? '';
+    return `Ma đạo coi bạn là cái gai trong mắt, phái sát thủ đến trừ khử. Bạn đánh lui được nhưng thân mang trọng thương.${hurt(c, r(ctx, 25, 40), ctx)}${f ?? ''}`;
+  },
+  (c, ctx) => {
+    const f = fatal(c, ctx, 0.2, 'Bạn ra tay cứu một cô gái giữa phố, không ngờ sau lưng ác bá là cả một bang phái. Bạn bị vây đánh đến chết.');
+    if (c.dead) return f ?? '';
+    return `Thấy chuyện bất bình, bạn ra tay trượng nghĩa. Đồng bọn của ác bá kéo đến vây đánh, bạn trọng thương mới thoát được.${hurt(c, r(ctx, 20, 35), ctx)}${f ?? ''}`;
+  },
+  (c, ctx) => {
+    const lost = Math.round(c.linhThach * 0.35);
+    money(c, -lost);
+    return `Kẻ tiểu nhân lợi dụng lòng tốt của bạn, giả làm người gặp nạn rồi gài bẫy. Bạn mất ${lost} linh thạch, còn bị đâm một nhát.${hurt(c, r(ctx, 15, 25), ctx)}`;
+  },
+  (c, ctx) => {
+    const f = fatal(c, ctx, 0.25, 'Chính tà giao tranh, bạn xung phong đi đầu. Trận ấy chính phái thắng, nhưng bạn không trở về.');
+    if (c.dead) return f ?? '';
+    return `Chính phái triệu tập đi diệt ma, bạn là người xung phong đầu tiên. Thắng trận, nhưng bạn mang về đầy mình thương tích.${hurt(c, r(ctx, 25, 40), ctx)}${f ?? ''}`;
+  },
+];
+
+export function righteousPeril(c: Character, ctx: EffectCtx): string | null {
+  if (c.dead || c.age < 16) return null;
+  const p = c.daoTam >= 70 ? 0.03 : c.daoTam >= 40 ? 0.018 : 0;
+  if (!p || ctx.rnd() >= p) return null;
+  ctx.fx('hurt');
+  return PERILS[Math.floor(ctx.rnd() * PERILS.length)](c, ctx);
+}

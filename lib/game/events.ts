@@ -1218,19 +1218,9 @@ export const EVENTS: GameEvent[] = [
 export const PATH_EVENT_ID = '__chon_duong';
 export const BREAK_EVENT_ID = '__dot_pha';
 
-export function pathChoices(c: Character): Choice[] {
-  const list = (Object.keys(PATHS) as (keyof typeof PATHS)[])
-    .map((k) => PATHS[k])
-    .filter((p) => {
-      if (p.id === 'phat') return c.daoTam >= 15;
-      if (p.id === 'ma') return c.daoTam <= -15;
-      if (p.id === 'yeu') return c.race === 'yeu';
-      return true;
-    });
-  // ưu tiên đủ 4 lựa chọn, đường đặc biệt (phật/ma/yêu) lên đầu
-  const special = list.filter((p) => ['phat', 'ma', 'yeu'].includes(p.id));
-  const normal = list.filter((p) => !['phat', 'ma', 'yeu'].includes(p.id));
-  const chosen = [...special, ...normal].slice(0, 4);
+export function pathChoices(_c: Character): Choice[] {
+  // hiện đủ cả 6 con đường; Phật tu kéo đạo tâm về chính, Ma tu kéo về tà
+  const chosen = (Object.keys(PATHS) as (keyof typeof PATHS)[]).map((k) => PATHS[k]);
   return chosen.map((p) => ({
     label: p.name,
     hint: p.desc,
@@ -1238,7 +1228,7 @@ export function pathChoices(c: Character): Choice[] {
     run: (ch, ctx) => {
       ch.path = p.id;
       if (p.id === 'phat') {
-        ch.lifespan = Math.round(ch.lifespan * 1.3);
+        ch.lifespan = Math.round(ch.lifespan * 1.1);
         dao(ch, 10);
       }
       if (p.id === 'ma') {

@@ -3,7 +3,7 @@ import { BREAK_EVENT_ID, EVENTS, PATH_EVENT_ID, pathChoices } from './events';
 import { addCult, addPill, clamp, fatal, reward, wealthTier, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
 import type { Character, Choice, EffectCtx, Fx, FxKind, GameEvent, Meta, PendingEvent, Tone } from './types';
 import { applyGifts, giftOf, hasGift } from './gacha';
-import { afterChoice, beforeChoice } from './fate';
+import { afterChoice, beforeChoice, righteousPeril } from './fate';
 import { childLine } from './childhood';
 import { petName } from './pets';
 
@@ -195,8 +195,8 @@ function pathMul(c: Character) {
 
 export function yearlyGain(c: Character) {
   const base = GAIN[c.realm] ?? 90;
-  // tà đạo tu nhanh hơn (đổi lại nhiều tâm ma, nhiều kẻ thù), chính đạo chậm mà chắc
-  const lean = c.daoTam <= -40 ? 1.22 : c.daoTam <= -15 ? 1.08 : c.daoTam >= 40 ? 0.92 : 1;
+  // tà đạo tu nhanh hơn (đổi lại nhiều tâm ma, nhiều kẻ thù)
+  const lean = c.daoTam <= -40 ? 1.22 : c.daoTam <= -15 ? 1.08 : 1;
   return base * c.linhCanMul * (0.6 + c.stats.ngoTinh / 100) * pathMul(c) * gearMul(c) * (c.stats.tamMa > 70 ? 0.8 : 1) * (hasGift(c, 'g_doan_menh') ? 1.3 : 1) * lean;
 }
 
@@ -425,6 +425,15 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
     }
   }
 
+  // ---- Cây cao đón gió: chính đạo nổi danh dễ bị ma đạo nhắm tới ----
+  if (!opts.closed) {
+    const peril = righteousPeril(c, ctx);
+    if (peril) {
+      ctx.log(peril, c.dead ? 'big' : 'bad');
+      if (c.dead) return null;
+    }
+  }
+
   // ---- Quái vật hồi sức khi lâu không bị săn ----
   if (c.monLv) for (const k of Object.keys(c.monLv)) if (c.focus !== 'tru_yeu' || c.huntTarget !== k) c.monLv[k] = Math.max(0, c.monLv[k] - 0.5);
 
@@ -519,6 +528,8 @@ function pathEvent(c: Character): GameEvent {
 
 function breakChance(c: Character) {
   return clamp(
+    // chính đạo đạo tâm vững, đột phá dễ hơn chút
+    (c.daoTam >= 40 ? 0.06 : 0) +
     (hasGift(c, 'g_thien_menh') ? 0.15 : 0) + 0.39 - Math.max(0, c.realm - 2) * 0.07 + c.stats.ngoTinh / 450 + c.stats.tamCanh / 500 - c.stats.tamMa / 200 + (c.stats.khiVan - 50) / 500 + c.linhCanMul * 0.05,
     0.08,
     0.9,
