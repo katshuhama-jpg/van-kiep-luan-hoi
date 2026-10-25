@@ -1,5 +1,5 @@
 import { combatLevel, playerStats, type Fighter } from './combat';
-import { ITEMS, REALMS, realmLabel } from './data';
+import { ITEMS, REALMS, fxText, realmLabel } from './data';
 import { demoChar } from './demo';
 import { genName } from './engine';
 import { addCult, fatal, giveItem, money, reward, stat } from './helpers';
@@ -150,6 +150,31 @@ export function foeLabel(f: DuelFoe): string {
   return `${r.name}${r.player ? ` (@${r.player})` : ''} · ${r.realm === 0 ? 'Phàm nhân' : realmLabel(r.realm, r.layer)}`;
 }
 
+const RARE_NAME = ['Phàm', 'Tốt', 'Hiếm', 'Cực phẩm'];
+
+/**
+ * Lấy một món trong đồ đối thủ đang mang (vũ khí, áo, phụ kiện...). Ưu tiên món mình chưa có;
+ * món nào cũng có rồi thì bán lấy linh thạch.
+ */
+function rivalLoot(c: Character, r: RivalChar, ctx: EffectCtx, chance: number, say: (name: string) => string): string | null {
+  if (ctx.rnd() >= chance) return null;
+  const items = Object.values(r.equipped ?? {})
+    .map((id) => ITEMS.find((i) => i.id === id))
+    .filter((i): i is (typeof ITEMS)[number] => !!i && i.id !== 'ao_vai');
+  if (!items.length) return null;
+  const fresh = items.filter((i) => !c.inventory.includes(i.id));
+  const it = (fresh.length ? fresh : items)[Math.floor(ctx.rnd() * (fresh.length ? fresh : items).length)];
+  const tag = `[${RARE_NAME[it.rare ?? 0]}]`;
+  if (c.inventory.includes(it.id)) {
+    const sell = Math.round(40 + (it.price || 80) * 0.5 + (it.rare ?? 0) * 120);
+    money(c, sell);
+    return `${say(`${tag} ${it.name}`)} Bạn đã có món này nên đem bán được ${sell} linh thạch.`;
+  }
+  giveItem(c, it.id, false);
+  ctx.fx((it.rare ?? 0) >= 3 ? 'layer' : 'buy', it.name);
+  return `${say(`${tag} ${it.name}`)} (${fxText(it.fx)}) Mở Túi đồ để mặc.`;
+}
+
 /** Kết thúc trận: thưởng phạt theo loại cuộc gặp */
 export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'draw', pLoss: number, ctx: EffectCtx): string[] {
   const r = f.rival;
@@ -162,6 +187,8 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
       addCult(c, exp);
       stat(c, 'khiVan', 2);
       out.push(`Luận võ với ${who}, bạn thắng một chiêu. Hai bên cười lớn, chia tay như bạn cũ (+${exp} tu vi).`);
+      const g = rivalLoot(c, r, ctx, 0.35, (n) => `${r.name} phục tài, tháo ${n} tặng bạn làm kỷ niệm.`);
+      if (g) out.push(g);
     } else if (result === 'draw') {
       const exp = Math.round(reward(c, 0.2) * harder);
       addCult(c, exp);
@@ -182,11 +209,8 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
       const loot = Math.round(40 + r.realm * 60 * harder);
       money(c, loot);
       out.push(`Bạn đánh bại địch thủ ${who} (+${exp} tu vi, +${loot} linh thạch).`);
-      const wpn = r.equipped?.vu_khi;
-      if (wpn && !c.inventory.includes(wpn) && ctx.rnd() < 0.3) {
-        giveItem(c, wpn, false);
-        out.push(`Hắn đánh rơi ${ITEMS.find((i) => i.id === wpn)?.name ?? 'binh khí'}. Bạn thu lấy làm chiến lợi phẩm.`);
-      }
+      const g = rivalLoot(c, r, ctx, 0.7, (n) => `Bạn lột được ${n} của ${r.name} làm chiến lợi phẩm.`);
+      if (g) out.push(g);
       stat(c, 'sucKhoe', -Math.round(pLoss * 20));
     } else if (result === 'draw') {
       stat(c, 'sucKhoe', -Math.round(pLoss * 25));
@@ -209,6 +233,8 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
     stat(c, 'tamCanh', 8);
     stat(c, 'khiVan', 3);
     out.push(`Bạn vượt qua bóng của ${r.name} kiếp trước. Nghiệp cũ tan như sương sớm, đạo tâm sáng rực (+${exp} tu vi).`);
+    const g = rivalLoot(c, r, ctx, 0.6, (n) => `Bóng kiếp trước tan đi, để lại ${n}, di vật bạn từng mang kiếp trước.`);
+    if (g) out.push(g);
   } else if (result === 'draw') {
     stat(c, 'tamMa', 5);
     out.push(`Bóng kiếp trước lặng lẽ tan vào mặt hồ. Chưa thắng, cũng chưa thua. Nó sẽ còn quay lại.`);
