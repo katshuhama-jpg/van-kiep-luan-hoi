@@ -26,13 +26,6 @@ export function Sheet({ title, onClose, children }: { title: string; onClose?: (
           )}
         </div>
         {children}
-        {onClose && (
-          <div className="sheet-foot">
-            <button className="btn btn-dark" onClick={onClose}>
-              Đóng
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );

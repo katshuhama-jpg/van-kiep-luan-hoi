@@ -14,7 +14,7 @@ import type { Character, EffectCtx, RivalChar } from './types';
  */
 
 export type DuelKind = 'dong_dao' | 'dich_thu' | 'kiep_truoc';
-export const DUEL_PER_YEAR = 0.15;
+export const DUEL_PER_YEAR = 0.1; // trung bình khoảng 10 năm gặp một lần
 export const DUEL_TURNS = 5;
 
 export interface DuelFoe {
@@ -87,6 +87,13 @@ function npcRival(c: Character, realm: number, sign: number, rnd: () => number):
   };
 }
 
+/** Đổi cấp chiến đấu ra cảnh giới và tầng: Luyện Khí 1-9, từ Trúc Cơ mỗi cảnh giới 3 tầng */
+function clToRealm(cl: number): { realm: number; layer: number } {
+  if (cl <= 9) return { realm: 1, layer: Math.max(1, cl) };
+  const realm = Math.min(7, 2 + Math.floor((cl - 10) / 3));
+  return { realm, layer: Math.min(3, cl - (9 + (realm - 2) * 3)) };
+}
+
 /** Chọn cuộc gặp năm nay. null nếu không có gì hợp lý. */
 export function pickDuel(c: Character, rnd: () => number): DuelFoe | null {
   const w = c.world;
@@ -101,31 +108,34 @@ export function pickDuel(c: Character, rnd: () => number): DuelFoe | null {
   let kind: DuelKind = 'dong_dao';
   for (const [k, wt] of kinds) if ((x -= wt) < 0) { kind = k; break; }
 
-  // cấp độ đối thủ: đồng đạo thường ngang hoặc yếu hơn, địch thủ và tâm ma hay mạnh hơn
+  // cấp độ đối thủ theo cấp chiến đấu, chia ba bậc rõ ràng để ít gặp người ngang cấp:
+  // đồng đạo: yếu 45%, ngang 25%, mạnh 30%; địch thủ: 25/25/50; tâm ma kiếp trước: 20/20/60
+  const me0 = combatLevel(c);
+  const W: Record<DuelKind, [number, number]> = { dong_dao: [0.45, 0.25], dich_thu: [0.25, 0.25], kiep_truoc: [0.2, 0.2] };
+  const [pw, pn] = W[kind];
   const r = rnd();
-  const up = kind === 'dong_dao' ? 0.2 : 0.45;
-  const down = kind === 'dong_dao' ? 0.4 : 0.25;
-  const delta = r < down ? -1 : r < down + up ? 1 : 0;
-  const target = Math.max(1, Math.min(7, c.realm + delta));
+  const ri = (a: number, b: number) => a + Math.floor(rnd() * (b - a + 1));
+  const delta = r < pw ? -ri(3, 6) : r < pw + pn ? ri(-1, 1) : ri(3, 6);
+  const targetCl = Math.max(1, Math.min(27, me0 + delta));
+  const tgt = clToRealm(targetCl);
 
   let rival: RivalChar | null = null;
   let npc = false;
   if (kind === 'kiep_truoc' && past) {
-    // tâm ma lớn thì bóng kiếp trước càng mạnh
-    const boost = c.stats.tamMa >= 50 ? 1 : 0;
-    rival = { ...past, realm: Math.max(1, Math.min(7, Math.max(past.realm, c.realm - 1) + boost)) };
+    // bóng kiếp trước: dáng hình kiếp trước, sức mạnh do tâm ma quyết định; tâm ma lớn thì mạnh thêm
+    const t2 = c.stats.tamMa >= 50 && delta > 0 ? clToRealm(Math.min(27, targetCl + 2)) : tgt;
+    rival = { ...past, realm: t2.realm, layer: t2.layer };
   } else {
     const mine = lean(c.daoTam);
-    const pool = (w?.rivals ?? []).filter((v) => v.realm >= 1 && Math.abs(v.realm - target) <= 0 + (delta === 0 ? 0 : 0) + 1);
+    const pool = (w?.rivals ?? []).filter((v) => v.realm >= 1 && Math.abs(combatLevel(foeChar(v)) - targetCl) <= 1);
     const side = pool.filter((v) => (kind === 'dong_dao' ? lean(v.daoTam) === mine || lean(v.daoTam) === 0 : lean(v.daoTam) !== mine || mine === 0));
-    const list = (side.length ? side : pool).sort((a, b) => Math.abs(a.realm - target) - Math.abs(b.realm - target));
+    const list = side.length ? side : pool;
     if (list.length) {
-      const best = list.filter((v) => Math.abs(v.realm - target) === Math.abs(list[0].realm - target));
-      rival = best[Math.floor(rnd() * best.length)];
+      rival = list[Math.floor(rnd() * list.length)];
     } else {
       npc = true;
       const sign = kind === 'dong_dao' ? (mine || 1) : mine > 0 ? -1 : mine < 0 ? 1 : rnd() < 0.5 ? 1 : -1;
-      rival = npcRival(c, target, sign, rnd);
+      rival = { ...npcRival(c, tgt.realm, sign, rnd), layer: tgt.layer };
     }
   }
   if (!rival) return null;

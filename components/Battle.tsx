@@ -3,6 +3,8 @@ import type { CSSProperties } from 'react';
 
 import type { Monster } from '@/lib/game/combat';
 import type { Character } from '@/lib/game/types';
+import { ELEMENTS, type ElemRel } from '@/lib/game/nguhanh';
+import type { Element } from '@/lib/game/types';
 import Sprite from './Sprite';
 import MonsterLpc from './MonsterLpc';
 import { MONSTER_LOOK } from '@/lib/game/monsterLook';
@@ -194,13 +196,28 @@ export interface BattleView {
   mHp: number;
   mMax: number;
   phase: 'fight' | 'rest';
-  last: { id: number; side: 'p' | 'm'; dmg: number; crit: boolean; text?: string; skill?: string; qi?: string }[];
+  last: { id: number; side: 'p' | 'm'; dmg: number; crit: boolean; text?: string; skill?: string; qi?: string; tag?: string }[];
   outcome?: 'win' | 'lose' | 'flee';
   kills: number;
   /** quái chặn đường: đếm hiệp */
   ambush?: { turn: number; max: number; kind: 'kem' | 'bang' | 'hon' };
   /** kỳ ngộ giang hồ: đối thủ là người */
-  duel?: { kind: 'dong_dao' | 'dich_thu' | 'kiep_truoc'; foe: Character; tag: string; player: string; turn: number; max: number };
+  duel?: { kind: 'dong_dao' | 'dich_thu' | 'kiep_truoc'; foe: Character; tag: string; player: string; turn: number; max: number; elem?: { me: Element; foe: Element; rel: ElemRel } };
+}
+
+/** Dải ngũ hành giữa sân đấu: bản mệnh hai bên và ai khắc ai */
+function ElemBanner({ e }: { e: { me: Element; foe: Element; rel: ElemRel } }) {
+  const A = ELEMENTS[e.me];
+  const B = ELEMENTS[e.foe];
+  const txt = e.rel === 'khac' ? 'Bạn khắc chế · đòn +50%' : e.rel === 'bi_khac' ? 'Bị khắc chế · đòn -30%' : e.rel === 'duoc_sinh' ? `${B.name} sinh ${A.name} · đòn +10%` : e.rel === 'sinh' ? `${A.name} sinh ${B.name}` : 'Cùng mệnh, không ai khắc ai';
+  return (
+    <div className={`elem-banner ${e.rel}`}>
+      <span className="el" style={{ background: A.color }}>{A.sym}</span>
+      <span className="arrow">{e.rel === 'khac' ? '▶' : e.rel === 'bi_khac' ? '◀' : '·'}</span>
+      <span className="el" style={{ background: B.color }}>{B.sym}</span>
+      <small>{txt}</small>
+    </div>
+  );
 }
 
 /** Lớp phủ trận đánh trên sân khấu: quái, thanh máu, số sát thương */
@@ -257,6 +274,7 @@ export function BattleOverlay({ b }: { b: BattleView }) {
             {b.duel.tag}
             {b.duel.player ? ` · @${b.duel.player}` : ''}
           </span>
+          {b.duel.elem && <ElemBanner e={b.duel.elem} />}
         </>
       ) : (
         <div className={`mon-wrap ${lastHit?.side === 'p' && b.phase === 'fight' ? 'got-hit' : ''} ${lastHit?.side === 'm' ? 'attacking' : ''}`} key={lastHit?.id ?? 0}>
@@ -279,8 +297,9 @@ export function BattleOverlay({ b }: { b: BattleView }) {
         </span>
       )}
       {b.last.map((h) => (
-        <span key={h.id} className={`dmg ${h.side} ${h.crit ? 'crit' : ''}`}>
+        <span key={h.id} className={`dmg ${h.side} ${h.crit ? 'crit' : ''} ${h.tag ? (h.tag.endsWith('!') ? 'el-khac' : 'el-bi') : ''}`}>
           {h.text ?? `-${h.dmg}`}
+          {h.tag && <small className="el-tag">{h.tag}</small>}
         </span>
       ))}
       {b.duel ? (

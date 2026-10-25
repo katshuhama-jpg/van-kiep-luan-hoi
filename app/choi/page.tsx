@@ -18,7 +18,7 @@ import { genName, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, res
 import { addPill, fatal, fmt, giveItem, money, stat, wealthTier } from '@/lib/game/helpers';
 import type { Character, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
 import DuelWarning from '@/components/Duel';
-import { ELEMENTS, elemMul, elemRel, elementOf } from '@/lib/game/nguhanh';
+import { ELEMENTS, elemHitTag, elemMul, elemRel, elementOf } from '@/lib/game/nguhanh';
 import { DUEL_INFO, DUEL_PER_YEAR, DUEL_TURNS, finishDuel, foeChar, foeStats, pickDuel, type DuelFoe } from '@/lib/game/duel';
 import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, pickAmbush } from '@/lib/game/ambush';
 import { addMemorial, displayName, fetchWorld, loadAll, saveLocal, saveMeta, saveRemote, type SaveState } from '@/lib/storage';
@@ -229,7 +229,7 @@ export default function PlayPage() {
       fs,
       sub: 0,
       foe: f,
-      duel: { kind: f.kind, foe: fc, tag: `${DUEL_INFO[f.kind].tag} · ${ELEMENTS[elementOf(fc)].sym}`, player: f.kind === 'kiep_truoc' ? '' : f.rival.player, turn: 0, max: DUEL_TURNS },
+      duel: { kind: f.kind, foe: fc, tag: DUEL_INFO[f.kind].tag, player: f.kind === 'kiep_truoc' ? '' : f.rival.player, turn: 0, max: DUEL_TURNS, elem: { me: elementOf(c), foe: elementOf(fc), rel: elemRel(elementOf(c), elementOf(fc)) } },
     };
     rerender();
   }
@@ -241,9 +241,13 @@ export default function PlayPage() {
     b.t += dtReal;
     let changed = false;
     const fc = b.duel.foe;
+    const eMe = elementOf(c);
+    const eFoe = elementOf(fc);
     const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string, skill?: string | null) => {
-      const qi = side === 'p' ? qiColor(c) : fc.path ? PATHS[fc.path].aura : '#ff6a5a';
-      b.last = [...b.last.slice(-4), { id: Math.random(), side, dmg, crit, text, skill: skill ?? undefined, qi: skill ? qi : undefined }];
+      // chưởng mang màu bản mệnh, đòn khắc chế có chữ riêng
+      const qi = ELEMENTS[side === 'p' ? eMe : eFoe].color;
+      const tag = text ? undefined : side === 'p' ? elemHitTag(eMe, eFoe) : elemHitTag(eFoe, eMe);
+      b.last = [...b.last.slice(-4), { id: Math.random(), side, dmg, crit, text, skill: skill ?? undefined, qi: skill ? qi : undefined, tag }];
     };
     const end = (result: 'win' | 'lose' | 'draw') => {
       const out: Fx[] = [];

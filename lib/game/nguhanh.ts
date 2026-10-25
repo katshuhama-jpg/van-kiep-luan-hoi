@@ -33,19 +33,25 @@ export function elemRel(a: Element, b: Element): ElemRel {
   return 'duoc_sinh';
 }
 
-/** hệ số sát thương khi a đánh b: khắc +30%, bị khắc -20% */
+/** hệ số sát thương khi a đánh b: khắc +50%, bị khắc -30%, được sinh +10% */
 export function elemMul(a: Element, b: Element): number {
   const r = elemRel(a, b);
-  return r === 'khac' ? 1.3 : r === 'bi_khac' ? 0.8 : 1;
+  return r === 'khac' ? 1.5 : r === 'bi_khac' ? 0.7 : r === 'duoc_sinh' ? 1.1 : 1;
+}
+
+/** chữ ngắn hiện trên đòn đánh */
+export function elemHitTag(a: Element, b: Element): string | undefined {
+  const r = elemRel(a, b);
+  return r === 'khac' ? `${ELEMENTS[a].sym} khắc ${ELEMENTS[b].sym}!` : r === 'bi_khac' ? `${ELEMENTS[a].sym} bị khắc` : undefined;
 }
 
 export function elemText(me: Element, foe: Element): { text: string; tone: 'good' | 'bad' | 'normal' } {
   const A = ELEMENTS[me].name;
   const B = ELEMENTS[foe].name;
   const r = elemRel(me, foe);
-  if (r === 'khac') return { text: `Bạn mệnh ${A}, khắc ${B} của đối thủ. Sát thương +30%, nhận ít hơn 20%.`, tone: 'good' };
-  if (r === 'bi_khac') return { text: `Đối thủ mệnh ${B}, khắc ${A} của bạn. Bất lợi: sát thương -20%, nhận thêm 30%.`, tone: 'bad' };
+  if (r === 'khac') return { text: `Bạn mệnh ${A}, khắc ${B} của đối thủ. Đòn của bạn +50%, đòn của đối thủ -30%.`, tone: 'good' };
+  if (r === 'bi_khac') return { text: `Đối thủ mệnh ${B}, khắc ${A} của bạn. Bất lợi: đòn của bạn -30%, đòn của đối thủ +50%.`, tone: 'bad' };
   if (r === 'sinh') return { text: `${A} sinh ${B}: đánh nhau không hơn không kém, nhưng kết giao thì hợp nhau.`, tone: 'normal' };
-  if (r === 'duoc_sinh') return { text: `${B} sinh ${A}: đối thủ vô tình nuôi dưỡng khí mạch của bạn. Kết giao rất có lợi.`, tone: 'normal' };
+  if (r === 'duoc_sinh') return { text: `${B} sinh ${A}: khí của đối thủ nuôi dưỡng bạn, đòn của bạn +10%. Kết giao rất có lợi.`, tone: 'normal' };
   return { text: `Cùng mệnh ${A}: ngang ngửa, không ai khắc ai.`, tone: 'normal' };
 }
