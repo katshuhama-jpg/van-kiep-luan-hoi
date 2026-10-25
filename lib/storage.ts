@@ -117,6 +117,16 @@ export async function listMemorials(user: Player | null): Promise<{ all: Memoria
   return { all: (all as Memorial[] | null) ?? [], mine };
 }
 
+/** Chi tiết một ngôi mộ để xem hồi ký: dáng vẻ, cột mốc, cảnh giới cuối */
+export async function lifeDetail(m: Memorial): Promise<{ look: Record<string, unknown> | null; realm_no: number | null; layer_no: number | null }> {
+  const local = m as Memorial & { look?: Record<string, unknown>; realm_no?: number; layer_no?: number };
+  if (typeof m.id !== 'number') return { look: local.look ?? null, realm_no: local.realm_no ?? null, layer_no: local.layer_no ?? null };
+  const sb = supabase();
+  if (!sb) return { look: null, realm_no: null, layer_no: null };
+  const { data } = await sb.from('vkl_lives').select('look, realm_no, layer_no').eq('id', m.id).maybeSingle();
+  return (data as { look: Record<string, unknown> | null; realm_no: number | null; layer_no: number | null }) ?? { look: null, realm_no: null, layer_no: null };
+}
+
 /** Đền thờ danh nhân: các ngôi mộ được thắp hương nhiều nhất */
 export async function topIncense(): Promise<Memorial[]> {
   const sb = supabase();

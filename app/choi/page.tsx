@@ -19,6 +19,7 @@ import { addPill, fatal, fmt, giveItem, money, stat, wealthTier } from '@/lib/ga
 import type { Character, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
 import DuelWarning from '@/components/Duel';
 import { artOf } from '@/lib/game/vocong';
+import { trackMiles } from '@/lib/game/miles';
 import { ELEMENTS, elemHitTag, elemMul, elemRel, elementOf } from '@/lib/game/nguhanh';
 import { DUEL_INFO, DUEL_PER_YEAR, DUEL_TURNS, finishDuel, foeChar, foeStats, pickDuel, teaTrap, type DuelFoe } from '@/lib/game/duel';
 import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, pickAmbush } from '@/lib/game/ambush';
@@ -82,6 +83,7 @@ export default function PlayPage() {
 
   const persist = useCallback(
     (forceRemote = false) => {
+      trackMiles(charRef.current);
       const s = snapshot();
       if (!s) return;
       saveLocal(userRef.current, s);
@@ -788,6 +790,7 @@ export default function PlayPage() {
   const finishLife = async (epitaph: string, note = '', bury = false, extra: { prophecy?: { id: string; text: string } | null; legendName?: string | null } = {}) => {
     const c = charRef.current;
     if (!c || !meta) return;
+    trackMiles(c);
     const k = karmaOf(c);
     const ending = endingOf(c);
     // nhiệm vụ ngày
@@ -826,6 +829,12 @@ export default function PlayPage() {
         lookSeed: c.lookSeed,
         petKind: c.petKind,
         element: c.element,
+        mount: c.mount,
+        miles: c.miles ?? [],
+        birthPlace: c.birthPlace,
+        origin: c.origin,
+        ascended: c.ascended,
+        endTag: c.endTag,
       },
     }).catch(() => {});
     const m: Meta = {

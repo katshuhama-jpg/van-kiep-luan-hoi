@@ -2881,3 +2881,80 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .tt-quests li.done .box { background: #2f6b3a; box-shadow: 0 0 0 2px var(--tt-ink), inset 0 0 0 2px #fffaf0; }
 .tt-note { display: block; font-size: 12px; color: #6a5a44; }
 .talent.ta .cost { color: var(--ta); }
+
+/* ================= Hồi ký một kiếp (nghĩa trang) ================= */
+.ls { position: fixed; inset: 0; z-index: 90; color: #fff3dc; background: radial-gradient(ellipse at 50% 20%, var(--ls-glow, #3a2a5a) 0%, var(--ls-bg, #0e0a1a) 70%); transition: background 0.8s; overflow: hidden; }
+.ls.tone-title { --ls-glow: #4a2a3a; --ls-bg: #100a16; }
+.ls.tone-dawn { --ls-glow: #8a4a3a; --ls-bg: #1a1020; }
+.ls.tone-jade { --ls-glow: #1f5a4a; --ls-bg: #0a141a; }
+.ls.tone-storm { --ls-glow: #3a3a7a; --ls-bg: #0a0c1e; }
+.ls.tone-rose { --ls-glow: #7a2a4a; --ls-bg: #1a0a14; }
+.ls.tone-gold { --ls-glow: #8a6a1a; --ls-bg: #1a1408; }
+.ls.tone-blood { --ls-glow: #7a0a1a; --ls-bg: #12040a; }
+.ls.tone-night { --ls-glow: #1a2a4a; --ls-bg: #05060e; }
+/* sao trời pixel nhấp nháy */
+.ls-stars { position: absolute; inset: 0; pointer-events: none; opacity: 0.7; background-image: radial-gradient(#fff 1px, transparent 1.5px), radial-gradient(#ffe9a0 1px, transparent 1.5px); background-size: 97px 89px, 151px 137px; background-position: 13px 7px, 61px 41px; animation: lsTwinkle 3s steps(3) infinite; }
+@keyframes lsTwinkle { 50% { opacity: 0.35; } }
+.ls-col { position: relative; max-width: 460px; height: 100dvh; margin: 0 auto; padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 8px; }
+.ls-bars { display: flex; gap: 4px; }
+.ls-bars span { flex: 1; height: 4px; background: rgba(255, 243, 220, 0.25); position: relative; overflow: hidden; }
+.ls-bars span::after { content: ''; position: absolute; inset: 0; width: 0; background: #ffd36b; }
+.ls-bars span.done::after { width: 100%; }
+.ls-bars span.run::after { animation: lsBar linear forwards; animation-duration: inherit; }
+@keyframes lsBar { to { width: 100%; } }
+.ls-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-weight: 700; color: #ffd36b; }
+.ls-top small { display: block; font-weight: 400; color: rgba(255, 243, 220, 0.7); font-size: 13px; }
+.ls-x { background: none; border: 2px solid rgba(255, 243, 220, 0.5); color: #fff3dc; width: 36px; height: 36px; font-size: 18px; cursor: pointer; }
+.ls-stage { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; animation: lsIn 0.6s steps(6) both; position: relative; z-index: 1; }
+@keyframes lsIn { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
+
+/* trang bìa */
+.ls-title { position: relative; text-align: center; padding: 10px 6px; }
+.ls-kicker { letter-spacing: 0.3em; text-transform: uppercase; color: #c9962e; font-size: 13px; }
+.ls-title h2 { margin: 6px 0 2px; font-size: 40px; line-height: 1.05; color: #ffd36b; text-shadow: 3px 3px 0 #5a0a14, 0 0 18px rgba(255, 211, 107, 0.45); animation: lsTitle 1.2s steps(8) both; }
+@keyframes lsTitle { from { letter-spacing: 0.4em; opacity: 0; } to { letter-spacing: 0; opacity: 1; } }
+.ls-sub { margin: 0; color: rgba(255, 243, 220, 0.85); }
+.ls-hero { position: relative; display: grid; place-items: center; margin: 14px auto 6px; width: 180px; height: 170px; }
+.ls-hero::before { content: ''; position: absolute; bottom: 8px; left: 50%; width: 150px; height: 26px; margin-left: -75px; background: radial-gradient(ellipse, rgba(255, 211, 107, 0.55), transparent 70%); animation: lsPulse 2.4s steps(4) infinite; }
+@keyframes lsPulse { 50% { opacity: 0.5; transform: scaleX(0.85); } }
+.ls-title blockquote { margin: 8px auto 0; max-width: 320px; font-style: italic; color: #f6e2b0; border-left: 3px solid #c9962e; padding-left: 10px; text-align: left; }
+/* đèn lồng pixel đung đưa */
+.ls-lantern { position: absolute; top: -6px; width: 26px; height: 34px; background: #c0202e; box-shadow: inset 0 4px 0 #ffd36b, inset 0 -4px 0 #ffd36b, inset 0 0 0 2px #5a0a14, 0 0 18px rgba(255, 90, 60, 0.6); transform-origin: 50% -20px; animation: lsSwing 3s ease-in-out infinite alternate; }
+.ls-lantern::before { content: ''; position: absolute; left: 12px; top: -18px; width: 2px; height: 18px; background: #c9962e; }
+.ls-lantern::after { content: ''; position: absolute; left: 10px; bottom: -10px; width: 6px; height: 10px; background: #ffd36b; }
+.ls-lantern.l { left: 8px; }
+.ls-lantern.r { right: 8px; animation-delay: -1.5s; }
+@keyframes lsSwing { from { transform: rotate(-6deg); } to { transform: rotate(6deg); } }
+
+/* cảnh cột mốc */
+.ls-scene { position: relative; border: 3px solid #1f160d; box-shadow: 0 0 0 3px #c9962e, 0 8px 24px rgba(0, 0, 0, 0.6); }
+.ls-scene .scene { border-bottom: none; height: 270px; }
+.ls-chap { position: absolute; top: 8px; left: 8px; z-index: 5; padding: 2px 8px; background: #8a1a24; color: #fff3dc; font-size: 14px; font-weight: 700; box-shadow: 2px 2px 0 #1f160d; }
+.ls-kind { position: absolute; top: 8px; right: 8px; z-index: 5; padding: 2px 8px; background: rgba(31, 22, 13, 0.8); color: #ffd36b; font-size: 14px; border: 2px solid #c9962e; }
+/* đóng dấu tên cảnh giới, đạo giữa cảnh */
+.ls-realm { position: absolute; left: 50%; top: 30%; z-index: 5; transform: translate(-50%, -50%); padding: 4px 16px; font-size: 26px; font-weight: 700; color: #fff3dc; background: rgba(138, 26, 36, 0.85); border: 3px solid #ffd36b; box-shadow: 0 0 0 3px #1f160d, 0 0 24px rgba(255, 211, 107, 0.6); white-space: nowrap; animation: lsStamp 0.7s steps(5) 0.4s both; }
+@keyframes lsStamp { 0% { transform: translate(-50%, -50%) scale(2.4); opacity: 0; } 70% { transform: translate(-50%, -50%) scale(0.92); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+.ls-cap { margin-top: 10px; padding: 10px 12px; background: #ecdaa8; color: #1f160d; border: 3px solid #1f160d; box-shadow: inset 0 0 0 3px #5a3418, inset 0 0 0 5px #d8a830; min-height: 92px; }
+.ls-age { display: block; font-size: 22px; color: #8a1a24; }
+.ls-cap p { margin: 4px 0 0; font-size: 17px; line-height: 1.35; }
+.ls-caret { display: inline-block; width: 8px; height: 16px; margin-left: 2px; background: #8a1a24; vertical-align: -2px; animation: lsCaret 0.6s steps(1) infinite; }
+@keyframes lsCaret { 50% { opacity: 0; } }
+
+/* hồi kết: bia mộ */
+.ls-tomb { display: flex; gap: 12px; align-items: center; margin-top: 10px; padding: 10px; background: rgba(31, 22, 13, 0.7); border: 2px solid #8a7a5a; }
+.ls-stone { flex: none; width: 54px; height: 66px; background: #8a8a92; box-shadow: inset 0 0 0 3px #5a5a62, inset 6px 0 0 #a8a8b0; clip-path: polygon(20% 0, 80% 0, 100% 18%, 100% 100%, 0 100%, 0 18%); position: relative; }
+.ls-stone i { position: absolute; left: 50%; top: 16px; width: 4px; height: 26px; margin-left: -2px; background: #5a5a62; box-shadow: -8px 8px 0 -0px transparent; }
+.ls-stone i::after { content: ''; position: absolute; left: -8px; top: 8px; width: 20px; height: 4px; background: #5a5a62; }
+.ls-tomb b { display: block; color: #ffd36b; font-size: 18px; }
+.ls-tomb small { display: block; color: rgba(255, 243, 220, 0.75); }
+.ls-tomb em { display: block; color: #f6e2b0; }
+.ls-actions { display: flex; gap: 8px; margin-top: 10px; }
+.ls-actions .btn { flex: 1; }
+.ls-tap { position: absolute; top: 80px; bottom: 70px; width: 35%; background: none; border: none; z-index: 2; cursor: pointer; }
+.ls-tap.l { left: 0; }
+.ls-tap.r { right: 0; }
+.ls-nav { display: flex; gap: 8px; position: relative; z-index: 3; }
+.ls-nav .btn { flex: 1; }
+.ls-nav .btn:first-child, .ls-nav .btn:last-child { flex: 0 0 56px; font-size: 22px; }
+.story-btn { width: 100%; }
+@media (prefers-reduced-motion: reduce) { .ls *, .ls { animation: none !important; } }

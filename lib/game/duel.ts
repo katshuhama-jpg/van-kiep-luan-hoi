@@ -1,3 +1,4 @@
+import { addMile } from './miles';
 import { qmark } from './hook';
 import { combatLevel, playerStats, type Fighter } from './combat';
 import { ITEMS, REALMS, fxText, realmLabel } from './data';
@@ -285,6 +286,7 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
       addCult(c, exp);
       const loot = Math.round((40 + r.realm * 60 * harder) * rv);
       money(c, loot);
+      if (r.player && !f.npc) addMile(c, f.revenge ? 'revenge' : 'duel', f.revenge ? `Báo được đại thù với ${r.name} (@${r.player})` : `Đánh bại địch thủ ${r.name} (@${r.player})`);
       out.push(f.revenge ? `Đại thù đã báo! Bạn hạ được ${who} (+${exp} tu vi, +${loot} linh thạch, gấp đôi).` : `Bạn đánh bại địch thủ ${who} (+${exp} tu vi, +${loot} linh thạch).`);
       if (f.revenge) {
         const back = f.revenge.items.filter((id) => ITEMS.some((i) => i.id === id));
@@ -330,6 +332,7 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
     stat(c, 'tamMa', -20);
     stat(c, 'tamCanh', 8);
     stat(c, 'khiVan', 3);
+    addMile(c, 'duel', 'Vượt qua tâm ma của chính mình kiếp trước');
     out.push(`Bạn vượt qua bóng của ${r.name} kiếp trước. Nghiệp cũ tan như sương sớm, đạo tâm sáng rực (+${exp} tu vi).`);
     const g = rivalLoot(c, r, ctx, 0.6, (n) => `Bóng kiếp trước tan đi, để lại ${n}, di vật bạn từng mang kiếp trước.`);
     if (g) out.push(g);

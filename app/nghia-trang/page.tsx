@@ -3,10 +3,11 @@
 import BackButton from '@/components/BackButton';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { listMemorials, thapHuong, topIncense, type Memorial } from '@/lib/storage';
+import { lifeDetail, listMemorials, thapHuong, topIncense, type Memorial } from '@/lib/storage';
+import LifeStory, { type LifeRecord } from '@/components/LifeStory';
 import { useAuth } from '@/lib/useAuth';
 
-function Tomb({ m, canIncense, onIncense }: { m: Memorial; canIncense: boolean; onIncense: () => void }) {
+function Tomb({ m, canIncense, onIncense, onStory }: { m: Memorial; canIncense: boolean; onIncense: () => void; onStory: () => void }) {
   return (
     <article className={`grave ${m.ascended ? 'ascended' : ''}`}>
       <small>Kiếp {m.life_no} · {m.player_name}</small>
@@ -17,7 +18,10 @@ function Tomb({ m, canIncense, onIncense }: { m: Memorial; canIncense: boolean; 
       </small>
       {m.ascended ? <small style={{ color: m.cause?.includes('Ma Tôn') ? 'var(--ta)' : 'var(--jade)' }}>{m.cause?.includes('Ma Tôn') ? 'Đã thành Ma Tôn' : 'Đã phi thăng'}</small> : m.cause && <small>{m.cause}</small>}
       {m.epitaph && <span className="epitaph">“{m.epitaph}”</span>}
-      <button className="btn" style={{ marginTop: 'auto', fontSize: 17 }} disabled={!canIncense} onClick={onIncense} aria-label={`Thắp hương cho ${m.char_name}`}>
+      <button className="btn btn-red story-btn" style={{ marginTop: 'auto', fontSize: 17 }} onClick={onStory} aria-label={`Xem hồi ký ${m.char_name}`}>
+        Xem hồi ký
+      </button>
+      <button className="btn" style={{ fontSize: 17 }} disabled={!canIncense} onClick={onIncense} aria-label={`Thắp hương cho ${m.char_name}`}>
         Thắp hương · {m.incense}
       </button>
     </article>
@@ -35,6 +39,11 @@ export default function Graveyard() {
   }, [ready, user?.token]);
 
   const list = data ? data[tab] : [];
+  const [story, setStory] = useState<{ m: Memorial; r: LifeRecord } | null>(null);
+  async function openStory(m: Memorial) {
+    const d = await lifeDetail(m);
+    setStory({ m, r: { ...m, ...d } });
+  }
 
   async function incense(m: Memorial) {
     const n = await thapHuong(user, m.id);
@@ -80,9 +89,21 @@ export default function Graveyard() {
       ) : (
         <div className="grave-list">
           {list.map((m) => (
-            <Tomb key={m.id} m={m} canIncense={!!user && typeof m.id === 'number'} onIncense={() => incense(m)} />
+            <Tomb key={m.id} m={m} canIncense={!!user && typeof m.id === 'number'} onIncense={() => incense(m)} onStory={() => openStory(m)} />
           ))}
         </div>
+      )}
+
+      {story && (
+        <LifeStory
+          r={story.r}
+          onClose={() => setStory(null)}
+          canIncense={!!user && typeof story.m.id === 'number'}
+          onIncense={async () => {
+            await incense(story.m);
+            setStory((x) => (x ? { ...x, r: { ...x.r, incense: x.r.incense + 1 } } : x));
+          }}
+        />
       )}
 
       <Link href="/choi" className="btn btn-red btn-big" style={{ textDecoration: 'none', textAlign: 'center' }}>

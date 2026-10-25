@@ -101,6 +101,8 @@ export interface Character {
   legend?: Legend | null; // thần binh truyền kiếp đang mang
   vendettas?: Vendetta[];
   qf?: Record<string, number>; // đếm việc làm trong đời cho nhiệm vụ ngày
+  miles?: Mile[]; // cột mốc chính của đời, để xem lại ở nghĩa trang
+  mileSnap?: { realm: number; path: string | null; partner: string | null; pet: string | null; mount: string | null };
   maKien?: boolean; // tâm ma tăng chậm
   oanHon?: boolean; // oan hồn đỡ một lần chết
   maTon?: boolean; // ma tôn chuyển thế: tu nhanh hơn
@@ -245,6 +247,14 @@ export interface Career {
   paths: string[]; // các đạo đã từng đi
   duelWins: number;
   revenges: number;
+}
+
+export type MileKind = 'birth' | 'path' | 'realm' | 'love' | 'pet' | 'mount' | 'duel' | 'revenge' | 'death';
+export interface Mile {
+  age: number;
+  kind: MileKind;
+  text: string;
+  realm?: number;
 }
 
 export interface Legend {
