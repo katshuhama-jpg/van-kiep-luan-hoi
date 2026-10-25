@@ -17,6 +17,7 @@ import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, realmLabel } from '@/lib/
 import { genName, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick } from '@/lib/game/engine';
 import { addPill, fmt, giveItem, money, wealthTier } from '@/lib/game/helpers';
 import type { Character, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
+import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, pickAmbush } from '@/lib/game/ambush';
 import { addMemorial, displayName, fetchWorld, loadAll, saveLocal, saveMeta, saveRemote, type SaveState } from '@/lib/storage';
 import { useAuth } from '@/lib/useAuth';
 
@@ -45,6 +46,7 @@ export default function PlayPage() {
   const userRef = useRef(user);
   userRef.current = user;
   const battleRef = useRef<Battle | null>(null);
+  const ambushRef = useRef<(Battle & { sub: number }) | null>(null); // quái chặn đường
 
   const rerender = useCallback(() => setFrame((f) => f + 1), []);
 
@@ -195,6 +197,97 @@ export default function PlayPage() {
     return changed;
   }
 
+  /** Quái chặn đường: bắt buộc đánh, tối đa 3 hiệp, thời gian dừng trong lúc đánh */
+  function startAmbush(c: Character) {
+    const { m, tier } = pickAmbush(c, rnd);
+    const ps = playerStats(c);
+    const ms = ambushMonsterStats(c, m);
+    ambushRef.current = {
+      m,
+      name: monsterName(c, m),
+      lv: effLv(c, m),
+      tier: tierOf(c, m),
+      pHp: ps.hp,
+      pMax: ps.hp,
+      mHp: ms.hp,
+      mMax: ms.hp,
+      phase: 'fight',
+      last: [{ id: Math.random(), side: 'm', dmg: 0, crit: false, text: 'Chặn đường!' }],
+      kills: 0,
+      t: -0.9, // khựng lại một nhịp cho người chơi kịp nhìn
+      rest: 0,
+      ps,
+      ms,
+      sub: 0,
+      ambush: { turn: 0, max: AMBUSH_TURNS, kind: tier },
+    };
+    c.log.push({ age: Math.floor(c.age), tone: 'bad', text: `${AMBUSH_INTRO[tier]} (${monsterName(c, m)}, Lv${effLv(c, m)})` });
+  }
+
+  function stepAmbush(c: Character, dtReal: number): boolean {
+    const b = ambushRef.current;
+    if (!b) return false;
+    const half = 0.6; // mỗi đòn 0,6 giây thật, không phụ thuộc tốc độ
+    b.t += dtReal;
+    let changed = false;
+    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string) => {
+      b.last = [...b.last.slice(-4), { id: Math.random(), side, dmg, crit, text }];
+    };
+    const end = (result: 'win' | 'lose' | 'draw') => {
+      const out: Fx[] = [];
+      const ctx = makeCtx(c, out);
+      const notes = finishAmbush(c, b.m, result, 1 - b.pHp / b.pMax, 1 - b.mHp / b.mMax, ctx);
+      notes.forEach((n, i) => ctx.log(n, c.dead ? 'big' : i === 0 ? (result === 'win' ? 'good' : 'bad') : 'good'));
+      b.phase = 'rest';
+      b.rest = 3;
+      b.outcome = result === 'win' ? 'win' : result === 'lose' ? 'lose' : 'flee';
+      if (result === 'draw') push('m', 0, false, 'Hết 3 hiệp');
+      if (!c.dead) {
+        const p = checkProgress(c, ctx, talentsRef.current);
+        if (p) pendingRef.current = p;
+      }
+      pushFx(out);
+      persist(true);
+    };
+    while (b.t >= half) {
+      b.t -= half;
+      changed = true;
+      if (b.phase === 'rest') {
+        b.rest -= 1;
+        if (b.rest <= 0) {
+          ambushRef.current = null;
+          return true;
+        }
+        continue;
+      }
+      if (b.sub === 0) {
+        b.ambush!.turn += 1;
+        const h = hit(b.ps.atk, b.ms.def, rnd, 0.15 + gearFx(c.equipped).crit / 100);
+        b.mHp = Math.max(0, b.mHp - h.dmg);
+        push('p', h.dmg, h.crit);
+        b.sub = 1;
+        if (b.mHp <= 0) {
+          end('win');
+          break;
+        }
+      } else {
+        const h = hit(b.ms.atk, b.ps.def, rnd);
+        b.pHp = Math.max(0, b.pHp - h.dmg);
+        push('m', h.dmg, h.crit);
+        b.sub = 0;
+        if (b.pHp <= 0) {
+          end('lose');
+          break;
+        }
+        if (b.ambush!.turn >= b.ambush!.max) {
+          end('draw');
+          break;
+        }
+      }
+    }
+    return changed;
+  }
+
   useEffect(() => {
     if (phase !== 'play') return;
     let raf = 0;
@@ -204,12 +297,25 @@ export default function PlayPage() {
       const dt = Math.min(0.25, (t - last) / 1000);
       last = t;
       const c = charRef.current;
+      if (c && activeRef.current && ambushRef.current) {
+        // đang bị quái chặn đường: thời gian đứng yên cho tới khi đánh xong
+        if (stepAmbush(c, dt)) rerender();
+        raf = requestAnimationFrame(step);
+        return;
+      }
       if (c && activeRef.current && !pendingRef.current && !c.dead && c.focus === 'tru_yeu' && c.age >= 10 && c.huntTarget) {
         if (stepBattle(c, dt * speedRef.current)) rerender();
       }
       if (c && activeRef.current && !pendingRef.current && !c.dead) {
+        const dYear = (dt / yearSecRef.current) * speedRef.current;
+        if (c.age >= 10 && c.focus !== 'tru_yeu' && rnd() < AMBUSH_PER_YEAR * dYear) {
+          startAmbush(c);
+          rerender();
+          raf = requestAnimationFrame(step);
+          return;
+        }
         const before = Math.floor(c.age);
-        c.age += (dt / yearSecRef.current) * speedRef.current;
+        c.age += dYear;
         const after = Math.floor(c.age);
         if (after > before) {
           const frac = c.age - after;
@@ -511,7 +617,7 @@ export default function PlayPage() {
             <b>{fmt(c.linhThach)}</b> linh thạch · {wealthTier(c).name}
             {c.income ? ` · +${c.income}/năm` : ''}
           </span>
-          <MusicToggle battle={c.focus === 'tru_yeu' && c.age >= 10 && !!c.huntTarget && !c.dead} />
+          <MusicToggle battle={!!ambushRef.current || (c.focus === 'tru_yeu' && c.age >= 10 && !!c.huntTarget && !c.dead)} />
           <button className="icon-btn" onClick={() => setSheet('menu')} aria-label="Mở menu">
             ≡
           </button>
@@ -543,7 +649,7 @@ export default function PlayPage() {
       </header>
 
       <section className="stage">
-        <Scene c={c} fx={fx} paused={paused} season={season} battle={c.focus === 'tru_yeu' && c.age >= 10 && battleRef.current?.m.id === c.huntTarget ? battleRef.current : null} />
+        <Scene c={c} fx={fx} paused={paused} season={season} battle={ambushRef.current ?? (c.focus === 'tru_yeu' && c.age >= 10 && battleRef.current?.m.id === c.huntTarget ? battleRef.current : null)} />
         <button className="strip-btn" onClick={() => setSheet('info')} aria-label="Xem bảng chỉ số nhân vật">
           <StageStrip c={c} compact={!!pending && !c.dead} />
         </button>

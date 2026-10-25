@@ -2583,3 +2583,9 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .mon-wrap.got-hit .lpc-mon { animation: lpcHit 0.3s steps(3); }
 @keyframes lpcHit { 33% { filter: brightness(2.2); transform: translateX(6px); } 66% { transform: translateX(-3px); } }
 .mon-wrap .lpc-mon { animation: mon-idle 1.2s steps(2) infinite; }
+
+/* quái chặn đường */
+.kill-count.ambush-tag { background: #8a1a24; color: #fff3dc; padding: 1px 6px; animation: ambushBlink 0.8s steps(2) 3; }
+.kill-count.ambush-tag.kem { background: #5a4128; }
+.kill-count.ambush-tag.hon { background: #5a0a6a; }
+@keyframes ambushBlink { 50% { opacity: 0.35; } }

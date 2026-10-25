@@ -194,6 +194,8 @@ export interface BattleView {
   last: { id: number; side: 'p' | 'm'; dmg: number; crit: boolean; text?: string }[];
   outcome?: 'win' | 'lose' | 'flee';
   kills: number;
+  /** quái chặn đường: đếm hiệp */
+  ambush?: { turn: number; max: number; kind: 'kem' | 'bang' | 'hon' };
 }
 
 /** Lớp phủ trận đánh trên sân khấu: quái, thanh máu, số sát thương */
@@ -223,7 +225,13 @@ export function BattleOverlay({ b }: { b: BattleView }) {
           {h.text ?? `-${h.dmg}`}
         </span>
       ))}
-      <span className="kill-count">Đã trảm: {b.kills}</span>
+      {b.ambush ? (
+        <span className={`kill-count ambush-tag ${b.ambush.kind}`}>
+          Chặn đường · Hiệp {Math.max(1, b.ambush.turn)}/{b.ambush.max}
+        </span>
+      ) : (
+        <span className="kill-count">Đã trảm: {b.kills}</span>
+      )}
     </div>
   );
 }
