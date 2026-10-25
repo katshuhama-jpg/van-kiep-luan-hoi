@@ -28,16 +28,28 @@ export interface Omen {
   name: string;
   desc: string;
   icon: string;
+  han: string; // chữ Hán trên ấn
+  hanName: string;
+  nghi: string; // nên làm
+  ky: string; // kiêng
 }
 export const OMENS: Omen[] = [
-  { id: 'linh_khi', name: 'Linh khí triều dâng', desc: 'Linh khí trời đất dồi dào: ai tu luyện cũng nhanh hơn 15%.', icon: '☁' },
-  { id: 'huyet_nguyet', name: 'Huyết nguyệt', desc: 'Trăng máu treo cao: tà tu tu luyện nhanh hơn 25%, chính đạo chậm đi một chút.', icon: '◐' },
-  { id: 'phat_quang', name: 'Phật quang phổ chiếu', desc: 'Chính đạo tu luyện nhanh hơn 20%, tâm ma ai cũng tăng chậm hơn.', icon: '☸' },
-  { id: 'cat_tinh', name: 'Cát tinh chiếu mệnh', desc: 'Sao lành soi xuống: hạ quái dễ rơi đồ xịn gấp rưỡi.', icon: '✦' },
-  { id: 'yeu_trieu', name: 'Yêu triều', desc: 'Yêu ma tràn khỏi núi: quái chặn đường nhiều gấp đôi, hạ được thì nhiều tu vi hơn.', icon: '☠' },
-  { id: 'giang_ho_loan', name: 'Giang hồ đại loạn', desc: 'Võ lâm dậy sóng: gặp người chơi khác nhiều gấp đôi.', icon: '⚔' },
-  { id: 'loi_van', name: 'Lôi vân tụ đỉnh', desc: 'Mây sấm vần vũ: đột phá cảnh giới dễ hơn 6%.', icon: '⚡' },
+  { id: 'linh_khi', name: 'Linh khí triều dâng', desc: 'Linh khí trời đất dồi dào: ai tu luyện cũng nhanh hơn 15%.', icon: '☁', han: '靈', hanName: '靈氣潮湧', nghi: 'Bế quan, tu luyện', ky: 'Bỏ phí thời gian' },
+  { id: 'huyet_nguyet', name: 'Huyết nguyệt', desc: 'Trăng máu treo cao: tà tu tu luyện nhanh hơn 25%, chính đạo chậm đi một chút.', icon: '◐', han: '血', hanName: '血月當空', nghi: 'Tà công, sát phạt', ky: 'Đi đêm, tin người lạ' },
+  { id: 'phat_quang', name: 'Phật quang phổ chiếu', desc: 'Chính đạo tu luyện nhanh hơn 20%, tâm ma ai cũng tăng chậm hơn.', icon: '☸', han: '佛', hanName: '佛光普照', nghi: 'Hành thiện, tĩnh tọa', ky: 'Sát sinh' },
+  { id: 'cat_tinh', name: 'Cát tinh chiếu mệnh', desc: 'Sao lành soi xuống: hạ quái dễ rơi đồ xịn gấp rưỡi.', icon: '✦', han: '吉', hanName: '吉星高照', nghi: 'Trừ yêu, tìm bảo vật', ky: 'Ngồi không' },
+  { id: 'yeu_trieu', name: 'Yêu triều', desc: 'Yêu ma tràn khỏi núi: quái chặn đường nhiều gấp đôi, hạ được thì nhiều tu vi hơn.', icon: '☠', han: '妖', hanName: '妖潮四起', nghi: 'Trừ yêu luyện công', ky: 'Đi đường một mình' },
+  { id: 'giang_ho_loan', name: 'Giang hồ đại loạn', desc: 'Võ lâm dậy sóng: gặp người chơi khác nhiều gấp đôi.', icon: '⚔', han: '亂', hanName: '江湖大亂', nghi: 'Luận võ, báo thù', ky: 'Uống trà với người lạ' },
+  { id: 'loi_van', name: 'Lôi vân tụ đỉnh', desc: 'Mây sấm vần vũ: đột phá cảnh giới dễ hơn 6%.', icon: '⚡', han: '雷', hanName: '雷雲聚頂', nghi: 'Đột phá, độ kiếp', ky: 'Chần chừ' },
 ];
+
+const CAN = ['Giáp', 'Ất', 'Bính', 'Đinh', 'Mậu', 'Kỷ', 'Canh', 'Tân', 'Nhâm', 'Quý'];
+const CHI = ['Tý', 'Sửu', 'Dần', 'Mão', 'Thìn', 'Tỵ', 'Ngọ', 'Mùi', 'Thân', 'Dậu', 'Tuất', 'Hợi'];
+/** Can chi của ngày (theo lịch âm dương), ví dụ "Mậu Ngọ" */
+export function canChiDay(day: string = vnDay()): string {
+  const jdn = dayIndex(day) + 2440588;
+  return `${CAN[(jdn + 9) % 10]} ${CHI[(jdn + 1) % 12]}`;
+}
 
 export function omenToday(day: string = vnDay()): Omen {
   return OMENS[hash('omen' + day) % OMENS.length];
