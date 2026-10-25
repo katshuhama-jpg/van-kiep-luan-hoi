@@ -38,7 +38,7 @@ export default function Radar({ axes, size = 220, color = '#b8432f' }: { axes: R
         const [x, y] = pt(i, 140);
         const d = a.base !== undefined ? Math.round(a.value - a.base) : 0;
         return (
-          <text key={'t' + i} x={x} y={y} textAnchor="middle" dominantBaseline="middle" fontSize="7" fill="#3b2a1a" fontFamily="VT323, monospace">
+          <text key={'t' + i} x={x} y={y} textAnchor="middle" dominantBaseline="middle" fontSize="7" fill="#3b2a1a" fontFamily="Handjet, monospace">
             {a.label} {Math.round(a.value)}
             {d !== 0 && (
               <tspan fill={d > 0 ? '#2f6b5a' : '#a8303a'}>

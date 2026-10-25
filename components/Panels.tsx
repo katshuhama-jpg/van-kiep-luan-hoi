@@ -225,7 +225,7 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; 
   return (
     <Sheet title="Phường thị" onClose={onClose}>
       <p className="note" style={{ marginTop: 0 }}>
-        Linh thạch: <b style={{ color: 'var(--red-d)', fontWeight: 400 }}>{fmt(c.linhThach)}</b> · Đồ mua xong tự mặc lên người.
+        Linh thạch: <b style={{ color: 'var(--red-d)', fontWeight: 700 }}>{fmt(c.linhThach)}</b> · Đồ mua xong tự mặc lên người.
       </p>
       <div className="tabs">
         <button className={tab === 'do' ? 'on' : ''} onClick={() => setTab('do')}>
@@ -361,7 +361,7 @@ export function BeQuanSheet({ c, onGo, onClose }: { c: Character; onGo: (years: 
   return (
     <Sheet title="Bế quan" onClose={onClose}>
       <p style={{ marginTop: 0 }}>
-        Đóng cửa động phủ, tu vi tăng gấp rưỡi nhưng không gặp kỳ ngộ nào. Sẽ tự xuất quan khi chạm bình cảnh. Thọ nguyên còn khoảng <b style={{ fontWeight: 400, color: 'var(--red-d)' }}>{left} năm</b>.
+        Đóng cửa động phủ, tu vi tăng gấp rưỡi nhưng không gặp kỳ ngộ nào. Sẽ tự xuất quan khi chạm bình cảnh. Thọ nguyên còn khoảng <b style={{ fontWeight: 700, color: 'var(--red-d)' }}>{left} năm</b>.
       </p>
       {c.realm < 1 ? (
         <p className="note">Phải nhập đạo (Luyện Khí) mới bế quan được.</p>
@@ -512,7 +512,7 @@ export function DeathSheet({ c, karma, isNew, onDone }: { c: Character; karma: {
   return (
     <Sheet title={c.ascended ? 'Phi thăng!' : 'Một kiếp đã hết'}>
       <p style={{ marginTop: 0 }}>
-        <b style={{ fontWeight: 400, color: 'var(--red-d)', fontSize: 24 }}>{c.name}</b>
+        <b style={{ fontWeight: 700, color: 'var(--red-d)', fontSize: 24 }}>{c.name}</b>
         <br />
         {Math.floor(c.age)} tuổi · {realmLabel(c.realm, c.layer)}
         {c.path ? ` · ${PATHS[c.path].name}` : ''} · {describeLean(c.daoTam)}
@@ -524,11 +524,11 @@ export function DeathSheet({ c, karma, isNew, onDone }: { c: Character; karma: {
         <span>{ending.desc}</span>
       </div>
       <p>
-        Mang sang kiếp sau: <b style={{ fontWeight: 400, color: 'var(--jade)' }}>+{karma.phuc} phúc duyên</b>
+        Mang sang kiếp sau: <b style={{ fontWeight: 700, color: 'var(--jade)' }}>+{karma.phuc} phúc duyên</b>
         {karma.nghiep > 0 && (
           <>
             {' '}
-            và <b style={{ fontWeight: 400, color: 'var(--ta)' }}>+{karma.nghiep} nghiệp</b>
+            và <b style={{ fontWeight: 700, color: 'var(--ta)' }}>+{karma.nghiep} nghiệp</b>
           </>
         )}
         .
@@ -654,7 +654,7 @@ export function HuntSheet({ c, onPick, onToggleFlee, onClose }: { c: Character; 
   return (
     <Sheet title="Trừ yêu luyện công" onClose={onClose}>
       <p style={{ marginTop: 0 }}>
-        Cấp chiến đấu của bạn: <b style={{ fontWeight: 400, color: 'var(--red-d)' }}>Lv{L}</b> · Công {fmt(me.atk)} · Thủ {fmt(me.def)} · Máu {fmt(me.hp)}
+        Cấp chiến đấu của bạn: <b style={{ fontWeight: 700, color: 'var(--red-d)' }}>Lv{L}</b> · Công {fmt(me.atk)} · Thủ {fmt(me.def)} · Máu {fmt(me.hp)}
       </p>
       <p className="note" style={{ marginTop: 0 }}>Quái càng mạnh càng nhiều tu vi, nhưng thua là có thể bỏ mạng. Ngọc bội hộ thân đỡ được một lần.</p>
       <label className="toggle">

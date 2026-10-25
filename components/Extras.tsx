@@ -298,7 +298,7 @@ export async function makeCard(c: Character, ending: Ending, epitaph: string, sv
   const x = cv.getContext('2d');
   if (!x) return null;
   try {
-    await document.fonts.load('40px VT323');
+    await document.fonts.load('600 40px Handjet');
   } catch {}
   x.imageSmoothingEnabled = false;
   // nền giấy da + viền pixel
@@ -311,7 +311,7 @@ export async function makeCard(c: Character, ending: Ending, epitaph: string, sv
   x.strokeStyle = '#3e3228';
   x.lineWidth = 4;
   x.strokeRect(24, 24, W - 48, H - 48);
-  const font = (px: number) => `${px}px VT323, monospace`;
+  const font = (px: number) => `600 ${px}px Handjet, monospace`;
   x.textAlign = 'center';
   x.fillStyle = '#9a2a1e';
   x.font = font(44);

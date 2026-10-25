@@ -59,7 +59,7 @@ export default function Home() {
         {user && (
           <div className="panel" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <span>
-              Đạo hữu <b style={{ fontWeight: 400, color: 'var(--red-d)' }}>{displayName(user)}</b>
+              Đạo hữu <b style={{ fontWeight: 700, color: 'var(--red-d)' }}>{displayName(user)}</b>
             </span>
             <button className="btn" style={{ marginLeft: 'auto' }} onClick={() => signOut()}>
               Đăng xuất
