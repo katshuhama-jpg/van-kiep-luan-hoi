@@ -71,6 +71,7 @@ export interface Look {
   robeColors?: [string, string, string, string];
   deco?: RobeDeco;
   wpn?: { k: WeaponKind; a: string; b: string };
+  seed: number; // hạt giống nét riêng (da, mặt, râu, trang sức)
 }
 
 function mix(a: string, b: string, t: number) {
@@ -89,11 +90,18 @@ export function hairNow(l: Look): string {
   return h;
 }
 
+function hashStr(t: string) {
+  let h = 2166136261;
+  for (let i = 0; i < t.length; i++) h = Math.imul(h ^ t.charCodeAt(i), 16777619);
+  return h >>> 0;
+}
+
 export function lookOf(c: Character): Look {
   const ratio = c.age / Math.max(1, c.lifespan);
   return {
     stage: c.age < 4 ? 'baby' : c.age < 13 ? 'child' : 'adult',
     aging: ratio > 0.8 ? 2 : ratio > 0.6 ? 1 : 0,
+    seed: c.lookSeed ?? hashStr(c.name + (c.birthPlace ?? '') + c.lifeNo),
     gender: c.gender,
     yeu: c.race === 'yeu',
     path: c.path,
@@ -354,7 +362,37 @@ function robeOf(l: Look): Robe {
   return l.robeColors ? { body: l.robeColors[0], dark: l.robeColors[1], trim: l.robeColors[2], alt: l.robeColors[3] } : tones[l.tone % tones.length];
 }
 
-const HAIR_LPC = { nam: ['high_ponytail', 'long_tied', 'xlong'], nu: ['xlong', 'bunches', 'high_ponytail'] } as const;
+// 3 kiểu đầu giữ nguyên thứ tự cũ để nhân vật đang chơi không đổi tóc
+export const HAIR_LPC = {
+  nam: ['high_ponytail', 'long_tied', 'xlong', 'long_messy', 'ponytail', 'long_band', 'relm_xlong', 'unkempt', 'long_center_part'],
+  nu: ['xlong', 'bunches', 'high_ponytail', 'braid', 'princess', 'single', 'half_up', 'bangs_bun', 'xlong_wavy', 'pigtails'],
+} as const;
+
+/** Nét riêng của từng người: màu da, khuôn mặt, râu, đồ trang sức. Suy ra từ hạt giống nên luôn cố định. */
+const SKIN = [null, null, null, '*#fff0e4', '*#ffe2c8', '*#f6d0aa', '*#e8bc92'];
+const BEARD_YOUNG = [null, null, null, 'stubble', 'stache', 'beard_trim', 'stache_hb', 'stache_hs'];
+const BEARD_MID = [null, 'beard_trim', 'beard_med', 'stache', 'stache_hb', 'beard'];
+// về già: 70% để râu, râu bạc theo tóc
+const BEARD_OLD = ['beard', 'beard', 'beard', 'beard_med', 'beard_trim', 'stache_hb', 'stache', null, null, null];
+export function featOf(l: Look) {
+  let x = l.seed >>> 0 || 1;
+  const r = (n: number) => {
+    x = (Math.imul(x ^ (x >>> 15), 2246822507) + 0x9e3779b9) >>> 0;
+    return x % n;
+  };
+  const skin = SKIN[r(SKIN.length)];
+  const face = r(10); // 0-6 thường, 7-8 gầy, 9 mập (nam)
+  const beard = [BEARD_YOUNG, BEARD_MID, BEARD_OLD][l.aging][r(10)] ?? null;
+  const acc = r(100);
+  return {
+    skin,
+    head: l.gender === 'nam' ? (face >= 9 ? 'head_mp' : face >= 7 ? 'head_mg' : null) : null,
+    beard: l.gender === 'nam' ? beard : null,
+    headband: acc < 14,
+    earrings: l.gender !== 'nam' && acc >= 60 && acc < 82,
+    eyepatch: acc >= 97,
+  };
+}
 const HAIR_CHILD = ['relm_short', 'parted_side_bangs', 'wavy'];
 
 function weaponLayers(l: Look): { bg?: string; fg?: string; tint?: string } {
@@ -401,8 +439,10 @@ export function lpcLayers(c: Character, hideWeapon = false): Layer[] {
     ];
   }
   const elder = l.aging === 2;
-  const head = l.gender === 'nam' ? (elder ? 'head_me' : 'head_m') : elder ? 'head_fe' : 'head_f';
-  const hs = HAIR_LPC[l.gender === 'nam' ? 'nam' : 'nu'][st];
+  const ft = featOf(l);
+  const head = l.gender === 'nam' ? (elder ? 'head_me' : ft.head ?? 'head_m') : elder ? 'head_fe' : 'head_f';
+  const list = HAIR_LPC[l.gender === 'nam' ? 'nam' : 'nu'];
+  const hs = list[l.hairStyle % list.length];
   const bald = l.path === 'phat';
   const w = weaponLayers(l);
   const showW = !c.dead && !hideWeapon;
@@ -421,7 +461,8 @@ export function lpcLayers(c: Character, hideWeapon = false): Layer[] {
   if (l.yeu) out.push({ key: 'tail_bg' });
   if (!bald) out.push({ key: `hair_${hs}_bg`, tint: hair });
   if (w.bg && showW) out.push({ key: w.bg, tint: w.tint });
-  out.push({ key: 'body_adult' }, { key: head }, { key: `eyes_${eye}` });
+  out.push({ key: 'body_adult', tint: ft.skin ?? undefined }, { key: head, tint: ft.skin ?? undefined }, { key: `eyes_${eye}` });
+  if (ft.eyepatch) out.push({ key: 'eyepatch' });
   out.push({ key: 'pants', tint: robe.dark }, { key: 'shoes' });
   // thân áo theo loại đồ
   if (deco === 'giap') {
@@ -437,8 +478,11 @@ export function lpcLayers(c: Character, hideWeapon = false): Layer[] {
   // vai: Hóa Thần mặc giáp vai vàng, Trúc Cơ khoác khăn vai, áo lông có cổ lông
   if (realm >= 5 || deco === 'giap') out.push({ key: 'pauldrons', tint: realm >= 5 ? '#e0b02a' : robe.trim });
   else if (deco === 'long_thu' || realm >= 2) out.push({ key: 'mantal', tint: robe.trim });
-  if (elder && l.gender === 'nam') out.push({ key: 'beard', tint: hair });
+  // râu nhuộm theo màu tóc hiện tại nên cũng bạc dần khi già
+  if (ft.beard) out.push({ key: ft.beard, tint: hair });
   if (!bald) out.push({ key: `hair_${hs}_fg`, tint: hair });
+  if (ft.headband && !bald && realm < 4) out.push({ key: 'headband', tint: robe.trim });
+  if (ft.earrings) out.push({ key: 'earrings', tint: '#e0b02a' });
   // mũ miện theo cảnh giới (Phật tu đầu trọc, chỉ có hào quang)
   if (!bald) {
     if (realm >= 7) out.push({ key: 'crown_gold' });
@@ -459,6 +503,42 @@ export function animFor(c: Character, focus?: string): { anim: Anim; dir: number
   if (focus === 'du_ngoan') return { anim: 'walk', dir: 3 };
   if (focus === 'tu_luyen' && c.age >= 6) return { anim: 'spellcast', dir: 2 };
   return { anim: 'idle', dir: 2 };
+}
+
+/**
+ * Hào quang theo cảnh giới, càng lên càng rõ:
+ * 1 tỏa sáng mờ, 2 thêm linh khí bay lên, 3 thêm vòng pháp trận dưới chân,
+ * 4 vòng đôi và nhiều linh khí, 5 thêm cột sáng, 6 thêm tinh quang bay quanh, 7+ thêm hào quang tỏa tia.
+ */
+function Aura({ color, realm, layer, box }: { color: string; realm: number; layer: number; box: number }) {
+  const r = Math.min(realm, 8);
+  // mạnh dần trong cùng cảnh giới theo tầng
+  const k = Math.min(1, 0.4 + r * 0.08 + Math.min(layer, 9) * 0.008);
+  const size = box * (0.55 + r * 0.06);
+  const motes = r >= 2 ? Math.min(12, (r - 1) * 2) : 0;
+  const style = { ['--aura' as string]: color, ['--k' as string]: k } as CSSProperties;
+  return (
+    <span className={`aura r${r}`} style={style} aria-hidden="true">
+      {r >= 7 && <span className="aura-rays" style={{ width: box * 1.15, height: box * 1.15 }} />}
+      {r >= 5 && <span className="aura-pillar" style={{ width: box * 0.34, height: box * 1.1 }} />}
+      <span className="lpc-aura" style={{ width: size, height: size }} />
+      {r >= 3 && <span className="aura-ring" style={{ width: box * (0.5 + r * 0.03), height: box * (0.5 + r * 0.03), marginBottom: -box * (0.21 + r * 0.015) }} />}
+      {r >= 4 && <span className="aura-ring two" style={{ width: box * (0.66 + r * 0.03), height: box * (0.66 + r * 0.03), marginBottom: -box * (0.29 + r * 0.015) }} />}
+      {Array.from({ length: motes }, (_, i) => (
+        <span key={i} className="aura-mote" style={{ left: `${30 + ((i * 37) % 40)}%`, animationDelay: `${-(i * 0.47) % 2.6}s`, animationDuration: `${2.2 + (i % 3) * 0.5}s` }} />
+      ))}
+      {r >= 6 && (
+        <>
+          <span className="aura-orbit" style={{ width: box * 0.7, height: box * 0.7 }}>
+            <i />
+          </span>
+          <span className="aura-orbit rev" style={{ width: box * 0.8, height: box * 0.8 }}>
+            <i />
+          </span>
+        </>
+      )}
+    </span>
+  );
 }
 
 export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Character; size?: number; focus?: string; anim?: Anim; dir?: number }) {
@@ -499,7 +579,7 @@ export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Charact
   };
   return (
     <div className={`lpc ${l.dead ? 'is-dead' : ''}`} style={{ width: box, height: box }} role="img" aria-label={`${c.name}, ${c.age < 13 ? 'trẻ con' : 'người lớn'}${l.path ? ', ' + PATHS[l.path].name : ''}`}>
-      {aura && !l.dead && <span className="lpc-aura" style={{ ['--aura' as string]: aura, width: box * (0.6 + Math.min(l.realm, 7) * 0.05), height: box * (0.6 + Math.min(l.realm, 7) * 0.05) }} />}
+      {aura && !l.dead && <Aura color={aura} realm={l.realm} layer={c.layer} box={box} />}
       {l.path === 'phat' && !l.dead && <span className="lpc-halo" style={{ width: box * 0.26, height: box * 0.26, top: box * 0.06 }} />}
       {url ? <span className="lpc-strip" style={style} /> : <PixelSprite c={c} size={box} focus={focus} />}
       {l.acc === 'kiembay' && !l.dead && <span className="lpc-orbit" aria-hidden="true" />}

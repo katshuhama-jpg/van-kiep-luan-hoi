@@ -2560,6 +2560,24 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .lpc-strip { position: absolute; image-rendering: pixelated; background-repeat: no-repeat; background-position: 0 0; pointer-events: none; }
 @keyframes lpc-play { to { background-position-x: var(--lpc-end); } }
 .lpc-aura { position: absolute; left: 50%; top: 52%; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--aura) 45%, transparent) 0%, transparent 70%); animation: auraPulse 2.4s steps(6) infinite; pointer-events: none; }
+/* hào quang theo cảnh giới */
+.aura { position: absolute; inset: 0; pointer-events: none; }
+.aura .lpc-aura { opacity: calc(0.35 + var(--k) * 0.65); background: radial-gradient(circle, color-mix(in srgb, var(--aura) calc(var(--k) * 95%), transparent) 0%, color-mix(in srgb, var(--aura) calc(var(--k) * 40%), transparent) 45%, transparent 70%); }
+.aura-mote { position: absolute; bottom: 14%; width: 5px; height: 5px; z-index: 2; background: color-mix(in srgb, var(--aura) 60%, white); box-shadow: 0 0 6px var(--aura), 0 0 2px #fff; animation: moteRise 2.6s linear infinite; opacity: 0; }
+.aura-mote:nth-child(3n) { width: 3px; height: 3px; }
+@keyframes moteRise { 0% { transform: translate(0, 0); opacity: 0; } 15% { opacity: var(--k); } 60% { transform: translate(4px, -60px); } 100% { transform: translate(-3px, -110px); opacity: 0; } }
+.aura-ring { position: absolute; left: 50%; bottom: 3%; transform: translateX(-50%) perspective(400px) rotateX(74deg); border-radius: 50%; border: 2px dashed color-mix(in srgb, var(--aura) 85%, white); box-shadow: 0 0 8px var(--aura), inset 0 0 6px var(--aura); opacity: calc(var(--k) * 0.9); animation: ringSpin 6s linear infinite; }
+.aura-ring.two { border-style: dotted; animation-duration: 9s; animation-direction: reverse; bottom: 1%; opacity: calc(var(--k) * 0.6); }
+@keyframes ringSpin { from { transform: translateX(-50%) perspective(400px) rotateX(74deg) rotateZ(0); } to { transform: translateX(-50%) perspective(400px) rotateX(74deg) rotateZ(360deg); } }
+.aura-pillar { position: absolute; left: 50%; bottom: 4%; transform: translateX(-50%); background: linear-gradient(to top, color-mix(in srgb, var(--aura) 55%, transparent), color-mix(in srgb, var(--aura) 20%, transparent) 60%, transparent); filter: blur(2px); animation: pillar 1.8s ease-in-out infinite alternate; }
+@keyframes pillar { from { opacity: 0.35; transform: translateX(-50%) scaleX(0.85); } to { opacity: 0.8; transform: translateX(-50%) scaleX(1.1); } }
+.aura-orbit { position: absolute; z-index: 2; left: 50%; top: 58%; transform: translate(-50%, -50%); border-radius: 50%; animation: ringSpin2 2.4s linear infinite; }
+.aura-orbit.rev { animation-duration: 3.4s; animation-direction: reverse; top: 40%; }
+.aura-orbit i { position: absolute; left: -4px; top: 50%; width: 8px; height: 8px; margin-top: -4px; background: #fff; border-radius: 50%; box-shadow: 0 0 6px #fff, 0 0 12px var(--aura); }
+@keyframes ringSpin2 { from { transform: translate(-50%, -50%) perspective(400px) rotateX(70deg) rotateZ(0); } to { transform: translate(-50%, -50%) perspective(400px) rotateX(70deg) rotateZ(360deg); } }
+.aura-rays { position: absolute; left: 50%; top: 45%; transform: translate(-50%, -50%); border-radius: 50%; background: repeating-conic-gradient(color-mix(in srgb, var(--aura) 35%, transparent) 0 8deg, transparent 8deg 24deg); -webkit-mask: radial-gradient(circle, #000 20%, transparent 70%); mask: radial-gradient(circle, #000 20%, transparent 70%); animation: raysSpin 14s linear infinite; }
+@keyframes raysSpin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .aura * { animation: none !important; } }
 @keyframes auraPulse { 50% { transform: translate(-50%, -50%) scale(1.08); opacity: 0.8; } }
 .lpc-halo { position: absolute; left: 50%; transform: translateX(-50%); border: 2px solid #ffe27a; border-radius: 50%; box-shadow: 0 0 8px #ffe27a; }
 .lpc-orbit { position: absolute; left: 50%; top: 40%; width: 6px; height: 24px; margin-left: 42%; background: linear-gradient(#ffffff, #d9e6ff 70%, #ffd36b 70%); transform: rotate(35deg); animation: orbitFly 3s steps(12) infinite; }

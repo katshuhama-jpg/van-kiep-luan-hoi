@@ -575,5 +575,228 @@
 },
 "w_cane": {
 "walk": "weapon/polearm/cane/female/walk/cane.png"
+},
+"hair_long_messy_fg": {
+"walk": "hair/long_messy/adult/walk.png",
+"idle": "hair/long_messy/adult/idle.png",
+"slash": "hair/long_messy/adult/slash.png",
+"spellcast": "hair/long_messy/adult/spellcast.png",
+"hurt": "hair/long_messy/adult/hurt.png"
+},
+"hair_ponytail_bg": {
+"walk": "hair/ponytail/adult/bg/walk.png",
+"idle": "hair/ponytail/adult/bg/idle.png",
+"slash": "hair/ponytail/adult/bg/slash.png",
+"spellcast": "hair/ponytail/adult/bg/spellcast.png",
+"hurt": "hair/ponytail/adult/bg/hurt.png"
+},
+"hair_ponytail_fg": {
+"walk": "hair/ponytail/adult/fg/walk.png",
+"idle": "hair/ponytail/adult/fg/idle.png",
+"slash": "hair/ponytail/adult/fg/slash.png",
+"spellcast": "hair/ponytail/adult/fg/spellcast.png",
+"hurt": "hair/ponytail/adult/fg/hurt.png"
+},
+"hair_long_band_bg": {
+"walk": "hair/long_band/adult/bg/walk.png",
+"idle": "hair/long_band/adult/bg/idle.png",
+"slash": "hair/long_band/adult/bg/slash.png",
+"spellcast": "hair/long_band/adult/bg/spellcast.png",
+"hurt": "hair/long_band/adult/bg/hurt.png"
+},
+"hair_long_band_fg": {
+"walk": "hair/long_band/adult/fg/walk.png",
+"idle": "hair/long_band/adult/fg/idle.png",
+"slash": "hair/long_band/adult/fg/slash.png",
+"spellcast": "hair/long_band/adult/fg/spellcast.png",
+"hurt": "hair/long_band/adult/fg/hurt.png"
+},
+"hair_relm_xlong_bg": {
+"walk": "hair/relm_xlong/adult/bg/walk.png",
+"idle": "hair/relm_xlong/adult/bg/idle.png",
+"slash": "hair/relm_xlong/adult/bg/slash.png",
+"spellcast": "hair/relm_xlong/adult/bg/spellcast.png",
+"hurt": "hair/relm_xlong/adult/bg/hurt.png"
+},
+"hair_relm_xlong_fg": {
+"walk": "hair/relm_xlong/adult/fg/walk.png",
+"idle": "hair/relm_xlong/adult/fg/idle.png",
+"slash": "hair/relm_xlong/adult/fg/slash.png",
+"spellcast": "hair/relm_xlong/adult/fg/spellcast.png",
+"hurt": "hair/relm_xlong/adult/fg/hurt.png"
+},
+"hair_unkempt_fg": {
+"walk": "hair/unkempt/adult/walk.png",
+"idle": "hair/unkempt/adult/idle.png",
+"slash": "hair/unkempt/adult/slash.png",
+"spellcast": "hair/unkempt/adult/spellcast.png",
+"hurt": "hair/unkempt/adult/hurt.png"
+},
+"hair_long_center_part_bg": {
+"walk": "hair/long_center_part/adult/bg/walk.png",
+"idle": "hair/long_center_part/adult/bg/idle.png",
+"slash": "hair/long_center_part/adult/bg/slash.png",
+"spellcast": "hair/long_center_part/adult/bg/spellcast.png",
+"hurt": "hair/long_center_part/adult/bg/hurt.png"
+},
+"hair_long_center_part_fg": {
+"walk": "hair/long_center_part/adult/fg/walk.png",
+"idle": "hair/long_center_part/adult/fg/idle.png",
+"slash": "hair/long_center_part/adult/fg/slash.png",
+"spellcast": "hair/long_center_part/adult/fg/spellcast.png",
+"hurt": "hair/long_center_part/adult/fg/hurt.png"
+},
+"hair_braid_bg": {
+"walk": "hair/braid/adult/bg/walk.png",
+"idle": "hair/braid/adult/bg/idle.png",
+"slash": "hair/braid/adult/bg/slash.png",
+"spellcast": "hair/braid/adult/bg/spellcast.png",
+"hurt": "hair/braid/adult/bg/hurt.png"
+},
+"hair_braid_fg": {
+"walk": "hair/braid/adult/fg/walk.png",
+"idle": "hair/braid/adult/fg/idle.png",
+"slash": "hair/braid/adult/fg/slash.png",
+"spellcast": "hair/braid/adult/fg/spellcast.png",
+"hurt": "hair/braid/adult/fg/hurt.png"
+},
+"hair_princess_bg": {
+"walk": "hair/princess/adult/bg/walk.png",
+"idle": "hair/princess/adult/bg/idle.png",
+"slash": "hair/princess/adult/bg/slash.png",
+"spellcast": "hair/princess/adult/bg/spellcast.png",
+"hurt": "hair/princess/adult/bg/hurt.png"
+},
+"hair_princess_fg": {
+"walk": "hair/princess/adult/fg/walk.png",
+"idle": "hair/princess/adult/fg/idle.png",
+"slash": "hair/princess/adult/fg/slash.png",
+"spellcast": "hair/princess/adult/fg/spellcast.png",
+"hurt": "hair/princess/adult/fg/hurt.png"
+},
+"hair_single_bg": {
+"walk": "hair/single/adult/bg/walk.png",
+"idle": "hair/single/adult/bg/idle.png",
+"slash": "hair/single/adult/bg/slash.png",
+"spellcast": "hair/single/adult/bg/spellcast.png",
+"hurt": "hair/single/adult/bg/hurt.png"
+},
+"hair_single_fg": {
+"walk": "hair/single/adult/fg/walk.png",
+"idle": "hair/single/adult/fg/idle.png",
+"slash": "hair/single/adult/fg/slash.png",
+"spellcast": "hair/single/adult/fg/spellcast.png",
+"hurt": "hair/single/adult/fg/hurt.png"
+},
+"hair_half_up_fg": {
+"walk": "hair/half_up/adult/walk.png",
+"idle": "hair/half_up/adult/idle.png",
+"slash": "hair/half_up/adult/slash.png",
+"spellcast": "hair/half_up/adult/spellcast.png",
+"hurt": "hair/half_up/adult/hurt.png"
+},
+"hair_xlong_wavy_bg": {
+"walk": "hair/xlong_wavy/adult/bg/walk.png",
+"idle": "hair/xlong_wavy/adult/bg/idle.png",
+"slash": "hair/xlong_wavy/adult/bg/slash.png",
+"spellcast": "hair/xlong_wavy/adult/bg/spellcast.png",
+"hurt": "hair/xlong_wavy/adult/bg/hurt.png"
+},
+"hair_xlong_wavy_fg": {
+"walk": "hair/xlong_wavy/adult/fg/walk.png",
+"idle": "hair/xlong_wavy/adult/fg/idle.png",
+"slash": "hair/xlong_wavy/adult/fg/slash.png",
+"spellcast": "hair/xlong_wavy/adult/fg/spellcast.png",
+"hurt": "hair/xlong_wavy/adult/fg/hurt.png"
+},
+"hair_pigtails_fg": {
+"walk": "hair/pigtails/adult/walk.png",
+"idle": "hair/pigtails/adult/idle.png",
+"slash": "hair/pigtails/adult/slash.png",
+"spellcast": "hair/pigtails/adult/spellcast.png",
+"hurt": "hair/pigtails/adult/hurt.png"
+},
+"head_mg": {
+"walk": "head/heads/human/male_gaunt/walk.png",
+"idle": "head/heads/human/male_gaunt/idle.png",
+"slash": "head/heads/human/male_gaunt/slash.png",
+"spellcast": "head/heads/human/male_gaunt/spellcast.png",
+"hurt": "head/heads/human/male_gaunt/hurt.png"
+},
+"head_mp": {
+"walk": "head/heads/human/male_plump/walk.png",
+"idle": "head/heads/human/male_plump/idle.png",
+"slash": "head/heads/human/male_plump/slash.png",
+"spellcast": "head/heads/human/male_plump/spellcast.png",
+"hurt": "head/heads/human/male_plump/hurt.png"
+},
+"stubble": {
+"walk": "beards/beard/5oclock_shadow/walk.png",
+"idle": "beards/beard/5oclock_shadow/idle.png",
+"slash": "beards/beard/5oclock_shadow/slash.png",
+"spellcast": "beards/beard/5oclock_shadow/spellcast.png",
+"hurt": "beards/beard/5oclock_shadow/hurt.png"
+},
+"beard_trim": {
+"walk": "beards/beard/trimmed/walk.png",
+"idle": "beards/beard/trimmed/idle.png",
+"slash": "beards/beard/trimmed/slash.png",
+"spellcast": "beards/beard/trimmed/spellcast.png",
+"hurt": "beards/beard/trimmed/hurt.png"
+},
+"beard_med": {
+"walk": "beards/beard/medium/walk.png",
+"idle": "beards/beard/medium/idle.png",
+"slash": "beards/beard/medium/slash.png",
+"spellcast": "beards/beard/medium/spellcast.png",
+"hurt": "beards/beard/medium/hurt.png"
+},
+"stache": {
+"walk": "beards/mustache/basic/walk.png",
+"idle": "beards/mustache/basic/idle.png",
+"slash": "beards/mustache/basic/slash.png",
+"spellcast": "beards/mustache/basic/spellcast.png",
+"hurt": "beards/mustache/basic/hurt.png"
+},
+"stache_hb": {
+"walk": "beards/mustache/handlebar/walk.png",
+"idle": "beards/mustache/handlebar/idle.png",
+"slash": "beards/mustache/handlebar/slash.png",
+"spellcast": "beards/mustache/handlebar/spellcast.png",
+"hurt": "beards/mustache/handlebar/hurt.png"
+},
+"stache_hs": {
+"walk": "beards/mustache/horseshoe/walk.png",
+"idle": "beards/mustache/horseshoe/idle.png",
+"slash": "beards/mustache/horseshoe/slash.png",
+"spellcast": "beards/mustache/horseshoe/spellcast.png",
+"hurt": "beards/mustache/horseshoe/hurt.png"
+},
+"headband": {
+"walk": "hat/headband/tied/adult/walk.png",
+"idle": "hat/headband/tied/adult/idle.png",
+"slash": "hat/headband/tied/adult/slash.png",
+"spellcast": "hat/headband/tied/adult/spellcast.png",
+"hurt": "hat/headband/tied/adult/hurt.png"
+},
+"hairtie": {
+"walk": "hat/headband/hairtie/adult/walk.png",
+"idle": "hat/headband/hairtie/adult/idle.png",
+"slash": "hat/headband/hairtie/adult/slash.png",
+"spellcast": "hat/headband/hairtie/adult/spellcast.png",
+"hurt": "hat/headband/hairtie/adult/hurt.png"
+},
+"earrings": {
+"walk": "facial/earrings/emerald/female/walk/red.png",
+"slash": "facial/earrings/emerald/female/slash/red.png",
+"spellcast": "facial/earrings/emerald/female/spellcast/red.png",
+"hurt": "facial/earrings/emerald/female/hurt/red.png"
+},
+"eyepatch": {
+"walk": "facial/patches/eyepatch/ambi/adult/walk/black.png",
+"idle": "facial/patches/eyepatch/ambi/adult/idle/black.png",
+"slash": "facial/patches/eyepatch/ambi/adult/slash/black.png",
+"spellcast": "facial/patches/eyepatch/ambi/adult/spellcast/black.png",
+"hurt": "facial/patches/eyepatch/ambi/adult/hurt/black.png"
 }
 }

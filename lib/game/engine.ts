@@ -41,7 +41,7 @@ export function rollBase(): Character {
     .filter(([, h]) => (race === 'yeu' ? h.yeu || h.w <= 4 : !h.yeu))
     .map(([id, h]) => ({ id, w: h.w }));
   const hairColor = weighted(rnd, hairList).id;
-  const hairStyle = Math.floor(rnd() * 3);
+  const hairStyle = Math.floor(rnd() * HAIR_STYLES[gender].length);
   const fate = weighted(rnd, LIFE_FATES);
   // nơi sinh và gia cảnh
   const region = race === 'yeu' ? REGIONS.find((r) => r.id === 'van_yeu')! : weighted(rnd, REGIONS.filter((r) => r.w > 0));
@@ -88,6 +88,7 @@ export function rollBase(): Character {
     breakDelay: 0,
     hairColor,
     hairStyle,
+    lookSeed: Math.floor(rnd() * 2 ** 31),
     lifeMul,
     outfitTone: Math.floor(rnd() * 5),
     outfitCut: Math.floor(rnd() * 4),

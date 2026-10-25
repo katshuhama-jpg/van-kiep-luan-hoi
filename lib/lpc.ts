@@ -48,8 +48,20 @@ function hexRgb(h: string): [number, number, number] {
 function tintCanvas(cv: HTMLCanvasElement, hex: string) {
   const ctx = cv.getContext('2d')!;
   const d = ctx.getImageData(0, 0, cv.width, cv.height);
-  const [tr, tg, tb] = hexRgb(hex);
   const px = d.data;
+  // "*#rrggbb": nhân màu (giữ nguyên sắc độ gốc), dùng cho màu da
+  if (hex.startsWith('*')) {
+    const [mr, mg, mb] = hexRgb(hex.slice(1));
+    for (let i = 0; i < px.length; i += 4) {
+      if (!px[i + 3]) continue;
+      px[i] = Math.min(255, (px[i] * mr) / 235);
+      px[i + 1] = Math.min(255, (px[i + 1] * mg) / 235);
+      px[i + 2] = Math.min(255, (px[i + 2] * mb) / 235);
+    }
+    ctx.putImageData(d, 0, 0);
+    return;
+  }
+  const [tr, tg, tb] = hexRgb(hex);
   for (let i = 0; i < px.length; i += 4) {
     if (!px[i + 3]) continue;
     const l = (0.3 * px[i] + 0.59 * px[i + 1] + 0.11 * px[i + 2]) / 255;
