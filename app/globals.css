@@ -2589,23 +2589,3 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .kill-count.ambush-tag.kem { background: #5a4128; }
 .kill-count.ambush-tag.hon { background: #5a0a6a; }
 @keyframes ambushBlink { 50% { opacity: 0.35; } }
-
-/* Tàng Kinh Các khảo thí */
-.quiz-wrap { position: fixed; inset: 0; z-index: 70; background: rgba(20, 12, 6, 0.72); display: flex; align-items: center; justify-content: center; padding: 16px; }
-.quiz { width: 100%; max-width: 420px; max-height: calc(100dvh - 32px); overflow-y: auto; animation: quizIn 0.25s steps(3); }
-.quiz-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
-.quiz-head h2 { margin: 0; }
-.quiz-step { color: var(--muted); font-size: 16px; white-space: nowrap; }
-.quiz-intro { margin: 6px 0 0; }
-.quiz-q { font-size: 21px; font-weight: 600; margin: 12px 0; line-height: 1.3; }
-.quiz-opts { display: grid; gap: 8px; }
-.quiz-opt { text-align: left; font-size: 18px; padding: 10px 12px; white-space: normal; }
-.quiz-opt:disabled { cursor: default; opacity: 1; }
-.quiz-opt.ok { background: var(--jade); color: #fff3dc; }
-.quiz-opt.bad { background: var(--red); color: #fff3dc; }
-.quiz-opt.dim { opacity: 0.55; }
-.quiz-note { margin-top: 12px; padding: 8px 10px; border: 3px solid var(--ink); font-size: 17px; line-height: 1.35; }
-.quiz-note.ok { background: #dff0e0; }
-.quiz-note.bad { background: #f6dcd6; }
-.quiz-next { width: 100%; margin-top: 12px; }
-@keyframes quizIn { from { transform: translateY(16px); opacity: 0; } to { transform: none; opacity: 1; } }
