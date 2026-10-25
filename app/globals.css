@@ -2738,19 +2738,19 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .dmg.el-bi .el-tag { color: #c8c0b0; }
 .skill-name.foe { top: 52%; font-size: 17px; color: #ffd0c4; text-shadow: 2px 2px 0 #1f160d, -1px -1px 0 #1f160d, 0 0 8px #ff6a5a; }
 
-/* viền hào quang ôm dáng người theo cảnh giới, nhịp thở chậm */
-.lpc-glow { position: absolute; inset: 0; pointer-events: none; --g: 2px; --g2: 4px; filter: drop-shadow(0 0 var(--g) var(--aura)); animation: glowBreath 2.4s ease-in-out infinite; }
-.lpc-glow.g1 { --g: 2px; --g2: 4px; }
-.lpc-glow.g2 { --g: 3px; --g2: 5px; }
-.lpc-glow.g3 { --g: 4px; --g2: 7px; }
-.lpc-glow.g4 { --g: 5px; --g2: 9px; }
-.lpc-glow.g5 { --g: 6px; --g2: 11px; }
-.lpc-glow.g6 { --g: 7px; --g2: 13px; }
-.lpc-glow.g7 { --g: 8px; --g2: 16px; }
-@keyframes glowBreath {
-  0%, 100% { filter: drop-shadow(0 0 1px var(--aura)) drop-shadow(0 0 var(--g) var(--aura)); }
-  50% { filter: drop-shadow(0 0 1.5px color-mix(in srgb, var(--aura) 55%, white)) drop-shadow(0 0 var(--g2) var(--aura)); }
-}
+/* viền hào quang ôm dáng người theo cảnh giới, kiểu pixel: viền đặc dày 1-2 điểm ảnh, nhấp nháy theo nhịp */
+.lpc-glow { position: absolute; inset: 0; pointer-events: none; --c: color-mix(in srgb, var(--aura) 60%, transparent); --c2: transparent; filter: var(--o1) var(--o2); animation: glowBlink 1.6s steps(1) infinite; }
+.lpc-glow { --o1: drop-shadow(var(--px) 0 0 var(--c)) drop-shadow(calc(-1 * var(--px)) 0 0 var(--c)) drop-shadow(0 var(--px) 0 var(--c)) drop-shadow(0 calc(-1 * var(--px)) 0 var(--c)); --o2: ; }
+.lpc-glow.g1, .lpc-glow.g2 { --c: color-mix(in srgb, var(--aura) 55%, transparent); }
+.lpc-glow.g3, .lpc-glow.g4, .lpc-glow.g5 { --c: var(--aura); }
+.lpc-glow.g6, .lpc-glow.g7 { --c: color-mix(in srgb, var(--aura) 55%, white); --o2: drop-shadow(var(--px) 0 0 var(--aura)) drop-shadow(calc(-1 * var(--px)) 0 0 var(--aura)) drop-shadow(0 var(--px) 0 var(--aura)) drop-shadow(0 calc(-1 * var(--px)) 0 var(--aura)); }
+@keyframes glowBlink { 50% { opacity: 0.999; filter: var(--o1) var(--o2) brightness(1.15); } }
+.aura-px-ring { top: 93%; }
+.aura-px-ring.two { top: 94%; opacity: 0.7; }
+.aura-px-motes { top: 50%; }
+.aura-px-pillar { top: 48%; opacity: 0.8; }
+.aura-px-orbit { top: 55%; }
+.aura-px-rays { top: 45%; opacity: 0.8; }
 .aura-ring.still { animation: none; border-style: dotted; opacity: calc(var(--k) * 0.7); }
 @media (prefers-reduced-motion: reduce) { .lpc-glow { animation: none; } }
 

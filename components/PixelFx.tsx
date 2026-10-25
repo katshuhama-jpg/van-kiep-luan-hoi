@@ -350,3 +350,113 @@ export function fxTuongVan(): FxSpec {
     },
   };
 }
+
+// ---------------- Hào quang chung theo cảnh giới ----------------
+/** Vòng pháp trận dưới chân (elip dẹt), vạch đứt chạy vòng */
+export function fxRing(color: string, w: number, dashed: boolean): FxSpec {
+  const h = Math.round(w * 0.32);
+  return {
+    key: `ring${color}${w}${dashed}`,
+    w: w + 2,
+    h: h + 2,
+    frames: dashed ? 8 : 1,
+    draw: (p) => {
+      const rx = w / 2 - 1;
+      const ry = h / 2 - 1;
+      const C = Math.PI * (rx + ry);
+      const dash = dashed ? `stroke-dasharray="3 2" stroke-dashoffset="${r1(-p * 5)}"` : '';
+      return `<ellipse cx="${w / 2 + 1}" cy="${h / 2 + 1}" rx="${rx}" ry="${ry}" fill="none" stroke="${color}" stroke-width="1.2" ${dash} pathLength="${Math.round(C)}"/>
+        <ellipse cx="${w / 2 + 1}" cy="${h / 2 + 1}" rx="${rx - 3}" ry="${Math.max(1, ry - 1.5)}" fill="none" stroke="${color}" stroke-width="1" opacity="0.6" stroke-dasharray="1 3"/>`;
+    },
+  };
+}
+
+/** Linh quang: đốm sáng vuông bốc lên quanh người */
+export function fxMotes(n: number, color: string): FxSpec {
+  const W = 36;
+  const H = 44;
+  return {
+    key: `motes${n}${color}`,
+    w: W,
+    h: H,
+    frames: 12,
+    draw: (p) => {
+      let out = '';
+      for (let i = 0; i < n; i++) {
+        const q = (p * (1 + (i % 3) * 0.0) + i / n) % 1;
+        const x = 3 + ((i * 11) % (W - 6));
+        const y = H - 2 - q * (H - 6);
+        const s = i % 3 === 0 ? 2 : 1;
+        if (q > 0.9) continue;
+        out += `<rect x="${x}" y="${Math.round(y)}" width="${s}" height="${s}" fill="${i % 2 ? '#ffffff' : color}"/>`;
+      }
+      return out;
+    },
+  };
+}
+
+/** Cột sáng: các vạch sáng chạy dọc lên */
+export function fxPillar(color: string): FxSpec {
+  const W = 22;
+  const H = 60;
+  return {
+    key: `pillar2${color}`,
+    w: W,
+    h: H,
+    frames: 8,
+    draw: (p) => {
+      // chỉ các vệt sáng chạy lên, không tô nền (nền mờ trông như khối xám)
+      let out = '';
+      for (let i = 0; i < 8; i++) {
+        const x = 3 + ((i * 7) % (W - 6));
+        const y = H - ((p + i / 8) % 1) * (H + 8);
+        out += `<rect x="${x}" y="${Math.round(y)}" width="1" height="${i % 2 ? 5 : 8}" fill="${i % 3 ? color : '#ffffff'}"/>`;
+      }
+      return out;
+    },
+  };
+}
+
+/** Hai đốm sáng bay vòng quanh người */
+export function fxOrbit(color: string): FxSpec {
+  const W = 50;
+  const H = 40;
+  return {
+    key: `orbit${color}`,
+    w: W,
+    h: H,
+    frames: 16,
+    outline: color,
+    draw: (p) => {
+      let out = '';
+      for (let k = 0; k < 2; k++) {
+        const a = TAU * (k ? -p : p) + k * 2;
+        const x = W / 2 + Math.cos(a) * (W / 2 - 4);
+        const y = (k ? 14 : 24) + Math.sin(a) * 5;
+        out += `<rect x="${Math.round(x) - 1}" y="${Math.round(y) - 1}" width="2" height="2" fill="#ffffff"/>`;
+      }
+      return out;
+    },
+  };
+}
+
+/** Vầng tia sáng lớn sau lưng (Độ Kiếp) */
+export function fxRays(color: string): FxSpec {
+  const S = 70;
+  const c = S / 2;
+  return {
+    key: `rays${color}`,
+    w: S,
+    h: S,
+    frames: 6,
+    soft: true,
+    draw: (p) => {
+      let out = '';
+      for (let i = 0; i < 16; i++) {
+        const a = i * 22.5 + p * 22.5;
+        out += `<rect x="${c - 1}" y="2" width="2" height="${i % 2 ? 12 : 20}" fill="${color}" opacity="${i % 2 ? 0.5 : 0.85}" transform="rotate(${r1(a)} ${c} ${c})"/>`;
+      }
+      return out;
+    },
+  };
+}

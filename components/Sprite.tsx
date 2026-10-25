@@ -5,7 +5,7 @@ import { HAIR_COLORS, ITEMS, PATHS, type RobeDeco, type WeaponKind } from '@/lib
 import { ANIM, composeStrip, readyStrip, type Anim, type Layer } from '@/lib/lpc';
 import { equippedLook } from '@/lib/game/helpers';
 import { PETS, petOf } from '@/lib/game/pets';
-import { PixelFx, fxBatQuai, fxCuuVi, fxDanHoan, fxHuyetNguyet, fxKiem, fxLua, fxLuaTien, fxMaKhi, fxPhatQuang, fxSen, fxTuongVan } from './PixelFx';
+import { PixelFx, fxOrbit, fxPillar, fxRays, fxRing, fxMotes, fxBatQuai, fxCuuVi, fxDanHoan, fxHuyetNguyet, fxKiem, fxLua, fxLuaTien, fxMaKhi, fxPhatQuang, fxSen, fxTuongVan } from './PixelFx';
 import type { Character } from '@/lib/game/types';
 
 type R = [number, number, number, number, string];
@@ -656,33 +656,20 @@ function PathAura({ path, ma, yeu, realm, color, box }: { path?: string | null; 
   return <PixelFx spec={fxLuaTien(color)} scale={sc} dur={2.4} className="pa pa-lua-tien" style={st} />;
 }
 
-function Aura({ color, realm, layer, box }: { color: string; realm: number; layer: number; box: number }) {
+function Aura({ color, realm, box }: { color: string; realm: number; layer: number; box: number }) {
   const r = Math.min(realm, 8);
-  // mạnh dần trong cùng cảnh giới theo tầng
-  const k = Math.min(1, 0.55 + r * 0.07 + Math.min(layer, 9) * 0.008);
-  const size = box * (0.55 + r * 0.06);
-  const motes = r >= 1 ? Math.min(14, r * 2) : 0;
-  const style = { ['--aura' as string]: color, ['--k' as string]: k } as CSSProperties;
+  const sc = box / 64; // cỡ 1 điểm ảnh nhân vật
+  const motes = Math.min(14, r * 2);
+  // vòng pháp trận to dần theo cảnh giới (tính bằng điểm ảnh nhân vật)
+  const ringW = 26 + r * 2;
   return (
-    <span className={`aura r${r}`} style={style} aria-hidden="true">
-      {r >= 7 && <span className="aura-rays" style={{ width: box * 1.15, height: box * 1.15 }} />}
-      {r >= 5 && <span className="aura-pillar" style={{ width: box * 0.34, height: box * 1.1 }} />}
-      <span className="lpc-aura" style={{ width: size, height: size }} />
-      {r >= 1 && <span className={`aura-ring ${r < 3 ? 'still' : ''}`} style={{ width: box * (0.5 + r * 0.03), height: box * (0.5 + r * 0.03), marginBottom: -box * (0.21 + r * 0.015) }} />}
-      {r >= 4 && <span className="aura-ring two" style={{ width: box * (0.66 + r * 0.03), height: box * (0.66 + r * 0.03), marginBottom: -box * (0.29 + r * 0.015) }} />}
-      {Array.from({ length: motes }, (_, i) => (
-        <span key={i} className="aura-mote" style={{ left: `${30 + ((i * 37) % 40)}%`, animationDelay: `${-(i * 0.47) % 2.6}s`, animationDuration: `${2.2 + (i % 3) * 0.5}s` }} />
-      ))}
-      {r >= 6 && (
-        <>
-          <span className="aura-orbit" style={{ width: box * 0.7, height: box * 0.7 }}>
-            <i />
-          </span>
-          <span className="aura-orbit rev" style={{ width: box * 0.8, height: box * 0.8 }}>
-            <i />
-          </span>
-        </>
-      )}
+    <span className={`aura r${r}`} aria-hidden="true">
+      {r >= 7 && <PixelFx spec={fxRays(color)} scale={sc} dur={2.4} className="pa aura-px-rays" />}
+      {r >= 5 && <PixelFx spec={fxPillar(color)} scale={sc} dur={1.2} className="pa aura-px-pillar" />}
+      {r >= 1 && <PixelFx spec={fxRing(color, ringW, r >= 3)} scale={sc} dur={1.6} className="pa aura-px-ring" />}
+      {r >= 4 && <PixelFx spec={fxRing(color, ringW + 10, true)} scale={sc} dur={2.4} className="pa aura-px-ring two" />}
+      {motes > 0 && <PixelFx spec={fxMotes(motes, color)} scale={sc} dur={2.4} className="pa aura-px-motes" />}
+      {r >= 6 && <PixelFx spec={fxOrbit(color)} scale={sc} dur={2} className="pa aura-px-orbit" />}
     </span>
   );
 }
@@ -764,7 +751,7 @@ export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Charact
       {url &&
         (aura && !l.dead && l.realm >= 1 ? (
           // viền hào quang ôm sát dáng người, càng lên cảnh giới càng dày và sáng
-          <span className={`lpc-glow g${Math.min(l.realm, 7)}`} style={{ ['--aura' as string]: aura } as CSSProperties}>
+          <span className={`lpc-glow g${Math.min(l.realm, 7)}`} style={{ ['--aura' as string]: aura, ['--px' as string]: `${Math.max(1, Math.round(box / 64))}px` } as CSSProperties}>
             <span className="lpc-strip" style={style} />
           </span>
         ) : (
