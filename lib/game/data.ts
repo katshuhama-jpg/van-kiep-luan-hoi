@@ -34,12 +34,12 @@ export interface PathInfo {
 }
 
 export const PATHS: Record<PathId, PathInfo> = {
-  kiem: { id: 'kiem', name: 'Kiếm tu', short: 'Kiếm', desc: 'Lấy kiếm nhập đạo. Đánh nhau mạnh, kiếm bay quanh người.', lean: 'trung', aura: '#7fc8ff' },
-  dan: { id: 'dan', name: 'Đan tu', short: 'Đan', desc: 'Luyện đan kiếm nhiều linh thạch, tự chế đan đột phá.', lean: 'trung', aura: '#ffb057' },
-  tran: { id: 'tran', name: 'Trận tu', short: 'Trận', desc: 'Bày trận, vẽ phù. Bế quan an toàn, ít bị tập kích.', lean: 'trung', aura: '#b59cff' },
-  phat: { id: 'phat', name: 'Phật tu', short: 'Phật', desc: 'Từ bi hỷ xả. Thọ nguyên dài, tâm ma khó xâm nhập.', lean: 'chinh', aura: '#ffe27a' },
-  ma: { id: 'ma', name: 'Ma tu', short: 'Ma', desc: 'Hút linh lực, luyện huyết công. Tu cực nhanh, tâm ma cực nặng.', lean: 'ta', aura: '#ff3448' },
-  yeu: { id: 'yeu', name: 'Yêu tu', short: 'Yêu', desc: 'Thức tỉnh huyết mạch yêu tộc. Thân thể mạnh, có thể hóa hình.', lean: 'trung', aura: '#7be3a4' },
+  kiem: { id: 'kiem', name: 'Kiếm tu', short: 'Kiếm', desc: 'Lấy kiếm nhập đạo. Công mạnh nhất, tu nhanh. Hay chết trận vì ham đánh.', lean: 'trung', aura: '#7fc8ff' },
+  dan: { id: 'dan', name: 'Đan tu', short: 'Đan', desc: 'Luyện đan kiếm nhiều linh thạch, tự chế đan đột phá. Giàu có, nhưng đánh nhau kém.', lean: 'trung', aura: '#ffb057' },
+  tran: { id: 'tran', name: 'Trận tu', short: 'Trận', desc: 'Bày trận, vẽ phù. Thủ cực chắc, bế quan an toàn, ít bị tập kích. Thường sống rất thọ.', lean: 'trung', aura: '#b59cff' },
+  phat: { id: 'phat', name: 'Phật tu', short: 'Phật', desc: 'Từ bi hỷ xả. Máu và thủ dày, thọ nguyên dài, tâm ma khó xâm nhập, đột phá vững vàng.', lean: 'chinh', aura: '#ffe27a' },
+  ma: { id: 'ma', name: 'Ma tu', short: 'Ma', desc: 'Hút linh lực, luyện huyết công. Tu nhanh nhất, nhưng tâm ma cực nặng.', lean: 'ta', aura: '#ff3448' },
+  yeu: { id: 'yeu', name: 'Yêu tu', short: 'Yêu', desc: 'Thức tỉnh huyết mạch yêu tộc. Thân thể khỏe, có thể hóa hình. Sống thọ nhất trong các đạo.', lean: 'trung', aura: '#7be3a4' },
 };
 
 export const LINH_CAN = [
@@ -233,6 +233,11 @@ export const TALENTS: Talent[] = [
   { id: 'gia_tai', name: 'Đầu thai nhà giàu', desc: 'Khởi đầu thêm 300 linh thạch', cost: 25 },
   { id: 'phuc', name: 'Phúc tinh chiếu mệnh', desc: 'Khí vận khởi đầu +25', cost: 40 },
   { id: 'kiem_tam', name: 'Kiếm tâm thông minh', desc: 'Sinh ra đã có Mộc kiếm, du ngoạn an toàn hơn', cost: 20 },
+  { id: 'ho_than', name: 'Ngọc bội hộ thân', desc: 'Sinh ra đã đeo ngọc bội, đỡ được một lần chết', cost: 35 },
+  { id: 'linh_thu', name: 'Linh thú bầu bạn', desc: 'Một linh thú hiếm theo bạn từ lúc lọt lòng', cost: 50 },
+  { id: 'van_kiep', name: 'Vạn kiếp bất diệt', desc: 'Trời thương như kiếp đầu: trước 16 tuổi không chết', cost: 70 },
+  { id: 'thien_menh', name: 'Thiên mệnh chi tử', desc: 'Khí vận tối đa, linh căn biến dị, đột phá dễ hơn 15%', cost: 150 },
+  { id: 'tien_cot', name: 'Tiên cốt trời sinh', desc: 'Chắc chắn mang Thiên linh căn, tu luyện nhanh gấp đôi', cost: 200 },
 ];
 
 export const SEASONS = ['Xuân', 'Hạ', 'Thu', 'Đông'];

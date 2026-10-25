@@ -154,6 +154,28 @@ export function newCharacter(meta: Meta, gifts: string[] = [], base?: Character)
     if (hasGift(c, 'g_trung_sinh') && c.past) c.log.push({ age: 0, tone: 'big', text: `Vừa mở mắt, bạn đã nhớ ra: kiếp trước mình là ${c.past.name}, ${c.past.realmName}, chết năm ${c.past.age} tuổi.` });
     if (hasGift(c, 'g_hop')) c.log.push({ age: 0, tone: 'normal', text: 'Trong tay bạn nắm chặt một chiếc hộp nhỏ, không ai cạy ra được.' });
   }
+  // thiên phú mua bằng phúc duyên (áp sau thiên phú bẩm sinh để không bị ghi đè)
+  if (t.includes('ho_than')) giveItem(c, 'ngoc_boi', true);
+  if (t.includes('van_kiep')) {
+    c.grace16 = true;
+    c.log.push({ age: 0, tone: 'good', text: 'Vạn kiếp bất diệt: trước 16 tuổi, trời cao sẽ che chở bạn.' });
+  }
+  if (t.includes('thien_menh')) {
+    c.gifts = [...(c.gifts ?? []), 'g_thien_menh'];
+    c.stats.khiVan = 100;
+    c.linhCanMul = Math.max(c.linhCanMul, 1.6);
+  }
+  if (t.includes('tien_cot') && c.linhCanMul < 2.2) {
+    c.log = c.log.map((l) => ({ ...l, text: l.text.replace(c.linhCan, 'Thiên linh căn') }));
+    c.linhCan = 'Thiên linh căn';
+    c.linhCanMul = 2.2;
+  }
+  if (t.includes('linh_thu')) {
+    const rare = ['tuyet_ho', 'bach_xa', 'hoa_ho', 'bang_phong', 'kim_thu', 'mai_loc', 'linh_loc', 'thu_vuong'];
+    c.pet = true;
+    c.petKind = rare[Math.floor(rnd() * rare.length)];
+    c.log.push({ age: 0, tone: 'good', text: 'Ngày bạn chào đời, một linh thú lạ nằm canh bên nôi, từ đó không rời.' });
+  }
   return c;
 }
 
@@ -168,7 +190,7 @@ export function makeCtx(c: Character, fxOut: Fx[]): EffectCtx {
 function die(c: Character, cause: string, ctx: EffectCtx) {
   if (c.dead) return;
   // kiếp đầu được trời thương đến 16 tuổi
-  if (c.lifeNo === 1 && c.age < 16) {
+  if ((c.lifeNo === 1 || c.grace16) && c.age < 16) {
     c.stats.sucKhoe = Math.max(c.stats.sucKhoe, 15);
     c.stats.tamMa = Math.min(c.stats.tamMa, 60);
     ctx.log('Tưởng đã mất mạng, nhưng trời cao như còn thương đứa trẻ này. Bạn thoát chết trong gang tấc.', 'good');
@@ -198,11 +220,11 @@ function pathMul(c: Character) {
     case 'ma':
       return 1.45;
     case 'kiem':
-      return 1.15;
+      return 1.08;
     case 'yeu':
       return 1.1;
     case 'phat':
-      return 0.9;
+      return 1.05;
     default:
       return 1;
   }
@@ -274,9 +296,18 @@ function progress(c: Character, ctx: EffectCtx, talents: string[]): PendingEvent
   return null;
 }
 
+/** Chết vì sức khỏe cạn: nói rõ vết thương gần nhất đến từ đâu, để người chơi hiểu vì sao */
+function hurtCause(c: Character): string {
+  const age = Math.floor(c.age);
+  const last = [...c.log].reverse().find((l) => l.tone === 'bad' && l.age >= age - 4 && !l.text.startsWith('⚠') && !/tẩu hỏa|thiên kiếp/i.test(l.text));
+  if (!last) return 'Thương thế quá nặng, bạn trút hơi thở cuối cùng.';
+  const t = last.text.length > 90 ? last.text.slice(0, 88).trimEnd() + '…' : last.text;
+  return `Thương thế chồng chất không kịp hồi phục (lần cuối, năm ${last.age} tuổi: ${t}). Bạn trút hơi thở cuối cùng.`;
+}
+
 function checkDeath(c: Character, ctx: EffectCtx) {
   if (c.dead) return;
-  if (c.stats.sucKhoe <= 0) die(c, 'Thương thế quá nặng, bạn trút hơi thở cuối cùng.', ctx);
+  if (c.stats.sucKhoe <= 0) die(c, hurtCause(c), ctx);
   else if (c.stats.tamMa >= 100) {
     // tâm ma đầy chưa chắc đã chết: 40% tẩu hỏa nhập ma, còn lại trọng thương, rớt tu vi rồi gượng lại được
     if (rnd() < 0.4) die(c, 'Tâm ma phản phệ. Bạn tẩu hỏa nhập ma, kinh mạch nổ tung.', ctx);
@@ -461,6 +492,15 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
   if (c.path !== 'ma') stat(c, 'tamMa', -1);
   if (c.path === 'ma') stat(c, 'tamMa', 2);
   if (c.path === 'phat') stat(c, 'tamMa', -2);
+  // du ngoạn khi sức khỏe yếu là nghỉ dưỡng: hồi nhanh hơn
+  if (focus === 'du_ngoan' && c.stats.sucKhoe < 60) stat(c, 'sucKhoe', 6);
+  // cảnh báo sức khỏe nguy kịch, mỗi 3 năm nhắc một lần
+  if (c.stats.sucKhoe <= 25 && (c.hpWarnAt ?? -99) + 3 <= age) {
+    c.hpWarnAt = age;
+    const pill = (c.pills.hoi_xuan ?? 0) > 0 ? 'uống Hồi Xuân Đan trong Túi đồ' : 'mua Hồi Xuân Đan ở Phường thị';
+    ctx.log(`⚠ Sức khỏe chỉ còn ${Math.round(c.stats.sucKhoe)}. Thêm một vết thương nữa có thể mất mạng: nên chuyển sang Du ngoạn để nghỉ dưỡng, ${pill}, tránh trừ yêu và bế quan.`, 'bad');
+    ctx.fx('hurt', 'Sức khỏe nguy kịch');
+  }
   const gf = gearFx(c.equipped);
   if (gf.tamMa) stat(c, 'tamMa', gf.tamMa);
   if (gf.tamCanh) stat(c, 'tamCanh', gf.tamCanh);
@@ -492,7 +532,7 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
   checkDeath(c, ctx);
   if (c.dead) return null;
   if (brk) return brk;
-  if (c.realm >= 2 && !c.path) return buildPending(c, pathEvent(c));
+  if (needPath(c)) return buildPending(c, pathEvent(c));
 
   if (opts.noEvents || opts.closed) return null;
   const chance = age < 6 ? 0.3 : focus === 'du_ngoan' ? 0.6 : 0.3;
@@ -533,11 +573,16 @@ function findLoot(c: Character, focus: string | null, tier: number) {
 
 // --------- Sự kiện đặc biệt ---------
 
+/** Chọn đạo từ Luyện Khí tầng 5 (trước là Trúc Cơ), để người chơi sớm có mục tiêu */
+export function needPath(c: Character): boolean {
+  return !c.path && (c.realm >= 2 || (c.realm === 1 && c.layer >= 5));
+}
+
 function pathEvent(c: Character): GameEvent {
   return {
     id: PATH_EVENT_ID,
     title: 'Chọn con đường tu tập',
-    text: () => 'Trúc Cơ đã thành, đạo cơ vững chắc. Đã đến lúc chọn con đường sẽ đi suốt phần đời còn lại.',
+    text: () => (c.realm >= 2 ? 'Trúc Cơ đã thành, đạo cơ vững chắc. Đã đến lúc chọn con đường sẽ đi suốt phần đời còn lại.' : 'Luyện Khí đã qua nửa chặng, chân khí bắt đầu có tính khí riêng. Đã đến lúc chọn con đường sẽ đi suốt phần đời còn lại.'),
     choices: pathChoices,
   };
 }
@@ -546,6 +591,7 @@ function breakChance(c: Character) {
   return clamp(
     // chính đạo đạo tâm vững, đột phá dễ hơn chút
     (c.daoTam >= 40 ? 0.06 : 0) +
+    (c.path === 'phat' ? 0.05 : 0) +
     (omenIs('loi_van') ? 0.06 : 0) +
     (hasGift(c, 'g_thien_menh') ? 0.15 : 0) + 0.39 - Math.max(0, c.realm - 2) * 0.07 + c.stats.ngoTinh / 450 + c.stats.tamCanh / 500 - c.stats.tamMa / 200 + (c.stats.khiVan - 50) / 500 + c.linhCanMul * 0.05,
     0.08,
@@ -668,7 +714,7 @@ export function resolveChoice(c: Character, p: PendingEvent, idx: number, ctx: E
   if (c.dead) return null;
   const brk = progress(c, ctx, talents);
   if (brk) return brk;
-  if (c.realm >= 2 && !c.path) return buildPending(c, pathEvent(c));
+  if (needPath(c)) return buildPending(c, pathEvent(c));
   return null;
 }
 
@@ -855,7 +901,7 @@ export function checkProgress(c: Character, ctx: EffectCtx, talents: string[] = 
   if (c.dead) return null;
   const brk = progress(c, ctx, talents);
   if (brk) return brk;
-  if (c.realm >= 2 && !c.path) return buildPending(c, pathEvent(c));
+  if (needPath(c)) return buildPending(c, pathEvent(c));
   return null;
 }
 

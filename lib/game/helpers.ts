@@ -165,7 +165,7 @@ export function fatal(c: Character, ctx: EffectCtx, chance: number, cause: strin
   const p = clamp(chance * hard * tough * (chance < 1 ? youngMul(c.age) : 1) * (chance < 1 ? luckMul : 1), 0.01, chance >= 1 ? 1 : 0.95);
   if (ctx.rnd() >= p) return null;
   // kiếp đầu tiên được trời thương: chưa đủ 16 tuổi thì không chết, chỉ bị thương
-  if (c.lifeNo === 1 && c.age < 16) {
+  if ((c.lifeNo === 1 || c.grace16) && c.age < 16) {
     c.stats.sucKhoe = Math.max(10, c.stats.sucKhoe - 20);
     ctx.fx('heal', 'Trời thương');
     return ' Tưởng đã mất mạng, nhưng trời cao như còn thương đứa trẻ này. Bạn tỉnh lại, người đầy thương tích.';

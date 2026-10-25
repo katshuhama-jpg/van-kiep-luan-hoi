@@ -1,11 +1,13 @@
 'use client';
 
+import { useState } from 'react';
 import { Sheet } from './Panels';
 import { QUEST_BONUS, QUEST_REWARD, dailyOf, omenToday, questName, streakGift } from '@/lib/game/hook';
 import type { Meta } from '@/lib/game/types';
-import type { Mail } from '@/lib/storage';
+import { sendMail, type Mail } from '@/lib/storage';
+import type { Player } from '@/lib/auth';
 
-const KIND_ICON: Record<string, string> = { thang: '⚔', thua: '☠', hoa: '☯', doc: '☠', tra: '🍵', huong: '🕯' };
+const KIND_ICON: Record<string, string> = { thang: '⚔', thua: '☠', hoa: '☯', doc: '☠', tra: '🍵', huong: '🕯', hoi_am: '💬', thach: '⚔' };
 
 function ago(iso: string): string {
   const m = Math.max(0, Math.round((Date.now() - Date.parse(iso)) / 60000));
@@ -17,7 +19,60 @@ function ago(iso: string): string {
 }
 
 /** Hộp thư giang hồ: chuyện người khác làm với bóng nhân vật của bạn khi bạn vắng mặt */
-export function MailSheet({ mail, onClose }: { mail: Mail[]; onClose: () => void }) {
+function MailItem({ m, user, onChallenge }: { m: Mail; user: Player | null; onChallenge?: (player: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const [text, setText] = useState('');
+  const [done, setDone] = useState<string | null>(null);
+  const from = m.from_player;
+  return (
+    <li className={`mail ${m.read ? '' : 'new'} k-${m.kind}`}>
+      <span className="mail-ic" aria-hidden="true">
+        {KIND_ICON[m.kind] ?? '✉'}
+      </span>
+      <span className="mail-body">
+        {m.body}
+        <small>{ago(m.created_at)}</small>
+        {from && user && !done && (
+          <span className="mail-acts">
+            <button className="chip-btn" onClick={() => setOpen(!open)}>
+              Hồi âm
+            </button>
+            {onChallenge && (
+              <button
+                className="chip-btn"
+                onClick={() => {
+                  onChallenge(from);
+                  sendMail(user, from, 'thach', `@${user.username} đã ghi tên bạn vào sổ thù. Giang hồ rộng lớn, hẹn ngày gặp lại.`).catch(() => {});
+                  setDone(`Đã ghi thù @${from}. Lần tới gặp trong giang hồ có thể báo thù.`);
+                }}
+              >
+                Ghi thù
+              </button>
+            )}
+          </span>
+        )}
+        {open && !done && user && from && (
+          <span className="mail-reply">
+            <input value={text} maxLength={120} onChange={(e) => setText(e.target.value)} placeholder="vd: Lần sau gặp lại, ta không nương tay" />
+            <button
+              className="btn"
+              disabled={!text.trim()}
+              onClick={() => {
+                sendMail(user, from, 'hoi_am', `@${user.username} hồi âm: "${text.trim()}"`).catch(() => {});
+                setDone('Đã gửi hồi âm.');
+              }}
+            >
+              Gửi
+            </button>
+          </span>
+        )}
+        {done && <small className="mail-done">{done}</small>}
+      </span>
+    </li>
+  );
+}
+
+export function MailSheet({ mail, onClose, user = null, onChallenge }: { mail: Mail[]; onClose: () => void; user?: Player | null; onChallenge?: (player: string) => void }) {
   return (
     <Sheet title="Thư giang hồ" onClose={onClose}>
       {!mail.length ? (
@@ -27,15 +82,7 @@ export function MailSheet({ mail, onClose }: { mail: Mail[]; onClose: () => void
           <p className="note" style={{ marginTop: 0 }}>Lúc bạn vắng mặt, bóng nhân vật của bạn vẫn lang bạt giang hồ:</p>
           <ul className="mail-list">
             {mail.map((m) => (
-              <li key={m.id} className={`mail ${m.read ? '' : 'new'} k-${m.kind}`}>
-                <span className="mail-ic" aria-hidden="true">
-                  {KIND_ICON[m.kind] ?? '✉'}
-                </span>
-                <span className="mail-body">
-                  {m.body}
-                  <small>{ago(m.created_at)}</small>
-                </span>
-              </li>
+              <MailItem key={m.id} m={m} user={user} onChallenge={onChallenge} />
             ))}
           </ul>
         </>

@@ -23,7 +23,7 @@ import { ELEMENTS, elemHitTag, elemMul, elemRel, elementOf } from '@/lib/game/ng
 import { DUEL_INFO, DUEL_PER_YEAR, DUEL_TURNS, finishDuel, foeChar, foeStats, pickDuel, teaTrap, type DuelFoe } from '@/lib/game/duel';
 import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, pickAmbush } from '@/lib/game/ambush';
 import { addMemorial, displayName, fetchWorld, listMail, loadAll, saveLocal, saveMeta, saveRemote, sendMail, unreadMail, weeklyTitles, type Mail, type SaveState } from '@/lib/storage';
-import { bumpStreak, evalQuests, omenIs, qmark, questName, streakGift, vnDay } from '@/lib/game/hook';
+import { updateCareer, bumpStreak, evalQuests, omenIs, qmark, questName, streakGift, vnDay } from '@/lib/game/hook';
 import { HookSheet, MailSheet, TitleBadge } from '@/components/Hook';
 import { omenToday } from '@/lib/game/hook';
 import { useAuth } from '@/lib/useAuth';
@@ -52,6 +52,7 @@ export default function PlayPage() {
   const [unread, setUnread] = useState(0);
   const [myTitle, setMyTitle] = useState<string | null>(null);
   const [questNews, setQuestNews] = useState<string[]>([]); // nhiệm vụ vừa xong ở đời trước
+  const [achNews, setAchNews] = useState<string[]>([]); // thành tựu vừa đạt
 
   const charRef = useRef<Character | null>(null);
   const pendingRef = useRef<PendingEvent | null>(null);
@@ -571,9 +572,16 @@ export default function PlayPage() {
           let stopped = false;
           for (let y = before + 1; y <= after; y++) {
             c.age = y;
+            const w0 = c.hpWarnAt;
             const p = yearTick(c, ctx, { talents: talentsRef.current });
             if (p || c.dead) {
               pendingRef.current = p;
+              stopped = true;
+              break;
+            }
+            // vừa cảnh báo sức khỏe nguy kịch: tạm dừng để người chơi kịp xử lý
+            if (c.hpWarnAt !== w0) {
+              setRunning(false);
               stopped = true;
               break;
             }
@@ -762,6 +770,18 @@ export default function PlayPage() {
     } catch {}
   };
 
+  // ghi thù từ thư giang hồ: đang chơi thì ghi vào nhân vật, chưa đầu thai thì ghi vào hồ sơ
+  const challenge = (player: string) => {
+    const v = { player, name: '', items: [], why: `@${player} từng khiến bạn ôm hận` };
+    const c = charRef.current;
+    if (c && !c.dead) c.vendettas = [...(c.vendettas ?? []).filter((x) => x.player !== player), v].slice(-3);
+    else if (meta) {
+      const m2 = { ...meta, vendettas: [...(meta.vendettas ?? []).filter((x) => x.player !== player), v].slice(-3) };
+      setMeta(m2);
+      saveMeta(user, m2).catch(() => {});
+    }
+  };
+
   const finishLife = async (epitaph: string, note = '', bury = false, extra: { prophecy?: { id: string; text: string } | null; legendName?: string | null } = {}) => {
     const c = charRef.current;
     if (!c || !meta) return;
@@ -831,6 +851,14 @@ export default function PlayPage() {
             }
           : null,
     };
+    // thành tựu dài hạn
+    const car = updateCareer(m, c);
+    m.career = car.career;
+    if (car.newly.length) {
+      m.achievements = [...(m.achievements ?? []), ...car.newly.map((a) => a.id)];
+      m.phucDuyen += car.newly.reduce((x, a) => x + a.reward, 0);
+    }
+    setAchNews(car.newly.map((a) => `${a.name} (+${a.reward} phúc)`));
     setMeta(m);
     await saveMeta(user, m).catch(() => {});
     charRef.current = null;
@@ -868,12 +896,17 @@ export default function PlayPage() {
             Chế độ khách chỉ lưu trên máy này. <Link href="/dang-nhap">Đăng nhập</Link> để lưu và lập bia ở nghĩa trang chung.
           </p>
         )}
+        {achNews.length > 0 && (
+          <p className="quest-news ach">
+            🏆 Thành tựu mới: <b>{achNews.join(', ')}</b>
+          </p>
+        )}
         {questNews.length > 0 && (
           <p className="quest-news">
             Nhiệm vụ vừa hoàn thành: <b>{questNews.map(questName).join(', ')}</b>
           </p>
         )}
-        {sheet === 'mail' && mail && <MailSheet mail={mail} onClose={() => setSheet(null)} />}
+        {sheet === 'mail' && mail && <MailSheet mail={mail} user={user} onChallenge={challenge} onClose={() => setSheet(null)} />}
         <BirthPanel meta={meta} onBorn={born} />
       </main>
     );
@@ -996,7 +1029,7 @@ export default function PlayPage() {
         </Sheet>
       )}
       {sheet === 'today' && <HookSheet meta={meta} onClose={() => setSheet(null)} />}
-      {sheet === 'mail' && mail && <MailSheet mail={mail} onClose={() => setSheet(null)} />}
+      {sheet === 'mail' && mail && <MailSheet mail={mail} user={user} onChallenge={challenge} onClose={() => setSheet(null)} />}
       {sheet === 'hunt' && <HuntSheet c={c} onPick={pickMonster} onToggleFlee={toggleFlee} onClose={() => setSheet(null)} />}
       {sheet === 'menu' && (
         <Sheet title="Menu" onClose={() => setSheet(null)}>

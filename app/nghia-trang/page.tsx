@@ -3,7 +3,7 @@
 import BackButton from '@/components/BackButton';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { listMemorials, thapHuong, type Memorial } from '@/lib/storage';
+import { listMemorials, thapHuong, topIncense, type Memorial } from '@/lib/storage';
 import { useAuth } from '@/lib/useAuth';
 
 function Tomb({ m, canIncense, onIncense }: { m: Memorial; canIncense: boolean; onIncense: () => void }) {
@@ -26,12 +26,12 @@ function Tomb({ m, canIncense, onIncense }: { m: Memorial; canIncense: boolean; 
 
 export default function Graveyard() {
   const { user, ready } = useAuth();
-  const [tab, setTab] = useState<'all' | 'mine'>('all');
-  const [data, setData] = useState<{ all: Memorial[]; mine: Memorial[] } | null>(null);
+  const [tab, setTab] = useState<'all' | 'mine' | 'den'>('all');
+  const [data, setData] = useState<{ all: Memorial[]; mine: Memorial[]; den: Memorial[] } | null>(null);
 
   useEffect(() => {
     if (!ready) return;
-    listMemorials(user).then(setData);
+    Promise.all([listMemorials(user), topIncense()]).then(([d, den]) => setData({ ...d, den }));
   }, [ready, user?.token]);
 
   const list = data ? data[tab] : [];
@@ -40,7 +40,7 @@ export default function Graveyard() {
     const n = await thapHuong(user, m.id);
     if (n === null || !data) return;
     const up = (arr: Memorial[]) => arr.map((x) => (x.id === m.id ? { ...x, incense: n } : x));
-    setData({ all: up(data.all), mine: up(data.mine) });
+    setData({ all: up(data.all), mine: up(data.mine), den: up(data.den) });
   }
 
   return (
@@ -62,9 +62,14 @@ export default function Graveyard() {
         <button className={tab === 'mine' ? 'on' : ''} onClick={() => setTab('mine')}>
           Các kiếp của tôi
         </button>
+        <button className={tab === 'den' ? 'on' : ''} onClick={() => setTab('den')}>
+          Đền danh nhân
+        </button>
       </div>
 
       {!user && <p className="note" style={{ margin: 0 }}>Đăng nhập để thắp hương và để bia của bạn hiện cho mọi người.</p>}
+
+      {tab === 'den' && <p className="note" style={{ margin: 0 }}>Những ngôi mộ được giang hồ thắp hương nhiều nhất. Danh nhân được ghi tên ở đây mãi mãi.</p>}
 
       {!data ? (
         <p>Đang dọn cỏ...</p>

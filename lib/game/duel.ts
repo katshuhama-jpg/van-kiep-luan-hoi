@@ -1,3 +1,4 @@
+import { qmark } from './hook';
 import { combatLevel, playerStats, type Fighter } from './combat';
 import { ITEMS, REALMS, fxText, realmLabel } from './data';
 import { demoChar } from './demo';
@@ -290,6 +291,7 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
         back.forEach((id) => giveItem(c, id, false));
         if (back.length) out.push(`Bạn lấy lại ${back.map((id) => ITEMS.find((i) => i.id === id)?.name).join(', ')} từng bị cướp.`);
         c.vendettas = (c.vendettas ?? []).filter((v) => v.player !== f.revenge!.player);
+        qmark(c, 'revenge');
       }
       // thắng địch thủ: lấy 1 món, 30% lấy được 2 món, không bao giờ lấy hết
       const g = rivalLoot(c, r, ctx, 0.7, (n) => `Bạn lột được ${n} của ${r.name} làm chiến lợi phẩm.`);

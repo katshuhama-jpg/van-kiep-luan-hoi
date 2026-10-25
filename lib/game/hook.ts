@@ -1,5 +1,5 @@
 import { ENDINGS } from './endings';
-import type { Character, Meta } from './types';
+import type { Career, Character, Meta } from './types';
 
 /**
  * Giữ chân người chơi: thiên tượng mỗi ngày, chuỗi ngày tu luyện, nhiệm vụ ngày, lời tiên tri cho kiếp sau.
@@ -178,4 +178,49 @@ export function nearEndings(c: Character, opened: Record<string, number> | undef
   const want = [...(pref[c.path ?? ''] ?? []), ...(c.daoTam >= 40 ? ['dai_thien'] : []), ...(c.realm >= 5 ? ['phi_thang'] : []), ...(c.linhThach > 800 ? ['dai_phu'] : [])];
   const sorted = [...left].sort((a, b) => (want.includes(b.id) ? 1 : 0) - (want.includes(a.id) ? 1 : 0) || a.rare - b.rare);
   return sorted.slice(0, 2).map((e) => ({ name: e.name, hint: e.hint }));
+}
+
+// ---------------- Thành tựu dài hạn (mục tiêu sau vài kiếp đầu) ----------------
+export interface Achievement {
+  id: string;
+  name: string;
+  desc: string;
+  reward: number; // phúc duyên
+  check: (m: Meta, k: Career) => boolean;
+}
+const nEnd = (m: Meta) => Object.keys(m.endings ?? {}).length;
+export const ACHIEVEMENTS: Achievement[] = [
+  { id: 'kiep_10', name: 'Thập thế luân hồi', desc: 'Trải qua 10 kiếp', reward: 20, check: (m) => m.lives >= 10 },
+  { id: 'kiep_50', name: 'Ngũ thập thế', desc: 'Trải qua 50 kiếp', reward: 60, check: (m) => m.lives >= 50 },
+  { id: 'kiep_100', name: 'Bách thế bất diệt', desc: 'Trải qua 100 kiếp', reward: 150, check: (m) => m.lives >= 100 },
+  { id: 'nguyen_anh', name: 'Nguyên Anh xuất khiếu', desc: 'Lần đầu đạt Nguyên Anh', reward: 20, check: (_m, k) => k.maxRealm >= 4 },
+  { id: 'hoa_than', name: 'Hóa Thần đại năng', desc: 'Lần đầu đạt Hóa Thần', reward: 40, check: (_m, k) => k.maxRealm >= 5 },
+  { id: 'do_kiep', name: 'Độ Kiếp chân nhân', desc: 'Lần đầu đạt Độ Kiếp', reward: 60, check: (_m, k) => k.maxRealm >= 7 },
+  { id: 'phi_thang', name: 'Bạch nhật phi thăng', desc: 'Phi thăng tiên giới lần đầu', reward: 100, check: (_m, k) => k.ascPaths.length >= 1 },
+  { id: 'tam_dao', name: 'Tam đạo phi thăng', desc: 'Phi thăng bằng 3 con đường khác nhau', reward: 200, check: (_m, k) => k.ascPaths.length >= 3 },
+  { id: 'luc_dao', name: 'Lục đạo luân hồi', desc: 'Từng đi đủ 6 con đường tu tập', reward: 60, check: (_m, k) => k.paths.length >= 6 },
+  { id: 'tho_150', name: 'Trường sinh', desc: 'Sống tới 150 tuổi', reward: 50, check: (_m, k) => k.maxAge >= 150 },
+  { id: 'ket_cuc_10', name: 'Nửa cuốn Sổ Sinh Tử', desc: 'Mở 10 kết cục', reward: 40, check: (m) => nEnd(m) >= 10 },
+  { id: 'ket_cuc_20', name: 'Thấu hiểu sinh tử', desc: 'Mở 20 kết cục', reward: 100, check: (m) => nEnd(m) >= 20 },
+  { id: 'linh_thu_10', name: 'Vạn thú chi chủ', desc: 'Từng nuôi 10 loài linh thú', reward: 50, check: (m) => (m.petBook?.length ?? 0) >= 10 },
+  { id: 'than_binh_5', name: 'Thần binh ngũ thế', desc: 'Truyền một thần binh qua 5 kiếp', reward: 60, check: (m) => (m.legend?.lv ?? 0) >= 5 },
+  { id: 'bao_thu', name: 'Có thù tất báo', desc: 'Báo thù được một người chơi khác', reward: 30, check: (_m, k) => k.revenges >= 1 },
+  { id: 'sat_than', name: 'Giang hồ sát thần', desc: 'Thắng người chơi khác 10 lần', reward: 50, check: (_m, k) => k.duelWins >= 10 },
+];
+
+/** Cộng dồn số liệu sự nghiệp sau một kiếp và chấm thành tựu mới */
+export function updateCareer(meta: Meta, c: Character): { career: Career; newly: Achievement[] } {
+  const k0: Career = meta.career ?? { maxAge: 0, maxRealm: 0, ascPaths: [], paths: [], duelWins: 0, revenges: 0 };
+  const career: Career = {
+    maxAge: Math.max(k0.maxAge, Math.floor(c.age)),
+    maxRealm: Math.max(k0.maxRealm, c.realm),
+    ascPaths: c.ascended && c.path && !k0.ascPaths.includes(c.path) ? [...k0.ascPaths, c.path] : k0.ascPaths,
+    paths: c.path && !k0.paths.includes(c.path) ? [...k0.paths, c.path] : k0.paths,
+    duelWins: k0.duelWins + (c.qf?.duelWin ?? 0),
+    revenges: k0.revenges + (c.qf?.revenge ?? 0),
+  };
+  const have = meta.achievements ?? [];
+  const m2 = { ...meta, career };
+  const newly = ACHIEVEMENTS.filter((a) => !have.includes(a.id) && a.check(m2, career));
+  return { career, newly };
 }

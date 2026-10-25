@@ -117,6 +117,14 @@ export async function listMemorials(user: Player | null): Promise<{ all: Memoria
   return { all: (all as Memorial[] | null) ?? [], mine };
 }
 
+/** Đền thờ danh nhân: các ngôi mộ được thắp hương nhiều nhất */
+export async function topIncense(): Promise<Memorial[]> {
+  const sb = supabase();
+  if (!sb) return [];
+  const { data } = await sb.from('vkl_lives').select(COLS).gt('incense', 0).order('incense', { ascending: false }).limit(12);
+  return ((data as Memorial[] | null) ?? []).filter((m) => !isTest(m.player_name));
+}
+
 export async function thapHuong(user: Player | null, id: number | string): Promise<number | null> {
   const sb = supabase();
   if (!sb || !user || typeof id !== 'number') return null;
@@ -221,7 +229,8 @@ export async function listFeedback(user: Player | null): Promise<Feedback[] | nu
   if (!sb) return null;
   const { data, error } = await sb.rpc('vkl_feedback_list', { p_token: user?.token ?? null });
   if (error) return null;
-  return (data as Feedback[]) ?? [];
+  // đánh giá nhanh ở màn chết chỉ dành cho người làm game đọc, không hiện ở trang góp ý chung
+  return ((data as Feedback[]) ?? []).filter((f) => !f.content.startsWith('[Đánh giá kiếp'));
 }
 
 const FB_ERR: Record<string, string> = {

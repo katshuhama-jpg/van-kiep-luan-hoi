@@ -13,6 +13,8 @@ import { cultPct, fmt, needFor } from '@/lib/game/helpers';
 import type { Character, Focus, LogEntry, Meta, PendingEvent, Slot } from '@/lib/game/types';
 import { evalQuests, nearEndings, pickProphecy, questName } from '@/lib/game/hook';
 import { TodayCard } from './Hook';
+import { useAuth } from '@/lib/useAuth';
+import { addFeedback } from '@/lib/storage';
 
 /* ---------------- Khung hộp thoại ---------------- */
 export function Sheet({ title, onClose, children }: { title: string; onClose?: () => void; children: ReactNode }) {
@@ -482,6 +484,32 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
 
       <TodayCard meta={meta} compact />
 
+      {!first && (
+        <section className="panel talent-shop">
+          <h2>
+            Tiêu phúc duyên <span className="jade">({left} phúc)</span>
+          </h2>
+          <p className="note" style={{ marginTop: 0 }}>Phúc duyên chỉ có ích khi tiêu. Chọn phúc lợi cho kiếp này rồi bấm Đầu thai.</p>
+          {meta.phucDuyen <= 0 && <p className="note" style={{ margin: 0 }}>Chưa có phúc duyên. Sống tốt một kiếp, chết đi sẽ được phúc duyên để mua ở đây.</p>}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {TALENTS.map((t) => {
+              const on = picked.includes(t.id);
+              const can = on || left >= t.cost;
+              return (
+                <button key={t.id} className={`talent ${on ? 'on' : ''}`} disabled={!can} aria-pressed={on} onClick={() => setPicked(on ? picked.filter((x) => x !== t.id) : [...picked, t.id])}>
+                  <span>
+                    {t.name}
+                    <br />
+                    <small className="note">{t.desc}</small>
+                  </span>
+                  <span className="cost">{t.cost} phúc</span>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
       <GachaPanel
         phuc={left}
         busy={busy}
@@ -510,24 +538,6 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
               </button>
             ))}
           </div>
-          <h3>Mua thêm phúc lợi (dùng phúc duyên)</h3>
-          {meta.phucDuyen <= 0 && <p className="note" style={{ margin: 0 }}>Chưa có phúc duyên. Sống tốt một kiếp, chết đi sẽ được phúc duyên để mua ở đây.</p>}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {TALENTS.map((t) => {
-              const on = picked.includes(t.id);
-              const can = on || left >= t.cost;
-              return (
-                <button key={t.id} className={`talent ${on ? 'on' : ''}`} disabled={!can} aria-pressed={on} onClick={() => setPicked(on ? picked.filter((x) => x !== t.id) : [...picked, t.id])}>
-                  <span>
-                    {t.name}
-                    <br />
-                    <small className="note">{t.desc}</small>
-                  </span>
-                  <span className="cost">{t.cost} phúc</span>
-                </button>
-              );
-            })}
-          </div>
           <Link href="/so-sinh-tu" className="btn" style={{ display: 'block', textAlign: 'center', textDecoration: 'none', marginTop: 8 }}>
             Sổ Sinh Tử ({Object.keys(meta.endings ?? {}).length}/{ENDINGS.length} kết cục)
           </Link>
@@ -538,6 +548,42 @@ export function BirthPanel({ meta, onBorn, busy }: { meta: Meta; onBorn: (talent
 }
 
 /* ---------------- Màn chết ---------------- */
+/** Hỏi nhanh cảm nhận ngay ở màn chết (thay vì bắt người chơi tìm trang góp ý) */
+function LifeFeedback({ c }: { c: Character }) {
+  const { user } = useAuth();
+  const [star, setStar] = useState(0);
+  const [text, setText] = useState('');
+  const [sent, setSent] = useState<string | null>(null);
+  if (!user) return null;
+  if (sent) return <p className="note life-fb-done">{sent}</p>;
+  return (
+    <div className="life-fb">
+      <small>Kiếp này chơi thấy thế nào?</small>
+      <div className="life-fb-stars" role="radiogroup" aria-label="Chấm điểm kiếp này">
+        {[1, 2, 3, 4, 5].map((n) => (
+          <button key={n} role="radio" aria-checked={star === n} className={n <= star ? 'on' : ''} onClick={() => setStar(n)} aria-label={`${n} sao`}>
+            ★
+          </button>
+        ))}
+      </div>
+      {star > 0 && (
+        <div className="life-fb-row">
+          <input value={text} maxLength={200} onChange={(e) => setText(e.target.value)} placeholder={star <= 3 ? 'Điều gì làm bạn chưa vui?' : 'Điều gì bạn thích nhất?'} />
+          <button
+            className="btn"
+            onClick={async () => {
+              const err = await addFeedback(user, 'khac', `[Đánh giá kiếp ${c.lifeNo}] ${'★'.repeat(star)} ${text.trim() || '(không ghi chú)'} · ${Math.floor(c.age)} tuổi, ${realmLabel(c.realm, c.layer)}, ${c.cause ?? ''}`.slice(0, 480));
+              setSent(err ?? 'Cảm ơn bạn! Góp ý đã được ghi lại.');
+            }}
+          >
+            Gửi
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function DeathSheet({ c, meta, karma, isNew, onDone }: { c: Character; meta: Meta; karma: { phuc: number; nghiep: number }; isNew: boolean; onDone: (epitaph: string, note: string, bury: boolean, extra: { prophecy: { id: string; text: string }; legendName: string | null }) => void }) {
   const [prophecy] = useState(() => pickProphecy(c, Math.random));
   const weapon = c.equipped.vu_khi ? ITEMS.find((i) => i.id === c.equipped.vu_khi) : null;
@@ -632,6 +678,7 @@ export function DeathSheet({ c, meta, karma, isNew, onDone }: { c: Character; me
           )}
         </>
       )}
+      <LifeFeedback c={c} />
       <div style={{ marginTop: 10 }}>
         <ShareCard c={c} ending={ending} epitaph={text.trim()} />
       </div>
@@ -653,9 +700,9 @@ export function DeathSheet({ c, meta, karma, isNew, onDone }: { c: Character; me
 export { SEASONS };
 
 /* ---------------- Dải chỉ số gọn dưới sân khấu ---------------- */
-function Mini({ label, value, pct, color }: { label: string; value: number | string; pct: number; color: string }) {
+function Mini({ label, value, pct, color, danger }: { label: string; value: number | string; pct: number; color: string; danger?: boolean }) {
   return (
-    <div className="mini">
+    <div className={`mini ${danger ? 'danger' : ''}`}>
       <span className="mini-l">{label}</span>
       <span className="mini-v">{value}</span>
       <span className="mini-bar" aria-hidden="true">
@@ -685,7 +732,7 @@ export function StageStrip({ c, compact }: { c: Character; compact: boolean }) {
         <>
           <div className="minis">
             <Mini label="Thọ" value={`${Math.floor(c.age)}/${c.lifespan}`} pct={1 - c.age / c.lifespan} color="#b8432f" />
-            <Mini label="Khỏe" value={s.sucKhoe} pct={s.sucKhoe / 100} color="#d96a4a" />
+            <Mini label={s.sucKhoe <= 25 ? "⚠ Khỏe" : "Khỏe"} value={s.sucKhoe} pct={s.sucKhoe / 100} color="#d96a4a" danger={s.sucKhoe <= 25} />
             <Mini label="Tâm" value={s.tamCanh} pct={s.tamCanh / 100} color="#c9962e" />
             <Mini label="Ma" value={s.tamMa} pct={s.tamMa / 100} color="#6a1a2e" />
             <Mini label="Ngộ" value={s.ngoTinh} pct={s.ngoTinh / 100} color="#5b6fb0" />

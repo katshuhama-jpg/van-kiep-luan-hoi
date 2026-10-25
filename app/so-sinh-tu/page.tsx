@@ -8,6 +8,7 @@ import { GIFTS, RARE_NAME } from '@/lib/game/gacha';
 import type { Meta } from '@/lib/game/types';
 import { endingStats, loadAll } from '@/lib/storage';
 import { PETS, PET_IDS } from '@/lib/game/pets';
+import { ACHIEVEMENTS } from '@/lib/game/hook';
 import { useAuth } from '@/lib/useAuth';
 
 export default function SoSinhTu() {
@@ -56,6 +57,28 @@ export default function SoSinhTu() {
           );
         })}
       </div>
+      <section className="panel" style={{ marginTop: 10 }}>
+        <h2>Thành tựu</h2>
+        <p className="note" style={{ marginTop: 0 }}>
+          Đã đạt {(meta?.achievements ?? []).length}/{ACHIEVEMENTS.length}. Mỗi thành tựu thưởng phúc duyên, chấm khi một kiếp kết thúc.
+        </p>
+        <ul className="ach-list">
+          {ACHIEVEMENTS.map((a) => {
+            const has = meta?.achievements?.includes(a.id);
+            return (
+              <li key={a.id} className={has ? 'has' : ''}>
+                <span aria-hidden="true">{has ? '🏆' : '▫'}</span>
+                <span>
+                  <b>{a.name}</b>
+                  <small>
+                    {a.desc} · +{a.reward} phúc
+                  </small>
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
       <section className="panel" style={{ marginTop: 10 }}>
         <h2>Sổ linh thú</h2>
         <p className="note" style={{ marginTop: 0 }}>

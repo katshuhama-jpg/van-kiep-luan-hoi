@@ -106,11 +106,11 @@ export function playerStats(c: Character): Fighter {
   let atk = 15 * s;
   let def = 4 * s;
   let hp = 125 * s * (0.6 + c.stats.sucKhoe / 250);
-  if (c.path === 'kiem') atk *= 1.3;
+  if (c.path === 'kiem') atk *= 1.22;
   if (c.path === 'ma') atk *= 1.25;
   if (c.path === 'yeu') hp *= 1.25;
   if (c.path === 'tran') def *= 1.4;
-  if (c.path === 'phat') (hp *= 1.15), (def *= 1.15);
+  if (c.path === 'phat') (hp *= 1.3), (def *= 1.3), (atk *= 1.1);
   if (c.gifts?.includes('g_than_luc')) atk *= 1.25;
   if (c.gifts?.includes('g_kiem_cot')) atk *= 1.1;
   if (c.mount === 'rong') (atk *= 1.2), (hp *= 1.2);

@@ -101,7 +101,8 @@ export interface Character {
   legend?: Legend | null; // thần binh truyền kiếp đang mang
   vendettas?: Vendetta[];
   qf?: Record<string, number>; // đếm việc làm trong đời cho nhiệm vụ ngày
-  firstLifeGrace?: boolean;
+  grace16?: boolean; // được trời thương đến 16 tuổi
+  hpWarnAt?: number; // năm gần nhất đã cảnh báo sức khỏe
   ambushSeen?: string[]; // mấy loài quái chặn đường gần nhất, để không lặp lại
   timid?: number; // số lựa chọn an toàn liên tiếp gần đây: hiền quá dễ bị bắt nạt
   kiepBonus?: number; // thưởng/phạt từ mini-game thiên kiếp
@@ -229,6 +230,17 @@ export interface Meta {
   legend?: Legend | null; // thần binh truyền kiếp
   vendettas?: Vendetta[]; // kẻ thù là người chơi thật, để báo thù
   petBook?: string[]; // các loài linh thú đã từng nuôi
+  achievements?: string[]; // thành tựu dài hạn đã đạt
+  career?: Career; // số liệu cộng dồn qua các kiếp
+}
+
+export interface Career {
+  maxAge: number;
+  maxRealm: number;
+  ascPaths: string[]; // các đạo đã phi thăng
+  paths: string[]; // các đạo đã từng đi
+  duelWins: number;
+  revenges: number;
 }
 
 export interface Legend {
