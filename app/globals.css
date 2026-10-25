@@ -2737,3 +2737,19 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .dmg.el-bi { font-size: 19px; opacity: 0.85; }
 .dmg.el-bi .el-tag { color: #c8c0b0; }
 .skill-name.foe { top: 52%; font-size: 17px; color: #ffd0c4; text-shadow: 2px 2px 0 #1f160d, -1px -1px 0 #1f160d, 0 0 8px #ff6a5a; }
+
+/* viền hào quang ôm dáng người theo cảnh giới, nhịp thở chậm */
+.lpc-glow { position: absolute; inset: 0; pointer-events: none; --g: 2px; --g2: 4px; filter: drop-shadow(0 0 var(--g) var(--aura)); animation: glowBreath 2.4s ease-in-out infinite; }
+.lpc-glow.g1 { --g: 2px; --g2: 4px; }
+.lpc-glow.g2 { --g: 3px; --g2: 5px; }
+.lpc-glow.g3 { --g: 4px; --g2: 7px; }
+.lpc-glow.g4 { --g: 5px; --g2: 9px; }
+.lpc-glow.g5 { --g: 6px; --g2: 11px; }
+.lpc-glow.g6 { --g: 7px; --g2: 13px; }
+.lpc-glow.g7 { --g: 8px; --g2: 16px; }
+@keyframes glowBreath {
+  0%, 100% { filter: drop-shadow(0 0 1px var(--aura)) drop-shadow(0 0 var(--g) var(--aura)); }
+  50% { filter: drop-shadow(0 0 1.5px color-mix(in srgb, var(--aura) 55%, white)) drop-shadow(0 0 var(--g2) var(--aura)); }
+}
+.aura-ring.still { animation: none; border-style: dotted; opacity: calc(var(--k) * 0.7); }
+@media (prefers-reduced-motion: reduce) { .lpc-glow { animation: none; } }

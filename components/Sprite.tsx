@@ -611,16 +611,16 @@ function PetRoam({ id, box }: { id: string; box: number }) {
 function Aura({ color, realm, layer, box }: { color: string; realm: number; layer: number; box: number }) {
   const r = Math.min(realm, 8);
   // mạnh dần trong cùng cảnh giới theo tầng
-  const k = Math.min(1, 0.4 + r * 0.08 + Math.min(layer, 9) * 0.008);
+  const k = Math.min(1, 0.55 + r * 0.07 + Math.min(layer, 9) * 0.008);
   const size = box * (0.55 + r * 0.06);
-  const motes = r >= 2 ? Math.min(12, (r - 1) * 2) : 0;
+  const motes = r >= 1 ? Math.min(14, r * 2) : 0;
   const style = { ['--aura' as string]: color, ['--k' as string]: k } as CSSProperties;
   return (
     <span className={`aura r${r}`} style={style} aria-hidden="true">
       {r >= 7 && <span className="aura-rays" style={{ width: box * 1.15, height: box * 1.15 }} />}
       {r >= 5 && <span className="aura-pillar" style={{ width: box * 0.34, height: box * 1.1 }} />}
       <span className="lpc-aura" style={{ width: size, height: size }} />
-      {r >= 3 && <span className="aura-ring" style={{ width: box * (0.5 + r * 0.03), height: box * (0.5 + r * 0.03), marginBottom: -box * (0.21 + r * 0.015) }} />}
+      {r >= 1 && <span className={`aura-ring ${r < 3 ? 'still' : ''}`} style={{ width: box * (0.5 + r * 0.03), height: box * (0.5 + r * 0.03), marginBottom: -box * (0.21 + r * 0.015) }} />}
       {r >= 4 && <span className="aura-ring two" style={{ width: box * (0.66 + r * 0.03), height: box * (0.66 + r * 0.03), marginBottom: -box * (0.29 + r * 0.015) }} />}
       {Array.from({ length: motes }, (_, i) => (
         <span key={i} className="aura-mote" style={{ left: `${30 + ((i * 37) % 40)}%`, animationDelay: `${-(i * 0.47) % 2.6}s`, animationDuration: `${2.2 + (i % 3) * 0.5}s` }} />
@@ -707,7 +707,15 @@ export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Charact
       {aura && !l.dead && <Aura color={aura} realm={l.realm} layer={c.layer} box={box} />}
       {l.path === 'phat' && !l.dead && <span className="lpc-halo" style={{ width: box * 0.26, height: box * 0.26, top: box * 0.06 }} />}
       {l.pet && l.stage !== 'baby' && !l.dead && <PetRoam id={petOf(c)} box={box} />}
-      {url && <span className="lpc-strip" style={style} />}
+      {url &&
+        (aura && !l.dead && l.realm >= 1 ? (
+          // viền hào quang ôm sát dáng người, càng lên cảnh giới càng dày và sáng
+          <span className={`lpc-glow g${Math.min(l.realm, 7)}`} style={{ ['--aura' as string]: aura } as CSSProperties}>
+            <span className="lpc-strip" style={style} />
+          </span>
+        ) : (
+          <span className="lpc-strip" style={style} />
+        ))}
       {l.acc === 'kiembay' && !l.dead && <span className="lpc-orbit" aria-hidden="true" />}
 
     </div>
