@@ -38,11 +38,13 @@ export function realmName(realm: number, cosmos?: Cosmos | null): string {
 
 /** Thọ nguyên tối đa: phàm giới 200, tiên giới, ma giới theo cảnh giới */
 export function lifeCap(realm: number): number {
-  return realm >= ASCEND_REALM ? (REALMS[realm]?.life ?? 700) + 120 : MAX_LIFE;
+  return realm >= ASCEND_REALM ? MAX_LIFE_ASCENDED : MAX_LIFE;
 }
 
-/** Thọ nguyên tối đa của mọi kiếp, để kiếp nào cũng sớm đến lúc luân hồi */
+/** Thọ nguyên tối đa khi chưa phi thăng, để kiếp nào cũng sớm đến lúc luân hồi */
 export const MAX_LIFE = 200;
+/** Thọ nguyên tối đa sau khi lên Tiên giới, Ma giới, Thái Hư giới */
+export const MAX_LIFE_ASCENDED = 300;
 
 export const STAGE3 = ['Sơ kỳ', 'Trung kỳ', 'Hậu kỳ'];
 
