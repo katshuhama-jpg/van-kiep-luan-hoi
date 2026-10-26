@@ -151,8 +151,8 @@ const ICON_COLOR: Record<string, [string, string]> = {
   casa: ['#e0902a', '#b8432f'],
 };
 
-export function ItemIcon({ item, pill }: { item?: Item; pill?: string }) {
-  if (pill || item?.icon || item?.slot === 'ao') return <ItemIconImg item={item} pill={pill} />;
+export function ItemIcon({ item, pill, silhouette }: { item?: Item; pill?: string; silhouette?: boolean }) {
+  if (pill || item?.icon || item?.slot === 'ao') return <ItemIconImg item={item} pill={pill} silhouette={silhouette} />;
   if (pill) {
     const col = { tu_khi: '#7fc8ff', truc_co: '#ffc23d', dien_tho: '#ff8fb1', thanh_tam: '#9ff0c8', hoi_xuan: '#ff7a5a' }[pill] ?? '#fff';
     return (
@@ -615,7 +615,7 @@ export function BaoKho({ book }: { book: string[] }) {
             onClick={() => setPick(i.id)}
             aria-label={has.has(i.id) ? i.name : 'Chưa có, xem gợi ý'}
           >
-            <ItemIcon item={i} />
+            <ItemIcon item={i} silhouette={!has.has(i.id)} />
             {!has.has(i.id) && <span className="bk-q">?</span>}
           </button>
         ))}
