@@ -571,3 +571,7 @@ Mục tiêu: chết nhiều không còn là lợi thế; người chơi lâu có
 ## Màn đầu thai (bố cục 27/10)
 - Bước 1 Lá số: hàng chỉ số (kiếp, phúc, nghiệp, Kiếp Số), khung lá số gộp thiên phú trời ban, nút Đầu thai cố định đáy. Dưới là "Chuẩn bị" (mua thiên phú, tà đạo, Kiếp Số và Hồn lực, tốc độ), "Hôm nay" (thiên tượng gập lại), "Hành trình".
 - Bước 2 Cầu Nại Hà (từ kiếp 15, `ManhBaBridge` trong components/LuanHoi.tsx): toàn màn, 2 lựa chọn Uống / Hất chén, bấm là đầu thai luôn. Chưa tới kiếp 15 thì Đầu thai đi thẳng.
+
+## Quy tắc hình ảnh (Tyler, 27/10)
+- Nhân vật, quái, thú: chỉ dùng LPC (public/lpc, lib/game/monsterLook.ts) hoặc nguồn pixel art có sẵn. Không tự vẽ SVG pixel bằng code nữa.
+- Quái chưa có ngoại hình LPC thì đang rơi về hình SVG cũ trong components/Battle.tsx.

@@ -60,6 +60,20 @@ export const MONSTER_LOOK: Record<string, MonsterLook> = {
     { key: 'cape_bg', tint: '#3a0a10' },
     { key: 'w_katana', tint: '#e0e4ee' },
   ]),
+  // lão ma đầu áo đỏ: mặt già, tóc bạc dài, mắt đỏ, áo kimono đỏ máu tay áo rộng, áo choàng thẫm
+  huyet_y: M(
+    'body_adult',
+    'head_me',
+    [
+      { key: 'cape_bg', tint: '#3a0a10' },
+      { key: 'hair_xlong_bg', tint: '#d8d0d0' },
+      { key: 'eyes_red' },
+      ...kim('#8a1a24', '#2a1a1a', '#7a1420'),
+      { key: 'beard', tint: '#d8d0d0' },
+      { key: 'hair_xlong_fg', tint: '#d8d0d0' },
+    ],
+    1.05,
+  ),
   huyet_ma: M('body_male', 'mh_vamp', [{ key: 'bwings_bg' }, { key: 'pants_m', tint: '#1e1a24' }, { key: 'plate_m', tint: '#7a0a1e' }, { key: 'bwings_fg' }], 1.1),
   bang_giao: M(
     'body_musc',
