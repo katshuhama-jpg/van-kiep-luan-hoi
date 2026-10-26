@@ -3788,17 +3788,14 @@ button.shadow-card { cursor: pointer; }
 .game .speeds button { min-height: 28px; font-size: 15px; }
 .game .speeds .next { font-size: 18px; }
 
-.game .scene { height: clamp(140px, 24dvh, 230px); }
-.game.has-event .scene { height: clamp(110px, 17dvh, 180px); }
-.game .sprite-wrap .sprite { width: min(144px, 19dvh); height: min(144px, 19dvh); }
-.game.has-event .sprite-wrap .sprite { width: min(112px, 14dvh); height: min(112px, 14dvh); }
+/* cảnh và nhân vật giữ cỡ gốc: nhỏ hơn thì các chi tiết trận đấu chồng lên nhau */
 
 .game .strip { padding: 4px 8px 5px; gap: 3px; }
 .game .strip-name { font-size: 18px; }
 .game .strip-who .badge { font-size: 13px; padding: 0 4px; }
 .game .strip-realm { font-size: 14px; padding: 0 5px; }
-.game .cult { height: 14px; }
-.game .cult-text { font-size: 12px; padding-left: 4px; }
+.game .cult { height: 17px; }
+.game .cult-text { font-size: 13px; padding-left: 5px; }
 .game .minis { gap: 4px; }
 .game .mini-l { font-size: 12px; }
 .game .mini-v { font-size: 15px; }
