@@ -83,7 +83,7 @@ export function finishAmbush(c: Character, m: Monster, result: 'win' | 'lose' | 
   const lost = drop > 0 ? ` Túi bị rách, rơi mất ${drop} linh thạch.` : '';
   money(c, -drop);
   if (result === 'lose') {
-    const f = fatal(c, ctx, 0.3 * danger, `Bị ${m.name} chặn đường giữa nơi hoang vắng. Không ai tới cứu.`);
+    const f = fatal(c, ctx, c.age < 16 ? 0 : 0.3 * danger, `Bị ${m.name} chặn đường giữa nơi hoang vắng. Không ai tới cứu.`);
     if (c.dead) return [`${m.name} chặn đường, bạn không địch nổi.${f ?? ''}`];
     stat(c, 'sucKhoe', -Math.round(35 * danger));
     c.cultivation = Math.max(0, Math.round(c.cultivation * 0.93));
@@ -102,7 +102,7 @@ export function finishAmbush(c: Character, m: Monster, result: 'win' | 'lose' | 
   stat(c, 'sucKhoe', -hurt);
   const notes = [`Ba hiệp không hạ được ${m.name}, bạn đành bỏ chạy, trúng một đòn sau lưng (-${hurt} sức khỏe).${lost}`];
   if (ctx.rnd() < 0.25 * danger) {
-    const f = fatal(c, ctx, 0.08 * danger, `Bỏ chạy khỏi ${m.name}, vết thương sau lưng nhiễm độc. Bạn gục xuống giữa đường.`);
+    const f = fatal(c, ctx, c.age < 16 ? 0 : 0.08 * danger, `Bỏ chạy khỏi ${m.name}, vết thương sau lưng nhiễm độc. Bạn gục xuống giữa đường.`);
     if (c.dead) return [notes[0] + (f ?? '')];
     stat(c, 'tamMa', 6);
     notes.push(`Vết thương sau lưng mưng mủ mãi không lành, đêm nằm mơ thấy ${m.name} đuổi theo (+tâm ma).${f ?? ''}`);

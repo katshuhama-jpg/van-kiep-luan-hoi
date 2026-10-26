@@ -574,6 +574,7 @@ export function playerStats(c: Character): Fighter {
   if (c.path === 'yeu') hp *= 1.25;
   if (c.path === 'tran') def *= 1.4;
   if (c.path === 'phat') ((hp *= 1.3), (def *= 1.3), (atk *= 1.1));
+  if (c.path === 'dan') ((hp *= 1.15), (def *= 1.1)); // đan dược hộ thân
   if (c.gifts?.includes('g_than_luc')) atk *= 1.25;
   if (c.gifts?.includes('g_kiem_cot')) atk *= 1.1;
   if (c.mount === 'rong') ((atk *= 1.2), (hp *= 1.2));
@@ -787,7 +788,13 @@ export function loseFight(c: Character, m: Monster, ctx: EffectCtx): string {
       ? `Huyết Ma Lão Tổ cười khẩy, hút đi một phần tu vi rồi ném bạn ra khỏi tổng đàn. Bạn trọng thương, may còn giữ được mạng.${f ?? ''}`
       : `Kiếm Tôn thu kiếm: "Còn trẻ, đừng phí mạng." Kiếm khí phế mất một phần tu vi của bạn. Bạn trọng thương trở về.${f ?? ''}`;
   }
-  const f = fatal(c, ctx, 0.85, `Bạn bị ${m.name} giết chết ở ${m.place}, thi thể không còn nguyên vẹn.`);
+  // dưới 16 tuổi thua quái không chết (người làng, sư huynh kịp cứu); quái không mạnh hơn mình thì bớt hiểm
+  if (c.age < 16) {
+    stat(c, 'sucKhoe', -25);
+    return `Bạn thua ${m.name}, may có người qua đường kịp xua nó đi. Bạn được cõng về, trọng thương nhưng còn sống.`;
+  }
+  const d = dangerOf(c, m);
+  const f = fatal(c, ctx, d === 'de' || d === 'vua' ? 0.5 : 0.85, `Bạn bị ${m.name} giết chết ở ${m.place}, thi thể không còn nguyên vẹn.`);
   if (c.dead) return `Trừ yêu thất bại.${f}`;
   stat(c, 'sucKhoe', -35);
   return `Bạn thua ${m.name}, lết được về nhà, trọng thương.${f ?? ''}`;

@@ -34,7 +34,7 @@ import {
 import { BREAK_EVENT_ID, EVENTS, PATH_EVENT_ID, pathChoices } from './events';
 import { ASCEND_MIN_AGE, anOf, destOf, keyAn, needTrial } from './nguHanhDai';
 import { ASCEND_GEAR } from './items2';
-import { addCult, addPill, clamp, fatal, reward, wealthTier, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
+import { addCult, addPill, clamp, cosmosCause, fatal, reward, wealthTier, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
 import type { Character, Choice, EffectCtx, Fx, FxKind, GameEvent, Meta, PendingEvent, Tone } from './types';
 import { applyGifts, giftOf, hasGift } from './gacha';
 import { afterChoice, beforeChoice, righteousPeril } from './fate';
@@ -275,9 +275,9 @@ function die(c: Character, cause: string, ctx: EffectCtx) {
     return;
   }
   c.dead = true;
-  c.cause = cause;
+  c.cause = cosmosCause(c, cause);
   ctx.fx('death');
-  ctx.log(cause, 'big');
+  ctx.log(c.cause, 'big');
 }
 
 function enterRealm(c: Character, realm: number, ctx: EffectCtx, talents: string[]) {
@@ -328,6 +328,8 @@ function pathMul(c: Character) {
     case 'yeu':
       return 1.1;
     case 'phat':
+      return 1.1;
+    case 'dan':
       return 1.05;
     default:
       return 1;
@@ -1354,6 +1356,8 @@ function overwork(c: Character, ctx: EffectCtx, focus: string, n: number) {
   if (!o) return;
   if (n === SAFE_YEARS - 1) ctx.log(`${o.warn} Nên đổi việc khác cho thân tâm nghỉ ngơi.`, 'bad');
   if (n < SAFE_YEARS) return;
+  // quá ngưỡng: năm nào cũng nhắc, nói rõ có thể mất mạng
+  ctx.log(`⚠ Đã ${n} năm liền làm một việc. Càng kéo dài càng dễ ngã bệnh, thậm chí mất mạng. Hãy đổi sang việc khác.`, 'big');
   const chance = Math.min(0.4, 0.07 + (n - SAFE_YEARS) * 0.04);
   if (rnd() >= chance) return;
   const hit = weighted(

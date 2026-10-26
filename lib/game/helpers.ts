@@ -207,8 +207,19 @@ export function fatal(c: Character, ctx: EffectCtx, chance: number, cause: strin
     return ' Đúng lúc tưởng chết, ngọc bội hộ thân vỡ tan, giữ lại cho bạn một hơi thở.';
   }
   c.dead = true;
-  c.cause = cause;
+  c.cause = cosmosCause(c, cause);
   c.stats.sucKhoe = 0;
   ctx.fx('death');
-  return ' ' + cause;
+  return ' ' + c.cause;
+}
+
+/** Chết ở ba cõi vì nguyên nhân thường (quái, hiểm cảnh, thương thế...): thêm câu kết riêng của cõi, để không chết như người phàm */
+const COSMOS_EPI: Record<'tien' | 'ma' | 'hu', string> = {
+  tien: 'Tiên thể vỡ vụn, chỉ còn chút tiên quang rơi xuống nhân gian như mưa sao.',
+  ma: 'Ma hồn tan vào huyết hải, Ma giới chẳng ai còn nhắc tên.',
+  hu: 'Thân thể tan vào hư không, như chưa từng tồn tại.',
+};
+export function cosmosCause(c: Character, cause: string): string {
+  if (!c.cosmos || /tiên giới|Tiên Ma|Trảm Tiên|Thiên Đình|Ma giới|huyết hải|hư không|Lôi Bộ|tiên quang/i.test(cause)) return cause;
+  return `${cause} ${COSMOS_EPI[c.cosmos]}`;
 }

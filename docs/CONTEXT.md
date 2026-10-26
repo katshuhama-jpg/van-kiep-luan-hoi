@@ -507,3 +507,12 @@ Khi được yêu cầu cập nhật tài liệu:
 - Bia mộ riêng: màn chết có tranh bia Tiên Trủng/Ma Trủng/Hư Trủng; nghĩa trang tô thẻ mộ theo cõi (`cosOfGrave` đoán theo tên cảnh giới).
 - Đại hạn Độ Kiếp (`DAI_HAN_EVENT_ID` trong engine): chưa phi thăng, ở Độ Kiếp, thọ còn ≤ 10 năm thì hiện một lần. Chọn tọa hóa chuyển thế (kiếp sau lời tiên tri `chuyen_the`: ngộ +20, linh căn ít nhất Địa, tâm cảnh +10) hoặc truyền công (RPC `vkl_truyen_cong`: tặng 5 phúc duyên + thư `truyen_cong` cho huynh đệ kết nghĩa hoặc một người chơi ngẫu nhiên đang chơi trong 7 ngày, tối đa 1 lần mỗi 6 giờ; kiếp sau lời tiên tri `phuc_bao`), hoặc sống tiếp.
 - Ở đỉnh (cảnh giới 11) giữ như cũ: chỉ có Chứng Đạo, thất bại chờ 30 năm.
+
+## Đợt cân bằng theo dữ liệu người chơi (26/10 trưa)
+
+- Dưới 16 tuổi thua quái (trừ yêu, quái chặn đường) không chết, chỉ trọng thương. Từ 16 tuổi, thua quái không mạnh hơn mình (mức Dễ, Vừa sức) 50% chết thay vì 85%.
+- "Sát thủ nhận nhầm người" (`lib/game/fate.ts`): ít gặp hơn một nửa, tỉ lệ chết 30% -> 12%.
+- Quá độ giữ nguyên luật cũ (vẫn có thể chết), chỉ thêm cảnh báo mỗi năm khi đã quá 6 năm làm một việc. Tyler không muốn game tự đổi việc.
+- Chết ở ba cõi vì nguyên nhân thường được thêm câu kết riêng của cõi (`cosmosCause` trong `helpers.ts`).
+- Phật tu tu nhanh +10% (trước +5%); Đan tu tu nhanh +5%, sinh lực +15%, thủ +10%, mô tả đường mới.
+- Mời góp ý: bảng `vkl_feedback_invite(username, reward, rewarded_at)`, trigger `vkl_feedback_invite_reward` trên `vkl_feedback`: người được mời gửi góp ý đầu tiên (không phải đánh giá nhanh) tự nhận quà phúc duyên + thư Thiên Đạo. 26/10 mời @lyn, @thien, @lnquocdat432k2, @minimoni (10 phúc duyên mỗi người). Muốn mời thêm: `insert into vkl_feedback_invite (username, reward) values (...)` rồi gửi thư `kind = 'thien_dao'`.

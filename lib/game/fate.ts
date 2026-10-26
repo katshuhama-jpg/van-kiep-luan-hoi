@@ -44,9 +44,9 @@ const BULLY: Mishap[] = [
   },
   {
     id: 'am_sat_nham',
-    w: (c) => (c.realm >= 1 ? 2 : 0.6),
+    w: (c) => (c.realm >= 1 ? 1 : 0.3),
     run: (c, ctx) => {
-      const f = fatal(c, ctx, 0.3, 'Sát thủ nhận nhầm người. Một mũi tên tẩm độc bay ra từ bóng tối. Bạn chết mà không biết vì sao.');
+      const f = fatal(c, ctx, 0.12, 'Sát thủ nhận nhầm người. Một mũi tên tẩm độc bay ra từ bóng tối. Bạn chết mà không biết vì sao.');
       if (c.dead) return f ?? '';
       const t = hurt(c, r(ctx, 30, 50), ctx);
       return `Đêm khuya, sát thủ nhận nhầm bạn là mục tiêu. Bạn trúng một đao, may mà kêu cứu kịp.${t}${f ?? ''}`;
