@@ -483,6 +483,8 @@ Khi được yêu cầu cập nhật tài liệu:
 - Thư hệ thống: chèn `vkl_mail` với `from_player = null`, `kind = 'thien_dao'` (biểu tượng ✦, không có nút hồi âm).
 - Quà: chèn `vkl_gift` với `kind = 'phuc'` (phúc duyên cho tài khoản) hoặc kind khác (linh thạch cho nhân vật đang sống). Game lĩnh qua `vkl_payout_claim2` mỗi 2 phút khi đang chơi; quà phúc duyên hiện popup "Thiên Đạo ban thưởng" một lần. Chỉ chèn quà phúc sau khi bản có `vkl_payout_claim2` đã deploy.
 - 26/10: @minimoni (góp ý #2) nhận hồi đáp, thư và 10 phúc duyên cho bản 1.0.3.
+- 26/10 chiều: @minimoni (#4, lỗi thiên sát cô tinh và đồ đệ) nhận hồi đáp, thư, 10 phúc cho bản 2.0.0. @thien (#6): hiện lại kiếp 44 Ma Đế lên bảng (bỏ `look.unranked`). Góp ý #5 của @thien (thêm tông môn, nội dung khi lên Ma giới) chưa làm.
+- Trẻ mồ côi: `isOrphan` / `FAMILY_RE` trong `helpers.ts` lọc dòng tuổi thơ và sự kiện dưới 18 tuổi có cha mẹ, ông bà. Đồ đệ đếm bằng `c.qf.deTu`.
 
 ## Cân bằng rơi đồ (26/10)
 
