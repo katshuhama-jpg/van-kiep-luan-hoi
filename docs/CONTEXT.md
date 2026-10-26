@@ -558,3 +558,4 @@ Mục tiêu: chết nhiều không còn là lợi thế; người chơi lâu có
 - `/choi` chưa đăng nhập thì chuyển sang `/dang-nhap?next=/choi`. Nút "Vào luân hồi" ở trang đầu cũng dẫn thẳng tới đăng nhập khi chưa có phiên. Bỏ nút "Chơi thử không cần tài khoản".
 - Phiên đăng nhập (`localStorage vkl.session`) giữ nguyên, không đổi cách lưu.
 - Đăng ký mới: `carryGuest` (storage.ts) đưa hồ sơ và kiếp chơi dở của chế độ khách cũ trên máy lên tài khoản rồi xóa bản trên máy.
+- **Bục vinh danh Lôi đài** (`components/Podium.tsx`, nền `public/bg/podium-loidai.png` vẽ bằng `scripts/gen_podium.py`): đại điện Long Ỷ, số 1 giữa trước ngai, số 2 và 3 ở hai hốc; mỗi người một ô cắt riêng (`SLOT`) để hào quang không lấn nhau; bảng tên bên dưới; hiệu ứng xuất hiện (số 3, số 2, cột sáng, số 1) chỉ chạy khi đã tải xong nhân vật; bấm vào để xem chi tiết. Không ghi cáo thị.

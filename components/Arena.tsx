@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import Sprite from '@/components/Sprite';
+import Podium from '@/components/Podium';
 import type { Player } from '@/lib/auth';
 import { foeChar, simulateDuel } from '@/lib/game/duel';
 import type { RivalChar } from '@/lib/game/types';
@@ -63,6 +64,7 @@ export default function Arena({ user }: { user: Player | null }) {
   const left = st.me ? Math.max(0, ARENA_TURNS - st.me.used) : 0;
   return (
     <section className="arena">
+      <Podium top={st.top} me={user?.username} />
       {st.me ? (
         <div className="ar-me">
           <span className="ar-elo">
@@ -146,27 +148,28 @@ export default function Arena({ user }: { user: Player | null }) {
           </ol>
         </>
       )}
-      <h3 className="gh-h">Bảng lôi đài tuần này</h3>
-      {st.top.length ? (
-        <ol className="gh-board ar-top">
-          {st.top.map((t, i) => (
-            <li key={t.username} className={t.username === user?.username ? 'me' : ''}>
-              <span className="gh-poster" aria-hidden="true">
-                {i + 1}
-              </span>
-              <span>
-                <b>@{t.username}</b>
-                <small>
-                  {rank(t.elo)} · {t.wins} thắng, {t.losses} thua
-                </small>
-              </span>
-              <b className="gh-gold">{t.elo}</b>
-            </li>
-          ))}
-        </ol>
-      ) : (
-        <p className="note">Chưa ai lên lôi đài tuần này. Hãy là người đầu tiên.</p>
+      {st.top.length > 3 && (
+        <>
+          <h3 className="gh-h">Hạng 4 trở xuống</h3>
+          <ol className="gh-board ar-top">
+            {st.top.slice(3).map((t, i) => (
+              <li key={t.username} className={t.username === user?.username ? 'me' : ''}>
+                <span className="gh-poster" aria-hidden="true">
+                  {i + 4}
+                </span>
+                <span>
+                  <b>@{t.username}</b>
+                  <small>
+                    {rank(t.elo)} · {t.wins} thắng, {t.losses} thua
+                  </small>
+                </span>
+                <b className="gh-gold">{t.elo}</b>
+              </li>
+            ))}
+          </ol>
+        </>
       )}
+      {!st.top.length && <p className="note">Chưa ai lên lôi đài tuần này. Long ỷ còn trống, hãy là người đầu tiên.</p>}
     </section>
   );
 }
