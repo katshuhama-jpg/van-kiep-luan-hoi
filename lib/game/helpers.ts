@@ -225,3 +225,8 @@ export function cosmosCause(c: Character, cause: string): string {
   if (!c.cosmos || /tiên giới|Tiên Ma|Trảm Tiên|Thiên Đình|Ma giới|huyết hải|hư không|Lôi Bộ|tiên quang/i.test(cause)) return cause;
   return `${cause} ${COSMOS_EPI[c.cosmos]}`;
 }
+
+/** Không cha không mẹ: cô nhi, trẻ bị bỏ ở chùa, mệnh thiên sát cô tinh. Tuổi thơ không có cảnh cha mẹ, ông bà. */
+export const isOrphan = (c: Character) => c.originId === 'co_nhi' || c.originId === 'chua' || !!c.gifts?.includes('g_co_tinh');
+/** Câu chữ nhắc tới cha mẹ, ông bà ruột */
+export const FAMILY_RE = /(^|[^\p{L}])(mẹ|cha|ông nội|bà nội|ông ngoại|bà ngoại|ông bà|cha mẹ|bà ru|nhà mình|anh họ)(?![\p{L}])/iu;

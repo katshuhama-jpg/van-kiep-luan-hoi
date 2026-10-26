@@ -34,7 +34,7 @@ import {
 import { BREAK_EVENT_ID, EVENTS, PATH_EVENT_ID, pathChoices } from './events';
 import { ASCEND_MIN_AGE, anOf, destOf, keyAn, needTrial } from './nguHanhDai';
 import { ASCEND_GEAR } from './items2';
-import { addCult, addPill, clamp, cosmosCause, fatal, reward, wealthTier, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
+import { FAMILY_RE, isOrphan, addCult, addPill, clamp, cosmosCause, fatal, reward, wealthTier, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
 import type { Character, Choice, EffectCtx, Fx, FxKind, GameEvent, Meta, PendingEvent, Tone } from './types';
 import { applyGifts, giftOf, hasGift } from './gacha';
 import { afterChoice, beforeChoice, righteousPeril } from './fate';
@@ -206,6 +206,11 @@ export function newCharacter(meta: Meta, gifts: string[] = [], base?: Character)
     if (hasGift(c, 'g_trung_sinh') && c.past)
       c.log.push({ age: 0, tone: 'big', text: `Vừa mở mắt, bạn đã nhớ ra: kiếp trước mình là ${c.past.name}, ${c.past.realmName}, chết năm ${c.past.age} tuổi.` });
     if (hasGift(c, 'g_hop')) c.log.push({ age: 0, tone: 'normal', text: 'Trong tay bạn nắm chặt một chiếc hộp nhỏ, không ai cạy ra được.' });
+    // thiên sát cô tinh: khắc cha mẹ, tuổi thơ không còn người thân
+    if (hasGift(c, 'g_co_tinh') && c.originId !== 'co_nhi' && c.originId !== 'chua') {
+      c.familyTier = Math.min(c.familyTier ?? 1, 1);
+      c.log.push({ age: 0, tone: 'bad', text: 'Mệnh thiên sát cô tinh. Chưa đầy năm, cha mẹ lần lượt qua đời, ông bà cũng không qua nổi mùa đông. Bạn lớn lên nhờ bát cơm của hàng xóm.' });
+    }
   }
   // thiên phú mua bằng phúc duyên (áp sau thiên phú bẩm sinh để không bị ghi đè)
   if (t.includes('ho_than')) giveItem(c, 'ngoc_boi', true);
@@ -519,6 +524,15 @@ const COSMOS_KIEP_TEXT: Record<'tien' | 'ma' | 'hu', string> = {
   hu: 'Kiếp nạn xé toạc hư không quanh bạn. Bạn bị cuốn vào khe nứt thời gian.',
 };
 
+function mentionsFamily(c: Character, e: GameEvent): boolean {
+  try {
+    if (FAMILY_RE.test(e.title) || FAMILY_RE.test(e.text(c))) return true;
+    return e.choices(c, 0).some((ch) => FAMILY_RE.test(ch.label) || FAMILY_RE.test(ch.hint ?? ''));
+  } catch {
+    return false;
+  }
+}
+
 function eligible(c: Character, e: GameEvent): boolean {
   // sau phi thăng chỉ còn sự kiện tiên giới, ma giới; trước phi thăng không gặp sự kiện của các giới đó
   if (c.cosmos) {
@@ -538,6 +552,8 @@ function eligible(c: Character, e: GameEvent): boolean {
     if (a - seen < (e.cooldown ?? 10)) return false;
   }
   if (e.when && !e.when(c)) return false;
+  // trẻ mồ côi (cô nhi, bị bỏ ở chùa, thiên sát cô tinh): bỏ qua sự kiện tuổi nhỏ có cảnh cha mẹ, ông bà
+  if (c.age < 18 && isOrphan(c) && mentionsFamily(c, e)) return false;
   return true;
 }
 
@@ -786,7 +802,9 @@ const LOOT: { id: string; p: number; ok: (c: Character, focus: string | null, ti
 function findLoot(c: Character, focus: string | null, tier: number) {
   for (const l of LOOT) {
     if (c.inventory.includes(l.id) || !l.ok(c, focus, tier)) continue;
-    if (rnd() < l.p) return { id: l.id, text: l.text, name: ITEMS.find((i) => i.id === l.id)?.name ?? l.id };
+    // trẻ mồ côi: con dao bếp là của bà hàng xóm dúi cho
+    const text = isOrphan(c) && FAMILY_RE.test(l.text) ? l.text.replace(/^Mẹ /, 'Bà hàng xóm ') : l.text;
+    if (rnd() < l.p) return { id: l.id, text, name: ITEMS.find((i) => i.id === l.id)?.name ?? l.id };
   }
   return null;
 }

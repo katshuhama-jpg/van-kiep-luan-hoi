@@ -1,5 +1,5 @@
 import { DAO_LU, ITEMS, PATHS } from './data';
-import { addCult, addPill, dao, fatal, giveItem, hasItem, hurt, luck, money, pick, reward, sample, stat, usePill } from './helpers';
+import { addCult, addPill, dao, fatal, giveItem, hasItem, hurt, isOrphan, luck, money, pick, reward, sample, stat, usePill } from './helpers';
 import type { Character, Choice, GameEvent } from './types';
 import { EVENTS2 } from './events2';
 import { EVENTS3 } from './events3';
@@ -331,11 +331,11 @@ export const EVENTS: GameEvent[] = [
             },
           },
           {
-            label: 'Bỏ cuộc, về nhà ăn cơm',
+            label: 'Bỏ cuộc, về ăn cơm',
             lean: 'trung',
             run: (c) => {
               stat(c, 'sucKhoe', 3);
-              return 'Mẹ nấu canh cua. Trò chơi gì cũng không bằng.';
+              return isOrphan(c) ? 'Bà hàng xóm để phần bạn bát canh cua. Trò chơi gì cũng không bằng.' : 'Mẹ nấu canh cua. Trò chơi gì cũng không bằng.';
             },
           },
         ],
@@ -531,7 +531,7 @@ export const EVENTS: GameEvent[] = [
             },
           },
           {
-            label: 'Theo mẹ đi ăn xin',
+            label: 'Theo đám ăn mày đi xin ăn',
             lean: 'trung',
             run: (c) => {
               stat(c, 'tamMa', 4);
@@ -1514,7 +1514,10 @@ export const EVENTS: GameEvent[] = [
           dao(c, 5);
           if (c.realm >= 3) {
             stat(c, 'tamCanh', 10);
-            return 'Đứa bé có linh căn không tệ. Bạn có đồ đệ đầu tiên.';
+            const n = (c.qf?.deTu ?? 0) + 1;
+            c.qf = { ...(c.qf ?? {}), deTu: n };
+            const SO = ['', 'đầu tiên', 'thứ hai', 'thứ ba', 'thứ tư', 'thứ năm', 'thứ sáu', 'thứ bảy', 'thứ tám', 'thứ chín', 'thứ mười'];
+            return n === 1 ? 'Đứa bé có linh căn không tệ. Bạn có đồ đệ đầu tiên.' : `Đứa bé có linh căn không tệ. Bạn nhận nó làm đồ đệ ${SO[n] ?? `thứ ${n}`}, môn hạ ngày một đông.`;
           }
           return 'Đứa bé cầm bánh, đi theo hướng bạn chỉ.';
         },

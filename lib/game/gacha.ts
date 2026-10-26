@@ -115,7 +115,7 @@ export const GIFTS: Gift[] = [
       stat(c, 'ngoTinh', 30);
     },
   },
-  { id: 'g_co_tinh', name: 'Thiên sát cô tinh', desc: 'Khí vận +20, nhưng người thân cận khó bền', rare: 2, bad: true, apply: (c) => stat(c, 'khiVan', 20) },
+  { id: 'g_co_tinh', name: 'Thiên sát cô tinh', desc: 'Khí vận +20, nhưng khắc cha mẹ từ nhỏ, người thân cận khó bền', rare: 2, bad: true, apply: (c) => stat(c, 'khiVan', 20) },
   // ---- Địa ----
   { id: 'g_hop', name: 'Chiếc hộp bí ẩn', desc: 'Một chiếc hộp không mở được. Bà mụ dặn: đến năm 80 tuổi hãy mở.', rare: 3 },
   { id: 'g_he_thong', name: 'Hệ Thống', desc: 'Đinh! Một giọng nói lạ vang lên trong đầu bạn...', rare: 3 },

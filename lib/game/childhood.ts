@@ -1,4 +1,4 @@
-import { addCult, dao, giveItem, hurt, money, sample, stat } from './helpers';
+import { FAMILY_RE, addCult, dao, giveItem, hurt, isOrphan, money, sample, stat } from './helpers';
 import type { Character, Choice, GameEvent } from './types';
 
 /**
@@ -100,7 +100,7 @@ export const CHILD_LINES: Line[] = [
 /** Rút một kỷ niệm chưa gặp trong kiếp này. Trả về null nếu năm nay không có gì đáng nhớ. */
 export function childLine(c: Character, age: number, rnd: () => number): string | null {
   const used = c.seenEvents;
-  const pool = CHILD_LINES.map((l, i) => ({ l, i })).filter(({ l, i }) => age >= l.a[0] && age <= l.a[1] && !used[`cl${i}`] && (!l.ok || l.ok(c)));
+  const pool = CHILD_LINES.map((l, i) => ({ l, i })).filter(({ l, i }) => age >= l.a[0] && age <= l.a[1] && !used[`cl${i}`] && (!l.ok || l.ok(c)) && !(isOrphan(c) && FAMILY_RE.test(l.t)));
   if (!pool.length) return null;
   // ưu tiên dòng riêng theo xuất thân, vùng đất
   const weighted = pool.flatMap((p) => (p.l.ok ? [p, p, p] : [p]));

@@ -50,6 +50,12 @@ export const RELEASES: Release[] = [
         ],
       },
       {
+        h: 'Theo góp ý của đạo hữu',
+        items: [
+          '@minimoni báo: mệnh thiên sát cô tinh mà tuổi thơ vẫn có cha mẹ, ông bà; nhận bao nhiêu đồ đệ cũng là "đồ đệ đầu tiên". Nay cô tinh, cô nhi và trẻ bị bỏ ở chùa lớn lên không còn cảnh cha mẹ, ông bà; đồ đệ được đếm thứ hai, thứ ba... Đa tạ đạo hữu!',
+        ],
+      },
+      {
         h: 'Thiên đạo khắt khe hơn',
         items: [
           'Đột phá khó hơn, càng lên cao càng khó. Thiên mệnh chi tử chỉ còn giúp đột phá dễ hơn 10%.',

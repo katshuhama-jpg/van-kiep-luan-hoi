@@ -658,6 +658,7 @@ export const EVENTS2: GameEvent[] = [
         run: (c) => {
           setArc(c, 'de_tu', 1);
           stat(c, 'tamCanh', 5);
+          c.qf = { ...(c.qf ?? {}), deTu: (c.qf?.deTu ?? 0) + 1 };
           return 'Bạn khoác áo cho nó. Nó lạy chín lạy, trán chảy máu.';
         },
       },
