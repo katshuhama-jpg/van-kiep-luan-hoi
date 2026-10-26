@@ -3775,3 +3775,34 @@ button.shadow-card { cursor: pointer; }
 @keyframes mbIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 @keyframes mbWarn { 50% { box-shadow: 3px 3px 0 #000, 0 0 0 3px rgba(224, 64, 48, 0.5); } }
 @media (prefers-reduced-motion: reduce) { .mb-bridge, .mb-opt.danger { animation: none; } }
+
+/* ===== Màn chơi gọn hơn: nhường chỗ cho gia phả (27/10) ===== */
+.game .topbar { gap: 4px; padding: calc(4px + env(safe-area-inset-top)) 6px 5px; }
+.game .topbar-row { gap: 6px; }
+.game .age-big { font-size: 30px; min-width: 34px; }
+.game .topbar .meta { font-size: 14px; line-height: 1.15; }
+.game .top-icons { grid-template-columns: repeat(4, 30px); gap: 3px; }
+.game .top-icons .icon-btn, .game .top-icons .music-btn + .icon-btn { min-width: 30px; width: 30px; min-height: 28px; height: 28px; font-size: 14px; }
+.game .top-icons .music-btn { width: 30px; min-width: 30px; height: 28px; min-height: 28px; }
+.game .year-bar { height: 4px; }
+.game .speeds button { min-height: 28px; font-size: 15px; }
+.game .speeds .next { font-size: 18px; }
+
+.game .scene { height: clamp(118px, 19dvh, 190px); }
+.game.has-event .scene { height: clamp(96px, 14dvh, 150px); }
+.game .sprite-wrap .sprite { width: min(116px, 15dvh); height: min(116px, 15dvh); }
+.game.has-event .sprite-wrap .sprite { width: min(92px, 12dvh); height: min(92px, 12dvh); }
+
+.game .strip { padding: 4px 8px 5px; gap: 3px; }
+.game .strip-name { font-size: 18px; }
+.game .strip-who .badge { font-size: 13px; padding: 0 4px; }
+.game .strip-realm { font-size: 14px; padding: 0 5px; }
+.game .cult { height: 14px; }
+.game .cult-text { font-size: 12px; padding-left: 4px; }
+.game .minis { gap: 4px; }
+.game .mini-l { font-size: 12px; }
+.game .mini-v { font-size: 15px; }
+.game .mini-bar { height: 3px; }
+.game .dao-line { grid-template-columns: auto 1fr auto auto; gap: 5px; font-size: 12px; }
+.game .dao-line .dao-name { grid-column: auto; margin: 0; font-size: 12px; white-space: nowrap; }
+.game .dao-track.thin { height: 7px; }
