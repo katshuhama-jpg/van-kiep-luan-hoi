@@ -77,12 +77,12 @@ Vòng chơi một kiếp:
 
 | Bậc | Tiên giới | Ma giới | Thái Hư giới | Thọ | Tu vi cần |
 |---|---|---|---|---|---|
-| 8 | Chân Tiên | Ma Tướng | Hư Tiên | 300 | 2600 |
-| 9 | Huyền Tiên | Ma Vương | Huyền Tôn | 300 | 3600 |
-| 10 | Kim Tiên | Ma Hoàng | Thái Hư Chân Quân | 300 | 5000 |
-| 11 | Đại La Kim Tiên | Ma Đế | Hỗn Nguyên Đạo Tổ | 300 | 7000 |
+| 8 | Chân Tiên | Ma Tướng | Hư Tiên | 350 | 2600 |
+| 9 | Huyền Tiên | Ma Vương | Huyền Tôn | 350 | 3600 |
+| 10 | Kim Tiên | Ma Hoàng | Thái Hư Chân Quân | 350 | 5000 |
+| 11 | Đại La Kim Tiên | Ma Đế | Hỗn Nguyên Đạo Tổ | 350 | 7000 |
 
-- Thọ nguyên tối đa: chưa phi thăng 200 (`MAX_LIFE`), đã lên tiên/ma/hư giới 300 (`MAX_LIFE_ASCENDED` trong `lib/game/data.ts`). Mọi cách tăng thọ (đan, sự kiện) đều bị chặn ở mức này.
+- Thọ nguyên tối đa: chưa phi thăng 200 (`MAX_LIFE`), đã lên tiên/ma/hư giới 350 (`MAX_LIFE_ASCENDED` trong `lib/game/data.ts`). Mọi cách tăng thọ (đan, sự kiện) đều bị chặn ở mức này.
 
 - Độ khó đột phá tính lại từ đầu: Chân Tiên lên Huyền Tiên khó ngang Trúc Cơ lên Kim Đan, càng lên càng khó. Kiếp cuối từ bậc 11 là **Chứng Đạo** (-25% tỉ lệ, thất bại phải chờ 30 năm mới thử lại); thành công là kết cục Chứng Đạo Vĩnh Hằng.
 - Thọ hết thì **Thiên nhân ngũ suy** (tiên), ma thể mục ruỗng (ma) hoặc **tan vào hư không** (Thái Hư).

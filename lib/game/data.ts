@@ -44,7 +44,7 @@ export function lifeCap(realm: number): number {
 /** Thọ nguyên tối đa khi chưa phi thăng, để kiếp nào cũng sớm đến lúc luân hồi */
 export const MAX_LIFE = 200;
 /** Thọ nguyên tối đa sau khi lên Tiên giới, Ma giới, Thái Hư giới */
-export const MAX_LIFE_ASCENDED = 300;
+export const MAX_LIFE_ASCENDED = 350;
 
 export const STAGE3 = ['Sơ kỳ', 'Trung kỳ', 'Hậu kỳ'];
 
