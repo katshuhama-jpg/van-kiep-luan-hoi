@@ -3253,3 +3253,12 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .ver-tag { font-size: 12px; opacity: 0.8; margin-left: 4px; }
 .rel-body .rel-kick { padding: 0 44px; }
 .rel-body h2 { padding: 0 30px; }
+
+/* lời nhắn Thiên Đạo dưới góp ý */
+.fb-reply { display: flex; gap: 8px; margin-top: 8px; padding: 8px; color: #3a2414; background: #f1e3c0; background-image: repeating-linear-gradient(0deg, rgba(120, 80, 30, 0.06) 0 2px, transparent 2px 6px); border: 2px solid #b8945a; border-left: 4px solid #b0201a; }
+.fb-reply-seal { flex: 0 0 auto; display: grid; place-items: center; width: 38px; height: 38px; font-size: 11px; line-height: 1.05; font-weight: 700; text-align: center; color: #fff3dc; background: #b0201a; border: 3px double #fff3dc; box-shadow: 0 0 0 2px #b0201a; transform: rotate(-6deg); }
+.fb-reply b { color: #8a1a1a; font-size: 14px; }
+.fb-reply p { margin: 2px 0 4px; font-size: 15px; line-height: 1.4; }
+.fb-reply-link { font-size: 14px; color: #8a1a1a; }
+.mail.k-thien_dao { background: #fff6dc; border-left: 4px solid #c9962e; }
+.mail.k-thien_dao .mail-ic { color: #c9962e; }

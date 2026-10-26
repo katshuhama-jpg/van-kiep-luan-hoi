@@ -140,6 +140,24 @@ export default function GopY() {
                 </small>
               </div>
               <p>{f.content}</p>
+              {f.reply && (
+                <div className="fb-reply">
+                  <span className="fb-reply-seal" aria-hidden="true">
+                    Thiên
+                    <br />
+                    Đạo
+                  </span>
+                  <div>
+                    <b>Thiên Đạo hồi đáp{f.reply_ver ? ` · bản ${f.reply_ver}` : ''}</b>
+                    <p>{f.reply}</p>
+                    {f.reply_ver && (
+                      <Link href="/cap-nhat" className="fb-reply-link">
+                        Xem cáo thị bản {f.reply_ver} ›
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </article>
         ))}

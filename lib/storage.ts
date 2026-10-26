@@ -253,12 +253,15 @@ export interface Feedback {
   created_at: string;
   voted: boolean;
   mine: boolean;
+  reply?: string | null; // lời nhắn của người làm game
+  reply_ver?: string | null; // bản cập nhật đã làm góp ý này
 }
 
 export async function listFeedback(user: Player | null): Promise<Feedback[] | null> {
   const sb = supabase();
   if (!sb) return null;
-  const { data, error } = await sb.rpc('vkl_feedback_list', { p_token: user?.token ?? null });
+  let { data, error } = await sb.rpc('vkl_feedback_list2', { p_token: user?.token ?? null });
+  if (error) ({ data, error } = await sb.rpc('vkl_feedback_list', { p_token: user?.token ?? null }));
   if (error) return null;
   // đánh giá nhanh ở màn chết chỉ dành cho người làm game đọc, không hiện ở trang góp ý chung
   return ((data as Feedback[]) ?? []).filter((f) => !f.content.startsWith('[Đánh giá kiếp'));

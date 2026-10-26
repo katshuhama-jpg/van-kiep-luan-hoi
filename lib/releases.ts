@@ -52,6 +52,12 @@ export const RELEASES: Release[] = [
         items: ['Mạch truyện chính 10 mảnh ký ức: vì sao bạn cứ phải luân hồi mãi? Gom đủ để gặp lại chính mình thuở ban đầu.'],
       },
       {
+        h: 'Theo góp ý của đạo hữu',
+        items: [
+          '@minimoni xin thêm cốt truyện, thêm cảnh giới sau phi thăng, và bái sư theo căn cốt: căn cốt tốt làm nội môn, căn cốt thường làm ngoại môn. Cả ba đều đã có trong bản này. Đa tạ đạo hữu!',
+        ],
+      },
+      {
         h: 'Cân bằng',
         items: [
           'Quái và người đều mang ngũ hành, khắc chế khi giao đấu.',

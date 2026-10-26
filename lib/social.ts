@@ -120,9 +120,12 @@ export async function bountyClear(user: Player | null): Promise<number> {
 }
 
 /** Tiền cược chiến thư được trả về (thắng, hòa, bị từ chối) */
-export async function payoutClaim(user: Player | null): Promise<{ amount: number; note: string }[]> {
+/** Lĩnh quà đang chờ: kind 'phuc' là phúc duyên cho tài khoản, còn lại là linh thạch cho nhân vật */
+export async function payoutClaim(user: Player | null): Promise<{ kind?: string; amount: number; note: string }[]> {
   const sb = supabase();
   if (!sb || !user) return [];
+  const r = await sb.rpc('vkl_payout_claim2', { p_token: user.token });
+  if (!r.error) return (r.data as { kind: string; amount: number; note: string }[]) ?? [];
   const { data, error } = await sb.rpc('vkl_payout_claim', { p_token: user.token });
   return error ? [] : ((data as { amount: number; note: string }[]) ?? []);
 }

@@ -1062,6 +1062,18 @@ export default function PlayPage() {
         const ch = charRef.current;
         if (!ps.length || !ch || ch.dead) return;
         for (const p of ps) {
+          if (p.kind === 'phuc') {
+            // quà của Thiên Đạo: phúc duyên giữ qua các kiếp
+            const m0 = metaRef.current;
+            if (m0) {
+              const m2 = { ...m0, phucDuyen: (m0.phucDuyen ?? 0) + p.amount };
+              metaRef.current = m2;
+              setMeta(m2);
+              saveMeta(userRef.current, m2).catch(() => {});
+            }
+            ch.log.push({ age: Math.floor(ch.age), tone: 'big', text: `${p.note}: +${p.amount} phúc duyên.` });
+            continue;
+          }
           money(ch, p.amount);
           ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: `${p.note}: +${p.amount} linh thạch.` });
         }
