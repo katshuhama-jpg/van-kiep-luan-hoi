@@ -472,3 +472,11 @@ Khi được yêu cầu cập nhật tài liệu:
 - Lịch sử phiên bản ở `lib/releases.ts` (mảng `RELEASES`, bản mới nhất đứng đầu). Trang `/cap-nhat` hiện toàn bộ; nút "Lịch sử cập nhật" ở trang đầu và trong menu ☰ màn chơi.
 - **Cáo thị giang hồ** (`components/Release.tsx`): bản đầu mảng hiện thành popup một lần cho mỗi người chơi. Đã xem thì lưu `vkl.seenVer` trên máy và `meta.seenVer` trên tài khoản, không bật lại.
 - **Quy tắc:** chỉ thêm phiên bản mới khi Tyler báo phát hành. Không tự tăng version theo từng lần sửa hay từng cuộc trò chuyện. Thêm bản mới = thêm phần tử vào đầu `RELEASES`, popup tự hiện lại cho mọi người.
+
+## Hồi đáp góp ý và quà Thiên Đạo
+
+- `vkl_feedback` có thêm `reply`, `reply_ver`, `reply_at`. Trang Góp ý đọc qua `vkl_feedback_list2` và hiện khung "Thiên Đạo hồi đáp · bản X" có ấn son, kèm link sang cáo thị.
+- Khi một bản làm theo góp ý: đặt `status = 'da_xong'`, ghi `reply` (giọng kiếm hiệp, xưng "đạo hữu"), `reply_ver`; thêm mục "Theo góp ý của đạo hữu" trong `RELEASES` ghi tên người góp ý.
+- Thư hệ thống: chèn `vkl_mail` với `from_player = null`, `kind = 'thien_dao'` (biểu tượng ✦, không có nút hồi âm).
+- Quà: chèn `vkl_gift` với `kind = 'phuc'` (phúc duyên cho tài khoản) hoặc kind khác (linh thạch cho nhân vật đang sống). Game lĩnh qua `vkl_payout_claim2` mỗi 2 phút khi đang chơi; quà phúc duyên hiện popup "Thiên Đạo ban thưởng" một lần. Chỉ chèn quà phúc sau khi bản có `vkl_payout_claim2` đã deploy.
+- 26/10: @minimoni (góp ý #2) nhận hồi đáp, thư và 10 phúc duyên cho bản 1.0.3.
