@@ -1,4 +1,5 @@
 import { MONSTERS, combatLevel, effLv, growth, killExp, killReward, monsterStats, type Fighter, type Monster } from './combat';
+import { ambushDrawWin, ambushFlee, ambushLose, ambushWin, chieuOf, marginOf } from './fightLines';
 import { addCult, fatal, money, stat } from './helpers';
 import type { Character, EffectCtx } from './types';
 import { sectSide } from './sect';
@@ -67,7 +68,7 @@ export const AMBUSH_INTRO: Record<AmbushTier, string> = {
 export function finishAmbush(c: Character, m: Monster, result: 'win' | 'lose' | 'draw', pLoss: number, mDealt: number, ctx: EffectCtx, tier: AmbushTier = 'bang'): string[] {
   const danger = tier === 'hon' ? 1.6 : tier === 'kem' ? 0.6 : 1;
   if (result === 'win') {
-    const notes = [`Bạn hạ được ${m.name} chặn đường (+${killExp(c, m)} tu vi).`];
+    const notes = [`${ambushWin(m.name, marginOf(pLoss), chieuOf(c, ctx.rnd), ctx.rnd)} (+${killExp(c, m)} tu vi).`];
     // quái chặn đường thắng xong gần như chắc chắn có chiến lợi phẩm
     notes.push(...killReward(c, m, ctx, 0.75));
     const hurt = Math.round(pLoss * 25);
@@ -87,7 +88,7 @@ export function finishAmbush(c: Character, m: Monster, result: 'win' | 'lose' | 
     if (c.dead) return [`${m.name} chặn đường, bạn không địch nổi.${f ?? ''}`];
     stat(c, 'sucKhoe', -Math.round(35 * danger));
     c.cultivation = Math.max(0, Math.round(c.cultivation * 0.93));
-    return [`${m.name} đánh bạn trọng thương rồi bỏ đi (-${Math.round(35 * danger)} sức khỏe, tu vi tổn hao).${lost}${f ?? ''}`];
+    return [`${ambushLose(m.name, ctx.rnd)} (-${Math.round(35 * danger)} sức khỏe, tu vi tổn hao).${lost}${f ?? ''}`];
   }
   // hòa: hết 3 hiệp chưa phân thắng bại
   if (mDealt >= 0.5 && mDealt > pLoss) {
@@ -95,12 +96,12 @@ export function finishAmbush(c: Character, m: Monster, result: 'win' | 'lose' | 
     stat(c, 'sucKhoe', -hurt);
     const exp = Math.max(1, Math.round(killExp(c, m) * 0.3));
     addCult(c, exp);
-    return [`Ba hiệp chưa phân thắng bại, ${m.name} bị thương bỏ chạy. Bạn rút được chút kinh nghiệm (+${exp} tu vi, -${hurt} sức khỏe).`];
+    return [`${ambushDrawWin(m.name, ctx.rnd)} Bạn rút được chút kinh nghiệm (+${exp} tu vi, -${hurt} sức khỏe).`];
   }
   // phải bỏ chạy: bị đánh sau lưng, rơi linh thạch, có thể trọng thương
   const hurt = Math.round((12 + pLoss * 30) * danger);
   stat(c, 'sucKhoe', -hurt);
-  const notes = [`Ba hiệp không hạ được ${m.name}, bạn đành bỏ chạy, trúng một đòn sau lưng (-${hurt} sức khỏe).${lost}`];
+  const notes = [`${ambushFlee(m.name, ctx.rnd)} (-${hurt} sức khỏe).${lost}`];
   if (ctx.rnd() < 0.25 * danger) {
     const f = fatal(c, ctx, c.age < 16 ? 0 : 0.08 * danger, `Bỏ chạy khỏi ${m.name}, vết thương sau lưng nhiễm độc. Bạn gục xuống giữa đường.`);
     if (c.dead) return [notes[0] + (f ?? '')];

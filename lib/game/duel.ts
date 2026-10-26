@@ -1,4 +1,5 @@
 import { addMile } from './miles';
+import { chieuOf, dichThuDeath, dichThuDraw, dichThuLose, dichThuRevenge, dichThuWin, dongDaoDraw, dongDaoLose, dongDaoWin, dongMonDraw, dongMonLose, dongMonWin, marginOf, swornLine, tamMaLine } from './fightLines';
 import { qmark } from './hook';
 import { DROP_MUL, combatLevel, hit, playerStats, type Fighter } from './combat';
 import { ITEMS, REALMS, fxText, realmLabel } from './data';
@@ -362,7 +363,7 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
       const exp = Math.round(reward(c, f.daiBi ? 0.8 : 0.4) * harder);
       addCult(c, exp);
       stat(c, 'khiVan', 2);
-      out.push(f.daiBi ? `Bạn thắng ${who} ở Đại bỉ tông môn, cả diễn võ trường vỡ òa (+${exp} tu vi).` : `Bạn thắng đồng môn ${who} một chiêu (+${exp} tu vi).`);
+      out.push(`${dongMonWin(who, !!f.daiBi, ctx.rnd)} (+${exp} tu vi).`);
       if (f.daiBi) {
         const up = promote(c, ctx, 'Chưởng môn gật đầu tán thưởng.');
         if (up) out.push(up);
@@ -374,11 +375,11 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
     } else if (result === 'draw') {
       const exp = Math.round(reward(c, 0.25) * harder);
       addCult(c, exp);
-      out.push(`Hòa với ${who}. Trưởng lão đứng xem khẽ gật đầu (+${exp} tu vi).${f.daiBi ? ' Đại bỉ lần này bạn chưa được thăng bậc.' : ''}`);
+      out.push(`${dongMonDraw(who, ctx.rnd)} (+${exp} tu vi).${f.daiBi ? ' Đại bỉ lần này bạn chưa được thăng bậc.' : ''}`);
     } else {
       stat(c, 'sucKhoe', -10);
       stat(c, 'tamCanh', -3);
-      out.push(`Bạn thua đồng môn ${who}.${f.daiBi ? ' Đại bỉ lần này đành chờ kỳ sau.' : ' Về luyện thêm thôi.'}`);
+      out.push(dongMonLose(who, !!f.daiBi, ctx.rnd));
       if (ta) {
         // ma môn: đồng môn cũng chẳng nương tay
         const fl = fatal(c, ctx, 0.08, `Đồng môn ${who} ra tay tàn độc giữa hang tối. Ở Huyết Sát Môn, kẻ yếu không có quyền sống.`);
@@ -396,9 +397,7 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
     addCult(c, exp);
     stat(c, 'tamCanh', 3);
     stat(c, 'khiVan', 2);
-    out.push(
-      `${result === 'win' ? 'Bạn thắng huynh đệ một chiêu' : result === 'draw' ? 'Hai huynh đệ bất phân thắng bại' : 'Huynh đệ hơn bạn một chiêu'}. ${r.name} cười lớn, chỉ ra chỗ hở trong chiêu thức của bạn. Cả hai cùng tiến (+${exp} tu vi).`,
-    );
+    out.push(`${swornLine(r.name, result, ctx.rnd)} (+${exp} tu vi).`);
     return out;
   }
   if (f.kind === 'dong_dao') {
@@ -406,19 +405,19 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
       const exp = Math.round(reward(c, 0.35) * harder);
       addCult(c, exp);
       stat(c, 'khiVan', 2);
-      out.push(`Luận võ với ${who}, bạn thắng một chiêu. Hai bên cười lớn, chia tay như bạn cũ (+${exp} tu vi).`);
+      out.push(`${dongDaoWin(who, marginOf(pLoss), ctx.rnd)} (+${exp} tu vi).`);
       const g = rivalLoot(c, r, ctx, 0.35, (n) => `${r.name} phục tài, tháo ${n} tặng bạn làm kỷ niệm.`);
       if (g) out.push(g);
     } else if (result === 'draw') {
       const exp = Math.round(reward(c, 0.2) * harder);
       addCult(c, exp);
       stat(c, 'tamCanh', 3);
-      out.push(`Năm hiệp bất phân thắng bại với ${who}. Bạn ngộ ra vài điều về võ học (+${exp} tu vi).`);
+      out.push(`${dongDaoDraw(who, ctx.rnd)} (+${exp} tu vi).`);
     } else {
       const exp = Math.round(reward(c, 0.12) * harder);
       addCult(c, exp);
       stat(c, 'sucKhoe', -12);
-      out.push(`${who} hơn bạn một bậc. Thua tâm phục khẩu phục, bạn học được không ít (+${exp} tu vi).`);
+      out.push(`${dongDaoLose(who, ctx.rnd)} (+${exp} tu vi).`);
       // đồng đạo cũng có kẻ giả nhân giả nghĩa: thắng xong trở mặt lột đồ (người nghiêng tà dễ trở mặt hơn)
       if (ctx.rnd() < (r.daoTam < 0 ? 0.35 : 0.15)) {
         const ids: string[] = [];
@@ -438,7 +437,7 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
       const loot = Math.round((40 + r.realm * 60 * harder) * rv);
       money(c, loot);
       if (r.player && !f.npc) addMile(c, f.revenge || f.hunt ? 'revenge' : 'duel', f.revenge ? `Báo được đại thù với ${r.name} (@${r.player})` : `Đánh bại địch thủ ${r.name} (@${r.player})`);
-      out.push(f.revenge || f.hunt ? `Đại thù đã báo! Bạn hạ được ${who} (+${exp} tu vi, +${loot} linh thạch, gấp đôi).` : `Bạn đánh bại địch thủ ${who} (+${exp} tu vi, +${loot} linh thạch).`);
+      out.push(f.revenge || f.hunt ? `${dichThuRevenge(who, ctx.rnd)} (+${exp} tu vi, +${loot} linh thạch, gấp đôi).` : `${dichThuWin(who, marginOf(pLoss), chieuOf(c, ctx.rnd), ctx.rnd)} (+${exp} tu vi, +${loot} linh thạch).`);
       if (vend) {
         const back = vend.items.filter((id) => ITEMS.some((i) => i.id === id));
         back.forEach((id) => giveItem(c, id, false));
@@ -456,14 +455,14 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
       stat(c, 'sucKhoe', -Math.round(pLoss * 20));
     } else if (result === 'draw') {
       stat(c, 'sucKhoe', -Math.round(pLoss * 25));
-      out.push(`Năm hiệp chưa phân thắng bại, ${who} hừ lạnh rồi bỏ đi: "Lần sau gặp lại, ta lấy mạng ngươi."`);
+      out.push(dichThuDraw(who, marginOf(pLoss), ctx.rnd));
     } else {
       // bị đồng đạo trở mặt đánh úp thì càng dễ chết
       const fl = fatal(
         c,
         ctx,
         f.betray ? 0.45 : 0.25,
-        f.betray ? `Bạn tin nhầm ${who}. Chén trà còn chưa nguội, người đã thành thi thể.` : `Bạn bại dưới tay địch thủ ${who}. Giang hồ lại thêm một nấm mồ.`,
+        f.betray ? `Bạn tin nhầm ${who}. Chén trà còn chưa nguội, người đã thành thi thể.` : dichThuDeath(who, ctx.rnd),
       );
       if (c.dead) {
         addVendetta(c, f, [], f.betray ? `${r.name} trở mặt giết bạn bên bàn trà` : `${r.name} đã giết bạn`);
@@ -472,7 +471,7 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
       stat(c, 'sucKhoe', -35);
       const lost = Math.round(c.linhThach * (f.provoke ? 0.3 : 0.2));
       money(c, -lost);
-      out.push(`Bạn thua ${who}, bị cướp ${lost} linh thạch, lết về trong trọng thương.${fl ?? ''}`);
+      out.push(`${dichThuLose(who, lost, ctx.rnd)}${fl ?? ''}`);
       // bị lột 1-2 món đang mặc, không bao giờ mất hết
       const ids: string[] = [];
       const taken = robGear(c, ctx, ctx.rnd() < 0.3 ? 2 : 1, ids);
@@ -489,18 +488,18 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
     stat(c, 'tamCanh', 8);
     stat(c, 'khiVan', 3);
     addMile(c, 'duel', 'Vượt qua tâm ma của chính mình kiếp trước');
-    out.push(`Bạn vượt qua bóng của ${r.name} kiếp trước. Nghiệp cũ tan như sương sớm, đạo tâm sáng rực (+${exp} tu vi).`);
+    out.push(`${tamMaLine(r.name, 'win', ctx.rnd)} (+${exp} tu vi).`);
     const g = rivalLoot(c, r, ctx, 0.6, (n) => `Bóng kiếp trước tan đi, để lại ${n}, di vật bạn từng mang kiếp trước.`);
     if (g) out.push(g);
   } else if (result === 'draw') {
     stat(c, 'tamMa', 5);
-    out.push(`Bóng kiếp trước lặng lẽ tan vào mặt hồ. Chưa thắng, cũng chưa thua. Nó sẽ còn quay lại.`);
+    out.push(tamMaLine(r.name, 'draw', ctx.rnd));
   } else {
     const fl = fatal(c, ctx, 0.1, `Bạn thua chính mình kiếp trước. Hai kiếp người hóa thành một nắm tro bên hồ.`);
     if (c.dead) return [fl ?? ''];
     stat(c, 'tamMa', 15);
     stat(c, 'sucKhoe', -25);
-    out.push(`Bạn thua chính mình kiếp trước. Tâm ma dâng lên, ngực đau như bị xé.${fl ?? ''}`);
+    out.push(`${tamMaLine(r.name, 'lose', ctx.rnd)}${fl ?? ''}`);
   }
   return out;
 }

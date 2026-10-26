@@ -1,4 +1,5 @@
 import { ksDrop, ksLegendPer, ksMonster } from './luanHoi';
+import { huntDeath, huntLose } from './fightLines';
 import { omenIs } from './hook';
 import { ITEMS, REALMS, fxText, gearFx } from './data';
 import { addCult, addPill, clamp, fatal, giveItem, money, needFor, stat } from './helpers';
@@ -796,13 +797,13 @@ export function loseFight(c: Character, m: Monster, ctx: EffectCtx): string {
     return `Bạn thua ${m.name}, may có người qua đường kịp xua nó đi. Bạn được cõng về, trọng thương nhưng còn sống.`;
   }
   const d = dangerOf(c, m);
-  const f = fatal(c, ctx, d === 'de' || d === 'vua' ? 0.5 : 0.85, `Bạn bị ${m.name} giết chết ở ${m.place}, thi thể không còn nguyên vẹn.`);
+  const f = fatal(c, ctx, d === 'de' || d === 'vua' ? 0.5 : 0.85, huntDeath(m.name, m.place, ctx.rnd));
   // kết cục riêng khi chết vì quái (ở ba cõi đã có kết cục của cõi)
   if (c.dead && !c.cosmos && !c.endTag)
     c.endTag = m.id === 'tho_yeu' ? 'tho_yeu' : m.sect ? 'thi_luyen' : m.human ? 'dao_giang_ho' : d === 'de' || d === 'vua' ? 'khinh_dich' : 'tu_dia';
   if (c.dead) return `Trừ yêu thất bại.${f}`;
   stat(c, 'sucKhoe', -35);
-  return `Bạn thua ${m.name}, lết được về nhà, trọng thương.${f ?? ''}`;
+  return `${huntLose(m.name, ctx.rnd)}${f ?? ''}`;
 }
 
 export function fleeChance(c: Character, m: Monster): number {
