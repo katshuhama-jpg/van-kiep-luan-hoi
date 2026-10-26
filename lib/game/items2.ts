@@ -495,9 +495,29 @@ export const EXTRA_ITEMS: Item[] = [
     from: ['kim_long'],
     rare: 3,
   },
+  // Quà phi thăng: mỗi cõi một bộ, áo khi vào cõi, vũ khí ở cảnh giới thứ 2, phụ kiện ở cảnh giới thứ 3
+  { id: 'tien_tu_van_bao', name: 'Tử Vân tiên bào', slot: 'ao', price: 0, minRealm: 8, desc: 'Tiên bào Thiên Đình ban cho người mới ghi tên vào tiên tịch, mây tím quấn quanh vạt áo.', look: 'x', fx: { def: 26, hp: 16, cult: 8 }, src: 'event', where: 'Phi thăng lên Tiên giới', rare: 2, robe: ['#f4ecff', '#b8a0e0', '#ffe27a', '#d8c8f4'], deco: 'vu' },
+  { id: 'tien_loi_am_kiem', name: 'Lôi Âm tiên kiếm', icon: true, slot: 'vu_khi', price: 0, minRealm: 9, desc: 'Kiếm của tiên quan Lôi Bộ, vung lên nghe tiếng sấm rền xa xa.', look: 'x', fx: { atk: 48, crit: 10, cult: 6 }, src: 'event', where: 'Tu tới Huyền Tiên ở Tiên giới', rare: 2, wpn: { k: 'kiem', a: '#bfe4ff', b: '#4a7ac0' } },
+  { id: 'tien_tich_ngoc_phu', name: 'Tiên tịch ngọc phù', icon: true, slot: 'phu_kien', price: 0, minRealm: 10, desc: 'Ngọc phù khắc tên bạn trong sổ tiên tịch, đi đâu cũng được tiên quan nể mặt.', look: 'x', fx: { cult: 14, hp: 12, tamCanh: 2 }, src: 'event', where: 'Tu tới Kim Tiên ở Tiên giới', rare: 3 },
+  { id: 'ma_huyet_long_bao', name: 'Huyết Long ma bào', slot: 'ao', price: 0, minRealm: 8, desc: 'Ma bào thêu rồng máu, Ma giới chỉ ban cho kẻ nuốt trọn chín đạo huyết lôi.', look: 'x', fx: { def: 22, hp: 14, atk: 10 }, src: 'event', where: 'Vào Ma giới thành Ma Tướng', rare: 2, robe: ['#3a0a12', '#1a0408', '#e0302a', '#7a1420'], deco: 'long' },
+  { id: 'ma_diet_hon_dao', name: 'Diệt Hồn ma đao', icon: true, slot: 'vu_khi', price: 0, minRealm: 9, desc: 'Ma đao uống hồn kẻ bại trận, càng chém càng sắc.', look: 'x', fx: { atk: 52, crit: 12 }, src: 'event', where: 'Tu tới Ma Vương ở Ma giới', rare: 2, wpn: { k: 'dao', a: '#c070e0', b: '#2a0a2a' } },
+  { id: 'ma_ton_lenh', name: 'Ma Tôn lệnh', icon: true, slot: 'phu_kien', price: 0, minRealm: 10, desc: 'Lệnh bài đen, giơ lên là vạn ma cúi đầu.', look: 'x', fx: { cult: 12, atk: 10, money: 20 }, src: 'event', where: 'Tu tới Ma Hoàng ở Ma giới', rare: 3 },
+  { id: 'hu_van_dao_bao', name: 'Hư Vân đạo bào', slot: 'ao', price: 0, minRealm: 8, desc: 'Đạo bào dệt từ mây hư không, lúc rõ lúc mờ như không có thật.', look: 'x', fx: { def: 24, flee: 14, cult: 8 }, src: 'event', where: 'Lạc vào Thái Hư giới', rare: 2, robe: ['#2a2a5a', '#14143a', '#9fd8ff', '#5a5aa0'], deco: 'van' },
+  { id: 'hu_thai_hu_xich', name: 'Thái Hư xích', icon: true, slot: 'vu_khi', price: 0, minRealm: 9, desc: 'Cây thước đo được khoảng cách giữa các vì sao, đập xuống thì khoảng cách ấy biến mất.', look: 'x', fx: { atk: 46, crit: 10, flee: 8 }, src: 'event', where: 'Tu tới Huyền Tôn ở Thái Hư giới', rare: 2, wpn: { k: 'truong', a: '#7fe0e0', b: '#2a2a5a' } },
+  { id: 'hu_tinh_do_ngoc_gian', name: 'Tinh đồ ngọc giản', icon: true, slot: 'phu_kien', price: 0, minRealm: 10, desc: 'Ngọc giản ghi tinh đồ cả ba cõi, đọc một lần là biết đường đi.', look: 'x', fx: { cult: 14, drop: 10, tamCanh: 2 }, src: 'event', where: 'Tu tới Thái Hư Chân Quân', rare: 3 },
+  // Ngũ Hành Vấn Tâm Đài
+  { id: 'ngu_hanh_vien_man_chau', name: 'Ngũ Hành Viên Mãn châu', icon: true, slot: 'phu_kien', price: 0, minRealm: 7, desc: 'Năm sắc khí của năm tấm gương vỡ ngưng lại thành một viên châu. Chỉ người thắng cả năm bóng mà chưa từng ngã mới có.', look: 'x', fx: { cult: 15, atk: 12, def: 12, hp: 12 }, src: 'event', where: 'Qua Ngũ Hành Đài mà không thua lần nào', rare: 3 },
+  { id: 'guong_van_tam', name: 'Gương vỡ Vấn Tâm', icon: true, slot: 'phu_kien', price: 0, minRealm: 7, desc: 'Mảnh gương cuối cùng trên Ngũ Hành Đài. Soi vào chỉ thấy chính mình, không còn bóng nào khác.', look: 'x', fx: { cult: 6, tamCanh: 3 }, src: 'event', where: 'Qua Ngũ Hành Đài', rare: 2 },
 ];
 
 /** Đồ tông môn trao khi thăng bậc: [chính phái, ma môn] theo bậc 1..3 */
+/** Quà phi thăng theo cõi: [áo khi vào cõi, vũ khí cảnh giới 9, phụ kiện cảnh giới 10] */
+export const ASCEND_GEAR: Record<'tien' | 'ma' | 'hu', string[]> = {
+  tien: ['tien_tu_van_bao', 'tien_loi_am_kiem', 'tien_tich_ngoc_phu'],
+  ma: ['ma_huyet_long_bao', 'ma_diet_hon_dao', 'ma_ton_lenh'],
+  hu: ['hu_van_dao_bao', 'hu_thai_hu_xich', 'hu_tinh_do_ngoc_gian'],
+};
+
 export const SECT_GEAR: Record<'chinh' | 'ta' | 'trung', string[][]> = {
   chinh: [[], ['tv_ngoai_bao'], ['tv_noi_bao', 'tv_lenh'], ['tv_chan_bao']],
   trung: [[], ['tc_ky_danh_bao'], ['tc_than_truyen_bao', 'tc_la_ban'], ['tc_truyen_nhan_bao']],

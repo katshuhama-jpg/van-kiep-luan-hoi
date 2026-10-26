@@ -487,3 +487,14 @@ Khi được yêu cầu cập nhật tài liệu:
 
 - `DROP_MUL = 0.75` trong `lib/game/combat.ts`: nhân vào mọi tỉ lệ rơi đồ khi hạ quái (đồ riêng của loài, chiến lợi phẩm ngẫu nhiên, yêu đan, đan dược, Ngũ Hành Phù) và khi thắng người chơi, đồng môn, bóng kiếp trước (`rivalLoot` trong `duel.ts`). Độ hiếm không đổi, chỉ ít rơi hơn 25%.
 - Ngũ Hành Ấn 20% -> 15% (`AN_CHANCE`).
+
+## Sau phi thăng: hào quang, quà, cảnh phi thăng (26/10)
+
+- **Hào quang ba cõi** (`components/Sprite.tsx`: `CosmosBack`, `CosmosFront`; hiệu ứng pixel ở `components/PixelFx.tsx`): khi `c.cosmos` có và cảnh giới từ 8, màu hào quang đổi theo cõi và mạnh dần theo cảnh giới của cõi (lv 1-4 = cảnh giới 8-11). Hào quang thường bị giới hạn ở mức cảnh giới 4 để hiệu ứng cõi nổi lên.
+  - Tiên giới: vầng tiên quang sau đầu; lv2 hoa và đốm sáng rơi; lv3 lụa tiên vàng, mây ngũ sắc dưới chân, viền người sáng trắng; lv4 vầng tia vàng.
+  - Ma giới: huyết nguyệt (trừ ma tu đã có); lv2 tro tàn đom lửa bốc lên; lv3 lửa ma dưới chân, xích quấn quanh người; lv4 vầng tia đỏ, viền đỏ tỏa.
+  - Thái Hư: vòng xoáy hư không sau lưng; lv2 tinh tú bay vòng; lv3 bóng người tách lớp xanh hồng; lv4 vầng tia tím, người chập chờn mờ rõ.
+  - Hiện ở mọi nơi dùng Sprite: màn chơi, bảng xếp hạng, đấu người chơi, nghĩa trang.
+- **Quà phi thăng** (`ASCEND_GEAR` trong `lib/game/items2.ts`, trao trong `enterRealm` ở engine): áo khi vào cõi (mặc luôn), vũ khí ở cảnh giới 9, phụ kiện ở cảnh giới 10. Tiên: Tử Vân tiên bào, Lôi Âm tiên kiếm, Tiên tịch ngọc phù. Ma: Huyết Long ma bào, Diệt Hồn ma đao, Ma Tôn lệnh. Hư: Hư Vân đạo bào, Thái Hư xích, Tinh đồ ngọc giản. Yếu hơn đồ quái cõi đó rơi một chút.
+- **Vật phẩm Ngũ Hành Đài:** qua đài nhận Gương vỡ Vấn Tâm; qua mà chưa thua lần nào (`c.nhd.lost` rỗng) nhận thêm Ngũ Hành Viên Mãn châu (cực phẩm). Cả 11 món tính vào Bảo khố.
+- **Cảnh phi thăng** (`components/AscendScene.tsx`): khoảng 5 giây, cột sáng giáng xuống, nhân vật bay lên, nền đổi sang cõi mới; chạm để bỏ qua. Chỉ bật khi `cosmos` vừa đổi từ rỗng sang có trong lúc chơi, không bật khi mở lại bản lưu.

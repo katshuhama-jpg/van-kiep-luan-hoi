@@ -33,6 +33,7 @@ import {
 } from './data';
 import { BREAK_EVENT_ID, EVENTS, PATH_EVENT_ID, pathChoices } from './events';
 import { ASCEND_MIN_AGE, anOf, destOf, keyAn, needTrial } from './nguHanhDai';
+import { ASCEND_GEAR } from './items2';
 import { addCult, addPill, clamp, fatal, reward, wealthTier, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
 import type { Character, Choice, EffectCtx, Fx, FxKind, GameEvent, Meta, PendingEvent, Tone } from './types';
 import { applyGifts, giftOf, hasGift } from './gacha';
@@ -287,6 +288,22 @@ function enterRealm(c: Character, realm: number, ctx: EffectCtx, talents: string
   c.lifespan = Math.min(lifeCap(realm), Math.max(c.lifespan, Math.round(base * lifeMult(c, talents) * (0.9 + rnd() * 0.2))));
   const up = promoteByRealm(c, ctx);
   if (up) ctx.log(up, 'good');
+  // quà phi thăng theo cõi: áo khi vào cõi (mặc luôn), vũ khí ở cảnh giới 9, phụ kiện ở cảnh giới 10
+  if (c.cosmos && realm >= ASCEND_REALM && realm <= ASCEND_REALM + 2) {
+    const id = ASCEND_GEAR[c.cosmos][realm - ASCEND_REALM];
+    const it = ITEMS.find((i) => i.id === id);
+    if (it && !c.inventory.includes(id)) {
+      giveItem(c, id, realm === ASCEND_REALM);
+      const who = c.cosmos === 'ma' ? 'Ma Đế' : c.cosmos === 'hu' ? 'Hư không' : 'Thiên Đình';
+      ctx.fx('buy', it.name);
+      ctx.log(
+        realm === ASCEND_REALM
+          ? `${who} ban cho bạn ${it.name}. Bạn khoác vào, khí tức đổi khác hẳn.`
+          : `${who} ban thưởng ${it.name}${realm === ASCEND_REALM + 2 ? ', đủ bộ ba món của cõi này' : ''}. Mở Túi đồ để mang.`,
+        'good',
+      );
+    }
+  }
   if (!c.cosmos && (realm === 5 || realm === 7)) {
     const k = ELEMENTS[keyAn(c)].name;
     ctx.log(

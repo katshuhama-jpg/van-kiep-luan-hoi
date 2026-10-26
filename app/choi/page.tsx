@@ -35,6 +35,7 @@ import { HookSheet, TitleBadge } from '@/components/Hook';
 import { omenToday } from '@/lib/game/hook';
 import { useAuth } from '@/lib/useAuth';
 import ReleaseNotice, { GiftNotice, needNotice } from '@/components/Release';
+import AscendScene from '@/components/AscendScene';
 import { CURRENT_VERSION } from '@/lib/releases';
 import NguHanhDai, { NhdMirror, waiting, type NhdView } from '@/components/NguHanhDai';
 import { arenaBg, NHD_MAX_TURNS, PHU_PRICE, STANCES, loseRound, mirrorChar, mirrorStance, mirrorStats, needTrial, nhdOf, roundMods, tellOf, winRound, type RoundMods, type Stance } from '@/lib/game/nguHanhDai';
@@ -66,6 +67,8 @@ export default function PlayPage() {
   const [nhd, setNhd] = useState<{ i: number; p: PendingEvent; view: NhdView | 'fight'; foe: Stance; tell: Stance; msg?: string; end?: 'next' | 'done' | 'lose' | 'dead' } | null>(null);
   const [tut, setTut] = useState(false); // hướng dẫn lần đầu
   const [relOpen, setRelOpen] = useState(false); // cáo thị bản cập nhật mới
+  const [ascend, setAscend] = useState<'tien' | 'ma' | 'hu' | null>(null); // cảnh phi thăng vừa xảy ra
+  const cosSeen = useRef<string | null | undefined>(undefined);
   const [gifts, setGifts] = useState<{ amount: number; note: string }[] | null>(null); // quà Thiên Đạo vừa lĩnh
   const [duelWarn, setDuelWarn] = useState<DuelFoe | null>(null); // cảnh báo kỳ ngộ giang hồ
   const duelOpen = useRef(false);
@@ -210,7 +213,7 @@ export default function PlayPage() {
   const speedRef = useRef(speed);
   speedRef.current = speed;
   const activeRef = useRef(false);
-  activeRef.current = running && sheet === null && phase === 'play' && kiep === null && !tut && duelWarn === null && !nhdPeek && !relOpen && !gifts && (nhd === null || nhd.view === 'fight');
+  activeRef.current = running && sheet === null && phase === 'play' && kiep === null && !tut && duelWarn === null && !nhdPeek && !relOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
 
   /** Ngũ hành giữa bạn và loài quái */
   function monElem(c: Character, m: { el?: Element }) {
@@ -1147,6 +1150,19 @@ export default function PlayPage() {
   };
 
   // đánh dấu đã xem mục mới trong Sổ Sinh Tử (e) hay Bảo khố (i)
+  // cảnh phi thăng: chỉ khi vừa đổi từ chưa có cõi sang có cõi trong lúc chơi (không bật khi mở lại bản lưu)
+  const curCos = charRef.current?.cosmos ?? null;
+  const curLife = charRef.current?.lifeNo;
+  useEffect(() => {
+    if (phase !== 'play') return;
+    if (cosSeen.current === undefined) {
+      cosSeen.current = curCos;
+      return;
+    }
+    if (!cosSeen.current && curCos) setAscend(curCos);
+    cosSeen.current = curCos;
+  }, [curCos, curLife, phase]);
+
   // cáo thị bản cập nhật: một lần cho mỗi bản, nhường hướng dẫn lần đầu
   const metaReady = !!meta;
   useEffect(() => {
@@ -1592,6 +1608,7 @@ export default function PlayPage() {
         />
       )}
       {relOpen && !c.dead && <ReleaseNotice onClose={closeRel} />}
+      {ascend && !c.dead && <AscendScene c={c} cos={ascend} onDone={() => setAscend(null)} />}
       {gifts && !relOpen && <GiftNotice gifts={gifts} onClose={() => setGifts(null)} />}
       {nhdPeek && !nhd && (
         <NguHanhDai c={c} view="rules" tell="cong" preview onFight={() => {}} onBuyPhu={() => {}} onLeave={() => setNhdPeek(false)} onNext={() => {}} onRules={() => setNhdPeek(false)} />

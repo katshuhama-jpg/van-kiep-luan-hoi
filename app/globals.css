@@ -3266,3 +3266,44 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .gift-body h2 { font-size: 34px; }
 .gift-hint { margin: 6px 0 0; font-size: 14px; line-height: 1.4; color: #6a4a2a; }
 .gift-body .rel-seal { font-size: 11px; line-height: 1.05; text-align: center; }
+
+/* hào quang ba cõi sau phi thăng */
+.cos-aura { position: absolute; inset: 0; pointer-events: none; }
+.cos-halo { top: 4%; }
+.cos-rays { top: 42%; opacity: 0.9; }
+.cos-van { top: 95%; }
+.cos-mahoa { top: 88%; }
+.cos-vortex { top: 42%; opacity: 0.95; }
+.cos-fall { top: 48%; }
+.cos-xich { top: 62%; }
+.cos-stars { top: 44%; }
+.lpc-glow.cos-tien.cl3, .lpc-glow.cos-tien.cl4 { --c: #fffbe6; --o2: drop-shadow(var(--px) 0 0 #ffe27a) drop-shadow(calc(-1 * var(--px)) 0 0 #ffe27a) drop-shadow(0 calc(-1 * var(--px)) 0 #ffe27a) drop-shadow(0 0 6px #fff4c0); }
+.lpc-glow.cos-ma { --c: #7a0a18; --o2: drop-shadow(var(--px) 0 0 #ff3048) drop-shadow(calc(-1 * var(--px)) 0 0 #ff3048) drop-shadow(0 calc(-1 * var(--px)) 0 #ff3048); }
+.lpc-glow.cos-ma.cl4 { --o2: drop-shadow(var(--px) 0 0 #ff3048) drop-shadow(calc(-1 * var(--px)) 0 0 #ff3048) drop-shadow(0 calc(-1 * var(--px)) 0 #ff3048) drop-shadow(0 0 8px #c0102a); }
+.lpc-glow.cos-hu { --c: #a08cff; }
+.lpc-glow.cos-hu.cl3, .lpc-glow.cos-hu.cl4 { --o2: drop-shadow(calc(2 * var(--px)) 0 0 rgba(127, 224, 255, 0.55)) drop-shadow(calc(-2 * var(--px)) 0 0 rgba(255, 106, 216, 0.45)); }
+.lpc-glow.cos-hu.cl4 { animation: huFlicker 2.2s steps(1) infinite; }
+@keyframes huFlicker { 0%, 100% { opacity: 1; } 45% { opacity: 0.55; } 50% { opacity: 1; } 78% { opacity: 0.75; } 82% { opacity: 1; } }
+
+/* cảnh phi thăng */
+.asc { position: fixed; inset: 0; z-index: 95; overflow: hidden; background: #000; cursor: pointer; --beam: #fff4c0; --sky: #3a2a10; }
+.asc-ma { --beam: #ff3048; --sky: #1a0408; }
+.asc-hu { --beam: #a08cff; --sky: #06061a; }
+.asc-bg { position: absolute; inset: 0; background: var(--sky) center / cover no-repeat; image-rendering: pixelated; opacity: 0; transition: opacity 1.4s steps(6); }
+.asc.s3 .asc-bg { opacity: 1; }
+.asc-flash { position: absolute; inset: 0; background: var(--beam); opacity: 0; }
+.asc.s1 .asc-flash { animation: ascFlash 0.6s steps(3); }
+.asc.s3 .asc-flash { animation: ascFlash 0.8s steps(4); }
+@keyframes ascFlash { 0% { opacity: 0; } 30% { opacity: 0.9; } 100% { opacity: 0; } }
+.asc-beam { position: absolute; left: 50%; top: 0; bottom: 0; width: 0; transform: translateX(-50%); background: repeating-linear-gradient(0deg, var(--beam) 0 6px, color-mix(in srgb, var(--beam) 60%, white) 6px 12px); box-shadow: 0 0 40px var(--beam); transition: width 0.6s steps(5); }
+.asc.s1 .asc-beam, .asc.s2 .asc-beam { width: 120px; animation: ascBeam 0.4s steps(2) infinite; }
+@keyframes ascBeam { 50% { background-position-y: 6px; } }
+.asc-hero { position: absolute; left: 50%; bottom: 18%; transform: translateX(-50%); transition: transform 1.6s steps(12), bottom 1.6s steps(12); }
+.asc.s2 .asc-hero { bottom: 46%; }
+.asc.s3 .asc-hero { bottom: 22%; }
+.asc-text { position: absolute; left: 16px; right: 16px; top: 14%; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; opacity: 0; transition: opacity 0.6s steps(3); }
+.asc.s2 .asc-text, .asc.s3 .asc-text { opacity: 1; }
+.asc-text b { font-size: 34px; color: #fff3dc; letter-spacing: 0.06em; text-shadow: 3px 3px 0 #1f160d, 0 0 18px var(--beam); }
+.asc-text span { font-size: 16px; color: #fff3dc; text-shadow: 2px 2px 0 #1f160d; }
+.asc-skip { position: absolute; bottom: 16px; left: 0; right: 0; text-align: center; font-size: 13px; color: rgba(255, 243, 220, 0.7); }
+@media (prefers-reduced-motion: reduce) { .asc * { animation: none !important; transition: none !important; } }

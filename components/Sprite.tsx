@@ -5,7 +5,7 @@ import { HAIR_COLORS, ITEMS, PATHS, type RobeDeco, type WeaponKind } from '@/lib
 import { ANIM, composeStrip, readyStrip, type Anim, type Layer } from '@/lib/lpc';
 import { equippedLook } from '@/lib/game/helpers';
 import { PETS, petOf } from '@/lib/game/pets';
-import { PixelFx, fxOrbit, fxPillar, fxRays, fxRing, fxMotes, fxBatQuai, fxCuuVi, fxDanHoan, fxHuyetNguyet, fxKiem, fxLua, fxLuaTien, fxMaKhi, fxPhatQuang, fxSen, fxTuongVan } from './PixelFx';
+import { PixelFx, fxEmbers, fxHuStars, fxHuVortex, fxMaHoa, fxMaXich, fxNguSacVan, fxTienHalo, fxTienPetals, fxOrbit, fxPillar, fxRays, fxRing, fxMotes, fxBatQuai, fxCuuVi, fxDanHoan, fxHuyetNguyet, fxKiem, fxLua, fxLuaTien, fxMaKhi, fxPhatQuang, fxSen, fxTuongVan } from './PixelFx';
 import type { Character } from '@/lib/game/types';
 
 type R = [number, number, number, number, string];
@@ -739,6 +739,56 @@ function Aura({ color, realm, box }: { color: string; realm: number; layer: numb
   );
 }
 
+/** Màu hào quang sau phi thăng, thay màu theo đạo */
+const COS_AURA: Record<'tien' | 'ma' | 'hu', string> = { tien: '#ffe9a0', ma: '#ff3048', hu: '#a08cff' };
+
+/**
+ * Hào quang của ba cõi sau phi thăng, mạnh dần theo cảnh giới của cõi (lv 1-4):
+ * Tiên giới: tiên quang sau đầu, hoa rơi, mây ngũ sắc và lụa tiên, vầng tia vàng.
+ * Ma giới: huyết nguyệt, tro tàn bốc lên, lửa ma dưới chân và xích quấn, vầng tia đỏ.
+ * Thái Hư: vòng xoáy hư không, tinh tú bay vòng, bóng người tách lớp, chập chờn như không có thật.
+ */
+function CosmosBack({ cos, lv, box, maPath }: { cos: 'tien' | 'ma' | 'hu'; lv: number; box: number; maPath: boolean }) {
+  const sc = box / 64;
+  if (cos === 'tien')
+    return (
+      <span className="cos-aura" aria-hidden="true">
+        {lv >= 4 && <PixelFx spec={fxRays('#ffe27a')} scale={sc} dur={2.4} className="pa cos-rays" />}
+        <PixelFx spec={fxTienHalo()} scale={sc} dur={2} className="pa cos-halo" />
+        {lv >= 3 && <PixelFx spec={fxLuaTien('#ffe27a')} scale={sc} dur={2.4} className="pa pa-lua-tien" />}
+        {lv >= 3 && <PixelFx spec={fxNguSacVan()} scale={sc} dur={1.6} className="pa cos-van" />}
+      </span>
+    );
+  if (cos === 'ma')
+    return (
+      <span className="cos-aura" aria-hidden="true">
+        {lv >= 4 && <PixelFx spec={fxRays('#c0102a')} scale={sc} dur={2.4} className="pa cos-rays" />}
+        {!maPath && <PixelFx spec={fxHuyetNguyet()} scale={sc} dur={1} className="pa pa-huyetnguyet" />}
+        {lv >= 3 && <PixelFx spec={fxMaHoa()} scale={sc} dur={0.8} className="pa cos-mahoa" />}
+      </span>
+    );
+  return (
+    <span className="cos-aura" aria-hidden="true">
+      {lv >= 4 && <PixelFx spec={fxRays('#8a6ae0')} scale={sc} dur={3} className="pa cos-rays" />}
+      <PixelFx spec={fxHuVortex()} scale={sc} dur={2.4} className="pa cos-vortex" />
+    </span>
+  );
+}
+
+function CosmosFront({ cos, lv, box }: { cos: 'tien' | 'ma' | 'hu'; lv: number; box: number }) {
+  const sc = box / 64;
+  if (lv < 2) return null;
+  if (cos === 'tien') return <PixelFx spec={fxTienPetals(6 + lv * 3)} scale={sc} dur={3} className="pa cos-fall" />;
+  if (cos === 'ma')
+    return (
+      <>
+        <PixelFx spec={fxEmbers(6 + lv * 3)} scale={sc} dur={2.4} className="pa cos-fall" />
+        {lv >= 3 && <PixelFx spec={fxMaXich()} scale={sc} dur={3} className="pa cos-xich" />}
+      </>
+    );
+  return <PixelFx spec={fxHuStars(5 + lv * 3)} scale={sc} dur={4} className="pa cos-stars" />;
+}
+
 /** Hình đã hiện gần nhất theo bộ lớp ảnh, dùng tạm khi đổi dáng mà hình mới chưa ghép xong */
 const LAST_SHOWN = new Map<string, { key: string; url: string; frames: number }>();
 const PREFETCH: [Anim, number][] = [
@@ -782,7 +832,9 @@ export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Charact
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
-  const aura = auraColor(l);
+  const cos = c.cosmos && l.realm >= 8 ? c.cosmos : null;
+  const cosLv = cos ? Math.min(4, l.realm - 7) : 0;
+  const aura = cos ? COS_AURA[cos] : auraColor(l);
   const scale = l.stage === 'baby' ? 0.75 : 1;
   const box = size;
   const cell = box * 2 * scale; // khung 128 = gấp đôi khung người 64
@@ -813,20 +865,22 @@ export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Charact
     >
       {/* chưa ghép xong hình thì hiện bóng chờ, chưa hiện hiệu ứng để khỏi thấy hào quang mà không thấy người */}
       {!url && <span className="lpc-wait" style={{ width: box * 0.36, height: box * 0.62, left: box * 0.32, top: box * 0.2 }} />}
-      {url && aura && !l.dead && <Aura color={aura} realm={l.realm} layer={c.layer} box={box} />}
-      {url && aura && !l.dead && l.realm >= 5 && !ma0(l) && Math.abs(l.dao) < 15 && <TuongVan box={box} />}
+      {url && cos && !l.dead && <CosmosBack cos={cos} lv={cosLv} box={box} maPath={ma0(l)} />}
+      {url && aura && !l.dead && <Aura color={aura} realm={cos ? 4 : l.realm} layer={c.layer} box={box} />}
+      {url && aura && !l.dead && !cos && l.realm >= 5 && !ma0(l) && Math.abs(l.dao) < 15 && <TuongVan box={box} />}
       {url && aura && !l.dead && l.realm >= 2 && <PathAura path={l.path} ma={ma0(l)} yeu={!!l.yeu} realm={l.realm} color={aura} box={box} />}
       {url && l.path === 'phat' && !l.dead && <span className="lpc-halo" style={{ width: box * 0.26, height: box * 0.26, top: box * 0.06 }} />}
       {url && l.pet && l.stage !== 'baby' && !l.dead && <PetRoam id={petOf(c)} box={box} />}
       {url &&
         (aura && !l.dead && l.realm >= 1 ? (
           // viền hào quang ôm sát dáng người, càng lên cảnh giới càng dày và sáng
-          <span className={`lpc-glow g${Math.min(l.realm, 7)}`} style={{ ['--aura' as string]: aura, ['--px' as string]: `${Math.max(1, Math.round(box / 64))}px` } as CSSProperties}>
+          <span className={`lpc-glow g${Math.min(l.realm, 7)}${cos ? ` cos-${cos} cl${cosLv}` : ''}`} style={{ ['--aura' as string]: aura, ['--px' as string]: `${Math.max(1, Math.round(box / 64))}px` } as CSSProperties}>
             <span className="lpc-strip" style={style} />
           </span>
         ) : (
           <span className="lpc-strip" style={style} />
         ))}
+      {url && cos && !l.dead && <CosmosFront cos={cos} lv={cosLv} box={box} />}
       {l.acc === 'kiembay' && !l.dead && <span className="lpc-orbit" aria-hidden="true" />}
     </div>
   );

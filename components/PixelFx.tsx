@@ -474,3 +474,183 @@ export function fxRays(color: string): FxSpec {
     },
   };
 }
+
+// ---------------- Hào quang sau phi thăng: Tiên giới, Ma giới, Thái Hư giới ----------------
+/** Tiên giới: vầng tiên quang tròn sau đầu, vành vàng có tia ngắn */
+export function fxTienHalo(): FxSpec {
+  const S = 40;
+  const c = S / 2;
+  return {
+    key: 'tienhalo2',
+    w: S,
+    h: S,
+    frames: 8,
+    outline: '#a8782a',
+    draw: (p) => {
+      let out = `<circle cx="${c}" cy="${c}" r="14" fill="none" stroke="#ffe27a" stroke-width="2"/><circle cx="${c}" cy="${c}" r="11" fill="none" stroke="#fff8dc" stroke-width="1"/>`;
+      for (let i = 0; i < 16; i++) {
+        const a = i * 22.5 + p * 22.5;
+        out += `<rect x="${c - 0.5}" y="0" width="1" height="${i % 2 ? 3 : 5}" fill="${i % 2 ? '#fff8dc' : '#ffe27a'}" transform="rotate(${r1(a)} ${c} ${c})"/>`;
+      }
+      return out;
+    },
+  };
+}
+
+/** Tiên giới: cánh hoa và đốm sáng rơi chậm quanh người */
+export function fxTienPetals(n: number): FxSpec {
+  const W = 50;
+  const H = 56;
+  return {
+    key: `tienpetal${n}`,
+    w: W,
+    h: H,
+    frames: 12,
+    draw: (p) => {
+      let out = '';
+      for (let i = 0; i < n; i++) {
+        const q = (p + i / n) % 1;
+        const x = 4 + ((i * 13) % (W - 8)) + Math.sin(q * TAU + i) * 3;
+        const y = 2 + q * (H - 6);
+        if (q > 0.92) continue;
+        out += i % 3 ? `<rect x="${Math.round(x)}" y="${Math.round(y)}" width="2" height="1" fill="${i % 2 ? '#ffc8dc' : '#ffffff'}"/>` : `<rect x="${Math.round(x)}" y="${Math.round(y)}" width="1" height="1" fill="#ffe27a"/>`;
+      }
+      return out;
+    },
+  };
+}
+
+/** Tiên giới: mây ngũ sắc dưới chân */
+export function fxNguSacVan(): FxSpec {
+  const cols = ['#ffd0e0', '#fff4b0', '#c8f0d0', '#c8e0ff', '#e8d0ff'];
+  return {
+    key: 'ngusacvan',
+    w: 64,
+    h: 16,
+    frames: 4,
+    outline: '#8a78b0',
+    draw: (p) => {
+      let out = '';
+      [8, 20, 32, 44, 56].forEach((x, i) => {
+        const y = 9 + Math.round(Math.sin(TAU * p + i) * 1);
+        out += `<g transform="translate(${x} ${y})"><path d="M-8 3 Q-9 -1 -5 -2 Q-4 -6 1 -5 Q4 -7 7 -3 Q10 -2 8 2 Q9 4 6 4Z" fill="${cols[i]}"/></g>`;
+      });
+      return out;
+    },
+  };
+}
+
+/** Ma giới: tro tàn và đom lửa bốc lên */
+export function fxEmbers(n: number): FxSpec {
+  const W = 50;
+  const H = 58;
+  return {
+    key: `embers${n}`,
+    w: W,
+    h: H,
+    frames: 12,
+    draw: (p) => {
+      let out = '';
+      for (let i = 0; i < n; i++) {
+        const q = (p + i / n) % 1;
+        const x = 4 + ((i * 11) % (W - 8)) + Math.sin(q * 9 + i) * 2;
+        const y = H - 3 - q * (H - 6);
+        if (q > 0.9) continue;
+        out += `<rect x="${Math.round(x)}" y="${Math.round(y)}" width="${i % 4 ? 1 : 2}" height="${i % 4 ? 1 : 2}" fill="${i % 3 ? '#ff6a2a' : i % 2 ? '#ffd060' : '#5a5050'}"/>`;
+      }
+      return out;
+    },
+  };
+}
+
+/** Ma giới: lửa ma đỏ đen bốc dưới chân */
+export function fxMaHoa(): FxSpec {
+  const W = 48;
+  const H = 22;
+  return {
+    key: 'mahoa',
+    w: W,
+    h: H,
+    frames: 6,
+    outline: '#1a0206',
+    draw: (p, i) => {
+      let out = '';
+      for (let k = 0; k < 7; k++) {
+        const x = 5 + k * 6.3;
+        const hh = 8 + ((k * 5 + i * 3) % 7) + Math.sin(TAU * p + k) * 2;
+        out += `<path d="M${r1(x - 3)} ${H} Q${r1(x - 2)} ${r1(H - hh * 0.6)} ${r1(x)} ${r1(H - hh)} Q${r1(x + 2)} ${r1(H - hh * 0.6)} ${r1(x + 3)} ${H}Z" fill="${k % 2 ? '#a01020' : '#5a0a20'}"/><path d="M${r1(x - 1)} ${H} Q${r1(x)} ${r1(H - hh * 0.5)} ${r1(x + 1)} ${H}Z" fill="#ff5a2a"/>`;
+      }
+      return out;
+    },
+  };
+}
+
+/** Ma giới: xích ma khí quấn vòng quanh người */
+export function fxMaXich(): FxSpec {
+  const W = 56;
+  const H = 40;
+  return {
+    key: 'maxich',
+    w: W,
+    h: H,
+    frames: 12,
+    outline: '#12020a',
+    draw: (p) => {
+      let out = '';
+      for (let i = 0; i < 14; i++) {
+        const a = TAU * (p + i / 14);
+        const x = W / 2 + Math.cos(a) * (W / 2 - 4);
+        const y = H / 2 + Math.sin(a) * 7 + (i % 2 ? 0 : 1);
+        const front = Math.sin(a) > 0;
+        out += `<rect x="${Math.round(x) - 1}" y="${Math.round(y) - 1}" width="3" height="2" fill="${front ? '#8a8a96' : '#4a4a56'}"/><rect x="${Math.round(x)}" y="${Math.round(y) - 1}" width="1" height="1" fill="#2a2a32"/>`;
+      }
+      return out;
+    },
+  };
+}
+
+/** Thái Hư: vòng xoáy hư không sau lưng */
+export function fxHuVortex(): FxSpec {
+  const S = 66;
+  const c = S / 2;
+  return {
+    key: 'huvortex2',
+    w: S,
+    h: S,
+    frames: 12,
+    soft: true,
+    draw: (p) => {
+      let out = `<circle cx="${c}" cy="${c}" r="12" fill="#05030e" opacity="0.8"/>`;
+      for (let arm = 0; arm < 4; arm++)
+        for (let k = 0; k < 14; k++) {
+          const a = TAU * (p + arm / 4) + k * 0.38;
+          const r = 12 + k * 1.45;
+          out += `<rect x="${r1(c + Math.cos(a) * r - 1)}" y="${r1(c + Math.sin(a) * r - 1)}" width="2" height="2" fill="${k % 3 ? '#8a6ae0' : '#9fe8ff'}" opacity="${1 - k / 16}"/>`;
+        }
+      return out;
+    },
+  };
+}
+
+/** Thái Hư: tinh tú bay vòng quanh người */
+export function fxHuStars(n: number): FxSpec {
+  const W = 56;
+  const H = 46;
+  return {
+    key: `hustars${n}`,
+    w: W,
+    h: H,
+    frames: 16,
+    draw: (p) => {
+      let out = '';
+      for (let i = 0; i < n; i++) {
+        const a = TAU * (p * (i % 2 ? -1 : 1) + i / n);
+        const rx = W / 2 - 3 - (i % 3) * 4;
+        const x = W / 2 + Math.cos(a) * rx;
+        const y = 10 + (i % 4) * 8 + Math.sin(a) * 4;
+        out += i % 3 === 0 ? `<rect x="${Math.round(x) - 1}" y="${Math.round(y)}" width="3" height="1" fill="#ffffff"/><rect x="${Math.round(x)}" y="${Math.round(y) - 1}" width="1" height="3" fill="#ffffff"/>` : `<rect x="${Math.round(x)}" y="${Math.round(y)}" width="1" height="1" fill="${i % 2 ? '#9fe8ff' : '#c8b8ff'}"/>`;
+      }
+      return out;
+    },
+  };
+}

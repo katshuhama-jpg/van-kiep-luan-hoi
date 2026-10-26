@@ -1,7 +1,7 @@
 import { hit, playerStats, type Fighter } from './combat';
 import { ELEMENTS, elemMul, elemRel, elementOf, type ElemRel } from './nguhanh';
 import { addMile } from './miles';
-import { fatal } from './helpers';
+import { fatal, giveItem } from './helpers';
 import type { Character, EffectCtx, Element } from './types';
 
 /**
@@ -51,6 +51,7 @@ export interface NhdState {
   tries: number;
   done?: boolean;
   warned?: boolean;
+  lost?: number; // tổng số lần thua trên đài
 }
 
 export const nhdOf = (c: Character): NhdState => (c.nhd ??= { won: 0, lose5: 0, tries: 0 });
@@ -178,7 +179,11 @@ export function winRound(c: Character): string {
     s.done = true;
     c.kiepBonus = (c.kiepBonus ?? 0) + 0.1;
     addMile(c, 'duel', 'Qua Ngũ Hành Vấn Tâm Đài, ngũ hành viên mãn');
-    return `Bóng ${ELEMENTS[el].name} vỡ tan như gương. Năm bóng của bạn hợp lại làm một, ngũ hành viên mãn. Cửa trời đã mở, thiên kiếp đang chờ (tỉ lệ vượt kiếp +10%).`;
+    // vật phẩm của đài: ai qua cũng có mảnh gương vỡ; thắng cả năm bóng mà chưa từng ngã thì có Viên Mãn châu
+    giveItem(c, 'guong_van_tam', false);
+    const perfect = !s.lost;
+    if (perfect) giveItem(c, 'ngu_hanh_vien_man_chau', false);
+    return `Bóng ${ELEMENTS[el].name} vỡ tan như gương. Năm bóng của bạn hợp lại làm một, ngũ hành viên mãn. Cửa trời đã mở, thiên kiếp đang chờ (tỉ lệ vượt kiếp +10%). Bạn nhặt được mảnh Gương vỡ Vấn Tâm${perfect ? '. Năm sắc khí còn ngưng lại thành Ngũ Hành Viên Mãn châu, chỉ người chưa từng ngã trên đài mới có' : ''}.`;
   }
   return `Bóng ${ELEMENTS[el].name} tan thành khói. Còn ${NHD_ROUNDS - s.won} bóng.`;
 }
@@ -192,6 +197,7 @@ export function loseRound(c: Character, ctx: EffectCtx): string {
   const round = s.won;
   const el = nhdOrder(elementOf(c))[round];
   if (round >= 4) s.lose5 += 1;
+  s.lost = (s.lost ?? 0) + 1;
   const f = fatal(c, ctx, deathChance(round), `Gục ngã trước bóng ${ELEMENTS[el].name} của chính mình trên Ngũ Hành Đài.`);
   if (c.dead) return `Bóng ${ELEMENTS[el].name} đâm xuyên ngực bạn. Bạn nhìn thấy chính mình mỉm cười, rồi mọi thứ tối sầm.`;
   if (round >= 4 && s.lose5 >= GUONG_LOSSES) {

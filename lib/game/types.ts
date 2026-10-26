@@ -113,7 +113,7 @@ export interface Character {
   cgN?: number; // tu vi đã hấp thu trong năm đó
   ascWait?: number; // năm gần nhất đã nhắc chưa đủ tuổi phi thăng
   phu?: number; // Ngũ Hành Phù: đổi bản mệnh một vòng trên Ngũ Hành Đài
-  nhd?: { won: number; lose5: number; tries: number; done?: boolean; warned?: boolean }; // Ngũ Hành Vấn Tâm Đài trước khi phi thăng
+  nhd?: { won: number; lose5: number; tries: number; done?: boolean; warned?: boolean; lost?: number }; // Ngũ Hành Vấn Tâm Đài trước khi phi thăng
   mount?: string | null; // tọa kỵ (rồng)
   fateName?: string; // tướng số lúc sinh
 }
