@@ -32,6 +32,7 @@ import {
   realmLabel,
 } from './data';
 import { BREAK_EVENT_ID, EVENTS, PATH_EVENT_ID, pathChoices } from './events';
+import { ASCEND_MIN_AGE, anOf, keyAn, needTrial } from './nguHanhDai';
 import { addCult, addPill, clamp, fatal, reward, wealthTier, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
 import type { Character, Choice, EffectCtx, Fx, FxKind, GameEvent, Meta, PendingEvent, Tone } from './types';
 import { applyGifts, giftOf, hasGift } from './gacha';
@@ -286,6 +287,15 @@ function enterRealm(c: Character, realm: number, ctx: EffectCtx, talents: string
   c.lifespan = Math.min(lifeCap(realm), Math.max(c.lifespan, Math.round(base * lifeMult(c, talents) * (0.9 + rnd() * 0.2))));
   const up = promoteByRealm(c, ctx);
   if (up) ctx.log(up, 'good');
+  if (!c.cosmos && (realm === 5 || realm === 7)) {
+    const k = ELEMENTS[keyAn(c)].name;
+    ctx.log(
+      realm === 5
+        ? `Hóa Thần rồi, bạn bắt đầu mơ thấy năm tấm gương. Trước cửa phi thăng là Ngũ Hành Vấn Tâm Đài: phải hạ 5 bóng của chính mình, mỗi bóng một hệ. Bóng cuối khắc bản mệnh của bạn. Hãy săn quái hệ ${k} để tích Ngũ Hành Ấn (hiện có ${anOf(c, keyAn(c))}/5).`
+        : `Độ Kiếp rồi, Ngũ Hành Đài đã gần (cửa trời chỉ mở cho người từ ${ASCEND_MIN_AGE} tuổi). Ấn hệ ${k} đang có ${anOf(c, keyAn(c))}/5. Đủ 5 ấn thì bóng cuối không còn khắc được bạn.`,
+      'big',
+    );
+  }
 }
 
 export function gearMul(c: Character) {
@@ -415,6 +425,15 @@ function progress(c: Character, ctx: EffectCtx, talents: string[]): PendingEvent
     } else {
       c.cultivation = needFor(c);
       if (c.breakDelay > 0) return null;
+      // phi thăng còn cần đủ tuổi đạo hạnh: chưa đủ thì chặn, nhắc còn bao năm (mỗi 10 năm một lần)
+      if (c.realm + 1 === ASCEND_REALM && !c.cosmos && c.age < ASCEND_MIN_AGE) {
+        const left = Math.ceil(ASCEND_MIN_AGE - c.age);
+        if (c.ascWait === undefined || c.age - c.ascWait >= 10) {
+          c.ascWait = Math.floor(c.age);
+          ctx.log(`Tu vi đã đủ phi thăng, nhưng đạo hạnh còn non: cửa trời chỉ mở cho người từ ${ASCEND_MIN_AGE} tuổi. Còn ${left} năm nữa. Tranh thủ săn quái tích Ngũ Hành Ấn cho Ngũ Hành Đài.`, 'big');
+        }
+        return null;
+      }
       return buildPending(c, breakEvent(c));
     }
   }
@@ -780,6 +799,11 @@ function breakEvent(c: Character): GameEvent {
 
 function attempt(c: Character, ctx: EffectCtx, bonus: number): string {
   const target = c.realm + 1;
+  // phi thăng phải qua Ngũ Hành Đài trước (màn chơi ở giao diện)
+  if (target === ASCEND_REALM && needTrial(c)) {
+    c.breakDelay = 1;
+    return 'Năm tấm gương chắn trước cửa trời. Chưa hạ đủ năm bóng của chính mình trên Ngũ Hành Đài thì chưa thể độ kiếp.';
+  }
   const name = realmName(target, c.cosmos);
   const kiep = target >= 3;
   if (kiep) ctx.fx('lightning');

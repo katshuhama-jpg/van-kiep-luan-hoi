@@ -34,6 +34,9 @@ import { updateCareer, bumpStreak, evalQuests, omenIs, qmark, questName, streakG
 import { HookSheet, TitleBadge } from '@/components/Hook';
 import { omenToday } from '@/lib/game/hook';
 import { useAuth } from '@/lib/useAuth';
+import NguHanhDai, { NhdBanner, type NhdView } from '@/components/NguHanhDai';
+import { NHD_MAX_TURNS, PHU_PRICE, STANCES, loseRound, mirrorChar, mirrorStance, mirrorStats, needTrial, nhdOf, roundMods, tellOf, winRound, type RoundMods, type Stance } from '@/lib/game/nguHanhDai';
+import { sectSide } from '@/lib/game/sect';
 
 const SPEEDS = [1, 2, 4, 8, 16];
 /** màu chưởng lực theo con đường tu luyện */
@@ -56,6 +59,9 @@ export default function PlayPage() {
   const [speed, setSpeed] = useState(1);
   const [running, setRunning] = useState(true);
   const [kiep, setKiep] = useState<number | null>(null); // lựa chọn đang chờ mini-game thiên kiếp
+  // Ngũ Hành Đài trước phi thăng: giữ lựa chọn đột phá và sự kiện để độ kiếp sau khi thắng đủ 5 bóng
+  const [nhdPeek, setNhdPeek] = useState(false); // xem luật Ngũ Hành Đài từ dải nhắc
+  const [nhd, setNhd] = useState<{ i: number; p: PendingEvent; view: NhdView | 'fight'; foe: Stance; tell: Stance; msg?: string; end?: 'next' | 'done' | 'lose' | 'dead' } | null>(null);
   const [tut, setTut] = useState(false); // hướng dẫn lần đầu
   const [duelWarn, setDuelWarn] = useState<DuelFoe | null>(null); // cảnh báo kỳ ngộ giang hồ
   const duelOpen = useRef(false);
@@ -75,7 +81,7 @@ export default function PlayPage() {
   userRef.current = user;
   const battleRef = useRef<Battle | null>(null);
   const ambushRef = useRef<(Battle & { sub: number }) | null>(null); // quái chặn đường
-  const duelRef = useRef<(Battle & { sub: number; foe: DuelFoe; fs: Fighter }) | null>(null); // đấu với người chơi khác
+  const duelRef = useRef<(Battle & { sub: number; foe: DuelFoe; fs: Fighter; nhd?: RoundMods }) | null>(null); // đấu với người chơi khác
 
   const rerender = useCallback(() => setFrame((f) => f + 1), []);
 
@@ -200,7 +206,7 @@ export default function PlayPage() {
   const speedRef = useRef(speed);
   speedRef.current = speed;
   const activeRef = useRef(false);
-  activeRef.current = running && sheet === null && phase === 'play' && kiep === null && !tut && duelWarn === null;
+  activeRef.current = running && sheet === null && phase === 'play' && kiep === null && !tut && duelWarn === null && !nhdPeek && (nhd === null || nhd.view === 'fight');
 
   /** Ngũ hành giữa bạn và loài quái */
   function monElem(c: Character, m: { el?: Element }) {
@@ -376,17 +382,31 @@ export default function PlayPage() {
     b.t += dtReal;
     let changed = false;
     const fc = b.duel.foe;
-    const eMe = elementOf(c);
-    const eFoe = elementOf(fc);
+    const eMe = b.nhd ? b.nhd.myEl : elementOf(c);
+    const eFoe = b.nhd ? b.nhd.foeEl : elementOf(fc);
     const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string, art?: { name: string; palm: boolean } | null) => {
       // chưởng mang màu bản mệnh, đòn khắc chế có chữ riêng
       const qi = ELEMENTS[side === 'p' ? eMe : eFoe].color;
-      const tag = text ? undefined : side === 'p' ? elemHitTag(eMe, eFoe) : elemHitTag(eFoe, eMe);
+      const tag = text || b.nhd?.rel === 'dong' ? undefined : side === 'p' ? elemHitTag(eMe, eFoe) : elemHitTag(eFoe, eMe);
       b.last = [...b.last.slice(-4), { id: Math.random(), side, dmg, crit, text, skill: art?.name, palm: art?.palm, qi: art?.palm ? qi : undefined, tag }];
     };
     const end = (result: 'win' | 'lose' | 'draw') => {
       const out: Fx[] = [];
       const ctx = makeCtx(c, out);
+      if (b.foe.kind === 'ngu_hanh') {
+        const won = result === 'win';
+        const msg = won ? winRound(c) : loseRound(c, ctx);
+        const ek = won ? (nhdOf(c).done ? 'done' : 'next') : c.dead ? 'dead' : 'lose';
+        ctx.log(msg, c.dead ? 'big' : won ? 'good' : 'bad');
+        if (won) ctx.fx('breakthrough', nhdOf(c).done ? 'NGŨ HÀNH VIÊN MÃN' : `Gương ${nhdOf(c).won}/5`);
+        b.phase = 'rest';
+        b.rest = 4;
+        b.outcome = won ? 'win' : 'lose';
+        pushFx(out);
+        persist(true);
+        setNhd((n) => (n ? { ...n, view: 'result', msg, end: ek } : n));
+        return;
+      }
       const notes = finishDuel(c, b.foe, result, 1 - b.pHp / b.pMax, ctx);
       notes.forEach((n, i) => ctx.log(n, c.dead ? 'big' : i === 0 ? (result === 'win' ? 'good' : result === 'lose' ? 'bad' : 'normal') : 'good'));
       if (result === 'win' && b.foe.kind !== 'kiep_truoc') qmark(c, 'duelWin');
@@ -455,7 +475,7 @@ export default function PlayPage() {
       if (b.sub === 0) {
         b.duel.turn += 1;
         const h = hit(b.ps.atk, b.fs.def, rnd, 0.15 + gearFx(c.equipped).crit / 100);
-        h.dmg = Math.round(h.dmg * elemMul(elementOf(c), elementOf(fc)));
+        h.dmg = Math.round(h.dmg * (b.nhd ? b.nhd.pMul : elemMul(elementOf(c), elementOf(fc))));
         b.mHp = Math.max(0, b.mHp - h.dmg);
         push('p', h.dmg, h.crit, undefined, artOf(c, rnd));
         b.sub = 1;
@@ -465,7 +485,7 @@ export default function PlayPage() {
         }
       } else {
         const h = hit(b.fs.atk, b.ps.def, rnd, 0.15 + gearFx(fc.equipped).crit / 100);
-        h.dmg = Math.round(h.dmg * elemMul(elementOf(fc), elementOf(c)));
+        h.dmg = Math.round(h.dmg * (b.nhd ? b.nhd.fMul : elemMul(elementOf(fc), elementOf(c))));
         b.pHp = Math.max(0, b.pHp - h.dmg);
         push('m', h.dmg, h.crit, undefined, artOf(fc, rnd));
         b.sub = 0;
@@ -474,7 +494,8 @@ export default function PlayPage() {
           break;
         }
         if (b.duel.turn >= b.duel.max) {
-          end(b.mHp / b.mMax < b.pHp / b.pMax - 0.25 ? 'win' : 'draw');
+          if (b.nhd) end(b.mHp / b.mMax < b.pHp / b.pMax ? 'win' : 'lose');
+          else end(b.mHp / b.mMax < b.pHp / b.pMax - 0.25 ? 'win' : 'draw');
           break;
         }
       }
@@ -785,12 +806,104 @@ export default function PlayPage() {
   const choose = (i: number) => {
     const p = pendingRef.current;
     const c = charRef.current;
+    // phi thăng: phải qua Ngũ Hành Đài trước rồi mới độ kiếp
+    if (p && c && p.id === BREAK_EVENT_ID && needTrial(c) && !p.choices[i]?.label.startsWith('Củng cố')) {
+      pendingRef.current = null;
+      const s = nhdOf(c);
+      s.tries += 1;
+      const foe = mirrorStance(s.won, rnd);
+      setNhd({ i, p, view: s.tries > 1 ? 'prep' : 'rules', foe, tell: tellOf(foe, rnd) });
+      persist(true);
+      return;
+    }
     // đột phá có thiên kiếp: chơi mini-game đỡ sấm trước
     if (p && c && p.id === BREAK_EVENT_ID && c.realm + 1 >= 3 && !p.choices[i]?.label.startsWith('Củng cố')) {
       setKiep(i);
       return;
     }
     resolveNow(i);
+  };
+
+  /** Lên đài đánh một bóng: dùng lại sân đấu giang hồ, hệ số theo ngũ hành, ấn, phù, thế trận */
+  const nhdFight = (my: Stance, phu: boolean) => {
+    const c = charRef.current;
+    const n = nhd;
+    if (!c || !n) return;
+    if (phu) c.phu = Math.max(0, (c.phu ?? 1) - 1);
+    const r = nhdOf(c).won;
+    const mods = roundMods(c, r, my, n.foe, phu);
+    const ps = playerStats(c);
+    const fs = mirrorStats(c, r);
+    const fc = mirrorChar(c, r);
+    c.log.push({ age: Math.floor(c.age), tone: 'normal', text: `Ngũ Hành Đài, gương ${r + 1}: bạn rút lá ${STANCES[my].name}, bóng ra thế ${STANCES[n.foe].name}.${mods.notes.length ? ' ' + mods.notes.join('. ') + '.' : ''}` });
+    duelRef.current = {
+      m: { ...MONSTERS[0], id: 'duel', name: fc.name },
+      name: fc.name,
+      lv: combatLevel(c),
+      tier: 0,
+      pHp: ps.hp,
+      pMax: ps.hp,
+      mHp: fs.hp,
+      mMax: fs.hp,
+      phase: 'fight',
+      last: [{ id: Math.random(), side: 'm', dmg: 0, crit: false, text: 'Bóng bước ra!' }],
+      kills: 0,
+      t: -0.9,
+      rest: 0,
+      ps,
+      ms: fs,
+      fs,
+      sub: 0,
+      foe: { kind: 'ngu_hanh', rival: toRival('', fc), npc: true, rel: 'ngang', reason: '' },
+      duel: { kind: 'ngu_hanh', foe: fc, tag: `Gương ${r + 1}/5 · ${STANCES[my].name} đấu ${STANCES[n.foe].name}`, player: '', turn: 0, max: NHD_MAX_TURNS, elem: { me: mods.myEl, foe: mods.foeEl, rel: mods.rel } },
+      nhd: mods,
+    };
+    setNhd({ ...n, view: 'fight' });
+    setRunning(true);
+    rerender();
+  };
+
+  const nhdNext = () => {
+    const c = charRef.current;
+    const n = nhd;
+    duelRef.current = null;
+    if (!c || !n) return setNhd(null);
+    if (n.end === 'next') {
+      const foe = mirrorStance(nhdOf(c).won, rnd);
+      setNhd({ ...n, view: 'prep', msg: undefined, end: undefined, foe, tell: tellOf(foe, rnd) });
+      return;
+    }
+    setNhd(null);
+    if (n.end === 'done') {
+      pendingRef.current = n.p;
+      setKiep(n.i);
+      return;
+    }
+    persist(true);
+    rerender();
+  };
+
+  const nhdLeave = () => {
+    const c = charRef.current;
+    setNhd(null);
+    duelRef.current = null;
+    if (!c) return;
+    c.breakDelay = Math.max(c.breakDelay, 3);
+    c.log.push({ age: Math.floor(c.age), tone: 'normal', text: 'Bạn bước xuống Ngũ Hành Đài, về củng cố thêm. Năm tấm gương vẫn chờ.' });
+    persist(true);
+    rerender();
+  };
+
+  const nhdBuyPhu = () => {
+    const c = charRef.current;
+    if (!c) return;
+    const price = sectSide(c) === 'trung' ? PHU_PRICE / 2 : PHU_PRICE;
+    if (c.linhThach < price || (c.phu ?? 0) >= 3) return;
+    money(c, -price);
+    c.phu = (c.phu ?? 0) + 1;
+    c.log.push({ age: Math.floor(c.age), tone: 'good', text: `Sứ giả Thiên Cơ Các bán cho bạn một tấm Ngũ Hành Phù (-${price} linh thạch).` });
+    persist(true);
+    rerender();
   };
 
   const afterKiep = (bonus: number, blocked: number) => {
@@ -1289,6 +1402,7 @@ export default function PlayPage() {
           <EventCard p={pending} onChoose={choose} />
         ) : (
           <div className="dock-inner">
+            <NhdBanner c={c} onOpen={() => setNhdPeek(true)} />
             <FocusGrid c={c} onPick={pickFocus} />
             <div className="dock-actions">
               <button className="btn btn-dark" onClick={() => setSheet('shop')} disabled={c.dead}>
@@ -1433,6 +1547,24 @@ export default function PlayPage() {
           fleeChance={duelFlee(c, duelWarn)}
           canBefriend={!!duelWarn.sworn || duelWarn.rel === 'yeu' || ['sinh', 'duoc_sinh'].includes(elemRel(elementOf(c), elementOf(duelWarn.rival)))}
           onPick={pickDuelAction}
+        />
+      )}
+      {nhdPeek && !nhd && (
+        <NguHanhDai c={c} view="rules" tell="cong" preview onFight={() => {}} onBuyPhu={() => {}} onLeave={() => setNhdPeek(false)} onNext={() => {}} onRules={() => setNhdPeek(false)} />
+      )}
+      {nhd && nhd.view !== 'fight' && (
+        <NguHanhDai
+          key={`${nhdOf(c).won}-${nhd.view}`}
+          c={c}
+          view={nhd.view}
+          tell={nhd.tell}
+          msg={nhd.msg}
+          end={nhd.end}
+          onFight={nhdFight}
+          onBuyPhu={nhdBuyPhu}
+          onLeave={nhdLeave}
+          onNext={nhdNext}
+          onRules={() => setNhd({ ...nhd, view: nhd.view === 'rules' ? 'prep' : 'rules' })}
         />
       )}
       {kiep !== null && !c.dead && (

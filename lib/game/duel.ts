@@ -18,7 +18,7 @@ import type { Character, EffectCtx, RivalChar, Slot, Vendetta } from './types';
  * Có màn cảnh báo trước khi vào trận, nền sân đấu riêng, đánh tối đa 5 hiệp.
  */
 
-export type DuelKind = 'dong_dao' | 'dich_thu' | 'kiep_truoc' | 'dong_mon';
+export type DuelKind = 'dong_dao' | 'dich_thu' | 'kiep_truoc' | 'dong_mon' | 'ngu_hanh';
 export const DUEL_PER_YEAR = 0.1; // trung bình khoảng 10 năm gặp một lần
 export const DUEL_TURNS = 5;
 
@@ -42,6 +42,7 @@ export const DUEL_INFO: Record<DuelKind, { title: string; tag: string; warn: str
   dich_thu: { title: 'Địch thủ xuất hiện!', tag: 'Địch thủ', warn: 'Sát khí ập tới. Kẻ khác đạo đã đợi bạn ở đây từ lâu. Hôm nay chỉ một người được rời đi.' },
   dong_mon: { title: 'Đồng môn tỷ thí', tag: 'Đồng môn', warn: 'Một đồng môn chặn bạn ở diễn võ trường: "Sư môn dạy ta, hôm nay xem ai học giỏi hơn."' },
   kiep_truoc: { title: 'Tâm ma kiếp trước', tag: 'Kiếp trước', warn: 'Mặt hồ phẳng lặng bỗng in bóng một người. Đó là bạn, của một kiếp đã qua. Muốn đi tiếp, phải vượt qua chính mình.' },
+  ngu_hanh: { title: 'Ngũ Hành Vấn Tâm Đài', tag: 'Ngũ Hành Đài', warn: 'Năm tấm gương dựng quanh đài đá. Trong mỗi tấm là bạn, mang một bản mệnh khác.' },
 };
 
 function lean(d: number) {
@@ -251,7 +252,7 @@ function pickDuel0(c: Character, rnd: () => number): DuelFoe | null {
   // cấp độ đối thủ theo cấp chiến đấu, chia ba bậc rõ ràng để ít gặp người ngang cấp:
   // đồng đạo: yếu 45%, ngang 25%, mạnh 30%; địch thủ: 25/25/50; tâm ma kiếp trước: 20/20/60
   const me0 = combatLevel(c);
-  const W: Record<DuelKind, [number, number]> = { dong_dao: [0.45, 0.25], dich_thu: [0.25, 0.25], kiep_truoc: [0.2, 0.2], dong_mon: [0, 1] };
+  const W: Record<DuelKind, [number, number]> = { dong_dao: [0.45, 0.25], dich_thu: [0.25, 0.25], kiep_truoc: [0.2, 0.2], dong_mon: [0, 1], ngu_hanh: [0, 1] };
   const [pw, pn] = W[kind];
   const r = rnd();
   const ri = (a: number, b: number) => a + Math.floor(rnd() * (b - a + 1));

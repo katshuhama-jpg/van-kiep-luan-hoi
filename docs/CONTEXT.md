@@ -89,6 +89,22 @@ Vòng chơi một kiếp:
 - Quái riêng mỗi giới (4 loài, Lv28-37; Thái Hư: Hư Không Thú, Tinh Hà Kình, Hỗn Độn Linh, Thôn Thiên Thú), đồ riêng (minRealm 8-11; Thái Hư: Hư Không Y, Tinh Hà Châu, Hỗn Độn Trượng, Thôn Thiên Giáp). Chỉ gặp người chơi cùng giới.
 - Hạ phàm làm mưa có thể bị **giáng trần**: kiếp kết thúc, kiếp sau nhận lời tiên tri "ký ức tiên nhân" (ngộ tính +25, khí vận +15, linh căn ít nhất Địa).
 
+## 4b2. Ngũ Hành Vấn Tâm Đài và điều kiện phi thăng
+
+- Phi thăng cần đủ **Độ Kiếp hậu kỳ, tu vi đầy và từ 120 tuổi** (`ASCEND_MIN_AGE` trong `lib/game/nguHanhDai.ts`). Chưa đủ tuổi thì sự kiện phi thăng không hiện, tu vi đứng yên, cứ 10 năm có dòng nhắc. Ở dock có dải **Ngũ Hành Đài** (từ Hóa Thần): ấn, phù, số năm còn phải chờ; chạm vào mở luật kèm hướng dẫn nên làm gì trong lúc chờ.
+- Chọn phương án đột phá phi thăng (trừ "Củng cố") thì lên **Ngũ Hành Đài** trước, thắng xong mới tới mini-game thiên kiếp. Engine tự chặn `attempt()` nếu chưa qua đài.
+- 5 bóng giống hệt người chơi, chỉ khác bản mệnh, thứ tự: bóng mình khắc, cùng mệnh, mình sinh, sinh mình, **bóng khắc mình (cuối)**. Sức bóng theo vòng: 95%, 102%, 106%, 110%, 115%. Mỗi vòng tối đa 10 hiệp, hết hiệp thì so % máu.
+- Bốn cách lật thế:
+  - **Ngũ Hành Ấn** (`c.an`): diệt quái có hệ, không ở mức "Dễ", 20% được 1 ấn hệ đó, tối đa 5 mỗi hệ. Khi bị khắc, mỗi ấn của hệ khắc được bóng gỡ 20% phần thiệt (5 ấn là hết thiệt).
+  - **Thế trận** chọn trước mỗi vòng bằng lá bùa: Công (đòn +25%), Thủ (nhận -35%), Hóa (xóa khắc chế, đòn -10%). Thủ khắc Công, Hóa khắc Thủ, Công khắc Hóa, khắc được thì thêm 15%. Bóng cũng chọn thế (gương cuối 50% Công) và lộ dáng trước, đúng 70%.
+  - **Ngũ Hành Phù** (`c.phu`, tối đa 3): đổi bản mệnh sang hệ khắc bóng một vòng. Rơi 1% từ quái có hệ Lv16+, hoặc mua trên đài 1500 linh thạch (đệ tử Thiên Cơ Các 750).
+  - **Tâm cảnh:** tâm ma làm bóng mạnh thêm tới 20%; đạo tâm |≥40| bóng yếu 5%, |≥70| yếu 10%.
+- Thua: 6% chết (gương cuối 20%), không chết thì -15% tu vi, tâm ma +6, chờ 8 năm; gương đã vỡ được giữ (`c.nhd.won`). Thua gương cuối lần thứ 5 mà còn sống: kết cục bí ẩn **Người Trong Gương** (`ket_guong`). Thắng đủ 5: thiên kiếp +10%.
+- Mô phỏng tỉ lệ thắng gương cuối: đọc thế giỏi mà không ấn ~12%, 3 ấn ~21%, 5 ấn ~38%, dùng phù ~60%.
+- Giao diện riêng (`components/NguHanhDai.tsx`): cuộn giấy luật có vòng ngũ hành, đài 5 tấm gương, 3 lá bùa thế trận, ô phù, 5 con triện ấn; trận đánh dùng sân đấu giang hồ với kind `ngu_hanh`.
+- Sau phi thăng có **trần tu vi**: mỗi năm hấp thu tối đa 1/8 tu vi một tầng (`COSMOS_YEARS_PER_LAYER` trong `helpers.ts`), tức ít nhất ~24 năm một cảnh giới. Người chơi mạnh mô phỏng ra ~28 năm mỗi cảnh giới.
+- Hai kiếp lên Ma giới trước khi có luật này (25-26/10, @thien và @abcsxvyz) được giữ kết cục nhưng gắn `look.unranked = true` trong `vkl_lives`, bị loại khỏi `vkl_leaderboard` và `vkl_titles_char`.
+
 ## 4c. Tông môn
 
 - Sự kiện "Tông môn tuyển đệ tử" (9-16 tuổi). Thanh Vân Tông (chính) xếp bậc theo linh căn: Thiên linh căn **Chân truyền**, Địa **Nội môn**, Huyền và Tạp **Ngoại môn**, Phế 40% được nhận làm **Tạp dịch** (còn lại bị đuổi). Huyết Sát Môn (ma) không kén linh căn, ít nhất Ngoại đường; bậc ma môn tên khác: Huyết nô, Ngoại đường sát thủ, Nội đường hộ pháp, Huyết Sát Thánh tử. **Thiên Cơ Các** (trung lập) kén người thông minh, xếp bậc theo ngộ tính: từ 70 **Thiên Cơ truyền nhân**, 50 **Thân truyền đệ tử**, 30 **Ký danh đệ tử**, dưới 30 là **Học đồ** và chỉ 50% được nhận (trượt thì làm tán tu). Truyền nhân Thiên Cơ được khí vận +10 và một tấm **bùa thế mạng** (cứu một lần như sư phụ chính phái). Có thêm lựa chọn "Ở nhà".
@@ -237,8 +253,8 @@ Mở từ nút thư (✉). Ba tab: Thư, Ân oán, Truy nã.
 - Có thù tất báo: Báo thù được một người chơi khác (+30 phúc)
 - Giang hồ sát thần: Thắng người chơi khác 10 lần (+50 phúc)
 
-### Sổ Sinh Tử - 33 kết cục
-Kết cục được xét theo thứ tự từ hiếm tới thường, lấy cái đầu tiên khớp. 5 kết cục cố ý để **bí ẩn** (không ghi cách mở trong game) để người chơi tự khám phá.
+### Sổ Sinh Tử - 34 kết cục
+Kết cục được xét theo thứ tự từ hiếm tới thường, lấy cái đầu tiên khớp. 6 kết cục cố ý để **bí ẩn** (không ghi cách mở trong game) để người chơi tự khám phá.
 
 |Kết cục|Phẩm|Cách mở|
 |---|---|---|
@@ -249,6 +265,7 @@ Kết cục được xét theo thứ tự từ hiếm tới thường, lấy cá
 | Hỗn Nguyên Đạo Tổ (`hon_nguyen`) | Thiên | Giữ đạo tâm trung lập (-39 đến 19) khi phi thăng để vào Thái Hư giới, tu tới Hỗn Nguyên Đạo Tổ rồi mới chết. |
 | Tiêu Dao Thái Hư (`tieu_dao`) | Địa | Phi thăng khi đạo tâm trung lập để vào Thái Hư giới, rồi chết ở đó. |
 | Bị Giáng Trần (`giang_tran`) | Địa | Sau khi phi thăng, hạ phàm cứu người mà bị Thiên đình phạt. |
+| Người Trong Gương (`ket_guong`) | Huyền | **Bí ẩn** - gợi ý: Có những tấm gương không nên soi quá nhiều lần. |
 | Xuyên Không (`xuyen_khong`) | Thiên | **Bí ẩn** - gợi ý: Có những khe nứt không nên bước vào... hoặc nên. |
 | Ma Tôn Độ Kiếp (`ma_ton_do_kiep`) | Thiên | Giữ đạo tâm từ -40 trở xuống, tu đến Độ Kiếp tầng cuối rồi vượt qua thiên kiếp cuối cùng. |
 | Phi Thăng Tiên Giới (`phi_thang`) | Thiên | Tu đến Độ Kiếp tầng cuối rồi vượt qua thiên kiếp cuối cùng (đạo tâm từ 20 trở lên lên Tiên giới, trung lập vào Thái Hư). |
@@ -276,7 +293,7 @@ Kết cục được xét theo thứ tự từ hiếm tới thường, lấy cá
 | Thọ Chung Chính Tẩm (`tho_tan`) | Phàm | Sống đến khi hết thọ nguyên. |
 | Chết Không Toàn Thây (`bat_dac`) | Phàm | Chết vì bất kỳ lý do nào khác: quái, kẻ thù, tai nạn giang hồ. |
 
-Danh hiệu sưu tầm: **Kỳ Văn Khách** khi mở từ 8 kết cục, **Bách Hiểu Sinh** khi mở một nửa (17/33, tự tính theo tổng số kết cục).
+Danh hiệu sưu tầm: **Kỳ Văn Khách** khi mở từ 8 kết cục, **Bách Hiểu Sinh** khi mở một nửa (17/34, tự tính theo tổng số kết cục).
 
 ## 9. Giữ chân người chơi (hook)
 
@@ -409,7 +426,7 @@ select count(*) from vkl_bounty; select status, count(*) from vkl_challenge grou
 - **Không chen màn hình chính:** tính năng phụ được quảng bá bằng chấm đỏ, dấu báo khi mở khóa, màn chết, màn đầu thai, không đặt khối lớn ở màn chơi.
 - **Nút đóng** ở dưới (danh sách dài không phải kéo lên đầu để đóng), chỉ một nút đóng.
 - **Danh hiệu gắn theo nhân vật**, không theo tài khoản (từng gây hiểu lầm).
-- **5 kết cục bí ẩn** không ghi cách mở để người chơi tự tìm hiểu.
+- **6 kết cục bí ẩn** không ghi cách mở để người chơi tự tìm hiểu.
 - **Đã bỏ:** gửi quà giữa người chơi.
 - **Database:** không xóa hay drop qua công cụ tự động; Tyler tự chạy câu xóa.
 
@@ -421,6 +438,7 @@ select count(*) from vkl_bounty; select status, count(*) from vkl_challenge grou
 - Chống farm đồ theo chênh cấp; bảng trừ yêu gọn lại.
 - Phi thăng mở Tiên giới / Ma giới / Thái Hư giới với 4 cảnh giới, sự kiện, quái, đồ, nền riêng; kết cục Chứng Đạo, Đại La Kim Tiên, Ma Đế, Hỗn Nguyên Đạo Tổ, Tiêu Dao Thái Hư, Bị Giáng Trần.
 - Tông môn thứ ba Thiên Cơ Các (trung lập, xếp bậc theo ngộ tính).
+- Ngũ Hành Vấn Tâm Đài trước phi thăng, mốc 120 tuổi, trần tu vi sau phi thăng.
 - Thiên thư: mạch truyện Vạn Kiếp 10 mảnh và kết cục Vạn Kiếp Quy Nhất.
 
 **25/10/2026**

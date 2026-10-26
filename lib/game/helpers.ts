@@ -76,9 +76,23 @@ export function needFor(c: Character): number {
   return REALMS[c.realm]?.need || 40;
 }
 
+/** số năm tối thiểu cho mỗi tầng ở tiên/ma/hư giới */
+export const COSMOS_YEARS_PER_LAYER = 8;
+
 export function addCult(c: Character, amount: number) {
   // thiên tượng hôm nay làm tu vi nhanh hay chậm
   if (amount > 0) amount *= omenCultMul(c) * swornCultMul();
+  // sau phi thăng: thiên đạo áp chế, mỗi năm hấp thu tối đa 1/8 tu vi một tầng (ít nhất 24 năm một cảnh giới)
+  if (amount > 0 && c.cosmos) {
+    const y = Math.floor(c.age);
+    if (c.cgY !== y) {
+      c.cgY = y;
+      c.cgN = 0;
+    }
+    const room = Math.max(0, needFor(c) / COSMOS_YEARS_PER_LAYER - (c.cgN ?? 0));
+    amount = Math.min(amount, room);
+    c.cgN = (c.cgN ?? 0) + amount;
+  }
   c.cultivation = Math.max(0, c.cultivation + amount);
 }
 

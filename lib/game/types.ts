@@ -108,6 +108,12 @@ export interface Character {
   ambushSeen?: string[]; // mấy loài quái chặn đường gần nhất, để không lặp lại
   timid?: number; // số lựa chọn an toàn liên tiếp gần đây: hiền quá dễ bị bắt nạt
   kiepBonus?: number; // thưởng/phạt từ mini-game thiên kiếp
+  an?: Partial<Record<Element, number>>; // Ngũ Hành Ấn thu được khi diệt quái có hệ (tối đa 5 mỗi hệ)
+  cgY?: number; // năm đang tính trần tu vi sau phi thăng
+  cgN?: number; // tu vi đã hấp thu trong năm đó
+  ascWait?: number; // năm gần nhất đã nhắc chưa đủ tuổi phi thăng
+  phu?: number; // Ngũ Hành Phù: đổi bản mệnh một vòng trên Ngũ Hành Đài
+  nhd?: { won: number; lose5: number; tries: number; done?: boolean; warned?: boolean }; // Ngũ Hành Vấn Tâm Đài trước khi phi thăng
   mount?: string | null; // tọa kỵ (rồng)
   fateName?: string; // tướng số lúc sinh
 }

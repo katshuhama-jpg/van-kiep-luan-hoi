@@ -2,6 +2,7 @@ import { omenIs } from './hook';
 import { ITEMS, REALMS, fxText, gearFx } from './data';
 import { addCult, addPill, clamp, fatal, giveItem, money, needFor, stat } from './helpers';
 import type { Character, EffectCtx, Element } from './types';
+import { gainAn } from './nguHanhDai';
 
 /** Dáng quái dùng để vẽ pixel */
 export type MonsterShape = 'thu' | 'ran' | 'nguoi' | 'chim' | 'rong' | 'bo' | 'vo_lam';
@@ -691,6 +692,14 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance 
     ctx.fx('buy', pill === 'truc_co' ? '+Trúc Cơ Đan' : pill === 'tu_khi' ? '+Tụ Khí Đan' : '+Hồi Xuân Đan');
   }
   if (m.lv >= 11 && ctx.rnd() < 0.02) stat(c, 'khiVan', 1);
+  // Ngũ Hành Ấn và Ngũ Hành Phù cho Ngũ Hành Đài trước phi thăng
+  const an = gainAn(c, m.el, dangerOf(c, m) === 'de', ctx.rnd);
+  if (an) notes.push(an);
+  if (m.el && !c.cosmos && m.lv >= 16 && dangerOf(c, m) !== 'de' && (c.phu ?? 0) < 3 && ctx.rnd() < 0.01) {
+    c.phu = (c.phu ?? 0) + 1;
+    ctx.fx('buy', 'Ngũ Hành Phù');
+    notes.push(`${m.name} rơi ra một tấm Ngũ Hành Phù (${c.phu}/3). Trên Ngũ Hành Đài, phù đổi bản mệnh của bạn sang hệ khắc bóng trong một vòng.`);
+  }
   return notes;
 }
 

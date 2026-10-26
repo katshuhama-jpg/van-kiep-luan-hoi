@@ -62,6 +62,14 @@ export const ENDINGS: Ending[] = [
     test: (c) => c.endTag === 'giang_tran',
   },
   {
+    id: 'ket_guong',
+    name: 'Người Trong Gương',
+    desc: 'Bóng của bạn bước ra ngoài sống tiếp. Còn bạn ở lại trong gương Ngũ Hành Đài, nhìn mãi.',
+    hint: 'Có những tấm gương không nên soi quá nhiều lần.',
+    rare: 3,
+    test: (c) => c.endTag === 'ket_guong',
+  },
+  {
     id: 'xuyen_khong',
     name: 'Xuyên Không',
     desc: 'Bước qua khe nứt không gian, tỉnh dậy giữa phố Hà Nội năm 2026.',
