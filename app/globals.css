@@ -3470,15 +3470,16 @@ a { overflow-wrap: anywhere; }
 .pd-fig { position: relative; display: block; flex: none; }
 .pd-ghost { display: block; background: rgba(255, 255, 255, 0.08); border: 2px dashed rgba(255, 211, 107, 0.45); border-radius: 40% 40% 4px 4px; margin-bottom: 2px; }
 .pd-beam { position: absolute; left: 41%; width: 18%; top: 0; height: 64%; z-index: 1; pointer-events: none; background: linear-gradient(rgba(255, 236, 160, 0.85), rgba(255, 220, 120, 0.15)); opacity: 0; }
-.pd-plaques { list-style: none; margin: 4px 0 0; padding: 0; display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 4px; align-items: end; }
-.pd-plaque button { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 0; padding: 4px 3px 5px; font: inherit; color: #f3e6c4; background: linear-gradient(#5a3420, #3a2014); border: 2px solid #1a0e0c; box-shadow: inset 0 0 0 1px #b07c28; cursor: pointer; min-width: 0; }
-.pd-plaque.p1 button { padding-top: 6px; background: linear-gradient(#8a5a14, #5a3a0c); box-shadow: inset 0 0 0 2px #ffd36b; }
+.pd-plaques { list-style: none; margin: 4px 0 0; padding: 0; display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 4px; align-items: stretch; }
+.pd-plaque { display: flex; min-width: 0; }
+.pd-plaque button { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; padding: 4px 3px 5px; font: inherit; color: #f3e6c4; background: linear-gradient(#5a3420, #3a2014); border: 2px solid #1a0e0c; box-shadow: inset 0 0 0 1px #b07c28; cursor: pointer; min-width: 0; }
+.pd-plaque.p1 button { background: linear-gradient(#8a5a14, #5a3a0c); box-shadow: inset 0 0 0 2px #ffd36b; }
 .pd-plaque.mine button { box-shadow: inset 0 0 0 2px #e04030; }
 .pd-plaque button:disabled { cursor: default; opacity: 0.7; }
 .pd-rank { font-size: 13px; font-weight: 700; line-height: 18px; width: 20px; color: #3a2405; background: #d6dce6; border: 2px solid #1a0e0c; text-align: center; }
 .pd-plaque.p1 .pd-rank { background: #ffcf3e; }
 .pd-plaque.p3 .pd-rank { background: #d98a4a; }
-.pd-name { max-width: 100%; font-size: 15px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff3dc; }
+.pd-name { max-width: 100%; font-size: 15px; line-height: 1.2; text-align: center; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: #fff3dc; }
 .pd-plaque.p1 .pd-name { font-size: 17px; color: #ffe9a8; }
 .pd-user { max-width: 100%; font-size: 12px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #e0c8a0; }
 .pd-elo { font-size: 12px; font-weight: 700; color: #ffd36b; }
