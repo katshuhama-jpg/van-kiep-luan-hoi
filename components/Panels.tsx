@@ -11,11 +11,12 @@ import { DANGER_TEXT, MONSTERS, combatLevel, dangerOf, dropFactor, monstersFor, 
 import { MonsterSprite } from './Battle';
 import { cultPct, fmt, needFor } from '@/lib/game/helpers';
 import type { Character, Focus, LogEntry, Meta, PendingEvent, Slot } from '@/lib/game/types';
-import { QUEST_BONUS, QUEST_REWARD, evalQuests, nearEndings, pickProphecy, questName } from '@/lib/game/hook';
+import { QUEST_BONUS, QUEST_REWARD, dailyOf, omenToday, evalQuests, nearEndings, pickProphecy, questName } from '@/lib/game/hook';
 import { HIDDEN_ITEMS, collectStats, isHidden, itemHint } from '@/lib/game/collect';
 import { sectSide, rankName, rankShort } from '@/lib/game/sect';
-import LuanHoiCard from './LuanHoi';
-import { BIG_TALENTS, ksOf, ksOneBig } from '@/lib/game/luanHoi';
+import { KiepSoBlock, ManhBaBridge, luanHoiSummary, useNow } from './LuanHoi';
+import Sprite from './Sprite';
+import { BIG_TALENTS, honActive, ksBase, ksOf, ksOneBig } from '@/lib/game/luanHoi';
 import { LORE, LORE2_TOTAL, LORE_TOTAL, lore1Count, lore2Count, quyNhatDone } from '@/lib/game/lore';
 import { ELEMENTS } from '@/lib/game/nguhanh';
 import { TodayScroll } from './Hook';
@@ -750,7 +751,7 @@ export function BirthPanel({
   const [gifts, setGifts] = useState<string[]>([]);
   const [gSpent, setGSpent] = useState(0);
   const [base, setBase] = useState<Character | null>(null);
-  const [drink, setDrink] = useState(false);
+  const [bridge, setBridge] = useState(false);
   const oneBig = ksOneBig(ksOf(meta));
   const tal = (id: string) => TALENTS.find((t) => t.id === id);
   const spent = picked.filter((id) => !tal(id)?.ta).reduce((s, id) => s + (tal(id)?.cost ?? 0), 0) + gSpent;
@@ -759,82 +760,67 @@ export function BirthPanel({
   const first = meta.lives === 0;
   const cs = collectStats(meta);
   const cheapest = Math.min(...TALENTS.filter((t) => !t.ta).map((t) => t.cost));
+  const now = useNow();
+  const lhOn = honActive(meta);
+  const ksOn = ksBase(meta) > 0 || lhOn;
+  const lh = luanHoiSummary(meta, false, now);
+  const omen = omenToday();
+  const daily = dailyOf(meta);
+  const doneQ = daily.quests.filter((q) => daily.done.includes(q)).length;
+  const bought = picked.filter((id) => !tal(id)?.ta).length;
+  const boughtTa = picked.filter((id) => tal(id)?.ta).length;
+  const speed = yearSec === 10 ? 'Nhanh' : yearSec === 30 ? 'Chậm' : 'Vừa';
+  const barNote = lhOn ? 'tiếp theo: Cầu Nại Hà' : [picked.length + gifts.length ? `${picked.length + gifts.length} thiên phú` : '', `thời gian ${speed.toLowerCase()}`].filter(Boolean).join(' · ');
+  const go = (d: boolean) => onBorn(picked, yearSec, gifts, gSpent, base, d);
   return (
     <div className="birth-flow">
-      <TodayScroll meta={meta} />
       {first ? (
-        <section className="panel howto">
-          <h2>Cách chơi</h2>
+        <section className="howto-strip" aria-label="Cách chơi">
+          <b className="hs-title">Lần đầu luân hồi</b>
           <ol>
             <li>
-              Trời đã gieo cho bạn một lá số: tên, tướng mạo, chỉ số. Không ưng thì bấm <b>Gieo lại</b>.
+              Xem <b>lá số</b>, không ưng thì <b>Gieo lại</b>
             </li>
             <li>
-              Bấm <b>Đầu thai</b>. Thời gian tự trôi, bạn lớn lên từng năm.
+              Bấm <b>Đầu thai</b>, năm tháng tự trôi
             </li>
-            <li>Gặp chuyện thì chọn 1 trong 4 cách. Có cách giúp bạn mạnh lên, có cách khiến bạn chết.</li>
-            <li>
-              Mục tiêu đầu tiên: <b>sống trọn một kiếp</b> để mở trang đầu của Thiên thư, rồi <b>kết Kim Đan</b> để biết vì sao mình cứ phải luân hồi.
-            </li>
+            <li>Gặp chuyện thì chọn cách xử lý, có cách mạnh lên, có cách chết</li>
           </ol>
+          <small>
+            Mục tiêu: <b>sống trọn một kiếp</b>, rồi <b>kết Kim Đan</b> để biết vì sao mình cứ phải luân hồi.
+          </small>
         </section>
       ) : (
-        <p className="birth-meta">
-          Đã trải qua <b>{meta.lives}</b> kiếp · Phúc duyên <b className="jade">{left}</b>
+        <div className="bf-stats">
+          <span>
+            <small>Đã trải</small>
+            <b>{meta.lives} kiếp</b>
+          </span>
+          <span className="jade">
+            <small>Phúc duyên</small>
+            <b>{left}</b>
+          </span>
           {meta.nghiep > 0 && (
-            <>
-              {' '}
-              · Nghiệp <b className="ta">{meta.nghiep}</b>
-            </>
+            <span className="ta">
+              <small>Nghiệp</small>
+              <b>{leftTa}</b>
+            </span>
           )}
-          {meta.past && (
-            <>
-              <br />
-              Kiếp trước: {meta.past.name}, {meta.past.age} tuổi, {meta.past.realmName}.{meta.stash ? ' Có chôn lại một chiếc rương...' : ''}
-            </>
+          {ksOn && (
+            <span className="ks">
+              <small>Kiếp Số</small>
+              <b>{lh.ks}</b>
+            </span>
           )}
-        </p>
-      )}
-
-      {!first && <LifeGoal meta={meta} />}
-      {!first && (
-        <div className="collect-strip">
-          <Link href="/so-sinh-tu" onClick={onSoSinhTu} className="cs-item">
-            <small>Sổ Sinh Tử</small>
-            <b>
-              {cs.endings}/{cs.endingsTotal}
-            </b>
-            <span className="bk-bar" aria-hidden="true">
-              <i style={{ width: `${(cs.endings / cs.endingsTotal) * 100}%` }} />
-            </span>
-          </Link>
-          <Link href="/so-sinh-tu#thien-thu" className="cs-item cs-lore">
-            <small>{quyNhatDone(meta) ? 'Thiên thư II' : 'Thiên thư'}</small>
-            <b>
-              {quyNhatDone(meta) ? `${lore2Count(meta)}/${LORE2_TOTAL}` : `${lore1Count(meta)}/${LORE_TOTAL}`}
-            </b>
-            <span className="bk-bar" aria-hidden="true">
-              <i style={{ width: `${(quyNhatDone(meta) ? lore2Count(meta) / LORE2_TOTAL : lore1Count(meta) / LORE_TOTAL) * 100}%` }} />
-            </span>
-          </Link>
-          <button className="cs-item" onClick={onKho}>
-            <small>Bảo khố</small>
-            <b>
-              {cs.items}/{cs.itemsTotal}
-            </b>
-            <span className="bk-bar" aria-hidden="true">
-              <i style={{ width: `${(cs.items / cs.itemsTotal) * 100}%` }} />
-            </span>
-          </button>
         </div>
       )}
-
-      {!first && <LuanHoiCard meta={meta} drink={drink} onDrink={setDrink} />}
 
       <GachaPanel
         phuc={left}
         busy={busy}
-        onBorn={() => onBorn(picked, yearSec, gifts, gSpent, base, drink)}
+        lifeNo={meta.lives + 1}
+        barNote={barNote}
+        onBorn={() => (lhOn ? setBridge(true) : go(false))}
         onChange={(g, s, b) => {
           setGifts(g);
           setGSpent(s);
@@ -842,94 +828,172 @@ export function BirthPanel({
         }}
       />
 
-      {!first && (
-        <details className="more talent-shop" open={meta.phucDuyen >= cheapest}>
-          <summary>
-            Chọn thiên phú <span className="jade">({left} phúc duyên)</span>
-            {picked.length > 0 ? ` · đã chọn ${picked.length}` : ''}
-          </summary>
-          <div className="more-body">
-            <p className="note" style={{ marginTop: 0 }}>
-              Chọn phúc lợi cho kiếp này rồi bấm Đầu thai.
-            </p>
-            {meta.phucDuyen <= 0 && (
-              <p className="note" style={{ margin: 0 }}>
-                Chưa có phúc duyên. Sống tốt một kiếp, chết đi sẽ được phúc duyên để mua ở đây.
+      <section className="prep">
+        <h2 className="prep-title">Chuẩn bị trước khi đầu thai</h2>
+
+        {!first && (
+          <details className="prep-row" open={meta.phucDuyen >= cheapest && meta.lives < 5}>
+            <summary>
+              <span className="pr-name">Mua thiên phú</span>
+              <span className="pr-val jade">{bought ? `đã chọn ${bought} · còn ${left} phúc` : `${left} phúc duyên`}</span>
+            </summary>
+            <div className="pr-body">
+              {meta.phucDuyen <= 0 && <p className="note">Chưa có phúc duyên. Sống tốt một kiếp, chết đi sẽ được phúc duyên để mua ở đây.</p>}
+              <div className="talent-list">
+                {TALENTS.filter((t) => !t.ta).map((t) => {
+                  const on = picked.includes(t.id);
+                  // Kiếp Số từ 5: mỗi kiếp chỉ một thiên phú lớn
+                  const blocked = oneBig && BIG_TALENTS.includes(t.id) && picked.some((x) => x !== t.id && BIG_TALENTS.includes(x));
+                  const can = on || (left >= t.cost && !blocked);
+                  return (
+                    <button key={t.id} className={`talent ${on ? 'on' : ''}`} disabled={!can} title={blocked ? 'Kiếp Số từ 5: mỗi kiếp chỉ chọn một thiên phú lớn' : undefined} aria-pressed={on} onClick={() => setPicked(on ? picked.filter((x) => x !== t.id) : [...picked, t.id])}>
+                      <span>
+                        {t.name}
+                        <br />
+                        <small className="note">{t.desc}</small>
+                      </span>
+                      <span className="cost">{t.cost} phúc</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </details>
+        )}
+
+        {meta.nghiep > 0 && (
+          <details className="prep-row ta-row">
+            <summary>
+              <span className="pr-name">Thiên phú tà đạo</span>
+              <span className="pr-val ta">{boughtTa ? `đã chọn ${boughtTa} · còn ${leftTa}` : `${leftTa} nghiệp lực`}</span>
+            </summary>
+            <div className="pr-body">
+              <p className="note" style={{ marginTop: 0 }}>
+                Nghiệp lực tích từ những kiếp đi tà. Tích quá {150} nghiệp mà không tiêu thì kiếp sau bị trời phạt.
               </p>
-            )}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              {TALENTS.filter((t) => !t.ta).map((t) => {
-                const on = picked.includes(t.id);
-                // Kiếp Số từ 5: mỗi kiếp chỉ một thiên phú lớn
-                const blocked = oneBig && BIG_TALENTS.includes(t.id) && picked.some((x) => x !== t.id && BIG_TALENTS.includes(x));
-                const can = on || (left >= t.cost && !blocked);
-                return (
-                  <button key={t.id} className={`talent ${on ? 'on' : ''}`} disabled={!can} title={blocked ? 'Kiếp Số từ 5: mỗi kiếp chỉ chọn một thiên phú lớn' : undefined} aria-pressed={on} onClick={() => setPicked(on ? picked.filter((x) => x !== t.id) : [...picked, t.id])}>
-                    <span>
-                      {t.name}
-                      <br />
-                      <small className="note">{t.desc}</small>
-                    </span>
-                    <span className="cost">{t.cost} phúc</span>
-                  </button>
-                );
-              })}
+              <div className="talent-list">
+                {TALENTS.filter((t) => t.ta).map((t) => {
+                  const on = picked.includes(t.id);
+                  const can = on || leftTa >= t.cost;
+                  return (
+                    <button key={t.id} className={`talent ta ${on ? 'on' : ''}`} disabled={!can} aria-pressed={on} onClick={() => setPicked(on ? picked.filter((x) => x !== t.id) : [...picked, t.id])}>
+                      <span>
+                        {t.name}
+                        <br />
+                        <small className="note">{t.desc}</small>
+                      </span>
+                      <span className="cost">{t.cost} nghiệp</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        </details>
-      )}
+          </details>
+        )}
 
-      {meta.nghiep > 0 && (
-        <details className="more talent-shop ta-shop">
-          <summary>
-            Thiên phú tà đạo <span className="ta">({leftTa} nghiệp lực)</span>
-          </summary>
-          <div className="more-body">
-            <p className="note" style={{ marginTop: 0 }}>
-              Nghiệp lực tích từ những kiếp đi tà. Tiêu vào thiên phú tà đạo; tích quá {150} nghiệp mà không tiêu thì kiếp sau bị trời phạt.
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              {TALENTS.filter((t) => t.ta).map((t) => {
-                const on = picked.includes(t.id);
-                const can = on || leftTa >= t.cost;
-                return (
-                  <button key={t.id} className={`talent ta ${on ? 'on' : ''}`} disabled={!can} aria-pressed={on} onClick={() => setPicked(on ? picked.filter((x) => x !== t.id) : [...picked, t.id])}>
-                    <span>
-                      {t.name}
-                      <br />
-                      <small className="note">{t.desc}</small>
-                    </span>
-                    <span className="cost">{t.cost} nghiệp</span>
-                  </button>
-                );
-              })}
+        {ksOn && (
+          <details className="prep-row">
+            <summary>
+              <span className="pr-name">Kiếp Số và Hồn lực</span>
+              <span className="pr-val">
+                Kiếp Số {lh.ks}
+                {lhOn ? ` · ${lh.honName} ${lh.hon}` : ''}
+              </span>
+            </summary>
+            <div className="pr-body">
+              <KiepSoBlock meta={meta} />
             </div>
-          </div>
-        </details>
-      )}
+          </details>
+        )}
 
-      <details className="more">
-        <summary>Tùy chỉnh thêm (không bắt buộc)</summary>
-        <div className="more-body">
-          <h3>Tốc độ thời gian</h3>
-          <div className="choice-row">
+        <div className="prep-row prep-inline">
+          <span className="pr-name">Tốc độ thời gian</span>
+          <div className="seg" role="radiogroup" aria-label="Tốc độ thời gian">
             {[
               [10, 'Nhanh'],
               [20, 'Vừa'],
               [30, 'Chậm'],
-            ].map(([s, label]) => (
-              <button key={s} className={`btn ${yearSec === s ? 'on' : ''}`} onClick={() => setYearSec(s as number)} aria-pressed={yearSec === s}>
+            ].map(([sec, label]) => (
+              <button key={sec} role="radio" className={yearSec === sec ? 'on' : ''} onClick={() => setYearSec(sec as number)} aria-checked={yearSec === sec} title={`1 năm khoảng ${sec} giây`}>
                 {label}
-                <br />
-                <small>1 năm ≈ {s}s</small>
               </button>
             ))}
           </div>
-          <Link href="/so-sinh-tu" className="btn" style={{ display: 'block', textAlign: 'center', textDecoration: 'none', marginTop: 8 }}>
-            Sổ Sinh Tử ({Object.keys(meta.endings ?? {}).length}/{ENDINGS.length} kết cục)
-          </Link>
+        </div>
+      </section>
+
+      <details className="prep-row today-row">
+        <summary>
+          <span className="pr-name">Hôm nay · {omen.name}</span>
+          <span className="pr-val">
+            Nhiệm vụ {doneQ}/{daily.quests.length}
+          </span>
+        </summary>
+        <div className="pr-body">
+          <TodayScroll meta={meta} />
         </div>
       </details>
+
+      {bridge && (
+        <ManhBaBridge
+          meta={meta}
+          busy={busy}
+          onBack={() => setBridge(false)}
+          onPick={go}
+          who={
+            base ? (
+              <>
+                <span className="mbw-fig">
+                  <Sprite c={{ ...base, age: 22, lifespan: 90 }} size={56} />
+                </span>
+                <span>
+                  <small>Kiếp {meta.lives + 1}</small>
+                  <b>{base.name}</b>
+                </span>
+              </>
+            ) : null
+          }
+        />
+      )}
+
+      {!first && (
+        <section className="journey">
+          <h2 className="prep-title">Hành trình</h2>
+          {meta.past && (
+            <p className="jr-past">
+              Kiếp trước: <b>{meta.past.name}</b>, {meta.past.age} tuổi, {meta.past.realmName}.{meta.stash ? ' Có chôn lại một chiếc rương...' : ''}
+            </p>
+          )}
+          <LifeGoal meta={meta} />
+          <div className="collect-strip">
+            <Link href="/so-sinh-tu" onClick={onSoSinhTu} className="cs-item">
+              <small>Sổ Sinh Tử</small>
+              <b>
+                {cs.endings}/{cs.endingsTotal}
+              </b>
+              <span className="bk-bar" aria-hidden="true">
+                <i style={{ width: `${(cs.endings / cs.endingsTotal) * 100}%` }} />
+              </span>
+            </Link>
+            <Link href="/so-sinh-tu#thien-thu" className="cs-item cs-lore">
+              <small>{quyNhatDone(meta) ? 'Thiên thư II' : 'Thiên thư'}</small>
+              <b>{quyNhatDone(meta) ? `${lore2Count(meta)}/${LORE2_TOTAL}` : `${lore1Count(meta)}/${LORE_TOTAL}`}</b>
+              <span className="bk-bar" aria-hidden="true">
+                <i style={{ width: `${(quyNhatDone(meta) ? lore2Count(meta) / LORE2_TOTAL : lore1Count(meta) / LORE_TOTAL) * 100}%` }} />
+              </span>
+            </Link>
+            <button className="cs-item" onClick={onKho}>
+              <small>Bảo khố</small>
+              <b>
+                {cs.items}/{cs.itemsTotal}
+              </b>
+              <span className="bk-bar" aria-hidden="true">
+                <i style={{ width: `${(cs.items / cs.itemsTotal) * 100}%` }} />
+              </span>
+            </button>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

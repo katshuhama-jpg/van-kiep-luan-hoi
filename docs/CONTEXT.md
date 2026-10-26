@@ -567,3 +567,7 @@ Mục tiêu: chết nhiều không còn là lợi thế; người chơi lâu có
 - Xin xăm: `vkl_arena_draw` rút ngẫu nhiên phía máy chủ, giữ `pending` tới khi đánh xong (không rút lại). Hiệu ứng ống xăm, que màu theo phẩm (Phàm/Linh/Huyền/Thiên theo cảnh giới thật), thẻ lật, quẻ Thượng cát/Trung bình/Hạ hung theo xác suất nền.
 - Trận đấu (`lib/game/arena.ts`, `components/Arena.tsx Match`): bóng đối thủ `equalize` về cùng cảnh giới; mỗi hiệp Công/Thủ/Hóa; ý đồ đúng 55%, đối thủ 35% khắc thế hiệp trước của bạn; 31 luật theo ngày trong tháng (`ARENA_RULES`, `ruleOf`). Mô phỏng thế cân: đoán theo ý đồ thắng 63%, chọn bừa 50%. Có nút Tự đánh.
 - `vkl_arena_fight2`: kiểm tra lượt, `pending`, báo thù (`vkl_arena_revenge`, tối đa 3 chờ, hạn 48 giờ), liên thắng `win_run`, thư cho đối thủ.
+
+## Màn đầu thai (bố cục 27/10)
+- Bước 1 Lá số: hàng chỉ số (kiếp, phúc, nghiệp, Kiếp Số), khung lá số gộp thiên phú trời ban, nút Đầu thai cố định đáy. Dưới là "Chuẩn bị" (mua thiên phú, tà đạo, Kiếp Số và Hồn lực, tốc độ), "Hôm nay" (thiên tượng gập lại), "Hành trình".
+- Bước 2 Cầu Nại Hà (từ kiếp 15, `ManhBaBridge` trong components/LuanHoi.tsx): toàn màn, 2 lựa chọn Uống / Hất chén, bấm là đầu thai luôn. Chưa tới kiếp 15 thì Đầu thai đi thẳng.

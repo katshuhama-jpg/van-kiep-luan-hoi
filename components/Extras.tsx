@@ -12,7 +12,7 @@ import type { Character } from '@/lib/game/types';
 import { ELEMENTS, elementOf } from '@/lib/game/nguhanh';
 
 /* ================= Gieo quẻ: lá số nhân vật + thiên phú ================= */
-export function GachaPanel({ phuc, onChange, onBorn, busy }: { phuc: number; onChange: (gifts: string[], spent: number, base: Character | null) => void; onBorn: () => void; busy?: boolean }) {
+export function GachaPanel({ phuc, onChange, onBorn, busy, lifeNo, barNote }: { phuc: number; onChange: (gifts: string[], spent: number, base: Character | null) => void; onBorn: () => void; busy?: boolean; lifeNo?: number; barNote?: string }) {
   const [cards, setCards] = useState<string[]>([]);
   const [picked, setPicked] = useState<string[]>([]);
   const [rolls, setRolls] = useState(0);
@@ -46,52 +46,54 @@ export function GachaPanel({ phuc, onChange, onBorn, busy }: { phuc: number; onC
   const best = cards.reduce((m, id) => Math.max(m, giftOf(id)?.rare ?? 0), 0);
   return (
     <>
-      <section className="panel">
-        <h2>Lá số kiếp này</h2>
+      <section className="panel la-so">
+        <div className="ls-head">
+          <h2>Lá số {lifeNo ? `kiếp ${lifeNo}` : 'kiếp này'}</h2>
+          {base && (
+            <button className="link-btn" onClick={() => setShowRadar(!showRadar)} aria-expanded={showRadar}>
+              {showRadar ? 'Ẩn chỉ số' : 'Xem chỉ số'}
+            </button>
+          )}
+        </div>
         {base && <BirthCard key={'b' + flip} c={base} />}
-        {base && (
-          <button className="link-btn" onClick={() => setShowRadar(!showRadar)} aria-expanded={showRadar}>
-            {showRadar ? 'Ẩn biểu đồ chỉ số' : 'Xem biểu đồ chỉ số'}
-          </button>
-        )}
         {base && showRadar && <GiftRadar base={base} picked={picked} />}
-      </section>
-      {cards.length > 0 && (
-        <section className="panel">
-          <h2>Chọn thiên phú</h2>
-          <p className="note" style={{ marginTop: 0 }}>
-            Không bắt buộc. Chọn tối đa 2 lá. Lá ghi &quot;có họa&quot; vừa có lợi vừa có hại.
-          </p>
-          <div className={`gacha-row ${best >= 3 ? 'gold' : ''}`} key={flip}>
-            {cards.map((id, i) => {
-              const g = giftOf(id)!;
-              const on = picked.includes(id);
-              return (
-                <button
-                  key={id}
-                  className={`gacha-card r${g.rare} ${on ? 'on' : ''}`}
-                  style={{ animationDelay: `${0.3 + i * 0.12}s`, ['--rc' as string]: RARE_COLOR[g.rare] }}
-                  onClick={() => toggle(id)}
-                  aria-pressed={on}
-                >
-                  <span className="gc-rare">{RARE_NAME[g.rare]}</span>
-                  <b>{g.name}</b>
-                  <small>{g.desc}</small>
-                  {g.bad && <span className="gc-bad">có họa</span>}
-                  {on && <span className="gc-check">✓ Đã chọn</span>}
-                </button>
-              );
-            })}
+        {cards.length > 0 && (
+          <div className="ls-gifts">
+            <h3>
+              Trời ban thiên phú <small>chọn tối đa 2 lá, không bắt buộc</small>
+            </h3>
+            <div className={`gacha-row ${best >= 3 ? 'gold' : ''}`} key={flip}>
+              {cards.map((id, i) => {
+                const g = giftOf(id)!;
+                const on = picked.includes(id);
+                return (
+                  <button
+                    key={id}
+                    className={`gacha-card r${g.rare} ${on ? 'on' : ''}`}
+                    style={{ animationDelay: `${0.3 + i * 0.12}s`, ['--rc' as string]: RARE_COLOR[g.rare] }}
+                    onClick={() => toggle(id)}
+                    aria-pressed={on}
+                  >
+                    <span className="gc-rare">{RARE_NAME[g.rare]}</span>
+                    <b>{g.name}</b>
+                    <small>{g.desc}</small>
+                    {g.bad && <span className="gc-bad">có họa</span>}
+                    {on && <span className="gc-check">✓ Đã chọn</span>}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </section>
-      )}
+        )}
+      </section>
       <div className="birth-bar">
         <button className="btn" onClick={roll} disabled={cost > 0 && phuc < cost}>
           Gieo lại
           <small>{cost ? `-${cost} phúc` : 'miễn phí'}</small>
         </button>
         <button className="btn btn-red btn-big" onClick={onBorn} disabled={busy || !base}>
-          Đầu thai ▶
+          <span>Đầu thai ▶</span>
+          {barNote && <small>{barNote}</small>}
         </button>
       </div>
     </>
@@ -110,25 +112,29 @@ function BirthCard({ c }: { c: Character }) {
       </div>
       <div className="bc-info">
         <b className="bc-title">{c.name}</b>
-        <ul>
-          <li>{c.origin}</li>
-          <li>{c.birthPlace}</li>
-          <li>
-            Gia cảnh <b>{fam?.name}</b> · {c.linhThach} linh thạch
-          </li>
-          <li>
+        <i className="bc-origin">{c.origin}</i>
+        <dl className="bc-rows">
+          <dt>Quê</dt>
+          <dd>{c.birthPlace}</dd>
+          <dt>Nhà</dt>
+          <dd>
+            <b>{fam?.name}</b> · {c.linhThach} linh thạch
+          </dd>
+          <dt>Căn</dt>
+          <dd>
             <b>{c.linhCan}</b>
-          </li>
-          <li>
-            Tướng số: {c.fateName} · thọ khoảng {c.lifespan}
-          </li>
-          <li>
-            Bản mệnh:{' '}
+          </dd>
+          <dt>Thọ</dt>
+          <dd>
+            khoảng {c.lifespan} · {c.fateName}
+          </dd>
+          <dt>Mệnh</dt>
+          <dd>
             <b style={{ color: ELEMENTS[elementOf(c)].color, textShadow: '1px 1px 0 #1f160d' }}>
               {ELEMENTS[elementOf(c)].name} {ELEMENTS[elementOf(c)].sym}
             </b>
-          </li>
-        </ul>
+          </dd>
+        </dl>
       </div>
     </div>
   );
