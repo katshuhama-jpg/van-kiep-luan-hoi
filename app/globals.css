@@ -3333,3 +3333,13 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .grave.cos-hu { background: linear-gradient(#1a1446, #06061a); color: #e8e4ff; border-color: #6a52aa; border-radius: 12px; }
 .grave.cos-hu .grave-cos { color: #a08cff; }
 .grave.cos-hu .gname, .grave.cos-hu small { color: #e8e4ff; }
+
+/* chống cuộn ngang: popup, sheet và trang không bao giờ rộng hơn màn hình */
+html, body { overflow-x: hidden; max-width: 100%; }
+.sheet, .duel-card, .duel-warn, .rel-wrap, .nhd, .kiep, .asc { overflow-x: hidden; }
+.sheet { overflow-y: auto; }
+.showcase { overflow: hidden; max-width: 100%; }
+.new-stamp { right: 4px; }
+.app { max-width: 100%; }
+img, svg, canvas { max-width: 100%; }
+a { overflow-wrap: anywhere; }
