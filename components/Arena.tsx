@@ -4,13 +4,14 @@ import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Sprite from '@/components/Sprite';
 import Podium from '@/components/Podium';
+import { PixelFx, fxMotes, fxRays } from '@/components/PixelFx';
 import type { Player } from '@/lib/auth';
 import { PATHS, realmLabel } from '@/lib/game/data';
 import { foeChar, foeStats } from '@/lib/game/duel';
 import { ELEMENTS, elementOf } from '@/lib/game/nguhanh';
 import { STANCES, type Stance } from '@/lib/game/nguHanhDai';
 import type { RivalChar } from '@/lib/game/types';
-import { HABIT_TEXT, ROUND_TEXT, baseChance, beats, bestOf, counterOf, equalize, foeStance, needWins, roundChance, ruleOf, tellOf, vnDate, type ArenaRule } from '@/lib/game/arena';
+import { HABIT_TEXT, baseChance, commentary, beats, bestOf, counterOf, equalize, foeStance, needWins, roundChance, ruleOf, tellOf, vnDate, type ArenaRule } from '@/lib/game/arena';
 import { arena2State, arenaCandidates, arenaDraw, arenaFight2, arenaPick, arenaShadow, toRival, type Arena2State } from '@/lib/social';
 
 export const ARENA_TURNS = 3;
@@ -85,23 +86,46 @@ export function RuleBanner({ compact }: { compact?: boolean }) {
   );
 }
 
-/** Ống xăm vẽ pixel */
+const TIER_COL = ['#d8d0c8', '#6ab0ff', '#c08aff', '#ffd36b'];
+
+/** Ống xăm vẽ pixel, đặt trên bàn thờ trong gian miếu */
 function OngXam({ phase, tier }: { phase: 'idle' | 'shake' | 'fly' | 'open'; tier: number }) {
+  const col = TIER_COL[tier];
   return (
-    <div className={`xam xam-${phase} xt${tier}`} aria-hidden="true">
-      <span className="xam-glow" />
-      <span className="xam-stick fly" />
+    <div className={`xam xam-${phase}`} aria-hidden="true">
+      {phase === 'fly' && (
+        <>
+          <PixelFx spec={fxRays(col)} scale={3} dur={0.6} className="pa xam-rays" />
+          <PixelFx spec={fxMotes(12, col)} scale={3} dur={1} className="pa xam-motes" />
+        </>
+      )}
+      <svg className="xam-stick" viewBox="0 0 6 30" shapeRendering="crispEdges">
+        <rect x="1" y="0" width="4" height="30" fill="#2a1408" />
+        <rect x="2" y="1" width="2" height="28" fill="#e8c87a" />
+        <rect x="2" y="1" width="2" height="6" fill={col} />
+        <rect x="2" y="2" width="1" height="3" fill="#ffffff" opacity="0.7" />
+      </svg>
       <svg className="xam-pot" viewBox="0 0 32 40" shapeRendering="crispEdges">
-        {[5, 9, 13, 17, 21, 25].map((x, i) => (
-          <rect key={x} className={`xs xs${i}`} x={x} y={2 + (i % 3) * 2} width="2" height="16" fill={i % 2 ? '#e8c87a' : '#d8b060'} />
+        {[6, 9, 12, 15, 18, 21, 24].map((x, i) => (
+          <g key={x} className={`xs xs${i % 3}`}>
+            <rect x={x - 0.5} y={1 + (i % 3) * 2} width="3" height="15" fill="#2a1408" />
+            <rect x={x} y={2 + (i % 3) * 2} width="2" height="14" fill={i % 2 ? '#e8c87a' : '#d0a858'} />
+            <rect x={x} y={2 + (i % 3) * 2} width="2" height="2" fill={i % 2 ? '#b0201a' : '#c8963a'} />
+          </g>
         ))}
-        <rect x="3" y="14" width="26" height="24" fill="#7a3a18" />
-        <rect x="3" y="14" width="26" height="3" fill="#a8582a" />
-        <rect x="3" y="36" width="26" height="2" fill="#4a2010" />
-        <rect x="5" y="20" width="22" height="2" fill="#c8963a" />
-        <rect x="5" y="30" width="22" height="2" fill="#c8963a" />
-        <rect x="13" y="23" width="6" height="5" fill="#b0201a" />
-        <rect x="14" y="24" width="4" height="3" fill="#ffd36b" />
+        <rect x="3" y="13" width="26" height="26" fill="#2a1408" />
+        <rect x="4" y="14" width="24" height="24" fill="#8a4a1e" />
+        <rect x="4" y="14" width="5" height="24" fill="#a8622a" />
+        <rect x="23" y="14" width="5" height="24" fill="#6a3414" />
+        <rect x="4" y="14" width="24" height="2" fill="#c07a34" />
+        <rect x="4" y="19" width="24" height="2" fill="#d8a848" />
+        <rect x="4" y="20" width="24" height="1" fill="#a87a28" />
+        <rect x="4" y="32" width="24" height="2" fill="#d8a848" />
+        <rect x="4" y="33" width="24" height="1" fill="#a87a28" />
+        <rect x="12" y="23" width="8" height="7" fill="#2a1408" />
+        <rect x="13" y="24" width="6" height="5" fill="#b0201a" />
+        <rect x="14" y="25" width="4" height="3" fill="#ffd36b" />
+        <rect x="4" y="37" width="24" height="1" fill="#4a2410" />
       </svg>
     </div>
   );
@@ -135,7 +159,9 @@ function XinXam({ me, user, rule, left, onFight, onErr }: { me: RivalChar; user:
     <div className="xin-xam">
       {phase !== 'open' ? (
         <>
-          <OngXam phase={phase} tier={tier} />
+          <div className="xam-stage">
+            <OngXam phase={phase} tier={tier} />
+          </div>
           <button className="btn btn-red btn-big xam-btn" disabled={phase !== 'idle' || left <= 0} onClick={shake}>
             {phase === 'idle' ? `Lắc ống xăm · còn ${left} lượt` : phase === 'shake' ? 'Đang lắc...' : 'Que xăm bay ra!'}
           </button>
@@ -144,9 +170,14 @@ function XinXam({ me, user, rule, left, onFight, onErr }: { me: RivalChar; user:
       ) : (
         draw && (
           <div className={`xam-card ${TIERS[tier].cls}`}>
-            <span className="xc-burst" aria-hidden="true" />
+            <i className="xc-corner tl" aria-hidden="true" />
+            <i className="xc-corner tr" aria-hidden="true" />
+            <i className="xc-corner bl" aria-hidden="true" />
+            <i className="xc-corner br" aria-hidden="true" />
             <small className="xc-tier">{TIERS[tier].name}</small>
             <span className="xc-fig">
+              {tier > 0 && <PixelFx spec={fxRays(TIER_COL[tier])} scale={2} dur={1.2} className="pa xc-rays" />}
+              {tier > 1 && <PixelFx spec={fxMotes(10, TIER_COL[tier])} scale={3} dur={1.4} className="pa xc-motes" />}
               <Sprite c={foeChar(draw.foe)} size={96} anim="idle" dir={2} />
             </span>
             <b className="xc-name">{draw.foe.name}</b>
@@ -170,7 +201,31 @@ function XinXam({ me, user, rule, left, onFight, onErr }: { me: RivalChar; user:
   );
 }
 
-type Round = { my: Stance; foe: Stance; win: boolean; text: string };
+type Round = { my: Stance; foe: Stance; win: boolean; lines: string[] };
+
+/** Bình luận chiêu thức của hai bên, hiệp mới nhất ở trên */
+function Commentary({ rounds, live }: { rounds: Round[]; live: Round | null }) {
+  const all = live ? [...rounds, live] : rounds;
+  if (!all.length) return <p className="am-comm-empty">Diễn biến trận đấu sẽ hiện ở đây.</p>;
+  return (
+    <section className="am-comm" aria-live="polite">
+      <h4>Diễn biến</h4>
+      {all
+        .map((r, i) => ({ r, i }))
+        .reverse()
+        .map(({ r, i }) => (
+          <div key={i} className={`am-round ${r.win ? 'w' : 'l'} ${r === live ? 'live' : ''}`}>
+            <b>Hiệp {i + 1}</b>
+            {r.lines.map((t, k) => (
+              <p key={k} className={k === r.lines.length - 1 ? 'res' : k === 0 ? 'me' : k === 1 ? 'foe' : ''}>
+                {t}
+              </p>
+            ))}
+          </div>
+        ))}
+    </section>
+  );
+}
 
 /** Màn đấu ba hiệp kiểu Ngũ Hành Đài, khó hơn */
 function Match({ me, foe0, opp, rule, revenge, user, onDone }: { me: RivalChar; foe0: RivalChar; opp: string; rule: ArenaRule; revenge: number | null; user: Player; onDone: () => void }) {
@@ -207,8 +262,8 @@ function Match({ me, foe0, opp, rule, revenge, user, onDone }: { me: RivalChar; 
     if (!plan || anim || over) return;
     const p = roundChance(base, my, plan.foe, rule, { last: rounds.length === bestOf(rule) - 1, myWonLast: rounds.length ? rounds[rounds.length - 1].win : null });
     const win = Math.random() < p;
-    const pool = win ? ROUND_TEXT.win : ROUND_TEXT.lose;
-    const r: Round = { my, foe: plan.foe, win, text: pool[Math.floor(Math.random() * pool.length)] };
+    const names = { cong: STANCES.cong.name, thu: STANCES.thu.name, hoa: STANCES.hoa.name };
+    const r: Round = { my, foe: plan.foe, win, lines: commentary(rounds.length + 1, me, foe, my, plan.foe, win, rule, Math.random, names) };
     setAnim(r);
     setTimeout(() => {
       setRounds((x) => [...x, r]);
@@ -249,15 +304,6 @@ function Match({ me, foe0, opp, rule, revenge, user, onDone }: { me: RivalChar; 
         <p className="am-rule">
           <b>{rule.name}:</b> {rule.desc} {revenge ? <em>Trận báo thù, không tính lượt.</em> : null}
         </p>
-        {rounds.length > 0 && (
-          <ol className="am-log">
-            {rounds.map((r, i) => (
-              <li key={i} className={r.win ? 'w' : 'l'}>
-                Hiệp {i + 1}: bạn {STANCES[r.my].name}, đối thủ {STANCES[r.foe].name}. {r.text}
-              </li>
-            ))}
-          </ol>
-        )}
         {!over ? (
           <>
             <p className="am-tell">
@@ -280,6 +326,7 @@ function Match({ me, foe0, opp, rule, revenge, user, onDone }: { me: RivalChar; 
             <button className="btn am-auto" disabled={!!anim} onClick={auto}>
               Tự đánh hiệp này
             </button>
+            <Commentary rounds={rounds} live={anim} />
           </>
         ) : (
           <div className="am-res">
@@ -297,6 +344,7 @@ function Match({ me, foe0, opp, rule, revenge, user, onDone }: { me: RivalChar; 
             <button className="btn btn-red btn-big" disabled={!res} onClick={onDone}>
               Rời lôi đài
             </button>
+            <Commentary rounds={rounds} live={null} />
           </div>
         )}
       </div>

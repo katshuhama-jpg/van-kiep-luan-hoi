@@ -180,3 +180,31 @@ export const ROUND_TEXT = {
   win: ['Bạn đọc trúng ý đồ, một chưởng đẩy bóng đối thủ lùi ba bước.', 'Đòn của bạn tới trước một nhịp, đối thủ loạng choạng.', 'Bạn hóa giải gọn gàng rồi phản đòn.'],
   lose: ['Đối thủ chặn đúng đòn của bạn rồi trả lại gấp đôi.', 'Bạn trúng kế, ngực đau nhói.', 'Một đòn hiểm lách qua thế thủ của bạn.'],
 };
+
+/** Tên chiêu theo con đường và thế đánh, để bình luận trận đấu */
+const MOVES: Record<string, Record<Stance, string[]>> = {
+  kiem: { cong: ['Nhất Kiếm Phá Không', 'Lưu Tinh Kiếm Vũ'], thu: ['Kiếm Võng Hộ Thân', 'Bích Thủy Kiếm Bích'], hoa: ['Dĩ Nhu Khắc Cương', 'Kiếm Ý Như Phong'] },
+  dan: { cong: ['Đan Hỏa Phần Thiên', 'Liệt Diễm Đan Châm'], thu: ['Hộ Thể Đan Khí', 'Ngọc Dịch Kim Thân'], hoa: ['Hóa Độc Thành Dược', 'Vạn Thảo Quy Nguyên'] },
+  tran: { cong: ['Sát Trận Khởi Động', 'Vạn Kiếm Quy Tông Trận'], thu: ['Bát Môn Kim Tỏa Trận', 'Huyền Vũ Hộ Trận'], hoa: ['Mê Tung Ảo Trận', 'Càn Khôn Đảo Chuyển'] },
+  phat: { cong: ['Đại Lực Kim Cang Chưởng', 'Phục Ma Côn Pháp'], thu: ['Kim Cang Bất Hoại Thể', 'Cà Sa Hộ Thân'], hoa: ['Niêm Hoa Vi Tiếu', 'Lục Tự Chân Ngôn'] },
+  ma: { cong: ['Huyết Ma Trảo', 'Thiên Ma Giải Thể'], thu: ['Ma Khí Hộ Thể', 'Huyết Hải Hộ Thân'], hoa: ['Hấp Tinh Ma Công', 'Ảnh Ma Phân Thân'] },
+  yeu: { cong: ['Yêu Thú Cuồng Kích', 'Hổ Khiếu Sơn Lâm'], thu: ['Thạch Bì Yêu Giáp', 'Quy Giáp Thần Công'], hoa: ['Huyễn Hình Độn Ảnh', 'Hồ Mị Mê Tâm'] },
+  '': { cong: ['Mãnh Hổ Quyền', 'Khai Sơn Chưởng'], thu: ['Thiết Bố Sam', 'Trầm Thạch Bộ'], hoa: ['Phiêu Diêu Bộ Pháp', 'Lưu Thủy Thân Pháp'] },
+};
+export function moveOf(r: RivalChar, s: Stance, rnd: () => number): string {
+  const set = MOVES[r.path ?? ''] ?? MOVES[''];
+  const l = set[s];
+  return l[Math.floor(rnd() * l.length)];
+}
+
+/** Bình luận một hiệp: chiêu hai bên, thế nào khắc thế nào, kết quả */
+export function commentary(n: number, me: RivalChar, foe: RivalChar, my: Stance, fs: Stance, win: boolean, rule: ArenaRule, rnd: () => number, names: Record<Stance, string>): string[] {
+  const a = moveOf(me, my, rnd);
+  const b = moveOf(foe, fs, rnd);
+  const lines = [`${me.name} thi triển “${a}” (${names[my]}).`, `${foe.name} đáp lại bằng “${b}” (${names[fs]}).`];
+  if (beats(my, fs, rule)) lines.push(win ? `“${a}” khắc đúng “${b}”, đối thủ trở tay không kịp.` : `“${a}” khắc thế, nhưng nội lực đối thủ quá dày, đòn bị đỡ lại.`);
+  else if (beats(fs, my, rule)) lines.push(win ? `“${b}” khắc thế, nhưng bạn liều mình lách qua, phản đòn trúng đích!` : `“${b}” khắc đúng “${a}”, bạn trúng kế.`);
+  else lines.push(win ? 'Hai chiêu cùng thế va vào nhau, bạn nhỉnh hơn một nhịp.' : 'Hai chiêu cùng thế va vào nhau, đối thủ nhỉnh hơn một nhịp.');
+  lines.push(win ? `Bạn thắng hiệp ${n}.` : `Bạn thua hiệp ${n}.`);
+  return lines;
+}
