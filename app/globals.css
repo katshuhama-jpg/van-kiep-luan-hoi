@@ -1658,7 +1658,8 @@ button:disabled {
 
 .game-scroll {
   flex: 1;
-  min-height: 0;
+  /* luôn chừa chỗ cho gia phả, kể cả màn hình thấp hay khi đang có sự kiện */
+  min-height: clamp(84px, 16vh, 150px);
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: 8px 8px 12px;
@@ -3077,7 +3078,7 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .ss-secret { color: #3d2a6b !important; }
 /* sự kiện dài, nhiều lựa chọn: khung dưới được co lại và tự cuộn, không bị cắt mất lựa chọn cuối */
 .game.has-event .game-bottom { flex: 0 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
-.game.has-event .game-scroll { min-height: 0; }
+.game.has-event .game-scroll { min-height: clamp(84px, 16vh, 150px); }
 .game-bottom .dialog { max-height: none; overflow: visible; }
 .el-badge { color: #1f160d; border: 2px solid #1f160d; }
 .drop-warn { color: var(--red-d); font-weight: 700; }
