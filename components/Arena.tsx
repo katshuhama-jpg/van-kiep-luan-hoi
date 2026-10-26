@@ -4,18 +4,17 @@ import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Sprite from '@/components/Sprite';
 import Podium from '@/components/Podium';
+import ArenaMatch from '@/components/ArenaMatch';
 import { PixelFx, fxMotes, fxRays } from '@/components/PixelFx';
 import type { Player } from '@/lib/auth';
 import { PATHS, realmLabel } from '@/lib/game/data';
 import { foeChar, foeStats } from '@/lib/game/duel';
 import { ELEMENTS, elementOf } from '@/lib/game/nguhanh';
-import { STANCES, type Stance } from '@/lib/game/nguHanhDai';
 import type { RivalChar } from '@/lib/game/types';
-import { HABIT_TEXT, baseChance, commentary, fitsRule, beats, bestOf, counterOf, equalize, foeStance, needWins, roundChance, ruleOf, tellOf, vnDate, type ArenaRule } from '@/lib/game/arena';
+import { baseChance, fitsRule, equalize, ruleOf, vnDate, type ArenaRule } from '@/lib/game/arena';
 import { arena2State, arenaCandidates, arenaDraw, arenaFight2, arenaPick, arenaShadow, toRival, type Arena2State } from '@/lib/social';
 
 export const ARENA_TURNS = 3;
-const BGS = ['tien', 'ma', 'hu'].flatMap((c) => ['kim', 'moc', 'thuy', 'hoa', 'tho'].map((e) => `/bg/nhd-${c}-${e}.png`));
 
 /** Phẩm của thẻ bóng theo cảnh giới thật (trước khi kéo về cùng cấp) */
 const TIERS = [
@@ -232,157 +231,6 @@ function XinXam({ me, user, rule, left, onFight, onErr }: { me: RivalChar; user:
   );
 }
 
-type Round = { my: Stance; foe: Stance; win: boolean; lines: string[] };
-
-/** Bình luận chiêu thức của hai bên, hiệp mới nhất ở trên */
-function Commentary({ rounds, live }: { rounds: Round[]; live: Round | null }) {
-  const all = live ? [...rounds, live] : rounds;
-  if (!all.length) return <p className="am-comm-empty">Diễn biến trận đấu sẽ hiện ở đây.</p>;
-  return (
-    <section className="am-comm" aria-live="polite">
-      <h4>Diễn biến</h4>
-      {all
-        .map((r, i) => ({ r, i }))
-        .reverse()
-        .map(({ r, i }) => (
-          <div key={i} className={`am-round ${r.win ? 'w' : 'l'} ${r === live ? 'live' : ''}`}>
-            <b>Hiệp {i + 1}</b>
-            {r.lines.map((t, k) => (
-              <p key={k} className={k === r.lines.length - 1 ? 'res' : k === 0 ? 'me' : k === 1 ? 'foe' : ''}>
-                {t}
-              </p>
-            ))}
-          </div>
-        ))}
-    </section>
-  );
-}
-
-/** Màn đấu ba hiệp kiểu Ngũ Hành Đài, khó hơn */
-function Match({ me, foe0, opp, rule, revenge, user, onDone }: { me: RivalChar; foe0: RivalChar; opp: string; rule: ArenaRule; revenge: number | null; user: Player; onDone: () => void }) {
-  const foe = useMemo(() => equalize(foe0, me), [foe0, me]);
-  const base = useMemo(() => baseChance(me, foe, rule), [me, foe, rule]);
-  const bg = useMemo(() => BGS[Math.floor(Math.random() * BGS.length)], []);
-  const [rounds, setRounds] = useState<Round[]>([]);
-  const [plan, setPlan] = useState<{ foe: Stance; tell: { shown: Stance | null; text: string } } | null>(null);
-  const [anim, setAnim] = useState<Round | null>(null);
-  const [res, setRes] = useState<{ win: boolean; pts?: number; err?: string } | null>(null);
-  const wins = rounds.filter((r) => r.win).length;
-  const losses = rounds.length - wins;
-  const need = needWins(rule);
-  const over = wins >= need || losses >= need;
-  const forced = rounds.length === 0 && rule.force1 ? rule.force1 : null;
-
-  useEffect(() => {
-    if (over || anim) return;
-    const last = rounds.length ? rounds[rounds.length - 1].my : null;
-    const fs = foeStance(foe, Math.random, rounds.length, last, rule);
-    setPlan({ foe: fs, tell: tellOf(fs, rule, Math.random) });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rounds.length, anim]);
-
-  useEffect(() => {
-    if (!over || res) return;
-    const win = wins >= need;
-    const detail = `${me.name} ${win ? 'thắng' : 'thua'} ${foe.name} ${wins}-${losses}. Luật hôm nay: ${rule.name}.`;
-    arenaFight2(user, opp, win, detail, revenge).then((r) => setRes({ win, pts: r?.pts, err: !r ? 'Lôi đài đang đông, kết quả chưa ghi được.' : r.error }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [over]);
-
-  function play(my: Stance) {
-    if (!plan || anim || over) return;
-    const p = roundChance(base, my, plan.foe, rule, { last: rounds.length === bestOf(rule) - 1, myWonLast: rounds.length ? rounds[rounds.length - 1].win : null });
-    const win = Math.random() < p;
-    const names = { cong: STANCES.cong.name, thu: STANCES.thu.name, hoa: STANCES.hoa.name };
-    const r: Round = { my, foe: plan.foe, win, lines: commentary(rounds.length + 1, me, foe, my, plan.foe, win, rule, Math.random, names) };
-    setAnim(r);
-    setTimeout(() => {
-      setRounds((x) => [...x, r]);
-      setAnim(null);
-    }, 900);
-  }
-  const auto = () => play(forced ?? (plan?.tell.shown ? counterOf(plan.tell.shown, rule) : (['cong', 'thu', 'hoa'] as Stance[])[Math.floor(Math.random() * 3)]));
-  const all: Stance[] = ['cong', 'thu', 'hoa'];
-
-  return (
-    <div className="arena-match" role="dialog" aria-modal="true" aria-label={`Lôi đài với @${opp}`}>
-      <div className="am-stage" style={{ backgroundImage: `url(${bg})` }}>
-        <div className={`am-side me ${anim ? (anim.win ? 'hit' : 'hurt') : ''}`}>
-          <Sprite c={foeChar(me)} size={84} anim={anim ? 'slash' : 'idle'} dir={3} />
-          <small>{me.name}</small>
-        </div>
-        <div className="am-mid">
-          <span className="am-pips" aria-label={`Thắng ${wins}, thua ${losses}`}>
-            {Array.from({ length: bestOf(rule) }, (_, i) => (
-              <i key={i} className={rounds[i] ? (rounds[i].win ? 'w' : 'l') : ''} />
-            ))}
-          </span>
-          <b>{over ? (wins >= need ? 'THẮNG' : 'THUA') : `Hiệp ${rounds.length + 1}`}</b>
-          {anim && (
-            <small className="am-clash">
-              {STANCES[anim.my].name} ⚔ {STANCES[anim.foe].name}
-            </small>
-          )}
-        </div>
-        <div className={`am-side foe ${anim ? (anim.win ? 'hurt' : 'hit') : ''}`}>
-          <Sprite c={foeChar(foe)} size={84} anim={anim ? 'slash' : 'idle'} dir={1} />
-          <small>
-            {foe.name} · @{opp}
-          </small>
-        </div>
-      </div>
-      <div className="am-body">
-        <p className="am-rule">
-          <b>{rule.name}:</b> {rule.desc} {revenge ? <em>Trận báo thù, không tính lượt.</em> : null}
-        </p>
-        {!over ? (
-          <>
-            <p className="am-tell">
-              {plan?.tell.text} <small>{HABIT_TEXT[foe.path ?? ''] ?? ''}</small>
-            </p>
-            <div className="am-stances">
-              {all.map((s) => {
-                const beat = all.find((x) => beats(s, x, rule))!;
-                const lose = all.find((x) => beats(x, s, rule))!;
-                return (
-                  <button key={s} className={`am-stance st-${s}`} disabled={!!anim || (!!forced && forced !== s)} onClick={() => play(s)}>
-                    <b>{STANCES[s].name}</b>
-                    <small>
-                      thắng {STANCES[beat].name}, thua {STANCES[lose].name}
-                    </small>
-                  </button>
-                );
-              })}
-            </div>
-            <button className="btn am-auto" disabled={!!anim} onClick={auto}>
-              Tự đánh hiệp này
-            </button>
-            <Commentary rounds={rounds} live={anim} />
-          </>
-        ) : (
-          <div className="am-res">
-            {res ? (
-              <>
-                <p>
-                  {wins >= need ? `Bạn thắng ${wins}-${losses}. +3 điểm lôi đài.` : `Bạn thua ${wins}-${losses}. Không được điểm.`}
-                  {typeof res.pts === 'number' ? ` Tuần này: ${res.pts} điểm.` : ''}
-                </p>
-                {res.err && <p className="ar-err">{res.err === 'NO_TURNS' ? 'Hôm nay đã hết lượt.' : res.err === 'NO_REVENGE' ? 'Lượt báo thù đã hết hạn.' : res.err === 'BAD_OPP' ? 'Quẻ này không còn hiệu lực.' : res.err}</p>}
-              </>
-            ) : (
-              <p>Đang ghi kết quả lên bảng...</p>
-            )}
-            <button className="btn btn-red btn-big" disabled={!res} onClick={onDone}>
-              Rời lôi đài
-            </button>
-            <Commentary rounds={rounds} live={null} />
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
 /**
  * Lôi đài hằng ngày: chọn bóng xuất chiến (1 trong 5 kiếp mạnh nhất, giữ cả ngày), mỗi ngày 3 lần xin xăm ra đối thủ ngẫu nhiên,
  * bóng đối thủ kéo về cùng cảnh giới. Thắng trận được 3 điểm, thua 0. Điểm reset mỗi thứ Hai.
@@ -591,7 +439,7 @@ export default function Arena({ user }: { user: Player | null }) {
       {!st.top.length && <p className="note">Chưa ai có điểm tuần này. Long ỷ còn trống, hãy là người đầu tiên.</p>}
 
       {match && user && (
-        <Match
+        <ArenaMatch
           me={match.me}
           foe0={match.foe}
           opp={match.opp}

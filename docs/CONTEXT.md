@@ -575,3 +575,9 @@ Mục tiêu: chết nhiều không còn là lợi thế; người chơi lâu có
 ## Quy tắc hình ảnh (Tyler, 27/10)
 - Nhân vật, quái, thú: chỉ dùng LPC (public/lpc, lib/game/monsterLook.ts) hoặc nguồn pixel art có sẵn. Không tự vẽ SVG pixel bằng code nữa.
 - Quái chưa có ngoại hình LPC thì đang rơi về hình SVG cũ trong components/Battle.tsx.
+
+## Trận lôi đài kiểu máu (27/10)
+- lib/game/arenaFight.ts: 100 máu (Nhất chiêu 50, Ngũ chiến 150), mỗi lượt chọn thế + 1 trong 3 ấn ngũ hành; nội lực 5 ô thì tung tuyệt kỹ theo con đường (ULT_NAME); đối thủ đầy nội lực thì báo trước, người chơi đỡ bằng nhịp (perfect/good/miss). Tối đa 14 lượt, hết lượt thì bên còn nhiều % máu hơn thắng.
+- Vẫn dùng roundChance (31 luật ngày) nhưng giảm độ lệch (SKILL_DAMP 0.3, nền kéo về 0.5 x0.6) vì lợi thế mỗi lượt cộng dồn.
+- Mô phỏng: cân sức, chơi khéo 76%, chơi bừa 47%; yếu hơn (nền 0.3) chơi khéo 53%. Trung bình 11 lượt, mỗi bên ~2 tuyệt kỹ.
+- components/ArenaMatch.tsx: màn đấu. Rút bóng (XinXam trong Arena.tsx) giờ là 3 lá bài úp, lật ra bóng đen rồi hiện hình.
