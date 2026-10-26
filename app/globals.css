@@ -3788,10 +3788,10 @@ button.shadow-card { cursor: pointer; }
 .game .speeds button { min-height: 28px; font-size: 15px; }
 .game .speeds .next { font-size: 18px; }
 
-.game .scene { height: clamp(118px, 19dvh, 190px); }
-.game.has-event .scene { height: clamp(96px, 14dvh, 150px); }
-.game .sprite-wrap .sprite { width: min(116px, 15dvh); height: min(116px, 15dvh); }
-.game.has-event .sprite-wrap .sprite { width: min(92px, 12dvh); height: min(92px, 12dvh); }
+.game .scene { height: clamp(140px, 24dvh, 230px); }
+.game.has-event .scene { height: clamp(110px, 17dvh, 180px); }
+.game .sprite-wrap .sprite { width: min(144px, 19dvh); height: min(144px, 19dvh); }
+.game.has-event .sprite-wrap .sprite { width: min(112px, 14dvh); height: min(112px, 14dvh); }
 
 .game .strip { padding: 4px 8px 5px; gap: 3px; }
 .game .strip-name { font-size: 18px; }
