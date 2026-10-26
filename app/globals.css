@@ -3625,3 +3625,14 @@ button.shadow-card { cursor: pointer; }
 .am-round.w p.res { color: #2f6b5a; }
 .am-round.l p.res { color: #a8201a; }
 .am-comm-empty { margin: 0; font-size: 14px; color: var(--muted); text-align: center; }
+/* thẻ chọn bóng: nói rõ là nhân vật mình từng chơi */
+.sp-intro { display: flex; flex-direction: column; gap: 3px; padding: 8px 10px; font-size: 15px; line-height: 1.35; background: #fff3cf; border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); }
+.sp-intro > b { font-size: 17px; color: var(--red-d); }
+.fit-tag, .sc-tags i.fit { font-style: normal; font-size: 12px; font-weight: 700; padding: 0 4px; color: #fff3dc; background: #2f6b5a; border: 1px solid var(--ink); }
+.shadow-card { position: relative; }
+.sc-rank { position: absolute; top: -2px; right: -2px; z-index: 1; font-size: 12px; font-weight: 700; padding: 0 6px; color: #3a2405; background: #e8dcc0; border: 2px solid var(--ink); }
+.sc-rank.r1 { background: #ffd36b; }
+.sc-tags { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 1px; }
+.sc-tags i { font-style: normal; font-size: 12px; font-weight: 700; padding: 0 4px; border: 1px solid var(--ink); }
+.sc-tags i.past { background: #e8dcc0; color: #3a2a1a; }
+.sc-tags i.live { background: #3d6fb0; color: #fff3dc; }

@@ -11,7 +11,7 @@ import { foeChar, foeStats } from '@/lib/game/duel';
 import { ELEMENTS, elementOf } from '@/lib/game/nguhanh';
 import { STANCES, type Stance } from '@/lib/game/nguHanhDai';
 import type { RivalChar } from '@/lib/game/types';
-import { HABIT_TEXT, baseChance, commentary, beats, bestOf, counterOf, equalize, foeStance, needWins, roundChance, ruleOf, tellOf, vnDate, type ArenaRule } from '@/lib/game/arena';
+import { HABIT_TEXT, baseChance, commentary, fitsRule, beats, bestOf, counterOf, equalize, foeStance, needWins, roundChance, ruleOf, tellOf, vnDate, type ArenaRule } from '@/lib/game/arena';
 import { arena2State, arenaCandidates, arenaDraw, arenaFight2, arenaPick, arenaShadow, toRival, type Arena2State } from '@/lib/social';
 
 export const ARENA_TURNS = 3;
@@ -29,20 +29,22 @@ const omen = (p: number) =>
   p >= 0.58 ? { name: 'Thượng cát', text: 'Quẻ tốt: bóng này khó đỡ được thế của bạn.' } : p <= 0.42 ? { name: 'Hạ hung', text: 'Quẻ xấu: bóng này có lợi thế, phải đoán thật chuẩn.' } : { name: 'Trung bình', text: 'Quẻ hòa: thắng thua nằm ở cách đoán thế.' };
 
 /** Thẻ một bóng: hình, cảnh giới, con đường, bản mệnh, chỉ số */
-function ShadowCard({ r, on, onPick, small }: { r: RivalChar; on?: boolean; onPick?: () => void; small?: boolean }) {
+function ShadowCard({ r, on, onPick, small, rank, rule }: { r: RivalChar; on?: boolean; onPick?: () => void; small?: boolean; rank?: number; rule?: ArenaRule }) {
   const s = foeStats(r);
   const el = elementOf(r);
   const body = (
     <>
+      {rank !== undefined && <span className={`sc-rank r${rank}`}>{rank === 1 ? 'Mạnh nhất' : `Hạng ${rank}`}</span>}
       <span className="sc-fig">
         <Sprite c={foeChar(r)} size={small ? 56 : 72} />
       </span>
       <span className="sc-info">
+        <span className="sc-tags">
+          <i className={r.alive ? 'live' : 'past'}>{r.alive ? 'Nhân vật đang chơi' : `Kiếp thứ ${r.lifeNo ?? 1} của bạn`}</i>
+          {rule && fitsRule(r, rule) && <i className="fit">Hợp luật hôm nay</i>}
+        </span>
         <b>{r.name}</b>
-        <small>
-          {r.realm === 0 ? 'Phàm nhân' : realmLabel(r.realm, r.layer, r.cosmos)} · Kiếp {r.lifeNo ?? 1}
-          {r.alive ? ' · đang sống' : ''}
-        </small>
+        <small>{r.realm === 0 ? 'Phàm nhân' : realmLabel(r.realm, r.layer, r.cosmos)}</small>
         <small>
           {r.path ? PATHS[r.path].name : 'Chưa chọn đường'} · Mệnh {ELEMENTS[el].name} · {r.age} tuổi
         </small>
@@ -430,11 +432,11 @@ export default function Arena({ user }: { user: Player | null }) {
 
       {st.me && (
         <>
-          <h3 className="gh-h">Bóng xuất chiến hôm nay</h3>
+          <h3 className="gh-h">{champ ? 'Bóng xuất chiến hôm nay' : 'Chọn bóng xuất chiến từ các kiếp của bạn'}</h3>
           {champ ? (
             <>
-              <ShadowCard r={champ} />
-              <small className="note">Đã chọn, giữ nguyên tới hết ngày. Người khác rút trúng bạn cũng gặp bóng này.</small>
+              <ShadowCard r={champ} rule={rule} />
+              <small className="note">Bóng của bạn hôm nay, giữ nguyên tới hết ngày. Ai rút trúng bạn cũng đấu với bóng này.</small>
             </>
           ) : cands === null ? (
             <p>Đang gọi các kiếp trước...</p>
@@ -442,12 +444,16 @@ export default function Arena({ user }: { user: Player | null }) {
             <p className="note">Bạn chưa có kiếp nào. Sống trọn một kiếp rồi quay lại lôi đài.</p>
           ) : (
             <>
-              <p className="note" style={{ margin: 0 }}>
-                Chọn 1 trong {cands.length} kiếp mạnh nhất. Chọn rồi thì giữ tới hết ngày. Luật hôm nay: {rule.name}, hãy chọn bóng hợp luật.
-              </p>
+              <div className="sp-intro">
+                <b>Đây là {cands.length} nhân vật mạnh nhất bạn từng chơi</b>
+                <span>Xếp theo cảnh giới cao nhất từng đạt, gồm cả kiếp đã mất. Chọn một người làm bóng ra lôi đài hôm nay. Chọn rồi thì giữ tới hết ngày, ai rút trúng bạn cũng đấu với bóng này.</span>
+                <span>
+                  Luật hôm nay <b>{rule.name}</b>: {rule.desc} Bóng có nhãn <i className="fit-tag">Hợp luật hôm nay</i> được lợi thế.
+                </span>
+              </div>
               <div className="shadow-pick">
                 {cands.map((c, i) => (
-                  <ShadowCard key={`${c.lifeId}-${i}`} r={c} on={pick === i} onPick={() => setPick(i)} />
+                  <ShadowCard key={`${c.lifeId}-${i}`} r={c} rank={i + 1} rule={rule} on={pick === i} onPick={() => setPick(i)} />
                 ))}
               </div>
               <button className="btn btn-red btn-big" disabled={pick === null || !!busy} onClick={lock}>

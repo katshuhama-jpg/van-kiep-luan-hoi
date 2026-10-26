@@ -130,6 +130,9 @@ export function tellOf(real: Stance, rule: ArenaRule, rnd: () => number): { show
   return { shown, text: `Đối thủ ${t}.` };
 }
 
+/** Bóng này có được luật hôm nay ưu ái không */
+export const fitsRule = (r: RivalChar, rule: ArenaRule) => ruleMul(r, rule) > 1;
+
 function ruleMul(r: RivalChar, rule: ArenaRule): number {
   let m = 1;
   if (rule.el && elementOf(r) === rule.el) m *= 1.15;
