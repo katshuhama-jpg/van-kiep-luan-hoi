@@ -295,6 +295,8 @@ export function updateCareer(meta: Meta, c: Character): { career: Career; newly:
     paths: c.path && !k0.paths.includes(c.path) ? [...k0.paths, c.path] : k0.paths,
     duelWins: k0.duelWins + (c.qf?.duelWin ?? 0),
     revenges: k0.revenges + (c.qf?.revenge ?? 0),
+    cosmoses: c.cosmos && !(k0.cosmoses ?? []).includes(c.cosmos) ? [...(k0.cosmoses ?? []), c.cosmos] : (k0.cosmoses ?? []),
+    nhdClean: !!k0.nhdClean || (!!c.nhd?.done && !c.nhd?.lost),
   };
   const have = meta.achievements ?? [];
   const m2 = { ...meta, career };

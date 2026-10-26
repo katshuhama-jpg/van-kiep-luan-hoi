@@ -77,19 +77,21 @@ export function needFor(c: Character): number {
 }
 
 /** số năm tối thiểu cho mỗi tầng ở tiên/ma/hư giới */
-export const COSMOS_YEARS_PER_LAYER = 8;
+export const COSMOS_YEARS_PER_LAYER = 17;
+/** cảnh giới cuối (Đại La, Ma Đế, Hỗn Nguyên) nhanh hơn để kẻ phi thăng sớm còn kịp thử Chứng Đạo */
+export const COSMOS_YEARS_TOP = 12;
 
 export function addCult(c: Character, amount: number) {
   // thiên tượng hôm nay làm tu vi nhanh hay chậm
   if (amount > 0) amount *= omenCultMul(c) * swornCultMul();
-  // sau phi thăng: thiên đạo áp chế, mỗi năm hấp thu tối đa 1/8 tu vi một tầng (ít nhất 24 năm một cảnh giới)
+  // sau phi thăng: thiên đạo áp chế, mỗi năm hấp thu tối đa 1/17 tu vi một tầng (ít nhất 51 năm một cảnh giới, cảnh giới cuối 36 năm)
   if (amount > 0 && c.cosmos) {
     const y = Math.floor(c.age);
     if (c.cgY !== y) {
       c.cgY = y;
       c.cgN = 0;
     }
-    const room = Math.max(0, needFor(c) / COSMOS_YEARS_PER_LAYER - (c.cgN ?? 0));
+    const room = Math.max(0, needFor(c) / (c.realm >= 11 ? COSMOS_YEARS_TOP : COSMOS_YEARS_PER_LAYER) - (c.cgN ?? 0));
     amount = Math.min(amount, room);
     c.cgN = (c.cgN ?? 0) + amount;
   }

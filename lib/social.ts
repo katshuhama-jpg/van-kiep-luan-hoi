@@ -243,3 +243,11 @@ export async function truyenCong(user: Player | null, to: string | null, name: s
   const { data, error } = await sb.rpc('vkl_truyen_cong', { p_token: user.token, p_to: to, p_name: name });
   return error ? null : ((data as string | null) ?? null);
 }
+
+/** Số liệu giang hồ để mở các mảnh Thiên thư Quyển II */
+export async function loreSocial(user: Player | null): Promise<import('./game/lore').LoreSocial | null> {
+  const sb = supabase();
+  if (!sb || !user) return null;
+  const { data, error } = await sb.rpc('vkl_lore_social', { p_token: user.token });
+  return error || !data ? null : (data as import('./game/lore').LoreSocial);
+}

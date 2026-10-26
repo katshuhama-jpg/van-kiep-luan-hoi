@@ -380,3 +380,19 @@ export function collectors(min = 8): Promise<Record<string, number>> {
   setTimeout(() => (collectorsCache = null), 5 * 60 * 1000);
   return collectorsCache;
 }
+
+// ---------- Danh hiệu Thiên thư ----------
+let loreMastersCache: Promise<Record<string, string>> | null = null;
+/** Người đã đi hết một quyển Thiên thư: username -> danh hiệu (Vạn Kiếp Quy Nhất, Kẻ Gõ Chuông, Phá Chuông) */
+export function loreMasters(): Promise<Record<string, string>> {
+  if (loreMastersCache) return loreMastersCache;
+  loreMastersCache = (async () => {
+    const sb = supabase();
+    if (!sb) return {};
+    const { data, error } = await sb.rpc('vkl_lore_masters');
+    if (error || !data) return {};
+    return Object.fromEntries((data as { username: string; title: string }[]).map((r) => [r.username, r.title]));
+  })();
+  setTimeout(() => (loreMastersCache = null), 5 * 60 * 1000);
+  return loreMastersCache;
+}

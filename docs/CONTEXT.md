@@ -236,7 +236,8 @@ Mở từ nút thư (✉). Ba tab: Thư, Ân oán, Truy nã.
 - **Rương kiếp trước:** chôn một phần tài sản cho kiếp sau tìm lại. **Thần binh truyền kiếp:** đặt tên vũ khí, mạnh dần qua các kiếp.
 - **Hồi ký:** mỗi ngôi mộ có hồi ký 7-10 cảnh pixel (chào đời, đột phá, chọn đạo, bái sư, đạo lữ, linh thú, rồng, bảo vật, phát tài, trừ yêu, giao đấu, báo thù, tạ thế).
 - **Bảo khố:** 205 đồ ẩn (chỉ rơi từ quái hoặc có từ kỳ ngộ, không bán). Món nào từng có ở bất kỳ kiếp nào được ghi vĩnh viễn. Lần đầu có thì hiện dấu mộc báo.
-- **Thiên thư (mạch truyện chính):** 10 mảnh ký ức trả lời câu hỏi "vì sao cứ phải luân hồi?". Bạn là một mảnh của **Vạn Kiếp Chân Nhân**, người tu đến tận cùng mà không hiểu vì sao phải sống nên tự đập vỡ mình thành vạn mảnh đi tìm câu trả lời. Các mảnh mở khi một kiếp kết thúc: sống trọn 1 kiếp, 5 kiếp, Kim Đan, 5 kết cục, thắng người chơi 3 lần, Hóa Thần, phi thăng, đi 4 con đường, 13 kết cục, Đại La Kim Tiên/Ma Đế. Đủ 10 mảnh thì kiếp sau (từ 30 tuổi) gặp sự kiện **Vạn Kiếp Quy Nhất**: chọn buông bỏ là kết cục cuối cùng. Đọc ở đầu trang Sổ Sinh Tử.
+- **Thiên thư (mạch truyện chính):** 10 mảnh ký ức trả lời câu hỏi "vì sao cứ phải luân hồi?". Bạn là một mảnh của **Vạn Kiếp Chân Nhân**, người tu đến tận cùng mà không hiểu vì sao phải sống nên tự đập vỡ mình thành vạn mảnh đi tìm câu trả lời. Các mảnh mở khi một kiếp kết thúc: sống trọn 1 kiếp, 5 kiếp, Kim Đan, 5 kết cục, thắng người chơi 3 lần, Hóa Thần, phi thăng, đi 4 con đường, 13 kết cục, Đại La Kim Tiên/Ma Đế. Đủ 10 mảnh thì kiếp sau (từ 30 tuổi) gặp sự kiện **Vạn Kiếp Quy Nhất**: chọn buông bỏ là kết cục cuối cùng. **Mỗi tài khoản chỉ gặp Quy Nhất 1 lần** (`quyNhatDone` = `meta.endings.thoat_van_kiep`), lần đầu thưởng 100 phúc (`meta.quyThuong`), chuông vàng bên vai nhân vật (`c.quyNhat`, `fxChuongVang`) và danh hiệu trên bảng xếp hạng (RPC `vkl_lore_masters`). Đọc ở đầu trang Sổ Sinh Tử (tab Quyển I / Quyển II).
+- **Thiên thư Quyển II "Vạn Mảnh" (`book: 2` trong `lore.ts`, mở sau Quy Nhất):** người chơi khác cũng là mảnh của Chân Nhân; có Kẻ Gõ Chuông đang đếm. 10 mảnh XI-XX: Quy Nhất; kết nghĩa người có ≥5 mảnh; truyền công/nhận truyền công; viếng 5 mộ người khác; đánh xong 1 chiến thư (4 mảnh xã hội lấy từ RPC `vkl_lore_social`, gọi ở `finishLife`); từng lên đủ 3 cõi (`career.cosmoses`); qua Ngũ Hành Đài không ngã (`career.nhdClean`); 30 kết cục; thắng **Kẻ Gõ Chuông** (sự kiện `ke_go_chuong` ở cảnh giới 11 của cõi, cần ≥7 mảnh Quyển II, đỡ đủ 3 tiếng chuông, thua 25% chết; thắng thì `meta.chuongWin`); **Chuông vỡ** (sự kiện kiếp sau, chọn gõ chuông `go_chuong` hoặc đập chuông `dap_chuong`, 2 kết cục mới). Dự kiến: khi đủ N người đập chuông thì mở sự kiện máy chủ (chưa làm).
 - **Sổ linh thú:** 32 loài. **Thành tựu dài hạn:**
 - Thập thế luân hồi: Trải qua 10 kiếp (+20 phúc)
 - Ngũ thập thế: Trải qua 50 kiếp (+60 phúc)
@@ -343,7 +344,7 @@ Màn chơi: thanh trên (tuổi, mùa, kiếp, nơi sinh, linh thạch; cụm 4 
 | `lib/game/data.ts`, `gear.ts`, `items2.ts` | Cảnh giới (cả tiên, ma), con đường, linh căn, xuất thân, trọng tâm, 392 món đồ, đan dược, thiên phú |
 | `lib/game/sect.ts`, `sectEvents.ts` | Tông môn: bậc đệ tử, thăng bậc, Đại bỉ, sự kiện tông môn |
 | `lib/game/cosmosEvents.ts` | Sự kiện tiên giới, ma giới |
-| `lib/game/lore.ts` | Thiên thư: 10 mảnh ký ức |
+| `lib/game/lore.ts` | Thiên thư: Quyển I (10 mảnh) và Quyển II (10 mảnh, mở sau Quy Nhất) |
 | `lib/game/engine.ts` | Vòng năm (`yearTick`), tu vi, đột phá, thiên kiếp, bế quan, quá độ, phúc duyên |
 | `lib/game/events*.ts`, `taEvents.ts`, `hookEvents.ts`, `childhood.ts` | Các sự kiện 4 lựa chọn (khoảng 90 sự kiện) |
 | `lib/game/combat.ts` | Quái, chỉ số chiến đấu, rơi đồ |
@@ -516,3 +517,10 @@ Khi được yêu cầu cập nhật tài liệu:
 - Chết ở ba cõi vì nguyên nhân thường được thêm câu kết riêng của cõi (`cosmosCause` trong `helpers.ts`).
 - Phật tu tu nhanh +10% (trước +5%); Đan tu tu nhanh +5%, sinh lực +15%, thủ +10%, mô tả đường mới.
 - Mời góp ý: bảng `vkl_feedback_invite(username, reward, rewarded_at)`, trigger `vkl_feedback_invite_reward` trên `vkl_feedback`: người được mời gửi góp ý đầu tiên (không phải đánh giá nhanh) tự nhận quà phúc duyên + thư Thiên Đạo. 26/10 mời @lyn, @thien, @lnquocdat432k2, @minimoni (10 phúc duyên mỗi người). Muốn mời thêm: `insert into vkl_feedback_invite (username, reward) values (...)` rồi gửi thư `kind = 'thien_dao'`.
+
+## Cân bằng độ khó (26/10, chiều)
+- Đột phá: nền 0.34 (trước 0.39), mỗi cảnh giới khó thêm 0.08 (trước 0.07); Thiên mệnh +10% (trước 15%).
+- Thiên linh căn và thiên phú Tiên cốt: hệ số 1.9 (trước 2.2). Giá Tiên cốt 250, Thiên mệnh 180.
+- Phúc duyên mỗi kiếp: 5 + cảnh giới×6 + tuổi/25 + 70 nếu phi thăng (trước ×8, /20, +100).
+- Sau phi thăng: mỗi tầng ít nhất 17 năm (cảnh giới cuối 12 năm) qua `COSMOS_YEARS_PER_LAYER` / `COSMOS_YEARS_TOP`. Thọ tối đa giữ 350: chỉ ai phi thăng sớm mới kịp lên đỉnh và thử Chứng Đạo.
+- Mô phỏng (60 tài khoản × 30 kiếp, không mua thiên phú): Độ Kiếp từ kiếp 5 lên kiếp 7-10; số tài khoản phi thăng 36 → 22-25; lên cảnh giới 11 từ 29 → 11-20.

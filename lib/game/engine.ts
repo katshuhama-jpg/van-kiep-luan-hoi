@@ -1,5 +1,5 @@
 import { applyProphecy, omenIs } from './hook';
-import { LORE_TOTAL } from './lore';
+import { loreDone, lore2Count, quyNhatDone } from './lore';
 import { CHAN_TRUYEN_BREAK, promoteByRealm, rankOf, sectCultMul } from './sect';
 import {
   ITEMS,
@@ -191,7 +191,10 @@ export function newCharacter(meta: Meta, gifts: string[] = [], base?: Character)
     c.log.push({ age: 0, tone: 'ta', text: 'Ngày bạn sinh ra, quạ đen đậu kín mái nhà. Nghiệp kiếp trước vẫn chưa trả hết.' });
   }
   c.past = meta.past ?? null;
-  c.loreDone = (meta.lore?.length ?? 0) >= LORE_TOTAL;
+  c.loreDone = loreDone(meta);
+  c.quyNhat = quyNhatDone(meta);
+  c.lore2 = lore2Count(meta);
+  c.bell = meta.endings?.go_chuong || meta.endings?.dap_chuong ? 2 : meta.chuongWin ? 1 : 0;
   c.stash = meta.stash ?? null;
   c.legend = meta.legend ?? null;
   c.vendettas = meta.vendettas ?? [];
@@ -215,10 +218,10 @@ export function newCharacter(meta: Meta, gifts: string[] = [], base?: Character)
     c.stats.khiVan = 100;
     c.linhCanMul = Math.max(c.linhCanMul, 1.6);
   }
-  if (t.includes('tien_cot') && c.linhCanMul < 2.2) {
+  if (t.includes('tien_cot') && c.linhCanMul < 1.9) {
     c.log = c.log.map((l) => ({ ...l, text: l.text.replace(c.linhCan, 'Thiên linh căn') }));
     c.linhCan = 'Thiên linh căn';
-    c.linhCanMul = 2.2;
+    c.linhCanMul = 1.9;
   }
   // thiên phú tà đạo (trả bằng nghiệp lực)
   if (t.includes('ta_huyet')) {
@@ -818,10 +821,11 @@ function breakChance(c: Character) {
       (c.realm >= TOP_REALM ? -0.25 : 0) +
       (rankOf(c) === 3 ? CHAN_TRUYEN_BREAK : 0) +
       (omenIs('loi_van') ? 0.06 : 0) +
-      (hasGift(c, 'g_thien_menh') ? 0.15 : 0) +
-      0.39 -
+      (hasGift(c, 'g_thien_menh') ? 0.1 : 0) +
+      // độ khó 1.0.3: hạ nền từ 0.39, mỗi cảnh giới khó thêm 0.08 thay vì 0.07
+      0.34 -
       // tiên giới, ma giới tính lại từ đầu: Chân Tiên khó như Trúc Cơ, càng lên càng khó
-      Math.max(0, (c.realm >= ASCEND_REALM ? c.realm - ASCEND_REALM + 2 : c.realm) - 2) * 0.07 +
+      Math.max(0, (c.realm >= ASCEND_REALM ? c.realm - ASCEND_REALM + 2 : c.realm) - 2) * 0.08 +
       c.stats.ngoTinh / 450 +
       c.stats.tamCanh / 500 -
       c.stats.tamMa / 200 +
@@ -1423,7 +1427,8 @@ export function checkProgress(c: Character, ctx: EffectCtx, talents: string[] = 
 }
 
 export function karmaOf(c: Character) {
-  const points = 5 + c.realm * 8 + Math.floor(c.age / 20) + (c.ascended ? 100 : 0);
+  // phúc duyên mỗi kiếp: giảm nhẹ để cao thủ không mua Tiên cốt mỗi kiếp
+  const points = 5 + c.realm * 6 + Math.floor(c.age / 25) + (c.ascended ? 70 : 0);
   const phuc = points + Math.max(0, Math.round(c.daoTam / 4));
   // tà tu tích nghiệp lực theo độ tà và cảnh giới, dùng để mua thiên phú tà đạo ở kiếp sau
   const nghiep = c.daoTam < -30 ? Math.round(-c.daoTam / 4 + c.realm * 4 + (c.ascended ? 60 : 0)) : 0;

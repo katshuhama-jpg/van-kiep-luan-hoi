@@ -3343,3 +3343,11 @@ html, body { overflow-x: hidden; max-width: 100%; }
 .app { max-width: 100%; }
 img, svg, canvas { max-width: 100%; }
 a { overflow-wrap: anywhere; }
+.pa-chuong { top: 22%; left: 74%; }
+.title-badge.lore-master { background: linear-gradient(#ffe27a, #c89632); color: #3a2405; box-shadow: 0 0 0 1px #7a5418; }
+.tt-tabs { display: flex; gap: 6px; margin: 0 0 8px; flex-wrap: wrap; }
+.tt-tabs button { flex: 1 1 140px; min-width: 0; padding: 6px 8px; font: inherit; font-size: 16px; color: #c8b8dc; background: rgba(255, 255, 255, 0.04); border: 2px solid #4a3a5a; cursor: pointer; text-align: left; }
+.tt-tabs button small { display: block; font-size: 13px; color: #a898bc; }
+.tt-tabs button.on { color: #ffd36b; border-color: #c9962e; background: rgba(255, 211, 107, 0.1); }
+.tt-seal { padding: 10px; border: 2px dashed #6a5a3a; text-align: center; }
+.tt-list li:not(.has) { display: block; } .tt-list li:not(.has) b { white-space: nowrap; }

@@ -654,3 +654,32 @@ export function fxHuStars(n: number): FxSpec {
     },
   };
 }
+
+/** Chuông vàng Vạn Kiếp Quy Nhất: quả chuông nhỏ lơ lửng bên vai, đung đưa và tỏa gợn sóng */
+export function fxChuongVang(): FxSpec {
+  const W = 20;
+  const H = 24;
+  return {
+    key: 'chuongvang1',
+    w: W,
+    h: H,
+    frames: 12,
+    outline: '#7a5418',
+    draw: (p) => {
+      const a = Math.sin(p * TAU) * 14;
+      const cx = W / 2;
+      let out = `<g transform="rotate(${r1(a)} ${cx} 3)">`;
+      out += `<rect x="${cx - 1}" y="2" width="2" height="2" fill="#c89632"/>`;
+      out += `<path d="M${cx - 4} 13 Q${cx - 4} 4 ${cx} 4 Q${cx + 4} 4 ${cx + 4} 13 L${cx + 6} 15 L${cx - 6} 15 Z" fill="#ffd34d"/>`;
+      out += `<rect x="${cx - 2}" y="6" width="1" height="5" fill="#fff4c0"/>`;
+      out += `<rect x="${cx - 5}" y="12" width="10" height="1" fill="#c89632"/>`;
+      out += `<rect x="${cx - 1}" y="15" width="2" height="2" fill="#c89632"/>`;
+      out += '</g>';
+      // gợn sóng tiếng chuông
+      const r = 4 + p * 6;
+      if (p > 0.15)
+        out += `<path d="M${cx - r} ${17 + r * 0.5} Q${cx} ${17 + r} ${cx + r} ${17 + r * 0.5}" fill="none" stroke="#ffe27a" stroke-width="1"/>`;
+      return out;
+    },
+  };
+}

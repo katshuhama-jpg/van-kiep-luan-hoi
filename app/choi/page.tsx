@@ -24,10 +24,10 @@ import { ELEMENTS, elemHitTag, elemMul, elemRel, elementOf } from '@/lib/game/ng
 import { DUEL_INFO, DUEL_PER_YEAR, DUEL_TURNS, finishDuel, foeChar, foeStats, pickDuel, teaTrap, toRival, type DuelFoe } from '@/lib/game/duel';
 import { SOCIAL } from '@/lib/game/social';
 import { daiBiDue, rankName, sectCultMul } from '@/lib/game/sect';
-import { bountyClaim, khieuDone, loadSocial, payoutClaim, truyenCong } from '@/lib/social';
+import { bountyClaim, khieuDone, loadSocial, loreSocial, payoutClaim, truyenCong } from '@/lib/social';
 import { GiangHoSheet, type GiangHoApi } from '@/components/GiangHo';
 import { HIDDEN_ITEMS, collectStats, markSeen, newFinds, unseen } from '@/lib/game/collect';
-import { newLore } from '@/lib/game/lore';
+import { QUY_NHAT_PHUC, newLore, quyNhatDone } from '@/lib/game/lore';
 import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, pickAmbush } from '@/lib/game/ambush';
 import { titleKey, addMemorial, displayName, fetchWorld, listMail, loadAll, saveLocal, saveMeta, saveRemote, sendMail, unreadMail, weeklyTitles, type Mail, type SaveState } from '@/lib/storage';
 import { updateCareer, bumpStreak, evalQuests, omenIs, qmark, questName, streakGift, vnDay } from '@/lib/game/hook';
@@ -1204,8 +1204,10 @@ export default function PlayPage() {
     // truyền công: gửi phúc duyên cho một người chơi khác (ưu tiên huynh đệ kết nghĩa)
     if (c.truyenCong && user) {
       const bro = SOCIAL.cur.sworn[0] ?? null;
-      truyenCong(user, bro, c.name).catch(() => {});
+      await truyenCong(user, bro, c.name).catch(() => {});
     }
+    // số liệu giang hồ cho Thiên thư Quyển II (chỉ cần sau Quy Nhất)
+    const social = quyNhatDone(meta) || c.endTag === 'thoat_van_kiep' ? await loreSocial(user).catch(() => null) : null;
     await addMemorial(user, {
       player_name: displayName(user),
       char_name: c.name,
@@ -1289,10 +1291,19 @@ export default function PlayPage() {
       m.phucDuyen += car.newly.reduce((x, a) => x + a.reward, 0);
     }
     setAchNews(car.newly.map((a) => `${a.name} (+${a.reward} phúc)`));
+    // Vạn Kiếp Quy Nhất lần đầu: thưởng một lần cho mỗi tài khoản (cả người đã đạt từ trước)
+    let quyNote = '';
+    if (quyNhatDone(m) && !m.quyThuong) {
+      m.quyThuong = true;
+      m.phucDuyen += QUY_NHAT_PHUC;
+      quyNote = `Vạn Kiếp Quy Nhất: +${QUY_NHAT_PHUC} phúc, đeo chuông vàng qua mọi kiếp`;
+    }
+    if (c.qf?.chuongWin) m.chuongWin = true;
     // Thiên thư: mảnh ký ức mới
-    const lore = newLore(m, c, car.career);
+    const lore = newLore(m, c, car.career, social);
     if (lore.length) m.lore = [...(m.lore ?? []), ...lore.map((f) => f.id)];
     setLoreNews(lore.map((f) => f.title));
+    if (quyNote) setAchNews((a) => [quyNote, ...a]);
     setMeta(m);
     await saveMeta(user, m).catch(() => {});
     charRef.current = null;

@@ -92,6 +92,9 @@ export interface Character {
   vendettas?: Vendetta[];
   hunt?: { rival: RivalChar; at: number } | null;
   loreDone?: boolean; // đã gom đủ Thiên thư: kiếp này sẽ gặp lại chính mình
+  quyNhat?: boolean; // tài khoản đã từng đạt Vạn Kiếp Quy Nhất: không gặp lại, đeo chuông vàng
+  lore2?: number; // số mảnh Quyển II đã mở lúc đầu thai
+  bell?: number; // Kẻ Gõ Chuông: 1 đã đánh bại (cầm dùi chuông), 2 đã chọn gõ hay đập
   cosmos?: 'tien' | 'ma' | 'hu' | null; // đã phi thăng lên tiên giới hay ma giới
   ascendAge?: number; // tuổi lúc phi thăng
   sectRank?: number; // bậc trong tông môn: 0 tạp dịch, 1 ngoại môn, 2 nội môn, 3 chân truyền
@@ -254,6 +257,8 @@ export interface Meta {
   petBook?: string[]; // các loài linh thú đã từng nuôi
   achievements?: string[]; // thành tựu dài hạn đã đạt
   career?: Career; // số liệu cộng dồn qua các kiếp
+  quyThuong?: boolean; // đã nhận thưởng Vạn Kiếp Quy Nhất
+  chuongWin?: boolean; // đã đánh bại Kẻ Gõ Chuông
 }
 
 export interface Career {
@@ -263,6 +268,8 @@ export interface Career {
   paths: string[]; // các đạo đã từng đi
   duelWins: number;
   revenges: number;
+  cosmoses?: string[]; // các cõi đã từng lên: tien, ma, hu
+  nhdClean?: boolean; // từng qua Ngũ Hành Đài mà chưa ngã lần nào
 }
 
 export type MileKind = 'birth' | 'path' | 'realm' | 'love' | 'pet' | 'mount' | 'duel' | 'revenge' | 'sect' | 'wealth' | 'treasure' | 'hunt' | 'journey' | 'fate' | 'death';

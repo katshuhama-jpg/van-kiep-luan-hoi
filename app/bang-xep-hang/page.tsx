@@ -9,7 +9,7 @@ import { describeLean } from '@/lib/game/engine';
 import { fmt } from '@/lib/game/helpers';
 import type { Character } from '@/lib/game/types';
 import { TitleBadge } from '@/components/Hook';
-import { collectors, leaderboard, titleKey, weeklyTitles, type RankKind, type RankLean, type RankScope } from '@/lib/storage';
+import { collectors, leaderboard, loreMasters, titleKey, weeklyTitles, type RankKind, type RankLean, type RankScope } from '@/lib/storage';
 import { useAuth } from '@/lib/useAuth';
 import { RelChips } from '@/components/GiangHo';
 import { collectorTitle } from '@/lib/game/collect';
@@ -60,6 +60,7 @@ export default function RankPage() {
   const [titles, setTitles] = useState<Record<string, string[]>>({});
   const [social, setSocial] = useState<SocialState>(SOCIAL.cur);
   const [coll, setColl] = useState<Record<string, number>>({});
+  const [lm, setLm] = useState<Record<string, string>>({});
   const [truy, setTruy] = useState(false);
   const [board, setBoard] = useState<BountyRow[] | null>(null);
   const [pairs, setPairs] = useState<OanGia[]>([]);
@@ -69,6 +70,9 @@ export default function RankPage() {
       .catch(() => {});
     collectors()
       .then(setColl)
+      .catch(() => {});
+    loreMasters()
+      .then(setLm)
       .catch(() => {});
   }, []);
   useEffect(() => {
@@ -263,6 +267,7 @@ export default function RankPage() {
                       <span className="rank-owner">
                         <span className="rank-user">@{r.username}</span>
                         <TitleBadge title={titles[titleKey(r.username, c.lifeNo)]} />
+                        {lm[r.username] && <span className="title-badge lore-master">🔔 {lm[r.username]}</span>}
                         {coll[r.username] && <span className="title-badge collector">{collectorTitle(coll[r.username])}</span>}
                         {mine && <span className="badge">Bạn</span>}
                         <RelChips player={r.username} s={social} />

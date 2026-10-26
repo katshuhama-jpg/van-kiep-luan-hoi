@@ -1,5 +1,5 @@
 import { ITEMS } from './data';
-import { addCult, giveItem, money, reward, stat } from './helpers';
+import { addCult, fatal, giveItem, money, reward, stat } from './helpers';
 import { PET_IDS, PETS, adopt } from './pets';
 import type { Character, GameEvent } from './types';
 
@@ -12,7 +12,8 @@ export const HOOK_EVENTS: GameEvent[] = [
     minAge: 30,
     once: true,
     weight: 400,
-    when: (c) => !!c.loreDone,
+    // mỗi tài khoản chỉ gặp một lần; về sau là Quyển II
+    when: (c) => !!c.loreDone && !c.quyNhat,
     title: 'Vạn Kiếp Quy Nhất',
     text: () =>
       'Đêm ấy bạn không mơ. Bạn tỉnh giấc trên đỉnh núi tuyết, và người kia đã quay mặt lại, mỉm cười bằng khuôn mặt của bạn: "Vạn kiếp đã đủ. Ngươi muốn dừng lại, hay đi thêm một kiếp nữa?"',
@@ -37,6 +38,88 @@ export const HOOK_EVENTS: GameEvent[] = [
           c.stats.tamCanh = Math.min(100, c.stats.tamCanh + 20);
           c.stats.khiVan = Math.min(100, c.stats.khiVan + 20);
           return 'Người kia gật đầu: "Cũng là một câu trả lời." Bạn tỉnh dậy, thấy nắng sớm đẹp hơn mọi buổi sáng trước đây.';
+        },
+      },
+    ],
+  },
+  {
+    id: 'ke_go_chuong',
+    cosmos: 'both',
+    minRealm: 11,
+    once: true,
+    weight: 160,
+    // Quyển II: đã đi qua ít nhất 7 mảnh, đang ở cảnh giới cuối của một cõi
+    when: (c) => !!c.quyNhat && !!c.cosmos && (c.lore2 ?? 0) >= 7 && !c.bell,
+    title: 'Kẻ Gõ Chuông',
+    text: () =>
+      'Trên đỉnh cao nhất của cõi này, bạn nghe tiếng chuông rõ hơn bao giờ hết. Giữa mây có một bàn tay cầm dùi, không thân, không mặt. "Lại một mảnh tìm tới," giọng nói vang lên. "Ngươi muốn ta ngừng đếm? Vậy thử đỡ ba tiếng chuông của ta."',
+    choices: () => [
+      {
+        label: 'Đỡ ba tiếng chuông',
+        hint: 'tâm cảnh, khí vận càng cao càng dễ thắng · thua có thể chết',
+        lean: 'chinh',
+        run: (c, ctx) => {
+          const p = Math.min(0.7, 0.15 + (c.stats.tamCanh / 100) * 0.3 + (c.stats.khiVan / 100) * 0.15 + (c.lore2 ?? 0) * 0.02);
+          let hits = 0;
+          for (let i = 0; i < 3; i++) if (ctx.rnd() < p + 0.05) hits++;
+          if (hits >= 3) {
+            c.qf = { ...(c.qf ?? {}), chuongWin: 1 };
+            c.bell = 1;
+            stat(c, 'tamCanh', 10);
+            ctx.fx('breakthrough', 'ĐỠ ĐƯỢC BA TIẾNG CHUÔNG');
+            return 'Tiếng thứ nhất làm bạn quỳ xuống. Tiếng thứ hai làm bạn quên tên mình. Tiếng thứ ba, bạn gọi tên những người đã đi cùng mình qua vạn kiếp, và đứng dậy. Bàn tay buông dùi. Dùi chuông rơi xuống chân bạn. (Kiếp sau sẽ được chọn số phận của chiếc chuông.)';
+          }
+          stat(c, 'sucKhoe', -45);
+          stat(c, 'tamMa', 15);
+          const d = fatal(c, ctx, 0.25, 'Nguyên thần bị tiếng chuông chấn nát trên đỉnh cõi trời');
+          return (
+            `Bạn chỉ đỡ được ${hits} tiếng. Tiếng chuông còn lại xuyên qua nguyên thần, bạn rơi khỏi mây như chiếc lá. Giọng nói vọng theo: "Chưa đủ. Mảnh vỡ của ngươi còn chưa biết nhau."` +
+            (d ?? ' Bạn còn sống, nhưng tim vẫn đập theo nhịp chuông rất lâu.')
+          );
+        },
+      },
+      {
+        label: 'Lui lại, chưa phải lúc',
+        hint: 'an toàn, kiếp sau còn gặp',
+        lean: 'trung',
+        run: () => 'Bạn cúi đầu lui xuống. Tiếng chuông cười khẽ, rồi tiếp tục đếm.',
+      },
+    ],
+  },
+  {
+    id: 'chuong_vo',
+    minAge: 20,
+    once: true,
+    weight: 400,
+    when: (c) => c.bell === 1,
+    title: 'Chuông vỡ',
+    text: () =>
+      'Dùi chuông vẫn nằm trong tay bạn, kiếp này qua kiếp khác. Đêm nay, quả chuông vô hình hiện ra trước mặt, to như một ngọn núi. Gõ nó, bạn sẽ thay kẻ kia đếm các mảnh để không mảnh nào bị quên. Đập vỡ nó, vạn mảnh sẽ tự do, nhưng có thể chẳng bao giờ tìm lại nhau.',
+    choices: () => [
+      {
+        label: 'Gõ chuông, thành người giữ chuông',
+        hint: 'kết thúc kiếp · kết cục mới',
+        lean: 'chinh',
+        run: (c, ctx) => {
+          c.dead = true;
+          c.bell = 2;
+          c.endTag = 'go_chuong';
+          c.cause = 'Cầm dùi chuông, thay Thiên Đạo đếm vạn mảnh để không ai bị quên';
+          ctx.fx('breakthrough', 'NGƯỜI GIỮ CHUÔNG');
+          return 'Bạn gõ một tiếng. Khắp các cõi, vạn người cùng ngẩng lên, và lần đầu tiên tiếng chuông không làm ai sợ. Nó chỉ nói: ta vẫn nhớ các ngươi.';
+        },
+      },
+      {
+        label: 'Đập vỡ chuông, trả tự do cho vạn mảnh',
+        hint: 'kết thúc kiếp · kết cục mới',
+        lean: 'ta',
+        run: (c, ctx) => {
+          c.dead = true;
+          c.bell = 2;
+          c.endTag = 'dap_chuong';
+          c.cause = 'Đập vỡ quả chuông của Thiên Đạo, trả tự do cho vạn mảnh';
+          ctx.fx('breakthrough', 'CHUÔNG VỠ');
+          return 'Dùi chuông giáng xuống. Quả chuông vỡ thành vạn mảnh sáng, rơi xuống khắp các cõi như mưa sao. Từ nay không ai đếm nữa. Mỗi mảnh phải tự nhớ lấy mình.';
         },
       },
     ],

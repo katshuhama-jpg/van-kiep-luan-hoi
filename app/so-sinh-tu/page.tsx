@@ -10,7 +10,7 @@ import { endingStats, loadAll } from '@/lib/storage';
 import { PETS, PET_IDS } from '@/lib/game/pets';
 import { ACHIEVEMENTS } from '@/lib/game/hook';
 import { useAuth } from '@/lib/useAuth';
-import { LORE, LORE_TOTAL } from '@/lib/game/lore';
+import { LORE1, LORE2, LORE2_TOTAL, LORE_TOTAL, lore1Count, lore2Count, quyNhatDone, type LoreFragment } from '@/lib/game/lore';
 
 export default function SoSinhTu() {
   const { user, ready } = useAuth();
@@ -43,33 +43,7 @@ export default function SoSinhTu() {
           <BackButton fallback="/choi" />
         </div>
       </header>
-      <section className="panel thien-thu" id="thien-thu" style={{ marginBottom: 10 }}>
-        <h2>Thiên thư · Vạn Kiếp</h2>
-        <p className="note" style={{ marginTop: 0 }}>
-          Vì sao bạn cứ phải luân hồi mãi? Mỗi mảnh ký ức mở khi đạt một cột mốc lớn qua các kiếp. Đã mở {(meta?.lore ?? []).length}/{LORE_TOTAL}.
-          {(meta?.lore ?? []).length >= LORE_TOTAL ? ' Đã đủ: kiếp sau, bạn sẽ gặp lại chính mình.' : ''}
-        </p>
-        <ol className="tt-list">
-          {LORE.map((f, i) => {
-            const has = meta?.lore?.includes(f.id);
-            const last = has && !LORE.slice(i + 1).some((x) => meta?.lore?.includes(x.id));
-            return (
-              <li key={f.id} className={has ? 'has' : ''}>
-                {has ? (
-                  <details open={last}>
-                    <summary>{f.title}</summary>
-                    <p>{f.text}</p>
-                  </details>
-                ) : (
-                  <>
-                    <b>{f.title.split('.')[0] + '. ???'}</b> <small>{f.hint}</small>
-                  </>
-                )}
-              </li>
-            );
-          })}
-        </ol>
-      </section>
+      <ThienThu meta={meta} />
       <div className="ss-progress" aria-hidden="true">
         <span style={{ width: `${(n / ENDINGS.length) * 100}%` }} />
       </div>
@@ -165,5 +139,67 @@ export default function SoSinhTu() {
         Chơi tiếp
       </Link>
     </main>
+  );
+}
+
+/** Thiên thư hai quyển: Quyển II bị phong ấn tới khi đạt Vạn Kiếp Quy Nhất */
+function ThienThu({ meta }: { meta: Meta | null }) {
+  const open2 = quyNhatDone(meta);
+  const [tab, setTab] = useState<1 | 2>(1);
+  useEffect(() => {
+    if (open2) setTab(2);
+  }, [open2]);
+  const n1 = lore1Count(meta);
+  const n2 = lore2Count(meta);
+  const list: LoreFragment[] = tab === 1 ? LORE1 : LORE2;
+  return (
+    <section className="panel thien-thu" id="thien-thu" style={{ marginBottom: 10 }}>
+      <h2>Thiên thư · Vạn Kiếp</h2>
+      <div className="tt-tabs" role="tablist">
+        <button role="tab" aria-selected={tab === 1} className={tab === 1 ? 'on' : ''} onClick={() => setTab(1)}>
+          Quyển I · Vạn Kiếp <small>{n1}/{LORE_TOTAL}</small>
+        </button>
+        <button role="tab" aria-selected={tab === 2} className={tab === 2 ? 'on' : ''} onClick={() => setTab(2)}>
+          {open2 ? 'Quyển II · Vạn Mảnh' : '🔒 Quyển II'} <small>{open2 ? `${n2}/${LORE2_TOTAL}` : 'phong ấn'}</small>
+        </button>
+      </div>
+      {tab === 1 ? (
+        <p className="note" style={{ marginTop: 0 }}>
+          Vì sao bạn cứ phải luân hồi mãi? Mỗi mảnh ký ức mở khi đạt một cột mốc lớn qua các kiếp. Đã mở {n1}/{LORE_TOTAL}.
+          {n1 >= LORE_TOTAL && !open2 ? ' Đã đủ: kiếp sau, bạn sẽ gặp lại chính mình.' : ''}
+          {open2 ? ' Bạn đã gom lại chính mình. Nhưng tiếng chuông vẫn chưa im.' : ''}
+        </p>
+      ) : open2 ? (
+        <p className="note" style={{ marginTop: 0 }}>
+          Chân Nhân không chỉ vỡ làm một mảnh là bạn. Những đạo hữu trên giang hồ cũng là mảnh vỡ, và có kẻ vẫn đang đếm. Mảnh mới mở khi một kiếp khép lại. Đã mở {n2}/{LORE2_TOTAL}.
+        </p>
+      ) : (
+        <p className="note tt-seal" style={{ marginTop: 0 }}>
+          Quyển sách bị niêm bằng một sợi chỉ vàng. Gom đủ 10 mảnh Quyển I và đạt kết cục Vạn Kiếp Quy Nhất để mở phong ấn.
+        </p>
+      )}
+      {(tab === 1 || open2) && (
+        <ol className="tt-list">
+          {list.map((f, i) => {
+            const has = meta?.lore?.includes(f.id);
+            const last = has && !list.slice(i + 1).some((x) => meta?.lore?.includes(x.id));
+            return (
+              <li key={f.id} className={has ? 'has' : ''}>
+                {has ? (
+                  <details open={last}>
+                    <summary>{f.title}</summary>
+                    <p>{f.text}</p>
+                  </details>
+                ) : (
+                  <>
+                    <b>{f.title.split('.')[0] + '. ???'}</b> <small>{f.hint}</small>
+                  </>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      )}
+    </section>
   );
 }

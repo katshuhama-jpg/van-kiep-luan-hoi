@@ -14,7 +14,7 @@ import type { Character, Focus, LogEntry, Meta, PendingEvent, Slot } from '@/lib
 import { evalQuests, nearEndings, pickProphecy, questName } from '@/lib/game/hook';
 import { HIDDEN_ITEMS, collectStats, isHidden, itemHint } from '@/lib/game/collect';
 import { sectSide, rankName, rankShort } from '@/lib/game/sect';
-import { LORE_TOTAL } from '@/lib/game/lore';
+import { LORE2_TOTAL, LORE_TOTAL, lore1Count, lore2Count, quyNhatDone } from '@/lib/game/lore';
 import { ELEMENTS } from '@/lib/game/nguhanh';
 import { TodayScroll } from './Hook';
 import { useAuth } from '@/lib/useAuth';
@@ -755,12 +755,12 @@ export function BirthPanel({
             </span>
           </Link>
           <Link href="/so-sinh-tu#thien-thu" className="cs-item cs-lore">
-            <small>Thiên thư</small>
+            <small>{quyNhatDone(meta) ? 'Thiên thư II' : 'Thiên thư'}</small>
             <b>
-              {(meta.lore ?? []).length}/{LORE_TOTAL}
+              {quyNhatDone(meta) ? `${lore2Count(meta)}/${LORE2_TOTAL}` : `${lore1Count(meta)}/${LORE_TOTAL}`}
             </b>
             <span className="bk-bar" aria-hidden="true">
-              <i style={{ width: `${((meta.lore ?? []).length / LORE_TOTAL) * 100}%` }} />
+              <i style={{ width: `${(quyNhatDone(meta) ? lore2Count(meta) / LORE2_TOTAL : lore1Count(meta) / LORE_TOTAL) * 100}%` }} />
             </span>
           </Link>
           <button className="cs-item" onClick={onKho}>

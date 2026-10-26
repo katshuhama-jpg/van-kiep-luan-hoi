@@ -74,7 +74,7 @@ export const PATHS: Record<PathId, PathInfo> = {
 };
 
 export const LINH_CAN = [
-  { name: 'Thiên linh căn', mul: 2.2, w: 3 },
+  { name: 'Thiên linh căn', mul: 1.9, w: 3 },
   { name: 'Địa linh căn', mul: 1.6, w: 12 },
   { name: 'Huyền linh căn', mul: 1.2, w: 30 },
   { name: 'Tạp linh căn', mul: 0.85, w: 40 },
@@ -870,8 +870,8 @@ export const TALENTS: Talent[] = [
   { id: 'ho_than', name: 'Ngọc bội hộ thân', desc: 'Sinh ra đã đeo ngọc bội, đỡ được một lần chết', cost: 35 },
   { id: 'linh_thu', name: 'Linh thú bầu bạn', desc: 'Một linh thú hiếm theo bạn từ lúc lọt lòng', cost: 50 },
   { id: 'van_kiep', name: 'Vạn kiếp bất diệt', desc: 'Trời thương như kiếp đầu: trước 16 tuổi không chết', cost: 70 },
-  { id: 'thien_menh', name: 'Thiên mệnh chi tử', desc: 'Khí vận tối đa, linh căn biến dị, đột phá dễ hơn 15%', cost: 150 },
-  { id: 'tien_cot', name: 'Tiên cốt trời sinh', desc: 'Chắc chắn mang Thiên linh căn, tu luyện nhanh gấp đôi', cost: 200 },
+  { id: 'thien_menh', name: 'Thiên mệnh chi tử', desc: 'Khí vận tối đa, linh căn biến dị, đột phá dễ hơn 10%', cost: 180 },
+  { id: 'tien_cot', name: 'Tiên cốt trời sinh', desc: 'Chắc chắn mang Thiên linh căn, tu luyện nhanh hơn hẳn', cost: 250 },
   // thiên phú của tà đạo, trả bằng nghiệp lực
   { id: 'ta_huyet', name: 'Huyết mạch ma tộc', desc: 'Sinh ra đã nghiêng về tà (đạo tâm -30), ngộ tính +10', cost: 30, ta: true },
   { id: 'ta_dao', name: 'Huyết Ma Đao chờ chủ', desc: 'Huyết Ma Đao nằm sẵn trong túi, đủ Trúc Cơ là cầm được', cost: 40, ta: true },

@@ -5,7 +5,7 @@ import { HAIR_COLORS, ITEMS, PATHS, type RobeDeco, type WeaponKind } from '@/lib
 import { ANIM, composeStrip, readyStrip, type Anim, type Layer } from '@/lib/lpc';
 import { equippedLook } from '@/lib/game/helpers';
 import { PETS, petOf } from '@/lib/game/pets';
-import { PixelFx, fxEmbers, fxHuStars, fxHuVortex, fxMaHoa, fxMaXich, fxNguSacVan, fxTienHalo, fxTienPetals, fxOrbit, fxPillar, fxRays, fxRing, fxMotes, fxBatQuai, fxCuuVi, fxDanHoan, fxHuyetNguyet, fxKiem, fxLua, fxLuaTien, fxMaKhi, fxPhatQuang, fxSen, fxTuongVan } from './PixelFx';
+import { PixelFx, fxEmbers, fxHuStars, fxHuVortex, fxMaHoa, fxMaXich, fxNguSacVan, fxTienHalo, fxTienPetals, fxChuongVang, fxOrbit, fxPillar, fxRays, fxRing, fxMotes, fxBatQuai, fxCuuVi, fxDanHoan, fxHuyetNguyet, fxKiem, fxLua, fxLuaTien, fxMaKhi, fxPhatQuang, fxSen, fxTuongVan } from './PixelFx';
 import type { Character } from '@/lib/game/types';
 
 type R = [number, number, number, number, string];
@@ -882,6 +882,7 @@ export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Charact
         ))}
       {url && cos && !l.dead && <CosmosFront cos={cos} lv={cosLv} box={box} />}
       {l.acc === 'kiembay' && !l.dead && <span className="lpc-orbit" aria-hidden="true" />}
+      {url && c.quyNhat && !l.dead && l.stage !== 'baby' && <PixelFx spec={fxChuongVang()} scale={(box / 64) * 0.8} dur={2.2} className="pa pa-chuong" />}
     </div>
   );
 }
