@@ -524,3 +524,8 @@ Khi được yêu cầu cập nhật tài liệu:
 - Phúc duyên mỗi kiếp: 5 + cảnh giới×6 + tuổi/25 + 70 nếu phi thăng (trước ×8, /20, +100).
 - Sau phi thăng: mỗi tầng ít nhất 17 năm (cảnh giới cuối 12 năm) qua `COSMOS_YEARS_PER_LAYER` / `COSMOS_YEARS_TOP`. Thọ tối đa giữ 350: chỉ ai phi thăng sớm mới kịp lên đỉnh và thử Chứng Đạo.
 - Mô phỏng (60 tài khoản × 30 kiếp, không mua thiên phú): Độ Kiếp từ kiếp 5 lên kiếp 7-10; số tài khoản phi thăng 36 → 22-25; lên cảnh giới 11 từ 29 → 11-20.
+
+## 10 kết cục ba cõi (2.0.0)
+- File `lib/game/cosmosEnds.ts`: 10 sự kiện `end_*`, mỗi sự kiện dẫn tới một kết cục (đặt trước `dai_la` trong `ENDINGS`). Mỗi kiếp chỉ 30% có duyên gặp từng sự kiện (`fated`, băm theo `lookSeed` + `lifeNo`, hằng `FATE`).
+- Tiên: `ha_pham` (có đạo lữ), `thu_mon` (cảnh giới 9+, giữ cổng tử trận 50%), `hoa_chu` (10+), `thien_de` (11, đạo tâm ≥40). Ma: `hoa_huyet_hai` (10+), `buong_dao` (đạo tâm ≥0), `tam_phuc` (9+, rượu độc 45%). Hư (bí ẩn, không có `how`): `vo_danh` (bán tên, cờ `qf.voDanh`, ghi đè cái chết khác ở Thái Hư), `ve_tuoi_tho` (9+), `hoang_luong` (10+).
+- `alsoEndings` ghi thêm `dai_la` / `ma_de` / `hon_nguyen` khi chết ở cảnh giới 11 theo kết cục khác.

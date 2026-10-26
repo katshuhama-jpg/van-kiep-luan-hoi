@@ -17,7 +17,7 @@ export const RELEASES: Release[] = [
     lead: 'Bạn tưởng tiếng chuông đã im. Nhưng nó lại vang lên, lần này không đếm bạn mà đếm những người khác. Vạn Kiếp Chân Nhân không chỉ vỡ làm một mảnh là bạn. Và có kẻ vẫn đang gõ chuông.',
     stats: [
       { n: '+10', label: 'mảnh Thiên thư' },
-      { n: '+2', label: 'kết cục' },
+      { n: '+12', label: 'kết cục' },
       { n: '+1', label: 'đại địch' },
     ],
     groups: [
@@ -30,6 +30,16 @@ export const RELEASES: Release[] = [
           'Kẻ Gõ Chuông chờ ở đỉnh cao nhất của các cõi. Phải đỡ đủ ba tiếng chuông, đỡ hụt có thể thân tử đạo tiêu.',
           'Thắng hắn, kiếp sau cầm dùi chuông và tự chọn: gõ tiếp hay đập vỡ. Hai kết cục mới, hai danh hiệu mới.',
           'Trang Sổ Sinh Tử chia Thiên thư thành hai quyển. Quyển II bị phong ấn tới khi bạn gặp lại chính mình.',
+        ],
+      },
+      {
+        h: 'Mười kết cục ba cõi',
+        items: [
+          'Tiên giới: Hạ Phàm Vì Tình, Thủ Môn Thiên Giới, Hóa Chữ Thiên Thư, Thiên Đế Vạn Thế.',
+          'Ma giới: Hóa Thân Huyết Hải, Buông Đao Thành Phật, Chết Dưới Tay Tâm Phúc.',
+          'Thái Hư giới: ba kết cục bí ẩn, không ghi cách mở. Tự đi tìm.',
+          'Mỗi kết cục đi kèm một kỳ ngộ hiếm, phần lớn chỉ đến ở cảnh giới cao, và không phải kiếp nào cũng có duyên gặp.',
+          'Chết ở cảnh giới cuối theo một kết cục khác thì Sổ Sinh Tử vẫn ghi nhận Đại La Kim Tiên, Ma Đế hay Hỗn Nguyên Đạo Tổ.',
         ],
       },
       {

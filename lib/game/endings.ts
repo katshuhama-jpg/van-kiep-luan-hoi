@@ -50,6 +50,17 @@ export const ENDINGS: Ending[] = [
     rare: 4,
     test: (c) => c.endTag === 'chung_dao',
   },
+  // ---- 10 kết cục hiếm ở ba cõi (2.0.0) ----
+  { id: 'ha_pham', name: 'Hạ Phàm Vì Tình', desc: 'Tự xóa tên khỏi tiên tịch, xuống trần sống nốt những mùa xuân cuối cùng với người mình thương.', hint: 'Bên kia Thiên Hà có người đang già đi.', how: 'Ở Tiên giới khi đã có đạo lữ, đêm thất tịch chọn bỏ tiên tịch hạ phàm.', rare: 4, test: (c) => c.endTag === 'ha_pham' },
+  { id: 'thu_mon', name: 'Thủ Môn Thiên Giới', desc: 'Một mình giữ Nam Thiên Môn trước mười vạn ma quân, đứng chết mà không lùi.', hint: 'Có ngày cổng trời chỉ còn một người giữ.', how: 'Ở Tiên giới từ cảnh giới thứ hai, khi ma quân phá cổng, chọn một mình giữ cổng và tử trận.', rare: 3, test: (c) => c.endTag === 'thu_mon' },
+  { id: 'hoa_chu', name: 'Hóa Chữ Thiên Thư', desc: 'Chép trang cuối của thiên thư rồi hóa vào từng nét chữ, sống mãi trong sách.', hint: 'Có một tòa lầu sách không đáy.', how: 'Ở Tiên giới từ cảnh giới thứ ba, nhận lời Văn Khúc Tinh Quân chép trang cuối.', rare: 4, test: (c) => c.endTag === 'hoa_chu' },
+  { id: 'thien_de', name: 'Thiên Đế Vạn Thế', desc: 'Ngồi lên ngai Lăng Tiêu Điện, nhìn thấy mọi thứ mà không bao giờ được chạm vào thứ gì nữa.', hint: 'Ba giới không thể một ngày không có chủ.', how: 'Ở cảnh giới cuối của Tiên giới, đạo tâm từ 40 trở lên, nhận ngôi Thiên Đế.', rare: 4, test: (c) => c.endTag === 'thien_de' },
+  { id: 'hoa_huyet_hai', name: 'Hóa Thân Huyết Hải', desc: 'Nuốt trái tim Ma Tổ, tan vào Huyết Hải. Bất tử, nhưng không còn là mình.', hint: 'Giữa biển máu có thứ vẫn còn đập.', how: 'Ở Ma giới từ cảnh giới thứ ba, nuốt trái tim giữa Huyết Hải.', rare: 4, test: (c) => c.endTag === 'hoa_huyet_hai' },
+  { id: 'buong_dao', name: 'Buông Đao Thành Phật', desc: 'Giữa Ma giới, ma đầu buông đồ đao, quy y dưới chân một lão tăng.', hint: 'Ma đầu cũng có ngày nghe thấy tiếng chuông chùa.', how: 'Ở Ma giới mà giữ đạo tâm từ 0 trở lên, nghe tiếng chuông chùa và chọn quy y.', rare: 4, test: (c) => c.endTag === 'buong_dao' },
+  { id: 'tam_phuc', name: 'Chết Dưới Tay Tâm Phúc', desc: 'Uống chén rượu mừng thọ của kẻ theo mình lâu nhất. Ma giới chỉ có một luật.', hint: 'Kẻ đáng sợ nhất là kẻ đứng sau lưng.', how: 'Ở Ma giới từ cảnh giới thứ hai, uống chén rượu của tả hộ pháp và trúng độc.', rare: 3, test: (c) => c.endTag === 'tam_phuc' },
+  { id: 'vo_danh', name: 'Vô Danh', desc: 'Bán tên lấy đạo. Lúc chết, không ai biết bia mộ phải khắc tên gì, kể cả chính bạn.', hint: 'Ở Thái Hư, có kẻ đi mua tên người.' , rare: 3, test: (c) => c.cosmos === 'hu' && !!c.qf?.voDanh },
+  { id: 've_tuoi_tho', name: 'Trở Về Thuở Nhỏ', desc: 'Bước qua khe nứt thời gian, làm lại đứa trẻ bảy tuổi trước sân nhà. Lần này không đi tu tiên.', hint: 'Có khe nứt nhìn thấy ngày xưa.', rare: 4, test: (c) => c.endTag === 've_tuoi_tho' },
+  { id: 'hoang_luong', name: 'Hoàng Lương Nhất Mộng', desc: 'Tỉnh dậy bên nồi kê chưa chín. Cả đời tu tiên, ba cõi vạn năm, chỉ là một giấc ngủ trưa.', hint: 'Giữa hư không có mùi kê nấu.', rare: 4, test: (c) => c.endTag === 'hoang_luong' },
   {
     id: 'dai_la',
     name: 'Đại La Kim Tiên',
@@ -307,7 +318,12 @@ export const ENDINGS: Ending[] = [
 export function alsoEndings(c: Character): string[] {
   if (!c.cosmos) return [];
   const id = c.cosmos === 'ma' ? 'ma_ton_do_kiep' : c.cosmos === 'hu' ? 'tieu_dao' : 'phi_thang';
-  return endingOf(c).id === id ? [] : [id];
+  const main = endingOf(c).id;
+  const out = main === id ? [] : [id];
+  // tới cảnh giới cuối mà chết theo kết cục khác: vẫn ghi nhận đỉnh của cõi
+  const top = c.realm >= 11 ? (c.cosmos === 'ma' ? 'ma_de' : c.cosmos === 'hu' ? 'hon_nguyen' : 'dai_la') : null;
+  if (top && main !== top && main !== 'chung_dao') out.push(top);
+  return out;
 }
 
 export function endingOf(c: Character): Ending {
