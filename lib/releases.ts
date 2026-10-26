@@ -11,6 +11,47 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '2.0.0',
+    date: '26/10/2026',
+    title: 'Vạn Mảnh',
+    lead: 'Bạn tưởng tiếng chuông đã im. Nhưng nó lại vang lên, lần này không đếm bạn mà đếm những người khác. Vạn Kiếp Chân Nhân không chỉ vỡ làm một mảnh là bạn. Và có kẻ vẫn đang gõ chuông.',
+    stats: [
+      { n: '+10', label: 'mảnh Thiên thư' },
+      { n: '+2', label: 'kết cục' },
+      { n: '+1', label: 'đại địch' },
+    ],
+    groups: [
+      {
+        h: 'Thiên thư Quyển II',
+        items: [
+          'Quyển II "Vạn Mảnh" mở sau khi đạt Vạn Kiếp Quy Nhất: 10 mảnh ký ức mới, từ XI tới XX.',
+          'Những đạo hữu trên giang hồ cũng là mảnh vỡ. Có mảnh chỉ mở khi kết nghĩa, truyền công, viếng mộ hay giao chiến thư với người chơi khác.',
+          'Có mảnh chỉ dành cho bậc cao thủ: từng lên đủ Tiên, Ma, Thái Hư, qua Ngũ Hành Đài mà không ngã lần nào, mở 30 kết cục.',
+          'Kẻ Gõ Chuông chờ ở đỉnh cao nhất của các cõi. Phải đỡ đủ ba tiếng chuông, đỡ hụt có thể thân tử đạo tiêu.',
+          'Thắng hắn, kiếp sau cầm dùi chuông và tự chọn: gõ tiếp hay đập vỡ. Hai kết cục mới, hai danh hiệu mới.',
+          'Trang Sổ Sinh Tử chia Thiên thư thành hai quyển. Quyển II bị phong ấn tới khi bạn gặp lại chính mình.',
+        ],
+      },
+      {
+        h: 'Vạn Kiếp Quy Nhất',
+        items: [
+          'Mỗi tài khoản chỉ gặp lại chính mình một lần. Từ đó, đường đi tiếp nằm trong Quyển II.',
+          'Lần đầu Quy Nhất được 100 phúc duyên, một chiếc chuông vàng theo bên vai qua mọi kiếp, và danh hiệu 🔔 trên bảng xếp hạng. Ai đã đạt trước đây sẽ nhận ở lần luân hồi tới.',
+        ],
+      },
+      {
+        h: 'Thiên đạo khắt khe hơn',
+        items: [
+          'Đột phá khó hơn, càng lên cao càng khó. Thiên mệnh chi tử chỉ còn giúp đột phá dễ hơn 10%.',
+          'Thiên linh căn và Tiên cốt trời sinh tu nhanh ít hơn trước. Tiên cốt giá 250 phúc, Thiên mệnh 180 phúc.',
+          'Phúc duyên mỗi kiếp ít đi khoảng một phần tư.',
+          'Sau phi thăng, mỗi cảnh giới mất ít nhất khoảng 50 năm. Thọ nguyên vẫn tối đa 350: chỉ ai phi thăng sớm mới kịp chạm đỉnh và thử Chứng Đạo.',
+          'Tu tới Kim Đan, Hóa Thần vẫn như cũ, người mới không bị làm khó.',
+        ],
+      },
+    ],
+  },
+  {
     v: '1.0.3',
     date: '26/10/2026',
     title: 'Tam Giới Khai Môn',
