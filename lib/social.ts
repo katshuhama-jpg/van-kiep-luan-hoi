@@ -235,3 +235,11 @@ export async function khieuDone(user: Player | null, other: string) {
   if (!sb || !user) return;
   await sb.rpc('vkl_khieu_done', { p_token: user.token, p_other: other });
 }
+
+/** Truyền công lúc tọa hóa: tặng 5 phúc duyên và thư cho người được chọn (không có thì người hữu duyên ngẫu nhiên). Trả về tên người nhận. */
+export async function truyenCong(user: Player | null, to: string | null, name: string): Promise<string | null> {
+  const sb = supabase();
+  if (!sb || !user) return null;
+  const { data, error } = await sb.rpc('vkl_truyen_cong', { p_token: user.token, p_to: to, p_name: name });
+  return error ? null : ((data as string | null) ?? null);
+}

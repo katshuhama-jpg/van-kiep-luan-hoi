@@ -18,8 +18,8 @@ export const RELEASES: Release[] = [
     stats: [
       { n: '+3', label: 'giới mới' },
       { n: '+12', label: 'cảnh giới' },
-      { n: '+8', label: 'kết cục' },
-      { n: '+44', label: 'vật phẩm' },
+      { n: '+20', label: 'kết cục' },
+      { n: '+55', label: 'vật phẩm' },
       { n: '+30', label: 'quái vật' },
       { n: '+19', label: 'kỳ ngộ' },
     ],
@@ -28,16 +28,27 @@ export const RELEASES: Release[] = [
         h: 'Tam giới sau phi thăng',
         items: [
           'Phi thăng xong vẫn sống tiếp trong cùng kiếp. Chính đạo lên Tiên giới, tà đạo vào Ma giới, người trung lập lạc vào Thái Hư giới.',
-          'Mỗi giới 4 cảnh giới, có sự kiện, quái, bảo vật và cảnh nền riêng: Chân Tiên tới Đại La Kim Tiên, Ma Tướng tới Ma Đế, Hư Tiên tới Hỗn Nguyên Đạo Tổ.',
-          'Kiếp cuối cùng là Chứng Đạo, vượt được thì thoát khỏi mọi giới.',
+          'Mỗi giới 4 cảnh giới, có sự kiện, quái, bảo vật và cảnh nền riêng: Chân Tiên tới Đại La Kim Tiên, Ma Tướng tới Ma Đế, Hư Tiên tới Hỗn Nguyên Đạo Tổ. Kiếp cuối là Chứng Đạo, vượt được thì thoát khỏi mọi giới.',
+          'Cảnh phi thăng: cột sáng giáng xuống, nhân vật bay lên cõi mới.',
+          'Hào quang riêng mỗi cõi, mạnh dần theo cảnh giới: tiên quang và mây ngũ sắc, huyết nguyệt và xích ma, vòng xoáy hư không và tinh tú.',
+          'Quà phi thăng: mỗi cõi một bộ áo, vũ khí, phụ kiện, trao dần khi lên cảnh giới.',
         ],
       },
       {
         h: 'Ngũ Hành Vấn Tâm Đài',
         items: [
-          'Trước khi phi thăng phải hạ 5 bóng của chính mình, mỗi bóng một hệ. Bóng cuối khắc bản mệnh của bạn.',
+          'Trước khi phi thăng phải hạ 5 bóng của chính mình, mỗi bóng một hệ. Bóng cuối khắc bản mệnh của bạn. Phi thăng từ 120 tuổi.',
           'Lật thế bằng Ngũ Hành Ấn (săn quái đúng hệ), lá bùa Công, Thủ, Hóa, Ngũ Hành Phù và tâm cảnh. 15 sân đấu theo giới và theo hệ của bóng.',
-          'Thua có thể thân tử đạo tiêu. Hãy chuẩn bị từ Hóa Thần.',
+          'Qua đài nhận Gương vỡ Vấn Tâm; qua mà chưa ngã lần nào nhận Ngũ Hành Viên Mãn châu. Thua có thể thân tử đạo tiêu, hãy chuẩn bị từ Hóa Thần.',
+        ],
+      },
+      {
+        h: 'Sinh tử ba cõi',
+        items: [
+          'Mỗi cõi có cách chết riêng: Thiên Nhân Ngũ Suy, Lôi Phạt, Trảm Tiên Đài, Ma Thể Mục Ruỗng, Tâm Ma Đoạt Xá, Bị Thôn Phệ, Hóa Thành Tinh Tú, Lạc Khe Nứt Thời Gian, Tử Trận Tiên Ma.',
+          '20 năm cuối đời ở ba cõi hiện dần 5 dấu hiệu suy tàn. Tiên nhân để đạo tâm tụt dưới -20 có ngày lên Trảm Tiên Đài.',
+          'Bia mộ riêng: Tiên Trủng, Ma Trủng, Hư Trủng.',
+          'Ở Độ Kiếp mà không kịp phi thăng: tự chọn tọa hóa chuyển thế (kiếp sau mang theo linh thức) hoặc truyền công cho một đạo hữu trên giang hồ.',
         ],
       },
       {
@@ -61,9 +72,8 @@ export const RELEASES: Release[] = [
         h: 'Cân bằng',
         items: [
           'Quái và người đều mang ngũ hành, khắc chế khi giao đấu.',
-          'Đánh quái quá yếu gần như không rơi đồ; đồ rơi theo cấp của quái.',
-          'Phi thăng cần từ 120 tuổi. Sau phi thăng, mỗi cảnh giới mất ít nhất khoảng 24 năm.',
-          'Kết cục mới: Chứng Đạo Vĩnh Hằng, Đại La Kim Tiên, Ma Đế Vĩnh Dạ, Hỗn Nguyên Đạo Tổ, Tiêu Dao Thái Hư, Bị Giáng Trần, Vạn Kiếp Quy Nhất và một kết cục bí ẩn.',
+          'Rơi đồ giảm khoảng 25% (quái, người chơi, bóng kiếp trước). Đánh quái quá yếu gần như không rơi đồ; đồ rơi theo cấp của quái.',
+          'Thọ nguyên tối đa: 200 khi chưa phi thăng, 350 khi đã lên ba cõi. Sau phi thăng, mỗi cảnh giới mất ít nhất khoảng 24 năm.',
         ],
       },
     ],

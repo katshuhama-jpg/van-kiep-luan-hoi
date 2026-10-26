@@ -51,7 +51,6 @@ export const ENDINGS: Ending[] = [
     test: (c) => c.cosmos === 'ma' && c.realm >= 11,
   },
   { id: 'hon_nguyen', name: 'Hỗn Nguyên Đạo Tổ', desc: 'Không chính không tà, đứng giữa hư không mà ba giới phải nể.', hint: 'Giữa trời và vực còn một cõi khác.', how: 'Giữ đạo tâm trung lập (-39 đến 19) khi phi thăng để vào Thái Hư giới, tu tới Hỗn Nguyên Đạo Tổ rồi mới chết.', rare: 4, test: (c) => c.cosmos === 'hu' && c.realm >= 11 },
-  { id: 'tieu_dao', name: 'Tiêu Dao Thái Hư', desc: 'Không vào tiên tịch, không nhập ma môn, sống tự do giữa hư không đến hơi thở cuối.', hint: 'Không chọn phe cũng là một con đường.', how: 'Phi thăng khi đạo tâm trung lập (-39 đến 19) để vào Thái Hư giới, rồi chết ở đó.', rare: 3, test: (c) => c.cosmos === 'hu' },
   {
     id: 'giang_tran',
     name: 'Bị Giáng Trần',
@@ -77,6 +76,21 @@ export const ENDINGS: Ending[] = [
     rare: 4,
     test: (c) => c.endTag === 'xuyen_khong',
   },
+  // Độ Kiếp mà không kịp phi thăng: tự chọn cách ra đi
+  { id: 'toa_hoa', name: 'Tọa Hóa Chuyển Thế', desc: 'Biết mình không kịp phi thăng, bạn tự tán công, để một tia linh thức mang theo sang kiếp sau.', hint: 'Đứng trước cửa trời mà thọ đã cạn.', how: 'Ở Độ Kiếp, khi thọ còn dưới 10 năm, chọn tọa hóa chuyển thế.', rare: 3, test: (c) => c.endTag === 'toa_hoa' },
+  { id: 'truyen_cong', name: 'Truyền Công Tọa Hóa', desc: 'Không mang theo được thì để lại. Bạn truyền hết công lực cho một người trên giang hồ rồi nhắm mắt.', hint: 'Cái gì không mang đi được thì cho đi.', how: 'Ở Độ Kiếp, khi thọ còn dưới 10 năm, chọn truyền công cho người khác.', rare: 3, test: (c) => c.endTag === 'truyen_cong' },
+  // Cách chết riêng của ba cõi sau phi thăng (xét theo endTag đặt lúc chết; còn lại rơi vào kết cục chung của cõi)
+  { id: 'tu_tran', name: 'Tử Trận Tiên Ma', desc: 'Ngã xuống giữa Tiên Ma đại chiến, máu tiên và máu ma trộn vào nhau.', hint: 'Hai cõi giao chiến, không ai đứng ngoài được.', how: 'Đã phi thăng, chết trong Tiên Ma đại chiến.', rare: 3, test: (c) => c.endTag === 'tu_tran' },
+  { id: 'thien_nhan_ngu_suy', name: 'Thiên Nhân Ngũ Suy', desc: 'Áo tiên bám bụi, hoa trên mũ héo, thân hết tỏa sáng. Tiên cũng có ngày tàn.', hint: 'Tiên nhân cũng già.', how: 'Ở Tiên giới đến khi hết thọ nguyên.', rare: 3, test: (c) => c.endTag === 'thien_nhan_ngu_suy' },
+  { id: 'loi_phat', name: 'Lôi Phạt Tiên Thân', desc: 'Thiên lôi đánh tan tiên thể, ba hồn bảy vía không còn chỗ về.', hint: 'Ở trên trời, sấm sét càng gần.', how: 'Ở Tiên giới, chết vì thiên kiếp hoặc tâm ma.', rare: 3, test: (c) => c.endTag === 'loi_phat' },
+  { id: 'tram_tien_dai', name: 'Trảm Tiên Đài', desc: 'Tiên tâm nhiễm bẩn, Thiên Đình đưa lên Trảm Tiên Đài. Một nhát đao, tiên tịch xóa tên.', hint: 'Thiên quy không dung kẻ tâm tà.', how: 'Ở Tiên giới mà để đạo tâm tụt dưới -20.', rare: 3, test: (c) => c.endTag === 'tram_tien_dai' },
+  { id: 'ma_the_muc_ruong', name: 'Ma Thể Mục Ruỗng', desc: 'Da nứt, ma khí rỉ ra từng sợi, ma hồn tan vào huyết hải.', hint: 'Ma cũng không sống mãi.', how: 'Ở Ma giới đến khi hết thọ nguyên.', rare: 3, test: (c) => c.endTag === 'ma_the_muc_ruong' },
+  { id: 'tam_ma_doat_xa', name: 'Tâm Ma Đoạt Xá', desc: 'Bóng tối trong lòng cuối cùng cũng bước ra, chiếm lấy thân xác bạn mà sống tiếp.', hint: 'Ở Ma giới, kẻ thù lớn nhất ở bên trong.', how: 'Ở Ma giới, chết vì huyết kiếp hoặc tâm ma.', rare: 3, test: (c) => c.endTag === 'tam_ma_doat_xa' },
+  { id: 'bi_thon_phe', name: 'Bị Thôn Phệ', desc: 'Kẻ mạnh nuốt kẻ yếu. Lần này bạn là kẻ yếu.', hint: 'Ma giới chỉ có một luật.', how: 'Ở Ma giới, chết vì giao đấu hay hiểm cảnh.', rare: 3, test: (c) => c.cosmos === 'ma' },
+  { id: 'hoa_tinh', name: 'Hóa Thành Tinh Tú', desc: 'Ở giữa hư không quá lâu, bạn hòa vào nó, thành một vì sao lặng lẽ.', hint: 'Nhìn hư không đủ lâu, hư không nhìn lại.', how: 'Ở Thái Hư giới đến khi hết thọ nguyên.', rare: 3, test: (c) => c.endTag === 'hoa_tinh' },
+  { id: 'lac_khe_nut', name: 'Lạc Khe Nứt Thời Gian', desc: 'Một bước hụt giữa hư không, bạn trôi vào khe nứt, mãi mãi ở giữa quá khứ và tương lai.', hint: 'Hư không có những chỗ không đáy.', how: 'Ở Thái Hư giới, chết vì kiếp nạn hoặc tâm ma.', rare: 3, test: (c) => c.endTag === 'lac_khe_nut' },
+  { id: 'tieu_dao', name: 'Tiêu Dao Thái Hư', desc: 'Không vào tiên tịch, không nhập ma môn, sống tự do giữa hư không đến hơi thở cuối.', hint: 'Không chọn phe cũng là một con đường.', how: 'Phi thăng khi đạo tâm trung lập (-39 đến 19) để vào Thái Hư giới, rồi chết ở đó.', rare: 3, test: (c) => c.cosmos === 'hu' },
+  { id: 'tien_vo', name: 'Tiên Thân Tan Vỡ', desc: 'Tiên thể vỡ vụn giữa chín tầng trời, chỉ còn chút tiên quang rơi xuống nhân gian như mưa sao.', hint: 'Tiên giới cũng có hiểm nguy.', how: 'Ở Tiên giới, chết vì giao đấu hay hiểm cảnh.', rare: 3, test: (c) => c.cosmos === 'tien' },
   {
     id: 'ma_ton_do_kiep',
     name: 'Ma Tôn Độ Kiếp',
@@ -270,6 +284,13 @@ export const ENDINGS: Ending[] = [
     test: () => true,
   },
 ];
+
+/** Kết cục vào cõi (phi thăng, Ma Tôn, Thái Hư) vẫn được ghi vào Sổ Sinh Tử khi chết ở cõi đó vì một kết cục riêng hơn */
+export function alsoEndings(c: Character): string[] {
+  if (!c.cosmos) return [];
+  const id = c.cosmos === 'ma' ? 'ma_ton_do_kiep' : c.cosmos === 'hu' ? 'tieu_dao' : 'phi_thang';
+  return endingOf(c).id === id ? [] : [id];
+}
 
 export function endingOf(c: Character): Ending {
   return ENDINGS.find((e) => e.test(c)) ?? ENDINGS[ENDINGS.length - 1];

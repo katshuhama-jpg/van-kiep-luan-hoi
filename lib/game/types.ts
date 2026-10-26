@@ -111,6 +111,10 @@ export interface Character {
   an?: Partial<Record<Element, number>>; // Ngũ Hành Ấn thu được khi diệt quái có hệ (tối đa 5 mỗi hệ)
   cgY?: number; // năm đang tính trần tu vi sau phi thăng
   cgN?: number; // tu vi đã hấp thu trong năm đó
+  daiHan?: boolean; // đã gặp đại hạn ở Độ Kiếp (tọa hóa hay truyền công)
+  truyenCong?: boolean; // chọn truyền công lúc tọa hóa: game gửi phúc duyên cho người khác
+  suy?: number; // dấu hiệu suy tàn đã hiện ở ba cõi (0-4)
+  tqWarn?: number; // năm gần nhất bị thiên quy cảnh cáo
   ascWait?: number; // năm gần nhất đã nhắc chưa đủ tuổi phi thăng
   phu?: number; // Ngũ Hành Phù: đổi bản mệnh một vòng trên Ngũ Hành Đài
   nhd?: { won: number; lose5: number; tries: number; done?: boolean; warned?: boolean; lost?: number }; // Ngũ Hành Vấn Tâm Đài trước khi phi thăng

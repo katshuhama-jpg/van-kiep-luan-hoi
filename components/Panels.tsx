@@ -962,6 +962,13 @@ export function DeathSheet({
                 : 'Một kiếp đã hết'
       }
     >
+      {c.cosmos && (
+        <div className={`cos-tomb ${c.cosmos}`} aria-hidden="true">
+          <i className="sky" />
+          <i className="stele" />
+          <b>{c.cosmos === 'ma' ? 'Ma Trủng' : c.cosmos === 'hu' ? 'Hư Trủng' : 'Tiên Trủng'}</b>
+        </div>
+      )}
       <p style={{ marginTop: 0 }}>
         <b style={{ fontWeight: 700, color: 'var(--red-d)', fontSize: 24 }}>{c.name}</b>
         <br />

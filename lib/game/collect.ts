@@ -1,4 +1,4 @@
-import { ITEMS, PATHS, REALMS, type Item } from './data';
+import { HU_REALMS, ITEMS, MA_REALMS, PATHS, REALMS, type Item } from './data';
 import { MONSTERS } from './combat';
 import { ENDINGS, endingOf, type Ending } from './endings';
 import { vnDay } from './hook';
@@ -103,4 +103,12 @@ export function endingOfGrave(g: {
     stats: { tamCanh: 50, ngoTinh: 50, khiVan: 50, tamMa: 0, sucKhoe: 50 },
   } as unknown as Character;
   return endingOf(c);
+}
+
+/** Cõi của một ngôi mộ (để vẽ bia riêng): đoán theo tên cảnh giới */
+export function cosOfGrave(g: { realm: string; realm_no?: number | null }): 'tien' | 'ma' | 'hu' | null {
+  if ((g.realm_no ?? 0) < 8) return null;
+  if (MA_REALMS.some((n) => g.realm.startsWith(n))) return 'ma';
+  if (HU_REALMS.some((n) => g.realm.startsWith(n))) return 'hu';
+  return 'tien';
 }

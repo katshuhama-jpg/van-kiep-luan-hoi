@@ -60,6 +60,7 @@ const KIND_ICON: Record<string, string> = {
   chien_thu: '📜',
   vieng: '🕯',
   thien_dao: '✦',
+  truyen_cong: '☯',
 };
 
 function ago(iso: string): string {

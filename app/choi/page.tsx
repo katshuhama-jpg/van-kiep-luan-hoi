@@ -6,7 +6,7 @@ import Scene from '@/components/Scene';
 import MusicToggle from '@/components/MusicToggle';
 import { TribulationOverlay, Tutorial } from '@/components/Extras';
 import { BREAK_EVENT_ID } from '@/lib/game/events';
-import { endingOf } from '@/lib/game/endings';
+import { alsoEndings, endingOf } from '@/lib/game/endings';
 import { BagSheet, BaoKhoSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, HuntSheet, LogPanel, SEASONS, ShopSheet, Sheet, StageStrip, StatsPanel } from '@/components/Panels';
 import Radar, { charAxes, wealthScore } from '@/components/Radar';
 import { giftOf } from '@/lib/game/gacha';
@@ -24,7 +24,7 @@ import { ELEMENTS, elemHitTag, elemMul, elemRel, elementOf } from '@/lib/game/ng
 import { DUEL_INFO, DUEL_PER_YEAR, DUEL_TURNS, finishDuel, foeChar, foeStats, pickDuel, teaTrap, toRival, type DuelFoe } from '@/lib/game/duel';
 import { SOCIAL } from '@/lib/game/social';
 import { daiBiDue, rankName, sectCultMul } from '@/lib/game/sect';
-import { bountyClaim, khieuDone, loadSocial, payoutClaim } from '@/lib/social';
+import { bountyClaim, khieuDone, loadSocial, payoutClaim, truyenCong } from '@/lib/social';
 import { GiangHoSheet, type GiangHoApi } from '@/components/GiangHo';
 import { HIDDEN_ITEMS, collectStats, markSeen, newFinds, unseen } from '@/lib/game/collect';
 import { newLore } from '@/lib/game/lore';
@@ -1201,6 +1201,11 @@ export default function PlayPage() {
     const w = c.equipped.vu_khi;
     const legend = extra.legendName && w && !c.ascended ? { item: w, name: extra.legendName.slice(0, 40), lv: c.legend?.item === w ? c.legend.lv + 1 : 1 } : null;
     const petBook = c.pet && c.petKind && !(meta.petBook ?? []).includes(c.petKind) ? [...(meta.petBook ?? []), c.petKind] : meta.petBook;
+    // truyền công: gửi phúc duyên cho một người chơi khác (ưu tiên huynh đệ kết nghĩa)
+    if (c.truyenCong && user) {
+      const bro = SOCIAL.cur.sworn[0] ?? null;
+      truyenCong(user, bro, c.name).catch(() => {});
+    }
     await addMemorial(user, {
       player_name: displayName(user),
       char_name: c.name,
@@ -1252,7 +1257,7 @@ export default function PlayPage() {
       lives: meta.lives + 1,
       talents: [],
       enemy: c.daoTam < -30 ? c.enemy : null,
-      endings: { ...(meta.endings ?? {}), [ending.id]: (meta.endings?.[ending.id] ?? 0) + 1 },
+      endings: [ending.id, ...alsoEndings(c)].reduce((e, id) => ({ ...e, [id]: (e[id] ?? 0) + 1 }), { ...(meta.endings ?? {}) } as Record<string, number>),
       past: {
         name: c.name,
         lifeNo: c.lifeNo,

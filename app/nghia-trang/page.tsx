@@ -10,7 +10,7 @@ import { RelChips } from '@/components/GiangHo';
 import { SOCIAL, type SocialState } from '@/lib/game/social';
 import { condolenceAdd, condolenceCounts, loadSocial } from '@/lib/social';
 import type { Player } from '@/lib/auth';
-import { endingOfGrave } from '@/lib/game/collect';
+import { cosOfGrave, endingOfGrave } from '@/lib/game/collect';
 import { RARE_COLOR } from '@/lib/game/endings';
 
 type Condo = Record<string, { n: number; last: string }>;
@@ -41,7 +41,8 @@ function Tomb({
   const unseen = mine !== null && !mine[end.id];
   const [text, setText] = useState('');
   return (
-    <article className={`grave ${m.ascended ? 'ascended' : ''}`}>
+    <article className={`grave ${m.ascended ? 'ascended' : ''} ${cosOfGrave(m) ? `cos-${cosOfGrave(m)}` : ''}`}>
+      {cosOfGrave(m) && <span className="grave-cos">{TRUNG[cosOfGrave(m)!]}</span>}
       <small>
         Kiếp {m.life_no} · {m.player_name} <RelChips player={m.player_name} s={social} />
       </small>
@@ -99,6 +100,8 @@ function Tomb({
     </article>
   );
 }
+
+const TRUNG = { tien: 'Tiên Trủng', ma: 'Ma Trủng', hu: 'Hư Trủng' } as const;
 
 export default function Graveyard() {
   const { user, ready } = useAuth();

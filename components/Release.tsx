@@ -79,21 +79,19 @@ export function GiftNotice({ gifts, onClose }: { gifts: { amount: number; note: 
         <i className="rod" aria-hidden="true" />
         <div className="rel-body gift-body">
           <span className="rel-seal" aria-hidden="true">
-            Thiên
-            <br />
-            Đạo
+            Phúc
           </span>
-          <p className="rel-kick">Thiên Đạo ban thưởng</p>
+          <p className="rel-kick">Phúc duyên tìm đến</p>
           <h2 id="gift-title">+{total} phúc duyên</h2>
           {gifts.map((g, i) => (
             <p key={i} className="rel-intro">
               {g.note}
             </p>
           ))}
-          <p className="gift-hint">Phúc duyên theo bạn qua mọi kiếp, dùng để chọn thiên phú khi đầu thai. Thư của Thiên Đạo đã gửi vào Hộp thư giang hồ.</p>
+          <p className="gift-hint">Phúc duyên theo bạn qua mọi kiếp, dùng để chọn thiên phú khi đầu thai. Xem thư trong Hộp thư giang hồ.</p>
           <div className="rel-acts">
             <button className="btn btn-red btn-big" onClick={onClose}>
-              Đa tạ Thiên Đạo
+              Đa tạ
             </button>
           </div>
         </div>

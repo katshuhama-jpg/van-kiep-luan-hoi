@@ -214,7 +214,10 @@ export const COSMOS_EVENTS: GameEvent[] = [
             0.2,
             ch.cosmos === 'ma' ? 'Bạn bị Lôi Bộ vây đánh trước Nam Thiên Môn. Ma hồn tan thành tro dưới vạn đạo sét.' : 'Bạn ngã xuống trên chiến trường Tiên Ma, giữa biển máu và tiên quang.',
           );
-          if (ch.dead) return 'Trận chiến kéo dài bảy ngày.' + f;
+          if (ch.dead) {
+            ch.endTag = 'tu_tran';
+            return 'Trận chiến kéo dài bảy ngày.' + f;
+          }
           addCult(ch, reward(ch, 2));
           stat(ch, 'sucKhoe', -30);
           dao(ch, ch.cosmos === 'ma' ? -10 : 10);

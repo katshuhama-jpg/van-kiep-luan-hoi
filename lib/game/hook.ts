@@ -161,6 +161,26 @@ export const PROPHECIES: Prophecy[] = [
     },
   },
   {
+    id: 'chuyen_the',
+    text: 'Một tia linh thức đã gói ghém những gì ngươi ngộ ra. Kiếp sau, nó sẽ tìm về.',
+    done: 'Lời tiên tri ứng nghiệm: tia linh thức kiếp trước tìm về (ngộ tính +20, linh căn ít nhất Địa, tâm cảnh +10).',
+    apply: (c) => {
+      c.stats.ngoTinh = Math.min(100, c.stats.ngoTinh + 20);
+      c.stats.tamCanh = Math.min(100, c.stats.tamCanh + 10);
+      c.linhCanMul = Math.max(c.linhCanMul, 1.5);
+    },
+  },
+  {
+    id: 'phuc_bao',
+    text: 'Cho đi cả đời công lực, phúc báo sẽ theo ngươi sang kiếp sau.',
+    done: 'Lời tiên tri ứng nghiệm: phúc báo của kiếp trước (khí vận +20, sức khỏe +10, +300 linh thạch).',
+    apply: (c) => {
+      c.stats.khiVan = Math.min(100, c.stats.khiVan + 20);
+      c.stats.sucKhoe = Math.min(100, c.stats.sucKhoe + 10);
+      c.linhThach += 300;
+    },
+  },
+  {
     id: 'tho',
     text: 'Kiếp sau, ngươi sẽ sống lâu hơn người thường.',
     done: 'Lời tiên tri ứng nghiệm: thọ nguyên của bạn dài hơn người thường.',
@@ -203,8 +223,12 @@ export const PROPHECIES: Prophecy[] = [
 /** Bốc lời tiên tri lúc chết; tà nhiều thì dễ ra điềm dữ */
 export function pickProphecy(c: Character, rnd: () => number): { id: string; text: string } {
   if (c.endTag === 'giang_tran') return { id: 'tien_nhan', text: PROPHECIES[0].text };
+  if (c.endTag === 'toa_hoa' || c.endTag === 'truyen_cong') {
+    const p = PROPHECIES.find((x) => x.id === (c.endTag === 'toa_hoa' ? 'chuyen_the' : 'phuc_bao'))!;
+    return { id: p.id, text: p.text };
+  }
   const pool =
-    c.daoTam <= -40 && rnd() < 0.5 ? PROPHECIES.filter((p) => p.id === 'hung') : PROPHECIES.filter((p) => p.id !== 'hung' && p.id !== 'tien_nhan' && (p.id !== 'kiep' || !!c.vendettas?.length));
+    c.daoTam <= -40 && rnd() < 0.5 ? PROPHECIES.filter((p) => p.id === 'hung') : PROPHECIES.filter((p) => p.id !== 'hung' && p.id !== 'tien_nhan' && p.id !== 'chuyen_the' && p.id !== 'phuc_bao' && (p.id !== 'kiep' || !!c.vendettas?.length));
   const p = pool[Math.floor(rnd() * pool.length)];
   return { id: p.id, text: p.text };
 }

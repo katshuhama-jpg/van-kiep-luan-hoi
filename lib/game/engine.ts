@@ -468,10 +468,15 @@ function hurtCause(c: Character): string {
 
 function checkDeath(c: Character, ctx: EffectCtx) {
   if (c.dead) return;
+  // được cứu khỏi chết (oan hồn, sư phụ...) thì bỏ nhãn cách chết đã gắn
+  if (c.endTag && ['loi_phat', 'tam_ma_doat_xa', 'lac_khe_nut', 'tu_tran', 'tram_tien_dai'].includes(c.endTag)) c.endTag = undefined;
   if (c.stats.sucKhoe <= 0) die(c, hurtCause(c), ctx);
   else if (c.stats.tamMa >= 100) {
     // tâm ma đầy chưa chắc đã chết: 40% tẩu hỏa nhập ma, còn lại trọng thương, rớt tu vi rồi gượng lại được
-    if (rnd() < 0.4) die(c, 'Tâm ma phản phệ. Bạn tẩu hỏa nhập ma, kinh mạch nổ tung.', ctx);
+    if (rnd() < 0.4) {
+      if (c.cosmos) c.endTag = COSMOS_DEATH_TAG[c.cosmos];
+      die(c, c.cosmos ? COSMOS_TAMMA_TEXT[c.cosmos] : 'Tâm ma phản phệ. Bạn tẩu hỏa nhập ma, kinh mạch nổ tung.', ctx);
+    }
     else {
       c.stats.tamMa = 65;
       stat(c, 'sucKhoe', -35);
@@ -480,7 +485,8 @@ function checkDeath(c: Character, ctx: EffectCtx) {
       ctx.log('Tâm ma bùng phát, bạn hộc máu ngã quỵ, tu vi tụt mất một đoạn. May mà gượng giữ được linh đài.', 'bad');
       if (c.stats.sucKhoe <= 0) die(c, 'Tâm ma phản phệ cộng thêm trọng thương, bạn không qua khỏi.', ctx);
     }
-  } else if (c.age >= c.lifespan)
+  } else if (c.age >= c.lifespan) {
+    if (c.cosmos) c.endTag = c.cosmos === 'ma' ? 'ma_the_muc_ruong' : c.cosmos === 'hu' ? 'hoa_tinh' : 'thien_nhan_ngu_suy';
     die(
       c,
       c.cosmos === 'ma'
@@ -492,7 +498,21 @@ function checkDeath(c: Character, ctx: EffectCtx) {
           : `Thọ nguyên cạn kiệt. Bạn tọa hóa ở tuổi ${Math.floor(c.age)}.`,
       ctx,
     );
+  }
 }
+
+/** Chết vì kiếp nạn hay tâm ma ở ba cõi: mỗi cõi một kiểu chết riêng */
+const COSMOS_DEATH_TAG: Record<'tien' | 'ma' | 'hu', string> = { tien: 'loi_phat', ma: 'tam_ma_doat_xa', hu: 'lac_khe_nut' };
+const COSMOS_TAMMA_TEXT: Record<'tien' | 'ma' | 'hu', string> = {
+  tien: 'Tâm ma vừa ló dạng, thiên lôi đã giáng xuống. Tiên giới không dung tiên thân nhiễm ma, ba hồn bảy vía tan theo tiếng sấm.',
+  ma: 'Bóng tối trong lòng bạn đứng dậy, bước ra khỏi thân xác rồi quay lại chiếm lấy nó. Kẻ đang sống tiếp kia không còn là bạn.',
+  hu: 'Tâm ma làm linh đài chao đảo, bạn hụt một bước giữa hư không và rơi vào khe nứt thời gian, trôi mãi không đáy.',
+};
+const COSMOS_KIEP_TEXT: Record<'tien' | 'ma' | 'hu', string> = {
+  tien: 'Lôi kiếp nơi tiên giới không nương tay. Tiên thể vỡ tan dưới đạo lôi cuối cùng.',
+  ma: 'Huyết lôi đánh nát ma thể, tâm ma thừa cơ chiếm lấy chỗ trống.',
+  hu: 'Kiếp nạn xé toạc hư không quanh bạn. Bạn bị cuốn vào khe nứt thời gian.',
+};
 
 function eligible(c: Character, e: GameEvent): boolean {
   // sau phi thăng chỉ còn sự kiện tiên giới, ma giới; trước phi thăng không gặp sự kiện của các giới đó
@@ -585,6 +605,17 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
   if (c.sect) {
     const up = promoteByRealm(c, ctx);
     if (up) ctx.log(up, 'good');
+  }
+
+  // ---- Ba cõi: thiên quy, dấu hiệu suy tàn ----
+  if (c.cosmos) {
+    cosmosYear(c, ctx);
+    if (c.dead) return null;
+  }
+  // ---- Đại hạn ở Độ Kiếp mà không kịp phi thăng: tọa hóa chuyển thế hay truyền công ----
+  if (!c.cosmos && c.realm === ASCEND_REALM - 1 && c.lifespan - c.age <= 10 && !c.daiHan) {
+    c.daiHan = true;
+    return buildPending(c, daiHanEvent(c));
   }
 
   // ---- Quá độ: làm một việc quá lâu ----
@@ -877,7 +908,8 @@ function attempt(c: Character, ctx: EffectCtx, bonus: number): string {
   stat(c, 'tamMa', 8);
   const t = hurt(c, kiep ? 40 + (target - 3) * 12 : 25, ctx);
   if (c.stats.sucKhoe <= 0) {
-    die(c, kiep ? 'Bạn hóa thành tro bụi dưới thiên kiếp.' : 'Xung quan thất bại, kinh mạch đứt đoạn.', ctx);
+    if (c.cosmos) c.endTag = COSMOS_DEATH_TAG[c.cosmos];
+    die(c, c.cosmos ? COSMOS_KIEP_TEXT[c.cosmos] : kiep ? 'Bạn hóa thành tro bụi dưới thiên kiếp.' : 'Xung quan thất bại, kinh mạch đứt đoạn.', ctx);
     return 'Đột phá thất bại.';
   }
   return 'Đột phá thất bại, tu vi tụt mất một đoạn.' + t;
@@ -938,7 +970,105 @@ function breakChoices(c: Character): Choice[] {
   ];
 }
 
+const SUY: Record<'tien' | 'ma' | 'hu', string[]> = {
+  tien: [
+    'Thiên nhân ngũ suy, dấu hiệu thứ nhất: áo tiên bắt đầu bám bụi, phủi mãi không sạch.',
+    'Dấu hiệu thứ hai: hoa trên mũ tiên héo dần, cánh rụng từng cánh.',
+    'Dấu hiệu thứ ba: dưới nách rịn mồ hôi, điều chưa từng có từ ngày thành tiên.',
+    'Dấu hiệu thứ tư: thân thể tỏa mùi lạ, tiên hạc không dám bay lại gần.',
+    'Dấu hiệu thứ năm: ngồi đâu cũng không yên. Ngũ suy đã đủ, ngày tọa hóa không còn xa.',
+  ],
+  ma: [
+    'Ma thể bắt đầu suy: da nứt như đất khô.',
+    'Ma khí rỉ ra từ những kẽ nứt, gom lại không được.',
+    'Đôi mắt đỏ của bạn mờ dần.',
+    'Huyết hải gọi tên bạn trong giấc ngủ.',
+    'Ma thể mục ruỗng từ bên trong. Ngày tan vào huyết hải không còn xa.',
+  ],
+  hu: [
+    'Hư không bắt đầu đòi lại bạn: có lúc bàn tay trong suốt, nhìn xuyên qua được.',
+    'Bóng của bạn không còn đi theo bạn nữa.',
+    'Có lúc người khác nhìn thẳng qua bạn như không thấy.',
+    'Tiếng nói của bạn đến tai người khác chậm nửa nhịp.',
+    'Bạn mờ dần như sương. Sắp đến ngày hóa thành một vì sao.',
+  ],
+};
+
+/** Mỗi năm ở ba cõi: tiên giới có thiên quy trảm kẻ tâm tà; 20 năm cuối hiện dần 5 dấu hiệu suy tàn */
+function cosmosYear(c: Character, ctx: EffectCtx) {
+  const cos = c.cosmos as 'tien' | 'ma' | 'hu';
+  const age = Math.floor(c.age);
+  if (cos === 'tien' && c.daoTam < 0) {
+    if (c.daoTam <= -20) {
+      const f = fatal(c, ctx, 0.12, 'Thiên Đình xét tiên tâm đã nhiễm bẩn. Bạn bị giải lên Trảm Tiên Đài, một nhát đao, tiên tịch xóa tên.');
+      if (c.dead) {
+        c.endTag = 'tram_tien_dai';
+        return;
+      }
+      if (f) ctx.log(f.trim(), 'bad');
+    }
+    if (c.tqWarn === undefined || age - c.tqWarn >= 5) {
+      c.tqWarn = age;
+      ctx.log(`Thiên quy cảnh cáo: tiên nhân mà đạo tâm tà (${c.daoTam}). Tụt xuống -20 là có ngày lên Trảm Tiên Đài.`, 'big');
+    }
+  }
+  const left = c.lifespan - c.age;
+  if (left <= 20) {
+    const idx = Math.min(4, Math.floor((20 - left) / 4));
+    if ((c.suy ?? -1) < idx) {
+      c.suy = idx;
+      stat(c, 'sucKhoe', -3);
+      ctx.log(SUY[cos][idx], 'big');
+    }
+  }
+}
+
+export const DAI_HAN_EVENT_ID = '__dai_han__';
+function daiHanEvent(c: Character): GameEvent {
+  return {
+    id: DAI_HAN_EVENT_ID,
+    title: 'Đại hạn trước cửa trời',
+    text: () =>
+      `Đã đến Độ Kiếp mà thọ nguyên chỉ còn chưa tới ${Math.max(1, Math.ceil(c.lifespan - c.age))} năm. Cửa trời còn xa, ngọn đèn trong người đã leo lét. Người tu đến bậc này có quyền tự chọn cách ra đi.`,
+    choices: () => [
+      {
+        label: 'Tọa hóa chuyển thế',
+        hint: 'chết ngay, kiếp sau mang theo tia linh thức',
+        lean: 'trung',
+        run: (ch, ctx) => {
+          ch.endTag = 'toa_hoa';
+          ch.dead = true;
+          ch.cause = 'Tự tán công, tọa hóa chuyển thế. Một tia linh thức theo bạn sang kiếp sau.';
+          ctx.fx('death');
+          return 'Bạn ngồi xếp bằng, tự tán đi công lực cả đời. Chỉ giữ lại một tia linh thức, gói vào đó những gì đã ngộ ra. Kiếp sau, nó sẽ tìm về.';
+        },
+      },
+      {
+        label: 'Truyền công cho người hữu duyên',
+        hint: 'chết ngay, một đạo hữu trên giang hồ nhận 5 phúc duyên, kiếp sau được phúc báo',
+        lean: 'chinh',
+        run: (ch, ctx) => {
+          ch.endTag = 'truyen_cong';
+          ch.truyenCong = true;
+          ch.dead = true;
+          ch.cause = 'Truyền hết công lực cho người hữu duyên rồi tọa hóa.';
+          dao(ch, 10);
+          ctx.fx('death');
+          return 'Bạn gom toàn bộ công lực thành một luồng sáng, gửi theo gió đến một người hữu duyên trên giang hồ. Người nhẹ tênh, bạn mỉm cười nhắm mắt.';
+        },
+      },
+      {
+        label: 'Gắng sống nốt những năm còn lại',
+        hint: 'không chọn gì, đợi thọ tận hoặc phi thăng kịp',
+        lean: 'trung',
+        run: () => 'Bạn chưa muốn buông. Mỗi ngày còn lại, bạn vẫn ngồi trước động phủ nhìn lên trời.',
+      },
+    ],
+  };
+}
+
 function findEvent(c: Character, id: string): GameEvent | null {
+  if (id === DAI_HAN_EVENT_ID) return daiHanEvent(c);
   if (id === PATH_EVENT_ID) return pathEvent(c);
   if (id === BREAK_EVENT_ID) return breakEvent(c);
   return EVENTS.find((e) => e.id === id) ?? null;

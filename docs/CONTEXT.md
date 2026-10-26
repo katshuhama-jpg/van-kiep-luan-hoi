@@ -498,3 +498,12 @@ Khi được yêu cầu cập nhật tài liệu:
 - **Quà phi thăng** (`ASCEND_GEAR` trong `lib/game/items2.ts`, trao trong `enterRealm` ở engine): áo khi vào cõi (mặc luôn), vũ khí ở cảnh giới 9, phụ kiện ở cảnh giới 10. Tiên: Tử Vân tiên bào, Lôi Âm tiên kiếm, Tiên tịch ngọc phù. Ma: Huyết Long ma bào, Diệt Hồn ma đao, Ma Tôn lệnh. Hư: Hư Vân đạo bào, Thái Hư xích, Tinh đồ ngọc giản. Yếu hơn đồ quái cõi đó rơi một chút.
 - **Vật phẩm Ngũ Hành Đài:** qua đài nhận Gương vỡ Vấn Tâm; qua mà chưa thua lần nào (`c.nhd.lost` rỗng) nhận thêm Ngũ Hành Viên Mãn châu (cực phẩm). Cả 11 món tính vào Bảo khố.
 - **Cảnh phi thăng** (`components/AscendScene.tsx`): khoảng 5 giây, cột sáng giáng xuống, nhân vật bay lên, nền đổi sang cõi mới; chạm để bỏ qua. Chỉ bật khi `cosmos` vừa đổi từ rỗng sang có trong lúc chơi, không bật khi mở lại bản lưu.
+
+## Sinh tử ba cõi và đại hạn Độ Kiếp (26/10)
+
+- Kết cục: 46. Thêm 12: Tọa Hóa Chuyển Thế, Truyền Công Tọa Hóa (Độ Kiếp không kịp phi thăng), Tử Trận Tiên Ma, Thiên Nhân Ngũ Suy, Lôi Phạt Tiên Thân, Trảm Tiên Đài, Tiên Thân Tan Vỡ, Ma Thể Mục Ruỗng, Tâm Ma Đoạt Xá, Bị Thôn Phệ, Hóa Thành Tinh Tú, Lạc Khe Nứt Thời Gian.
+- Cách chết ở ba cõi gắn `c.endTag` lúc chết: hết thọ (`thien_nhan_ngu_suy`/`ma_the_muc_ruong`/`hoa_tinh`), tâm ma hay kiếp nạn (`loi_phat`/`tam_ma_doat_xa`/`lac_khe_nut`), Tiên Ma đại chiến (`tu_tran`), tiên đạo tâm ≤ -20 mỗi năm 12% lên Trảm Tiên Đài (`tram_tien_dai`). Chết kiểu khác: tiên `tien_vo`, ma `bi_thon_phe`, hư `tieu_dao`. Kết cục vào cõi (Phi Thăng Tiên Giới, Ma Tôn Độ Kiếp, Tiêu Dao Thái Hư) vẫn được ghi thêm vào Sổ Sinh Tử qua `alsoEndings`.
+- 20 năm cuối đời ở ba cõi: cứ 4 năm hiện một trong 5 dấu hiệu suy tàn (`c.suy`), mỗi cõi một bộ câu riêng.
+- Bia mộ riêng: màn chết có tranh bia Tiên Trủng/Ma Trủng/Hư Trủng; nghĩa trang tô thẻ mộ theo cõi (`cosOfGrave` đoán theo tên cảnh giới).
+- Đại hạn Độ Kiếp (`DAI_HAN_EVENT_ID` trong engine): chưa phi thăng, ở Độ Kiếp, thọ còn ≤ 10 năm thì hiện một lần. Chọn tọa hóa chuyển thế (kiếp sau lời tiên tri `chuyen_the`: ngộ +20, linh căn ít nhất Địa, tâm cảnh +10) hoặc truyền công (RPC `vkl_truyen_cong`: tặng 5 phúc duyên + thư `truyen_cong` cho huynh đệ kết nghĩa hoặc một người chơi ngẫu nhiên đang chơi trong 7 ngày, tối đa 1 lần mỗi 6 giờ; kiếp sau lời tiên tri `phuc_bao`), hoặc sống tiếp.
+- Ở đỉnh (cảnh giới 11) giữ như cũ: chỉ có Chứng Đạo, thất bại chờ 30 năm.
