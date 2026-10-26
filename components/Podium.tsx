@@ -6,7 +6,7 @@ import { Sheet } from '@/components/Panels';
 import { foeChar } from '@/lib/game/duel';
 import { PATHS, realmLabel } from '@/lib/game/data';
 import type { RivalChar } from '@/lib/game/types';
-import { arenaShadow } from '@/lib/social';
+import { arenaPodiumShadow } from '@/lib/social';
 
 export interface PodiumEntry {
   username: string;
@@ -45,7 +45,7 @@ export default function Podium({ top, me }: { top: PodiumEntry[]; me?: string })
   }, []);
   useEffect(() => {
     let live = true;
-    Promise.all(three.map((t) => arenaShadow(t.username).catch(() => null))).then((x) => live && setChars(x));
+    Promise.all(three.map((t) => arenaPodiumShadow(t.username).catch(() => null))).then((x) => live && setChars(x));
     return () => {
       live = false;
     };
@@ -138,7 +138,7 @@ export default function Podium({ top, me }: { top: PodiumEntry[]; me?: string })
                   {sel.c.alive ? ' · đang sống' : ' · đã mất'}
                 </p>
               )}
-              <p className="note">Bóng xuất chiến hôm nay của người chơi này (chưa chọn thì là kiếp mạnh nhất).</p>
+              <p className="note">Bóng người chơi này đã cầm ra lôi đài gần nhất.</p>
             </div>
           </div>
         </Sheet>

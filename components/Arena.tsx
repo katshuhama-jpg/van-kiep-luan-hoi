@@ -28,6 +28,33 @@ const tierOf = (r: RivalChar) => (r.realm >= 8 ? 3 : r.realm >= 6 ? 2 : r.realm 
 const omen = (p: number) =>
   p >= 0.58 ? { name: 'Thượng cát', text: 'Quẻ tốt: bóng này khó đỡ được thế của bạn.' } : p <= 0.42 ? { name: 'Hạ hung', text: 'Quẻ xấu: bóng này có lợi thế, phải đoán thật chuẩn.' } : { name: 'Trung bình', text: 'Quẻ hòa: thắng thua nằm ở cách đoán thế.' };
 
+/** Cuộn tới một mục trên trang lôi đài */
+function jump(id: string) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/** Ba bước mỗi ngày ở lôi đài, bước đang làm sáng lên, chạm để tới đúng chỗ */
+function TodaySteps({ step, left }: { step: 1 | 2 | 3; left: number }) {
+  const steps = [
+    { n: 1, t: 'Chọn bóng', d: 'một kiếp mạnh nhất của bạn', to: 'ar-pick' },
+    { n: 2, t: 'Xin xăm', d: `rút đối thủ · còn ${left} lượt`, to: 'ar-xam' },
+    { n: 3, t: 'Ra đài', d: 'đánh 3 hiệp, thắng +3 điểm', to: 'ar-xam' },
+  ];
+  return (
+    <nav className="ar-steps" aria-label="Các bước hôm nay">
+      {steps.map((x) => (
+        <button key={x.n} className={x.n < step ? 'done' : x.n === step ? 'now' : ''} onClick={() => jump(x.to)} disabled={x.n > step}>
+          <i>{x.n < step ? '✓' : x.n}</i>
+          <span>
+            <b>{x.t}</b>
+            <small>{x.d}</small>
+          </span>
+        </button>
+      ))}
+    </nav>
+  );
+}
+
 /** Thẻ một bóng: hình, cảnh giới, con đường, bản mệnh, chỉ số */
 function ShadowCard({ r, on, onPick, small, rank, rule, vert }: { r: RivalChar; on?: boolean; onPick?: () => void; small?: boolean; rank?: number; rule?: ArenaRule; vert?: boolean }) {
   const s = foeStats(r);
@@ -410,6 +437,7 @@ export default function Arena({ user }: { user: Player | null }) {
   const left = st.me ? Math.max(0, ARENA_TURNS - st.me.used) : 0;
   return (
     <section className="arena">
+      {st.me && <TodaySteps step={!champ ? 1 : left > 0 ? 2 : 3} left={left} />}
       <Podium top={st.top} me={user?.username} />
       <RuleBanner />
       {st.me ? (
@@ -452,7 +480,7 @@ export default function Arena({ user }: { user: Player | null }) {
                   Luật hôm nay <b>{rule.name}</b>: {rule.desc} Bóng có nhãn <i className="fit-tag">Hợp luật hôm nay</i> được lợi thế.
                 </span>
               </div>
-              <div className="shadow-pick">
+              <div className="shadow-pick" id="ar-pick">
                 {cands.map((c, i) => (
                   <ShadowCard key={`${c.lifeId}-${i}`} r={c} rank={i + 1} rule={rule} vert on={pick === i} onPick={() => setPick(i)} />
                 ))}
@@ -470,11 +498,19 @@ export default function Arena({ user }: { user: Player | null }) {
                     </span>
                   </span>
                 ) : (
-                  <span className="sp-hint">Chạm vào một thẻ ở trên để chọn bóng</span>
+                  <span className="sp-hint">
+                    <b>Bước 1:</b> chọn 1 trong {cands.length} bóng làm người ra đài hôm nay
+                  </span>
                 )}
-                <button className="btn btn-red sp-go" disabled={pick === null || !!busy} onClick={lock}>
-                  {busy === 'pick' ? 'Đang triệu hồi...' : '⚔ Xuất chiến'}
-                </button>
+                {pick === null ? (
+                  <button className="btn btn-red sp-go" onClick={() => jump('ar-pick')}>
+                    Chọn bóng ↓
+                  </button>
+                ) : (
+                  <button className="btn btn-red sp-go" disabled={!!busy} onClick={lock}>
+                    {busy === 'pick' ? 'Đang triệu hồi...' : '⚔ Xuất chiến'}
+                  </button>
+                )}
               </div>
             </>
           )}
@@ -483,7 +519,7 @@ export default function Arena({ user }: { user: Player | null }) {
 
       {st.me && champ && user && (
         <>
-          <h3 className="gh-h">Xin xăm đối thủ</h3>
+          <h3 className="gh-h" id="ar-xam">Xin xăm đối thủ</h3>
           {left > 0 ? (
             <XinXam key={round} me={champ} user={user} rule={rule} left={left} onErr={setErr} onFight={(d) => setMatch({ me: champ, foe: d.foe, opp: d.opp, revenge: null })} />
           ) : (

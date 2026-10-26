@@ -321,6 +321,15 @@ export async function arenaShadow(username: string): Promise<RivalChar | null> {
   return error || !data ? null : toRival(username, data);
 }
 
+/** Hình trên bục Long Ỷ: bóng người chơi đã cầm ra đài gần nhất, không phải kiếp mạnh nhất */
+export async function arenaPodiumShadow(username: string): Promise<RivalChar | null> {
+  const sb = supabase();
+  if (!sb) return null;
+  const { data, error } = await sb.rpc('vkl_arena_podium_shadow', { p_username: username });
+  if (error) return arenaShadow(username);
+  return !data ? null : toRival(username, data);
+}
+
 export async function arenaFight2(user: Player | null, opp: string, win: boolean, detail: string, revenge: number | null): Promise<{ pts?: number; used?: number; winRun?: number; error?: string } | null> {
   const sb = supabase();
   if (!sb || !user) return null;
