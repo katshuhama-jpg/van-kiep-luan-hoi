@@ -3352,3 +3352,27 @@ a { overflow-wrap: anywhere; }
 .tt-tabs button.on { color: #ffd36b; border-color: #c9962e; background: rgba(255, 211, 107, 0.1); }
 .tt-seal { padding: 10px; border: 2px dashed #6a5a3a; text-align: center; }
 .tt-list li:not(.has) { display: block; } .tt-list li:not(.has) b { white-space: nowrap; }
+/* báo bản mới */
+.ver-card { position: fixed; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 90; width: min(360px, calc(100vw - 24px)); padding: 12px 14px; background: #f4e6c4; color: #2a1d10; border: 3px solid #2a1d10; box-shadow: 0 4px 0 #2a1d10, 0 10px 24px rgba(0, 0, 0, 0.35); }
+.ver-card b { display: block; font-size: 20px; color: #8a1a14; }
+.ver-card p { margin: 4px 0 10px; font-size: 16px; line-height: 1.35; }
+.ver-card .rel-seal.sm { width: 38px; height: 38px; font-size: 12px; }
+.ver-acts { display: flex; gap: 8px; }
+.ver-acts .btn { flex: 1; }
+.ver-chip { position: fixed; top: calc(8px + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); z-index: 90; padding: 4px 12px; font: inherit; font-size: 15px; font-weight: 700; color: #fff3dc; background: #b0201a; border: 2px solid #fff3dc; box-shadow: 0 0 0 2px #b0201a; cursor: pointer; animation: verPulse 1.6s ease-in-out infinite; }
+@keyframes verPulse { 50% { box-shadow: 0 0 0 2px #b0201a, 0 0 12px #ff7a5a; } }
+@media (prefers-reduced-motion: reduce) { .ver-chip { animation: none; } }
+.condo-presets { display: flex; flex-direction: column; gap: 4px; width: 100%; }
+.condo-chip { font: inherit; font-size: 15px; text-align: left; padding: 4px 8px; background: #fff6e0; color: #2a1d10; border: 2px solid #8a6a3a; cursor: pointer; line-height: 1.25; }
+.condo-chip:hover, .condo-chip:focus-visible { background: #ffe9b8; border-color: #2a1d10; }
+.overwork-bar { margin: 0 0 6px; padding: 5px 8px; font-size: 15px; line-height: 1.3; font-weight: 700; color: #6a3a00; background: #ffe7a8; border: 2px solid #c9962e; }
+.overwork-bar.hot { color: #fff3dc; background: #a8201a; border-color: #4a0a08; animation: owPulse 1s steps(2) infinite; }
+@keyframes owPulse { 50% { background: #d0302a; } }
+@media (prefers-reduced-motion: reduce) { .overwork-bar.hot { animation: none; } }
+.next-life { display: flex; flex-direction: column; gap: 4px; margin: 8px 0; padding: 8px 10px; background: #eef6ea; border: 2px solid #2f6b5a; }
+.next-life small { font-weight: 700; color: #2f6b5a; text-transform: uppercase; letter-spacing: 0.04em; }
+.next-life span { font-size: 16px; line-height: 1.35; }
+.next-life span::before { content: '◆ '; color: #2f6b5a; }
+.life-goal { display: block; margin: 0 0 8px; padding: 6px 10px; text-decoration: none; color: #f3e6ff; background: linear-gradient(#2a1e3a, #1e1428); border: 2px solid #c9962e; }
+.life-goal small { display: block; font-size: 13px; font-weight: 700; color: #ffd36b; letter-spacing: 0.03em; }
+.life-goal span { font-size: 16px; }

@@ -7,6 +7,7 @@ import { demoChar } from '@/lib/game/demo';
 import { REALMS, realmLabel, realmName } from '@/lib/game/data';
 import { pickStory } from '@/lib/game/miles';
 import { condolences, type Condolence } from '@/lib/social';
+import CondoPresets from './CondoPresets';
 import type { Character, Focus, Fx, FxKind, Mile, PathId } from '@/lib/game/types';
 
 /**
@@ -248,8 +249,17 @@ export default function LifeStory({
                 </ul>
               )}
               {onCondole && (
+                <CondoPresets
+                  seed={lifeId ?? 7}
+                  onPick={(b) => {
+                    onCondole(b);
+                    setCondo((x) => [{ from_player: 'bạn', body: b, created_at: new Date().toISOString() }, ...x]);
+                  }}
+                />
+              )}
+              {onCondole && (
                 <span className="condo-input">
-                  <input value={text} maxLength={120} onChange={(e) => setText(e.target.value)} placeholder="Để lại một lời viếng" aria-label="Lời viếng" />
+                  <input value={text} maxLength={120} onChange={(e) => setText(e.target.value)} placeholder="Hoặc tự viết lời viếng" aria-label="Lời viếng" />
                   <button
                     className="btn"
                     disabled={!text.trim()}

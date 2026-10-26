@@ -11,10 +11,10 @@ import { DANGER_TEXT, MONSTERS, combatLevel, dangerOf, dropFactor, monstersFor, 
 import { MonsterSprite } from './Battle';
 import { cultPct, fmt, needFor } from '@/lib/game/helpers';
 import type { Character, Focus, LogEntry, Meta, PendingEvent, Slot } from '@/lib/game/types';
-import { evalQuests, nearEndings, pickProphecy, questName } from '@/lib/game/hook';
+import { QUEST_BONUS, QUEST_REWARD, evalQuests, nearEndings, pickProphecy, questName } from '@/lib/game/hook';
 import { HIDDEN_ITEMS, collectStats, isHidden, itemHint } from '@/lib/game/collect';
 import { sectSide, rankName, rankShort } from '@/lib/game/sect';
-import { LORE2_TOTAL, LORE_TOTAL, lore1Count, lore2Count, quyNhatDone } from '@/lib/game/lore';
+import { LORE, LORE2_TOTAL, LORE_TOTAL, lore1Count, lore2Count, quyNhatDone } from '@/lib/game/lore';
 import { ELEMENTS } from '@/lib/game/nguhanh';
 import { TodayScroll } from './Hook';
 import { useAuth } from '@/lib/useAuth';
@@ -657,6 +657,18 @@ export function BeQuanSheet({ c, onGo, onClose }: { c: Character; onGo: (years: 
 }
 
 /* ---------------- Trọng tâm ---------------- */
+/** Cảnh báo quá độ nổi bật trên dock: chỉ cảnh báo, không tự đổi việc */
+export function OverworkBar({ c }: { c: Character }) {
+  const n = c.streak?.f === c.focus ? c.streak.n : 0;
+  if (n < 5 || c.dead) return null;
+  const name = FOCUS[c.focus as Focus]?.name ?? 'một việc';
+  return (
+    <p className={`overwork-bar ${n >= 6 ? 'hot' : ''}`} role="alert">
+      ⚠ {n >= 6 ? `Quá độ: đã ${n} năm liền ${name.toLowerCase()}. Mỗi năm thêm đều có thể mất mạng, hãy đổi việc khác.` : `Đã ${n} năm liền ${name.toLowerCase()}. Sang năm là quá độ, nên đổi việc khác.`}
+    </p>
+  );
+}
+
 export function FocusGrid({ c, onPick }: { c: Character; onPick: (f: Focus) => void }) {
   return (
     <div className="focus-grid" role="radiogroup" aria-label="Trọng tâm năm nay">
@@ -680,6 +692,20 @@ export function FocusGrid({ c, onPick }: { c: Character; onPick: (f: Focus) => v
         );
       })}
     </div>
+  );
+}
+
+/** Mục tiêu kiếp này: mảnh Thiên thư kế tiếp, để người mới biết nên nhắm tới đâu */
+function LifeGoal({ meta }: { meta: Meta }) {
+  const have = new Set(meta.lore ?? []);
+  const b2 = quyNhatDone(meta);
+  const f = LORE.find((x) => !have.has(x.id) && (!x.book || b2));
+  if (!f) return null;
+  return (
+    <Link href="/so-sinh-tu#thien-thu" className="life-goal">
+      <small>Mục tiêu · Thiên thư {f.title.split('.')[0]}</small>
+      <span>{f.hint}</span>
+    </Link>
   );
 }
 
@@ -723,6 +749,9 @@ export function BirthPanel({
               Bấm <b>Đầu thai</b>. Thời gian tự trôi, bạn lớn lên từng năm.
             </li>
             <li>Gặp chuyện thì chọn 1 trong 4 cách. Có cách giúp bạn mạnh lên, có cách khiến bạn chết.</li>
+            <li>
+              Mục tiêu đầu tiên: <b>sống trọn một kiếp</b> để mở trang đầu của Thiên thư, rồi <b>kết Kim Đan</b> để biết vì sao mình cứ phải luân hồi.
+            </li>
           </ol>
         </section>
       ) : (
@@ -743,6 +772,7 @@ export function BirthPanel({
         </p>
       )}
 
+      {!first && <LifeGoal meta={meta} />}
       {!first && (
         <div className="collect-strip">
           <Link href="/so-sinh-tu" onClick={onSoSinhTu} className="cs-item">
@@ -920,6 +950,32 @@ function LifeFeedback({ c }: { c: Character }) {
   );
 }
 
+/** Kiếp sau đang chờ gì: nhiệm vụ còn lại, thiên phú mua được, mảnh Thiên thư kế tiếp. Để người chơi có lý do đầu thai thêm một kiếp. */
+function NextLife({ meta, c, gain, left }: { meta: Meta; c: Character; gain: number; left: string[] }) {
+  const total = meta.phucDuyen + gain;
+  const best = [...TALENTS].filter((t) => !t.ta && t.cost <= total).sort((a, b) => b.cost - a.cost)[0];
+  const next = TALENTS.filter((t) => !t.ta && t.cost > total).sort((a, b) => a.cost - b.cost)[0];
+  const have = new Set(meta.lore ?? []);
+  const book2 = quyNhatDone(meta) || c.endTag === 'thoat_van_kiep';
+  const lore = LORE.find((f) => !have.has(f.id) && (!f.book || book2));
+  const rows: { k: string; t: string }[] = [];
+  if (left.length) rows.push({ k: 'q', t: `Còn ${left.length} nhiệm vụ hôm nay: ${left.map(questName).join(', ')} (+${QUEST_REWARD} phúc mỗi việc, xong cả ba thêm ${QUEST_BONUS})` });
+  if (best) rows.push({ k: 't', t: `Có ${total} phúc duyên: kiếp sau mua được ${best.name}${next ? `, thêm ${next.cost - total} phúc nữa là đủ ${next.name}` : ''}` });
+  else if (next) rows.push({ k: 't', t: `Thêm ${next.cost - total} phúc duyên nữa là mua được ${next.name} cho kiếp sau` });
+  if (lore) rows.push({ k: 'l', t: `Thiên thư sắp mở ${lore.title.split('.')[0]}: ${lore.hint}` });
+  if (!rows.length) return null;
+  return (
+    <div className="next-life">
+      <small>Kiếp sau đang chờ</small>
+      {rows.map((r) => (
+        <span key={r.k} className={`nl-${r.k}`}>
+          {r.t}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 export function DeathSheet({
   c,
   meta,
@@ -1011,6 +1067,7 @@ export function DeathSheet({
           Nhiệm vụ hôm nay hoàn thành: <b>{q.newly.map(questName).join(', ')}</b> (+{q.reward} phúc duyên)
         </p>
       )}
+      <NextLife meta={meta} c={c} gain={karma.phuc + q.reward} left={q.daily.quests.filter((id) => !q.daily.done.includes(id))} />
       <div className="prophecy">
         <small>Lời tiên tri cho kiếp sau</small>
         <b>“{prophecy.text}”</b>

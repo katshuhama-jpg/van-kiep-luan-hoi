@@ -99,9 +99,9 @@ const MSG: Record<string, string> = {
 };
 
 /** Bảng hành động với một người chơi: kết thân hay kết oán */
-function Actions({ api, who, onDone, onTab }: { api: GiangHoApi; who: string; onDone: (t: string) => void; onTab?: (t: Tab) => void }) {
+function Actions({ api, who, onDone, onTab, initMode = null }: { api: GiangHoApi; who: string; onDone: (t: string) => void; onTab?: (t: Tab) => void; initMode?: null | 'bounty' | 'chien' }) {
   const [note, setNote] = useState('');
-  const [mode, setMode] = useState<null | 'bounty' | 'chien'>(null);
+  const [mode, setMode] = useState<null | 'bounty' | 'chien'>(initMode);
   const [busy, setBusy] = useState(false);
   const S = SOCIAL.cur;
   const sworn = S.sworn.includes(who);
@@ -206,9 +206,11 @@ function Actions({ api, who, onDone, onTab }: { api: GiangHoApi; who: string; on
 }
 
 function MailItem({ m, api, onTab }: { m: Mail; api: GiangHoApi; onTab: (t: Tab) => void }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<false | 'reply' | 'chien'>(false);
   const [done, setDone] = useState<string | null>(null);
   const from = m.from_player;
+  // thư thắng thua, khiêu khích: mời đánh lại bằng chiến thư ngay tại chỗ
+  const duelMail = ['thang', 'thua', 'khieu', 'thach', 'doc'].includes(m.kind);
   const S = SOCIAL.cur;
   const req = m.kind === 'nghia_req' && from && S.swornReq.includes(from);
   return (
@@ -250,12 +252,17 @@ function MailItem({ m, api, onTab }: { m: Mail; api: GiangHoApi; onTab: (t: Tab)
                 Xem chiến thư
               </button>
             )}
-            <button className={`chip-btn ${open ? 'on' : ''}`} onClick={() => setOpen(!open)}>
+            {duelMail && m.kind !== 'chien_thu' && (
+              <button className={`chip-btn ${open === 'chien' ? 'on' : ''}`} onClick={() => setOpen(open === 'chien' ? false : 'chien')}>
+                📜 Gửi chiến thư
+              </button>
+            )}
+            <button className={`chip-btn ${open === 'reply' ? 'on' : ''}`} onClick={() => setOpen(open === 'reply' ? false : 'reply')}>
               Hồi âm ▾
             </button>
           </span>
         )}
-        {open && from && !done && <Actions api={api} who={from} onDone={setDone} onTab={onTab} />}
+        {open && from && !done && <Actions key={open} api={api} who={from} onDone={setDone} onTab={onTab} initMode={open === 'chien' ? 'chien' : null} />}
         {done && <small className="mail-done">{done}</small>}
       </span>
     </li>

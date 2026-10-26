@@ -266,6 +266,13 @@ export const ENDINGS: Ending[] = [
     rare: 1,
     test: (c) => c.endTag === 'be_quan',
   },
+  // ---- chết vì quái, thay cho kết cục chung chung ----
+  { id: 'tho_yeu', name: 'Chết Dưới Răng Thỏ', desc: 'Cả giang hồ cười suốt ba ngày. Một con thỏ yêu mới khai linh trí đã tiễn bạn đi.', hint: 'Đừng coi thường thứ gì ở bãi cỏ đầu làng.', rare: 2, test: (c) => c.endTag === 'tho_yeu' },
+  { id: 'thi_luyen', name: 'Bỏ Mạng Thí Luyện', desc: 'Vào bí cảnh thí luyện của tông môn mà không trở ra. Sư môn chỉ nhận về một tấm lệnh bài vỡ.', hint: 'Bí cảnh tông môn không phải chỗ để đùa.', how: 'Đã bái nhập tông môn, chết khi đánh quái thí luyện của môn phái.', rare: 1, test: (c) => c.endTag === 'thi_luyen' },
+  { id: 'dao_giang_ho', name: 'Chết Dưới Đao Giang Hồ', desc: 'Không phải yêu ma, mà là người. Giang hồ hiểm ác, một nhát đao trong đêm là hết.', hint: 'Người còn đáng sợ hơn yêu.', how: 'Chết khi giao đấu với thích khách, đạo tặc, tà tu khi trừ yêu.', rare: 1, test: (c) => c.endTag === 'dao_giang_ho' },
+  { id: 'khinh_dich', name: 'Khinh Địch Mất Mạng', desc: 'Con quái ấy vốn không mạnh hơn bạn. Chỉ là bạn chủ quan đúng một lần.', hint: 'Dễ, chưa chắc đã an toàn.', how: 'Chết dưới tay một con quái dễ hoặc vừa sức.', rare: 1, test: (c) => c.endTag === 'khinh_dich' },
+  { id: 'tu_dia', name: 'Liều Mình Vào Tử Địa', desc: 'Biết là nguy hiểm mà vẫn bước vào. Người đời gọi là gan dạ, hoặc là ngốc.', hint: 'Có những nơi ghi rõ hai chữ Tử Địa.', how: 'Chết khi đánh một con quái nguy hiểm hoặc tử địa.', rare: 1, test: (c) => c.endTag === 'tu_dia' },
+
   {
     id: 'thien_kiep',
     name: 'Tro Bụi Dưới Thiên Kiếp',
@@ -294,7 +301,21 @@ export const ENDINGS: Ending[] = [
     test: (c) => c.linhThach <= 5 && c.age >= 16 && c.stats.sucKhoe <= 5,
   },
   { id: 'chet_yeu', name: 'Yểu Mệnh', desc: 'Ra đi khi còn chưa kịp lớn.', hint: 'Trẻ con cũng có thể chết.', how: 'Chết trước 13 tuổi.', rare: 0, test: (c) => c.age < 13 },
+  // ---- chết vì hiểm cảnh: chia nhóm theo nguyên nhân thay cho kết cục chung chung ----
+  { id: 'xa_than', name: 'Xả Thân Cứu Người', desc: 'Lúc nguy nan, bạn không chạy mà quay lại cứu người. Có người sống được nhờ bạn.', hint: 'Có những cái chết đáng giá.', how: 'Chết khi đang cứu người khác trong hiểm cảnh.', rare: 2, test: (c) => !c.cosmos && /cứu được|đẩy được|che cho|đỡ thay|nhiễm (ôn )?dịch/i.test(c.cause ?? '') },
+  { id: 'trung_doc', name: 'Độc Phát Thân Vong', desc: 'Một chén canh, một cây nấm, một mũi ám khí. Thuốc độc không cần tu vi cũng giết được người.', hint: 'Cẩn thận với thứ mình ăn uống.', how: 'Chết vì trúng độc.', rare: 1, test: (c) => !c.cosmos && /độc|Đoạn Trường|nấm|bước thứ bảy/i.test(c.cause ?? '') },
+  { id: 'loan_dao', name: 'Chết Dưới Loạn Đao', desc: 'Đao phủ, sát thủ, cường đạo. Bạn ngã xuống giữa một trận chém giết mà mình không chọn.', hint: 'Giang hồ đâu chỉ có yêu ma.', how: 'Chết vì đao kiếm của người trong hiểm cảnh.', rare: 1, test: (c) => !c.cosmos && /đao|chém|đâm|ám sát|đánh hội đồng|xông lên/i.test(c.cause ?? '') },
+  { id: 'hiem_dia', name: 'Vùi Thân Hiểm Địa', desc: 'Vực sâu, đá lở, cấm chế cổ, nhà sập. Trời đất muốn giữ ai lại thì người đó không đi được.', hint: 'Có nơi chưa ai trở ra.', how: 'Chết vì rơi vực, đá lở, cấm chế, nhà sập hay rơi khi ngự khí.', rare: 1, test: (c) => !c.cosmos && /vực|đá lở|cấm chế|sập|rơi giữa chừng|tro bụi giữa/i.test(c.cause ?? '') },
+  { id: 'moi_yeu_thu', name: 'Làm Mồi Yêu Thú', desc: 'Không phải trận chiến nào cũng có hồi kết đẹp. Có khi chỉ là một bữa no của yêu thú.', hint: 'Nó không hiểu tiếng người.', how: 'Bị yêu thú ăn thịt trong hiểm cảnh.', rare: 1, test: (c) => !c.cosmos && /bữa tối|nuốt|mãng xà|cắn xé|xác khô/i.test(c.cause ?? '') },
   {
+    id: 'anh_tai',
+    name: 'Anh Tài Yểu Mệnh',
+    desc: 'Chưa tới ba mươi lăm đã đạt Trúc Cơ, ai cũng bảo tiền đồ vô lượng. Trời ghen người tài.',
+    hint: 'Tài cao mệnh bạc.',
+    how: 'Đạt Trúc Cơ trở lên rồi chết trước 35 tuổi vì hiểm cảnh.',
+    rare: 1,
+    test: (c) => c.age < 35 && c.realm >= 2 && !c.cosmos,
+  },  {
     id: 'tho_tan',
     name: 'Thọ Chung Chính Tẩm',
     desc: 'Thọ nguyên cạn, ra đi thanh thản.',

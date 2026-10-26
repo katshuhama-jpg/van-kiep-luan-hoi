@@ -531,3 +531,10 @@ Khi được yêu cầu cập nhật tài liệu:
 - File `lib/game/cosmosEnds.ts`: 10 sự kiện `end_*`, mỗi sự kiện dẫn tới một kết cục (đặt trước `dai_la` trong `ENDINGS`). Mỗi kiếp chỉ 30% có duyên gặp từng sự kiện (`fated`, băm theo `lookSeed` + `lifeNo`, hằng `FATE`).
 - Tiên: `ha_pham` (có đạo lữ), `thu_mon` (cảnh giới 9+, giữ cổng tử trận 50%), `hoa_chu` (10+), `thien_de` (11, đạo tâm ≥40). Ma: `hoa_huyet_hai` (10+), `buong_dao` (đạo tâm ≥0), `tam_phuc` (9+, rượu độc 45%). Hư (bí ẩn, không có `how`): `vo_danh` (bán tên, cờ `qf.voDanh`, ghi đè cái chết khác ở Thái Hư), `ve_tuoi_tho` (9+), `hoang_luong` (10+).
 - `alsoEndings` ghi thêm `dai_la` / `ma_de` / `hon_nguyen` khi chết ở cảnh giới 11 theo kết cục khác.
+
+## Cải thiện theo hành vi người chơi (26/10 chiều, không ghi vào cáo thị)
+- **Báo bản mới:** `next.config.mjs` gắn `NEXT_PUBLIC_BUILD` (commit SHA trên Vercel); `app/api/version` trả mã build của máy chủ; `components/VersionWatch.tsx` (trong `layout.tsx`) hỏi mỗi 3 phút và khi quay lại tab. Khác mã thì hiện thẻ "Thiên đạo đổi thay · Tải lại"; đang giữa kiếp (`document.body.dataset.busy = '1'` do `/choi` đặt) thì chỉ hiện nút nhỏ "↻ Bản mới". Lý do: logic game chạy trên trình duyệt, tab mở lâu chạy code cũ.
+- **Lời viếng mẫu:** `components/CondoPresets.tsx`, bấm một lần là gửi (nghĩa trang và hồi ký). **Chiến thư:** thư thắng, thua, khiêu khích, thách đấu, ám toán có nút "📜 Gửi chiến thư" (mở thẳng phần cược).
+- **Kết cục thay cho `bat_dac`:** chết vì quái gắn `endTag` trong `loseFight` (`tho_yeu`, `thi_luyen`, `dao_giang_ho`, `khinh_dich`, `tu_dia`); chết vì hiểm cảnh chia theo nguyên nhân bằng regex (`xa_than`, `trung_doc`, `loan_dao`, `hiem_dia`, `moi_yeu_thu`); `anh_tai` (Trúc Cơ trở lên, chết trước 35). Mô phỏng: `bat_dac` từ 49% xuống 18% (chưa tính chết vì quái).
+- **Quá độ:** `OverworkBar` trên dock từ năm thứ 5 làm một việc (vàng), từ năm thứ 6 đỏ nhấp nháy. Vẫn chỉ cảnh báo, không tự đổi việc.
+- **Giữ chân:** `LifeGoal` trên màn đầu thai (mảnh Thiên thư kế tiếp); `NextLife` trong bảng tử vong (nhiệm vụ còn lại, thiên phú mua được, mảnh Thiên thư sắp mở); hướng dẫn kiếp đầu có mục tiêu.

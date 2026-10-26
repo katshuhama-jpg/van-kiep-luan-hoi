@@ -1,4 +1,5 @@
 import { NavTracker } from '@/components/BackButton';
+import VersionWatch from '@/components/VersionWatch';
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
@@ -26,6 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <NavTracker />
         {children}
+        <VersionWatch />
       </body>
     </html>
   );

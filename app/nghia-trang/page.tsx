@@ -9,6 +9,7 @@ import { useAuth } from '@/lib/useAuth';
 import { RelChips } from '@/components/GiangHo';
 import { SOCIAL, type SocialState } from '@/lib/game/social';
 import { condolenceAdd, condolenceCounts, loadSocial } from '@/lib/social';
+import CondoPresets from '@/components/CondoPresets';
 import type { Player } from '@/lib/auth';
 import { cosOfGrave, endingOfGrave } from '@/lib/game/collect';
 import { RARE_COLOR } from '@/lib/game/endings';
@@ -82,8 +83,17 @@ function Tomb({
         Thắp hương · {m.incense}
       </button>
       {writing && (
+        <CondoPresets
+          seed={m.id}
+          onPick={(b) => {
+            onCondole(b);
+            setWriting(false);
+          }}
+        />
+      )}
+      {writing && (
         <span className="condo-input">
-          <input autoFocus value={text} maxLength={120} onChange={(e) => setText(e.target.value)} placeholder="Để lại một lời viếng" aria-label={`Lời viếng cho ${m.char_name}`} />
+          <input autoFocus value={text} maxLength={120} onChange={(e) => setText(e.target.value)} placeholder="Hoặc tự viết lời viếng" aria-label={`Lời viếng cho ${m.char_name}`} />
           <button
             className="btn"
             disabled={!text.trim()}

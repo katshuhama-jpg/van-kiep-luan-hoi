@@ -795,6 +795,9 @@ export function loseFight(c: Character, m: Monster, ctx: EffectCtx): string {
   }
   const d = dangerOf(c, m);
   const f = fatal(c, ctx, d === 'de' || d === 'vua' ? 0.5 : 0.85, `Bạn bị ${m.name} giết chết ở ${m.place}, thi thể không còn nguyên vẹn.`);
+  // kết cục riêng khi chết vì quái (ở ba cõi đã có kết cục của cõi)
+  if (c.dead && !c.cosmos && !c.endTag)
+    c.endTag = m.id === 'tho_yeu' ? 'tho_yeu' : m.sect ? 'thi_luyen' : m.human ? 'dao_giang_ho' : d === 'de' || d === 'vua' ? 'khinh_dich' : 'tu_dia';
   if (c.dead) return `Trừ yêu thất bại.${f}`;
   stat(c, 'sucKhoe', -35);
   return `Bạn thua ${m.name}, lết được về nhà, trọng thương.${f ?? ''}`;

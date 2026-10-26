@@ -7,7 +7,7 @@ import MusicToggle from '@/components/MusicToggle';
 import { TribulationOverlay, Tutorial } from '@/components/Extras';
 import { BREAK_EVENT_ID } from '@/lib/game/events';
 import { alsoEndings, endingOf } from '@/lib/game/endings';
-import { BagSheet, BaoKhoSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, HuntSheet, LogPanel, SEASONS, ShopSheet, Sheet, StageStrip, StatsPanel } from '@/components/Panels';
+import { BagSheet, BaoKhoSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, HuntSheet, LogPanel, OverworkBar, SEASONS, ShopSheet, Sheet, StageStrip, StatsPanel } from '@/components/Panels';
 import Radar, { charAxes, wealthScore } from '@/components/Radar';
 import { giftOf } from '@/lib/game/gacha';
 import type { BattleView } from '@/components/Battle';
@@ -189,6 +189,14 @@ export default function PlayPage() {
       cancel = true;
     };
   }, [ready, user?.token]);
+
+  // đang giữa kiếp: báo bản mới chỉ hiện nút nhỏ, không chen ngang
+  useEffect(() => {
+    document.body.dataset.busy = phase === 'play' ? '1' : '';
+    return () => {
+      document.body.dataset.busy = '';
+    };
+  }, [phase]);
 
   // vào màn chơi thì kiểm tra ngay đồ ẩn mới (Bảo khố)
   useEffect(() => {
@@ -1474,6 +1482,7 @@ export default function PlayPage() {
           <EventCard p={pending} onChoose={choose} />
         ) : (
           <div className="dock-inner">
+            <OverworkBar c={c} />
             <FocusGrid c={c} onPick={pickFocus} />
             <div className="dock-actions">
               <button className="btn btn-dark" onClick={() => setSheet('shop')} disabled={c.dead}>
