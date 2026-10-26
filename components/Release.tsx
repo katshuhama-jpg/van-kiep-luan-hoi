@@ -69,3 +69,36 @@ export default function ReleaseNotice({ onClose }: { onClose: (v: string) => voi
     </div>
   );
 }
+
+/** Quà Thiên Đạo (phúc duyên) vừa lĩnh: hiện một lần ngay khi nhận */
+export function GiftNotice({ gifts, onClose }: { gifts: { amount: number; note: string }[]; onClose: () => void }) {
+  const total = gifts.reduce((a, g) => a + g.amount, 0);
+  return (
+    <div className="rel-wrap" role="dialog" aria-modal="true" aria-labelledby="gift-title">
+      <div className="rel-scroll">
+        <i className="rod" aria-hidden="true" />
+        <div className="rel-body gift-body">
+          <span className="rel-seal" aria-hidden="true">
+            Thiên
+            <br />
+            Đạo
+          </span>
+          <p className="rel-kick">Thiên Đạo ban thưởng</p>
+          <h2 id="gift-title">+{total} phúc duyên</h2>
+          {gifts.map((g, i) => (
+            <p key={i} className="rel-intro">
+              {g.note}
+            </p>
+          ))}
+          <p className="gift-hint">Phúc duyên theo bạn qua mọi kiếp, dùng để chọn thiên phú khi đầu thai. Thư của Thiên Đạo đã gửi vào Hộp thư giang hồ.</p>
+          <div className="rel-acts">
+            <button className="btn btn-red btn-big" onClick={onClose}>
+              Đa tạ Thiên Đạo
+            </button>
+          </div>
+        </div>
+        <i className="rod" aria-hidden="true" />
+      </div>
+    </div>
+  );
+}

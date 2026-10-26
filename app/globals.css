@@ -3262,3 +3262,7 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .fb-reply-link { font-size: 14px; color: #8a1a1a; }
 .mail.k-thien_dao { background: #fff6dc; border-left: 4px solid #c9962e; }
 .mail.k-thien_dao .mail-ic { color: #c9962e; }
+
+.gift-body h2 { font-size: 34px; }
+.gift-hint { margin: 6px 0 0; font-size: 14px; line-height: 1.4; color: #6a4a2a; }
+.gift-body .rel-seal { font-size: 11px; line-height: 1.05; text-align: center; }
