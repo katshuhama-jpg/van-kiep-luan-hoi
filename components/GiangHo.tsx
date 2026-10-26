@@ -58,6 +58,7 @@ const KIND_ICON: Record<string, string> = {
   hoa_giai: '☯',
   truy_na: '☠',
   chien_thu: '📜',
+  loi_dai: '🏯',
   vieng: '🕯',
   thien_dao: '✦',
   truyen_cong: '☯',
@@ -210,7 +211,7 @@ function MailItem({ m, api, onTab }: { m: Mail; api: GiangHoApi; onTab: (t: Tab)
   const [done, setDone] = useState<string | null>(null);
   const from = m.from_player;
   // thư thắng thua, khiêu khích: mời đánh lại bằng chiến thư ngay tại chỗ
-  const duelMail = ['thang', 'thua', 'khieu', 'thach', 'doc'].includes(m.kind);
+  const duelMail = ['thang', 'thua', 'khieu', 'thach', 'doc', 'loi_dai'].includes(m.kind);
   const S = SOCIAL.cur;
   const req = m.kind === 'nghia_req' && from && S.swornReq.includes(from);
   return (

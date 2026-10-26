@@ -21,6 +21,7 @@ export interface LoreSocial {
   truyen: number; // lần truyền công hoặc được truyền công
   vieng: number; // mộ người khác đã viếng
   chien: number; // trận chiến thư đã đánh xong
+  loi_dai?: number; // trận lôi đài đã thắng
 }
 
 const nEnd = (m: Meta) => Object.keys(m.endings ?? {}).length;
@@ -132,10 +133,10 @@ export const LORE: LoreFragment[] = [
   {
     id: 'chien_thu',
     book: 2,
-    title: 'XV. Chiến thư',
-    hint: 'Đánh xong một trận chiến thư với người chơi khác.',
+    title: 'XV. Lôi đài',
+    hint: 'Thắng 3 trận lôi đài (hoặc đánh xong một trận chiến thư).',
     text: 'Kiếm chạm kiếm, bạn nghe thấy tiếng chuông vang ngay giữa hai lưỡi thép. Có kẻ muốn các mảnh đánh nhau, muốn các mảnh mãi không ghép lại được. Đối thủ hạ kiếm trước: "Ngươi cũng nghe thấy, đúng không?"',
-    check: (_m, _c, _k, s) => (s?.chien ?? 0) >= 1,
+    check: (_m, _c, _k, s) => (s?.chien ?? 0) >= 1 || (s?.loi_dai ?? 0) >= 3,
   },
   {
     id: 'ba_coi',

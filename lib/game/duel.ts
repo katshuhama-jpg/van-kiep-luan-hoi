@@ -76,25 +76,24 @@ export function foeChar(r: RivalChar): Character {
 export function foeStats(r: RivalChar, me?: Character): Fighter {
   const s = playerStats(foeChar(r));
   if (!me) return s;
-  // luân hồi nhiều kiếp hơn thì kinh nghiệm chiến đấu dày hơn: công và thủ theo hệ số kiếp
-  const m = lifeMul(r.lifeNo ?? 1, me.lifeNo);
+  // Luân Hồi Đạo: bên luân hồi nhiều hơn thì hồn mòn hơn (quy hết về chỉ số của đối thủ cho gọn)
+  const m = lifeMul(r.lifeNo ?? 1, me.lifeNo) / lifeMul(me.lifeNo, r.lifeNo ?? 1);
   return { ...s, atk: Math.round(s.atk * m), def: Math.round(s.def * m) };
 }
 
 /**
- * Hệ số kiếp: đối thủ hơn mỗi kiếp +3% công và thủ, tối đa +30%;
- * kém mỗi kiếp -3%, tối đa -20%.
+ * Luân Hồi Đạo (3.0.0): luân hồi nhiều không còn là lợi thế. Kẻ đã đầu thai nhiều hơn thì hồn phách mòn hơn:
+ * mỗi kiếp chênh lệch -1,5% công và thủ, tối đa -15%. Bên ít kiếp hơn không được cộng gì.
  */
 export function lifeMul(foeLife: number, myLife: number): number {
   const d = foeLife - myLife;
-  return 1 + Math.max(-0.2, Math.min(0.3, d * 0.03));
+  return d > 0 ? 1 - Math.min(0.15, d * 0.015) : 1;
 }
 
 export function lifeText(foeLife: number, myLife: number): { text: string; tone: 'good' | 'bad' | 'normal' } {
   const d = foeLife - myLife;
-  const pct = Math.round((lifeMul(foeLife, myLife) - 1) * 100);
-  if (d > 0) return { text: `Đối thủ luân hồi nhiều hơn bạn ${d} kiếp, kinh nghiệm dày hơn: công và thủ +${pct}%.`, tone: 'bad' };
-  if (d < 0) return { text: `Bạn luân hồi nhiều hơn ${-d} kiếp, nhìn thấu chiêu thức: đối thủ công và thủ ${pct}%.`, tone: 'good' };
+  if (d > 0) return { text: `Đối thủ luân hồi nhiều hơn bạn ${d} kiếp, hồn phách đã mòn: công và thủ ${Math.round((lifeMul(foeLife, myLife) - 1) * 100)}%.`, tone: 'good' };
+  if (d < 0) return { text: `Bạn luân hồi nhiều hơn ${-d} kiếp, hồn phách đã mòn: công và thủ ${Math.round((lifeMul(myLife, foeLife) - 1) * 100)}%.`, tone: 'bad' };
   return { text: 'Cùng số kiếp luân hồi, không ai hơn ai.', tone: 'normal' };
 }
 

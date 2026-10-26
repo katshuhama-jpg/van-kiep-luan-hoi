@@ -58,6 +58,8 @@ export function stat(c: Character, key: keyof Stats, delta: number) {
   if (key === 'tamMa' && delta > 0 && c.daoTam <= -40) delta *= 0.7;
   if (key === 'tamMa' && delta > 0 && omenIs('phat_quang')) delta *= 0.6;
   if (key === 'tamMa' && delta > 0 && c.maKien) delta *= 0.65;
+  // Kiếp Số 10: tâm ma dâng nhanh hơn
+  if (key === 'tamMa' && delta > 0 && (c.kiepSo ?? 0) >= 10) delta *= 1.2;
   // càng cao càng khó lên: khí vận, tâm cảnh, ngộ tính trên 80 chỉ tăng nửa
   if (delta > 0 && key !== 'tamMa' && key !== 'sucKhoe' && c.stats[key] >= 80) delta *= 0.5;
   c.stats[key] = clamp(Math.round(c.stats[key] + delta), 0, 100);
@@ -91,7 +93,7 @@ export function addCult(c: Character, amount: number) {
       c.cgY = y;
       c.cgN = 0;
     }
-    const room = Math.max(0, needFor(c) / (c.realm >= 11 ? COSMOS_YEARS_TOP : COSMOS_YEARS_PER_LAYER) - (c.cgN ?? 0));
+    const room = Math.max(0, needFor(c) / ((c.realm >= 11 ? COSMOS_YEARS_TOP : COSMOS_YEARS_PER_LAYER) + ((c.kiepSo ?? 0) >= 8 ? 2 : 0)) - (c.cgN ?? 0));
     amount = Math.min(amount, room);
     c.cgN = (c.cgN ?? 0) + amount;
   }

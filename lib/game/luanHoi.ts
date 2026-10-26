@@ -1,0 +1,148 @@
+import type { Character, Meta } from './types';
+
+/**
+ * Luân Hồi Đạo (bản 3.0.0): làm cho việc chết nhiều không còn là lợi thế.
+ * - Kiếp Số: tài khoản càng nhiều thành tích, Thiên đạo càng để mắt. Mỗi bậc khó hơn nhưng thưởng nhiều hơn.
+ * - Hồn lực: linh hồn hao mòn mỗi lần đầu thai, hồi theo giờ thật. Đầu thai dồn dập thì sinh ra yếu.
+ * - Chén canh Mạnh Bà: uống thì quên (mất thần binh, rương), được tĩnh tâm hạ Kiếp Số; không uống thì nghiệp dồn lại.
+ * - Kiếp tích: người Kiếp Số thấp chết ở Độ Kiếp thì kiếp sau đột phá dễ hơn.
+ */
+
+export const KS_MAX = 10;
+/** Từ kiếp thứ mấy thì Hồn lực và chén canh Mạnh Bà bắt đầu có hiệu lực */
+export const LH_FROM_LIFE = 15;
+
+const BOOK2 = ['chuong_11', 'manh_khac', 'truyen_cong', 'loi_vieng', 'chien_thu', 'ba_coi', 'guong_lanh', 'so_day', 'ke_go_chuong', 'chuong_vo'];
+const BOOK1 = ['chuong', 'mat', 'kim_dan', 'so_sinh_tu', 'an_oan', 'hoa_than', 'phi_thang', 'hai_duong', 'nua_so', 'dinh'];
+
+export interface KsPart {
+  label: string;
+  pts: number;
+  max: number;
+}
+
+/** Kiếp Số gốc: chỉ tăng, tính từ thành tích của tài khoản */
+export function ksParts(m: Meta | null | undefined): KsPart[] {
+  if (!m) return [];
+  const lore = new Set(m.lore ?? []);
+  const b1 = BOOK1.every((id) => lore.has(id));
+  const b2 = BOOK2.filter((id) => lore.has(id)).length;
+  const k = m.career;
+  const e = m.endings ?? {};
+  return [
+    { label: 'Mỗi 15 kiếp đã sống', pts: Math.min(3, Math.floor((m.lives ?? 0) / 15)), max: 3 },
+    { label: 'Gom đủ Thiên thư Quyển I', pts: b1 ? 1 : 0, max: 1 },
+    { label: 'Mỗi 3 mảnh Thiên thư Quyển II', pts: Math.min(3, Math.floor(b2 / 3)), max: 3 },
+    { label: 'Từng phi thăng', pts: (k?.ascPaths?.length ?? 0) > 0 || (k?.maxRealm ?? 0) >= 8 ? 1 : 0, max: 1 },
+    { label: 'Từng tới cảnh giới cuối của một cõi', pts: (k?.maxRealm ?? 0) >= 11 ? 1 : 0, max: 1 },
+    { label: 'Từng Chứng Đạo', pts: e.chung_dao ? 1 : 0, max: 1 },
+  ];
+}
+
+export const ksBase = (m: Meta | null | undefined) => Math.min(KS_MAX, ksParts(m).reduce((a, p) => a + p.pts, 0));
+/** Kiếp Số hiệu lực: trừ đi tĩnh tâm do uống canh Mạnh Bà */
+export const ksOf = (m: Meta | null | undefined) => Math.max(0, ksBase(m) - (m?.tinhTam ?? 0));
+
+/** Điều khó của từng bậc (cộng dồn) */
+export const KS_TIERS: { lv: number; hard: string }[] = [
+  { lv: 1, hard: 'Thiên kiếp nặng hơn: đột phá khó hơn 4%' },
+  { lv: 2, hard: 'Thần binh truyền kiếp mỗi đời chỉ thêm 6% công (thay vì 8%)' },
+  { lv: 3, hard: 'Bóng ở Ngũ Hành Đài mạnh thêm 5%' },
+  { lv: 4, hard: 'Quái hung hơn 10%' },
+  { lv: 5, hard: 'Mỗi kiếp chỉ mua được một thiên phú lớn (Tiên cốt hoặc Thiên mệnh)' },
+  { lv: 6, hard: 'Thiên kiếp nặng thêm: đột phá khó hơn 8%' },
+  { lv: 7, hard: 'Bóng ở Ngũ Hành Đài mạnh thêm 5% (tổng 10%)' },
+  { lv: 8, hard: 'Sau phi thăng, mỗi tầng chậm thêm 2 năm' },
+  { lv: 9, hard: 'Kẻ Gõ Chuông khó đỡ hơn' },
+  { lv: 10, hard: 'Tâm ma dâng nhanh hơn 20%' },
+];
+
+/** Tên gọi từng bậc, cho có vị kiếm hiệp */
+export const KS_NAME = ['Vô danh', 'Lộ diện', 'Có tiếng', 'Thành danh', 'Kinh động', 'Chấn động', 'Thiên đạo chú ý', 'Thiên đạo kiêng dè', 'Thiên đạo truy xét', 'Nghịch thiên', 'Vạn kiếp bất diệt'];
+
+// ---------- Hiệu ứng lên nhân vật (đọc c.kiepSo, đặt lúc đầu thai) ----------
+const ks = (c: Character) => c.kiepSo ?? 0;
+/** Đột phá khó hơn theo bậc, cộng với kiếp tích */
+export const ksBreak = (c: Character) => (ks(c) >= 6 ? -0.08 : ks(c) >= 1 ? -0.04 : 0) + (c.kiepTich ?? 0) * 0.05;
+export const ksLegendPer = (c: Character) => (ks(c) >= 2 ? 0.06 : 0.08);
+export const ksMirror = (c: Character) => 1 + (ks(c) >= 7 ? 0.1 : ks(c) >= 3 ? 0.05 : 0);
+export const ksMonster = (c: Character | null | undefined) => (c && ks(c) >= 4 ? 1.1 : 1);
+export const ksOneBig = (n: number) => n >= 5;
+export const ksCosmosYears = (c: Character) => (ks(c) >= 8 ? 2 : 0);
+export const ksBell = (c: Character) => (ks(c) >= 9 ? -0.1 : 0);
+export const ksTamMa = (c: Character) => (ks(c) >= 10 ? 1.2 : 1);
+/** Phần thưởng: phúc duyên và đồ rơi */
+export const ksPhuc = (c: Character) => 1 + ks(c) * 0.05;
+export const ksDrop = (c: Character | null | undefined) => 1 + (c ? ks(c) : 0) * 0.03;
+export const BIG_TALENTS = ['tien_cot', 'thien_menh'];
+
+// ---------- Hồn lực ----------
+export const HON_MAX = 100;
+export const HON_COST = 15;
+export const HON_REGEN = 10; // mỗi giờ
+const HOUR = 3600_000;
+
+export function honNow(m: Meta | null | undefined, now: number): number {
+  const h = m?.hon;
+  if (!h) return HON_MAX;
+  return Math.min(HON_MAX, h.v + Math.max(0, (now - h.at) / HOUR) * HON_REGEN);
+}
+/** Số giờ tới khi hồi đầy */
+export const honFullIn = (v: number) => Math.max(0, Math.ceil(((HON_MAX - v) / HON_REGEN) * 10) / 10);
+export const honActive = (m: Meta | null | undefined) => (m?.lives ?? 0) + 1 >= LH_FROM_LIFE;
+
+export type HonState = 'ven' | 'moi' | 'khuyet' | 'tan';
+export const honState = (v: number): HonState => (v >= 70 ? 'ven' : v >= 40 ? 'moi' : v >= 20 ? 'khuyet' : 'tan');
+export const HON_TEXT: Record<HonState, { name: string; fx: string; log: string }> = {
+  ven: { name: 'Hồn vẹn', fx: 'Bình thường', log: '' },
+  moi: { name: 'Hồn mỏi', fx: 'Ngộ tính -5, khí vận -5', log: 'Hồn phách còn mỏi sau lần luân hồi trước. Đứa trẻ sinh ra hay ngẩn ngơ.' },
+  khuyet: { name: 'Hồn khuyết', fx: 'Linh căn -10%, ngộ tính -10, khí vận -10, tâm ma +10', log: 'Hồn phách chưa lành đã vội đầu thai. Đứa trẻ sinh ra yếu ớt, đêm hay giật mình.' },
+  tan: { name: 'Hồn tàn', fx: 'Linh căn -20%, thọ nguyên -10%, tâm ma +20', log: 'Hồn phách rách nát vì luân hồi quá dồn dập. Bà đỡ lắc đầu: "Đứa nhỏ này mang hồn già."' },
+};
+
+/** Áp trạng thái hồn lên đứa trẻ vừa sinh */
+export function applyHon(c: Character, v: number, fullRest: boolean) {
+  const s = honState(v);
+  const cl = (k: keyof Character['stats'], d: number) => (c.stats[k] = Math.max(0, Math.min(100, c.stats[k] + d)));
+  if (s === 'moi') {
+    cl('ngoTinh', -5);
+    cl('khiVan', -5);
+  } else if (s === 'khuyet') {
+    c.linhCanMul = Math.round(c.linhCanMul * 0.9 * 100) / 100;
+    cl('ngoTinh', -10);
+    cl('khiVan', -10);
+    cl('tamMa', 10);
+  } else if (s === 'tan') {
+    c.linhCanMul = Math.round(c.linhCanMul * 0.8 * 100) / 100;
+    c.lifespan = Math.round(c.lifespan * 0.9);
+    cl('tamMa', 20);
+  }
+  if (HON_TEXT[s].log) c.log.push({ age: 0, tone: 'bad', text: `${HON_TEXT[s].name}. ${HON_TEXT[s].log}` });
+  if (fullRest && s === 'ven') {
+    cl('khiVan', 5);
+    c.log.push({ age: 0, tone: 'good', text: 'Hồn viên mãn: linh hồn đã nghỉ ngơi đủ lâu trước khi đầu thai. Khí vận +5.' });
+  }
+}
+
+// ---------- Chén canh Mạnh Bà ----------
+export const TINH_TAM_MAX = 3;
+export const CAU_HON_AT = 5; // không uống bao nhiêu lần liên tiếp thì bị Câu hồn sứ giả truy
+
+/** Cập nhật hồ sơ theo lựa chọn ở cầu Nại Hà. Trả về hồ sơ mới. */
+export function manhBa(m: Meta, drink: boolean): Meta {
+  if (drink) {
+    return { ...m, legend: null, stash: null, tinhTam: Math.min(TINH_TAM_MAX, (m.tinhTam ?? 0) + 1), noDrink: 0, ttDecay: 0 };
+  }
+  const nd = (m.noDrink ?? 0) + 1;
+  const dec = (m.ttDecay ?? 0) + 1;
+  // tĩnh tâm tự phai sau mỗi 2 kiếp không uống
+  const fade = dec >= 2 && (m.tinhTam ?? 0) > 0;
+  return { ...m, noDrink: nd, ttDecay: fade ? 0 : dec, tinhTam: fade ? (m.tinhTam ?? 0) - 1 : m.tinhTam };
+}
+
+/** Kiếp tích: chỉ người Kiếp Số hiệu lực từ 2 trở xuống, chết ở Độ Kiếp mà chưa phi thăng */
+export function nextKiepTich(m: Meta, c: Character): number {
+  if (c.ascended || c.cosmos) return 0;
+  if (c.realm === 7 && ksOf(m) <= 2) return Math.min(3, (m.kiepTich ?? 0) + 1);
+  return m.kiepTich ?? 0;
+}

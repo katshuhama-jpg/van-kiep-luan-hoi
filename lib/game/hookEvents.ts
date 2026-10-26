@@ -59,7 +59,7 @@ export const HOOK_EVENTS: GameEvent[] = [
         hint: 'tâm cảnh, khí vận càng cao càng dễ thắng · thua có thể chết',
         lean: 'chinh',
         run: (c, ctx) => {
-          const p = Math.min(0.7, 0.15 + (c.stats.tamCanh / 100) * 0.3 + (c.stats.khiVan / 100) * 0.15 + (c.lore2 ?? 0) * 0.02);
+          const p = Math.min(0.7, 0.15 + (c.stats.tamCanh / 100) * 0.3 + (c.stats.khiVan / 100) * 0.15 + (c.lore2 ?? 0) * 0.02 + ((c.kiepSo ?? 0) >= 9 ? -0.1 : 0));
           let hits = 0;
           for (let i = 0; i < 3; i++) if (ctx.rnd() < p + 0.05) hits++;
           if (hits >= 3) {
@@ -83,6 +83,48 @@ export const HOOK_EVENTS: GameEvent[] = [
         hint: 'an toàn, kiếp sau còn gặp',
         lean: 'trung',
         run: () => 'Bạn cúi đầu lui xuống. Tiếng chuông cười khẽ, rồi tiếp tục đếm.',
+      },
+    ],
+  },
+  {
+    id: 'cau_hon_su_gia',
+    minAge: 20,
+    once: true,
+    weight: 300,
+    when: (c) => !!c.cauHon,
+    title: 'Câu hồn sứ giả',
+    text: () =>
+      'Năm lần qua cầu Nại Hà, năm lần hất đổ chén canh. Đêm nay có tiếng xích sắt kéo lê ngoài cửa. Một bóng áo đen đội mũ cao, tay cầm câu hồn lệnh: "Kẻ không chịu quên, Địa phủ đến đòi nợ."',
+    choices: () => [
+      {
+        label: 'Rút binh khí, đánh với sứ giả',
+        hint: 'cảnh giới, tâm cảnh càng cao càng dễ thắng · thua có thể chết',
+        lean: 'trung',
+        run: (c, ctx) => {
+          const p = Math.min(0.75, 0.2 + c.realm * 0.06 + (c.stats.tamCanh / 100) * 0.2);
+          if (ctx.rnd() < p) {
+            c.qf = { ...(c.qf ?? {}), cauHonWin: 1 };
+            c.cauHon = false;
+            stat(c, 'tamCanh', 8);
+            giveItem(c, 'cau_hon_lenh', true);
+            ctx.fx('breakthrough', 'ĐÁNH LUI SỨ GIẢ');
+            return 'Xích sắt đứt làm đôi. Sứ giả lùi vào bóng tối, để rơi lại câu hồn lệnh: "Lần này ta tha. Nợ của ngươi, Địa phủ xóa sổ." Từ nay không còn ai đòi bạn uống canh nữa.';
+          }
+          stat(c, 'sucKhoe', -40);
+          const d = fatal(c, ctx, 0.4, 'Bị Câu hồn sứ giả xích hồn kéo về Địa phủ vì năm lần không chịu uống canh Mạnh Bà');
+          if (c.dead) c.endTag = 'cau_hon';
+          return 'Xích sắt quấn quanh cổ, lạnh buốt tới tận hồn.' + (d ?? ' Bạn giãy thoát được, nhưng hồn phách rách một mảng. Sứ giả hẹn kiếp sau gặp lại.');
+        },
+      },
+      {
+        label: 'Đốt vàng mã, xin khất nợ',
+        hint: 'mất linh thạch, tâm ma +',
+        lean: 'chinh',
+        run: (c) => {
+          money(c, -Math.round(c.linhThach * 0.3));
+          stat(c, 'tamMa', 12);
+          return 'Sứ giả nhận lễ, lặng lẽ rời đi. Nhưng bạn biết, chừng nào còn chưa uống canh, hắn còn quay lại.';
+        },
       },
     ],
   },

@@ -1,5 +1,6 @@
 import { applyProphecy, omenIs } from './hook';
 import { loreDone, lore2Count, quyNhatDone } from './lore';
+import { ksBreak, ksOf, ksPhuc } from './luanHoi';
 import { CHAN_TRUYEN_BREAK, promoteByRealm, rankOf, sectCultMul } from './sect';
 import {
   ITEMS,
@@ -194,6 +195,8 @@ export function newCharacter(meta: Meta, gifts: string[] = [], base?: Character)
   c.loreDone = loreDone(meta);
   c.quyNhat = quyNhatDone(meta);
   c.lore2 = lore2Count(meta);
+  c.kiepSo = ksOf(meta);
+  c.kiepTich = meta.kiepTich ?? 0;
   c.bell = meta.endings?.go_chuong || meta.endings?.dap_chuong ? 2 : meta.chuongWin ? 1 : 0;
   c.stash = meta.stash ?? null;
   c.legend = meta.legend ?? null;
@@ -848,7 +851,9 @@ function breakChance(c: Character) {
       c.stats.tamCanh / 500 -
       c.stats.tamMa / 200 +
       (c.stats.khiVan - 50) / 500 +
-      c.linhCanMul * 0.05,
+      c.linhCanMul * 0.05 +
+      // Luân Hồi Đạo: Kiếp Số làm thiên kiếp nặng hơn, kiếp tích giúp người kẹt Độ Kiếp
+      ksBreak(c),
     0.08,
     0.9,
   );
@@ -1447,7 +1452,8 @@ export function checkProgress(c: Character, ctx: EffectCtx, talents: string[] = 
 export function karmaOf(c: Character) {
   // phúc duyên mỗi kiếp: giảm nhẹ để cao thủ không mua Tiên cốt mỗi kiếp
   const points = 5 + c.realm * 6 + Math.floor(c.age / 25) + (c.ascended ? 70 : 0);
-  const phuc = points + Math.max(0, Math.round(c.daoTam / 4));
+  // Kiếp Số cao thì phúc nhiều hơn; vừa uống canh Mạnh Bà thì +20%
+  const phuc = Math.round((points + Math.max(0, Math.round(c.daoTam / 4))) * ksPhuc(c) * (c.tanHon ? 1.2 : 1));
   // tà tu tích nghiệp lực theo độ tà và cảnh giới, dùng để mua thiên phú tà đạo ở kiếp sau
   const nghiep = c.daoTam < -30 ? Math.round(-c.daoTam / 4 + c.realm * 4 + (c.ascended ? 60 : 0)) : 0;
   return { phuc, nghiep };

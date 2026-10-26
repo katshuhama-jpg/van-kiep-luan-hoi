@@ -95,6 +95,10 @@ export interface Character {
   quyNhat?: boolean; // tài khoản đã từng đạt Vạn Kiếp Quy Nhất: không gặp lại, đeo chuông vàng
   lore2?: number; // số mảnh Quyển II đã mở lúc đầu thai
   bell?: number; // Kẻ Gõ Chuông: 1 đã đánh bại (cầm dùi chuông), 2 đã chọn gõ hay đập
+  kiepSo?: number; // Kiếp Số hiệu lực lúc đầu thai (Luân Hồi Đạo)
+  kiepTich?: number; // kiếp tích: mỗi điểm +5% đột phá
+  tanHon?: boolean; // vừa uống canh Mạnh Bà: phúc duyên kiếp này +20%
+  cauHon?: boolean; // không uống canh 5 lần liền: Câu hồn sứ giả truy theo
   cosmos?: 'tien' | 'ma' | 'hu' | null; // đã phi thăng lên tiên giới hay ma giới
   ascendAge?: number; // tuổi lúc phi thăng
   sectRank?: number; // bậc trong tông môn: 0 tạp dịch, 1 ngoại môn, 2 nội môn, 3 chân truyền
@@ -259,6 +263,11 @@ export interface Meta {
   career?: Career; // số liệu cộng dồn qua các kiếp
   quyThuong?: boolean; // đã nhận thưởng Vạn Kiếp Quy Nhất
   chuongWin?: boolean; // đã đánh bại Kẻ Gõ Chuông
+  hon?: { v: number; at: number }; // Hồn lực lúc đầu thai gần nhất (at: giờ máy chủ, ms)
+  tinhTam?: number; // tĩnh tâm từ canh Mạnh Bà: mỗi bậc giảm 1 Kiếp Số hiệu lực
+  noDrink?: number; // số lần liên tiếp không uống canh
+  ttDecay?: number; // đếm để tĩnh tâm phai dần
+  kiepTich?: number; // kiếp tích mang sang kiếp sau
 }
 
 export interface Career {

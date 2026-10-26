@@ -507,6 +507,8 @@ export const EXTRA_ITEMS: Item[] = [
   { id: 'hu_tinh_do_ngoc_gian', name: 'Tinh đồ ngọc giản', icon: true, slot: 'phu_kien', price: 0, minRealm: 10, desc: 'Ngọc giản ghi tinh đồ cả ba cõi, đọc một lần là biết đường đi.', look: 'x', fx: { cult: 14, drop: 10, tamCanh: 2 }, src: 'event', where: 'Tu tới Thái Hư Chân Quân', rare: 3 },
   // Ngũ Hành Vấn Tâm Đài
   { id: 'ngu_hanh_vien_man_chau', name: 'Ngũ Hành Viên Mãn châu', icon: true, slot: 'phu_kien', price: 0, minRealm: 7, desc: 'Năm sắc khí của năm tấm gương vỡ ngưng lại thành một viên châu. Chỉ người thắng cả năm bóng mà chưa từng ngã mới có.', look: 'x', fx: { cult: 15, atk: 12, def: 12, hp: 12 }, src: 'event', where: 'Qua Ngũ Hành Đài mà không thua lần nào', rare: 3 },
+  // Luân Hồi Đạo: đánh lui Câu hồn sứ giả
+  { id: 'cau_hon_lenh', name: 'Câu hồn lệnh', icon: true, slot: 'phu_kien', price: 0, minRealm: 0, desc: 'Lệnh bài của sứ giả Địa phủ, đánh rơi khi bị đánh lui. Cầm nó, quỷ ma tránh đường.', look: 'x', fx: { def: 10, tamCanh: 3, drop: 6 }, src: 'event', where: 'Đánh lui Câu hồn sứ giả', rare: 3 },
   { id: 'guong_van_tam', name: 'Gương vỡ Vấn Tâm', icon: true, slot: 'phu_kien', price: 0, minRealm: 7, desc: 'Mảnh gương cuối cùng trên Ngũ Hành Đài. Soi vào chỉ thấy chính mình, không còn bóng nào khác.', look: 'x', fx: { cult: 6, tamCanh: 3 }, src: 'event', where: 'Qua Ngũ Hành Đài', rare: 2 },
 ];
 

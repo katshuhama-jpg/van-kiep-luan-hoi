@@ -142,7 +142,8 @@ export function roundMods(c: Character, round: number, my: Stance, foe: Stance, 
 /** Chỉ số của bóng vòng thứ round */
 export function mirrorStats(c: Character, round: number): Fighter {
   const ps = playerStats(c);
-  const k = ROUND_POW[round] * mirrorMind(c).mul;
+  // Kiếp Số từ 3: bóng mạnh hơn
+  const k = ROUND_POW[round] * mirrorMind(c).mul * (1 + ((c.kiepSo ?? 0) >= 7 ? 0.1 : (c.kiepSo ?? 0) >= 3 ? 0.05 : 0));
   return { hp: Math.round(ps.hp * k), atk: Math.round(ps.atk * k), def: Math.round(ps.def * k) };
 }
 

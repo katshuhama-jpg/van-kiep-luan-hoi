@@ -50,7 +50,7 @@ export function pickAmbush(c: Character, rnd: () => number): { m: Monster; tier:
 }
 
 export function ambushMonsterStats(c: Character, m: Monster): Fighter {
-  const s = monsterStats(m, effLv(c, m));
+  const s = monsterStats(m, effLv(c, m), c);
   return { ...s, hp: Math.max(1, Math.round(s.hp * AMBUSH_HP)) };
 }
 

@@ -538,3 +538,18 @@ Khi được yêu cầu cập nhật tài liệu:
 - **Kết cục thay cho `bat_dac`:** chết vì quái gắn `endTag` trong `loseFight` (`tho_yeu`, `thi_luyen`, `dao_giang_ho`, `khinh_dich`, `tu_dia`); chết vì hiểm cảnh chia theo nguyên nhân bằng regex (`xa_than`, `trung_doc`, `loan_dao`, `hiem_dia`, `moi_yeu_thu`); `anh_tai` (Trúc Cơ trở lên, chết trước 35). Mô phỏng: `bat_dac` từ 49% xuống 18% (chưa tính chết vì quái).
 - **Quá độ:** `OverworkBar` trên dock từ năm thứ 5 làm một việc (vàng), từ năm thứ 6 đỏ nhấp nháy. Vẫn chỉ cảnh báo, không tự đổi việc.
 - **Giữ chân:** `LifeGoal` trên màn đầu thai (mảnh Thiên thư kế tiếp); `NextLife` trong bảng tử vong (nhiệm vụ còn lại, thiên phú mua được, mảnh Thiên thư sắp mở); hướng dẫn kiếp đầu có mục tiêu.
+
+## Bản 3.0.0 Luân Hồi Đạo (26/10 tối)
+Mục tiêu: chết nhiều không còn là lợi thế; người chơi lâu có lý do chơi tiếp. Kế hoạch gốc: file `ke-hoach-giu-chan.md` gửi Tyler (mục 4, 5.3, 5.4).
+- `lib/game/luanHoi.ts`:
+  - **Kiếp Số** `ksBase(meta)` (0-10, từ số kiếp/15, Thiên thư I, mỗi 3 mảnh Quyển II, phi thăng, cảnh giới 11, Chứng Đạo) trừ `meta.tinhTam` = `ksOf`. Gắn vào `c.kiepSo` lúc `newCharacter`.
+  - Hiệu ứng theo bậc đọc `c.kiepSo`: `breakChance` (`ksBreak`, kèm kiếp tích +5%/điểm), thần binh 6%/đời (`combat.ts`), bóng Ngũ Hành Đài (`mirrorStats`), quái x1.1 (`monsterStats(m, lv, c)`), một thiên phú lớn từ bậc 5 (BirthPanel và `born`), +2 năm/tầng sau phi thăng từ bậc 8 (`addCult`), Kẻ Gõ Chuông -0,1 từ bậc 9, tâm ma x1.2 từ bậc 10 (`stat`). Thưởng: `karmaOf` x(1+0,05 bậc), đồ rơi `ksDrop`.
+  - Kết cục kèm (alsoEndings): `nghich_thien` (phi thăng ở Kiếp Số ≥5), `van_kiep_bat_diet` (Chứng Đạo ở Kiếp Số 10).
+  - **Kiếp tích** `meta.kiepTich`: Kiếp Số hiệu lực ≤2, chết ở Độ Kiếp chưa phi thăng thì +1 (tối đa 3), phi thăng xóa.
+  - **Hồn lực** `meta.hon {v, at}` (giờ máy chủ từ `/api/version` qua `lib/serverTime.ts`): từ kiếp 15, mỗi lần đầu thai -15, hồi 10/giờ; 4 trạng thái `applyHon`; nghỉ ≥8 giờ và đầy thì Hồn viên mãn.
+  - **Mạnh Bà** `manhBa(meta, drink)`: uống thì mất `legend`, `stash`, +1 `tinhTam` (tối đa 3), +30 Hồn lực, `c.tanHon` (khí vận +15, phúc +20%); không uống thì `noDrink`+1, tĩnh tâm phai 1 bậc mỗi 2 kiếp. `noDrink` ≥5: `c.cauHon`, sự kiện `cau_hon_su_gia` (thắng: Câu hồn lệnh, xóa nợ; thua: 40% chết, kết cục `cau_hon`).
+- UI: `components/LuanHoi.tsx` (thẻ ở màn đầu thai: Kiếp Số, Hồn lực, cầu Nại Hà); bảng xếp hạng hiện "Kiếp Số N".
+- **Hồn mòn khi giao đấu** (`duel.ts lifeMul`): bên luân hồi nhiều hơn -1,5%/kiếp, tối đa -15% (trước đây là +3%/kiếp).
+- **Lôi đài** (`components/Arena.tsx`, tab Lôi đài ở Xếp hạng, link `?tab=loi-dai`, nút trong ☰ menu): bảng `vkl_arena`, `vkl_arena_log`, `vkl_arena_champ`, `vkl_arena_season`; RPC `vkl_arena_state`, `vkl_arena_fight` (điểm kiểu cờ vua K=32, đối thủ chịu một nửa), `vkl_priv.arena_roll` (sang tuần: lưu top 3, kéo điểm về gần 1000). Trận đấu mô phỏng ở trình duyệt bằng `simulateDuel` với `vkl_player_best`. Mảnh XV: `loi_dai ≥ 3` (hoặc chiến thư cũ).
+- `/cap-nhat`: danh sách phiên bản, bấm xem chi tiết (`?v=`).
+- Mô phỏng 25 tài khoản × 50 kiếp: nhóm từ 36 kiếp chơi dồn dập (20 phút/kiếp) tới Độ Kiếp 4%, phi thăng 0,3% (không có Luân Hồi Đạo: 7% và 1,3%); chơi có nghỉ (3 giờ/kiếp) 8% và 2,4%.

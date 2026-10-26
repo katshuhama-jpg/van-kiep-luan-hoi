@@ -11,6 +11,50 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '3.0.0',
+    date: '26/10/2026',
+    title: 'Luân Hồi Đạo',
+    lead: 'Vạn kiếp luân hồi không còn là con đường tắt. Kẻ chết càng nhiều, Thiên đạo càng để mắt; linh hồn đầu thai dồn dập thì mòn đi. Muốn đi xa, phải biết nghỉ, biết quên, và biết đứng trên lôi đài.',
+    stats: [
+      { n: '10', label: 'bậc Kiếp Số' },
+      { n: '+3', label: 'kết cục' },
+      { n: '3', label: 'trận lôi đài mỗi ngày' },
+    ],
+    groups: [
+      {
+        h: 'Kiếp Số: Thiên đạo để mắt',
+        items: [
+          'Tài khoản có Kiếp Số từ 0 tới 10, tăng theo thành tích: số kiếp đã sống, Thiên thư, phi thăng, chạm đỉnh, Chứng Đạo.',
+          'Mỗi bậc thêm một kiếp nạn: thiên kiếp nặng hơn, thần binh truyền kiếp yếu đi, bóng Ngũ Hành Đài và quái mạnh hơn, mỗi kiếp chỉ mua được một thiên phú lớn...',
+          'Bù lại, mỗi bậc thêm 5% phúc duyên và 3% đồ rơi. Bảng xếp hạng ghi Kiếp Số cạnh cảnh giới.',
+          'Kết cục mới: Nghịch Thiên Hành Đạo (phi thăng khi Kiếp Số từ 5), Vạn Kiếp Bất Diệt (Chứng Đạo ở Kiếp Số 10).',
+          'Kiếp tích: người Kiếp Số thấp mà ngã ở Độ Kiếp thì kiếp sau đột phá dễ hơn, tối đa 3 lần.',
+        ],
+      },
+      {
+        h: 'Hồn lực và cầu Nại Hà',
+        items: [
+          'Từ kiếp thứ 15, mỗi lần đầu thai tốn Hồn lực, hồi lại theo giờ thật. Đầu thai dồn dập thì sinh ra hồn mỏi, hồn khuyết, hồn tàn. Nghỉ đủ lâu thì được Hồn viên mãn.',
+          'Trước mỗi lần đầu thai, Mạnh Bà đưa chén canh. Uống thì quên thần binh và rương kiếp trước, được tĩnh tâm hạ Kiếp Số, khí vận và phúc duyên dồi dào. Hất chén thì giữ hết, nhưng nợ Địa phủ dồn lại.',
+          'Năm lần liền không uống, Câu hồn sứ giả tìm tới. Đánh lui được thì nhận Câu hồn lệnh, thua thì có thể mất mạng.',
+          'Luân hồi nhiều không còn là lợi thế khi giao đấu: bên đã đầu thai nhiều hơn thì hồn phách mòn hơn, công và thủ giảm tới 15%.',
+        ],
+      },
+      {
+        h: 'Lôi đài hằng ngày',
+        items: [
+          'Mỗi ngày 3 trận đánh với bóng nhân vật mạnh nhất của người chơi có điểm gần mình. Không cần ai trả lời, không mất đồ, không chết.',
+          'Bảng lôi đài tuần. Mỗi thứ Hai trao danh hiệu Lôi Đài Bá Chủ, Á Chủ, Tam Kiệt.',
+          'Thiên thư mảnh XV nay mở khi thắng 3 trận lôi đài.',
+        ],
+      },
+      {
+        h: 'Khác',
+        items: ['Lịch sử cập nhật gọn lại thành danh sách phiên bản, bấm vào một bản để xem chi tiết.'],
+      },
+    ],
+  },
+  {
     v: '2.0.0',
     date: '26/10/2026',
     title: 'Vạn Mảnh',

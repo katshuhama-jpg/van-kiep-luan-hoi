@@ -251,3 +251,26 @@ export async function loreSocial(user: Player | null): Promise<import('./game/lo
   const { data, error } = await sb.rpc('vkl_lore_social', { p_token: user.token });
   return error || !data ? null : (data as import('./game/lore').LoreSocial);
 }
+
+// ---------- Lôi đài hằng ngày ----------
+export interface ArenaState {
+  me: { username: string; elo: number; used: number; wins: number; losses: number } | null;
+  opps: { username: string; elo: number }[];
+  top: { username: string; elo: number; wins: number; losses: number }[];
+  champs: { week: string; rank: number; username: string; elo: number }[];
+}
+export const ARENA_TURNS = 3;
+
+export async function arenaState(user: Player | null): Promise<ArenaState | null> {
+  const sb = supabase();
+  if (!sb) return null;
+  const { data, error } = await sb.rpc('vkl_arena_state', { p_token: user?.token ?? '00000000-0000-0000-0000-000000000000' });
+  return error || !data ? null : (data as ArenaState);
+}
+
+export async function arenaFight(user: Player | null, opp: string, win: boolean, detail: string): Promise<{ delta?: number; elo?: number; used?: number; error?: string } | null> {
+  const sb = supabase();
+  if (!sb || !user) return null;
+  const { data, error } = await sb.rpc('vkl_arena_fight', { p_token: user.token, p_opp: opp, p_win: win, p_detail: detail });
+  return error ? null : (data as { delta?: number; elo?: number; used?: number; error?: string });
+}

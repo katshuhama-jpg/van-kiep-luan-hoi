@@ -14,6 +14,8 @@ import type { Character, Focus, LogEntry, Meta, PendingEvent, Slot } from '@/lib
 import { QUEST_BONUS, QUEST_REWARD, evalQuests, nearEndings, pickProphecy, questName } from '@/lib/game/hook';
 import { HIDDEN_ITEMS, collectStats, isHidden, itemHint } from '@/lib/game/collect';
 import { sectSide, rankName, rankShort } from '@/lib/game/sect';
+import LuanHoiCard from './LuanHoi';
+import { BIG_TALENTS, ksOf, ksOneBig } from '@/lib/game/luanHoi';
 import { LORE, LORE2_TOTAL, LORE_TOTAL, lore1Count, lore2Count, quyNhatDone } from '@/lib/game/lore';
 import { ELEMENTS } from '@/lib/game/nguhanh';
 import { TodayScroll } from './Hook';
@@ -738,7 +740,7 @@ export function BirthPanel({
   onSoSinhTu,
 }: {
   meta: Meta;
-  onBorn: (talents: string[], yearSec: number, gifts: string[], gachaSpent: number, base: Character | null) => void;
+  onBorn: (talents: string[], yearSec: number, gifts: string[], gachaSpent: number, base: Character | null, drink: boolean) => void;
   busy?: boolean;
   onKho?: () => void;
   onSoSinhTu?: () => void;
@@ -748,6 +750,8 @@ export function BirthPanel({
   const [gifts, setGifts] = useState<string[]>([]);
   const [gSpent, setGSpent] = useState(0);
   const [base, setBase] = useState<Character | null>(null);
+  const [drink, setDrink] = useState(false);
+  const oneBig = ksOneBig(ksOf(meta));
   const tal = (id: string) => TALENTS.find((t) => t.id === id);
   const spent = picked.filter((id) => !tal(id)?.ta).reduce((s, id) => s + (tal(id)?.cost ?? 0), 0) + gSpent;
   const left = meta.phucDuyen - spent;
@@ -825,10 +829,12 @@ export function BirthPanel({
         </div>
       )}
 
+      {!first && <LuanHoiCard meta={meta} drink={drink} onDrink={setDrink} />}
+
       <GachaPanel
         phuc={left}
         busy={busy}
-        onBorn={() => onBorn(picked, yearSec, gifts, gSpent, base)}
+        onBorn={() => onBorn(picked, yearSec, gifts, gSpent, base, drink)}
         onChange={(g, s, b) => {
           setGifts(g);
           setGSpent(s);
@@ -854,9 +860,11 @@ export function BirthPanel({
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               {TALENTS.filter((t) => !t.ta).map((t) => {
                 const on = picked.includes(t.id);
-                const can = on || left >= t.cost;
+                // Kiếp Số từ 5: mỗi kiếp chỉ một thiên phú lớn
+                const blocked = oneBig && BIG_TALENTS.includes(t.id) && picked.some((x) => x !== t.id && BIG_TALENTS.includes(x));
+                const can = on || (left >= t.cost && !blocked);
                 return (
-                  <button key={t.id} className={`talent ${on ? 'on' : ''}`} disabled={!can} aria-pressed={on} onClick={() => setPicked(on ? picked.filter((x) => x !== t.id) : [...picked, t.id])}>
+                  <button key={t.id} className={`talent ${on ? 'on' : ''}`} disabled={!can} title={blocked ? 'Kiếp Số từ 5: mỗi kiếp chỉ chọn một thiên phú lớn' : undefined} aria-pressed={on} onClick={() => setPicked(on ? picked.filter((x) => x !== t.id) : [...picked, t.id])}>
                     <span>
                       {t.name}
                       <br />

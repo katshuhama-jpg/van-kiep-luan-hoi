@@ -41,6 +41,10 @@ export const ENDINGS: Ending[] = [
     rare: 4,
     test: (c) => c.endTag === 'dap_chuong',
   },
+  { id: 'cau_hon', name: 'Hồn Bị Câu Đi', desc: 'Năm lần không chịu uống canh Mạnh Bà. Địa phủ cử sứ giả đến, xích hồn kéo đi giữa đêm.', hint: 'Không chịu quên thì phải trả nợ.', how: 'Không uống canh Mạnh Bà 5 kiếp liền, rồi thua Câu hồn sứ giả.', rare: 3, test: (c) => c.endTag === 'cau_hon' },
+  // ---- Luân Hồi Đạo (3.0.0): chỉ ghi kèm qua alsoEndings, không làm kết cục chính ----
+  { id: 'nghich_thien', name: 'Nghịch Thiên Hành Đạo', desc: 'Thiên đạo đã để mắt, kiếp nạn nặng gấp bội, mà bạn vẫn phá được cửa trời.', hint: 'Bị trời ghét mà vẫn bay lên.', how: 'Phi thăng khi Kiếp Số từ 5 trở lên.', rare: 4, test: () => false },
+  { id: 'van_kiep_bat_diet', name: 'Vạn Kiếp Bất Diệt', desc: 'Kiếp Số đã chạm trần, Thiên đạo dồn mọi kiếp nạn lên một người. Người ấy vẫn chứng đạo.', hint: 'Đỉnh của đỉnh.', how: 'Chứng Đạo khi Kiếp Số là 10.', rare: 4, test: () => false },
   {
     id: 'chung_dao',
     name: 'Chứng Đạo Vĩnh Hằng',
@@ -344,6 +348,8 @@ export function alsoEndings(c: Character): string[] {
   // tới cảnh giới cuối mà chết theo kết cục khác: vẫn ghi nhận đỉnh của cõi
   const top = c.realm >= 11 ? (c.cosmos === 'ma' ? 'ma_de' : c.cosmos === 'hu' ? 'hon_nguyen' : 'dai_la') : null;
   if (top && main !== top && main !== 'chung_dao') out.push(top);
+  if ((c.kiepSo ?? 0) >= 5) out.push('nghich_thien');
+  if ((c.kiepSo ?? 0) >= 10 && c.endTag === 'chung_dao') out.push('van_kiep_bat_diet');
   return out;
 }
 

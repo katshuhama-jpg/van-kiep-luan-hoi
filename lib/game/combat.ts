@@ -1,3 +1,4 @@
+import { ksDrop, ksLegendPer, ksMonster } from './luanHoi';
 import { omenIs } from './hook';
 import { ITEMS, REALMS, fxText, gearFx } from './data';
 import { addCult, addPill, clamp, fatal, giveItem, money, needFor, stat } from './helpers';
@@ -584,15 +585,16 @@ export function playerStats(c: Character): Fighter {
   def *= 1 + g.def / 100;
   hp *= 1 + g.hp / 100;
   // thần binh truyền kiếp: mỗi đời truyền qua +8% công (tối đa 10 đời)
-  if (c.legend && c.equipped.vu_khi === c.legend.item) atk *= 1 + Math.min(10, c.legend.lv) * 0.08;
+  if (c.legend && c.equipped.vu_khi === c.legend.item) atk *= 1 + Math.min(10, c.legend.lv) * ksLegendPer(c);
   // tuổi già sức yếu
   if (c.age / c.lifespan > 0.85) ((atk *= 0.85), (hp *= 0.85));
   return { hp: Math.round(hp), atk: Math.round(atk), def: Math.round(def) };
 }
 
-export function monsterStats(m: Monster, lv: number = m.lv): Fighter {
+export function monsterStats(m: Monster, lv: number = m.lv, c?: Character | null): Fighter {
   if (m.boss) return { hp: 9e15, atk: 9e12, def: 9e12 };
-  const s = Math.pow(GROW, lv);
+  // Kiếp Số từ 4: quái hung hơn
+  const s = Math.pow(GROW, lv) * ksMonster(c);
   return { hp: Math.round(115 * s), atk: Math.round(13.8 * s), def: Math.round(4 * s) };
 }
 
@@ -657,7 +659,7 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance 
   const df = dropFactor(c, m);
   if (drops.length && df > 0) {
     const g = gearFx(c.equipped);
-    const p = (0.05 + (c.stats.khiVan - 50) / 2500) * (1 + tierOf(c, m) * 0.5) * (1 + g.drop / 100) * df * DROP_MUL;
+    const p = (0.05 + (c.stats.khiVan - 50) / 2500) * (1 + tierOf(c, m) * 0.5) * (1 + g.drop / 100) * df * DROP_MUL * ksDrop(c);
     if (ctx.rnd() < p) {
       const it = drops[Math.floor(ctx.rnd() * drops.length)];
       if (c.inventory.includes(it.id)) {
@@ -671,7 +673,7 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance 
       }
     }
   }
-  if (ctx.rnd() < lootChance * df * DROP_MUL) {
+  if (ctx.rnd() < lootChance * df * DROP_MUL * ksDrop(c)) {
     const l = lootDrop(c, m, ctx);
     if (l) notes.push(l);
   }
@@ -685,7 +687,7 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance 
   }
   if (m.human && (m.id === 'son_tac' || m.id === 'thich_khach' || m.id === 'doc_vuong')) c.daoTam = Math.min(100, c.daoTam + 1);
   if (n === 100) notes.push(`Đã trảm 100 con ${m.name}. Giang hồ gọi bạn là khắc tinh của chúng.`);
-  const r = ctx.rnd() / Math.max(0.05, df * DROP_MUL);
+  const r = ctx.rnd() / Math.max(0.05, df * DROP_MUL * ksDrop(c));
   if (r < 0.02) {
     addCult(c, killExp(c, m) * 6);
     ctx.fx('layer', 'Yêu đan!');

@@ -28,6 +28,8 @@ import { bountyClaim, khieuDone, loadSocial, loreSocial, payoutClaim, truyenCong
 import { GiangHoSheet, type GiangHoApi } from '@/components/GiangHo';
 import { HIDDEN_ITEMS, collectStats, markSeen, newFinds, unseen } from '@/lib/game/collect';
 import { QUY_NHAT_PHUC, newLore, quyNhatDone } from '@/lib/game/lore';
+import { CAU_HON_AT, HON_COST, HON_MAX, KS_NAME, applyHon, honActive, honNow, ksOf, ksOneBig, manhBa, nextKiepTich } from '@/lib/game/luanHoi';
+import { serverNow } from '@/lib/serverTime';
 import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, pickAmbush } from '@/lib/game/ambush';
 import { titleKey, addMemorial, displayName, fetchWorld, listMail, loadAll, saveLocal, saveMeta, saveRemote, sendMail, unreadMail, weeklyTitles, type Mail, type SaveState } from '@/lib/storage';
 import { updateCareer, bumpStreak, evalQuests, omenIs, qmark, questName, streakGift, vnDay } from '@/lib/game/hook';
@@ -236,7 +238,7 @@ export default function PlayPage() {
     if (!m) return null;
     const ps = playerStats(c);
     // boss: không thể gây sát thương, mỗi đòn của nó lấy khoảng 1/3 máu
-    const ms = m.boss ? { hp: 1e9, atk: Math.round(ps.hp * 0.38 + ps.def * 0.5), def: 1e12 } : monsterStats(m, effLv(c, m));
+    const ms = m.boss ? { hp: 1e9, atk: Math.round(ps.hp * 0.38 + ps.def * 0.5), def: 1e12 } : monsterStats(m, effLv(c, m), c);
     return {
       m,
       name: monsterName(c, m),
@@ -1008,16 +1010,41 @@ export default function PlayPage() {
     });
   };
 
-  const born = async (talents: string[], yearSec: number, gifts: string[] = [], gachaSpent = 0, base: Character | null = null) => {
+  const born = async (talents: string[], yearSec: number, gifts: string[] = [], gachaSpent = 0, base: Character | null = null, drink = false) => {
     if (!meta) return;
+    // Luân Hồi Đạo: Kiếp Số từ 5 chỉ giữ một thiên phú lớn
+    if (ksOneBig(ksOf(meta)) && talents.includes('tien_cot') && talents.includes('thien_menh')) talents = talents.filter((t) => t !== 'thien_menh');
+    // Hồn lực và chén canh Mạnh Bà (từ kiếp 15), giờ lấy theo máy chủ
+    const now = await serverNow();
+    const lh = honActive(meta);
+    let honV = honNow(meta, now);
+    const rested = !!meta.hon && now - meta.hon.at >= 8 * 3600_000;
+    const mb: Meta = lh ? manhBa(meta, drink) : meta;
+    if (lh && drink) honV = Math.min(HON_MAX, honV + 30);
     // thiên phú thường trả bằng phúc duyên, thiên phú tà trả bằng nghiệp lực
     const tal = (id: string) => TALENTS.find((t) => t.id === id);
     const cost = talents.filter((id) => !tal(id)?.ta).reduce((s, id) => s + (tal(id)?.cost ?? 0), 0) + gachaSpent;
     const costTa = talents.filter((id) => tal(id)?.ta).reduce((s, id) => s + (tal(id)?.cost ?? 0), 0);
-    const m2: Meta = { ...meta, phucDuyen: Math.max(0, meta.phucDuyen - cost), nghiep: Math.max(0, meta.nghiep - costTa), talents };
+    const m2: Meta = { ...mb, phucDuyen: Math.max(0, meta.phucDuyen - cost), nghiep: Math.max(0, meta.nghiep - costTa), talents };
     if (base && !base.name.trim()) base = { ...base, name: genName(base.gender) };
     const c = newCharacter(m2, gifts, base ?? undefined);
     talentsRef.current = talents;
+    if ((c.kiepSo ?? 0) > 0) c.log.push({ age: 0, tone: 'big', text: `Kiếp Số ${c.kiepSo} · ${KS_NAME[c.kiepSo ?? 0]}. Thiên đạo đã để mắt tới linh hồn này, kiếp nạn sẽ nặng hơn, phúc báo cũng dày hơn.` });
+    if ((c.kiepTich ?? 0) > 0) c.log.push({ age: 0, tone: 'good', text: `Kiếp tích ${c.kiepTich}: những lần ngã trước cửa trời đã thành kinh nghiệm. Đột phá dễ hơn ${(c.kiepTich ?? 0) * 5}%.` });
+    if (lh) {
+      applyHon(c, honV, rested && honV >= HON_MAX);
+      if (drink) {
+        c.tanHon = true;
+        c.stats.khiVan = Math.min(100, c.stats.khiVan + 15);
+        c.log.push({ age: 0, tone: 'good', text: 'Bạn uống cạn chén canh Mạnh Bà. Kiếp trước tan như khói, linh hồn nhẹ bẫng. Khí vận +15, phúc duyên kiếp này +20%.' });
+      } else {
+        c.log.push({ age: 0, tone: 'ta', text: `Bạn hất đổ chén canh Mạnh Bà, mang theo ký ức mà đầu thai (${m2.noDrink} lần liền).` });
+        if ((m2.noDrink ?? 0) >= CAU_HON_AT) {
+          c.cauHon = true;
+          c.log.push({ age: 0, tone: 'bad', text: 'Sau lưng vang tiếng xích sắt. Địa phủ đã ghi tên bạn vào sổ nợ.' });
+        }
+      }
+    }
     // quà chuỗi ngày: mỗi ngày nhận một lần, ở kiếp đầu tiên đầu thai trong ngày
     const today = vnDay();
     let streak = m2.streak;
@@ -1030,7 +1057,7 @@ export default function PlayPage() {
       streak = { ...streak, giftDay: today };
     }
     // rương kiếp trước, lời tiên tri, thần binh chỉ dùng cho một kiếp
-    const m3: Meta = { ...m2, talents: [], stash: null, prophecy: null, legend: null, streak };
+    const m3: Meta = { ...m2, talents: [], stash: null, prophecy: null, legend: null, streak, hon: lh ? { v: Math.max(0, honV - HON_COST), at: now } : m2.hon };
     // dấu vết người chơi khác: tải nền, không chặn việc đầu thai
     fetchWorld(user)
       .then((w) => {
@@ -1253,6 +1280,7 @@ export default function PlayPage() {
         endTag: c.endTag,
         ending: endingOf(c).id,
         cosmos: c.cosmos ?? null,
+        kiepSo: c.kiepSo ?? 0,
       },
     }).catch(() => {});
     const m: Meta = {
@@ -1292,6 +1320,9 @@ export default function PlayPage() {
           : null,
     };
     // thành tựu dài hạn
+    // Luân Hồi Đạo: kiếp tích cho người kẹt Độ Kiếp; đánh lui Câu hồn sứ giả thì xóa nợ không uống canh
+    m.kiepTich = nextKiepTich(m, c);
+    if (c.qf?.cauHonWin) m.noDrink = 0;
     const car = updateCareer(m, c);
     m.career = car.career;
     if (car.newly.length) {
@@ -1569,6 +1600,9 @@ export default function PlayPage() {
             >
               Hướng dẫn chơi
             </button>
+            <Link className="btn btn-red" href="/bang-xep-hang?tab=loi-dai" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
+              ⚔ Lôi đài hằng ngày
+            </Link>
             <Link className="btn" href="/cap-nhat" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
               Lịch sử cập nhật · bản {CURRENT_VERSION}
             </Link>
