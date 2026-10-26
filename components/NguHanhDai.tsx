@@ -14,6 +14,8 @@ import {
   ROUND_NAME,
   STANCES,
   anOf,
+  arenaBg,
+  destOf,
   deathChance,
   elemPart,
   khacBy,
@@ -29,6 +31,7 @@ import { needFor } from '@/lib/game/helpers';
 
 export type NhdView = 'rules' | 'prep' | 'result';
 
+const DEST_NAME = { tien: 'Tiên giới', ma: 'Ma giới', hu: 'Thái Hư' } as const;
 const pct = (x: number) => `${x >= 1 ? '+' : ''}${Math.round((x - 1) * 100)}%`;
 const REL_TXT = { khac: 'Bạn khắc bóng', bi_khac: 'Bóng khắc bạn', sinh: 'Bạn sinh bóng', duoc_sinh: 'Bóng sinh bạn', dong: 'Cùng mệnh' } as const;
 
@@ -249,9 +252,15 @@ export default function NguHanhDai({
   const ep = elemPart(c, round, phu);
   const fc = mirrorChar(c, round);
   return (
-    <div className="nhd nhd-stage" role="dialog" aria-modal="true" aria-labelledby="nhd-title">
+    <div
+      className="nhd nhd-stage"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="nhd-title"
+      style={{ backgroundImage: `linear-gradient(rgba(10, 7, 16, 0.55), rgba(10, 7, 16, 0.9) 45%), url(${arenaBg(c, round)})` }}
+    >
       <header className="nhd-head">
-        <span>Ngũ Hành Đài</span>
+        <span>Ngũ Hành Đài · cửa {DEST_NAME[destOf(c)]}</span>
         <b id="nhd-title">
           Gương {round + 1}/{NHD_ROUNDS} · {ROUND_NAME[round]}
         </b>

@@ -3203,7 +3203,8 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .nhd-res-mirror.shatter i:nth-child(3) { background: linear-gradient(15deg, transparent 32%, #fff 33%, transparent 35%); animation-delay: 0.3s; }
 @keyframes nhdCrack { from { opacity: 0; } to { opacity: 1; } }
 /* trận trên đài */
-.duel-bg.duel-ngu_hanh { background: radial-gradient(ellipse at 50% 30%, #3a2a5a, #120c1c 75%); }
+.duel-bg.duel-ngu_hanh { background: #120c1c center bottom / cover no-repeat; image-rendering: pixelated; }
+.duel-bg.duel-ngu_hanh .duel-hills, .duel-bg.duel-ngu_hanh .duel-floor { display: none; }
 .duel-bg.duel-ngu_hanh .duel-moon { display: none; }
 .duel-bg.duel-ngu_hanh .duel-hills { background: #1a1228; opacity: 0.8; }
 .duel-bg.duel-ngu_hanh .duel-floor { background: repeating-linear-gradient(90deg, #4a3a6a 0 30px, #3a2a5a 30px 32px); border-top-color: #b8a8e8; }
@@ -3224,3 +3225,5 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .cult.wait .cult-text { color: #fff3dc; text-shadow: 1px 1px 0 #1f160d, -1px 1px 0 #1f160d, 1px -1px 0 #1f160d, -1px -1px 0 #1f160d; }
 .nhd-wait { margin: 8px 0; padding: 8px 10px; background: #fff6dc; border: 2px solid #c9962e; }
 .nhd-wait b { color: #8a1a1a; font-size: 15px; }
+
+.nhd-stage { background-color: #0a0710; background-size: 100% auto; background-position: center top; background-repeat: no-repeat; image-rendering: pixelated; }

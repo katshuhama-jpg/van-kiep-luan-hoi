@@ -32,7 +32,7 @@ import {
   realmLabel,
 } from './data';
 import { BREAK_EVENT_ID, EVENTS, PATH_EVENT_ID, pathChoices } from './events';
-import { ASCEND_MIN_AGE, anOf, keyAn, needTrial } from './nguHanhDai';
+import { ASCEND_MIN_AGE, anOf, destOf, keyAn, needTrial } from './nguHanhDai';
 import { addCult, addPill, clamp, fatal, reward, wealthTier, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
 import type { Character, Choice, EffectCtx, Fx, FxKind, GameEvent, Meta, PendingEvent, Tone } from './types';
 import { applyGifts, giftOf, hasGift } from './gacha';
@@ -826,7 +826,7 @@ function attempt(c: Character, ctx: EffectCtx, bonus: number): string {
       c.ascended = true;
       c.ascendAge = Math.floor(c.age);
       // tà tu không lên tiên giới mà vượt huyết kiếp, thành Ma Tôn, mở ra ma giới
-      if (c.daoTam <= -40 || c.path === 'ma') {
+      if (destOf(c) === 'ma') {
         c.cosmos = 'ma';
         c.endTag = 'ma_ton_do_kiep';
         enterRealm(c, ASCEND_REALM, ctx, []);
@@ -835,7 +835,7 @@ function attempt(c: Character, ctx: EffectCtx, bonus: number): string {
         return `Chín đạo huyết lôi giáng xuống, bạn nuốt trọn từng đạo một. Trời đất nhuộm đỏ, vạn ma quỳ lạy. Bạn bước qua cửa Ma giới, thành ${realmName(ASCEND_REALM, 'ma')}. Thọ nguyên lên tới ${c.lifespan} năm. Ở đây chỉ có một luật: kẻ mạnh nuốt kẻ yếu.`;
       }
       // trung lập: không lên tiên giới, không vào ma giới, mà bước vào Thái Hư
-      if (c.daoTam < 20) {
+      if (destOf(c) === 'hu') {
         c.cosmos = 'hu';
         enterRealm(c, ASCEND_REALM, ctx, []);
         stat(c, 'sucKhoe', 40);

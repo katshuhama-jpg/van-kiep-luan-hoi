@@ -237,7 +237,7 @@ export interface BattleView {
   /** ngũ hành giữa bạn và quái */
   melem?: { me: Element; foe: Element; rel: ElemRel };
   /** kỳ ngộ giang hồ: đối thủ là người */
-  duel?: { kind: 'dong_dao' | 'dich_thu' | 'kiep_truoc' | 'dong_mon' | 'ngu_hanh'; foe: Character; tag: string; player: string; turn: number; max: number; elem?: { me: Element; foe: Element; rel: ElemRel } };
+  duel?: { kind: 'dong_dao' | 'dich_thu' | 'kiep_truoc' | 'dong_mon' | 'ngu_hanh'; foe: Character; tag: string; player: string; turn: number; max: number; elem?: { me: Element; foe: Element; rel: ElemRel }; bg?: string };
 }
 
 /** Dải ngũ hành giữa sân đấu: bản mệnh hai bên và ai khắc ai */
@@ -282,7 +282,7 @@ export function BattleOverlay({ b }: { b: BattleView }) {
       </div>
       {b.duel ? (
         <>
-          <div className={`duel-bg duel-${b.duel.kind}`} aria-hidden="true">
+          <div className={`duel-bg duel-${b.duel.kind}`} style={b.duel.bg ? { backgroundImage: `url(${b.duel.bg})` } : undefined} aria-hidden="true">
             <i className="duel-moon" />
             <i className="duel-hills" />
             <i className="duel-floor" />
@@ -293,13 +293,6 @@ export function BattleOverlay({ b }: { b: BattleView }) {
               </>
             )}
             {b.duel.kind === 'dich_thu' && <i className="duel-bolt" />}
-            {b.duel.kind === 'ngu_hanh' && (
-              <span className="nhd-bgm">
-                {[0, 1, 2, 3, 4].map((i) => (
-                  <i key={i} />
-                ))}
-              </span>
-            )}
             {b.duel.kind === 'kiep_truoc' && (
               <span className="duel-mist">
                 {Array.from({ length: 8 }, (_, i) => (

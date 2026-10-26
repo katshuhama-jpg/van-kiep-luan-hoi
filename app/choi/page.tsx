@@ -35,7 +35,7 @@ import { HookSheet, TitleBadge } from '@/components/Hook';
 import { omenToday } from '@/lib/game/hook';
 import { useAuth } from '@/lib/useAuth';
 import NguHanhDai, { NhdMirror, waiting, type NhdView } from '@/components/NguHanhDai';
-import { NHD_MAX_TURNS, PHU_PRICE, STANCES, loseRound, mirrorChar, mirrorStance, mirrorStats, needTrial, nhdOf, roundMods, tellOf, winRound, type RoundMods, type Stance } from '@/lib/game/nguHanhDai';
+import { arenaBg, NHD_MAX_TURNS, PHU_PRICE, STANCES, loseRound, mirrorChar, mirrorStance, mirrorStats, needTrial, nhdOf, roundMods, tellOf, winRound, type RoundMods, type Stance } from '@/lib/game/nguHanhDai';
 import { sectSide } from '@/lib/game/sect';
 
 const SPEEDS = [1, 2, 4, 8, 16];
@@ -855,7 +855,7 @@ export default function PlayPage() {
       fs,
       sub: 0,
       foe: { kind: 'ngu_hanh', rival: toRival('', fc), npc: true, rel: 'ngang', reason: '' },
-      duel: { kind: 'ngu_hanh', foe: fc, tag: `Gương ${r + 1}/5 · ${STANCES[my].name} đấu ${STANCES[n.foe].name}`, player: '', turn: 0, max: NHD_MAX_TURNS, elem: { me: mods.myEl, foe: mods.foeEl, rel: mods.rel } },
+      duel: { kind: 'ngu_hanh', foe: fc, tag: `Gương ${r + 1}/5 · ${STANCES[my].name} đấu ${STANCES[n.foe].name}`, player: '', turn: 0, max: NHD_MAX_TURNS, elem: { me: mods.myEl, foe: mods.foeEl, rel: mods.rel }, bg: arenaBg(c, r) },
       nhd: mods,
     };
     setNhd({ ...n, view: 'fight' });

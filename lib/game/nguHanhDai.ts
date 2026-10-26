@@ -219,3 +219,13 @@ export function gainAn(c: Character, el: Element | undefined, easy: boolean, rnd
 export function keyAn(c: Character): Element {
   return khacBy(nhdOrder(elementOf(c))[4]);
 }
+
+/** Giới sẽ đến nếu phi thăng lúc này (cùng luật với engine): ma tu hoặc đạo tâm từ -40 xuống là ma, dưới 20 là Thái Hư, còn lại tiên */
+export function destOf(c: Character): 'tien' | 'ma' | 'hu' {
+  return c.daoTam <= -40 || c.path === 'ma' ? 'ma' : c.daoTam < 20 ? 'hu' : 'tien';
+}
+
+/** Sân đấu theo giới sắp đến và hệ của bóng: 3 x 5 = 15 nền */
+export function arenaBg(c: Character, round: number): string {
+  return `/bg/nhd-${destOf(c)}-${nhdOrder(elementOf(c))[round]}.png`;
+}

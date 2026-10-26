@@ -183,7 +183,7 @@ def gmap_one(l, pal):
 
 
 # ================= Tiên giới =================
-def scene_tien():
+def scene_tien(bare=False):
     img = Image.new('RGBA', (W, H))
     gradient(img, ['#f6c27a', '#f8d6a0', '#fbe6c6', '#fdf2e2'])
     disc(img, 196, 46, 22, '#fff6dc', ring='#fde8b4', dither=5)
@@ -225,7 +225,7 @@ def scene_tien():
 
 
 # ================= Ma giới =================
-def scene_ma():
+def scene_ma(bare=False):
     img = Image.new('RGBA', (W, H))
     gradient(img, ['#12070c', '#2a0a14', '#4e1018', '#7a1c1c'])
     px = img.load()
@@ -269,8 +269,9 @@ def scene_ma():
         px[x, GROUND] = (90, 20, 20, 255)
     # cây chết đen
     dead = tree(['#08040a', '#140a10', '#22121a', '#30182a'], trunk=('#0a0408', '#1a0c10'))
-    put(img, dead.resize((60, 76), Image.NEAREST), -12, GROUND + 4)
-    put(img, dead.resize((40, 50), Image.NEAREST), 112, GROUND + 2)
+    if not bare:  # sân đấu Ngũ Hành Đài bỏ tiền cảnh
+        put(img, dead.resize((60, 76), Image.NEAREST), -12, GROUND + 4)
+        put(img, dead.resize((40, 50), Image.NEAREST), 112, GROUND + 2)
     # bia đá đen trước thành
     ob = gmap(no_bg(OBELISK), ['#0e0610', '#1e1018', '#32202c', '#5a2a30'])
     if False:
@@ -283,7 +284,7 @@ def scene_ma():
 
 
 # ================= Thái Hư giới =================
-def scene_hu():
+def scene_hu(bare=False):
     img = Image.new('RGBA', (W, H))
     gradient(img, ['#06061a', '#0e0e2e', '#1a1446', '#2a1a5a'], 0, H)
     px = img.load()
@@ -326,6 +327,8 @@ def scene_hu():
         px[x, GROUND] = (150, 130, 240, 255)
         if x % 2 == 0:
             px[x, GROUND + 1] = (90, 70, 180, 255)
+    if bare:
+        return img
     gate = gmap(no_bg(GATE), ['#3a3a7a', '#6a6ab8', '#a8b4e8', '#e4ecff'])
     put(img, gate.resize((84, 96), Image.NEAREST), 86, GROUND + 4)
     col = gmap(no_bg(COLUMN), ['#2a2a5a', '#4a4a8a', '#8a90d0', '#c8d0f4'])
