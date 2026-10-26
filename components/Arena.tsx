@@ -117,84 +117,86 @@ export function RuleBanner({ compact }: { compact?: boolean }) {
 
 const TIER_COL = ['#d8d0c8', '#6ab0ff', '#c08aff', '#ffd36b'];
 
-/** Ống xăm vẽ pixel, đặt trên bàn thờ trong gian miếu */
-function OngXam({ phase, tier }: { phase: 'idle' | 'shake' | 'fly' | 'open'; tier: number }) {
-  const col = TIER_COL[tier];
-  return (
-    <div className={`xam xam-${phase}`} aria-hidden="true">
-      {phase === 'fly' && (
-        <>
-          <PixelFx spec={fxRays(col)} scale={3} dur={0.6} className="pa xam-rays" />
-          <PixelFx spec={fxMotes(12, col)} scale={3} dur={1} className="pa xam-motes" />
-        </>
-      )}
-      <svg className="xam-stick" viewBox="0 0 6 30" shapeRendering="crispEdges">
-        <rect x="1" y="0" width="4" height="30" fill="#2a1408" />
-        <rect x="2" y="1" width="2" height="28" fill="#e8c87a" />
-        <rect x="2" y="1" width="2" height="6" fill={col} />
-        <rect x="2" y="2" width="1" height="3" fill="#ffffff" opacity="0.7" />
-      </svg>
-      <svg className="xam-pot" viewBox="0 0 32 40" shapeRendering="crispEdges">
-        {[6, 9, 12, 15, 18, 21, 24].map((x, i) => (
-          <g key={x} className={`xs xs${i % 3}`}>
-            <rect x={x - 0.5} y={1 + (i % 3) * 2} width="3" height="15" fill="#2a1408" />
-            <rect x={x} y={2 + (i % 3) * 2} width="2" height="14" fill={i % 2 ? '#e8c87a' : '#d0a858'} />
-            <rect x={x} y={2 + (i % 3) * 2} width="2" height="2" fill={i % 2 ? '#b0201a' : '#c8963a'} />
-          </g>
-        ))}
-        <rect x="3" y="13" width="26" height="26" fill="#2a1408" />
-        <rect x="4" y="14" width="24" height="24" fill="#8a4a1e" />
-        <rect x="4" y="14" width="5" height="24" fill="#a8622a" />
-        <rect x="23" y="14" width="5" height="24" fill="#6a3414" />
-        <rect x="4" y="14" width="24" height="2" fill="#c07a34" />
-        <rect x="4" y="19" width="24" height="2" fill="#d8a848" />
-        <rect x="4" y="20" width="24" height="1" fill="#a87a28" />
-        <rect x="4" y="32" width="24" height="2" fill="#d8a848" />
-        <rect x="4" y="33" width="24" height="1" fill="#a87a28" />
-        <rect x="12" y="23" width="8" height="7" fill="#2a1408" />
-        <rect x="13" y="24" width="6" height="5" fill="#b0201a" />
-        <rect x="14" y="25" width="4" height="3" fill="#ffd36b" />
-        <rect x="4" y="37" width="24" height="1" fill="#4a2410" />
-      </svg>
-    </div>
-  );
-}
-
 type Draw = { opp: string; foe: RivalChar; again?: boolean };
 
-/** Xin xăm lôi đài: lắc ống xăm, một que bay ra mang màu phẩm của đối thủ, lật thành thẻ bóng */
+/** Rút bóng: ba lá bài úp xáo trộn, chạm một lá, lật ra bóng đen của đối thủ rồi hiện hình (hình đều từ LPC và bộ icon CC0) */
+type XPhase = 'idle' | 'shuffle' | 'pick' | 'flip' | 'open';
 function XinXam({ me, user, rule, left, onFight, onErr }: { me: RivalChar; user: Player; rule: ArenaRule; left: number; onFight: (d: Draw) => void; onErr: (e: string) => void }) {
-  const [phase, setPhase] = useState<'idle' | 'shake' | 'fly' | 'open'>('idle');
+  const [phase, setPhase] = useState<XPhase>('idle');
   const [draw, setDraw] = useState<Draw | null>(null);
+  const [chosen, setChosen] = useState<number | null>(null);
   const tier = draw ? tierOf(draw.foe) : 0;
-  async function shake() {
+  async function shuffle() {
     if (phase !== 'idle') return;
-    setPhase('shake');
+    setPhase('shuffle');
     const t0 = Date.now();
     const r = await arenaDraw(user);
     if (!r || r.error || !r.opp || !r.shadow) {
       setPhase('idle');
-      onErr(r?.error === 'NO_TURNS' ? 'Hôm nay đã hết lượt.' : r?.error === 'NO_OPP' ? 'Chưa có đối thủ nào để rút.' : 'Ống xăm kẹt, thử lại sau.');
+      onErr(r?.error === 'NO_TURNS' ? 'Hôm nay đã hết lượt.' : r?.error === 'NO_OPP' ? 'Chưa có đối thủ nào để rút.' : 'Bài kẹt, thử lại sau.');
       return;
     }
     setDraw({ opp: r.opp, foe: r.shadow, again: r.again });
-    // lắc đủ lâu cho hồi hộp, rồi que bay ra
-    setTimeout(() => setPhase('fly'), Math.max(0, 1500 - (Date.now() - t0)));
-    setTimeout(() => setPhase('open'), Math.max(0, 1500 - (Date.now() - t0)) + 1100);
+    // xáo đủ lâu cho hồi hộp rồi mới cho chọn
+    setTimeout(() => setPhase('pick'), Math.max(0, 1300 - (Date.now() - t0)));
+  }
+  function choose(i: number) {
+    if (phase !== 'pick') return;
+    setChosen(i);
+    setPhase('flip');
+    // bóng đen hiện trước, lóe sáng theo phẩm rồi mới lộ mặt
+    setTimeout(() => setPhase('open'), 1700);
   }
   const p = draw ? baseChance(me, equalize(draw.foe, me), rule) : 0.5;
   const o = omen(p);
+  const col = TIER_COL[tier];
   return (
     <div className="xin-xam">
       {phase !== 'open' ? (
         <>
-          <div className="xam-stage">
-            <OngXam phase={phase} tier={tier} />
+          <div className={`xb-table xb-${phase}`}>
+            {[0, 1, 2].map((i) => {
+              const isChosen = chosen === i;
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  className={`xb-card c${i} ${isChosen ? 'chosen' : chosen !== null ? 'other' : ''}`}
+                  disabled={phase !== 'pick'}
+                  onClick={() => choose(i)}
+                  aria-label={phase === 'pick' ? `Lật lá thứ ${i + 1}` : 'Lá bài úp'}
+                  style={{ ['--tc' as string]: col }}
+                >
+                  {isChosen && phase === 'flip' && draw ? (
+                    <span className={`xb-face t${tier}`}>
+                      {tier > 0 && <PixelFx spec={fxRays(col)} scale={2} dur={1.2} className="pa xb-rays" />}
+                      {tier > 1 && <PixelFx spec={fxMotes(10, col)} scale={3} dur={1.4} className="pa xb-motes" />}
+                      <span className="xb-sil">
+                        <Sprite c={foeChar(draw.foe)} size={84} anim="idle" dir={2} />
+                      </span>
+                      <b>{TIERS[tier].name}</b>
+                    </span>
+                  ) : (
+                    <span className="xb-back">
+                      <img src="/icons/g_bat_quai_kinh.png" width={32} height={32} alt="" />
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
-          <button className="btn btn-red btn-big xam-btn" disabled={phase !== 'idle' || left <= 0} onClick={shake}>
-            {phase === 'idle' ? `Lắc ống xăm · còn ${left} lượt` : phase === 'shake' ? 'Đang lắc...' : 'Que xăm bay ra!'}
-          </button>
-          <small className="note">Mỗi que là bóng của một đạo hữu ngẫu nhiên. Màu que báo phẩm của bóng: xám Phàm, lam Linh, tím Huyền, vàng Thiên.</small>
+          {phase === 'pick' ? (
+            <p className="xb-hint">Chạm một lá để lật</p>
+          ) : phase === 'flip' ? (
+            <p className="xb-hint" style={{ color: col }}>
+              {tier >= 3 ? 'Thiên phẩm hiện thế!' : tier === 2 ? 'Bóng Huyền phẩm!' : tier === 1 ? 'Bóng Linh phẩm' : 'Một bóng Phàm phẩm'}
+            </p>
+          ) : (
+            <button className="btn btn-red btn-big xam-btn" disabled={phase !== 'idle' || left <= 0} onClick={shuffle}>
+              {phase === 'idle' ? `Rút bóng đối thủ · còn ${left} lượt` : 'Đang xáo bài...'}
+            </button>
+          )}
+          <small className="note">Mỗi lá là bóng của một đạo hữu ngẫu nhiên. Ánh sáng khi lật báo phẩm của bóng: xám Phàm, lam Linh, tím Huyền, vàng Thiên.</small>
         </>
       ) : (
         draw && (

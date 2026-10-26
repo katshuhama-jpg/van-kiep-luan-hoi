@@ -3548,19 +3548,8 @@ button.shadow-card { cursor: pointer; }
 .xin-xam { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 6px; background: #1a0e0c; border: 3px solid var(--ink); }
 .xin-xam .note { color: #e0c8a0; text-align: center; font-size: 13px; }
 .xam-btn { width: 100%; }
-.xam-stage { position: relative; width: 100%; aspect-ratio: 128 / 96; background: #28100e url('/bg/xam-mieu.png') center / 100% 100% no-repeat; image-rendering: pixelated; border: 2px solid #000; overflow: hidden; }
-.xam { position: absolute; left: 50%; bottom: 27%; width: 26%; aspect-ratio: 32 / 40; transform: translateX(-50%); }
-.xam-pot { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; transform-origin: 50% 95%; }
-.xam-stick { position: absolute; left: 50%; top: -6%; width: 14%; margin-left: -7%; opacity: 0; image-rendering: pixelated; z-index: 2; }
-.xam-rays { top: 20%; z-index: 0; }
-.xam-motes { top: 10%; z-index: 1; }
-.xam-shake .xam-pot { animation: xamShake 0.16s steps(2) infinite; }
-.xam-shake .xs0 { animation: xsJig 0.12s steps(2) infinite; }
-.xam-shake .xs1 { animation: xsJig 0.12s steps(2) 0.06s infinite; }
-.xam-shake .xs2 { animation: xsJig 0.18s steps(2) infinite; }
 @keyframes xamShake { 0% { transform: rotate(-8deg) translateX(-2px); } 100% { transform: rotate(8deg) translateX(2px); } }
 @keyframes xsJig { 0% { transform: translateY(0); } 100% { transform: translateY(-2px); } }
-.xam-fly .xam-stick { animation: xsFly 1.1s steps(11) forwards; }
 @keyframes xsFly { 0% { opacity: 1; transform: translateY(40%) rotate(0); } 55% { opacity: 1; transform: translateY(-120%) rotate(180deg); } 100% { opacity: 1; transform: translateY(-70%) rotate(360deg) scale(1.4); } }
 /* thẻ bóng sau khi lật: khung pixel nhiều lớp, nền ca rô kiểu dither, góc nạm vàng */
 .xam-card { --c1: #4a4440; --c2: #3e3834; --hi: #b8b0a8; position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 14px 12px 12px; text-align: center; color: #fff3dc; background: repeating-conic-gradient(var(--c1) 0 25%, var(--c2) 0 50%) 0 0 / 6px 6px; border: 3px solid #000; box-shadow: inset 0 0 0 3px var(--hi), inset 0 0 0 6px #000; animation: xcFlip 0.6s steps(6) both; image-rendering: pixelated; }
@@ -3894,3 +3883,36 @@ button.shadow-card { cursor: pointer; }
 @keyframes pdLongFloatL { to { transform: scaleX(-1) translateY(-4px); } }
 @keyframes pdLongFloatR { to { transform: translateY(-4px); } }
 @media (prefers-reduced-motion: reduce) { .pd-stage.ready .pd-long.l, .pd-stage.ready .pd-long.r { animation: none; } }
+
+/* Rút bóng lôi đài: ba lá bài úp */
+.xb-table { position: relative; width: 100%; height: 190px; display: flex; justify-content: center; align-items: center; gap: 10px; background: repeating-linear-gradient(90deg, #3a1210 0 6px, #34100e 6px 12px); border: 2px solid #000; box-shadow: inset 0 0 0 3px #6a2a18; }
+.xb-card { --tc: #d8d0c8; position: relative; width: 92px; height: 132px; padding: 0; font: inherit; cursor: pointer; background: none; border: 0; image-rendering: pixelated; transition: transform 0.2s steps(3), opacity 0.3s steps(3); }
+.xb-card:disabled { cursor: default; }
+.xb-back, .xb-face { position: absolute; inset: 0; display: grid; place-items: center; border: 3px solid #000; }
+.xb-back { background: repeating-conic-gradient(#8a1a14 0 25%, #741410 0 50%) 0 0 / 8px 8px; box-shadow: inset 0 0 0 3px #c9962e, inset 0 0 0 6px #000, 3px 3px 0 #000; }
+.xb-back img { width: 48px; height: 48px; image-rendering: pixelated; filter: drop-shadow(0 0 0 #000) drop-shadow(2px 2px 0 #000); }
+.xb-face { background: #120a1a; box-shadow: inset 0 0 0 3px var(--tc), 0 0 16px var(--tc), 3px 3px 0 #000; overflow: hidden; animation: xbFlip 0.5s steps(5) both; }
+.xb-face b { position: absolute; bottom: 4px; left: 0; right: 0; text-align: center; font-size: 13px; color: #000; background: var(--tc); }
+.xb-sil { position: relative; z-index: 2; filter: brightness(0) drop-shadow(0 0 3px var(--tc)) drop-shadow(0 0 6px var(--tc)); animation: xbReveal 1.7s steps(6) both; }
+.xb-rays { z-index: 1; }
+.xb-motes { z-index: 3; }
+@keyframes xbFlip { 0% { transform: scaleX(0); } 100% { transform: scaleX(1); } }
+@keyframes xbReveal { 0%, 55% { filter: brightness(0) drop-shadow(0 0 3px var(--tc)) drop-shadow(0 0 6px var(--tc)); } 100% { filter: brightness(1) drop-shadow(0 0 4px var(--tc)); } }
+/* xáo bài: ba lá đổi chỗ cho nhau */
+.xb-shuffle .c0 { animation: xbSh0 0.45s steps(4) infinite; }
+.xb-shuffle .c1 { animation: xbSh1 0.45s steps(4) infinite; }
+.xb-shuffle .c2 { animation: xbSh2 0.45s steps(4) infinite; }
+@keyframes xbSh0 { 50% { transform: translate(102px, -10px) rotate(6deg); } }
+@keyframes xbSh1 { 50% { transform: translate(0, 14px) scale(0.92); } }
+@keyframes xbSh2 { 50% { transform: translate(-102px, -10px) rotate(-6deg); } }
+.xb-idle .xb-card { animation: xbFloat 1.6s steps(2) infinite alternate; }
+.xb-idle .c1 { animation-delay: 0.3s; }
+.xb-idle .c2 { animation-delay: 0.6s; }
+@keyframes xbFloat { to { transform: translateY(-4px); } }
+.xb-pick .xb-card { animation: xbPulse 0.8s steps(2) infinite; }
+.xb-pick .xb-card:hover, .xb-pick .xb-card:focus-visible { transform: translateY(-10px); }
+@keyframes xbPulse { 50% { filter: drop-shadow(0 0 6px #ffd36b); } }
+.xb-flip .xb-card.other { opacity: 0.15; transform: scale(0.9); }
+.xb-flip .xb-card.chosen { transform: scale(1.25); z-index: 2; }
+.xb-hint { margin: 2px 0; font-size: 18px; font-weight: 700; color: #ffd36b; text-shadow: 2px 2px 0 #000; animation: blinkTap 1s steps(2) infinite; }
+@media (prefers-reduced-motion: reduce) { .xb-card, .xb-sil, .xb-face, .xb-hint { animation: none !important; } }
