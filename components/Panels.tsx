@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { ENDINGS, RARE_COLOR, endingOf } from '@/lib/game/endings';
 import { GachaPanel, ShareCard } from './Extras';
 import ItemIconImg from './ItemIcon';
@@ -121,8 +121,28 @@ export function EventCard({ p, onChoose }: { p: PendingEvent; onChoose: (i: numb
 export function LogPanel({ log }: { log: LogEntry[] }) {
   const [all, setAll] = useState(false);
   const items = [...log].reverse().slice(0, all ? 400 : 25);
+  const ref = useRef<HTMLElement>(null);
+  const touched = useRef(0);
+  // người chơi đang tự cuộn đọc lại thì để yên một lúc
+  useEffect(() => {
+    const box = ref.current?.closest('.game-scroll');
+    if (!box) return;
+    const mark = () => (touched.current = Date.now());
+    box.addEventListener('touchstart', mark, { passive: true });
+    box.addEventListener('wheel', mark, { passive: true });
+    return () => {
+      box.removeEventListener('touchstart', mark);
+      box.removeEventListener('wheel', mark);
+    };
+  }, []);
+  // dòng mới nhất nằm trên cùng: có mốc mới thì cuộn khung gia phả về đầu cho người chơi thấy ngay
+  useEffect(() => {
+    const box = ref.current?.closest('.game-scroll');
+    if (!box || box.scrollTop <= 0 || Date.now() - touched.current < 6000) return;
+    box.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [log.length]);
   return (
-    <section className="panel" aria-label="Gia phả kiếp này">
+    <section className="panel" aria-label="Gia phả kiếp này" ref={ref}>
       <h2>Gia phả kiếp này</h2>
       <div className="log">
         {items.map((e, i) => (
