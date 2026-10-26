@@ -3646,3 +3646,18 @@ button.shadow-card { cursor: pointer; }
 .shadow-card.vert .sc-tags, .shadow-card.vert .sc-stats { justify-content: center; }
 .shadow-card.vert .sc-rank { top: 4px; right: 4px; }
 .shadow-card.vert.on { box-shadow: inset 0 0 0 3px #c9962e, 0 0 0 2px #c9962e; }
+/* thanh xuất chiến bám đáy */
+.sp-bar { position: fixed; left: 50%; transform: translateX(-50%); width: min(540px, calc(100vw - 20px)); bottom: calc(10px + env(safe-area-inset-bottom)); z-index: 40; display: flex; align-items: center; gap: 8px; padding: 6px 8px; background: #2a1810; color: #fff3dc; border: 3px solid #1a0e0c; box-shadow: inset 0 0 0 2px #6a4a2a, 0 4px 0 #1a0e0c; }
+.sp-bar.ready { box-shadow: inset 0 0 0 2px #ffd36b, 0 4px 0 #1a0e0c; }
+.sp-chosen { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; }
+.sp-chosen small { display: block; font-size: 12px; color: #e0c8a0; }
+.sp-chosen b { display: block; font-size: 16px; color: #ffe9a8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sp-chosen > span:last-child { min-width: 0; }
+.sp-mini { flex: none; width: 44px; height: 44px; overflow: hidden; background: #1a0e0c; border: 2px solid #6a4a2a; }
+.sp-hint { flex: 1; font-size: 14px; color: #e0c8a0; }
+.sp-go { flex: none; font-size: 19px; padding: 8px 14px; }
+.sp-bar.ready .sp-go { animation: spPulse 1s steps(2) infinite; }
+@keyframes spPulse { 50% { box-shadow: 0 0 0 3px #ffd36b; } }
+@media (prefers-reduced-motion: reduce) { .sp-bar.ready .sp-go { animation: none; } }
+
+.shadow-pick { margin-bottom: 84px; }

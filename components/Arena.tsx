@@ -456,9 +456,25 @@ export default function Arena({ user }: { user: Player | null }) {
                   <ShadowCard key={`${c.lifeId}-${i}`} r={c} rank={i + 1} rule={rule} vert on={pick === i} onPick={() => setPick(i)} />
                 ))}
               </div>
-              <button className="btn btn-red btn-big" disabled={pick === null || !!busy} onClick={lock}>
-                {busy === 'pick' ? 'Đang triệu hồi...' : 'Xuất chiến'}
-              </button>
+              {/* thanh xuất chiến bám đáy màn hình: luôn thấy, không phải cuộn xuống tìm */}
+              <div className={`sp-bar ${pick !== null ? 'ready' : ''}`}>
+                {pick !== null && cands[pick] ? (
+                  <span className="sp-chosen">
+                    <span className="sp-mini">
+                      <Sprite c={foeChar(cands[pick])} size={44} />
+                    </span>
+                    <span>
+                      <small>Bóng đã chọn</small>
+                      <b>{cands[pick].name}</b>
+                    </span>
+                  </span>
+                ) : (
+                  <span className="sp-hint">Chạm vào một thẻ ở trên để chọn bóng</span>
+                )}
+                <button className="btn btn-red sp-go" disabled={pick === null || !!busy} onClick={lock}>
+                  {busy === 'pick' ? 'Đang triệu hồi...' : '⚔ Xuất chiến'}
+                </button>
+              </div>
             </>
           )}
         </>
