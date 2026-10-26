@@ -553,3 +553,8 @@ Mục tiêu: chết nhiều không còn là lợi thế; người chơi lâu có
 - **Lôi đài** (`components/Arena.tsx`, tab Lôi đài ở Xếp hạng, link `?tab=loi-dai`, nút trong ☰ menu): bảng `vkl_arena`, `vkl_arena_log`, `vkl_arena_champ`, `vkl_arena_season`; RPC `vkl_arena_state`, `vkl_arena_fight` (điểm kiểu cờ vua K=32, đối thủ chịu một nửa), `vkl_priv.arena_roll` (sang tuần: lưu top 3, kéo điểm về gần 1000). Trận đấu mô phỏng ở trình duyệt bằng `simulateDuel` với `vkl_player_best`. Mảnh XV: `loi_dai ≥ 3` (hoặc chiến thư cũ).
 - `/cap-nhat`: danh sách phiên bản, bấm xem chi tiết (`?v=`).
 - Mô phỏng 25 tài khoản × 50 kiếp: nhóm từ 36 kiếp chơi dồn dập (20 phút/kiếp) tới Độ Kiếp 4%, phi thăng 0,3% (không có Luân Hồi Đạo: 7% và 1,3%); chơi có nghỉ (3 giờ/kiếp) 8% và 2,4%.
+
+## Bỏ chế độ khách (26/10, không ghi cáo thị)
+- `/choi` chưa đăng nhập thì chuyển sang `/dang-nhap?next=/choi`. Nút "Vào luân hồi" ở trang đầu cũng dẫn thẳng tới đăng nhập khi chưa có phiên. Bỏ nút "Chơi thử không cần tài khoản".
+- Phiên đăng nhập (`localStorage vkl.session`) giữ nguyên, không đổi cách lưu.
+- Đăng ký mới: `carryGuest` (storage.ts) đưa hồ sơ và kiếp chơi dở của chế độ khách cũ trên máy lên tài khoản rồi xóa bản trên máy.

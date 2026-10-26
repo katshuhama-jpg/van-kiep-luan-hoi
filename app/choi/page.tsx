@@ -149,6 +149,11 @@ export default function PlayPage() {
   // Tải dữ liệu khi biết đã đăng nhập hay chưa
   useEffect(() => {
     if (!ready) return;
+    // không còn chế độ khách: chưa đăng nhập thì sang trang đăng nhập (phiên đã có giữ nguyên)
+    if (!user) {
+      window.location.replace('/dang-nhap?next=/choi');
+      return;
+    }
     let cancel = false;
     (async () => {
       const { meta: m0, save } = await loadAll(user);
@@ -1369,17 +1374,12 @@ export default function PlayPage() {
             <span className="age-big" style={{ fontSize: 28 }}>
               Luân hồi
             </span>
-            <span className="meta">{user ? `Đạo hữu ${displayName(user)}` : 'Đang chơi chế độ khách'}</span>
+            <span className="meta">{user ? `Đạo hữu ${displayName(user)}` : ''}</span>
             <Link href="/" className="icon-btn" style={{ textDecoration: 'none', display: 'grid', placeItems: 'center' }} aria-label="Về trang đầu">
               ‹
             </Link>
           </div>
         </header>
-        {!user && (
-          <p className="note" style={{ margin: 0 }}>
-            Chế độ khách chỉ lưu trên máy này. <Link href="/dang-nhap">Đăng nhập</Link> để lưu và lập bia ở nghĩa trang chung.
-          </p>
-        )}
         {loreNews.length > 0 && (
           <Link href="/so-sinh-tu#thien-thu" className="quest-news lore" style={{ display: 'block', textDecoration: 'none' }}>
             📜 Thiên thư mở thêm: <b>{loreNews.join(', ')}</b> · chạm để đọc

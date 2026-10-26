@@ -344,7 +344,7 @@ export default function RankPage() {
 
       {!user && (
         <p className="note" style={{ margin: 0 }}>
-          Nhân vật chế độ khách không lên bảng. <Link href="/dang-nhap">Đăng nhập</Link> để ghi danh.
+          <Link href="/dang-nhap">Đăng nhập</Link> để ghi danh lên bảng.
         </p>
       )}
     </main>

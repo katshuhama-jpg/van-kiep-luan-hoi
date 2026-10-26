@@ -396,3 +396,17 @@ export function loreMasters(): Promise<Record<string, string>> {
   setTimeout(() => (loreMastersCache = null), 5 * 60 * 1000);
   return loreMastersCache;
 }
+
+/** Tài khoản vừa tạo: đưa hồ sơ và kiếp đang chơi dở của chế độ khách cũ (lưu trên máy) lên tài khoản, rồi xóa bản trên máy */
+export async function carryGuest(user: Player | null) {
+  if (!user) return;
+  const meta = readLocal<Meta>(K.meta);
+  const save = readLocal<SaveState>(K.save);
+  if (meta && (meta.lives ?? 0) > 0) await saveMeta(user, { ...emptyMeta(), ...meta });
+  if (save) {
+    saveLocal(user, save);
+    await saveRemote(user, save);
+  }
+  writeLocal(K.meta, null);
+  writeLocal(K.save, null);
+}

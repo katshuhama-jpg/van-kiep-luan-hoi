@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Sprite from '@/components/Sprite';
-import { signIn, signUp } from '@/lib/auth';
+import { currentPlayer, signIn, signUp } from '@/lib/auth';
+import { carryGuest } from '@/lib/storage';
 import { demoChar } from '@/lib/game/demo';
 import { useAuth } from '@/lib/useAuth';
 
@@ -25,8 +26,14 @@ export default function LoginPage() {
     setError(null);
     const err = mode === 'in' ? await signIn(username, password) : await signUp(username, password);
     setBusy(false);
-    if (err) setError(err);
-    else router.push('/choi');
+    if (err) {
+      setError(err);
+      return;
+    }
+    // tài khoản mới: chuyển tiến độ chơi thử trên máy (nếu có) vào tài khoản
+    if (mode === 'up') await carryGuest(currentPlayer()).catch(() => {});
+    const next = new URLSearchParams(window.location.search).get('next');
+    router.push(next && next.startsWith('/') ? next : '/choi');
   }
 
   return (
@@ -49,7 +56,10 @@ export default function LoginPage() {
           </button>
         </div>
 
-        {!enabled && <p className="error">Chưa cấu hình máy chủ, tạm thời chỉ chơi được ở chế độ khách.</p>}
+        {!enabled && <p className="error">Chưa kết nối được máy chủ, thử lại sau ít phút.</p>}
+        <p className="note" style={{ margin: 0 }}>
+          Cần một tài khoản để vào luân hồi. Tiến độ được lưu trên mây, đổi máy vẫn chơi tiếp được.
+        </p>
 
         <label className="field">
           <span>Tên đăng nhập</span>
@@ -87,9 +97,6 @@ export default function LoginPage() {
       </form>
 
       <div className="menu">
-        <Link className="btn" href="/choi" style={{ textDecoration: 'none', display: 'block' }}>
-          Chơi thử không cần tài khoản
-        </Link>
         <Link href="/" className="note">
           ‹ Về trang đầu
         </Link>

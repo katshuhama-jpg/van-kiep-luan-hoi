@@ -46,7 +46,7 @@ export default function Home() {
       </div>
 
       <div className="menu">
-        <Link href="/choi" className="btn btn-red btn-big" style={link}>
+        <Link href={ready && !user ? '/dang-nhap?next=/choi' : '/choi'} className="btn btn-red btn-big" style={link}>
           Vào luân hồi
         </Link>
         <Link href="/bang-xep-hang" className="btn" style={link}>
