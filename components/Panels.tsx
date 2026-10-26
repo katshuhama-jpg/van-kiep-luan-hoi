@@ -1090,7 +1090,7 @@ function Mini({ label, value, pct, color, danger }: { label: string; value: numb
   );
 }
 
-export function StageStrip({ c, compact }: { c: Character; compact: boolean }) {
+export function StageStrip({ c, compact, wait = 0 }: { c: Character; compact: boolean; wait?: number }) {
   const s = c.stats;
   const cult = c.realm === 0 ? c.cultivation / 40 : cultPct(c);
   const daoPct = (c.daoTam + 100) / 200;
@@ -1107,9 +1107,9 @@ export function StageStrip({ c, compact }: { c: Character; compact: boolean }) {
         )}
         <span className="strip-realm">{c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer, c.cosmos)}</span>
       </div>
-      <div className="cult" role="progressbar" aria-label="Tu vi" aria-valuenow={Math.round(cult * 100)} aria-valuemin={0} aria-valuemax={100}>
+      <div className={`cult ${wait ? 'wait' : ''}`} role="progressbar" aria-label="Tu vi" aria-valuenow={Math.round(cult * 100)} aria-valuemin={0} aria-valuemax={100}>
         <span className="cult-fill" style={{ width: `${Math.min(1, cult) * 100}%` }} />
-        <span className="cult-text">Tu vi {Math.round(cult * 100)}%</span>
+        <span className="cult-text">{wait ? `Đủ phi thăng · còn ${wait} năm · chạm xem` : `Tu vi ${Math.round(cult * 100)}%`}</span>
       </div>
       {!compact && (
         <>

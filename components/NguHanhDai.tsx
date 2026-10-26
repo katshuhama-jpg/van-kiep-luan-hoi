@@ -96,17 +96,16 @@ export function waiting(c: Character): number {
   return ready ? Math.max(0, Math.ceil(ASCEND_MIN_AGE - c.age)) : 0;
 }
 
-/** Dải nhắc Ngũ Hành Đài ở dock: từ Hóa Thần tới lúc phi thăng */
-export function NhdBanner({ c, onOpen }: { c: Character; onOpen: () => void }) {
+/** Huy hiệu gương ở góc sân khấu: mờ từ Hóa Thần, sáng khi đủ cấp mà chưa đủ tuổi */
+export function NhdMirror({ c, onOpen }: { c: Character; onOpen: () => void }) {
   if (c.cosmos || c.realm < 5 || c.nhd?.done || c.dead) return null;
   const k = khacBy(nhdOrder(elementOf(c))[4]);
   const w = waiting(c);
+  const label = w ? `Đủ cấp phi thăng, còn ${w} năm tới ${ASCEND_MIN_AGE} tuổi. Chạm xem nên chuẩn bị gì` : `Ngũ Hành Đài: ấn ${ELEMENTS[k].name} ${anOf(c, k)}/${AN_MAX}, phù ${c.phu ?? 0}/3`;
   return (
-    <button className={`nhd-banner ${w ? 'wait' : ''}`} onClick={onOpen}>
-      <b>{w ? `Đủ cấp phi thăng · còn ${w} năm tới ${ASCEND_MIN_AGE} tuổi` : 'Ngũ Hành Đài chờ trước cửa trời'}</b>
-      <span>
-        Ấn {ELEMENTS[k].name} {anOf(c, k)}/{AN_MAX} · Phù {c.phu ?? 0}/3 · {w ? 'chạm xem nên làm gì' : `phi thăng từ ${ASCEND_MIN_AGE} tuổi`}
-      </span>
+    <button className={`nhd-badge ${w ? 'wait' : ''}`} onClick={onOpen} aria-label={label} title={label} style={{ ['--el' as string]: ELEMENTS[k].color } as CSSProperties}>
+      <i aria-hidden="true" />
+      <small>{w ? `${w}n` : `${anOf(c, k)}/${AN_MAX}`}</small>
     </button>
   );
 }

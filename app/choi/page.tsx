@@ -34,7 +34,7 @@ import { updateCareer, bumpStreak, evalQuests, omenIs, qmark, questName, streakG
 import { HookSheet, TitleBadge } from '@/components/Hook';
 import { omenToday } from '@/lib/game/hook';
 import { useAuth } from '@/lib/useAuth';
-import NguHanhDai, { NhdBanner, type NhdView } from '@/components/NguHanhDai';
+import NguHanhDai, { NhdMirror, waiting, type NhdView } from '@/components/NguHanhDai';
 import { NHD_MAX_TURNS, PHU_PRICE, STANCES, loseRound, mirrorChar, mirrorStance, mirrorStats, needTrial, nhdOf, roundMods, tellOf, winRound, type RoundMods, type Stance } from '@/lib/game/nguHanhDai';
 import { sectSide } from '@/lib/game/sect';
 
@@ -1308,6 +1308,7 @@ export default function PlayPage() {
 
   const c = charRef.current!;
   const pending = pendingRef.current;
+  const battleNow = duelRef.current ?? ambushRef.current ?? (c.focus === 'tru_yeu' && c.age >= 10 && battleRef.current?.m.id === c.huntTarget ? battleRef.current : null);
   const paused = !running || !!pending || sheet !== null || c.dead;
   const season = seasonOf(c.age);
   const omenIcon = omenToday().icon;
@@ -1386,10 +1387,15 @@ export default function PlayPage() {
           fx={fx}
           paused={paused}
           season={season}
-          battle={duelRef.current ?? ambushRef.current ?? (c.focus === 'tru_yeu' && c.age >= 10 && battleRef.current?.m.id === c.huntTarget ? battleRef.current : null)}
+          battle={battleNow}
         />
-        <button className="strip-btn" onClick={() => setSheet('info')} aria-label="Xem bảng chỉ số nhân vật">
-          <StageStrip c={c} compact={!!pending && !c.dead} />
+        {!battleNow && <NhdMirror c={c} onOpen={() => setNhdPeek(true)} />}
+        <button
+          className="strip-btn"
+          onClick={(e) => ((e.target as HTMLElement).closest('.cult.wait') ? setNhdPeek(true) : setSheet('info'))}
+          aria-label="Xem bảng chỉ số nhân vật"
+        >
+          <StageStrip c={c} compact={!!pending && !c.dead} wait={waiting(c)} />
         </button>
       </section>
 
@@ -1402,7 +1408,6 @@ export default function PlayPage() {
           <EventCard p={pending} onChoose={choose} />
         ) : (
           <div className="dock-inner">
-            <NhdBanner c={c} onOpen={() => setNhdPeek(true)} />
             <FocusGrid c={c} onPick={pickFocus} />
             <div className="dock-actions">
               <button className="btn btn-dark" onClick={() => setSheet('shop')} disabled={c.dead}>
