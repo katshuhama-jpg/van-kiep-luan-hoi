@@ -1690,6 +1690,7 @@ export default function PlayPage() {
         <TribulationOverlay
           realmName={c.realm + 1 > 11 ? 'Chứng Đạo' : c.realm + 1 === 8 ? (c.daoTam <= -40 || c.path === 'ma' ? 'Ma Giới' : c.daoTam < 20 ? 'Thái Hư' : 'Phi Thăng') : realmName(c.realm + 1, c.cosmos)}
           onDone={afterKiep}
+          c={c}
         />
       )}
     </main>

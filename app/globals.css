@@ -3808,3 +3808,58 @@ button.shadow-card { cursor: pointer; }
 .choice.chinh, .choice.ta { padding-right: 58px; }
 .game .dialog p { font-size: 18px; line-height: 1.3; margin: 3px 0 7px; }
 .game .dialog h2 { font-size: 20px; }
+
+/* ===== Lôi kiếp kiểu pixel (27/10) ===== */
+.kiep { background: #0c0818; image-rendering: pixelated; }
+.kiep-sky { display: none; }
+.kiep-px { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.kp-star { animation: blinkTap 1.6s steps(2) infinite; }
+.kp-clouds { animation: kpDrift 5s steps(6) infinite alternate; }
+.kp-clouds.charge rect { fill: #6a52a8; }
+.kiep-fake .kp-clouds.charge rect { fill: #7a3aa8; }
+@keyframes kpDrift { to { transform: translateX(3px); } }
+.kp-bolt { z-index: 3; animation: kpBolt 0.3s steps(3) both; }
+.kp-bolt.hit { filter: drop-shadow(0 0 6px #fff6a8); }
+@keyframes kpBolt { 0% { opacity: 0; } 34% { opacity: 1; } 67% { opacity: 0.5; } 100% { opacity: 1; } }
+.kiep-hit { animation: kiepShake 0.3s steps(3); background: #2a0a14; }
+.kiep-block { background: #0a201c; }
+.kiep-trap { animation: kiepShake 0.3s steps(3); background: #22103a; }
+
+.kiep-hud { z-index: 4; display: block; top: max(10px, env(safe-area-inset-top)); left: 10px; right: 10px; padding: 6px 8px; background: #1a1230; border: 3px solid #0a0614; box-shadow: inset 0 0 0 2px #c9962e, 3px 3px 0 #000; font-size: 17px; }
+.kh-top { display: flex; justify-content: space-between; gap: 8px; }
+.kh-top b { color: #ffd36b; }
+.kh-top span { color: #c8b8dc; }
+.kh-pips { display: flex; align-items: center; gap: 4px; margin-top: 5px; }
+.kh-pips i { width: 16px; height: 16px; background: #2a2244; border: 2px solid #0a0614; }
+.kh-pips i.ok { background: #6ac0a0; box-shadow: inset -3px -3px 0 #2f6b5a; }
+.kh-pips i.hit { background: #d04040; box-shadow: inset -3px -3px 0 #7a1a1a; }
+.kh-pips i.now { background: #ffd36b; animation: blinkTap 0.6s steps(2) infinite; }
+.kh-pips em { margin-left: 4px; font-style: normal; font-weight: 700; color: #c88aff; }
+
+/* khung ngắm: ô vuông góc gãy, co dần vào khung đích */
+.kiep-aim { position: absolute; z-index: 3; top: 42%; width: 0; height: 0; pointer-events: none; }
+.ka-frame, .ka-ret { position: absolute; left: -36px; top: -36px; width: 72px; height: 72px; }
+.ka-frame { border: 4px solid rgba(255, 246, 168, 0.85); box-shadow: 0 0 0 3px #0a0614; clip-path: polygon(0 0, 30% 0, 30% 8px, 8px 8px, 8px 30%, 0 30%, 0 70%, 8px 70%, 8px calc(100% - 8px), 30% calc(100% - 8px), 30% 100%, 70% 100%, 70% calc(100% - 8px), calc(100% - 8px) calc(100% - 8px), calc(100% - 8px) 70%, 100% 70%, 100% 30%, calc(100% - 8px) 30%, calc(100% - 8px) 8px, 70% 8px, 70% 0, 100% 0, 100% 100%, 0 100%); }
+.ka-ret { border: 4px solid #ffd36b; box-shadow: 3px 3px 0 #0a0614; animation: kaShrink linear forwards; }
+.kiep-aim b { position: absolute; left: -40px; width: 80px; top: 44px; text-align: center; font-size: 18px; font-weight: 700; color: #fff6a8; text-shadow: 2px 2px 0 #0a0614; }
+@keyframes kaShrink { from { transform: scale(var(--s0, 2.2)); } to { transform: scale(0.8); border-color: #ff6a5a; } }
+.kiep-aim.fake .ka-ret { border-color: #c88aff; }
+.kiep-aim.fake .ka-frame { border-color: rgba(200, 138, 255, 0.85); }
+.kiep-aim.fake b { color: #c88aff; }
+
+.kiep-center { z-index: 4; }
+.kiep-card { padding: 12px 14px; text-align: left; background: #1a1230; border: 3px solid #0a0614; box-shadow: inset 0 0 0 2px #c9962e, 4px 4px 0 #000; }
+.kiep-card .kiep-big { text-align: center; font-size: 28px; font-weight: 700; text-shadow: 2px 2px 0 #5a1420; }
+.kiep-card ul { margin: 6px 0; padding-left: 18px; font-size: 17px; line-height: 1.35; color: #e0d4ee; }
+.kiep-card li { margin: 3px 0; }
+.kiep-card b { color: #ffd36b; }
+.kiep-card b.vio, .kiep-mid.vio { color: #c88aff; }
+.kiep-card .kiep-tap, .kiep-card > p { text-align: center; }
+.kiep-card .btn { width: 100%; margin-top: 6px; }
+.kiep-mid { font-size: 26px; font-weight: 700; text-shadow: 2px 2px 0 #0a0614; }
+.kiep-hero { position: absolute; z-index: 2; left: 50%; bottom: calc(22% - 6px); transform: translateX(-50%); pointer-events: none; }
+.kiep-hero.hurt { animation: kiepShake 0.3s steps(3); filter: brightness(1.8) sepia(1) hue-rotate(-30deg); }
+.kiep-hero.guard { filter: drop-shadow(0 0 6px #9ff0c8); }
+.kiep-skip { z-index: 5; background: #1a1230; border: 2px solid #6a5a8a; box-shadow: 2px 2px 0 #000; }
+@media (prefers-reduced-motion: reduce) { .kp-clouds, .kp-star, .kiep-trap { animation: none; } }
+.kiep .kiep-mid.ok { background: none; border: 0; padding: 0; box-shadow: none; }
