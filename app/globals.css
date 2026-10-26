@@ -3863,3 +3863,4 @@ button.shadow-card { cursor: pointer; }
 .kiep-skip { z-index: 5; background: #1a1230; border: 2px solid #6a5a8a; box-shadow: 2px 2px 0 #000; }
 @media (prefers-reduced-motion: reduce) { .kp-clouds, .kp-star, .kiep-trap { animation: none; } }
 .kiep .kiep-mid.ok { background: none; border: 0; padding: 0; box-shadow: none; }
+.ar-reset { display: block; margin-top: 2px; font-size: 13px; line-height: 1.25; color: var(--muted); }

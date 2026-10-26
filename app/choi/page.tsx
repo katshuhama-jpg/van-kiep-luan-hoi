@@ -13,7 +13,7 @@ import { giftOf } from '@/lib/game/gacha';
 import type { BattleView } from '@/components/Battle';
 import { MONSTERS, combatLevel, effLv, fleeChance, hit, killExp, killReward, loseFight, monsterName, monsterStats, playerStats, tierOf, type Fighter } from '@/lib/game/combat';
 import { signOut } from '@/lib/auth';
-import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, realmLabel, realmName } from '@/lib/game/data';
+import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, pillPrice, realmLabel, realmName } from '@/lib/game/data';
 import { genName, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick } from '@/lib/game/engine';
 import { addCult, addPill, dao, fatal, fmt, giveItem, money, reward, stat, wealthTier } from '@/lib/game/helpers';
 import type { Character, Element, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
@@ -985,8 +985,10 @@ export default function PlayPage() {
   const buyPill = (id: string) =>
     act((c, out) => {
       const p = PILLS.find((x) => x.id === id);
-      if (!p || c.linhThach < p.price) return;
-      money(c, -p.price);
+      const price = p ? pillPrice(c, id) : 0;
+      if (!p || c.linhThach < price) return;
+      money(c, -price);
+      c.pillBuy = { ...(c.pillBuy ?? {}), [id]: (c.pillBuy?.[id] ?? 0) + 1 };
       addPill(c, id);
       out.push({ kind: 'coin', id: Math.random(), label: `+1 ${p.name}` });
     });

@@ -1070,7 +1070,9 @@ export const EVENTS2: GameEvent[] = [
           const r = ctx.rnd();
           if (r < 0.45) {
             addCult(c, reward(c, 6));
+            const b0 = c.lifespan;
             c.lifespan = Math.min(200, c.lifespan + 30);
+            c.lifeExtra = (c.lifeExtra ?? 0) + (c.lifespan - b0); // tiên đan: giữ phần thọ thêm qua mức trần hằng năm
             ctx.fx('breakthrough', 'Tiên duyên');
             return 'Trong hộp là một viên tiên đan cổ. Bạn trẻ lại ba mươi tuổi, tu vi tăng vọt.';
           }

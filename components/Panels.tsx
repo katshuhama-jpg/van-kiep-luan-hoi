@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 
 import { ENDINGS, RARE_COLOR, endingOf } from '@/lib/game/endings';
 import { GachaPanel, ShareCard } from './Extras';
 import ItemIconImg from './ItemIcon';
-import { FOCUS, ITEMS, PATHS, PILLS, REALMS, SEASONS, TALENTS, fxText, gearFx, realmLabel, type Item } from '@/lib/game/data';
+import { FOCUS, ITEMS, PATHS, PILLS, REALMS, SEASONS, TALENTS, fxText, gearFx, pillPrice, realmLabel, type Item } from '@/lib/game/data';
 import { describeLean } from '@/lib/game/engine';
 import { DANGER_TEXT, MONSTERS, combatLevel, dangerOf, dropFactor, monstersFor, effLv, killExp, monsterName, playerStats, tierOf } from '@/lib/game/combat';
 import { MonsterSprite } from './Battle';
@@ -473,8 +473,8 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; 
                 </span>
                 <small>{p.desc}</small>
               </div>
-              <button className="btn btn-red" disabled={c.linhThach < p.price} onClick={() => onBuyPill(p.id)}>
-                {fmt(p.price)}
+              <button className="btn btn-red" disabled={c.linhThach < pillPrice(c, p.id)} onClick={() => onBuyPill(p.id)}>
+                {fmt(pillPrice(c, p.id))}
               </button>
             </div>
           ))}

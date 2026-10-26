@@ -27,6 +27,8 @@ import {
   ORIGINS,
   PATHS,
   PILLS,
+  dienThoYears,
+  pillPrice,
   REALMS,
   TEN_NAM,
   TEN_NU,
@@ -755,8 +757,8 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
   }
   if (c.partner) stat(c, 'tamCanh', 1);
 
-  // Thọ nguyên không vượt quá 1.15 lần mức chuẩn của cảnh giới
-  const cap = Math.min(lifeCap(c.realm), Math.round((REALMS[c.realm]?.life ?? 70) * 1.15 * lifeMult(c, talents)));
+  // Thọ nguyên không vượt quá 1.15 lần mức chuẩn của cảnh giới, cộng phần Diên Thọ Đan đã uống
+  const cap = Math.min(lifeCap(c.realm), Math.round((REALMS[c.realm]?.life ?? 70) * 1.15 * lifeMult(c, talents)) + (c.lifeExtra ?? 0));
   if (c.lifespan > cap) c.lifespan = cap;
 
   // Sự kiện tuổi thơ cố định
@@ -975,10 +977,10 @@ function breakChoices(c: Character): Choice[] {
   return [
     {
       label: havePill ? 'Uống Trúc Cơ Đan rồi xung quan' : 'Mua đan dược rồi xung quan',
-      hint: havePill ? `+25%, còn ${c.pills.truc_co}` : '-200 linh thạch, +25%',
+      hint: havePill ? `+25%, còn ${c.pills.truc_co}` : `-${pillPrice(c, 'truc_co')} linh thạch, +25%`,
       lean: 'trung',
       run: (ch, ctx) => {
-        if (!usePill(ch, 'truc_co')) money(ch, -200);
+        if (!usePill(ch, 'truc_co')) money(ch, -pillPrice(ch, 'truc_co'));
         return attempt(ch, ctx, 0.25);
       },
     },
@@ -1402,7 +1404,8 @@ export function usePillNow(c: Character, id: string, ctx: EffectCtx, talents: st
   const yr = Math.floor(c.age);
   if (!c.danDoc || c.danDoc.y !== yr) c.danDoc = { y: yr, n: 0 };
   const nth = c.danDoc.n++;
-  const potency = [1, 0.6, 0.4, 0.25, 0.15][nth] ?? 0.1;
+  // Tụ Khí Đan: mỗi năm chỉ viên đầu đủ lực
+  const potency = (id === 'tu_khi' ? [1, 0.3, 0.1] : [1, 0.6, 0.4, 0.25, 0.15])[nth] ?? 0.1;
   if ((id === 'tu_khi' || id === 'truc_co') && nth >= 3) {
     stat(c, 'tamMa', 4);
     stat(c, 'sucKhoe', -5);
@@ -1412,8 +1415,15 @@ export function usePillNow(c: Character, id: string, ctx: EffectCtx, talents: st
     addCult(c, reward(c, 0.25 * potency));
     ctx.fx('layer', '+tu vi');
   } else if (id === 'dien_tho') {
-    c.lifespan = Math.min(lifeCap(c.realm), c.lifespan + 8);
-    ctx.fx('heal', '+thọ nguyên');
+    // kháng dược: viên sau kém viên trước
+    const y = dienThoYears(c.dtUsed ?? 0);
+    c.dtUsed = (c.dtUsed ?? 0) + 1;
+    const before = c.lifespan;
+    c.lifespan = Math.min(lifeCap(c.realm), c.lifespan + y);
+    // giữ phần thọ này lại, để mức trần thọ hằng năm không cắt mất
+    c.lifeExtra = (c.lifeExtra ?? 0) + (c.lifespan - before);
+    ctx.fx('heal', `+${y} năm thọ`);
+    if (y <= 2) ctx.log('Uống Diên Thọ Đan nhiều quá, thân thể đã quen thuốc. Dược lực chỉ còn chút ít.', 'bad');
   } else if (id === 'thanh_tam') {
     stat(c, 'tamMa', -25);
     ctx.fx('heal', 'Thanh tâm');

@@ -422,6 +422,7 @@ export default function Arena({ user }: { user: Player | null }) {
             {st.me.wins} thắng · {st.me.losses} thua{st.me.winRun >= 2 ? ` · Liên thắng ${st.me.winRun}` : ''}
             <br />
             Hôm nay còn <b>{left}</b>/{ARENA_TURNS} lượt
+            <small className="ar-reset">Lượt và luật đổi lúc 0 giờ, điểm tuần tính lại 0 giờ thứ Hai (giờ Việt Nam)</small>
           </span>
         </div>
       ) : (

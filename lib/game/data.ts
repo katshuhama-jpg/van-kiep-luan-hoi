@@ -852,13 +852,25 @@ export function fxText(fx?: ItemFx): string {
 }
 
 export const PILLS = [
-  { id: 'tu_khi', name: 'Tụ Khí Đan', icon: true, price: 30, desc: '+tu vi ngay lập tức' },
+  { id: 'tu_khi', name: 'Tụ Khí Đan', icon: true, price: 30, desc: '+tu vi ngay. Mỗi năm chỉ viên đầu đủ dược lực' },
   { id: 'truc_co', name: 'Trúc Cơ Đan', icon: true, price: 200, desc: 'Tăng tỉ lệ đột phá đại cảnh giới' },
-  { id: 'dien_tho', name: 'Diên Thọ Đan', icon: true, price: 500, desc: '+8 năm thọ nguyên (tối đa 200)' },
+  { id: 'dien_tho', name: 'Diên Thọ Đan', icon: true, price: 500, desc: '+thọ nguyên. Uống nhiều thì kháng dược, mua nhiều thì đắt dần' },
   { id: 'thanh_tam', name: 'Thanh Tâm Đan', icon: true, price: 90, desc: '-tâm ma' },
   { id: 'hoi_xuan', name: 'Hồi Xuân Đan', icon: true, price: 60, desc: 'Hồi sức khỏe' },
   { id: 'huyet_sat', name: 'Huyết Sát Đan', icon: true, price: 50, desc: 'Tà tu: -tâm ma mạnh, đổi bằng máu. Chính đạo uống vào thì tâm ma tăng' },
 ];
+
+/** Thọ nguyên Diên Thọ Đan thêm, theo số viên đã uống trong kiếp: kháng dược dần */
+export const DIEN_THO_YEARS = [8, 6, 4, 2];
+export const dienThoYears = (used: number) => DIEN_THO_YEARS[used] ?? 1;
+
+/** Giá đan ở phường thị: Tụ Khí, Trúc Cơ đắt theo cảnh giới; Diên Thọ đắt thêm 50% mỗi viên đã mua trong kiếp */
+export function pillPrice(c: { realm: number; pillBuy?: Record<string, number> }, id: string): number {
+  const base = PILLS.find((p) => p.id === id)?.price ?? 0;
+  if (id === 'tu_khi' || id === 'truc_co') return base * (c.realm + 1);
+  if (id === 'dien_tho') return Math.round(base * (1 + 0.5 * (c.pillBuy?.dien_tho ?? 0)));
+  return base;
+}
 
 export const TALENTS: Talent[] = [
   { id: 'ky_uc', name: 'Ký ức tiền kiếp', desc: 'Ngộ tính khởi đầu +20', cost: 30 },
