@@ -629,6 +629,9 @@ export function killExp(c: Character, m: Monster): number {
   return Math.max(1, Math.round(base * factor * tierBonus * c.linhCanMul * (1 + gearFx(c.equipped).exp / 100)));
 }
 
+/** Hệ số rơi đồ chung (26/10: giảm 25% vì người chơi nhặt đồ quá dễ) */
+export const DROP_MUL = 0.75;
+
 export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance = 0.12): string[] {
   const notes: string[] = [];
   addCult(c, killExp(c, m));
@@ -653,7 +656,7 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance 
   const df = dropFactor(c, m);
   if (drops.length && df > 0) {
     const g = gearFx(c.equipped);
-    const p = (0.05 + (c.stats.khiVan - 50) / 2500) * (1 + tierOf(c, m) * 0.5) * (1 + g.drop / 100) * df;
+    const p = (0.05 + (c.stats.khiVan - 50) / 2500) * (1 + tierOf(c, m) * 0.5) * (1 + g.drop / 100) * df * DROP_MUL;
     if (ctx.rnd() < p) {
       const it = drops[Math.floor(ctx.rnd() * drops.length)];
       if (c.inventory.includes(it.id)) {
@@ -667,7 +670,7 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance 
       }
     }
   }
-  if (ctx.rnd() < lootChance * df) {
+  if (ctx.rnd() < lootChance * df * DROP_MUL) {
     const l = lootDrop(c, m, ctx);
     if (l) notes.push(l);
   }
@@ -681,7 +684,7 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance 
   }
   if (m.human && (m.id === 'son_tac' || m.id === 'thich_khach' || m.id === 'doc_vuong')) c.daoTam = Math.min(100, c.daoTam + 1);
   if (n === 100) notes.push(`Đã trảm 100 con ${m.name}. Giang hồ gọi bạn là khắc tinh của chúng.`);
-  const r = ctx.rnd() / Math.max(0.05, df);
+  const r = ctx.rnd() / Math.max(0.05, df * DROP_MUL);
   if (r < 0.02) {
     addCult(c, killExp(c, m) * 6);
     ctx.fx('layer', 'Yêu đan!');
@@ -695,7 +698,7 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance 
   // Ngũ Hành Ấn và Ngũ Hành Phù cho Ngũ Hành Đài trước phi thăng
   const an = gainAn(c, m.el, dangerOf(c, m) === 'de', ctx.rnd);
   if (an) notes.push(an);
-  if (m.el && !c.cosmos && m.lv >= 16 && dangerOf(c, m) !== 'de' && (c.phu ?? 0) < 3 && ctx.rnd() < 0.01) {
+  if (m.el && !c.cosmos && m.lv >= 16 && dangerOf(c, m) !== 'de' && (c.phu ?? 0) < 3 && ctx.rnd() < 0.01 * DROP_MUL) {
     c.phu = (c.phu ?? 0) + 1;
     ctx.fx('buy', 'Ngũ Hành Phù');
     notes.push(`${m.name} rơi ra một tấm Ngũ Hành Phù (${c.phu}/3). Trên Ngũ Hành Đài, phù đổi bản mệnh của bạn sang hệ khắc bóng trong một vòng.`);

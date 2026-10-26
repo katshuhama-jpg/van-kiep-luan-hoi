@@ -1,6 +1,6 @@
 import { addMile } from './miles';
 import { qmark } from './hook';
-import { combatLevel, hit, playerStats, type Fighter } from './combat';
+import { DROP_MUL, combatLevel, hit, playerStats, type Fighter } from './combat';
 import { ITEMS, REALMS, fxText, realmLabel } from './data';
 import { demoChar } from './demo';
 import { ELEMENT_IDS, elemMul, elemRel, elementOf, type ElemRel } from './nguhanh';
@@ -307,7 +307,7 @@ const RARE_NAME = ['Phàm', 'Tốt', 'Hiếm', 'Cực phẩm'];
  * món nào cũng có rồi thì bán lấy linh thạch.
  */
 function rivalLoot(c: Character, r: RivalChar, ctx: EffectCtx, chance: number, say: (name: string) => string): string | null {
-  if (ctx.rnd() >= chance) return null;
+  if (ctx.rnd() >= chance * DROP_MUL) return null;
   const items = Object.values(r.equipped ?? {})
     .map((id) => ITEMS.find((i) => i.id === id))
     .filter((i): i is (typeof ITEMS)[number] => !!i && i.id !== 'ao_vai');

@@ -4,6 +4,7 @@ import { useState, type CSSProperties } from 'react';
 import Sprite from './Sprite';
 import { ELEMENTS, ELEMENT_IDS, elementOf } from '@/lib/game/nguhanh';
 import {
+  AN_CHANCE,
   AN_MAX,
   ASCEND_MIN_AGE,
   BEATS,
@@ -205,7 +206,7 @@ export default function NguHanhDai({
             <h3>Bốn cách lật thế</h3>
             <ul className="nhd-list">
               <li>
-                <b>Ngũ Hành Ấn.</b> Diệt quái có hệ (không quá yếu) có 20% nhận 1 ấn hệ đó, tối đa {AN_MAX} ấn mỗi hệ. Khi bị khắc, mỗi ấn của hệ khắc được bóng gỡ 20% phần thiệt. Bóng cuối cần ấn <Chip e={lastKey} small />: bạn có {anOf(c, lastKey)}/{AN_MAX}.
+                <b>Ngũ Hành Ấn.</b> Diệt quái có hệ (không quá yếu) có {Math.round(AN_CHANCE * 100)}% nhận 1 ấn hệ đó, tối đa {AN_MAX} ấn mỗi hệ. Khi bị khắc, mỗi ấn của hệ khắc được bóng gỡ 20% phần thiệt. Bóng cuối cần ấn <Chip e={lastKey} small />: bạn có {anOf(c, lastKey)}/{AN_MAX}.
               </li>
               <li>
                 <b>Thế trận.</b> Trước mỗi vòng rút một lá bùa: Công (đòn +25%), Thủ (nhận -35%), Hóa (xóa khắc chế, đòn -10%). Thủ chặn Công, Hóa phá Thủ, Công thắng Hóa: rút đúng lá khắc thế của bóng thì thêm 15% lợi thế. Bóng lộ dáng trước khi ra tay, nhưng 3 lần trong 10 là đòn nhử.

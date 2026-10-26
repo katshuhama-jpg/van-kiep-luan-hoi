@@ -31,6 +31,8 @@ export const deathChance = (round: number) => (round >= 4 ? 0.2 : 0.06);
 export const NHD_DELAY = 8;
 export const GUONG_LOSSES = 5;
 export const AN_MAX = 5;
+/** tỉ lệ nhận ấn mỗi con quái có hệ (trước 20%, giảm theo đợt cân bằng rơi đồ 26/10) */
+export const AN_CHANCE = 0.15;
 export const PHU_PRICE = 1500;
 
 export type Stance = 'cong' | 'thu' | 'hoa';
@@ -206,11 +208,11 @@ export function loseRound(c: Character, ctx: EffectCtx): string {
   return `Bóng ${ELEMENTS[el].name} hạ gục bạn.${f ?? ''} Bạn bị hất khỏi Ngũ Hành Đài, tu vi tổn hao, tâm ma tăng. ${NHD_DELAY} năm nữa mới được lên đài lại${round ? `, ${round} bóng đã hạ vẫn được giữ` : ''}.`;
 }
 
-/** Ấn khi diệt quái có hệ: chỉ quái không quá yếu, 20% mỗi con */
+/** Ấn khi diệt quái có hệ: chỉ quái không quá yếu, AN_CHANCE mỗi con */
 export function gainAn(c: Character, el: Element | undefined, easy: boolean, rnd: () => number): string | null {
   if (!el || easy || c.cosmos) return null;
   const n = anOf(c, el);
-  if (n >= AN_MAX || rnd() >= 0.2) return null;
+  if (n >= AN_MAX || rnd() >= AN_CHANCE) return null;
   c.an = { ...(c.an ?? {}), [el]: n + 1 };
   return `Thu được 1 Ngũ Hành Ấn hệ ${ELEMENTS[el].name} (${n + 1}/${AN_MAX}). Ấn giúp chống lại bóng bị hệ ${ELEMENTS[el].name} khắc chế trên Ngũ Hành Đài.`;
 }

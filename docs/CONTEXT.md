@@ -95,7 +95,7 @@ Vòng chơi một kiếp:
 - Chọn phương án đột phá phi thăng (trừ "Củng cố") thì lên **Ngũ Hành Đài** trước, thắng xong mới tới mini-game thiên kiếp. Engine tự chặn `attempt()` nếu chưa qua đài.
 - 5 bóng giống hệt người chơi, chỉ khác bản mệnh, thứ tự: bóng mình khắc, cùng mệnh, mình sinh, sinh mình, **bóng khắc mình (cuối)**. Sức bóng theo vòng: 95%, 102%, 106%, 110%, 115%. Mỗi vòng tối đa 10 hiệp, hết hiệp thì so % máu.
 - Bốn cách lật thế:
-  - **Ngũ Hành Ấn** (`c.an`): diệt quái có hệ, không ở mức "Dễ", 20% được 1 ấn hệ đó, tối đa 5 mỗi hệ. Khi bị khắc, mỗi ấn của hệ khắc được bóng gỡ 20% phần thiệt (5 ấn là hết thiệt).
+  - **Ngũ Hành Ấn** (`c.an`): diệt quái có hệ, không ở mức "Dễ", 15% được 1 ấn hệ đó, tối đa 5 mỗi hệ. Khi bị khắc, mỗi ấn của hệ khắc được bóng gỡ 20% phần thiệt (5 ấn là hết thiệt).
   - **Thế trận** chọn trước mỗi vòng bằng lá bùa: Công (đòn +25%), Thủ (nhận -35%), Hóa (xóa khắc chế, đòn -10%). Thủ khắc Công, Hóa khắc Thủ, Công khắc Hóa, khắc được thì thêm 15%. Bóng cũng chọn thế (gương cuối 50% Công) và lộ dáng trước, đúng 70%.
   - **Ngũ Hành Phù** (`c.phu`, tối đa 3): đổi bản mệnh sang hệ khắc bóng một vòng. Rơi 1% từ quái có hệ Lv16+, hoặc mua trên đài 1500 linh thạch (đệ tử Thiên Cơ Các 750).
   - **Tâm cảnh:** tâm ma làm bóng mạnh thêm tới 20%; đạo tâm |≥40| bóng yếu 5%, |≥70| yếu 10%.
@@ -480,3 +480,8 @@ Khi được yêu cầu cập nhật tài liệu:
 - Thư hệ thống: chèn `vkl_mail` với `from_player = null`, `kind = 'thien_dao'` (biểu tượng ✦, không có nút hồi âm).
 - Quà: chèn `vkl_gift` với `kind = 'phuc'` (phúc duyên cho tài khoản) hoặc kind khác (linh thạch cho nhân vật đang sống). Game lĩnh qua `vkl_payout_claim2` mỗi 2 phút khi đang chơi; quà phúc duyên hiện popup "Thiên Đạo ban thưởng" một lần. Chỉ chèn quà phúc sau khi bản có `vkl_payout_claim2` đã deploy.
 - 26/10: @minimoni (góp ý #2) nhận hồi đáp, thư và 10 phúc duyên cho bản 1.0.3.
+
+## Cân bằng rơi đồ (26/10)
+
+- `DROP_MUL = 0.75` trong `lib/game/combat.ts`: nhân vào mọi tỉ lệ rơi đồ khi hạ quái (đồ riêng của loài, chiến lợi phẩm ngẫu nhiên, yêu đan, đan dược, Ngũ Hành Phù) và khi thắng người chơi, đồng môn, bóng kiếp trước (`rivalLoot` trong `duel.ts`). Độ hiếm không đổi, chỉ ít rơi hơn 25%.
+- Ngũ Hành Ấn 20% -> 15% (`AN_CHANCE`).
