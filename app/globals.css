@@ -3636,3 +3636,13 @@ button.shadow-card { cursor: pointer; }
 .sc-tags i { font-style: normal; font-size: 12px; font-weight: 700; padding: 0 4px; border: 1px solid var(--ink); }
 .sc-tags i.past { background: #e8dcc0; color: #3a2a1a; }
 .sc-tags i.live { background: #3d6fb0; color: #fff3dc; }
+/* chọn bóng: thẻ dọc, 2 thẻ một hàng */
+.shadow-pick { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.shadow-card.vert { flex-direction: column; align-items: stretch; gap: 4px; padding: 6px; text-align: center; height: 100%; }
+.shadow-card.vert .sc-fig { width: 100%; height: 92px; display: grid; place-items: end center; }
+.shadow-card.vert .sc-info { align-items: center; }
+.shadow-card.vert .sc-info b { font-size: 17px; line-height: 1.15; overflow-wrap: anywhere; }
+.shadow-card.vert .sc-info small { font-size: 13px; }
+.shadow-card.vert .sc-tags, .shadow-card.vert .sc-stats { justify-content: center; }
+.shadow-card.vert .sc-rank { top: 4px; right: 4px; }
+.shadow-card.vert.on { box-shadow: inset 0 0 0 3px #c9962e, 0 0 0 2px #c9962e; }

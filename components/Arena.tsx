@@ -29,14 +29,14 @@ const omen = (p: number) =>
   p >= 0.58 ? { name: 'Thượng cát', text: 'Quẻ tốt: bóng này khó đỡ được thế của bạn.' } : p <= 0.42 ? { name: 'Hạ hung', text: 'Quẻ xấu: bóng này có lợi thế, phải đoán thật chuẩn.' } : { name: 'Trung bình', text: 'Quẻ hòa: thắng thua nằm ở cách đoán thế.' };
 
 /** Thẻ một bóng: hình, cảnh giới, con đường, bản mệnh, chỉ số */
-function ShadowCard({ r, on, onPick, small, rank, rule }: { r: RivalChar; on?: boolean; onPick?: () => void; small?: boolean; rank?: number; rule?: ArenaRule }) {
+function ShadowCard({ r, on, onPick, small, rank, rule, vert }: { r: RivalChar; on?: boolean; onPick?: () => void; small?: boolean; rank?: number; rule?: ArenaRule; vert?: boolean }) {
   const s = foeStats(r);
   const el = elementOf(r);
   const body = (
     <>
       {rank !== undefined && <span className={`sc-rank r${rank}`}>{rank === 1 ? 'Mạnh nhất' : `Hạng ${rank}`}</span>}
       <span className="sc-fig">
-        <Sprite c={foeChar(r)} size={small ? 56 : 72} />
+        <Sprite c={foeChar(r)} size={vert ? 84 : small ? 56 : 72} />
       </span>
       <span className="sc-info">
         <span className="sc-tags">
@@ -57,7 +57,7 @@ function ShadowCard({ r, on, onPick, small, rank, rule }: { r: RivalChar; on?: b
     </>
   );
   return onPick ? (
-    <button type="button" className={`shadow-card ${on ? 'on' : ''}`} onClick={onPick} aria-pressed={on}>
+    <button type="button" className={`shadow-card ${on ? 'on' : ''} ${vert ? 'vert' : ''}`} onClick={onPick} aria-pressed={on}>
       {body}
     </button>
   ) : (
@@ -453,7 +453,7 @@ export default function Arena({ user }: { user: Player | null }) {
               </div>
               <div className="shadow-pick">
                 {cands.map((c, i) => (
-                  <ShadowCard key={`${c.lifeId}-${i}`} r={c} rank={i + 1} rule={rule} on={pick === i} onPick={() => setPick(i)} />
+                  <ShadowCard key={`${c.lifeId}-${i}`} r={c} rank={i + 1} rule={rule} vert on={pick === i} onPick={() => setPick(i)} />
                 ))}
               </div>
               <button className="btn btn-red btn-big" disabled={pick === null || !!busy} onClick={lock}>

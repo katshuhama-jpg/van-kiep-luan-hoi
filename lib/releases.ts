@@ -47,7 +47,7 @@ export const RELEASES: Release[] = [
         hot: true,
         items: [
           'Lôi đài có trang riêng, mở ngay ở trang đầu và menu trong game.',
-          'Mỗi ngày chọn bóng xuất chiến: 1 trong 5 kiếp mạnh nhất của bạn, giữ nguyên cả ngày.',
+          'Mỗi ngày chọn bóng xuất chiến: 1 trong 6 nhân vật mạnh nhất bạn từng chơi, giữ nguyên cả ngày.',
           'Lắc ống xăm để rút đối thủ ngẫu nhiên. Màu que báo phẩm của bóng: Phàm, Linh, Huyền, Thiên. Quẻ chưa giải thì không rút lại được.',
           'Bóng đối thủ được kéo về cùng cảnh giới với bóng của bạn. Thắng thua nằm ở bản mệnh, con đường và cách đoán thế.',
           'Mỗi trận ba hiệp, mỗi hiệp chọn Công, Thủ hay Hóa như Ngũ Hành Đài nhưng khó hơn: đối thủ để lộ ý đồ không phải lúc nào cũng thật, và biết đọc thế của bạn.',
