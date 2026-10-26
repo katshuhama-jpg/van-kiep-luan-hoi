@@ -4,7 +4,6 @@ import BackButton from '@/components/BackButton';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import Sprite from '@/components/Sprite';
-import Arena from '@/components/Arena';
 import { PATHS, realmLabel } from '@/lib/game/data';
 import { describeLean } from '@/lib/game/engine';
 import { fmt } from '@/lib/game/helpers';
@@ -85,9 +84,9 @@ export default function RankPage() {
   const [coll, setColl] = useState<Record<string, number>>({});
   const [lm, setLm] = useState<Record<string, string>>({});
   const [truy, setTruy] = useState(false);
-  const [ld, setLd] = useState(false);
+  // lôi đài đã có trang riêng
   useEffect(() => {
-    if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('tab') === 'loi-dai') setLd(true);
+    if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('tab') === 'loi-dai') window.location.replace('/loi-dai');
   }, []);
   const [board, setBoard] = useState<BountyRow[] | null>(null);
   const [pairs, setPairs] = useState<OanGia[]>([]);
@@ -140,70 +139,51 @@ export default function RankPage() {
         </div>
       </header>
 
-      <div className="tabs tabs-5" role="tablist" style={{ margin: 0 }}>
+      <div className="tabs tabs-4" role="tablist" style={{ margin: 0 }}>
         <button
           role="tab"
-          aria-selected={!truy && !ld && kind === 'power'}
-          className={!truy && !ld && kind === 'power' ? 'on' : ''}
+          aria-selected={!truy && kind === 'power'}
+          className={!truy && kind === 'power' ? 'on' : ''}
           onClick={() => {
             setKind('power');
             setTruy(false);
-            setLd(false);
           }}
         >
           Năng lực
         </button>
         <button
           role="tab"
-          aria-selected={!truy && !ld && kind === 'wealth'}
-          className={!truy && !ld && kind === 'wealth' ? 'on' : ''}
+          aria-selected={!truy && kind === 'wealth'}
+          className={!truy && kind === 'wealth' ? 'on' : ''}
           onClick={() => {
             setKind('wealth');
             setTruy(false);
-            setLd(false);
           }}
         >
           Phú hào
         </button>
         <button
           role="tab"
-          aria-selected={!truy && !ld && kind === 'age'}
-          className={!truy && !ld && kind === 'age' ? 'on' : ''}
+          aria-selected={!truy && kind === 'age'}
+          className={!truy && kind === 'age' ? 'on' : ''}
           onClick={() => {
             setKind('age');
             setTruy(false);
-            setLd(false);
           }}
         >
           Trường thọ
         </button>
         <button
           role="tab"
-          aria-selected={ld}
-          className={ld ? 'on' : ''}
-          onClick={() => {
-            setLd(true);
-            setTruy(false);
-          }}
-        >
-          Lôi đài
-        </button>
-        <button
-          role="tab"
           aria-selected={truy}
           className={truy ? 'on' : ''}
-          onClick={() => {
-            setTruy(true);
-            setLd(false);
-          }}
+          onClick={() => setTruy(true)}
         >
           Truy nã
         </button>
       </div>
 
-      {ld ? (
-        <Arena user={user} />
-      ) : truy ? (
+      {truy ? (
         <section className="gh-truy">
           <h3 className="gh-h">Bảng truy nã</h3>
           {board === null ? (

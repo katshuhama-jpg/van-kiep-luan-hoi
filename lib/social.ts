@@ -203,29 +203,7 @@ export async function playerBest(username: string): Promise<RivalChar | null> {
   if (!sb) return null;
   const { data, error } = await sb.rpc('vkl_player_best', { p_username: username });
   if (error || !data) return null;
-  const c = data as Partial<Character> & { alive?: boolean };
-  if (!c.name) return null;
-  return {
-    player: username,
-    name: c.name,
-    gender: c.gender === 'nu' ? 'nu' : 'nam',
-    race: c.race,
-    realm: c.realm ?? 0,
-    layer: c.layer ?? 1,
-    path: c.path ?? null,
-    daoTam: c.daoTam ?? 0,
-    age: Math.floor(c.age ?? 30),
-    lifespan: c.lifespan,
-    hairColor: c.hairColor,
-    hairStyle: c.hairStyle,
-    outfitTone: c.outfitTone,
-    outfitCut: c.outfitCut,
-    equipped: c.equipped ?? { ao: 'ao_vai' },
-    lookSeed: c.lookSeed,
-    element: c.element,
-    lifeNo: c.lifeNo ?? 1,
-    alive: c.alive !== false,
-  };
+  return toRival(username, data);
 }
 
 /** Khiêu khích chỉ tính một lần chạm mặt: đánh xong thì gỡ */
@@ -273,4 +251,89 @@ export async function arenaFight(user: Player | null, opp: string, win: boolean,
   if (!sb || !user) return null;
   const { data, error } = await sb.rpc('vkl_arena_fight', { p_token: user.token, p_opp: opp, p_win: win, p_detail: detail });
   return error ? null : (data as { delta?: number; elo?: number; used?: number; error?: string });
+}
+
+/** Đổi dữ liệu nhân vật trên máy chủ thành bóng để đem đi đấu */
+export function toRival(username: string, data: unknown): RivalChar | null {
+  const c = data as Partial<Character> & { alive?: boolean; lifeId?: number };
+  if (!c.name) return null;
+  return {
+    player: username,
+    name: c.name,
+    gender: c.gender === 'nu' ? 'nu' : 'nam',
+    race: c.race,
+    realm: c.realm ?? 0,
+    layer: c.layer ?? 1,
+    path: c.path ?? null,
+    daoTam: c.daoTam ?? 0,
+    age: Math.floor(c.age ?? 30),
+    lifespan: c.lifespan,
+    hairColor: c.hairColor,
+    hairStyle: c.hairStyle,
+    outfitTone: c.outfitTone,
+    outfitCut: c.outfitCut,
+    equipped: c.equipped ?? { ao: 'ao_vai' },
+    lookSeed: c.lookSeed,
+    element: c.element,
+    lifeNo: c.lifeNo ?? 1,
+    alive: c.alive !== false,
+    cosmos: c.cosmos ?? null,
+    lifeId: c.lifeId,
+  };
+}
+
+// ---------- Lôi đài 2: điểm tuần, bóng xuất chiến, báo thù ----------
+export interface Arena2State {
+  me: { username: string; pts: number; used: number; wins: number; losses: number; winRun: number; champ: unknown | null } | null;
+  opps: { username: string; pts: number }[];
+  revenge: { id: number; target: string; at: string }[];
+  top: { username: string; pts: number; wins: number; losses: number; winRun: number }[];
+  champs: { week: string; rank: number; username: string; pts: number }[];
+}
+const NO_TOKEN = '00000000-0000-0000-0000-000000000000';
+
+export async function arena2State(user: Player | null): Promise<Arena2State | null> {
+  const sb = supabase();
+  if (!sb) return null;
+  const { data, error } = await sb.rpc('vkl_arena_state2', { p_token: user?.token ?? NO_TOKEN });
+  return error || !data ? null : (data as Arena2State);
+}
+
+export async function arenaCandidates(user: Player | null): Promise<RivalChar[]> {
+  const sb = supabase();
+  if (!sb || !user) return [];
+  const { data, error } = await sb.rpc('vkl_arena_candidates', { p_token: user.token });
+  if (error || !Array.isArray(data)) return [];
+  return data.map((d) => toRival(user.username, d)).filter((x): x is RivalChar => !!x);
+}
+
+export async function arenaPick(user: Player | null, lifeId: number): Promise<{ champ?: unknown; error?: string } | null> {
+  const sb = supabase();
+  if (!sb || !user) return null;
+  const { data, error } = await sb.rpc('vkl_arena_pick', { p_token: user.token, p_life_id: lifeId });
+  return error ? null : (data as { champ?: unknown; error?: string });
+}
+
+export async function arenaShadow(username: string): Promise<RivalChar | null> {
+  const sb = supabase();
+  if (!sb) return null;
+  const { data, error } = await sb.rpc('vkl_arena_shadow', { p_username: username });
+  return error || !data ? null : toRival(username, data);
+}
+
+export async function arenaFight2(user: Player | null, opp: string, win: boolean, detail: string, revenge: number | null): Promise<{ pts?: number; used?: number; winRun?: number; error?: string } | null> {
+  const sb = supabase();
+  if (!sb || !user) return null;
+  const { data, error } = await sb.rpc('vkl_arena_fight2', { p_token: user.token, p_opp: opp, p_win: win, p_detail: detail, p_revenge: revenge ?? 0 });
+  return error ? null : (data as { pts?: number; used?: number; winRun?: number; error?: string });
+}
+
+/** Xin xăm đối thủ lôi đài: máy chủ rút ngẫu nhiên; quẻ chưa giải thì trả lại đúng người cũ */
+export async function arenaDraw(user: Player | null): Promise<{ opp?: string; shadow?: RivalChar | null; again?: boolean; error?: string } | null> {
+  const sb = supabase();
+  if (!sb || !user) return null;
+  const { data, error } = await sb.rpc('vkl_arena_draw', { p_token: user.token });
+  if (error || !data) return null;
+  const d = data as { opp?: string; shadow?: unknown; again?: boolean; error?: string };
+  return { ...d, shadow: d.opp && d.shadow ? toRival(d.opp, d.shadow) : null };
 }

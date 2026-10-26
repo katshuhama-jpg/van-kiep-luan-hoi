@@ -30,6 +30,7 @@ import { HIDDEN_ITEMS, collectStats, markSeen, newFinds, unseen } from '@/lib/ga
 import { QUY_NHAT_PHUC, newLore, quyNhatDone } from '@/lib/game/lore';
 import { CAU_HON_AT, HON_COST, HON_MAX, KS_NAME, applyHon, honActive, honNow, ksOf, ksOneBig, manhBa, nextKiepTich } from '@/lib/game/luanHoi';
 import { serverNow } from '@/lib/serverTime';
+import { ruleOf } from '@/lib/game/arena';
 import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, pickAmbush } from '@/lib/game/ambush';
 import { titleKey, addMemorial, displayName, fetchWorld, listMail, loadAll, saveLocal, saveMeta, saveRemote, sendMail, unreadMail, weeklyTitles, type Mail, type SaveState } from '@/lib/storage';
 import { updateCareer, bumpStreak, evalQuests, omenIs, qmark, questName, streakGift, vnDay } from '@/lib/game/hook';
@@ -1559,6 +1560,10 @@ export default function PlayPage() {
       {sheet === 'menu' && (
         <Sheet title="Menu" onClose={() => setSheet(null)}>
           <div className="menu">
+            <Link className="btn menu-loidai" href="/loi-dai" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
+              <span className="ml-title">⚔ Lôi đài hằng ngày</span>
+              <small className="ml-rule">Luật hôm nay: {ruleOf().name}</small>
+            </Link>
             <Link className="btn" href="/" style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
               Trang đầu
             </Link>
@@ -1600,9 +1605,6 @@ export default function PlayPage() {
             >
               Hướng dẫn chơi
             </button>
-            <Link className="btn btn-red" href="/bang-xep-hang?tab=loi-dai" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
-              ⚔ Lôi đài hằng ngày
-            </Link>
             <Link className="btn" href="/cap-nhat" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
               Lịch sử cập nhật · bản {CURRENT_VERSION}
             </Link>

@@ -19,7 +19,7 @@ export function ReleaseBody({ r }: { r: Release }) {
         </div>
       )}
       {r.groups.map((g) => (
-        <div key={g.h} className="rel-group">
+        <div key={g.h} className={`rel-group ${g.hot ? 'hot' : ''}`}>
           <h3>{g.h}</h3>
           <ul className="rel-items">
             {g.items.map((t) => (

@@ -1,3 +1,5 @@
+import { ARENA_RULES } from './game/arena';
+
 /** Lịch sử phiên bản. Bản mới nhất để đầu; CURRENT_VERSION là bản hiện cáo thị cho người chơi cũ. */
 
 export interface Release {
@@ -6,7 +8,7 @@ export interface Release {
   title: string;
   lead: string;
   stats?: { n: string; label: string }[];
-  groups: { h: string; items: string[] }[];
+  groups: { h: string; items: string[]; hot?: boolean }[]; // hot: nhóm nổi bật
 }
 
 export const RELEASES: Release[] = [
@@ -18,7 +20,7 @@ export const RELEASES: Release[] = [
     stats: [
       { n: '10', label: 'bậc Kiếp Số' },
       { n: '+3', label: 'kết cục' },
-      { n: '3', label: 'trận lôi đài mỗi ngày' },
+      { n: '31', label: 'luật lôi đài' },
     ],
     groups: [
       {
@@ -42,11 +44,22 @@ export const RELEASES: Release[] = [
       },
       {
         h: 'Lôi đài hằng ngày',
+        hot: true,
         items: [
-          'Mỗi ngày 3 trận đánh với bóng nhân vật mạnh nhất của người chơi có điểm gần mình. Không cần ai trả lời, không mất đồ, không chết.',
-          'Bảng lôi đài tuần. Mỗi thứ Hai trao danh hiệu Lôi Đài Bá Chủ, Á Chủ, Tam Kiệt.',
+          'Lôi đài có trang riêng, mở ngay ở trang đầu và menu trong game.',
+          'Mỗi ngày chọn bóng xuất chiến: 1 trong 5 kiếp mạnh nhất của bạn, giữ nguyên cả ngày.',
+          'Lắc ống xăm để rút đối thủ ngẫu nhiên. Màu que báo phẩm của bóng: Phàm, Linh, Huyền, Thiên. Quẻ chưa giải thì không rút lại được.',
+          'Bóng đối thủ được kéo về cùng cảnh giới với bóng của bạn. Thắng thua nằm ở bản mệnh, con đường và cách đoán thế.',
+          'Mỗi trận ba hiệp, mỗi hiệp chọn Công, Thủ hay Hóa như Ngũ Hành Đài nhưng khó hơn: đối thủ để lộ ý đồ không phải lúc nào cũng thật, và biết đọc thế của bạn.',
+          'Mỗi ngày 3 lượt. Thắng trận được 3 điểm, thua 0. Điểm tính lại mỗi thứ Hai; top 3 tuần đứng trên bục Long Ỷ với danh hiệu Bá Chủ, Á Chủ, Tam Kiệt.',
+          'Bị ai thắng bóng thì có một lượt báo thù không tính lượt, hạn 48 giờ.',
           'Thiên thư mảnh XV nay mở khi thắng 3 trận lôi đài.',
         ],
+      },
+      {
+        h: 'Lịch 31 luật lôi đài',
+        hot: true,
+        items: ARENA_RULES.map((r) => `Ngày ${r.day} · ${r.name}: ${r.desc}`),
       },
       {
         h: 'Khác',

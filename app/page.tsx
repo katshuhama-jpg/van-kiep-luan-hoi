@@ -10,6 +10,7 @@ import { useAuth } from '@/lib/useAuth';
 import { useEffect, useState } from 'react';
 import ReleaseNotice, { needNotice } from '@/components/Release';
 import { CURRENT_VERSION } from '@/lib/releases';
+import { ruleOf } from '@/lib/game/arena';
 
 const SHOW = [
   demoChar({ age: 9, lifespan: 70, realm: 0, gender: 'nu', equipped: { ao: 'ao_vai' } }),
@@ -48,6 +49,10 @@ export default function Home() {
       <div className="menu">
         <Link href={ready && !user ? '/dang-nhap?next=/choi' : '/choi'} className="btn btn-red btn-big" style={link}>
           Vào luân hồi
+        </Link>
+        <Link href="/loi-dai" className="btn menu-loidai" style={link}>
+          <span className="ml-title">⚔ Lôi đài hằng ngày</span>
+          <small className="ml-rule">Luật hôm nay: {ruleOf().name}</small>
         </Link>
         <Link href="/bang-xep-hang" className="btn" style={link}>
           Bảng xếp hạng

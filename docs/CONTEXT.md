@@ -559,3 +559,11 @@ Mục tiêu: chết nhiều không còn là lợi thế; người chơi lâu có
 - Phiên đăng nhập (`localStorage vkl.session`) giữ nguyên, không đổi cách lưu.
 - Đăng ký mới: `carryGuest` (storage.ts) đưa hồ sơ và kiếp chơi dở của chế độ khách cũ trên máy lên tài khoản rồi xóa bản trên máy.
 - **Bục vinh danh Lôi đài** (`components/Podium.tsx`, nền `public/bg/podium-loidai.png` vẽ bằng `scripts/gen_podium.py`): đại điện Long Ỷ, số 1 giữa trước ngai, số 2 và 3 ở hai hốc; mỗi người một ô cắt riêng (`SLOT`) để hào quang không lấn nhau; bảng tên bên dưới; hiệu ứng xuất hiện (số 3, số 2, cột sáng, số 1) chỉ chạy khi đã tải xong nhân vật; bấm vào để xem chi tiết. Không ghi cáo thị.
+
+## Lôi đài 2 (26/10 khuya, ghi vào cáo thị 3.0.0)
+- Trang riêng `/loi-dai` (nút nổi bật `.menu-loidai` ở trang đầu và ☰ menu, kèm luật hôm nay); bỏ tab Lôi đài ở Xếp hạng (`?tab=loi-dai` chuyển sang `/loi-dai`).
+- Điểm tuần: thắng 3, thua 0 (`vkl_arena.pts`), reset thứ Hai trong `vkl_priv.arena_roll` (lưu top 3 vào `vkl_arena_champ`, cột `elo` ở đó chứa điểm). Không có quà.
+- Bóng xuất chiến: `vkl_arena_candidates` (5 kiếp mạnh nhất, gồm nhân vật đang sống), `vkl_arena_pick` khóa tới hết ngày (`champ`, `champ_day`). Bóng người khác: `vkl_arena_shadow` (bóng đã chọn hôm nay, chưa chọn thì kiếp mạnh nhất qua `vkl_priv.best_shadow`).
+- Xin xăm: `vkl_arena_draw` rút ngẫu nhiên phía máy chủ, giữ `pending` tới khi đánh xong (không rút lại). Hiệu ứng ống xăm, que màu theo phẩm (Phàm/Linh/Huyền/Thiên theo cảnh giới thật), thẻ lật, quẻ Thượng cát/Trung bình/Hạ hung theo xác suất nền.
+- Trận đấu (`lib/game/arena.ts`, `components/Arena.tsx Match`): bóng đối thủ `equalize` về cùng cảnh giới; mỗi hiệp Công/Thủ/Hóa; ý đồ đúng 55%, đối thủ 35% khắc thế hiệp trước của bạn; 31 luật theo ngày trong tháng (`ARENA_RULES`, `ruleOf`). Mô phỏng thế cân: đoán theo ý đồ thắng 63%, chọn bừa 50%. Có nút Tự đánh.
+- `vkl_arena_fight2`: kiểm tra lượt, `pending`, báo thù (`vkl_arena_revenge`, tối đa 3 chờ, hạn 48 giờ), liên thắng `win_run`, thư cho đối thủ.

@@ -184,6 +184,7 @@ export interface RivalChar {
   sectRank?: number;
   cosmos?: 'tien' | 'ma' | 'hu' | null;
   alive: boolean;
+  lifeId?: number; // lôi đài: kiếp nào làm bóng (0 là nhân vật đang sống)
 }
 
 export interface WorldEcho {

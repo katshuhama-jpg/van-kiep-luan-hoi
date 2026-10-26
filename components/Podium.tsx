@@ -6,13 +6,14 @@ import { Sheet } from '@/components/Panels';
 import { foeChar } from '@/lib/game/duel';
 import { PATHS, realmLabel } from '@/lib/game/data';
 import type { RivalChar } from '@/lib/game/types';
-import { playerBest } from '@/lib/social';
+import { arenaShadow } from '@/lib/social';
 
 export interface PodiumEntry {
   username: string;
-  elo: number;
+  pts: number;
   wins: number;
   losses: number;
+  winRun?: number;
 }
 
 const TITLE = ['Lôi Đài Bá Chủ', 'Lôi Đài Á Chủ', 'Lôi Đài Tam Kiệt'];
@@ -44,7 +45,7 @@ export default function Podium({ top, me }: { top: PodiumEntry[]; me?: string })
   }, []);
   useEffect(() => {
     let live = true;
-    Promise.all(three.map((t) => playerBest(t.username).catch(() => null))).then((x) => live && setChars(x));
+    Promise.all(three.map((t) => arenaShadow(t.username).catch(() => null))).then((x) => live && setChars(x));
     return () => {
       live = false;
     };
@@ -72,7 +73,7 @@ export default function Podium({ top, me }: { top: PodiumEntry[]; me?: string })
               style={{ left, width, top, height }}
               onClick={() => t && setOpen(i)}
               disabled={!t}
-              aria-label={t ? `Hạng ${i + 1}: @${t.username}, ${t.elo} điểm. Bấm xem chi tiết` : `Hạng ${i + 1} còn trống`}
+              aria-label={t ? `Hạng ${i + 1}: @${t.username}, ${t.pts} điểm. Bấm xem chi tiết` : `Hạng ${i + 1} còn trống`}
             >
               {t && c ? (
                 <span className="pd-fig" style={{ width: size, height: size }}>
@@ -100,7 +101,9 @@ export default function Podium({ top, me }: { top: PodiumEntry[]; me?: string })
                       @{t.username}
                       {t.username === me ? ' · Bạn' : ''}
                     </small>
-                    <small className="pd-elo">{t.elo} điểm</small>
+                    <small className="pd-elo">
+                      {t.pts} điểm{(t.winRun ?? 0) >= 3 ? ` · Liên thắng ${t.winRun}` : ''}
+                    </small>
                   </>
                 ) : (
                   <small className="pd-user">Còn trống</small>
@@ -125,7 +128,8 @@ export default function Podium({ top, me }: { top: PodiumEntry[]; me?: string })
                 {sel.t.username === me ? ' (bạn)' : ''}
               </p>
               <p>
-                <b>{sel.t.elo}</b> điểm lôi đài · {sel.t.wins} thắng, {sel.t.losses} thua tuần này
+                <b>{sel.t.pts}</b> điểm lôi đài · {sel.t.wins} thắng, {sel.t.losses} thua tuần này
+                {(sel.t.winRun ?? 0) >= 3 ? ` · Liên thắng ${sel.t.winRun}` : ''}
               </p>
               {sel.c && (
                 <p>
@@ -134,7 +138,7 @@ export default function Podium({ top, me }: { top: PodiumEntry[]; me?: string })
                   {sel.c.alive ? ' · đang sống' : ' · đã mất'}
                 </p>
               )}
-              <p className="note">Bóng đứng trên lôi đài là nhân vật mạnh nhất hiện có của người chơi này.</p>
+              <p className="note">Bóng xuất chiến hôm nay của người chơi này (chưa chọn thì là kiếp mạnh nhất).</p>
             </div>
           </div>
         </Sheet>
