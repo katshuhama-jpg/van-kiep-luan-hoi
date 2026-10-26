@@ -8,7 +8,6 @@ import { PATHS, realmLabel } from '@/lib/game/data';
 import { describeLean } from '@/lib/game/engine';
 import { fmt } from '@/lib/game/helpers';
 import type { Character } from '@/lib/game/types';
-import { TitleBadge } from '@/components/Hook';
 import { collectors, leaderboard, loreMasters, titleKey, weeklyTitles, type RankKind, type RankLean, type RankScope } from '@/lib/storage';
 import { useAuth } from '@/lib/useAuth';
 import { RelChips } from '@/components/GiangHo';
@@ -46,6 +45,29 @@ function Medal({ rank }: { rank: number }) {
         {rank}
       </text>
     </svg>
+  );
+}
+
+/** Danh hiệu gọn: hiện 2 cái quan trọng nhất, còn lại gộp vào nút +N */
+function RankTitles({ weekly, lore, coll }: { weekly: string[]; lore: string | null; coll: string | null }) {
+  const [open, setOpen] = useState(false);
+  const titles = [...weekly, lore, coll].filter((t): t is string => !!t);
+  if (!titles.length) return null;
+  const shown = open ? titles : titles.slice(0, 2);
+  const cls = (t: string) => (t === lore ? 'lore-master' : t === coll ? 'collector' : t.includes('Ma Đầu') ? 'ta' : t.includes('Minh Chủ') ? 'chinh' : t.includes('Phú') ? 'phu' : t.includes('Thọ') ? 'tho' : 'gold');
+  return (
+    <span className="rank-titles">
+      {shown.map((t) => (
+        <span key={t} className={`title-badge ${cls(t)}`}>
+          {t}
+        </span>
+      ))}
+      {titles.length > 2 && (
+        <button type="button" className="title-more" onClick={() => setOpen(!open)} aria-label={open ? 'Thu gọn danh hiệu' : `Xem thêm ${titles.length - 2} danh hiệu`}>
+          {open ? 'Thu gọn' : `+${titles.length - 2}`}
+        </button>
+      )}
+    </span>
   );
 }
 
@@ -203,33 +225,39 @@ export default function RankPage() {
         </section>
       ) : (
         <>
-          <div className="chips" role="radiogroup" aria-label="Lọc theo sống chết">
-            {SCOPES.map((x) => (
-              <button key={x.id} role="radio" aria-checked={scope === x.id} className={`chip-btn ${scope === x.id ? 'on' : ''}`} onClick={() => setScope(x.id)}>
-                {x.name}
-              </button>
-            ))}
+          <div className="rank-filters">
+            <label>
+              <span className="sr-only">Thời gian</span>
+              <select value={scope} onChange={(e) => setScope(e.target.value as RankScope)} aria-label="Lọc theo sống chết">
+                {SCOPES.map((x) => (
+                  <option key={x.id} value={x.id}>
+                    {x.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span className="sr-only">Phe</span>
+              <select value={lean} onChange={(e) => setLean(e.target.value as RankLean)} aria-label="Lọc theo phái">
+                {LEANS.map((l) => (
+                  <option key={l.id} value={l.id}>
+                    {l.id === 'all' ? 'Mọi phe' : l.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span className="sr-only">Con đường</span>
+              <select value={path} onChange={(e) => setPath(e.target.value)} aria-label="Lọc theo con đường">
+                {PATH_FILTERS.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.id === 'all' ? 'Mọi đạo' : p.name}
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
-          {scope === 'week' && (
-            <p className="note" style={{ margin: '0 0 6px' }}>
-              Bảng tuần tính lại từ thứ Hai hằng tuần. Ba người mạnh nhất tuần, cùng người mạnh nhất chính phái và tà phái, được treo danh hiệu: Thiên Hạ Đệ Nhất, Đệ Nhị Cao Thủ, Đệ Tam Cao Thủ, Võ
-              Lâm Minh Chủ, Đệ Nhất Ma Đầu.
-            </p>
-          )}
-          <div className="chips" role="radiogroup" aria-label="Lọc theo phái">
-            {LEANS.map((l) => (
-              <button key={l.id} role="radio" aria-checked={lean === l.id} className={`chip-btn ${l.id} ${lean === l.id ? 'on' : ''}`} onClick={() => setLean(l.id)}>
-                {l.name}
-              </button>
-            ))}
-          </div>
-          <div className="chips scroll" role="radiogroup" aria-label="Lọc theo con đường">
-            {PATH_FILTERS.map((p) => (
-              <button key={p.id} role="radio" aria-checked={path === p.id} className={`chip-btn ${path === p.id ? 'on' : ''}`} onClick={() => setPath(p.id)}>
-                {p.name}
-              </button>
-            ))}
-          </div>
+          {scope === 'week' && <p className="note rank-note">Tính lại mỗi thứ Hai. Top 3 tuần và người mạnh nhất mỗi phe được treo danh hiệu.</p>}
 
           {!enabled || failed ? (
             <section className="panel">
@@ -254,7 +282,12 @@ export default function RankPage() {
                       <Sprite c={c.dead ? { ...c, dead: false } : c} size={64} />
                     </div>
                     <div className="rank-body">
-                      <span className="rank-name">{c.name}</span>
+                      <span className="rank-head">
+                        <span className="rank-name">{c.name}</span>
+                        <span className={`rank-state rs-${r.alive ? 'alive' : c.endTag === 'chung_dao' ? 'dao' : c.cosmos || c.ascended ? 'asc' : 'gone'}`}>
+                          {r.alive ? 'Đang sống' : c.endTag === 'chung_dao' ? 'Chứng đạo' : c.cosmos === 'ma' ? 'Ma giới' : c.cosmos === 'hu' ? 'Thái Hư' : c.cosmos === 'tien' || c.ascended ? 'Tiên giới' : 'Đã mất'}
+                        </span>
+                      </span>
                       <span className="rank-val">
                         {kind === 'power'
                           ? c.realm === 0
@@ -264,23 +297,12 @@ export default function RankPage() {
                             ? `Thọ ${Math.floor(c.age)} tuổi · ${c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer, c.cosmos)}`
                             : `${fmt(c.linhThach)} linh thạch`}
                       </span>
-                      <span className="rank-owner">
-                        <span className="rank-user">@{r.username}</span>
-                        <TitleBadge title={titles[titleKey(r.username, c.lifeNo)]} />
-                        {lm[r.username] && <span className="title-badge lore-master">🔔 {lm[r.username]}</span>}
-                        {coll[r.username] && <span className="title-badge collector">{collectorTitle(coll[r.username])}</span>}
-                        {mine && <span className="badge">Bạn</span>}
-                        <RelChips player={r.username} s={social} />
-                        {!r.alive && (
-                          <span className="badge gone-badge">
-                            {c.endTag === 'chung_dao' ? 'Chứng đạo' : c.cosmos === 'ma' ? 'Ma giới' : c.cosmos === 'hu' ? 'Thái Hư' : c.cosmos === 'tien' || c.ascended ? 'Tiên giới' : 'Đã mất'}
-                          </span>
-                        )}
-                      </span>
-                      <small>
-                        {r.alive ? '' : `Kiếp ${c.lifeNo} · `}
-                        {Math.floor(c.age)} tuổi · {c.path ? PATHS[c.path].name : 'chưa chọn đường'} · {describeLean(c.daoTam)}
+                      <small className="rank-meta">
+                        <b className="rank-user">@{r.username}</b>
+                        {mine ? ' (bạn)' : ''} · Kiếp {c.lifeNo} · {Math.floor(c.age)} tuổi · {c.path ? PATHS[c.path].name : 'chưa chọn đường'} · {describeLean(c.daoTam)}
                       </small>
+                      <RankTitles weekly={titles[titleKey(r.username, c.lifeNo)] ?? []} lore={lm[r.username] ? '🔔 ' + lm[r.username] : null} coll={coll[r.username] ? collectorTitle(coll[r.username]) : null} />
+                      <RelChips player={r.username} s={social} />
                     </div>
                   </li>
                 );

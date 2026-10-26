@@ -3376,3 +3376,21 @@ a { overflow-wrap: anywhere; }
 .life-goal { display: block; margin: 0 0 8px; padding: 6px 10px; text-decoration: none; color: #f3e6ff; background: linear-gradient(#2a1e3a, #1e1428); border: 2px solid #c9962e; }
 .life-goal small { display: block; font-size: 13px; font-weight: 700; color: #ffd36b; letter-spacing: 0.03em; }
 .life-goal span { font-size: 16px; }
+/* bảng xếp hạng gọn: lọc bằng 3 ô chọn, mỗi dòng 4 tầng rõ ràng */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.rank-filters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin: 8px 0 6px; }
+.rank-filters label { min-width: 0; }
+.rank-filters select { width: 100%; min-width: 0; appearance: none; -webkit-appearance: none; font: inherit; font-size: 16px; font-weight: 600; color: var(--ink); padding: 6px 22px 6px 8px; background: var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h10v2H8v2H6v2H4V4H2V2H0z' fill='%233b2a1a'/%3E%3C/svg%3E") no-repeat right 8px center; border: 3px solid var(--ink); border-radius: 0; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+.rank-note { margin: 0 0 6px; font-size: 14px; }
+.rank-head { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; min-width: 0; }
+.rank-head .rank-name { min-width: 0; flex: 1 1 auto; }
+.rank-state { flex: none; font-size: 12px; font-weight: 700; padding: 0 5px; line-height: 17px; border: 2px solid var(--ink); background: #5a4a44; color: #f3e6c4; }
+.rank-state.rs-alive { background: #2f6b5a; color: #fff3dc; }
+.rank-state.rs-dao { background: #ffd36b; color: #3a2405; }
+.rank-state.rs-asc { background: #3d6fb0; color: #fff3dc; }
+.rank-meta { display: block; font-size: 14px !important; line-height: 1.25; margin-top: 1px; }
+.rank-meta .rank-user { color: var(--red-d); font-weight: 700; }
+.rank-titles { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
+.rank-titles .title-badge { margin: 0; font-size: 12px; line-height: 16px; padding: 0 5px; }
+.title-more { font: inherit; font-size: 12px; font-weight: 700; line-height: 16px; padding: 0 6px; background: var(--paper-2); color: var(--ink); border: 2px dashed var(--ink); cursor: pointer; }
+.rank-body .rel-chips { margin-top: 3px; }
