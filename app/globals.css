@@ -3881,3 +3881,16 @@ button.shadow-card { cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .ar-steps .now { animation: none; } }
 .sp-hint b { color: #ffd36b; }
 #ar-pick, #ar-xam { scroll-margin-top: 12px; }
+
+/* Bục Long Ỷ: hai rồng vàng chầu hai bên */
+.pd-long { position: absolute; top: 3%; z-index: 1; image-rendering: pixelated; pointer-events: none; filter: drop-shadow(0 0 4px rgba(255, 211, 107, 0.55)); }
+.pd-long.l { left: -2%; transform: scaleX(-1); }
+.pd-long.r { right: -2%; }
+.pd-stage:not(.ready) .pd-long { opacity: 0; }
+.pd-stage.ready .pd-long.l { animation: pdLongL 0.7s 0.2s steps(7) both, pdLongFloatL 2.4s 1s steps(4) infinite alternate; }
+.pd-stage.ready .pd-long.r { animation: pdLongR 0.7s 0.2s steps(7) both, pdLongFloatR 2.4s 1.2s steps(4) infinite alternate; }
+@keyframes pdLongL { from { opacity: 0; transform: scaleX(-1) translateX(40px); } to { opacity: 1; transform: scaleX(-1); } }
+@keyframes pdLongR { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: none; } }
+@keyframes pdLongFloatL { to { transform: scaleX(-1) translateY(-4px); } }
+@keyframes pdLongFloatR { to { transform: translateY(-4px); } }
+@media (prefers-reduced-motion: reduce) { .pd-stage.ready .pd-long.l, .pd-stage.ready .pd-long.r { animation: none; } }

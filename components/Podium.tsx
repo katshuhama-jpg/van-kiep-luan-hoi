@@ -57,6 +57,10 @@ export default function Podium({ top, me }: { top: PodiumEntry[]; me?: string })
     <section className="podium" aria-label="Ba người đứng đầu lôi đài tuần này">
       <div className={`pd-stage ${chars.length === three.length ? 'ready' : ''}`} ref={box} style={{ height: h }}>
         <i className="pd-beam" aria-hidden="true" />
+        {/* hai rồng vàng chầu hai bên long ỷ (ảnh Chinese Green Dragon của Pixel Archer, CC0, nhuộm vàng); phóng theo bội số nguyên cho nét pixel sắc */}
+        {[0, 1].map((k) => (
+          <img key={k} className={`pd-long ${k ? 'r' : 'l'}`} src="/px/long_vang.png" alt="" aria-hidden="true" width={128 * Math.max(1, Math.floor(w / 300))} height={64 * Math.max(1, Math.floor(w / 300))} />
+        ))}
         {SLOT.map((s, i) => {
           const t = three[i];
           const c = chars[i];
