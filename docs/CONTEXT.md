@@ -466,3 +466,9 @@ Khi được yêu cầu cập nhật tài liệu:
 4. Chỉ sửa file `docs/CONTEXT.md`. Không sửa code, không xóa nội dung mục 13 (quy ước) nếu Tyler chưa đồng ý.
 5. Giữ quy ước viết: tiếng Việt tự nhiên, dùng "-" không dùng "—".
 6. Commit với message bắt đầu bằng `docs:`. Lưu ý mỗi lần đẩy lên `main` Vercel sẽ deploy lại (vô hại vì chỉ đổi tài liệu).
+
+## Phiên bản và cáo thị cập nhật
+
+- Lịch sử phiên bản ở `lib/releases.ts` (mảng `RELEASES`, bản mới nhất đứng đầu). Trang `/cap-nhat` hiện toàn bộ; nút "Lịch sử cập nhật" ở trang đầu và trong menu ☰ màn chơi.
+- **Cáo thị giang hồ** (`components/Release.tsx`): bản đầu mảng hiện thành popup một lần cho mỗi người chơi. Đã xem thì lưu `vkl.seenVer` trên máy và `meta.seenVer` trên tài khoản, không bật lại.
+- **Quy tắc:** chỉ thêm phiên bản mới khi Tyler báo phát hành. Không tự tăng version theo từng lần sửa hay từng cuộc trò chuyện. Thêm bản mới = thêm phần tử vào đầu `RELEASES`, popup tự hiện lại cho mọi người.

@@ -3227,3 +3227,29 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .nhd-wait b { color: #8a1a1a; font-size: 15px; }
 
 .nhd-stage { background-color: #0a0710; background-size: 100% auto; background-position: center top; background-repeat: no-repeat; image-rendering: pixelated; }
+
+/* ================= Cáo thị bản cập nhật ================= */
+.rel-wrap { position: fixed; inset: 0; z-index: 90; display: flex; justify-content: center; align-items: flex-start; overflow-y: auto; padding: 16px; background: radial-gradient(circle at 50% 30%, rgba(60, 30, 10, 0.75), rgba(8, 4, 2, 0.94)); animation: duelIn 0.35s steps(4); }
+.rel-scroll { width: 100%; max-width: 420px; margin: auto 0; }
+.rel-scroll .rod { display: block; height: 14px; margin: 0 -8px; background: linear-gradient(#8a5a2a, #5a3410 60%, #3a200a); border: 2px solid #1f160d; }
+.rel-body { position: relative; padding: 16px 16px 14px; color: #3a2414; background: #f1e3c0; background-image: repeating-linear-gradient(0deg, rgba(120, 80, 30, 0.06) 0 2px, transparent 2px 6px); border-left: 2px solid #b8945a; border-right: 2px solid #b8945a; }
+.rel-body h2, .rel-panel h2 { margin: 2px 0 8px; font-size: 28px; color: #8a1a1a; text-align: center; }
+.rel-kick { margin: 0; text-align: center; font-size: 13px; letter-spacing: 0.2em; text-transform: uppercase; color: #8a6a3a; }
+.rel-seal { position: absolute; top: 10px; right: 10px; display: grid; place-items: center; width: 50px; height: 50px; font-size: 14px; font-weight: 700; color: #fff3dc; background: #b0201a; border: 3px double #fff3dc; box-shadow: 0 0 0 2px #b0201a; transform: rotate(8deg); }
+.rel-seal.sm { position: static; float: right; width: 42px; height: 42px; font-size: 12px; margin: 0 0 4px 8px; }
+.rel-intro { margin: 0 0 10px; font-size: 16px; line-height: 1.45; font-style: italic; }
+.rel-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px; }
+.rel-stats div { display: flex; flex-direction: column; align-items: center; padding: 6px 2px; background: #fff6dc; border: 2px solid #c9962e; }
+.rel-stats b { font-size: 22px; color: #b0201a; line-height: 1.1; }
+.rel-stats small { font-size: 12px; text-align: center; }
+.rel-group h3 { margin: 10px 0 4px; font-size: 17px; color: #8a1a1a; border-bottom: 1px dashed #b8945a; }
+.rel-items { margin: 0; padding-left: 18px; font-size: 15px; line-height: 1.4; }
+.rel-items li { margin-bottom: 4px; }
+.rel-acts { display: flex; flex-direction: column; align-items: stretch; gap: 8px; margin-top: 14px; }
+.rel-link { text-align: center; font-size: 15px; color: #8a1a1a; }
+.rel-panel { position: relative; }
+.rel-panel .rel-kick { text-align: left; }
+.rel-panel h2 { text-align: left; }
+.ver-tag { font-size: 12px; opacity: 0.8; margin-left: 4px; }
+.rel-body .rel-kick { padding: 0 44px; }
+.rel-body h2 { padding: 0 30px; }

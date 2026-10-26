@@ -245,6 +245,7 @@ export interface Meta {
   feud?: Record<string, number[]>;
   lore?: string[]; // Thiên thư: các mảnh ký ức đã mở
   itemBook?: string[]; // Bảo khố: đồ ẩn đã từng có được
+  seenVer?: string; // bản cập nhật đã xem cáo thị
   seenBook?: { e: number; i: number }; // số kết cục, đồ ẩn đã xem (để báo mục mới) // huyết hải thâm thù: các kiếp đã giao đấu với từng người chơi
   petBook?: string[]; // các loài linh thú đã từng nuôi
   achievements?: string[]; // thành tựu dài hạn đã đạt

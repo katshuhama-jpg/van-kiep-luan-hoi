@@ -34,6 +34,8 @@ import { updateCareer, bumpStreak, evalQuests, omenIs, qmark, questName, streakG
 import { HookSheet, TitleBadge } from '@/components/Hook';
 import { omenToday } from '@/lib/game/hook';
 import { useAuth } from '@/lib/useAuth';
+import ReleaseNotice, { needNotice } from '@/components/Release';
+import { CURRENT_VERSION } from '@/lib/releases';
 import NguHanhDai, { NhdMirror, waiting, type NhdView } from '@/components/NguHanhDai';
 import { arenaBg, NHD_MAX_TURNS, PHU_PRICE, STANCES, loseRound, mirrorChar, mirrorStance, mirrorStats, needTrial, nhdOf, roundMods, tellOf, winRound, type RoundMods, type Stance } from '@/lib/game/nguHanhDai';
 import { sectSide } from '@/lib/game/sect';
@@ -63,6 +65,7 @@ export default function PlayPage() {
   const [nhdPeek, setNhdPeek] = useState(false); // xem luật Ngũ Hành Đài từ dải nhắc
   const [nhd, setNhd] = useState<{ i: number; p: PendingEvent; view: NhdView | 'fight'; foe: Stance; tell: Stance; msg?: string; end?: 'next' | 'done' | 'lose' | 'dead' } | null>(null);
   const [tut, setTut] = useState(false); // hướng dẫn lần đầu
+  const [relOpen, setRelOpen] = useState(false); // cáo thị bản cập nhật mới
   const [duelWarn, setDuelWarn] = useState<DuelFoe | null>(null); // cảnh báo kỳ ngộ giang hồ
   const duelOpen = useRef(false);
   const [mail, setMail] = useState<Mail[] | null>(null); // hộp thư giang hồ
@@ -206,7 +209,7 @@ export default function PlayPage() {
   const speedRef = useRef(speed);
   speedRef.current = speed;
   const activeRef = useRef(false);
-  activeRef.current = running && sheet === null && phase === 'play' && kiep === null && !tut && duelWarn === null && !nhdPeek && (nhd === null || nhd.view === 'fight');
+  activeRef.current = running && sheet === null && phase === 'play' && kiep === null && !tut && duelWarn === null && !nhdPeek && !relOpen && (nhd === null || nhd.view === 'fight');
 
   /** Ngũ hành giữa bạn và loài quái */
   function monElem(c: Character, m: { el?: Element }) {
@@ -1129,6 +1132,21 @@ export default function PlayPage() {
   };
 
   // đánh dấu đã xem mục mới trong Sổ Sinh Tử (e) hay Bảo khố (i)
+  // cáo thị bản cập nhật: một lần cho mỗi bản, nhường hướng dẫn lần đầu
+  const metaReady = !!meta;
+  useEffect(() => {
+    if (metaReady && phase !== 'loading' && !tut && needNotice(metaRef.current?.seenVer)) setRelOpen(true);
+  }, [metaReady, phase, tut]);
+  const closeRel = (v: string) => {
+    setRelOpen(false);
+    const m0 = metaRef.current;
+    if (!m0 || m0.seenVer === v) return;
+    const m2 = { ...m0, seenVer: v };
+    metaRef.current = m2;
+    setMeta(m2);
+    saveMeta(user, m2).catch(() => {});
+  };
+
   function seeBook(w: 'e' | 'i') {
     const m0 = metaRef.current;
     if (!m0) return;
@@ -1302,6 +1320,7 @@ export default function PlayPage() {
           />
         )}
         <BirthPanel meta={meta} onBorn={born} onKho={() => setSheet('kho')} onSoSinhTu={() => seeBook('e')} />
+        {relOpen && <ReleaseNotice onClose={closeRel} />}
       </main>
     );
   }
@@ -1494,6 +1513,9 @@ export default function PlayPage() {
             >
               Hướng dẫn chơi
             </button>
+            <Link className="btn" href="/cap-nhat" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
+              Lịch sử cập nhật · bản {CURRENT_VERSION}
+            </Link>
             <Link className="btn btn-jade" href="/gop-y" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
               Góp ý tính năng
             </Link>
@@ -1554,6 +1576,7 @@ export default function PlayPage() {
           onPick={pickDuelAction}
         />
       )}
+      {relOpen && !c.dead && <ReleaseNotice onClose={closeRel} />}
       {nhdPeek && !nhd && (
         <NguHanhDai c={c} view="rules" tell="cong" preview onFight={() => {}} onBuyPhu={() => {}} onLeave={() => setNhdPeek(false)} onNext={() => {}} onRules={() => setNhdPeek(false)} />
       )}
