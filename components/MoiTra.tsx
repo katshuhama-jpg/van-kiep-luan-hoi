@@ -43,9 +43,6 @@ export default function MoiTra() {
         <h2>Mời tác giả một chén ngộ đạo trà!</h2>
       </div>
       <p className="mt-text">Nếu cảm thấy cõi tiên đồ họa hữu tình, game cuốn hút, đạo hữu có thể hoan hỉ mời bần đạo một chén trà để tái tạo linh lực, tiếp tục độ kiếp fix bug và có tiền mua sữa bỉm nuôi tiểu quỷ ở nhà.</p>
-      <p className="mt-fair">
-        <b>Cơ chế công bằng:</b> Ủng hộ hoàn toàn tùy tâm, không cộng lực chiến, không đổi được thần khí. Kẻ nạp triệu lượng hay người chơi hệ &quot;chay&quot; đều bình đẳng trước thiên đạo!
-      </p>
       <div className="mt-card">
         <TraQR />
         <dl>
