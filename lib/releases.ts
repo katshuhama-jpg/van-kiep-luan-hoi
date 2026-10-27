@@ -13,6 +13,42 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '3.1.1',
+    date: '27/10/2026',
+    title: 'Hoàn Hồn Đan',
+    lead: 'Đạo hữu nghiện quá mà hồn không theo kịp? Tiệm đan dưới chân cầu Nại Hà đã mở. Cùng lúc, Thiên Đạo cân lại đường tu: thọ dài hơn thì tu cũng phải chậm lại một chút.',
+    stats: [
+      { n: '3', label: 'phẩm đan hồi hồn' },
+      { n: '+10', label: 'Hồn lực mỗi nhiệm vụ' },
+      { n: 'x1,5', label: 'tu vi cần từ Kim Đan' },
+    ],
+    groups: [
+      {
+        h: 'Đan hồi hồn',
+        hot: true,
+        items: [
+          'Ở Cầu Nại Hà, ngay trước khi đầu thai, giờ mua được đan hồi Hồn lực bằng phúc duyên. Cũng mua được trong mục Kiếp Số và Hồn lực ở lá số.',
+          'Tụ Hồn Đan (hạ phẩm): +20 Hồn lực, 20 phúc. Dưỡng Hồn Đan (trung phẩm): +45 Hồn lực, 55 phúc. Hoàn Hồn Đan (thượng phẩm): hồi đầy, 140 phúc.',
+          'Mỗi ngày 3 viên đầu giá gốc. Từ viên thứ 4, mỗi viên đắt thêm 50% so với viên trước. Nghiện thì vẫn chơi tiếp được, chỉ là tốn phúc.',
+          'Mỗi nhiệm vụ ngày hoàn thành hồi thêm 10 Hồn lực.',
+        ],
+      },
+      {
+        h: 'Cân bằng lại cơ chế tu luyện',
+        items: [
+          'Bản 3.1.0 làm thọ dài ra 1,5 lần nên phi thăng dễ quá (người chơi lâu năm phi thăng gần 1/4 số kiếp). Nay tu luyện chậm lại cho cân: tu vi cần để lên tầng từ Kim Đan trở lên tăng 1,5 lần.',
+          'Cõi trên: mỗi tầng cần ít nhất 24 năm (trước 17 năm), cảnh giới cuối 16 năm (trước 12 năm).',
+          'Thiên kiếp phi thăng khó thêm 5%.',
+          'Nhân vật đang chơi giữa kiếp sẽ thấy thanh tu vi tụt một đoạn: tu vi vẫn giữ nguyên, chỉ là mức cần để lên tầng cao hơn.',
+        ],
+      },
+      {
+        h: 'Theo góp ý của đạo hữu',
+        items: ['Đạo hữu trên Threads xin tắt Hồn lực vì "đang nghiện mà phải dừng". Không tắt được, nhưng có đan rồi.'],
+      },
+    ],
+  },
+  {
     v: '3.1.0',
     date: '27/10/2026',
     title: 'Vạn Tông Triều Bái',
@@ -68,15 +104,6 @@ export const RELEASES: Release[] = [
           'Đột phá từ Kim Đan trở lên phụ thuộc linh căn: Phế -15%, Tạp -8%, Địa +3%, Thiên +6%.',
           'Hỏng 3 lần liền ở cùng cảnh giới thì rơi vào bình cảnh, phải bế quan 10 năm mới thử lại.',
           'Cảnh giới càng cao, năm trôi càng nhanh, nên mỗi kiếp không dài thêm.',
-        ],
-      },
-      {
-        h: 'Cân bằng lại cơ chế tu luyện',
-        items: [
-          'Thọ dài ra nên tu luyện chậm lại cho cân: tu vi cần để lên tầng từ Kim Đan trở lên tăng 1,5 lần.',
-          'Cõi trên: mỗi tầng cần ít nhất 24 năm (trước 17 năm), cảnh giới cuối 16 năm (trước 12 năm).',
-          'Thiên kiếp phi thăng khó thêm 5%.',
-          'Nhân vật đang chơi giữa kiếp sẽ thấy thanh tu vi tụt một đoạn: tu vi vẫn giữ nguyên, chỉ là mức cần để lên tầng cao hơn.',
         ],
       },
       {
