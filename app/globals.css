@@ -2716,7 +2716,7 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 
 /* ngũ hành trong màn cảnh báo */
 .duel-elem { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; padding: 6px; border: 2px dashed rgba(255, 243, 220, 0.35); }
-.duel-elem .el { width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #1f160d; border: 2px solid #1f160d; }
+.duel-elem .el { min-width: 28px; height: 28px; padding: 0 6px; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; color: #1f160d; border: 2px solid #1f160d; }
 .duel-elem .vs { font-size: 18px; }
 .duel-elem small { flex-basis: 100%; font-size: 15px; line-height: 1.3; }
 .duel-elem.good small { color: #8af09a; }
@@ -2729,7 +2729,7 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 
 /* ngũ hành trong trận đấu với người */
 .elem-banner { position: absolute; right: 8px; bottom: 6px; z-index: 2; display: flex; align-items: center; gap: 4px; padding: 2px 8px 2px 4px; background: rgba(31, 22, 13, 0.82); border: 2px solid #8a7a5a; color: #fff3dc; white-space: nowrap; }
-.elem-banner .el { width: 22px; height: 22px; display: grid; place-items: center; font-size: 15px; color: #1f160d; font-weight: 700; border: 2px solid #1f160d; }
+.elem-banner .el { min-width: 22px; height: 22px; padding: 0 4px; display: grid; place-items: center; font-size: 12px; color: #1f160d; font-weight: 700; border: 2px solid #1f160d; }
 .elem-banner .arrow { font-size: 12px; }
 .elem-banner small { font-size: 12px; margin-left: 2px; }
 .elem-banner.khac { border-color: #5ac86a; animation: elemPulse 1.2s ease-in-out infinite; }
@@ -4019,3 +4019,27 @@ button.shadow-card { cursor: pointer; }
 .hp-row .hp.up small { color: var(--ta); }
 .mb-hoan { margin: 0 0 8px; }
 .mb-hoan > small { display: block; font-size: 14px; }
+
+/* 3.2.0 mục tiêu ba kiếp đầu */
+.newbie-goal { font-size: 13px; color: #ffd36b; }
+.newbie-goal.done { color: #9be3a4; }
+/* 3.2.0 điểm danh 7 ngày */
+.checkin { margin-top: 8px; padding: 8px; background: var(--paper-3); border: 3px solid var(--ink); box-shadow: 2px 2px 0 var(--shadow); }
+.ci-head { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
+.ci-head b { font-size: 17px; }
+.ci-head small { font-size: 12px; color: var(--muted); text-align: right; }
+.ci-days { list-style: none; margin: 6px 0; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+.ci-days li { display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 3px 1px; min-height: 52px; background: var(--paper-2); border: 2px solid var(--ink); font-size: 11px; line-height: 1.1; text-align: center; overflow-wrap: anywhere; }
+.ci-days li i { font-style: normal; font-weight: 700; font-size: 11px; color: var(--muted); }
+.ci-days li.got { background: #d8e8d0; color: #2f6b3a; }
+.ci-days li.got i { color: #2f6b3a; }
+.ci-days li.now { background: #ffe9b0; border-color: var(--red); box-shadow: 0 0 0 2px #ffd36b; animation: ci-pulse 1.2s steps(2) infinite; }
+@keyframes ci-pulse { 50% { box-shadow: 0 0 0 2px var(--red); } }
+.ci-claim { width: 100%; margin: 2px 0 6px; }
+.ci-quests { list-style: none; margin: 4px 0 2px; padding: 0; display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+.ci-quests li { display: flex; align-items: center; gap: 6px; }
+.ci-quests .box { flex: none; width: 11px; height: 11px; background: #fffaf0; box-shadow: 0 0 0 2px var(--ink); }
+.ci-quests li.done { color: #2f6b3a; text-decoration: line-through; }
+.ci-quests li.done .box { background: #2f6b3a; }
+@media (prefers-reduced-motion: reduce) { .ci-days li.now { animation: none; } }
+.ci-done { margin: 6px 0 2px; font-size: 13px; color: #3c7a3c; text-align: center; }

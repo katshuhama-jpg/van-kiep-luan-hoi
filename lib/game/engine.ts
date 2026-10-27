@@ -1,4 +1,4 @@
-import { applyProphecy, omenIs } from './hook';
+import { applyProphecy, checkNewbieGoal, newbieGoal, omenIs } from './hook';
 import { loreDone, lore2Count, quyNhatDone } from './lore';
 import { ksBreak, ksOf, ksPhuc } from './luanHoi';
 import { CHAN_TRUYEN_BREAK, leaveSect, promoteByRealm, rankOf, sectConflict, sectCultMul } from './sect';
@@ -212,6 +212,7 @@ export function newCharacter(meta: Meta, gifts: string[] = [], base?: Character)
   c.vendettas = meta.vendettas ?? [];
   applyProphecy(c, meta.prophecy);
   if (c.lifeNo === 1) c.log.push({ age: 0, tone: 'good', text: 'Kiếp đầu tiên, trời cao thương đứa trẻ mới đến: trước 16 tuổi bạn sẽ không chết.' });
+  if (c.lifeNo <= 3) c.log.push({ age: 0, tone: 'good', text: `Ba kiếp đầu được trời thương: tới khi chọn con đường tu luyện, hiểm cảnh khó lấy mạng bạn hơn. Mục tiêu kiếp này: ${newbieGoal(c)?.name ?? ''}.` });
   if (gifts.length) {
     applyGifts(c, gifts);
     c.log.push({ age: 0, tone: 'good', text: `Thiên phú bẩm sinh: ${gifts.map((g) => giftOf(g)?.name).join(', ')}.` });
@@ -654,6 +655,13 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
         ctx.log(`Thân phận bị lộ. ${name} tuyên bố trục xuất bạn trước toàn tông, lột áo bào, thu lệnh bài.`, 'bad');
       }
     }
+  }
+
+  // ---- 3.2.0: mục tiêu ba kiếp đầu ----
+  const goal = checkNewbieGoal(c);
+  if (goal) {
+    ctx.log(goal, 'good');
+    ctx.fx('buy', 'Đạt mục tiêu');
   }
 
   // ---- Ba cõi: thiên quy, dấu hiệu suy tàn ----

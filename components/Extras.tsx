@@ -131,7 +131,7 @@ function BirthCard({ c }: { c: Character }) {
           <dt>Mệnh</dt>
           <dd>
             <b style={{ color: ELEMENTS[elementOf(c)].color, textShadow: '1px 1px 0 #1f160d' }}>
-              {ELEMENTS[elementOf(c)].name} {ELEMENTS[elementOf(c)].sym}
+              {ELEMENTS[elementOf(c)].name}
             </b>
           </dd>
         </dl>

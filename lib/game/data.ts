@@ -66,7 +66,7 @@ export interface PathInfo {
 
 export const PATHS: Record<PathId, PathInfo> = {
   kiem: { id: 'kiem', name: 'Kiếm tu', short: 'Kiếm', desc: 'Lấy kiếm nhập đạo. Công mạnh nhất, tu nhanh. Hay chết trận vì ham đánh.', lean: 'trung', aura: '#7fc8ff' },
-  dan: { id: 'dan', name: 'Đan tu', short: 'Đan', desc: 'Luyện đan kiếm nhiều linh thạch, tự chế đan đột phá, tu nhanh hơn chút. Giàu có, có đan dược hộ thân nên khó chết, nhưng ra đòn không mạnh.', lean: 'trung', aura: '#ffb057' },
+  dan: { id: 'dan', name: 'Đan tu', short: 'Đan', desc: 'Sống lâu nhất trong các con đường. Luyện đan kiếm nhiều linh thạch, tự chế đan đột phá, tu nhanh hơn chút, có đan dược hộ thân nên khó chết, nhưng ra đòn không mạnh. Kiếp sau còn nhớ cách luyện: đan hồi hồn rẻ hơn 30%.', lean: 'trung', aura: '#ffb057' },
   tran: { id: 'tran', name: 'Trận tu', short: 'Trận', desc: 'Bày trận, vẽ phù. Thủ cực chắc, bế quan an toàn, ít bị tập kích. Thường sống rất thọ.', lean: 'trung', aura: '#b59cff' },
   phat: { id: 'phat', name: 'Phật tu', short: 'Phật', desc: 'Từ bi hỷ xả. Máu và thủ dày, thọ nguyên dài, tâm ma khó xâm nhập, đột phá vững vàng.', lean: 'chinh', aura: '#ffe27a' },
   ma: { id: 'ma', name: 'Ma tu', short: 'Ma', desc: 'Hút linh lực, luyện huyết công. Tu nhanh nhất, nhưng tâm ma cực nặng.', lean: 'ta', aura: '#ff3448' },

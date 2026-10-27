@@ -111,10 +111,16 @@ export function honPillUsed(m: Meta | null | undefined, now: number): number {
   return p && p.day === vnDate(now) ? p.n : 0;
 }
 /** Giá viên kế tiếp của một phẩm đan, theo số viên đã dùng hôm nay */
-export function honPillCost(base: number, used: number): number {
+export function honPillCost(base: number, used: number, danTu = false): number {
   const over = Math.max(0, used - HON_PILL_FREE + 1);
-  return Math.round((base * Math.pow(HON_PILL_STEP, over)) / 5) * 5;
+  return Math.round((base * Math.pow(HON_PILL_STEP, over) * (danTu ? DAN_TU_DISCOUNT : 1)) / 5) * 5;
 }
+/** 3.2.0: kiếp trước là Đan tu thì đan hồi hồn rẻ hơn 30% */
+export const DAN_TU_DISCOUNT = 0.7;
+export const pastDanTu = (m: Meta | null | undefined) => {
+  const p = m?.past?.path;
+  return p === 'dan' || p === 'Đan tu';
+};
 /** Cộng Hồn lực (không quá tối đa), tính từ mức hiện tại */
 export function addHon(m: Meta, amount: number, now: number): Meta {
   return { ...m, hon: { v: Math.min(HON_MAX, honNow(m, now) + amount), at: now } };

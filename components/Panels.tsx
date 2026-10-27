@@ -19,7 +19,7 @@ import Sprite from './Sprite';
 import { BIG_TALENTS, honActive, ksBase, ksOf, ksOneBig } from '@/lib/game/luanHoi';
 import { LORE, LORE2_TOTAL, LORE_TOTAL, lore1Count, lore2Count, quyNhatDone } from '@/lib/game/lore';
 import { ELEMENTS } from '@/lib/game/nguhanh';
-import { TodayScroll } from './Hook';
+import { CheckinRow, TodayScroll } from './Hook';
 import { useAuth } from '@/lib/useAuth';
 import { addFeedback } from '@/lib/storage';
 
@@ -802,8 +802,10 @@ export function BirthPanel({
   onKho,
   onSoSinhTu,
   onHoanHon,
+  onCheckin,
 }: {
   meta: Meta;
+  onCheckin?: () => void;
   onHoanHon?: (id: import('@/lib/game/luanHoi').HonPillId) => void;
   onBorn: (talents: string[], yearSec: number, gifts: string[], gachaSpent: number, base: Character | null, drink: boolean) => void;
   busy?: boolean;
@@ -878,6 +880,7 @@ export function BirthPanel({
           )}
         </div>
       )}
+      {onCheckin && <CheckinRow meta={meta} onClaim={onCheckin} />}
 
       <GachaPanel
         phuc={left}

@@ -28,12 +28,12 @@ import { bountyClaim, khieuDone, loadSocial, loreSocial, payoutClaim, truyenCong
 import { GiangHoSheet, type GiangHoApi } from '@/components/GiangHo';
 import { HIDDEN_ITEMS, collectStats, markSeen, newFinds, unseen } from '@/lib/game/collect';
 import { QUY_NHAT_PHUC, newLore, quyNhatDone } from '@/lib/game/lore';
-import { HON_PILLS, QUEST_HON, addHon, honPillCost, honPillUsed, honDay, type HonPillId, CAU_HON_AT, HON_COST, HON_MAX, KS_NAME, applyHon, honActive, honNow, ksOf, ksOneBig, manhBa, nextKiepTich } from '@/lib/game/luanHoi';
+import { HON_PILLS, QUEST_HON, addHon, pastDanTu, honPillCost, honPillUsed, honDay, type HonPillId, CAU_HON_AT, HON_COST, HON_MAX, KS_NAME, applyHon, honActive, honNow, ksOf, ksOneBig, manhBa, nextKiepTich } from '@/lib/game/luanHoi';
 import { serverNow } from '@/lib/serverTime';
 import LoiDaiButton from '@/components/LoiDaiButton';
 import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, pickAmbush } from '@/lib/game/ambush';
 import { titleKey, addMemorial, displayName, fetchWorld, listMail, loadAll, saveLocal, saveMeta, saveRemote, sendMail, unreadMail, weeklyTitles, type Mail, type SaveState } from '@/lib/storage';
-import { updateCareer, bumpStreak, evalQuests, omenIs, qmark, questName, streakGift, vnDay } from '@/lib/game/hook';
+import { CHECKIN, checkinClaimed, checkinDay, updateCareer, bumpStreak, evalQuests, newbieGoal, omenIs, qmark, questName, vnDay } from '@/lib/game/hook';
 import { HookSheet, TitleBadge } from '@/components/Hook';
 import { omenToday } from '@/lib/game/hook';
 import { useAuth } from '@/lib/useAuth';
@@ -1023,6 +1023,27 @@ export default function PlayPage() {
     });
   };
 
+  // Điểm danh 7 ngày: nhận quà ngày hôm nay
+  const checkin = async () => {
+    if (!meta) return;
+    const now = await serverNow();
+    const day = vnDay();
+    if (checkinClaimed(meta, day)) return;
+    const g = CHECKIN[checkinDay(meta) - 1];
+    const hon = honActive(meta);
+    let m2: Meta = { ...meta, checkin: day };
+    let phuc = g.phuc ?? 0;
+    if (g.hon) {
+      if (hon) m2 = addHon(m2, g.hon, now);
+      else phuc += g.honPhuc ?? 0;
+    }
+    if (phuc) m2 = { ...m2, phucDuyen: m2.phucDuyen + phuc };
+    if (g.money || g.item) m2 = { ...m2, checkinNext: { money: (meta.checkinNext?.money ?? 0) + (g.money ?? 0) || undefined, item: g.item ?? meta.checkinNext?.item } };
+    track('checkin', { day: checkinDay(meta) });
+    setMeta(m2);
+    saveMeta(user, m2).catch(() => {});
+  };
+
   // Đan hồi hồn: đổi phúc duyên lấy Hồn lực, mỗi ngày tối đa vài viên
   const hoanHon = async (id: HonPillId) => {
     if (!meta) return;
@@ -1030,7 +1051,7 @@ export default function PlayPage() {
     const now = await serverNow();
     if (!pill) return;
     const used = honPillUsed(meta, now);
-    const cost = honPillCost(pill.cost, used);
+    const cost = honPillCost(pill.cost, used, pastDanTu(meta));
     if (meta.phucDuyen < cost) return;
     const day = honDay(now);
     const n = used + 1;
@@ -1077,19 +1098,15 @@ export default function PlayPage() {
         }
       }
     }
-    // quà chuỗi ngày: mỗi ngày nhận một lần, ở kiếp đầu tiên đầu thai trong ngày
-    const today = vnDay();
-    let streak = m2.streak;
-    const sg = streak && streak.giftDay !== today ? streakGift(streak.n) : null;
-    if (sg && streak) {
-      money(c, sg.money);
-      if (sg.khiVan) stat(c, 'khiVan', sg.khiVan);
-      if (sg.item) giveItem(c, sg.item, true);
-      c.log.push({ age: 0, tone: 'good', text: sg.text });
-      streak = { ...streak, giftDay: today };
+    // 3.2.0: quà điểm danh dành cho kiếp kế tiếp (linh thạch, ngọc bội)
+    const cn = m2.checkinNext;
+    if (cn) {
+      if (cn.money) money(c, cn.money);
+      if (cn.item) giveItem(c, cn.item, true);
+      c.log.push({ age: 0, tone: 'good', text: `Quà điểm danh: ${[cn.money ? `+${cn.money} linh thạch` : '', cn.item ? 'ngọc bội hộ thân' : ''].filter(Boolean).join(', ')}.` });
     }
     // rương kiếp trước, lời tiên tri, thần binh chỉ dùng cho một kiếp
-    const m3: Meta = { ...m2, talents: [], stash: null, prophecy: null, legend: null, streak, hon: lh ? { v: Math.max(0, honV - HON_COST), at: now } : m2.hon };
+    const m3: Meta = { ...m2, talents: [], stash: null, prophecy: null, legend: null, checkinNext: undefined, hon: lh ? { v: Math.max(0, honV - HON_COST), at: now } : m2.hon };
     // dấu vết người chơi khác: tải nền, không chặn việc đầu thai
     fetchWorld(user)
       .then((w) => {
@@ -1325,7 +1342,7 @@ export default function PlayPage() {
       legend,
       vendettas: (c.vendettas ?? []).slice(-3),
       petBook,
-      phucDuyen: meta.phucDuyen + k.phuc + q.reward,
+      phucDuyen: meta.phucDuyen + k.phuc + q.reward + (c.goalDone ? (newbieGoal(c)?.reward ?? 0) : 0),
       nghiep: k.nghiep > 0 ? meta.nghiep + k.nghiep : Math.max(0, meta.nghiep - 5),
       lives: meta.lives + 1,
       talents: [],
@@ -1436,7 +1453,7 @@ export default function PlayPage() {
           />
         )}
         {(setScreen('dau_thai'), null)}
-        <BirthPanel meta={meta} onHoanHon={hoanHon} onBorn={born} onKho={() => setSheet('kho')} onSoSinhTu={() => seeBook('e')} />
+        <BirthPanel meta={meta} onCheckin={checkin} onHoanHon={hoanHon} onBorn={born} onKho={() => setSheet('kho')} onSoSinhTu={() => seeBook('e')} />
         {relOpen && <ReleaseNotice onClose={closeRel} />}
       </main>
     );
@@ -1470,6 +1487,14 @@ export default function PlayPage() {
             <br />
             <b>{fmt(c.linhThach)}</b> linh thạch · {wealthTier(c).name}
             {c.income ? ` · +${c.income}/năm` : ''}
+            {newbieGoal(c) && (
+              <>
+                <br />
+                <span className={`newbie-goal ${c.goalDone ? 'done' : ''}`}>
+                  {c.goalDone ? '✓ ' : ''}Mục tiêu kiếp {c.lifeNo}: {newbieGoal(c)!.name} (+{newbieGoal(c)!.reward} phúc)
+                </span>
+              </>
+            )}
           </span>
           <div className="top-icons">
             <button className="icon-btn today-btn" onClick={() => setSheet('today')} aria-label="Thiên tượng và nhiệm vụ hôm nay">

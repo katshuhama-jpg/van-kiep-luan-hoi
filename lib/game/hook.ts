@@ -306,3 +306,47 @@ export function updateCareer(meta: Meta, c: Character): { career: Career; newly:
   const newly = ACHIEVEMENTS.filter((a) => !have.includes(a.id) && a.check(m2, career));
   return { career, newly };
 }
+
+// ---------------- Mục tiêu ba kiếp đầu (3.2.0) ----------------
+export interface NewbieGoal {
+  life: number;
+  name: string;
+  reward: number; // phúc duyên, nhận khi luân hồi
+  check: (c: Character) => boolean;
+}
+export const NEWBIE_GOALS: NewbieGoal[] = [
+  { life: 1, name: 'Lên Trúc Cơ', reward: 30, check: (c) => c.realm >= 2 },
+  { life: 2, name: 'Chọn con đường và sống qua 60 tuổi', reward: 30, check: (c) => !!c.path && c.age >= 60 },
+  { life: 3, name: 'Kết Kim Đan', reward: 40, check: (c) => c.realm >= 3 },
+];
+export const newbieGoal = (c: Character) => NEWBIE_GOALS.find((g) => g.life === c.lifeNo) ?? null;
+/** Kiểm tra mục tiêu kiếp đầu mỗi năm: đạt thì đánh dấu và trả câu báo */
+export function checkNewbieGoal(c: Character): string | null {
+  const g = newbieGoal(c);
+  if (!g || c.goalDone || !g.check(c)) return null;
+  c.goalDone = true;
+  return `Đạt mục tiêu kiếp ${c.lifeNo}: ${g.name}. Luân hồi xong sẽ nhận ${g.reward} phúc duyên.`;
+}
+
+// ---------------- Điểm danh 7 ngày (3.2.0) ----------------
+/** Quà theo ngày trong chuỗi (lặp lại sau ngày 7). hon: Hồn lực; khi chưa có Hồn lực (dưới kiếp 15) đổi sang phúc duyên */
+export interface CheckinGift {
+  phuc?: number;
+  hon?: number;
+  honPhuc?: number; // phúc thay cho Hồn lực khi chưa mở Hồn lực
+  money?: number; // linh thạch cho kiếp kế tiếp
+  item?: string; // đồ cho kiếp kế tiếp
+  label: string;
+}
+export const CHECKIN: CheckinGift[] = [
+  { phuc: 10, label: '10 phúc' },
+  { hon: 20, honPhuc: 10, label: 'Tụ Hồn Đan' },
+  { phuc: 20, label: '20 phúc' },
+  { hon: 45, honPhuc: 20, label: 'Dưỡng Hồn Đan' },
+  { phuc: 30, label: '30 phúc' },
+  { money: 600, label: '600 linh thạch' },
+  { hon: 100, honPhuc: 40, item: 'ngoc_boi', label: 'Hoàn Hồn Đan, ngọc bội' },
+];
+/** Ngày thứ mấy trong vòng 7 ngày (1-7) theo chuỗi hiện tại */
+export const checkinDay = (meta: Meta) => (((meta.streak?.n ?? 1) - 1) % 7) + 1;
+export const checkinClaimed = (meta: Meta, day: string = vnDay()) => meta.checkin === day;

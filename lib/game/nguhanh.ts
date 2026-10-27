@@ -2,11 +2,11 @@ import type { Character, Element, RivalChar } from './types';
 
 /** Ngũ hành: mỗi người một bản mệnh. Tương khắc khi giao đấu giữa người với người. */
 export const ELEMENTS: Record<Element, { name: string; color: string; sym: string }> = {
-  kim: { name: 'Kim', color: '#e6e0b0', sym: '金' },
-  moc: { name: 'Mộc', color: '#5ac86a', sym: '木' },
-  thuy: { name: 'Thủy', color: '#5a9ae0', sym: '水' },
-  hoa: { name: 'Hỏa', color: '#e85a3a', sym: '火' },
-  tho: { name: 'Thổ', color: '#c8963a', sym: '土' },
+  kim: { name: 'Kim', color: '#e6e0b0', sym: 'Kim' },
+  moc: { name: 'Mộc', color: '#5ac86a', sym: 'Mộc' },
+  thuy: { name: 'Thủy', color: '#5a9ae0', sym: 'Thủy' },
+  hoa: { name: 'Hỏa', color: '#e85a3a', sym: 'Hỏa' },
+  tho: { name: 'Thổ', color: '#c8963a', sym: 'Thổ' },
 };
 export const ELEMENT_IDS = Object.keys(ELEMENTS) as Element[];
 
