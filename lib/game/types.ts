@@ -109,6 +109,8 @@ export interface Character {
   sectRank?: number; // bậc trong tông môn: 0 tạp dịch, 1 ngoại môn, 2 nội môn, 3 chân truyền
   sectHide?: boolean; // ngược phe nhưng giấu thân phận ở lại tông
   maStep?: number; // 3.1.0 chuỗi nhập Ma giới: đã qua mấy bước (0-4)
+  arc?: Record<string, number>; // 3.1.0 cốt truyện sau phi thăng: đang ở bước nào
+  arcAt?: Record<string, number>; // tuổi lúc qua bước đó
   maAt?: number; // tuổi lúc qua bước gần nhất của chuỗi Ma giới
   maLord?: 'huyet' | 'cot' | 'anh'; // Ma quân đã nhận làm chủ
   maLand?: number; // địa bàn ở Ma giới: thu linh thạch mỗi năm

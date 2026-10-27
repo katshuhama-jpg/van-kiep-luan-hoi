@@ -9,6 +9,7 @@ import { SECT_EVENTS } from './sectEvents';
 import { SECT_EVENTS2 } from './sectEvents2';
 import { COSMOS_EVENTS } from './cosmosEvents';
 import { HU_EVENTS } from './huEvents';
+import { COSMOS_STORIES } from './cosmosStories';
 import { COSMOS_END_EVENTS } from './cosmosEnds';
 import { joinSect, rankByRoot, rankByWit, rankName } from './sect';
 import { CHILD_EVENTS } from './childhood';
@@ -2785,6 +2786,7 @@ export const EVENTS: GameEvent[] = [
   ...SECT_EVENTS2,
   ...COSMOS_EVENTS,
   ...HU_EVENTS,
+  ...COSMOS_STORIES,
   ...COSMOS_END_EVENTS,
   ...CHILD_EVENTS,
   PET_EVENT,

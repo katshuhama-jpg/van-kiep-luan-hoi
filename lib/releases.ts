@@ -16,10 +16,10 @@ export const RELEASES: Release[] = [
     v: '3.1.0',
     date: '27/10/2026',
     title: 'Vạn Tông Triều Bái',
-    lead: 'Bản này làm theo góp ý của đạo hữu. Thêm bốn tông môn, một con đường nhập Ma giới, thọ nguyên dài hơn mà đột phá khó hơn, linh thạch không còn dễ như nhặt lá.',
+    lead: 'Bản này làm theo góp ý của đạo hữu. Thêm bốn tông môn, một con đường nhập Ma giới, mười cốt truyện cho người đã phi thăng, thọ nguyên dài hơn mà đột phá khó hơn, linh thạch không còn dễ như nhặt lá.',
     stats: [
       { n: '+4', label: 'tông môn' },
-      { n: '4', label: 'bước nhập Ma giới' },
+      { n: '+33', label: 'sự kiện cốt truyện' },
       { n: 'x1,5', label: 'thọ nguyên' },
     ],
     groups: [
@@ -32,6 +32,17 @@ export const RELEASES: Release[] = [
           'Vạn Độc Môn (tà): mời Đan tu, Ma tu. Có việc thử độc: tu vi tăng mạnh, đổi lại mất sức khỏe, có thể chết.',
           'Yêu Thần Điện (tà): nhận mọi yêu tộc, không xét linh căn. Có huyết tế và lệnh săn.',
           'Mỗi tông có tên bậc đệ tử riêng, áo bào và bảo vật riêng cho từng bậc.',
+        ],
+      },
+      {
+        h: 'Mười cốt truyện sau phi thăng',
+        hot: true,
+        items: [
+          'Tổng cộng bản này thêm 33 sự kiện cốt truyện mới: 15 sự kiện sau phi thăng, 16 sự kiện tông môn và chuỗi Ma giới, 2 sự kiện Phản môn.',
+          'Tiên giới: Canh bến Thiên Hà (thả hay bắt con giao long, tám năm sau nó quay lại), Cây quế Quảng Hàn (uống rượu với Ngô Cương), Trông lò Bát Quái (đừng mở nắp), Miếu thờ ở nhân gian (lén làm mưa cho hậu nhân).',
+          'Ma giới: Huyết Nguyệt, Ma Đế bệnh nặng (theo Đại hoàng tử, Tam công chúa hay đứng ngoài, qua chính biến tới ngày tân Ma Đế lên ngôi), Cửu U Thâm Uyên chín tầng, mỗi lần xuống sâu hơn, tầng cuối có Cửu U Ma Long.',
+          'Thái Hư giới: Kẻ giữ đồng hồ cát (đổi thọ lấy đạo hay đạo lấy thọ), Bóng kiếp trước (gặp lại chính mình kiếp trước), Hư không rách (vá trời hay hút linh khí, bảy năm sau trả giá).',
+          'Nhiều chuyện kéo dài qua nhiều bước, lựa chọn bước trước quyết định bước sau. Vài chuyện lặp lại để người sống lâu ở cõi trên luôn có việc để làm.',
         ],
       },
       {
