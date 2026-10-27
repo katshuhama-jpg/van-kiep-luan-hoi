@@ -85,10 +85,10 @@ export default function LoginPage() {
           />
           {username && norm !== username ? (
             <small className="note">
-              Tên sẽ dùng: <b>{norm || '...'}</b>
+              Tên đăng nhập viết liền, không dấu: <b>{norm || '...'}</b>
             </small>
           ) : (
-            <small className="note">3-16 ký tự. Gõ có dấu hay viết hoa cũng được, game tự chuyển thành chữ thường không dấu.</small>
+            <small className="note">3-16 ký tự, viết liền không dấu: chữ thường, số, dấu _</small>
           )}
         </label>
         <label className="field">
