@@ -1385,6 +1385,7 @@ export default function PlayPage() {
       lives: meta.lives + 1,
       talents: [],
       enemy: c.daoTam < -30 ? c.enemy : null,
+      daoBook: c.daoSwitch && !(meta.daoBook ?? []).includes(c.daoSwitch) ? [...(meta.daoBook ?? []), c.daoSwitch] : meta.daoBook,
       endings: [ending.id, ...alsoEndings(c)].reduce((e, id) => ({ ...e, [id]: (e[id] ?? 0) + 1 }), { ...(meta.endings ?? {}) } as Record<string, number>),
       past: {
         name: c.name,

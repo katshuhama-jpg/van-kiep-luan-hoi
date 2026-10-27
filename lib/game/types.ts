@@ -109,6 +109,10 @@ export interface Character {
   sectRank?: number; // bậc trong tông môn: 0 tạp dịch, 1 ngoại môn, 2 nội môn, 3 chân truyền
   sectHide?: boolean; // ngược phe nhưng giấu thân phận ở lại tông
   goalDone?: boolean; // 3.2.0 đã đạt mục tiêu kiếp đầu
+  daoSwitch?: string; // kỳ ngộ chuyển đạo đã dùng trong kiếp này (mỗi kiếp một lần)
+  forge?: number; // cấp rèn của vũ khí đang cầm (+1..+5)
+  forgeItem?: string; // vũ khí đã rèn (đổi vũ khí thì cấp rèn không theo)
+  tinhHoa?: number; // tinh hoa luyện hóa từ đồ thừa
   maDauMet?: number; // 3.2.0 số lần gặp bóng ma đầu trong kiếp này (tối đa 2)
   maStep?: number; // 3.1.0 chuỗi nhập Ma giới: đã qua mấy bước (0-4)
   arc?: Record<string, number>; // 3.1.0 cốt truyện sau phi thăng: đang ở bước nào
@@ -273,6 +277,7 @@ export interface Meta {
   feud?: Record<string, number[]>;
   lore?: string[]; // Thiên thư: các mảnh ký ức đã mở
   itemBook?: string[]; // Bảo khố: đồ ẩn đã từng có được
+  daoBook?: string[]; // kỳ ngộ chuyển đạo đã từng gặp và đi theo
   seenVer?: string; // bản cập nhật đã xem cáo thị
   seenBook?: { e: number; i: number }; // số kết cục, đồ ẩn đã xem (để báo mục mới) // huyết hải thâm thù: các kiếp đã giao đấu với từng người chơi
   petBook?: string[]; // các loài linh thú đã từng nuôi

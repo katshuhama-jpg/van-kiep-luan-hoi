@@ -4,6 +4,8 @@ import BackButton from '@/components/BackButton';
 import Link from 'next/link';
 import { useEffect, useState, type CSSProperties } from 'react';
 import { ENDINGS, RARE_COLOR } from '@/lib/game/endings';
+import { CHUYEN_DAO } from '@/lib/game/chuyenDao';
+import { PATHS } from '@/lib/game/data';
 import { GIFTS, RARE_NAME } from '@/lib/game/gacha';
 import type { Meta } from '@/lib/game/types';
 import { endingFirsts, endingStats, loadAll } from '@/lib/storage';
@@ -83,6 +85,24 @@ export default function SoSinhTu() {
           );
         })}
       </div>
+      <section className="panel" style={{ marginTop: 10 }}>
+        <h2>Kỳ ngộ chuyển đạo</h2>
+        <p className="note" style={{ marginTop: 0 }}>
+          Đã gặp {(meta?.daoBook ?? []).length}/{CHUYEN_DAO.length}. Mỗi kỳ ngộ cho đổi sang một con đường giữa kiếp, mất 30% tu vi, mỗi kiếp một lần, từ Trúc Cơ trở lên.
+        </p>
+        <div className="ss-grid">
+          {CHUYEN_DAO.map((d) => {
+            const k = meta?.daoBook?.includes(d.id);
+            return (
+              <article key={d.id} className={`ss-card ${k ? 'open' : 'locked'}`} style={{ ['--rc' as string]: PATHS[d.to].aura } as CSSProperties}>
+                <small>Sang {PATHS[d.to].name}</small>
+                <b>{k ? d.name : '???'}</b>
+                <span className={k ? '' : 'ss-how secret'}>{d.hint}</span>
+              </article>
+            );
+          })}
+        </div>
+      </section>
       <section className="panel" style={{ marginTop: 10 }}>
         <h2>Thành tựu</h2>
         <p className="note" style={{ marginTop: 0 }}>

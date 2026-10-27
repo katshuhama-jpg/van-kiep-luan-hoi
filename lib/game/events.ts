@@ -7,6 +7,7 @@ import { HOOK_EVENTS } from './hookEvents';
 import { TA_EVENTS } from './taEvents';
 import { SECT_EVENTS } from './sectEvents';
 import { SECT_EVENTS2 } from './sectEvents2';
+import { CHUYEN_DAO_EVENTS } from './chuyenDao';
 import { COSMOS_EVENTS } from './cosmosEvents';
 import { HU_EVENTS } from './huEvents';
 import { COSMOS_STORIES } from './cosmosStories';
@@ -2784,6 +2785,7 @@ export const EVENTS: GameEvent[] = [
   ...TA_EVENTS,
   ...SECT_EVENTS,
   ...SECT_EVENTS2,
+  ...CHUYEN_DAO_EVENTS,
   ...COSMOS_EVENTS,
   ...HU_EVENTS,
   ...COSMOS_STORIES,
