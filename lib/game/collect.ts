@@ -65,11 +65,23 @@ function hash(s: string): number {
 }
 
 /** Lời đồn giang hồ hôm nay: gợi ý một kết cục người chơi chưa mở */
-export function rumorToday(meta: Meta, day = vnDay()): Ending | null {
-  const locked = ENDINGS.filter((e) => !meta.endings?.[e.id] && e.rare >= 1);
+/**
+ * Lời đồn hôm nay: một kết cục bạn chưa mở, ưu tiên những kết cục ít người trong giang hồ mở nhất
+ * (counts: số người đã mở từng kết cục). Chỉ gợi mờ, không nói cách mở.
+ */
+export function rumorToday(meta: Meta, day = vnDay(), counts?: Record<string, number> | null): Ending | null {
+  let locked = ENDINGS.filter((e) => !meta.endings?.[e.id] && e.rare >= 1);
   if (!locked.length) return null;
+  if (counts) {
+    const rare = [...locked].sort((a, b) => (counts[a.id] ?? 0) - (counts[b.id] ?? 0) || b.rare - a.rare).slice(0, 4);
+    if (rare.length) locked = rare;
+  }
   return locked[hash('ru' + day) % locked.length];
 }
+
+/** Câu mở đầu lời đồn, mỗi ngày một kiểu */
+export const RUMOR_HEAD = ['Có kẻ nói', 'Trong quán trà người ta thì thầm', 'Một lão ăn mày say rượu kể', 'Đồn rằng', 'Có người thề đã tận mắt thấy'];
+export const rumorHead = (day = vnDay()) => RUMOR_HEAD[hash('rh' + day) % RUMOR_HEAD.length];
 
 /** Đoán kết cục của một ngôi mộ từ thông tin trên bia (mộ cũ chưa ghi kết cục) */
 export function endingOfGrave(g: {

@@ -15,9 +15,17 @@ export interface SocialState {
   swornSent: string[]; // mình đã mời, chờ họ trả lời
   bounty: Record<string, number>; // tiền truy nã trên đầu từng người
   dodgers: string[]; // kẻ né chiến trong 24 giờ qua
+  maDau: MaDau[]; // 3.2.0 bóng ma đầu đang hoành hành
 }
 
-export const emptySocial = (): SocialState => ({ me: '', sworn: [], swornToday: [], foes: [], hatedBy: [], provoke: [], peace: [], swornReq: [], swornSent: [], bounty: {}, dodgers: [] });
+/** Bóng thắng lôi đài được thả vào giang hồ, gặp trong kiếp của người khác */
+export interface MaDau {
+  owner: string;
+  rival: import('./types').RivalChar;
+  kills: number;
+}
+
+export const emptySocial = (): SocialState => ({ me: '', sworn: [], swornToday: [], foes: [], hatedBy: [], provoke: [], peace: [], swornReq: [], swornSent: [], bounty: {}, dodgers: [], maDau: [] });
 
 export const SOCIAL: { cur: SocialState } = { cur: emptySocial() };
 

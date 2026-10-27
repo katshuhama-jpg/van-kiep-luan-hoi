@@ -19,7 +19,7 @@ import type { Character, EffectCtx, RivalChar, Slot, Vendetta } from './types';
  * Có màn cảnh báo trước khi vào trận, nền sân đấu riêng, đánh tối đa 5 hiệp.
  */
 
-export type DuelKind = 'dong_dao' | 'dich_thu' | 'kiep_truoc' | 'dong_mon' | 'ngu_hanh';
+export type DuelKind = 'dong_dao' | 'dich_thu' | 'kiep_truoc' | 'dong_mon' | 'ngu_hanh' | 'ma_dau';
 export const DUEL_PER_YEAR = 0.1; // trung bình khoảng 10 năm gặp một lần
 export const DUEL_TURNS = 5;
 
@@ -43,6 +43,7 @@ export const DUEL_INFO: Record<DuelKind, { title: string; tag: string; warn: str
   dich_thu: { title: 'Địch thủ xuất hiện!', tag: 'Địch thủ', warn: 'Sát khí ập tới. Kẻ khác đạo đã đợi bạn ở đây từ lâu. Hôm nay chỉ một người được rời đi.' },
   dong_mon: { title: 'Đồng môn tỷ thí', tag: 'Đồng môn', warn: 'Một đồng môn chặn bạn ở diễn võ trường: "Sư môn dạy ta, hôm nay xem ai học giỏi hơn."' },
   kiep_truoc: { title: 'Tâm ma kiếp trước', tag: 'Kiếp trước', warn: 'Mặt hồ phẳng lặng bỗng in bóng một người. Đó là bạn, của một kiếp đã qua. Muốn đi tiếp, phải vượt qua chính mình.' },
+  ma_dau: { title: 'Ma đầu chặn đường!', tag: 'Ma đầu', warn: 'Một bóng người mắt đỏ như máu chặn ngang đường, sát khí ngút trời.' },
   ngu_hanh: { title: 'Ngũ Hành Vấn Tâm Đài', tag: 'Ngũ Hành Đài', warn: 'Năm tấm gương dựng quanh đài đá. Trong mỗi tấm là bạn, mang một bản mệnh khác.' },
 };
 
@@ -130,8 +131,39 @@ function clToRealm(cl: number): { realm: number; layer: number } {
   return { realm, layer: Math.min(3, cl - (9 + (realm - 2) * 3)) };
 }
 
+/** Danh hiệu ma đầu theo con đường của bóng */
+const MA_TITLE: Record<string, string> = {
+  kiem: 'Huyết Kiếm Ma Soái',
+  ma: 'Huyết Ma Lão Tổ',
+  phat: 'Hắc Phật Ma Tăng',
+  tran: 'Âm Trận Ma Quân',
+  dan: 'Độc Đan Ma Y',
+  yeu: 'Thiên Yêu Ma Vương',
+  '': 'Vô Danh Ma Đầu',
+};
+export const maTitle = (r: RivalChar) => MA_TITLE[r.path ?? ''] ?? MA_TITLE[''];
+export const MA_DAU_MAX = 2;
+
+/**
+ * Bóng ma đầu (3.2.0): bóng thắng 2 trận lôi đài trong ngày đi vào kiếp của người khác.
+ * Chỉ từ Trúc Cơ, tối đa 2 lần mỗi kiếp, không gặp bóng của chính mình, kéo ngang cảnh giới.
+ */
+function pickMaDau(c: Character, rnd: () => number): DuelFoe | null {
+  const list = SOCIAL.cur.maDau.filter((m) => m.owner !== SOCIAL.cur.me);
+  if (c.realm < 2 || (c.maDauMet ?? 0) >= MA_DAU_MAX || !list.length || rnd() >= 0.35) return null;
+  const m = list[Math.floor(rnd() * list.length)];
+  c.maDauMet = (c.maDauMet ?? 0) + 1;
+  SOCIAL.cur.maDau = SOCIAL.cur.maDau.filter((x) => x.owner !== m.owner);
+  const rival: RivalChar = { ...m.rival, realm: c.realm, layer: c.layer, cosmos: c.cosmos ?? null, alive: true };
+  const kills = m.kills >= 2 ? `vừa hạ ${m.kills} người trong giang hồ` : 'vừa thắng liền hai trận trên lôi đài';
+  const reason = `${maTitle(rival)} ${rival.name} (@${m.owner}) chặn đường. Mắt hắn đỏ như máu, ${kills}. Không tránh được, phải đánh.`;
+  return { kind: 'ma_dau', rival, npc: false, rel: 'ngang', reason };
+}
+
 /** Chọn cuộc gặp năm nay. null nếu không có gì hợp lý. */
 export function pickDuel(c: Character, rnd: () => number): DuelFoe | null {
+  const md = pickMaDau(c, rnd);
+  if (md) return md;
   const f = pickDuel0(c, rnd);
   if (!f || f.npc || !f.rival.player || f.kind === 'kiep_truoc') return f;
   // gắn quan hệ giang hồ với người chơi thật
@@ -252,7 +284,7 @@ function pickDuel0(c: Character, rnd: () => number): DuelFoe | null {
   // cấp độ đối thủ theo cấp chiến đấu, chia ba bậc rõ ràng để ít gặp người ngang cấp:
   // đồng đạo: yếu 45%, ngang 25%, mạnh 30%; địch thủ: 25/25/50; tâm ma kiếp trước: 20/20/60
   const me0 = combatLevel(c);
-  const W: Record<DuelKind, [number, number]> = { dong_dao: [0.45, 0.25], dich_thu: [0.25, 0.25], kiep_truoc: [0.2, 0.2], dong_mon: [0, 1], ngu_hanh: [0, 1] };
+  const W: Record<DuelKind, [number, number]> = { dong_dao: [0.45, 0.25], dich_thu: [0.25, 0.25], kiep_truoc: [0.2, 0.2], dong_mon: [0, 1], ngu_hanh: [0, 1], ma_dau: [0, 1] };
   const [pw, pn] = W[kind];
   const r = rnd();
   const ri = (a: number, b: number) => a + Math.floor(rnd() * (b - a + 1));
@@ -357,6 +389,30 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
   const harder = (f.rel === 'manh' ? 1.6 : f.rel === 'yeu' ? 0.5 : 1) * (f.provoke ? PROVOKE_MUL : 1);
   const out: string[] = [];
   if (f.provoke) out.push('Hai bên từng khiêu khích nhau, trận này thắng thua đều gấp rưỡi.');
+  if (f.kind === 'ma_dau') {
+    const t = `${maTitle(r)} ${r.name}`;
+    if (result === 'win') {
+      const exp = Math.round(reward(c, 0.5));
+      addCult(c, exp);
+      stat(c, 'khiVan', 3);
+      out.push(`Bạn đánh tan ${t} của @${r.player}. Ma khí tan thành khói đen (+${exp} tu vi, +10 phúc duyên).`);
+      const g = rivalLoot(c, r, ctx, 1, (n) => `Bóng ma đầu tan đi, rơi lại ${n}.`);
+      if (g) out.push(g);
+      return out;
+    }
+    // thua hay hòa đều không chết: trọng thương, mất 10% linh thạch (tối đa 500)
+    const lost = Math.min(500, Math.round(c.linhThach * 0.1));
+    money(c, -lost);
+    const hurt = result === 'lose' ? 40 : 20;
+    c.stats.sucKhoe = Math.max(5, c.stats.sucKhoe - hurt);
+    ctx.fx('hurt', 'Trọng thương');
+    out.push(
+      result === 'lose'
+        ? `${t} đánh bạn gục xuống, cướp ${lost} linh thạch rồi cười dài bỏ đi. Bạn trọng thương nhưng còn sống (-${hurt} sức khỏe).`
+        : `Hai bên đánh tới kiệt sức. ${t} giật được ${lost} linh thạch rồi hóa khói đen bỏ đi (-${hurt} sức khỏe).`,
+    );
+    return out;
+  }
   if (f.kind === 'dong_mon') {
     const ta = sectSide(c) === 'ta';
     if (result === 'win') {

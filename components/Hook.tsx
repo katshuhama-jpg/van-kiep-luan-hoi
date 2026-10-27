@@ -1,10 +1,34 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Sheet } from './Panels';
 import { CHECKIN, QUEST_BONUS, QUEST_REWARD, canChiDay, checkinClaimed, checkinDay, dailyOf, omenToday, questName, streakGift } from '@/lib/game/hook';
 import { honActive } from '@/lib/game/luanHoi';
 import type { Meta } from '@/lib/game/types';
-import { rumorToday } from '@/lib/game/collect';
+import { rumorHead, rumorToday } from '@/lib/game/collect';
+import { endingStats } from '@/lib/storage';
+
+/** Tiếng đồn hôm nay ở màn đầu thai: gợi mờ một kết cục ít người mở nhất, chạm để mở Sổ Sinh Tử */
+export function RumorLine({ meta }: { meta: Meta }) {
+  const [counts, setCounts] = useState<Record<string, number> | null>(null);
+  useEffect(() => {
+    endingStats()
+      .then((r) => r && setCounts(r.counts))
+      .catch(() => {});
+  }, []);
+  const rumor = rumorToday(meta, undefined, counts);
+  if (!rumor) return null;
+  const n = counts ? (counts[rumor.id] ?? 0) : null;
+  return (
+    <a className="rumor-line" href="/so-sinh-tu">
+      <i>Tiếng đồn</i>
+      <span>
+        {rumorHead()}: “{rumor.hint}”
+        {n !== null && <small>{n === 0 ? ' Chưa ai trong giang hồ chạm tới.' : n <= 3 ? ` Mới ${n} người chạm tới.` : ''}</small>}
+      </span>
+    </a>
+  );
+}
 
 /** Thẻ "Hôm nay": thiên tượng, chuỗi ngày, nhiệm vụ ngày */
 /** Biểu tượng pixel 10x10 cho từng thiên tượng (# = màu chính, o = màu phụ) */
@@ -36,7 +60,6 @@ export function TodayScroll({ meta }: { meta: Meta }) {
   const d = dailyOf(meta);
   const n = meta.streak?.n ?? 1;
   const next = streakGift(n + 1);
-  const rumor = rumorToday(meta);
   return (
     <section className={`thien-tuong o-${o.id}`} aria-label={`Thiên tượng hôm nay: ${o.name}`}>
       <div className="tt-head">
@@ -60,11 +83,6 @@ export function TodayScroll({ meta }: { meta: Meta }) {
           <i className="ky">Kiêng</i> {o.ky}
         </span>
       </div>
-      {rumor && (
-        <p className="tt-rumor">
-          <i>Lời đồn</i> {rumor.hint} <small>(một kết cục bạn chưa mở trong Sổ Sinh Tử)</small>
-        </p>
-      )}
       <div className="tt-daily">
         <div className="tt-streak">
           <b>Chuỗi tu luyện {n} ngày</b>

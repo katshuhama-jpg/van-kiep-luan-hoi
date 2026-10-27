@@ -365,6 +365,22 @@ export async function endingStats(): Promise<{ total: number; counts: Record<str
   return error ? null : (data as { total: number; counts: Record<string, number> });
 }
 
+/** Báo kết cục vừa mở: ai mở đầu tiên thì cả giang hồ nhận thư Thiên Đạo. Trả về các kết cục mình là người đầu tiên. */
+export async function endingFirst(user: Player | null, ids: string[], names: string[]): Promise<string[]> {
+  const sb = supabase();
+  if (!sb || !user || !ids.length) return [];
+  const { data, error } = await sb.rpc('vkl_ending_first', { p_token: user.token, p_ids: ids, p_names: names });
+  return error ? [] : ((data as string[]) ?? []);
+}
+
+/** Người đầu tiên mở từng kết cục: id kết cục -> username */
+export async function endingFirsts(): Promise<Record<string, string>> {
+  const sb = supabase();
+  if (!sb) return {};
+  const { data, error } = await sb.rpc('vkl_ending_firsts');
+  return error ? {} : ((data as Record<string, string>) ?? {});
+}
+
 // ---------- Danh hiệu sưu tầm ----------
 let collectorsCache: Promise<Record<string, number>> | null = null;
 /** Người chơi đã mở nhiều kết cục trong Sổ Sinh Tử: username -> số kết cục */

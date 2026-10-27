@@ -109,6 +109,7 @@ export interface Character {
   sectRank?: number; // bậc trong tông môn: 0 tạp dịch, 1 ngoại môn, 2 nội môn, 3 chân truyền
   sectHide?: boolean; // ngược phe nhưng giấu thân phận ở lại tông
   goalDone?: boolean; // 3.2.0 đã đạt mục tiêu kiếp đầu
+  maDauMet?: number; // 3.2.0 số lần gặp bóng ma đầu trong kiếp này (tối đa 2)
   maStep?: number; // 3.1.0 chuỗi nhập Ma giới: đã qua mấy bước (0-4)
   arc?: Record<string, number>; // 3.1.0 cốt truyện sau phi thăng: đang ở bước nào
   arcAt?: Record<string, number>; // tuổi lúc qua bước đó

@@ -6,7 +6,7 @@ import Scene from '@/components/Scene';
 import MusicToggle from '@/components/MusicToggle';
 import { TribulationOverlay, Tutorial } from '@/components/Extras';
 import { BREAK_EVENT_ID } from '@/lib/game/events';
-import { alsoEndings, endingOf } from '@/lib/game/endings';
+import { ENDINGS, alsoEndings, endingOf } from '@/lib/game/endings';
 import { BagSheet, BaoKhoSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, HuntSheet, LogPanel, OverworkBar, SEASONS, ShopSheet, Sheet, StageStrip, StatsPanel } from '@/components/Panels';
 import Radar, { charAxes, wealthScore } from '@/components/Radar';
 import { giftOf } from '@/lib/game/gacha';
@@ -24,7 +24,7 @@ import { ELEMENTS, elemHitTag, elemMul, elemRel, elementOf } from '@/lib/game/ng
 import { DUEL_INFO, DUEL_PER_YEAR, DUEL_TURNS, finishDuel, foeChar, foeStats, pickDuel, teaTrap, toRival, type DuelFoe } from '@/lib/game/duel';
 import { SOCIAL } from '@/lib/game/social';
 import { daiBiDue, rankName, sectCultMul } from '@/lib/game/sect';
-import { bountyClaim, khieuDone, loadSocial, loreSocial, payoutClaim, truyenCong } from '@/lib/social';
+import { bountyClaim, khieuDone, loadSocial, loreSocial, madResult, payoutClaim, truyenCong } from '@/lib/social';
 import { GiangHoSheet, type GiangHoApi } from '@/components/GiangHo';
 import { HIDDEN_ITEMS, collectStats, markSeen, newFinds, unseen } from '@/lib/game/collect';
 import { QUY_NHAT_PHUC, newLore, quyNhatDone } from '@/lib/game/lore';
@@ -32,7 +32,7 @@ import { HON_PILLS, QUEST_HON, addHon, pastDanTu, honPillCost, honPillUsed, honD
 import { serverNow } from '@/lib/serverTime';
 import LoiDaiButton from '@/components/LoiDaiButton';
 import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, pickAmbush } from '@/lib/game/ambush';
-import { titleKey, addMemorial, displayName, fetchWorld, listMail, loadAll, saveLocal, saveMeta, saveRemote, sendMail, unreadMail, weeklyTitles, type Mail, type SaveState } from '@/lib/storage';
+import { endingFirst, titleKey, addMemorial, displayName, fetchWorld, listMail, loadAll, saveLocal, saveMeta, saveRemote, sendMail, unreadMail, weeklyTitles, type Mail, type SaveState } from '@/lib/storage';
 import { CHECKIN, checkinClaimed, checkinDay, updateCareer, bumpStreak, evalQuests, newbieGoal, omenIs, qmark, questName, vnDay } from '@/lib/game/hook';
 import { HookSheet, TitleBadge } from '@/components/Hook';
 import { omenToday } from '@/lib/game/hook';
@@ -438,7 +438,14 @@ export default function PlayPage() {
       if (result === 'win' && b.foe.kind !== 'kiep_truoc') qmark(c, 'duelWin');
       // thư giang hồ cho chủ nhân của bóng nhân vật vừa gặp
       const fo = b.foe;
-      if (fo.kind !== 'kiep_truoc' && fo.rival.player && !fo.npc) {
+      if (fo.kind === 'ma_dau') {
+        // máy chủ gửi thư cho chủ bóng, chia phúc duyên; gia phả ghi lại trận này
+        madResult(userRef.current, fo.rival.player, result === 'win', c.lifeNo, c.name)
+          .then(() => setTimeout(claimPayouts, 1500))
+          .catch(() => {});
+        c.miles = [...(c.miles ?? []), { age: Math.floor(c.age), kind: 'duel', text: result === 'win' ? `Đánh tan bóng ma đầu ${fo.rival.name} của @${fo.rival.player}` : `Bị bóng ma đầu ${fo.rival.name} của @${fo.rival.player} đánh trọng thương` }];
+      }
+      if (fo.kind !== 'kiep_truoc' && fo.kind !== 'ma_dau' && fo.rival.player && !fo.npc) {
         const me = userRef.current?.username ?? '';
         const shadow = `bóng ${fo.rival.name} của bạn`;
         const loot = notes.find((n) => n.includes('lột') || n.includes('tặng bạn') || n.includes('lấy lại'));
@@ -1346,6 +1353,18 @@ export default function PlayPage() {
         kiepSo: c.kiepSo ?? 0,
       },
     }).catch(() => {});
+    // kết cục lần đầu mở: hỏi máy chủ xem có phải người đầu tiên trong giang hồ không
+    const freshIds = Array.from(new Set([ending.id, ...alsoEndings(c)])).filter((id) => !meta.endings?.[id]);
+    if (freshIds.length)
+      endingFirst(
+        user,
+        freshIds,
+        freshIds.map((id) => ENDINGS.find((e) => e.id === id)?.name ?? id),
+      )
+        .then((firsts) => {
+          if (firsts.length) track('ending_first', { ids: firsts.join(',') });
+        })
+        .catch(() => {});
     // nhiệm vụ ngày xong thì hồn cũng được hồi thêm
     const metaH = q.newly.length && honActive(meta) ? addHon(meta, q.newly.length * QUEST_HON, Date.now()) : meta;
     const m: Meta = {

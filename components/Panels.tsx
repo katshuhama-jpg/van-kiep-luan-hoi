@@ -19,7 +19,7 @@ import Sprite from './Sprite';
 import { BIG_TALENTS, honActive, ksBase, ksOf, ksOneBig } from '@/lib/game/luanHoi';
 import { LORE, LORE2_TOTAL, LORE_TOTAL, lore1Count, lore2Count, quyNhatDone } from '@/lib/game/lore';
 import { ELEMENTS } from '@/lib/game/nguhanh';
-import { CheckinRow, TodayScroll } from './Hook';
+import { CheckinRow, RumorLine, TodayScroll } from './Hook';
 import { ArenaNudge } from './LoiDaiButton';
 import { useAuth } from '@/lib/useAuth';
 import { addFeedback } from '@/lib/storage';
@@ -1028,6 +1028,7 @@ export function BirthPanel({
       {!first && (
         <section className="journey">
           <h2 className="prep-title">Hành trình</h2>
+          <RumorLine meta={meta} />
           {meta.past && (
             <p className="jr-past">
               Kiếp trước: <b>{meta.past.name}</b>, {meta.past.age} tuổi, {meta.past.realmName}.{meta.stash ? ' Có chôn lại một chiếc rương...' : ''}

@@ -237,7 +237,7 @@ export interface BattleView {
   /** ngũ hành giữa bạn và quái */
   melem?: { me: Element; foe: Element; rel: ElemRel };
   /** kỳ ngộ giang hồ: đối thủ là người */
-  duel?: { kind: 'dong_dao' | 'dich_thu' | 'kiep_truoc' | 'dong_mon' | 'ngu_hanh'; foe: Character; tag: string; player: string; turn: number; max: number; elem?: { me: Element; foe: Element; rel: ElemRel }; bg?: string };
+  duel?: { kind: 'dong_dao' | 'dich_thu' | 'kiep_truoc' | 'dong_mon' | 'ngu_hanh' | 'ma_dau'; foe: Character; tag: string; player: string; turn: number; max: number; elem?: { me: Element; foe: Element; rel: ElemRel }; bg?: string };
 }
 
 /** Dải ngũ hành giữa sân đấu: bản mệnh hai bên và ai khắc ai */
@@ -292,7 +292,7 @@ export function BattleOverlay({ b }: { b: BattleView }) {
                 <i className="duel-flag r" />
               </>
             )}
-            {b.duel.kind === 'dich_thu' && <i className="duel-bolt" />}
+            {(b.duel.kind === 'dich_thu' || b.duel.kind === 'ma_dau') && <i className="duel-bolt" />}
             {b.duel.kind === 'kiep_truoc' && (
               <span className="duel-mist">
                 {Array.from({ length: 8 }, (_, i) => (

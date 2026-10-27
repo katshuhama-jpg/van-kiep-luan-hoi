@@ -47,7 +47,7 @@ export default function DuelWarning({
       <div className="duel-flash" aria-hidden="true" />
       <div className="duel-card">
         <p className="duel-kicker">
-          {foe.kind === 'dich_thu' ? '⚠ Sát khí' : foe.kind === 'kiep_truoc' ? '◈ Tâm cảnh' : foe.kind === 'dong_mon' ? (foe.daiBi ? '⚑ Đại bỉ tông môn' : '⚑ Đồng môn') : '✦ Kỳ ngộ'}
+          {foe.kind === 'ma_dau' ? '☠ Ma đầu' : foe.kind === 'dich_thu' ? '⚠ Sát khí' : foe.kind === 'kiep_truoc' ? '◈ Tâm cảnh' : foe.kind === 'dong_mon' ? (foe.daiBi ? '⚑ Đại bỉ tông môn' : '⚑ Đồng môn') : '✦ Kỳ ngộ'}
         </p>
         <h2 id="duel-title">{info.title}</h2>
         <div className={`duel-foe ${foe.kind === 'kiep_truoc' ? 'ghost' : ''}`}>
@@ -98,7 +98,7 @@ export default function DuelWarning({
           <small>{lt.text}</small>
         </div>
         <p className="duel-text">{foe.reason || info.warn}</p>
-        {foe.rel !== 'yeu' && foe.kind !== 'kiep_truoc' && foe.kind !== 'dong_mon' && (
+        {foe.rel !== 'yeu' && foe.kind !== 'kiep_truoc' && foe.kind !== 'dong_mon' && foe.kind !== 'ma_dau' && (
           <p className="duel-risk">Đối thủ không yếu hơn bạn: không đánh mà rời đi thì có thể bị trọng thương, thậm chí mất mạng.</p>
         )}
         <div className="duel-actions">
@@ -141,6 +141,14 @@ export default function DuelWarning({
             <button className="btn btn-red btn-big" onClick={() => onPick('fight')}>
               Đối diện chính mình
             </button>
+          )}
+          {foe.kind === 'ma_dau' && (
+            <>
+              <button className="btn btn-red btn-big" onClick={() => onPick('fight')}>
+                Nghênh chiến ma đầu
+              </button>
+              <small className="note">Thắng: +10 phúc duyên và đồ rơi. Thua: trọng thương, mất 10% linh thạch, không chết.</small>
+            </>
           )}
         </div>
       </div>

@@ -6,7 +6,7 @@ import { useEffect, useState, type CSSProperties } from 'react';
 import { ENDINGS, RARE_COLOR } from '@/lib/game/endings';
 import { GIFTS, RARE_NAME } from '@/lib/game/gacha';
 import type { Meta } from '@/lib/game/types';
-import { endingStats, loadAll } from '@/lib/storage';
+import { endingFirsts, endingStats, loadAll } from '@/lib/storage';
 import { PETS, PET_IDS } from '@/lib/game/pets';
 import { ACHIEVEMENTS } from '@/lib/game/hook';
 import { useAuth } from '@/lib/useAuth';
@@ -23,6 +23,12 @@ export default function SoSinhTu() {
   useEffect(() => {
     endingStats()
       .then(setStats)
+      .catch(() => {});
+  }, []);
+  const [firsts, setFirsts] = useState<Record<string, string>>({});
+  useEffect(() => {
+    endingFirsts()
+      .then(setFirsts)
       .catch(() => {});
   }, []);
   const pct = (id: string) => (stats && stats.total ? Math.round(((stats.counts[id] ?? 0) / stats.total) * 100) : null);
@@ -67,7 +73,12 @@ export default function SoSinhTu() {
               )}
               {k && !e.how && <em className="ss-secret">Kết cục bí ẩn</em>}
               {k ? <em>Đã gặp {k} lần</em> : null}
-              {stats && <i className="ss-rarity">{(stats.counts[e.id] ?? 0) === 0 ? 'Chưa ai đạt được' : `${pct(e.id)}% người chơi đã mở`}</i>}
+              {stats && (
+                <i className="ss-rarity">
+                  {(stats.counts[e.id] ?? 0) === 0 ? 'Chưa ai trong giang hồ mở được' : `${stats.counts[e.id]} người đã mở (${pct(e.id)}%)`}
+                  {firsts[e.id] ? ` · đầu tiên: @${firsts[e.id]}` : ''}
+                </i>
+              )}
             </article>
           );
         })}

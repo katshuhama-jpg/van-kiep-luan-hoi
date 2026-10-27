@@ -59,7 +59,7 @@ export async function dodgers(): Promise<string[]> {
 
 /** Tải lại toàn bộ quan hệ giang hồ */
 export async function loadSocial(user: Player | null): Promise<SocialState> {
-  const [rs, bb, dd] = await Promise.all([relList(user), bountyBoard(), dodgers()]);
+  const [rs, bb, dd, md] = await Promise.all([relList(user), bountyBoard(), dodgers(), madList(user)]);
   rels = rs;
   const s = emptySocial();
   s.me = user?.username ?? '';
@@ -74,6 +74,7 @@ export async function loadSocial(user: Player | null): Promise<SocialState> {
   }
   for (const b of bb) s.bounty[b.target] = b.total;
   s.dodgers = dd;
+  s.maDau = md;
   SOCIAL.cur = s;
   return s;
 }
@@ -363,4 +364,25 @@ export async function arenaTierInfo(user: Player | null): Promise<{ pts: number;
   if (!sb || !user) return null;
   const { data, error } = await sb.rpc('vkl_arena_tier_info', { p_token: user.token });
   return error ? null : (data as { pts: number; tier: number; left: number; revenge: number } | null);
+}
+
+/** Bóng ma đầu đang hoành hành (3.2.0) */
+async function madList(user: Player | null): Promise<import('./game/social').MaDau[]> {
+  const sb = supabase();
+  if (!sb || !user) return [];
+  const { data, error } = await sb.rpc('vkl_mad_list', { p_token: user.token });
+  if (error || !Array.isArray(data)) return [];
+  return (data as { owner: string; champ: unknown; kills: number }[])
+    .map((d) => {
+      const r = toRival(d.owner, d.champ);
+      return r ? { owner: d.owner, rival: r, kills: d.kills } : null;
+    })
+    .filter((x): x is import('./game/social').MaDau => !!x);
+}
+
+/** Ghi kết quả gặp ma đầu: máy chủ gửi thư cho chủ bóng và chia phúc duyên */
+export async function madResult(user: Player | null, owner: string, win: boolean, lifeNo: number, charName: string): Promise<void> {
+  const sb = supabase();
+  if (!sb || !user) return;
+  await sb.rpc('vkl_mad_result', { p_token: user.token, p_owner: owner, p_win: win, p_life_no: lifeNo, p_char: charName });
 }
