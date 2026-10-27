@@ -14,7 +14,8 @@ import { baseChance, equalize, type ArenaRule } from '@/lib/game/arena';
 import { turnLines, ultName, type FightState } from '@/lib/game/arenaFight';
 import { ARENA_DAY_HON, ARENA_LOSE_PHUC, ARENA_WIN_PHUC, autoClash, powerOf, tierOfPts, type Clash } from '@/lib/game/phiKiem';
 import { arenaFight3 } from '@/lib/social';
-import { shareMatch } from '@/lib/shareCard';
+import { shareMatch, type ShareOut } from '@/lib/shareCard';
+import ShareSheet from '@/components/ShareSheet';
 import { track } from '@/lib/track';
 
 const BGS = ['tien', 'ma', 'hu'].flatMap((c) => ['kim', 'moc', 'thuy', 'hoa', 'tho'].map((e) => `/bg/nhd-${c}-${e}.png`));
@@ -58,6 +59,8 @@ export default function LoiDaiMatch({
   const [banner, setBanner] = useState<string | null>(null);
   const [res, setRes] = useState<Res | null>(null);
   const [shareMsg, setShareMsg] = useState<string | null>(null);
+  const [sheet, setSheet] = useState<ShareOut | null>(null);
+  const [sharing, setSharing] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const later = (ms: number, fn: () => void) => {
     if (timer.current) clearTimeout(timer.current);
@@ -132,8 +135,12 @@ export default function LoiDaiMatch({
   async function share() {
     if (!clash) return;
     track('share', { kind: 'match' });
+    setSharing(true);
+    setShareMsg(null);
     const r = await shareMatch({ me, foe, meUser: user.username, opp, win: clash.win, hp: clash.hpPct, swords, rule: rule.name });
-    setShareMsg(r === 'copied' ? 'Đã chép chữ, dán vào nhóm là xong.' : r === 'saved' ? 'Đã tải ảnh về máy.' : r === 'shared' ? null : 'Chưa khoe được, thử lại sau.');
+    setSharing(false);
+    if (r?.link) setSheet(r);
+    else setShareMsg(r?.saved ? 'Chưa tạo được link, đã tải ảnh về máy.' : 'Chưa khoe được, thử lại sau.');
   }
 
   const cur: FightState | null = clash ? (step >= 0 ? clash.steps[step].st : { ...clash.steps[0].st, me: { ...clash.steps[0].st.me, hp: clash.steps[0].st.me.max, ki: 0 }, foe: { ...clash.steps[0].st.foe, hp: clash.steps[0].st.foe.max, ki: 0 }, over: null }) : null;
@@ -261,8 +268,8 @@ export default function LoiDaiMatch({
                       Rời lôi đài
                     </button>
                   )}
-                  <button className="btn ldm-share" onClick={share}>
-                    Khoe trận
+                  <button className="btn ldm-share" onClick={share} disabled={sharing}>
+                    {sharing ? 'Đang tạo link...' : 'Khoe trận'}
                   </button>
                   {leftAfter > 0 && !revenge && (
                     <button className="btn ldm-leave" disabled={!res} onClick={onDone}>
@@ -271,6 +278,7 @@ export default function LoiDaiMatch({
                   )}
                 </div>
                 {shareMsg && <small className="note">{shareMsg}</small>}
+                {sheet && <ShareSheet out={sheet} kind="match" onClose={() => setSheet(null)} />}
               </div>
             )}
           </div>

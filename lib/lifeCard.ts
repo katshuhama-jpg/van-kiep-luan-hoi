@@ -9,7 +9,7 @@ import { PATHS, realmLabel } from '@/lib/game/data';
 import { RARE_COLOR, type Ending } from '@/lib/game/endings';
 import type { Character } from '@/lib/game/types';
 import { supabase } from '@/lib/supabase';
-import { CH, CW, OH, OW, P, SITE, blk, box, canvas, copyText, deliver, hero, paper, seal, txt, wrapTxt, type ShareResult } from '@/lib/shareCard';
+import { CH, CW, OH, OW, P, SITE, blk, box, canvas, copyText, deliver, hero, paper, seal, txt, wrapTxt, type ShareOut } from '@/lib/shareCard';
 
 export type Grade = 'S' | 'A' | 'B' | 'C' | 'D';
 export const GRADE_COL: Record<Grade, string> = { S: '#d0202e', A: '#d9822b', B: '#8a3ad0', C: '#3d6fb0', D: '#6a5a44' };
@@ -129,9 +129,9 @@ export async function drawLifeOg(c: Character, ending: Ending, isNew: boolean, p
   return cv;
 }
 
-export async function shareLife(c: Character, ending: Ending, isNew: boolean, epitaph: string, pct: number | null): Promise<ShareResult> {
+export async function shareLife(c: Character, ending: Ending, isNew: boolean, epitaph: string, pct: number | null): Promise<ShareOut | null> {
   const [cv, og] = await Promise.all([drawLife(c, ending, isNew, epitaph, pct), drawLifeOg(c, ending, isNew, pct)]);
-  if (!cv || !og) return 'fail';
+  if (!cv || !og) return null;
   const { grade } = gradeOf(c, ending, isNew);
   const title = `${c.name}, kiếp ${c.lifeNo}: ${ending.name} · Xếp loại ${grade}`;
   const desc = `${Math.floor(c.age)} tuổi, ${realmOf(c)}${c.path ? ', ' + PATHS[c.path].name : ''}.${pct !== null ? ` Vượt ${pct}% các kiếp trong giang hồ.` : ''} ${(memorable(c)[0] ?? '').replace(/([^.!?])$/, '$1.')} Đầu thai thử một kiếp ở Vạn Kiếp Luân Hồi.`.replace(/\s+/g, ' ').trim();

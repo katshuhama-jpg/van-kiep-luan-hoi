@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import Sprite, { lpcLayers } from './Sprite';
 import { GRADE_COL, copyLife, drawLife, gradeOf, rankPct, shareLife } from '@/lib/lifeCard';
 import { track } from '@/lib/track';
+import ShareSheet from './ShareSheet';
+import type { ShareOut } from '@/lib/shareCard';
 import Radar, { charAxes, wealthScore } from './Radar';
 import { GIFTS, RARE_NAME, applyGifts, drawGifts, giftOf } from '@/lib/game/gacha';
 import { RARE_COLOR, type Ending } from '@/lib/game/endings';
@@ -430,6 +432,7 @@ export function ShareCard({ c, ending, epitaph, isNew = false }: { c: Character;
   const [url, setUrl] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  const [sheet, setSheet] = useState<ShareOut | null>(null);
   const { grade } = gradeOf(c, ending, isNew);
   const urlRef = useRef<string | null>(null);
   urlRef.current = url;
@@ -463,7 +466,8 @@ export function ShareCard({ c, ending, epitaph, isNew = false }: { c: Character;
     track('share', { kind: 'life', grade });
     const r = await shareLife(c, ending, isNew, epitaph, pct);
     setBusy(false);
-    setMsg(r === 'copied' ? 'Đã chép chữ kèm link, dán lên mạng là hiện hình nhân vật.' : r === 'saved' ? 'Chưa tạo được link, đã tải ảnh về máy.' : r === 'fail' ? 'Chưa khoe được, thử lại sau.' : null);
+    if (r?.link) setSheet(r);
+    else setMsg(r?.saved ? 'Chưa tạo được link, đã tải ảnh về máy.' : 'Chưa khoe được, thử lại sau.');
   }
   async function copy() {
     track('share', { kind: 'life_text', grade });
@@ -491,6 +495,7 @@ export function ShareCard({ c, ending, epitaph, isNew = false }: { c: Character;
         </button>
       </div>
       {msg && <small className="note">{msg}</small>}
+      {sheet && <ShareSheet out={sheet} kind="life" onClose={() => setSheet(null)} />}
     </div>
   );
 }

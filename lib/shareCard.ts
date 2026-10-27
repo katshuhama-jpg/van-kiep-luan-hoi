@@ -164,26 +164,27 @@ export async function download(cv: HTMLCanvasElement, name: string): Promise<boo
   return true;
 }
 
-export type ShareResult = 'shared' | 'copied' | 'saved' | 'fail';
+/** Kết quả chuẩn bị khoe: có link thì mở bảng khoe trong game, không có thì đã tải ảnh về */
+export type ShareOut = { link: string | null; title: string; text: string; saved: boolean };
 
 /**
- * Khoe: ưu tiên chia sẻ link (dán lên Facebook, Threads, Zalo sẽ hiện ảnh nhân vật, tiêu đề, mô tả).
- * Máy không có bảng chia sẻ thì chép chữ kèm link; không đẩy được link thì tải ảnh dọc về.
+ * Chuẩn bị khoe: đẩy ảnh ngang lên server lấy link /k/<mã> (dán lên mạng hiện hình nhân vật, tiêu đề, mô tả).
+ * Không tạo được link thì tải ảnh dọc về máy.
  */
-export async function deliver(portrait: HTMLCanvasElement, og: HTMLCanvasElement, kind: 'life' | 'match', name: string, title: string, desc: string, text: string): Promise<ShareResult> {
+export async function deliver(portrait: HTMLCanvasElement, og: HTMLCanvasElement, kind: 'life' | 'match', name: string, title: string, desc: string, text: string): Promise<ShareOut> {
   const link = await publish(kind, title, desc, og);
-  if (link) {
-    try {
-      if (navigator.share) {
-        await navigator.share({ title, text, url: link });
-        return 'shared';
-      }
-    } catch (e) {
-      if ((e as Error)?.name === 'AbortError') return 'shared';
-    }
-    if (await copyText(`${text}\n${link}`)) return 'copied';
-  }
-  return (await download(portrait, name)) ? 'saved' : 'fail';
+  if (link) return { link, title, text, saved: false };
+  return { link: null, title, text, saved: await download(portrait, name) };
+}
+
+/** Link mở thẳng từng mạng xã hội */
+export function shareTargets(link: string, text: string) {
+  const e = encodeURIComponent;
+  return {
+    threads: `https://www.threads.net/intent/post?text=${e(`${text}\n${link}`)}`,
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${e(link)}`,
+    messenger: `fb-messenger://share/?link=${e(link)}`,
+  };
 }
 
 export async function copyText(s: string): Promise<boolean> {
@@ -198,9 +199,9 @@ export async function copyText(s: string): Promise<boolean> {
 const realmOf = (r: { realm: number; layer: number; cosmos?: 'tien' | 'ma' | 'hu' | null }) => (r.realm === 0 ? 'Phàm nhân' : realmLabel(r.realm, r.layer, r.cosmos));
 
 /** Thẻ kết quả trận lôi đài: "@A hạ @B, còn 3% máu, cắm 17 phi kiếm" */
-export async function shareMatch(m: { me: RivalChar; foe: RivalChar; meUser: string; opp: string; win: boolean; hp: number; swords: number; rule: string }): Promise<'shared' | 'saved' | 'copied' | 'fail'> {
+export async function shareMatch(m: { me: RivalChar; foe: RivalChar; meUser: string; opp: string; win: boolean; hp: number; swords: number; rule: string }): Promise<ShareOut | null> {
   const c = await canvas();
-  if (!c) return 'fail';
+  if (!c) return null;
   const { cv, x } = c;
   paper(x, 'dem');
   txt(x, 'LÔI ĐÀI PHI KIẾM', CW / 2, 150, 64, '#ffd36b', { w: 700, shadow: '#000' });
@@ -226,7 +227,7 @@ export async function shareMatch(m: { me: RivalChar; foe: RivalChar; meUser: str
   txt(x, SITE, 150, 1296, 28, '#c8b89a', { align: 'left' });
   // bản ngang cho xem trước link
   const o = await canvas(OW, OH);
-  if (!o) return 'fail';
+  if (!o) return null;
   const g = o.x;
   paper(g, 'dem', OW, OH);
   for (const side of ['me', 'foe'] as const) {

@@ -4159,3 +4159,18 @@ button.shadow-card { cursor: pointer; }
 .rumor-line span { font-size: 14px; line-height: 1.35; }
 .rumor-line small { color: #ffd36b; }
 .rel-group { text-align: left; }
+.ss-wrap { position: fixed; inset: 0; z-index: 90; display: flex; align-items: flex-end; justify-content: center; background: rgba(10, 6, 4, 0.6); }
+.ss-sheet { width: 100%; max-width: 560px; display: flex; flex-direction: column; gap: 10px; padding: 14px 16px calc(16px + env(safe-area-inset-bottom)); background: var(--paper, #f3e6c4); border: 3px solid var(--ink, #1f160d); border-bottom: 0; box-shadow: 0 -4px 0 #1f160d; animation: ldmFade 0.15s steps(2); }
+.ss-head { display: flex; justify-content: space-between; align-items: center; }
+.ss-head b { font-size: 20px; }
+.ss-x { width: 36px; height: 36px; font: inherit; font-size: 18px; background: transparent; border: 3px solid var(--ink, #1f160d); cursor: pointer; }
+.ss-title { margin: 0; font-size: 15px; color: var(--muted, #6a5a44); }
+.ss-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ss-btn { display: grid; place-items: center; min-height: 52px; padding: 6px; font: inherit; font-size: 18px; font-weight: 700; text-decoration: none; color: #fff; border: 3px solid #1f160d; box-shadow: 3px 3px 0 #1f160d; cursor: pointer; }
+.ss-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 #1f160d; }
+.ss-btn.threads { background: #1a1a1a; }
+.ss-btn.facebook { background: #1f4fa8; }
+.ss-btn.messenger { background: #6a3ad0; }
+.ss-btn.copy { background: #2f6b3a; }
+.ss-more { font: inherit; font-size: 15px; padding: 8px; background: transparent; border: 2px dashed var(--ink, #1f160d); cursor: pointer; }
+.ss-link { display: block; padding: 6px 8px; font-size: 12px; word-break: break-all; user-select: all; background: rgba(0, 0, 0, 0.06); border: 2px solid rgba(0, 0, 0, 0.15); }
