@@ -2,10 +2,16 @@ import { NavTracker } from '@/components/BackButton';
 import VersionWatch from '@/components/VersionWatch';
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import { pageMeta, SITE_DESC, SITE_NAME, SITE_URL } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: 'Vạn Kiếp Luân Hồi',
-  description: 'Game pixel trùng sinh tu tiên: đầu thai ngẫu nhiên, tu luyện, chọn chính tà, sống trọn một kiếp rồi luân hồi.',
+  metadataBase: new URL(SITE_URL),
+  ...pageMeta(null, SITE_DESC),
+  title: { default: `${SITE_NAME} - Game pixel tu tiên trùng sinh`, template: `%s · ${SITE_NAME}` },
+  applicationName: SITE_NAME,
+  keywords: ['Vạn Kiếp Luân Hồi', 'game tu tiên', 'game pixel', 'trùng sinh', 'luân hồi', 'tu tiên online', 'game web', 'phi thăng', 'kiếm hiệp', 'game Việt'],
+  category: 'game',
+  robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {

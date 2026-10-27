@@ -13,11 +13,11 @@ import { CURRENT_VERSION } from '@/lib/releases';
 import LoiDaiButton from '@/components/LoiDaiButton';
 
 const SHOW = [
-  demoChar({ age: 9, lifespan: 70, realm: 0, gender: 'nu', equipped: { ao: 'ao_vai' } }),
-  demoChar({ age: 40, realm: 3, path: 'phat', daoTam: 60, equipped: { ao: 'ca_sa', vu_khi: 'phat_tran' } }),
-  demoChar({ age: 80, lifespan: 400, realm: 4, path: 'kiem', equipped: { ao: 'tu_kim_bao', phu_kien: 'kiem_bay' } }),
-  demoChar({ age: 60, realm: 3, path: 'ma', daoTam: -90, gender: 'nu', equipped: { ao: 'huyet_bao', vu_khi: 'huyet_dao' } }),
-  demoChar({ age: 350, lifespan: 400, realm: 3, daoTam: 20, equipped: { ao: 'bach_y' } }),
+  demoChar({ lookSeed: 2, age: 9, lifespan: 70, realm: 0, gender: 'nu', equipped: { ao: 'ao_vai' } }),
+  demoChar({ lookSeed: 13, age: 40, realm: 3, path: 'phat', daoTam: 60, equipped: { ao: 'ca_sa', vu_khi: 'phat_tran' } }),
+  demoChar({ lookSeed: 1, age: 80, lifespan: 400, realm: 4, path: 'kiem', equipped: { ao: 'tu_kim_bao', phu_kien: 'kiem_bay' } }),
+  demoChar({ lookSeed: 10, age: 60, realm: 3, path: 'ma', daoTam: -90, gender: 'nu', equipped: { ao: 'huyet_bao', vu_khi: 'huyet_dao' } }),
+  demoChar({ lookSeed: 8, age: 350, lifespan: 400, realm: 3, daoTam: 20, equipped: { ao: 'bach_y' } }),
 ];
 
 const link = { textDecoration: 'none', display: 'block' } as const;
