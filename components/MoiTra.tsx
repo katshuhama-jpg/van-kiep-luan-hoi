@@ -45,7 +45,7 @@ export default function MoiTra() {
           <small>Tu tiên cũng cần trà nóng. Game miễn phí, không quảng cáo, không nạp.</small>
         </span>
       </div>
-      <p className="mt-text">Nếu thấy game vui, đạo hữu có thể mời tác giả một chén trà để có thêm động lực làm game và trả tiền máy chủ. Ủng hộ là tùy tâm: người ủng hộ không nhận thêm quà hay sức mạnh gì, ai cũng chơi như nhau.</p>
+      <p className="mt-text">Nếu thấy game vui, đạo hữu có thể mời tác giả một chén trà để có thêm động lực làm game và trả tiền nuôi con Claude. Ủng hộ là tùy tâm: người ủng hộ không nhận thêm quà hay sức mạnh gì, ai cũng chơi như nhau.</p>
       <div className="mt-card">
         <TraQR />
         <dl>
