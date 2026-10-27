@@ -12,7 +12,7 @@ export default function TacGia() {
           <span className="age-big" style={{ fontSize: 28 }}>
             Tác giả
           </span>
-          <span className="meta">Người làm game và các họa sĩ chia sẻ hình miễn phí</span>
+          <span className="meta">Game làm bằng prompt, hình của các họa sĩ chia sẻ miễn phí</span>
           <BackButton fallback="/" />
         </div>
       </header>
