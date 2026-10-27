@@ -4024,25 +4024,24 @@ button.shadow-card { cursor: pointer; }
 .newbie-goal { font-size: 13px; color: #ffd36b; }
 .newbie-goal.done { color: #9be3a4; }
 /* 3.2.0 điểm danh 7 ngày */
-.checkin { margin-top: 8px; padding: 8px; background: var(--paper-3); border: 3px solid var(--ink); box-shadow: 2px 2px 0 var(--shadow); }
-.ci-head { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
-.ci-head b { font-size: 17px; }
-.ci-head small { font-size: 12px; color: var(--muted); text-align: right; }
-.ci-days { list-style: none; margin: 6px 0; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
-.ci-days li { display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 3px 1px; min-height: 52px; background: var(--paper-2); border: 2px solid var(--ink); font-size: 11px; line-height: 1.1; text-align: center; overflow-wrap: anywhere; }
-.ci-days li i { font-style: normal; font-weight: 700; font-size: 11px; color: var(--muted); }
-.ci-days li.got { background: #d8e8d0; color: #2f6b3a; }
-.ci-days li.got i { color: #2f6b3a; }
-.ci-days li.now { background: #ffe9b0; border-color: var(--red); box-shadow: 0 0 0 2px #ffd36b; animation: ci-pulse 1.2s steps(2) infinite; }
+.checkin { margin-top: 8px; padding: 6px 8px; display: flex; flex-direction: column; gap: 6px; background: var(--paper-3); border: 3px solid var(--ink); box-shadow: 2px 2px 0 var(--shadow); }
+.ci-line { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.ci-line > b { font-size: 16px; }
+.ci-pips { list-style: none; margin: 0; padding: 0; display: flex; gap: 4px; }
+.ci-pips li { display: grid; place-items: center; width: 26px; height: 26px; font-size: 13px; font-weight: 700; color: var(--muted); background: var(--paper-2); border: 2px solid var(--ink); }
+.ci-pips li.got { background: #d8e8d0; color: #2f6b3a; }
+.ci-pips li.now { color: var(--ink); background: #ffe9b0; border-color: var(--red); box-shadow: 0 0 0 2px #ffd36b; animation: ci-pulse 1.2s steps(2) infinite; }
 @keyframes ci-pulse { 50% { box-shadow: 0 0 0 2px var(--red); } }
-.ci-claim { width: 100%; margin: 2px 0 6px; }
+.ci-q { flex: 1; min-width: 0; }
+.ci-q summary { cursor: pointer; font-size: 14px; font-weight: 700; }
+.ci-claim { flex: none; padding: 4px 10px; font-size: 14px; max-width: 58%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ci-quests { list-style: none; margin: 4px 0 2px; padding: 0; display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
 .ci-quests li { display: flex; align-items: center; gap: 6px; }
 .ci-quests .box { flex: none; width: 11px; height: 11px; background: #fffaf0; box-shadow: 0 0 0 2px var(--ink); }
 .ci-quests li.done { color: #2f6b3a; text-decoration: line-through; }
 .ci-quests li.done .box { background: #2f6b3a; }
-@media (prefers-reduced-motion: reduce) { .ci-days li.now { animation: none; } }
-.ci-done { margin: 6px 0 2px; font-size: 13px; color: #3c7a3c; text-align: center; }
+@media (prefers-reduced-motion: reduce) { .ci-pips li.now { animation: none; } }
+.ci-done { flex: none; font-size: 13px; color: #3c7a3c; }
 
 /* ===== 3.2.0 Lôi đài Phi Kiếm ===== */
 .linklike { background: none; border: 0; padding: 0; font: inherit; color: var(--red, #9a2a1e); text-decoration: underline; cursor: pointer; }

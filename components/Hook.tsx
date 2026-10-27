@@ -136,44 +136,53 @@ export function CheckinRow({ meta, onClaim }: { meta: Meta; onClaim: () => void 
   const claimed = checkinClaimed(meta);
   const hon = honActive(meta);
   const d = dailyOf(meta);
+  const labelOf = (i: number) => {
+    const g = CHECKIN[i];
+    return g.hon && !hon ? `${g.honPhuc} phúc${g.item ? ', ngọc bội' : ''}` : g.label;
+  };
+  const done = d.quests.filter((id) => d.done.includes(id)).length;
   return (
-    <section className="checkin" aria-label="Điểm danh 7 ngày">
-      <div className="ci-head">
+    <section className="checkin" aria-label="Điểm danh 7 ngày và nhiệm vụ hôm nay">
+      <div className="ci-line">
         <b>Điểm danh</b>
-        <small>Chuỗi {meta.streak?.n ?? 1} ngày · bỏ một ngày là về ngày 1</small>
+        <ol className="ci-pips">
+          {CHECKIN.map((_, i) => {
+            const n = i + 1;
+            const st = n < day || (n === day && claimed) ? 'got' : n === day ? 'now' : '';
+            return (
+              <li key={n} className={st} title={`Ngày ${n}: ${labelOf(i)}`}>
+                {st === 'got' ? '✓' : n}
+              </li>
+            );
+          })}
+        </ol>
       </div>
-      <ol className="ci-days">
-        {CHECKIN.map((g, i) => {
-          const n = i + 1;
-          const st = n < day || (n === day && claimed) ? 'got' : n === day ? 'now' : '';
-          const label = g.hon && !hon ? `${g.honPhuc} phúc${g.item ? ', ngọc bội' : ''}` : g.label;
-          return (
-            <li key={n} className={st}>
-              <i>Ngày {n}</i>
-              <span>{label}</span>
-            </li>
-          );
-        })}
-      </ol>
-      {!claimed ? (
-        <button className="btn btn-red ci-claim" onClick={onClaim}>
-          Nhận quà ngày {day}
-        </button>
-      ) : (
-        <p className="ci-done">Đã nhận quà hôm nay. Mai quay lại nhận ngày {(day % 7) + 1}.</p>
-      )}
-      <ul className="ci-quests" aria-label={`Nhiệm vụ hôm nay, mỗi việc +${QUEST_REWARD} phúc duyên`}>
-        {d.quests.map((id) => (
-          <li key={id} className={d.done.includes(id) ? 'done' : ''}>
-            <span className="box" aria-hidden="true" />
-            {questName(id)}
-          </li>
-        ))}
-      </ul>
-      <small className="tt-note">
-        Nhiệm vụ +{QUEST_REWARD} phúc mỗi việc, xong cả 3 thêm +{QUEST_BONUS}
-        {hon ? ', mỗi việc hồi 10 Hồn lực' : ''}
-      </small>
+      <div className="ci-line">
+        <details className="ci-q">
+          <summary>
+            Nhiệm vụ {done}/{d.quests.length}
+          </summary>
+          <ul className="ci-quests" aria-label={`Nhiệm vụ hôm nay, mỗi việc +${QUEST_REWARD} phúc duyên`}>
+            {d.quests.map((id) => (
+              <li key={id} className={d.done.includes(id) ? 'done' : ''}>
+                <span className="box" aria-hidden="true" />
+                {questName(id)}
+              </li>
+            ))}
+          </ul>
+          <small className="tt-note">
+            +{QUEST_REWARD} phúc mỗi việc, xong cả 3 thêm +{QUEST_BONUS}
+            {hon ? ', mỗi việc hồi 10 Hồn lực' : ''}
+          </small>
+        </details>
+        {!claimed ? (
+          <button className="btn btn-red ci-claim" onClick={onClaim}>
+            Nhận {labelOf(day - 1)}
+          </button>
+        ) : (
+          <small className="ci-done">Mai: {labelOf(day % 7)}</small>
+        )}
+      </div>
     </section>
   );
 }

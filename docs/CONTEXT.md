@@ -608,3 +608,14 @@ Làm theo plan "Plan 3.1.0 - Xử lý góp ý người chơi" (trừ góp ý #7 
 - 27/10 20h05: Tyler: khó hơn nhưng đừng quá, người chơi nản. Hạ xuống: `NEED_MUL_HIGH` 1,5, cõi trên 24 năm mỗi tầng (cuối 16), thiên kiếp phi thăng -5%. Mô phỏng: Độ Kiếp 7%, phi thăng 2%, đỉnh 0,8% (giữa trước 3.1.0 và 3.1.0 lúc chiều).
 - 27/10 20h15: Đan hồi hồn (lib/game/luanHoi.ts `HON_PILLS`): Tụ Hồn Đan +20 hồn 20 phúc, Dưỡng Hồn Đan +45 hồn 55 phúc, Hoàn Hồn Đan hồi đầy 140 phúc; mỗi ngày (giờ VN) 3 viên đầu giá gốc, từ viên thứ 4 mỗi viên x1,5 (`honPillCost`, `meta.honPill`). Mua ở Cầu Nại Hà (hiện khi Hồn lực dưới 90) và trong mục Kiếp Số và Hồn lực ở lá số. Mỗi nhiệm vụ ngày xong hồi thêm 10 Hồn lực. Lý do: người chơi kêu Hồn lực bắt dừng khi đang nghiện; phúc duyên đang dư (trung vị 770 ở người từ kiếp 15) nên đan là chỗ tiêu phúc.
 - 27/10 20h20: cáo thị 3.1.1 Hoàn Hồn Đan (popup): đan hồi hồn + cân bằng tu luyện (mục cân bằng chuyển từ 3.1.0 sang 3.1.1).
+
+## Bản 3.2.0 trên nhánh next (27/10 tối)
+- Ba kiếp đầu trời thương: `NEWBIE_FATAL_MUL` 0,4 tới khi chọn con đường; mục tiêu kiếp 1-3 (`NEWBIE_GOALS`, hook.ts).
+- Điểm danh 7 ngày (`CHECKIN`, `CheckinRow`) ở màn đầu thai; quà linh thạch/đồ lưu `meta.checkinNext`, áp khi đầu thai.
+- Đan tu: kiếp sau mua đan hồi hồn rẻ 30% (`pastDanTu`, `DAN_TU_DISCOUNT`).
+- Lôi đài Phi Kiếm: `components/Arena.tsx` (sảnh: bậc + 3 lượt, sân đối mặt bóng đen, tab Xếp hạng/Báo thù/Cách chơi, nút Ra đài dính đáy), `PhiKiem.tsx` (12 giây, 10 kiếm vỡ một tầng, hình từ icon CC0: g_long_tuyen_kiem, g_huyet_anh_dao, g_kiem_y_phu, các linh châu), `LoiDaiMatch.tsx`, `lib/game/phiKiem.ts` (sức mạnh 70% + 2%/kiếm, tối đa 130%).
+- Database mới: `vkl_arena_fight3` (thua +1 điểm, thưởng vào `vkl_gift2`), `vkl_payout_claim3` (lĩnh cả `vkl_gift` cũ và `vkl_gift2`, thưởng bậc tuần trước 5 phúc/bậc qua `vkl_arena_weekgift`), `vkl_arena_tier_info`, `vkl_priv.arena_tier`. Hàm cũ không sửa.
+- Thẻ khoe: `lib/shareCard.ts`, `lib/lifeCard.ts`; link `/k/<mã>` (bảng `vkl_cards`, `vkl_card_put/meta/png`) có og 1200x630 vẽ nhân vật. Xếp loại S≥120, A≥80, B≥50, C≥25; `vkl_life_rank` tính % vượt giang hồ.
+- Ma đầu: bảng `vkl_mad`, `vkl_priv.mad_release` (gọi trong fight3 khi thắng đủ 2 trận/ngày), `vkl_mad_list`, `vkl_mad_result`. Trong game là DuelKind `ma_dau` (duel.ts `pickMaDau`), không chết khi thua.
+- Tiếng đồn: `RumorLine` ở Hành trình màn đầu thai; `vkl_ending_first` gửi thư Thiên Đạo cho cả giang hồ khi có người mở đầu tiên; Sổ Sinh Tử ghi số người mở và người đầu tiên.
+- Tài khoản thử: `test_card` (mật khẩu tk2610), tên `test_` bị loại khỏi bảng xếp hạng.
