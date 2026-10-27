@@ -32,7 +32,7 @@ export default function GopY() {
   const [busy, setBusy] = useState(false);
   const [sort, setSort] = useState<'top' | 'new'>('top');
   const [filter, setFilter] = useState<FeedbackKind | 'all'>('all');
-  const [state, setState] = useState<'open' | 'done' | 'all'>('open');
+  const [state, setState] = useState<'open' | 'done' | 'all'>('done');
 
   const load = () => listFeedback(user).then((l) => setList(l ?? []));
   useEffect(() => {
@@ -114,8 +114,8 @@ export default function GopY() {
         <div className="fb-state" role="tablist" aria-label="Trạng thái">
           {(
             [
-              { id: 'open', name: 'Chưa giải quyết', n: nOpen },
               { id: 'done', name: 'Đã giải quyết', n: nDone },
+              { id: 'open', name: 'Chưa giải quyết', n: nOpen },
               { id: 'all', name: 'Tất cả', n: byKind.length },
             ] as const
           ).map((t) => (
