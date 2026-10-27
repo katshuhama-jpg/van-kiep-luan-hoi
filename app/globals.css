@@ -4299,3 +4299,5 @@ button.shadow-card { cursor: pointer; }
 .mt-card dd { margin: 0; font-weight: 700; }
 .mt-acct { font-variant-numeric: tabular-nums; user-select: all; }
 .tra-nudge { display: block; margin-top: 8px; padding: 6px 8px; font-size: 14px; text-align: center; color: #8a1a1a; text-decoration: none; border: 2px dashed #8a1a1a; }
+.mt-fair { margin: 0; padding: 6px 10px; max-width: 62ch; background: #fff8e6; border: 2px solid #1f160d; box-shadow: inset 4px 0 0 #8a1a1a; }
+.mt-fair b { color: #8a1a1a; }
