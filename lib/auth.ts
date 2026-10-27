@@ -57,7 +57,7 @@ export function onPlayerChange(fn: (p: Player | null) => void) {
 }
 
 export function validate(username: string, password: string): string | null {
-  if (!USERNAME_RE.test(normalizeUsername(username))) return 'Tên đăng nhập cần ít nhất 3 chữ cái hoặc số.';
+  if (!USERNAME_RE.test(normalizeUsername(username))) return 'Tên đăng nhập dài 3-16 ký tự, viết liền không dấu: chữ thường, số, dấu _.';
   if (password.length < 3 || password.length > 6) return 'Mật khẩu dài từ 3 đến 6 ký tự.';
   return null;
 }
