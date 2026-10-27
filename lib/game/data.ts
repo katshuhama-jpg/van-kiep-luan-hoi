@@ -860,6 +860,20 @@ export const PILLS = [
   { id: 'huyet_sat', name: 'Huyết Sát Đan', icon: true, price: 50, desc: 'Tà tu: -tâm ma mạnh, đổi bằng máu. Chính đạo uống vào thì tâm ma tăng' },
 ];
 
+/** Giá đồ phường thị (3.1.0): đắt theo cảnh giới người mua; đồ Luyện Hư, Độ Kiếp mỗi kiếp chỉ bán một lần mỗi món */
+export const itemPrice = (c: { realm: number }, it: { price: number }) => Math.round(it.price * (1 + 0.25 * c.realm));
+export const RARE_STOCK_REALM = 6;
+export const soldOut = (c: { bought?: string[] }, it: { id: string; minRealm: number }) => it.minRealm >= RARE_STOCK_REALM && (c.bought ?? []).includes(it.id);
+/** Quá độ (3.1.0): số năm làm liền một việc mới bắt đầu nguy hiểm, tăng theo cảnh giới. Tu luyện không tính quá độ. */
+export function safeYears(c: { realm: number; cosmos?: string | null }): number {
+  if (c.cosmos || c.realm >= 8) return 40;
+  return c.realm >= 6 ? 20 : c.realm >= 4 ? 15 : c.realm >= 2 ? 10 : 6;
+}
+export const overworkFree = (focus: string | null | undefined) => focus === 'tu_luyen';
+
+/** Kiếm tiền, luyện đan liên tục nhiều năm thì thu ít dần (n = số năm đã làm liền trước đó) */
+export const grindMul = (n: number) => [1, 0.9, 0.8, 0.65, 0.5][n] ?? 0.4;
+
 /** Thọ nguyên Diên Thọ Đan thêm, theo số viên đã uống trong kiếp: kháng dược dần */
 export const DIEN_THO_YEARS = [8, 6, 4, 2];
 export const dienThoYears = (used: number) => DIEN_THO_YEARS[used] ?? 1;

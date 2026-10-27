@@ -52,6 +52,7 @@ export interface Character {
   inventory: string[];
   equipped: Partial<Record<Slot, string>>;
   pills: Record<string, number>;
+  bought?: string[]; // đồ Luyện Hư, Độ Kiếp đã mua ở phường thị kiếp này (mỗi món một lần)
   pillBuy?: Record<string, number>; // số viên đã mua ở phường thị trong kiếp này (Diên Thọ đắt dần)
   dtUsed?: number; // số Diên Thọ Đan đã uống trong kiếp này (kháng dược)
   lifeExtra?: number; // thọ nguyên cộng thêm từ đan dược, được giữ ngoài mức trần thọ của cảnh giới

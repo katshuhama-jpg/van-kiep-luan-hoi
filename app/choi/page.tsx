@@ -13,7 +13,7 @@ import { giftOf } from '@/lib/game/gacha';
 import type { BattleView } from '@/components/Battle';
 import { MONSTERS, combatLevel, effLv, fleeChance, hit, killExp, killReward, loseFight, monsterName, monsterStats, playerStats, tierOf, type Fighter } from '@/lib/game/combat';
 import { signOut } from '@/lib/auth';
-import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, pillPrice, realmLabel, realmName } from '@/lib/game/data';
+import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, itemPrice, pillPrice, RARE_STOCK_REALM, realmLabel, realmName, soldOut } from '@/lib/game/data';
 import { genName, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick } from '@/lib/game/engine';
 import { addCult, addPill, dao, fatal, fmt, giveItem, money, reward, stat, wealthTier } from '@/lib/game/helpers';
 import type { Character, Element, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
@@ -975,11 +975,13 @@ export default function PlayPage() {
   const buyItem = (id: string) =>
     act((c, out) => {
       const it = ITEMS.find((x) => x.id === id);
-      if (!it || c.linhThach < it.price) return;
-      money(c, -it.price);
+      const price = it ? itemPrice(c, it) : 0;
+      if (!it || c.linhThach < price || soldOut(c, it)) return;
+      money(c, -price);
       giveItem(c, id, true);
+      if (it.minRealm >= RARE_STOCK_REALM) c.bought = [...(c.bought ?? []), id];
       out.push({ kind: 'buy', id: Math.random(), label: it.name });
-      c.log.push({ age: Math.floor(c.age), tone: 'good', text: `Mua ${it.name} ở phường thị. (-${fmt(it.price)} linh thạch)` });
+      c.log.push({ age: Math.floor(c.age), tone: 'good', text: `Mua ${it.name} ở phường thị. (-${fmt(price)} linh thạch)` });
     });
 
   const buyPill = (id: string) =>

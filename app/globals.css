@@ -4002,3 +4002,4 @@ button.shadow-card { cursor: pointer; }
 .bag-kinds button.on small { color: #d9c69a; }
 .bag-sort { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--muted); }
 .bag-sort select { font: inherit; font-size: 15px; padding: 2px 4px; color: var(--ink); background: var(--paper-3); border: 2px solid var(--ink); }
+.item-body .stock-tag { color: #8a3ad0; font-weight: 700; font-size: 13px; }

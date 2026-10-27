@@ -27,6 +27,9 @@ import {
   ORIGINS,
   PATHS,
   PILLS,
+  grindMul,
+  overworkFree,
+  safeYears,
   dienThoYears,
   pillPrice,
   REALMS,
@@ -609,8 +612,10 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
     if (focus === 'tu_luyen') addCult(c, g * (opts.closed ? 1.5 : 1));
     else if (c.realm >= 1) addCult(c, g * 0.25);
   }
+  // 3.1.0: cày tiền liền nhiều năm thì thu ít dần; % tiền, % đan từ trang bị tối đa +100%
+  const grind = grindMul(c.streak?.f === focus ? c.streak.n : 0);
   if (focus === 'luyen_dan') {
-    const mul = (c.path === 'dan' ? 2 : 1) * (1 + gearFx(c.equipped).dan / 100);
+    const mul = (c.path === 'dan' ? 2 : 1) * (1 + Math.min(100, gearFx(c.equipped).dan) / 100) * grind;
     money(c, (15 + 25 * c.realm) * mul * jitter);
     if (rnd() < 0.3 * (c.path === 'dan' ? 1.6 : 1)) {
       const p = c.path === 'dan' && rnd() < 0.25 ? 'truc_co' : pick(rnd, ['tu_khi', 'hoi_xuan', 'thanh_tam']);
@@ -618,7 +623,8 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
       ctx.log(`Luyện thành một viên ${PILLS.find((x) => x.id === p)?.name}.`, 'good');
     }
   } else if (focus === 'kiem_tien') {
-    money(c, (c.realm === 0 ? 12 : 10 + 30 * c.realm) * (0.6 + rnd() * 0.8) * (1 + gearFx(c.equipped).money / 100));
+    money(c, (c.realm === 0 ? 12 : 10 + 30 * c.realm) * (0.6 + rnd() * 0.8) * (1 + Math.min(100, gearFx(c.equipped).money) / 100) * grind);
+    if (grind < 0.7 && rnd() < 0.3) ctx.log('Làm ăn mãi một mối, khách quen đã bão hòa. Thu nhập năm nay ít hẳn, nên đổi việc khác một thời gian.', 'normal');
   } else if (focus === 'du_ngoan') {
     if (rnd() < 0.3) stat(c, 'khiVan', 1);
     stat(c, 'tamCanh', 1);
@@ -1389,11 +1395,12 @@ const OVERWORK: Record<string, { warn: string; hits: { p: number; run: (c: Chara
   },
 };
 
-const SAFE_YEARS = 6;
+
 
 function overwork(c: Character, ctx: EffectCtx, focus: string, n: number) {
   const o = OVERWORK[focus];
-  if (!o) return;
+  if (!o || overworkFree(focus)) return;
+  const SAFE_YEARS = safeYears(c);
   if (n === SAFE_YEARS - 1) ctx.log(`${o.warn} Nên đổi việc khác cho thân tâm nghỉ ngơi.`, 'bad');
   if (n < SAFE_YEARS) return;
   // quá ngưỡng: năm nào cũng nhắc, nói rõ có thể mất mạng

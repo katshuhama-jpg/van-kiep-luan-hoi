@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 
 import { ENDINGS, RARE_COLOR, endingOf } from '@/lib/game/endings';
 import { GachaPanel, ShareCard } from './Extras';
 import ItemIconImg from './ItemIcon';
-import { FOCUS, ITEMS, PATHS, PILLS, REALMS, SEASONS, TALENTS, fxText, gearFx, pillPrice, realmLabel, type Item } from '@/lib/game/data';
+import { FOCUS, ITEMS, PATHS, PILLS, REALMS, SEASONS, TALENTS, fxText, gearFx, itemPrice, overworkFree, pillPrice, safeYears, RARE_STOCK_REALM, realmLabel, soldOut, type Item } from '@/lib/game/data';
 import { describeLean } from '@/lib/game/engine';
 import { DANGER_TEXT, MONSTERS, combatLevel, dangerOf, dropFactor, monstersFor, effLv, killExp, monsterName, playerStats, tierOf } from '@/lib/game/combat';
 import { MonsterSprite } from './Battle';
@@ -416,6 +416,8 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; 
             .map((it) => {
               const owned = c.inventory.includes(it.id);
               const lock = lockReason(c, it);
+              const price = itemPrice(c, it);
+              const out = soldOut(c, it);
               return (
                 <div key={it.id} className="item">
                   <div className="item-icon">
@@ -425,9 +427,10 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; 
                     <span>{it.name}</span>
                     {it.fx && <small className="fx-line">{fxText(it.fx)}</small>}
                     <small>{lock ?? it.desc}</small>
+                    {it.minRealm >= RARE_STOCK_REALM && !owned && !out && <small className="stock-tag">Hàng hiếm: mỗi kiếp chỉ bán một lần</small>}
                   </div>
-                  <button className="btn btn-red" disabled={owned || !!lock || c.linhThach < it.price} onClick={() => onBuyItem(it.id)}>
-                    {owned ? 'Đã có' : fmt(it.price)}
+                  <button className="btn btn-red" disabled={owned || out || !!lock || c.linhThach < price} onClick={() => onBuyItem(it.id)}>
+                    {owned ? 'Đã có' : out ? 'Hết hàng' : fmt(price)}
                   </button>
                 </div>
               );
@@ -740,11 +743,12 @@ export function BeQuanSheet({ c, onGo, onClose }: { c: Character; onGo: (years: 
 /** Cảnh báo quá độ nổi bật trên dock: chỉ cảnh báo, không tự đổi việc */
 export function OverworkBar({ c }: { c: Character }) {
   const n = c.streak?.f === c.focus ? c.streak.n : 0;
-  if (n < 5 || c.dead) return null;
+  const safe = safeYears(c);
+  if (overworkFree(c.focus) || n < safe - 1 || c.dead) return null;
   const name = FOCUS[c.focus as Focus]?.name ?? 'một việc';
   return (
-    <p className={`overwork-bar ${n >= 6 ? 'hot' : ''}`} role="alert">
-      ⚠ {n >= 6 ? `Quá độ: đã ${n} năm liền ${name.toLowerCase()}. Mỗi năm thêm đều có thể mất mạng, hãy đổi việc khác.` : `Đã ${n} năm liền ${name.toLowerCase()}. Sang năm là quá độ, nên đổi việc khác.`}
+    <p className={`overwork-bar ${n >= safe ? 'hot' : ''}`} role="alert">
+      ⚠ {n >= safe ? `Quá độ: đã ${n} năm liền ${name.toLowerCase()}. Mỗi năm thêm đều có thể mất mạng, hãy đổi việc khác.` : `Đã ${n} năm liền ${name.toLowerCase()}. Sang năm là quá độ, nên đổi việc khác.`}
     </p>
   );
 }
@@ -754,20 +758,21 @@ export function FocusGrid({ c, onPick }: { c: Character; onPick: (f: Focus) => v
     <div className="focus-grid" role="radiogroup" aria-label="Trọng tâm năm nay">
       {(Object.keys(FOCUS) as Focus[]).map((f) => {
         const locked = c.age < FOCUS[f].minAge;
-        const n = c.focus === f && c.streak?.f === f ? c.streak.n : 0;
+        const n = c.focus === f && c.streak?.f === f && !overworkFree(f) ? c.streak.n : 0;
+        const safe = safeYears(c);
         return (
           <button
             key={f}
             role="radio"
             aria-checked={c.focus === f}
-            className={`${c.focus === f ? 'on' : ''} ${n >= 6 ? 'tired' : n >= 4 ? 'warm' : ''}`}
+            className={`${c.focus === f ? 'on' : ''} ${n >= safe ? 'tired' : n >= safe - 2 ? 'warm' : ''}`}
             disabled={locked || c.dead}
             onClick={() => onPick(f)}
             title={locked ? `Mở khi ${FOCUS[f].minAge} tuổi` : FOCUS[f].desc}
           >
             <FocusIcon f={f} />
             <span>{locked ? `${FOCUS[f].minAge}t` : FOCUS[f].name}</span>
-            {n >= 2 && <i className="streak">{n >= 6 ? `Quá độ ${n}n` : `${n} năm`}</i>}
+            {n >= 2 && <i className="streak">{n >= safe ? `Quá độ ${n}n` : `${n}/${safe} năm`}</i>}
           </button>
         );
       })}
