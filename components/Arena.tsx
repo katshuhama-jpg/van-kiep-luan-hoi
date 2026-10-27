@@ -77,21 +77,7 @@ export function RuleBanner({ compact }: { compact?: boolean }) {
   );
 }
 
-/** Bậc lôi đài một dòng: tên bậc, điểm, thanh 6 bậc */
-function TierLine({ pts }: { pts: number }) {
-  const t = tierOfPts(pts);
-  return (
-    <div className="ar-tier" aria-label={`Bậc ${t.name}, ${pts} điểm`}>
-      <b>{t.name}</b>
-      <ol className="ar-tier-steps" aria-hidden="true">
-        {ARENA_TIERS.map((x, i) => (
-          <li key={x.name} className={i < t.n ? 'got' : i === t.n ? 'next' : ''} />
-        ))}
-      </ol>
-      <small>{t.next ? `${pts} điểm · còn ${t.next.need} lên ${t.next.name}` : `${pts} điểm · bậc cao nhất`}</small>
-    </div>
-  );
-}
+const STAGE_BGS = ['tien', 'ma', 'hu'].flatMap((c) => ['kim', 'moc', 'thuy', 'hoa', 'tho'].map((e) => `/bg/nhd-${c}-${e}.png`));
 
 /**
  * Lôi đài Phi Kiếm (3.2.0): một chạm "Ra đài" là tự lấy bóng mạnh nhất, rút đối thủ, vào trận 25 giây.
@@ -102,6 +88,7 @@ export default function Arena({ user }: { user: Player | null }) {
   const [cands, setCands] = useState<RivalChar[] | null>(null);
   const [pick, setPick] = useState<number | null>(null);
   const [picking, setPicking] = useState(false);
+  const [tab, setTab] = useState<'top' | 'thu' | 'how'>('top');
   const [busy, setBusy] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [match, setMatch] = useState<{ me: RivalChar; foe: RivalChar; opp: string; revenge: number | null; leftAfter: number; key: number } | null>(null);
@@ -120,8 +107,8 @@ export default function Arena({ user }: { user: Player | null }) {
   const usedRef = useRef(0);
   if (st?.me) usedRef.current = Math.max(usedRef.current, st.me.used);
   useEffect(() => {
-    if (user && st?.me && !champ && cands === null && picking) arenaCandidates(user).then(setCands);
-  }, [user, st, champ, cands, picking]);
+    if (user && st?.me && !champ && cands === null) arenaCandidates(user).then(setCands);
+  }, [user, st, champ, cands]);
 
   /** Khóa một bóng cho cả ngày; không chỉ định thì lấy kiếp mạnh nhất */
   async function lockChamp(c?: RivalChar): Promise<RivalChar | null> {
@@ -193,121 +180,154 @@ export default function Arena({ user }: { user: Player | null }) {
 
   if (!st) return <p>Đang dựng lôi đài...</p>;
   const left = st.me ? Math.max(0, ARENA_TURNS - st.me.used) : 0;
+  const hero = champ ?? cands?.[0] ?? null;
+  const t = tierOfPts(st.me?.pts ?? 0);
+  const bg = STAGE_BGS[(Number(vnDate().slice(8, 10)) || 1) % STAGE_BGS.length];
   return (
-    <section className="arena">
-      <Podium top={st.top} me={user?.username} />
+    <section className="arena ar-lobby">
       {st.me ? (
-        <div className="ar-go">
-          {champ ? (
-            <span className="ar-champ" title="Bóng xuất chiến hôm nay">
-              <Sprite c={foeChar(champ)} size={56} />
-            </span>
-          ) : null}
-          <button className="btn btn-red btn-big ar-go-btn" disabled={!!busy || left <= 0} onClick={raDai}>
-            {busy === 'go' ? 'Đang rút đối thủ...' : left > 0 ? '⚔ Ra đài' : 'Mai đánh tiếp'}
-            <small>{left > 0 ? `còn ${left}/${ARENA_TURNS} lượt hôm nay` : 'Hôm nay đã đủ 3 trận'}</small>
-          </button>
+        <div className="ar-top">
+          <span className="ar-top-tier">
+            <b>{t.name}</b>
+            <small>{st.me.pts} điểm{t.next ? ` · còn ${t.next.need} lên ${t.next.name}` : ''}</small>
+          </span>
+          <ol className="ar-tier-steps" aria-hidden="true">
+            {ARENA_TIERS.map((x, i) => (
+              <li key={x.name} className={i < t.n ? 'got' : i === t.n ? 'next' : ''} />
+            ))}
+          </ol>
+          <span className="ar-pips" aria-label={`Còn ${left} trên ${ARENA_TURNS} lượt hôm nay`}>
+            {Array.from({ length: ARENA_TURNS }, (_, i) => (
+              <img key={i} src="/icons/g_long_tuyen_kiem.png" width={32} height={32} alt="" className={i < left ? 'on' : ''} />
+            ))}
+          </span>
         </div>
       ) : (
         <p className="note">
           <Link href="/dang-nhap?next=/loi-dai">Đăng nhập</Link> để lên lôi đài.
         </p>
       )}
-      {st.me && <TierLine pts={st.me.pts} />}
+
+      <div className="ar-stage" style={{ backgroundImage: `url(${bg})` }}>
+        <div className="ar-side me">
+          {hero ? <Sprite c={foeChar(hero)} size={120} anim="idle" dir={3} /> : <span className="ar-unknown">?</span>}
+          <b>{hero ? hero.name : 'Bóng của bạn'}</b>
+          {st.me && !champ && hero && (
+            <button className="linklike ar-swap" onClick={() => setPicking((v) => !v)}>
+              {picking ? 'Đóng' : 'Đổi bóng'}
+            </button>
+          )}
+        </div>
+        <span className="ar-vs">VS</span>
+        <div className="ar-side foe">
+          {hero ? (
+            <span className="ar-shadow">
+              <Sprite c={foeChar(hero)} size={120} anim="idle" dir={1} />
+            </span>
+          ) : (
+            <span className="ar-unknown">?</span>
+          )}
+          <b>Đối thủ ngẫu nhiên</b>
+        </div>
+        <span className="ar-rule-tag">
+          Luật hôm nay: <b>{rule.name}</b>
+        </span>
+      </div>
       {err && <p className="note ar-err">{err}</p>}
 
-      {st.me && st.revenge.length > 0 && (
-        <ul className="ar-opps revenge">
-          {st.revenge.map((r) => (
-            <li key={r.id}>
-              <span>
-                <b>@{r.target} hạ bóng của bạn</b>
-                <small>Báo thù không tốn lượt</small>
-              </span>
-              <button className="btn btn-red" disabled={!!busy} onClick={() => revenge(r.target, r.id)}>
-                {busy === r.target ? '...' : 'Báo thù'}
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {st.me && !champ && !picking && (
-        <p className="ar-pick-link">
-          <button className="linklike" onClick={() => setPicking(true)}>
-            Tự chọn bóng ra đài
+      {picking && cands && cands.length > 0 ? (
+        <>
+          <div className="shadow-pick" id="ar-pick">
+            {cands.map((c, i) => (
+              <ShadowCard key={`${c.lifeId}-${i}`} r={c} rank={i + 1} rule={rule} vert on={pick === i} onPick={() => setPick(i)} />
+            ))}
+          </div>
+          <button className="btn btn-red ar-keep" disabled={!!busy || pick === null} onClick={lockPicked}>
+            {busy === 'pick' ? '...' : pick !== null ? `Giữ ${cands[pick].name} cả ngày` : 'Chọn một bóng'}
           </button>
-        </p>
-      )}
-      {st.me && !champ && picking && (
-        cands === null ? (
-          <p>Đang gọi các kiếp trước...</p>
-        ) : !cands.length ? (
-          <p className="note">Bạn chưa có kiếp nào. Sống trọn một kiếp rồi quay lại.</p>
-        ) : (
-          <>
-            <div className="shadow-pick" id="ar-pick">
-              {cands.map((c, i) => (
-                <ShadowCard key={`${c.lifeId}-${i}`} r={c} rank={i + 1} rule={rule} vert on={pick === i} onPick={() => setPick(i)} />
+        </>
+      ) : (
+        <>
+          <nav className="ar-tabs" role="tablist">
+            <button role="tab" aria-selected={tab === 'top'} className={tab === 'top' ? 'on' : ''} onClick={() => setTab('top')}>
+              Xếp hạng
+            </button>
+            <button role="tab" aria-selected={tab === 'thu'} className={tab === 'thu' ? 'on' : ''} onClick={() => setTab('thu')}>
+              Báo thù{st.revenge.length ? <i className="ar-tab-dot">{st.revenge.length}</i> : null}
+            </button>
+            <button role="tab" aria-selected={tab === 'how'} className={tab === 'how' ? 'on' : ''} onClick={() => setTab('how')}>
+              Cách chơi
+            </button>
+          </nav>
+          <div className="ar-tab-body">
+            {tab === 'top' && (
+              <>
+                <Podium top={st.top} me={user?.username} />
+                {st.top.length > 3 && (
+                  <ol className="gh-board ar-top-list">
+                    {st.top.slice(3).map((x, i) => (
+                      <li key={x.username} className={x.username === user?.username ? 'me' : ''}>
+                        <span className="gh-poster" aria-hidden="true">
+                          {i + 4}
+                        </span>
+                        <span>
+                          <b>@{x.username}</b>
+                          <small>{tierOfPts(x.pts).name}</small>
+                        </span>
+                        <b className="gh-gold">{x.pts}</b>
+                      </li>
+                    ))}
+                  </ol>
+                )}
+                {!st.top.length && <p className="note">Long ỷ còn trống tuần này, hãy là người đầu tiên.</p>}
+                {st.champs.length > 0 && (
+                  <p className="note ar-last">
+                    Tuần trước: {st.champs.map((c) => `${['Bá Chủ', 'Á Chủ', 'Tam Kiệt'][c.rank - 1]} @${c.username}`).join(' · ')}
+                  </p>
+                )}
+              </>
+            )}
+            {tab === 'thu' &&
+              (st.revenge.length ? (
+                <ul className="ar-opps revenge">
+                  {st.revenge.map((r) => (
+                    <li key={r.id}>
+                      <span>
+                        <b>@{r.target} hạ bóng của bạn</b>
+                        <small>Không tốn lượt, hạn 48 giờ</small>
+                      </span>
+                      <button className="btn btn-red" disabled={!!busy} onClick={() => revenge(r.target, r.id)}>
+                        {busy === r.target ? '...' : 'Báo thù'}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="note">Chưa ai hạ được bóng của bạn.</p>
               ))}
-            </div>
-            <div className={`sp-bar ${pick !== null ? 'ready' : ''}`}>
-              <span className="sp-hint">{pick !== null && cands[pick] ? cands[pick].name : 'Chọn một bóng, giữ cả ngày'}</span>
-              <button className="btn btn-red sp-go" disabled={!!busy || pick === null} onClick={lockPicked}>
-                {busy === 'pick' ? '...' : 'Giữ bóng này'}
-              </button>
-            </div>
-          </>
-        )
-      )}
-
-      <RuleBanner compact />
-      <details className="ar-how">
-        <summary>Cách chơi</summary>
-        <ul>
-          <li>Chạm để phóng phi kiếm trong 12 giây. Đâm vào kiếm đã cắm là hỏng.</li>
-          <li>Càng nhiều kiếm, bóng của bạn càng mạnh. Sau đó hai bóng tự đánh.</li>
-          <li>Thắng +3 điểm, 10 phúc. Thua +1 điểm, 3 phúc. Đủ 3 trận +15 Hồn lực.</li>
-          <li>Bậc cuối tuần: mỗi bậc 5 phúc. Top 3 lên bục Long Ỷ.</li>
-        </ul>
-      </details>
-
-
-
-      {st.champs.length > 0 && (
-        <>
-          <h3 className="gh-h">Bá chủ tuần trước</h3>
-          <ol className="ar-champs">
-            {st.champs.map((c) => (
-              <li key={c.rank}>
-                <b>{['Lôi Đài Bá Chủ', 'Lôi Đài Á Chủ', 'Lôi Đài Tam Kiệt'][c.rank - 1]}</b> @{c.username} · {c.pts} điểm
-              </li>
-            ))}
-          </ol>
+            {tab === 'how' && (
+              <>
+                <ul className="ar-how-list">
+                  <li>Chạm để phóng phi kiếm trong 12 giây, đừng đâm vào kiếm đã cắm.</li>
+                  <li>Càng nhiều kiếm, bóng của bạn càng mạnh. Sau đó hai bóng tự đánh.</li>
+                  <li>Thắng +3 điểm, 10 phúc. Thua +1 điểm, 3 phúc. Đủ 3 trận +15 Hồn lực.</li>
+                  <li>Cuối tuần mỗi bậc thưởng 5 phúc. Top 3 lên bục Long Ỷ.</li>
+                </ul>
+                <RuleBanner />
+              </>
+            )}
+          </div>
         </>
       )}
-      {st.top.length > 3 && (
-        <>
-          <h3 className="gh-h">Hạng 4 trở xuống</h3>
-          <ol className="gh-board ar-top">
-            {st.top.slice(3).map((t, i) => (
-              <li key={t.username} className={t.username === user?.username ? 'me' : ''}>
-                <span className="gh-poster" aria-hidden="true">
-                  {i + 4}
-                </span>
-                <span>
-                  <b>@{t.username}</b>
-                  <small>
-                    {t.wins} thắng, {t.losses} thua · {tierOfPts(t.pts).name}
-                  </small>
-                </span>
-                <b className="gh-gold">{t.pts}</b>
-              </li>
-            ))}
-          </ol>
-        </>
+
+      {st.me && (
+        <div className="ar-dock">
+          <button className="btn btn-red btn-big ar-go-btn" disabled={!!busy || left <= 0} onClick={raDai}>
+            {busy === 'go' ? 'Đang rút đối thủ...' : left > 0 ? '⚔ Ra đài' : 'Mai đánh tiếp'}
+            <small>{left > 0 ? `còn ${left}/${ARENA_TURNS} lượt · 25 giây một trận` : 'Hôm nay đã đủ 3 trận'}</small>
+          </button>
+        </div>
       )}
-      {!st.top.length && <p className="note">Chưa ai có điểm tuần này. Long ỷ còn trống, hãy là người đầu tiên.</p>}
 
       {match && user && (
         <LoiDaiMatch

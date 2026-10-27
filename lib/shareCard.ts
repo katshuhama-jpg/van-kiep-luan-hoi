@@ -10,6 +10,9 @@ import { composeFrame } from '@/lib/lpc';
 import { foeChar } from '@/lib/game/duel';
 import { PATHS, realmLabel } from '@/lib/game/data';
 import type { Character, RivalChar } from '@/lib/game/types';
+import { currentPlayer } from '@/lib/auth';
+import { supabase } from '@/lib/supabase';
+import { SITE_URL } from '@/lib/seo';
 
 export const CW = 1080;
 export const CH = 1350;
@@ -18,10 +21,13 @@ export const SITE = 'van-kiep-luan-hoi.vercel.app';
 
 export const font = (px: number, w = 600) => `${w} ${px}px 'Barlow Semi Condensed', sans-serif`;
 
-export async function canvas(): Promise<{ cv: HTMLCanvasElement; x: CanvasRenderingContext2D } | null> {
+export const OW = 1200;
+export const OH = 630;
+
+export async function canvas(w = CW, h = CH): Promise<{ cv: HTMLCanvasElement; x: CanvasRenderingContext2D } | null> {
   const cv = document.createElement('canvas');
-  cv.width = CW;
-  cv.height = CH;
+  cv.width = w;
+  cv.height = h;
   const x = cv.getContext('2d');
   if (!x) return null;
   try {
@@ -39,7 +45,7 @@ export function blk(x: CanvasRenderingContext2D, gx: number, gy: number, gw: num
 }
 
 /** Nền giấy da, viền gỗ hai lớp, đinh vàng bốn góc */
-export function paper(x: CanvasRenderingContext2D, tone: 'giay' | 'dem' = 'giay') {
+export function paper(x: CanvasRenderingContext2D, tone: 'giay' | 'dem' = 'giay', CW = 1080, CH = 1350) {
   const dark = tone === 'dem';
   blk(x, 0, 0, CW, CH, '#1f160d');
   blk(x, P * 3, P * 3, CW - P * 6, CH - P * 6, dark ? '#3a1f1a' : '#8a5a2e');
@@ -98,9 +104,9 @@ export function txt(x: CanvasRenderingContext2D, s: string, tx: number, ty: numb
 }
 
 /** Xuống dòng theo bề ngang, trả về y sau dòng cuối */
-export function wrapTxt(x: CanvasRenderingContext2D, s: string, tx: number, ty: number, maxW: number, lh: number, px: number, col: string, maxLines = 3): number {
+export function wrapTxt(x: CanvasRenderingContext2D, s: string, tx: number, ty: number, maxW: number, lh: number, px: number, col: string, maxLines = 3, align: CanvasTextAlign = 'center'): number {
   x.font = font(px);
-  x.textAlign = 'center';
+  x.textAlign = align;
   x.fillStyle = col;
   const words = s.split(' ');
   let line = '';
@@ -135,27 +141,49 @@ export function seal(x: CanvasRenderingContext2D, sx: number, sy: number, size: 
 
 const toBlob = (cv: HTMLCanvasElement) => new Promise<Blob | null>((res) => cv.toBlob((b) => res(b), 'image/png'));
 
-/** Mở bảng chia sẻ của máy kèm ảnh; máy không hỗ trợ thì tải ảnh về */
-export async function deliver(cv: HTMLCanvasElement, name: string, text: string): Promise<'shared' | 'saved' | 'fail'> {
+/** Đẩy ảnh ngang lên server, nhận link /k/<mã> có xem trước hình nhân vật */
+export async function publish(kind: 'life' | 'match', title: string, desc: string, og: HTMLCanvasElement): Promise<string | null> {
+  const user = currentPlayer();
+  const sb = supabase();
+  if (!user || !sb) return null;
+  const b64 = og.toDataURL('image/png').split(',')[1];
+  const { data, error } = await sb.rpc('vkl_card_put', { p_token: user.token, p_kind: kind, p_title: title, p_desc: desc, p_png: b64 });
+  return error || !data ? null : `${SITE_URL}/k/${data as string}`;
+}
+
+/** Tải ảnh dọc về máy */
+export async function download(cv: HTMLCanvasElement, name: string): Promise<boolean> {
   const b = await toBlob(cv);
-  if (!b) return 'fail';
-  const file = new File([b], `${name}.png`, { type: 'image/png' });
-  try {
-    if (navigator.canShare?.({ files: [file] })) {
-      await navigator.share({ files: [file], title: 'Vạn Kiếp Luân Hồi', text: `${text}\n${SITE}` });
-      return 'shared';
-    }
-  } catch (e) {
-    // người chơi tự đóng bảng chia sẻ: không tính là lỗi
-    if ((e as Error)?.name === 'AbortError') return 'shared';
-  }
+  if (!b) return false;
   const url = URL.createObjectURL(b);
   const a = document.createElement('a');
   a.href = url;
-  a.download = file.name;
+  a.download = `${name}.png`;
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 4000);
-  return 'saved';
+  return true;
+}
+
+export type ShareResult = 'shared' | 'copied' | 'saved' | 'fail';
+
+/**
+ * Khoe: ưu tiên chia sẻ link (dán lên Facebook, Threads, Zalo sẽ hiện ảnh nhân vật, tiêu đề, mô tả).
+ * Máy không có bảng chia sẻ thì chép chữ kèm link; không đẩy được link thì tải ảnh dọc về.
+ */
+export async function deliver(portrait: HTMLCanvasElement, og: HTMLCanvasElement, kind: 'life' | 'match', name: string, title: string, desc: string, text: string): Promise<ShareResult> {
+  const link = await publish(kind, title, desc, og);
+  if (link) {
+    try {
+      if (navigator.share) {
+        await navigator.share({ title, text, url: link });
+        return 'shared';
+      }
+    } catch (e) {
+      if ((e as Error)?.name === 'AbortError') return 'shared';
+    }
+    if (await copyText(`${text}\n${link}`)) return 'copied';
+  }
+  return (await download(portrait, name)) ? 'saved' : 'fail';
 }
 
 export async function copyText(s: string): Promise<boolean> {
@@ -196,8 +224,24 @@ export async function shareMatch(m: { me: RivalChar; foe: RivalChar; meUser: str
   seal(x, CW - 300, 1186, 132, m.win ? 'THẮNG' : 'BẠI', m.win ? '#b0201a' : '#3e3228', 44);
   txt(x, 'VẠN KIẾP LUÂN HỒI', 150, 1252, 36, '#ffd36b', { w: 700, align: 'left' });
   txt(x, SITE, 150, 1296, 28, '#c8b89a', { align: 'left' });
+  // bản ngang cho xem trước link
+  const o = await canvas(OW, OH);
+  if (!o) return 'fail';
+  const g = o.x;
+  paper(g, 'dem', OW, OH);
+  for (const side of ['me', 'foe'] as const) {
+    const r = side === 'me' ? m.me : m.foe;
+    const cx = side === 'me' ? 250 : OW - 250;
+    box(g, cx - 168, 96, 336, 384, winSide === side ? '#2a1f3d' : '#1f1418', winSide === side ? '#ffd36b' : '#5a4a4a');
+    await hero(g, foeChar(r), cx, 108, 4.2, side === 'me' ? 3 : 1, winSide !== side);
+    txt(g, `@${side === 'me' ? m.meUser : m.opp}`, cx, 520, 36, '#fff3dc', { w: 700, max: 330 });
+  }
+  seal(g, OW / 2 - 66, 210, 132, 'VS', '#5a2a1a', 56);
+  txt(g, m.win ? 'THẮNG' : 'BẠI', OW / 2, 420, 52, m.win ? '#ffd36b' : '#ff6b5a', { w: 700, shadow: '#000' });
+  txt(g, `${m.swords} phi kiếm · còn ${m.hp}% máu`, OW / 2, 470, 28, '#e8dcc0', { max: 330 });
+  txt(g, 'LÔI ĐÀI · VẠN KIẾP LUÂN HỒI', OW / 2, 556, 26, '#ffd36b', { w: 700 });
+  const title = m.win ? `@${m.meUser} hạ @${m.opp} trên lôi đài` : `@${m.opp} hạ @${m.meUser} trên lôi đài`;
+  const desc = `${m.me.name} đấu ${m.foe.name}, cắm ${m.swords} phi kiếm, ${m.win ? 'thắng' : 'thua'} khi ${m.win ? 'còn' : 'đối thủ còn'} ${m.hp}% máu. Luật hôm nay: ${m.rule}. Vào Vạn Kiếp Luân Hồi lên đài thử sức.`;
   const text = m.win ? `Tôi vừa hạ @${m.opp} trên lôi đài Vạn Kiếp Luân Hồi, còn ${m.hp}% máu, cắm ${m.swords} phi kiếm.` : `@${m.opp} vừa thắng tôi trên lôi đài Vạn Kiếp Luân Hồi. Mai báo thù!`;
-  const r = await deliver(cv, `loi-dai-${m.meUser}-${m.opp}`, text);
-  if (r === 'fail') return (await copyText(`${text} ${SITE}`)) ? 'copied' : 'fail';
-  return r;
+  return deliver(cv, o.cv, 'match', `loi-dai-${m.meUser}-${m.opp}`, title, desc, text);
 }

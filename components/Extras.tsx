@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Sprite, { lpcLayers } from './Sprite';
-import { composeFrame } from '@/lib/lpc';
+import { GRADE_COL, copyLife, drawLife, gradeOf, rankPct, shareLife } from '@/lib/lifeCard';
+import { track } from '@/lib/track';
 import Radar, { charAxes, wealthScore } from './Radar';
 import { GIFTS, RARE_NAME, applyGifts, drawGifts, giftOf } from '@/lib/game/gacha';
 import { RARE_COLOR, type Ending } from '@/lib/game/endings';
@@ -423,147 +424,70 @@ function wrap(ctx: CanvasRenderingContext2D, text: string, x: number, y: number,
   return y + lh;
 }
 
-async function svgToImage(svg: SVGSVGElement, size: number): Promise<HTMLImageElement> {
-  const clone = svg.cloneNode(true) as SVGSVGElement;
-  clone.querySelectorAll('.aura, .halo').forEach((n) => n.remove());
-  clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-  clone.setAttribute('width', String(size));
-  clone.setAttribute('height', String(size));
-  const src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(clone));
-  const img = new Image();
-  img.src = src;
-  await img.decode();
-  return img;
-}
-
-export async function makeCard(c: Character, ending: Ending, epitaph: string, svg: SVGSVGElement | null): Promise<Blob | null> {
-  const W = 600;
-  const H = 860;
-  const cv = document.createElement('canvas');
-  cv.width = W;
-  cv.height = H;
-  const x = cv.getContext('2d');
-  if (!x) return null;
-  try {
-    await document.fonts.load("600 40px 'Barlow Semi Condensed'");
-  } catch {}
-  x.imageSmoothingEnabled = false;
-  // nền giấy da + viền pixel
-  x.fillStyle = '#2a2018';
-  x.fillRect(0, 0, W, H);
-  x.fillStyle = '#f3e6c4';
-  x.fillRect(12, 12, W - 24, H - 24);
-  x.fillStyle = '#e4d2a6';
-  for (let i = 0; i < 60; i++) x.fillRect(12 + ((i * 97) % (W - 40)), 12 + ((i * 53) % (H - 40)), 4, 4);
-  x.strokeStyle = '#3e3228';
-  x.lineWidth = 4;
-  x.strokeRect(24, 24, W - 48, H - 48);
-  const font = (px: number) => `600 ${px}px 'Barlow Semi Condensed', sans-serif`;
-  x.textAlign = 'center';
-  x.fillStyle = '#9a2a1e';
-  x.font = font(44);
-  x.fillText('VẠN KIẾP LUÂN HỒI', W / 2, 78);
-  x.fillStyle = '#6a5a44';
-  x.font = font(24);
-  x.fillText(`Kiếp thứ ${c.lifeNo}`, W / 2, 106);
-  // khung nhân vật
-  x.fillStyle = ending.rare >= 3 ? '#2a1f3d' : '#d8c79a';
-  x.fillRect(W / 2 - 130, 126, 260, 260);
-  if (ending.rare >= 3) {
-    x.fillStyle = RARE_COLOR[ending.rare];
-    for (let k = 0; k < 16; k++) x.fillRect(W / 2 - 130 + ((k * 61) % 250), 130 + ((k * 37) % 250), 4, 4);
-  }
-  x.strokeStyle = RARE_COLOR[ending.rare];
-  x.lineWidth = 6;
-  x.strokeRect(W / 2 - 130, 126, 260, 260);
-  try {
-    // khung 128 ảnh LPC, người nằm giữa 64 điểm: phóng to 4 lần, cắt lấy phần giữa
-    const img = await composeFrame(lpcLayers({ ...c, dead: false }), 'idle', 2, 0);
-    x.drawImage(img, 24, 20, 80, 90, W / 2 - 120, 136, 240, 270 * 0.89);
-  } catch {}
-  void svg;
-  x.fillStyle = '#2a2018';
-  x.font = font(52);
-  x.fillText(c.name, W / 2, 440);
-  x.font = font(26);
-  x.fillStyle = '#4a3a2a';
-  x.fillText(`${Math.floor(c.age)} tuổi · ${c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer, c.cosmos)}${c.path ? ' · ' + PATHS[c.path].name : ''}`, W / 2, 474);
-  // kết cục
-  x.fillStyle = RARE_COLOR[ending.rare];
-  x.fillRect(60, 500, W - 120, 64);
-  x.fillStyle = '#fff8e6';
-  x.font = font(22);
-  x.fillText(`KẾT CỤC · ${['PHÀM', 'LINH', 'HUYỀN', 'ĐỊA', 'THIÊN'][ending.rare]} PHẨM`, W / 2, 522);
-  x.font = font(36);
-  x.fillText(ending.name, W / 2, 554);
-  x.fillStyle = '#3e3228';
-  x.font = font(24);
-  let y = wrap(x, c.cause ?? ending.desc, W / 2, 604, W - 120, 28, 4);
-  if (epitaph) {
-    x.fillStyle = '#9a2a1e';
-    x.font = font(28);
-    wrap(x, `"${epitaph}"`, W / 2, y + 10, W - 120, 30, 2);
-  }
-  x.fillStyle = '#6a5a44';
-  x.font = font(22);
-  x.fillText('van-kiep-luan-hoi.vercel.app', W / 2, H - 44);
-  return new Promise((res) => cv.toBlob((b) => res(b), 'image/png'));
-}
-
-export function ShareCard({ c, ending, epitaph }: { c: Character; ending: Ending; epitaph: string }) {
-  const ref = useRef<HTMLDivElement>(null);
+/** Thẻ Một đời: xếp loại, phần trăm vượt giang hồ, khoe bằng link có hình nhân vật hoặc chép chữ */
+export function ShareCard({ c, ending, epitaph, isNew = false }: { c: Character; ending: Ending; epitaph: string; isNew?: boolean }) {
+  const [pct, setPct] = useState<number | null>(null);
   const [url, setUrl] = useState<string | null>(null);
-  const [blob, setBlob] = useState<Blob | null>(null);
   const [busy, setBusy] = useState(false);
-  const build = async () => {
-    setBusy(true);
-    const svg = ref.current?.querySelector('svg') ?? null;
-    const b = await makeCard(c, ending, epitaph, svg as SVGSVGElement | null);
-    setBusy(false);
-    if (!b) return;
-    setBlob(b);
-    setUrl((old) => {
-      if (old) URL.revokeObjectURL(old);
-      return URL.createObjectURL(b);
+  const [msg, setMsg] = useState<string | null>(null);
+  const { grade } = gradeOf(c, ending, isNew);
+  useEffect(() => {
+    let live = true;
+    rankPct(c).then((p) => live && setPct(p));
+    return () => {
+      live = false;
+    };
+  }, [c]);
+  useEffect(() => {
+    let live = true;
+    drawLife(c, ending, isNew, epitaph, pct).then((cv) => {
+      if (!live || !cv) return;
+      cv.toBlob((b) => {
+        if (!b || !live) return;
+        setUrl((old) => {
+          if (old) URL.revokeObjectURL(old);
+          return URL.createObjectURL(b);
+        });
+      }, 'image/png');
     });
-  };
-  const share = async () => {
-    if (!blob) return;
-    const file = new File([blob], `van-kiep-${c.name.replace(/\s+/g, '-')}.png`, { type: 'image/png' });
-    const text = `${c.name} - ${ending.name}. Kiếp này của tôi ở Vạn Kiếp Luân Hồi!`;
-    try {
-      if (navigator.canShare?.({ files: [file] })) {
-        await navigator.share({ files: [file], title: 'Vạn Kiếp Luân Hồi', text });
-        return;
-      }
-    } catch {
-      return;
-    }
-    const a = document.createElement('a');
-    a.href = url!;
-    a.download = file.name;
-    a.click();
-  };
+    return () => {
+      live = false;
+    };
+  }, [c, ending, isNew, epitaph, pct]);
+  async function share() {
+    setBusy(true);
+    setMsg(null);
+    track('share', { kind: 'life', grade });
+    const r = await shareLife(c, ending, isNew, epitaph, pct);
+    setBusy(false);
+    setMsg(r === 'copied' ? 'Đã chép chữ kèm link, dán lên mạng là hiện hình nhân vật.' : r === 'saved' ? 'Chưa tạo được link, đã tải ảnh về máy.' : r === 'fail' ? 'Chưa khoe được, thử lại sau.' : null);
+  }
+  async function copy() {
+    track('share', { kind: 'life_text', grade });
+    setMsg((await copyLife(c, ending, isNew, pct)) ? 'Đã chép, dán vào nhóm là xong.' : 'Máy không cho chép chữ.');
+  }
   return (
-    <div className="share-card">
-      {url ? (
-        <>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={url} alt={`Thẻ kết cục của ${c.name}`} className="share-preview" />
-          <div className="choice-row">
-            <button className="btn btn-jade" onClick={share}>
-              Chia sẻ / Lưu ảnh
-            </button>
-            <button className="btn" onClick={build} disabled={busy}>
-              Làm lại thẻ
-            </button>
-          </div>
-        </>
-      ) : (
-        <button className="btn btn-jade" style={{ width: '100%' }} onClick={build} disabled={busy}>
-          {busy ? 'Đang vẽ...' : 'Tạo thẻ khoe kết cục'}
+    <div className="share-card life-card">
+      <div className="lc-head">
+        <b className={`lc-grade g-${grade}`} style={{ background: GRADE_COL[grade] }}>
+          {grade}
+        </b>
+        <span>
+          <small>Xếp loại đời này</small>
+          <b>{pct !== null ? `Vượt ${pct}% giang hồ` : '...'}</b>
+        </span>
+      </div>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      {url && <img src={url} alt={`Thẻ Một đời của ${c.name}`} className="share-preview" />}
+      <div className="choice-row">
+        <button className="btn btn-jade" onClick={share} disabled={busy}>
+          {busy ? 'Đang tạo link...' : 'Khoe đời này'}
         </button>
-      )}
+        <button className="btn" onClick={copy}>
+          Chép chữ
+        </button>
+      </div>
+      {msg && <small className="note">{msg}</small>}
     </div>
   );
 }

@@ -1283,7 +1283,7 @@ export function DeathSheet({
       )}
       <LifeFeedback c={c} />
       <div style={{ marginTop: 10 }}>
-        <ShareCard c={c} ending={ending} epitaph={text.trim()} />
+        <ShareCard c={c} ending={ending} epitaph={text.trim()} isNew={isNew} />
       </div>
       <ArenaNudge />
       <button
