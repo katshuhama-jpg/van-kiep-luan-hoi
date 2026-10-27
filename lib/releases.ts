@@ -49,6 +49,7 @@ export const RELEASES: Release[] = [
         items: [
           'Màn lập bia có thẻ khoe: xếp loại S, A, B, C, D, đời này vượt bao nhiêu phần trăm các kiếp trong giang hồ, 3 dòng đáng nhớ.',
           'Bấm Khoe đời này để chia sẻ link. Dán lên Facebook, Threads, Zalo sẽ hiện hình nhân vật của bạn. Có nút Chép chữ để dán vào nhóm.',
+          'Bảng khoe có nút đi thẳng Threads, Facebook, Messenger và Chép link để dán Zalo, không phải tìm trong bảng chia sẻ của máy.',
           'Sau mỗi trận lôi đài cũng có nút Khoe trận.',
         ],
       },
