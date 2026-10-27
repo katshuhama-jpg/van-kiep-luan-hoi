@@ -21,6 +21,7 @@ import { LORE, LORE2_TOTAL, LORE_TOTAL, lore1Count, lore2Count, quyNhatDone } fr
 import { ELEMENTS } from '@/lib/game/nguhanh';
 import { CheckinRow, RumorLine, TodayScroll } from './Hook';
 import BagDoll from './BagDoll';
+import { track } from '@/lib/track';
 import { FORGE_CHANCE, FORGE_COST, FORGE_MAX, FORGE_PER, canSmelt, forgeLevel, smeltValue } from '@/lib/game/forge';
 import { ArenaNudge } from './LoiDaiButton';
 import { useAuth } from '@/lib/useAuth';
@@ -1223,6 +1224,11 @@ export function DeathSheet({
         <ShareCard c={c} ending={ending} epitaph={text.trim()} isNew={isNew} />
       </div>
       <ArenaNudge />
+      {((meta.lives + 1) % 10 === 0 || c.ascended) && (
+        <a className="tra-nudge" href="/tac-gia#moi-tra" onClick={() => track('tra_open', { from: 'death' })}>
+          Đi trọn {meta.lives + 1} kiếp rồi. Thấy vui thì mời tác giả chén trà ›
+        </a>
+      )}
       <button
         className="btn btn-red btn-big"
         style={{ width: '100%', marginTop: 10 }}

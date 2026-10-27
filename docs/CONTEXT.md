@@ -621,7 +621,7 @@ Làm theo plan "Plan 3.1.0 - Xử lý góp ý người chơi" (trừ góp ý #7 
 - Tài khoản thử: `test_card` (mật khẩu tk2610), tên `test_` bị loại khỏi bảng xếp hạng.
 
 ## Danh sách cho bản kế tiếp (sau 3.2.0)
-- **Mời tác giả chén trà (ủng hộ, kiểu Buy Me a Coffee)** - Tyler chốt 27/10: nhận qua **QR chuyển khoản ngân hàng** (VietQR). Cần Tyler gửi tên ngân hàng, số tài khoản, tên chủ tài khoản khi bắt tay làm.
+- **Mời tác giả chén trà (ủng hộ, kiểu Buy Me a Coffee)** - đã làm trên `next` (28/10): `components/MoiTra.tsx`, ma trận QR trong `lib/moiTra.ts` dựng lại từ chuỗi VietQR gốc (Techcombank) và tô màu game, đã thử quét lại.
   - Chỗ đặt: khối "Mời tác giả chén trà" ở trang Tác giả (QR, vài câu tếu kiểu tu tiên, có thể có bảng "Công đức" ghi tên người ủng hộ nếu họ đồng ý); một dòng nhỏ ở màn lập bia, chỉ thỉnh thoảng (ví dụ mỗi 10 kiếp hoặc khi vừa phi thăng).
   - Không tặng gì trong game cho người ủng hộ (kể cả danh hiệu, phúc duyên), để giữ là ủng hộ thuần túy.
   - Đo: ghi sự kiện mở khối chén trà và bấm xem QR.

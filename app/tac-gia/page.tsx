@@ -2,6 +2,7 @@
 
 import BackButton from '@/components/BackButton';
 import credits from '@/lib/lpc-credits.json';
+import MoiTra from '@/components/MoiTra';
 
 export default function TacGia() {
   return (
@@ -9,12 +10,13 @@ export default function TacGia() {
       <header className="topbar">
         <div className="topbar-row">
           <span className="age-big" style={{ fontSize: 28 }}>
-            Tác giả hình ảnh
+            Tác giả
           </span>
-          <span className="meta">Cảm ơn các họa sĩ đã chia sẻ miễn phí</span>
+          <span className="meta">Người làm game và các họa sĩ chia sẻ hình miễn phí</span>
           <BackButton fallback="/" />
         </div>
       </header>
+      <MoiTra />
       <section className="panel">
         <h2>Nhân vật</h2>
         <p style={{ marginTop: 0 }}>
