@@ -71,6 +71,15 @@ export const RELEASES: Release[] = [
         ],
       },
       {
+        h: 'Cân bằng lại cơ chế tu luyện',
+        items: [
+          'Thọ dài ra nên tu luyện chậm lại cho cân: tu vi cần để lên tầng từ Kim Đan trở lên tăng 1,5 lần.',
+          'Cõi trên: mỗi tầng cần ít nhất 24 năm (trước 17 năm), cảnh giới cuối 16 năm (trước 12 năm).',
+          'Thiên kiếp phi thăng khó thêm 5%.',
+          'Nhân vật đang chơi giữa kiếp sẽ thấy thanh tu vi tụt một đoạn: tu vi vẫn giữ nguyên, chỉ là mức cần để lên tầng cao hơn.',
+        ],
+      },
+      {
         h: 'Linh thạch và phường thị',
         items: [
           'Đồ phường thị đắt dần theo cảnh giới của đạo hữu. Đồ hiếm (Luyện Hư, Độ Kiếp) mỗi kiếp chỉ mua được một lần.',
