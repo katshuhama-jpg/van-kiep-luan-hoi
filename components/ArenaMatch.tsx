@@ -5,6 +5,7 @@ import Sprite from '@/components/Sprite';
 import { PixelFx, fxBatQuai, fxCuuVi, fxKiem, fxLua, fxMaKhi, fxMotes, fxPhatQuang, fxRays, type FxSpec } from '@/components/PixelFx';
 import type { Player } from '@/lib/auth';
 import { foeChar } from '@/lib/game/duel';
+import { realmLabel } from '@/lib/game/data';
 import { ELEMENTS, elemMul, elementOf } from '@/lib/game/nguhanh';
 import { STANCES, type Stance } from '@/lib/game/nguHanhDai';
 import type { Element, RivalChar } from '@/lib/game/types';
@@ -16,7 +17,7 @@ const BGS = ['tien', 'ma', 'hu'].flatMap((c) => ['kim', 'moc', 'thuy', 'hoa', 't
 const EL_NAME: Record<Element, string> = { kim: 'Kim', moc: 'Mộc', thuy: 'Thủy', hoa: 'Hỏa', tho: 'Thổ' };
 const PARRY_MS = 950;
 /** Khung ngắm đỡ tuyệt kỹ co từ 2.4 xuống 0.8: lọt khung giữa là đúng nhịp */
-const parryOf = (f: number): Parry => (f >= 0.74 && f <= 0.93 ? 'perfect' : f >= 0.58 && f <= 1 ? 'good' : 'miss');
+const parryOf = (f: number): Parry => (f >= 0.78 && f <= 0.9 ? 'perfect' : f >= 0.64 && f <= 0.98 ? 'good' : 'miss');
 
 function ultFx(r: RivalChar): FxSpec {
   const col = ELEMENTS[elementOf(r)].color;
@@ -269,6 +270,10 @@ export default function ArenaMatch({ me, foe0, opp, rule, revenge, user, onDone 
       <div className="am-body">
         <p className="am-rule">
           <b>{rule.name}:</b> {rule.desc} {revenge ? <em>Trận báo thù, không tính lượt.</em> : null}
+          <br />
+          <small>
+            Ngang cảnh giới: {foe.name} (thật là {foe0.realm === 0 ? 'Phàm nhân' : realmLabel(foe0.realm, foe0.layer, foe0.cosmos)}) được kéo về {me.realm === 0 ? 'Phàm nhân' : realmLabel(me.realm, me.layer, me.cosmos)} như bạn.
+          </small>
         </p>
         {!st.over ? (
           <>

@@ -119,3 +119,30 @@ export function masterSaves(c: Character): string | null {
   if (sectSide(c) === 'trung') return ' Tấm bùa thế mạng Các chủ Thiên Cơ Các trao cho bạn bỗng bốc cháy. Kiếp nạn đã được tính trước, bạn thoát chết trong gang tấc.';
   return ` Sư phụ ở ${c.sect} cảm ứng được, một đạo kiếm quang xé trời lao tới cứu bạn. Bạn thoát chết, sư phụ chỉ để lại một câu: "Lần sau tự lo."`;
 }
+
+/**
+ * Phản môn (3.1.0): đạo và tông môn ngược phe.
+ * Chính phái: chọn Ma tu hoặc đạo tâm từ -40 trở xuống. Ma môn: chọn Phật tu hoặc đạo tâm từ 40 trở lên.
+ * Thiên Cơ Các trung lập không đuổi ai, nhưng người lệch hẳn về một phía sẽ kéo chính tà tới vây đánh.
+ */
+export function sectConflict(c: Pick<Character, 'sect' | 'path' | 'daoTam'>): boolean {
+  const side = sectSide(c);
+  if (side === 'chinh') return c.path === 'ma' || c.daoTam <= -40;
+  if (side === 'ta') return c.path === 'phat' || c.daoTam >= 40;
+  return false;
+}
+
+/** Rời tông môn; bị trục xuất thì mất cả áo bào, lệnh bài tông môn */
+export function leaveSect(c: Character, expelled: boolean) {
+  const side = sectSide(c);
+  if (expelled && side) {
+    const gear = SECT_GEAR[side].flat();
+    c.inventory = c.inventory.filter((id) => !gear.includes(id));
+    for (const k of Object.keys(c.equipped) as (keyof Character['equipped'])[]) {
+      if (gear.includes(c.equipped[k] ?? '')) c.equipped[k] = k === 'ao' ? 'ao_vai' : undefined;
+    }
+  }
+  c.sect = null;
+  c.sectRank = undefined;
+  c.sectHide = false;
+}

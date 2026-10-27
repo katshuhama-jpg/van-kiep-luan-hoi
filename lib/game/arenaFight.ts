@@ -14,7 +14,8 @@ import type { Element, RivalChar } from './types';
 export const KI_MAX = 5;
 export const TURN_CAP = 14;
 const D = 11; // sát thương gốc mỗi đòn với 100 máu
-const SKILL_DAMP = 0.3;
+const SKILL_DAMP = 0.15;
+const ULT_CAP = 0.3; // một tuyệt kỹ tối đa 30% máu, để không có trận thua trắng vì một đòn
 
 export type Parry = 'perfect' | 'good' | 'miss';
 export interface Side {
@@ -74,7 +75,7 @@ export function foeIntent(foe: RivalChar, st: FightState, rule: ArenaRule, rnd: 
   const r = rnd();
   const el = vsMe && r < 0.35 ? vsMe : r < 0.7 ? own : ELEMENT_IDS[Math.floor(rnd() * 5)];
   const tell = tellOf(stance, rule, rnd);
-  const acc = rule.tells === 'none' ? -1 : rule.tells === 'loan' ? 0.25 : 0.5;
+  const acc = rule.tells === 'none' ? -1 : rule.tells === 'loan' ? 0.25 : 0.42;
   const elShown = acc < 0 ? null : rnd() < acc ? el : ELEMENT_IDS.filter((e) => e !== el)[Math.floor(rnd() * 4)];
   return { stance, el, tell, elShown };
 }
@@ -96,7 +97,7 @@ export function trade(st: FightState, base: number, my: Stance, myEl: Element, i
   const p = b0 + (roundChance(b0, my, it.stance, rule, { last: false, myWonLast: st.myWonLast }) - b0) * SKILL_DAMP;
   const meWins = rnd() < p;
   const clash = my === it.stance;
-  const crit = rnd() < 0.12;
+  const crit = rnd() < 0.08;
   const cx = crit ? 1.5 : 1;
   let toFoe = 0;
   let toMe = 0;
@@ -129,16 +130,16 @@ export function trade(st: FightState, base: number, my: Stance, myEl: Element, i
 /** Tuyệt kỹ của mình: chắc chắn trúng, mạnh theo hành bản mệnh khắc bản mệnh đối thủ và sức mạnh hai bên */
 export function myUlt(me: RivalChar, foe: RivalChar, base: number, st: FightState, rule: ArenaRule): TurnResult {
   const m = elemOf(elementOf(me), elementOf(foe), rule);
-  const toFoe = Math.round(D * 2.2 * m * (0.7 + base * 0.6) * lowX(st.foe, rule));
+  const toFoe = Math.round(Math.min(st.foe.max * ULT_CAP, D * 2.2 * m * (0.7 + base * 0.6) * lowX(st.foe, rule)));
   return { kind: 'ult_me', winner: 'me', toFoe, toMe: 0, crit: false, elemTag: tagOf(m) };
 }
 
 /** Tuyệt kỹ của đối thủ: người chơi đỡ bằng nhịp. Đúng nhịp thì phản đòn, hơi lệch thì đỡ được phần lớn */
 export function foeUlt(me: RivalChar, foe: RivalChar, base: number, st: FightState, rule: ArenaRule, parry: Parry): TurnResult {
   const m = elemOf(elementOf(foe), elementOf(me), rule);
-  const full = D * 2.2 * m * (0.7 + (1 - base) * 0.6) * lowX(st.me, rule);
-  const toMe = Math.round(parry === 'perfect' ? 0 : parry === 'good' ? full * 0.6 : full);
-  const toFoe = Math.round(parry === 'perfect' ? full * 0.3 : 0);
+  const full = Math.min(st.me.max * ULT_CAP, D * 2.2 * m * (0.7 + (1 - base) * 0.6) * lowX(st.me, rule));
+  const toMe = Math.round(parry === 'perfect' ? 0 : parry === 'good' ? full * 0.75 : full);
+  const toFoe = Math.round(parry === 'perfect' ? full * 0.15 : 0);
   return { kind: 'ult_foe', winner: parry === 'miss' ? 'foe' : 'me', toFoe, toMe, crit: false, elemTag: tagOf(m), parry };
 }
 

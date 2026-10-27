@@ -105,6 +105,8 @@ export interface Character {
   cosmos?: 'tien' | 'ma' | 'hu' | null; // đã phi thăng lên tiên giới hay ma giới
   ascendAge?: number; // tuổi lúc phi thăng
   sectRank?: number; // bậc trong tông môn: 0 tạp dịch, 1 ngoại môn, 2 nội môn, 3 chân truyền
+  sectHide?: boolean; // ngược phe nhưng giấu thân phận ở lại tông
+  tcVay?: number; // số lần Thiên Cơ Các bị chính tà vây đánh trong kiếp
   daiBiAt?: number; // tuổi tới kỳ Đại bỉ tông môn kế tiếp
   sectSaved?: boolean; // chân truyền đã được sư phụ cứu một lần // truy sát: thuê người dò tung tích, năm sau chạm mặt
   qf?: Record<string, number>; // đếm việc làm trong đời cho nhiệm vụ ngày

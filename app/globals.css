@@ -3990,3 +3990,15 @@ button.shadow-card { cursor: pointer; }
 .af-aim { position: relative; top: 0; left: 0; }
 .af-parry p { margin: 0; font-size: 20px; font-weight: 700; color: #ffd36b; text-shadow: 2px 2px 0 #000; }
 @media (prefers-reduced-motion: reduce) { .af-cut, .af-cut-fig, .af-cut-band, .af-pop, .af-fig, .af-stage.quake { animation: none !important; } }
+.xam-card .xc-realm { margin-top: 2px; padding: 3px 6px; background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.25); }
+.xam-card .xc-realm b { color: #ffd36b; }
+
+/* Túi đồ: lọc theo loại, sắp xếp (3.1.0) */
+.bag-filter { display: flex; flex-direction: column; gap: 6px; margin-bottom: 6px; }
+.bag-kinds { display: flex; flex-wrap: wrap; gap: 4px; }
+.bag-kinds button { flex: none; font: inherit; font-size: 15px; padding: 4px 8px; color: var(--ink); background: var(--paper-3); border: 2px solid var(--ink); cursor: pointer; white-space: nowrap; }
+.bag-kinds button small { font-size: 12px; color: var(--muted); }
+.bag-kinds button.on { color: var(--paper-3); background: var(--ink); }
+.bag-kinds button.on small { color: #d9c69a; }
+.bag-sort { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--muted); }
+.bag-sort select { font: inherit; font-size: 15px; padding: 2px 4px; color: var(--ink); background: var(--paper-3); border: 2px solid var(--ink); }

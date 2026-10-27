@@ -1,12 +1,128 @@
 import { addCult, addPill, dao, fatal, money, reward, stat } from './helpers';
+import { leaveSect, sectConflict } from './sect';
 import { promote, rankName, rankOf, sectSide } from './sect';
-import type { GameEvent } from './types';
+import type { Choice, GameEvent } from './types';
 
 /**
  * Sự kiện trong tông môn, theo bậc đệ tử: tạp dịch có cơ hội nghịch thiên, ngoại môn bị sai việc vặt,
  * nội môn vào Tàng Kinh Các, chân truyền được sư phụ chỉ điểm. Ma môn có luật rừng riêng.
  */
 export const SECT_EVENTS: GameEvent[] = [
+  // ---- 3.1.0: Phản môn khi đạo và tông môn ngược phe ----
+  {
+    id: 'phan_mon',
+    minAge: 10,
+    weight: 400,
+    cooldown: 3,
+    when: (c) => !c.cosmos && !!c.sect && !c.sectHide && sectConflict(c),
+    title: 'Phản môn',
+    text: (c) =>
+      sectSide(c) === 'ta'
+        ? `Tin bạn ${c.path === 'phat' ? 'quy y cửa Phật' : 'làm việc thiện'} lan tới tổng đàn ${c.sect}. Đêm nay, mấy tên hộ pháp đứng chặn trước cửa phòng bạn, tay đặt sẵn lên chuôi đao.`
+        : `Các trưởng lão ${c.sect} phát hiện trên người bạn có ${c.path === 'ma' ? 'ma khí' : 'mùi huyết tinh'}. Chính phái không dung kẻ theo tà. Sáng mai bạn bị gọi lên chính điện.`,
+    choices: (c) => {
+      const ta = sectSide(c) === 'ta';
+      const list: Choice[] = [
+        {
+          label: 'Tự xin rời tông môn',
+          hint: ta ? 'ma môn không tha kẻ bỏ đi · có thể bị truy sát' : 'rời đi êm thấm, giữ đồ',
+          lean: 'trung',
+          run: (ch, ctx) => {
+            const name = ch.sect;
+            leaveSect(ch, false);
+            stat(ch, 'tamCanh', -5);
+            if (ta) {
+              const f = fatal(ch, ctx, 0.15, `Rời ${name} chưa được ba ngày, sát thủ ma môn đuổi kịp. Kẻ phản môn không được sống.`);
+              if (ch.dead) return 'Bạn lẳng lặng xuống núi trong đêm...' + f;
+              ch.enemy = ch.enemy ?? 'ma môn truy sát kẻ phản đồ';
+              return `Bạn trả lại lệnh bài, xuống núi trong đêm. Từ nay ${name} coi bạn là kẻ phản đồ.${f ?? ''}`;
+            }
+            return `Bạn quỳ trước chính điện, xin rời ${name}. Chưởng môn thở dài phất tay áo: "Đạo khác nhau, không cùng mưu. Đi đi."`;
+          },
+        },
+        {
+          label: 'Giấu thân phận, ở lại',
+          hint: 'giữ tông môn, mỗi năm có thể bị lộ · lộ thì bị trục xuất, mất áo bào',
+          lean: 'ta',
+          run: (ch) => {
+            ch.sectHide = true;
+            stat(ch, 'tamMa', 6);
+            return 'Bạn cúi đầu nhận sai, thề không tái phạm. Trưởng lão nửa tin nửa ngờ. Từ nay mỗi bước đi trong sơn môn đều phải giữ ý.';
+          },
+        },
+      ];
+      if (!ta)
+        list.push({
+          label: 'Phản sư diệt tổ, cướp bảo vật',
+          hint: 'đánh với trưởng lão · thắng được bảo vật và bị cả tông truy sát · thua có thể chết',
+          lean: 'ta',
+          run: (ch, ctx) => {
+            const name = ch.sect;
+            const p = Math.min(0.7, 0.2 + ch.realm * 0.06);
+            dao(ch, -20);
+            if (ctx.rnd() < p) {
+              leaveSect(ch, false);
+              addCult(ch, reward(ch, 2));
+              money(ch, 400 + ch.realm * 150);
+              ch.enemy = `${name} truy sát kẻ phản sư`;
+              ctx.fx('evil', 'Phản sư diệt tổ');
+              return `Bạn đánh trọng thương trưởng lão giữa chính điện, cướp bảo khố rồi phá vòng vây mà đi. Tu vi tăng vọt, túi đầy linh thạch. Từ nay ${name} treo thưởng đầu bạn.`;
+            }
+            stat(ch, 'sucKhoe', -45);
+            leaveSect(ch, true);
+            const f = fatal(ch, ctx, 0.35, `Bạn phản sư không thành, bị trưởng lão ${name} một chưởng đánh nát tâm mạch.`);
+            if (ch.dead) return 'Trưởng lão chỉ cần một chưởng...' + f;
+            ch.enemy = ch.enemy ?? `${name} truy sát kẻ phản sư`;
+            return `Trưởng lão một chưởng đánh bạn văng ra khỏi chính điện. Bạn bị phế bỏ thân phận đệ tử, lột áo bào, bò xuống núi.${f ?? ''}`;
+          },
+        });
+      return list;
+    },
+  },
+  {
+    id: 'thien_co_vay',
+    minAge: 16,
+    weight: 60,
+    cooldown: 8,
+    when: (c) => !c.cosmos && sectSide(c) === 'trung' && Math.abs(c.daoTam) >= 40 && (c.tcVay ?? 0) < 2,
+    title: 'Chính tà vây Thiên Cơ Các',
+    text: (c) => `Thiên Cơ Các vốn đứng ngoài chính tà, nhưng bạn đã nghiêng hẳn về một phía. Đêm nay, ${(c.lookSeed ?? c.name.length) % 2 ? 'người của Huyết Sát Môn' : 'đệ tử Thanh Vân Tông'} kéo tới vây kín Các, đòi giao bạn ra.`,
+    choices: (c) => [
+      {
+        label: 'Ra trận, một mình chặn cửa',
+        hint: 'cảnh giới càng cao càng dễ thắng · thắng được Các chủ thưởng · thua trọng thương',
+        lean: c.daoTam >= 40 ? 'chinh' : 'ta',
+        run: (ch, ctx) => {
+          ch.tcVay = (ch.tcVay ?? 0) + 1;
+          const p = Math.min(0.75, 0.3 + ch.realm * 0.06);
+          if (ctx.rnd() < p) {
+            addCult(ch, reward(ch, 1));
+            stat(ch, 'khiVan', 4);
+            const up = promote(ch, ctx, 'Các chủ đứng trên lầu nhìn bạn đánh lui cả đoàn người.');
+            ctx.fx('breakthrough', 'Giữ được Thiên Cơ Các');
+            return `Bạn chặn cửa suốt một đêm, đánh lui kẻ tới gây sự. ${up ?? 'Các chủ ban cho bạn một quẻ tốt: khí vận +4.'}`;
+          }
+          stat(ch, 'sucKhoe', -35);
+          const lost = Math.round(ch.linhThach * 0.3);
+          money(ch, -lost);
+          const f = fatal(ch, ctx, 0.12, 'Một mình chặn cửa Thiên Cơ Các, bạn ngã xuống dưới làn kiếm khí của cả đoàn người.');
+          if (ch.dead) return 'Bạn ra trận...' + f;
+          return `Bạn không chặn nổi. Trọng thương, bị cướp ${lost} linh thạch, Các chủ phải ra mặt mới giải được vây.${f ?? ''}`;
+        },
+      },
+      {
+        label: 'Trốn vào mật thất, để Các chủ lo',
+        hint: 'an toàn, tâm cảnh -, Các chủ không vui',
+        lean: 'trung',
+        run: (ch) => {
+          ch.tcVay = (ch.tcVay ?? 0) + 1;
+          stat(ch, 'tamCanh', -6);
+          if (ch.sectRank && ch.sectRank > 1) ch.sectRank -= 1;
+          return 'Bạn trốn trong mật thất ba ngày. Khi bước ra, vòng vây đã tan, nhưng ánh mắt Các chủ nhìn bạn đã khác. Bạn bị giáng một bậc.';
+        },
+      },
+    ],
+  },
   {
     id: 'tap_dich_nghich_thien',
     minAge: 10,

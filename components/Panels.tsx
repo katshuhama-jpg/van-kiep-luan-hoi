@@ -484,6 +484,28 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; 
 }
 
 /* ---------------- Túi đồ ---------------- */
+type BagKind = 'all' | Slot | 'dan';
+type BagSort = 'new' | 'rare' | 'atk' | 'def';
+const BAG_KINDS: [BagKind, string][] = [
+  ['all', 'Tất cả'],
+  ['ao', 'Pháp y'],
+  ['vu_khi', 'Vũ khí'],
+  ['phu_kien', 'Phụ kiện'],
+  ['dan', 'Đan dược'],
+];
+function readPref(k: string): string {
+  try {
+    return localStorage.getItem(k) ?? '';
+  } catch {
+    return '';
+  }
+}
+function writePref(k: string, v: string) {
+  try {
+    localStorage.setItem(k, v);
+  } catch {}
+}
+
 export function BagSheet({
   c,
   onEquip,
@@ -501,8 +523,23 @@ export function BagSheet({
   startTab?: 'tui' | 'kho';
   onSeen?: () => void;
 }) {
-  const owned = ITEMS.filter((i) => c.inventory.includes(i.id));
-  const pills = PILLS.filter((p) => (c.pills[p.id] ?? 0) > 0);
+  // 3.1.0: lọc theo loại, sắp xếp; đồ đang mặc luôn ở trên; nhớ lựa chọn lần trước
+  const [kind, setKind] = useState<BagKind>(() => (readPref('vkl.bagKind') as BagKind) || 'all');
+  const [sort, setSort] = useState<BagSort>(() => (readPref('vkl.bagSort') as BagSort) || 'new');
+  useEffect(() => writePref('vkl.bagKind', kind), [kind]);
+  useEffect(() => writePref('vkl.bagSort', sort), [sort]);
+  const allOwned = ITEMS.filter((i) => c.inventory.includes(i.id));
+  const allPills = PILLS.filter((p) => (c.pills[p.id] ?? 0) > 0);
+  const count = (k: BagKind) => (k === 'all' ? allOwned.length + allPills.length : k === 'dan' ? allPills.length : allOwned.filter((i) => i.slot === k).length);
+  const isOn = (it: Item) => c.equipped[it.slot] === it.id;
+  const owned = (kind === 'all' ? allOwned : kind === 'dan' ? [] : allOwned.filter((i) => i.slot === kind)).sort((a, b) => {
+    if (isOn(a) !== isOn(b)) return isOn(a) ? -1 : 1;
+    if (sort === 'rare') return (b.rare ?? 0) - (a.rare ?? 0) || b.minRealm - a.minRealm;
+    if (sort === 'atk') return (b.fx?.atk ?? 0) - (a.fx?.atk ?? 0);
+    if (sort === 'def') return (b.fx?.def ?? 0) - (a.fx?.def ?? 0);
+    return c.inventory.lastIndexOf(b.id) - c.inventory.lastIndexOf(a.id);
+  });
+  const pills = kind === 'all' || kind === 'dan' ? allPills : [];
   const total = fxText(gearFx(c.equipped));
   const [tab, setTab] = useState<'tui' | 'kho'>(startTab);
   useEffect(() => {
@@ -526,6 +563,26 @@ export function BagSheet({
           <p className="note" style={{ marginTop: 0 }}>
             Trang bị đang mặc: {total || 'chưa có chỉ số gì'}
           </p>
+          <div className="bag-filter">
+            <div className="bag-kinds" role="tablist" aria-label="Loại đồ">
+              {BAG_KINDS.map(([k, label]) => (
+                <button key={k} role="tab" aria-selected={kind === k} className={kind === k ? 'on' : ''} onClick={() => setKind(k)}>
+                  {label} <small>{count(k)}</small>
+                </button>
+              ))}
+            </div>
+            {kind !== 'dan' && (
+              <label className="bag-sort">
+                Xếp theo
+                <select value={sort} onChange={(e) => setSort(e.target.value as BagSort)}>
+                  <option value="new">Mới nhận</option>
+                  <option value="rare">Phẩm</option>
+                  <option value="atk">Công</option>
+                  <option value="def">Thủ</option>
+                </select>
+              </label>
+            )}
+          </div>
           <div className="items">
             {owned.map((it) => {
               const on = c.equipped[it.slot] === it.id;
@@ -570,7 +627,7 @@ export function BagSheet({
                 </button>
               </div>
             ))}
-            {!owned.length && !pills.length && <p className="note">Túi trống trơn.</p>}
+            {!owned.length && !pills.length && <p className="note">{kind === 'all' ? 'Túi trống trơn.' : 'Chưa có món nào loại này.'}</p>}
           </div>
         </>
       )}

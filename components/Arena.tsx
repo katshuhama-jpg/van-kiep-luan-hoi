@@ -212,10 +212,10 @@ function XinXam({ me, user, rule, left, onFight, onErr }: { me: RivalChar; user:
             </span>
             <b className="xc-name">{draw.foe.name}</b>
             <small>
-              @{draw.opp} · bóng thật {draw.foe.realm === 0 ? 'Phàm nhân' : realmLabel(draw.foe.realm, draw.foe.layer, draw.foe.cosmos)}
+              @{draw.opp} · {draw.foe.path ? PATHS[draw.foe.path].name : 'Chưa chọn đường'} · Mệnh {ELEMENTS[elementOf(draw.foe)].name}
             </small>
-            <small>
-              {draw.foe.path ? PATHS[draw.foe.path].name : 'Chưa chọn đường'} · Mệnh {ELEMENTS[elementOf(draw.foe)].name} · lên đài sẽ kéo về {me.realm === 0 ? 'Phàm nhân' : realmLabel(me.realm, me.layer, me.cosmos)}
+            <small className="xc-realm">
+              Cảnh giới thật: {draw.foe.realm === 0 ? 'Phàm nhân' : realmLabel(draw.foe.realm, draw.foe.layer, draw.foe.cosmos)}. Lên đài được kéo ngang <b>{me.realm === 0 ? 'Phàm nhân' : realmLabel(me.realm, me.layer, me.cosmos)}</b> như bạn.
             </small>
             <p className={`xc-omen o-${o.name === 'Thượng cát' ? 'good' : o.name === 'Hạ hung' ? 'bad' : 'mid'}`}>
               <b>{o.name}</b> · {o.text}
@@ -399,7 +399,7 @@ export default function Arena({ user }: { user: Player | null }) {
       )}
 
       <p className="note ar-rule">
-        Bóng đối thủ được kéo về cùng cảnh giới với bóng của bạn. Mỗi hiệp chọn Công, Thủ hay Hóa; đối thủ để lộ ý đồ nhưng không phải lúc nào cũng thật, và biết đọc thế của bạn. Thắng trận được 3 điểm, thua
+        Mọi trận đều ngang cảnh giới: bóng đối thủ được kéo lên hoặc xuống bằng cảnh giới bóng của bạn, thắng thua do bản mệnh, con đường, trang bị và cách đánh. Mỗi lượt chọn Công, Thủ hay Hóa và gắn một ấn ngũ hành; đầy nội lực thì tung tuyệt kỹ, tuyệt kỹ của đối thủ thì đỡ bằng nhịp. Đối thủ để lộ ý đồ nhưng không phải lúc nào cũng thật. Thắng trận được 3 điểm, thua
         0. Điểm tính lại mỗi thứ Hai, top 3 nhận danh hiệu Bá Chủ, Á Chủ, Tam Kiệt.
       </p>
 

@@ -1,7 +1,7 @@
 import { applyProphecy, omenIs } from './hook';
 import { loreDone, lore2Count, quyNhatDone } from './lore';
 import { ksBreak, ksOf, ksPhuc } from './luanHoi';
-import { CHAN_TRUYEN_BREAK, promoteByRealm, rankOf, sectCultMul } from './sect';
+import { CHAN_TRUYEN_BREAK, leaveSect, promoteByRealm, rankOf, sectConflict, sectCultMul } from './sect';
 import {
   ITEMS,
   fxText,
@@ -631,6 +631,17 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
   if (c.sect) {
     const up = promoteByRealm(c, ctx);
     if (up) ctx.log(up, 'good');
+    // 3.1.0: giấu thân phận ở lại tông ngược phe, mỗi năm 10% bị lộ
+    if (c.sectHide) {
+      if (!sectConflict(c)) c.sectHide = false;
+      else if (rnd() < 0.1) {
+        const name = c.sect;
+        leaveSect(c, true);
+        c.enemy = c.enemy ?? `${name} truy nã kẻ phản môn`;
+        ctx.fx('hurt', 'Bị trục xuất');
+        ctx.log(`Thân phận bị lộ. ${name} tuyên bố trục xuất bạn trước toàn tông, lột áo bào, thu lệnh bài.`, 'bad');
+      }
+    }
   }
 
   // ---- Ba cõi: thiên quy, dấu hiệu suy tàn ----
