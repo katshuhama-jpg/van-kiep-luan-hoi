@@ -4158,3 +4158,4 @@ button.shadow-card { cursor: pointer; }
 .rumor-line i { flex: none; padding: 1px 6px; font-style: normal; font-size: 12px; font-weight: 700; color: #1f160d; background: #c08aff; }
 .rumor-line span { font-size: 14px; line-height: 1.35; }
 .rumor-line small { color: #ffd36b; }
+.rel-group { text-align: left; }

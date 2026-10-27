@@ -13,6 +13,64 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '3.2.0',
+    date: '27/10/2026',
+    title: 'Phi Kiếm Luận Anh Hùng',
+    lead: 'Lôi đài giờ chỉ cần một ngón tay và 25 giây. Bóng mạnh nhất được thả vào giang hồ làm ma đầu. Đời nào đáng khoe thì có thẻ để khoe, dán link lên mạng là hiện hình nhân vật.',
+    stats: [
+      { n: '25s', label: 'một trận lôi đài' },
+      { n: '7', label: 'ngày điểm danh' },
+      { n: 'x0,4', label: 'tử nạn 3 kiếp đầu' },
+    ],
+    groups: [
+      {
+        h: 'Lôi đài Phi Kiếm',
+        hot: true,
+        items: [
+          'Bấm Ra đài là vào trận ngay: game tự lấy kiếp mạnh nhất của bạn làm bóng và rút đối thủ. Vẫn tự chọn bóng được.',
+          '12 giây phóng phi kiếm phá hộ thể đối thủ: chạm để phóng, đâm vào kiếm đã cắm là Phản phệ. Đủ 10 kiếm vỡ một tầng, tầng sau xoay thất thường hơn.',
+          'Càng nhiều kiếm, bóng càng mạnh: 0 kiếm còn 70% sức, mỗi kiếm thêm 2%, tối đa 130%. Sau đó hai bóng tự đánh, sắp gục được tuyệt địa phản kích một lần.',
+          'Thắng +3 điểm và 10 phúc duyên. Thua vẫn +1 điểm và 3 phúc duyên. Đủ 3 trận trong ngày thêm 15 Hồn lực.',
+          'Bậc lôi đài theo điểm tuần: Luyện Khí 3, Trúc Cơ 9, Kim Đan 18, Nguyên Anh 30, Hóa Thần 42, Độ Kiếp 54. Đầu tuần mới nhận 5 phúc duyên mỗi bậc.',
+          'Bị ai hạ thì có thư và nút Báo thù, không tốn lượt. Nút Lôi đài có chấm đỏ khi còn lượt.',
+        ],
+      },
+      {
+        h: 'Bóng thành ma đầu',
+        hot: true,
+        items: [
+          'Bóng thắng 2 trận lôi đài trong một ngày hóa ma đầu, được thả vào giang hồ 24 giờ, chặn đường người chơi khác (từ Trúc Cơ, tối đa 2 lần mỗi kiếp).',
+          'Đánh tan ma đầu: +10 phúc duyên và đồ rơi. Thua: trọng thương, mất 10% linh thạch (tối đa 500), nhưng không chết.',
+          'Bóng của bạn hạ được ai thì bạn nhận thư và 5 phúc duyên, tối đa 30 mỗi ngày.',
+        ],
+      },
+      {
+        h: 'Thẻ Một đời',
+        items: [
+          'Màn lập bia có thẻ khoe: xếp loại S, A, B, C, D, đời này vượt bao nhiêu phần trăm các kiếp trong giang hồ, 3 dòng đáng nhớ.',
+          'Bấm Khoe đời này để chia sẻ link. Dán lên Facebook, Threads, Zalo sẽ hiện hình nhân vật của bạn. Có nút Chép chữ để dán vào nhóm.',
+          'Sau mỗi trận lôi đài cũng có nút Khoe trận.',
+        ],
+      },
+      {
+        h: 'Người mới và điểm danh',
+        items: [
+          'Ba kiếp đầu trời thương: hiểm cảnh khó giết người hơn nhiều cho tới khi chọn con đường. Mỗi kiếp đầu có một mục tiêu, đạt thì thưởng phúc duyên.',
+          'Điểm danh 7 ngày ngay ở màn đầu thai: phúc duyên, đan hồi hồn, linh thạch, ngày 7 là Hoàn Hồn Đan và ngọc bội. Bỏ một ngày thì về ngày 1.',
+          'Nhiệm vụ ngày nằm ngay dưới hàng điểm danh.',
+        ],
+      },
+      {
+        h: 'Đan tu và tiếng đồn',
+        items: [
+          'Kiếp sau một đời Đan tu mua đan hồi hồn rẻ hơn 30%: còn nhớ cách luyện.',
+          'Mỗi ngày một tiếng đồn ở màn đầu thai, gợi mờ một kết cục ít người mở nhất.',
+          'Ai mở một kết cục đầu tiên trong giang hồ, cả server nhận thư Thiên Đạo. Sổ Sinh Tử ghi số người đã mở và người đầu tiên.',
+        ],
+      },
+    ],
+  },
+  {
     v: '3.1.1',
     date: '27/10/2026',
     title: 'Hoàn Hồn Đan',
