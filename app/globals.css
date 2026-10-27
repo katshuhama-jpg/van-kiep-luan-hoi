@@ -4286,18 +4286,29 @@ button.shadow-card { cursor: pointer; }
 .fs-buy small { font-size: 12px; color: #6a5a44; }
 .fs-buy span { display: flex; gap: 6px; flex-wrap: wrap; }
 .fs-buy .btn { padding: 4px 10px; font-size: 14px; }
-.moi-tra { display: flex; flex-direction: column; gap: 10px; }
-.mt-head { display: flex; gap: 10px; align-items: center; }
-.mt-head h2 { margin: 0; }
-.mt-head small { font-size: 13px; color: var(--muted, #6a5a44); }
-.mt-seal { flex: none; display: grid; place-items: center; width: 48px; height: 48px; font-size: 20px; font-weight: 700; color: #f3e6c4; background: #8a1a1a; border: 3px solid #1f160d; box-shadow: inset 0 0 0 3px #f3e6c4; }
-.mt-text { margin: 0; max-width: 62ch; }
-.mt-card { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px; background: #f3e6c4; border: 3px solid #1f160d; box-shadow: inset 0 0 0 3px #b08a5a, 4px 4px 0 #1f160d; }
-.tra-qr { display: block; width: min(240px, 70vw); height: auto; image-rendering: pixelated; border: 3px solid #1f160d; }
-.mt-card dl { display: grid; grid-template-columns: auto auto; gap: 2px 12px; margin: 0; font-size: 14px; }
-.mt-card dt { color: #6a5a44; }
-.mt-card dd { margin: 0; font-weight: 700; }
-.mt-acct { font-variant-numeric: tabular-nums; user-select: all; }
 .tra-nudge { display: block; margin-top: 8px; padding: 6px 8px; font-size: 14px; text-align: center; color: #8a1a1a; text-decoration: none; border: 2px dashed #8a1a1a; }
-.mt-fair { margin: 0; padding: 6px 10px; max-width: 62ch; background: #fff8e6; border: 2px solid #1f160d; box-shadow: inset 4px 0 0 #8a1a1a; }
-.mt-fair b { color: #8a1a1a; }
+
+/* ===== Mời tác giả chén trà: cuộn thư pháp ===== */
+.moi-tra { margin: 4px 0 14px; }
+.mt-rod { display: block; height: 16px; margin: 0 -6px; background: linear-gradient(#a0703a, #5a3410 60%, #3a200a); border: 3px solid #1f160d; box-shadow: 0 3px 0 #1f160d; }
+.mt-paper { position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 18px 16px 20px; text-align: center; color: #3a2414; background: #f1e3c0; background-image: repeating-linear-gradient(0deg, rgba(120, 80, 30, 0.06) 0 2px, transparent 2px 6px); border-left: 3px solid #b8945a; border-right: 3px solid #b8945a; }
+.mt-kick { font-size: 13px; letter-spacing: 0.25em; text-transform: uppercase; color: #8a6a3a; }
+.mt-title { margin: 0; font-family: 'Protest Revolution', var(--font); font-weight: 400; font-size: 34px; line-height: 1.15; color: #8a1a1a; text-shadow: 2px 2px 0 #e8c78a; text-wrap: balance; }
+.mt-text { margin: 0; max-width: 34ch; font-size: 16px; line-height: 1.5; }
+.mt-altar { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 18px 0 6px; }
+.mt-rays { position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%); opacity: 0.55; pointer-events: none; }
+.mt-motes { position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%); pointer-events: none; }
+.mt-frame { position: relative; padding: 14px; background: linear-gradient(#7a4a20, #4a2a10); border: 3px solid #1f160d; box-shadow: inset 3px 3px 0 #a0703a, inset -3px -3px 0 #2a1608, 4px 4px 0 #1f160d, 0 0 24px rgba(255, 211, 107, 0.45); animation: mtGlow 2.4s steps(4) infinite; }
+@keyframes mtGlow { 50% { box-shadow: inset 3px 3px 0 #a0703a, inset -3px -3px 0 #2a1608, 4px 4px 0 #1f160d, 0 0 36px rgba(255, 211, 107, 0.75); } }
+.mt-frame .ml-stud { width: 8px; height: 8px; }
+.tra-qr { display: block; width: min(232px, 64vw); height: auto; image-rendering: pixelated; border: 3px solid #1f160d; }
+.mt-scan { position: relative; font-size: 13px; color: #6a5a44; }
+.mt-plaque { display: flex; align-items: center; gap: 10px; width: 100%; max-width: 320px; padding: 8px 10px; text-align: left; color: #fff3dc; background: linear-gradient(#5a3a1e, #3a2412); border: 3px solid #1f160d; box-shadow: inset 2px 2px 0 #8a5a2e, 3px 3px 0 #1f160d; }
+.mt-plaque span { flex: 1; display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
+.mt-plaque small { font-size: 12px; color: #c8b89a; }
+.mt-plaque b { font-size: 15px; }
+.mt-plaque em { font-style: normal; font-size: 18px; font-weight: 700; color: #ffd36b; font-variant-numeric: tabular-nums; letter-spacing: 0.04em; user-select: all; }
+.mt-plaque .btn { flex: none; padding: 6px 12px; font-size: 15px; }
+.mt-msg { font-size: 13px; color: #2f6b3a; }
+.mt-sign { position: absolute; right: 10px; top: 10px; display: grid; place-items: center; width: 44px; height: 44px; font-size: 11px; line-height: 1.05; font-weight: 700; color: #f3e6c4; background: #8a1a1a; border: 2px solid #1f160d; box-shadow: inset 0 0 0 2px #f3e6c4; transform: rotate(-6deg); }
+@media (prefers-reduced-motion: reduce) { .mt-frame { animation: none; } }

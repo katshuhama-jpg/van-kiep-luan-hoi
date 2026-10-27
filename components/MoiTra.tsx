@@ -3,6 +3,7 @@
 import { useState, type ReactElement } from 'react';
 import { TRA_BANK, TRA_QR } from '@/lib/moiTra';
 import { track } from '@/lib/track';
+import { PixelFx, fxMotes, fxRays } from './PixelFx';
 
 const Q = 3; // vùng trống quanh mã, tính theo ô
 
@@ -22,43 +23,57 @@ export function TraQR({ size = 240 }: { size?: number }) {
   );
 }
 
-/** Khối "Mời tác giả chén trà" ở trang Tác giả */
+/** Khối "Mời tác giả chén trà" ở trang Tác giả: cuộn thư pháp hai trục gỗ, QR trong khung gỗ đinh vàng có linh quang */
 export default function MoiTra() {
   const [msg, setMsg] = useState<string | null>(null);
   async function copy() {
     track('tra_copy');
     try {
       await navigator.clipboard.writeText(TRA_BANK.acct);
-      setMsg('Đã chép số tài khoản.');
+      setMsg('Đã chép số tài khoản. Đa tạ đạo hữu!');
     } catch {
       setMsg('Máy không cho chép, giữ ngón tay lên số tài khoản để chép.');
     }
   }
   return (
-    <section className="panel moi-tra" id="moi-tra">
-      <div className="mt-head">
-        <span className="mt-seal" aria-hidden="true">
-          Trà
+    <section className="moi-tra" id="moi-tra" aria-labelledby="mt-title">
+      <i className="mt-rod" aria-hidden="true" />
+      <div className="mt-paper">
+        <span className="mt-kick">Ngộ đạo trà quán</span>
+        <h2 id="mt-title" className="mt-title">
+          Mời tác giả một chén ngộ đạo trà!
+        </h2>
+        <p className="mt-text">Nếu cảm thấy cõi tiên đồ họa hữu tình, game cuốn hút, đạo hữu có thể hoan hỉ mời bần đạo một chén trà để tái tạo linh lực, tiếp tục độ kiếp fix bug và có tiền mua sữa bỉm nuôi tiểu quỷ ở nhà.</p>
+        <div className="mt-altar">
+          <PixelFx spec={fxRays('#ffd36b')} scale={3} dur={2.4} className="pa mt-rays" />
+          <PixelFx spec={fxMotes(14, '#ffd36b')} scale={3} dur={2} className="pa mt-motes" />
+          <div className="mt-frame">
+            <i className="ml-stud a" aria-hidden="true" />
+            <i className="ml-stud b" aria-hidden="true" />
+            <i className="ml-stud c" aria-hidden="true" />
+            <i className="ml-stud d" aria-hidden="true" />
+            <TraQR />
+          </div>
+          <span className="mt-scan">Quét bằng app ngân hàng</span>
+        </div>
+        <div className="mt-plaque">
+          <span>
+            <small>{TRA_BANK.bank}</small>
+            <b>{TRA_BANK.name}</b>
+            <em>{TRA_BANK.acctText}</em>
+          </span>
+          <button className="btn btn-red" onClick={copy}>
+            Chép số
+          </button>
+        </div>
+        {msg && <small className="mt-msg">{msg}</small>}
+        <span className="mt-sign" aria-hidden="true">
+          Bần đạo
+          <br />
+          đa tạ
         </span>
-        <h2>Mời tác giả một chén ngộ đạo trà!</h2>
       </div>
-      <p className="mt-text">Nếu cảm thấy cõi tiên đồ họa hữu tình, game cuốn hút, đạo hữu có thể hoan hỉ mời bần đạo một chén trà để tái tạo linh lực, tiếp tục độ kiếp fix bug và có tiền mua sữa bỉm nuôi tiểu quỷ ở nhà.</p>
-      <div className="mt-card">
-        <TraQR />
-        <dl>
-          <dt>Ngân hàng</dt>
-          <dd>{TRA_BANK.bank}</dd>
-          <dt>Chủ tài khoản</dt>
-          <dd>{TRA_BANK.name}</dd>
-          <dt>Số tài khoản</dt>
-          <dd className="mt-acct">{TRA_BANK.acctText}</dd>
-        </dl>
-        <button className="btn" onClick={copy}>
-          Chép số tài khoản
-        </button>
-        {msg && <small className="note">{msg}</small>}
-      </div>
-      <small className="note">Mở app ngân hàng, quét mã là được. Đa tạ đạo hữu.</small>
+      <i className="mt-rod" aria-hidden="true" />
     </section>
   );
 }
