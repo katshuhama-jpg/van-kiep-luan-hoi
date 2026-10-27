@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Sprite from '@/components/Sprite';
-import { currentPlayer, signIn, signUp } from '@/lib/auth';
+import { currentPlayer, normalizeUsername, signIn, signUp } from '@/lib/auth';
 import { carryGuest } from '@/lib/storage';
 import { demoChar } from '@/lib/game/demo';
 import { useAuth } from '@/lib/useAuth';
@@ -20,15 +20,21 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [suggest, setSuggest] = useState<string | null>(null);
+  // tên thật sẽ dùng sau khi bỏ dấu, viết thường, bỏ khoảng trắng
+  const norm = normalizeUsername(username);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     setError(null);
-    const err = mode === 'in' ? await signIn(username, password) : await signUp(username, password);
+    setSuggest(null);
+    if (norm !== username) setUsername(norm);
+    const err = mode === 'in' ? await signIn(norm, password) : await signUp(norm, password);
     setBusy(false);
     if (err) {
       setError(err);
+      if (mode === 'up' && err.includes('đã có người dùng')) setSuggest(`${norm.slice(0, 13)}${10 + Math.floor(Math.random() * 90)}`);
       track('auth_fail', { mode, err: String(err).slice(0, 80) });
       return;
     }
@@ -68,15 +74,22 @@ export default function LoginPage() {
           <span>Tên đăng nhập</span>
           <input
             value={username}
-            onChange={(e) => setUsername(e.target.value.toLowerCase())}
+            onChange={(e) => setUsername(e.target.value)}
+            onBlur={() => norm && setUsername(norm)}
             autoComplete="username"
             autoCapitalize="none"
             spellCheck={false}
-            maxLength={16}
+            maxLength={24}
             placeholder="vd: thanhvan"
             required
           />
-          <small className="note">3-16 ký tự: chữ thường không dấu, số, dấu _</small>
+          {username && norm !== username ? (
+            <small className="note">
+              Tên sẽ dùng: <b>{norm || '...'}</b>
+            </small>
+          ) : (
+            <small className="note">3-16 ký tự. Gõ có dấu hay viết hoa cũng được, game tự chuyển thành chữ thường không dấu.</small>
+          )}
         </label>
         <label className="field">
           <span>Mật khẩu</span>
@@ -93,6 +106,11 @@ export default function LoginPage() {
         </label>
 
         {error && <p className="error" role="alert">{error}</p>}
+        {suggest && (
+          <button type="button" className="btn" onClick={() => (setUsername(suggest), setSuggest(null), setError(null))}>
+            Dùng tên {suggest}
+          </button>
+        )}
 
         <button className="btn btn-red btn-big" disabled={busy || !enabled}>
           {busy ? 'Đang vận công...' : mode === 'in' ? 'Vào game' : 'Tạo tài khoản'}

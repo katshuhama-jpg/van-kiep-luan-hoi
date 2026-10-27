@@ -15,6 +15,29 @@ import type { Character } from '@/lib/game/types';
 import { ELEMENTS, elementOf } from '@/lib/game/nguhanh';
 
 /* ================= Gieo quẻ: lá số nhân vật + thiên phú ================= */
+/** Lá số đang gieo dở được giữ lại tới khi đầu thai, rời trang rồi vào lại vẫn là lá số đó và số lần gieo đó */
+const LASO_KEY = 'vkl.laso';
+type LaSo = { lifeNo: number; cards: string[]; picked: string[]; rolls: number; base: Character };
+function readLaSo(lifeNo?: number): LaSo | null {
+  try {
+    const v = JSON.parse(localStorage.getItem(LASO_KEY) || 'null') as LaSo | null;
+    return v && v.base && Array.isArray(v.cards) && v.lifeNo === (lifeNo ?? 0) ? v : null;
+  } catch {
+    return null;
+  }
+}
+function writeLaSo(v: LaSo) {
+  try {
+    localStorage.setItem(LASO_KEY, JSON.stringify(v));
+  } catch {}
+}
+/** Gọi khi đã đầu thai xong để kiếp sau gieo lá số mới */
+export function clearLaSo() {
+  try {
+    localStorage.removeItem(LASO_KEY);
+  } catch {}
+}
+
 export function GachaPanel({ phuc, onChange, onBorn, busy, lifeNo, barNote }: { phuc: number; onChange: (gifts: string[], spent: number, base: Character | null) => void; onBorn: () => void; busy?: boolean; lifeNo?: number; barNote?: string }) {
   const [cards, setCards] = useState<string[]>([]);
   const [picked, setPicked] = useState<string[]>([]);
@@ -25,25 +48,36 @@ export function GachaPanel({ phuc, onChange, onBorn, busy, lifeNo, barNote }: { 
   // lần gieo đầu tiên và lần gieo lại kế tiếp miễn phí
   const cost = rolls < 2 ? 0 : 5;
   const spent = Math.max(0, rolls - 2) * 5;
-  const roll = () => {
+  const roll = (from = rolls) => {
     const next = drawGifts(5);
     const b = rollBase();
+    const n = from + 1;
     setCards(next);
     setPicked([]);
     setBase(b);
-    setRolls((r) => r + 1);
+    setRolls(n);
     setFlip((f) => f + 1);
-    onChange([], Math.max(0, rolls + 1 - 2) * 5, b);
+    writeLaSo({ lifeNo: lifeNo ?? 0, cards: next, picked: [], rolls: n, base: b });
+    onChange([], Math.max(0, n - 2) * 5, b);
   };
-  // vào màn là trời đã gieo sẵn một lá số
+  // vào màn là trời đã gieo sẵn một lá số; đang gieo dở thì lấy lại lá số cũ
   useEffect(() => {
-    if (rolls === 0) roll();
+    const saved = readLaSo(lifeNo);
+    if (saved) {
+      setCards(saved.cards);
+      setPicked(saved.picked ?? []);
+      setBase(saved.base);
+      setRolls(saved.rolls);
+      setFlip((f) => f + 1);
+      onChange(saved.picked ?? [], Math.max(0, saved.rolls - 2) * 5, saved.base);
+    } else roll(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const toggle = (id: string) => {
     const on = picked.includes(id);
     const next = on ? picked.filter((x) => x !== id) : picked.length >= 2 ? [picked[1], id] : [...picked, id];
     setPicked(next);
+    if (base) writeLaSo({ lifeNo: lifeNo ?? 0, cards, picked: next, rolls, base });
     onChange(next, spent, base);
   };
   const best = cards.reduce((m, id) => Math.max(m, giftOf(id)?.rare ?? 0), 0);
@@ -90,7 +124,7 @@ export function GachaPanel({ phuc, onChange, onBorn, busy, lifeNo, barNote }: { 
         )}
       </section>
       <div className="birth-bar">
-        <button className="btn" onClick={roll} disabled={cost > 0 && phuc < cost}>
+        <button className="btn" onClick={() => roll()} disabled={cost > 0 && phuc < cost}>
           Gieo lại
           <small>{cost ? `-${cost} phúc` : 'miễn phí'}</small>
         </button>

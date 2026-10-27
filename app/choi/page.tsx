@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Scene from '@/components/Scene';
 import MusicToggle from '@/components/MusicToggle';
-import { TribulationOverlay, Tutorial } from '@/components/Extras';
+import { TribulationOverlay, Tutorial, clearLaSo } from '@/components/Extras';
 import { BREAK_EVENT_ID } from '@/lib/game/events';
 import { ENDINGS, alsoEndings, endingOf } from '@/lib/game/endings';
 import { BagSheet, BaoKhoSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, HuntSheet, LogPanel, OverworkBar, SEASONS, ShopSheet, Sheet, StageStrip, StatsPanel } from '@/components/Panels';
@@ -1089,6 +1089,7 @@ export default function PlayPage() {
     const c = newCharacter(m2, gifts, base ?? undefined);
     talentsRef.current = talents;
     lifeT0.current = Date.now();
+    clearLaSo();
     track('life_start', { lifeNo: c.lifeNo, drink, talents: talents.length, gifts: gifts.length, picked: !!base });
     if ((c.kiepSo ?? 0) > 0) c.log.push({ age: 0, tone: 'big', text: `Kiếp Số ${c.kiepSo} · ${KS_NAME[c.kiepSo ?? 0]}. Thiên đạo đã để mắt tới linh hồn này, kiếp nạn sẽ nặng hơn, phúc báo cũng dày hơn.` });
     if ((c.kiepTich ?? 0) > 0) c.log.push({ age: 0, tone: 'good', text: `Kiếp tích ${c.kiepTich}: những lần ngã trước cửa trời đã thành kinh nghiệm. Đột phá dễ hơn ${(c.kiepTich ?? 0) * 5}%.` });

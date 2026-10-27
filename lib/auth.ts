@@ -17,8 +17,17 @@ const KEY = 'vkl.session';
 export const USERNAME_RE = /^[a-z0-9_]{3,16}$/;
 const listeners = new Set<(p: Player | null) => void>();
 
+/** Tên gõ có dấu, chữ hoa, khoảng trắng vẫn nhận: "Thanh Vân" thành "thanhvan" */
 export function normalizeUsername(u: string) {
-  return u.trim().toLowerCase();
+  return u
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[đĐ]/g, 'd')
+    .toLowerCase()
+    .replace(/\s+/g, '')
+    .replace(/[-.]/g, '_')
+    .replace(/[^a-z0-9_]/g, '')
+    .slice(0, 16);
 }
 
 export function currentPlayer(): Player | null {
@@ -48,7 +57,7 @@ export function onPlayerChange(fn: (p: Player | null) => void) {
 }
 
 export function validate(username: string, password: string): string | null {
-  if (!USERNAME_RE.test(normalizeUsername(username))) return 'Tên đăng nhập dài 3-16 ký tự, chỉ gồm chữ thường không dấu, số và dấu _.';
+  if (!USERNAME_RE.test(normalizeUsername(username))) return 'Tên đăng nhập cần ít nhất 3 chữ cái hoặc số.';
   if (password.length < 3 || password.length > 6) return 'Mật khẩu dài từ 3 đến 6 ký tự.';
   return null;
 }
