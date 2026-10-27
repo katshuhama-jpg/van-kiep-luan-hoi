@@ -801,8 +801,10 @@ export function BirthPanel({
   busy,
   onKho,
   onSoSinhTu,
+  onHoanHon,
 }: {
   meta: Meta;
+  onHoanHon?: (id: import('@/lib/game/luanHoi').HonPillId) => void;
   onBorn: (talents: string[], yearSec: number, gifts: string[], gachaSpent: number, base: Character | null, drink: boolean) => void;
   busy?: boolean;
   onKho?: () => void;
@@ -963,7 +965,7 @@ export function BirthPanel({
               </span>
             </summary>
             <div className="pr-body">
-              <KiepSoBlock meta={meta} />
+              <KiepSoBlock meta={meta} onHoanHon={onHoanHon} />
             </div>
           </details>
         )}
@@ -999,6 +1001,7 @@ export function BirthPanel({
       {bridge && (
         <ManhBaBridge
           meta={meta}
+          onHoanHon={onHoanHon}
           busy={busy}
           onBack={() => setBridge(false)}
           onPick={go}

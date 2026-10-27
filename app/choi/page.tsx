@@ -28,7 +28,7 @@ import { bountyClaim, khieuDone, loadSocial, loreSocial, payoutClaim, truyenCong
 import { GiangHoSheet, type GiangHoApi } from '@/components/GiangHo';
 import { HIDDEN_ITEMS, collectStats, markSeen, newFinds, unseen } from '@/lib/game/collect';
 import { QUY_NHAT_PHUC, newLore, quyNhatDone } from '@/lib/game/lore';
-import { CAU_HON_AT, HON_COST, HON_MAX, KS_NAME, applyHon, honActive, honNow, ksOf, ksOneBig, manhBa, nextKiepTich } from '@/lib/game/luanHoi';
+import { HON_PILLS, QUEST_HON, addHon, honPillLeft, honDay, type HonPillId, CAU_HON_AT, HON_COST, HON_MAX, KS_NAME, applyHon, honActive, honNow, ksOf, ksOneBig, manhBa, nextKiepTich } from '@/lib/game/luanHoi';
 import { serverNow } from '@/lib/serverTime';
 import LoiDaiButton from '@/components/LoiDaiButton';
 import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, pickAmbush } from '@/lib/game/ambush';
@@ -1023,6 +1023,20 @@ export default function PlayPage() {
     });
   };
 
+  // Đan hồi hồn: đổi phúc duyên lấy Hồn lực, mỗi ngày tối đa vài viên
+  const hoanHon = async (id: HonPillId) => {
+    if (!meta) return;
+    const pill = HON_PILLS.find((p) => p.id === id);
+    const now = await serverNow();
+    if (!pill || meta.phucDuyen < pill.cost || honPillLeft(meta, now) <= 0) return;
+    const day = honDay(now);
+    const n = meta.honPill?.day === day ? meta.honPill.n + 1 : 1;
+    const m2: Meta = { ...addHon(meta, pill.gain, now), phucDuyen: meta.phucDuyen - pill.cost, honPill: { day, n } };
+    track('hon_pill', { id, n, cost: pill.cost, hon: Math.round(m2.hon?.v ?? 0) });
+    setMeta(m2);
+    saveMeta(user, m2).catch(() => {});
+  };
+
   const born = async (talents: string[], yearSec: number, gifts: string[] = [], gachaSpent = 0, base: Character | null = null, drink = false) => {
     if (!meta) return;
     // Luân Hồi Đạo: Kiếp Số từ 5 chỉ giữ một thiên phú lớn
@@ -1299,8 +1313,10 @@ export default function PlayPage() {
         kiepSo: c.kiepSo ?? 0,
       },
     }).catch(() => {});
+    // nhiệm vụ ngày xong thì hồn cũng được hồi thêm
+    const metaH = q.newly.length && honActive(meta) ? addHon(meta, q.newly.length * QUEST_HON, Date.now()) : meta;
     const m: Meta = {
-      ...meta,
+      ...metaH,
       daily: q.daily,
       prophecy: extra.prophecy ?? null,
       legend,
@@ -1417,7 +1433,7 @@ export default function PlayPage() {
           />
         )}
         {(setScreen('dau_thai'), null)}
-        <BirthPanel meta={meta} onBorn={born} onKho={() => setSheet('kho')} onSoSinhTu={() => seeBook('e')} />
+        <BirthPanel meta={meta} onHoanHon={hoanHon} onBorn={born} onKho={() => setSheet('kho')} onSoSinhTu={() => seeBook('e')} />
         {relOpen && <ReleaseNotice onClose={closeRel} />}
       </main>
     );

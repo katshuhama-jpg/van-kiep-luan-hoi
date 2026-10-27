@@ -87,6 +87,30 @@ export function honNow(m: Meta | null | undefined, now: number): number {
   if (!h) return HON_MAX;
   return Math.min(HON_MAX, h.v + Math.max(0, (now - h.at) / HOUR) * HON_REGEN);
 }
+/**
+ * Đan hồi hồn, mua bằng phúc duyên ở màn đầu thai. Ba phẩm, phẩm càng cao càng đắt theo tỉ lệ
+ * (đan nhỏ lời nhất, đan lớn tiện nhất). Mỗi ngày (giờ VN) dùng tối đa 3 viên, gộp mọi phẩm.
+ * Mốc giá: một kiếp bình thường cho khoảng 30-50 phúc duyên, một lần đầu thai tốn 15 Hồn lực.
+ */
+export const HON_PILLS = [
+  { id: 'tu_hon', name: 'Tụ Hồn Đan', grade: 'Hạ phẩm', gain: 20, cost: 20, icon: 'thanh_tam' },
+  { id: 'duong_hon', name: 'Dưỡng Hồn Đan', grade: 'Trung phẩm', gain: 45, cost: 55, icon: 'hoi_xuan' },
+  { id: 'hoan_hon', name: 'Hoàn Hồn Đan', grade: 'Thượng phẩm', gain: 100, cost: 140, icon: 'dien_tho' },
+] as const;
+export type HonPillId = (typeof HON_PILLS)[number]['id'];
+export const HON_PILL_PER_DAY = 3;
+/** Mỗi nhiệm vụ ngày hoàn thành hồi thêm Hồn lực */
+export const QUEST_HON = 10;
+const vnDate = (now: number) => new Date(now).toLocaleDateString('en-CA', { timeZone: 'Asia/Ho_Chi_Minh' });
+export function honPillLeft(m: Meta | null | undefined, now: number): number {
+  const p = m?.honPill;
+  return HON_PILL_PER_DAY - (p && p.day === vnDate(now) ? p.n : 0);
+}
+/** Cộng Hồn lực (không quá tối đa), tính từ mức hiện tại */
+export function addHon(m: Meta, amount: number, now: number): Meta {
+  return { ...m, hon: { v: Math.min(HON_MAX, honNow(m, now) + amount), at: now } };
+}
+export const honDay = vnDate;
 /** Số giờ tới khi hồi đầy */
 export const honFullIn = (v: number) => Math.max(0, Math.ceil(((HON_MAX - v) / HON_REGEN) * 10) / 10);
 export const honActive = (m: Meta | null | undefined) => (m?.lives ?? 0) + 1 >= LH_FROM_LIFE;

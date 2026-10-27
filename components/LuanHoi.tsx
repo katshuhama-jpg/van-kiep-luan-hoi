@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from 'react';
 import type { Meta } from '@/lib/game/types';
-import { CAU_HON_AT, HON_COST, HON_MAX, HON_REGEN, LH_FROM_LIFE, HON_TEXT, KS_NAME, KS_TIERS, TINH_TAM_MAX, honActive, honFullIn, honNow, honState, ksBase, ksOf, ksParts, type HonState } from '@/lib/game/luanHoi';
+import { HON_PILLS, QUEST_HON, honPillLeft, type HonPillId, CAU_HON_AT, HON_COST, HON_MAX, HON_REGEN, LH_FROM_LIFE, HON_TEXT, KS_NAME, KS_TIERS, TINH_TAM_MAX, honActive, honFullIn, honNow, honState, ksBase, ksOf, ksParts, type HonState } from '@/lib/game/luanHoi';
 
 /** Cầu Nại Hà vẽ pixel: Mạnh Bà bên nồi canh */
 function NaiHa() {
@@ -63,7 +63,7 @@ export function luanHoiSummary(meta: Meta, drink: boolean, now: number) {
 }
 
 /** Kiếp Số và Hồn lực: giải thích bằng lời thường */
-export function KiepSoBlock({ meta }: { meta: Meta }) {
+export function KiepSoBlock({ meta, onHoanHon }: { meta: Meta; onHoanHon?: (id: HonPillId) => void }) {
   const now = useNow();
   const base = ksBase(meta);
   const ks = ksOf(meta);
@@ -116,16 +116,44 @@ export function KiepSoBlock({ meta }: { meta: Meta }) {
             <i style={{ width: `${hon}%` }} className={`hb-${honState(hon)}`} />
           </span>
           <small className="note">
-            Mỗi lần đầu thai tốn {HON_COST}, tự hồi {HON_REGEN} mỗi giờ{hon < HON_MAX ? ` (đầy sau ${honFullIn(hon)} giờ)` : ''}. Đầu thai liên tục làm hồn mòn, kiếp sau sinh ra yếu hơn.
+            Mỗi lần đầu thai tốn {HON_COST}, tự hồi {HON_REGEN} mỗi giờ{hon < HON_MAX ? ` (đầy sau ${honFullIn(hon)} giờ)` : ''}. Đầu thai liên tục làm hồn mòn, kiếp sau sinh ra yếu hơn. Mỗi nhiệm vụ ngày xong hồi thêm {QUEST_HON}.
           </small>
+          {onHoanHon && hon < HON_MAX && <HonPills meta={meta} now={now} onPick={onHoanHon} />}
         </div>
       )}
     </div>
   );
 }
 
+/** Ba phẩm đan hồi hồn, mua bằng phúc duyên */
+function HonPills({ meta, now, onPick, compact }: { meta: Meta; now: number; onPick: (id: HonPillId) => void; compact?: boolean }) {
+  const left = honPillLeft(meta, now);
+  const hon = honNow(meta, now);
+  return (
+    <div className={`hon-pills ${compact ? 'compact' : ''}`}>
+      <small className="hp-head">
+        {left > 0 ? `Đan hồi hồn · hôm nay còn ${left} viên · đang có ${meta.phucDuyen} phúc duyên` : 'Đan hồi hồn: hôm nay đã dùng đủ 3 viên, mai quay lại'}
+      </small>
+      <div className="hp-row">
+        {HON_PILLS.map((p) => {
+          const real = Math.min(p.gain, Math.round(HON_MAX - hon));
+          return (
+            <button key={p.id} className="btn hp" disabled={left <= 0 || meta.phucDuyen < p.cost || real <= 0} onClick={() => onPick(p.id)} title={`${p.name} (${p.grade}): hồi ${p.gain} Hồn lực`}>
+              <img src={`/icons/${p.icon}.png`} width={24} height={24} alt="" className="px-icon" />
+              <b>{p.name}</b>
+              <small>
+                +{p.gain === 100 ? 'đầy' : p.gain} hồn · {p.cost} phúc
+              </small>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 /** Bước 2: Cầu Nại Hà. Chọn uống hay hất chén canh Mạnh Bà, chọn xong là đầu thai luôn */
-export function ManhBaBridge({ meta, who, onPick, onBack, busy }: { meta: Meta; who: ReactNode; onPick: (drink: boolean) => void; onBack: () => void; busy?: boolean }) {
+export function ManhBaBridge({ meta, who, onPick, onBack, busy, onHoanHon }: { meta: Meta; who: ReactNode; onPick: (drink: boolean) => void; onBack: () => void; busy?: boolean; onHoanHon?: (id: HonPillId) => void }) {
   const now = useNow();
   const base = ksBase(meta);
   const nd = meta.noDrink ?? 0;
@@ -158,6 +186,14 @@ export function ManhBaBridge({ meta, who, onPick, onBack, busy }: { meta: Meta; 
         <p className="mb-say">
           Mạnh Bà múc một chén canh, khói xanh bốc lên: <i>&ldquo;Uống đi, quên hết mà đi cho nhẹ.&rdquo;</i>
         </p>
+        {onHoanHon && honActive(meta) && hon < HON_MAX - 10 && (
+          <div className="mb-hoan">
+            <small>
+              Hồn lực {Math.round(hon)}/{HON_MAX} · {HON_TEXT[stN].name}
+            </small>
+            <HonPills meta={meta} now={now} onPick={onHoanHon} compact />
+          </div>
+        )}
         <div className="mb-opts">
           <button className="mb-opt drink" onClick={() => onPick(true)} disabled={busy}>
             <b>Uống canh</b>

@@ -278,6 +278,7 @@ export interface Meta {
   career?: Career; // số liệu cộng dồn qua các kiếp
   quyThuong?: boolean; // đã nhận thưởng Vạn Kiếp Quy Nhất
   chuongWin?: boolean; // đã đánh bại Kẻ Gõ Chuông
+  honPill?: { day: string; n: number }; // Hoàn Hồn Đan đã uống trong ngày
   hon?: { v: number; at: number }; // Hồn lực lúc đầu thai gần nhất (at: giờ máy chủ, ms)
   tinhTam?: number; // tĩnh tâm từ canh Mạnh Bà: mỗi bậc giảm 1 Kiếp Số hiệu lực
   noDrink?: number; // số lần liên tiếp không uống canh
