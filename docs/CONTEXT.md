@@ -433,6 +433,10 @@ select count(*) from vkl_bounty; select status, count(*) from vkl_challenge grou
 - **Đã bỏ:** gửi quà giữa người chơi.
 - **Database:** không xóa hay drop qua công cụ tự động; Tyler tự chạy câu xóa.
 - **Ra bản theo gói (từ 27/10 tối):** không đẩy lắt nhắt lên production. Làm trên nhánh `next`, gộp nhiều ý tưởng thành một gói, kiểm tra trên bản preview Vercel của nhánh `next`, rồi mới gộp vào `main` một lần kèm cáo thị. Chỉ sửa thẳng `main` khi Tyler nói rõ là lỗi gấp.
+- **Sửa lỗi (Tyler chốt 27/10):**
+  - Lỗi gấp (không vào được game, mất dữ liệu, game đứng hoặc trắng màn hình, lỗ hổng cày tiền hay đồ vô hạn): sửa ngay trên nhánh tách từ `main`, đưa lên `main` liền, rồi gộp sang `next`. Có cáo thị ngắn (3.x.y) nếu nhiều người bị ảnh hưởng.
+  - Lỗi nhỏ (chữ, giao diện, cân bằng, lỗi hiếm): sửa trên nhánh `fix` tách từ `main`, gom lại thành một bản vá mỗi ngày (khoảng 22h tối), gộp vào `main` rồi sang `next`.
+  - Không chắc lỗi gấp hay nhỏ thì hỏi Tyler.
 
 ## 14. Nhật ký thay đổi gần đây
 
