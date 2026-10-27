@@ -93,12 +93,14 @@ export const RELEASES: Release[] = [
         items: [
           '@thien: thêm tông môn và nội dung Ma giới, Phản môn khi đổi phe, lôi đài nói rõ việc kéo ngang cảnh giới, thọ nguyên dài hơn, quá độ nhắc muộn hơn, linh thạch khó kiếm hơn.',
           '@thienkhue: túi đồ có tab và sắp xếp.',
+          '@xiaoyu: báo lỗi thọ nguyên Bàn Đào hội bị tụt về.',
         ],
       },
       {
         h: 'Sửa lỗi và giao diện',
         items: [
           'Túi đồ có tab theo loại (Pháp y, Vũ khí, Phụ kiện, Đan dược) và sắp xếp theo mới nhận, phẩm, công, thủ. Đồ đang mặc luôn ở trên.',
+          'Sửa lỗi thọ nguyên thêm từ Bàn Đào hội, tiên đan, Diên Thọ Đan đấu giá bị tụt về sau một năm. Thọ thêm từ đan, đào, kỳ ngộ giờ được giữ, cộng ngoài trần thọ.',
           'Sửa lỗi Diên Thọ Đan. Lôi kiếp khó hơn và đổi giao diện pixel. Quái còn hình tự vẽ đã đổi hết sang hình LPC.',
           'Lời kể giao đấu thắng, thua, hòa đa dạng hơn. Màn đầu thai bố cục 2 bước dễ hiểu hơn.',
         ],

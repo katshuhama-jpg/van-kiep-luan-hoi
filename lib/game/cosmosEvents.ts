@@ -1,4 +1,4 @@
-import { addCult, addPill, dao, fatal, giveItem, money, reward, stat } from './helpers';
+import { addCult, addLife, addPill, dao, fatal, giveItem, money, reward, stat } from './helpers';
 import { realmName } from './data';
 import type { GameEvent } from './types';
 
@@ -65,7 +65,7 @@ export const COSMOS_EVENTS: GameEvent[] = [
         hint: 'thọ nguyên +, an toàn',
         lean: 'chinh',
         run: (c) => {
-          c.lifespan += 30;
+          addLife(c, 30);
           return 'Bạn bưng rượu suốt ba ngày, cuối buổi được thưởng nửa quả đào. Thọ nguyên thêm 30 năm.';
         },
       },
@@ -76,7 +76,7 @@ export const COSMOS_EVENTS: GameEvent[] = [
         run: (c, ctx) => {
           dao(c, -10);
           if (ctx.rnd() < 0.55) {
-            c.lifespan += 80;
+            addLife(c, 80);
             addCult(c, reward(c, 1));
             return 'Bạn nuốt chửng ba quả đào chín đỏ rồi chuồn mất. Thọ nguyên thêm 80 năm, tu vi tăng vọt. Thiên đình đang truy tìm kẻ trộm.';
           }

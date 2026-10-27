@@ -71,6 +71,12 @@ export function dao(c: Character, delta: number) {
   c.daoTam = clamp(Math.round(c.daoTam + delta), -100, 100);
 }
 
+/** Thêm thọ nguyên từ đan, đào, kỳ ngộ: ghi vào lifeExtra để mức trần thọ hằng năm không cắt mất */
+export function addLife(c: Character, years: number) {
+  c.lifespan += years;
+  c.lifeExtra = (c.lifeExtra ?? 0) + years;
+}
+
 export function money(c: Character, delta: number) {
   c.linhThach = Math.max(0, Math.round(c.linhThach + delta));
 }

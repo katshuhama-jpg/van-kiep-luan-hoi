@@ -44,7 +44,7 @@ import { BREAK_EVENT_ID, EVENTS, PATH_EVENT_ID, pathChoices } from './events';
 import { maChainYear } from './sectEvents2';
 import { ASCEND_MIN_AGE, anOf, destOf, keyAn, needTrial } from './nguHanhDai';
 import { ASCEND_GEAR } from './items2';
-import { FAMILY_RE, isOrphan, addCult, addPill, clamp, cosmosCause, fatal, reward, wealthTier, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
+import { FAMILY_RE, isOrphan, addCult, addLife, addPill, clamp, cosmosCause, fatal, reward, wealthTier, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
 import type { Character, Choice, EffectCtx, Fx, FxKind, GameEvent, Meta, PendingEvent, Tone } from './types';
 import { applyGifts, giftOf, hasGift } from './gacha';
 import { afterChoice, beforeChoice, righteousPeril } from './fate';
@@ -782,8 +782,11 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
   }
   if (c.partner) stat(c, 'tamCanh', 1);
 
-  // Thọ nguyên không vượt quá 1.15 lần mức chuẩn của cảnh giới, cộng phần Diên Thọ Đan đã uống
-  const cap = Math.min(lifeCap(c.realm), Math.round((REALMS[c.realm]?.life ?? 70) * 1.15 * lifeMult(c, talents)) + (c.lifeExtra ?? 0));
+  // Thọ nguyên tự nhiên không vượt 1.15 lần mức chuẩn của cảnh giới và trần thọ;
+  // phần thêm từ đan, đào, kỳ ngộ (lifeExtra) cộng ngoài trần, tối đa nửa trần
+  const cap =
+    Math.min(lifeCap(c.realm), Math.round((REALMS[c.realm]?.life ?? 70) * 1.15 * lifeMult(c, talents))) +
+    Math.min(c.lifeExtra ?? 0, Math.round(lifeCap(c.realm) / 2));
   if (c.lifespan > cap) c.lifespan = cap;
 
   // Sự kiện tuổi thơ cố định
@@ -1456,10 +1459,7 @@ export function usePillNow(c: Character, id: string, ctx: EffectCtx, talents: st
     // kháng dược: viên sau kém viên trước
     const y = dienThoYears(c.dtUsed ?? 0);
     c.dtUsed = (c.dtUsed ?? 0) + 1;
-    const before = c.lifespan;
-    c.lifespan = Math.min(lifeCap(c.realm), c.lifespan + y);
-    // giữ phần thọ này lại, để mức trần thọ hằng năm không cắt mất
-    c.lifeExtra = (c.lifeExtra ?? 0) + (c.lifespan - before);
+    addLife(c, y);
     ctx.fx('heal', `+${y} năm thọ`);
     if (y <= 2) ctx.log('Uống Diên Thọ Đan nhiều quá, thân thể đã quen thuốc. Dược lực chỉ còn chút ít.', 'bad');
   } else if (id === 'thanh_tam') {

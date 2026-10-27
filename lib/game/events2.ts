@@ -1,7 +1,7 @@
-import { ITEMS, REALMS, lifeCap } from './data';
+import { ITEMS, REALMS } from './data';
 import { joinSect } from './sect';
 import { hasGift } from './gacha';
-import { addCult, addPill, dao, fatal, giveItem, hurt, luck, money, reward, stat } from './helpers';
+import { addCult, addLife, addPill, dao, fatal, giveItem, hurt, luck, money, reward, stat } from './helpers';
 import type { Character, Choice, EffectCtx, GameEvent, Grave } from './types';
 
 const itemName = (id: string | null) => (id ? (ITEMS.find((i) => i.id === id)?.name ?? id) : null);
@@ -1070,9 +1070,7 @@ export const EVENTS2: GameEvent[] = [
           const r = ctx.rnd();
           if (r < 0.45) {
             addCult(c, reward(c, 6));
-            const b0 = c.lifespan;
-            c.lifespan = Math.min(lifeCap(c.realm), c.lifespan + 30);
-            c.lifeExtra = (c.lifeExtra ?? 0) + (c.lifespan - b0); // tiên đan: giữ phần thọ thêm qua mức trần hằng năm
+            addLife(c, 30);
             ctx.fx('breakthrough', 'Tiên duyên');
             return 'Trong hộp là một viên tiên đan cổ. Bạn trẻ lại ba mươi tuổi, tu vi tăng vọt.';
           }

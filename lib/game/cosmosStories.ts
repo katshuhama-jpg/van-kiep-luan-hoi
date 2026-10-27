@@ -1,5 +1,4 @@
-import { lifeCap } from './data';
-import { addCult, addPill, dao, fatal, hurt, luck, money, reward, stat } from './helpers';
+import { addCult, addLife, addPill, dao, fatal, hurt, luck, money, reward, stat } from './helpers';
 import type { Character, EffectCtx, GameEvent } from './types';
 
 /**
@@ -16,7 +15,6 @@ function setArc(c: Character, id: string, v: number) {
 /** cốt truyện dài: bước sau mở sau ít nhất n năm */
 const next = (c: Character, id: string, vals: number[], years: number) => vals.includes(arc(c, id)) && since(c, id) >= years;
 const tier = (c: Character) => Math.max(1, c.realm - 7);
-const tamCap = (c: Character) => lifeCap(c.realm);
 
 /** đánh một trận trong cốt truyện: tỉ lệ theo khí vận và sức khỏe */
 function fight(c: Character, ctx: EffectCtx, base: number) {
@@ -673,9 +671,7 @@ export const COSMOS_STORIES: GameEvent[] = [
         lean: 'trung',
         run: (c) => {
           c.cultivation = Math.round(c.cultivation * 0.6);
-          const b = c.lifespan;
-          c.lifespan = Math.min(tamCap(c) + 100, c.lifespan + 40);
-          c.lifeExtra = (c.lifeExtra ?? 0) + (c.lifespan - b);
+          addLife(c, 40);
           return 'Lão lật ngược đồng hồ. Cát chảy lên. Bạn trẻ lại, tu vi lùi một đoạn.';
         },
       },

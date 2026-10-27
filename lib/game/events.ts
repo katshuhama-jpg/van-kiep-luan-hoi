@@ -1,5 +1,5 @@
 import { DAO_LU, ITEMS, PATHS } from './data';
-import { addCult, addPill, dao, fatal, giveItem, hasItem, hurt, isOrphan, luck, money, pick, reward, sample, stat, usePill } from './helpers';
+import { addCult, addLife, addPill, dao, fatal, giveItem, hasItem, hurt, isOrphan, luck, money, pick, reward, sample, stat, usePill } from './helpers';
 import type { Character, Choice, GameEvent } from './types';
 import { EVENTS2 } from './events2';
 import { EVENTS3 } from './events3';
@@ -1178,7 +1178,7 @@ export const EVENTS: GameEvent[] = [
           const f = fatal(c, ctx, 0.08, 'Viên đan là Hạc Đỉnh Hồng. Bạn thất khiếu chảy máu mà chết ngay giữa phường thị.');
           if (c.dead) return 'Bạn nuốt viên đan...' + f;
           if (ctx.rnd() < 0.2) {
-            c.lifespan += 15;
+            addLife(c, 15);
             ctx.fx('heal', '+15 thọ');
             return 'Không ngờ là đan thật! Thọ nguyên tăng 15 năm.';
           }
@@ -1333,7 +1333,7 @@ export const EVENTS: GameEvent[] = [
         run: (c, ctx) => {
           if (c.linhThach < 600) return 'Không đủ linh thạch, bạn chỉ biết nhìn người khác giơ bảng.';
           money(c, -600);
-          c.lifespan += Math.round(c.lifespan * 0.12);
+          addLife(c, Math.round(c.lifespan * 0.12));
           ctx.fx('heal', '+thọ nguyên');
           return 'Bạn thắng giá. Uống vào, tóc mai bạc trở lại đen nhánh.';
         },
@@ -1365,7 +1365,7 @@ export const EVENTS: GameEvent[] = [
         run: (c, ctx) => {
           dao(c, -14);
           if (ctx.rnd() < luck(c, 0.45)) {
-            c.lifespan += Math.round(c.lifespan * 0.12);
+            addLife(c, Math.round(c.lifespan * 0.12));
             ctx.fx('evil', 'Cướp đan');
             return 'Bạn chặn hắn ở ngoài thành. Diên Thọ Đan giờ là của bạn.';
           }

@@ -184,7 +184,10 @@ export const PROPHECIES: Prophecy[] = [
     id: 'tho',
     text: 'Kiếp sau, ngươi sẽ sống lâu hơn người thường.',
     done: 'Lời tiên tri ứng nghiệm: thọ nguyên của bạn dài hơn người thường.',
-    apply: (c) => (c.lifespan = Math.round(c.lifespan * 1.15)),
+    apply: (c) => {
+      c.lifeMul = (c.lifeMul ?? 1) * 1.15;
+      c.lifespan = Math.round(c.lifespan * 1.15);
+    },
   },
   {
     id: 'ngo',
