@@ -167,7 +167,7 @@ function dongMon(c: Character, rnd: () => number, daiBi: boolean): DuelFoe {
   const reason = daiBi
     ? `Đại bỉ ${c.sect} khai mạc! Bốc thăm trúng ${g.toLowerCase()} ${n}. Thắng trận này, bạn được thăng bậc ngay trước mặt các trưởng lão.`
     : side === 'ta'
-      ? `${g} ${n} chặn bạn trong hang tối: "Ở Huyết Sát Môn, muốn lên thì phải giẫm lên đầu người khác."`
+      ? `${g} ${n} chặn bạn trong hang tối: "Ở ${c.sect}, muốn lên thì phải giẫm lên đầu người khác."`
       : `${g} ${n} gặp bạn ở diễn võ trường ${c.sect}: "Lâu rồi chưa luận kiếm, đấu một trận chứ?"`;
   return { kind: 'dong_mon', rival, npc, rel: 'ngang', reason, daiBi };
 }
@@ -197,7 +197,7 @@ function pickDuel0(c: Character, rnd: () => number): DuelFoe | null {
   }
   // Đại bỉ tông môn: tới kỳ thì chắc chắn đấu với một đồng môn
   if (daiBiDue(c)) {
-    c.daiBiAt = Math.floor(c.age) + 5 + Math.floor(rnd() * 4);
+    c.daiBiAt = Math.floor(c.age) + (c.sect === 'Kiếm Cốc' ? 3 : 5 + Math.floor(rnd() * 4));
     return dongMon(c, rnd, true);
   }
   // ghi thù trong sổ (cả từ thư giang hồ) cũng tính là oan gia
@@ -382,7 +382,7 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
       out.push(dongMonLose(who, !!f.daiBi, ctx.rnd));
       if (ta) {
         // ma môn: đồng môn cũng chẳng nương tay
-        const fl = fatal(c, ctx, 0.08, `Đồng môn ${who} ra tay tàn độc giữa hang tối. Ở Huyết Sát Môn, kẻ yếu không có quyền sống.`);
+        const fl = fatal(c, ctx, 0.08, `Đồng môn ${who} ra tay tàn độc giữa hang tối. Ở ${c.sect}, kẻ yếu không có quyền sống.`);
         if (c.dead) return [fl ?? ''];
         const ids: string[] = [];
         const taken = ctx.rnd() < 0.3 ? robGear(c, ctx, 1, ids) : [];

@@ -287,7 +287,7 @@ export const SECT_EVENTS: GameEvent[] = [
     title: 'Sư phụ chỉ điểm',
     text: (c) =>
       sectSide(c) === 'ta'
-        ? 'Lão tổ Huyết Sát Môn gọi bạn vào huyết trì: "Muốn mạnh hơn, phải trả giá. Ngươi chọn đi."'
+        ? `Lão tổ ${c.sect} gọi bạn vào huyết trì: "Muốn mạnh hơn, phải trả giá. Ngươi chọn đi."`
         : `Sư phụ ở ${c.sect} gọi bạn lên đỉnh núi lúc bình minh: "Hôm nay ta dạy con một điều. Con muốn học gì?"`,
     choices: (c) => [
       {

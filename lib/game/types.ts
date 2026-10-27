@@ -108,6 +108,11 @@ export interface Character {
   ascendAge?: number; // tuổi lúc phi thăng
   sectRank?: number; // bậc trong tông môn: 0 tạp dịch, 1 ngoại môn, 2 nội môn, 3 chân truyền
   sectHide?: boolean; // ngược phe nhưng giấu thân phận ở lại tông
+  maStep?: number; // 3.1.0 chuỗi nhập Ma giới: đã qua mấy bước (0-4)
+  maAt?: number; // tuổi lúc qua bước gần nhất của chuỗi Ma giới
+  maLord?: 'huyet' | 'cot' | 'anh'; // Ma quân đã nhận làm chủ
+  maLand?: number; // địa bàn ở Ma giới: thu linh thạch mỗi năm
+  maTitle?: string; // danh hiệu Ma Đế ban
   tcVay?: number; // số lần Thiên Cơ Các bị chính tà vây đánh trong kiếp
   daiBiAt?: number; // tuổi tới kỳ Đại bỉ tông môn kế tiếp
   sectSaved?: boolean; // chân truyền đã được sư phụ cứu một lần // truy sát: thuê người dò tung tích, năm sau chạm mặt

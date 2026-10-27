@@ -41,6 +41,7 @@ import {
   realmLabel,
 } from './data';
 import { BREAK_EVENT_ID, EVENTS, PATH_EVENT_ID, pathChoices } from './events';
+import { maChainYear } from './sectEvents2';
 import { ASCEND_MIN_AGE, anOf, destOf, keyAn, needTrial } from './nguHanhDai';
 import { ASCEND_GEAR } from './items2';
 import { FAMILY_RE, isOrphan, addCult, addPill, clamp, cosmosCause, fatal, reward, wealthTier, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
@@ -364,6 +365,7 @@ export function yearlyGain(c: Character) {
     base *
     sectCultMul(c) *
     (c.maTon ? 1.15 : 1) *
+    (c.maLord === 'huyet' && c.cosmos === 'ma' ? 1.12 : 1) *
     c.linhCanMul *
     (0.6 + c.stats.ngoTinh / 100) *
     pathMul(c) *
@@ -658,6 +660,8 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
   if (c.cosmos) {
     cosmosYear(c, ctx);
     if (c.dead) return null;
+    const ma = maChainYear(c, rnd);
+    if (ma) ctx.log(ma, 'good');
   }
   // ---- Đại hạn ở Độ Kiếp mà không kịp phi thăng: tọa hóa chuyển thế hay truyền công ----
   if (!c.cosmos && c.realm === ASCEND_REALM - 1 && c.lifespan - c.age <= 10 && !c.daiHan) {

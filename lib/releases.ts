@@ -13,6 +13,81 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '3.1.0',
+    date: '27/10/2026',
+    title: 'Vạn Tông Triều Bái',
+    lead: 'Bản này làm theo góp ý của đạo hữu. Thêm bốn tông môn, một con đường nhập Ma giới, thọ nguyên dài hơn mà đột phá khó hơn, linh thạch không còn dễ như nhặt lá.',
+    stats: [
+      { n: '+4', label: 'tông môn' },
+      { n: '4', label: 'bước nhập Ma giới' },
+      { n: 'x1,5', label: 'thọ nguyên' },
+    ],
+    groups: [
+      {
+        h: 'Bốn tông môn mới',
+        hot: true,
+        items: [
+          'Phổ Đà Sơn (chính): mời Phật tu và người đạo tâm từ 40. Tâm ma tăng chậm, nhưng diệt yêu quá tay sẽ bị Giới luật viện gọi lên.',
+          'Kiếm Cốc (chính): mời Kiếm tu. Phải rút được kiếm trên vách đá mới được nhận. Đại bỉ 3 năm một lần, thăng bậc nhanh.',
+          'Vạn Độc Môn (tà): mời Đan tu, Ma tu. Có việc thử độc: tu vi tăng mạnh, đổi lại mất sức khỏe, có thể chết.',
+          'Yêu Thần Điện (tà): nhận mọi yêu tộc, không xét linh căn. Có huyết tế và lệnh săn.',
+          'Mỗi tông có tên bậc đệ tử riêng, áo bào và bảo vật riêng cho từng bậc.',
+        ],
+      },
+      {
+        h: 'Phản môn',
+        items: [
+          'Đạo và tông môn ngược phe (đang ở chính phái mà theo Ma tu hoặc đạo tâm từ -40, đang ở ma môn mà theo Phật tu hoặc đạo tâm từ 40) sẽ gặp sự kiện Phản môn: tự xin rời, giấu thân phận, hoặc phản sư diệt tổ.',
+          'Giấu thân phận thì mỗi năm có thể bị lộ: bị trục xuất, mất áo bào và lệnh bài tông môn.',
+          'Thiên Cơ Các trung lập không đuổi ai, nhưng người nghiêng hẳn về một phía sẽ kéo chính hoặc tà tới vây đánh cả Các.',
+        ],
+      },
+      {
+        h: 'Chuỗi nhập Ma giới',
+        items: [
+          'Vừa lên Ma giới, đạo hữu đi qua 4 bước trong khoảng 20 năm đầu: Huyết Trì tẩy thân, Nhận chủ, Tranh địa bàn, Ma Đế triệu kiến.',
+          'Ba Ma quân cho ba lợi thế suốt kiếp: Huyết Ma Quân tu nhanh hơn, Cốt Ma Quân hồi sức khỏe và giảm tâm ma, Ảnh Ma Quân có thể dẫn tới của cải.',
+          'Giành được khe Huyết Phong thì mỗi năm thu linh thạch. Ma Đế ban danh hiệu và bảo vật theo con đường tu.',
+        ],
+      },
+      {
+        h: 'Thọ nguyên và đột phá',
+        items: [
+          'Thọ nguyên mỗi cảnh giới tăng khoảng 1,5 lần: Trúc Cơ 150, Độ Kiếp 300, Ma Đế và Đại La tới 1.050. Trần thọ phàm giới 300, sau phi thăng 1.050.',
+          'Đột phá từ Kim Đan trở lên phụ thuộc linh căn: Phế -15%, Tạp -8%, Địa +3%, Thiên +6%.',
+          'Hỏng 3 lần liền ở cùng cảnh giới thì rơi vào bình cảnh, phải bế quan 10 năm mới thử lại.',
+          'Cảnh giới càng cao, năm trôi càng nhanh, nên mỗi kiếp không dài thêm.',
+        ],
+      },
+      {
+        h: 'Linh thạch và phường thị',
+        items: [
+          'Đồ phường thị đắt dần theo cảnh giới của đạo hữu. Đồ hiếm (Luyện Hư, Độ Kiếp) mỗi kiếp chỉ mua được một lần.',
+          'Kiếm tiền và luyện đan liền nhiều năm thì thu ít dần, đổi việc một năm là về lại như cũ. % tiền từ trang bị tối đa +100%.',
+          'Đan Tụ Khí, Trúc Cơ đắt theo cảnh giới, Tụ Khí mỗi năm chỉ viên đầu đủ lực. Diên Thọ Đan càng dùng càng kém và càng đắt.',
+          'Quá độ nhắc muộn hơn ở cảnh giới cao (Trúc Cơ 10 năm, Nguyên Anh 15, Luyện Hư 20, sau phi thăng 40). Tu luyện không còn bị tính quá độ.',
+        ],
+      },
+      {
+        h: 'Lôi đài',
+        items: [
+          'Trận đấu mới kiểu máu: mỗi lượt chọn một ấn ngũ hành, có nội lực và tuyệt kỹ theo con đường, đỡ tuyệt kỹ của đối thủ bằng nhịp.',
+          'Rút đối thủ bằng 3 lá bài thay cho ống xăm. Lá bài ghi rõ cảnh giới thật của bóng và việc lên đài được kéo ngang cảnh giới với bóng của đạo hữu.',
+          'Bớt may rủi: tuyệt kỹ tối đa 30% máu một đòn, chí mạng ít hơn. Chơi khéo vẫn thắng nhiều hơn chơi bừa.',
+          'Bục Long Ỷ có rồng vàng chầu hai bên, hiện đúng bóng người chơi đã cầm ra đài.',
+        ],
+      },
+      {
+        h: 'Sửa lỗi và giao diện',
+        items: [
+          'Túi đồ có tab theo loại (Pháp y, Vũ khí, Phụ kiện, Đan dược) và sắp xếp theo mới nhận, phẩm, công, thủ. Đồ đang mặc luôn ở trên.',
+          'Sửa lỗi Diên Thọ Đan. Lôi kiếp khó hơn và đổi giao diện pixel. Quái còn hình tự vẽ đã đổi hết sang hình LPC.',
+          'Lời kể giao đấu thắng, thua, hòa đa dạng hơn. Màn đầu thai bố cục 2 bước dễ hiểu hơn.',
+        ],
+      },
+    ],
+  },
+  {
     v: '3.0.0',
     date: '26/10/2026',
     title: 'Luân Hồi Đạo',

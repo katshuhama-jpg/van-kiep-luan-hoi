@@ -1,5 +1,5 @@
 import { addMile } from './miles';
-import { SECT_GEAR } from './items2';
+import { SECT_GEAR, SECT_GEAR_BY } from './items2';
 import type { Character, EffectCtx } from './types';
 
 /**
@@ -14,23 +14,39 @@ export const RANK_TRUNG = ['Học đồ', 'Ký danh đệ tử', 'Thân truyền
 export const RANK_SHORT_CHINH = ['Tạp dịch', 'Ngoại môn', 'Nội môn', 'Chân truyền'];
 export const RANK_SHORT_TA = ['Huyết nô', 'Sát thủ', 'Hộ pháp', 'Thánh tử'];
 export const RANK_SHORT_TRUNG = ['Học đồ', 'Ký danh', 'Thân truyền', 'Truyền nhân'];
+/** 3.1.0: bốn tông môn mới, mỗi tông có tên bậc riêng */
+export const SECT_RANKS: Record<string, { full: string[]; short: string[] }> = {
+  'Phổ Đà Sơn': { full: ['Hỏa đầu tăng', 'Sa di', 'Tỳ kheo', 'Hộ pháp La Hán'], short: ['Hỏa đầu', 'Sa di', 'Tỳ kheo', 'La Hán'] },
+  'Kiếm Cốc': { full: ['Mài kiếm đồng', 'Kiếm đồng', 'Kiếm sĩ', 'Kiếm Cốc truyền nhân'], short: ['Mài kiếm', 'Kiếm đồng', 'Kiếm sĩ', 'Truyền nhân'] },
+  'Vạn Độc Môn': { full: ['Dược nô', 'Độc đồng', 'Độc sứ', 'Vạn Độc Thánh sứ'], short: ['Dược nô', 'Độc đồng', 'Độc sứ', 'Thánh sứ'] },
+  'Yêu Thần Điện': { full: ['Yêu bộc', 'Yêu binh', 'Yêu tướng', 'Yêu Thần tử'], short: ['Yêu bộc', 'Yêu binh', 'Yêu tướng', 'Thần tử'] },
+};
 export function rankShort(c: Character): string {
   const r = rankOf(c);
   const side = sectSide(c);
-  return r < 0 ? '' : ((side === 'ta' ? RANK_SHORT_TA : side === 'trung' ? RANK_SHORT_TRUNG : RANK_SHORT_CHINH)[r] ?? '');
+  if (r < 0) return '';
+  const own = c.sect ? SECT_RANKS[c.sect] : undefined;
+  if (own) return own.short[r] ?? '';
+  return (side === 'ta' ? RANK_SHORT_TA : side === 'trung' ? RANK_SHORT_TRUNG : RANK_SHORT_CHINH)[r] ?? '';
+}
+/** Đồ tông môn theo bậc: tông có đồ riêng thì dùng, không thì theo phe */
+export function sectGear(c: Pick<Character, 'sect'>): string[][] {
+  return (c.sect && SECT_GEAR_BY[c.sect]) || SECT_GEAR[sectSide(c) ?? 'chinh'];
 }
 /** hệ số tu luyện theo bậc: tạp dịch, ngoại môn, nội môn, chân truyền */
 export const RANK_CULT = [1, 1.1, 1.25, 1.4];
 /** chân truyền: đột phá dễ hơn nhờ sư phụ chỉ điểm */
 export const CHAN_TRUYEN_BREAK = 0.08;
 
-const TA_SECTS = ['Huyết Sát Môn'];
+const TA_SECTS = ['Huyết Sát Môn', 'Vạn Độc Môn', 'Yêu Thần Điện'];
 const TRUNG_SECTS = ['Thiên Cơ Các'];
 export const sectSide = (c: Pick<Character, 'sect'>): SectSide | null => (c.sect ? (TA_SECTS.includes(c.sect) ? 'ta' : TRUNG_SECTS.includes(c.sect) ? 'trung' : 'chinh') : null);
 export const rankOf = (c: Character): number => (c.sect ? (c.sectRank ?? 1) : -1);
 
 export function rankName(c: Character, rank = rankOf(c)): string {
   if (rank < 0) return '';
+  const own = c.sect ? SECT_RANKS[c.sect] : undefined;
+  if (own) return own.full[rank] ?? '';
   const side = sectSide(c);
   return (side === 'ta' ? RANK_TA : side === 'trung' ? RANK_TRUNG : RANK_CHINH)[rank] ?? '';
 }
@@ -54,11 +70,12 @@ export function sectCultMul(c: Character): number {
 export function joinSect(c: Character, sect: string, rank: number) {
   c.sect = sect;
   c.sectRank = Math.max(0, Math.min(3, rank));
-  c.daiBiAt = Math.floor(c.age) + 4;
+  c.daiBiAt = Math.floor(c.age) + (sect === 'Kiếm Cốc' ? 3 : 4);
   c.sectSaved = false;
+  c.sectHide = false;
   addMile(c, 'sect', `Bái nhập ${sect}, làm ${rankName(c)}`);
-  const side = sectSide(c) ?? 'chinh';
-  for (let r = 1; r <= c.sectRank; r++) for (const id of SECT_GEAR[side][r] ?? []) if (!c.inventory.includes(id)) c.inventory.push(id);
+  const g = sectGear(c);
+  for (let r = 1; r <= c.sectRank; r++) for (const id of g[r] ?? []) if (!c.inventory.includes(id)) c.inventory.push(id);
 }
 
 /** Thăng một bậc (tối đa chân truyền). Trả về câu kể */
@@ -69,7 +86,7 @@ export function promote(c: Character, ctx: EffectCtx | null, why: string): strin
   const name = rankName(c);
   if (c.sectRank === 2) c.stats.ngoTinh = Math.min(100, c.stats.ngoTinh + 5); // được vào Tàng Kinh Các
   if (c.sectRank === 3 && sectSide(c) === 'trung') c.stats.khiVan = Math.min(100, c.stats.khiVan + 10);
-  const gear = SECT_GEAR[sectSide(c) ?? 'chinh'][c.sectRank] ?? [];
+  const gear = sectGear(c)[c.sectRank] ?? [];
   for (const id of gear) if (!c.inventory.includes(id)) c.inventory.push(id);
   addMile(c, 'sect', `Thăng làm ${name} của ${c.sect}`);
   ctx?.fx('buy', name);
@@ -136,7 +153,7 @@ export function sectConflict(c: Pick<Character, 'sect' | 'path' | 'daoTam'>): bo
 export function leaveSect(c: Character, expelled: boolean) {
   const side = sectSide(c);
   if (expelled && side) {
-    const gear = SECT_GEAR[side].flat();
+    const gear = sectGear(c).flat();
     c.inventory = c.inventory.filter((id) => !gear.includes(id));
     for (const k of Object.keys(c.equipped) as (keyof Character['equipped'])[]) {
       if (gear.includes(c.equipped[k] ?? '')) c.equipped[k] = k === 'ao' ? 'ao_vai' : undefined;

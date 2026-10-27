@@ -58,6 +58,8 @@ export function stat(c: Character, key: keyof Stats, delta: number) {
   if (key === 'tamMa' && delta > 0 && c.daoTam <= -40) delta *= 0.7;
   if (key === 'tamMa' && delta > 0 && omenIs('phat_quang')) delta *= 0.6;
   if (key === 'tamMa' && delta > 0 && c.maKien) delta *= 0.65;
+  // 3.1.0: Phổ Đà Sơn tụng kinh mỗi ngày, tâm ma tăng chậm
+  if (key === 'tamMa' && delta > 0 && c.sect === 'Phổ Đà Sơn' && !c.cosmos) delta *= 0.7;
   // Kiếp Số 10: tâm ma dâng nhanh hơn
   if (key === 'tamMa' && delta > 0 && (c.kiepSo ?? 0) >= 10) delta *= 1.2;
   // càng cao càng khó lên: khí vận, tâm cảnh, ngộ tính trên 80 chỉ tăng nửa

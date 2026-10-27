@@ -6,6 +6,7 @@ import { EVENTS3 } from './events3';
 import { HOOK_EVENTS } from './hookEvents';
 import { TA_EVENTS } from './taEvents';
 import { SECT_EVENTS } from './sectEvents';
+import { SECT_EVENTS2 } from './sectEvents2';
 import { COSMOS_EVENTS } from './cosmosEvents';
 import { HU_EVENTS } from './huEvents';
 import { COSMOS_END_EVENTS } from './cosmosEnds';
@@ -2781,6 +2782,7 @@ export const EVENTS: GameEvent[] = [
   ...HOOK_EVENTS,
   ...TA_EVENTS,
   ...SECT_EVENTS,
+  ...SECT_EVENTS2,
   ...COSMOS_EVENTS,
   ...HU_EVENTS,
   ...COSMOS_END_EVENTS,

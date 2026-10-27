@@ -581,3 +581,13 @@ Mục tiêu: chết nhiều không còn là lợi thế; người chơi lâu có
 - Vẫn dùng roundChance (31 luật ngày) nhưng giảm độ lệch (SKILL_DAMP 0.3, nền kéo về 0.5 x0.6) vì lợi thế mỗi lượt cộng dồn.
 - Mô phỏng: cân sức, chơi khéo 76%, chơi bừa 47%; yếu hơn (nền 0.3) chơi khéo 53%. Trung bình 11 lượt, mỗi bên ~2 tuyệt kỹ.
 - components/ArenaMatch.tsx: màn đấu. Rút bóng (XinXam trong Arena.tsx) giờ là 3 lá bài úp, lật ra bóng đen rồi hiện hình.
+
+## Bản 3.1.0 Vạn Tông Triều Bái (27/10)
+Làm theo plan "Plan 3.1.0 - Xử lý góp ý người chơi" (trừ góp ý #7 nhóm Discord và #9 bán/rèn đồ, đổi hướng tu).
+- Phản môn (lib/game/sect.ts `sectConflict`, `leaveSect`; sectEvents.ts `phan_mon`, `thien_co_vay`): chính phái mà Ma tu hoặc đạo tâm ≤ -40, ma môn mà Phật tu hoặc đạo tâm ≥ 40. Thiên Cơ Các không đuổi, bị chính hoặc tà vây (tối đa 2 lần mỗi kiếp). Giấu thân phận (`sectHide`) mỗi năm 10% bị lộ.
+- Lôi đài: lá bài ghi cảnh giới thật và việc kéo ngang; arenaFight ULT_CAP 0.3, chí mạng 0.08. Công bằng tuyệt đối, cảnh giới thật không tính.
+- Kinh tế (data.ts): `itemPrice` = giá × (1 + 0,25 × cảnh giới); đồ minRealm ≥ 6 mỗi kiếp mua 1 lần (`c.bought`); `grindMul` cho kiếm tiền, luyện đan làm liền năm; % tiền, % đan từ đồ tối đa 100.
+- Quá độ: `safeYears` 6/10/15/20/40 theo cảnh giới; tu luyện không tính (`overworkFree`).
+- Thọ nguyên: REALMS life x1,5 (LK 120 … ĐK 300, Chân Tiên 480 … Đại La 1050); MAX_LIFE 300, MAX_LIFE_ASCENDED 1050. `linhCanBreak` cộng vào breakChance khi đột phá lên Kim Đan tới Độ Kiếp. Bình cảnh: hỏng 3 lần liền cùng cảnh giới (`c.breakFail`) thì breakDelay 10 năm. `yearSpeed` (TC 1,3, KĐ 1,6, NA+ 2, phi thăng 2,5) nhân vào tick năm ở app/choi/page.tsx.
+- Tông mới (lib/game/sectEvents2.ts, sect.ts `SECT_RANKS`, items2.ts `SECT_GEAR_BY`): Phổ Đà Sơn (chính, tâm ma tăng x0,7 trong helpers.stat, Giới luật viện khi trừ yêu), Kiếm Cốc (chính, Đại bỉ 3 năm), Vạn Độc Môn (tà, thử độc), Yêu Thần Điện (tà, yêu tộc). Icon phụ kiện lấy từ bộ 7Soul1 (2 cái nhuộm màu).
+- Chuỗi nhập Ma giới (sectEvents2.ts, `maStep`, `maAt`, `maLord`, `maLand`, `maTitle`; `maChainYear` gọi trong yearTick): Huyết Trì → Nhận chủ (huyet tu +12%, cot hồi sức/giảm tâm ma, anh nhặt của) → Tranh địa bàn (thu linh thạch mỗi năm) → Ma Đế triệu kiến (danh hiệu, đồ theo con đường). Sự kiện cũ `ma_huyet_hai` đã tắt. Mô phỏng: xong chuỗi trung vị 24 năm.

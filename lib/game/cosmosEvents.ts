@@ -282,6 +282,8 @@ export const COSMOS_EVENTS: GameEvent[] = [
     cosmos: 'ma',
     once: true,
     weight: 60,
+    // 3.1.0: thay bằng chuỗi nhập Ma giới (Nhận chủ), giữ lại để gia phả cũ còn đọc được
+    when: () => false,
     title: 'Bờ Huyết Hải',
     text: (c) => `Bạn bước qua cửa Ma giới. Trước mặt là Huyết Hải mênh mông, sóng đỏ như máu. Ba vị ma chúa đang chờ xem ${realmName(c.realm, 'ma')} mới tới đứng về phe ai.`,
     choices: () => [
