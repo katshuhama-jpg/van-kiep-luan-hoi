@@ -432,6 +432,7 @@ select count(*) from vkl_bounty; select status, count(*) from vkl_challenge grou
 - **6 kết cục bí ẩn** không ghi cách mở để người chơi tự tìm hiểu.
 - **Đã bỏ:** gửi quà giữa người chơi.
 - **Database:** không xóa hay drop qua công cụ tự động; Tyler tự chạy câu xóa.
+- **Ra bản theo gói (từ 27/10 tối):** không đẩy lắt nhắt lên production. Làm trên nhánh `next`, gộp nhiều ý tưởng thành một gói, kiểm tra trên bản preview Vercel của nhánh `next`, rồi mới gộp vào `main` một lần kèm cáo thị. Chỉ sửa thẳng `main` khi Tyler nói rõ là lỗi gấp.
 
 ## 14. Nhật ký thay đổi gần đây
 
