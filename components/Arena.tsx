@@ -102,10 +102,14 @@ export default function Arena({ user }: { user: Player | null }) {
     load();
   }, [load]);
   const champ = useMemo(() => (st?.me?.champ && user ? toRival(user.username, st.me.champ) : null), [st, user]);
-  const champRef = useRef<RivalChar | null>(null);
-  if (champ) champRef.current = champ;
-  const usedRef = useRef(0);
-  if (st?.me) usedRef.current = Math.max(usedRef.current, st.me.used);
+  // giữ theo ngày: qua nửa đêm thì bóng và lượt của hôm qua không còn tính
+  const champRef = useRef<{ day: string; c: RivalChar | null }>({ day: vnDate(), c: null });
+  const usedRef = useRef<{ day: string; n: number }>({ day: vnDate(), n: 0 });
+  const today = vnDate();
+  if (champRef.current.day !== today) champRef.current = { day: today, c: null };
+  if (usedRef.current.day !== today) usedRef.current = { day: today, n: 0 };
+  if (champ) champRef.current.c = champ;
+  if (st?.me) usedRef.current.n = Math.max(usedRef.current.n, st.me.used);
   useEffect(() => {
     if (user && st?.me && !champ && cands === null) arenaCandidates(user).then(setCands);
   }, [user, st, champ, cands]);
@@ -129,7 +133,7 @@ export default function Arena({ user }: { user: Player | null }) {
       return null;
     }
     const ch = toRival(user.username, r.champ) ?? target;
-    champRef.current = ch;
+    champRef.current = { day: vnDate(), c: ch };
     return ch;
   }
 
@@ -138,8 +142,8 @@ export default function Arena({ user }: { user: Player | null }) {
     if (!user || busy) return;
     setBusy('go');
     setErr(null);
-    track('arena_go', { hasChamp: !!champRef.current });
-    const ch = champRef.current ?? (await lockChamp());
+    track('arena_go', { hasChamp: !!champRef.current.c });
+    const ch = champRef.current.c ?? (await lockChamp());
     if (!ch) return setBusy(null);
     const r = await arenaDraw(user);
     setBusy(null);
@@ -149,7 +153,7 @@ export default function Arena({ user }: { user: Player | null }) {
       return;
     }
     track('arena_draw');
-    const left = Math.max(0, ARENA_TURNS - usedRef.current);
+    const left = Math.max(0, ARENA_TURNS - usedRef.current.n);
     setMatch({ me: ch, foe: r.shadow, opp: r.opp, revenge: null, leftAfter: Math.max(0, left - 1), key: Date.now() });
   }
 
@@ -167,7 +171,7 @@ export default function Arena({ user }: { user: Player | null }) {
     if (!user || busy) return;
     setBusy(opp);
     setErr(null);
-    const ch = champRef.current ?? (await lockChamp());
+    const ch = champRef.current.c ?? (await lockChamp());
     const foe = ch ? await arenaShadow(opp) : null;
     setBusy(null);
     if (!ch) return;
@@ -175,7 +179,7 @@ export default function Arena({ user }: { user: Player | null }) {
       setErr('Không tìm thấy bóng của đối thủ.');
       return;
     }
-    setMatch({ me: ch, foe, opp, revenge: id, leftAfter: Math.max(0, ARENA_TURNS - usedRef.current), key: Date.now() });
+    setMatch({ me: ch, foe, opp, revenge: id, leftAfter: Math.max(0, ARENA_TURNS - usedRef.current.n), key: Date.now() });
   }
 
   if (!st) return <p>Đang dựng lôi đài...</p>;
@@ -340,13 +344,13 @@ export default function Arena({ user }: { user: Player | null }) {
           user={user}
           leftAfter={match.leftAfter}
           onNext={() => {
-            usedRef.current += 1;
+            usedRef.current.n += 1;
             setMatch(null);
             load();
             void raDai();
           }}
           onDone={() => {
-            if (!match.revenge) usedRef.current += 1;
+            if (!match.revenge) usedRef.current.n += 1;
             setMatch(null);
             load();
           }}

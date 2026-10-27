@@ -1035,18 +1035,19 @@ export default function PlayPage() {
     if (!meta) return;
     const now = await serverNow();
     const day = vnDay();
-    if (checkinClaimed(meta, day)) return;
-    const g = CHECKIN[checkinDay(meta) - 1];
-    const hon = honActive(meta);
-    let m2: Meta = { ...meta, checkin: day };
+    const base = bumpStreak(meta, day) ?? meta;
+    if (checkinClaimed(base, day)) return;
+    const g = CHECKIN[checkinDay(base) - 1];
+    const hon = honActive(base);
+    let m2: Meta = { ...base, checkin: day };
     let phuc = g.phuc ?? 0;
     if (g.hon) {
       if (hon) m2 = addHon(m2, g.hon, now);
       else phuc += g.honPhuc ?? 0;
     }
     if (phuc) m2 = { ...m2, phucDuyen: m2.phucDuyen + phuc };
-    if (g.money || g.item) m2 = { ...m2, checkinNext: { money: (meta.checkinNext?.money ?? 0) + (g.money ?? 0) || undefined, item: g.item ?? meta.checkinNext?.item } };
-    track('checkin', { day: checkinDay(meta) });
+    if (g.money || g.item) m2 = { ...m2, checkinNext: { money: (base.checkinNext?.money ?? 0) + (g.money ?? 0) || undefined, item: g.item ?? base.checkinNext?.item } };
+    track('checkin', { day: checkinDay(base) });
     setMeta(m2);
     saveMeta(user, m2).catch(() => {});
   };
@@ -1154,8 +1155,11 @@ export default function PlayPage() {
     if (!userRef.current || !c || c.dead) return;
     payoutClaim(userRef.current)
       .then((ps) => {
-        const ch = charRef.current;
-        if (!ps.length || !ch || ch.dead) return;
+        const ch0 = charRef.current;
+        if (!ps.length) return;
+        // phúc duyên và Hồn lực thuộc tài khoản: nhân vật vừa chết vẫn phải cộng
+        const live = !!ch0 && !ch0.dead;
+        const ch = ch0 ?? ({ log: [] } as unknown as Character);
         // quà từng trận lôi đài đã hiện ở thẻ kết quả trận, không bật bảng nữa
         const phuc = ps.filter((p) => p.kind === 'phuc' && !/^(Thắng lôi đài|Lôi đài)/.test(p.note));
         if (phuc.length) setGifts(phuc);
@@ -1184,9 +1188,11 @@ export default function PlayPage() {
             ch.log.push({ age: Math.floor(ch.age), tone: 'big', text: `${p.note}: +${p.amount} phúc duyên.` });
             continue;
           }
+          if (!live) continue;
           money(ch, p.amount);
           ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: `${p.note}: +${p.amount} linh thạch.` });
         }
+        if (!live) return;
         persist(true);
         rerender();
       })

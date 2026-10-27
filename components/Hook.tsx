@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Sheet } from './Panels';
-import { CHECKIN, QUEST_BONUS, QUEST_REWARD, canChiDay, checkinClaimed, checkinDay, dailyOf, omenToday, questName, streakGift } from '@/lib/game/hook';
+import { CHECKIN, QUEST_BONUS, QUEST_REWARD, canChiDay, checkinClaimed, checkinDay, dailyOf, omenToday, questName } from '@/lib/game/hook';
 import { honActive } from '@/lib/game/luanHoi';
 import type { Meta } from '@/lib/game/types';
 import { rumorHead, rumorToday } from '@/lib/game/collect';
@@ -59,7 +59,6 @@ export function TodayScroll({ meta }: { meta: Meta }) {
   const o = omenToday();
   const d = dailyOf(meta);
   const n = meta.streak?.n ?? 1;
-  const next = streakGift(n + 1);
   return (
     <section className={`thien-tuong o-${o.id}`} aria-label={`Thiên tượng hôm nay: ${o.name}`}>
       <div className="tt-head">
@@ -86,7 +85,6 @@ export function TodayScroll({ meta }: { meta: Meta }) {
       <div className="tt-daily">
         <div className="tt-streak">
           <b>Chuỗi tu luyện {n} ngày</b>
-          {next && <small> · mai thêm +{next.money} linh thạch</small>}
         </div>
         <ul className="tt-quests" aria-label={`Nhiệm vụ hôm nay, mỗi việc +${QUEST_REWARD} phúc duyên, xong cả 3 thêm +${QUEST_BONUS}`}>
           {d.quests.map((id) => (

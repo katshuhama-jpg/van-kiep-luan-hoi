@@ -431,6 +431,9 @@ export function ShareCard({ c, ending, epitaph, isNew = false }: { c: Character;
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const { grade } = gradeOf(c, ending, isNew);
+  const urlRef = useRef<string | null>(null);
+  urlRef.current = url;
+  useEffect(() => () => void (urlRef.current && URL.revokeObjectURL(urlRef.current)), []);
   useEffect(() => {
     let live = true;
     rankPct(c).then((p) => live && setPct(p));

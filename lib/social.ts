@@ -127,6 +127,8 @@ export async function payoutClaim(user: Player | null): Promise<{ kind?: string;
   if (!sb || !user) return [];
   const r3 = await sb.rpc('vkl_payout_claim3', { p_token: user.token });
   if (!r3.error) return (r3.data as { kind: string; amount: number; note: string }[]) ?? [];
+  // lỗi mạng tạm thời thì thôi, đợi lần sau; chỉ lùi về hàm cũ khi máy chủ chưa có hàm mới
+  if (r3.error.code !== 'PGRST202' && !/function .* does not exist|Could not find the function/i.test(r3.error.message)) return [];
   const r = await sb.rpc('vkl_payout_claim2', { p_token: user.token });
   if (!r.error) return (r.data as { kind: string; amount: number; note: string }[]) ?? [];
   const { data, error } = await sb.rpc('vkl_payout_claim', { p_token: user.token });
