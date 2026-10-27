@@ -1,3 +1,4 @@
+import { sealLv } from './forge';
 import { applyProphecy, checkNewbieGoal, newbieGoal, omenIs } from './hook';
 import { loreDone, lore2Count, quyNhatDone } from './lore';
 import { ksBreak, ksOf, ksPhuc } from './luanHoi';
@@ -610,6 +611,9 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
   const age = Math.floor(c.age);
   const talents = opts.talents ?? [];
   if (c.breakDelay > 0) c.breakDelay -= 1;
+  // ấn Mộc trên vũ khí: mỗi năm hồi thêm sức khỏe
+  const moc = sealLv(c, 'moc');
+  if (moc) stat(c, 'sucKhoe', moc);
 
   // Trọng tâm năm nay
   const focus = opts.closed ? 'tu_luyen' : age >= FOCUS[c.focus].minAge ? c.focus : null;

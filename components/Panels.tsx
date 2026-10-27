@@ -20,6 +20,8 @@ import { BIG_TALENTS, honActive, ksBase, ksOf, ksOneBig } from '@/lib/game/luanH
 import { LORE, LORE2_TOTAL, LORE_TOTAL, lore1Count, lore2Count, quyNhatDone } from '@/lib/game/lore';
 import { ELEMENTS } from '@/lib/game/nguhanh';
 import { CheckinRow, RumorLine, TodayScroll } from './Hook';
+import BagDoll from './BagDoll';
+import { FORGE_CHANCE, FORGE_COST, FORGE_MAX, FORGE_PER, canSmelt, forgeLevel, smeltValue } from '@/lib/game/forge';
 import { ArenaNudge } from './LoiDaiButton';
 import { useAuth } from '@/lib/useAuth';
 import { addFeedback } from '@/lib/storage';
@@ -518,10 +520,16 @@ export function BagSheet({
   book,
   startTab = 'tui',
   onSeen,
+  onSmelt,
+  onForge,
+  onSeal,
 }: {
   c: Character;
   onEquip: (id: string) => void;
   onUsePill: (id: string) => void;
+  onSmelt?: (id: string) => void;
+  onForge?: () => void;
+  onSeal?: (el: import('@/lib/game/types').Element) => void;
   onClose: () => void;
   book: string[];
   startTab?: 'tui' | 'kho';
@@ -560,81 +568,7 @@ export function BagSheet({
           Bảo khố {got}/{HIDDEN_ITEMS.length}
         </button>
       </div>
-      {tab === 'kho' ? (
-        <BaoKho book={book} />
-      ) : (
-        <>
-          <p className="note" style={{ marginTop: 0 }}>
-            Trang bị đang mặc: {total || 'chưa có chỉ số gì'}
-          </p>
-          <div className="bag-filter">
-            <div className="bag-kinds" role="tablist" aria-label="Loại đồ">
-              {BAG_KINDS.map(([k, label]) => (
-                <button key={k} role="tab" aria-selected={kind === k} className={kind === k ? 'on' : ''} onClick={() => setKind(k)}>
-                  {label} <small>{count(k)}</small>
-                </button>
-              ))}
-            </div>
-            {kind !== 'dan' && (
-              <label className="bag-sort">
-                Xếp theo
-                <select value={sort} onChange={(e) => setSort(e.target.value as BagSort)}>
-                  <option value="new">Mới nhận</option>
-                  <option value="rare">Phẩm</option>
-                  <option value="atk">Công</option>
-                  <option value="def">Thủ</option>
-                </select>
-              </label>
-            )}
-          </div>
-          <div className="items">
-            {owned.map((it) => {
-              const on = c.equipped[it.slot] === it.id;
-              return (
-                <div key={it.id} className="item">
-                  <div className="item-icon">
-                    <ItemIcon item={it} />
-                  </div>
-                  <div className="item-body">
-                    <span>
-                      {c.legend?.item === it.id ? (
-                        <b className="legend-name">
-                          ★ {c.legend.name} ({it.name}, {c.legend.lv} kiếp)
-                        </b>
-                      ) : (
-                        it.name
-                      )}{' '}
-                      {it.rare ? <em className={`rare-tag r${it.rare}`}>{RARE_TXT[it.rare]}</em> : null}
-                    </span>
-                    {it.fx && <small className="fx-line">{fxText(it.fx)}</small>}
-                    <small>{it.desc}</small>
-                  </div>
-                  <button className={`btn ${on ? 'btn-jade' : ''}`} onClick={() => onEquip(it.id)}>
-                    {on ? 'Đang dùng' : 'Dùng'}
-                  </button>
-                </div>
-              );
-            })}
-            {pills.map((p) => (
-              <div key={p.id} className="item">
-                <div className="item-icon">
-                  <ItemIcon pill={p.id} />
-                </div>
-                <div className="item-body">
-                  <span>
-                    {p.name} x{c.pills[p.id]}
-                  </span>
-                  <small>{p.desc}</small>
-                </div>
-                <button className="btn btn-red" onClick={() => onUsePill(p.id)}>
-                  Uống
-                </button>
-              </div>
-            ))}
-            {!owned.length && !pills.length && <p className="note">{kind === 'all' ? 'Túi trống trơn.' : 'Chưa có món nào loại này.'}</p>}
-          </div>
-        </>
-      )}
+      {tab === 'kho' ? <BaoKho book={book} /> : <BagDoll c={c} onEquip={onEquip} onUsePill={onUsePill} onSmelt={onSmelt} onForge={onForge} onSeal={onSeal} />}
     </Sheet>
   );
 }

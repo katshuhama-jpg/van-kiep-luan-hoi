@@ -1,3 +1,4 @@
+import { forgeMul, sealAtk, sealDef, sealExp, sealHp } from './forge';
 import { ksDrop, ksLegendPer, ksMonster } from './luanHoi';
 import { huntDeath, huntLose } from './fightLines';
 import { omenIs } from './hook';
@@ -587,6 +588,10 @@ export function playerStats(c: Character): Fighter {
   hp *= 1 + g.hp / 100;
   // thần binh truyền kiếp: mỗi đời truyền qua +8% công (tối đa 10 đời)
   if (c.legend && c.equipped.vu_khi === c.legend.item) atk *= 1 + Math.min(10, c.legend.lv) * ksLegendPer(c);
+  // vũ khí đã rèn
+  atk *= forgeMul(c) * sealAtk(c);
+  def *= sealDef(c);
+  hp *= sealHp(c);
   // tuổi già sức yếu
   if (c.age / c.lifespan > 0.85) ((atk *= 0.85), (hp *= 0.85));
   return { hp: Math.round(hp), atk: Math.round(atk), def: Math.round(def) };
@@ -630,7 +635,7 @@ export function killExp(c: Character, m: Monster): number {
   const factor = d <= -4 ? 0.15 : clamp(1 + 0.35 * d, 0.3, 2.4);
   // quái tiến hóa cho nhiều tu vi hơn
   const tierBonus = (1 + tierOf(c, m) * 0.25) * (omenIs('yeu_trieu') ? 1.25 : 1);
-  return Math.max(1, Math.round(base * factor * tierBonus * c.linhCanMul * (1 + gearFx(c.equipped).exp / 100)));
+  return Math.max(1, Math.round(base * factor * tierBonus * c.linhCanMul * (1 + gearFx(c.equipped).exp / 100) * sealExp(c)));
 }
 
 /** Hệ số rơi đồ chung (26/10: giảm 25% vì người chơi nhặt đồ quá dễ) */

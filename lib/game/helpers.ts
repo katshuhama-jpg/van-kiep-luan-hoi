@@ -1,3 +1,4 @@
+import { sealFatal } from './forge';
 import { omenCultMul, omenIs } from './hook';
 import { swornCultMul } from './social';
 import { masterSaves } from './sect';
@@ -198,7 +199,7 @@ export function fatal(c: Character, ctx: EffectCtx, chance: number, cause: strin
   // khí vận chỉ giảm rủi ro theo tỉ lệ (tối đa 20%), không còn trừ thẳng làm hiểm cảnh nhỏ gần như vô hại
   const luckMul = 1 - clamp((c.stats.khiVan - 50) / 250, -0.2, 0.2);
   // 3.2.0: ba kiếp đầu của tài khoản được trời thương tới khi chọn con đường tu luyện
-  const newbie = c.lifeNo <= NEWBIE_LIVES && !c.path ? NEWBIE_FATAL_MUL : 1;
+  const newbie = (c.lifeNo <= NEWBIE_LIVES && !c.path ? NEWBIE_FATAL_MUL : 1) * sealFatal(c);
   const p = clamp(chance * hard * tough * (chance < 1 ? youngMul(c.age) * newbie : 1) * (chance < 1 ? luckMul : 1), 0.01, chance >= 1 ? 1 : 0.95);
   if (ctx.rnd() >= p) return null;
   if (c.oanHon) {

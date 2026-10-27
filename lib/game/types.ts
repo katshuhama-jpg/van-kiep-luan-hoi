@@ -113,6 +113,7 @@ export interface Character {
   forge?: number; // cấp rèn của vũ khí đang cầm (+1..+5)
   forgeItem?: string; // vũ khí đã rèn (đổi vũ khí thì cấp rèn không theo)
   tinhHoa?: number; // tinh hoa luyện hóa từ đồ thừa
+  seals?: Partial<Record<Element, number>>; // ấn ngũ hành khắc trên vũ khí đã rèn
   maDauMet?: number; // 3.2.0 số lần gặp bóng ma đầu trong kiếp này (tối đa 2)
   maStep?: number; // 3.1.0 chuỗi nhập Ma giới: đã qua mấy bước (0-4)
   arc?: Record<string, number>; // 3.1.0 cốt truyện sau phi thăng: đang ở bước nào
