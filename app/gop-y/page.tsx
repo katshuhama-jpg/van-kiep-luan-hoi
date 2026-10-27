@@ -32,6 +32,7 @@ export default function GopY() {
   const [busy, setBusy] = useState(false);
   const [sort, setSort] = useState<'top' | 'new'>('top');
   const [filter, setFilter] = useState<FeedbackKind | 'all'>('all');
+  const [state, setState] = useState<'open' | 'done' | 'all'>('open');
 
   const load = () => listFeedback(user).then((l) => setList(l ?? []));
   useEffect(() => {
@@ -58,8 +59,12 @@ export default function GopY() {
     setList((l) => l?.map((x) => (x.id === f.id ? { ...x, votes: n, voted: true } : x)) ?? null);
   };
 
-  const shown = (list ?? [])
-    .filter((f) => filter === 'all' || f.kind === filter)
+  const isDone = (f: Feedback) => f.status === 'da_xong';
+  const byKind = (list ?? []).filter((f) => filter === 'all' || f.kind === filter);
+  const nOpen = byKind.filter((f) => !isDone(f)).length;
+  const nDone = byKind.length - nOpen;
+  const shown = byKind
+    .filter((f) => state === 'all' || (state === 'done') === isDone(f))
     .sort((a, b) => (sort === 'top' ? b.votes - a.votes || +new Date(b.created_at) - +new Date(a.created_at) : +new Date(b.created_at) - +new Date(a.created_at)));
 
   return (
@@ -105,25 +110,39 @@ export default function GopY() {
         )}
       </section>
 
-      <div className="tabs" style={{ marginTop: 10 }}>
-        <button className={sort === 'top' ? 'on' : ''} onClick={() => setSort('top')}>
-          Nhiều đồng ý
-        </button>
-        <button className={sort === 'new' ? 'on' : ''} onClick={() => setSort('new')}>
-          Mới nhất
-        </button>
-      </div>
       <div className="fb-filter">
-        {[{ id: 'all' as const, name: 'Tất cả' }, ...KINDS].map((k) => (
-          <button key={k.id} className={filter === k.id ? 'on' : ''} onClick={() => setFilter(k.id)}>
-            {k.name}
-          </button>
-        ))}
+        <div className="fb-state" role="tablist" aria-label="Trạng thái">
+          {(
+            [
+              { id: 'open', name: 'Chưa giải quyết', n: nOpen },
+              { id: 'done', name: 'Đã giải quyết', n: nDone },
+              { id: 'all', name: 'Tất cả', n: byKind.length },
+            ] as const
+          ).map((t) => (
+            <button key={t.id} role="tab" aria-selected={state === t.id} className={state === t.id ? 'on' : ''} onClick={() => setState(t.id)}>
+              {t.name} <small>{t.n}</small>
+            </button>
+          ))}
+        </div>
+        <div className="fb-selects">
+          <select aria-label="Loại góp ý" value={filter} onChange={(e) => setFilter(e.target.value as FeedbackKind | 'all')}>
+            <option value="all">Mọi loại</option>
+            {KINDS.map((k) => (
+              <option key={k.id} value={k.id}>
+                {k.name}
+              </option>
+            ))}
+          </select>
+          <select aria-label="Sắp xếp" value={sort} onChange={(e) => setSort(e.target.value as 'top' | 'new')}>
+            <option value="top">Nhiều đồng ý</option>
+            <option value="new">Mới nhất</option>
+          </select>
+        </div>
       </div>
 
       <div className="fb-list">
         {list === null && <p className="note">Đang tải...</p>}
-        {list && !shown.length && <p className="note">Chưa có góp ý nào. Hãy là người đầu tiên!</p>}
+        {list && !shown.length && <p className="note">{state === 'done' ? 'Chưa có góp ý nào được giải quyết ở mục này.' : state === 'open' && byKind.length ? 'Mọi góp ý ở mục này đã được giải quyết.' : 'Chưa có góp ý nào. Hãy là người đầu tiên!'}</p>}
         {shown.map((f) => (
           <article key={f.id} className={`fb-item ${f.status}`}>
             <button className={`fb-vote ${f.voted ? 'on' : ''}`} onClick={() => vote(f)} disabled={!user || f.voted} aria-label={f.voted ? `Đã đồng ý, ${f.votes} phiếu` : `Đồng ý, hiện ${f.votes} phiếu`}>
