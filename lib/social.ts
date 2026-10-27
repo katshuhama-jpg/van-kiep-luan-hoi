@@ -124,6 +124,8 @@ export async function bountyClear(user: Player | null): Promise<number> {
 export async function payoutClaim(user: Player | null): Promise<{ kind?: string; amount: number; note: string }[]> {
   const sb = supabase();
   if (!sb || !user) return [];
+  const r3 = await sb.rpc('vkl_payout_claim3', { p_token: user.token });
+  if (!r3.error) return (r3.data as { kind: string; amount: number; note: string }[]) ?? [];
   const r = await sb.rpc('vkl_payout_claim2', { p_token: user.token });
   if (!r.error) return (r.data as { kind: string; amount: number; note: string }[]) ?? [];
   const { data, error } = await sb.rpc('vkl_payout_claim', { p_token: user.token });
@@ -345,4 +347,20 @@ export async function arenaDraw(user: Player | null): Promise<{ opp?: string; sh
   if (error || !data) return null;
   const d = data as { opp?: string; shadow?: unknown; again?: boolean; error?: string };
   return { ...d, shadow: d.opp && d.shadow ? toRival(d.opp, d.shadow) : null };
+}
+
+/** Lôi đài Phi Kiếm (3.2.0): ghi trận, thua vẫn +1 điểm; thưởng phúc và Hồn lực vào hàng chờ quà */
+export async function arenaFight3(user: Player | null, opp: string, win: boolean, detail: string, revenge: number | null, hp: number, swords: number): Promise<{ pts?: number; used?: number; winRun?: number; phuc?: number; hon?: number; tier?: number; error?: string } | null> {
+  const sb = supabase();
+  if (!sb || !user) return null;
+  const { data, error } = await sb.rpc('vkl_arena_fight3', { p_token: user.token, p_opp: opp, p_win: win, p_detail: detail, p_revenge: revenge ?? 0, p_hp: hp, p_swords: swords });
+  return error ? null : (data as { pts?: number; used?: number; error?: string });
+}
+
+/** Lượt lôi đài còn lại hôm nay và nợ báo thù, cho chấm đỏ ở nút Lôi đài */
+export async function arenaTierInfo(user: Player | null): Promise<{ pts: number; tier: number; left: number; revenge: number } | null> {
+  const sb = supabase();
+  if (!sb || !user) return null;
+  const { data, error } = await sb.rpc('vkl_arena_tier_info', { p_token: user.token });
+  return error ? null : (data as { pts: number; tier: number; left: number; revenge: number } | null);
 }

@@ -43,7 +43,7 @@ function ultFx(r: RivalChar): FxSpec {
 type Log = { n: number; lines: string[]; cls: 'w' | 'l' | 'c' | 'u' };
 type Pop = { id: number; side: 'me' | 'foe'; v: number; tag?: string };
 
-function HpBar({ name, side, s, flip }: { name: string; side: FightState['me']; s?: string; flip?: boolean }) {
+export function HpBar({ name, side, s, flip }: { name: string; side: FightState['me']; s?: string; flip?: boolean }) {
   const pct = Math.max(0, side.hp / side.max) * 100;
   return (
     <div className={`af-hp ${flip ? 'r' : ''}`}>

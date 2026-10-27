@@ -1,5 +1,35 @@
+'use client';
+
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { currentPlayer } from '@/lib/auth';
 import { ruleOf } from '@/lib/game/arena';
+import { arenaTierInfo } from '@/lib/social';
+
+/** Số lượt lôi đài còn hôm nay và nợ báo thù (null khi chưa đăng nhập hoặc chưa tải xong) */
+export function useArenaLeft(): { left: number; revenge: number } | null {
+  const [v, setV] = useState<{ left: number; revenge: number } | null>(null);
+  useEffect(() => {
+    const u = currentPlayer();
+    if (!u) return;
+    arenaTierInfo(u)
+      .then((r) => r && setV({ left: r.left, revenge: r.revenge }))
+      .catch(() => {});
+  }, []);
+  return v;
+}
+
+/** Nút ra đài nhanh ở màn chết: chỉ hiện khi còn lượt hoặc có nợ báo thù */
+export function ArenaNudge({ onClick }: { onClick?: () => void }) {
+  const v = useArenaLeft();
+  if (!v || (v.left <= 0 && v.revenge <= 0)) return null;
+  return (
+    <Link href="/loi-dai" className="btn arena-nudge" onClick={onClick}>
+      ⚔ Ra đài 25 giây
+      <small>{v.left > 0 ? `còn ${v.left} lượt hôm nay` : `${v.revenge} kẻ chờ báo thù`}</small>
+    </Link>
+  );
+}
 
 /** Kiếm bắt chéo vẽ pixel */
 function Swords() {
@@ -57,8 +87,15 @@ function Swords() {
 
 /** Nút Lôi đài nổi bật kiểu pixel: nền đỏ son, viền vát sáng tối, đinh vàng ở góc, sao lấp lánh theo nhịp */
 export default function LoiDaiButton({ onClick }: { onClick?: () => void }) {
+  const v = useArenaLeft();
+  const dot = v ? v.left + v.revenge : 0;
   return (
     <Link href="/loi-dai" className="menu-loidai" onClick={onClick}>
+      {dot > 0 && (
+        <b className="ml-dot" aria-label={`Còn ${v!.left} lượt`}>
+          {dot}
+        </b>
+      )}
       <i className="ml-stud a" aria-hidden="true" />
       <i className="ml-stud b" aria-hidden="true" />
       <i className="ml-stud c" aria-hidden="true" />

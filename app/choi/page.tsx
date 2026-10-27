@@ -1149,9 +1149,22 @@ export default function PlayPage() {
       .then((ps) => {
         const ch = charRef.current;
         if (!ps.length || !ch || ch.dead) return;
-        const phuc = ps.filter((p) => p.kind === 'phuc');
+        // quà từng trận lôi đài đã hiện ở thẻ kết quả trận, không bật bảng nữa
+        const phuc = ps.filter((p) => p.kind === 'phuc' && !/^(Thắng lôi đài|Lôi đài)/.test(p.note));
         if (phuc.length) setGifts(phuc);
         for (const p of ps) {
+          if (p.kind === 'hon') {
+            const m0 = metaRef.current;
+            const lh = honActive(m0);
+            if (m0) {
+              const m2 = lh ? addHon(m0, p.amount, Date.now()) : { ...m0, phucDuyen: (m0.phucDuyen ?? 0) + Math.round(p.amount / 2) };
+              metaRef.current = m2;
+              setMeta(m2);
+              saveMeta(userRef.current, m2).catch(() => {});
+            }
+            ch.log.push({ age: Math.floor(ch.age), tone: 'big', text: lh ? `${p.note}: +${p.amount} Hồn lực.` : `${p.note}: +${Math.round(p.amount / 2)} phúc duyên.` });
+            continue;
+          }
           if (p.kind === 'phuc') {
             // quà của Thiên Đạo: phúc duyên giữ qua các kiếp
             const m0 = metaRef.current;

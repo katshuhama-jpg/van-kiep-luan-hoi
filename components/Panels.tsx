@@ -20,6 +20,7 @@ import { BIG_TALENTS, honActive, ksBase, ksOf, ksOneBig } from '@/lib/game/luanH
 import { LORE, LORE2_TOTAL, LORE_TOTAL, lore1Count, lore2Count, quyNhatDone } from '@/lib/game/lore';
 import { ELEMENTS } from '@/lib/game/nguhanh';
 import { CheckinRow, TodayScroll } from './Hook';
+import { ArenaNudge } from './LoiDaiButton';
 import { useAuth } from '@/lib/useAuth';
 import { addFeedback } from '@/lib/storage';
 
@@ -1284,6 +1285,7 @@ export function DeathSheet({
       <div style={{ marginTop: 10 }}>
         <ShareCard c={c} ending={ending} epitaph={text.trim()} />
       </div>
+      <ArenaNudge />
       <button
         className="btn btn-red btn-big"
         style={{ width: '100%', marginTop: 10 }}
