@@ -522,14 +522,12 @@ export function BagSheet({
   onSeen,
   onSmelt,
   onForge,
-  onSeal,
 }: {
   c: Character;
   onEquip: (id: string) => void;
   onUsePill: (id: string) => void;
   onSmelt?: (id: string) => void;
-  onForge?: () => void;
-  onSeal?: (el: import('@/lib/game/types').Element) => void;
+  onForge?: () => import('@/lib/game/forge').ForgeResult | null;
   onClose: () => void;
   book: string[];
   startTab?: 'tui' | 'kho';
@@ -568,7 +566,7 @@ export function BagSheet({
           Bảo khố {got}/{HIDDEN_ITEMS.length}
         </button>
       </div>
-      {tab === 'kho' ? <BaoKho book={book} /> : <BagDoll c={c} onEquip={onEquip} onUsePill={onUsePill} onSmelt={onSmelt} onForge={onForge} onSeal={onSeal} />}
+      {tab === 'kho' ? <BaoKho book={book} /> : <BagDoll c={c} onEquip={onEquip} onUsePill={onUsePill} onSmelt={onSmelt} onForge={onForge} />}
     </Sheet>
   );
 }

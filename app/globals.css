@@ -4238,3 +4238,46 @@ button.shadow-card { cursor: pointer; }
 .th-pick.on { background: #ffe9b0; box-shadow: 0 0 0 3px #b0201a; }
 .th-btn { font-size: 15px; }
 .rank-thach { align-self: flex-start; margin-top: 2px; padding: 1px 8px; font-size: 13px; font-weight: 700; color: #fff3dc; text-decoration: none; background: #7a1e18; border: 2px solid #1f160d; }
+
+/* ===== Lò rèn ===== */
+.forge-open { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 1px; }
+.forge-open small { font-size: 12px; font-weight: 500; opacity: 0.9; }
+.el-tag { padding: 0 4px; font-weight: 700; color: #1f160d; border: 1px solid #1f160d; }
+.el-tag.e-kim { background: #d8d8e8; } .el-tag.e-moc { background: #8ad89a; } .el-tag.e-thuy { background: #8ab8f0; } .el-tag.e-hoa { background: #f09a7a; } .el-tag.e-tho { background: #e0b870; }
+.forge-wrap { position: fixed; inset: 0; z-index: 95; display: flex; align-items: center; justify-content: center; padding: 12px; background: rgba(10, 6, 4, 0.75); }
+.forge-scene { width: 100%; max-width: 420px; max-height: calc(100dvh - 24px); overflow-y: auto; display: flex; flex-direction: column; background: #f3e6c4; border: 3px solid #1f160d; box-shadow: 4px 4px 0 #1f160d; }
+.fs-head { display: flex; align-items: center; gap: 8px; padding: 8px 10px; color: #fff3dc; background: #2a1f18; }
+.fs-head b { font-size: 20px; flex: 1; }
+.fs-tinh { padding: 1px 8px; font-size: 14px; font-weight: 700; color: #ffd36b; border: 2px solid #ffd36b; }
+.fs-head .ss-x { color: #fff3dc; border-color: #fff3dc; }
+.fs-stage { position: relative; height: 240px; overflow: hidden; background: radial-gradient(circle at 50% 85%, #7a2a10 0 22%, #2a120c 23% 45%, #120806 46%); border-bottom: 3px solid #1f160d; image-rendering: pixelated; }
+.fs-fire { position: absolute; left: 50%; bottom: 120px; transform: translateX(-50%); opacity: 0.5; }
+.fs-de { position: absolute; left: 50%; bottom: -34px; width: 192px; height: 192px; transform: translateX(-50%); image-rendering: pixelated; }
+.fs-weapon { position: absolute; left: 50%; top: 22px; width: 112px; height: 112px; transform: translateX(-50%) rotate(-45deg); display: grid; place-items: center; filter: drop-shadow(0 0 8px #ff9a4a); }
+.fs-weapon img, .fs-weapon svg { width: 112px; height: 112px; image-rendering: pixelated; }
+.fs-weapon i { position: absolute; right: 0; bottom: 6px; transform: rotate(45deg); padding: 0 4px; font-style: normal; font-weight: 700; color: #fff; background: #b0201a; border: 2px solid #1f160d; }
+.fs-stage.hitting .fs-weapon { animation: fsShake 0.36s steps(2) infinite; }
+.fs-weapon.broken { filter: grayscale(1) brightness(0.5); animation: fsBreak 0.5s steps(4) forwards; }
+@keyframes fsShake { 50% { transform: translateX(-50%) rotate(-45deg) translateY(3px); } }
+@keyframes fsBreak { to { transform: translateX(-50%) rotate(-10deg) translateY(40px); opacity: 0.4; } }
+.fs-hammer { position: absolute; left: calc(50% + 6px); top: 14px; width: 88px; height: 88px; image-rendering: pixelated; transform-origin: 85% 85%; transform: scaleX(-1) rotate(25deg); }
+.fs-hammer.swing { animation: fsSwing 0.36s steps(3) infinite; }
+@keyframes fsSwing { 0% { transform: scaleX(-1) rotate(25deg); } 45% { transform: scaleX(-1) rotate(-30deg); } 100% { transform: scaleX(-1) rotate(25deg); } }
+.fs-spark { position: absolute; left: 50%; top: 78px; width: 0; height: 0; }
+.fs-spark i { position: absolute; width: 6px; height: 6px; background: #ffd36b; box-shadow: 0 0 0 2px #e05a1a; transform: rotate(var(--a)) translateX(0); animation: fsSpark 0.35s steps(4) forwards; }
+@keyframes fsSpark { to { transform: rotate(var(--a)) translateX(46px); opacity: 0; } }
+.fs-stamp { position: absolute; left: 50%; top: 36%; transform: translate(-50%, -50%) rotate(-8deg); padding: 4px 14px; font-size: 40px; font-weight: 700; border: 4px solid currentColor; background: rgba(0, 0, 0, 0.6); animation: ldmStamp 0.35s steps(4) both; }
+.fs-stamp.ok { color: #ffd36b; } .fs-stamp.fail { color: #c8b89a; } .fs-stamp.break { color: #ff5a4a; }
+.fs-stage.r-ok { box-shadow: inset 0 0 40px #ffd36b; }
+.fs-stage.r-break { animation: kiepShake 0.3s steps(3) 2; }
+.fs-info { display: flex; flex-direction: column; gap: 8px; padding: 10px 12px 14px; }
+.fs-name { font-size: 20px; }
+.fs-el { padding: 4px 8px; font-size: 13px; background: #fff8e6; border: 2px solid #1f160d; box-shadow: inset 4px 0 0 var(--ec); }
+.fs-res { margin: 0; padding: 6px 8px; font-size: 14px; border: 2px solid #1f160d; }
+.fs-res.ok { background: #e6f2d8; } .fs-res.fail { background: #efe6d0; } .fs-res.break { background: #f6d6cc; color: #7a1e18; font-weight: 700; }
+.fs-odds { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; margin: 0; font-size: 14px; }
+.fs-odds dt { color: #6a5a44; }
+.fs-odds dd { margin: 0; font-weight: 700; }
+.fs-odds dd.bad { color: #b0201a; }
+.fs-go { width: 100%; }
+@media (prefers-reduced-motion: reduce) { .fs-hammer.swing, .fs-stage.hitting .fs-weapon { animation: none; } }

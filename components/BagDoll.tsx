@@ -5,8 +5,9 @@ import ItemIcon from './ItemIcon';
 import Sprite from './Sprite';
 import { ITEMS, PILLS, fxText as fxTextData, gearFx, type Item } from '@/lib/game/data';
 import { playerStats } from '@/lib/game/combat';
-import { FORGE_CHANCE, FORGE_COST, FORGE_MAX, FORGE_PER, SEALS, SEAL_COST, canSmelt, forgeLevel, sealLv, smeltValue } from '@/lib/game/forge';
-import type { Character, Element, Slot } from '@/lib/game/types';
+import { FORGE_MAX, canSmelt, elFx, forgeLevel, itemEl, smeltValue, type ForgeResult } from '@/lib/game/forge';
+import ForgeScene from './ForgeScene';
+import type { Character, Slot } from '@/lib/game/types';
 
 const RARE_TXT = ['Thường', 'Tốt', 'Hiếm', 'Cực phẩm'];
 const SLOT_NAME: Record<Slot, string> = { ao: 'Áo', vu_khi: 'Vũ khí', phu_kien: 'Phụ kiện' };
@@ -39,7 +40,8 @@ function writePref(k: string, v: string) {
  * Túi đồ kiểu búp bê: nhân vật ở giữa, ô trang bị quanh người, chỉ số bên cạnh, lưới đồ ở dưới.
  * Chạm một ô để xem chi tiết và thao tác: dùng, luyện hóa, rèn, khắc ấn ngũ hành.
  */
-export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onForge, onSeal }: { c: Character; onEquip: (id: string) => void; onUsePill: (id: string) => void; onSmelt?: (id: string) => void; onForge?: () => void; onSeal?: (el: Element) => void }) {
+export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onForge }: { c: Character; onEquip: (id: string) => void; onUsePill: (id: string) => void; onSmelt?: (id: string) => void; onForge?: () => ForgeResult | null }) {
+  const [forging, setForging] = useState(false);
   const [kind, setKind] = useState<Kind>(() => (readPref('vkl.bagKind') as Kind) || 'all');
   useEffect(() => writePref('vkl.bagKind', kind), [kind]);
   const [sel, setSel] = useState<Sel>(() => (c.equipped.vu_khi ? { item: c.equipped.vu_khi } : null));
@@ -135,7 +137,7 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onForge, onSea
                 {selItem.slot === 'vu_khi' && isOn(selItem.id) && lv > 0 ? <em className="forge-lv"> +{lv}</em> : null}
               </b>
               <small>
-                {SLOT_NAME[selItem.slot]} · {RARE_TXT[selItem.rare ?? 0]}
+                {SLOT_NAME[selItem.slot]} · {RARE_TXT[selItem.rare ?? 0]} · <span className={`el-tag e-${itemEl(c, selItem.id)}`}>Hệ {elFx(itemEl(c, selItem.id)).name}</span>
                 {selItem.fx ? ` · ${fxText(selItem.fx)}` : ''}
               </small>
             </span>
@@ -152,50 +154,10 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onForge, onSea
             )}
           </div>
           {selItem.slot === 'vu_khi' && isOn(selItem.id) && onForge && (
-            <div className="forge-box">
-              <div className="forge-row">
-                <span>
-                  <b>Rèn {lv}/{FORGE_MAX}</b>
-                  <small>mỗi cấp công +{Math.round(FORGE_PER * 100)}%</small>
-                </span>
-                <span className="forge-pips" aria-hidden="true">
-                  {Array.from({ length: FORGE_MAX }, (_, i) => (
-                    <i key={i} className={i < lv ? 'on' : ''} />
-                  ))}
-                </span>
-                {lv < FORGE_MAX && (
-                  <button className="btn btn-red" disabled={(c.tinhHoa ?? 0) < FORGE_COST[lv]} onClick={onForge}>
-                    +1 · {FORGE_COST[lv]}
-                    {FORGE_CHANCE[lv] < 1 ? ` · ${Math.round(FORGE_CHANCE[lv] * 100)}%` : ''}
-                  </button>
-                )}
-              </div>
-              <small className="note">Ấn ngũ hành, cấp ấn không vượt cấp rèn:</small>
-              {SEALS.map((s) => {
-                const sl = sealLv(c, s.el);
-                const can = sl < FORGE_MAX && sl < lv && (c.tinhHoa ?? 0) >= SEAL_COST[sl];
-                return (
-                  <div key={s.el} className={`forge-row seal s-${s.el}`}>
-                    <span>
-                      <b>
-                        Ấn {s.name} {sl}/{FORGE_MAX}
-                      </b>
-                      <small>{s.per} mỗi cấp</small>
-                    </span>
-                    <span className="forge-pips" aria-hidden="true">
-                      {Array.from({ length: FORGE_MAX }, (_, i) => (
-                        <i key={i} className={i < sl ? 'on' : ''} />
-                      ))}
-                    </span>
-                    {sl < FORGE_MAX && onSeal && (
-                      <button className="btn" disabled={!can} onClick={() => onSeal(s.el)}>
-                        +1 · {SEAL_COST[sl]}
-                      </button>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+            <button className="btn btn-red btn-big forge-open" onClick={() => setForging(true)}>
+              ⚒ Mở lò rèn
+              <small>{lv >= FORGE_MAX ? `đã +${FORGE_MAX}` : `đang +${lv} · tinh hoa ${c.tinhHoa ?? 0}`}</small>
+            </button>
           )}
         </section>
       )}
@@ -220,7 +182,8 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onForge, onSea
           </div>
         </section>
       )}
-      {!selItem && !selPill && <p className="note inv-hint">Chạm vào một món để xem và dùng. Đồ thừa luyện hóa ra tinh hoa để rèn và khắc ấn cho vũ khí.</p>}
+      {forging && onForge && <ForgeScene c={c} onForge={onForge} onClose={() => setForging(false)} />}
+      {!selItem && !selPill && <p className="note inv-hint">Chạm vào một món để xem và dùng. Mỗi món mang một hệ ngũ hành. Đồ thừa luyện hóa ra tinh hoa để rèn vũ khí.</p>}
     </div>
   );
 }
