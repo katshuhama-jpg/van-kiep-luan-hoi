@@ -13,6 +13,9 @@ import {
   ASCEND_REALM,
   TOP_REALM,
   lifeCap,
+  linhCanBreak,
+  BINH_CANH_FAILS,
+  BINH_CANH_YEARS,
   realmName,
   HAIR_COLORS,
   HAIR_STYLES,
@@ -297,6 +300,7 @@ function die(c: Character, cause: string, ctx: EffectCtx) {
 }
 
 function enterRealm(c: Character, realm: number, ctx: EffectCtx, talents: string[]) {
+  c.breakFail = undefined;
   c.realm = realm;
   c.layer = 1;
   c.cultivation = 0;
@@ -871,6 +875,8 @@ function breakChance(c: Character) {
       c.stats.tamMa / 200 +
       (c.stats.khiVan - 50) / 500 +
       c.linhCanMul * 0.05 +
+      // 3.1.0: từ Kim Đan trở lên (phàm giới) linh căn quyết định nhiều hơn
+      (c.realm + 1 >= 3 && c.realm + 1 < ASCEND_REALM ? linhCanBreak(c.linhCanMul) : 0) +
       // Luân Hồi Đạo: Kiếp Số làm thiên kiếp nặng hơn, kiếp tích giúp người kẹt Độ Kiếp
       ksBreak(c),
     0.08,
@@ -953,6 +959,16 @@ function attempt(c: Character, ctx: EffectCtx, bonus: number): string {
   c.cultivation = Math.round(c.cultivation * 0.6);
   // kiếp chứng đạo thất bại thì phải chờ rất lâu mới thử lại
   c.breakDelay = c.realm >= TOP_REALM ? 30 : 3;
+  // 3.1.0 bình cảnh: hỏng liên tiếp nhiều lần ở cùng cảnh giới thì phải bế quan
+  const bf = c.breakFail && c.breakFail.r === c.realm ? c.breakFail.n + 1 : 1;
+  c.breakFail = { r: c.realm, n: bf };
+  let binh = '';
+  if (bf >= BINH_CANH_FAILS && c.realm < TOP_REALM) {
+    c.breakDelay = Math.max(c.breakDelay, BINH_CANH_YEARS);
+    c.breakFail = { r: c.realm, n: 0 };
+    binh = ` Hỏng ${bf} lần liền, bạn rơi vào bình cảnh, phải bế quan ${BINH_CANH_YEARS} năm mới thử lại được.`;
+    ctx.log(`Rơi vào bình cảnh: bế quan ${BINH_CANH_YEARS} năm trước khi đột phá lại.`, 'bad');
+  }
   stat(c, 'tamMa', 8);
   const t = hurt(c, kiep ? 40 + (target - 3) * 12 : 25, ctx);
   if (c.stats.sucKhoe <= 0) {
@@ -960,7 +976,7 @@ function attempt(c: Character, ctx: EffectCtx, bonus: number): string {
     die(c, c.cosmos ? COSMOS_KIEP_TEXT[c.cosmos] : kiep ? 'Bạn hóa thành tro bụi dưới thiên kiếp.' : 'Xung quan thất bại, kinh mạch đứt đoạn.', ctx);
     return 'Đột phá thất bại.';
   }
-  return 'Đột phá thất bại, tu vi tụt mất một đoạn.' + t;
+  return 'Đột phá thất bại, tu vi tụt mất một đoạn.' + t + binh;
 }
 
 function breakChoices(c: Character): Choice[] {

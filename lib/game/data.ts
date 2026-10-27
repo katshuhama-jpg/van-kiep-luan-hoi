@@ -4,18 +4,18 @@ import type { Focus, PathId, Slot, Talent } from './types';
 
 export const REALMS = [
   { name: 'Phàm Nhân', layers: 1, life: 65, need: 0 },
-  { name: 'Luyện Khí', layers: 9, life: 80, need: 60 },
-  { name: 'Trúc Cơ', layers: 3, life: 100, need: 220 },
-  { name: 'Kim Đan', layers: 3, life: 120, need: 380 },
-  { name: 'Nguyên Anh', layers: 3, life: 140, need: 600 },
-  { name: 'Hóa Thần', layers: 3, life: 160, need: 900 },
-  { name: 'Luyện Hư', layers: 3, life: 180, need: 1300 },
-  { name: 'Độ Kiếp', layers: 3, life: 200, need: 1800 },
+  { name: 'Luyện Khí', layers: 9, life: 120, need: 60 },
+  { name: 'Trúc Cơ', layers: 3, life: 150, need: 220 },
+  { name: 'Kim Đan', layers: 3, life: 180, need: 380 },
+  { name: 'Nguyên Anh', layers: 3, life: 210, need: 600 },
+  { name: 'Hóa Thần', layers: 3, life: 240, need: 900 },
+  { name: 'Luyện Hư', layers: 3, life: 270, need: 1300 },
+  { name: 'Độ Kiếp', layers: 3, life: 300, need: 1800 },
   // Tiên giới (ma tu thì là Ma giới, cùng bậc nhưng tên khác, xem MA_REALMS)
-  { name: 'Chân Tiên', layers: 3, life: 320, need: 2600 },
-  { name: 'Huyền Tiên', layers: 3, life: 420, need: 3600 },
-  { name: 'Kim Tiên', layers: 3, life: 540, need: 5000 },
-  { name: 'Đại La Kim Tiên', layers: 3, life: 700, need: 7000 },
+  { name: 'Chân Tiên', layers: 3, life: 480, need: 2600 },
+  { name: 'Huyền Tiên', layers: 3, life: 630, need: 3600 },
+  { name: 'Kim Tiên', layers: 3, life: 810, need: 5000 },
+  { name: 'Đại La Kim Tiên', layers: 3, life: 1050, need: 7000 },
 ] as const;
 
 /** Cảnh giới đầu tiên sau phi thăng */
@@ -36,15 +36,15 @@ export function realmName(realm: number, cosmos?: Cosmos | null): string {
   return REALMS[realm]?.name ?? 'Phi Thăng';
 }
 
-/** Thọ nguyên tối đa: phàm giới 200, tiên giới, ma giới theo cảnh giới */
+/** Thọ nguyên tối đa: phàm giới 300, tiên giới, ma giới theo cảnh giới */
 export function lifeCap(realm: number): number {
   return realm >= ASCEND_REALM ? MAX_LIFE_ASCENDED : MAX_LIFE;
 }
 
 /** Thọ nguyên tối đa khi chưa phi thăng, để kiếp nào cũng sớm đến lúc luân hồi */
-export const MAX_LIFE = 200;
+export const MAX_LIFE = 300;
 /** Thọ nguyên tối đa sau khi lên Tiên giới, Ma giới, Thái Hư giới */
-export const MAX_LIFE_ASCENDED = 350;
+export const MAX_LIFE_ASCENDED = 1050;
 
 export const STAGE3 = ['Sơ kỳ', 'Trung kỳ', 'Hậu kỳ'];
 
@@ -80,6 +80,26 @@ export const LINH_CAN = [
   { name: 'Tạp linh căn', mul: 0.85, w: 40 },
   { name: 'Phế linh căn', mul: 0.45, w: 15 },
 ];
+
+/** 3.1.0: đột phá đại cảnh giới từ Kim Đan trở lên phụ thuộc linh căn */
+export function linhCanBreak(mul: number): number {
+  if (mul >= 1.9) return 0.06;
+  if (mul >= 1.6) return 0.03;
+  if (mul >= 1.2) return 0;
+  if (mul >= 0.85) return -0.08;
+  return -0.15;
+}
+/** Bình cảnh: thất bại liên tiếp ở cùng cảnh giới thì phải bế quan */
+export const BINH_CANH_FAILS = 3;
+export const BINH_CANH_YEARS = 10;
+/** Năm trôi nhanh hơn ở cảnh giới cao để mỗi kiếp vẫn gọn */
+export function yearSpeed(realm: number, cosmos?: unknown): number {
+  if (cosmos || realm >= 8) return 2.5;
+  if (realm >= 4) return 2;
+  if (realm >= 3) return 1.6;
+  if (realm >= 2) return 1.3;
+  return 1;
+}
 
 export const ORIGINS = [
   { id: 'nong', name: 'Con nhà nông ở Thanh Thủy thôn', money: 20, w: 34 },
