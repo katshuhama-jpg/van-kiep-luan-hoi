@@ -7,7 +7,7 @@ import MusicToggle from '@/components/MusicToggle';
 import { TribulationOverlay, Tutorial } from '@/components/Extras';
 import { BREAK_EVENT_ID } from '@/lib/game/events';
 import { ENDINGS, alsoEndings, endingOf } from '@/lib/game/endings';
-import { forge, smelt } from '@/lib/game/forge';
+import { buyTinh, forge, sell, smelt } from '@/lib/game/forge';
 import { BagSheet, BaoKhoSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, HuntSheet, LogPanel, OverworkBar, SEASONS, ShopSheet, Sheet, StageStrip, StatsPanel } from '@/components/Panels';
 import Radar, { charAxes, wealthScore } from '@/components/Radar';
 import { giftOf } from '@/lib/game/gacha';
@@ -1639,7 +1639,7 @@ export default function PlayPage() {
       </footer>
 
       {sheet === 'shop' && <ShopSheet c={c} onBuyItem={buyItem} onBuyPill={buyPill} onClose={() => setSheet(null)} />}
-      {sheet === 'bag' && <BagSheet c={c} book={meta.itemBook ?? []} startTab={bagTab} onSeen={() => seeBook('i')} onEquip={equip} onUsePill={takePill} onSmelt={(id) => act((ch, out) => { const t = smelt(ch, id, makeCtx(ch, out)); if (t) ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: t }); })} onForge={() => {
+      {sheet === 'bag' && <BagSheet c={c} book={meta.itemBook ?? []} startTab={bagTab} onSeen={() => seeBook('i')} onEquip={equip} onUsePill={takePill} onSmelt={(id) => act((ch, out) => { const t = smelt(ch, id, makeCtx(ch, out)); if (t) ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: t }); })} onSell={(id) => act((ch, out) => { const t = sell(ch, id, makeCtx(ch, out)); if (t) ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: t }); })} onBuy={(n) => act((ch, out) => { const t = buyTinh(ch, n, makeCtx(ch, out)); if (t) { ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: t }); track('buy_tinh', { n }); } })} onForge={() => {
             let r: ReturnType<typeof forge> = null;
             act((ch, out) => {
               r = forge(ch, makeCtx(ch, out));

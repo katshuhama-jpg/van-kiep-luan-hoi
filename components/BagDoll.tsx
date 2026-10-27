@@ -5,7 +5,7 @@ import ItemIcon from './ItemIcon';
 import Sprite from './Sprite';
 import { ITEMS, PILLS, fxText as fxTextData, gearFx, type Item } from '@/lib/game/data';
 import { playerStats } from '@/lib/game/combat';
-import { FORGE_MAX, canSmelt, elFx, forgeLevel, itemEl, smeltValue, type ForgeResult } from '@/lib/game/forge';
+import { FORGE_MAX, canSmelt, elFx, forgeLevel, itemEl, sellValue, smeltValue, type ForgeResult } from '@/lib/game/forge';
 import ForgeScene from './ForgeScene';
 import type { Character, Slot } from '@/lib/game/types';
 
@@ -38,9 +38,9 @@ function writePref(k: string, v: string) {
 
 /**
  * Túi đồ kiểu búp bê: nhân vật ở giữa, ô trang bị quanh người, chỉ số bên cạnh, lưới đồ ở dưới.
- * Chạm một ô để xem chi tiết và thao tác: dùng, luyện hóa, rèn, khắc ấn ngũ hành.
+ * Chạm một ô để xem chi tiết và thao tác: dùng, bán, phân giải, mở lò rèn.
  */
-export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onForge }: { c: Character; onEquip: (id: string) => void; onUsePill: (id: string) => void; onSmelt?: (id: string) => void; onForge?: () => ForgeResult | null }) {
+export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForge, onBuy }: { c: Character; onEquip: (id: string) => void; onUsePill: (id: string) => void; onSmelt?: (id: string) => void; onSell?: (id: string) => void; onForge?: () => ForgeResult | null; onBuy?: (n: number) => void }) {
   const [forging, setForging] = useState(false);
   const [kind, setKind] = useState<Kind>(() => (readPref('vkl.bagKind') as Kind) || 'all');
   useEffect(() => writePref('vkl.bagKind', kind), [kind]);
@@ -55,7 +55,7 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onForge }: { c
   const isOn = (id: string) => Object.values(c.equipped).includes(id);
   const selItem = sel && 'item' in sel ? ITEMS.find((i) => i.id === sel.item) : null;
   const selPill = sel && 'pill' in sel ? PILLS.find((p) => p.id === sel.pill) : null;
-  // món đang chọn bị luyện hóa mất thì bỏ chọn
+  // món đang chọn bị bán hay phân giải thì bỏ chọn
   useEffect(() => {
     if (sel && 'item' in sel && !c.inventory.includes(sel.item)) setSel(null);
     if (sel && 'pill' in sel && !(c.pills[sel.pill] > 0)) setSel(null);
@@ -97,7 +97,7 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onForge }: { c
       </div>
       <div className="doll-bar">
         <span>{fxTextData(g) || 'Trang bị chưa có chỉ số'}</span>
-        <b>Tinh hoa {c.tinhHoa ?? 0}</b>
+        <b>Tinh thiết {c.tinhHoa ?? 0}</b>
       </div>
 
       <div className="inv-kinds" role="tablist" aria-label="Loại đồ">
@@ -147,16 +147,21 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onForge }: { c
             <button className={`btn ${isOn(selItem.id) ? 'btn-jade' : 'btn-red'}`} onClick={() => onEquip(selItem.id)}>
               {isOn(selItem.id) ? 'Đang dùng' : 'Dùng'}
             </button>
+            {onSell && canSmelt(c, selItem.id) && (
+              <button className="btn" onClick={() => onSell(selItem.id)}>
+                Bán · +{sellValue(selItem.id)} linh thạch
+              </button>
+            )}
             {onSmelt && canSmelt(c, selItem.id) && (
               <button className="btn" onClick={() => onSmelt(selItem.id)}>
-                Luyện hóa · +{smeltValue(selItem.id)} tinh hoa
+                Phân giải · +{smeltValue(selItem.id)} tinh thiết
               </button>
             )}
           </div>
           {selItem.slot === 'vu_khi' && isOn(selItem.id) && onForge && (
             <button className="btn btn-red btn-big forge-open" onClick={() => setForging(true)}>
               ⚒ Mở lò rèn
-              <small>{lv >= FORGE_MAX ? `đã +${FORGE_MAX}` : `đang +${lv} · tinh hoa ${c.tinhHoa ?? 0}`}</small>
+              <small>{lv >= FORGE_MAX ? `đã +${FORGE_MAX}` : `đang +${lv} · tinh thiết ${c.tinhHoa ?? 0}`}</small>
             </button>
           )}
         </section>
@@ -182,8 +187,8 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onForge }: { c
           </div>
         </section>
       )}
-      {forging && onForge && <ForgeScene c={c} onForge={onForge} onClose={() => setForging(false)} />}
-      {!selItem && !selPill && <p className="note inv-hint">Chạm vào một món để xem và dùng. Mỗi món mang một hệ ngũ hành. Đồ thừa luyện hóa ra tinh hoa để rèn vũ khí.</p>}
+      {forging && onForge && <ForgeScene c={c} onForge={onForge} onBuy={onBuy} onClose={() => setForging(false)} />}
+      {!selItem && !selPill && <p className="note inv-hint">Chạm vào một món để xem và dùng. Mỗi món mang một hệ ngũ hành. Đồ thừa đem bán lấy linh thạch hoặc phân giải ra tinh thiết để rèn vũ khí.</p>}
     </div>
   );
 }

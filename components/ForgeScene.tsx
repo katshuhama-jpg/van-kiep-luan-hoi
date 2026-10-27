@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import ItemIcon from './ItemIcon';
 import { PixelFx, fxLua } from './PixelFx';
 import { ITEMS } from '@/lib/game/data';
-import { FORGE_CHANCE, FORGE_COST, FORGE_MAX, FORGE_PER, breakChance, elFx, forgeLevel, itemEl, type ForgeResult } from '@/lib/game/forge';
+import { FORGE_CHANCE, FORGE_COST, FORGE_MAX, FORGE_PER, breakChance, elFx, forgeLevel, itemEl, tinhPrice, type ForgeResult } from '@/lib/game/forge';
 import type { Character } from '@/lib/game/types';
 
 const EL_COL: Record<string, string> = { kim: '#d8d8e8', moc: '#5ac86a', thuy: '#5a9ae0', hoa: '#e85a3a', tho: '#c8963a' };
@@ -13,7 +13,7 @@ const EL_COL: Record<string, string> = { kim: '#d8d8e8', moc: '#5ac86a', thuy: '
  * Lò rèn: vũ khí đang cầm đặt trên đe trước lò lửa, búa gõ ba nhịp rồi ra kết quả.
  * Búa lấy từ bộ icon CC0 của Henrique Lazarini, đe từ "Anvil" của AntumDeluge (CC0, dựa trên ảnh của nightowl và Momentmal); lửa lò là hiệu ứng pixel sẵn có của game.
  */
-export default function ForgeScene({ c, onForge, onClose }: { c: Character; onForge: () => ForgeResult | null; onClose: () => void }) {
+export default function ForgeScene({ c, onForge, onBuy, onClose }: { c: Character; onForge: () => ForgeResult | null; onBuy?: (n: number) => void; onClose: () => void }) {
   const [phase, setPhase] = useState<'idle' | 'hit' | 'res'>('idle');
   const [res, setRes] = useState<ForgeResult | null>(null);
   const [hits, setHits] = useState(0);
@@ -56,7 +56,7 @@ export default function ForgeScene({ c, onForge, onClose }: { c: Character; onFo
       <div className="forge-scene">
         <div className="fs-head">
           <b>Lò rèn</b>
-          <span className="fs-tinh">Tinh hoa {c.tinhHoa ?? 0}</span>
+          <span className="fs-tinh">Tinh thiết {c.tinhHoa ?? 0}</span>
           <button className="ss-x" onClick={onClose} aria-label="Đóng lò rèn" disabled={phase === 'hit'}>
             ✕
           </button>
@@ -101,16 +101,29 @@ export default function ForgeScene({ c, onForge, onClose }: { c: Character; onFo
                   công +{Math.round((lv + 1) * FORGE_PER * 100)}%, hệ {el.name} cấp {lv + 1}
                 </dd>
                 <dt>Tốn</dt>
-                <dd className={enough ? '' : 'bad'}>{cost} tinh hoa</dd>
+                <dd className={enough ? '' : 'bad'}>{cost} tinh thiết</dd>
                 <dt>Thành</dt>
                 <dd>{Math.round(ok * 100)}%</dd>
                 <dt>Vỡ mất đồ</dt>
                 <dd className={brk > 0 ? 'bad' : ''}>{brk > 0 ? `${Math.round(brk * 100)}%` : 'không'}</dd>
               </dl>
               <button className="btn btn-red btn-big fs-go" disabled={phase === 'hit' || !enough} onClick={strike}>
-                {phase === 'hit' ? 'Đang rèn...' : enough ? '⚒ Gõ búa' : 'Thiếu tinh hoa'}
+                {phase === 'hit' ? 'Đang rèn...' : enough ? '⚒ Gõ búa' : 'Thiếu tinh thiết'}
               </button>
-              {c.legend?.item === it.id && <small className="note">Thần binh truyền đời không vỡ, rèn hỏng chỉ mất tinh hoa.</small>}
+              {onBuy && (
+                <div className="fs-buy">
+                  <small>Mua tinh thiết · {tinhPrice(c)} linh thạch/cục · đang có {Math.floor(c.linhThach)}</small>
+                  <span>
+                    {[1, 5, Math.max(1, cost - (c.tinhHoa ?? 0))].filter((n, i, a) => a.indexOf(n) === i).map((n) => (
+                      <button key={n} className="btn" disabled={phase === 'hit' || c.linhThach < tinhPrice(c) * n} onClick={() => onBuy(n)}>
+                        +{n}
+                        {n === Math.max(1, cost - (c.tinhHoa ?? 0)) && !enough ? ' (đủ gõ)' : ''}
+                      </button>
+                    ))}
+                  </span>
+                </div>
+              )}
+              {c.legend?.item === it.id && <small className="note">Thần binh truyền đời không vỡ, rèn hỏng chỉ mất tinh thiết.</small>}
             </>
           )}
         </div>

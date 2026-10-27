@@ -4281,3 +4281,7 @@ button.shadow-card { cursor: pointer; }
 .fs-odds dd.bad { color: #b0201a; }
 .fs-go { width: 100%; }
 @media (prefers-reduced-motion: reduce) { .fs-hammer.swing, .fs-stage.hitting .fs-weapon { animation: none; } }
+.fs-buy { display: flex; flex-direction: column; gap: 4px; padding: 6px 8px; background: #fff8e6; border: 2px dashed #b08a5a; }
+.fs-buy small { font-size: 12px; color: #6a5a44; }
+.fs-buy span { display: flex; gap: 6px; flex-wrap: wrap; }
+.fs-buy .btn { padding: 4px 10px; font-size: 14px; }
