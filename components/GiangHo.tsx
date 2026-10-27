@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 import { useEffect, useState } from 'react';
 import { Sheet } from './Panels';
 import { sendMail, type Mail } from '@/lib/storage';
@@ -164,9 +166,9 @@ function Actions({ api, who, onDone, onTab, initMode = null }: { api: GiangHoApi
         <button className={`chip-btn ${mode === 'bounty' ? 'on' : ''}`} onClick={() => setMode(mode === 'bounty' ? null : 'bounty')}>
           Treo thưởng
         </button>
-        <button className={`chip-btn ${mode === 'chien' ? 'on' : ''}`} onClick={() => setMode(mode === 'chien' ? null : 'chien')}>
-          Chiến thư
-        </button>
+        <Link className="chip-btn" href={`/thach-dau?u=${encodeURIComponent(who)}`}>
+          ⚔ Hạ chiến thư
+        </Link>
       </div>
       {mode && (
         <div className="gh-stake">

@@ -13,7 +13,7 @@ import type { RivalChar } from '@/lib/game/types';
 import { baseChance, equalize, type ArenaRule } from '@/lib/game/arena';
 import { turnLines, ultName, type FightState } from '@/lib/game/arenaFight';
 import { ARENA_DAY_HON, ARENA_LOSE_PHUC, ARENA_WIN_PHUC, autoClash, powerOf, tierOfPts, type Clash } from '@/lib/game/phiKiem';
-import { arenaFight3 } from '@/lib/social';
+import { arenaFight3, thachFight } from '@/lib/social';
 import { shareMatch, type ShareOut } from '@/lib/shareCard';
 import ShareSheet from '@/components/ShareSheet';
 import { track } from '@/lib/track';
@@ -21,7 +21,7 @@ import { track } from '@/lib/track';
 const BGS = ['tien', 'ma', 'hu'].flatMap((c) => ['kim', 'moc', 'thuy', 'hoa', 'tho'].map((e) => `/bg/nhd-${c}-${e}.png`));
 type Phase = 'vs' | 'pk' | 'clash' | 'final' | 'res';
 type Pop = { id: number; side: 'me' | 'foe'; v: number; tag?: string };
-type Res = { pts?: number; used?: number; phuc?: number; hon?: number; err?: string };
+type Res = { pts?: number; used?: number; phuc?: number; hon?: number; left?: number; err?: string };
 
 const realmOf = (r: RivalChar) => (r.realm === 0 ? 'Phàm nhân' : realmLabel(r.realm, r.layer, r.cosmos));
 
@@ -34,6 +34,8 @@ export default function LoiDaiMatch({
   revenge,
   user,
   leftAfter,
+  mode = 'arena',
+  lifeId = 0,
   onNext,
   onDone,
 }: {
@@ -44,6 +46,8 @@ export default function LoiDaiMatch({
   revenge: number | null;
   user: Player;
   leftAfter: number; // lượt còn lại sau trận này
+  mode?: 'arena' | 'thach'; // thach: hạ chiến thư với bóng một kiếp cụ thể
+  lifeId?: number;
   onNext: () => void;
   onDone: () => void;
 }) {
@@ -121,7 +125,9 @@ export default function LoiDaiMatch({
         const hp = clash.hpPct;
         const detail = `${me.name} ${clash.win ? 'hạ' : 'bại dưới tay'} ${foe.name}, cắm ${swords} phi kiếm, ${clash.win ? 'còn' : 'đối thủ còn'} ${hp}% máu. Luật hôm nay: ${rule.name}.`;
         track('arena_fight', { win: clash.win, swords, revenge: !!revenge, rule: rule.name, mode: 'phi_kiem' });
-        arenaFight3(user, opp, clash.win, detail, revenge, hp, swords).then((r) => setRes(r ? { ...r, err: r.error } : { err: 'Lôi đài đang đông, kết quả chưa ghi được.' }));
+        if (mode === 'thach')
+          thachFight(user, opp, lifeId, clash.win, hp, swords, detail).then((r) => setRes(r ? { phuc: r.phuc, left: r.left, err: r.error } : { err: 'Chưa ghi được chiến thư, thử lại sau.' }));
+        else arenaFight3(user, opp, clash.win, detail, revenge, hp, swords).then((r) => setRes(r ? { ...r, err: r.error } : { err: 'Lôi đài đang đông, kết quả chưa ghi được.' }));
       });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -249,7 +255,7 @@ export default function LoiDaiMatch({
                     <p className="ar-err">{res.err === 'NO_TURNS' ? 'Hôm nay đã hết lượt.' : res.err === 'NO_REVENGE' ? 'Lượt báo thù đã hết hạn.' : res.err === 'BAD_OPP' ? 'Lượt này không còn hiệu lực.' : res.err}</p>
                   ) : (
                     <ul className="ldm-gain">
-                      <li>+{clash.win ? 3 : 1} điểm</li>
+                      {mode === 'arena' ? <li>+{clash.win ? 3 : 1} điểm</li> : <li>Còn {res.left ?? 0} chiến thư hôm nay</li>}
                       <li>+{res.phuc ?? (clash.win ? ARENA_WIN_PHUC : ARENA_LOSE_PHUC)} phúc</li>
                       {(res.hon ?? 0) > 0 && <li>+{ARENA_DAY_HON} Hồn lực</li>}
                       {tier && <li className="ldm-tier">{tier.name}{tier.next ? ` · còn ${tier.next.need} lên ${tier.next.name}` : ''}</li>}
@@ -259,7 +265,7 @@ export default function LoiDaiMatch({
                   <p>Đang ghi kết quả lên bảng...</p>
                 )}
                 <div className="ldm-acts">
-                  {leftAfter > 0 && !revenge ? (
+                  {leftAfter > 0 && !revenge && mode === 'arena' ? (
                     <button className="btn btn-red btn-big" disabled={!res} onClick={onNext}>
                       Trận tiếp · còn {leftAfter} lượt
                     </button>
@@ -271,7 +277,7 @@ export default function LoiDaiMatch({
                   <button className="btn ldm-share" onClick={share} disabled={sharing}>
                     {sharing ? 'Đang tạo link...' : 'Khoe trận'}
                   </button>
-                  {leftAfter > 0 && !revenge && (
+                  {leftAfter > 0 && !revenge && mode === 'arena' && (
                     <button className="btn ldm-leave" disabled={!res} onClick={onDone}>
                       Nghỉ đã
                     </button>

@@ -388,3 +388,26 @@ export async function madResult(user: Player | null, owner: string, win: boolean
   if (!sb || !user) return;
   await sb.rpc('vkl_mad_result', { p_token: user.token, p_owner: owner, p_win: win, p_life_no: lifeNo, p_char: charName });
 }
+
+/** Hạ chiến thư: bóng của một kiếp đã ghi */
+export async function lifeShadow(lifeId: number): Promise<{ player: string; shadow: RivalChar } | null> {
+  const sb = supabase();
+  if (!sb) return null;
+  const { data, error } = await sb.rpc('vkl_life_shadow_get', { p_id: lifeId });
+  if (error || !data) return null;
+  const d = data as { player: string; shadow: unknown };
+  const r = toRival(d.player, d.shadow);
+  return r ? { player: d.player, shadow: r } : null;
+}
+export async function thachLeft(user: Player | null): Promise<number> {
+  const sb = supabase();
+  if (!sb || !user) return 0;
+  const { data, error } = await sb.rpc('vkl_thach_left', { p_token: user.token });
+  return error ? 0 : ((data as number) ?? 0);
+}
+export async function thachFight(user: Player | null, opp: string, lifeId: number, win: boolean, hp: number, swords: number, detail: string): Promise<{ left?: number; phuc?: number; error?: string } | null> {
+  const sb = supabase();
+  if (!sb || !user) return null;
+  const { data, error } = await sb.rpc('vkl_thach_fight', { p_token: user.token, p_opp: opp, p_life_id: lifeId, p_win: win, p_hp: hp, p_swords: swords, p_detail: detail });
+  return error ? null : (data as { left?: number; phuc?: number; error?: string });
+}

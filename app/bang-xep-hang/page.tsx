@@ -313,6 +313,11 @@ export default function RankPage() {
                       </small>
                       <RankTitles weekly={titles[titleKey(r.username, c.lifeNo)] ?? []} lore={lm[r.username] ? '🔔 ' + lm[r.username] : null} coll={coll[r.username] ? collectorTitle(coll[r.username]) : null} />
                       <RelChips player={r.username} s={social} />
+                      {user && !mine && (
+                        <Link className="rank-thach" href={`/thach-dau?u=${encodeURIComponent(r.username)}`}>
+                          ⚔ Hạ chiến thư
+                        </Link>
+                      )}
                     </div>
                   </li>
                 );

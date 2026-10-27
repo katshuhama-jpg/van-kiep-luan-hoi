@@ -70,6 +70,11 @@ function Tomb({
       <button className="btn btn-red story-btn" style={{ marginTop: 'auto', fontSize: 17 }} onClick={onStory} aria-label={`Xem hồi ký ${m.char_name}`}>
         Xem hồi ký
       </button>
+      {user && user.username !== m.player_name && (
+        <Link className="btn btn-dark th-btn" href={`/thach-dau?l=${m.id}`} aria-label={`Hạ chiến thư cho ${m.char_name}`}>
+          ⚔ Hạ chiến thư
+        </Link>
+      )}
       <button
         className="btn"
         style={{ fontSize: 17 }}

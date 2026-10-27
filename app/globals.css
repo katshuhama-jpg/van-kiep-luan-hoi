@@ -4228,3 +4228,13 @@ button.shadow-card { cursor: pointer; }
 .seal.s-kim .forge-pips i.on { background: #7a7a8e; } .seal.s-moc .forge-pips i.on { background: #4aa05a; } .seal.s-thuy .forge-pips i.on { background: #4a8ad0; } .seal.s-hoa .forge-pips i.on { background: #e05a3a; } .seal.s-tho .forge-pips i.on { background: #b8862e; }
 .inv-hint { margin: 0; }
 @media (max-width: 380px) { .doll { grid-template-columns: 68px 1fr 88px; } .doll-slot { width: 58px; height: 58px; } }
+.thach { padding-bottom: 96px; }
+.th-stage { margin-top: 8px; }
+.th-note { margin: 8px 0; }
+.th-picks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.th-pick { display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 6px 4px; font: inherit; background: var(--paper, #f3e6c4); border: 3px solid #1f160d; cursor: pointer; min-width: 0; }
+.th-pick b { font-size: 13px; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.th-pick small { font-size: 11px; color: #6a5a44; text-align: center; }
+.th-pick.on { background: #ffe9b0; box-shadow: 0 0 0 3px #b0201a; }
+.th-btn { font-size: 15px; }
+.rank-thach { align-self: flex-start; margin-top: 2px; padding: 1px 8px; font-size: 13px; font-weight: 700; color: #fff3dc; text-decoration: none; background: #7a1e18; border: 2px solid #1f160d; }
