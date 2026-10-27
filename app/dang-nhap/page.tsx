@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Sprite from '@/components/Sprite';
-import { currentPlayer, normalizeUsername, signIn, signUp } from '@/lib/auth';
+import { currentPlayer, signIn, signUp, usernameIssue } from '@/lib/auth';
 import { carryGuest } from '@/lib/storage';
 import { demoChar } from '@/lib/game/demo';
 import { useAuth } from '@/lib/useAuth';
@@ -21,20 +21,19 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [suggest, setSuggest] = useState<string | null>(null);
-  // tên thật sẽ dùng sau khi bỏ dấu, viết thường, bỏ khoảng trắng
-  const norm = normalizeUsername(username);
+  // tên có dấu, khoảng trắng, chữ hoa thì cảnh báo ngay và không cho gửi
+  const issue = usernameIssue(username);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     setError(null);
     setSuggest(null);
-    if (norm !== username) setUsername(norm);
-    const err = mode === 'in' ? await signIn(norm, password) : await signUp(norm, password);
+    const err = mode === 'in' ? await signIn(username, password) : await signUp(username, password);
     setBusy(false);
     if (err) {
       setError(err);
-      if (mode === 'up' && err.includes('đã có người dùng')) setSuggest(`${norm.slice(0, 13)}${10 + Math.floor(Math.random() * 90)}`);
+      if (mode === 'up' && err.includes('đã có người dùng')) setSuggest(`${username.slice(0, 13)}${10 + Math.floor(Math.random() * 90)}`);
       track('auth_fail', { mode, err: String(err).slice(0, 80) });
       return;
     }
@@ -75,20 +74,20 @@ export default function LoginPage() {
           <input
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            onBlur={() => norm && setUsername(norm)}
+            aria-invalid={!!issue}
             autoComplete="username"
             autoCapitalize="none"
             spellCheck={false}
-            maxLength={24}
+            maxLength={16}
             placeholder="vd: thanhvan"
             required
           />
-          {username && norm !== username ? (
-            <small className="note">
-              Tên đăng nhập viết liền, không dấu: <b>{norm || '...'}</b>
+          {issue ? (
+            <small className="error" role="alert" style={{ margin: 0 }}>
+              {issue}
             </small>
           ) : (
-            <small className="note">3-16 ký tự, viết liền không dấu: chữ thường, số, dấu _</small>
+            <small className="note">3-16 ký tự, viết liền: chữ thường không dấu, số, dấu _</small>
           )}
         </label>
         <label className="field">
@@ -112,7 +111,7 @@ export default function LoginPage() {
           </button>
         )}
 
-        <button className="btn btn-red btn-big" disabled={busy || !enabled}>
+        <button className="btn btn-red btn-big" disabled={busy || !enabled || !!issue}>
           {busy ? 'Đang vận công...' : mode === 'in' ? 'Vào game' : 'Tạo tài khoản'}
         </button>
       </form>
