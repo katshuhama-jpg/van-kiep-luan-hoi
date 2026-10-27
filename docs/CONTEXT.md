@@ -619,3 +619,9 @@ Làm theo plan "Plan 3.1.0 - Xử lý góp ý người chơi" (trừ góp ý #7 
 - Ma đầu: bảng `vkl_mad`, `vkl_priv.mad_release` (gọi trong fight3 khi thắng đủ 2 trận/ngày), `vkl_mad_list`, `vkl_mad_result`. Trong game là DuelKind `ma_dau` (duel.ts `pickMaDau`), không chết khi thua.
 - Tiếng đồn: `RumorLine` ở Hành trình màn đầu thai; `vkl_ending_first` gửi thư Thiên Đạo cho cả giang hồ khi có người mở đầu tiên; Sổ Sinh Tử ghi số người mở và người đầu tiên.
 - Tài khoản thử: `test_card` (mật khẩu tk2610), tên `test_` bị loại khỏi bảng xếp hạng.
+
+## Danh sách cho bản kế tiếp (sau 3.2.0)
+- **Mời tác giả chén trà (ủng hộ, kiểu Buy Me a Coffee)** - Tyler chốt 27/10: nhận qua **QR chuyển khoản ngân hàng** (VietQR). Cần Tyler gửi tên ngân hàng, số tài khoản, tên chủ tài khoản khi bắt tay làm.
+  - Chỗ đặt: khối "Mời tác giả chén trà" ở trang Tác giả (QR, vài câu tếu kiểu tu tiên, có thể có bảng "Công đức" ghi tên người ủng hộ nếu họ đồng ý); một dòng nhỏ ở màn lập bia, chỉ thỉnh thoảng (ví dụ mỗi 10 kiếp hoặc khi vừa phi thăng).
+  - Không tặng gì trong game cho người ủng hộ (kể cả danh hiệu, phúc duyên), để giữ là ủng hộ thuần túy.
+  - Đo: ghi sự kiện mở khối chén trà và bấm xem QR.
