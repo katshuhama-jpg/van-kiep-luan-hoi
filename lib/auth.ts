@@ -17,17 +17,15 @@ const KEY = 'vkl.session';
 export const USERNAME_RE = /^[a-z0-9_]{3,16}$/;
 const listeners = new Set<(p: Player | null) => void>();
 
-/** Tên gõ có dấu, chữ hoa, khoảng trắng vẫn nhận: "Thanh Vân" thành "thanhvan" */
-export function normalizeUsername(u: string) {
-  return u
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[đĐ]/g, 'd')
-    .toLowerCase()
-    .replace(/\s+/g, '')
-    .replace(/[-.]/g, '_')
-    .replace(/[^a-z0-9_]/g, '')
-    .slice(0, 16);
+/** Tên đăng nhập sai quy tắc thì trả lời cảnh báo cụ thể, đúng thì trả null */
+export function usernameIssue(u: string): string | null {
+  if (!u) return null;
+  if (/[^\x00-\x7F]/.test(u)) return 'Tên đăng nhập không được có dấu tiếng Việt.';
+  if (/\s/.test(u)) return 'Tên đăng nhập không được có khoảng trắng.';
+  if (/[A-Z]/.test(u)) return 'Tên đăng nhập không được có chữ hoa.';
+  if (/[^a-z0-9_]/.test(u)) return 'Tên đăng nhập chỉ gồm chữ thường, số và dấu _.';
+  if (u.length < 3 || u.length > 16) return 'Tên đăng nhập dài từ 3 đến 16 ký tự.';
+  return null;
 }
 
 export function currentPlayer(): Player | null {
@@ -57,7 +55,9 @@ export function onPlayerChange(fn: (p: Player | null) => void) {
 }
 
 export function validate(username: string, password: string): string | null {
-  if (!USERNAME_RE.test(normalizeUsername(username))) return 'Tên đăng nhập dài 3-16 ký tự, viết liền không dấu: chữ thường, số, dấu _.';
+  const bad = usernameIssue(username);
+  if (bad) return bad;
+  if (!USERNAME_RE.test(username)) return 'Tên đăng nhập dài 3-16 ký tự: chữ thường không dấu, số, dấu _.';
   if (password.length < 3 || password.length > 6) return 'Mật khẩu dài từ 3 đến 6 ký tự.';
   return null;
 }
@@ -76,7 +76,7 @@ async function call(fn: 'vkl_register' | 'vkl_login', username: string, password
   if (err) return err;
   const sb = supabase();
   if (!sb) return 'Chưa cấu hình máy chủ.';
-  const { data, error } = await sb.rpc(fn, { p_username: normalizeUsername(username), p_password: password });
+  const { data, error } = await sb.rpc(fn, { p_username: username, p_password: password });
   if (error) return translate(error.message);
   const d = data as { token: string; username: string };
   setPlayer({ token: d.token, username: d.username });
