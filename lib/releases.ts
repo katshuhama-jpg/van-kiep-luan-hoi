@@ -78,6 +78,13 @@ export const RELEASES: Release[] = [
         ],
       },
       {
+        h: 'Theo góp ý của đạo hữu',
+        items: [
+          '@thien: thêm tông môn và nội dung Ma giới, Phản môn khi đổi phe, lôi đài nói rõ việc kéo ngang cảnh giới, thọ nguyên dài hơn, quá độ nhắc muộn hơn, linh thạch khó kiếm hơn.',
+          '@thienkhue: túi đồ có tab và sắp xếp.',
+        ],
+      },
+      {
         h: 'Sửa lỗi và giao diện',
         items: [
           'Túi đồ có tab theo loại (Pháp y, Vũ khí, Phụ kiện, Đan dược) và sắp xếp theo mới nhận, phẩm, công, thủ. Đồ đang mặc luôn ở trên.',
