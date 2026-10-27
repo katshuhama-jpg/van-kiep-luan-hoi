@@ -4016,5 +4016,6 @@ button.shadow-card { cursor: pointer; }
 .hp-row .hp b { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 .hp-row .hp small { font-size: 12px; color: var(--muted); white-space: nowrap; }
 .hp-row .hp:disabled { opacity: 0.5; }
+.hp-row .hp.up small { color: var(--ta); }
 .mb-hoan { margin: 0 0 8px; }
 .mb-hoan > small { display: block; font-size: 14px; }

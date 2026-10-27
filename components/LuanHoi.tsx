@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from 'react';
 import type { Meta } from '@/lib/game/types';
-import { HON_PILLS, QUEST_HON, honPillLeft, type HonPillId, CAU_HON_AT, HON_COST, HON_MAX, HON_REGEN, LH_FROM_LIFE, HON_TEXT, KS_NAME, KS_TIERS, TINH_TAM_MAX, honActive, honFullIn, honNow, honState, ksBase, ksOf, ksParts, type HonState } from '@/lib/game/luanHoi';
+import { HON_PILLS, HON_PILL_FREE, QUEST_HON, honPillCost, honPillUsed, type HonPillId, CAU_HON_AT, HON_COST, HON_MAX, HON_REGEN, LH_FROM_LIFE, HON_TEXT, KS_NAME, KS_TIERS, TINH_TAM_MAX, honActive, honFullIn, honNow, honState, ksBase, ksOf, ksParts, type HonState } from '@/lib/game/luanHoi';
 
 /** Cầu Nại Hà vẽ pixel: Mạnh Bà bên nồi canh */
 function NaiHa() {
@@ -127,22 +127,25 @@ export function KiepSoBlock({ meta, onHoanHon }: { meta: Meta; onHoanHon?: (id: 
 
 /** Ba phẩm đan hồi hồn, mua bằng phúc duyên */
 function HonPills({ meta, now, onPick, compact }: { meta: Meta; now: number; onPick: (id: HonPillId) => void; compact?: boolean }) {
-  const left = honPillLeft(meta, now);
+  const used = honPillUsed(meta, now);
   const hon = honNow(meta, now);
   return (
     <div className={`hon-pills ${compact ? 'compact' : ''}`}>
       <small className="hp-head">
-        {left > 0 ? `Đan hồi hồn · hôm nay còn ${left} viên · đang có ${meta.phucDuyen} phúc duyên` : 'Đan hồi hồn: hôm nay đã dùng đủ 3 viên, mai quay lại'}
+        {used < HON_PILL_FREE
+          ? `Đan hồi hồn · hôm nay còn ${HON_PILL_FREE - used} viên giá gốc, sau đó mỗi viên đắt thêm 50% · có ${meta.phucDuyen} phúc`
+          : `Đan hồi hồn · đã dùng ${used} viên hôm nay, giá đang tăng · có ${meta.phucDuyen} phúc`}
       </small>
       <div className="hp-row">
         {HON_PILLS.map((p) => {
           const real = Math.min(p.gain, Math.round(HON_MAX - hon));
+          const cost = honPillCost(p.cost, used);
           return (
-            <button key={p.id} className="btn hp" disabled={left <= 0 || meta.phucDuyen < p.cost || real <= 0} onClick={() => onPick(p.id)} title={`${p.name} (${p.grade}): hồi ${p.gain} Hồn lực`}>
+            <button key={p.id} className={`btn hp ${cost > p.cost ? 'up' : ''}`} disabled={meta.phucDuyen < cost || real <= 0} onClick={() => onPick(p.id)} title={`${p.name} (${p.grade}): hồi ${p.gain} Hồn lực`}>
               <img src={`/icons/${p.icon}.png`} width={24} height={24} alt="" className="px-icon" />
               <b>{p.name}</b>
               <small>
-                +{p.gain === 100 ? 'đầy' : p.gain} hồn · {p.cost} phúc
+                +{p.gain === 100 ? 'đầy' : p.gain} hồn · {cost} phúc
               </small>
             </button>
           );

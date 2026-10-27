@@ -28,7 +28,7 @@ import { bountyClaim, khieuDone, loadSocial, loreSocial, payoutClaim, truyenCong
 import { GiangHoSheet, type GiangHoApi } from '@/components/GiangHo';
 import { HIDDEN_ITEMS, collectStats, markSeen, newFinds, unseen } from '@/lib/game/collect';
 import { QUY_NHAT_PHUC, newLore, quyNhatDone } from '@/lib/game/lore';
-import { HON_PILLS, QUEST_HON, addHon, honPillLeft, honDay, type HonPillId, CAU_HON_AT, HON_COST, HON_MAX, KS_NAME, applyHon, honActive, honNow, ksOf, ksOneBig, manhBa, nextKiepTich } from '@/lib/game/luanHoi';
+import { HON_PILLS, QUEST_HON, addHon, honPillCost, honPillUsed, honDay, type HonPillId, CAU_HON_AT, HON_COST, HON_MAX, KS_NAME, applyHon, honActive, honNow, ksOf, ksOneBig, manhBa, nextKiepTich } from '@/lib/game/luanHoi';
 import { serverNow } from '@/lib/serverTime';
 import LoiDaiButton from '@/components/LoiDaiButton';
 import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, pickAmbush } from '@/lib/game/ambush';
@@ -1028,11 +1028,14 @@ export default function PlayPage() {
     if (!meta) return;
     const pill = HON_PILLS.find((p) => p.id === id);
     const now = await serverNow();
-    if (!pill || meta.phucDuyen < pill.cost || honPillLeft(meta, now) <= 0) return;
+    if (!pill) return;
+    const used = honPillUsed(meta, now);
+    const cost = honPillCost(pill.cost, used);
+    if (meta.phucDuyen < cost) return;
     const day = honDay(now);
-    const n = meta.honPill?.day === day ? meta.honPill.n + 1 : 1;
-    const m2: Meta = { ...addHon(meta, pill.gain, now), phucDuyen: meta.phucDuyen - pill.cost, honPill: { day, n } };
-    track('hon_pill', { id, n, cost: pill.cost, hon: Math.round(m2.hon?.v ?? 0) });
+    const n = used + 1;
+    const m2: Meta = { ...addHon(meta, pill.gain, now), phucDuyen: meta.phucDuyen - cost, honPill: { day, n } };
+    track('hon_pill', { id, n, cost, hon: Math.round(m2.hon?.v ?? 0) });
     setMeta(m2);
     saveMeta(user, m2).catch(() => {});
   };

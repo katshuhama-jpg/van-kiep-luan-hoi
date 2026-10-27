@@ -89,7 +89,8 @@ export function honNow(m: Meta | null | undefined, now: number): number {
 }
 /**
  * Đan hồi hồn, mua bằng phúc duyên ở màn đầu thai. Ba phẩm, phẩm càng cao càng đắt theo tỉ lệ
- * (đan nhỏ lời nhất, đan lớn tiện nhất). Mỗi ngày (giờ VN) dùng tối đa 3 viên, gộp mọi phẩm.
+ * (đan nhỏ lời nhất, đan lớn tiện nhất). Mỗi ngày (giờ VN) 3 viên đầu giá gốc, gộp mọi phẩm;
+ * từ viên thứ 4 mỗi viên đắt thêm 50% so với viên trước, người nghiện vẫn chơi tiếp được nhưng tốn phúc mạnh.
  * Mốc giá: một kiếp bình thường cho khoảng 30-50 phúc duyên, một lần đầu thai tốn 15 Hồn lực.
  */
 export const HON_PILLS = [
@@ -98,13 +99,21 @@ export const HON_PILLS = [
   { id: 'hoan_hon', name: 'Hoàn Hồn Đan', grade: 'Thượng phẩm', gain: 100, cost: 140, icon: 'dien_tho' },
 ] as const;
 export type HonPillId = (typeof HON_PILLS)[number]['id'];
-export const HON_PILL_PER_DAY = 3;
+/** Số viên giá gốc mỗi ngày; sau đó giá nhân HON_PILL_STEP mỗi viên */
+export const HON_PILL_FREE = 3;
+export const HON_PILL_STEP = 1.5;
 /** Mỗi nhiệm vụ ngày hoàn thành hồi thêm Hồn lực */
 export const QUEST_HON = 10;
 const vnDate = (now: number) => new Date(now).toLocaleDateString('en-CA', { timeZone: 'Asia/Ho_Chi_Minh' });
-export function honPillLeft(m: Meta | null | undefined, now: number): number {
+/** Số viên đã dùng hôm nay */
+export function honPillUsed(m: Meta | null | undefined, now: number): number {
   const p = m?.honPill;
-  return HON_PILL_PER_DAY - (p && p.day === vnDate(now) ? p.n : 0);
+  return p && p.day === vnDate(now) ? p.n : 0;
+}
+/** Giá viên kế tiếp của một phẩm đan, theo số viên đã dùng hôm nay */
+export function honPillCost(base: number, used: number): number {
+  const over = Math.max(0, used - HON_PILL_FREE + 1);
+  return Math.round((base * Math.pow(HON_PILL_STEP, over)) / 5) * 5;
 }
 /** Cộng Hồn lực (không quá tối đa), tính từ mức hiện tại */
 export function addHon(m: Meta, amount: number, now: number): Meta {
