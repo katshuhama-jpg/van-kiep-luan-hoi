@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-export const SITE_URL = 'https://kiep-luan-hoi.vercel.app';
+export const SITE_URL = 'https://van-kiep-luan-hoi.vercel.app';
 export const SITE_NAME = 'Vạn Kiếp Luân Hồi';
 export const SITE_DESC =
   'Game pixel tu tiên trùng sinh trên trình duyệt: đầu thai ngẫu nhiên, tu luyện từ phàm nhân tới phi thăng, chọn chính hay tà, vào tông môn, đấu lôi đài hằng ngày. Chơi miễn phí, không cần cài đặt.';

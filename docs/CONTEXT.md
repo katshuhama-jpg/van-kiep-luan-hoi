@@ -2,7 +2,7 @@
 
 Tài liệu này dành cho người và AI agent cần hiểu game: cốt truyện, cách chơi, luật và con số, dữ liệu, quy ước. Đọc file này trước khi đọc code.
 
-- Game: https://kiep-luan-hoi.vercel.app
+- Game: https://van-kiep-luan-hoi.vercel.app
 - Code: https://github.com/katshuhama-jpg/van-kiep-luan-hoi
 - Chủ dự án: Tyler. Mọi quyết định thiết kế hỏi Tyler.
 - Cập nhật lần cuối: 26/10/2026.
