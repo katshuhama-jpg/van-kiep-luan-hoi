@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Sprite, { lpcLayers } from './Sprite';
-import { GRADE_COL, copyLife, drawLife, gradeOf, rankPct, shareLife } from '@/lib/lifeCard';
+import { GRADE_COL, drawLife, gradeOf, rankPct, shareLife } from '@/lib/lifeCard';
 import { track } from '@/lib/track';
 import ShareSheet from './ShareSheet';
 import type { ShareOut } from '@/lib/shareCard';
@@ -469,10 +469,6 @@ export function ShareCard({ c, ending, epitaph, isNew = false }: { c: Character;
     if (r?.link) setSheet(r);
     else setMsg(r?.saved ? 'Chưa tạo được link, đã tải ảnh về máy.' : 'Chưa khoe được, thử lại sau.');
   }
-  async function copy() {
-    track('share', { kind: 'life_text', grade });
-    setMsg((await copyLife(c, ending, isNew, pct)) ? 'Đã chép, dán vào nhóm là xong.' : 'Máy không cho chép chữ.');
-  }
   return (
     <div className="share-card life-card">
       <div className="lc-head">
@@ -486,14 +482,10 @@ export function ShareCard({ c, ending, epitaph, isNew = false }: { c: Character;
       </div>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       {url && <img src={url} alt={`Thẻ Một đời của ${c.name}`} className="share-preview" />}
-      <div className="choice-row">
-        <button className="btn btn-jade" onClick={share} disabled={busy}>
-          {busy ? 'Đang tạo link...' : 'Khoe đời này'}
-        </button>
-        <button className="btn" onClick={copy}>
-          Chép chữ
-        </button>
-      </div>
+      <button className="btn btn-jade btn-big lc-share" onClick={share} disabled={busy}>
+        {busy ? 'Đang tạo link...' : 'Khoe đời này'}
+        <small>Threads · Facebook · Messenger · Zalo</small>
+      </button>
       {msg && <small className="note">{msg}</small>}
       {sheet && <ShareSheet out={sheet} kind="life" onClose={() => setSheet(null)} />}
     </div>

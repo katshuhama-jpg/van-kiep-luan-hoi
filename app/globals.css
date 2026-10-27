@@ -4174,3 +4174,5 @@ button.shadow-card { cursor: pointer; }
 .ss-btn.copy { background: #2f6b3a; }
 .ss-more { font: inherit; font-size: 15px; padding: 8px; background: transparent; border: 2px dashed var(--ink, #1f160d); cursor: pointer; }
 .ss-link { display: block; padding: 6px 8px; font-size: 12px; word-break: break-all; user-select: all; background: rgba(0, 0, 0, 0.06); border: 2px solid rgba(0, 0, 0, 0.15); }
+.lc-share { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 1px; }
+.lc-share small { font-size: 12px; font-weight: 500; opacity: 0.9; }
