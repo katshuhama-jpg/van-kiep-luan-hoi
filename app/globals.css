@@ -4250,20 +4250,20 @@ button.shadow-card { cursor: pointer; }
 .fs-head b { font-size: 20px; flex: 1; }
 .fs-tinh { padding: 1px 8px; font-size: 14px; font-weight: 700; color: #ffd36b; border: 2px solid #ffd36b; }
 .fs-head .ss-x { color: #fff3dc; border-color: #fff3dc; }
-.fs-stage { position: relative; height: 240px; overflow: hidden; background: radial-gradient(circle at 50% 85%, #7a2a10 0 22%, #2a120c 23% 45%, #120806 46%); border-bottom: 3px solid #1f160d; image-rendering: pixelated; }
+.fs-stage { position: relative; height: 230px; overflow: hidden; background: radial-gradient(circle at 50% 50%, #5a2a14 0 26%, #2a120c 27% 50%, #120806 51%); border-bottom: 3px solid #1f160d; image-rendering: pixelated; }
 .fs-fire { position: absolute; left: 50%; bottom: 120px; transform: translateX(-50%); opacity: 0.5; }
 .fs-de { position: absolute; left: 50%; bottom: -34px; width: 192px; height: 192px; transform: translateX(-50%); image-rendering: pixelated; }
-.fs-weapon { position: absolute; left: 50%; top: 22px; width: 112px; height: 112px; transform: translateX(-50%) rotate(-45deg); display: grid; place-items: center; filter: drop-shadow(0 0 8px #ff9a4a); }
+.fs-weapon { position: absolute; left: 50%; top: 56px; width: 112px; height: 112px; transform: translateX(-50%) rotate(-45deg); display: grid; place-items: center; filter: drop-shadow(0 0 8px #ff9a4a); }
 .fs-weapon img, .fs-weapon svg { width: 112px; height: 112px; image-rendering: pixelated; }
 .fs-weapon i { position: absolute; right: 0; bottom: 6px; transform: rotate(45deg); padding: 0 4px; font-style: normal; font-weight: 700; color: #fff; background: #b0201a; border: 2px solid #1f160d; }
 .fs-stage.hitting .fs-weapon { animation: fsShake 0.36s steps(2) infinite; }
 .fs-weapon.broken { filter: grayscale(1) brightness(0.5); animation: fsBreak 0.5s steps(4) forwards; }
 @keyframes fsShake { 50% { transform: translateX(-50%) rotate(-45deg) translateY(3px); } }
 @keyframes fsBreak { to { transform: translateX(-50%) rotate(-10deg) translateY(40px); opacity: 0.4; } }
-.fs-hammer { position: absolute; left: calc(50% + 6px); top: 14px; width: 88px; height: 88px; image-rendering: pixelated; transform-origin: 85% 85%; transform: scaleX(-1) rotate(25deg); }
+.fs-hammer { position: absolute; left: calc(50% + 6px); top: 48px; width: 88px; height: 88px; image-rendering: pixelated; transform-origin: 85% 85%; transform: scaleX(-1) rotate(25deg); }
 .fs-hammer.swing { animation: fsSwing 0.36s steps(3) infinite; }
 @keyframes fsSwing { 0% { transform: scaleX(-1) rotate(25deg); } 45% { transform: scaleX(-1) rotate(-30deg); } 100% { transform: scaleX(-1) rotate(25deg); } }
-.fs-spark { position: absolute; left: 50%; top: 78px; width: 0; height: 0; }
+.fs-spark { position: absolute; left: 50%; top: 112px; width: 0; height: 0; }
 .fs-spark i { position: absolute; width: 6px; height: 6px; background: #ffd36b; box-shadow: 0 0 0 2px #e05a1a; transform: rotate(var(--a)) translateX(0); animation: fsSpark 0.35s steps(4) forwards; }
 @keyframes fsSpark { to { transform: rotate(var(--a)) translateX(46px); opacity: 0; } }
 .fs-stamp { position: absolute; left: 50%; top: 36%; transform: translate(-50%, -50%) rotate(-8deg); padding: 4px 14px; font-size: 40px; font-weight: 700; border: 4px solid currentColor; background: rgba(0, 0, 0, 0.6); animation: ldmStamp 0.35s steps(4) both; }
@@ -4279,7 +4279,8 @@ button.shadow-card { cursor: pointer; }
 .fs-odds dt { color: #6a5a44; }
 .fs-odds dd { margin: 0; font-weight: 700; }
 .fs-odds dd.bad { color: #b0201a; }
-.fs-go { width: 100%; }
+.fs-go { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 1px; }
+.fs-go small { font-size: 13px; font-weight: 500; opacity: 0.95; }
 @media (prefers-reduced-motion: reduce) { .fs-hammer.swing, .fs-stage.hitting .fs-weapon { animation: none; } }
 .fs-buy { display: flex; flex-direction: column; gap: 4px; padding: 6px 8px; background: #fff8e6; border: 2px dashed #b08a5a; }
 .fs-buy small { font-size: 12px; color: #6a5a44; }

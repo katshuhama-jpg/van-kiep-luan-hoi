@@ -125,7 +125,7 @@ export function forge(c: Character, ctx: EffectCtx): ForgeResult | null {
     c.forge = 0;
     c.forgeItem = undefined;
     ctx.fx('hurt', 'Vỡ vũ khí');
-    return { kind: 'break', lv: 0, text: `Một tiếng "choang", ${name} +${lv} vỡ làm đôi trên đe. Mất luôn vũ khí (-${costN} tinh thiết).` };
+    return { kind: 'break', lv: 0, text: `Một tiếng "choang", ${name} +${lv} vỡ làm đôi dưới búa. Mất luôn vũ khí (-${costN} tinh thiết).` };
   }
   ctx.fx('hurt', 'Rèn hỏng');
   return { kind: 'fail', lv, text: `Búa giáng lệch một nhịp, tinh thiết bốc thành khói. ${name} vẫn giữ +${lv} (-${costN} tinh thiết).` };

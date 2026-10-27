@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react';
 import ItemIcon from './ItemIcon';
-import { PixelFx, fxLua } from './PixelFx';
 import { ITEMS } from '@/lib/game/data';
 import { FORGE_CHANCE, FORGE_COST, FORGE_MAX, FORGE_PER, breakChance, elFx, forgeLevel, itemEl, tinhPrice, type ForgeResult } from '@/lib/game/forge';
 import type { Character } from '@/lib/game/types';
@@ -10,8 +9,8 @@ import type { Character } from '@/lib/game/types';
 const EL_COL: Record<string, string> = { kim: '#d8d8e8', moc: '#5ac86a', thuy: '#5a9ae0', hoa: '#e85a3a', tho: '#c8963a' };
 
 /**
- * Lò rèn: vũ khí đang cầm đặt trên đe trước lò lửa, búa gõ ba nhịp rồi ra kết quả.
- * Búa lấy từ bộ icon CC0 của Henrique Lazarini, đe từ "Anvil" của AntumDeluge (CC0, dựa trên ảnh của nightowl và Momentmal); lửa lò là hiệu ứng pixel sẵn có của game.
+ * Lò rèn: vũ khí đang cầm đứng giữa, bấm Gõ búa thì búa mới đập ba nhịp rồi ra kết quả.
+ * Búa lấy từ bộ icon CC0 của Henrique Lazarini.
  */
 export default function ForgeScene({ c, onForge, onBuy, onClose }: { c: Character; onForge: () => ForgeResult | null; onBuy?: (n: number) => void; onClose: () => void }) {
   const [phase, setPhase] = useState<'idle' | 'hit' | 'res'>('idle');
@@ -62,13 +61,11 @@ export default function ForgeScene({ c, onForge, onBuy, onClose }: { c: Characte
           </button>
         </div>
         <div className={`fs-stage ${phase === 'hit' ? 'hitting' : ''} ${res ? `r-${res.kind}` : ''}`}>
-          <PixelFx spec={fxLua(14)} scale={4} dur={1.2} className="pa fs-fire" />
-          <img className="fs-de" src="/px/de_ren.png" alt="" width={64} height={64} />
           <span className={`fs-weapon ${res?.kind === 'break' ? 'broken' : ''}`} key={`w${hits}`}>
             <ItemIcon item={it} />
             {res?.kind !== 'break' && lv > 0 && <i>+{lv}</i>}
           </span>
-          <img className={`fs-hammer ${phase === 'hit' ? 'swing' : ''}`} src="/icons/g_chuy_go_lim.png" alt="" width={32} height={32} />
+          {phase === 'hit' && <img className="fs-hammer swing" src="/icons/g_chuy_go_lim.png" alt="" width={32} height={32} />}
           {phase === 'hit' && hits > 0 && (
             <span className="fs-spark" key={hits} aria-hidden="true">
               {Array.from({ length: 8 }, (_, i) => (
@@ -100,8 +97,10 @@ export default function ForgeScene({ c, onForge, onBuy, onClose }: { c: Characte
                 <dd>
                   công +{Math.round((lv + 1) * FORGE_PER * 100)}%, hệ {el.name} cấp {lv + 1}
                 </dd>
-                <dt>Tốn</dt>
-                <dd className={enough ? '' : 'bad'}>{cost} tinh thiết</dd>
+                <dt>Nguyên liệu</dt>
+                <dd className={enough ? '' : 'bad'}>
+                  {cost} tinh thiết (đang có {c.tinhHoa ?? 0})
+                </dd>
                 <dt>Thành</dt>
                 <dd>{Math.round(ok * 100)}%</dd>
                 <dt>Vỡ mất đồ</dt>
@@ -109,6 +108,9 @@ export default function ForgeScene({ c, onForge, onBuy, onClose }: { c: Characte
               </dl>
               <button className="btn btn-red btn-big fs-go" disabled={phase === 'hit' || !enough} onClick={strike}>
                 {phase === 'hit' ? 'Đang rèn...' : enough ? '⚒ Gõ búa' : 'Thiếu tinh thiết'}
+                <small>
+                  mất {cost} tinh thiết · còn {Math.max(0, (c.tinhHoa ?? 0) - cost)}
+                </small>
               </button>
               {onBuy && (
                 <div className="fs-buy">
