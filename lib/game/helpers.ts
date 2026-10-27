@@ -82,16 +82,16 @@ export function money(c: Character, delta: number) {
 }
 
 /** Tu vi cần cho mỗi tầng ở cảnh giới hiện tại */
-/** 3.1.0b: thọ dài ra 1,5 lần nên tu vi cần từ Kim Đan trở lên tăng 1,8 lần, để phi thăng vẫn là chuyện hiếm */
-export const NEED_MUL_HIGH = 1.8;
+/** 3.1.0b: thọ dài ra 1,5 lần nên tu vi cần từ Kim Đan trở lên tăng 1,5 lần, để phi thăng không quá dễ */
+export const NEED_MUL_HIGH = 1.5;
 export function needFor(c: Character): number {
   return Math.round((REALMS[c.realm]?.need || 40) * (c.realm >= 3 ? NEED_MUL_HIGH : 1));
 }
 
 /** số năm tối thiểu cho mỗi tầng ở tiên/ma/hư giới */
-export const COSMOS_YEARS_PER_LAYER = 30;
+export const COSMOS_YEARS_PER_LAYER = 24;
 /** cảnh giới cuối (Đại La, Ma Đế, Hỗn Nguyên) nhanh hơn để kẻ phi thăng sớm còn kịp thử Chứng Đạo */
-export const COSMOS_YEARS_TOP = 20;
+export const COSMOS_YEARS_TOP = 16;
 
 export function addCult(c: Character, amount: number) {
   // thiên tượng hôm nay làm tu vi nhanh hay chậm

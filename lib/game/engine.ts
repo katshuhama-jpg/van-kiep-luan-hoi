@@ -871,7 +871,7 @@ function breakChance(c: Character) {
       // kiếp chứng đạo cuối cùng: khó hơn hẳn
       (c.realm >= TOP_REALM ? -0.25 : 0) +
       // 3.1.0b: thiên kiếp phi thăng khó thêm
-      (c.realm === ASCEND_REALM - 1 && !c.cosmos ? -0.1 : 0) +
+      (c.realm === ASCEND_REALM - 1 && !c.cosmos ? -0.05 : 0) +
       (rankOf(c) === 3 ? CHAN_TRUYEN_BREAK : 0) +
       (omenIs('loi_van') ? 0.06 : 0) +
       (hasGift(c, 'g_thien_menh') ? 0.1 : 0) +
