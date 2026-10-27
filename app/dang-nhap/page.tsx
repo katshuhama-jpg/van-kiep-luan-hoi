@@ -1,5 +1,6 @@
 'use client';
 
+import { track } from '@/lib/track';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -28,8 +29,10 @@ export default function LoginPage() {
     setBusy(false);
     if (err) {
       setError(err);
+      track('auth_fail', { mode, err: String(err).slice(0, 80) });
       return;
     }
+    track(mode === 'in' ? 'login' : 'signup');
     // tài khoản mới: chuyển tiến độ chơi thử trên máy (nếu có) vào tài khoản
     if (mode === 'up') await carryGuest(currentPlayer()).catch(() => {});
     const next = new URLSearchParams(window.location.search).get('next');

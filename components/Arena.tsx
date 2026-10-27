@@ -12,6 +12,7 @@ import { foeChar, foeStats } from '@/lib/game/duel';
 import { ELEMENTS, elementOf } from '@/lib/game/nguhanh';
 import type { RivalChar } from '@/lib/game/types';
 import { baseChance, fitsRule, equalize, ruleOf, vnDate, type ArenaRule } from '@/lib/game/arena';
+import { track } from '@/lib/track';
 import { arena2State, arenaCandidates, arenaDraw, arenaFight2, arenaPick, arenaShadow, toRival, type Arena2State } from '@/lib/social';
 
 export const ARENA_TURNS = 3;
@@ -135,6 +136,7 @@ function XinXam({ me, user, rule, left, onFight, onErr }: { me: RivalChar; user:
       onErr(r?.error === 'NO_TURNS' ? 'Hôm nay đã hết lượt.' : r?.error === 'NO_OPP' ? 'Chưa có đối thủ nào để rút.' : 'Bài kẹt, thử lại sau.');
       return;
     }
+    track('arena_draw');
     setDraw({ opp: r.opp, foe: r.shadow, again: r.again });
     // xáo đủ lâu cho hồi hộp rồi mới cho chọn
     setTimeout(() => setPhase('pick'), Math.max(0, 1300 - (Date.now() - t0)));
@@ -261,6 +263,7 @@ export default function Arena({ user }: { user: Player | null }) {
     if (!user || pick === null || !cands) return;
     const c = cands[pick];
     setBusy('pick');
+    track('arena_pick');
     const r = await arenaPick(user, c.lifeId ?? 0);
     setBusy(null);
     if (!r || (r.error && r.error !== 'LOCKED')) {

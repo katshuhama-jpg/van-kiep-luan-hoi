@@ -12,6 +12,7 @@ import type { Element, RivalChar } from '@/lib/game/types';
 import { HABIT_TEXT, baseChance, beats, equalize, type ArenaRule } from '@/lib/game/arena';
 import { KI_MAX, TURN_CAP, apply, autoPick, foeIntent, foeUlt, handOf, myUlt, newFight, trade, turnLines, ultName, type FightState, type Intent, type Parry, type TurnResult } from '@/lib/game/arenaFight';
 import { arenaFight2 } from '@/lib/social';
+import { track } from '@/lib/track';
 
 const BGS = ['tien', 'ma', 'hu'].flatMap((c) => ['kim', 'moc', 'thuy', 'hoa', 'tho'].map((e) => `/bg/nhd-${c}-${e}.png`));
 const EL_NAME: Record<Element, string> = { kim: 'Kim', moc: 'Mộc', thuy: 'Thủy', hoa: 'Hỏa', tho: 'Thổ' };
@@ -103,6 +104,7 @@ export default function ArenaMatch({ me, foe0, opp, rule, revenge, user, onDone 
     const win = st.over === 'win';
     const pct = (s: FightState['me']) => Math.round((s.hp / s.max) * 100);
     const detail = `${me.name} ${win ? 'thắng' : 'thua'} ${foe.name} sau ${st.turn} lượt (còn ${pct(st.me)}% máu, đối thủ ${pct(st.foe)}%). Luật hôm nay: ${rule.name}.`;
+    track('arena_fight', { win, turns: st.turn, revenge: !!revenge, rule: rule.name });
     arenaFight2(user, opp, win, detail, revenge).then((r) => setRes({ win, pts: r?.pts, err: !r ? 'Lôi đài đang đông, kết quả chưa ghi được.' : r.error }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [st.over]);

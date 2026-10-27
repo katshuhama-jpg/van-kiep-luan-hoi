@@ -43,6 +43,7 @@ import { CURRENT_VERSION } from '@/lib/releases';
 import NguHanhDai, { NhdMirror, waiting, type NhdView } from '@/components/NguHanhDai';
 import { arenaBg, NHD_MAX_TURNS, PHU_PRICE, STANCES, loseRound, mirrorChar, mirrorStance, mirrorStats, needTrial, nhdOf, roundMods, tellOf, winRound, type RoundMods, type Stance } from '@/lib/game/nguHanhDai';
 import { sectSide } from '@/lib/game/sect';
+import { setScreen, track } from '@/lib/track';
 
 const SPEEDS = [1, 2, 4, 8, 16];
 /** màu chưởng lực theo con đường tu luyện */
@@ -83,6 +84,8 @@ export default function PlayPage() {
   const [loreNews, setLoreNews] = useState<string[]>([]); // mảnh Thiên thư vừa mở
 
   const charRef = useRef<Character | null>(null);
+  const lifeT0 = useRef(0); // lúc bắt đầu kiếp trong phiên này, để đo thời gian một kiếp
+  const deathSeen = useRef(0);
   const pendingRef = useRef<PendingEvent | null>(null);
   const yearSecRef = useRef(30);
   const talentsRef = useRef<string[]>([]);
@@ -1039,6 +1042,8 @@ export default function PlayPage() {
     if (base && !base.name.trim()) base = { ...base, name: genName(base.gender) };
     const c = newCharacter(m2, gifts, base ?? undefined);
     talentsRef.current = talents;
+    lifeT0.current = Date.now();
+    track('life_start', { lifeNo: c.lifeNo, drink, talents: talents.length, gifts: gifts.length, picked: !!base });
     if ((c.kiepSo ?? 0) > 0) c.log.push({ age: 0, tone: 'big', text: `Kiếp Số ${c.kiepSo} · ${KS_NAME[c.kiepSo ?? 0]}. Thiên đạo đã để mắt tới linh hồn này, kiếp nạn sẽ nặng hơn, phúc báo cũng dày hơn.` });
     if ((c.kiepTich ?? 0) > 0) c.log.push({ age: 0, tone: 'good', text: `Kiếp tích ${c.kiepTich}: những lần ngã trước cửa trời đã thành kinh nghiệm. Đột phá dễ hơn ${(c.kiepTich ?? 0) * 5}%.` });
     if (lh) {
@@ -1239,6 +1244,7 @@ export default function PlayPage() {
     trackMiles(c);
     const k = karmaOf(c);
     const ending = endingOf(c);
+    track('life_end', { lifeNo: c.lifeNo, ending: ending.id, bury, epitaph: !!epitaph.trim() });
     // nhiệm vụ ngày
     const q = evalQuests(meta, c, !meta.endings?.[ending.id]);
     setQuestNews(q.newly);
@@ -1410,6 +1416,7 @@ export default function PlayPage() {
             }}
           />
         )}
+        {(setScreen('dau_thai'), null)}
         <BirthPanel meta={meta} onBorn={born} onKho={() => setSheet('kho')} onSoSinhTu={() => seeBook('e')} />
         {relOpen && <ReleaseNotice onClose={closeRel} />}
       </main>
@@ -1418,6 +1425,11 @@ export default function PlayPage() {
 
   const c = charRef.current!;
   const pending = pendingRef.current;
+  setScreen(c.dead ? 'chet' : pending ? 'su_kien' : sheet ? `bang_${sheet}` : 'choi');
+  if (c.dead && deathSeen.current !== c.lifeNo) {
+    deathSeen.current = c.lifeNo;
+    track('death', { lifeNo: c.lifeNo, realm: c.realm, age: Math.floor(c.age), path: c.path, cosmos: c.cosmos ?? null, min: lifeT0.current ? Math.round((Date.now() - lifeT0.current) / 6000) / 10 : null });
+  }
   const battleNow = duelRef.current ?? ambushRef.current ?? (c.focus === 'tru_yeu' && c.age >= 10 && battleRef.current?.m.id === c.huntTarget ? battleRef.current : null);
   const paused = !running || !!pending || sheet !== null || c.dead;
   const season = seasonOf(c.age);
