@@ -13,9 +13,10 @@ import { HABIT_TEXT, baseChance, beats, equalize, type ArenaRule } from '@/lib/g
 import { KI_MAX, TURN_CAP, apply, autoPick, foeIntent, foeUlt, handOf, myUlt, newFight, trade, turnLines, ultName, type FightState, type Intent, type Parry, type TurnResult } from '@/lib/game/arenaFight';
 import { arenaFight2 } from '@/lib/social';
 import { track } from '@/lib/track';
+import { tr } from '@/lib/i18n';
 
 const BGS = ['tien', 'ma', 'hu'].flatMap((c) => ['kim', 'moc', 'thuy', 'hoa', 'tho'].map((e) => `/bg/nhd-${c}-${e}.png`));
-const EL_NAME: Record<Element, string> = { kim: 'Kim', moc: 'Mộc', thuy: 'Thủy', hoa: 'Hỏa', tho: 'Thổ' };
+const EL_NAME: Record<Element, string> = { kim: tr('Kim', "Metal"), moc: tr('Mộc', "Wood"), thuy: tr('Thủy', "Water"), hoa: tr('Hỏa', "Fire"), tho: tr('Thổ', "Earth") };
 const PARRY_MS = 950;
 /** Khung ngắm đỡ tuyệt kỹ co từ 2.4 xuống 0.8: lọt khung giữa là đúng nhịp */
 const parryOf = (f: number): Parry => (f >= 0.78 && f <= 0.9 ? 'perfect' : f >= 0.64 && f <= 0.98 ? 'good' : 'miss');
@@ -48,13 +49,13 @@ export function HpBar({ name, side, s, flip }: { name: string; side: FightState[
   return (
     <div className={`af-hp ${flip ? 'r' : ''}`}>
       <b>{name}</b>
-      <span className="af-bar" aria-label={`Máu ${side.hp}/${side.max}`}>
+      <span className="af-bar" aria-label={tr(`Máu ${side.hp}/${side.max}`, `HP ${side.hp}/${side.max}`)}>
         <i className={pct < 30 ? 'low' : ''} style={{ width: `${pct}%` }} />
         <em>
           {side.hp}/{side.max}
         </em>
       </span>
-      <span className="af-ki" aria-label={`Nội lực ${side.ki}/${KI_MAX}`}>
+      <span className="af-ki" aria-label={tr(`Nội lực ${side.ki}/${KI_MAX}`, `Inner force ${side.ki}/${KI_MAX}`)}>
         {Array.from({ length: KI_MAX }, (_, i) => (
           <i key={i} className={i < side.ki ? (side.ki >= KI_MAX ? 'full' : 'on') : ''} />
         ))}
@@ -103,19 +104,19 @@ export default function ArenaMatch({ me, foe0, opp, rule, revenge, user, onDone 
     if (!st.over || res) return;
     const win = st.over === 'win';
     const pct = (s: FightState['me']) => Math.round((s.hp / s.max) * 100);
-    const detail = `${me.name} ${win ? 'thắng' : 'thua'} ${foe.name} sau ${st.turn} lượt (còn ${pct(st.me)}% máu, đối thủ ${pct(st.foe)}%). Luật hôm nay: ${rule.name}.`;
+    const detail = tr(`${me.name} ${win ? tr('thắng', "defeated") : tr('thua', "lost to")} ${foe.name} sau ${st.turn} lượt (còn ${pct(st.me)}% máu, đối thủ ${pct(st.foe)}%). Luật hôm nay: ${rule.name}.`, `${me.name} ${win ? tr('thắng', "defeated") : tr('thua', "lost to")} ${foe.name} after ${st.turn} turns (${pct(st.me)}% HP left, opponent ${pct(st.foe)}%). Today's rule: ${rule.name}.`);
     track('arena_fight', { win, turns: st.turn, revenge: !!revenge, rule: rule.name });
-    arenaFight2(user, opp, win, detail, revenge).then((r) => setRes({ win, pts: r?.pts, err: !r ? 'Lôi đài đang đông, kết quả chưa ghi được.' : r.error }));
+    arenaFight2(user, opp, win, detail, revenge).then((r) => setRes({ win, pts: r?.pts, err: !r ? tr('Lôi đài đang đông, kết quả chưa ghi được.', "The Arena is packed - the result couldn't be recorded.") : r.error }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [st.over]);
 
   function land(r: TurnResult) {
     const id = Date.now();
-    const tag = r.elemTag === 'khac' ? 'Khắc!' : r.elemTag === 'bi_khac' ? 'Bị khắc' : undefined;
+    const tag = r.elemTag === 'khac' ? tr('Khắc!', "Counter!") : r.elemTag === 'bi_khac' ? tr('Bị khắc', "Countered") : undefined;
     const p: Pop[] = [];
-    if (r.toFoe) p.push({ id: id + 1, side: 'foe', v: r.toFoe, tag: r.winner !== 'foe' ? (r.crit ? 'Chí mạng!' : tag) : undefined });
-    if (r.toMe) p.push({ id: id + 2, side: 'me', v: r.toMe, tag: r.winner === 'foe' ? (r.crit ? 'Chí mạng!' : tag) : undefined });
-    if (r.kind === 'ult_foe' && r.parry === 'perfect') p.push({ id: id + 3, side: 'me', v: 0, tag: 'Hóa giải!' });
+    if (r.toFoe) p.push({ id: id + 1, side: 'foe', v: r.toFoe, tag: r.winner !== 'foe' ? (r.crit ? tr('Chí mạng!', "Critical!") : tag) : undefined });
+    if (r.toMe) p.push({ id: id + 2, side: 'me', v: r.toMe, tag: r.winner === 'foe' ? (r.crit ? tr('Chí mạng!', "Critical!") : tag) : undefined });
+    if (r.kind === 'ult_foe' && r.parry === 'perfect') p.push({ id: id + 3, side: 'me', v: 0, tag: tr('Hóa giải!', "Deflected!") });
     setPops(p);
     const n = st.turn + 1;
     setLogs((l) => [...l, { n, lines: turnLines(r, me, foe, Math.random), cls: r.kind !== 'trade' ? 'u' : r.winner === 'me' ? 'w' : r.winner === 'foe' ? 'l' : 'c' }]);
@@ -201,17 +202,17 @@ export default function ArenaMatch({ me, foe0, opp, rule, revenge, user, onDone 
   const meHurt = anim && anim.toMe > 0;
   const foeHurt = anim && anim.toFoe > 0;
   const lastLog = logs.length ? logs[logs.length - 1] : null;
-  const elTag = (e: Element) => (intent?.elShown ? (elemMul(e, intent.elShown) > 1.2 ? 'khắc' : elemMul(intent.elShown, e) > 1.2 ? 'bị khắc' : '') : '');
+  const elTag = (e: Element) => (intent?.elShown ? (elemMul(e, intent.elShown) > 1.2 ? tr('khắc', "counters") : elemMul(intent.elShown, e) > 1.2 ? tr('bị khắc', "countered") : '') : '');
 
   return (
-    <div className="arena-match af" role="dialog" aria-modal="true" aria-label={`Lôi đài với @${opp}`}>
+    <div className="arena-match af" role="dialog" aria-modal="true" aria-label={tr(`Lôi đài với @${opp}`, `Arena vs @${opp}`)}>
       <div className={`af-stage ${anim?.kind === 'ult_me' || (anim?.kind === 'ult_foe' && anim.parry === 'miss') ? 'quake' : ''}`} style={{ backgroundImage: `url(${bg})` }}>
         <div className="af-hud">
-          <HpBar name={me.name} side={st.me} s={st.me.ki >= KI_MAX ? 'Tuyệt kỹ!' : undefined} />
+          <HpBar name={me.name} side={st.me} s={st.me.ki >= KI_MAX ? tr('Tuyệt kỹ!', "Ultimate!") : undefined} />
           <span className="af-turn">
-            {st.over ? (st.over === 'win' ? 'THẮNG' : 'THUA') : `Lượt ${st.turn + 1}/${TURN_CAP}`}
+            {st.over ? (st.over === 'win' ? tr('THẮNG', "VICTORY") : tr('THUA', "DEFEAT")) : tr(`Lượt ${st.turn + 1}/${TURN_CAP}`, `Turn ${st.turn + 1}/${TURN_CAP}`)}
           </span>
-          <HpBar name={`${foe.name}`} side={st.foe} s={st.foeUltNext ? 'Sắp tung tuyệt kỹ!' : undefined} flip />
+          <HpBar name={`${foe.name}`} side={st.foe} s={st.foeUltNext ? tr('Sắp tung tuyệt kỹ!', "Ultimate incoming!") : undefined} flip />
         </div>
         <div className="af-floor">
           <div className={`af-fig me ${meHurt ? 'hurt' : anim && anim.winner === 'me' ? 'lunge' : ''} ${st.over === 'lose' ? 'down' : ''}`}>
@@ -252,29 +253,30 @@ export default function ArenaMatch({ me, foe0, opp, rule, revenge, user, onDone 
             <Sprite c={foeChar(cut === 'me' ? me : foe)} size={176} anim="spellcast" dir={cut === 'me' ? 3 : 1} />
           </span>
           <span className="af-cut-band">
-            <small>{cut === 'me' ? 'Tuyệt kỹ' : `${foe.name} tung tuyệt kỹ`}</small>
+            <small>{cut === 'me' ? tr('Tuyệt kỹ', "Ultimate") : tr(`${foe.name} tung tuyệt kỹ`, `${foe.name} unleashes an ultimate`)}</small>
             <b>{ultName(cut === 'me' ? me : foe)}</b>
           </span>
         </div>
       )}
 
       {phase === 'parry' && (
-        <div className="af-parry" onPointerDown={tapParry} role="button" aria-label="Chạm đúng nhịp để đỡ tuyệt kỹ">
+        <div className="af-parry" onPointerDown={tapParry} role="button" aria-label={tr("Chạm đúng nhịp để đỡ tuyệt kỹ", "Tap on the beat to parry the ultimate")}>
           <div className="kiep-aim af-aim">
             <span className="ka-frame" />
             <span className="ka-ret" style={{ animationDuration: `${PARRY_MS}ms`, ['--s0' as string]: 2.4 } as CSSProperties} />
-            <b>ĐỠ!</b>
+            <b>{tr("ĐỠ!", "PARRY!")}</b>
           </div>
-          <p>Chạm khi ô ngắm lọt vào khung</p>
+          <p>{tr("Chạm khi ô ngắm lọt vào khung", "Tap when the reticle is inside the frame")}</p>
         </div>
       )}
 
       <div className="am-body">
         <p className="am-rule">
-          <b>{rule.name}:</b> {rule.desc} {revenge ? <em>Trận báo thù, không tính lượt.</em> : null}
+          <b>{rule.name}:</b> {rule.desc} {revenge ? <em>{tr("Trận báo thù, không tính lượt.", "Revenge match - doesn't use a turn.")}</em> : null}
           <br />
           <small>
-            Ngang cảnh giới: {foe.name} (thật là {foe0.realm === 0 ? 'Phàm nhân' : realmLabel(foe0.realm, foe0.layer, foe0.cosmos)}) được kéo về {me.realm === 0 ? 'Phàm nhân' : realmLabel(me.realm, me.layer, me.cosmos)} như bạn.
+            
+            {tr("Ngang cảnh giới: ", "Realm-matched: ")}{foe.name}{tr(" (thật là ", " (actually ")}{foe0.realm === 0 ? tr('Phàm nhân', "Mortal") : realmLabel(foe0.realm, foe0.layer, foe0.cosmos)}{tr(") được kéo về ", ") is scaled to ")}{me.realm === 0 ? tr('Phàm nhân', "Mortal") : realmLabel(me.realm, me.layer, me.cosmos)}{tr(" như bạn.", " just like you.")}
           </small>
         </p>
         {!st.over ? (
@@ -282,30 +284,32 @@ export default function ArenaMatch({ me, foe0, opp, rule, revenge, user, onDone 
             {st.foeUltNext ? (
               <>
                 <p className="am-tell af-warn">
-                  {foe.name} đã tụ đủ nội lực, sắp tung <b>“{ultName(foe)}”</b>! <small>Chạm đúng nhịp khi ô ngắm lọt vào khung: đúng nhịp thì phản đòn, hơi lệch thì đỡ được phần lớn.</small>
+                  {foe.name}{tr(" đã tụ đủ nội lực, sắp tung ", " has gathered full inner force and is about to unleash ")}<b>“{ultName(foe)}”</b>! <small>{tr("Chạm đúng nhịp khi ô ngắm lọt vào khung: đúng nhịp thì phản đòn, hơi lệch thì đỡ được phần lớn.", "Tap on the beat when the reticle is inside the frame: perfect timing counters, slightly off still blocks most of it.")}</small>
                 </p>
                 <button className="btn btn-red btn-big af-brace" disabled={phase !== 'idle'} onClick={() => brace()}>
-                  Đón đỡ tuyệt kỹ
+                  
+                  {tr("Đón đỡ tuyệt kỹ", "Parry the ultimate")}
                 </button>
               </>
             ) : (
               <>
                 <p className="am-tell">
-                  {intent?.tell.text} {intent?.elShown ? <>Quanh người tụ khí hệ <b style={{ color: ELEMENTS[intent.elShown].color, textShadow: '1px 1px 0 #1f160d' }}>{EL_NAME[intent.elShown]}</b>.</> : null}
-                  <small>{HABIT_TEXT[foe.path ?? ''] ?? ''} Ý đồ để lộ không phải lúc nào cũng thật.</small>
+                  {intent?.tell.text} {intent?.elShown ? <>{tr("Quanh người tụ khí hệ ", "Qi gathers around them, element: ")}<b style={{ color: ELEMENTS[intent.elShown].color, textShadow: '1px 1px 0 #1f160d' }}>{EL_NAME[intent.elShown]}</b>.</> : null}
+                  <small>{HABIT_TEXT[foe.path ?? ''] ?? ''}{tr(" Ý đồ để lộ không phải lúc nào cũng thật.", " Their tells aren't always honest.")}</small>
                 </p>
-                <div className="af-hand" role="radiogroup" aria-label="Ấn ngũ hành gắn vào chiêu">
-                  <small>Ấn ngũ hành</small>
+                <div className="af-hand" role="radiogroup" aria-label={tr("Ấn ngũ hành gắn vào chiêu", "Five Elements seal attached to the move")}>
+                  <small>{tr("Ấn ngũ hành", "Five Elements seal")}</small>
                   {hand.map((e) => (
                     <button key={e} role="radio" aria-checked={sel === e} className={`af-seal ${sel === e ? 'on' : ''}`} style={{ ['--ec' as string]: ELEMENTS[e].color }} onClick={() => setSel(e)} disabled={phase !== 'idle'}>
                       <b>{EL_NAME[e]}</b>
-                      {elTag(e) && <small className={elTag(e) === 'khắc' ? 'good' : 'bad'}>{elTag(e)}</small>}
+                      {elTag(e) && <small className={intent?.elShown && elemMul(e, intent.elShown) > 1.2 ? 'good' : 'bad'}>{elTag(e)}</small>}
                     </button>
                   ))}
                 </div>
                 {st.me.ki >= KI_MAX && (
                   <button className="btn btn-big af-ult" disabled={phase !== 'idle'} onClick={ult}>
-                    ✦ Tuyệt kỹ: {ultName(me)}
+                    
+                    {tr("✦ Tuyệt kỹ: ", "✦ Ultimate: ")}{ultName(me)}
                   </button>
                 )}
                 <div className="am-stances">
@@ -316,7 +320,8 @@ export default function ArenaMatch({ me, foe0, opp, rule, revenge, user, onDone 
                       <button key={s} className={`am-stance st-${s}`} disabled={phase !== 'idle' || (st.turn === 0 && !!rule.force1 && rule.force1 !== s)} onClick={() => play(s)}>
                         <b>{STANCES[s].name}</b>
                         <small>
-                          thắng {STANCES[beat].name}, thua {STANCES[lose].name}
+                          
+                          {tr("thắng ", "beats ")}{STANCES[beat].name}{tr(", thua ", ", loses to ")}{STANCES[lose].name}
                         </small>
                       </button>
                     );
@@ -325,7 +330,8 @@ export default function ArenaMatch({ me, foe0, opp, rule, revenge, user, onDone 
               </>
             )}
             <button className="btn am-auto" disabled={phase !== 'idle'} onClick={auto}>
-              Tự đánh lượt này
+              
+              {tr("Tự đánh lượt này", "Auto-play this turn")}
             </button>
           </>
         ) : (
@@ -333,25 +339,26 @@ export default function ArenaMatch({ me, foe0, opp, rule, revenge, user, onDone 
             {res ? (
               <>
                 <p>
-                  {st.over === 'win' ? `Bạn thắng sau ${st.turn} lượt. +3 điểm lôi đài.` : `Bạn thua sau ${st.turn} lượt. Không được điểm.`}
-                  {typeof res.pts === 'number' ? ` Tuần này: ${res.pts} điểm.` : ''}
+                  {st.over === 'win' ? tr(`Bạn thắng sau ${st.turn} lượt. +3 điểm lôi đài.`, `You win after ${st.turn} turns. +3 arena points.`) : tr(`Bạn thua sau ${st.turn} lượt. Không được điểm.`, `You lose after ${st.turn} turns. No points.`)}
+                  {typeof res.pts === 'number' ? tr(` Tuần này: ${res.pts} điểm.`, ` This week: ${res.pts} points.`) : ''}
                 </p>
-                {res.err && <p className="ar-err">{res.err === 'NO_TURNS' ? 'Hôm nay đã hết lượt.' : res.err === 'NO_REVENGE' ? 'Lượt báo thù đã hết hạn.' : res.err === 'BAD_OPP' ? 'Quẻ này không còn hiệu lực.' : res.err}</p>}
+                {res.err && <p className="ar-err">{res.err === 'NO_TURNS' ? tr('Hôm nay đã hết lượt.', "No turns left today.") : res.err === 'NO_REVENGE' ? tr('Lượt báo thù đã hết hạn.', "Your revenge match has expired.") : res.err === 'BAD_OPP' ? tr('Quẻ này không còn hiệu lực.', "This draw is no longer valid.") : res.err}</p>}
               </>
             ) : (
-              <p>Đang ghi kết quả lên bảng...</p>
+              <p>{tr("Đang ghi kết quả lên bảng...", "Recording the result...")}</p>
             )}
             <button className="btn btn-red btn-big" disabled={!res} onClick={onDone}>
-              Rời lôi đài
+              
+              {tr("Rời lôi đài", "Leave the arena")}
             </button>
           </div>
         )}
         {logs.length > 0 ? (
           <section className="am-comm" aria-live="polite">
-            <h4>Diễn biến</h4>
+            <h4>{tr("Diễn biến", "Match log")}</h4>
             {[...logs].reverse().map((l) => (
               <div key={l.n} className={`am-round ${l.cls === 'w' || l.cls === 'u' ? 'w' : l.cls === 'l' ? 'l' : ''} ${l === lastLog ? 'live' : ''}`}>
-                <b>Lượt {l.n}</b>
+                <b>{tr("Lượt ", "Turn ")}{l.n}</b>
                 {l.lines.map((t, k) => (
                   <p key={k} className={k === l.lines.length - 1 ? 'res' : k === 0 ? 'me' : 'foe'}>
                     {t}
@@ -361,7 +368,7 @@ export default function ArenaMatch({ me, foe0, opp, rule, revenge, user, onDone 
             ))}
           </section>
         ) : (
-          <p className="am-comm-empty">Diễn biến trận đấu sẽ hiện ở đây.</p>
+          <p className="am-comm-empty">{tr("Diễn biến trận đấu sẽ hiện ở đây.", "The match log will appear here.")}</p>
         )}
       </div>
     </div>

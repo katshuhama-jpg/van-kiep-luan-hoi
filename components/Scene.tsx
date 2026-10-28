@@ -7,6 +7,7 @@ import MonsterLpc from './MonsterLpc';
 import { DRAGON_BABY, DRAGON_BIG } from '@/lib/game/monsterLook';
 import type { Character, Fx } from '@/lib/game/types';
 import { REALMS } from '@/lib/game/data';
+import { tr } from '@/lib/i18n';
 
 const REALM_NAMES: string[] = REALMS.map((r) => r.name);
 
@@ -205,9 +206,9 @@ function Background({ focus, season = 0 }: { focus: string; season?: number }) {
 }
 
 const FX_TEXT: Partial<Record<Fx['kind'], string>> = {
-  breakthrough: 'ĐỘT PHÁ!',
-  lightning: 'THIÊN KIẾP',
-  death: 'BỎ MẠNG',
+  breakthrough: tr('ĐỘT PHÁ!', "BREAKTHROUGH!"),
+  lightning: tr('THIÊN KIẾP', "TRIBULATION"),
+  death: tr('BỎ MẠNG', "PERISHED"),
 };
 
 let preloaded = false;
@@ -385,7 +386,7 @@ export default function Scene({ c, fx, paused, season, battle, quiet }: { c: Cha
               >
                 {f.kind === 'breakthrough' && f.label ? (
                   <>
-                    <small>{REALM_NAMES.includes(f.label) || f.label === 'PHI THĂNG' ? 'ĐỘT PHÁ' : 'NHẬP ĐẠO'}</small>
+                    <small>{REALM_NAMES.includes(f.label) || f.label === 'PHI THĂNG' || f.label === 'ASCENSION' ? tr('ĐỘT PHÁ', "BREAKTHROUGH") : tr('NHẬP ĐẠO', "ENTER THE DAO")}</small>
                     {f.label}
                   </>
                 ) : (

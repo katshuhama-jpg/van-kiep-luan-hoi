@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { getMusic, musicPref, setMusicPref } from '@/lib/music';
+import { tr } from '@/lib/i18n';
 
 /** Nút bật/tắt nhạc nền. Trình duyệt chỉ cho phát nhạc sau lần chạm đầu tiên. */
 export default function MusicToggle({ battle = false }: { battle?: boolean }) {
@@ -32,7 +33,7 @@ export default function MusicToggle({ battle = false }: { battle?: boolean }) {
   };
 
   return (
-    <button className="icon-btn music-btn" onClick={toggle} aria-pressed={on} aria-label={on ? 'Tắt nhạc' : 'Bật nhạc'} title={on ? 'Tắt nhạc' : 'Bật nhạc'}>
+    <button className="icon-btn music-btn" onClick={toggle} aria-pressed={on} aria-label={on ? tr('Tắt nhạc', "Mute music") : tr('Bật nhạc', "Play music")} title={on ? tr('Tắt nhạc', "Mute music") : tr('Bật nhạc', "Play music")}>
       <svg viewBox="0 0 8 8" width="18" height="18" shapeRendering="crispEdges" aria-hidden="true">
         <rect x="3" y="0" width="1" height="6" fill="currentColor" />
         <rect x="4" y="0" width="3" height="1" fill="currentColor" />

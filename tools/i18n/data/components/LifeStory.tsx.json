@@ -1,0 +1,224 @@
+[
+ {
+  "vi": "Chào đời",
+  "en": "Birth"
+ },
+ {
+  "vi": "Nhập đạo",
+  "en": "Entering the Dao"
+ },
+ {
+  "vi": "Đột phá",
+  "en": "Breakthrough"
+ },
+ {
+  "vi": "Nhân duyên",
+  "en": "Fated bonds"
+ },
+ {
+  "vi": "Linh thú",
+  "en": "Spirit beast"
+ },
+ {
+  "vi": "Long kỵ",
+  "en": "Dragon rider"
+ },
+ {
+  "vi": "Giao đấu",
+  "en": "Duel"
+ },
+ {
+  "vi": "Báo thù",
+  "en": "Revenge"
+ },
+ {
+  "vi": "Bái sư",
+  "en": "Taking a Master"
+ },
+ {
+  "vi": "Phát tài",
+  "en": "Fortune made"
+ },
+ {
+  "vi": "Bảo vật",
+  "en": "Treasure"
+ },
+ {
+  "vi": "Trừ yêu",
+  "en": "Hunting demons"
+ },
+ {
+  "vi": "Lên đường",
+  "en": "Setting out"
+ },
+ {
+  "vi": "Mệnh số",
+  "en": "Destiny"
+ },
+ {
+  "vi": "Tạ thế",
+  "en": "Passing"
+ },
+ {
+  "vi": "nhất",
+  "en": "One"
+ },
+ {
+  "vi": "nhị",
+  "en": "Two"
+ },
+ {
+  "vi": "tam",
+  "en": "Three"
+ },
+ {
+  "vi": "tứ",
+  "en": "Four"
+ },
+ {
+  "vi": "ngũ",
+  "en": "Five"
+ },
+ {
+  "vi": "lục",
+  "en": "Six"
+ },
+ {
+  "vi": "thất",
+  "en": "Seven"
+ },
+ {
+  "vi": "bát",
+  "en": "Eight"
+ },
+ {
+  "vi": "Chào đời ở {0}{1}.",
+  "ph": [
+   "look.birthPlace",
+   "look.origin ? `, ${look.origin.toLowerCase()}` : ''"
+  ],
+  "en": "Born in {0}{1}."
+ },
+ {
+  "vi": "Một tiếng khóc chào đời, một kiếp người bắt đầu.",
+  "en": "A first cry, and a new life begins."
+ },
+ {
+  "vi": "Hồi ký {0}",
+  "ph": [
+   "r.char_name"
+  ],
+  "en": "Memoir of {0}"
+ },
+ {
+  "vi": "Hồi ký · ",
+  "en": "Memoir · "
+ },
+ {
+  "vi": " · Kiếp ",
+  "en": " · Life "
+ },
+ {
+  "vi": "Đóng hồi ký",
+  "en": "Close memoir"
+ },
+ {
+  "vi": "Một kiếp người",
+  "en": "One mortal life"
+ },
+ {
+  "vi": " năm dương thế · ",
+  "en": " years in the world · "
+ },
+ {
+  "vi": "Phàm nhân",
+  "en": "Mortal"
+ },
+ {
+  "vi": "Thành Ma Tôn",
+  "en": "Became a Demon Sovereign"
+ },
+ {
+  "vi": "Phi thăng",
+  "en": "Ascended"
+ },
+ {
+  "vi": "Hồi kết",
+  "en": "The end"
+ },
+ {
+  "vi": "Năm ",
+  "en": "Year "
+ },
+ {
+  "vi": " tuổi",
+  "en": " years old"
+ },
+ {
+  "vi": "Một kiếp người khép lại.",
+  "en": "A life draws to a close."
+ },
+ {
+  "vi": "Hưởng thọ ",
+  "en": "Lived to "
+ },
+ {
+  "vi": " nén hương",
+  "en": " sticks of incense"
+ },
+ {
+  "vi": "Lời viếng",
+  "en": "Condolences"
+ },
+ {
+  "vi": "bạn",
+  "en": "you"
+ },
+ {
+  "vi": "Hoặc tự viết lời viếng",
+  "en": "Or write your own condolence"
+ },
+ {
+  "vi": "Viếng",
+  "en": "Pay respects"
+ },
+ {
+  "vi": "Xem lại từ đầu",
+  "en": "Watch from the start"
+ },
+ {
+  "vi": "Thắp một nén hương",
+  "en": "Burn a stick of incense"
+ },
+ {
+  "vi": "Cảnh trước",
+  "en": "Previous scene"
+ },
+ {
+  "vi": "Cảnh sau",
+  "en": "Next scene"
+ },
+ {
+  "vi": "❚❚ Dừng",
+  "en": "❚❚ Pause"
+ },
+ {
+  "vi": "▶ Tự chạy",
+  "en": "▶ Autoplay"
+ },
+ {
+  "vi": "Hồi thứ ",
+  "en": "Chapter "
+ },
+ {
+  "vi": "Năm đầu tiên",
+  "en": "The first year"
+ },
+ {
+  "vi": "Năm {0} tuổi",
+  "ph": [
+   "m.age"
+  ],
+  "en": "Age {0}"
+ }
+]

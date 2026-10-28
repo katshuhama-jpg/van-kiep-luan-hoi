@@ -1,0 +1,110 @@
+[
+ {
+  "vi": "Phàm nhân",
+  "en": "Mortal"
+ },
+ {
+  "vi": "LÔI ĐÀI PHI KIẾM",
+  "en": "FLYING SWORD ARENA"
+ },
+ {
+  "vi": "Luật hôm nay: {0}",
+  "ph": [
+   "m.rule"
+  ],
+  "en": "Today's rule: {0}"
+ },
+ {
+  "vi": "@{0} hạ @{1}",
+  "ph": [
+   "m.meUser",
+   "m.opp"
+  ],
+  "en": "@{0} defeats @{1}"
+ },
+ {
+  "vi": "Còn {0}% máu · cắm {1} phi kiếm",
+  "ph": [
+   "m.hp",
+   "m.swords"
+  ],
+  "en": "{0}% HP left · {1} flying swords landed"
+ },
+ {
+  "vi": "THẮNG",
+  "en": "VICTORY"
+ },
+ {
+  "vi": "BẠI",
+  "en": "DEFEAT"
+ },
+ {
+  "vi": "VẠN KIẾP LUÂN HỒI",
+  "en": "VẠN KIẾP LUÂN HỒI"
+ },
+ {
+  "vi": "{0} phi kiếm · còn {1}% máu",
+  "ph": [
+   "m.swords",
+   "m.hp"
+  ],
+  "en": "{0} flying swords · {1}% HP left"
+ },
+ {
+  "vi": "LÔI ĐÀI · VẠN KIẾP LUÂN HỒI",
+  "en": "ARENA · VẠN KIẾP LUÂN HỒI"
+ },
+ {
+  "vi": "@{0} hạ @{1} trên lôi đài",
+  "ph": [
+   "m.meUser",
+   "m.opp"
+  ],
+  "en": "@{0} defeats @{1} in the arena"
+ },
+ {
+  "vi": "{0} đấu {1}, cắm {2} phi kiếm, {3} khi {4} {5}% máu. Luật hôm nay: {6}. Vào Vạn Kiếp Luân Hồi lên đài thử sức.",
+  "ph": [
+   "m.me.name",
+   "m.foe.name",
+   "m.swords",
+   "m.win ? 'thắng' : 'thua'",
+   "m.win ? 'còn' : 'đối thủ còn'",
+   "m.hp",
+   "m.rule"
+  ],
+  "en": "{0} vs {1}: landed {2} flying swords and {3}, {4} {5}% HP. Today's rule: {6}. Join Vạn Kiếp Luân Hồi and test yourself in the arena."
+ },
+ {
+  "vi": "thắng",
+  "en": "won"
+ },
+ {
+  "vi": "thua",
+  "en": "lost"
+ },
+ {
+  "vi": "còn",
+  "en": "left with"
+ },
+ {
+  "vi": "đối thủ còn",
+  "en": "the opponent left with"
+ },
+ {
+  "vi": "Tôi vừa hạ @{0} trên lôi đài Vạn Kiếp Luân Hồi, còn {1}% máu, cắm {2} phi kiếm.",
+  "ph": [
+   "m.opp",
+   "m.hp",
+   "m.swords"
+  ],
+  "en": "I just beat @{0} in the Vạn Kiếp Luân Hồi arena with {1}% HP left and {2} flying swords landed."
+ },
+ {
+  "vi": "@{0} vừa thắng tôi trên lôi đài Vạn Kiếp Luân Hồi. Mai báo thù!",
+  "ph": [
+   "m.opp"
+  ],
+  "en": "@{0} just beat me in the Vạn Kiếp Luân Hồi arena. Revenge tomorrow!"
+ }
+]

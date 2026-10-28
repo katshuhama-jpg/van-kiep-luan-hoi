@@ -14,28 +14,29 @@ import { RelChips } from '@/components/GiangHo';
 import { collectorTitle } from '@/lib/game/collect';
 import { SOCIAL, type SocialState } from '@/lib/game/social';
 import { bountyBoard, loadSocial, oanGia, type BountyRow, type OanGia } from '@/lib/social';
+import { tr } from '@/lib/i18n';
 
 const LEANS: { id: RankLean; name: string }[] = [
-  { id: 'all', name: 'Tất cả' },
-  { id: 'chinh', name: 'Chính phái' },
-  { id: 'trung', name: 'Trung lập' },
-  { id: 'ta', name: 'Tà phái' },
+  { id: 'all', name: tr('Tất cả', "All") },
+  { id: 'chinh', name: tr('Chính phái', "Righteous") },
+  { id: 'trung', name: tr('Trung lập', "Neutral") },
+  { id: 'ta', name: tr('Tà phái', "Evil") },
 ];
 
 const SCOPES: { id: RankScope; name: string }[] = [
-  { id: 'week', name: 'Tuần này' },
-  { id: 'all', name: 'Mọi kiếp' },
-  { id: 'alive', name: 'Đang sống' },
-  { id: 'dead', name: 'Đã mất' },
+  { id: 'week', name: tr('Tuần này', "This week") },
+  { id: 'all', name: tr('Mọi kiếp', "All lives") },
+  { id: 'alive', name: tr('Đang sống', "Alive") },
+  { id: 'dead', name: tr('Đã mất', "Dead") },
 ];
 
-const PATH_FILTERS: { id: string; name: string }[] = [{ id: 'all', name: 'Mọi con đường' }, ...Object.values(PATHS).map((p) => ({ id: p.id, name: p.name })), { id: 'none', name: 'Chưa chọn đường' }];
+const PATH_FILTERS: { id: string; name: string }[] = [{ id: 'all', name: tr('Mọi con đường', "All Paths") }, ...Object.values(PATHS).map((p) => ({ id: p.id, name: p.name })), { id: 'none', name: tr('Chưa chọn đường', "No Path yet") }];
 
 function Medal({ rank }: { rank: number }) {
   const col = rank === 1 ? '#ffcf3e' : rank === 2 ? '#d6dce6' : rank === 3 ? '#d98a4a' : null;
   if (!col) return <span className="rank-no">{rank}</span>;
   return (
-    <svg className="rank-medal" viewBox="0 0 10 12" width="30" height="36" shapeRendering="crispEdges" role="img" aria-label={`Hạng ${rank}`}>
+    <svg className="rank-medal" viewBox="0 0 10 12" width="30" height="36" shapeRendering="crispEdges" role="img" aria-label={tr(`Hạng ${rank}`, `Rank ${rank}`)}>
       <rect x="2" y="0" width="2" height="4" fill="#b8432f" />
       <rect x="6" y="0" width="2" height="4" fill="#3d6fb0" />
       <rect x="2" y="4" width="6" height="8" fill={col} />
@@ -54,7 +55,7 @@ function RankTitles({ weekly, lore, coll }: { weekly: string[]; lore: string | n
   const titles = [...weekly, lore, coll].filter((t): t is string => !!t);
   if (!titles.length) return null;
   const shown = open ? titles : titles.slice(0, 2);
-  const cls = (t: string) => (t === lore ? 'lore-master' : t === coll ? 'collector' : t.includes('Ma Đầu') ? 'ta' : t.includes('Minh Chủ') ? 'chinh' : t.includes('Phú') ? 'phu' : t.includes('Thọ') ? 'tho' : 'gold');
+  const cls = (t: string) => (t === lore ? 'lore-master' : t === coll ? 'collector' : /Ma Đầu|Demon Lord/.test(t) ? 'ta' : /Minh Chủ|Alliance Leader/.test(t) ? 'chinh' : /Phú|Rich/.test(t) ? 'phu' : /Thọ|Long/.test(t) ? 'tho' : 'gold');
   return (
     <span className="rank-titles">
       {shown.map((t) => (
@@ -63,8 +64,8 @@ function RankTitles({ weekly, lore, coll }: { weekly: string[]; lore: string | n
         </span>
       ))}
       {titles.length > 2 && (
-        <button type="button" className="title-more" onClick={() => setOpen(!open)} aria-label={open ? 'Thu gọn danh hiệu' : `Xem thêm ${titles.length - 2} danh hiệu`}>
-          {open ? 'Thu gọn' : `+${titles.length - 2}`}
+        <button type="button" className="title-more" onClick={() => setOpen(!open)} aria-label={open ? tr('Thu gọn danh hiệu', "Collapse titles") : tr(`Xem thêm ${titles.length - 2} danh hiệu`, `Show ${titles.length - 2} more titles`)}>
+          {open ? tr('Thu gọn', "Collapse") : `+${titles.length - 2}`}
         </button>
       )}
     </span>
@@ -132,9 +133,10 @@ export default function RankPage() {
       <header className="topbar">
         <div className="topbar-row">
           <span className="age-big" style={{ fontSize: 28 }}>
-            Xếp hạng
+            
+            {tr("Xếp hạng", "Rankings")}
           </span>
-          <span className="meta">Anh hùng các đời</span>
+          <span className="meta">{tr("Anh hùng các đời", "Heroes of all ages")}</span>
           <BackButton fallback="/choi" />
         </div>
       </header>
@@ -149,7 +151,8 @@ export default function RankPage() {
             setTruy(false);
           }}
         >
-          Năng lực
+          
+          {tr("Năng lực", "Power")}
         </button>
         <button
           role="tab"
@@ -160,7 +163,8 @@ export default function RankPage() {
             setTruy(false);
           }}
         >
-          Phú hào
+          
+          {tr("Phú hào", "Tycoons")}
         </button>
         <button
           role="tab"
@@ -171,7 +175,8 @@ export default function RankPage() {
             setTruy(false);
           }}
         >
-          Trường thọ
+          
+          {tr("Trường thọ", "Longevity")}
         </button>
         <button
           role="tab"
@@ -179,17 +184,18 @@ export default function RankPage() {
           className={truy ? 'on' : ''}
           onClick={() => setTruy(true)}
         >
-          Truy nã
+          
+          {tr("Truy nã", "Wanted")}
         </button>
       </div>
 
       {truy ? (
         <section className="gh-truy">
-          <h3 className="gh-h">Bảng truy nã</h3>
+          <h3 className="gh-h">{tr("Bảng truy nã", "Wanted board")}</h3>
           {board === null ? (
-            <p>Đang dán cáo thị...</p>
+            <p>{tr("Đang dán cáo thị...", "Posting notices...")}</p>
           ) : !board.length ? (
-            <p className="note">Chưa ai bị treo thưởng. Vào game, mở Giang hồ để treo đầu kẻ thù.</p>
+            <p className="note">{tr("Chưa ai bị treo thưởng. Vào game, mở Giang hồ để treo đầu kẻ thù.", "No bounties yet. Enter the game and open Jianghu to put a price on your enemy's head.")}</p>
           ) : (
             <ol className="gh-board">
               {board.map((b) => (
@@ -200,7 +206,7 @@ export default function RankPage() {
                   <span>
                     <b>@{b.target}</b> <RelChips player={b.target} s={social} />
                     <small>
-                      {b.n} lệnh · treo bởi {b.posters.map((p) => '@' + p).join(', ')}
+                      {b.n}{tr(" lệnh · treo bởi ", " bounties · posted by ")}{b.posters.map((p) => '@' + p).join(', ')}
                     </small>
                   </span>
                   <b className="gh-gold">{fmt(b.total)}</b>
@@ -208,12 +214,13 @@ export default function RankPage() {
               ))}
             </ol>
           )}
-          <h3 className="gh-h">Oan gia</h3>
+          <h3 className="gh-h">{tr("Oan gia", "Nemeses")}</h3>
           <p className="note" style={{ marginTop: 0 }}>
-            Những cặp đối đầu nhiều nhất giang hồ.
+            
+            {tr("Những cặp đối đầu nhiều nhất giang hồ.", "The fiercest rivalries in the jianghu.")}
           </p>
           {!pairs.length ? (
-            <p className="note">Chưa có cặp oan gia nào.</p>
+            <p className="note">{tr("Chưa có cặp oan gia nào.", "No sworn enemies yet.")}</p>
           ) : (
             <ol className="gh-board">
               {pairs.map((p) => (
@@ -224,7 +231,7 @@ export default function RankPage() {
                   <span>
                     <b>@{p.p1}</b> {p.w1} : {p.w2} <b>@{p.p2}</b>
                     <small>
-                      {p.fights} trận{p.fights - p.w1 - p.w2 > 0 ? `, ${p.fights - p.w1 - p.w2} trận hòa` : ''}
+                      {p.fights}{tr(" trận", " fights")}{p.fights - p.w1 - p.w2 > 0 ? tr(`, ${p.fights - p.w1 - p.w2} trận hòa`, `, ${p.fights - p.w1 - p.w2} draws`) : ''}
                     </small>
                   </span>
                 </li>
@@ -236,8 +243,8 @@ export default function RankPage() {
         <>
           <div className="rank-filters">
             <label>
-              <span className="sr-only">Thời gian</span>
-              <select value={scope} onChange={(e) => setScope(e.target.value as RankScope)} aria-label="Lọc theo sống chết">
+              <span className="sr-only">{tr("Thời gian", "Time")}</span>
+              <select value={scope} onChange={(e) => setScope(e.target.value as RankScope)} aria-label={tr("Lọc theo sống chết", "Filter by alive or dead")}>
                 {SCOPES.map((x) => (
                   <option key={x.id} value={x.id}>
                     {x.name}
@@ -246,37 +253,37 @@ export default function RankPage() {
               </select>
             </label>
             <label>
-              <span className="sr-only">Phe</span>
-              <select value={lean} onChange={(e) => setLean(e.target.value as RankLean)} aria-label="Lọc theo phái">
+              <span className="sr-only">{tr("Phe", "Faction")}</span>
+              <select value={lean} onChange={(e) => setLean(e.target.value as RankLean)} aria-label={tr("Lọc theo phái", "Filter by side")}>
                 {LEANS.map((l) => (
                   <option key={l.id} value={l.id}>
-                    {l.id === 'all' ? 'Mọi phe' : l.name}
+                    {l.id === 'all' ? tr('Mọi phe', "All sides") : l.name}
                   </option>
                 ))}
               </select>
             </label>
             <label>
-              <span className="sr-only">Con đường</span>
-              <select value={path} onChange={(e) => setPath(e.target.value)} aria-label="Lọc theo con đường">
+              <span className="sr-only">{tr("Con đường", "Path")}</span>
+              <select value={path} onChange={(e) => setPath(e.target.value)} aria-label={tr("Lọc theo con đường", "Filter by Path")}>
                 {PATH_FILTERS.map((p) => (
                   <option key={p.id} value={p.id}>
-                    {p.id === 'all' ? 'Mọi đạo' : p.name}
+                    {p.id === 'all' ? tr('Mọi đạo', "All Paths") : p.name}
                   </option>
                 ))}
               </select>
             </label>
           </div>
-          {scope === 'week' && <p className="note rank-note">Tính lại mỗi thứ Hai. Top 3 tuần và người mạnh nhất mỗi phe được treo danh hiệu.</p>}
+          {scope === 'week' && <p className="note rank-note">{tr("Tính lại mỗi thứ Hai. Top 3 tuần và người mạnh nhất mỗi phe được treo danh hiệu.", "Resets every Monday. The weekly top 3 and the strongest of each side earn titles.")}</p>}
 
           {!enabled || failed ? (
             <section className="panel">
-              <p style={{ margin: 0 }}>Chưa kết nối được máy chủ xếp hạng.</p>
+              <p style={{ margin: 0 }}>{tr("Chưa kết nối được máy chủ xếp hạng.", "Can't reach the ranking server.")}</p>
             </section>
           ) : rows === null ? (
-            <p>Đang xem thiên bảng...</p>
+            <p>{tr("Đang xem thiên bảng...", "Reading the Heaven Ranking...")}</p>
           ) : rows.length === 0 ? (
             <section className="panel">
-              <p style={{ margin: 0 }}>Chưa có tu sĩ nào ở mục này.</p>
+              <p style={{ margin: 0 }}>{tr("Chưa có tu sĩ nào ở mục này.", "No cultivators here yet.")}</p>
             </section>
           ) : (
             <ol className="ranks">
@@ -294,22 +301,22 @@ export default function RankPage() {
                       <span className="rank-head">
                         <span className="rank-name">{c.name}</span>
                         <span className={`rank-state rs-${r.alive ? 'alive' : c.endTag === 'chung_dao' ? 'dao' : c.cosmos || c.ascended ? 'asc' : 'gone'}`}>
-                          {r.alive ? 'Đang sống' : c.endTag === 'chung_dao' ? 'Chứng đạo' : c.cosmos === 'ma' ? 'Ma giới' : c.cosmos === 'hu' ? 'Thái Hư' : c.cosmos === 'tien' || c.ascended ? 'Tiên giới' : 'Đã mất'}
+                          {r.alive ? tr('Đang sống', "Alive") : c.endTag === 'chung_dao' ? tr('Chứng đạo', "Attained the Yao") : c.cosmos === 'ma' ? tr('Ma giới', "Demon Realm") : c.cosmos === 'hu' ? tr('Thái Hư', "Great Void") : c.cosmos === 'tien' || c.ascended ? tr('Tiên giới', "Immortal Realm") : tr('Đã mất', "Dead")}
                         </span>
                       </span>
                       <span className="rank-val">
                         {kind === 'power'
                           ? c.realm === 0
-                            ? 'Phàm nhân'
+                            ? tr('Phàm nhân', "Mortal")
                             : realmLabel(c.realm, c.layer, c.cosmos)
                           : kind === 'age'
-                            ? `Thọ ${Math.floor(c.age)} tuổi · ${c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer, c.cosmos)}`
-                            : `${fmt(c.linhThach)} linh thạch`}
-                        {(c.kiepSo ?? 0) > 0 && <span className="ks-chip">Kiếp Số {c.kiepSo}</span>}
+                            ? tr(`Thọ ${Math.floor(c.age)} tuổi · ${c.realm === 0 ? tr('Phàm nhân', "Mortal") : realmLabel(c.realm, c.layer, c.cosmos)}`, `Lived to ${Math.floor(c.age)} · ${c.realm === 0 ? tr('Phàm nhân', "Mortal") : realmLabel(c.realm, c.layer, c.cosmos)}`)
+                            : tr(`${fmt(c.linhThach)} linh thạch`, `${fmt(c.linhThach)} spirit stones`)}
+                        {(c.kiepSo ?? 0) > 0 && <span className="ks-chip">{tr("Kiếp Số ", "Calamity Count ")}{c.kiepSo}</span>}
                       </span>
                       <small className="rank-meta">
                         <b className="rank-user">@{r.username}</b>
-                        {mine ? ' (bạn)' : ''} · Kiếp {c.lifeNo} · {Math.floor(c.age)} tuổi · {c.path ? PATHS[c.path].name : 'chưa chọn đường'} · {describeLean(c.daoTam)}
+                        {mine ? tr(' (bạn)', " (you)") : ''}{tr(" · Kiếp ", " · Life ")}{c.lifeNo} · {Math.floor(c.age)}{tr(" tuổi · ", " yrs · ")}{c.path ? PATHS[c.path].name : tr('chưa chọn đường', "no Path yet")} · {describeLean(c.daoTam)}
                       </small>
                       <RankTitles weekly={titles[titleKey(r.username, c.lifeNo)] ?? []} lore={lm[r.username] ? '🔔 ' + lm[r.username] : null} coll={coll[r.username] ? collectorTitle(coll[r.username]) : null} />
                       <RelChips player={r.username} s={social} />
@@ -324,7 +331,7 @@ export default function RankPage() {
 
       {!user && (
         <p className="note" style={{ margin: 0 }}>
-          <Link href="/dang-nhap">Đăng nhập</Link> để ghi danh lên bảng.
+          <Link href="/dang-nhap">{tr("Đăng nhập", "Log in")}</Link>{tr(" để ghi danh lên bảng.", " to register on the board.")}
         </p>
       )}
     </main>

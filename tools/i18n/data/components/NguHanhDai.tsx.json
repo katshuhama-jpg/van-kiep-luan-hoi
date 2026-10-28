@@ -1,0 +1,370 @@
+[
+ {
+  "vi": "Tiên giới",
+  "en": "Immortal Realm"
+ },
+ {
+  "vi": "Ma giới",
+  "en": "Demon Realm"
+ },
+ {
+  "vi": "Thái Hư",
+  "en": "Thái Hư"
+ },
+ {
+  "vi": "Bạn khắc bóng",
+  "en": "You overcome the shadow"
+ },
+ {
+  "vi": "Bóng khắc bạn",
+  "en": "The shadow overcomes you"
+ },
+ {
+  "vi": "Bạn sinh bóng",
+  "en": "You feed the shadow"
+ },
+ {
+  "vi": "Bóng sinh bạn",
+  "en": "The shadow feeds you"
+ },
+ {
+  "vi": "Cùng mệnh",
+  "en": "Same element"
+ },
+ {
+  "vi": "Vòng ngũ hành: vòng ngoài tương sinh, ngôi sao trong tương khắc",
+  "en": "Five Elements wheel: outer ring generates, inner star overcomes"
+ },
+ {
+  "vi": "Đủ cấp phi thăng, còn {0} năm tới {1} tuổi. Chạm xem nên chuẩn bị gì",
+  "ph": [
+   "w",
+   "ASCEND_MIN_AGE"
+  ],
+  "en": "Ready to ascend - {0} years until age {1}. Tap to see how to prepare"
+ },
+ {
+  "vi": "Ngũ Hành Đài: ấn {0} {1}/{2}, phù {3}/3",
+  "ph": [
+   "ELEMENTS[k].name",
+   "anOf(c, k)",
+   "AN_MAX",
+   "c.phu ?? 0"
+  ],
+  "en": "Five Elements Platform: {0} seals {1}/{2}, talismans {3}/3"
+ },
+ {
+  "vi": "Ngũ hành viên mãn",
+  "en": "Five Elements perfected"
+ },
+ {
+  "vi": "Gương vỡ · {0}/{1}",
+  "ph": [
+   "st.won",
+   "NHD_ROUNDS"
+  ],
+  "en": "Mirror shattered · {0}/{1}"
+ },
+ {
+  "vi": "Thân tử đạo tiêu",
+  "en": "Body and Dao destroyed"
+ },
+ {
+  "vi": "Bị hất khỏi đài",
+  "en": "Thrown off the platform"
+ },
+ {
+  "vi": "Đón thiên kiếp",
+  "en": "Face the tribulation"
+ },
+ {
+  "vi": "Tới gương tiếp theo",
+  "en": "On to the next mirror"
+ },
+ {
+  "vi": "Tiếp tục",
+  "en": "Continue"
+ },
+ {
+  "vi": "Trước cửa trời",
+  "en": "Before the gate of heaven"
+ },
+ {
+  "vi": "Luật Ngũ Hành Đài",
+  "en": "Five Elements Platform rules"
+ },
+ {
+  "vi": "Bạn đã đủ cấp phi thăng, còn ",
+  "en": "You are ready to ascend, but there are still "
+ },
+ {
+  "vi": " năm nữa mới tới ",
+  "en": " years until you are "
+ },
+ {
+  "vi": " tuổi.",
+  "en": " years old."
+ },
+ {
+  "vi": "Tu vi đã đầy, không tăng thêm. Quãng chờ này dành để chuẩn bị cho Ngũ Hành Đài:",
+  "en": "Your cultivation is full and won't grow further. Use this wait to prepare for the Five Elements Platform:"
+ },
+ {
+  "vi": "Săn quái hệ ",
+  "en": "Hunt "
+ },
+ {
+  "vi": " (Vừa sức trở lên) để đủ ",
+  "en": " monsters (Even match or harder) to collect "
+ },
+ {
+  "vi": " ấn: gương cuối hết khắc được bạn. Đang có ",
+  "en": " seals: then the last mirror can no longer overcome you. You have "
+ },
+ {
+  "vi": "Kiếm tiền mua Ngũ Hành Phù (",
+  "en": "Earn money to buy Five Elements Talismans ("
+ },
+ {
+  "vi": " linh thạch một tấm, tối đa 3). Dùng phù ở gương cuối là cách lật thế mạnh nhất.",
+  "en": " spirit stones each, max 3). A talisman at the last mirror is the strongest way to turn the tide."
+ },
+ {
+  "vi": "Hạ tâm ma (Thanh Tâm Đan, bế quan) để bóng yếu đi, giữ đạo tâm thật vững.",
+  "en": "Lower your heart demon (Clear Heart Pill, Seclusion) to weaken the shadows, and keep your Dao Heart steady."
+ },
+ {
+  "vi": "Để ý thọ nguyên: thọ sắp hết thì uống Diên Thọ Đan.",
+  "en": "Watch your lifespan: if it's running out, take a Longevity Pill."
+ },
+ {
+  "vi": "Muốn phi thăng phải hạ đủ ",
+  "en": "To ascend you must defeat "
+ },
+ {
+  "vi": " bóng của chính mình. Bóng giống hệt bạn (cấp, chỉ số, trang bị), chỉ khác bản mệnh, và mỗi vòng một mạnh hơn. Bóng cuối mạnh hơn chính bạn.",
+  "en": " shadows of yourself. Each shadow is your exact copy (level, stats, gear), differing only in natal element, and each round's is stronger. The last one is stronger than you."
+ },
+ {
+  "vi": "⇢ khắc",
+  "en": "⇢ overcomes"
+ },
+ {
+  "vi": " · Bị khắc: đòn bạn -30%, đòn bóng +50%",
+  "en": " · Overcome: your hits -30%, shadow's hits +50%"
+ },
+ {
+  "vi": "Năm tấm gương (bạn mệnh ",
+  "en": "Five mirrors (your element: "
+ },
+ {
+  "vi": " · đã vỡ",
+  "en": " · shattered"
+ },
+ {
+  "vi": " · khó nhất",
+  "en": " · hardest"
+ },
+ {
+  "vi": "Bốn cách lật thế",
+  "en": "Four ways to turn the tide"
+ },
+ {
+  "vi": "Ngũ Hành Ấn.",
+  "en": "Five Elements Seal."
+ },
+ {
+  "vi": " Diệt quái có hệ (không quá yếu) có ",
+  "en": " Slaying an elemental monster (not too weak) gives a "
+ },
+ {
+  "vi": "% nhận 1 ấn hệ đó, tối đa ",
+  "en": "% chance of 1 seal of that element, up to "
+ },
+ {
+  "vi": " ấn mỗi hệ. Khi bị khắc, mỗi ấn của hệ khắc được bóng gỡ 20% phần thiệt. Bóng cuối cần ấn ",
+  "en": " seals per element. When overcome, each seal of the element that overcomes the shadow cancels 20% of the penalty. The last shadow needs seals of "
+ },
+ {
+  "vi": ": bạn có ",
+  "en": ": you have "
+ },
+ {
+  "vi": "Thế trận.",
+  "en": "Stance."
+ },
+ {
+  "vi": " Trước mỗi vòng rút một lá bùa: Công (đòn +25%), Thủ (nhận -35%), Hóa (xóa khắc chế, đòn -10%). Thủ chặn Công, Hóa phá Thủ, Công thắng Hóa: rút đúng lá khắc thế của bóng thì thêm 15% lợi thế. Bóng lộ dáng trước khi ra tay, nhưng 3 lần trong 10 là đòn nhử.",
+  "en": " Before each round, draw a charm: Attack (hits +25%), Guard (damage taken -35%), Merge (cancels element counters, hits -10%). Guard blocks Attack, Merge breaks Guard, Attack beats Merge: draw the charm that counters the shadow's stance for an extra 15% edge. The shadow shows its stance before striking, but 3 times in 10 it's a feint."
+ },
+ {
+  "vi": "Ngũ Hành Phù.",
+  "en": "Five Elements Talisman."
+ },
+ {
+  "vi": " Đổi bản mệnh của bạn sang hệ khắc bóng trong một vòng. Rơi từ quái có hệ Lv16 trở lên, hoặc mua của sứ giả Thiên Cơ Các ngay trên đài. Mang tối đa 3 tấm, bạn có ",
+  "en": " Switches your natal element to the one that overcomes the shadow for one round. Dropped by elemental monsters Lv16 and up, or sold by the Thiên Cơ Pavilion envoy right on the platform. Carry up to 3; you have "
+ },
+ {
+  "vi": "Tâm cảnh.",
+  "en": "State of mind."
+ },
+ {
+  "vi": " Tâm ma cao thì bóng mạnh thêm, tối đa 20%. Đạo tâm vững (rất chính hoặc rất tà) thì bóng yếu đi 5-10%. Hiện tại: ",
+  "en": " A high heart demon makes the shadows up to 20% stronger. A steady Dao Heart (very Righteous or very Evil) weakens them by 5-10%. Currently: "
+ },
+ {
+  "vi": "Thắng và thua",
+  "en": "Winning and losing"
+ },
+ {
+  "vi": "Chỉ được lên đài khi đủ Độ Kiếp hậu kỳ và từ ",
+  "en": "You may only step onto the platform at Tribulation Late and age "
+ },
+ {
+  "vi": " tuổi trở lên.",
+  "en": " or older."
+ },
+ {
+  "vi": "Vỡ đủ ",
+  "en": "Shatter all "
+ },
+ {
+  "vi": " gương: được độ kiếp phi thăng, tỉ lệ vượt kiếp +10%.",
+  "en": " mirrors: you may face the tribulation and ascend, with +10% chance to survive it."
+ },
+ {
+  "vi": "Thua một vòng: ",
+  "en": "Lose a round: "
+ },
+ {
+  "vi": "% thân tử đạo tiêu (gương cuối ",
+  "en": "% chance your body and Dao are destroyed (last mirror "
+ },
+ {
+  "vi": "%). Sống sót thì mất 15% tu vi, tâm ma +6, ",
+  "en": "%). If you survive, you lose 15% cultivation, heart demon +6, and must wait "
+ },
+ {
+  "vi": " năm sau mới được lên đài lại. Gương đã vỡ không lành lại.",
+  "en": " years before returning. Shattered mirrors stay shattered."
+ },
+ {
+  "vi": "Thua gương cuối quá ",
+  "en": "Lose to the last mirror more than "
+ },
+ {
+  "vi": " lần thì... không ai biết điều gì xảy ra.",
+  "en": " times and... no one knows what happens."
+ },
+ {
+  "vi": "Đã hiểu",
+  "en": "Got it"
+ },
+ {
+  "vi": "Đã hiểu, lên đài",
+  "en": "Got it, step up"
+ },
+ {
+  "vi": "Chưa sẵn sàng",
+  "en": "Not ready"
+ },
+ {
+  "vi": "Ngũ Hành Đài · cửa ",
+  "en": "Five Elements Platform · gate to "
+ },
+ {
+  "vi": "Gương ",
+  "en": "Mirror "
+ },
+ {
+  "vi": "Bóng ",
+  "en": "The "
+ },
+ {
+  "vi": " lộ dáng:",
+  "en": " shadow reveals itself:"
+ },
+ {
+  "vi": " · đòn bạn ",
+  "en": " · your hits "
+ },
+ {
+  "vi": " · đòn bóng ",
+  "en": " · shadow's hits "
+ },
+ {
+  "vi": "Bàn chuẩn bị",
+  "en": "Preparation table"
+ },
+ {
+  "vi": "Rút một lá bùa thế trận",
+  "en": "Draw a stance charm"
+ },
+ {
+  "vi": "khắc ",
+  "en": "beats "
+ },
+ {
+  "vi": "Ngũ Hành Phù: đổi bản mệnh sang hệ khắc bóng trong vòng này",
+  "en": "Five Elements Talisman: switch your natal element to one that overcomes the shadow this round"
+ },
+ {
+  "vi": "Phù",
+  "en": "Talisman"
+ },
+ {
+  "vi": "Dùng phù: bạn mang mệnh {0} vòng này.",
+  "ph": [
+   "ELEMENTS[khacBy(foeEl)].name"
+  ],
+  "en": "Talisman used: you carry the {0} element this round."
+ },
+ {
+  "vi": "Chạm lá phù để dùng trong vòng này.",
+  "en": "Tap the talisman to use it this round."
+ },
+ {
+  "vi": "Chưa có Ngũ Hành Phù.",
+  "en": "No Five Elements Talisman yet."
+ },
+ {
+  "vi": "Mua của sứ giả Thiên Cơ · ",
+  "en": "Buy from the Thiên Cơ envoy · "
+ },
+ {
+  "vi": " (đồng môn)",
+  "en": " (sect ally)"
+ },
+ {
+  "vi": "Ngũ Hành Ấn",
+  "en": "Five Elements Seals"
+ },
+ {
+  "vi": "gương cuối",
+  "en": "last mirror"
+ },
+ {
+  "vi": "Tâm cảnh: ",
+  "en": "State of mind: "
+ },
+ {
+  "vi": "Lên đài với lá {0}",
+  "ph": [
+   "STANCES[pick].name"
+  ],
+  "en": "Step up with {0}"
+ },
+ {
+  "vi": "Chọn một lá bùa",
+  "en": "Pick a charm"
+ },
+ {
+  "vi": "Luật",
+  "en": "Rules"
+ },
+ {
+  "vi": "Rời đài",
+  "en": "Leave the platform"
+ }
+]

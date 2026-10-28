@@ -13,6 +13,7 @@ import type { Character, RivalChar } from '@/lib/game/types';
 import { currentPlayer } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
 import { SITE_URL } from '@/lib/seo';
+import { tr } from './i18n';
 
 export const CW = 1080;
 export const CH = 1350;
@@ -196,7 +197,7 @@ export async function copyText(s: string): Promise<boolean> {
   }
 }
 
-const realmOf = (r: { realm: number; layer: number; cosmos?: 'tien' | 'ma' | 'hu' | null }) => (r.realm === 0 ? 'Phàm nhân' : realmLabel(r.realm, r.layer, r.cosmos));
+const realmOf = (r: { realm: number; layer: number; cosmos?: 'tien' | 'ma' | 'hu' | null }) => (r.realm === 0 ? tr('Phàm nhân', "Mortal") : realmLabel(r.realm, r.layer, r.cosmos));
 
 /** Thẻ kết quả trận lôi đài: "@A hạ @B, còn 3% máu, cắm 17 phi kiếm" */
 export async function shareMatch(m: { me: RivalChar; foe: RivalChar; meUser: string; opp: string; win: boolean; hp: number; swords: number; rule: string }): Promise<ShareOut | null> {
@@ -204,8 +205,8 @@ export async function shareMatch(m: { me: RivalChar; foe: RivalChar; meUser: str
   if (!c) return null;
   const { cv, x } = c;
   paper(x, 'dem');
-  txt(x, 'LÔI ĐÀI PHI KIẾM', CW / 2, 150, 64, '#ffd36b', { w: 700, shadow: '#000' });
-  txt(x, `Luật hôm nay: ${m.rule}`, CW / 2, 204, 34, '#c8b89a');
+  txt(x, tr('LÔI ĐÀI PHI KIẾM', "FLYING SWORD ARENA"), CW / 2, 150, 64, '#ffd36b', { w: 700, shadow: '#000' });
+  txt(x, tr(`Luật hôm nay: ${m.rule}`, `Today's rule: ${m.rule}`), CW / 2, 204, 34, '#c8b89a');
   // hai bóng
   const winSide = m.win ? 'me' : 'foe';
   for (const side of ['me', 'foe'] as const) {
@@ -220,10 +221,10 @@ export async function shareMatch(m: { me: RivalChar; foe: RivalChar; meUser: str
   seal(x, CW / 2 - 78, 440, 156, 'VS', '#5a2a1a', 64);
   // dải kết quả
   box(x, 96, 966, CW - 192, 210, m.win ? '#3a6a2a' : '#7a1e18', '#000');
-  txt(x, m.win ? `@${m.meUser} hạ @${m.opp}` : `@${m.opp} hạ @${m.meUser}`, CW / 2, 1048, 58, '#fff8e6', { w: 700, shadow: '#000', max: CW - 260 });
-  txt(x, `Còn ${m.hp}% máu · cắm ${m.swords} phi kiếm`, CW / 2, 1120, 40, '#ffe9a8', { max: CW - 260 });
-  seal(x, CW - 300, 1186, 132, m.win ? 'THẮNG' : 'BẠI', m.win ? '#b0201a' : '#3e3228', 44);
-  txt(x, 'VẠN KIẾP LUÂN HỒI', 150, 1252, 36, '#ffd36b', { w: 700, align: 'left' });
+  txt(x, m.win ? tr(`@${m.meUser} hạ @${m.opp}`, `@${m.meUser} defeats @${m.opp}`) : tr(`@${m.opp} hạ @${m.meUser}`, `@${m.opp} defeats @${m.meUser}`), CW / 2, 1048, 58, '#fff8e6', { w: 700, shadow: '#000', max: CW - 260 });
+  txt(x, tr(`Còn ${m.hp}% máu · cắm ${m.swords} phi kiếm`, `${m.hp}% HP left · ${m.swords} flying swords landed`), CW / 2, 1120, 40, '#ffe9a8', { max: CW - 260 });
+  seal(x, CW - 300, 1186, 132, m.win ? tr('THẮNG', "VICTORY") : tr('BẠI', "DEFEAT"), m.win ? '#b0201a' : '#3e3228', 44);
+  txt(x, tr('VẠN KIẾP LUÂN HỒI', "VẠN KIẾP LUÂN HỒI"), 150, 1252, 36, '#ffd36b', { w: 700, align: 'left' });
   txt(x, SITE, 150, 1296, 28, '#c8b89a', { align: 'left' });
   // bản ngang cho xem trước link
   const o = await canvas(OW, OH);
@@ -238,11 +239,11 @@ export async function shareMatch(m: { me: RivalChar; foe: RivalChar; meUser: str
     txt(g, `@${side === 'me' ? m.meUser : m.opp}`, cx, 520, 36, '#fff3dc', { w: 700, max: 330 });
   }
   seal(g, OW / 2 - 66, 210, 132, 'VS', '#5a2a1a', 56);
-  txt(g, m.win ? 'THẮNG' : 'BẠI', OW / 2, 420, 52, m.win ? '#ffd36b' : '#ff6b5a', { w: 700, shadow: '#000' });
-  txt(g, `${m.swords} phi kiếm · còn ${m.hp}% máu`, OW / 2, 470, 28, '#e8dcc0', { max: 330 });
-  txt(g, 'LÔI ĐÀI · VẠN KIẾP LUÂN HỒI', OW / 2, 556, 26, '#ffd36b', { w: 700 });
-  const title = m.win ? `@${m.meUser} hạ @${m.opp} trên lôi đài` : `@${m.opp} hạ @${m.meUser} trên lôi đài`;
-  const desc = `${m.me.name} đấu ${m.foe.name}, cắm ${m.swords} phi kiếm, ${m.win ? 'thắng' : 'thua'} khi ${m.win ? 'còn' : 'đối thủ còn'} ${m.hp}% máu. Luật hôm nay: ${m.rule}. Vào Vạn Kiếp Luân Hồi lên đài thử sức.`;
-  const text = m.win ? `Tôi vừa hạ @${m.opp} trên lôi đài Vạn Kiếp Luân Hồi, còn ${m.hp}% máu, cắm ${m.swords} phi kiếm.` : `@${m.opp} vừa thắng tôi trên lôi đài Vạn Kiếp Luân Hồi. Mai báo thù!`;
+  txt(g, m.win ? tr('THẮNG', "VICTORY") : tr('BẠI', "DEFEAT"), OW / 2, 420, 52, m.win ? '#ffd36b' : '#ff6b5a', { w: 700, shadow: '#000' });
+  txt(g, tr(`${m.swords} phi kiếm · còn ${m.hp}% máu`, `${m.swords} flying swords · ${m.hp}% HP left`), OW / 2, 470, 28, '#e8dcc0', { max: 330 });
+  txt(g, tr('LÔI ĐÀI · VẠN KIẾP LUÂN HỒI', "ARENA · VẠN KIẾP LUÂN HỒI"), OW / 2, 556, 26, '#ffd36b', { w: 700 });
+  const title = m.win ? tr(`@${m.meUser} hạ @${m.opp} trên lôi đài`, `@${m.meUser} defeats @${m.opp} in the arena`) : tr(`@${m.opp} hạ @${m.meUser} trên lôi đài`, `@${m.opp} defeats @${m.meUser} in the arena`);
+  const desc = tr(`${m.me.name} đấu ${m.foe.name}, cắm ${m.swords} phi kiếm, ${m.win ? tr('thắng', "won") : tr('thua', "lost")} khi ${m.win ? tr('còn', "left with") : tr('đối thủ còn', "the opponent left with")} ${m.hp}% máu. Luật hôm nay: ${m.rule}. Vào Vạn Kiếp Luân Hồi lên đài thử sức.`, `${m.me.name} vs ${m.foe.name}: landed ${m.swords} flying swords and ${m.win ? tr('thắng', "won") : tr('thua', "lost")}, ${m.win ? tr('còn', "left with") : tr('đối thủ còn', "the opponent left with")} ${m.hp}% HP. Today's rule: ${m.rule}. Join Vạn Kiếp Luân Hồi and test yourself in the arena.`);
+  const text = m.win ? tr(`Tôi vừa hạ @${m.opp} trên lôi đài Vạn Kiếp Luân Hồi, còn ${m.hp}% máu, cắm ${m.swords} phi kiếm.`, `I just beat @${m.opp} in the Vạn Kiếp Luân Hồi arena with ${m.hp}% HP left and ${m.swords} flying swords landed.`) : tr(`@${m.opp} vừa thắng tôi trên lôi đài Vạn Kiếp Luân Hồi. Mai báo thù!`, `@${m.opp} just beat me in the Vạn Kiếp Luân Hồi arena. Revenge tomorrow!`);
   return deliver(cv, o.cv, 'match', `loi-dai-${m.meUser}-${m.opp}`, title, desc, text);
 }

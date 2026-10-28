@@ -1,5 +1,6 @@
 import type { Character } from './types';
 import { clamp, dao, giveItem, money, stat } from './helpers';
+import { tr } from '../i18n';
 
 /** Thiên phú rút ngẫu nhiên lúc đầu thai. rare: 0 phàm, 1 lam, 2 tím, 3 cam, 4 đỏ */
 export interface Gift {
@@ -11,18 +12,18 @@ export interface Gift {
   apply?: (c: Character) => void;
 }
 
-export const RARE_NAME = ['Phàm', 'Linh', 'Huyền', 'Địa', 'Thiên'];
+export const RARE_NAME = [tr('Phàm', "Mortal"), tr('Linh', "Spirit"), tr('Huyền', "Mystic"), tr('Địa', "Earth"), tr('Thiên', "Heaven")];
 export const RARE_W = [58, 28, 11, 2.9, 0.1];
 
 export const GIFTS: Gift[] = [
   // ---- Phàm ----
-  { id: 'g_trau', name: 'Khỏe như trâu', desc: 'Sức khỏe +12', rare: 0, apply: (c) => stat(c, 'sucKhoe', 12) },
-  { id: 'g_lanh', name: 'Lanh lợi', desc: 'Ngộ tính +6', rare: 0, apply: (c) => stat(c, 'ngoTinh', 6) },
-  { id: 'g_mom', name: 'Mồm mép tép nhảy', desc: '+40 linh thạch, nói gì cũng lọt tai', rare: 0, apply: (c) => money(c, 40) },
+  { id: 'g_trau', name: tr('Khỏe như trâu', "Strong as an ox"), desc: tr('Sức khỏe +12', "Health +12"), rare: 0, apply: (c) => stat(c, 'sucKhoe', 12) },
+  { id: 'g_lanh', name: tr('Lanh lợi', "Quick-witted"), desc: tr('Ngộ tính +6', "Insight +6"), rare: 0, apply: (c) => stat(c, 'ngoTinh', 6) },
+  { id: 'g_mom', name: tr('Mồm mép tép nhảy', "Silver tongue"), desc: tr('+40 linh thạch, nói gì cũng lọt tai', "+40 spirit stones, and everything you say goes down smooth"), rare: 0, apply: (c) => money(c, 40) },
   {
     id: 'g_mun',
-    name: 'Mặt đầy mụn',
-    desc: 'Khí vận -3, nhưng tâm chẳng vướng bụi hồng: tâm cảnh +8',
+    name: tr('Mặt đầy mụn', "Pimple face"),
+    desc: tr('Khí vận -3, nhưng tâm chẳng vướng bụi hồng: tâm cảnh +8', "Luck -3, but no romance to cloud your heart: Mind +8"),
     rare: 0,
     bad: true,
     apply: (c) => {
@@ -30,11 +31,11 @@ export const GIFTS: Gift[] = [
       stat(c, 'tamCanh', 8);
     },
   },
-  { id: 'g_an', name: 'Ham ăn', desc: 'Sức khỏe +6, mỗi năm tốn thêm tiền ăn', rare: 0, bad: true, apply: (c) => stat(c, 'sucKhoe', 6) },
+  { id: 'g_an', name: tr('Ham ăn', "Glutton"), desc: tr('Sức khỏe +6, mỗi năm tốn thêm tiền ăn', "Health +6, costs extra food money every year"), rare: 0, bad: true, apply: (c) => stat(c, 'sucKhoe', 6) },
   {
     id: 'g_ngu',
-    name: 'Ngủ nhiều',
-    desc: 'Tâm ma -5, ngộ tính -3',
+    name: tr('Ngủ nhiều', "Sleepyhead"),
+    desc: tr('Tâm ma -5, ngộ tính -3', "Heart demon -5, Insight -3"),
     rare: 0,
     apply: (c) => {
       stat(c, 'tamMa', -5);
@@ -43,8 +44,8 @@ export const GIFTS: Gift[] = [
   },
   {
     id: 'g_ngheo',
-    name: 'Nhà nghèo chí lớn',
-    desc: 'Mất hết của cải ban đầu, khí vận +8',
+    name: tr('Nhà nghèo chí lớn', "Poor but ambitious"),
+    desc: tr('Mất hết của cải ban đầu, khí vận +8', "Lose all starting wealth, Luck +8"),
     rare: 0,
     bad: true,
     apply: (c) => {
@@ -55,8 +56,8 @@ export const GIFTS: Gift[] = [
   // ---- Linh ----
   {
     id: 'g_sao_choi',
-    name: 'Sao chổi giáng thế',
-    desc: 'Khí vận -15, ngộ tính +15',
+    name: tr('Sao chổi giáng thế', "Born a jinx"),
+    desc: tr('Khí vận -15, ngộ tính +15', "Luck -15, Insight +15"),
     rare: 1,
     bad: true,
     apply: (c) => {
@@ -64,14 +65,14 @@ export const GIFTS: Gift[] = [
       stat(c, 'ngoTinh', 15);
     },
   },
-  { id: 'g_tham', name: 'Tham lam', desc: 'Nhà bỗng giàu to (+400). Nhưng tham thì thâm...', rare: 1, bad: true, apply: (c) => money(c, 400) },
-  { id: 'g_dao_hoa', name: 'Mệnh đào hoa', desc: 'Dễ gặp đạo lữ gấp 3, tâm cảnh +5', rare: 1, apply: (c) => stat(c, 'tamCanh', 5) },
-  { id: 'g_menh_cung', name: 'Mệnh cứng', desc: 'Khó chết hơn 30% trong mọi hiểm cảnh', rare: 1 },
-  { id: 'g_than_luc', name: 'Trời sinh thần lực', desc: 'Công khi trừ yêu +25%', rare: 1 },
+  { id: 'g_tham', name: tr('Tham lam', "Greedy"), desc: tr('Nhà bỗng giàu to (+400). Nhưng tham thì thâm...', "Sudden fortune (+400). But greed brings grief..."), rare: 1, bad: true, apply: (c) => money(c, 400) },
+  { id: 'g_dao_hoa', name: tr('Mệnh đào hoa', "Peach-blossom fate"), desc: tr('Dễ gặp đạo lữ gấp 3, tâm cảnh +5', "3x more likely to meet a Yao companion, Mind +5"), rare: 1, apply: (c) => stat(c, 'tamCanh', 5) },
+  { id: 'g_menh_cung', name: tr('Mệnh cứng', "Hard to kill"), desc: tr('Khó chết hơn 30% trong mọi hiểm cảnh', "30% less likely to die in any danger"), rare: 1 },
+  { id: 'g_than_luc', name: tr('Trời sinh thần lực', "Born with divine strength"), desc: tr('Công khi trừ yêu +25%', "Attack +25% when hunting demons"), rare: 1 },
   {
     id: 'g_tram_uat',
-    name: 'Trời sinh u uất',
-    desc: 'Tâm ma +20, ngộ tính +12',
+    name: tr('Trời sinh u uất', "Born melancholy"),
+    desc: tr('Tâm ma +20, ngộ tính +12', "Heart demon +20, Insight +12"),
     rare: 1,
     bad: true,
     apply: (c) => {
@@ -82,20 +83,20 @@ export const GIFTS: Gift[] = [
   // ---- Huyền ----
   {
     id: 'g_kiem_cot',
-    name: 'Thiên sinh kiếm cốt',
-    desc: 'Sinh ra cầm kiếm, du ngoạn và trừ yêu mạnh hơn',
+    name: tr('Thiên sinh kiếm cốt', "Born with sword bones"),
+    desc: tr('Sinh ra cầm kiếm, du ngoạn và trừ yêu mạnh hơn', "Born holding a sword - stronger when wandering and hunting demons"),
     rare: 2,
     apply: (c) => {
       giveItem(c, 'moc_kiem');
       stat(c, 'sucKhoe', 8);
     },
   },
-  { id: 'g_ngoc', name: 'Ngậm ngọc mà sinh', desc: 'Chào đời đã đeo Ngọc bội hộ thân', rare: 2, apply: (c) => giveItem(c, 'ngoc_boi') },
-  { id: 'g_don_ngo', name: 'Đốn ngộ', desc: 'Ngộ tính +25', rare: 2, apply: (c) => stat(c, 'ngoTinh', 25) },
+  { id: 'g_ngoc', name: tr('Ngậm ngọc mà sinh', "Born with jade in mouth"), desc: tr('Chào đời đã đeo Ngọc bội hộ thân', "Enters the world wearing a protective jade pendant"), rare: 2, apply: (c) => giveItem(c, 'ngoc_boi') },
+  { id: 'g_don_ngo', name: tr('Đốn ngộ', "Sudden enlightenment"), desc: tr('Ngộ tính +25', "Insight +25"), rare: 2, apply: (c) => stat(c, 'ngoTinh', 25) },
   {
     id: 'g_thanh_the',
-    name: 'Thánh thể',
-    desc: 'Sức khỏe +20, thọ nguyên +10%',
+    name: tr('Thánh thể', "Saint body"),
+    desc: tr('Sức khỏe +20, thọ nguyên +10%', "Health +20, lifespan +10%"),
     rare: 2,
     apply: (c) => {
       stat(c, 'sucKhoe', 20);
@@ -105,8 +106,8 @@ export const GIFTS: Gift[] = [
   },
   {
     id: 'g_doan_menh',
-    name: 'Thiên đố anh tài',
-    desc: 'Thọ nguyên -30%, ngộ tính +30, tu luyện nhanh hơn',
+    name: tr('Thiên đố anh tài', "Heaven envies genius"),
+    desc: tr('Thọ nguyên -30%, ngộ tính +30, tu luyện nhanh hơn', "Lifespan -30%, Insight +30, faster cultivation"),
     rare: 2,
     bad: true,
     apply: (c) => {
@@ -115,14 +116,14 @@ export const GIFTS: Gift[] = [
       stat(c, 'ngoTinh', 30);
     },
   },
-  { id: 'g_co_tinh', name: 'Thiên sát cô tinh', desc: 'Khí vận +20, nhưng khắc cha mẹ từ nhỏ, người thân cận khó bền', rare: 2, bad: true, apply: (c) => stat(c, 'khiVan', 20) },
+  { id: 'g_co_tinh', name: tr('Thiên sát cô tinh', "Lone heavenly star"), desc: tr('Khí vận +20, nhưng khắc cha mẹ từ nhỏ, người thân cận khó bền', "Luck +20, but you bring doom to your parents and those close to you rarely last"), rare: 2, bad: true, apply: (c) => stat(c, 'khiVan', 20) },
   // ---- Địa ----
-  { id: 'g_hop', name: 'Chiếc hộp bí ẩn', desc: 'Một chiếc hộp không mở được. Bà mụ dặn: đến năm 80 tuổi hãy mở.', rare: 3 },
-  { id: 'g_he_thong', name: 'Hệ Thống', desc: 'Đinh! Một giọng nói lạ vang lên trong đầu bạn...', rare: 3 },
+  { id: 'g_hop', name: tr('Chiếc hộp bí ẩn', "Mysterious box"), desc: tr('Một chiếc hộp không mở được. Bà mụ dặn: đến năm 80 tuổi hãy mở.', "A box that won't open. The midwife says: open it when you turn 80."), rare: 3 },
+  { id: 'g_he_thong', name: tr('Hệ Thống', "The System"), desc: tr('Đinh! Một giọng nói lạ vang lên trong đầu bạn...', "Ding! A strange voice rings out in your head..."), rare: 3 },
   {
     id: 'g_trung_sinh',
-    name: 'Trùng sinh giả',
-    desc: 'Nhớ rõ kiếp trước. Ngộ tính +15, khởi đầu có tu vi',
+    name: tr('Trùng sinh giả', "Reincarnator"),
+    desc: tr('Nhớ rõ kiếp trước. Ngộ tính +15, khởi đầu có tu vi', "Remembers the past life clearly. Insight +15, starts with some cultivation"),
     rare: 3,
     apply: (c) => {
       stat(c, 'ngoTinh', 15);
@@ -132,19 +133,19 @@ export const GIFTS: Gift[] = [
   // ---- Thiên ----
   {
     id: 'g_thien_menh',
-    name: 'Thiên mệnh chi tử',
-    desc: 'Khí vận tối đa, linh căn biến dị, đột phá dễ hơn',
+    name: tr('Thiên mệnh chi tử', "Child of Destiny"),
+    desc: tr('Khí vận tối đa, linh căn biến dị, đột phá dễ hơn', "Maxed Luck, mutated spiritual root, easier breakthroughs"),
     rare: 4,
     apply: (c) => {
       c.stats.khiVan = 100;
       c.linhCanMul = Math.max(c.linhCanMul, 1.6);
-      c.linhCan = 'Hỗn Độn linh căn';
+      c.linhCan = tr('Hỗn Độn linh căn', "Chaos Spiritual Root");
     },
   },
   {
     id: 'g_chan_tien',
-    name: 'Chân tiên chuyển thế',
-    desc: 'Một vị tiên nhân đầu thai. Tu luyện gấp đôi, thọ +20%',
+    name: tr('Chân tiên chuyển thế', "Reincarnated True Immortal"),
+    desc: tr('Một vị tiên nhân đầu thai. Tu luyện gấp đôi, thọ +20%', "An immortal reborn. Double cultivation speed, lifespan +20%"),
     rare: 4,
     apply: (c) => {
       c.linhCanMul *= 2;

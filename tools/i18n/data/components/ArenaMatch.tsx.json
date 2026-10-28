@@ -1,0 +1,258 @@
+[
+ {
+  "vi": "Kim",
+  "en": "Metal"
+ },
+ {
+  "vi": "Mộc",
+  "en": "Wood"
+ },
+ {
+  "vi": "Thủy",
+  "en": "Water"
+ },
+ {
+  "vi": "Hỏa",
+  "en": "Fire"
+ },
+ {
+  "vi": "Thổ",
+  "en": "Earth"
+ },
+ {
+  "vi": "Máu {0}/{1}",
+  "ph": [
+   "side.hp",
+   "side.max"
+  ],
+  "en": "HP {0}/{1}"
+ },
+ {
+  "vi": "Nội lực {0}/{1}",
+  "ph": [
+   "side.ki",
+   "KI_MAX"
+  ],
+  "en": "Inner force {0}/{1}"
+ },
+ {
+  "vi": "{0} {1} {2} sau {3} lượt (còn {4}% máu, đối thủ {5}%). Luật hôm nay: {6}.",
+  "ph": [
+   "me.name",
+   "win ? 'thắng' : 'thua'",
+   "foe.name",
+   "st.turn",
+   "pct(st.me)",
+   "pct(st.foe)",
+   "rule.name"
+  ],
+  "en": "{0} {1} {2} after {3} turns ({4}% HP left, opponent {5}%). Today's rule: {6}."
+ },
+ {
+  "vi": "thắng",
+  "en": "defeated"
+ },
+ {
+  "vi": "thua",
+  "en": "lost to"
+ },
+ {
+  "vi": "Lôi đài đang đông, kết quả chưa ghi được.",
+  "en": "The Arena is packed - the result couldn't be recorded."
+ },
+ {
+  "vi": "Khắc!",
+  "en": "Counter!"
+ },
+ {
+  "vi": "Bị khắc",
+  "en": "Countered"
+ },
+ {
+  "vi": "Chí mạng!",
+  "en": "Critical!"
+ },
+ {
+  "vi": "Hóa giải!",
+  "en": "Deflected!"
+ },
+ {
+  "vi": "khắc",
+  "en": "counters"
+ },
+ {
+  "vi": "bị khắc",
+  "en": "countered"
+ },
+ {
+  "vi": "Lôi đài với @{0}",
+  "ph": [
+   "opp"
+  ],
+  "en": "Arena vs @{0}"
+ },
+ {
+  "vi": "Tuyệt kỹ!",
+  "en": "Ultimate!"
+ },
+ {
+  "vi": "THẮNG",
+  "en": "VICTORY"
+ },
+ {
+  "vi": "THUA",
+  "en": "DEFEAT"
+ },
+ {
+  "vi": "Lượt {0}/{1}",
+  "ph": [
+   "st.turn + 1",
+   "TURN_CAP"
+  ],
+  "en": "Turn {0}/{1}"
+ },
+ {
+  "vi": "Sắp tung tuyệt kỹ!",
+  "en": "Ultimate incoming!"
+ },
+ {
+  "vi": "Tuyệt kỹ",
+  "en": "Ultimate"
+ },
+ {
+  "vi": "{0} tung tuyệt kỹ",
+  "ph": [
+   "foe.name"
+  ],
+  "en": "{0} unleashes an ultimate"
+ },
+ {
+  "vi": "Chạm đúng nhịp để đỡ tuyệt kỹ",
+  "en": "Tap on the beat to parry the ultimate"
+ },
+ {
+  "vi": "ĐỠ!",
+  "en": "PARRY!"
+ },
+ {
+  "vi": "Chạm khi ô ngắm lọt vào khung",
+  "en": "Tap when the reticle is inside the frame"
+ },
+ {
+  "vi": "Trận báo thù, không tính lượt.",
+  "en": "Revenge match - doesn't use a turn."
+ },
+ {
+  "vi": "Ngang cảnh giới: ",
+  "en": "Realm-matched: "
+ },
+ {
+  "vi": " (thật là ",
+  "en": " (actually "
+ },
+ {
+  "vi": "Phàm nhân",
+  "en": "Mortal"
+ },
+ {
+  "vi": ") được kéo về ",
+  "en": ") is scaled to "
+ },
+ {
+  "vi": " như bạn.",
+  "en": " just like you."
+ },
+ {
+  "vi": " đã tụ đủ nội lực, sắp tung ",
+  "en": " has gathered full inner force and is about to unleash "
+ },
+ {
+  "vi": "Chạm đúng nhịp khi ô ngắm lọt vào khung: đúng nhịp thì phản đòn, hơi lệch thì đỡ được phần lớn.",
+  "en": "Tap on the beat when the reticle is inside the frame: perfect timing counters, slightly off still blocks most of it."
+ },
+ {
+  "vi": "Đón đỡ tuyệt kỹ",
+  "en": "Parry the ultimate"
+ },
+ {
+  "vi": "Quanh người tụ khí hệ ",
+  "en": "Qi gathers around them, element: "
+ },
+ {
+  "vi": " Ý đồ để lộ không phải lúc nào cũng thật.",
+  "en": " Their tells aren't always honest."
+ },
+ {
+  "vi": "Ấn ngũ hành gắn vào chiêu",
+  "en": "Five Elements seal attached to the move"
+ },
+ {
+  "vi": "Ấn ngũ hành",
+  "en": "Five Elements seal"
+ },
+ {
+  "vi": "✦ Tuyệt kỹ: ",
+  "en": "✦ Ultimate: "
+ },
+ {
+  "vi": "thắng ",
+  "en": "beats "
+ },
+ {
+  "vi": "Tự đánh lượt này",
+  "en": "Auto-play this turn"
+ },
+ {
+  "vi": "Bạn thắng sau {0} lượt. +3 điểm lôi đài.",
+  "ph": [
+   "st.turn"
+  ],
+  "en": "You win after {0} turns. +3 arena points."
+ },
+ {
+  "vi": "Bạn thua sau {0} lượt. Không được điểm.",
+  "ph": [
+   "st.turn"
+  ],
+  "en": "You lose after {0} turns. No points."
+ },
+ {
+  "vi": " Tuần này: {0} điểm.",
+  "ph": [
+   "res.pts"
+  ],
+  "en": " This week: {0} points."
+ },
+ {
+  "vi": "Hôm nay đã hết lượt.",
+  "en": "No turns left today."
+ },
+ {
+  "vi": "Lượt báo thù đã hết hạn.",
+  "en": "Your revenge match has expired."
+ },
+ {
+  "vi": "Quẻ này không còn hiệu lực.",
+  "en": "This draw is no longer valid."
+ },
+ {
+  "vi": "Đang ghi kết quả lên bảng...",
+  "en": "Recording the result..."
+ },
+ {
+  "vi": "Rời lôi đài",
+  "en": "Leave the arena"
+ },
+ {
+  "vi": "Diễn biến",
+  "en": "Match log"
+ },
+ {
+  "vi": "Lượt ",
+  "en": "Turn "
+ },
+ {
+  "vi": "Diễn biến trận đấu sẽ hiện ở đây.",
+  "en": "The match log will appear here."
+ }
+]

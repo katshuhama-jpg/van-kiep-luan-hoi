@@ -1,0 +1,192 @@
+[
+ {
+  "vi": "Bóng bạn khắc",
+  "en": "Shadow you overcome"
+ },
+ {
+  "vi": "Bóng cùng mệnh",
+  "en": "Shadow of your element"
+ },
+ {
+  "vi": "Bóng bạn sinh",
+  "en": "Shadow you nourish"
+ },
+ {
+  "vi": "Bóng sinh bạn",
+  "en": "Shadow that nourishes you"
+ },
+ {
+  "vi": "Bóng khắc bạn",
+  "en": "Shadow that overcomes you"
+ },
+ {
+  "vi": "Công",
+  "en": "Attack"
+ },
+ {
+  "vi": "Đòn của bạn +25%.",
+  "en": "Your strikes +25%."
+ },
+ {
+  "vi": "Bóng của bạn dồn khí xuống quyền, sát khí bốc lên ngùn ngụt.",
+  "en": "Your shadow sinks its qi into its fists, killing intent boiling up."
+ },
+ {
+  "vi": "Thủ",
+  "en": "Guard"
+ },
+ {
+  "vi": "Sát thương nhận vào -35%.",
+  "en": "Damage taken -35%."
+ },
+ {
+  "vi": "Bóng của bạn lùi nửa bước, khí bao quanh thân như một tấm khiên.",
+  "en": "Your shadow steps back half a pace, qi wrapped around it like a shield."
+ },
+ {
+  "vi": "Hóa",
+  "en": "Merge"
+ },
+ {
+  "vi": "Xóa khắc chế của cả hai bên, coi như cùng mệnh. Đòn của bạn -10%.",
+  "en": "Cancels element counters on both sides, as if you shared an element. Your strikes -10%."
+ },
+ {
+  "vi": "Bóng của bạn khép mắt, ngũ hành quanh người xoay tròn rồi tan vào nhau.",
+  "en": "Your shadow closes its eyes; the five elements swirl around it and melt into one."
+ },
+ {
+  "vi": "tâm ma làm bóng mạnh thêm {0}%",
+  "ph": [
+   "Math.round(up * 100)"
+  ],
+  "en": "heart demons make the shadow {0}% stronger"
+ },
+ {
+  "vi": "đạo tâm vững làm bóng yếu đi {0}%",
+  "ph": [
+   "Math.round(down * 100)"
+  ],
+  "en": "a steady Dao Heart makes the shadow {0}% weaker"
+ },
+ {
+  "vi": "tâm cảnh bình thường, bóng ngang bạn",
+  "en": "your mind is calm, the shadow matches you"
+ },
+ {
+  "vi": "Ngũ Hành Phù đổi bản mệnh của bạn sang {0}",
+  "ph": [
+   "ELEMENTS[myEl].name"
+  ],
+  "en": "A Five Elements Talisman changes your natal element to {0}"
+ },
+ {
+  "vi": "Thế Hóa xóa khắc chế, hai bên như cùng mệnh",
+  "en": "Merge stance cancels counters - both sides as if one element"
+ },
+ {
+  "vi": "{0} ấn {1} gỡ {2}% phần thiệt vì bị khắc",
+  "ph": [
+   "n",
+   "ELEMENTS[khacBy(foeEl)].name",
+   "n * 20"
+  ],
+  "en": "{0} {1} Seal(s) remove {2}% of the penalty for being overcome"
+ },
+ {
+  "vi": "Thế {0} của bạn khắc thế {1} của bóng",
+  "ph": [
+   "STANCES[my].name",
+   "STANCES[foe].name"
+  ],
+  "en": "Your {0} stance beats the shadow's {1} stance"
+ },
+ {
+  "vi": "Thế {0} của bóng khắc thế {1} của bạn",
+  "ph": [
+   "STANCES[foe].name",
+   "STANCES[my].name"
+  ],
+  "en": "The shadow's {0} stance beats your {1} stance"
+ },
+ {
+  "vi": "Bóng {0}",
+  "ph": [
+   "ELEMENTS[el].name"
+  ],
+  "en": "{0} Shadow"
+ },
+ {
+  "vi": "Qua Ngũ Hành Vấn Tâm Đài, ngũ hành viên mãn",
+  "en": "Passed the Five Elements Heart-Trial Platform - the five elements perfected"
+ },
+ {
+  "vi": "Bóng {0} vỡ tan như gương. Năm bóng của bạn hợp lại làm một, ngũ hành viên mãn. Cửa trời đã mở, thiên kiếp đang chờ (tỉ lệ vượt kiếp +10%). Bạn nhặt được mảnh Gương vỡ Vấn Tâm{1}.",
+  "ph": [
+   "ELEMENTS[el].name",
+   "perfect ? '. Năm sắc khí còn ngưng lại thành Ngũ Hành Viên Mãn châu, chỉ người chưa từng ngã trên đài mới có' : ''"
+  ],
+  "en": "The {0} Shadow shatters like a mirror. Your five shadows merge into one, the five elements perfected. The gate of Heaven stands open and the tribulation awaits (tribulation success +10%). You pick up a Shard of the Heart-Questioning Mirror{1}."
+ },
+ {
+  "vi": ". Năm sắc khí còn ngưng lại thành Ngũ Hành Viên Mãn châu, chỉ người chưa từng ngã trên đài mới có",
+  "en": ". The five-colored qi also condenses into a Five Elements Perfection Pearl, granted only to those who never fell on the platform"
+ },
+ {
+  "vi": "Bóng {0} tan thành khói. Còn {1} bóng.",
+  "ph": [
+   "ELEMENTS[el].name",
+   "NHD_ROUNDS - s.won"
+  ],
+  "en": "The {0} Shadow dissolves into smoke. {1} shadow(s) remain."
+ },
+ {
+  "vi": "Gục ngã trước bóng {0} của chính mình trên Ngũ Hành Đài.",
+  "ph": [
+   "ELEMENTS[el].name"
+  ],
+  "en": "Fell before your own {0} Shadow on the Five Elements Platform."
+ },
+ {
+  "vi": "Bóng {0} đâm xuyên ngực bạn. Bạn nhìn thấy chính mình mỉm cười, rồi mọi thứ tối sầm.",
+  "ph": [
+   "ELEMENTS[el].name"
+  ],
+  "en": "The {0} Shadow runs you through the chest. You see yourself smiling, then everything goes dark."
+ },
+ {
+  "vi": "Thua chính mình quá nhiều lần, bị giam trong gương Ngũ Hành Đài.",
+  "en": "Lost to yourself too many times and was sealed inside the mirror of the Five Elements Platform."
+ },
+ {
+  "vi": "Lần nữa ngã xuống, mặt gương gợn sóng rồi nuốt lấy bạn. Bóng của bạn bước ra ngoài, sống tiếp phần đời còn lại. Còn bạn, ở trong gương, nhìn mãi.",
+  "en": "You fall once more; the mirror's surface ripples and swallows you. Your shadow steps out and lives out the rest of your life. And you, inside the mirror, watch forever."
+ },
+ {
+  "vi": "Bóng {0} hạ gục bạn.{1} Bạn bị hất khỏi Ngũ Hành Đài, tu vi tổn hao, tâm ma tăng. {2} năm nữa mới được lên đài lại{3}.",
+  "ph": [
+   "ELEMENTS[el].name",
+   "f ?? ''",
+   "NHD_DELAY",
+   "round ? `, ${round} bóng đã hạ vẫn được giữ` : ''"
+  ],
+  "en": "The {0} Shadow strikes you down.{1} You are thrown off the Five Elements Platform, cultivation lost, heart demons rising. You may climb the platform again in {2} years{3}."
+ },
+ {
+  "vi": ", {0} bóng đã hạ vẫn được giữ",
+  "ph": [
+   "round"
+  ],
+  "en": ", the {0} shadow(s) you defeated still count"
+ },
+ {
+  "vi": "Thu được 1 Ngũ Hành Ấn hệ {0} ({1}/{2}). Ấn giúp chống lại bóng bị hệ {3} khắc chế trên Ngũ Hành Đài.",
+  "ph": [
+   "ELEMENTS[el].name",
+   "n + 1",
+   "AN_MAX",
+   "ELEMENTS[el].name"
+  ],
+  "en": "Obtained 1 {0} Five Elements Seal ({1}/{2}). On the Five Elements Platform, seals help against shadows that {3} overcomes."
+ }
+]

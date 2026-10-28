@@ -1,0 +1,143 @@
+[
+ {
+  "vi": "+{0} linh thạch",
+  "ph": [
+   "v"
+  ],
+  "en": "+{0} spirit stones"
+ },
+ {
+  "vi": "Bán {0} được {1} linh thạch.",
+  "ph": [
+   "item(id)?.name",
+   "v"
+  ],
+  "en": "Sold {0} for {1} spirit stones."
+ },
+ {
+  "vi": "+{0} tinh thiết",
+  "ph": [
+   "n"
+  ],
+  "en": "+{0} refined iron"
+ },
+ {
+  "vi": "Mua {0} tinh thiết ở lò rèn, tốn {1} linh thạch.",
+  "ph": [
+   "n",
+   "cost"
+  ],
+  "en": "Bought {0} refined iron at the forge for {1} spirit stones."
+ },
+ {
+  "vi": "Phân giải {0}, thu {1} tinh thiết (đang có {2}).",
+  "ph": [
+   "item(id)?.name",
+   "v",
+   "c.tinhHoa"
+  ],
+  "en": "Dismantled {0}, got {1} refined iron (now {2})."
+ },
+ {
+  "vi": "Kim",
+  "en": "Metal"
+ },
+ {
+  "vi": "công +4%",
+  "en": "Attack +4%"
+ },
+ {
+  "vi": "Sắc bén",
+  "en": "Keen"
+ },
+ {
+  "vi": "Mộc",
+  "en": "Wood"
+ },
+ {
+  "vi": "sinh lực +4%, mỗi năm hồi 1 sức khỏe",
+  "en": "HP +4%, recover 1 Health per year"
+ },
+ {
+  "vi": "Sinh cơ",
+  "en": "Vital"
+ },
+ {
+  "vi": "Thủy",
+  "en": "Water"
+ },
+ {
+  "vi": "thủ +5%",
+  "en": "Defense +5%"
+ },
+ {
+  "vi": "Nhu thủy",
+  "en": "Flowing"
+ },
+ {
+  "vi": "Hỏa",
+  "en": "Fire"
+ },
+ {
+  "vi": "trừ yêu thêm 6% tu vi",
+  "en": "+6% cultivation from hunting demons"
+ },
+ {
+  "vi": "Bạo viêm",
+  "en": "Blaze"
+ },
+ {
+  "vi": "Thổ",
+  "en": "Earth"
+ },
+ {
+  "vi": "hiểm cảnh khó giết hơn 5%",
+  "en": "5% harder to kill in perilous situations"
+ },
+ {
+  "vi": "Hậu thổ",
+  "en": "Bedrock"
+ },
+ {
+  "vi": "vũ khí",
+  "en": "weapon"
+ },
+ {
+  "vi": "Lửa lò đỏ rực, {0} lên +{1}: công +{2}%, hệ {3} cấp {4} (-{5} tinh thiết).",
+  "ph": [
+   "name",
+   "lv + 1",
+   "Math.round((lv + 1) * FORGE_PER * 100)",
+   "el.name",
+   "lv + 1",
+   "costN"
+  ],
+  "en": "The forge fire blazes red, {0} rises to +{1}: Attack +{2}%, {3} element level {4} (-{5} refined iron)."
+ },
+ {
+  "vi": "Vỡ vũ khí",
+  "en": "Weapon shattered"
+ },
+ {
+  "vi": "Một tiếng \"choang\", {0} +{1} vỡ làm đôi dưới búa. Mất luôn vũ khí (-{2} tinh thiết).",
+  "ph": [
+   "name",
+   "lv",
+   "costN"
+  ],
+  "en": "With a loud \"clang\", {0} +{1} splits in two under the hammer. The weapon is gone (-{2} refined iron)."
+ },
+ {
+  "vi": "Rèn hỏng",
+  "en": "Forging failed"
+ },
+ {
+  "vi": "Búa giáng lệch một nhịp, tinh thiết bốc thành khói. {0} vẫn giữ +{1} (-{2} tinh thiết).",
+  "ph": [
+   "name",
+   "lv",
+   "costN"
+  ],
+  "en": "The hammer falls a beat off and the refined iron goes up in smoke. {0} stays at +{1} (-{2} refined iron)."
+ }
+]

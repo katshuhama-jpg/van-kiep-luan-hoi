@@ -1,0 +1,695 @@
+[
+ {
+  "vi": "Nấm phát sáng",
+  "en": "Glowing mushroom"
+ },
+ {
+  "vi": "Trong hang sâu, bạn thấy một cây nấm tím phát ánh sáng xanh lam, tỏa mùi thơm ngọt khiến đầu óc lâng lâng.",
+  "en": "Deep in a cave you find a purple mushroom glowing blue, its sweet scent making your head swim."
+ },
+ {
+  "vi": "Ăn sống luôn",
+  "en": "Eat it raw"
+ },
+ {
+  "vi": "rất liều",
+  "en": "very risky"
+ },
+ {
+  "vi": "Bạn ăn phải nấm Quỷ Đăng. Đêm đó bạn cười không ngừng, rồi không bao giờ tỉnh lại.",
+  "en": "It was a Ghost Lantern mushroom. That night you laugh and laugh, and never wake up again."
+ },
+ {
+  "vi": "Vị ngọt lịm...",
+  "en": "So sweet..."
+ },
+ {
+  "vi": "Linh chi",
+  "en": "Lingzhi"
+ },
+ {
+  "vi": "Là Huyễn Linh Chi ngàn năm! Bạn thấy cả vũ trụ xoay vần trong đầu.",
+  "en": "A thousand-year Illusion Lingzhi! You feel the whole cosmos spinning inside your head."
+ },
+ {
+  "vi": "Cho chuột ăn thử trước",
+  "en": "Feed some to a rat first"
+ },
+ {
+  "vi": "Con chuột không sao, còn chạy nhanh hơn. Bạn yên tâm ăn phần còn lại.",
+  "en": "The rat is fine - it even runs faster. Reassured, you eat the rest."
+ },
+ {
+  "vi": "Con chuột co giật rồi chết. Bạn ném cây nấm đi, lạnh cả sống lưng.",
+  "en": "The rat twitches and dies. You toss the mushroom away, a chill running down your spine."
+ },
+ {
+  "vi": "Hái về bán cho dược phường",
+  "en": "Pick it and sell it to the apothecary"
+ },
+ {
+  "vi": "+linh thạch",
+  "en": "+spirit stones"
+ },
+ {
+  "vi": "Lão dược sư trả 80 linh thạch, mắt không rời cây nấm.",
+  "en": "The old apothecary pays 80 spirit stones, never taking his eyes off the mushroom."
+ },
+ {
+  "vi": "Bỏ đi",
+  "en": "Leave it"
+ },
+ {
+  "vi": "Thứ gì đẹp quá thường có độc. Bạn đi tiếp.",
+  "en": "Anything that pretty is usually poisonous. You move on."
+ },
+ {
+  "vi": "Mỹ nhân trong miếu hoang",
+  "en": "Beauty in the ruined temple"
+ },
+ {
+  "vi": "Đêm mưa, bạn trú trong miếu hoang. Một {0} áo trắng tuyệt sắc bước vào, mỉm cười mời bạn chén rượu ấm.",
+  "ph": [
+   "c.gender === 'nam' ? 'thiếu nữ' : 'công tử'"
+  ],
+  "en": "On a rainy night you shelter in a ruined temple. A breathtaking {0} in white walks in and, smiling, offers you a cup of warm wine."
+ },
+ {
+  "vi": "thiếu nữ",
+  "en": "maiden"
+ },
+ {
+  "vi": "công tử",
+  "en": "young gentleman"
+ },
+ {
+  "vi": "Nhận chén rượu",
+  "en": "Accept the wine"
+ },
+ {
+  "vi": "Sáng hôm sau, tiều phu tìm thấy một cái xác khô quắt trong miếu. Yêu tinh đã hút cạn dương khí của bạn.",
+  "en": "The next morning a woodcutter finds a shrivelled corpse in the temple. A demon drained every drop of your yang essence."
+ },
+ {
+  "vi": "Rượu ngọt lạ thường...",
+  "en": "The wine is strangely sweet..."
+ },
+ {
+  "vi": "Người ấy chỉ là một tiểu thư lạc đường. Hai người trò chuyện đến sáng.",
+  "en": "They were just a lost young noble. The two of you talk until dawn."
+ },
+ {
+  "vi": "Rút kiếm chém trước",
+  "en": "Draw your sword and strike first"
+ },
+ {
+  "vi": "tà",
+  "en": "evil"
+ },
+ {
+  "vi": "Đầu rơi xuống hóa thành đầu cáo. Bạn lấy được yêu đan.",
+  "en": "The severed head turns into a fox's head. You claim its demon core."
+ },
+ {
+  "vi": "Máu đỏ chảy ra, người ấy chết thật. Chỉ là một cô gái bình thường.",
+  "en": "Red blood flows. They really are dead - just an ordinary girl."
+ },
+ {
+  "vi": "Niệm chú, rắc gạo nếp",
+  "en": "Chant a spell, scatter sticky rice"
+ },
+ {
+  "vi": "Nó rú lên, hiện nguyên hình hồ ly rồi chạy mất.",
+  "en": "It shrieks, reveals its true fox form, and flees."
+ },
+ {
+  "vi": "Gạo nếp không có tác dụng. Nó cười khanh khách, cào bạn một vết rồi biến mất.",
+  "en": "The sticky rice does nothing. It cackles, claws you, and vanishes."
+ },
+ {
+  "vi": "Giả vờ ngủ say",
+  "en": "Pretend to be fast asleep"
+ },
+ {
+  "vi": "Cả đêm bạn nghe tiếng thở sát bên tai. Sáng ra người ấy đã đi, để lại một sợi lông trắng.",
+  "en": "All night you hear breathing right by your ear. By morning they're gone, leaving a single white hair."
+ },
+ {
+  "vi": "Cầu treo Vạn Trượng",
+  "en": "Vạn Trượng Bridge"
+ },
+ {
+  "vi": "Cây cầu dây duy nhất bắc qua vực Vạn Trượng đã mục nát. Đi đường vòng mất ba tháng.",
+  "en": "The only rope bridge across the Vạn Trượng Chasm has rotted. The detour takes three months."
+ },
+ {
+  "vi": "Chạy thật nhanh qua cầu",
+  "en": "Sprint across the bridge"
+ },
+ {
+  "vi": "liều",
+  "en": "risky"
+ },
+ {
+  "vi": "Dây cầu đứt phựt ở giữa. Bạn rơi xuống vực Vạn Trượng, tiếng kêu vọng mãi không dứt.",
+  "en": "The rope snaps in the middle. You fall into the Vạn Trượng Chasm, your scream echoing forever."
+ },
+ {
+  "vi": "Đến giữa cầu, có tiếng rắc...",
+  "en": "Halfway across, there's a crack..."
+ },
+ {
+  "vi": "Bạn vừa đặt chân sang bờ bên kia thì cầu đứt. Tim đập thình thịch.",
+  "en": "The moment your foot touches the far side, the bridge gives way. Your heart is pounding."
+ },
+ {
+  "vi": "Ngự khí bay qua",
+  "en": "Ride the qi across"
+ },
+ {
+  "vi": "cần tu vi",
+  "en": "needs cultivation"
+ },
+ {
+  "vi": "Bạn nhẹ nhàng lướt qua vực sâu. Tu sĩ thì cần gì cầu.",
+  "en": "You glide lightly over the abyss. What does a cultivator need a bridge for?"
+ },
+ {
+  "vi": "Tu vi chưa đủ để ngự khí. Bạn rơi giữa chừng.",
+  "en": "Your cultivation isn't enough to ride the qi. You drop halfway."
+ },
+ {
+  "vi": "Bạn nhún người bay lên...",
+  "en": "You spring into the air..."
+ },
+ {
+  "vi": "Bạn chạm được vách đá bên kia, móng tay bật máu.",
+  "en": "You catch the cliff face on the other side, fingernails torn bloody."
+ },
+ {
+  "vi": "Đi đường vòng",
+  "en": "Take the detour"
+ },
+ {
+  "vi": "Ba tháng đường vòng, bạn ngắm được nhiều cảnh đẹp.",
+  "en": "Three months of detour, and plenty of fine scenery along the way."
+ },
+ {
+  "vi": "Sửa cầu cho người sau",
+  "en": "Repair the bridge for others"
+ },
+ {
+  "vi": "-40 linh thạch",
+  "en": "-40 spirit stones"
+ },
+ {
+  "vi": "Dân làng hai bờ khắc tên bạn lên trụ cầu.",
+  "en": "The villagers on both banks carve your name into the bridge post."
+ },
+ {
+  "vi": "Tiệc Hồng Môn",
+  "en": "Hongmen Banquet"
+ },
+ {
+  "vi": "Thành chủ mời bạn dự tiệc. Giữa tiệc, bạn thấy đao phủ nấp sau rèm, và chén rượu trước mặt có màu hơi lạ.",
+  "en": "The City Lord invites you to a feast. Midway, you spot axemen hidden behind the curtain - and the wine before you looks slightly off."
+ },
+ {
+  "vi": "Uống cạn cho phải phép",
+  "en": "Drain it, as etiquette demands"
+ },
+ {
+  "vi": "Rượu có Đoạn Trường Tán. Bạn gục xuống bàn tiệc, máu đen trào ra khóe miệng.",
+  "en": "The wine was laced with Gut-Severing Powder. You slump over the table, black blood trickling from your lips."
+ },
+ {
+  "vi": "Bạn nâng chén...",
+  "en": "You raise the cup..."
+ },
+ {
+  "vi": "Hóa ra thành chủ chỉ thử lòng can đảm. Ông thưởng bạn 200 linh thạch.",
+  "en": "The City Lord was only testing your nerve. He rewards you 200 spirit stones."
+ },
+ {
+  "vi": "Lật bàn, giết thành chủ",
+  "en": "Flip the table, kill the City Lord"
+ },
+ {
+  "vi": "rất nguy, tà",
+  "en": "very dangerous, evil"
+ },
+ {
+  "vi": "Ba mươi đao phủ ùa ra. Bạn chết dưới loạn đao.",
+  "en": "Thirty axemen pour out. You fall beneath a storm of blades."
+ },
+ {
+  "vi": "Bạn hất tung bàn tiệc...",
+  "en": "You hurl the table aside..."
+ },
+ {
+  "vi": "triều đình truy nã",
+  "en": "wanted by the imperial court"
+ },
+ {
+  "vi": "Bạn chém thành chủ, vét sạch kho bạc rồi trốn đi. Từ nay bị truy nã.",
+  "en": "You cut down the City Lord, loot the treasury and flee. From now on you're a wanted fugitive."
+ },
+ {
+  "vi": "Giả say, xin ra ngoài",
+  "en": "Feign drunkenness, excuse yourself"
+ },
+ {
+  "vi": "Bạn lẻn ra hậu viện rồi trèo tường trốn mất.",
+  "en": "You slip out to the back courtyard and climb over the wall."
+ },
+ {
+  "vi": "Thị vệ chặn lại, đâm một nhát. Bạn vẫn trốn được.",
+  "en": "A guard blocks you and lands a stab. You still get away."
+ },
+ {
+  "vi": "Dùng ngân châm thử rượu",
+  "en": "Test the wine with a silver needle"
+ },
+ {
+  "vi": "Ngân châm hóa đen. Bạn đặt chén xuống, mỉm cười nhìn thành chủ. Không ai dám động thủ nữa.",
+  "en": "The silver needle turns black. You set down the cup and smile at the City Lord. No one dares make a move."
+ },
+ {
+  "vi": "Mặt hồ đóng băng",
+  "en": "Frozen lake"
+ },
+ {
+  "vi": "Mùa đông, hồ lớn đóng băng. Giữa hồ có một bông Băng Liên trắng muốt đang nở, giá ngàn lượng.",
+  "en": "In winter the great lake freezes over. In its centre blooms a snow-white Ice Lotus worth a thousand taels."
+ },
+ {
+  "vi": "Bò ra giữa hồ hái",
+  "en": "Crawl out to pick it"
+ },
+ {
+  "vi": "Mặt băng nứt toác. Bạn rơi xuống nước lạnh buốt, không ai kịp kéo lên.",
+  "en": "The ice cracks wide open. You plunge into the freezing water before anyone can pull you out."
+ },
+ {
+  "vi": "Băng kêu răng rắc dưới tay...",
+  "en": "The ice creaks under your hands..."
+ },
+ {
+  "vi": "Băng Liên",
+  "en": "Ice Lotus"
+ },
+ {
+  "vi": "Bạn hái được Băng Liên, đổi được 300 linh thạch và một viên Diên Thọ Đan.",
+  "en": "You pick the Ice Lotus and trade it for 300 spirit stones and a Longevity Pill."
+ },
+ {
+  "vi": "Ném dây móc kéo vào",
+  "en": "Throw a grappling hook and drag it in"
+ },
+ {
+  "vi": "Trúng rồi! Bạn kéo được bông Băng Liên vào bờ.",
+  "en": "Got it! You haul the Ice Lotus to shore."
+ },
+ {
+  "vi": "Bông hoa rơi xuống lỗ băng, chìm mất.",
+  "en": "The flower slips into a hole in the ice and sinks."
+ },
+ {
+  "vi": "Trượt băng chơi với lũ trẻ",
+  "en": "Go skating with the kids"
+ },
+ {
+  "vi": "Một buổi chiều vui vẻ. Bạn quên luôn bông hoa.",
+  "en": "A fun afternoon. You forget all about the flower."
+ },
+ {
+  "vi": "Về nhà sưởi ấm",
+  "en": "Go home and warm up"
+ },
+ {
+  "vi": "Ngoài trời lạnh quá. Bông hoa để người khác lo.",
+  "en": "It's far too cold out. Let someone else worry about the flower."
+ },
+ {
+  "vi": "Ôn dịch",
+  "en": "Plague"
+ },
+ {
+  "vi": "Ôn dịch tràn qua trấn. Người chết chất đống ngoài cổng thành. Quan phủ sắp phong tỏa toàn bộ.",
+  "en": "A plague sweeps through the town. Corpses pile up outside the gates. The magistrate is about to seal everything off."
+ },
+ {
+  "vi": "Ở lại chữa bệnh cứu người",
+  "en": "Stay and heal the sick"
+ },
+ {
+  "vi": "chính, có thể nhiễm",
+  "en": "righteous, may get infected"
+ },
+ {
+  "vi": "Bạn cứu được hơn trăm người, rồi chính bạn nhiễm dịch. Dân trấn lập miếu thờ bạn.",
+  "en": "You save over a hundred people, then catch the plague yourself. The townsfolk build a shrine in your honour."
+ },
+ {
+  "vi": "Ngày thứ bốn mươi, bạn bắt đầu ho...",
+  "en": "On the fortieth day, you start to cough..."
+ },
+ {
+  "vi": "Ba tháng không ngủ, bạn cứu được cả trấn. Người người gọi bạn là thần y.",
+  "en": "Three sleepless months, and you save the whole town. Everyone calls you a miracle doctor."
+ },
+ {
+  "vi": "Trốn khỏi thành trước khi phong tỏa",
+  "en": "Flee before the lockdown"
+ },
+ {
+  "vi": "Bạn đã nhiễm bệnh từ trước khi trốn. Chết bên vệ đường, không ai dám lại gần.",
+  "en": "You were already infected before you fled. You die by the roadside, and no one dares come near."
+ },
+ {
+  "vi": "Bạn chạy suốt đêm...",
+  "en": "You run all night..."
+ },
+ {
+  "vi": "Bạn trốn thoát. Đêm nào cũng mơ thấy những người bị bỏ lại.",
+  "en": "You escape. Every night you dream of those left behind."
+ },
+ {
+  "vi": "Bán thuốc giá cắt cổ",
+  "en": "Sell medicine at extortionate prices"
+ },
+ {
+  "vi": "tà, +linh thạch",
+  "en": "evil, +spirit stones"
+ },
+ {
+  "vi": "Bạn bán thuốc gấp trăm lần giá. Giàu lên nhanh chóng, nhưng ai cũng nguyền rủa bạn.",
+  "en": "You sell medicine at a hundred times the price. You get rich fast, but everyone curses your name."
+ },
+ {
+  "vi": "Đóng cửa, uống Thanh Tâm Đan",
+  "en": "Lock the door, take a Clear Heart Pill"
+ },
+ {
+  "vi": "Bạn đóng cửa ba tháng. Gầy rộc, nhưng còn sống.",
+  "en": "You stay shut in for three months. Gaunt, but alive."
+ },
+ {
+  "vi": "Mãng xà ngàn năm",
+  "en": "Thousand-year python"
+ },
+ {
+  "vi": "Đang đi đường núi, bạn nhận ra khúc gỗ mình vừa ngồi lên nghỉ chân... đang thở.",
+  "en": "On a mountain trail you realise the log you sat on to rest is... breathing."
+ },
+ {
+  "vi": "Đâm vào mắt nó",
+  "en": "Stab it in the eye"
+ },
+ {
+  "vi": "liều, thưởng lớn",
+  "en": "risky, big reward"
+ },
+ {
+  "vi": "Mãng xà quấn chặt lấy bạn, xương cốt vỡ vụn rồi nuốt chửng.",
+  "en": "The python coils around you, crushes your bones, and swallows you whole."
+ },
+ {
+  "vi": "Bạn vung kiếm...",
+  "en": "You swing your sword..."
+ },
+ {
+  "vi": "Trảm mãng",
+  "en": "Python slain"
+ },
+ {
+  "vi": "Một kiếm xuyên mắt! Mãng xà giãy chết. Bạn mổ lấy mật rắn, tu vi tăng vọt.",
+  "en": "One thrust through the eye! The python thrashes and dies. You cut out its gallbladder and your cultivation soars."
+ },
+ {
+  "vi": "Nằm im giả chết",
+  "en": "Lie still and play dead"
+ },
+ {
+  "vi": "Mãng xà không quan tâm bạn chết hay sống. Nó nuốt luôn.",
+  "en": "The python doesn't care if you're dead or alive. It swallows you anyway."
+ },
+ {
+  "vi": "Bạn nín thở...",
+  "en": "You hold your breath..."
+ },
+ {
+  "vi": "Nó trườn đi. Bạn nằm im thêm một canh giờ mới dám đứng dậy.",
+  "en": "It slithers away. You lie still for another hour before you dare stand up."
+ },
+ {
+  "vi": "Rải hùng hoàng rồi chạy",
+  "en": "Scatter realgar and run"
+ },
+ {
+  "vi": "-20 linh thạch",
+  "en": "-20 spirit stones"
+ },
+ {
+  "vi": "Mùi hùng hoàng làm nó chùn lại. Bạn chạy một mạch xuống núi.",
+  "en": "The realgar smell makes it recoil. You run all the way down the mountain."
+ },
+ {
+  "vi": "Thì thầm với nó",
+  "en": "Whisper to it"
+ },
+ {
+  "vi": "yêu tộc?",
+  "en": "yao race?"
+ },
+ {
+  "vi": "Nó nhận ra bạn là yêu tộc, cúi đầu nhường đường rồi tặng một chiếc vảy.",
+  "en": "It recognises you as yao kin, bows its head to let you pass, and gifts you a scale."
+ },
+ {
+  "vi": "Nó không hiểu tiếng người. Bạn trở thành bữa tối.",
+  "en": "It doesn't understand human speech. You become dinner."
+ },
+ {
+  "vi": "Bạn ghé sát tai nó...",
+  "en": "You lean close to its ear..."
+ },
+ {
+  "vi": "Nó lè lưỡi liếm mặt bạn rồi bỏ đi. Thật khó hiểu.",
+  "en": "It flicks its tongue across your face and leaves. Baffling."
+ },
+ {
+  "vi": "Sấm sét giữa trời quang",
+  "en": "Thunder from a clear sky"
+ },
+ {
+  "vi": "Trời đang trong xanh bỗng tối sầm. Một tia sét đánh xuống ngay cạnh chỗ bạn đứng, cháy đen cả gốc cây.",
+  "en": "The clear blue sky suddenly goes black. A bolt of lightning strikes right beside you, scorching a tree stump."
+ },
+ {
+  "vi": "Giơ kiếm lên trời lĩnh ngộ lôi pháp",
+  "en": "Raise your sword to comprehend thunder law"
+ },
+ {
+  "vi": "cực liều",
+  "en": "insanely risky"
+ },
+ {
+  "vi": "Tia sét thứ hai đánh trúng mũi kiếm. Bạn hóa thành than đen trên đỉnh núi.",
+  "en": "A second bolt hits the tip of your sword. You become a lump of charcoal on the mountaintop."
+ },
+ {
+  "vi": "Bạn giơ cao thanh kiếm...",
+  "en": "You raise your sword high..."
+ },
+ {
+  "vi": "Lôi pháp",
+  "en": "Thunder law"
+ },
+ {
+  "vi": "Sét đánh trúng, nhưng bạn hấp thu được lôi lực! Tóc dựng đứng, tu vi tăng vọt.",
+  "en": "The lightning hits, but you absorb its power! Hair standing on end, your cultivation soars."
+ },
+ {
+  "vi": "Nằm rạp xuống đất",
+  "en": "Lie flat on the ground"
+ },
+ {
+  "vi": "Sấm sét đi qua. Bạn mặt mũi lấm lem nhưng còn sống.",
+  "en": "The storm passes. You're filthy but alive."
+ },
+ {
+  "vi": "Sét đánh trúng cây bên cạnh, cành gãy đập vào lưng bạn.",
+  "en": "Lightning strikes the tree beside you, and a broken branch slams into your back."
+ },
+ {
+  "vi": "Chạy vào hang trú",
+  "en": "Run into a cave for shelter"
+ },
+ {
+  "vi": "Trong hang có một bộ xương cầm cuốn bí kíp. Tiếc là chữ đã mờ hết.",
+  "en": "In the cave sits a skeleton clutching a secret manual. Sadly the writing has all faded."
+ },
+ {
+  "vi": "Quỳ xuống sám hối",
+  "en": "Kneel and repent"
+ },
+ {
+  "vi": "nếu từng làm ác",
+  "en": "if you've done evil"
+ },
+ {
+  "vi": "Trời không tha. Sét đánh trúng đỉnh đầu bạn đang cúi xuống.",
+  "en": "Heaven does not forgive. Lightning strikes the top of your bowed head."
+ },
+ {
+  "vi": "Bạn khấn vái...",
+  "en": "You pray..."
+ },
+ {
+  "vi": "Mây tan. Có lẽ trời cho bạn thêm một cơ hội.",
+  "en": "The clouds part. Perhaps Heaven is giving you another chance."
+ },
+ {
+  "vi": "Lòng không thẹn, sét không đến gần.",
+  "en": "A clear conscience - the lightning keeps its distance."
+ },
+ {
+  "vi": "Ván cờ của tiên nhân",
+  "en": "The immortals' game of Go"
+ },
+ {
+  "vi": "Trên đỉnh núi, hai ông lão đang đánh cờ dưới gốc tùng. Một người vẫy bạn: \"Ngồi xem một ván đi.\"",
+  "en": "On a mountaintop, two old men play Go beneath a pine. One beckons you: \"Sit and watch a game.\""
+ },
+ {
+  "vi": "Ngồi xem hết ván cờ",
+  "en": "Watch the whole game"
+ },
+ {
+  "vi": "thời gian?",
+  "en": "time?"
+ },
+ {
+  "vi": "Xem xong ván cờ, cán rìu bên cạnh đã mục nát. Xuống núi mới biết đã qua {0} năm. Bạn già đi rồi tọa hóa ngay dưới chân núi.",
+  "ph": [
+   "yrs"
+  ],
+  "en": "When the game ends, the axe handle beside you has rotted away. Back down the mountain, you learn {0} years have passed. You age at once and pass away at the foot of the mountain."
+ },
+ {
+  "vi": "Ván cờ kết thúc, bạn ngộ ra nhiều điều. Xuống núi mới biết đã qua {0} năm, người quen chẳng còn ai.",
+  "ph": [
+   "yrs"
+  ],
+  "en": "The game ends and you've grasped a great deal. Back down the mountain, you learn {0} years have passed, and everyone you knew is gone."
+ },
+ {
+  "vi": "Xin được đánh một ván",
+  "en": "Ask to play a game"
+ },
+ {
+  "vi": "tu vi",
+  "en": "cultivation"
+ },
+ {
+  "vi": "Bạn thắng tiên nhân một nước! Ông cười lớn, truyền cho bạn một đạo pháp quyết. Xuống núi đã qua năm năm.",
+  "en": "You beat the immortal by a single move! He laughs heartily and teaches you a Dao technique. Five years have passed when you come down the mountain."
+ },
+ {
+  "vi": "Bạn thua tan tác. Xuống núi mới biết đã qua năm năm.",
+  "en": "You're crushed. Back down the mountain, you learn five years have passed."
+ },
+ {
+  "vi": "Lấy trộm một quân cờ",
+  "en": "Steal a Go stone"
+ },
+ {
+  "vi": "Ông lão chỉ liếc nhìn. Bạn hóa thành tượng đá đứng mãi trên đỉnh núi.",
+  "en": "The old man merely glances at you. You turn to stone and stand on that peak forever."
+ },
+ {
+  "vi": "Bạn thò tay...",
+  "en": "You reach out..."
+ },
+ {
+  "vi": "Quân cờ bằng ngọc tiên, bán được 500 linh thạch.",
+  "en": "The Go stone is immortal jade - it sells for 500 spirit stones."
+ },
+ {
+  "vi": "Cúi chào rồi đi",
+  "en": "Bow and leave"
+ },
+ {
+  "vi": "Ông lão gật đầu: \"Biết đủ là phúc.\"",
+  "en": "The old man nods: \"Knowing when you have enough is a blessing.\""
+ },
+ {
+  "vi": "Địa long trở mình",
+  "en": "The earth dragon stirs"
+ },
+ {
+  "vi": "Đêm khuya, mặt đất rung chuyển dữ dội. Nhà cửa đổ sập, tiếng kêu cứu vang khắp nơi. Kho linh thạch của bạn sắp bị vùi lấp.",
+  "en": "Late at night the ground shakes violently. Houses collapse, cries for help everywhere. Your spirit stone store is about to be buried."
+ },
+ {
+  "vi": "Lao vào cứu kho linh thạch",
+  "en": "Rush in to save the spirit stones"
+ },
+ {
+  "vi": "liều vì tiền",
+  "en": "risking it for money"
+ },
+ {
+  "vi": "Xà nhà sập xuống. Người ta đào được xác bạn vẫn ôm chặt túi linh thạch.",
+  "en": "A beam comes crashing down. They dig out your corpse still clutching the bag of spirit stones."
+ },
+ {
+  "vi": "Bạn chạy vào kho...",
+  "en": "You dash into the storeroom..."
+ },
+ {
+  "vi": "Bạn ôm được túi linh thạch chạy ra ngay trước khi mái nhà đổ.",
+  "en": "You grab the bag of spirit stones and get out just before the roof caves in."
+ },
+ {
+  "vi": "Cứu đứa bé trong nhà bên",
+  "en": "Save the child next door"
+ },
+ {
+  "vi": "chính",
+  "en": "righteous"
+ },
+ {
+  "vi": "Bạn đẩy được đứa bé ra ngoài, rồi bức tường đổ ập lên người bạn.",
+  "en": "You shove the child to safety, then the wall collapses on top of you."
+ },
+ {
+  "vi": "Bạn lao vào đống đổ nát...",
+  "en": "You charge into the rubble..."
+ },
+ {
+  "vi": "Bạn cứu được đứa bé, nhưng kho linh thạch bị vùi mất một nửa.",
+  "en": "You save the child, but half your spirit stones are buried."
+ },
+ {
+  "vi": "Chạy ra bãi trống",
+  "en": "Run to open ground"
+ },
+ {
+  "vi": "Bạn an toàn. Kho linh thạch bị vùi mất gần một nửa.",
+  "en": "You're safe. Nearly half your spirit stones are buried."
+ },
+ {
+  "vi": "Nhân lúc hỗn loạn đi hôi của",
+  "en": "Loot in the chaos"
+ },
+ {
+  "vi": "Bị bắt quả tang, bạn bị dân đánh một trận.",
+  "en": "Caught red-handed, you get a beating from the townsfolk."
+ },
+ {
+  "vi": "Bạn vơ vét được kha khá trong đống đổ nát.",
+  "en": "You scavenge a decent haul from the rubble."
+ }
+]

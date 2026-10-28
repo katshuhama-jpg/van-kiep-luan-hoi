@@ -1,0 +1,287 @@
+[
+ {
+  "vi": "Kim",
+  "en": "Metal"
+ },
+ {
+  "vi": "kiếm khí sắc lạnh rít lên",
+  "en": "cold sword qi shrieks through the air"
+ },
+ {
+  "vi": "Mộc",
+  "en": "Wood"
+ },
+ {
+  "vi": "dây leo xanh cuộn trào khỏi mặt đài",
+  "en": "green vines surge up from the platform"
+ },
+ {
+  "vi": "Thủy",
+  "en": "Water"
+ },
+ {
+  "vi": "sóng nước dựng thành vách",
+  "en": "the water rises into a wall"
+ },
+ {
+  "vi": "Hỏa",
+  "en": "Fire"
+ },
+ {
+  "vi": "lửa đỏ bùng lên ngùn ngụt",
+  "en": "crimson flames roar skyward"
+ },
+ {
+  "vi": "Thổ",
+  "en": "Earth"
+ },
+ {
+  "vi": "đá dưới chân nứt toác, bụi mù bốc lên",
+  "en": "the stone underfoot cracks apart in a cloud of dust"
+ },
+ {
+  "vi": "Đỡ chiêu! «{m}»!",
+  "en": "Block this! «{m}»!"
+ },
+ {
+  "vi": "Tiếp ta một chiêu «{m}»!",
+  "en": "Receive my «{m}»!"
+ },
+ {
+  "vi": "Xem «{m}» đây!",
+  "en": "Behold, «{m}»!"
+ },
+ {
+  "vi": "Nạp mạng! «{m}»!",
+  "en": "Give me your life! «{m}»!"
+ },
+ {
+  "vi": "Ăn một chiêu «{m}» của ta!",
+  "en": "Taste my «{m}»!"
+ },
+ {
+  "vi": "Hừ! «{m}» của ta vững như bàn thạch!",
+  "en": "Hmph! My «{m}» stands firm as bedrock!"
+ },
+ {
+  "vi": "«{m}»! Muốn phá? Còn non lắm!",
+  "en": "«{m}»! You want to break it? You're too green!"
+ },
+ {
+  "vi": "Thủ! «{m}»!",
+  "en": "Guard! «{m}»!"
+ },
+ {
+  "vi": "Cứ đánh đi, «{m}» đã giăng sẵn!",
+  "en": "Strike all you like, «{m}» is already in place!"
+ },
+ {
+  "vi": "Lấy nhu chế cương, «{m}»!",
+  "en": "Softness overcomes hardness, «{m}»!"
+ },
+ {
+  "vi": "«{m}»! Ngươi đánh vào khoảng không rồi!",
+  "en": "«{m}»! You struck empty air!"
+ },
+ {
+  "vi": "Bốn lạng đẩy ngàn cân, «{m}»!",
+  "en": "Four ounces deflect a thousand pounds, «{m}»!"
+ },
+ {
+  "vi": "«{m}», hóa!",
+  "en": "«{m}», dissolve!"
+ },
+ {
+  "vi": "Khụ... chiêu hay!",
+  "en": "Cough... a fine move!"
+ },
+ {
+  "vi": "Ngươi... được lắm!",
+  "en": "You... not bad at all!"
+ },
+ {
+  "vi": "Chỉ là vết xước!",
+  "en": "Merely a scratch!"
+ },
+ {
+  "vi": "Hự! Ta chưa thua đâu!",
+  "en": "Ugh! I'm not beaten yet!"
+ },
+ {
+  "vi": "Đau thật... nhưng chưa đủ!",
+  "en": "That hurt... but not enough!"
+ },
+ {
+  "vi": "Chỉ thế thôi sao?",
+  "en": "Is that all?"
+ },
+ {
+  "vi": "Còn chiêu nào nữa không?",
+  "en": "Got any other moves?"
+ },
+ {
+  "vi": "Đứng vững vào!",
+  "en": "Stand firm!"
+ },
+ {
+  "vi": "Lần sau nhớ nhìn kỹ!",
+  "en": "Watch more closely next time!"
+ },
+ {
+  "vi": "Hừ, chậm quá!",
+  "en": "Hmph, too slow!"
+ },
+ {
+  "vi": "Ta chưa thua! Tuyệt địa phản kích!",
+  "en": "I'm not beaten! Last-ditch counterstrike!"
+ },
+ {
+  "vi": "Bị dồn tới đường cùng, {0} gầm lên, toàn thân bùng sáng. Một đòn liều mạng đánh thẳng vào {1}: mất {2} máu.",
+  "ph": [
+   "nm[a]",
+   "nm[b]",
+   "v"
+  ],
+  "en": "Driven to the brink, {0} roars as their whole body blazes with light. A desperate blow slams straight into {1}: {2} HP lost."
+ },
+ {
+  "vi": "Tuyệt kỹ, «{0}»!!!",
+  "ph": [
+   "ultName(me)"
+  ],
+  "en": "Ultimate art, «{0}»!!!"
+ },
+ {
+  "vi": "Trời đất tối sầm. {0} dồn toàn bộ nội lực vào một chiêu, {1} trúng trọn, mất {2} máu.{3}",
+  "ph": [
+   "nm.me",
+   "nm.foe",
+   "r.toFoe",
+   "r.elemTag === 'khac' ? ' Bản mệnh khắc chế, uy lực tăng vọt!' : ''"
+  ],
+  "en": "Heaven and earth go dark. {0} pours all their inner force into a single move, and {1} takes it full on, losing {2} HP.{3}"
+ },
+ {
+  "vi": " Bản mệnh khắc chế, uy lực tăng vọt!",
+  "en": " Natal element counter, power surges!"
+ },
+ {
+  "vi": "Ta đợi chiêu này lâu rồi!",
+  "en": "I've been waiting for this move!"
+ },
+ {
+  "vi": "{0} đón đúng nhịp, hóa giải toàn bộ rồi trả lại một chưởng: {1} mất {2} máu.",
+  "ph": [
+   "nm.me",
+   "nm.foe",
+   "r.toFoe"
+  ],
+  "en": "{0} meets it right on the beat, dissolves it completely and returns a palm strike: {1} loses {2} HP."
+ },
+ {
+  "vi": "{0} vận khí chống đỡ, chặn được phần lớn nhưng vẫn mất {1} máu.",
+  "ph": [
+   "nm.me",
+   "r.toMe"
+  ],
+  "en": "{0} channels qi to defend, blocking most of it but still losing {1} HP."
+ },
+ {
+  "vi": "{0} chậm một nhịp, trúng trọn tuyệt kỹ, mất {1} máu.",
+  "ph": [
+   "nm.me",
+   "r.toMe"
+  ],
+  "en": "{0} is a beat too slow and takes the ultimate full on, losing {1} HP."
+ },
+ {
+  "vi": " Hành khắc chế, uy lực tăng vọt!",
+  "en": " Element counter, power surges!"
+ },
+ {
+  "vi": " Hành bị khắc, đòn nhẹ hẳn đi.",
+  "en": " Element countered, the blow weakens."
+ },
+ {
+  "vi": " Chí mạng!",
+  "en": " Critical hit!"
+ },
+ {
+  "vi": "«{0}» hệ {1} va thẳng «{2}» hệ {3}, {4}. Hai luồng chân khí nổ vang, cả hai cùng bật lùi: {5} mất {6}, {7} mất {8} máu.",
+  "ph": [
+   "a",
+   "elA.name",
+   "b",
+   "elB.name",
+   "elA.fx",
+   "nm.me",
+   "r.toMe",
+   "nm.foe",
+   "r.toFoe"
+  ],
+  "en": "{1}-element «{0}» crashes head-on into {3}-element «{2}», {4}. The two currents of true qi explode, and both are thrown back: {5} loses {6}, {7} loses {8} HP."
+ },
+ {
+  "vi": "{0} lao tới nhưng va phải «{1}», {2}. {3} chặn gọn rồi phản một chưởng, {4} mất {5} máu.",
+  "ph": [
+   "nm[l]",
+   "wm",
+   "wel.fx",
+   "nm[w]",
+   "nm[l]",
+   "v"
+  ],
+  "en": "{0} charges in but slams into «{1}», {2}. {3} blocks cleanly and counters with a palm strike, {4} loses {5} HP."
+ },
+ {
+  "vi": "«{0}» dẫn lệch «{1}» sang bên, {2} hụt đà. {3} thuận thế đánh ngược, {4}: {5} mất {6} máu.",
+  "ph": [
+   "wm",
+   "lm",
+   "nm[l]",
+   "nm[w]",
+   "wel.fx",
+   "nm[l]",
+   "v"
+  ],
+  "en": "«{0}» deflects «{1}» aside and {2} overreaches. {3} turns the momentum back on them, {4}: {5} loses {6} HP."
+ },
+ {
+  "vi": "«{0}» hệ {1} đập vỡ «{2}», {3}. {4} lùi ba bước, mất {5} máu.",
+  "ph": [
+   "wm",
+   "wel.name",
+   "lm",
+   "wel.fx",
+   "nm[l]",
+   "v"
+  ],
+  "en": "{1}-element «{0}» shatters «{2}», {3}. {4} staggers back three steps, losing {5} HP."
+ },
+ {
+  "vi": "«{0}» tới trước một nhịp, {1}. «{2}» chưa kịp thành hình thì {3} đã trúng đòn, mất {4} máu.",
+  "ph": [
+   "wm",
+   "wel.fx",
+   "lm",
+   "nm[l]",
+   "v"
+  ],
+  "en": "«{0}» lands a beat earlier, {1}. Before «{2}» can even take shape, {3} is hit, losing {4} HP."
+ },
+ {
+  "vi": " {0} cũng dính dư chấn, mất {1} máu.",
+  "ph": [
+   "nm[w]",
+   "back"
+  ],
+  "en": " {0} is caught in the backlash too, losing {1} HP."
+ },
+ {
+  "vi": "{0} khuỵu xuống, chân khí tán loạn, không gượng dậy nổi nữa.",
+  "ph": [
+   "name"
+  ],
+  "en": "{0} drops to one knee, true qi scattered, unable to rise again."
+ }
+]

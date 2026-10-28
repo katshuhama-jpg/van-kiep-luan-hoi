@@ -1,6 +1,8 @@
 import { addMile } from './miles';
 import { SECT_GEAR, SECT_GEAR_BY } from './items2';
 import type { Character, EffectCtx } from './types';
+import { tr } from '../i18n';
+import { nameOf } from '../hanviet';
 
 /**
  * Tông môn: bậc đệ tử theo căn cốt (chính phái) hay độ tàn nhẫn (ma môn).
@@ -8,18 +10,18 @@ import type { Character, EffectCtx } from './types';
  */
 
 export type SectSide = 'chinh' | 'ta' | 'trung';
-export const RANK_CHINH = ['Tạp dịch', 'Ngoại môn đệ tử', 'Nội môn đệ tử', 'Chân truyền đệ tử'];
-export const RANK_TA = ['Huyết nô', 'Ngoại đường sát thủ', 'Nội đường hộ pháp', 'Huyết Sát Thánh tử'];
-export const RANK_TRUNG = ['Học đồ', 'Ký danh đệ tử', 'Thân truyền đệ tử', 'Thiên Cơ truyền nhân'];
-export const RANK_SHORT_CHINH = ['Tạp dịch', 'Ngoại môn', 'Nội môn', 'Chân truyền'];
-export const RANK_SHORT_TA = ['Huyết nô', 'Sát thủ', 'Hộ pháp', 'Thánh tử'];
-export const RANK_SHORT_TRUNG = ['Học đồ', 'Ký danh', 'Thân truyền', 'Truyền nhân'];
+export const RANK_CHINH = [tr('Tạp dịch', "Handyman"), tr('Ngoại môn đệ tử', "Outer Disciple"), tr('Nội môn đệ tử', "Inner Disciple"), tr('Chân truyền đệ tử', "True Disciple")];
+export const RANK_TA = [tr('Huyết nô', "Blood Slave"), tr('Ngoại đường sát thủ', "Outer Hall Assassin"), tr('Nội đường hộ pháp', "Inner Hall Protector"), tr('Huyết Sát Thánh tử', "Blood Fiend Holy Son")];
+export const RANK_TRUNG = [tr('Học đồ', "Apprentice"), tr('Ký danh đệ tử', "Registered Disciple"), tr('Thân truyền đệ tử', "Personal Disciple"), tr('Thiên Cơ truyền nhân', "Heir of Tianji")];
+export const RANK_SHORT_CHINH = [tr('Tạp dịch', "Handyman"), tr('Ngoại môn', "Outer"), tr('Nội môn', "Inner"), tr('Chân truyền', "True")];
+export const RANK_SHORT_TA = [tr('Huyết nô', "Blood Slave"), tr('Sát thủ', "Assassin"), tr('Hộ pháp', "Protector"), tr('Thánh tử', "Holy Son")];
+export const RANK_SHORT_TRUNG = [tr('Học đồ', "Apprentice"), tr('Ký danh', "Registered"), tr('Thân truyền', "Personal"), tr('Truyền nhân', "Heir")];
 /** 3.1.0: bốn tông môn mới, mỗi tông có tên bậc riêng */
 export const SECT_RANKS: Record<string, { full: string[]; short: string[] }> = {
-  'Phổ Đà Sơn': { full: ['Hỏa đầu tăng', 'Sa di', 'Tỳ kheo', 'Hộ pháp La Hán'], short: ['Hỏa đầu', 'Sa di', 'Tỳ kheo', 'La Hán'] },
-  'Kiếm Cốc': { full: ['Mài kiếm đồng', 'Kiếm đồng', 'Kiếm sĩ', 'Kiếm Cốc truyền nhân'], short: ['Mài kiếm', 'Kiếm đồng', 'Kiếm sĩ', 'Truyền nhân'] },
-  'Vạn Độc Môn': { full: ['Dược nô', 'Độc đồng', 'Độc sứ', 'Vạn Độc Thánh sứ'], short: ['Dược nô', 'Độc đồng', 'Độc sứ', 'Thánh sứ'] },
-  'Yêu Thần Điện': { full: ['Yêu bộc', 'Yêu binh', 'Yêu tướng', 'Yêu Thần tử'], short: ['Yêu bộc', 'Yêu binh', 'Yêu tướng', 'Thần tử'] },
+  'Phổ Đà Sơn': { full: [tr('Hỏa đầu tăng', "Kitchen monk"), 'Sa di', tr('Tỳ kheo', "Bhikkhu"), tr('Hộ pháp La Hán', "Arhat Protector")], short: [tr('Hỏa đầu', "Kitchen"), 'Sa di', tr('Tỳ kheo', "Bhikkhu"), tr('La Hán', "Arhat")] },
+  'Kiếm Cốc': { full: [tr('Mài kiếm đồng', "Sword-grinding boy"), tr('Kiếm đồng', "Sword boy"), tr('Kiếm sĩ', "Swordsman"), tr('Kiếm Cốc truyền nhân', "Heir of Jian Valley")], short: [tr('Mài kiếm', "Grinder"), tr('Kiếm đồng', "Sword boy"), tr('Kiếm sĩ', "Swordsman"), tr('Truyền nhân', "Heir")] },
+  'Vạn Độc Môn': { full: [tr('Dược nô', "Herb slave"), tr('Độc đồng', "Poison boy"), tr('Độc sứ', "Poison envoy"), tr('Vạn Độc Thánh sứ', "Holy Envoy of Wandu")], short: [tr('Dược nô', "Herb slave"), tr('Độc đồng', "Poison boy"), tr('Độc sứ', "Poison envoy"), tr('Thánh sứ', "Holy Envoy")] },
+  'Yêu Thần Điện': { full: [tr('Yêu bộc', "Yao servant"), tr('Yêu binh', "Yao soldier"), tr('Yêu tướng', "Yao general"), tr('Yêu Thần tử', "Yao Divine Son")], short: [tr('Yêu bộc', "Yao servant"), tr('Yêu binh', "Yao soldier"), tr('Yêu tướng', "Yao general"), tr('Thần tử', "Divine Son")] },
 };
 export function rankShort(c: Character): string {
   const r = rankOf(c);
@@ -38,8 +40,8 @@ export const RANK_CULT = [1, 1.1, 1.25, 1.4];
 /** chân truyền: đột phá dễ hơn nhờ sư phụ chỉ điểm */
 export const CHAN_TRUYEN_BREAK = 0.08;
 
-const TA_SECTS = ['Huyết Sát Môn', 'Vạn Độc Môn', 'Yêu Thần Điện'];
-const TRUNG_SECTS = ['Thiên Cơ Các'];
+const TA_SECTS = [tr('Huyết Sát Môn', "Xuesha Sect"), tr('Vạn Độc Môn', "Vạn Độc Môn"), tr('Yêu Thần Điện', "Yêu Thần Điện")];
+const TRUNG_SECTS = [tr('Thiên Cơ Các', "Tianji Pavilion")];
 export const sectSide = (c: Pick<Character, 'sect'>): SectSide | null => (c.sect ? (TA_SECTS.includes(c.sect) ? 'ta' : TRUNG_SECTS.includes(c.sect) ? 'trung' : 'chinh') : null);
 export const rankOf = (c: Character): number => (c.sect ? (c.sectRank ?? 1) : -1);
 
@@ -73,7 +75,7 @@ export function joinSect(c: Character, sect: string, rank: number) {
   c.daiBiAt = Math.floor(c.age) + (sect === 'Kiếm Cốc' ? 3 : 4);
   c.sectSaved = false;
   c.sectHide = false;
-  addMile(c, 'sect', `Bái nhập ${sect}, làm ${rankName(c)}`);
+  addMile(c, 'sect', tr(`Bái nhập ${sect}, làm ${rankName(c)}`, `Joined ${sect} as ${rankName(c)}`));
   const g = sectGear(c);
   for (let r = 1; r <= c.sectRank; r++) for (const id of g[r] ?? []) if (!c.inventory.includes(id)) c.inventory.push(id);
 }
@@ -88,20 +90,20 @@ export function promote(c: Character, ctx: EffectCtx | null, why: string): strin
   if (c.sectRank === 3 && sectSide(c) === 'trung') c.stats.khiVan = Math.min(100, c.stats.khiVan + 10);
   const gear = sectGear(c)[c.sectRank] ?? [];
   for (const id of gear) if (!c.inventory.includes(id)) c.inventory.push(id);
-  addMile(c, 'sect', `Thăng làm ${name} của ${c.sect}`);
+  addMile(c, 'sect', tr(`Thăng làm ${name} của ${c.sect}`, `Promoted to ${name} of ${nameOf(c.sect)}`));
   ctx?.fx('buy', name);
   const perk =
     c.sectRank === 3 && sectSide(c) === 'trung'
-      ? ' Các chủ truyền cho bạn thuật xem thiên cơ: tu luyện nhanh hơn 40%, đột phá dễ hơn, khí vận +10, và một tấm bùa thế mạng.'
+      ? tr(' Các chủ truyền cho bạn thuật xem thiên cơ: tu luyện nhanh hơn 40%, đột phá dễ hơn, khí vận +10, và một tấm bùa thế mạng.', " The Pavilion Master teaches you to read the heavenly secrets: 40% faster cultivation, easier breakthroughs, Luck +10, and a life-substitute talisman.")
       : c.sectRank === 3
       ? sectSide(c) === 'ta'
-        ? ' Lão tổ ban cho ma công bí truyền: tu luyện nhanh hơn 40%, đột phá dễ hơn.'
-        : ' Trưởng lão nhận bạn làm đồ đệ thân truyền: tu luyện nhanh hơn 40%, đột phá dễ hơn, sư phụ sẽ cứu bạn một lần.'
+        ? tr(' Lão tổ ban cho ma công bí truyền: tu luyện nhanh hơn 40%, đột phá dễ hơn.', " The Patriarch grants you secret demonic arts: 40% faster cultivation, easier breakthroughs.")
+        : tr(' Trưởng lão nhận bạn làm đồ đệ thân truyền: tu luyện nhanh hơn 40%, đột phá dễ hơn, sư phụ sẽ cứu bạn một lần.', " An Elder takes you as a personal disciple: 40% faster cultivation, easier breakthroughs, and your Master will save you once.")
       : c.sectRank === 2
-        ? ' Được vào Tàng Kinh Các (ngộ tính +5), tu luyện nhanh hơn 25%.'
-        : ' Tu luyện nhanh hơn 10%.';
-  const gn = gear.length ? ` Tông môn ban cho ${gear.length > 1 ? 'áo bào và lệnh bài' : 'áo bào'} mới, mở Túi đồ để mặc.` : '';
-  return `${why} Bạn được thăng làm ${name}.${perk}${gn}`;
+        ? tr(' Được vào Tàng Kinh Các (ngộ tính +5), tu luyện nhanh hơn 25%.', " You may enter the Scripture Pavilion (Insight +5), cultivation 25% faster.")
+        : tr(' Tu luyện nhanh hơn 10%.', " Cultivation 10% faster.");
+  const gn = gear.length ? tr(` Tông môn ban cho ${gear.length > 1 ? tr('áo bào và lệnh bài', "robe and token") : tr('áo bào', "robe")} mới, mở Túi đồ để mặc.`, ` The sect grants you a new ${gear.length > 1 ? tr('áo bào và lệnh bài', "robe and token") : tr('áo bào', "robe")}; open your Inventory to wear it.`) : '';
+  return tr(`${why} Bạn được thăng làm ${name}.${perk}${gn}`, `${why} You are promoted to ${name}.${perk}${gn}`);
 }
 
 /** Đột phá cảnh giới lớn thì tông môn tự nâng bậc: Trúc Cơ ít nhất nội môn, Kim Đan chân truyền */
@@ -117,8 +119,8 @@ export function promoteByRealm(c: Character, ctx: EffectCtx): string | null {
       c,
       ctx,
       cruel > rankOf(c) && c.realm < (rankOf(c) + 1 >= 3 ? 3 : 2)
-        ? 'Tiếng ác của bạn vang tới tổng đàn, lão tổ cười lớn.'
-        : `Tin bạn đột phá ${c.realm >= 3 ? 'Kim Đan' : 'Trúc Cơ'} truyền về sơn môn.`,
+        ? tr('Tiếng ác của bạn vang tới tổng đàn, lão tổ cười lớn.', "Your infamy reaches the headquarters, and the Patriarch laughs aloud.")
+        : tr(`Tin bạn đột phá ${c.realm >= 3 ? tr('Kim Đan', "Golden Core") : tr('Trúc Cơ', "Foundation")} truyền về sơn môn.`, `News of your ${c.realm >= 3 ? tr('Kim Đan', "Golden Core") : tr('Trúc Cơ', "Foundation")} breakthrough reaches the sect.`),
     );
   return out;
 }
@@ -133,8 +135,8 @@ export function masterSaves(c: Character): string | null {
   if (rankOf(c) !== 3 || c.sectSaved || sectSide(c) === 'ta') return null;
   c.sectSaved = true;
   c.stats.sucKhoe = Math.max(25, c.stats.sucKhoe);
-  if (sectSide(c) === 'trung') return ' Tấm bùa thế mạng Các chủ Thiên Cơ Các trao cho bạn bỗng bốc cháy. Kiếp nạn đã được tính trước, bạn thoát chết trong gang tấc.';
-  return ` Sư phụ ở ${c.sect} cảm ứng được, một đạo kiếm quang xé trời lao tới cứu bạn. Bạn thoát chết, sư phụ chỉ để lại một câu: "Lần sau tự lo."`;
+  if (sectSide(c) === 'trung') return tr(' Tấm bùa thế mạng Các chủ Thiên Cơ Các trao cho bạn bỗng bốc cháy. Kiếp nạn đã được tính trước, bạn thoát chết trong gang tấc.', " The life-substitute talisman from the Tianji Pavilion Pavilion Master suddenly bursts into flame. This calamity was foreseen - you escape death by a hair.");
+  return tr(` Sư phụ ở ${c.sect} cảm ứng được, một đạo kiếm quang xé trời lao tới cứu bạn. Bạn thoát chết, sư phụ chỉ để lại một câu: "Lần sau tự lo."`, ` Your Master at ${nameOf(c.sect)} senses it, and a sword light tears across the sky to save you. You live, and your Master leaves only one line: "Next time, handle it yourself."`);
 }
 
 /**

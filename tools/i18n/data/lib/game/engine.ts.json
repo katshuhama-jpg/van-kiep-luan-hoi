@@ -1,0 +1,1485 @@
+[
+ {
+  "vi": "__KIEP__ Bạn chào đời là {0} ở {1}, {2} ({3}), {4}, gia cảnh {5}. Thầy bói nói bạn mang {6}.",
+  "ph": [
+   "gender === 'nam' ? 'một bé trai' : 'một bé gái'",
+   "birthPlace",
+   "region.name",
+   "region.desc",
+   "origin.name.toLowerCase()",
+   "fam.name",
+   "lc.name"
+  ],
+  "en": "__KIEP__ You are born {0} in {1}, {2} ({3}), {4}, into a {5} family. The fortune-teller says you carry {6}."
+ },
+ {
+  "vi": "một bé trai",
+  "en": "a baby boy"
+ },
+ {
+  "vi": "một bé gái",
+  "en": "a baby girl"
+ },
+ {
+  "vi": "Tóc {0}, lớn lên sẽ để {1}. Bà mụ xem tướng bảo: mệnh {2}, bản mệnh ngũ hành thuộc {3}.",
+  "ph": [
+   "HAIR_COLORS[hairColor].name",
+   "HAIR_STYLES[gender][hairStyle]",
+   "fate.name",
+   "ELEMENTS[c.element ?? 'kim'].name"
+  ],
+  "en": "{0} hair, to be worn {1} when grown. The midwife reads your face: a {2} destiny, natal element {3}."
+ },
+ {
+  "vi": "Kiếp thứ {0}.",
+  "ph": [
+   "c.lifeNo"
+  ],
+  "en": "Life #{0}."
+ },
+ {
+  "vi": "oan hồn đòi nợ từ kiếp trước",
+  "en": "a vengeful ghost come to collect a debt from your past life"
+ },
+ {
+  "vi": "Ngày bạn sinh ra, quạ đen đậu kín mái nhà. Nghiệp kiếp trước vẫn chưa trả hết.",
+  "en": "The day you are born, black crows cover the whole roof. The karma of your past life is not yet repaid."
+ },
+ {
+  "vi": "Kiếp đầu tiên, trời cao thương đứa trẻ mới đến: trước 16 tuổi bạn sẽ không chết. Ba kiếp đầu, tuổi thơ trôi nhanh hơn.",
+  "en": "Your first life: the heavens pity the newcomer, and you will not die before 16. For your first three lives, childhood passes faster."
+ },
+ {
+  "vi": "Ba kiếp đầu được trời thương: tới khi chọn con đường tu luyện, hiểm cảnh khó lấy mạng bạn hơn. Mục tiêu kiếp này: {0}.",
+  "ph": [
+   "newbieGoal(c)?.name ?? ''"
+  ],
+  "en": "The heavens favor your first three lives: until you choose a cultivation path, danger has a harder time taking you. Goal for this life: {0}."
+ },
+ {
+  "vi": "Thiên phú bẩm sinh: {0}.",
+  "ph": [
+   "gifts.map((g) => giftOf(g)?.name).join(', ')"
+  ],
+  "en": "Innate talents: {0}."
+ },
+ {
+  "vi": "Vừa mở mắt, bạn đã nhớ ra: kiếp trước mình là {0}, {1}, chết năm {2} tuổi.",
+  "ph": [
+   "c.past.name",
+   "c.past.realmName",
+   "c.past.age"
+  ],
+  "en": "The moment you open your eyes, you remember: in your past life you were {0}, {1}, dead at age {2}."
+ },
+ {
+  "vi": "Trong tay bạn nắm chặt một chiếc hộp nhỏ, không ai cạy ra được.",
+  "en": "In your hand you clutch a small box that no one can pry open."
+ },
+ {
+  "vi": "Mệnh thiên sát cô tinh. Chưa đầy năm, cha mẹ lần lượt qua đời, ông bà cũng không qua nổi mùa đông. Bạn lớn lên nhờ bát cơm của hàng xóm.",
+  "en": "Born under the Lone Star of Heavenly Doom. Before your first year is out, both parents die one after another, and your grandparents don't survive the winter. You grow up on the neighbors' rice."
+ },
+ {
+  "vi": "Vạn kiếp bất diệt: trước 16 tuổi, trời cao sẽ che chở bạn.",
+  "en": "Ten Thousand Lives Undying: until 16, the heavens will shield you."
+ },
+ {
+  "vi": "Thiên linh căn",
+  "en": "Heavenly Spiritual Root"
+ },
+ {
+  "vi": "Ma tôn chuyển thế: ngày bạn ra đời, trời đỏ như máu, chó trong làng tru suốt đêm.",
+  "en": "A Demon Sovereign reincarnated: the day you are born, the sky turns blood red and the village dogs howl all night."
+ },
+ {
+  "vi": "Ngày bạn chào đời, một linh thú lạ nằm canh bên nôi, từ đó không rời.",
+  "en": "The day you are born, a strange spirit beast lies guarding your cradle, and never leaves your side."
+ },
+ {
+  "vi": "Một bóng oan hồn từ kiếp trước lao ra chắn trước mặt bạn rồi tan biến. Bạn thoát chết trong gang tấc.",
+  "en": "A vengeful ghost from your past life darts out in front of you and dissolves. You escape death by a hair."
+ },
+ {
+  "vi": "Oan hồn hộ thể",
+  "en": "Ghostly guardian"
+ },
+ {
+  "vi": "Tưởng đã mất mạng, nhưng trời cao như còn thương đứa trẻ này. Bạn thoát chết trong gang tấc.",
+  "en": "It seemed you were done for, but the heavens still pity this child. You escape death by a hair."
+ },
+ {
+  "vi": "Trời thương",
+  "en": "Heaven's mercy"
+ },
+ {
+  "vi": "Ma Đế",
+  "en": "The Demon Emperor"
+ },
+ {
+  "vi": "Hư không",
+  "en": "The Void"
+ },
+ {
+  "vi": "Thiên Đình",
+  "en": "The Heavenly Court"
+ },
+ {
+  "vi": "{0} ban cho bạn {1}. Bạn khoác vào, khí tức đổi khác hẳn.",
+  "ph": [
+   "who",
+   "it.name"
+  ],
+  "en": "{0} bestows {1} upon you. You put it on, and your aura changes completely."
+ },
+ {
+  "vi": "{0} ban thưởng {1}{2}. Mở Túi đồ để mang.",
+  "ph": [
+   "who",
+   "it.name",
+   "realm === ASCEND_REALM + 2 ? ', đủ bộ ba món của cõi này' : ''"
+  ],
+  "en": "{0} rewards you with {1}{2}. Open your Inventory to equip it."
+ },
+ {
+  "vi": ", đủ bộ ba món của cõi này",
+  "en": ", completing this realm's three-piece set"
+ },
+ {
+  "vi": "Hóa Thần rồi, bạn bắt đầu mơ thấy năm tấm gương. Trước cửa phi thăng là Ngũ Hành Vấn Tâm Đài: phải hạ 5 bóng của chính mình, mỗi bóng một hệ. Bóng cuối khắc bản mệnh của bạn. Hãy săn quái hệ {0} để tích Ngũ Hành Ấn (hiện có {1}/5).",
+  "ph": [
+   "k",
+   "anOf(c, keyAn(c))"
+  ],
+  "en": "Now at Spirit Transformation, you begin dreaming of five mirrors. Before the gate of Ascension stands the Five Elements Heart-Trial Platform: you must defeat 5 shadows of yourself, one per element. The last one overcomes your natal element. Hunt {0}-element monsters to gather Five Elements Seals (you have {1}/5)."
+ },
+ {
+  "vi": "Độ Kiếp rồi, Ngũ Hành Đài đã gần (cửa trời chỉ mở cho người từ {0} tuổi). Ấn hệ {1} đang có {2}/5. Đủ 5 ấn thì bóng cuối không còn khắc được bạn.",
+  "ph": [
+   "ASCEND_MIN_AGE",
+   "k",
+   "anOf(c, keyAn(c))"
+  ],
+  "en": "Now at Tribulation, the Five Elements Platform is near (the heavenly gate opens only to those aged {0} or more). You hold {2}/5 {1} Seals. With all 5, the last shadow can no longer overcome you."
+ },
+ {
+  "vi": "Đầu xuân,",
+  "en": "In early spring,"
+ },
+ {
+  "vi": "Giữa hè,",
+  "en": "At midsummer,"
+ },
+ {
+  "vi": "Cuối thu,",
+  "en": "In late autumn,"
+ },
+ {
+  "vi": "Đêm đông,",
+  "en": "On a winter night,"
+ },
+ {
+  "vi": "Một đêm trăng tròn,",
+  "en": "One full-moon night,"
+ },
+ {
+  "vi": "Sau cơn mưa rào,",
+  "en": "After a downpour,"
+ },
+ {
+  "vi": "Sáng sớm sương mù,",
+  "en": "On a misty morning,"
+ },
+ {
+  "vi": "Lúc hoàng hôn,",
+  "en": "At dusk,"
+ },
+ {
+  "vi": "Ngày tuyết đầu mùa,",
+  "en": "On the day of the first snow,"
+ },
+ {
+  "vi": "Tiết Thanh Minh,",
+  "en": "At Qingming,"
+ },
+ {
+  "vi": "Đêm Trung Thu,",
+  "en": "On Mid-Autumn night,"
+ },
+ {
+  "vi": "Mùa hoa đào nở,",
+  "en": "In peach-blossom season,"
+ },
+ {
+  "vi": "dưới thác Bạch Long",
+  "en": "beneath Bạch Long Falls"
+ },
+ {
+  "vi": "trên đỉnh Vân Vụ",
+  "en": "atop Vân Vụ Peak"
+ },
+ {
+  "vi": "bên bờ Thanh Giang",
+  "en": "on the banks of Thanh Giang River"
+ },
+ {
+  "vi": "trong rừng trúc tím",
+  "en": "in a purple bamboo grove"
+ },
+ {
+  "vi": "ở hậu sơn",
+  "en": "on the back mountain"
+ },
+ {
+  "vi": "trong động phủ",
+  "en": "in your cave abode"
+ },
+ {
+  "vi": "dưới gốc tùng ngàn năm",
+  "en": "under a thousand-year pine"
+ },
+ {
+  "vi": "trên thuyền giữa hồ Kính Nguyệt",
+  "en": "in a boat on Kính Nguyệt Lake"
+ },
+ {
+  "vi": "ở thạch đình bỏ hoang",
+  "en": "in an abandoned stone pavilion"
+ },
+ {
+  "vi": "trên vách đá Tuyệt Bích",
+  "en": "on the Tuyệt Bích cliff"
+ },
+ {
+  "vi": "trong ngôi miếu đổ nát",
+  "en": "in a ruined temple"
+ },
+ {
+  "vi": "giữa thảo nguyên Bắc Mạc",
+  "en": "on the Bắc Mạc steppe"
+ },
+ {
+  "vi": "bạn ngồi thiền vận chuyển chu thiên",
+  "en": "you meditate, circulating qi through the Grand Cycle"
+ },
+ {
+  "vi": "bạn luyện đi luyện lại một chiêu kiếm",
+  "en": "you drill the same sword move over and over"
+ },
+ {
+  "vi": "bạn hấp thụ linh khí nhật nguyệt",
+  "en": "you absorb the essence of sun and moon"
+ },
+ {
+  "vi": "bạn nghiền ngẫm bộ công pháp cũ",
+  "en": "you pore over an old technique manual"
+ },
+ {
+  "vi": "bạn thử đả thông một huyệt đạo khó",
+  "en": "you try to open a stubborn meridian point"
+ },
+ {
+  "vi": "bạn luyện công đến quên ăn",
+  "en": "you train so hard you forget to eat"
+ },
+ {
+  "vi": "bạn canh lò đan suốt bảy ngày",
+  "en": "you watch over the pill furnace for seven days"
+ },
+ {
+  "vi": "bạn thử một đan phương mới",
+  "en": "you try a new pill recipe"
+ },
+ {
+  "vi": "bạn đi hái thảo dược",
+  "en": "you go gathering herbs"
+ },
+ {
+  "vi": "bạn ghi chép lại các lần nổ lò",
+  "en": "you write up notes on every furnace explosion"
+ },
+ {
+  "vi": "bạn phơi thảo dược trên mái nhà",
+  "en": "you dry herbs on the roof"
+ },
+ {
+  "vi": "bạn dừng chân ngắm cảnh",
+  "en": "you stop to take in the view"
+ },
+ {
+  "vi": "bạn nghe người kể chuyện giang hồ",
+  "en": "you listen to a storyteller's tales of the jianghu"
+ },
+ {
+  "vi": "bạn vẽ lại phong cảnh",
+  "en": "you paint the scenery"
+ },
+ {
+  "vi": "bạn uống rượu với một khách lạ",
+  "en": "you share wine with a stranger"
+ },
+ {
+  "vi": "bạn lạc đường mất ba ngày",
+  "en": "you get lost for three days"
+ },
+ {
+  "vi": "bạn bày sạp bán phù chú",
+  "en": "you set up a stall selling talismans"
+ },
+ {
+  "vi": "bạn nhận làm thuê cho thương hội",
+  "en": "you take a job with a merchant guild"
+ },
+ {
+  "vi": "bạn đi buôn linh thảo",
+  "en": "you trade in spirit herbs"
+ },
+ {
+  "vi": "bạn chép kinh thuê cho chùa",
+  "en": "you copy sutras for a temple"
+ },
+ {
+  "vi": "bạn đòi nợ giúp một lão chủ tiệm",
+  "en": "you collect a debt for an old shopkeeper"
+ },
+ {
+  "vi": "bạn uống trà luận đạo với bạn cũ",
+  "en": "you discuss the Dao over tea with an old friend"
+ },
+ {
+  "vi": "bạn dự hội thơ của tu sĩ trẻ",
+  "en": "you attend a young cultivators' poetry gathering"
+ },
+ {
+  "vi": "bạn giúp một người lạ sửa xe",
+  "en": "you help a stranger fix a cart"
+ },
+ {
+  "vi": "bạn viết thư cho cố nhân",
+  "en": "you write a letter to an old friend"
+ },
+ {
+  "vi": "bạn kết giao thêm vài đạo hữu",
+  "en": "you make a few more fellow Daoist friends"
+ },
+ {
+  "vi": "bạn lau sạch máu yêu thú trên vũ khí",
+  "en": "you wipe demon beast blood off your weapon"
+ },
+ {
+  "vi": "bạn băng bó vết cào trên tay",
+  "en": "you bandage the claw marks on your arm"
+ },
+ {
+  "vi": "bạn đếm lại chiến lợi phẩm",
+  "en": "you count your spoils"
+ },
+ {
+  "vi": "bạn nghe tiếng sói tru vọng về",
+  "en": "you hear wolves howling in the distance"
+ },
+ {
+  "vi": "chân khí lưu chuyển thêm một vòng.",
+  "en": "and your true qi completes another cycle."
+ },
+ {
+  "vi": "trong đầu chợt sáng ra một điều.",
+  "en": "and something suddenly becomes clear."
+ },
+ {
+  "vi": "không thu được gì, nhưng lòng bình thản.",
+  "en": "gaining nothing, but your heart is at peace."
+ },
+ {
+  "vi": "mồ hôi ướt đẫm, tu vi nhích thêm một chút.",
+  "en": "drenched in sweat, your cultivation inching up."
+ },
+ {
+  "vi": "suýt nữa thì khí huyết nghịch hành.",
+  "en": "and your qi and blood nearly run backwards."
+ },
+ {
+  "vi": "mùi thuốc thơm khắp núi.",
+  "en": "and the scent of medicine fills the mountain."
+ },
+ {
+  "vi": "lò đan nổ, tóc cháy xém một mảng.",
+  "en": "and the furnace explodes, singeing off a patch of your hair."
+ },
+ {
+  "vi": "ra lò mấy viên đan có vân mây.",
+  "en": "and a few pills come out with cloud patterns."
+ },
+ {
+  "vi": "cuối cùng cũng hiểu vì sao lần trước hỏng.",
+  "en": "and you finally understand why the last batch failed."
+ },
+ {
+  "vi": "lòng rộng mở hơn hẳn.",
+  "en": "and your heart feels much wider."
+ },
+ {
+  "vi": "nhớ nhà da diết.",
+  "en": "and you miss home terribly."
+ },
+ {
+  "vi": "học được vài câu tiếng địa phương.",
+  "en": "and you pick up a few phrases of the local dialect."
+ },
+ {
+  "vi": "thấy thiên hạ rộng lớn hơn mình tưởng.",
+  "en": "and the world seems bigger than you thought."
+ },
+ {
+  "vi": "kiếm được kha khá linh thạch.",
+  "en": "and you earn a tidy sum of spirit stones."
+ },
+ {
+  "vi": "bị quỵt mất một nửa tiền công.",
+  "en": "and get cheated out of half your pay."
+ },
+ {
+  "vi": "gặp được một mối làm ăn lâu dài.",
+  "en": "and land a steady business partner."
+ },
+ {
+  "vi": "mệt rã rời nhưng túi rủng rỉnh.",
+  "en": "exhausted, but with a jingling purse."
+ },
+ {
+  "vi": "cười nói đến tận khuya.",
+  "en": "chatting and laughing late into the night."
+ },
+ {
+  "vi": "thấy lòng ấm áp lạ thường.",
+  "en": "and feel strangely warm inside."
+ },
+ {
+  "vi": "nghe được tin đồn thú vị trên giang hồ.",
+  "en": "and hear an interesting rumor from the jianghu."
+ },
+ {
+  "vi": "hẹn năm sau gặp lại.",
+  "en": "promising to meet again next year."
+ },
+ {
+  "vi": "tay vẫn còn run.",
+  "en": "your hands still shaking."
+ },
+ {
+  "vi": "thấy mình mạnh hơn hôm qua.",
+  "en": "feeling stronger than yesterday."
+ },
+ {
+  "vi": "nhớ lại trận đánh suýt mất mạng.",
+  "en": "recalling the fight that nearly killed you."
+ },
+ {
+  "vi": "Con {0} quanh quẩn bên cạnh.",
+  "ph": [
+   "petName(c)"
+  ],
+  "en": "Your {0} hangs around nearby."
+ },
+ {
+  "vi": "{0} ở bên pha trà.",
+  "ph": [
+   "c.partner"
+  ],
+  "en": "{0} brews tea beside you."
+ },
+ {
+  "vi": "Bạn chợt nghĩ đến {0}.",
+  "ph": [
+   "c.enemy"
+  ],
+  "en": "You suddenly think of {0}."
+ },
+ {
+  "vi": "Luyện Khí",
+  "en": "Qi Refining"
+ },
+ {
+  "vi": "Dẫn khí nhập thể! Bạn chính thức bước vào Luyện Khí, trở thành tu sĩ.",
+  "en": "Qi enters your body! You formally step into Qi Refining and become a cultivator."
+ },
+ {
+  "vi": "Lên {0}.",
+  "ph": [
+   "realmLabel(c.realm, c.layer, c.cosmos)"
+  ],
+  "en": "Reached {0}."
+ },
+ {
+  "vi": "Tu vi đã đủ phi thăng, nhưng đạo hạnh còn non: cửa trời chỉ mở cho người từ {0} tuổi. Còn {1} năm nữa. Tranh thủ săn quái tích Ngũ Hành Ấn cho Ngũ Hành Đài.",
+  "ph": [
+   "ASCEND_MIN_AGE",
+   "left"
+  ],
+  "en": "Your cultivation is enough to ascend, but your Dao is still green: the heavenly gate opens only to those aged {0} or more. {1} years to go. Hunt monsters meanwhile to gather Five Elements Seals for the Five Elements Platform."
+ },
+ {
+  "vi": "Thương thế quá nặng, bạn trút hơi thở cuối cùng.",
+  "en": "Your wounds are too severe. You breathe your last."
+ },
+ {
+  "vi": "Thương thế chồng chất không kịp hồi phục (lần cuối, năm {0} tuổi: {1}). Bạn trút hơi thở cuối cùng.",
+  "ph": [
+   "last.age",
+   "t"
+  ],
+  "en": "Wound piled on wound with no time to heal (the last, at age {0}: {1}). You breathe your last."
+ },
+ {
+  "vi": "Tâm ma phản phệ. Bạn tẩu hỏa nhập ma, kinh mạch nổ tung.",
+  "en": "Your heart demon strikes back. You fall into qi deviation and your meridians burst."
+ },
+ {
+  "vi": "Tâm ma",
+  "en": "Heart demon"
+ },
+ {
+  "vi": "Tâm ma bùng phát, bạn hộc máu ngã quỵ, tu vi tụt mất một đoạn. May mà gượng giữ được linh đài.",
+  "en": "Your heart demon erupts; you cough up blood and collapse, losing a chunk of cultivation. Luckily you hold your spirit platform together."
+ },
+ {
+  "vi": "Tâm ma phản phệ cộng thêm trọng thương, bạn không qua khỏi.",
+  "en": "Heart demon backlash on top of grave wounds - you do not pull through."
+ },
+ {
+  "vi": "Ma thể mục ruỗng, ma hồn tan vào huyết hải. Ma giới mất một vị {0} ở tuổi {1}.",
+  "ph": [
+   "realmName(c.realm, 'ma')",
+   "Math.floor(c.age)"
+  ],
+  "en": "Your demon body rots away and your demon soul dissolves into the sea of blood. The Demon Realm loses a {0} at age {1}."
+ },
+ {
+  "vi": "Thân thể dần trong suốt rồi tan vào hư không, như chưa từng tồn tại. Thái Hư giới tiễn một vị {0} ở tuổi {1}.",
+  "ph": [
+   "realmName(c.realm, 'hu')",
+   "Math.floor(c.age)"
+  ],
+  "en": "Your body slowly turns transparent and fades into the void, as if you never existed. The Great Void Realm bids farewell to a {0} at age {1}."
+ },
+ {
+  "vi": "Thiên nhân ngũ suy: áo tiên bám bụi, hoa trên đầu héo úa, thân không còn tỏa sáng. Bạn tọa hóa giữa tiên giới ở tuổi {0}.",
+  "ph": [
+   "Math.floor(c.age)"
+  ],
+  "en": "The Five Decays of the Celestial: your immortal robe gathers dust, the flowers on your head wither, your body no longer shines. You pass away in the Immortal Realm at age {0}."
+ },
+ {
+  "vi": "Thọ nguyên cạn kiệt. Bạn tọa hóa ở tuổi {0}.",
+  "ph": [
+   "Math.floor(c.age)"
+  ],
+  "en": "Your lifespan runs out. You pass away at age {0}."
+ },
+ {
+  "vi": "Tâm ma vừa ló dạng, thiên lôi đã giáng xuống. Tiên giới không dung tiên thân nhiễm ma, ba hồn bảy vía tan theo tiếng sấm.",
+  "en": "Your heart demon barely shows itself before heavenly lightning strikes. The Immortal Realm tolerates no demon-tainted immortal, and your souls scatter with the thunder."
+ },
+ {
+  "vi": "Bóng tối trong lòng bạn đứng dậy, bước ra khỏi thân xác rồi quay lại chiếm lấy nó. Kẻ đang sống tiếp kia không còn là bạn.",
+  "en": "The darkness in your heart stands up, steps out of your body, then turns back and takes it. Whoever goes on living in it is no longer you."
+ },
+ {
+  "vi": "Tâm ma làm linh đài chao đảo, bạn hụt một bước giữa hư không và rơi vào khe nứt thời gian, trôi mãi không đáy.",
+  "en": "Your heart demon shakes your spirit platform; you miss a step in the void and fall into a crack in time, drifting forever with no bottom."
+ },
+ {
+  "vi": "Lôi kiếp nơi tiên giới không nương tay. Tiên thể vỡ tan dưới đạo lôi cuối cùng.",
+  "en": "The tribulations of the Immortal Realm show no mercy. Your immortal body shatters under the final bolt."
+ },
+ {
+  "vi": "Huyết lôi đánh nát ma thể, tâm ma thừa cơ chiếm lấy chỗ trống.",
+  "en": "Blood lightning smashes your demon body, and your heart demon seizes the empty space."
+ },
+ {
+  "vi": "Kiếp nạn xé toạc hư không quanh bạn. Bạn bị cuốn vào khe nứt thời gian.",
+  "en": "The tribulation tears open the void around you. You are swept into a crack in time."
+ },
+ {
+  "vi": "Luyện thành một viên {0}.",
+  "ph": [
+   "PILLS.find((x) => x.id === p)?.name"
+  ],
+  "en": "Refined one {0}."
+ },
+ {
+  "vi": "Làm ăn mãi một mối, khách quen đã bão hòa. Thu nhập năm nay ít hẳn, nên đổi việc khác một thời gian.",
+  "en": "Same old business, and your regulars have had enough. Income is way down this year - try something else for a while."
+ },
+ {
+  "vi": "{0} truy nã kẻ phản môn",
+  "ph": [
+   "name"
+  ],
+  "en": "{0} hunts the traitor"
+ },
+ {
+  "vi": "Bị trục xuất",
+  "en": "Expelled"
+ },
+ {
+  "vi": "Thân phận bị lộ. {0} tuyên bố trục xuất bạn trước toàn tông, lột áo bào, thu lệnh bài.",
+  "ph": [
+   "name"
+  ],
+  "en": "Your identity is exposed. {0} expels you before the entire sect, stripping your robe and confiscating your token."
+ },
+ {
+  "vi": "Đạt mục tiêu",
+  "en": "Goal reached"
+ },
+ {
+  "vi": "Túng quẫn, bạn phải nhịn đói mấy ngày liền.",
+  "en": "Broke, you go hungry for days on end."
+ },
+ {
+  "vi": "Tham một mối làm ăn \"lời gấp mười\", bạn bị lừa mất {0} linh thạch. Tham thì thâm.",
+  "ph": [
+   "lost"
+  ],
+  "en": "Greedy for a \"tenfold profit\" deal, you get swindled out of {0} spirit stones. Greed never pays."
+ },
+ {
+  "vi": "Mệnh thiên sát cô tinh. {0} lâm bệnh nặng rồi qua đời.",
+  "ph": [
+   "c.partner"
+  ],
+  "en": "The Lone Star of Heavenly Doom strikes. {0} falls gravely ill and dies."
+ },
+ {
+  "vi": "Một trận sốt cao cướp đi bạn khi mới {0} tuổi.",
+  "ph": [
+   "age"
+  ],
+  "en": "A high fever takes you at just {0} years old."
+ },
+ {
+  "vi": "Bạn trượt chân ngã xuống giếng sau nhà.",
+  "en": "You slip and fall into the well behind the house."
+ },
+ {
+  "vi": "Dịch tả tràn qua làng. Bạn mất năm {0} tuổi.",
+  "ph": [
+   "age"
+  ],
+  "en": "Cholera sweeps through the village. You die at age {0}."
+ },
+ {
+  "vi": "Bạn bị rắn độc cắn khi đi chăn trâu, không kịp cứu.",
+  "en": "A venomous snake bites you while you're herding buffalo, and there's no saving you."
+ },
+ {
+  "vi": "Bạn đuối nước ở khúc sông đầu làng.",
+  "en": "You drown in the river bend at the edge of the village."
+ },
+ {
+  "vi": "Bạn ngã từ trên cây cao xuống, không bao giờ tỉnh lại.",
+  "en": "You fall from a tall tree and never wake up."
+ },
+ {
+  "vi": "Năm mất mùa, bạn chết đói khi chưa kịp lớn.",
+  "en": "In a year of famine, you starve before you can grow up."
+ },
+ {
+  "vi": "Mùa đông rét đậm, bạn không qua khỏi vì không có áo ấm.",
+  "en": "A bitter winter comes, and without warm clothes you don't make it."
+ },
+ {
+  "vi": "Thích khách của chi trưởng đột nhập, bạn chết trong giấc ngủ.",
+  "en": "An assassin sent by the elder branch slips in, and you die in your sleep."
+ },
+ {
+  "vi": "Có kẻ bỏ độc vào bát chè sen của bạn.",
+  "en": "Someone poisons your bowl of lotus-seed soup."
+ },
+ {
+  "vi": "Thợ săn yêu bắt được bạn, lột da bán ở phường thị.",
+  "en": "A demon hunter catches you, skins you, and sells the hide at the market."
+ },
+ {
+  "vi": "uống Hồi Xuân Đan trong Túi đồ",
+  "en": "drink a Spring Return Pill from your Inventory"
+ },
+ {
+  "vi": "mua Hồi Xuân Đan ở Phường thị",
+  "en": "buy a Spring Return Pill at the Market"
+ },
+ {
+  "vi": "⚠ Sức khỏe chỉ còn {0}. Thêm một vết thương nữa có thể mất mạng: nên chuyển sang Du ngoạn để nghỉ dưỡng, {1}, tránh trừ yêu và bế quan.",
+  "ph": [
+   "Math.round(c.stats.sucKhoe)",
+   "pill"
+  ],
+  "en": "⚠ Health is down to {0}. One more wound could kill you: switch to Wander to rest, {1}, and avoid hunting demons and seclusion."
+ },
+ {
+  "vi": "Sức khỏe nguy kịch",
+  "en": "Health critical"
+ },
+ {
+  "vi": "{0} Nhặt được {1}! ({2}) Mở Túi đồ để dùng.",
+  "ph": [
+   "found.text",
+   "found.name",
+   "fxText(ITEMS.find((i) => i.id === found.id)?.fx)"
+  ],
+  "en": "{0} Found {1}! ({2}) Open your Inventory to use it."
+ },
+ {
+  "vi": "Mẹ dúi cho bạn con dao bếp: \"Ra đường phải biết tự vệ.\"",
+  "en": "Mother presses a kitchen knife into your hand: \"Out there, you have to be able to defend yourself.\""
+ },
+ {
+  "vi": "Ông lão chăn trâu tặng bạn chiếc roi cũ.",
+  "en": "An old buffalo herder gives you his old whip."
+ },
+ {
+  "vi": "Trú mưa trong miếu hoang, bạn thấy chiếc áo tơi treo trên vách.",
+  "en": "Sheltering from the rain in an abandoned temple, you spot a straw raincoat hanging on the wall."
+ },
+ {
+  "vi": "Bên bờ Vị Thủy, một ông lão câu cá bằng lưỡi thẳng để lại cần câu rồi biến mất.",
+  "en": "On the banks of the Vị Thủy, an old man fishing with a straight hook leaves his rod behind and vanishes."
+ },
+ {
+  "vi": "Trên một ngôi mộ cổ không tên cắm một thanh kiếm gãy, vẫn còn vang tiếng kiếm ngân.",
+  "en": "A broken sword is stuck in a nameless ancient grave, still faintly ringing."
+ },
+ {
+  "vi": "Đám cưới tan, cô dâu bỏ trốn để lại bộ hỉ phục.",
+  "en": "The wedding falls apart; the bride runs off, leaving her wedding dress behind."
+ },
+ {
+  "vi": "Một lão ăn mày cởi áo khoác lên vai bạn: \"Cái Bang không bỏ huynh đệ.\"",
+  "en": "An old beggar drapes his coat over your shoulders: \"The Beggars' Sect never abandons a brother.\""
+ },
+ {
+  "vi": "Đào móng nhà, bạn chạm phải một chiếc rương sơn son: bên trong là long bào của vương triều đã mất.",
+  "en": "Digging the house foundation, you hit a red-lacquered chest: inside is the dragon robe of a fallen dynasty."
+ },
+ {
+  "vi": "Bà hàng xóm ",
+  "en": "The neighbor woman "
+ },
+ {
+  "vi": "Chọn con đường tu tập",
+  "en": "Choose a cultivation path"
+ },
+ {
+  "vi": "Trúc Cơ đã thành, đạo cơ vững chắc. Đã đến lúc chọn con đường sẽ đi suốt phần đời còn lại.",
+  "en": "Foundation Establishment is complete and your Dao foundation is solid. It is time to choose the path you will walk for the rest of your life."
+ },
+ {
+  "vi": "Luyện Khí đã qua nửa chặng, chân khí bắt đầu có tính khí riêng. Đã đến lúc chọn con đường sẽ đi suốt phần đời còn lại.",
+  "en": "You are halfway through Qi Refining and your true qi has begun to show a temper of its own. It is time to choose the path you will walk for the rest of your life."
+ },
+ {
+  "vi": "Chứng Đạo",
+  "en": "Attain the Dao"
+ },
+ {
+  "vi": "Phi Thăng",
+  "en": "Ascension"
+ },
+ {
+  "vi": "Thiên kiếp - đột phá {0}",
+  "ph": [
+   "name"
+  ],
+  "en": "Heavenly tribulation - break through to {0}"
+ },
+ {
+  "vi": "Đột phá {0}",
+  "ph": [
+   "name"
+  ],
+  "en": "Break through to {0}"
+ },
+ {
+  "vi": "Mây đen kéo tới che kín trời. Lôi kiếp đang chờ. Tỉ lệ ước tính khoảng {0}%.",
+  "ph": [
+   "Math.round(breakChance(c) * 100)"
+  ],
+  "en": "Dark clouds gather and blot out the sky. The lightning tribulation awaits. Estimated chance about {0}%."
+ },
+ {
+  "vi": "Tu vi đã đến đỉnh, bình cảnh rung động. Tỉ lệ ước tính khoảng {0}%.",
+  "ph": [
+   "Math.round(breakChance(c) * 100)"
+  ],
+  "en": "Your cultivation has peaked and the bottleneck trembles. Estimated chance about {0}%."
+ },
+ {
+  "vi": "Năm tấm gương chắn trước cửa trời. Chưa hạ đủ năm bóng của chính mình trên Ngũ Hành Đài thì chưa thể độ kiếp.",
+  "en": "Five mirrors bar the heavenly gate. Until you defeat all five of your shadows on the Five Elements Platform, you cannot face the tribulation."
+ },
+ {
+  "vi": "Vượt Diệt Thế Ma Kiếp, chứng đạo Ma Thần bất diệt",
+  "en": "Survive the World-Ending Demon Tribulation and attain the Dao as an undying Demon God"
+ },
+ {
+  "vi": "Vượt Hỗn Nguyên Đại Kiếp, chứng đạo vĩnh hằng",
+  "en": "Survive the Primordial Great Tribulation and attain the eternal Dao"
+ },
+ {
+  "vi": "CHỨNG ĐẠO",
+  "en": "DAO ATTAINED"
+ },
+ {
+  "vi": "Ma kiếp cuối cùng nổ tung cả ma giới. Khi khói máu tan đi, bạn đã không còn là ma, cũng không còn là người. Bạn chứng đạo Ma Thần, đứng ngoài mọi luân hồi.",
+  "en": "The final demon tribulation blasts the entire Demon Realm. When the bloody smoke clears, you are no longer demon, nor human. You attain the Dao as a Demon God, standing outside all reincarnation."
+ },
+ {
+  "vi": "Hỗn Nguyên Đại Kiếp giáng xuống chín chín tám mươi mốt ngày. Ngày cuối cùng, bạn mỉm cười bước vào ánh sáng. Bạn chứng đạo, vĩnh viễn đứng ngoài luân hồi.",
+  "en": "The Primordial Great Tribulation rains down for eighty-one days. On the last day, you smile and step into the light. You attain the Dao, forever outside reincarnation."
+ },
+ {
+  "vi": "MA TÔN",
+  "en": "DEMON SOVEREIGN"
+ },
+ {
+  "vi": "Chín đạo huyết lôi giáng xuống, bạn nuốt trọn từng đạo một. Trời đất nhuộm đỏ, vạn ma quỳ lạy. Bạn bước qua cửa Ma giới, thành {0}. Thọ nguyên lên tới {1} năm. Ở đây chỉ có một luật: kẻ mạnh nuốt kẻ yếu.",
+  "ph": [
+   "realmName(ASCEND_REALM, 'ma')",
+   "c.lifespan"
+  ],
+  "en": "Nine bolts of blood lightning strike, and you swallow every one. Heaven and earth turn red, ten thousand demons kneel. You pass through the gate of the Demon Realm and become a {0}. Your lifespan rises to {1} years. Here there is only one law: the strong devour the weak."
+ },
+ {
+  "vi": "THÁI HƯ",
+  "en": "GREAT VOID"
+ },
+ {
+  "vi": "Lôi kiếp tan, nhưng cửa trời không mở, cửa ma cũng không. Không thuộc về chính, cũng chẳng thuộc về tà, bạn bước vào Thái Hư giới, khoảng trống giữa hai cõi, thành {0}. Thọ nguyên lên tới {1} năm. Ở đây không ai cai quản ai.",
+  "ph": [
+   "realmName(ASCEND_REALM, 'hu')",
+   "c.lifespan"
+  ],
+  "en": "The tribulation fades, but neither the heavenly gate nor the demon gate opens. Belonging neither to the righteous nor the evil, you step into the Great Void Realm, the gap between the two worlds, and become a {0}. Your lifespan rises to {1} years. Here no one rules anyone."
+ },
+ {
+  "vi": "PHI THĂNG",
+  "en": "ASCENSION"
+ },
+ {
+  "vi": "Chín đạo lôi kiếp tan biến, tiên quang giáng xuống. Bạn phi thăng tiên giới, thành {0}! Thọ nguyên lên tới {1} năm. Tiên giới rộng lớn, con đường còn dài.",
+  "ph": [
+   "realmName(ASCEND_REALM, 'tien')",
+   "c.lifespan"
+  ],
+  "en": "The nine tribulation bolts vanish and immortal light descends. You ascend to the Immortal Realm as a {0}! Your lifespan rises to {1} years. The Immortal Realm is vast, and the road is still long."
+ },
+ {
+  "vi": "Đột phá thành công! Bạn bước vào {0}. Thọ nguyên tăng lên {1} năm.",
+  "ph": [
+   "name",
+   "c.lifespan"
+  ],
+  "en": "Breakthrough successful! You enter {0}. Lifespan rises to {1} years."
+ },
+ {
+  "vi": " Hỏng {0} lần liền, bạn rơi vào bình cảnh, phải bế quan {1} năm mới thử lại được.",
+  "ph": [
+   "bf",
+   "BINH_CANH_YEARS"
+  ],
+  "en": " After {0} failures in a row, you hit a bottleneck and must spend {1} years in seclusion before trying again."
+ },
+ {
+  "vi": "Rơi vào bình cảnh: bế quan {0} năm trước khi đột phá lại.",
+  "ph": [
+   "BINH_CANH_YEARS"
+  ],
+  "en": "Bottleneck: {0} years of seclusion before your next breakthrough attempt."
+ },
+ {
+  "vi": "Bạn hóa thành tro bụi dưới thiên kiếp.",
+  "en": "You are reduced to ash by the heavenly tribulation."
+ },
+ {
+  "vi": "Xung quan thất bại, kinh mạch đứt đoạn.",
+  "en": "The breakthrough fails and your meridians snap."
+ },
+ {
+  "vi": "Đột phá thất bại.",
+  "en": "Breakthrough failed."
+ },
+ {
+  "vi": "Đột phá thất bại, tu vi tụt mất một đoạn.",
+  "en": "Breakthrough failed, and you lose a chunk of cultivation."
+ },
+ {
+  "vi": "Huyết tế để phá quan",
+  "en": "Blood sacrifice to break through"
+ },
+ {
+  "vi": "+35% tỉ lệ, rất tà",
+  "en": "+35% chance, very evil"
+ },
+ {
+  "vi": "Huyết tế",
+  "en": "Blood sacrifice"
+ },
+ {
+  "vi": "Bạn bày huyết trận, dùng máu tươi mở đường. ",
+  "en": "You lay out a blood formation and pave the way with fresh blood. "
+ },
+ {
+  "vi": "Nhờ {0} hộ pháp",
+  "ph": [
+   "c.partner"
+  ],
+  "en": "Ask {0} to stand guard"
+ },
+ {
+  "vi": "Xin sư môn hộ pháp",
+  "en": "Ask the sect to stand guard"
+ },
+ {
+  "vi": "-300 linh thạch, +20%",
+  "en": "-300 spirit stones, +20%"
+ },
+ {
+  "vi": "Chọn ngày lành, cầu trời",
+  "en": "Pick an auspicious day, pray"
+ },
+ {
+  "vi": "Uống Trúc Cơ Đan rồi xung quan",
+  "en": "Take a Foundation Pill, then break through"
+ },
+ {
+  "vi": "Mua đan dược rồi xung quan",
+  "en": "Buy a pill, then break through"
+ },
+ {
+  "vi": "+25%, còn {0}",
+  "ph": [
+   "c.pills.truc_co"
+  ],
+  "en": "+25%, {0} left"
+ },
+ {
+  "vi": "-{0} linh thạch, +25%",
+  "ph": [
+   "pillPrice(c, 'truc_co')"
+  ],
+  "en": "-{0} spirit stones, +25%"
+ },
+ {
+  "vi": "Cưỡng ép xung quan ngay",
+  "en": "Force it now"
+ },
+ {
+  "vi": "không thêm gì",
+  "en": "no bonus"
+ },
+ {
+  "vi": "Củng cố thêm 5 năm",
+  "en": "Consolidate 5 more years"
+ },
+ {
+  "vi": "tâm cảnh +, ngộ tính +",
+  "en": "Mind +, Insight +"
+ },
+ {
+  "vi": "Bạn quyết định chưa vội. Đạo cơ cần thêm thời gian.",
+  "en": "You decide not to rush. Your Dao foundation needs more time."
+ },
+ {
+  "vi": "Thiên nhân ngũ suy, dấu hiệu thứ nhất: áo tiên bắt đầu bám bụi, phủi mãi không sạch.",
+  "en": "The Five Decays of the Celestial, first sign: your immortal robe begins to gather dust that won't brush off."
+ },
+ {
+  "vi": "Dấu hiệu thứ hai: hoa trên mũ tiên héo dần, cánh rụng từng cánh.",
+  "en": "Second sign: the flowers on your immortal crown wilt, shedding petal by petal."
+ },
+ {
+  "vi": "Dấu hiệu thứ ba: dưới nách rịn mồ hôi, điều chưa từng có từ ngày thành tiên.",
+  "en": "Third sign: sweat beads under your arms, something unheard of since you became immortal."
+ },
+ {
+  "vi": "Dấu hiệu thứ tư: thân thể tỏa mùi lạ, tiên hạc không dám bay lại gần.",
+  "en": "Fourth sign: your body gives off a strange odor, and the immortal cranes no longer dare fly near."
+ },
+ {
+  "vi": "Dấu hiệu thứ năm: ngồi đâu cũng không yên. Ngũ suy đã đủ, ngày tọa hóa không còn xa.",
+  "en": "Fifth sign: you can't sit still anywhere. All five decays have come; your passing is not far off."
+ },
+ {
+  "vi": "Ma thể bắt đầu suy: da nứt như đất khô.",
+  "en": "Your demon body begins to decay: your skin cracks like dry earth."
+ },
+ {
+  "vi": "Ma khí rỉ ra từ những kẽ nứt, gom lại không được.",
+  "en": "Demonic qi seeps out through the cracks, and you can't gather it back."
+ },
+ {
+  "vi": "Đôi mắt đỏ của bạn mờ dần.",
+  "en": "Your red eyes slowly dim."
+ },
+ {
+  "vi": "Huyết hải gọi tên bạn trong giấc ngủ.",
+  "en": "The sea of blood calls your name in your sleep."
+ },
+ {
+  "vi": "Ma thể mục ruỗng từ bên trong. Ngày tan vào huyết hải không còn xa.",
+  "en": "Your demon body rots from within. The day you dissolve into the sea of blood is near."
+ },
+ {
+  "vi": "Hư không bắt đầu đòi lại bạn: có lúc bàn tay trong suốt, nhìn xuyên qua được.",
+  "en": "The void begins to reclaim you: at times your hand turns transparent, and you can see right through it."
+ },
+ {
+  "vi": "Bóng của bạn không còn đi theo bạn nữa.",
+  "en": "Your shadow no longer follows you."
+ },
+ {
+  "vi": "Có lúc người khác nhìn thẳng qua bạn như không thấy.",
+  "en": "At times people look right through you as if you weren't there."
+ },
+ {
+  "vi": "Tiếng nói của bạn đến tai người khác chậm nửa nhịp.",
+  "en": "Your voice reaches others half a beat late."
+ },
+ {
+  "vi": "Bạn mờ dần như sương. Sắp đến ngày hóa thành một vì sao.",
+  "en": "You fade like mist. Soon you will become a star."
+ },
+ {
+  "vi": "Thiên Đình xét tiên tâm đã nhiễm bẩn. Bạn bị giải lên Trảm Tiên Đài, một nhát đao, tiên tịch xóa tên.",
+  "en": "The Heavenly Court judges your immortal heart defiled. You are dragged to the Immortal-Slaying Platform; one stroke of the blade, and your name is struck from the immortal registry."
+ },
+ {
+  "vi": "Thiên quy cảnh cáo: tiên nhân mà đạo tâm tà ({0}). Tụt xuống -20 là có ngày lên Trảm Tiên Đài.",
+  "ph": [
+   "c.daoTam"
+  ],
+  "en": "Heavenly law warns: an immortal with an evil Dao Heart ({0}). Drop to -20 and one day you'll stand on the Immortal-Slaying Platform."
+ },
+ {
+  "vi": "Đại hạn trước cửa trời",
+  "en": "The end, before the heavenly gate"
+ },
+ {
+  "vi": "Đã đến Độ Kiếp mà thọ nguyên chỉ còn chưa tới {0} năm. Cửa trời còn xa, ngọn đèn trong người đã leo lét. Người tu đến bậc này có quyền tự chọn cách ra đi.",
+  "ph": [
+   "Math.max(1, Math.ceil(c.lifespan - c.age))"
+  ],
+  "en": "You've reached Tribulation, yet less than {0} years of lifespan remain. The heavenly gate is still far, and the lamp within you flickers. One who has cultivated this far has the right to choose how to go."
+ },
+ {
+  "vi": "Tọa hóa chuyển thế",
+  "en": "Pass away and reincarnate"
+ },
+ {
+  "vi": "chết ngay, kiếp sau mang theo tia linh thức",
+  "en": "die now, carry a spark of spirit into your next life"
+ },
+ {
+  "vi": "Tự tán công, tọa hóa chuyển thế. Một tia linh thức theo bạn sang kiếp sau.",
+  "en": "You disperse your own cultivation and pass away to be reborn. A spark of spirit follows you into your next life."
+ },
+ {
+  "vi": "Bạn ngồi xếp bằng, tự tán đi công lực cả đời. Chỉ giữ lại một tia linh thức, gói vào đó những gì đã ngộ ra. Kiếp sau, nó sẽ tìm về.",
+  "en": "You sit cross-legged and disperse a lifetime of cultivation, keeping only a spark of spirit wrapped around everything you have understood. In your next life, it will find its way back."
+ },
+ {
+  "vi": "Truyền công cho người hữu duyên",
+  "en": "Pass your power to a destined one"
+ },
+ {
+  "vi": "chết ngay, một đạo hữu trên giang hồ nhận 5 phúc duyên, kiếp sau được phúc báo",
+  "en": "die now, a fellow Daoist in the jianghu gets 5 Fortune, and you are blessed next life"
+ },
+ {
+  "vi": "Truyền hết công lực cho người hữu duyên rồi tọa hóa.",
+  "en": "You pass all your power to a destined one, then pass away."
+ },
+ {
+  "vi": "Bạn gom toàn bộ công lực thành một luồng sáng, gửi theo gió đến một người hữu duyên trên giang hồ. Người nhẹ tênh, bạn mỉm cười nhắm mắt.",
+  "en": "You gather all your power into a stream of light and send it on the wind to a destined one in the jianghu. Feeling light as a feather, you smile and close your eyes."
+ },
+ {
+  "vi": "Gắng sống nốt những năm còn lại",
+  "en": "Live out the remaining years"
+ },
+ {
+  "vi": "không chọn gì, đợi thọ tận hoặc phi thăng kịp",
+  "en": "choose nothing, wait for the end or a timely ascension"
+ },
+ {
+  "vi": "Bạn chưa muốn buông. Mỗi ngày còn lại, bạn vẫn ngồi trước động phủ nhìn lên trời.",
+  "en": "You're not ready to let go. Every remaining day, you sit before your cave abode gazing at the sky."
+ },
+ {
+  "vi": "Vừa xuất quan chưa bao lâu, bạn lại bế quan {0} năm. Cơ thể chưa kịp hồi phục.",
+  "ph": [
+   "years"
+  ],
+  "en": "Barely out of seclusion, you go back in for {0} years. Your body hasn't had time to recover."
+ },
+ {
+  "vi": "Bạn đóng cửa động phủ, bế quan {0} năm.",
+  "ph": [
+   "years"
+  ],
+  "en": "You seal your cave abode and enter seclusion for {0} years."
+ },
+ {
+  "vi": "Bế quan quá lâu, một mình đối diện tâm ma. Người ta phá cửa động phủ thì bạn đã hóa thành bộ xương khô.",
+  "en": "Too long in seclusion, alone with your heart demon. When they break down the door of your cave abode, you are a dry skeleton."
+ },
+ {
+  "vi": "Xuất quan sau {0} năm.",
+  "ph": [
+   "done"
+  ],
+  "en": "You emerge from seclusion after {0} years."
+ },
+ {
+  "vi": "Kẻ trộm đào được vào kho, lấy mất {0} linh thạch.",
+  "ph": [
+   "lost"
+  ],
+  "en": "A thief tunnels into your storeroom and makes off with {0} spirit stones."
+ },
+ {
+  "vi": "{0} đợi mãi không thấy bạn, đã bỏ đi theo người khác.",
+  "ph": [
+   "c.partner"
+  ],
+  "en": "{0} waited and waited for you, then left with someone else."
+ },
+ {
+  "vi": "Con {0} không ai cho ăn, bỏ đi không trở lại.",
+  "ph": [
+   "petName(c)"
+  ],
+  "en": "With no one to feed it, your {0} wanders off and never returns."
+ },
+ {
+  "vi": "{0} gặp đại nạn khi bạn bế quan. Sư môn tan tác, không còn chốn về.",
+  "ph": [
+   "c.sect"
+  ],
+  "en": "{0} met with catastrophe during your seclusion. The sect is scattered, and you have nowhere to return to."
+ },
+ {
+  "vi": "Ruộng đất, cửa tiệm không người trông coi, bị kẻ khác chiếm mất một nửa.",
+  "en": "With no one minding your fields and shop, others seized half of them."
+ },
+ {
+  "vi": "Người thân trong nhà đã lần lượt qua đời. Không ai đợi bạn xuất quan.",
+  "en": "Your family members have passed away one by one. No one is waiting for you to come out."
+ },
+ {
+  "vi": "kẻ đã nhòm ngó động phủ của bạn bao năm",
+  "en": "the one who has eyed your cave abode for years"
+ },
+ {
+  "vi": "Có kẻ đã rình rập động phủ suốt những năm bạn bế quan.",
+  "en": "Someone was lurking around your cave abode all the years you were in seclusion."
+ },
+ {
+  "vi": "Ngồi bất động quá lâu, cơ thể suy kiệt (-{0} sức khỏe).",
+  "ph": [
+   "atrophy"
+  ],
+  "en": "Sitting motionless for too long has drained your body (-{0} Health)."
+ },
+ {
+  "vi": "Thế sự đổi thay",
+  "en": "The world has changed"
+ },
+ {
+  "vi": "Bước ra khỏi động phủ, cảnh vật vẫn y nguyên. Thật may mắn.",
+  "en": "You step out of your cave abode and everything is just as it was. How lucky."
+ },
+ {
+  "vi": "Bạn khổ tu liền mấy năm không nghỉ. Kinh mạch bắt đầu căng như dây đàn.",
+  "en": "You've cultivated nonstop for years. Your meridians are starting to stretch taut as zither strings."
+ },
+ {
+  "vi": "Kinh mạch tổn thương",
+  "en": "Meridian damage"
+ },
+ {
+  "vi": "Khổ tu quá độ, kinh mạch rạn nứt. Phải nằm liệt mấy tháng, tu vi tụt một đoạn.",
+  "en": "Overcultivation cracks your meridians. You're bedridden for months and your cultivation slips."
+ },
+ {
+  "vi": "Đêm nào cũng nghe tiếng thì thầm trong đầu. Tu luyện không ngơi nghỉ khiến tâm ma lớn dần.",
+  "en": "Every night you hear whispers in your head. Cultivating without rest is feeding your heart demon."
+ },
+ {
+  "vi": "Luyện công không ngơi nghỉ, chân khí nghịch chuyển. Bạn tẩu hỏa nhập ma giữa đêm.",
+  "en": "Training without rest, your true qi reverses. You fall into qi deviation in the middle of the night."
+ },
+ {
+  "vi": "Chân khí đột nhiên chạy loạn...{0}",
+  "ph": [
+   "f"
+  ],
+  "en": "Your true qi suddenly runs wild...{0}"
+ },
+ {
+  "vi": "Chân khí đột nhiên chạy loạn, bạn suýt tẩu hỏa nhập ma.",
+  "en": "Your true qi suddenly runs wild, and you nearly fall into qi deviation."
+ },
+ {
+  "vi": "Ngày nào cũng hít khói lò đan, bạn bắt đầu ho khan.",
+  "en": "Breathing furnace smoke every day, you start to develop a dry cough."
+ },
+ {
+  "vi": "Trúng đan độc",
+  "en": "Pill poisoning"
+ },
+ {
+  "vi": "Đan độc tích tụ trong phổi, bạn ho ra máu đen.",
+  "en": "Pill toxins build up in your lungs; you cough up black blood."
+ },
+ {
+  "vi": "Nổ lò",
+  "en": "Furnace explosion"
+ },
+ {
+  "vi": "Mệt mỏi lơ đãng, lò đan nổ tung, thiêu rụi {0} linh thạch dược liệu.",
+  "ph": [
+   "lost"
+  ],
+  "en": "Tired and distracted, your pill furnace explodes, burning up {0} spirit stones' worth of herbs."
+ },
+ {
+  "vi": "Lò đan phát nổ trong lúc bạn ngủ gục bên cạnh. Động phủ sập xuống.",
+  "en": "The furnace explodes while you doze beside it. Your cave abode collapses."
+ },
+ {
+  "vi": "Đêm ấy lửa lò bùng lên dữ dội...{0}",
+  "ph": [
+   "f"
+  ],
+  "en": "That night the furnace fire flares up violently...{0}"
+ },
+ {
+  "vi": "Lò đan phát nổ, bạn kịp lăn ra ngoài trong gang tấc.",
+  "en": "The furnace explodes, and you roll out just in time."
+ },
+ {
+  "vi": "Bạn đã phiêu bạt nhiều năm, chân đã mỏi, túi đã nhẹ.",
+  "en": "You've wandered for many years; your feet are weary and your purse is light."
+ },
+ {
+  "vi": "Bệnh xứ lạ",
+  "en": "Foreign illness"
+ },
+ {
+  "vi": "Bạn mắc bệnh lạ ở xứ người, sốt li bì không ai chăm.",
+  "en": "You catch a strange illness in a foreign land, burning with fever and no one to tend you."
+ },
+ {
+  "vi": "Ngủ quên ở quán trọ, bị lục sạch {0} linh thạch.",
+  "ph": [
+   "lost"
+  ],
+  "en": "You fall asleep at an inn and get cleaned out of {0} spirit stones."
+ },
+ {
+  "vi": "Bạn lạc vào chướng khí rừng thiêng, ngã xuống không bao giờ tỉnh dậy.",
+  "en": "You stray into the miasma of a sacred forest, collapse, and never wake."
+ },
+ {
+  "vi": "Mải đi, bạn lạc vào vùng chướng khí...{0}",
+  "ph": [
+   "f"
+  ],
+  "en": "Lost in your travels, you wander into a miasma zone...{0}"
+ },
+ {
+  "vi": "Bạn lạc vào chướng khí, bò được ra ngoài khi chỉ còn thoi thóp.",
+  "en": "You wander into a miasma and crawl out barely breathing."
+ },
+ {
+  "vi": "Bạn làm lụng quần quật quanh năm, chẳng có ngày nghỉ.",
+  "en": "You toil all year round without a single day off."
+ },
+ {
+  "vi": "Kiệt sức",
+  "en": "Exhaustion"
+ },
+ {
+  "vi": "Lao lực quá độ, bạn ngã quỵ giữa phường thị.",
+  "en": "Overworked, you collapse in the middle of the market."
+ },
+ {
+  "vi": "Tham làm thêm một mối, bạn bị lừa mất {0} linh thạch. Tham thì thâm.",
+  "ph": [
+   "lost"
+  ],
+  "en": "Greedy for one more deal, you get swindled out of {0} spirit stones. Greed never pays."
+ },
+ {
+  "vi": "Mang nhiều tiền đi đêm quá thường xuyên, bạn bị cướp giết bên bờ sông.",
+  "en": "Carrying too much money at night too often, you are robbed and killed by the river."
+ },
+ {
+  "vi": "Lại một chuyến hàng đêm...{0}",
+  "ph": [
+   "f"
+  ],
+  "en": "Another night run with the goods...{0}"
+ },
+ {
+  "vi": "Bị cướp chặn đường lúc đêm khuya, bạn bỏ của chạy lấy người.",
+  "en": "Robbers block your way late at night; you abandon the goods and run for your life."
+ },
+ {
+  "vi": "Rượu chè, hội hè liên miên. Tu luyện bỏ bê đã lâu.",
+  "en": "Endless wine and parties. You've neglected your cultivation for ages."
+ },
+ {
+  "vi": "Tửu sắc quá độ",
+  "en": "Overindulgence"
+ },
+ {
+  "vi": "Tửu sắc quá độ, thân thể hao mòn, tu vi sa sút.",
+  "en": "Too much wine and romance wears your body down, and your cultivation slips."
+ },
+ {
+  "vi": "Người tri kỷ hóa ra là kẻ lừa tình, cuỗm đi {0} linh thạch.",
+  "ph": [
+   "lost"
+  ],
+  "en": "Your soulmate turns out to be a romance scammer and runs off with {0} spirit stones."
+ },
+ {
+  "vi": "Bạn bị chồng của người tình đâm chết trong đêm.",
+  "en": "Your lover's husband stabs you to death in the night."
+ },
+ {
+  "vi": "Dan díu quá nhiều nơi...{0}",
+  "ph": [
+   "f"
+  ],
+  "en": "Too many affairs in too many places...{0}"
+ },
+ {
+  "vi": "Bị đánh ghen một trận thừa sống thiếu chết.",
+  "en": "A jealous spouse beats you within an inch of your life."
+ },
+ {
+  "vi": "Bạn giết yêu thú liên miên, trên người nồng nặc mùi máu.",
+  "en": "You've slain demon beasts nonstop; you reek of blood."
+ },
+ {
+  "vi": "Thương tích dồn",
+  "en": "Wounds piling up"
+ },
+ {
+  "vi": "Vết thương cũ chưa lành đã thêm vết mới. Bạn gục xuống giữa rừng.",
+  "en": "New wounds land before the old ones heal. You collapse in the forest."
+ },
+ {
+  "vi": "Sát khí nhập tâm. Bạn bắt đầu thấy khoái cảm mỗi khi giết chóc.",
+  "en": "Killing intent seeps into your heart. You start to enjoy every kill."
+ },
+ {
+  "vi": "Yêu tộc kết bầy báo thù. Bạn bị vây giết giữa rừng sâu.",
+  "en": "The yao race gathers in packs for revenge. You are surrounded and slain deep in the forest."
+ },
+ {
+  "vi": "Đêm ấy cả rừng rộ lên tiếng gầm...{0}",
+  "ph": [
+   "f"
+  ],
+  "en": "That night the whole forest erupts in roars...{0}"
+ },
+ {
+  "vi": "Yêu tộc kết bầy báo thù, bạn chạy thoát trong gang tấc.",
+  "en": "The yao race gathers in packs for revenge; you escape by a hair."
+ },
+ {
+  "vi": "{0} Nên đổi việc khác cho thân tâm nghỉ ngơi.",
+  "ph": [
+   "o.warn"
+  ],
+  "en": "{0} Switch to something else and let your body and mind rest."
+ },
+ {
+  "vi": "⚠ Đã {0} năm liền làm một việc. Càng kéo dài càng dễ ngã bệnh, thậm chí mất mạng. Hãy đổi sang việc khác.",
+  "ph": [
+   "n"
+  ],
+  "en": "⚠ {0} years straight doing the same thing. The longer it goes, the likelier you fall ill, or even die. Switch to something else."
+ },
+ {
+  "vi": "{0} năm liền không nghỉ. {1}",
+  "ph": [
+   "n",
+   "text"
+  ],
+  "en": "{0} years straight without rest. {1}"
+ },
+ {
+  "vi": "Uống đan quá nhiều trong một năm, đan độc tích lại trong kinh mạch. Dược lực giảm hẳn, người nóng ran.",
+  "en": "Too many pills in one year; toxins build up in your meridians. The medicine's effect drops sharply and your body burns."
+ },
+ {
+  "vi": "+{0} năm thọ",
+  "ph": [
+   "y"
+  ],
+  "en": "+{0} yrs lifespan"
+ },
+ {
+  "vi": "Uống Diên Thọ Đan nhiều quá, thân thể đã quen thuốc. Dược lực chỉ còn chút ít.",
+  "en": "Too many Longevity Pills - your body has grown used to them. Only a trace of their effect remains."
+ },
+ {
+  "vi": "Thanh tâm",
+  "en": "Clear mind"
+ },
+ {
+  "vi": "Huyết sát luyện tâm",
+  "en": "Blood-slaughter heart tempering"
+ },
+ {
+  "vi": "Huyết khí nghịch",
+  "en": "Qi and blood reversed"
+ },
+ {
+  "vi": "+sức khỏe",
+  "en": "+Health"
+ },
+ {
+  "vi": "Bạn uống {0}.",
+  "ph": [
+   "PILLS.find((p) => p.id === id)?.name"
+  ],
+  "en": "You take a {0}."
+ },
+ {
+  "vi": "Chính đạo",
+  "en": "Righteous Path"
+ },
+ {
+  "vi": "Hướng thiện",
+  "en": "Leaning good"
+ },
+ {
+  "vi": "Trung lập",
+  "en": "Neutral"
+ },
+ {
+  "vi": "Hướng tà",
+  "en": "Leaning evil"
+ },
+ {
+  "vi": "Ma đạo",
+  "en": "Demonic Path"
+ }
+]

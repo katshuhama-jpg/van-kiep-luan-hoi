@@ -14,6 +14,8 @@ import { giftOf } from '@/lib/game/gacha';
 import type { BattleView } from '@/components/Battle';
 import { MONSTERS, combatLevel, effLv, fleeChance, hit, killExp, killReward, loseFight, monsterName, monsterStats, playerStats, tierOf, type Fighter } from '@/lib/game/combat';
 import { sessionDropped, signOut } from '@/lib/auth';
+import { lang, setLang } from '@/lib/i18n';
+import { nameOf } from '@/lib/hanviet';
 import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, itemPrice, pillPrice, RARE_STOCK_REALM, realmLabel, realmName, soldOut, yearSpeed } from '@/lib/game/data';
 import { genName, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick } from '@/lib/game/engine';
 import { addCult, addPill, dao, fatal, fmt, giveItem, money, reward, stat, wealthTier } from '@/lib/game/helpers';
@@ -45,6 +47,7 @@ import NguHanhDai, { NhdMirror, waiting, type NhdView } from '@/components/NguHa
 import { arenaBg, NHD_MAX_TURNS, PHU_PRICE, STANCES, loseRound, mirrorChar, mirrorStance, mirrorStats, needTrial, nhdOf, roundMods, tellOf, winRound, type RoundMods, type Stance } from '@/lib/game/nguHanhDai';
 import { sectSide } from '@/lib/game/sect';
 import { setScreen, track } from '@/lib/track';
+import { tr } from '@/lib/i18n';
 
 const SPEEDS = [1, 2, 4, 8, 16];
 /** màu chưởng lực theo con đường tu luyện */
@@ -129,7 +132,7 @@ export default function PlayPage() {
             qmark(ch, 'newItem', nf.length);
             for (const id of nf) {
               const it = HIDDEN_ITEMS.find((i) => i.id === id);
-              ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: `Lần đầu có được ${it?.name ?? 'một món đồ ẩn'}, đã ghi vào Bảo khố (${n}/${HIDDEN_ITEMS.length}).` });
+              ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: tr(`Lần đầu có được ${it?.name ?? tr('một món đồ ẩn', "a hidden item")}, đã ghi vào Bảo khố (${n}/${HIDDEN_ITEMS.length}).`, `First time obtaining ${it?.name ?? tr('một món đồ ẩn', "a hidden item")} - recorded in the Treasury (${n}/${HIDDEN_ITEMS.length}).`) });
             }
             const last = HIDDEN_ITEMS.find((i) => i.id === nf[nf.length - 1]);
             if (last) setFind({ id: last.id, name: last.name, n, rare: last.rare ?? 0 });
@@ -185,6 +188,9 @@ export default function PlayPage() {
       weeklyTitles().then((t) => !cancel && setTitles(t));
       if (user) loadSocial(user).catch(() => {});
       if (save?.char && !save.char.dead) {
+        // bản lưu chơi bằng tiếng Việt, mở lại bằng tiếng Anh: tên đổi sang pinyin
+        save.char.name = nameOf(save.char.name);
+        if (save.char.partner) save.char.partner = nameOf(save.char.partner);
         charRef.current = save.char;
         pendingRef.current = save.pending;
         yearSecRef.current = save.yearSec || 30;
@@ -301,7 +307,7 @@ export default function PlayPage() {
       // bạn ra đòn
       const h1 = hit(b.ps.atk * (b.melem ? elemMul(b.melem.me, b.melem.foe) : 1), b.ms.def, rnd, 0.15 + gearFx(c.equipped).crit / 100);
       b.mHp = Math.max(0, b.mHp - h1.dmg);
-      push('p', h1.dmg, h1.crit, b.m.boss ? 'Vô hiệu' : undefined, artOf(c, rnd));
+      push('p', h1.dmg, h1.crit, b.m.boss ? tr('Vô hiệu', "Immune") : undefined, artOf(c, rnd));
       if (b.mHp <= 0) {
         const out: Fx[] = [];
         const ctx = makeCtx(c, out);
@@ -311,7 +317,7 @@ export default function PlayPage() {
         b.phase = 'rest';
         b.rest = 3;
         b.outcome = 'win';
-        push('p', 0, false, `+${exp} tu vi`);
+        push('p', 0, false, tr(`+${exp} tu vi`, `+${exp} cultivation`));
         const p = checkProgress(c, ctx, talentsRef.current);
         pushFx(out);
         if (p || c.dead) {
@@ -336,7 +342,7 @@ export default function PlayPage() {
         b.outcome = 'lose';
         if (!c.dead) {
           c.focus = 'tu_luyen';
-          ctx.log('Bạn về động phủ dưỡng thương, tạm gác việc trừ yêu.', 'normal');
+          ctx.log(tr('Bạn về động phủ dưỡng thương, tạm gác việc trừ yêu.', "You return to your cave abode to heal, setting demon hunting aside for now."), 'normal');
         }
         pushFx(out);
         persist(true);
@@ -348,7 +354,7 @@ export default function PlayPage() {
           b.phase = 'rest';
           b.rest = 5;
           b.outcome = 'flee';
-          push('m', 0, false, 'Rút lui!');
+          push('m', 0, false, tr('Rút lui!', "Retreat!"));
         }
       }
     }
@@ -366,9 +372,9 @@ export default function PlayPage() {
       c.log.push({
         age: Math.floor(c.age),
         tone: 'good',
-        text: `Huynh đệ kết nghĩa @${bro} nghe tin, từ xa phóng tới trợ quyền: "Đụng tới huynh đệ ta là đụng tới ta!" (sinh lực +30%, công +15% trận này)`,
+        text: tr(`Huynh đệ kết nghĩa @${bro} nghe tin, từ xa phóng tới trợ quyền: "Đụng tới huynh đệ ta là đụng tới ta!" (sinh lực +30%, công +15% trận này)`, `Your sworn brother @${bro} hears the news and comes flying from afar to back you up: "Touch my brother and you touch me!" (HP +30%, attack +15% this fight)`),
       });
-      if (userRef.current) sendMail(userRef.current, bro, 'nghia', `Bóng của bạn đã ra tay trợ quyền cho huynh đệ @${userRef.current.username} (${c.name}) trước ${f.rival.name}.`).catch(() => {});
+      if (userRef.current) sendMail(userRef.current, bro, 'nghia', tr(`Bóng của bạn đã ra tay trợ quyền cho huynh đệ @${userRef.current.username} (${c.name}) trước ${f.rival.name}.`, `Your shadow stepped in to help your sworn brother @${userRef.current.username} (${c.name}) against ${f.rival.name}.`)).catch(() => {});
     }
     const fs = foeStats(f.rival, c);
     const fc = foeChar(f.rival);
@@ -382,7 +388,7 @@ export default function PlayPage() {
       mHp: fs.hp,
       mMax: fs.hp,
       phase: 'fight',
-      last: [{ id: Math.random(), side: 'm', dmg: 0, crit: false, text: ambushed ? 'Bị chặn lại!' : 'Xuất chiêu!' }],
+      last: [{ id: Math.random(), side: 'm', dmg: 0, crit: false, text: ambushed ? tr('Bị chặn lại!', "Blocked!") : tr('Xuất chiêu!', "Strike!") }],
       kills: 0,
       t: -0.9,
       rest: 0,
@@ -394,7 +400,7 @@ export default function PlayPage() {
       duel: {
         kind: f.kind,
         foe: fc,
-        tag: `${DUEL_INFO[f.kind].tag} · Kiếp ${f.rival.lifeNo ?? 1}`,
+        tag: tr(`${DUEL_INFO[f.kind].tag} · Kiếp ${f.rival.lifeNo ?? 1}`, `${DUEL_INFO[f.kind].tag} · Life ${f.rival.lifeNo ?? 1}`),
         player: f.kind === 'kiep_truoc' ? '' : f.rival.player,
         turn: 0,
         max: DUEL_TURNS,
@@ -427,7 +433,7 @@ export default function PlayPage() {
         const msg = won ? winRound(c) : loseRound(c, ctx);
         const ek = won ? (nhdOf(c).done ? 'done' : 'next') : c.dead ? 'dead' : 'lose';
         ctx.log(msg, c.dead ? 'big' : won ? 'good' : 'bad');
-        if (won) ctx.fx('breakthrough', nhdOf(c).done ? 'NGŨ HÀNH VIÊN MÃN' : `Gương ${nhdOf(c).won}/5`);
+        if (won) ctx.fx('breakthrough', nhdOf(c).done ? tr('NGŨ HÀNH VIÊN MÃN', "FIVE ELEMENTS PERFECTED") : tr(`Gương ${nhdOf(c).won}/5`, `Mirror ${nhdOf(c).won}/5`));
         b.phase = 'rest';
         b.rest = 4;
         b.outcome = won ? 'win' : 'lose';
@@ -446,18 +452,18 @@ export default function PlayPage() {
         madResult(userRef.current, fo.rival.player, result === 'win', c.lifeNo, c.name)
           .then(() => setTimeout(claimPayouts, 1500))
           .catch(() => {});
-        c.miles = [...(c.miles ?? []), { age: Math.floor(c.age), kind: 'duel', text: result === 'win' ? `Đánh tan bóng ma đầu ${fo.rival.name} của @${fo.rival.player}` : `Bị bóng ma đầu ${fo.rival.name} của @${fo.rival.player} đánh trọng thương` }];
+        c.miles = [...(c.miles ?? []), { age: Math.floor(c.age), kind: 'duel', text: result === 'win' ? tr(`Đánh tan bóng ma đầu ${fo.rival.name} của @${fo.rival.player}`, `Shattered the demon lord shadow ${fo.rival.name} of @${fo.rival.player}`) : tr(`Bị bóng ma đầu ${fo.rival.name} của @${fo.rival.player} đánh trọng thương`, `Gravely wounded by the demon lord shadow ${fo.rival.name} of @${fo.rival.player}`) }];
       }
       if (fo.kind !== 'kiep_truoc' && fo.kind !== 'ma_dau' && fo.rival.player && !fo.npc) {
         const me = userRef.current?.username ?? '';
-        const shadow = `bóng ${fo.rival.name} của bạn`;
-        const loot = notes.find((n) => n.includes('lột') || n.includes('tặng bạn') || n.includes('lấy lại'));
+        const shadow = tr(`bóng ${fo.rival.name} của bạn`, `your shadow ${fo.rival.name}`);
+        const loot = notes.find((n) => /lột|tặng bạn|lấy lại|strip|gives it to you|reclaim/.test(n));
         const body =
           result === 'win'
-            ? `@${me} (${c.name}) ${fo.revenge ? 'đã báo thù, hạ' : 'đánh bại'} ${shadow}.${loot ? ' ' + loot.replace('Bạn ', 'Người ấy ') : ''}`
+            ? `@${me} (${c.name}) ${fo.revenge ? tr('đã báo thù, hạ', "took revenge and struck down") : tr('đánh bại', "defeated")} ${shadow}.${loot ? ' ' + loot.replace(/^Bạn /, tr('Người ấy ', "They ")).replace(/^You /, 'They ') : ''}`
             : result === 'lose'
-              ? `${shadow[0].toUpperCase() + shadow.slice(1)} đã ${fo.betray ? 'trở mặt bên bàn trà, ' : ''}${c.dead ? 'giết chết' : 'hạ gục'} @${me} (${c.name}).${notes.some((n) => n.includes('lột mất')) ? ' Còn lột được đồ của họ.' : ''}`
-              : `@${me} (${c.name}) đấu với ${shadow} năm hiệp, bất phân thắng bại.`;
+              ? tr(`${shadow[0].toUpperCase() + shadow.slice(1)} đã ${fo.betray ? tr('trở mặt bên bàn trà, ', "broke the truce over tea and ") : ''}${c.dead ? tr('giết chết', "killed") : tr('hạ gục', "struck down")} @${me} (${c.name}).${notes.some((n) => /lột mất|strips you of/.test(n)) ? tr(' Còn lột được đồ của họ.', " And stripped them of their gear.") : ''}`, `${shadow[0].toUpperCase() + shadow.slice(1)} ${fo.betray ? tr('trở mặt bên bàn trà, ', "broke the truce over tea and ") : ''}${c.dead ? tr('giết chết', "killed") : tr('hạ gục', "struck down")} @${me} (${c.name}).${notes.some((n) => /lột mất|strips you of/.test(n)) ? tr(' Còn lột được đồ của họ.', " And stripped them of their gear.") : ''}`)
+              : tr(`@${me} (${c.name}) đấu với ${shadow} năm hiệp, bất phân thắng bại.`, `@${me} (${c.name}) fought ${shadow} for five rounds - neither could win.`);
         sendMail(userRef.current, fo.rival.player, result === 'win' ? 'thua' : result === 'lose' ? 'thang' : 'hoa', body).catch(() => {});
         // huyết hải thâm thù: ghi lại các kiếp đã giao đấu với người này
         const m0 = metaRef.current;
@@ -468,7 +474,7 @@ export default function PlayPage() {
           const m2 = { ...m0, feud: fe };
           setMeta(m2);
           saveMeta(userRef.current, m2).catch(() => {});
-          if (lives.length === 3 && result === 'win') ctx.log(`Ba kiếp ân oán với @${fo.rival.player}. Giang hồ gọi bạn là kẻ "Báo thù 3 đời".`, 'big');
+          if (lives.length === 3 && result === 'win') ctx.log(tr(`Ba kiếp ân oán với @${fo.rival.player}. Giang hồ gọi bạn là kẻ "Báo thù 3 đời".`, `Three lives of grudges with @${fo.rival.player}. The jianghu calls you "the Three-Lifetime Avenger".`), 'big');
         }
         if (fo.provoke) khieuDone(userRef.current, fo.rival.player).catch(() => {});
         // lĩnh tiền truy nã
@@ -479,7 +485,7 @@ export default function PlayPage() {
               const ch = charRef.current;
               if (!n || !ch || ch.dead) return;
               money(ch, n);
-              ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: `Bạn mang thủ cấp bóng ${fo.rival.name} (@${who}) về lĩnh thưởng truy nã: +${n} linh thạch.` });
+              ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: tr(`Bạn mang thủ cấp bóng ${fo.rival.name} (@${who}) về lĩnh thưởng truy nã: +${n} linh thạch.`, `You bring the head of shadow ${fo.rival.name} (@${who}) back for the bounty: +${n} spirit stones.`) });
               persist(true);
               rerender();
             })
@@ -489,7 +495,7 @@ export default function PlayPage() {
       b.phase = 'rest';
       b.rest = 4;
       b.outcome = result === 'win' ? 'win' : result === 'lose' ? 'lose' : 'flee';
-      if (result === 'draw') push('m', 0, false, 'Bất phân thắng bại');
+      if (result === 'draw') push('m', 0, false, tr('Bất phân thắng bại', "A draw"));
       if (!c.dead) {
         const p = checkProgress(c, ctx, talentsRef.current);
         if (p) pendingRef.current = p;
@@ -554,13 +560,13 @@ export default function PlayPage() {
       ctx,
       dieP / hurtP,
       how === 'flee'
-        ? `Vừa quay lưng, một đạo kình lực của ${who} đánh xuyên tâm mạch. Bạn ngã xuống giữa đường chạy.`
-        : `${who} cười lạnh: "Muốn đi dễ vậy sao?" Một chưởng sau lưng, bạn không bao giờ đứng dậy nữa.`,
+        ? tr(`Vừa quay lưng, một đạo kình lực của ${who} đánh xuyên tâm mạch. Bạn ngã xuống giữa đường chạy.`, `The moment you turn your back, a surge of force from ${who} pierces your heart meridian. You fall mid-flight.`)
+        : tr(`${who} cười lạnh: "Muốn đi dễ vậy sao?" Một chưởng sau lưng, bạn không bao giờ đứng dậy nữa.`, `${who} laughs coldly: "Think you can leave that easily?" One palm to the back, and you never rise again.`),
     );
     if (c.dead) return ' ' + (fl ?? '').trim();
     stat(c, 'sucKhoe', f.rel === 'manh' ? -35 : -22);
     ctx.fx('hurt');
-    return how === 'flee' ? ` Chạy thoát nhưng lưng trúng một chưởng của ${who}, trọng thương.${fl ?? ''}` : ` ${who} không vui, tiễn bạn bằng một chưởng. Bạn trọng thương.${fl ?? ''}`;
+    return how === 'flee' ? tr(` Chạy thoát nhưng lưng trúng một chưởng của ${who}, trọng thương.${fl ?? ''}`, ` You escape, but take a palm strike from ${who} in the back - grave wounds.${fl ?? ''}`) : tr(` ${who} không vui, tiễn bạn bằng một chưởng. Bạn trọng thương.${fl ?? ''}`, ` ${who} is displeased and sees you off with a palm strike. You are gravely wounded.${fl ?? ''}`);
   };
 
   const pickDuelAction = (a: 'fight' | 'befriend' | 'leave' | 'flee') => {
@@ -575,18 +581,18 @@ export default function PlayPage() {
       if (rnd() < duelFlee(c, f))
         act((ch, out) => {
           const extra = declineRisk(ch, f, makeCtx(ch, out), 'flee');
-          ch.log.push({ age: Math.floor(ch.age), tone: ch.dead ? 'big' : extra ? 'bad' : 'normal', text: `Bạn thi triển khinh công thoát khỏi ${who}.${extra}` });
+          ch.log.push({ age: Math.floor(ch.age), tone: ch.dead ? 'big' : extra ? 'bad' : 'normal', text: tr(`Bạn thi triển khinh công thoát khỏi ${who}.${extra}`, `You unleash your lightness skill and escape ${who}.${extra}`) });
         });
       else {
-        c.log.push({ age: Math.floor(c.age), tone: 'bad', text: `Bỏ chạy không thành, ${who} chặn đầu đánh úp.` });
+        c.log.push({ age: Math.floor(c.age), tone: 'bad', text: tr(`Bỏ chạy không thành, ${who} chặn đầu đánh úp.`, `Your escape fails - ${who} cuts you off and strikes.`) });
         startDuel(c, f, true);
       }
     } else if (a === 'befriend') {
       // lòng người khó đoán: 40% ám toán, 40% trở mặt ra tay, 20% thật lòng
       const out0: Fx[] = [];
-      const tr = teaTrap(c, f, makeCtx(c, out0));
-      if (tr.kind === 'tro_mat') {
-        c.log.push({ age: Math.floor(c.age), tone: 'bad', text: tr.text });
+      const trap = teaTrap(c, f, makeCtx(c, out0));
+      if (trap.kind === 'tro_mat') {
+        c.log.push({ age: Math.floor(c.age), tone: 'bad', text: trap.text });
         pushFx(out0);
         // trở mặt thành địch thủ, bạn bị đánh úp (mất trước một phần máu)
         startDuel(c, { ...f, kind: 'dich_thu', betray: true }, true);
@@ -594,34 +600,34 @@ export default function PlayPage() {
       }
       const realP = f.rival.player && !f.npc ? f.rival.player : null;
       const meName = `@${userRef.current?.username ?? ''} (${c.name})`;
-      if (tr.kind === 'am_toan') {
-        c.log.push({ age: Math.floor(c.age), tone: c.dead ? 'big' : 'bad', text: tr.text });
+      if (trap.kind === 'am_toan') {
+        c.log.push({ age: Math.floor(c.age), tone: c.dead ? 'big' : 'bad', text: trap.text });
         if (!c.dead) qmark(c, 'teaSurvive');
-        if (realP) sendMail(userRef.current, realP, 'doc', `Bóng ${f.rival.name} của bạn đã bỏ độc vào trà mời ${meName}${c.dead ? '. Người ấy chết bên bàn trà.' : '.'}`).catch(() => {});
+        if (realP) sendMail(userRef.current, realP, 'doc', tr(`Bóng ${f.rival.name} của bạn đã bỏ độc vào trà mời ${meName}${c.dead ? tr('. Người ấy chết bên bàn trà.', ". They died at the tea table.") : '.'}`, `Your shadow ${f.rival.name} poisoned the tea it served ${meName}${c.dead ? tr('. Người ấy chết bên bàn trà.', ". They died at the tea table.") : '.'}`)).catch(() => {});
         pushFx(out0);
         persist(true);
         rerender();
         return;
       }
-      if (realP) sendMail(userRef.current, realP, 'tra', `${meName} cùng bóng ${f.rival.name} của bạn uống trà luận đạo suốt đêm, kết làm bằng hữu.`).catch(() => {});
+      if (realP) sendMail(userRef.current, realP, 'tra', tr(`${meName} cùng bóng ${f.rival.name} của bạn uống trà luận đạo suốt đêm, kết làm bằng hữu.`, `${meName} and your shadow ${f.rival.name} drank tea and discussed the Yao all night, and became friends.`)).catch(() => {});
       act((ch) => {
         qmark(ch, 'teaSurvive');
         if (f.sworn) {
           const exp = Math.round(reward(ch, 0.3));
           addCult(ch, exp);
-          ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: `Huynh đệ gặp nhau, trà thật lòng thật. Hai người cùng luận đạo, cả hai cùng tiến (+${exp} tu vi).` });
+          ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: tr(`Huynh đệ gặp nhau, trà thật lòng thật. Hai người cùng luận đạo, cả hai cùng tiến (+${exp} tu vi).`, `Brothers meet, the tea is real and so are the hearts. You discuss the Yao together and both of you advance (+${exp} cultivation).`) });
           return;
         }
         const er = elemRel(elementOf(ch), elementOf(f.rival));
         stat(ch, 'khiVan', er === 'duoc_sinh' ? 5 : er === 'sinh' ? 3 : 2);
         stat(ch, 'tamCanh', 4);
-        if (er === 'duoc_sinh' || er === 'sinh') ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: 'Ngũ hành tương sinh, hai người càng nói càng hợp. Khí vận của bạn khởi sắc.' });
-        ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: `Trà thật, người cũng thật. Bạn cùng ${who} uống trà luận đạo suốt đêm, kết làm bằng hữu giang hồ.` });
+        if (er === 'duoc_sinh' || er === 'sinh') ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: tr('Ngũ hành tương sinh, hai người càng nói càng hợp. Khí vận của bạn khởi sắc.', "The five elements nourish each other - the more you talk, the better you click. Your Luck brightens.") });
+        ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: tr(`Trà thật, người cũng thật. Bạn cùng ${who} uống trà luận đạo suốt đêm, kết làm bằng hữu giang hồ.`, `The tea is real, and so is the person. You and ${who} drink tea and discuss the Yao all night, becoming friends of the jianghu.`) });
       });
     } else
       act((ch, out) => {
         const extra = declineRisk(ch, f, makeCtx(ch, out), 'leave');
-        ch.log.push({ age: Math.floor(ch.age), tone: ch.dead ? 'big' : extra ? 'bad' : 'normal', text: `Bạn chắp tay cáo từ ${who}.${extra || ' Núi xanh còn đó, ngày sau gặp lại.'}` });
+        ch.log.push({ age: Math.floor(ch.age), tone: ch.dead ? 'big' : extra ? 'bad' : 'normal', text: tr(`Bạn chắp tay cáo từ ${who}.${extra || tr(' Núi xanh còn đó, ngày sau gặp lại.', " The green mountains remain; we shall meet again.")}`, `You cup your fists and take your leave of ${who}.${extra || tr(' Núi xanh còn đó, ngày sau gặp lại.', " The green mountains remain; we shall meet again.")}`) });
       });
   };
 
@@ -640,7 +646,7 @@ export default function PlayPage() {
       mHp: ms.hp,
       mMax: ms.hp,
       phase: 'fight',
-      last: [{ id: Math.random(), side: 'm', dmg: 0, crit: false, text: 'Chặn đường!' }],
+      last: [{ id: Math.random(), side: 'm', dmg: 0, crit: false, text: tr('Chặn đường!', "Ambushed!") }],
       kills: 0,
       t: -0.9, // khựng lại một nhịp cho người chơi kịp nhìn
       rest: 0,
@@ -653,7 +659,7 @@ export default function PlayPage() {
     c.log.push({
       age: Math.floor(c.age),
       tone: 'bad',
-      text: `${m.sect ? `Thí luyện tông môn: ${m.name} ở ${m.place} chặn đường, đệ tử nào cũng phải qua.` : AMBUSH_INTRO[tier]} (${monsterName(c, m)}, Lv${effLv(c, m)}, hệ ${ELEMENTS[m.el ?? 'tho'].name})`,
+      text: tr(`${m.sect ? tr(`Thí luyện tông môn: ${m.name} ở ${m.place} chặn đường, đệ tử nào cũng phải qua.`, `Sect trial: ${m.name} at ${m.place} blocks the way - every disciple must get past it.`) : AMBUSH_INTRO[tier]} (${monsterName(c, m)}, Lv${effLv(c, m)}, hệ ${ELEMENTS[m.el ?? 'tho'].name})`, `${m.sect ? tr(`Thí luyện tông môn: ${m.name} ở ${m.place} chặn đường, đệ tử nào cũng phải qua.`, `Sect trial: ${m.name} at ${m.place} blocks the way - every disciple must get past it.`) : AMBUSH_INTRO[tier]} (${monsterName(c, m)}, Lv${effLv(c, m)}, ${ELEMENTS[m.el ?? 'tho'].name})`),
     });
   }
 
@@ -673,11 +679,11 @@ export default function PlayPage() {
       const ctx = makeCtx(c, out);
       const notes = finishAmbush(c, b.m, result, 1 - b.pHp / b.pMax, 1 - b.mHp / b.mMax, ctx, b.ambush!.kind);
       if (result === 'win') qmark(c, 'ambushWin');
-      notes.forEach((n, i) => ctx.log(n, c.dead ? 'big' : result !== 'win' ? 'bad' : i === 0 ? 'good' : n.startsWith('Thắng nhưng') ? 'bad' : 'good'));
+      notes.forEach((n, i) => ctx.log(n, c.dead ? 'big' : result !== 'win' ? 'bad' : i === 0 ? 'good' : /^(Thắng nhưng|You win, but)/.test(n) ? 'bad' : 'good'));
       b.phase = 'rest';
       b.rest = 3;
       b.outcome = result === 'win' ? 'win' : result === 'lose' ? 'lose' : 'flee';
-      if (result === 'draw') push('m', 0, false, b.mHp / b.mMax <= 0.5 && 1 - b.mHp / b.mMax > 1 - b.pHp / b.pMax ? 'Quái bỏ chạy' : 'Bỏ chạy!');
+      if (result === 'draw') push('m', 0, false, b.mHp / b.mMax <= 0.5 && 1 - b.mHp / b.mMax > 1 - b.pHp / b.pMax ? tr('Quái bỏ chạy', "Monster fled") : tr('Bỏ chạy!', "Flee!"));
       if (!c.dead) {
         const p = checkProgress(c, ctx, talentsRef.current);
         if (p) pendingRef.current = p;
@@ -843,7 +849,7 @@ export default function PlayPage() {
     const p = pendingRef.current;
     const c = charRef.current;
     // phi thăng: phải qua Ngũ Hành Đài trước rồi mới độ kiếp
-    if (p && c && p.id === BREAK_EVENT_ID && needTrial(c) && !p.choices[i]?.label.startsWith('Củng cố')) {
+    if (p && c && p.id === BREAK_EVENT_ID && needTrial(c) && !/^(Củng cố|Consolidate)/.test(p.choices[i]?.label ?? '')) {
       pendingRef.current = null;
       const s = nhdOf(c);
       s.tries += 1;
@@ -853,7 +859,7 @@ export default function PlayPage() {
       return;
     }
     // đột phá có thiên kiếp: chơi mini-game đỡ sấm trước
-    if (p && c && p.id === BREAK_EVENT_ID && c.realm + 1 >= 3 && !p.choices[i]?.label.startsWith('Củng cố')) {
+    if (p && c && p.id === BREAK_EVENT_ID && c.realm + 1 >= 3 && !/^(Củng cố|Consolidate)/.test(p.choices[i]?.label ?? '')) {
       setKiep(i);
       return;
     }
@@ -871,7 +877,7 @@ export default function PlayPage() {
     const ps = playerStats(c);
     const fs = mirrorStats(c, r);
     const fc = mirrorChar(c, r);
-    c.log.push({ age: Math.floor(c.age), tone: 'normal', text: `Ngũ Hành Đài, gương ${r + 1}: bạn rút lá ${STANCES[my].name}, bóng ra thế ${STANCES[n.foe].name}.${mods.notes.length ? ' ' + mods.notes.join('. ') + '.' : ''}` });
+    c.log.push({ age: Math.floor(c.age), tone: 'normal', text: tr(`Ngũ Hành Đài, gương ${r + 1}: bạn rút lá ${STANCES[my].name}, bóng ra thế ${STANCES[n.foe].name}.${mods.notes.length ? ' ' + mods.notes.join('. ') + '.' : ''}`, `Five Elements Platform, mirror ${r + 1}: you draw ${STANCES[my].name}, the shadow plays ${STANCES[n.foe].name}.${mods.notes.length ? ' ' + mods.notes.join('. ') + '.' : ''}`) });
     duelRef.current = {
       m: { ...MONSTERS[0], id: 'duel', name: fc.name },
       name: fc.name,
@@ -882,7 +888,7 @@ export default function PlayPage() {
       mHp: fs.hp,
       mMax: fs.hp,
       phase: 'fight',
-      last: [{ id: Math.random(), side: 'm', dmg: 0, crit: false, text: 'Bóng bước ra!' }],
+      last: [{ id: Math.random(), side: 'm', dmg: 0, crit: false, text: tr('Bóng bước ra!', "The shadow steps out!") }],
       kills: 0,
       t: -0.9,
       rest: 0,
@@ -891,7 +897,7 @@ export default function PlayPage() {
       fs,
       sub: 0,
       foe: { kind: 'ngu_hanh', rival: toRival('', fc), npc: true, rel: 'ngang', reason: '' },
-      duel: { kind: 'ngu_hanh', foe: fc, tag: `Gương ${r + 1}/5 · ${STANCES[my].name} đấu ${STANCES[n.foe].name}`, player: '', turn: 0, max: NHD_MAX_TURNS, elem: { me: mods.myEl, foe: mods.foeEl, rel: mods.rel }, bg: arenaBg(c, r) },
+      duel: { kind: 'ngu_hanh', foe: fc, tag: tr(`Gương ${r + 1}/5 · ${STANCES[my].name} đấu ${STANCES[n.foe].name}`, `Mirror ${r + 1}/5 · ${STANCES[my].name} vs ${STANCES[n.foe].name}`), player: '', turn: 0, max: NHD_MAX_TURNS, elem: { me: mods.myEl, foe: mods.foeEl, rel: mods.rel }, bg: arenaBg(c, r) },
       nhd: mods,
     };
     setNhd({ ...n, view: 'fight' });
@@ -925,7 +931,7 @@ export default function PlayPage() {
     duelRef.current = null;
     if (!c) return;
     c.breakDelay = Math.max(c.breakDelay, 3);
-    c.log.push({ age: Math.floor(c.age), tone: 'normal', text: 'Bạn bước xuống Ngũ Hành Đài, về củng cố thêm. Năm tấm gương vẫn chờ.' });
+    c.log.push({ age: Math.floor(c.age), tone: 'normal', text: tr('Bạn bước xuống Ngũ Hành Đài, về củng cố thêm. Năm tấm gương vẫn chờ.', "You step down from the Five Elements Platform to consolidate further. The five mirrors are still waiting.") });
     persist(true);
     rerender();
   };
@@ -937,7 +943,7 @@ export default function PlayPage() {
     if (c.linhThach < price || (c.phu ?? 0) >= 3) return;
     money(c, -price);
     c.phu = (c.phu ?? 0) + 1;
-    c.log.push({ age: Math.floor(c.age), tone: 'good', text: `Sứ giả Thiên Cơ Các bán cho bạn một tấm Ngũ Hành Phù (-${price} linh thạch).` });
+    c.log.push({ age: Math.floor(c.age), tone: 'good', text: tr(`Sứ giả Thiên Cơ Các bán cho bạn một tấm Ngũ Hành Phù (-${price} linh thạch).`, `An envoy of Tianji Pavilion sells you a Five Elements Talisman (-${price} spirit stones).`) });
     persist(true);
     rerender();
   };
@@ -948,7 +954,7 @@ export default function PlayPage() {
     const c = charRef.current;
     if (i === null || !c) return;
     c.kiepBonus = bonus;
-    if (blocked >= 0) c.log.push({ age: Math.floor(c.age), tone: bonus >= 0 ? 'good' : 'bad', text: `Bạn vận công đỡ được ${blocked}/9 đạo thiên lôi.` });
+    if (blocked >= 0) c.log.push({ age: Math.floor(c.age), tone: bonus >= 0 ? 'good' : 'bad', text: tr(`Bạn vận công đỡ được ${blocked}/9 đạo thiên lôi.`, `You channel your power and block ${blocked}/9 heavenly thunderbolts.`) });
     resolveNow(i);
   };
 
@@ -994,7 +1000,7 @@ export default function PlayPage() {
       giveItem(c, id, true);
       if (it.minRealm >= RARE_STOCK_REALM) c.bought = [...(c.bought ?? []), id];
       out.push({ kind: 'buy', id: Math.random(), label: it.name });
-      c.log.push({ age: Math.floor(c.age), tone: 'good', text: `Mua ${it.name} ở phường thị. (-${fmt(price)} linh thạch)` });
+      c.log.push({ age: Math.floor(c.age), tone: 'good', text: tr(`Mua ${it.name} ở phường thị. (-${fmt(price)} linh thạch)`, `Bought ${it.name} at the Market. (-${fmt(price)} spirit stones)`) });
     });
 
   const buyPill = (id: string) =>
@@ -1094,19 +1100,19 @@ export default function PlayPage() {
     lifeT0.current = Date.now();
     clearLaSo();
     track('life_start', { lifeNo: c.lifeNo, drink, talents: talents.length, gifts: gifts.length, picked: !!base });
-    if ((c.kiepSo ?? 0) > 0) c.log.push({ age: 0, tone: 'big', text: `Kiếp Số ${c.kiepSo} · ${KS_NAME[c.kiepSo ?? 0]}. Thiên đạo đã để mắt tới linh hồn này, kiếp nạn sẽ nặng hơn, phúc báo cũng dày hơn.` });
-    if ((c.kiepTich ?? 0) > 0) c.log.push({ age: 0, tone: 'good', text: `Kiếp tích ${c.kiepTich}: những lần ngã trước cửa trời đã thành kinh nghiệm. Đột phá dễ hơn ${(c.kiepTich ?? 0) * 5}%.` });
+    if ((c.kiepSo ?? 0) > 0) c.log.push({ age: 0, tone: 'big', text: tr(`Kiếp Số ${c.kiepSo} · ${KS_NAME[c.kiepSo ?? 0]}. Thiên đạo đã để mắt tới linh hồn này, kiếp nạn sẽ nặng hơn, phúc báo cũng dày hơn.`, `Calamity Count ${c.kiepSo} · ${KS_NAME[c.kiepSo ?? 0]}. The Heavenly Yao has its eye on this soul: calamities will be heavier, and blessings richer.`) });
+    if ((c.kiepTich ?? 0) > 0) c.log.push({ age: 0, tone: 'good', text: tr(`Kiếp tích ${c.kiepTich}: những lần ngã trước cửa trời đã thành kinh nghiệm. Đột phá dễ hơn ${(c.kiepTich ?? 0) * 5}%.`, `Calamity Scars ${c.kiepTich}: past falls at Heaven's gate have become experience. Breakthroughs ${(c.kiepTich ?? 0) * 5}% easier.`) });
     if (lh) {
       applyHon(c, honV, rested && honV >= HON_MAX);
       if (drink) {
         c.tanHon = true;
         c.stats.khiVan = Math.min(100, c.stats.khiVan + 15);
-        c.log.push({ age: 0, tone: 'good', text: 'Bạn uống cạn chén canh Mạnh Bà. Kiếp trước tan như khói, linh hồn nhẹ bẫng. Khí vận +15, phúc duyên kiếp này +20%.' });
+        c.log.push({ age: 0, tone: 'good', text: tr('Bạn uống cạn chén canh Mạnh Bà. Kiếp trước tan như khói, linh hồn nhẹ bẫng. Khí vận +15, phúc duyên kiếp này +20%.', "You drain the bowl of Meng Po's soup. Your past life fades like smoke and your soul feels light as a feather. Luck +15, Fortune this life +20%.") });
       } else {
-        c.log.push({ age: 0, tone: 'ta', text: `Bạn hất đổ chén canh Mạnh Bà, mang theo ký ức mà đầu thai (${m2.noDrink} lần liền).` });
+        c.log.push({ age: 0, tone: 'ta', text: tr(`Bạn hất đổ chén canh Mạnh Bà, mang theo ký ức mà đầu thai (${m2.noDrink} lần liền).`, `You knock over Meng Po's soup and are reborn with your memories intact (${m2.noDrink} times in a row).`) });
         if ((m2.noDrink ?? 0) >= CAU_HON_AT) {
           c.cauHon = true;
-          c.log.push({ age: 0, tone: 'bad', text: 'Sau lưng vang tiếng xích sắt. Địa phủ đã ghi tên bạn vào sổ nợ.' });
+          c.log.push({ age: 0, tone: 'bad', text: tr('Sau lưng vang tiếng xích sắt. Địa phủ đã ghi tên bạn vào sổ nợ.', "Iron chains clank behind you. The underworld has entered your name in its book of debts.") });
         }
       }
     }
@@ -1115,7 +1121,7 @@ export default function PlayPage() {
     if (cn) {
       if (cn.money) money(c, cn.money);
       if (cn.item) giveItem(c, cn.item, true);
-      c.log.push({ age: 0, tone: 'good', text: `Quà điểm danh: ${[cn.money ? `+${cn.money} linh thạch` : '', cn.item ? 'ngọc bội hộ thân' : ''].filter(Boolean).join(', ')}.` });
+      c.log.push({ age: 0, tone: 'good', text: tr(`Quà điểm danh: ${[cn.money ? tr(`+${cn.money} linh thạch`, `+${cn.money} spirit stones`) : '', cn.item ? tr('ngọc bội hộ thân', "a protective jade pendant") : ''].filter(Boolean).join(', ')}.`, `Check-in gift: ${[cn.money ? tr(`+${cn.money} linh thạch`, `+${cn.money} spirit stones`) : '', cn.item ? tr('ngọc bội hộ thân', "a protective jade pendant") : ''].filter(Boolean).join(', ')}.`) });
     }
     // rương kiếp trước, lời tiên tri, thần binh chỉ dùng cho một kiếp
     const m3: Meta = { ...m2, talents: [], stash: null, prophecy: null, legend: null, checkinNext: undefined, hon: lh ? { v: Math.max(0, honV - HON_COST), at: now } : m2.hon };
@@ -1143,7 +1149,7 @@ export default function PlayPage() {
 
   // ghi thù từ thư giang hồ: đang chơi thì ghi vào nhân vật, chưa đầu thai thì ghi vào hồ sơ
   const challenge = (player: string) => {
-    const v = { player, name: '', items: [], why: `@${player} từng khiến bạn ôm hận` };
+    const v = { player, name: '', items: [], why: tr(`@${player} từng khiến bạn ôm hận`, `@${player} once left you seething with hatred`) };
     const c = charRef.current;
     if (c && !c.dead) c.vendettas = [...(c.vendettas ?? []).filter((x) => x.player !== player), v].slice(-3);
     else if (meta) {
@@ -1177,7 +1183,7 @@ export default function PlayPage() {
               setMeta(m2);
               saveMeta(userRef.current, m2).catch(() => {});
             }
-            ch.log.push({ age: Math.floor(ch.age), tone: 'big', text: lh ? `${p.note}: +${p.amount} Hồn lực.` : `${p.note}: +${Math.round(p.amount / 2)} phúc duyên.` });
+            ch.log.push({ age: Math.floor(ch.age), tone: 'big', text: lh ? tr(`${p.note}: +${p.amount} Hồn lực.`, `${p.note}: +${p.amount} Soul Power.`) : tr(`${p.note}: +${Math.round(p.amount / 2)} phúc duyên.`, `${p.note}: +${Math.round(p.amount / 2)} Fortune.`) });
             continue;
           }
           if (p.kind === 'phuc') {
@@ -1189,12 +1195,12 @@ export default function PlayPage() {
               setMeta(m2);
               saveMeta(userRef.current, m2).catch(() => {});
             }
-            ch.log.push({ age: Math.floor(ch.age), tone: 'big', text: `${p.note}: +${p.amount} phúc duyên.` });
+            ch.log.push({ age: Math.floor(ch.age), tone: 'big', text: tr(`${p.note}: +${p.amount} phúc duyên.`, `${p.note}: +${p.amount} Fortune.`) });
             continue;
           }
           if (!live) continue;
           money(ch, p.amount);
-          ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: `${p.note}: +${p.amount} linh thạch.` });
+          ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: tr(`${p.note}: +${p.amount} linh thạch.`, `${p.note}: +${p.amount} spirit stones.`) });
         }
         if (!live) return;
         persist(true);
@@ -1215,7 +1221,7 @@ export default function PlayPage() {
         if (!ch || ch.dead || ch.linhThach < n) return false;
         if (n > 0) {
           money(ch, -n);
-          ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: `${why}: -${n} linh thạch.` });
+          ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: tr(`${why}: -${n} linh thạch.`, `${why}: -${n} spirit stones.`) });
           persist(true);
           rerender();
         }
@@ -1225,7 +1231,7 @@ export default function PlayPage() {
         const ch = charRef.current;
         if (!ch || ch.dead || n <= 0) return;
         money(ch, n);
-        ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: `${why}: +${n} linh thạch.` });
+        ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: tr(`${why}: +${n} linh thạch.`, `${why}: +${n} spirit stones.`) });
         persist(true);
         rerender();
       },
@@ -1235,7 +1241,7 @@ export default function PlayPage() {
         if (ch && !ch.dead) {
           ch.vendettas = (ch.vendettas ?? []).filter((v) => v.player !== player);
           dao(ch, 5);
-          ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: `Bạn gửi lời hòa giải tới @${player}. Buông được mối thù, đạo tâm sáng thêm (+5 đạo tâm).` });
+          ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: tr(`Bạn gửi lời hòa giải tới @${player}. Buông được mối thù, đạo tâm sáng thêm (+5 đạo tâm).`, `You send words of reconciliation to @${player}. Letting go of the feud, your Yao Heart shines brighter (+5 Yao Heart).`) });
           persist(true);
           rerender();
         }
@@ -1249,7 +1255,7 @@ export default function PlayPage() {
         const ch = charRef.current;
         if (!ch || ch.dead) return;
         ch.hunt = { rival, at: ch.age + 0.3 + Math.random() * 0.7 };
-        ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: `Bạn thuê người dò tung tích ${rival.name} (@${rival.player}). Trong vòng một năm sẽ chạm mặt.` });
+        ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: tr(`Bạn thuê người dò tung tích ${rival.name} (@${rival.player}). Trong vòng một năm sẽ chạm mặt.`, `You hire someone to track down ${rival.name} (@${rival.player}). You will cross paths within a year.`) });
         persist(true);
         rerender();
       },
@@ -1407,7 +1413,7 @@ export default function PlayPage() {
         lifeNo: c.lifeNo,
         age: Math.floor(c.age),
         realm: c.realm,
-        realmName: c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer, c.cosmos),
+        realmName: c.realm === 0 ? tr('Phàm nhân', "Mortal") : realmLabel(c.realm, c.layer, c.cosmos),
         daoTam: c.daoTam,
         cause: c.cause,
         path: c.path ? PATHS[c.path].name : null,
@@ -1421,7 +1427,7 @@ export default function PlayPage() {
               money: Math.round(c.linhThach * 0.3),
               item: c.equipped.phu_kien ?? (legend ? null : c.equipped.vu_khi) ?? null,
               note,
-              place: rnd() < 0.5 ? 'gốc đa đầu làng' : rnd() < 0.5 ? 'dưới nền ngôi miếu cũ' : 'bên bờ suối sau núi',
+              place: rnd() < 0.5 ? tr('gốc đa đầu làng', "under the banyan at the village gate") : rnd() < 0.5 ? tr('dưới nền ngôi miếu cũ', "beneath the floor of the old temple") : tr('bên bờ suối sau núi', "by the stream behind the mountain"),
             }
           : null,
     };
@@ -1435,13 +1441,13 @@ export default function PlayPage() {
       m.achievements = [...(m.achievements ?? []), ...car.newly.map((a) => a.id)];
       m.phucDuyen += car.newly.reduce((x, a) => x + a.reward, 0);
     }
-    setAchNews(car.newly.map((a) => `${a.name} (+${a.reward} phúc)`));
+    setAchNews(car.newly.map((a) => tr(`${a.name} (+${a.reward} phúc)`, `${a.name} (+${a.reward} Fortune)`)));
     // Vạn Kiếp Quy Nhất lần đầu: thưởng một lần cho mỗi tài khoản (cả người đã đạt từ trước)
     let quyNote = '';
     if (quyNhatDone(m) && !m.quyThuong) {
       m.quyThuong = true;
       m.phucDuyen += QUY_NHAT_PHUC;
-      quyNote = `Vạn Kiếp Quy Nhất: +${QUY_NHAT_PHUC} phúc, đeo chuông vàng qua mọi kiếp`;
+      quyNote = tr(`Vạn Kiếp Quy Nhất: +${QUY_NHAT_PHUC} phúc, đeo chuông vàng qua mọi kiếp`, `Ten Thousand Lives Return to One: +${QUY_NHAT_PHUC} Fortune, wear the golden bell through every life`);
     }
     if (c.qf?.chuongWin) m.chuongWin = true;
     // Thiên thư: mảnh ký ức mới
@@ -1462,7 +1468,7 @@ export default function PlayPage() {
   if (phase === 'loading' || !meta) {
     return (
       <main className="app title-screen">
-        <p>Đang mở luân hồi đài...</p>
+        <p>{tr("Đang mở luân hồi đài...", "Opening the reincarnation platform...")}</p>
       </main>
     );
   }
@@ -1473,35 +1479,40 @@ export default function PlayPage() {
         <header className="topbar">
           <div className="topbar-row">
             <span className="age-big" style={{ fontSize: 28 }}>
-              Luân hồi
+              
+              {tr("Luân hồi", "Reincarnation")}
             </span>
             <span className="meta">
               {user ? (
-                `Đạo hữu ${displayName(user)}`
+                tr(`Đạo hữu ${displayName(user)}`, `Fellow Daoist ${displayName(user)}`)
               ) : (
                 <>
-                  Đang chơi thử · <Link href="/dang-nhap?next=/choi">Đăng nhập</Link>
+                  
+                  {tr("Đang chơi thử · ", "Playing as guest · ")}<Link href="/dang-nhap?next=/choi">{tr("Đăng nhập", "Log in")}</Link>
                 </>
               )}
             </span>
-            <Link href="/" className="icon-btn" style={{ textDecoration: 'none', display: 'grid', placeItems: 'center' }} aria-label="Về trang đầu">
+            <Link href="/" className="icon-btn" style={{ textDecoration: 'none', display: 'grid', placeItems: 'center' }} aria-label={tr("Về trang đầu", "Back to home")}>
               ‹
             </Link>
           </div>
         </header>
         {loreNews.length > 0 && (
           <Link href="/so-sinh-tu#thien-thu" className="quest-news lore" style={{ display: 'block', textDecoration: 'none' }}>
-            📜 Thiên thư mở thêm: <b>{loreNews.join(', ')}</b> · chạm để đọc
+            
+            {tr("📜 Thiên thư mở thêm: ", "📜 Heavenly Tome unlocked: ")}<b>{loreNews.join(', ')}</b>{tr(" · chạm để đọc", " · tap to read")}
           </Link>
         )}
         {achNews.length > 0 && (
           <p className="quest-news ach">
-            🏆 Thành tựu mới: <b>{achNews.join(', ')}</b>
+            
+            {tr("🏆 Thành tựu mới: ", "🏆 New achievement: ")}<b>{achNews.join(', ')}</b>
           </p>
         )}
         {questNews.length > 0 && (
           <p className="quest-news">
-            Nhiệm vụ vừa hoàn thành: <b>{questNews.map(questName).join(', ')}</b>
+            
+            {tr("Nhiệm vụ vừa hoàn thành: ", "Quest completed: ")}<b>{questNews.map(questName).join(', ')}</b>
           </p>
         )}
         {sheet === 'mail' && mail && giangHo() && <GiangHoSheet mail={mail} api={giangHo()!} onClose={() => setSheet(null)} />}
@@ -1545,22 +1556,23 @@ export default function PlayPage() {
           <span className="age-big">{Math.floor(c.age)}</span>
           <span className="meta">
             {user && <TitleBadge title={titles[titleKey(user.username, c.lifeNo)]} />}
-            tuổi · {SEASONS[season]} · Kiếp {c.lifeNo}
+            
+            {tr("tuổi · ", "yrs · ")}{SEASONS[season]}{tr(" · Kiếp ", " · Life ")}{c.lifeNo}
             {c.birthPlace ? ` · ${c.birthPlace.split(', ').pop()}` : ''}
             <br />
-            <b>{fmt(c.linhThach)}</b> linh thạch · {wealthTier(c).name}
-            {c.income ? ` · +${c.income}/năm` : ''}
+            <b>{fmt(c.linhThach)}</b>{tr(" linh thạch · ", " spirit stones · ")}{wealthTier(c).name}
+            {c.income ? tr(` · +${c.income}/năm`, ` · +${c.income}/yr`) : ''}
             {newbieGoal(c) && (
               <>
                 <br />
                 <span className={`newbie-goal ${c.goalDone ? 'done' : ''}`}>
-                  {c.goalDone ? '✓ ' : ''}Mục tiêu kiếp {c.lifeNo}: {newbieGoal(c)!.name} (+{newbieGoal(c)!.reward} phúc)
+                  {c.goalDone ? '✓ ' : ''}{tr("Mục tiêu kiếp ", "Goal for life ")}{c.lifeNo}: {newbieGoal(c)!.name} (+{newbieGoal(c)!.reward}{tr(" phúc)", " Fortune)")}
                 </span>
               </>
             )}
           </span>
           <div className="top-icons">
-            <button className="icon-btn today-btn" onClick={() => setSheet('today')} aria-label="Thiên tượng và nhiệm vụ hôm nay">
+            <button className="icon-btn today-btn" onClick={() => setSheet('today')} aria-label={tr("Thiên tượng và nhiệm vụ hôm nay", "Today's omens and quests")}>
               {omenIcon}
             </button>
             {user && (
@@ -1573,13 +1585,13 @@ export default function PlayPage() {
                   });
                   setSheet('mail');
                 }}
-                aria-label={`Giang hồ${unread ? `, ${unread} thư mới` : ''}`}
+                aria-label={tr(`Giang hồ${unread ? tr(`, ${unread} thư mới`, `, ${unread} new letters`) : ''}`, `Jianghu${unread ? tr(`, ${unread} thư mới`, `, ${unread} new letters`) : ''}`)}
               >
                 ✉{unread > 0 && <span className="dot">{unread}</span>}
               </button>
             )}
             <MusicToggle battle={!!duelRef.current || !!ambushRef.current || (c.focus === 'tru_yeu' && c.age >= 10 && !!c.huntTarget && !c.dead)} />
-            <button className="icon-btn menu-btn" onClick={() => setSheet('menu')} aria-label={`Mở menu${newBook ? ', có mục mới trong Sổ Sinh Tử hoặc Bảo khố' : ''}`}>
+            <button className="icon-btn menu-btn" onClick={() => setSheet('menu')} aria-label={tr(`Mở menu${newBook ? tr(', có mục mới trong Sổ Sinh Tử hoặc Bảo khố', ", new entries in the Book of Life and Death or Treasury") : ''}`, `Open menu${newBook ? tr(', có mục mới trong Sổ Sinh Tử hoặc Bảo khố', ", new entries in the Book of Life and Death or Treasury") : ''}`)}>
               ≡{newBook && <span className="dot" aria-hidden="true" />}
             </button>
           </div>
@@ -1588,7 +1600,7 @@ export default function PlayPage() {
           <div style={{ width: `${yearPct}%` }} />
         </div>
         <div className="speeds">
-          <button className="play" onClick={() => setRunning(!running)} aria-label={running ? 'Tạm dừng' : 'Tiếp tục'} disabled={!!pending || c.dead}>
+          <button className="play" onClick={() => setRunning(!running)} aria-label={running ? tr('Tạm dừng', "Pause") : tr('Tiếp tục', "Resume")} disabled={!!pending || c.dead}>
             {running ? '❚❚' : '▶'}
           </button>
           {SPEEDS.map((s) => (
@@ -1604,7 +1616,7 @@ export default function PlayPage() {
               {s}×
             </button>
           ))}
-          <button className="next" onClick={skipAhead} disabled={!!pending || c.dead} aria-label="Tua tới sự kiện kế tiếp">
+          <button className="next" onClick={skipAhead} disabled={!!pending || c.dead} aria-label={tr("Tua tới sự kiện kế tiếp", "Skip to next event")}>
             »
           </button>
         </div>
@@ -1622,7 +1634,7 @@ export default function PlayPage() {
         <button
           className="strip-btn"
           onClick={(e) => ((e.target as HTMLElement).closest('.cult.wait') ? setNhdPeek(true) : setSheet('info'))}
-          aria-label="Xem bảng chỉ số nhân vật"
+          aria-label={tr("Xem bảng chỉ số nhân vật", "View character stats")}
         >
           <StageStrip c={c} compact={!!pending && !c.dead} wait={waiting(c)} />
         </button>
@@ -1641,7 +1653,8 @@ export default function PlayPage() {
             <FocusGrid c={c} onPick={pickFocus} />
             <div className="dock-actions">
               <button className="btn btn-dark" onClick={() => setSheet('shop')} disabled={c.dead}>
-                Phường thị
+                
+                {tr("Phường thị", "Market")}
               </button>
               <button
                 className="btn btn-dark"
@@ -1651,10 +1664,12 @@ export default function PlayPage() {
                 }}
                 disabled={c.dead}
               >
-                Túi đồ
+                
+                {tr("Túi đồ", "Inventory")}
               </button>
               <button className="btn btn-jade" onClick={() => setSheet('bequan')} disabled={c.dead}>
-                Bế quan
+                
+                {tr("Bế quan", "Seclusion")}
               </button>
             </div>
           </div>
@@ -1671,8 +1686,8 @@ export default function PlayPage() {
           </div>
           <p className="note" style={{ textAlign: 'center', marginTop: 0 }}>
             {c.linhCan} · {c.origin} · {c.birthPlace}
-            {c.gifts?.length ? ` · Thiên phú: ${c.gifts.map((g) => giftOf(g)?.name).join(', ')}` : ''}
-            {c.sect ? ` · ${rankName(c)} ${c.sect} (tu luyện +${Math.round((sectCultMul(c) - 1) * 100)}%)` : ''}
+            {c.gifts?.length ? tr(` · Thiên phú: ${c.gifts.map((g) => giftOf(g)?.name).join(', ')}`, ` · Talent: ${c.gifts.map((g) => giftOf(g)?.name).join(', ')}`) : ''}
+            {c.sect ? tr(` · ${rankName(c)} ${c.sect} (tu luyện +${Math.round((sectCultMul(c) - 1) * 100)}%)`, ` · ${rankName(c)} of ${nameOf(c.sect)} (cultivation +${Math.round((sectCultMul(c) - 1) * 100)}%)`) : ''}
           </p>
           <StatsPanel c={c} />
         </Sheet>
@@ -1685,13 +1700,16 @@ export default function PlayPage() {
           <div className="menu">
             <LoiDaiButton onClick={() => persist(true)} />
             <Link className="btn" href="/" style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
-              Trang đầu
+              
+              {tr("Trang đầu", "Home")}
             </Link>
             <Link className="btn btn-red" href="/bang-xep-hang" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
-              Bảng xếp hạng
+              
+              {tr("Bảng xếp hạng", "Leaderboard")}
             </Link>
             <Link className="btn" href="/nghia-trang" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
-              Nghĩa trang
+              
+              {tr("Nghĩa trang", "Cemetery")}
             </Link>
             <Link
               className="btn"
@@ -1702,8 +1720,9 @@ export default function PlayPage() {
               }}
               style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}
             >
-              Sổ Sinh Tử {stats.endings}/{stats.endingsTotal}
-              {nb.endings && <span className="new-tag">mới</span>}
+              
+              {tr("Sổ Sinh Tử ", "Book of Life and Death ")}{stats.endings}/{stats.endingsTotal}
+              {nb.endings && <span className="new-tag">{tr("mới", "new")}</span>}
             </Link>
             <button
               className="btn"
@@ -1713,8 +1732,9 @@ export default function PlayPage() {
               }}
               disabled={c.dead}
             >
-              Bảo khố {stats.items}/{stats.itemsTotal}
-              {nb.items && <span className="new-tag">mới</span>}
+              
+              {tr("Bảo khố ", "Treasury ")}{stats.items}/{stats.itemsTotal}
+              {nb.items && <span className="new-tag">{tr("mới", "new")}</span>}
             </button>
             <button
               className="btn"
@@ -1723,13 +1743,25 @@ export default function PlayPage() {
                 setTut(true);
               }}
             >
-              Hướng dẫn chơi
+              
+              {tr("Hướng dẫn chơi", "How to play")}
             </button>
             <Link className="btn" href="/cap-nhat" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
-              Lịch sử cập nhật · bản {CURRENT_VERSION}
+              
+              {tr("Lịch sử cập nhật · bản ", "Update history · version ")}{CURRENT_VERSION}
             </Link>
+            <button
+              className="btn"
+              onClick={() => {
+                persist(true);
+                setLang(lang() === 'en' ? 'vi' : 'en');
+              }}
+            >
+              {lang() === 'en' ? tr('Tiếng Việt', "Tiếng Việt") : 'English'}
+            </button>
             <Link className="btn btn-jade" href="/gop-y" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
-              Góp ý tính năng
+              
+              {tr("Góp ý tính năng", "Feature requests")}
             </Link>
             {user ? (
               <button
@@ -1740,11 +1772,13 @@ export default function PlayPage() {
                   setSheet(null);
                 }}
               >
-                Đăng xuất ({displayName(user)})
+                
+                {tr("Đăng xuất (", "Log out (")}{displayName(user)})
               </button>
             ) : (
               <Link className="btn btn-red" href="/dang-nhap" style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
-                Đăng nhập để lưu lên mây
+                
+                {tr("Đăng nhập để lưu lên mây", "Log in to save to the cloud")}
               </Link>
             )}
           </div>
@@ -1772,10 +1806,10 @@ export default function PlayPage() {
             setSheet('bag');
           }}
         >
-          <small>Bảo khố +1</small>
+          <small>{tr("Bảo khố +1", "Treasury +1")}</small>
           <b>{find.name}</b>
           <small>
-            {find.n}/{HIDDEN_ITEMS.length} · chạm để xem
+            {find.n}/{HIDDEN_ITEMS.length}{tr(" · chạm để xem", " · tap to view")}
           </small>
         </button>
       )}
@@ -1811,7 +1845,7 @@ export default function PlayPage() {
       )}
       {kiep !== null && !c.dead && (
         <TribulationOverlay
-          realmName={c.realm + 1 > 11 ? 'Chứng Đạo' : c.realm + 1 === 8 ? (c.daoTam <= -40 || c.path === 'ma' ? 'Ma Giới' : c.daoTam < 20 ? 'Thái Hư' : 'Phi Thăng') : realmName(c.realm + 1, c.cosmos)}
+          realmName={c.realm + 1 > 11 ? tr('Chứng Đạo', "Attaining the Yao") : c.realm + 1 === 8 ? (c.daoTam <= -40 || c.path === 'ma' ? tr('Ma Giới', "Demon Realm") : c.daoTam < 20 ? tr('Thái Hư', "Great Void") : tr('Phi Thăng', "Ascension")) : realmName(c.realm + 1, c.cosmos)}
           onDone={afterKiep}
           c={c}
         />

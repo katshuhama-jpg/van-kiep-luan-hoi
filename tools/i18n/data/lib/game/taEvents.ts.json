@@ -1,0 +1,328 @@
+[
+ {
+  "vi": "Tâm ma cuộn trào",
+  "en": "Heart demon surging"
+ },
+ {
+  "vi": "Tâm ma đã lên {0}. Đêm nào cũng có giọng nói thì thầm trong đầu, mắt bạn đỏ ngầu. Ma đạo có cách trị tâm ma, nhưng cái giá luôn là máu.",
+  "ph": [
+   "Math.round(c.stats.tamMa)"
+  ],
+  "en": "Your heart demon has reached {0}. Every night a voice whispers in your head, and your eyes are bloodshot. The Demonic Path has ways to cure heart demons, but the price is always blood."
+ },
+ {
+  "vi": "Huyết tế bản thân",
+  "en": "Blood-sacrifice yourself"
+ },
+ {
+  "vi": "tâm ma -35, sức khỏe -20",
+  "en": "heart demon -35, Health -20"
+ },
+ {
+  "vi": "Huyết tế",
+  "en": "Blood sacrifice"
+ },
+ {
+  "vi": "Bạn rạch tay, để máu chảy vào trận huyết tế. Giọng nói trong đầu im bặt.",
+  "en": "You slit your hand and let the blood flow into the sacrificial array. The voice in your head goes silent."
+ },
+ {
+  "vi": "Hút sinh khí một kẻ lạ",
+  "en": "Drain a stranger's life force"
+ },
+ {
+  "vi": "tâm ma -30, đạo tâm -6, có thể bị truy sát",
+  "en": "heart demon -30, Dao Heart -6, may be hunted"
+ },
+ {
+  "vi": "Hút sinh khí",
+  "en": "Life drain"
+ },
+ {
+  "vi": "Bạn hút cạn sinh khí một tên lữ khách. Người nhà hắn kéo đến báo thù, bạn đánh lui nhưng mang thương.{0}",
+  "ph": [
+   "h"
+  ],
+  "en": "You drain a traveler dry. His family comes for revenge; you drive them off, but not unscathed.{0}"
+ },
+ {
+  "vi": "Một tên lữ khách ngã xuống bên đường. Tâm ma của bạn no nê, lặng đi như con thú vừa ăn.",
+  "en": "A traveler falls by the roadside. Your heart demon is sated, quiet as a beast after its meal."
+ },
+ {
+  "vi": "Tĩnh tọa áp chế",
+  "en": "Sit and suppress it"
+ },
+ {
+  "vi": "tâm ma -12, tu vi giảm",
+  "en": "heart demon -12, cultivation down"
+ },
+ {
+  "vi": "Bạn ngồi suốt bảy ngày, dùng chân khí đè tâm ma xuống. Tu vi hao đi một ít.",
+  "en": "You sit for seven days, pressing the heart demon down with true qi. Some cultivation is spent."
+ },
+ {
+  "vi": "Ma điển trong hang",
+  "en": "Demonic scripture in a cave"
+ },
+ {
+  "vi": "Trong một hang đá ẩm thấp, bạn thấy bộ xương ôm chặt cuốn sách bọc da người. Trang đầu viết bằng máu: \"Thiên Ma Giải Thể Đại Pháp\".",
+  "en": "In a damp stone cave, you find a skeleton clutching a book bound in human skin. The first page is written in blood: \"Heavenly Demon Body-Dissolution Great Art\"."
+ },
+ {
+  "vi": "Luyện ngay tại chỗ",
+  "en": "Practice it on the spot"
+ },
+ {
+  "vi": "tu vi tăng vọt, tâm ma +, đạo tâm -",
+  "en": "cultivation soars, heart demon +, Dao Heart -"
+ },
+ {
+  "vi": "Ma công",
+  "en": "Demonic art"
+ },
+ {
+  "vi": "Ma công phản phệ ngay lần luyện đầu. Bạn hóa thành một bộ xương nữa trong hang.",
+  "en": "The demonic art backfires on your first attempt. You become one more skeleton in the cave."
+ },
+ {
+  "vi": "Ma khí tràn vào kinh mạch, tu vi bạn tăng vọt.{0}",
+  "ph": [
+   "f ?? ''"
+  ],
+  "en": "Demonic qi floods your meridians, and your cultivation soars.{0}"
+ },
+ {
+  "vi": "Mang nộp cho chính phái",
+  "en": "Hand it to a righteous sect"
+ },
+ {
+  "vi": "đạo tâm +, linh thạch",
+  "en": "Dao Heart +, spirit stones"
+ },
+ {
+  "vi": "Chưởng môn chính phái cảm tạ, thưởng hai trăm linh thạch rồi đem sách đi đốt.",
+  "en": "The righteous Sect Leader thanks you, rewards two hundred spirit stones, then burns the book."
+ },
+ {
+  "vi": "Đốt đi",
+  "en": "Burn it"
+ },
+ {
+  "vi": "tâm cảnh +",
+  "en": "Mind +"
+ },
+ {
+  "vi": "Cuốn sách cháy rất lâu, khói đen bốc lên thành hình mặt người.",
+  "en": "The book burns for a long time; the black smoke rises in the shape of a human face."
+ },
+ {
+  "vi": "Đoàn tiêu xa đi ngang",
+  "en": "An escort caravan passes"
+ },
+ {
+  "vi": "Một đoàn tiêu xa chở đầy hòm gỗ đi qua khe núi. Tiêu sư đầu đàn đã già, đám tiêu cục ngáp dài.",
+  "en": "An escort caravan loaded with wooden chests passes through the gorge. The lead escort is old, and his men are yawning."
+ },
+ {
+  "vi": "Chặn đường cướp tiêu",
+  "en": "Rob the caravan"
+ },
+ {
+  "vi": "nhiều linh thạch, đạo tâm -, có thể bị thương",
+  "en": "lots of spirit stones, Dao Heart -, may be hurt"
+ },
+ {
+  "vi": "Bạn cướp được {0} linh thạch, nhưng lão tiêu sư liều mạng chém một đao.{1}",
+  "ph": [
+   "m",
+   "hurt(c, 15, ctx)"
+  ],
+  "en": "You grab {0} spirit stones, but the old escort lands a desperate saber blow.{1}"
+ },
+ {
+  "vi": "Đám tiêu cục bỏ chạy tán loạn. Bạn mở hòm: {0} linh thạch.",
+  "ph": [
+   "m"
+  ],
+  "en": "The escorts scatter in panic. You open a chest: {0} spirit stones."
+ },
+ {
+  "vi": "Xin đi hộ tống",
+  "en": "Offer to guard it"
+ },
+ {
+  "vi": "linh thạch, đạo tâm +, có thể bị thương",
+  "en": "spirit stones, Dao Heart +, may be hurt"
+ },
+ {
+  "vi": "Dọc đường gặp sơn tặc, bạn đánh lui nhưng trúng một mũi tên. Tiêu cục trả công {0} linh thạch.{1}",
+  "ph": [
+   "m",
+   "hurt(c, 15, ctx)"
+  ],
+  "en": "Bandits ambush you on the road; you drive them off but take an arrow. The escort agency pays you {0} spirit stones.{1}"
+ },
+ {
+  "vi": "Chuyến tiêu bình an. Tiêu cục trả công {0} linh thạch.",
+  "ph": [
+   "m"
+  ],
+  "en": "A safe journey. The escort agency pays you {0} spirit stones."
+ },
+ {
+  "vi": "Mặc kệ",
+  "en": "Ignore it"
+ },
+ {
+  "vi": "Bạn nhìn đoàn xe khuất sau khe núi.",
+  "en": "You watch the caravan disappear into the gorge."
+ },
+ {
+  "vi": "Huyết trì cổ",
+  "en": "Ancient blood pool"
+ },
+ {
+  "vi": "Sâu trong lòng núi có một ao máu sôi sùng sục, xung quanh là xương của những kẻ từng ngâm mình ở đây. Huyết khí nồng đến mức đá cũng đỏ.",
+  "en": "Deep inside the mountain is a bubbling pool of blood, ringed with the bones of those who once soaked in it. The blood qi is so thick even the stones are red."
+ },
+ {
+  "vi": "Ngâm mình luyện huyết thể",
+  "en": "Soak to temper a blood body"
+ },
+ {
+  "vi": "tu vi +, sức khỏe +, tâm ma +",
+  "en": "cultivation +, Health +, heart demon +"
+ },
+ {
+  "vi": "Huyết thể",
+  "en": "Blood body"
+ },
+ {
+  "vi": "Máu trong ao chui vào từng lỗ chân lông. Khi bước ra, da bạn đỏ như son, gân cốt rắn như sắt.",
+  "en": "The blood seeps into every pore. When you climb out, your skin is red as cinnabar and your sinews hard as iron."
+ },
+ {
+  "vi": "Phong ấn huyết trì",
+  "en": "Seal the blood pool"
+ },
+ {
+  "vi": "đạo tâm +, khí vận +",
+  "en": "Dao Heart +, Luck +"
+ },
+ {
+  "vi": "Bạn dùng ba ngày ba đêm bày trận phong ấn. Ao máu nguội dần rồi đông lại.",
+  "en": "You spend three days and nights laying a sealing formation. The pool cools and congeals."
+ },
+ {
+  "vi": "Lấy một bình máu rồi đi",
+  "en": "Take a flask of blood and go"
+ },
+ {
+  "vi": "được Huyết Sát Đan",
+  "en": "get Blood Fiend Pills"
+ },
+ {
+  "vi": "+2 Huyết Sát Đan",
+  "en": "+2 Blood Fiend Pill"
+ },
+ {
+  "vi": "Bạn luyện bình máu thành hai viên Huyết Sát Đan.",
+  "en": "You refine the flask of blood into two Blood Fiend Pills."
+ },
+ {
+  "vi": "Oan hồn dưới gốc hòe",
+  "en": "Wronged ghost under the pagoda tree"
+ },
+ {
+  "vi": "Dưới gốc hòe già, một oan hồn tóc dài khóc ri rỉ suốt đêm. Nó chưa siêu thoát được vì mối hận năm xưa.",
+  "en": "Under an old pagoda tree, a long-haired ghost weeps all night. It cannot pass on because of a grudge from long ago."
+ },
+ {
+  "vi": "Luyện thành quỷ nô",
+  "en": "Bind it as a ghost servant"
+ },
+ {
+  "vi": "quỷ nô đỡ một lần chết, đạo tâm -",
+  "en": "ghost servant blocks one death, Dao Heart -"
+ },
+ {
+  "vi": "Quỷ nô",
+  "en": "Ghost servant"
+ },
+ {
+  "vi": "Bạn nhốt oan hồn vào hồ lô. Từ nay nó sẽ liều mạng che chở cho chủ một lần.",
+  "en": "You trap the ghost in a gourd. From now on it will lay down its life to shield its master once."
+ },
+ {
+  "vi": "Siêu độ cho nó",
+  "en": "Release its soul"
+ },
+ {
+  "vi": "đạo tâm +, tâm ma -",
+  "en": "Dao Heart +, heart demon -"
+ },
+ {
+  "vi": "Bạn tụng kinh suốt đêm. Gần sáng, oan hồn cúi đầu cảm tạ rồi tan vào sương.",
+  "en": "You chant sutras all night. Near dawn, the ghost bows in thanks and fades into the mist."
+ },
+ {
+  "vi": "Rời đi",
+  "en": "Leave"
+ },
+ {
+  "vi": "Tiếng khóc đuổi theo bạn tới tận đầu làng.",
+  "en": "Its weeping follows you all the way to the village gate."
+ },
+ {
+  "vi": "Ma môn chiêu mộ",
+  "en": "Demonic sect recruitment"
+ },
+ {
+  "vi": "Một kẻ đeo mặt nạ quỷ chặn đường, chìa ra lệnh bài đen: \"Huyết Sát Môn để mắt tới ngươi lâu rồi. Gia nhập đi, thiên hạ sẽ là của chúng ta.\"",
+  "en": "A figure in a ghost mask blocks your path and holds out a black token: \"Huyết Sát Sect has had its eye on you for a while. Join us, and the world will be ours.\""
+ },
+ {
+  "vi": "Nhận lệnh bài",
+  "en": "Accept the token"
+ },
+ {
+  "vi": "Huyết Sát Bào, tu vi +, đạo tâm -",
+  "en": "Huyết Sát Robe, cultivation +, Dao Heart -"
+ },
+ {
+  "vi": "Huyết Sát Môn",
+  "en": "Huyết Sát Môn"
+ },
+ {
+  "vi": "Bạn nhận lệnh bài và một tấm Huyết Sát Bào. Từ nay ma môn là chỗ dựa của bạn.",
+  "en": "You accept the token and a Huyết Sát Robe. From now on the demonic sect has your back."
+ },
+ {
+  "vi": "Giả vờ nhận rồi tố giác",
+  "en": "Pretend to accept, then report them"
+ },
+ {
+  "vi": "đạo tâm +, có thể bị trả thù",
+  "en": "Dao Heart +, may face revenge"
+ },
+ {
+  "vi": "Chính phái phá được một phân đà ma môn nhờ bạn. Ma môn cho người ám sát, bạn thoát được nhưng bị thương.{0}",
+  "ph": [
+   "hurt(c, 20, ctx)"
+  ],
+  "en": "Thanks to you, the righteous sects destroy a demonic sect branch. The demonic sect sends assassins; you escape, but wounded.{0}"
+ },
+ {
+  "vi": "Chính phái phá được một phân đà ma môn nhờ bạn, thưởng một trăm năm mươi linh thạch.",
+  "en": "Thanks to you, the righteous sects destroy a demonic sect branch and reward you a hundred and fifty spirit stones."
+ },
+ {
+  "vi": "Từ chối",
+  "en": "Refuse"
+ },
+ {
+  "vi": "Kẻ đeo mặt nạ cười khẩy rồi biến vào bóng tối.",
+  "en": "The masked figure sneers and melts into the shadows."
+ }
+]

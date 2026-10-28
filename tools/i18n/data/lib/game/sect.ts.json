@@ -1,0 +1,273 @@
+[
+ {
+  "vi": "Tạp dịch",
+  "en": "Handyman"
+ },
+ {
+  "vi": "Ngoại môn đệ tử",
+  "en": "Outer Disciple"
+ },
+ {
+  "vi": "Nội môn đệ tử",
+  "en": "Inner Disciple"
+ },
+ {
+  "vi": "Chân truyền đệ tử",
+  "en": "True Disciple"
+ },
+ {
+  "vi": "Huyết nô",
+  "en": "Blood Slave"
+ },
+ {
+  "vi": "Ngoại đường sát thủ",
+  "en": "Outer Hall Assassin"
+ },
+ {
+  "vi": "Nội đường hộ pháp",
+  "en": "Inner Hall Protector"
+ },
+ {
+  "vi": "Huyết Sát Thánh tử",
+  "en": "Blood Fiend Holy Son"
+ },
+ {
+  "vi": "Học đồ",
+  "en": "Apprentice"
+ },
+ {
+  "vi": "Ký danh đệ tử",
+  "en": "Registered Disciple"
+ },
+ {
+  "vi": "Thân truyền đệ tử",
+  "en": "Personal Disciple"
+ },
+ {
+  "vi": "Thiên Cơ truyền nhân",
+  "en": "Heir of Thiên Cơ"
+ },
+ {
+  "vi": "Ngoại môn",
+  "en": "Outer"
+ },
+ {
+  "vi": "Nội môn",
+  "en": "Inner"
+ },
+ {
+  "vi": "Chân truyền",
+  "en": "True"
+ },
+ {
+  "vi": "Sát thủ",
+  "en": "Assassin"
+ },
+ {
+  "vi": "Hộ pháp",
+  "en": "Protector"
+ },
+ {
+  "vi": "Thánh tử",
+  "en": "Holy Son"
+ },
+ {
+  "vi": "Ký danh",
+  "en": "Registered"
+ },
+ {
+  "vi": "Thân truyền",
+  "en": "Personal"
+ },
+ {
+  "vi": "Truyền nhân",
+  "en": "Heir"
+ },
+ {
+  "vi": "Hỏa đầu tăng",
+  "en": "Kitchen monk"
+ },
+ {
+  "vi": "Tỳ kheo",
+  "en": "Bhikkhu"
+ },
+ {
+  "vi": "Hộ pháp La Hán",
+  "en": "Arhat Protector"
+ },
+ {
+  "vi": "Hỏa đầu",
+  "en": "Kitchen"
+ },
+ {
+  "vi": "La Hán",
+  "en": "Arhat"
+ },
+ {
+  "vi": "Mài kiếm đồng",
+  "en": "Sword-grinding boy"
+ },
+ {
+  "vi": "Kiếm đồng",
+  "en": "Sword boy"
+ },
+ {
+  "vi": "Kiếm sĩ",
+  "en": "Swordsman"
+ },
+ {
+  "vi": "Kiếm Cốc truyền nhân",
+  "en": "Heir of Kiếm Cốc"
+ },
+ {
+  "vi": "Mài kiếm",
+  "en": "Grinder"
+ },
+ {
+  "vi": "Dược nô",
+  "en": "Herb slave"
+ },
+ {
+  "vi": "Độc đồng",
+  "en": "Poison boy"
+ },
+ {
+  "vi": "Độc sứ",
+  "en": "Poison envoy"
+ },
+ {
+  "vi": "Vạn Độc Thánh sứ",
+  "en": "Holy Envoy of Vạn Độc"
+ },
+ {
+  "vi": "Thánh sứ",
+  "en": "Holy Envoy"
+ },
+ {
+  "vi": "Yêu bộc",
+  "en": "Yao servant"
+ },
+ {
+  "vi": "Yêu binh",
+  "en": "Yao soldier"
+ },
+ {
+  "vi": "Yêu tướng",
+  "en": "Yao general"
+ },
+ {
+  "vi": "Yêu Thần tử",
+  "en": "Yao Divine Son"
+ },
+ {
+  "vi": "Thần tử",
+  "en": "Divine Son"
+ },
+ {
+  "vi": "Huyết Sát Môn",
+  "en": "Huyết Sát Môn"
+ },
+ {
+  "vi": "Vạn Độc Môn",
+  "en": "Vạn Độc Môn"
+ },
+ {
+  "vi": "Yêu Thần Điện",
+  "en": "Yêu Thần Điện"
+ },
+ {
+  "vi": "Thiên Cơ Các",
+  "en": "Thiên Cơ Các"
+ },
+ {
+  "vi": "Bái nhập {0}, làm {1}",
+  "ph": [
+   "sect",
+   "rankName(c)"
+  ],
+  "en": "Joined {0} as {1}"
+ },
+ {
+  "vi": "Thăng làm {0} của {1}",
+  "ph": [
+   "name",
+   "c.sect"
+  ],
+  "en": "Promoted to {0} of {1}"
+ },
+ {
+  "vi": " Các chủ truyền cho bạn thuật xem thiên cơ: tu luyện nhanh hơn 40%, đột phá dễ hơn, khí vận +10, và một tấm bùa thế mạng.",
+  "en": " The Pavilion Master teaches you to read the heavenly secrets: 40% faster cultivation, easier breakthroughs, Luck +10, and a life-substitute talisman."
+ },
+ {
+  "vi": " Lão tổ ban cho ma công bí truyền: tu luyện nhanh hơn 40%, đột phá dễ hơn.",
+  "en": " The Patriarch grants you secret demonic arts: 40% faster cultivation, easier breakthroughs."
+ },
+ {
+  "vi": " Trưởng lão nhận bạn làm đồ đệ thân truyền: tu luyện nhanh hơn 40%, đột phá dễ hơn, sư phụ sẽ cứu bạn một lần.",
+  "en": " An Elder takes you as a personal disciple: 40% faster cultivation, easier breakthroughs, and your Master will save you once."
+ },
+ {
+  "vi": " Được vào Tàng Kinh Các (ngộ tính +5), tu luyện nhanh hơn 25%.",
+  "en": " You may enter the Scripture Pavilion (Insight +5), cultivation 25% faster."
+ },
+ {
+  "vi": " Tu luyện nhanh hơn 10%.",
+  "en": " Cultivation 10% faster."
+ },
+ {
+  "vi": " Tông môn ban cho {0} mới, mở Túi đồ để mặc.",
+  "ph": [
+   "gear.length > 1 ? 'áo bào và lệnh bài' : 'áo bào'"
+  ],
+  "en": " The sect grants you a new {0}; open your Inventory to wear it."
+ },
+ {
+  "vi": "áo bào và lệnh bài",
+  "en": "robe and token"
+ },
+ {
+  "vi": "áo bào",
+  "en": "robe"
+ },
+ {
+  "vi": "{0} Bạn được thăng làm {1}.{2}{3}",
+  "ph": [
+   "why",
+   "name",
+   "perk",
+   "gn"
+  ],
+  "en": "{0} You are promoted to {1}.{2}{3}"
+ },
+ {
+  "vi": "Tiếng ác của bạn vang tới tổng đàn, lão tổ cười lớn.",
+  "en": "Your infamy reaches the headquarters, and the Patriarch laughs aloud."
+ },
+ {
+  "vi": "Tin bạn đột phá {0} truyền về sơn môn.",
+  "ph": [
+   "c.realm >= 3 ? 'Kim Đan' : 'Trúc Cơ'"
+  ],
+  "en": "News of your {0} breakthrough reaches the sect."
+ },
+ {
+  "vi": "Kim Đan",
+  "en": "Golden Core"
+ },
+ {
+  "vi": "Trúc Cơ",
+  "en": "Foundation"
+ },
+ {
+  "vi": " Tấm bùa thế mạng Các chủ Thiên Cơ Các trao cho bạn bỗng bốc cháy. Kiếp nạn đã được tính trước, bạn thoát chết trong gang tấc.",
+  "en": " The life-substitute talisman from the Thiên Cơ Các Pavilion Master suddenly bursts into flame. This calamity was foreseen - you escape death by a hair."
+ },
+ {
+  "vi": " Sư phụ ở {0} cảm ứng được, một đạo kiếm quang xé trời lao tới cứu bạn. Bạn thoát chết, sư phụ chỉ để lại một câu: \"Lần sau tự lo.\"",
+  "ph": [
+   "c.sect"
+  ],
+  "en": " Your Master at {0} senses it, and a sword light tears across the sky to save you. You live, and your Master leaves only one line: \"Next time, handle it yourself.\""
+ }
+]

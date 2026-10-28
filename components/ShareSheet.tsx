@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { copyText, shareTargets, type ShareOut } from '@/lib/shareCard';
 import { track } from '@/lib/track';
+import { tr } from '@/lib/i18n';
 
 /**
  * Bảng khoe trong game: nút đi thẳng Threads, Facebook, Messenger, chép link (dán Zalo),
@@ -16,7 +17,7 @@ export default function ShareSheet({ out, kind, onClose }: { out: ShareOut; kind
   const go = (to: string) => track('share_to', { kind, to });
   async function copy() {
     go('copy');
-    setMsg((await copyText(`${out.text}\n${link}`)) ? 'Đã chép chữ kèm link. Dán vào Zalo hay nhóm chat là hiện hình nhân vật.' : 'Máy không cho chép, giữ ngón tay lên link bên dưới để chép.');
+    setMsg((await copyText(`${out.text}\n${link}`)) ? tr('Đã chép chữ kèm link. Dán vào Zalo hay nhóm chat là hiện hình nhân vật.', "Text and link copied. Paste it into Zalo or a group chat and your character's portrait shows up.") : tr('Máy không cho chép, giữ ngón tay lên link bên dưới để chép.', "Your device won't allow copying - long-press the link below to copy it."));
   }
   async function more() {
     go('native');
@@ -25,11 +26,11 @@ export default function ShareSheet({ out, kind, onClose }: { out: ShareOut; kind
     } catch {}
   }
   return (
-    <div className="ss-wrap" role="dialog" aria-modal="true" aria-label="Khoe lên mạng" onClick={onClose}>
+    <div className="ss-wrap" role="dialog" aria-modal="true" aria-label={tr("Khoe lên mạng", "Show off online")} onClick={onClose}>
       <div className="ss-sheet" onClick={(e) => e.stopPropagation()}>
         <div className="ss-head">
-          <b>Khoe lên mạng</b>
-          <button className="ss-x" onClick={onClose} aria-label="Đóng">
+          <b>{tr("Khoe lên mạng", "Show off online")}</b>
+          <button className="ss-x" onClick={onClose} aria-label={tr("Đóng", "Close")}>
             ✕
           </button>
         </div>
@@ -45,12 +46,14 @@ export default function ShareSheet({ out, kind, onClose }: { out: ShareOut; kind
             Messenger
           </a>
           <button className="ss-btn copy" onClick={copy}>
-            Chép link (Zalo)
+            
+            {tr("Chép link (Zalo)", "Copy link (Zalo)")}
           </button>
         </div>
         {typeof navigator !== 'undefined' && 'share' in navigator && (
           <button className="ss-more" onClick={more}>
-            Cách khác...
+            
+            {tr("Cách khác...", "Other ways...")}
           </button>
         )}
         <code className="ss-link">{link}</code>

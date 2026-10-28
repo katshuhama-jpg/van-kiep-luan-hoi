@@ -1,0 +1,167 @@
+[
+ {
+  "vi": "Vạn Kiếm Quy Tông",
+  "en": "Ten Thousand Swords Return"
+ },
+ {
+  "vi": "Huyết Hải Ma Đao",
+  "en": "Blood Sea Demon Blade"
+ },
+ {
+  "vi": "Kim Cang La Hán",
+  "en": "Vajra Arhat"
+ },
+ {
+  "vi": "Tru Tiên Kiếm Trận",
+  "en": "Immortal-Slaying Sword Array"
+ },
+ {
+  "vi": "Cửu Chuyển Đan Hỏa",
+  "en": "Nine-Turn Pill Flame"
+ },
+ {
+  "vi": "Yêu Thần Giáng Thế",
+  "en": "Yao God Descends"
+ },
+ {
+  "vi": "Toàn Lực Nhất Kích",
+  "en": "All-Out Strike"
+ },
+ {
+  "vi": "Kim",
+  "en": "Metal"
+ },
+ {
+  "vi": "Mộc",
+  "en": "Wood"
+ },
+ {
+  "vi": "Thủy",
+  "en": "Water"
+ },
+ {
+  "vi": "Hỏa",
+  "en": "Fire"
+ },
+ {
+  "vi": "Thổ",
+  "en": "Earth"
+ },
+ {
+  "vi": "{0} dồn toàn bộ nội lực, tung tuyệt kỹ “{1}”!",
+  "ph": [
+   "me.name",
+   "ultName(me)"
+  ],
+  "en": "{0} pours out all their inner force and unleashes the ultimate move “{1}”!"
+ },
+ {
+  "vi": "{0} trúng trọn, mất {1} máu.{2}",
+  "ph": [
+   "foe.name",
+   "r.toFoe",
+   "r.elemTag === 'khac' ? ' Bản mệnh khắc chế, uy lực tăng vọt.' : ''"
+  ],
+  "en": "{0} takes it head on, losing {1} HP.{2}"
+ },
+ {
+  "vi": " Bản mệnh khắc chế, uy lực tăng vọt.",
+  "en": " Natal element overcome - the power soars."
+ },
+ {
+  "vi": "{0} tung tuyệt kỹ “{1}”!",
+  "ph": [
+   "foe.name",
+   "ultName(foe)"
+  ],
+  "en": "{0} unleashes the ultimate move “{1}”!"
+ },
+ {
+  "vi": "Bạn đón đúng nhịp, hóa giải toàn bộ rồi phản đòn: {0} mất {1} máu.",
+  "ph": [
+   "foe.name",
+   "r.toFoe"
+  ],
+  "en": "You meet it right on the beat, neutralize it all and counter: {0} loses {1} HP."
+ },
+ {
+  "vi": "Bạn đỡ được phần lớn, vẫn mất {0} máu.",
+  "ph": [
+   "r.toMe"
+  ],
+  "en": "You block most of it, but still lose {0} HP."
+ },
+ {
+  "vi": "Bạn chậm một nhịp, trúng trọn, mất {0} máu.",
+  "ph": [
+   "r.toMe"
+  ],
+  "en": "You're a beat too slow and take it full on, losing {0} HP."
+ },
+ {
+  "vi": "{0}: “{1}” hệ {2}.",
+  "ph": [
+   "me.name",
+   "a",
+   "elName[r.myEl!]"
+  ],
+  "en": "{0}: “{1}”, {2} element."
+ },
+ {
+  "vi": " Hành khắc chế!",
+  "en": " Element advantage!"
+ },
+ {
+  "vi": " Hành bị khắc, đòn nhẹ đi.",
+  "en": " Element countered, the blow weakens."
+ },
+ {
+  "vi": " Chí mạng!",
+  "en": " Critical!"
+ },
+ {
+  "vi": "Hai chiêu cùng thế va nhau. Bạn mất {0}, đối thủ mất {1} máu.{2}",
+  "ph": [
+   "r.toMe",
+   "r.toFoe",
+   "tag"
+  ],
+  "en": "Two moves of the same stance collide. You lose {0}, your opponent loses {1} HP.{2}"
+ },
+ {
+  "vi": "Bạn chặn gọn rồi phản đòn, đối thủ mất {0} máu.{1}{2}",
+  "ph": [
+   "r.toFoe",
+   "tag",
+   "crit"
+  ],
+  "en": "You block cleanly and counter; your opponent loses {0} HP.{1}{2}"
+ },
+ {
+  "vi": "Bạn đánh trúng, đối thủ mất {0} máu.{1}{2}",
+  "ph": [
+   "r.toFoe",
+   "tag",
+   "crit"
+  ],
+  "en": "You land a hit; your opponent loses {0} HP.{1}{2}"
+ },
+ {
+  "vi": "Đối thủ chặn gọn rồi phản đòn, bạn mất {0} máu.{1}{2}",
+  "ph": [
+   "r.toMe",
+   "tag",
+   "crit"
+  ],
+  "en": "Your opponent blocks cleanly and counters; you lose {0} HP.{1}{2}"
+ },
+ {
+  "vi": "Bạn trúng đòn, mất {0} máu.{1}{2}",
+  "ph": [
+   "r.toMe",
+   "tag",
+   "crit"
+  ],
+  "en": "You get hit, losing {0} HP.{1}{2}"
+ }
+]

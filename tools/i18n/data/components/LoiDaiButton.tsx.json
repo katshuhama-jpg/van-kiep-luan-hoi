@@ -1,0 +1,35 @@
+[
+ {
+  "vi": "⚔ Ra đài 25 giây",
+  "en": "⚔ Enter the arena, 25s"
+ },
+ {
+  "vi": "còn {0} lượt hôm nay",
+  "ph": [
+   "v.left"
+  ],
+  "en": "{0} bouts left today"
+ },
+ {
+  "vi": "{0} kẻ chờ báo thù",
+  "ph": [
+   "v.revenge"
+  ],
+  "en": "{0} awaiting revenge"
+ },
+ {
+  "vi": "Còn {0} lượt",
+  "ph": [
+   "v!.left"
+  ],
+  "en": "{0} bouts left"
+ },
+ {
+  "vi": "Lôi đài hằng ngày",
+  "en": "Daily Arena"
+ },
+ {
+  "vi": "Luật hôm nay: ",
+  "en": "Today's rule: "
+ }
+]

@@ -1,0 +1,714 @@
+[
+ {
+  "vi": "Ngoại môn đạo bào",
+  "en": "Outer Disciple's Robe"
+ },
+ {
+  "vi": "Đạo bào xám của ngoại môn Thanh Vân, tay áo thêu một đám mây.",
+  "en": "The grey robe of Thanh Vân's outer sect, a single cloud embroidered on the sleeve."
+ },
+ {
+  "vi": "Thăng làm Ngoại môn đệ tử Thanh Vân Tông",
+  "en": "Promoted to Outer Disciple of Thanh Vân Tông"
+ },
+ {
+  "vi": "Nội môn thanh bào",
+  "en": "Inner Disciple's Blue Robe"
+ },
+ {
+  "vi": "Thanh bào nội môn, viền bạc, đi đâu cũng được nể ba phần.",
+  "en": "The inner sect's blue robe, trimmed in silver. Wherever you go, people show you a little respect."
+ },
+ {
+  "vi": "Thăng làm Nội môn đệ tử Thanh Vân Tông",
+  "en": "Promoted to Inner Disciple of Thanh Vân Tông"
+ },
+ {
+  "vi": "Chân truyền tử y",
+  "en": "True Disciple's Violet Robe"
+ },
+ {
+  "vi": "Tử y chỉ chân truyền đệ tử mới được mặc, thêu chín tầng mây.",
+  "en": "A violet robe worn only by true disciples, embroidered with nine tiers of clouds."
+ },
+ {
+  "vi": "Thăng làm Chân truyền đệ tử Thanh Vân Tông",
+  "en": "Promoted to True Disciple of Thanh Vân Tông"
+ },
+ {
+  "vi": "Thanh Vân lệnh",
+  "en": "Thanh Vân Token"
+ },
+ {
+  "vi": "Lệnh bài ngọc của Thanh Vân Tông, gặp đồng đạo chính phái thì được giúp.",
+  "en": "A jade token of Thanh Vân Tông. Righteous cultivators you meet will lend a hand."
+ },
+ {
+  "vi": "Thanh Vân kiếm",
+  "en": "Thanh Vân Sword"
+ },
+ {
+  "vi": "Kiếm tổ sư để lại trong Kiếm Các, chỉ trao cho người thắng được Kiếm Linh.",
+  "en": "A sword the founder left in the Sword Pavilion, granted only to one who defeats the Sword Spirit."
+ },
+ {
+  "vi": "Huyết nô y",
+  "en": "Blood Slave's Garb"
+ },
+ {
+  "vi": "Áo vải thô nhuộm máu khô, mặc vào là biết mạng mình rẻ.",
+  "en": "Coarse cloth stained with dried blood. Put it on and you know your life comes cheap."
+ },
+ {
+  "vi": "Nhập Huyết Sát Môn",
+  "en": "Joined Huyết Sát Môn"
+ },
+ {
+  "vi": "Hộ pháp huyết bào",
+  "en": "Blood Robe of the Guardian"
+ },
+ {
+  "vi": "Bào đỏ thẫm của hộ pháp nội đường, mùi máu không bao giờ phai.",
+  "en": "The crimson robe of an inner hall guardian. The smell of blood never fades."
+ },
+ {
+  "vi": "Thăng làm Nội đường hộ pháp Huyết Sát Môn",
+  "en": "Promoted to Inner Hall Guardian of Huyết Sát Môn"
+ },
+ {
+  "vi": "Thánh tử huyết long bào",
+  "en": "Holy Son's Blood Dragon Robe"
+ },
+ {
+  "vi": "Long bào dệt bằng tơ tằm nuôi máu, chỉ Thánh tử Huyết Sát mới được khoác.",
+  "en": "A dragon robe woven from blood-fed silkworm silk, worn only by the Holy Son of Huyết Sát."
+ },
+ {
+  "vi": "Thăng làm Huyết Sát Thánh tử",
+  "en": "Promoted to Holy Son of Huyết Sát"
+ },
+ {
+  "vi": "Huyết Sát hắc lệnh",
+  "en": "Huyết Sát Black Token"
+ },
+ {
+  "vi": "Lệnh bài sắt đen, đưa ra là ma tu khắp nơi phải nhường đường.",
+  "en": "A black iron token. Show it and demonic cultivators everywhere step aside."
+ },
+ {
+  "vi": "Huyết Trì ma đao",
+  "en": "Blood Pool Demon Saber"
+ },
+ {
+  "vi": "Đao rèn từ xương Ma Giao dưới đáy huyết trì, càng chém càng khát.",
+  "en": "A saber forged from the bones of a Demon Flood Dragon at the bottom of the blood pool. The more it cuts, the thirstier it gets."
+ },
+ {
+  "vi": "Ký danh lam bào",
+  "en": "Registered Disciple's Blue Robe"
+ },
+ {
+  "vi": "Áo lam của đệ tử ký danh Thiên Cơ Các, tay áo thêu bát quái nhỏ.",
+  "en": "The blue robe of a registered disciple of Thiên Cơ Các, a tiny bagua on the sleeve."
+ },
+ {
+  "vi": "Thăng làm Ký danh đệ tử Thiên Cơ Các",
+  "en": "Promoted to Registered Disciple of Thiên Cơ Các"
+ },
+ {
+  "vi": "Tinh đồ đạo bào",
+  "en": "Star Chart Robe"
+ },
+ {
+  "vi": "Đạo bào dệt hình sao trời, đêm xuống tự phát sáng.",
+  "en": "A Daoist robe woven with the stars of heaven. It glows on its own at nightfall."
+ },
+ {
+  "vi": "Thăng làm Thân truyền đệ tử Thiên Cơ Các",
+  "en": "Promoted to Personal Disciple of Thiên Cơ Các"
+ },
+ {
+  "vi": "Thiên Cơ tử kim bào",
+  "en": "Thiên Cơ Violet-Gold Robe"
+ },
+ {
+  "vi": "Áo của người được truyền thuật xem thiên cơ, mặc vào thấy trước ba bước.",
+  "en": "The robe of one taught to read the secrets of Heaven. Wear it and you see three steps ahead."
+ },
+ {
+  "vi": "Thăng làm Thiên Cơ truyền nhân",
+  "en": "Promoted to Heir of Thiên Cơ"
+ },
+ {
+  "vi": "Sa di hoàng y",
+  "en": "Novice's Yellow Robe"
+ },
+ {
+  "vi": "Áo vàng nhạt của sa di Phổ Đà Sơn, vá nhiều chỗ mà vẫn sạch tinh.",
+  "en": "The pale yellow robe of a Phổ Đà Sơn novice, patched all over yet spotlessly clean."
+ },
+ {
+  "vi": "Làm Sa di Phổ Đà Sơn",
+  "en": "Became a novice monk of Phổ Đà Sơn"
+ },
+ {
+  "vi": "Tỳ kheo cà sa",
+  "en": "Bhikkhu's Kasaya"
+ },
+ {
+  "vi": "Cà sa đỏ thẫm, khoác vào thì tâm ma khó gần.",
+  "en": "A deep red kasaya. Wear it and heart demons find it hard to get close."
+ },
+ {
+  "vi": "Thăng làm Tỳ kheo Phổ Đà Sơn",
+  "en": "Promoted to Bhikkhu of Phổ Đà Sơn"
+ },
+ {
+  "vi": "Bồ đề bội",
+  "en": "Bodhi Pendant"
+ },
+ {
+  "vi": "Ngọc bội khắc lá bồ đề, đeo lâu thấy lòng lặng như nước.",
+  "en": "A jade pendant carved with a bodhi leaf. Wear it long enough and your heart grows still as water."
+ },
+ {
+  "vi": "La Hán kim lan cà sa",
+  "en": "Arhat's Gold-Thread Kasaya"
+ },
+ {
+  "vi": "Cà sa dệt chỉ vàng, chỉ Hộ pháp La Hán của Phổ Đà Sơn mới được khoác.",
+  "en": "A kasaya woven with gold thread, worn only by the Arhat Guardians of Phổ Đà Sơn."
+ },
+ {
+  "vi": "Thăng làm Hộ pháp La Hán",
+  "en": "Promoted to Arhat Guardian"
+ },
+ {
+  "vi": "Kiếm đồng bạch y",
+  "en": "Sword Page's White Robe"
+ },
+ {
+  "vi": "Áo trắng gọn tay của kiếm đồng Kiếm Cốc, tiện múa kiếm.",
+  "en": "The neat, close-sleeved white robe of a Kiếm Cốc sword page, made for sword dancing."
+ },
+ {
+  "vi": "Làm Kiếm đồng Kiếm Cốc",
+  "en": "Became a sword page of Kiếm Cốc"
+ },
+ {
+  "vi": "Kiếm sĩ thanh bào",
+  "en": "Swordsman's Blue Robe"
+ },
+ {
+  "vi": "Áo xanh thẫm, vạt sau xẻ đôi để rút kiếm sau lưng.",
+  "en": "A deep blue robe with a split back hem for drawing the sword on your back."
+ },
+ {
+  "vi": "Thăng làm Kiếm sĩ Kiếm Cốc",
+  "en": "Promoted to Swordsman of Kiếm Cốc"
+ },
+ {
+  "vi": "Kiếm hồn bội",
+  "en": "Sword Soul Pendant"
+ },
+ {
+  "vi": "Ngọc bội giữ một sợi kiếm ý của tổ sư Kiếm Cốc.",
+  "en": "A jade pendant holding a single thread of sword intent from the founder of Kiếm Cốc."
+ },
+ {
+  "vi": "Vạn kiếm ngân bào",
+  "en": "Myriad Swords Silver Robe"
+ },
+ {
+  "vi": "Bào bạc thêu vạn thanh kiếm nhỏ, truyền nhân Kiếm Cốc mặc khi xuất cốc.",
+  "en": "A silver robe embroidered with ten thousand tiny swords, worn by Kiếm Cốc's heirs when they leave the valley."
+ },
+ {
+  "vi": "Thăng làm Kiếm Cốc truyền nhân",
+  "en": "Promoted to Heir of Kiếm Cốc"
+ },
+ {
+  "vi": "Dược nô y",
+  "en": "Herb Slave's Garb"
+ },
+ {
+  "vi": "Áo thô xanh rêu, tay áo loang vết độc ăn mòn.",
+  "en": "A coarse moss-green garment, its sleeves blotched where poison ate through."
+ },
+ {
+  "vi": "Làm Dược nô Vạn Độc Môn",
+  "en": "Became an herb slave of Vạn Độc Môn"
+ },
+ {
+  "vi": "Độc sứ tử bào",
+  "en": "Poison Envoy's Violet Robe"
+ },
+ {
+  "vi": "Bào tím than ngấm sẵn độc, kẻ nắm áo bạn sẽ hối hận.",
+  "en": "A charcoal-violet robe steeped in poison. Whoever grabs you by the collar will regret it."
+ },
+ {
+  "vi": "Thăng làm Độc sứ Vạn Độc Môn",
+  "en": "Promoted to Poison Envoy of Vạn Độc Môn"
+ },
+ {
+  "vi": "Vạn độc hồ lô",
+  "en": "Myriad Poison Gourd"
+ },
+ {
+  "vi": "Hồ lô nuôi trăm loại độc trùng, mở nút ra là cả đám tản đi.",
+  "en": "A gourd housing a hundred kinds of venomous insects. Pull the stopper and the whole swarm spreads out."
+ },
+ {
+  "vi": "Độc Thánh lục bào",
+  "en": "Poison Saint's Green Robe"
+ },
+ {
+  "vi": "Bào lục bích dệt từ tơ của nhện độc nghìn năm.",
+  "en": "A jade-green robe woven from the silk of a thousand-year venomous spider."
+ },
+ {
+  "vi": "Thăng làm Vạn Độc Thánh sứ",
+  "en": "Promoted to Holy Envoy of Vạn Độc Môn"
+ },
+ {
+  "vi": "Yêu bộc thảo y",
+  "en": "Yao Servant's Grass Cloak"
+ },
+ {
+  "vi": "Áo kết bằng cỏ và lông thú, yêu tộc mới vào điện đều mặc.",
+  "en": "A cloak of woven grass and beast fur, worn by every yao newly entering the hall."
+ },
+ {
+  "vi": "Làm Yêu bộc Yêu Thần Điện",
+  "en": "Became a yao servant of Yêu Thần Điện"
+ },
+ {
+  "vi": "Yêu tướng lân giáp",
+  "en": "Yao General's Scale Armor"
+ },
+ {
+  "vi": "Giáp vảy ghép từ da yêu thú đã chết dưới tay bạn.",
+  "en": "Scale armor pieced together from the hides of demon beasts that died by your hand."
+ },
+ {
+  "vi": "Thăng làm Yêu tướng Yêu Thần Điện",
+  "en": "Promoted to Yao General of Yêu Thần Điện"
+ },
+ {
+  "vi": "Yêu Thần lệnh",
+  "en": "Yêu Thần Token"
+ },
+ {
+  "vi": "Lệnh bài đá xanh, giơ lên là yêu thú trong vòng trăm dặm cúi đầu.",
+  "en": "A green stone token. Raise it and every demon beast within a hundred li bows its head."
+ },
+ {
+  "vi": "Yêu Thần long lân bào",
+  "en": "Yao God's Dragon Scale Robe"
+ },
+ {
+  "vi": "Bào phủ vảy rồng xanh, dấu hiệu của người được Yêu Thần chọn.",
+  "en": "A robe covered in azure dragon scales, the mark of one chosen by the Yao God."
+ },
+ {
+  "vi": "Thăng làm Yêu Thần tử",
+  "en": "Promoted to Son of the Yao God"
+ },
+ {
+  "vi": "Thiên Cơ la bàn",
+  "en": "Thiên Cơ Compass"
+ },
+ {
+  "vi": "La bàn chỉ không phải hướng bắc mà hướng cơ duyên.",
+  "en": "A compass that points not north, but toward opportunity."
+ },
+ {
+  "vi": "Cơ quan tâm",
+  "en": "Mechanism Heart"
+ },
+ {
+  "vi": "Bánh răng lõi của khôi lỗi cơ quan, quay mãi không ngừng.",
+  "en": "The core gear of a mechanical puppet. It turns and turns and never stops."
+ },
+ {
+  "vi": "Kính ảnh phiến",
+  "en": "Mirror-Shadow Fan"
+ },
+ {
+  "vi": "Quạt khảm mảnh gương phân thân, phẩy ra ba bóng người.",
+  "en": "A fan inlaid with clone-mirror shards. One wave and three figures appear."
+ },
+ {
+  "vi": "Cửu cung trận bàn",
+  "en": "Nine Palaces Formation Plate"
+ },
+ {
+  "vi": "Trận bàn chín ô, đặt xuống là thành trận.",
+  "en": "A nine-square formation plate. Set it down and a formation forms."
+ },
+ {
+  "vi": "Thiên Cơ toán kiếm",
+  "en": "Thiên Cơ Calculating Sword"
+ },
+ {
+  "vi": "Kiếm tính trước đường đi của đối thủ, chém đâu trúng đó.",
+  "en": "A sword that calculates the opponent's path in advance. Wherever it cuts, it hits."
+ },
+ {
+  "vi": "Hư không y",
+  "en": "Void Robe"
+ },
+ {
+  "vi": "Áo may bằng một mảnh hư không, đao kiếm chém qua như chém vào nước.",
+  "en": "A robe sewn from a scrap of the void. Blades pass through it like cutting water."
+ },
+ {
+  "vi": "Tinh hà châu",
+  "en": "Galaxy Pearl"
+ },
+ {
+  "vi": "Viên châu chứa cả một dải ngân hà thu nhỏ.",
+  "en": "A pearl holding an entire miniature Milky Way."
+ },
+ {
+  "vi": "Hỗn Độn trượng",
+  "en": "Chaos Staff"
+ },
+ {
+  "vi": "Gậy đẽo từ cành cây mọc trong hỗn độn, gõ xuống đất trời lẫn lộn.",
+  "en": "A staff carved from a branch that grew in primordial chaos. Strike the ground and heaven and earth tangle."
+ },
+ {
+  "vi": "Thôn Thiên giáp",
+  "en": "Sky-Devourer Armor"
+ },
+ {
+  "vi": "Giáp vảy Thôn Thiên Thú, nuốt cả sấm sét đánh vào người.",
+  "en": "Armor of Sky-Devouring Beast scales that swallows even the lightning that strikes you."
+ },
+ {
+  "vi": "Đồng nhân tâm",
+  "en": "Bronze Man's Heart"
+ },
+ {
+  "vi": "Lõi đồng trong ngực khôi lỗi, đeo vào thấy người cứng như đồng.",
+  "en": "The bronze core from a puppet's chest. Wear it and your body feels hard as bronze."
+ },
+ {
+  "vi": "Hạc vũ phiến",
+  "en": "Crane Feather Fan"
+ },
+ {
+  "vi": "Quạt kết bằng lông tiên hạc, phẩy một cái nhẹ cả người.",
+  "en": "A fan of immortal crane feathers. One wave and your whole body feels lighter."
+ },
+ {
+  "vi": "Giao lân giáp",
+  "en": "Flood Dragon Scale Armor"
+ },
+ {
+  "vi": "Giáp vảy giao long dưới Tỏa Yêu Tháp, nước lửa khó vào.",
+  "en": "Armor of flood dragon scales from beneath the Demon-Sealing Tower. Neither water nor fire gets through."
+ },
+ {
+  "vi": "Huyết khôi tâm",
+  "en": "Blood Puppet Heart"
+ },
+ {
+  "vi": "Tim của huyết khôi vẫn còn đập, ghê nhưng bổ.",
+  "en": "The heart of a blood puppet, still beating. Gross, but nourishing."
+ },
+ {
+  "vi": "Thi lang nha liên",
+  "en": "Corpse Wolf Fang Necklace"
+ },
+ {
+  "vi": "Chuỗi răng thi lang, đeo vào thú dữ tránh xa.",
+  "en": "A string of corpse wolf teeth. Wear it and wild beasts keep their distance."
+ },
+ {
+  "vi": "Vạn cổ hồ lô",
+  "en": "Myriad Gu Gourd"
+ },
+ {
+  "vi": "Hồ lô nhốt trăm con cổ, mở nắp ra là kẻ địch kêu trời.",
+  "en": "A gourd imprisoning a hundred gu. Lift the lid and your enemies cry to Heaven."
+ },
+ {
+  "vi": "Thiên tàm ti y",
+  "en": "Heavenly Silk Robe"
+ },
+ {
+  "vi": "Áo dệt từ tơ nhện tinh, mỏng như sương mà đao chém không đứt.",
+  "en": "A robe woven from spirit-spider silk, thin as mist yet no blade can cut it."
+ },
+ {
+  "vi": "Lang Vương trảo",
+  "en": "Wolf King Claws"
+ },
+ {
+  "vi": "Bộ vuốt sắt làm từ móng sói chúa, cào một cái lộ xương.",
+  "en": "Iron claws made from the talons of a wolf king. One swipe lays bone bare."
+ },
+ {
+  "vi": "Âm binh phù",
+  "en": "Underworld Soldier Talisman"
+ },
+ {
+  "vi": "Lá phù của quỷ tướng, đeo vào âm hồn không dám lại gần.",
+  "en": "A ghost general's talisman. Wear it and wandering spirits dare not come near."
+ },
+ {
+  "vi": "Huyết y",
+  "en": "Blood Robe"
+ },
+ {
+  "vi": "Áo đỏ của lão quái, mặc vào chém người không biết mỏi.",
+  "en": "The red robe of an old fiend. Wear it and you can cut people down without ever tiring."
+ },
+ {
+  "vi": "Xích Long kiếm",
+  "en": "Crimson Dragon Sword"
+ },
+ {
+  "vi": "Kiếm rèn trong dung nham bằng sừng Xích Diễm Giao, lưỡi còn đỏ rực.",
+  "en": "A sword forged in lava from the horn of a Crimson Flame Flood Dragon. Its blade still glows red."
+ },
+ {
+  "vi": "Kim thiềm bảo châu",
+  "en": "Golden Toad Treasure Pearl"
+ },
+ {
+  "vi": "Viên châu trong miệng cóc vàng, ai đeo tiền tự chảy về.",
+  "en": "The pearl from a golden toad's mouth. Whoever wears it, money flows to them on its own."
+ },
+ {
+  "vi": "Kim Long Lân kiếm",
+  "en": "Golden Dragon Scale Sword"
+ },
+ {
+  "vi": "Rèn từ vảy Thái Cổ Kim Long trong lò Bát Quái, chém ra một đường kim quang.",
+  "en": "Forged from the scales of the Primordial Golden Dragon in the Eight Trigrams Furnace. Each cut leaves a streak of golden light."
+ },
+ {
+  "vi": "Vảy rồng rơi ở Long Cung Thiên Thượng",
+  "en": "A dragon scale dropped in the Heavenly Dragon Palace"
+ },
+ {
+  "vi": "Thiên binh kim giáp",
+  "en": "Heavenly Soldier's Golden Armor"
+ },
+ {
+  "vi": "Giáp vàng của thiên binh, đao kiếm phàm trần chém không xước.",
+  "en": "The golden armor of a heavenly soldier. Mortal blades can't even scratch it."
+ },
+ {
+  "vi": "Lôi Công chùy",
+  "en": "Thunder Lord's Hammer"
+ },
+ {
+  "vi": "Chùy của Lôi Bộ, gõ một tiếng sấm rền chín tầng trời.",
+  "en": "A hammer of the Ministry of Thunder. One blow and thunder rolls through the nine heavens."
+ },
+ {
+  "vi": "Côn Bằng vũ y",
+  "en": "Kunpeng Feather Robe"
+ },
+ {
+  "vi": "Áo kết từ lông chim Bằng, khoác vào nhẹ như mây trôi.",
+  "en": "A robe of Peng feathers. Wear it and you feel light as a drifting cloud."
+ },
+ {
+  "vi": "Bàn Đào ngọc bội",
+  "en": "Peach of Immortality Pendant"
+ },
+ {
+  "vi": "Ngọc khắc hình quả đào tiên, đeo vào thấy người trẻ lại.",
+  "en": "Jade carved like an immortal peach. Wear it and you feel young again."
+ },
+ {
+  "vi": "Huyết ma giáp",
+  "en": "Blood Demon Armor"
+ },
+ {
+  "vi": "Giáp đúc từ máu đông của ma binh, càng đánh càng dày.",
+  "en": "Armor cast from the clotted blood of demon soldiers. The more you fight, the thicker it grows."
+ },
+ {
+  "vi": "Tam Đầu Khuyển nha",
+  "en": "Cerberus Fangs"
+ },
+ {
+  "vi": "Ba chiếc răng nanh chó địa ngục ghép thành vuốt, cào ra lửa.",
+  "en": "Three hellhound fangs set into claws that rake out fire."
+ },
+ {
+  "vi": "Cửu U ma vũ bào",
+  "en": "Nine Netherworlds Demon Feather Robe"
+ },
+ {
+  "vi": "Bào lông Ma Bằng, mặc vào ma khí quấn quanh không tan.",
+  "en": "A robe of Demon Peng feathers. Wear it and demonic qi coils around you, never dispersing."
+ },
+ {
+  "vi": "Diệt Thế ma đao",
+  "en": "World-Ending Demon Saber"
+ },
+ {
+  "vi": "Đao rèn từ xương sống Ma Long, một đao chém đứt cả không gian.",
+  "en": "A saber forged from a Demon Dragon's spine. One stroke cleaves space itself."
+ },
+ {
+  "vi": "Kim Long nghịch lân",
+  "en": "Golden Dragon's Reverse Scale"
+ },
+ {
+  "vi": "Chiếc vảy ngược dưới cằm rồng vàng, ai chạm vào rồng cũng nổi giận.",
+  "en": "The reverse scale beneath a golden dragon's chin. Touch it and any dragon flies into a rage."
+ },
+ {
+  "vi": "Tử Vân tiên bào",
+  "en": "Purple Cloud Immortal Robe"
+ },
+ {
+  "vi": "Tiên bào Thiên Đình ban cho người mới ghi tên vào tiên tịch, mây tím quấn quanh vạt áo.",
+  "en": "The robe the Heavenly Court grants to those newly entered in the immortal registry, purple clouds swirling round its hem."
+ },
+ {
+  "vi": "Phi thăng lên Tiên giới",
+  "en": "Ascended to the Immortal Realm"
+ },
+ {
+  "vi": "Lôi Âm tiên kiếm",
+  "en": "Thunderclap Immortal Sword"
+ },
+ {
+  "vi": "Kiếm của tiên quan Lôi Bộ, vung lên nghe tiếng sấm rền xa xa.",
+  "en": "The sword of an official of the Ministry of Thunder. Swing it and distant thunder rumbles."
+ },
+ {
+  "vi": "Tu tới Huyền Tiên ở Tiên giới",
+  "en": "Reached Mystic Immortal in the Immortal Realm"
+ },
+ {
+  "vi": "Tiên tịch ngọc phù",
+  "en": "Immortal Registry Jade Talisman"
+ },
+ {
+  "vi": "Ngọc phù khắc tên bạn trong sổ tiên tịch, đi đâu cũng được tiên quan nể mặt.",
+  "en": "A jade talisman bearing your name from the immortal registry. Immortal officials everywhere treat you with respect."
+ },
+ {
+  "vi": "Tu tới Kim Tiên ở Tiên giới",
+  "en": "Reached Golden Immortal in the Immortal Realm"
+ },
+ {
+  "vi": "Huyết Long ma bào",
+  "en": "Blood Dragon Demon Robe"
+ },
+ {
+  "vi": "Ma bào thêu rồng máu, Ma giới chỉ ban cho kẻ nuốt trọn chín đạo huyết lôi.",
+  "en": "A demon robe embroidered with blood dragons, granted by the Demon Realm only to those who swallow all nine blood thunderbolts."
+ },
+ {
+  "vi": "Vào Ma giới thành Ma Tướng",
+  "en": "Entered the Demon Realm as a Demon General"
+ },
+ {
+  "vi": "Diệt Hồn ma đao",
+  "en": "Soul-Slaying Demon Saber"
+ },
+ {
+  "vi": "Ma đao uống hồn kẻ bại trận, càng chém càng sắc.",
+  "en": "A demon saber that drinks the souls of the defeated. The more it cuts, the sharper it gets."
+ },
+ {
+  "vi": "Tu tới Ma Vương ở Ma giới",
+  "en": "Reached Demon King in the Demon Realm"
+ },
+ {
+  "vi": "Ma Tôn lệnh",
+  "en": "Demon Sovereign Token"
+ },
+ {
+  "vi": "Lệnh bài đen, giơ lên là vạn ma cúi đầu.",
+  "en": "A black token. Raise it and ten thousand demons bow their heads."
+ },
+ {
+  "vi": "Tu tới Ma Hoàng ở Ma giới",
+  "en": "Reached Demon Monarch in the Demon Realm"
+ },
+ {
+  "vi": "Hư Vân đạo bào",
+  "en": "Void Cloud Robe"
+ },
+ {
+  "vi": "Đạo bào dệt từ mây hư không, lúc rõ lúc mờ như không có thật.",
+  "en": "A Daoist robe woven from clouds of the void, now clear, now faint, as if it weren't real."
+ },
+ {
+  "vi": "Lạc vào Thái Hư giới",
+  "en": "Strayed into the Great Void Realm"
+ },
+ {
+  "vi": "Thái Hư xích",
+  "en": "Great Void Ruler"
+ },
+ {
+  "vi": "Cây thước đo được khoảng cách giữa các vì sao, đập xuống thì khoảng cách ấy biến mất.",
+  "en": "A ruler that can measure the distance between stars. Bring it down and that distance vanishes."
+ },
+ {
+  "vi": "Tu tới Huyền Tôn ở Thái Hư giới",
+  "en": "Reached Mystic Sovereign in the Great Void Realm"
+ },
+ {
+  "vi": "Tinh đồ ngọc giản",
+  "en": "Star Chart Jade Slip"
+ },
+ {
+  "vi": "Ngọc giản ghi tinh đồ cả ba cõi, đọc một lần là biết đường đi.",
+  "en": "A jade slip recording the star charts of all three realms. Read it once and you know the way."
+ },
+ {
+  "vi": "Tu tới Thái Hư Chân Quân",
+  "en": "Reached Great Void True Lord"
+ },
+ {
+  "vi": "Ngũ Hành Viên Mãn châu",
+  "en": "Five Elements Perfection Pearl"
+ },
+ {
+  "vi": "Năm sắc khí của năm tấm gương vỡ ngưng lại thành một viên châu. Chỉ người thắng cả năm bóng mà chưa từng ngã mới có.",
+  "en": "The five-colored qi of five shattered mirrors condensed into a single pearl. Only one who beats all five shadows without ever falling gets it."
+ },
+ {
+  "vi": "Qua Ngũ Hành Đài mà không thua lần nào",
+  "en": "Cleared the Five Elements Platform without a single loss"
+ },
+ {
+  "vi": "Câu hồn lệnh",
+  "en": "Soul Hook Token"
+ },
+ {
+  "vi": "Lệnh bài của sứ giả Địa phủ, đánh rơi khi bị đánh lui. Cầm nó, quỷ ma tránh đường.",
+  "en": "The token of an underworld envoy, dropped when driven back. Hold it and ghosts and demons give way."
+ },
+ {
+  "vi": "Đánh lui Câu hồn sứ giả",
+  "en": "Drove back the Soul-Hooking Envoy"
+ },
+ {
+  "vi": "Gương vỡ Vấn Tâm",
+  "en": "Shard of the Heart-Questioning Mirror"
+ },
+ {
+  "vi": "Mảnh gương cuối cùng trên Ngũ Hành Đài. Soi vào chỉ thấy chính mình, không còn bóng nào khác.",
+  "en": "The last mirror shard of the Five Elements Platform. Look into it and you see only yourself - no other shadow remains."
+ },
+ {
+  "vi": "Qua Ngũ Hành Đài",
+  "en": "Cleared the Five Elements Platform"
+ }
+]

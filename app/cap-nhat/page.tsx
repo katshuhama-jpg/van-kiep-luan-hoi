@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import BackButton from '@/components/BackButton';
 import { ReleaseBody } from '@/components/Release';
 import { RELEASES } from '@/lib/releases';
+import { tr } from '@/lib/i18n';
 
 /** Lịch sử cập nhật: danh sách gọn theo phiên bản, bấm vào một bản mới xem chi tiết */
 export default function CapNhat() {
@@ -25,11 +26,11 @@ export default function CapNhat() {
       <header className="topbar">
         <div className="topbar-row">
           <span className="age-big" style={{ fontSize: 28 }}>
-            {r ? `Bản ${r.v}` : 'Lịch sử cập nhật'}
+            {r ? tr(`Bản ${r.v}`, `Version ${r.v}`) : tr('Lịch sử cập nhật', "Update history")}
           </span>
-          <span className="meta">{r ? r.title : 'Những lần thiên hạ đổi thay'}</span>
+          <span className="meta">{r ? r.title : tr('Những lần thiên hạ đổi thay', "Every time the world changed")}</span>
           {r ? (
-            <button className="icon-btn" onClick={() => open(null)} aria-label="Về danh sách phiên bản">
+            <button className="icon-btn" onClick={() => open(null)} aria-label={tr("Về danh sách phiên bản", "Back to version list")}>
               ‹
             </button>
           ) : (
@@ -43,13 +44,15 @@ export default function CapNhat() {
             {r.v}
           </span>
           <p className="rel-kick">
-            Bản {r.v} · {r.date}
-            {r === RELEASES[0] ? ' · mới nhất' : ''}
+            
+            {tr("Bản ", "Version ")}{r.v} · {r.date}
+            {r === RELEASES[0] ? tr(' · mới nhất', " · latest") : ''}
           </p>
           <h2>{r.title}</h2>
           <ReleaseBody r={r} />
           <button className="btn" style={{ width: '100%', marginTop: 10 }} onClick={() => open(null)}>
-            ‹ Về danh sách phiên bản
+            
+            {tr("‹ Về danh sách phiên bản", "‹ Back to version list")}
           </button>
         </section>
       ) : (
@@ -62,7 +65,7 @@ export default function CapNhat() {
                   <b>{x.title}</b>
                   <small>
                     {x.date}
-                    {i === 0 ? ' · mới nhất' : ''} · {x.groups.length} mục
+                    {i === 0 ? tr(' · mới nhất', " · latest") : ''} · {x.groups.length}{tr(" mục", " items")}
                   </small>
                   <span className="rel-lead">{x.lead}</span>
                 </span>

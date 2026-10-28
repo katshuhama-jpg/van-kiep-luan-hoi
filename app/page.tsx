@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Sprite from '@/components/Sprite';
 import MusicToggle from '@/components/MusicToggle';
+import LangToggle from '@/components/LangToggle';
 import { signOut } from '@/lib/auth';
 import { demoChar } from '@/lib/game/demo';
 import { displayName } from '@/lib/storage';
@@ -11,6 +12,7 @@ import { useEffect, useState } from 'react';
 import ReleaseNotice, { firstVisit, markSeenLocal, needNotice } from '@/components/Release';
 import { CURRENT_VERSION } from '@/lib/releases';
 import LoiDaiButton from '@/components/LoiDaiButton';
+import { tr } from '@/lib/i18n';
 
 const SHOW = [
   demoChar({ lookSeed: 2, age: 9, lifespan: 70, realm: 0, gender: 'nu', equipped: { ao: 'ao_vai' } }),
@@ -32,17 +34,20 @@ export default function Home() {
   }, []);
   return (
     <main className="app title-screen">
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: -10 }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginBottom: -10 }}>
+        <LangToggle />
         <MusicToggle />
       </div>
       <h1 className="logo">
-        Vạn Kiếp
+        
+        {tr("Vạn Kiếp", "Wanjie")}
         <br />
-        Luân Hồi
-        <small>Một kiếp người, vạn con đường tu tiên</small>
+        
+        {tr("Luân Hồi", "Lunhui")}
+        <small>{tr("Một kiếp người, vạn con đường tu tiên", "One life, ten thousand paths to immortality")}</small>
       </h1>
 
-      <div className="showcase" aria-label="Các hình dạng nhân vật">
+      <div className="showcase" aria-label={tr("Các hình dạng nhân vật", "Character appearances")}>
         {SHOW.map((c, i) => (
           <Sprite key={i} c={c} size={i === 2 ? 96 : 68} />
         ))}
@@ -50,46 +55,56 @@ export default function Home() {
 
       <div className="menu">
         <Link href="/choi" className="btn btn-red btn-big" style={link}>
-          Vào luân hồi
+          
+          {tr("Vào luân hồi", "Enter the Cycle")}
         </Link>
-        {ready && !user && <small className="guest-note">Chơi ngay, chưa cần tài khoản</small>}
+        {ready && !user && <small className="guest-note">{tr("Chơi ngay, chưa cần tài khoản", "Play now, no account needed")}</small>}
         <LoiDaiButton />
         <Link href="/bang-xep-hang" className="btn" style={link}>
-          Bảng xếp hạng
+          
+          {tr("Bảng xếp hạng", "Leaderboard")}
         </Link>
         <Link href="/nghia-trang" className="btn" style={link}>
-          Nghĩa trang tu sĩ
+          
+          {tr("Nghĩa trang tu sĩ", "Cultivators' Cemetery")}
         </Link>
         <Link href="/gop-y" className="btn" style={link}>
-          Góp ý tính năng
+          
+          {tr("Góp ý tính năng", "Feature requests")}
         </Link>
         <Link href="/cap-nhat" className="btn" style={link}>
-          Lịch sử cập nhật <small className="ver-tag">bản {CURRENT_VERSION}</small>
+          
+          {tr("Lịch sử cập nhật ", "Update history ")}<small className="ver-tag">{tr("bản ", "ver ")}{CURRENT_VERSION}</small>
         </Link>
         <Link href="/tac-gia" className="btn" style={link}>
-          Tác giả hình ảnh
+          
+          {tr("Tác giả hình ảnh", "Art credits")}
         </Link>
         {ready && enabled && !user && (
           <Link href="/dang-nhap" className="btn btn-dark" style={link}>
-            Đăng nhập / Đăng ký
+            
+            {tr("Đăng nhập / Đăng ký", "Log in / Sign up")}
           </Link>
         )}
         {user && (
           <div className="panel" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <span>
-              Đạo hữu <b style={{ fontWeight: 700, color: 'var(--red-d)' }}>{displayName(user)}</b>
+              
+              {tr("Đạo hữu ", "Fellow Daoist ")}<b style={{ fontWeight: 700, color: 'var(--red-d)' }}>{displayName(user)}</b>
             </span>
             <button className="btn" style={{ marginLeft: 'auto' }} onClick={() => signOut()}>
-              Đăng xuất
+              
+              {tr("Đăng xuất", "Log out")}
             </button>
           </div>
         )}
       </div>
 
       <section className="panel" style={{ textAlign: 'left' }}>
-        <h2>Cách chơi</h2>
+        <h2>{tr("Cách chơi", "How to play")}</h2>
         <p style={{ margin: 0 }}>
-          Bạn đầu thai ngẫu nhiên: linh căn, xuất thân, giới tính đều do trời định. Thời gian tự trôi, mỗi năm chọn một trọng tâm. Gặp kỳ ngộ thì có 4 lựa chọn, mỗi lựa chọn đẩy Đạo tâm về phía Chính hoặc Tà. Lên Luyện Khí tầng 5 sẽ chọn con đường tu tập. Hết thọ nguyên thì chết, để lại bia mộ và mang phúc duyên sang kiếp sau.
+          
+          {tr("Bạn đầu thai ngẫu nhiên: linh căn, xuất thân, giới tính đều do trời định. Thời gian tự trôi, mỗi năm chọn một trọng tâm. Gặp kỳ ngộ thì có 4 lựa chọn, mỗi lựa chọn đẩy Đạo tâm về phía Chính hoặc Tà. Lên Luyện Khí tầng 5 sẽ chọn con đường tu tập. Hết thọ nguyên thì chết, để lại bia mộ và mang phúc duyên sang kiếp sau.", "You are reborn at random: spiritual root, origin and gender are all decided by Heaven. Time flows on its own, and each year you pick a Focus. Fortuitous encounters offer 4 choices, each pushing your Yao Heart toward Righteous or Evil. At Qi Refining Layer 5 you choose your Path. When your lifespan runs out you die, leave a tombstone, and carry your Fortune into the next life.")}
         </p>
       </section>
       {rel && <ReleaseNotice onClose={() => setRel(false)} />}

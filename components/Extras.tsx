@@ -13,6 +13,7 @@ import { FAMILY_TIERS, PATHS, realmLabel } from '@/lib/game/data';
 import { rollBase } from '@/lib/game/engine';
 import type { Character } from '@/lib/game/types';
 import { ELEMENTS, elementOf } from '@/lib/game/nguhanh';
+import { tr } from '@/lib/i18n';
 
 /* ================= Gieo quẻ: lá số nhân vật + thiên phú ================= */
 /** Lá số đang gieo dở được giữ lại tới khi đầu thai, rời trang rồi vào lại vẫn là lá số đó và số lần gieo đó */
@@ -85,10 +86,10 @@ export function GachaPanel({ phuc, onChange, onBorn, busy, lifeNo, barNote }: { 
     <>
       <section className="panel la-so">
         <div className="ls-head">
-          <h2>Lá số {lifeNo ? `kiếp ${lifeNo}` : 'kiếp này'}</h2>
+          <h2>{tr("Lá số ", "Fate chart: ")}{lifeNo ? tr(`kiếp ${lifeNo}`, `life ${lifeNo}`) : tr('kiếp này', "this life")}</h2>
           {base && (
             <button className="link-btn" onClick={() => setShowRadar(!showRadar)} aria-expanded={showRadar}>
-              {showRadar ? 'Ẩn chỉ số' : 'Xem chỉ số'}
+              {showRadar ? tr('Ẩn chỉ số', "Hide stats") : tr('Xem chỉ số', "Show stats")}
             </button>
           )}
         </div>
@@ -97,7 +98,8 @@ export function GachaPanel({ phuc, onChange, onBorn, busy, lifeNo, barNote }: { 
         {cards.length > 0 && (
           <div className="ls-gifts">
             <h3>
-              Trời ban thiên phú <small>chọn tối đa 2 lá, không bắt buộc</small>
+              
+              {tr("Trời ban thiên phú ", "Heaven-sent talents ")}<small>{tr("chọn tối đa 2 lá, không bắt buộc", "pick up to 2, optional")}</small>
             </h3>
             <div className={`gacha-row ${best >= 3 ? 'gold' : ''}`} key={flip}>
               {cards.map((id, i) => {
@@ -114,8 +116,8 @@ export function GachaPanel({ phuc, onChange, onBorn, busy, lifeNo, barNote }: { 
                     <span className="gc-rare">{RARE_NAME[g.rare]}</span>
                     <b>{g.name}</b>
                     <small>{g.desc}</small>
-                    {g.bad && <span className="gc-bad">có họa</span>}
-                    {on && <span className="gc-check">✓ Đã chọn</span>}
+                    {g.bad && <span className="gc-bad">{tr("có họa", "has a catch")}</span>}
+                    {on && <span className="gc-check">{tr("✓ Đã chọn", "✓ Chosen")}</span>}
                   </button>
                 );
               })}
@@ -125,11 +127,12 @@ export function GachaPanel({ phuc, onChange, onBorn, busy, lifeNo, barNote }: { 
       </section>
       <div className="birth-bar">
         <button className="btn" onClick={() => roll()} disabled={cost > 0 && phuc < cost}>
-          Gieo lại
-          <small>{cost ? `-${cost} phúc` : 'miễn phí'}</small>
+          
+          {tr("Gieo lại", "Reroll")}
+          <small>{cost ? tr(`-${cost} phúc`, `-${cost} Fortune`) : tr('miễn phí', "free")}</small>
         </button>
         <button className="btn btn-red btn-big" onClick={onBorn} disabled={busy || !base}>
-          <span>Đầu thai ▶</span>
+          <span>{tr("Đầu thai ▶", "Be reborn ▶")}</span>
           {barNote && <small>{barNote}</small>}
         </button>
       </div>
@@ -145,27 +148,28 @@ function BirthCard({ c }: { c: Character }) {
     <div className="birth-card">
       <div className="bc-sprite">
         <Sprite c={grown} size={112} />
-        <small>{c.gender === 'nam' ? 'Nam' : 'Nữ'} · lớn lên sẽ thế này</small>
+        <small>{c.gender === 'nam' ? 'Nam' : tr('Nữ', "Female")}{tr(" · lớn lên sẽ thế này", " · all grown up")}</small>
       </div>
       <div className="bc-info">
         <b className="bc-title">{c.name}</b>
         <i className="bc-origin">{c.origin}</i>
         <dl className="bc-rows">
-          <dt>Quê</dt>
+          <dt>{tr("Quê", "Hometown")}</dt>
           <dd>{c.birthPlace}</dd>
-          <dt>Nhà</dt>
+          <dt>{tr("Nhà", "Family")}</dt>
           <dd>
-            <b>{fam?.name}</b> · {c.linhThach} linh thạch
+            <b>{fam?.name}</b> · {c.linhThach}{tr(" linh thạch", " spirit stones")}
           </dd>
-          <dt>Căn</dt>
+          <dt>{tr("Căn", "Root")}</dt>
           <dd>
             <b>{c.linhCan}</b>
           </dd>
-          <dt>Thọ</dt>
+          <dt>{tr("Thọ", "Lifespan")}</dt>
           <dd>
-            khoảng {c.lifespan} · {c.fateName}
+            
+            {tr("khoảng ", "about ")}{c.lifespan} · {c.fateName}
           </dd>
-          <dt>Mệnh</dt>
+          <dt>{tr("Mệnh", "Element")}</dt>
           <dd>
             <b style={{ color: ELEMENTS[elementOf(c)].color, textShadow: '1px 1px 0 #1f160d' }}>
               {ELEMENTS[elementOf(c)].name}
@@ -186,8 +190,8 @@ function GiftRadar({ base, picked }: { base: Character; picked: string[] }) {
     <div className="gift-radar">
       <Radar axes={axes} size={230} color={picked.length ? '#b8432f' : '#2f6b5a'} />
       <p className="note" style={{ margin: 0, textAlign: 'center' }}>
-        {picked.length ? 'Vùng đỏ: chỉ số sau khi nhận thiên phú. Vùng xám: lá số gốc.' : 'Chỉ số của lá số này. Chọn thiên phú để xem thay đổi.'}
-        {after.linhCanMul !== base.linhCanMul ? ` Tu luyện x${after.linhCanMul.toFixed(1)}.` : ''}
+        {picked.length ? tr('Vùng đỏ: chỉ số sau khi nhận thiên phú. Vùng xám: lá số gốc.', "Red area: stats after your talents. Gray area: the original fate chart.") : tr('Chỉ số của lá số này. Chọn thiên phú để xem thay đổi.', "This fate chart's stats. Pick talents to see the changes.")}
+        {after.linhCanMul !== base.linhCanMul ? tr(` Tu luyện x${after.linhCanMul.toFixed(1)}.`, ` Cultivation x${after.linhCanMul.toFixed(1)}.`) : ''}
       </p>
     </div>
   );
@@ -350,17 +354,18 @@ export function TribulationOverlay({ realmName, onDone, c }: { realmName: string
   const bonus = Math.round(((blocked - 4.5) / K_TOTAL) * 0.3 * 100) / 100;
   const showBolt = phase === 'hit' || phase === 'block' || phase === 'trap';
   return (
-    <div className={`kiep kiep-${phase}`} role="dialog" aria-label="Thiên kiếp" onPointerDown={phase === 'done' ? undefined : tap}>
+    <div className={`kiep kiep-${phase}`} role="dialog" aria-label={tr("Thiên kiếp", "Heavenly tribulation")} onPointerDown={phase === 'done' ? undefined : tap}>
       <KiepSky phase={phase} />
       {showBolt && <KiepBolt lane={lane} kind={phase as 'hit' | 'block' | 'trap'} />}
       <div className="kiep-hud">
         <div className="kh-top">
-          <b>Lôi kiếp {realmName}</b>
+          <b>{tr("Lôi kiếp ", "Lightning tribulation · ")}{realmName}</b>
           <span>
-            Đạo {Math.min(K_TOTAL, i + 1)}/{K_TOTAL}
+            
+            {tr("Đạo ", "Bolt ")}{Math.min(K_TOTAL, i + 1)}/{K_TOTAL}
           </span>
         </div>
-        <div className="kh-pips" aria-label={`Đã đỡ ${blocked} đạo`}>
+        <div className="kh-pips" aria-label={tr(`Đã đỡ ${blocked} đạo`, `Blocked ${blocked} bolts`)}>
           {Array.from({ length: K_TOTAL }, (_, k) => (
             <i key={k} className={res[k] ?? (k === i && phase !== 'intro' && phase !== 'done' ? 'now' : '')} />
           ))}
@@ -372,42 +377,47 @@ export function TribulationOverlay({ realmName, onDone, c }: { realmName: string
         <div className={`kiep-aim ${phase === 'fake' ? 'fake' : ''}`} style={{ left: `${LANE_X[lane]}%` }}>
           <span className="ka-frame" />
           <span className="ka-ret" style={{ animationDuration: `${kWin(i)}ms`, ['--s0' as string]: kStart(i) }} />
-          <b>{phase === 'fake' ? 'GIẢ?' : 'ĐỠ'}</b>
+          <b>{phase === 'fake' ? tr('GIẢ?', "FAKE?") : tr('ĐỠ', "BLOCK")}</b>
         </div>
       )}
 
       <div className="kiep-center">
         {phase === 'intro' && (
           <div className="kiep-card">
-            <p className="kiep-big">CHÍN ĐẠO LÔI KIẾP</p>
+            <p className="kiep-big">{tr("CHÍN ĐẠO LÔI KIẾP", "NINE BOLTS OF TRIBULATION")}</p>
             <ul>
               <li>
-                Sét đánh xuống <b>trái, giữa hoặc phải</b>. Chạm đúng bên có khung ngắm.
+                
+                {tr("Sét đánh xuống ", "Lightning strikes ")}<b>{tr("trái, giữa hoặc phải", "left, middle or right")}</b>{tr(". Chạm đúng bên có khung ngắm.", ". Tap the side with the target frame.")}
               </li>
               <li>
-                Chờ ô ngắm co lọt vào khung <b>rồi mới chạm</b>. Chạm sớm hay chậm đều trúng sấm.
+                
+                {tr("Chờ ô ngắm co lọt vào khung ", "Wait for the target to shrink inside the frame ")}<b>{tr("rồi mới chạm", "before you tap")}</b>{tr(". Chạm sớm hay chậm đều trúng sấm.", ". Too early or too late and the lightning hits you.")}
               </li>
               <li>
-                Khung <b className="vio">tím</b> là lôi giả. Chạm vào là mất một đạo đã đỡ.
+                
+                {tr("Khung ", "The ")}<b className="vio">{tr("tím", "purple")}</b>{tr(" là lôi giả. Chạm vào là mất một đạo đã đỡ.", " frames are fake lightning. Tapping one costs you a bolt you already blocked.")}
               </li>
-              <li>Ba đạo cuối tới dồn dập, không kịp thở.</li>
+              <li>{tr("Ba đạo cuối tới dồn dập, không kịp thở.", "The last three bolts come thick and fast, no time to breathe.")}</li>
             </ul>
-            <p className="kiep-tap">Chạm để bắt đầu</p>
+            <p className="kiep-tap">{tr("Chạm để bắt đầu", "Tap to begin")}</p>
           </div>
         )}
-        {phase === 'calm' && <p className="kiep-mid">Mây đang tụ...</p>}
-        {phase === 'block' && <p className="kiep-mid ok">Đỡ được!</p>}
-        {phase === 'hit' && <p className="kiep-mid bad">Trúng sấm!</p>}
-        {phase === 'trap' && <p className="kiep-mid vio">Trúng lôi giả! Mất một đạo</p>}
-        {phase === 'fakeGone' && <p className="kiep-mid">Lôi giả tan...</p>}
+        {phase === 'calm' && <p className="kiep-mid">{tr("Mây đang tụ...", "Clouds gathering...")}</p>}
+        {phase === 'block' && <p className="kiep-mid ok">{tr("Đỡ được!", "Blocked!")}</p>}
+        {phase === 'hit' && <p className="kiep-mid bad">{tr("Trúng sấm!", "Struck by lightning!")}</p>}
+        {phase === 'trap' && <p className="kiep-mid vio">{tr("Trúng lôi giả! Mất một đạo", "Fake bolt! Lost one block")}</p>}
+        {phase === 'fakeGone' && <p className="kiep-mid">{tr("Lôi giả tan...", "The fake bolt fades...")}</p>}
         {phase === 'done' && (
           <div className="kiep-card">
             <p className="kiep-big">
-              Đỡ được {blocked}/{K_TOTAL} đạo
+              
+              {tr("Đỡ được ", "Blocked ")}{blocked}/{K_TOTAL}{tr(" đạo", " bolts")}
             </p>
-            <p>{bonus >= 0 ? `Tỉ lệ vượt kiếp +${Math.round(bonus * 100)}%` : `Tỉ lệ vượt kiếp ${Math.round(bonus * 100)}%`}</p>
+            <p>{bonus >= 0 ? tr(`Tỉ lệ vượt kiếp +${Math.round(bonus * 100)}%`, `Tribulation survival chance +${Math.round(bonus * 100)}%`) : tr(`Tỉ lệ vượt kiếp ${Math.round(bonus * 100)}%`, `Tribulation survival chance ${Math.round(bonus * 100)}%`)}</p>
             <button className="btn btn-red btn-big" onClick={() => onDone(bonus, blocked)}>
-              Xem kết quả
+              
+              {tr("Xem kết quả", "See the result")}
             </button>
           </div>
         )}
@@ -428,7 +438,8 @@ export function TribulationOverlay({ realmName, onDone, c }: { realmName: string
             onDone(0, -1);
           }}
         >
-          Phó mặc số trời
+          
+          {tr("Phó mặc số trời", "Leave it to fate")}
         </button>
       )}
     </div>
@@ -501,7 +512,7 @@ export function ShareCard({ c, ending, epitaph, isNew = false }: { c: Character;
     const r = await shareLife(c, ending, isNew, epitaph, pct);
     setBusy(false);
     if (r?.link) setSheet(r);
-    else setMsg(r?.saved ? 'Chưa tạo được link, đã tải ảnh về máy.' : 'Chưa khoe được, thử lại sau.');
+    else setMsg(r?.saved ? tr('Chưa tạo được link, đã tải ảnh về máy.', "Couldn't create a link; the image was saved to your device.") : tr('Chưa khoe được, thử lại sau.', "Couldn't share, try again later."));
   }
   return (
     <div className="share-card life-card">
@@ -510,14 +521,14 @@ export function ShareCard({ c, ending, epitaph, isNew = false }: { c: Character;
           {grade}
         </b>
         <span>
-          <small>Xếp loại đời này</small>
-          <b>{pct !== null ? `Vượt ${pct}% giang hồ` : '...'}</b>
+          <small>{tr("Xếp loại đời này", "This life's grade")}</small>
+          <b>{pct !== null ? tr(`Vượt ${pct}% giang hồ`, `Beat ${pct}% of the jianghu`) : '...'}</b>
         </span>
       </div>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      {url && <img src={url} alt={`Thẻ Một đời của ${c.name}`} className="share-preview" />}
+      {url && <img src={url} alt={tr(`Thẻ Một đời của ${c.name}`, `${c.name}'s Life Card`)} className="share-preview" />}
       <button className="btn btn-jade btn-big lc-share" onClick={share} disabled={busy}>
-        {busy ? 'Đang tạo link...' : 'Khoe đời này'}
+        {busy ? tr('Đang tạo link...', "Creating link...") : tr('Khoe đời này', "Show off this life")}
         <small>Threads · Facebook · Messenger · Zalo</small>
       </button>
       {msg && <small className="note">{msg}</small>}
@@ -528,12 +539,12 @@ export function ShareCard({ c, ending, epitaph, isNew = false }: { c: Character;
 
 /* ================= Hướng dẫn lần đầu: khoét sáng từng vùng ================= */
 const TUT_STEPS: { sel: string; title: string; text: string }[] = [
-  { sel: '.stage', title: 'Đây là bạn', text: 'Thời gian tự trôi. Thanh vàng phía trên chạy hết là bạn thêm 1 tuổi.' },
-  { sel: '.focus-grid', title: 'Năm nay làm gì?', text: 'Chạm để chọn việc. Tu luyện để lên cảnh giới, Kiếm tiền để mua đồ, Trừ yêu để đánh quái. Làm một việc quá lâu sẽ bị quá độ, nhớ đổi việc.' },
-  { sel: '.speeds', title: 'Nhanh hay chậm', text: 'Tua 2× đến 16×. Nút ❚❚ để dừng, nút » để nhảy tới chuyện kế tiếp.' },
-  { sel: '.strip-btn', title: 'Chỉ số của bạn', text: 'Chạm vào tên để xem chỉ số. Sức khỏe về 0 hoặc tâm ma lên 100 là chết.' },
-  { sel: '.dock-actions', title: 'Mua đồ, bế quan', text: 'Phường thị bán áo, vũ khí, đan dược. Túi đồ để mặc đồ. Bế quan để tu nhanh nhưng xuất quan sẽ có mất mát.' },
-  { sel: '.game-scroll', title: 'Sắp có chuyện xảy ra', text: 'Khi gặp chuyện, game tự dừng và hiện 4 cách xử lý. Đọc kỹ, có cách khiến bạn chết. Chúc đạo hữu sống lâu!' },
+  { sel: '.stage', title: tr('Đây là bạn', "This is you"), text: tr('Thời gian tự trôi. Thanh vàng phía trên chạy hết là bạn thêm 1 tuổi.', "Time flows on its own. When the gold bar at the top fills, you're 1 year older.") },
+  { sel: '.focus-grid', title: tr('Năm nay làm gì?', "What to do this year?"), text: tr('Chạm để chọn việc. Tu luyện để lên cảnh giới, Kiếm tiền để mua đồ, Trừ yêu để đánh quái. Làm một việc quá lâu sẽ bị quá độ, nhớ đổi việc.', "Tap to pick an activity. Cultivate to climb realms, Earn money to buy gear, Hunt demons to fight monsters. Doing one thing too long leads to burnout, so switch it up.") },
+  { sel: '.speeds', title: tr('Nhanh hay chậm', "Fast or slow"), text: tr('Tua 2× đến 16×. Nút ❚❚ để dừng, nút » để nhảy tới chuyện kế tiếp.', "Speed up from 2× to 16×. ❚❚ pauses, » skips to the next event.") },
+  { sel: '.strip-btn', title: tr('Chỉ số của bạn', "Your stats"), text: tr('Chạm vào tên để xem chỉ số. Sức khỏe về 0 hoặc tâm ma lên 100 là chết.', "Tap your name to see your stats. Health at 0 or heart demon at 100 means death.") },
+  { sel: '.dock-actions', title: tr('Mua đồ, bế quan', "Shopping, seclusion"), text: tr('Phường thị bán áo, vũ khí, đan dược. Túi đồ để mặc đồ. Bế quan để tu nhanh nhưng xuất quan sẽ có mất mát.', "The Market sells robes, weapons and pills. Use the Inventory to equip gear. Seclusion speeds up cultivation, but leaving it comes at a cost.") },
+  { sel: '.game-scroll', title: tr('Sắp có chuyện xảy ra', "Something is about to happen"), text: tr('Khi gặp chuyện, game tự dừng và hiện 4 cách xử lý. Đọc kỹ, có cách khiến bạn chết. Chúc đạo hữu sống lâu!', "When an event happens, the game pauses and shows 4 ways to respond. Read carefully - some of them get you killed. May you live long, fellow Daoist!") },
 ];
 
 export function Tutorial({ onDone }: { onDone: () => void }) {
@@ -559,7 +570,7 @@ export function Tutorial({ onDone }: { onDone: () => void }) {
   const last = i === TUT_STEPS.length - 1;
   const below = rect ? rect.top + rect.height / 2 < window.innerHeight / 2 : true;
   return (
-    <div className="tut" role="dialog" aria-modal="true" aria-label={`Hướng dẫn: ${step.title}`}>
+    <div className="tut" role="dialog" aria-modal="true" aria-label={tr(`Hướng dẫn: ${step.title}`, `Tutorial: ${step.title}`)}>
       {rect ? <div className="tut-hole" style={{ left: rect.left - 4, top: rect.top - 4, width: rect.width + 8, height: rect.height + 8 }} /> : <div className="tut-dim" />}
       <div
         className="tut-card"
@@ -572,10 +583,11 @@ export function Tutorial({ onDone }: { onDone: () => void }) {
         <p>{step.text}</p>
         <div className="tut-btns">
           <button className="btn" onClick={onDone}>
-            Bỏ qua
+            
+            {tr("Bỏ qua", "Skip")}
           </button>
           <button className="btn btn-red" onClick={() => (last ? onDone() : setI(i + 1))}>
-            {last ? 'Bắt đầu!' : 'Tiếp'}
+            {last ? tr('Bắt đầu!', "Start!") : tr('Tiếp', "Next")}
           </button>
         </div>
       </div>

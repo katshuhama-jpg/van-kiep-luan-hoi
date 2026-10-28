@@ -1,0 +1,142 @@
+[
+ {
+  "vi": "Bần hàn",
+  "en": "Destitute"
+ },
+ {
+  "vi": "Bình dân",
+  "en": "Commoner"
+ },
+ {
+  "vi": "Khá giả",
+  "en": "Well-off"
+ },
+ {
+  "vi": "Phú hộ",
+  "en": "Wealthy"
+ },
+ {
+  "vi": "Đại phú hào",
+  "en": "Tycoon"
+ },
+ {
+  "vi": "Vượt huyết kiếp, bước vào Ma giới",
+  "en": "Survived the blood tribulation and entered the Demon Realm"
+ },
+ {
+  "vi": "Vượt lôi kiếp, bước vào Thái Hư giới",
+  "en": "Survived the lightning tribulation and entered the Great Void Realm"
+ },
+ {
+  "vi": "Phi thăng tiên giới",
+  "en": "Ascended to the Immortal Realm"
+ },
+ {
+  "vi": "Bước vào {0}",
+  "ph": [
+   "realmName(c.realm, c.cosmos)"
+  ],
+  "en": "Entered {0}"
+ },
+ {
+  "vi": "Chọn con đường {0}",
+  "ph": [
+   "PATHS[c.path].name"
+  ],
+  "en": "Chose the path of {0}"
+ },
+ {
+  "vi": "Bái nhập {0}",
+  "ph": [
+   "c.sect"
+  ],
+  "en": "Joined {0}"
+ },
+ {
+  "vi": "Kết thành đạo lữ với {0}",
+  "ph": [
+   "c.partner"
+  ],
+  "en": "Became Dao companions with {0}"
+ },
+ {
+  "vi": "Thu nhận {0}",
+  "ph": [
+   "PETS[pet]?.name ?? 'một linh thú'"
+  ],
+  "en": "Took in {0}"
+ },
+ {
+  "vi": "một linh thú",
+  "en": "a spirit beast"
+ },
+ {
+  "vi": "Thuần phục được rồng, thành Long Kỵ Sĩ",
+  "en": "Tamed a dragon and became a Dragon Rider"
+ },
+ {
+  "vi": "Trở thành {0}, gia sản {1} linh thạch",
+  "ph": [
+   "WEALTH[w]",
+   "c.linhThach"
+  ],
+  "en": "Became {0}, with a fortune of {1} spirit stones"
+ },
+ {
+  "vi": "Có được bảo vật {0}",
+  "ph": [
+   "ITEMS.find((i) => i.id === id)?.name"
+  ],
+  "en": "Obtained the treasure {0}"
+ },
+ {
+  "vi": "Diệt đủ {0} yêu thú, danh trừ yêu vang khắp vùng",
+  "ph": [
+   "step"
+  ],
+  "en": "Slew {0} demon beasts, earning renown as a demon hunter across the land"
+ },
+ {
+  "vi": "Dẫn khí nhập thể, bước vào Luyện Khí",
+  "en": "Drew qi into the body and entered Qi Refining"
+ },
+ {
+  "vi": "Tu đến {0}",
+  "ph": [
+   "REALMS[r]?.name"
+  ],
+  "en": "Cultivated to {0}"
+ },
+ {
+  "vi": "Thầy bói xem tướng, phán bản mệnh thuộc {0}",
+  "ph": [
+   "ELEMENTS[fb.element as keyof typeof ELEMENTS].name"
+  ],
+  "en": "A fortune-teller read your face and declared your natal element {0}"
+ },
+ {
+  "vi": "Rời {0}, khăn gói lên đường xông pha giang hồ",
+  "ph": [
+   "fb.birthPlace.split(', ')[0]"
+  ],
+  "en": "Left {0}, bundle on your back, to brave the jianghu"
+ },
+ {
+  "vi": "Khăn gói rời nhà, lên đường xông pha giang hồ",
+  "en": "Left home, bundle on your back, to brave the jianghu"
+ },
+ {
+  "vi": "Có được {0}, từ đó không rời tay",
+  "ph": [
+   "wp.name"
+  ],
+  "en": "Obtained {0} and never let it leave your hand"
+ },
+ {
+  "vi": "Khoác lên mình {0}",
+  "ph": [
+   "robe.name"
+  ],
+  "en": "Donned {0}"
+ }
+]

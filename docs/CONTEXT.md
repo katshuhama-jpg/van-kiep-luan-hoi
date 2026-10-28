@@ -628,3 +628,10 @@ Làm theo plan "Plan 3.1.0 - Xử lý góp ý người chơi" (trừ góp ý #7 
 ## Danh sách ý tưởng (chưa ra bản, chờ Tyler chọn)
 - **Giữ người mới qua kiếp đầu:** ba kiếp đầu tuổi thơ (dưới 16) trôi nhanh gấp 2,5 và Tiên duyên đầu đời tới sớm hơn (từ 4 tuổi). Mô phỏng: lựa chọn đầu tiên từ giây 60 xuống giây 24, tới 16 tuổi từ 6 phút xuống 2,8 phút. Code đã có trên nhánh `next` (commit 12d522a, `youthPace`).
 - **Khoe và bia mộ:** bỏ ô viết bia riêng (1/343 kiếp dùng), thay bằng câu bia game tự viết từ khoảnh khắc đáng nhớ nhất của kiếp và in lên thẻ khoe. Nút Khoe chỉ nổi bật khi kiếp đáng khoe (hạng A/S, phi thăng, phá kỷ lục, kết cục mới). Chưa làm.
+
+## Tiếng Anh (28/10)
+- Mọi chữ hiển thị viết dạng `tr('tiếng Việt', 'English')` (`lib/i18n.ts`). Ngôn ngữ lưu ở `localStorage vkl.lang` và cookie `vkl_lang`; đổi ngôn ngữ thì tải lại trang. Bản tiếng Anh không vẽ trước ở máy chủ (`components/LangGate.tsx`) để khỏi lệch khi hydrate.
+- Nút đổi ngôn ngữ: trang đầu (`components/LangToggle.tsx`) và menu trong game.
+- Tên người, địa danh, tông môn Hán Việt sang pinyin trong bản tiếng Anh (`lib/hanviet.ts`: `pinyinize`, `nameOf`). Bốn tông môn dùng làm khóa trong code (Phổ Đà Sơn, Kiếm Cốc, Vạn Độc Môn, Yêu Thần Điện) vẫn lưu bằng tiếng Việt, hiển thị qua `nameOf(c.sect)`.
+- Chỗ code dò chữ (nguyên nhân chết cho kết cục, danh hiệu, ghi chú trận) viết regex nhận cả hai thứ tiếng.
+- Công cụ: `tools/i18n/`. Chữ mới viết thẳng `tr(...)`.

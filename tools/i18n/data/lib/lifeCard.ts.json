@@ -1,0 +1,153 @@
+[
+ {
+  "vi": "{0} tuổi: {1}",
+  "ph": [
+   "age",
+   "s"
+  ],
+  "en": "Age {0}: {1}"
+ },
+ {
+  "vi": "Phàm nhân",
+  "en": "Mortal"
+ },
+ {
+  "vi": "Kiếp {0} · {1} · {2} · {3} tuổi · {4} · Xếp loại {5}{6}\n{7}",
+  "ph": [
+   "c.lifeNo",
+   "c.name",
+   "realmOf(c)",
+   "Math.floor(c.age)",
+   "ending.name",
+   "grade",
+   "pct !== null ? ` · vượt ${pct}% giang hồ` : ''",
+   "SITE"
+  ],
+  "en": "Life {0} · {1} · {2} · age {3} · {4} · Grade {5}{6}\n{7}"
+ },
+ {
+  "vi": " · vượt {0}% giang hồ",
+  "ph": [
+   "pct"
+  ],
+  "en": " · beat {0}% of the jianghu"
+ },
+ {
+  "vi": "VẠN KIẾP LUÂN HỒI",
+  "en": "VẠN KIẾP LUÂN HỒI"
+ },
+ {
+  "vi": "Kiếp thứ {0}",
+  "ph": [
+   "c.lifeNo"
+  ],
+  "en": "Life #{0}"
+ },
+ {
+  "vi": "XẾP LOẠI",
+  "en": "GRADE"
+ },
+ {
+  "vi": "Vượt",
+  "en": "Beat"
+ },
+ {
+  "vi": "giang hồ",
+  "en": "the jianghu"
+ },
+ {
+  "vi": "{0} tuổi · {1}{2}",
+  "ph": [
+   "Math.floor(c.age)",
+   "realmOf(c)",
+   "c.path ? ' · ' + PATHS[c.path].name : ''"
+  ],
+  "en": "Age {0} · {1}{2}"
+ },
+ {
+  "vi": "KẾT CỤC · {0} PHẨM{1}",
+  "ph": [
+   "['PHÀM', 'LINH', 'HUYỀN', 'ĐỊA', 'THIÊN'][ending.rare]",
+   "isNew ? ' · LẦN ĐẦU' : ''"
+  ],
+  "en": "ENDING · {0} GRADE{1}"
+ },
+ {
+  "vi": "PHÀM",
+  "en": "MORTAL"
+ },
+ {
+  "vi": "LINH",
+  "en": "SPIRIT"
+ },
+ {
+  "vi": "HUYỀN",
+  "en": "MYSTIC"
+ },
+ {
+  "vi": "ĐỊA",
+  "en": "EARTH"
+ },
+ {
+  "vi": "THIÊN",
+  "en": "HEAVEN"
+ },
+ {
+  "vi": " · LẦN ĐẦU",
+  "en": " · FIRST TIME"
+ },
+ {
+  "vi": "Kiếp {0} · {1} tuổi",
+  "ph": [
+   "c.lifeNo",
+   "Math.floor(c.age)"
+  ],
+  "en": "Life {0} · age {1}"
+ },
+ {
+  "vi": "KẾT CỤC {0} PHẨM",
+  "ph": [
+   "['PHÀM', 'LINH', 'HUYỀN', 'ĐỊA', 'THIÊN'][ending.rare]"
+  ],
+  "en": "{0}-GRADE ENDING"
+ },
+ {
+  "vi": "Vượt {0}%",
+  "ph": [
+   "pct"
+  ],
+  "en": "Beat {0}%"
+ },
+ {
+  "vi": "các kiếp trong giang hồ",
+  "en": "of all lives in the jianghu"
+ },
+ {
+  "vi": "{0}, kiếp {1}: {2} · Xếp loại {3}",
+  "ph": [
+   "c.name",
+   "c.lifeNo",
+   "ending.name",
+   "grade"
+  ],
+  "en": "{0}, life {1}: {2} · Grade {3}"
+ },
+ {
+  "vi": "{0} tuổi, {1}{2}.{3} {4} Đầu thai thử một kiếp ở Vạn Kiếp Luân Hồi.",
+  "ph": [
+   "Math.floor(c.age)",
+   "realmOf(c)",
+   "c.path ? ', ' + PATHS[c.path].name : ''",
+   "pct !== null ? ` Vượt ${pct}% các kiếp trong giang hồ.` : ''",
+   "(memorable(c)[0] ?? '').replace(/([^.!?])$/, '$1.')"
+  ],
+  "en": "Age {0}, {1}{2}.{3} {4} Try a life of your own in Vạn Kiếp Luân Hồi."
+ },
+ {
+  "vi": " Vượt {0}% các kiếp trong giang hồ.",
+  "ph": [
+   "pct"
+  ],
+  "en": " Beat {0}% of all lives in the jianghu."
+ }
+]

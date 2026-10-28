@@ -1,0 +1,74 @@
+[
+ {
+  "vi": "Nhập Môn",
+  "en": "Enter the Gate"
+ },
+ {
+  "vi": "Bái Sư",
+  "en": "Join a Master"
+ },
+ {
+  "vi": "Đạo hữu quay lại rồi sao?",
+  "en": "Back again, fellow Daoist?"
+ },
+ {
+  "vi": "Ghi danh vào sổ luân hồi",
+  "en": "Register in the Book of Reincarnation"
+ },
+ {
+  "vi": "Đăng nhập",
+  "en": "Log in"
+ },
+ {
+  "vi": "Đăng ký",
+  "en": "Sign up"
+ },
+ {
+  "vi": "Chưa kết nối được máy chủ, thử lại sau ít phút.",
+  "en": "Can't reach the server, try again in a few minutes."
+ },
+ {
+  "vi": "Ghi danh để khắc bia ở Nghĩa trang tu sĩ, lên Bảng xếp hạng, ra Lôi đài. Tiến độ lưu trên mây, đổi máy vẫn chơi tiếp. Các kiếp đã chơi thử trên máy này được giữ lại.",
+  "en": "Register to carve your tombstone in the Cultivators' Cemetery, climb the Leaderboard and enter the Arena. Progress is saved to the cloud, so you can switch devices and keep playing. Lives played as a guest on this device are kept."
+ },
+ {
+  "vi": "Tên đăng nhập",
+  "en": "Username"
+ },
+ {
+  "vi": "3-16 ký tự, viết liền: chữ thường không dấu, số, dấu _",
+  "en": "3-16 characters, no spaces: lowercase letters without accents, digits, _"
+ },
+ {
+  "vi": "Mật khẩu",
+  "en": "Password"
+ },
+ {
+  "vi": "3-6 ký tự",
+  "en": "3-6 characters"
+ },
+ {
+  "vi": "Dùng tên ",
+  "en": "Use the name "
+ },
+ {
+  "vi": "Đang vận công...",
+  "en": "Circulating qi..."
+ },
+ {
+  "vi": "Vào game",
+  "en": "Enter game"
+ },
+ {
+  "vi": "Tạo tài khoản",
+  "en": "Create account"
+ },
+ {
+  "vi": "Chơi thử, chưa cần tài khoản ›",
+  "en": "Play as guest, no account needed ›"
+ },
+ {
+  "vi": "‹ Về trang đầu",
+  "en": "‹ Back to home"
+ }
+]

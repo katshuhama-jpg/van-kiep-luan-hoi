@@ -10,8 +10,9 @@ import { PATHS, realmLabel } from '@/lib/game/data';
 import { DUEL_INFO, foeChar, lifeText, type DuelFoe } from '@/lib/game/duel';
 import { ELEMENTS, elemText, elementOf } from '@/lib/game/nguhanh';
 import type { Character } from '@/lib/game/types';
+import { tr } from '@/lib/i18n';
 
-const REL_TXT = { yeu: 'Yếu hơn bạn', ngang: 'Ngang tài ngang sức', manh: 'Mạnh hơn bạn!' };
+const REL_TXT = { yeu: tr('Yếu hơn bạn', "Weaker than you"), ngang: tr('Ngang tài ngang sức', "Evenly matched"), manh: tr('Mạnh hơn bạn!', "Stronger than you!") };
 
 /** Màn cảnh báo trước khi vào kỳ ngộ giang hồ: ai, mạnh yếu thế nào, chọn đánh hay tránh */
 export default function DuelWarning({
@@ -47,7 +48,7 @@ export default function DuelWarning({
       <div className="duel-flash" aria-hidden="true" />
       <div className="duel-card">
         <p className="duel-kicker">
-          {foe.kind === 'ma_dau' ? '☠ Ma đầu' : foe.kind === 'dich_thu' ? '⚠ Sát khí' : foe.kind === 'kiep_truoc' ? '◈ Tâm cảnh' : foe.kind === 'dong_mon' ? (foe.daiBi ? '⚑ Đại bỉ tông môn' : '⚑ Đồng môn') : '✦ Kỳ ngộ'}
+          {foe.kind === 'ma_dau' ? tr('☠ Ma đầu', "☠ Demon lord") : foe.kind === 'dich_thu' ? tr('⚠ Sát khí', "⚠ Killing intent") : foe.kind === 'kiep_truoc' ? tr('◈ Tâm cảnh', "◈ Inner world") : foe.kind === 'dong_mon' ? (foe.daiBi ? tr('⚑ Đại bỉ tông môn', "⚑ Grand Sect Tournament") : tr('⚑ Đồng môn', "⚑ Fellow disciple")) : tr('✦ Kỳ ngộ', "✦ Fortuitous encounter")}
         </p>
         <h2 id="duel-title">{info.title}</h2>
         <div className={`duel-foe ${foe.kind === 'kiep_truoc' ? 'ghost' : ''}`}>
@@ -60,25 +61,25 @@ export default function DuelWarning({
           </p>
         )}
         <p className="duel-meta">
-          {foe.kind === 'kiep_truoc' ? 'Chính bạn, kiếp trước' : r.player ? `@${r.player}` : 'Giang hồ vô danh'}
-          {!r.alive && r.player && foe.kind !== 'kiep_truoc' ? ' · đã khuất' : ''}
+          {foe.kind === 'kiep_truoc' ? tr('Chính bạn, kiếp trước', "Yourself, from a past life") : r.player ? `@${r.player}` : tr('Giang hồ vô danh', "Nameless wanderer")}
+          {!r.alive && r.player && foe.kind !== 'kiep_truoc' ? tr(' · đã khuất', " · deceased") : ''}
           <br />
           {realmLabel(r.realm, r.layer, r.cosmos)}
           {r.path ? ` · ${PATHS[r.path]?.name ?? ''}` : ''}
         </p>
         {foe.kind !== 'kiep_truoc' && r.player && !foe.npc && (
           <p className="duel-tags">
-            {foe.hunt && <span className="rel-chip r-thu">Bạn đang truy sát</span>}
-            {foe.revenge && !foe.hunt && !SOCIAL.cur.foes.includes(r.player) && <span className="rel-chip r-thu">Kẻ thù của bạn</span>}
+            {foe.hunt && <span className="rel-chip r-thu">{tr("Bạn đang truy sát", "You are hunting them")}</span>}
+            {foe.revenge && !foe.hunt && !SOCIAL.cur.foes.includes(r.player) && <span className="rel-chip r-thu">{tr("Kẻ thù của bạn", "Your enemy")}</span>}
             <RelChips player={r.player} />
           </p>
         )}
         <span className={`duel-rel ${foe.rel}`}>{REL_TXT[foe.rel]}</span>
         {(foe.sworn || foe.provoke || foe.bounty) && (
           <p className="duel-social">
-            {foe.sworn && <span>Huynh đệ kết nghĩa: luận võ không ai lột đồ ai, trà luôn là trà thật.</span>}
-            {foe.provoke && <span>Hai bên từng khiêu khích nhau: thắng thua đều gấp rưỡi.</span>}
-            {!!foe.bounty && <span>Hạ được người này, lĩnh {foe.bounty} linh thạch tiền truy nã.</span>}
+            {foe.sworn && <span>{tr("Huynh đệ kết nghĩa: luận võ không ai lột đồ ai, trà luôn là trà thật.", "Sworn brothers: no one strips anyone's gear when sparring, and the tea is always just tea.")}</span>}
+            {foe.provoke && <span>{tr("Hai bên từng khiêu khích nhau: thắng thua đều gấp rưỡi.", "You've provoked each other before: wins and losses count one and a half times.")}</span>}
+            {!!foe.bounty && <span>{tr("Hạ được người này, lĩnh ", "Defeat this person to claim ")}{foe.bounty}{tr(" linh thạch tiền truy nã.", " spirit stones in bounty.")}</span>}
           </p>
         )}
         <div className={`duel-elem ${et.tone}`}>
@@ -92,62 +93,68 @@ export default function DuelWarning({
           <small>{et.text}</small>
         </div>
         <div className={`duel-elem duel-life ${lt.tone}`}>
-          <span className="kiep-no">Kiếp {me.lifeNo}</span>
+          <span className="kiep-no">{tr("Kiếp ", "Life ")}{me.lifeNo}</span>
           <span className="vs">⚔</span>
-          <span className="kiep-no">Kiếp {foeLife}</span>
+          <span className="kiep-no">{tr("Kiếp ", "Life ")}{foeLife}</span>
           <small>{lt.text}</small>
         </div>
         <p className="duel-text">{foe.reason || info.warn}</p>
         {foe.rel !== 'yeu' && foe.kind !== 'kiep_truoc' && foe.kind !== 'dong_mon' && foe.kind !== 'ma_dau' && (
-          <p className="duel-risk">Đối thủ không yếu hơn bạn: không đánh mà rời đi thì có thể bị trọng thương, thậm chí mất mạng.</p>
+          <p className="duel-risk">{tr("Đối thủ không yếu hơn bạn: không đánh mà rời đi thì có thể bị trọng thương, thậm chí mất mạng.", "Your opponent is no weaker than you: walking away without a fight could leave you badly wounded, or even dead.")}</p>
         )}
         <div className="duel-actions">
           {foe.kind === 'dong_dao' && (
             <>
               <button className="btn btn-red btn-big" onClick={() => onPick('fight')}>
-                Luận võ
+                
+                {tr("Luận võ", "Spar")}
               </button>
               {canBefriend && (
                 <button className="btn" onClick={() => onPick('befriend')}>
-                  Kết giao, uống trà luận đạo
+                  
+                  {tr("Kết giao, uống trà luận đạo", "Make friends over tea and Yao talk")}
                 </button>
               )}
               <button className="btn btn-dark" onClick={() => onPick('leave')}>
-                Cáo từ{foe.rel === 'yeu' ? '' : ' (có thể bị đánh lén)'}
+                
+                {tr("Cáo từ", "Take your leave")}{foe.rel === 'yeu' ? '' : tr(' (có thể bị đánh lén)', " (may be ambushed)")}
               </button>
             </>
           )}
           {foe.kind === 'dich_thu' && (
             <>
               <button className="btn btn-red btn-big" onClick={() => onPick('fight')}>
-                Nghênh chiến
+                
+                {tr("Nghênh chiến", "Accept the fight")}
               </button>
               <button className="btn btn-dark" onClick={() => onPick('flee')}>
-                {foe.rel === 'yeu' ? 'Bỏ đi, không chấp kẻ yếu' : `Liều bỏ chạy (${Math.round(fleeChance * 100)}%, dễ trúng đòn sau lưng)`}
+                {foe.rel === 'yeu' ? tr('Bỏ đi, không chấp kẻ yếu', "Walk away, don't stoop to the weak") : tr(`Liều bỏ chạy (${Math.round(fleeChance * 100)}%, dễ trúng đòn sau lưng)`, `Risk fleeing (${Math.round(fleeChance * 100)}%, easy to get hit in the back)`)}
               </button>
             </>
           )}
           {foe.kind === 'dong_mon' && (
             <>
               <button className="btn btn-red btn-big" onClick={() => onPick('fight')}>
-                {foe.daiBi ? 'Lên lôi đài' : 'Tỷ thí'}
+                {foe.daiBi ? tr('Lên lôi đài', "Enter the arena") : tr('Tỷ thí', "Compete")}
               </button>
               <button className="btn btn-dark" onClick={() => onPick('leave')}>
-                {foe.daiBi ? 'Bỏ lượt Đại bỉ (chờ kỳ sau)' : 'Nhường một bước'}
+                {foe.daiBi ? tr('Bỏ lượt Đại bỉ (chờ kỳ sau)', "Skip this Grand Tournament (wait for the next)") : tr('Nhường một bước', "Yield a step")}
               </button>
             </>
           )}
           {foe.kind === 'kiep_truoc' && (
             <button className="btn btn-red btn-big" onClick={() => onPick('fight')}>
-              Đối diện chính mình
+              
+              {tr("Đối diện chính mình", "Face yourself")}
             </button>
           )}
           {foe.kind === 'ma_dau' && (
             <>
               <button className="btn btn-red btn-big" onClick={() => onPick('fight')}>
-                Nghênh chiến ma đầu
+                
+                {tr("Nghênh chiến ma đầu", "Face the demon lord")}
               </button>
-              <small className="note">Thắng: +10 phúc duyên và đồ rơi. Thua: trọng thương, mất 10% linh thạch, không chết.</small>
+              <small className="note">{tr("Thắng: +10 phúc duyên và đồ rơi. Thua: trọng thương, mất 10% linh thạch, không chết.", "Win: +10 Fortune and loot. Lose: badly wounded, lose 10% of spirit stones, but no death.")}</small>
             </>
           )}
         </div>

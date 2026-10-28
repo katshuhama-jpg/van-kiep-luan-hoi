@@ -10,6 +10,8 @@ import { addCult, fatal, giveItem, money, reward, stat } from './helpers';
 import { PROVOKE_MUL, SOCIAL } from './social';
 import { daiBiDue, promote, sectSide } from './sect';
 import type { Character, EffectCtx, RivalChar, Slot, Vendetta } from './types';
+import { tr } from '../i18n';
+import { nameOf } from '../hanviet';
 
 /**
  * Kỳ ngộ giang hồ: gặp nhân vật của người chơi khác (hoặc chính mình kiếp trước).
@@ -39,12 +41,12 @@ export interface DuelFoe {
 }
 
 export const DUEL_INFO: Record<DuelKind, { title: string; tag: string; warn: string }> = {
-  dong_dao: { title: 'Gặp đồng đạo', tag: 'Đồng đạo', warn: 'Một tu sĩ cùng chí hướng chắn đường, chắp tay thi lễ: "Nghe danh đã lâu, xin được lĩnh giáo vài chiêu."' },
-  dich_thu: { title: 'Địch thủ xuất hiện!', tag: 'Địch thủ', warn: 'Sát khí ập tới. Kẻ khác đạo đã đợi bạn ở đây từ lâu. Hôm nay chỉ một người được rời đi.' },
-  dong_mon: { title: 'Đồng môn tỷ thí', tag: 'Đồng môn', warn: 'Một đồng môn chặn bạn ở diễn võ trường: "Sư môn dạy ta, hôm nay xem ai học giỏi hơn."' },
-  kiep_truoc: { title: 'Tâm ma kiếp trước', tag: 'Kiếp trước', warn: 'Mặt hồ phẳng lặng bỗng in bóng một người. Đó là bạn, của một kiếp đã qua. Muốn đi tiếp, phải vượt qua chính mình.' },
-  ma_dau: { title: 'Ma đầu chặn đường!', tag: 'Ma đầu', warn: 'Một bóng người mắt đỏ như máu chặn ngang đường, sát khí ngút trời.' },
-  ngu_hanh: { title: 'Ngũ Hành Vấn Tâm Đài', tag: 'Ngũ Hành Đài', warn: 'Năm tấm gương dựng quanh đài đá. Trong mỗi tấm là bạn, mang một bản mệnh khác.' },
+  dong_dao: { title: tr('Gặp đồng đạo', "A kindred spirit"), tag: tr('Đồng đạo', "Kindred"), warn: tr('Một tu sĩ cùng chí hướng chắn đường, chắp tay thi lễ: "Nghe danh đã lâu, xin được lĩnh giáo vài chiêu."', "A like-minded cultivator blocks your way and bows with clasped hands: \"Your name precedes you. I humbly ask to learn a few of your moves.\"") },
+  dich_thu: { title: tr('Địch thủ xuất hiện!', "A rival appears!"), tag: tr('Địch thủ', "Rival"), warn: tr('Sát khí ập tới. Kẻ khác đạo đã đợi bạn ở đây từ lâu. Hôm nay chỉ một người được rời đi.', "Killing intent rushes in. Someone of a different Yao has long been waiting for you here. Only one of you leaves today.") },
+  dong_mon: { title: tr('Đồng môn tỷ thí', "Sect sparring"), tag: tr('Đồng môn', "Fellow disciple"), warn: tr('Một đồng môn chặn bạn ở diễn võ trường: "Sư môn dạy ta, hôm nay xem ai học giỏi hơn."', "A fellow disciple blocks you on the training ground: \"We had the same teachers. Today we see who learned better.\"") },
+  kiep_truoc: { title: tr('Tâm ma kiếp trước', "Heart demon of a past life"), tag: tr('Kiếp trước', "Past life"), warn: tr('Mặt hồ phẳng lặng bỗng in bóng một người. Đó là bạn, của một kiếp đã qua. Muốn đi tiếp, phải vượt qua chính mình.', "A figure suddenly appears on the still surface of the lake. It is you, from a life gone by. To go on, you must overcome yourself.") },
+  ma_dau: { title: tr('Ma đầu chặn đường!', "A demon lord blocks the road!"), tag: tr('Ma đầu', "Demon lord"), warn: tr('Một bóng người mắt đỏ như máu chặn ngang đường, sát khí ngút trời.', "A figure with blood-red eyes stands across the road, killing intent soaring to the heavens.") },
+  ngu_hanh: { title: tr('Ngũ Hành Vấn Tâm Đài', "Five Elements Heart-Trial Platform"), tag: tr('Ngũ Hành Đài', "Five Elements Platform"), warn: tr('Năm tấm gương dựng quanh đài đá. Trong mỗi tấm là bạn, mang một bản mệnh khác.', "Five mirrors stand around a stone platform. In each one is you, with a different natal element.") },
 };
 
 function lean(d: number) {
@@ -94,9 +96,9 @@ export function lifeMul(foeLife: number, myLife: number): number {
 
 export function lifeText(foeLife: number, myLife: number): { text: string; tone: 'good' | 'bad' | 'normal' } {
   const d = foeLife - myLife;
-  if (d > 0) return { text: `Đối thủ luân hồi nhiều hơn bạn ${d} kiếp, hồn phách đã mòn: công và thủ ${Math.round((lifeMul(foeLife, myLife) - 1) * 100)}%.`, tone: 'good' };
-  if (d < 0) return { text: `Bạn luân hồi nhiều hơn ${-d} kiếp, hồn phách đã mòn: công và thủ ${Math.round((lifeMul(myLife, foeLife) - 1) * 100)}%.`, tone: 'bad' };
-  return { text: 'Cùng số kiếp luân hồi, không ai hơn ai.', tone: 'normal' };
+  if (d > 0) return { text: tr(`Đối thủ luân hồi nhiều hơn bạn ${d} kiếp, hồn phách đã mòn: công và thủ ${Math.round((lifeMul(foeLife, myLife) - 1) * 100)}%.`, `Your opponent has reincarnated ${d} more lives than you; their soul is worn thin: Attack and Defense ${Math.round((lifeMul(foeLife, myLife) - 1) * 100)}%.`), tone: 'good' };
+  if (d < 0) return { text: tr(`Bạn luân hồi nhiều hơn ${-d} kiếp, hồn phách đã mòn: công và thủ ${Math.round((lifeMul(myLife, foeLife) - 1) * 100)}%.`, `You have reincarnated ${-d} more lives; your soul is worn thin: Attack and Defense ${Math.round((lifeMul(myLife, foeLife) - 1) * 100)}%.`), tone: 'bad' };
+  return { text: tr('Cùng số kiếp luân hồi, không ai hơn ai.', "Same number of lives reincarnated. Neither has the edge."), tone: 'normal' };
 }
 
 function npcRival(c: Character, realm: number, sign: number, rnd: () => number): RivalChar {
@@ -133,13 +135,13 @@ function clToRealm(cl: number): { realm: number; layer: number } {
 
 /** Danh hiệu ma đầu theo con đường của bóng */
 const MA_TITLE: Record<string, string> = {
-  kiem: 'Huyết Kiếm Ma Soái',
-  ma: 'Huyết Ma Lão Tổ',
-  phat: 'Hắc Phật Ma Tăng',
-  tran: 'Âm Trận Ma Quân',
-  dan: 'Độc Đan Ma Y',
-  yeu: 'Thiên Yêu Ma Vương',
-  '': 'Vô Danh Ma Đầu',
+  kiem: tr('Huyết Kiếm Ma Soái', "Blood Sword Demon Marshal"),
+  ma: tr('Huyết Ma Lão Tổ', "Blood Demon Patriarch"),
+  phat: tr('Hắc Phật Ma Tăng', "Black Buddha Demon Monk"),
+  tran: tr('Âm Trận Ma Quân', "Yin Formation Demon Lord"),
+  dan: tr('Độc Đan Ma Y', "Poison Pill Demon Physician"),
+  yeu: tr('Thiên Yêu Ma Vương', "Heavenly Yao Demon King"),
+  '': tr('Vô Danh Ma Đầu', "Nameless Demon Lord"),
 };
 export const maTitle = (r: RivalChar) => MA_TITLE[r.path ?? ''] ?? MA_TITLE[''];
 export const MA_DAU_MAX = 2;
@@ -155,8 +157,8 @@ function pickMaDau(c: Character, rnd: () => number): DuelFoe | null {
   c.maDauMet = (c.maDauMet ?? 0) + 1;
   SOCIAL.cur.maDau = SOCIAL.cur.maDau.filter((x) => x.owner !== m.owner);
   const rival: RivalChar = { ...m.rival, realm: c.realm, layer: c.layer, cosmos: c.cosmos ?? null, alive: true };
-  const kills = m.kills >= 2 ? `vừa hạ ${m.kills} người trong giang hồ` : 'vừa thắng liền hai trận trên lôi đài';
-  const reason = `${maTitle(rival)} ${rival.name} (@${m.owner}) chặn đường. Mắt hắn đỏ như máu, ${kills}. Không tránh được, phải đánh.`;
+  const kills = m.kills >= 2 ? tr(`vừa hạ ${m.kills} người trong giang hồ`, `fresh from cutting down ${m.kills} people in the jianghu`) : tr('vừa thắng liền hai trận trên lôi đài', "fresh from two straight wins in the Arena");
+  const reason = tr(`${maTitle(rival)} ${rival.name} (@${m.owner}) chặn đường. Mắt hắn đỏ như máu, ${kills}. Không tránh được, phải đánh.`, `${maTitle(rival)} ${rival.name} (@${m.owner}) blocks your path. His eyes are blood-red, ${kills}. There's no avoiding it - you must fight.`);
   return { kind: 'ma_dau', rival, npc: false, rel: 'ngang', reason };
 }
 
@@ -194,13 +196,13 @@ function dongMon(c: Character, rnd: () => number, daiBi: boolean): DuelFoe {
     rival = { ...npcRival(c, Math.max(1, c.realm), side === 'ta' ? -1 : 1, rnd), sect: c.sect };
   }
   rival = { ...rival, realm: Math.max(1, c.realm), layer: c.layer, element };
-  const g = rival.gender === 'nu' ? 'Sư tỷ' : 'Sư huynh';
+  const g = rival.gender === 'nu' ? tr('Sư tỷ', "Senior sister") : tr('Sư huynh', "Senior brother");
   const n = rival.name + (rival.player ? ` (@${rival.player})` : '');
   const reason = daiBi
-    ? `Đại bỉ ${c.sect} khai mạc! Bốc thăm trúng ${g.toLowerCase()} ${n}. Thắng trận này, bạn được thăng bậc ngay trước mặt các trưởng lão.`
+    ? tr(`Đại bỉ ${c.sect} khai mạc! Bốc thăm trúng ${g.toLowerCase()} ${n}. Thắng trận này, bạn được thăng bậc ngay trước mặt các trưởng lão.`, `The ${nameOf(c.sect)} Grand Tournament begins! The draw pits you against ${g.toLowerCase()} ${n}. Win this bout and you'll be promoted right before the elders.`)
     : side === 'ta'
-      ? `${g} ${n} chặn bạn trong hang tối: "Ở ${c.sect}, muốn lên thì phải giẫm lên đầu người khác."`
-      : `${g} ${n} gặp bạn ở diễn võ trường ${c.sect}: "Lâu rồi chưa luận kiếm, đấu một trận chứ?"`;
+      ? tr(`${g} ${n} chặn bạn trong hang tối: "Ở ${c.sect}, muốn lên thì phải giẫm lên đầu người khác."`, `${g} ${n} corners you in a dark cave: "In ${nameOf(c.sect)}, if you want to climb, you step on other people's heads."`)
+      : tr(`${g} ${n} gặp bạn ở diễn võ trường ${c.sect}: "Lâu rồi chưa luận kiếm, đấu một trận chứ?"`, `${g} ${n} meets you on the ${nameOf(c.sect)} training ground: "It's been a while since we crossed swords. A bout?"`);
   return { kind: 'dong_mon', rival, npc, rel: 'ngang', reason, daiBi };
 }
 
@@ -224,7 +226,7 @@ function pickDuel0(c: Character, rnd: () => number): DuelFoe | null {
       npc: false,
       rel: relOf(c, rival),
       hunt: true,
-      reason: `Người bạn thuê đã dò ra tung tích của @${rival.player}. ${rival.name} đang đứng ngay trước mặt, không còn đường lui. Thắng được thưởng gấp đôi và lấy lại đồ từng bị cướp.`,
+      reason: tr(`Người bạn thuê đã dò ra tung tích của @${rival.player}. ${rival.name} đang đứng ngay trước mặt, không còn đường lui. Thắng được thưởng gấp đôi và lấy lại đồ từng bị cướp.`, `The one you hired has tracked down @${rival.player}. ${rival.name} stands right before you, with nowhere left to run. Win for double rewards and take back what was stolen from you.`),
     };
   }
   // Đại bỉ tông môn: tới kỳ thì chắc chắn đấu với một đồng môn
@@ -235,7 +237,7 @@ function pickDuel0(c: Character, rnd: () => number): DuelFoe | null {
   // ghi thù trong sổ (cả từ thư giang hồ) cũng tính là oan gia
   const foesV: Vendetta[] = [
     ...(c.vendettas ?? []),
-    ...S.foes.filter((p) => !(c.vendettas ?? []).some((v) => v.player === p)).map((p) => ({ player: p, name: '', items: [], why: `@${p} có tên trong sổ thù của bạn` })),
+    ...S.foes.filter((p) => !(c.vendettas ?? []).some((v) => v.player === p)).map((p) => ({ player: p, name: '', items: [], why: tr(`@${p} có tên trong sổ thù của bạn`, `@${p} is in your book of grudges`) })),
   ];
   // oan gia ngõ hẹp: có thù với người chơi thật thì 35% gặp lại họ
   for (const v of foesV) {
@@ -248,7 +250,7 @@ function pickDuel0(c: Character, rnd: () => number): DuelFoe | null {
       npc: false,
       rel: relOf(c, rival),
       revenge: v,
-      reason: `Oan gia ngõ hẹp! Bạn chưa quên: ${v.why}. Nay người của @${v.player} lại xuất hiện trước mặt. Báo thù được thưởng gấp đôi và lấy lại đồ đã mất.`,
+      reason: tr(`Oan gia ngõ hẹp! Bạn chưa quên: ${v.why}. Nay người của @${v.player} lại xuất hiện trước mặt. Báo thù được thưởng gấp đôi và lấy lại đồ đã mất.`, `Enemies meet on a narrow road! You haven't forgotten: ${v.why}. Now @${v.player}'s character stands before you again. Take revenge for double rewards and reclaim what you lost.`),
     };
   }
   // huynh đệ kết nghĩa: 30% gặp lại nhau trên đường
@@ -261,7 +263,7 @@ function pickDuel0(c: Character, rnd: () => number): DuelFoe | null {
       npc: false,
       rel: relOf(c, rival),
       sworn: true,
-      reason: `Giữa đường gặp lại huynh đệ kết nghĩa ${rival.name} (@${rival.player}). Hai người mừng rỡ, rủ nhau luận võ một trận cho đã tay.`,
+      reason: tr(`Giữa đường gặp lại huynh đệ kết nghĩa ${rival.name} (@${rival.player}). Hai người mừng rỡ, rủ nhau luận võ một trận cho đã tay.`, `On the road you run into your sworn brother ${rival.name} (@${rival.player}). Overjoyed, you two agree to a sparring match just for the fun of it.`),
     };
   }
   // đệ tử tông môn: 25% gặp đồng môn tỷ thí
@@ -329,10 +331,10 @@ function pickDuel0(c: Character, rnd: () => number): DuelFoe | null {
 
 export function foeLabel(f: DuelFoe): string {
   const r = f.rival;
-  return `${r.name}${r.player ? ` (@${r.player})` : ''} · ${r.realm === 0 ? 'Phàm nhân' : realmLabel(r.realm, r.layer, r.cosmos)}`;
+  return `${r.name}${r.player ? ` (@${r.player})` : ''} · ${r.realm === 0 ? tr('Phàm nhân', "Mortal") : realmLabel(r.realm, r.layer, r.cosmos)}`;
 }
 
-const RARE_NAME = ['Phàm', 'Tốt', 'Hiếm', 'Cực phẩm'];
+const RARE_NAME = [tr('Phàm', "Common"), tr('Tốt', "Fine"), tr('Hiếm', "Rare"), tr('Cực phẩm', "Supreme")];
 
 /**
  * Lấy một món trong đồ đối thủ đang mang (vũ khí, áo, phụ kiện...). Ưu tiên món mình chưa có;
@@ -350,11 +352,11 @@ function rivalLoot(c: Character, r: RivalChar, ctx: EffectCtx, chance: number, s
   if (c.inventory.includes(it.id)) {
     const sell = Math.round(40 + (it.price || 80) * 0.5 + (it.rare ?? 0) * 120);
     money(c, sell);
-    return `${say(`${tag} ${it.name}`)} Bạn đã có món này nên đem bán được ${sell} linh thạch.`;
+    return tr(`${say(`${tag} ${it.name}`)} Bạn đã có món này nên đem bán được ${sell} linh thạch.`, `${say(`${tag} ${it.name}`)} You already own this, so you sell it for ${sell} spirit stones.`);
   }
   giveItem(c, it.id, false);
   ctx.fx((it.rare ?? 0) >= 3 ? 'layer' : 'buy', it.name);
-  return `${say(`${tag} ${it.name}`)} (${fxText(it.fx)}) Mở Túi đồ để mặc.`;
+  return tr(`${say(`${tag} ${it.name}`)} (${fxText(it.fx)}) Mở Túi đồ để mặc.`, `${say(`${tag} ${it.name}`)} (${fxText(it.fx)}) Open your Inventory to equip it.`);
 }
 
 /** Bị lột n món đang mặc (bỏ qua áo vải khởi đầu). Mặc từ 2 món trở lên thì luôn chừa lại ít nhất một món. */
@@ -368,9 +370,9 @@ export function robGear(c: Character, ctx: EffectCtx, n: number, ids?: string[])
     c.equipped[slot] = slot === 'ao' ? 'ao_vai' : undefined;
     c.inventory = c.inventory.filter((x) => x !== id);
     ids?.push(id);
-    names.push(ITEMS.find((it) => it.id === id)?.name ?? 'một món đồ');
+    names.push(ITEMS.find((it) => it.id === id)?.name ?? tr('một món đồ', "an item"));
   }
-  if (names.length) ctx.fx('hurt', 'Bị lột đồ');
+  if (names.length) ctx.fx('hurt', tr('Bị lột đồ', "Stripped of gear"));
   return names;
 }
 
@@ -388,15 +390,15 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
   const who = r.player ? `${r.name} (@${r.player})` : r.name;
   const harder = (f.rel === 'manh' ? 1.6 : f.rel === 'yeu' ? 0.5 : 1) * (f.provoke ? PROVOKE_MUL : 1);
   const out: string[] = [];
-  if (f.provoke) out.push('Hai bên từng khiêu khích nhau, trận này thắng thua đều gấp rưỡi.');
+  if (f.provoke) out.push(tr('Hai bên từng khiêu khích nhau, trận này thắng thua đều gấp rưỡi.', "You two have provoked each other before - this bout's wins and losses count one and a half times."));
   if (f.kind === 'ma_dau') {
     const t = `${maTitle(r)} ${r.name}`;
     if (result === 'win') {
       const exp = Math.round(reward(c, 0.5));
       addCult(c, exp);
       stat(c, 'khiVan', 3);
-      out.push(`Bạn đánh tan ${t} của @${r.player}. Ma khí tan thành khói đen (+${exp} tu vi, +10 phúc duyên).`);
-      const g = rivalLoot(c, r, ctx, 1, (n) => `Bóng ma đầu tan đi, rơi lại ${n}.`);
+      out.push(tr(`Bạn đánh tan ${t} của @${r.player}. Ma khí tan thành khói đen (+${exp} tu vi, +10 phúc duyên).`, `You shatter @${r.player}'s ${t}. The demonic qi dissolves into black smoke (+${exp} cultivation, +10 Fortune).`));
+      const g = rivalLoot(c, r, ctx, 1, (n) => tr(`Bóng ma đầu tan đi, rơi lại ${n}.`, `The demon lord's shadow fades, leaving behind ${n}.`));
       if (g) out.push(g);
       return out;
     }
@@ -405,11 +407,11 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
     money(c, -lost);
     const hurt = result === 'lose' ? 40 : 20;
     c.stats.sucKhoe = Math.max(5, c.stats.sucKhoe - hurt);
-    ctx.fx('hurt', 'Trọng thương');
+    ctx.fx('hurt', tr('Trọng thương', "Badly wounded"));
     out.push(
       result === 'lose'
-        ? `${t} đánh bạn gục xuống, cướp ${lost} linh thạch rồi cười dài bỏ đi. Bạn trọng thương nhưng còn sống (-${hurt} sức khỏe).`
-        : `Hai bên đánh tới kiệt sức. ${t} giật được ${lost} linh thạch rồi hóa khói đen bỏ đi (-${hurt} sức khỏe).`,
+        ? tr(`${t} đánh bạn gục xuống, cướp ${lost} linh thạch rồi cười dài bỏ đi. Bạn trọng thương nhưng còn sống (-${hurt} sức khỏe).`, `${t} strikes you down, steals ${lost} spirit stones and leaves with a long laugh. You're badly wounded but alive (-${hurt} Health).`)
+        : tr(`Hai bên đánh tới kiệt sức. ${t} giật được ${lost} linh thạch rồi hóa khói đen bỏ đi (-${hurt} sức khỏe).`, `You fight to exhaustion. ${t} snatches ${lost} spirit stones and vanishes in black smoke (-${hurt} Health).`),
     );
     return out;
   }
@@ -419,30 +421,30 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
       const exp = Math.round(reward(c, f.daiBi ? 0.8 : 0.4) * harder);
       addCult(c, exp);
       stat(c, 'khiVan', 2);
-      out.push(`${dongMonWin(who, !!f.daiBi, ctx.rnd)} (+${exp} tu vi).`);
+      out.push(tr(`${dongMonWin(who, !!f.daiBi, ctx.rnd)} (+${exp} tu vi).`, `${dongMonWin(who, !!f.daiBi, ctx.rnd)} (+${exp} cultivation).`));
       if (f.daiBi) {
-        const up = promote(c, ctx, 'Chưởng môn gật đầu tán thưởng.');
+        const up = promote(c, ctx, tr('Chưởng môn gật đầu tán thưởng.', "The Sect Leader nods in approval."));
         if (up) out.push(up);
       }
       if (ta) {
-        const g = rivalLoot(c, r, ctx, 0.4, (n) => `Theo luật ma môn, kẻ thua phải nộp ${n} cho bạn.`);
+        const g = rivalLoot(c, r, ctx, 0.4, (n) => tr(`Theo luật ma môn, kẻ thua phải nộp ${n} cho bạn.`, `By the law of the demonic sect, the loser must hand ${n} over to you.`));
         if (g) out.push(g);
       }
     } else if (result === 'draw') {
       const exp = Math.round(reward(c, 0.25) * harder);
       addCult(c, exp);
-      out.push(`${dongMonDraw(who, ctx.rnd)} (+${exp} tu vi).${f.daiBi ? ' Đại bỉ lần này bạn chưa được thăng bậc.' : ''}`);
+      out.push(tr(`${dongMonDraw(who, ctx.rnd)} (+${exp} tu vi).${f.daiBi ? tr(' Đại bỉ lần này bạn chưa được thăng bậc.', " No promotion for you at this Grand Tournament.") : ''}`, `${dongMonDraw(who, ctx.rnd)} (+${exp} cultivation).${f.daiBi ? tr(' Đại bỉ lần này bạn chưa được thăng bậc.', " No promotion for you at this Grand Tournament.") : ''}`));
     } else {
       stat(c, 'sucKhoe', -10);
       stat(c, 'tamCanh', -3);
       out.push(dongMonLose(who, !!f.daiBi, ctx.rnd));
       if (ta) {
         // ma môn: đồng môn cũng chẳng nương tay
-        const fl = fatal(c, ctx, 0.08, `Đồng môn ${who} ra tay tàn độc giữa hang tối. Ở ${c.sect}, kẻ yếu không có quyền sống.`);
+        const fl = fatal(c, ctx, 0.08, tr(`Đồng môn ${who} ra tay tàn độc giữa hang tối. Ở ${c.sect}, kẻ yếu không có quyền sống.`, `Fellow disciple ${who} strikes viciously in the dark cave. In ${nameOf(c.sect)}, the weak have no right to live.`));
         if (c.dead) return [fl ?? ''];
         const ids: string[] = [];
         const taken = ctx.rnd() < 0.3 ? robGear(c, ctx, 1, ids) : [];
-        if (taken.length) out.push(`${r.name} còn lột mất ${taken.join(', ')} của bạn.${fl ?? ''}`);
+        if (taken.length) out.push(tr(`${r.name} còn lột mất ${taken.join(', ')} của bạn.${fl ?? ''}`, `${r.name} also strips you of ${taken.join(', ')}.${fl ?? ''}`));
       }
     }
     return out;
@@ -453,7 +455,7 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
     addCult(c, exp);
     stat(c, 'tamCanh', 3);
     stat(c, 'khiVan', 2);
-    out.push(`${swornLine(r.name, result, ctx.rnd)} (+${exp} tu vi).`);
+    out.push(tr(`${swornLine(r.name, result, ctx.rnd)} (+${exp} tu vi).`, `${swornLine(r.name, result, ctx.rnd)} (+${exp} cultivation).`));
     return out;
   }
   if (f.kind === 'dong_dao') {
@@ -461,25 +463,25 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
       const exp = Math.round(reward(c, 0.35) * harder);
       addCult(c, exp);
       stat(c, 'khiVan', 2);
-      out.push(`${dongDaoWin(who, marginOf(pLoss), ctx.rnd)} (+${exp} tu vi).`);
-      const g = rivalLoot(c, r, ctx, 0.35, (n) => `${r.name} phục tài, tháo ${n} tặng bạn làm kỷ niệm.`);
+      out.push(tr(`${dongDaoWin(who, marginOf(pLoss), ctx.rnd)} (+${exp} tu vi).`, `${dongDaoWin(who, marginOf(pLoss), ctx.rnd)} (+${exp} cultivation).`));
+      const g = rivalLoot(c, r, ctx, 0.35, (n) => tr(`${r.name} phục tài, tháo ${n} tặng bạn làm kỷ niệm.`, `${r.name}, won over by your skill, takes off ${n} and gives it to you as a keepsake.`));
       if (g) out.push(g);
     } else if (result === 'draw') {
       const exp = Math.round(reward(c, 0.2) * harder);
       addCult(c, exp);
       stat(c, 'tamCanh', 3);
-      out.push(`${dongDaoDraw(who, ctx.rnd)} (+${exp} tu vi).`);
+      out.push(tr(`${dongDaoDraw(who, ctx.rnd)} (+${exp} tu vi).`, `${dongDaoDraw(who, ctx.rnd)} (+${exp} cultivation).`));
     } else {
       const exp = Math.round(reward(c, 0.12) * harder);
       addCult(c, exp);
       stat(c, 'sucKhoe', -12);
-      out.push(`${dongDaoLose(who, ctx.rnd)} (+${exp} tu vi).`);
+      out.push(tr(`${dongDaoLose(who, ctx.rnd)} (+${exp} tu vi).`, `${dongDaoLose(who, ctx.rnd)} (+${exp} cultivation).`));
       // đồng đạo cũng có kẻ giả nhân giả nghĩa: thắng xong trở mặt lột đồ (người nghiêng tà dễ trở mặt hơn)
       if (ctx.rnd() < (r.daoTam < 0 ? 0.35 : 0.15)) {
         const ids: string[] = [];
         const taken = robGear(c, ctx, ctx.rnd() < 0.3 ? 2 : 1, ids);
-        if (taken.length) addVendetta(c, f, ids, `${r.name} giả nhân giả nghĩa lột đồ bạn`);
-        if (taken.length) out.push(`Nào ngờ ${r.name} là kẻ giả nhân giả nghĩa. Thấy bạn kiệt sức, hắn trở mặt lột mất ${taken.join(' và ')} rồi cười lớn bỏ đi.`);
+        if (taken.length) addVendetta(c, f, ids, tr(`${r.name} giả nhân giả nghĩa lột đồ bạn`, `${r.name}, the two-faced hypocrite, stripped your gear`));
+        if (taken.length) out.push(tr(`Nào ngờ ${r.name} là kẻ giả nhân giả nghĩa. Thấy bạn kiệt sức, hắn trở mặt lột mất ${taken.join(tr(' và ', " and "))} rồi cười lớn bỏ đi.`, `Who knew ${r.name} was a two-faced hypocrite? Seeing you spent, he turns on you, strips off ${taken.join(tr(' và ', " and "))} and leaves laughing.`));
       }
     }
     return out;
@@ -492,20 +494,20 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
       addCult(c, exp);
       const loot = Math.round((40 + r.realm * 60 * harder) * rv);
       money(c, loot);
-      if (r.player && !f.npc) addMile(c, f.revenge || f.hunt ? 'revenge' : 'duel', f.revenge ? `Báo được đại thù với ${r.name} (@${r.player})` : `Đánh bại địch thủ ${r.name} (@${r.player})`);
-      out.push(f.revenge || f.hunt ? `${dichThuRevenge(who, ctx.rnd)} (+${exp} tu vi, +${loot} linh thạch, gấp đôi).` : `${dichThuWin(who, marginOf(pLoss), chieuOf(c, ctx.rnd), ctx.rnd)} (+${exp} tu vi, +${loot} linh thạch).`);
+      if (r.player && !f.npc) addMile(c, f.revenge || f.hunt ? 'revenge' : 'duel', f.revenge ? tr(`Báo được đại thù với ${r.name} (@${r.player})`, `Avenged a great grudge against ${r.name} (@${r.player})`) : tr(`Đánh bại địch thủ ${r.name} (@${r.player})`, `Defeated rival ${r.name} (@${r.player})`));
+      out.push(f.revenge || f.hunt ? tr(`${dichThuRevenge(who, ctx.rnd)} (+${exp} tu vi, +${loot} linh thạch, gấp đôi).`, `${dichThuRevenge(who, ctx.rnd)} (+${exp} cultivation, +${loot} spirit stones, doubled).`) : tr(`${dichThuWin(who, marginOf(pLoss), chieuOf(c, ctx.rnd), ctx.rnd)} (+${exp} tu vi, +${loot} linh thạch).`, `${dichThuWin(who, marginOf(pLoss), chieuOf(c, ctx.rnd), ctx.rnd)} (+${exp} cultivation, +${loot} spirit stones).`));
       if (vend) {
         const back = vend.items.filter((id) => ITEMS.some((i) => i.id === id));
         back.forEach((id) => giveItem(c, id, false));
-        if (back.length) out.push(`Bạn lấy lại ${back.map((id) => ITEMS.find((i) => i.id === id)?.name).join(', ')} từng bị cướp.`);
+        if (back.length) out.push(tr(`Bạn lấy lại ${back.map((id) => ITEMS.find((i) => i.id === id)?.name).join(', ')} từng bị cướp.`, `You reclaim ${back.map((id) => ITEMS.find((i) => i.id === id)?.name).join(', ')}, once stolen from you.`));
         c.vendettas = (c.vendettas ?? []).filter((v) => v.player !== vend.player);
         qmark(c, 'revenge');
       }
       // thắng địch thủ: lấy 1 món, 30% lấy được 2 món, không bao giờ lấy hết
-      const g = rivalLoot(c, r, ctx, 0.7, (n) => `Bạn lột được ${n} của ${r.name} làm chiến lợi phẩm.`);
+      const g = rivalLoot(c, r, ctx, 0.7, (n) => tr(`Bạn lột được ${n} của ${r.name} làm chiến lợi phẩm.`, `You strip ${n} from ${r.name} as spoils of war.`));
       if (g) {
         out.push(g);
-        const g2 = rivalLoot(c, r, ctx, 0.3, (n) => `Lục thêm được ${n}.`);
+        const g2 = rivalLoot(c, r, ctx, 0.3, (n) => tr(`Lục thêm được ${n}.`, `You also scrounge up ${n}.`));
         if (g2) out.push(g2);
       }
       stat(c, 'sucKhoe', -Math.round(pLoss * 20));
@@ -518,10 +520,10 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
         c,
         ctx,
         f.betray ? 0.45 : 0.25,
-        f.betray ? `Bạn tin nhầm ${who}. Chén trà còn chưa nguội, người đã thành thi thể.` : dichThuDeath(who, ctx.rnd),
+        f.betray ? tr(`Bạn tin nhầm ${who}. Chén trà còn chưa nguội, người đã thành thi thể.`, `You trusted ${who} wrongly. Before the tea had cooled, you were a corpse.`) : dichThuDeath(who, ctx.rnd),
       );
       if (c.dead) {
-        addVendetta(c, f, [], f.betray ? `${r.name} trở mặt giết bạn bên bàn trà` : `${r.name} đã giết bạn`);
+        addVendetta(c, f, [], f.betray ? tr(`${r.name} trở mặt giết bạn bên bàn trà`, `${r.name} turned on you and killed you at the tea table`) : tr(`${r.name} đã giết bạn`, `${r.name} killed you`));
         return [fl ?? ''];
       }
       stat(c, 'sucKhoe', -35);
@@ -531,8 +533,8 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
       // bị lột 1-2 món đang mặc, không bao giờ mất hết
       const ids: string[] = [];
       const taken = robGear(c, ctx, ctx.rnd() < 0.3 ? 2 : 1, ids);
-      if (taken.length) out.push(`${r.name} còn lột mất ${taken.join(' và ')} của bạn.`);
-      addVendetta(c, f, ids, f.betray ? `${r.name} trở mặt đánh úp bạn` : `${r.name} đánh bại và cướp của bạn`);
+      if (taken.length) out.push(tr(`${r.name} còn lột mất ${taken.join(tr(' và ', " and "))} của bạn.`, `${r.name} also strips you of ${taken.join(tr(' và ', " and "))}.`));
+      addVendetta(c, f, ids, f.betray ? tr(`${r.name} trở mặt đánh úp bạn`, `${r.name} turned on you in an ambush`) : tr(`${r.name} đánh bại và cướp của bạn`, `${r.name} defeated and robbed you`));
     }
     return out;
   }
@@ -543,15 +545,15 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
     stat(c, 'tamMa', -20);
     stat(c, 'tamCanh', 8);
     stat(c, 'khiVan', 3);
-    addMile(c, 'duel', 'Vượt qua tâm ma của chính mình kiếp trước');
-    out.push(`${tamMaLine(r.name, 'win', ctx.rnd)} (+${exp} tu vi).`);
-    const g = rivalLoot(c, r, ctx, 0.6, (n) => `Bóng kiếp trước tan đi, để lại ${n}, di vật bạn từng mang kiếp trước.`);
+    addMile(c, 'duel', tr('Vượt qua tâm ma của chính mình kiếp trước', "Overcame the heart demon of your own past life"));
+    out.push(tr(`${tamMaLine(r.name, 'win', ctx.rnd)} (+${exp} tu vi).`, `${tamMaLine(r.name, 'win', ctx.rnd)} (+${exp} cultivation).`));
+    const g = rivalLoot(c, r, ctx, 0.6, (n) => tr(`Bóng kiếp trước tan đi, để lại ${n}, di vật bạn từng mang kiếp trước.`, `The shadow of your past life fades, leaving ${n}, a relic you carried in that life.`));
     if (g) out.push(g);
   } else if (result === 'draw') {
     stat(c, 'tamMa', 5);
     out.push(tamMaLine(r.name, 'draw', ctx.rnd));
   } else {
-    const fl = fatal(c, ctx, 0.1, `Bạn thua chính mình kiếp trước. Hai kiếp người hóa thành một nắm tro bên hồ.`);
+    const fl = fatal(c, ctx, 0.1, tr(`Bạn thua chính mình kiếp trước. Hai kiếp người hóa thành một nắm tro bên hồ.`, "You lose to your own past self. Two lifetimes turn into a handful of ash by the lake."));
     if (c.dead) return [fl ?? ''];
     stat(c, 'tamMa', 15);
     stat(c, 'sucKhoe', -25);
@@ -563,45 +565,45 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
 /** Lý do gặp: rút ngẫu nhiên theo loại cuộc gặp và hoàn cảnh hai bên, để mỗi lần một khác */
 function reasonFor(c: Character, kind: DuelKind, r: RivalChar, rnd: () => number): string {
   const n = r.name;
-  const pathName = r.path ? { kiem: 'kiếm', dan: 'đan', tran: 'trận', phat: 'Phật', ma: 'ma công', yeu: 'yêu thuật' }[r.path] : 'võ';
+  const pathName = r.path ? { kiem: tr('kiếm', "the sword"), dan: tr('đan', "alchemy"), tran: tr('trận', "formations"), phat: tr('Phật', "Buddhist arts"), ma: tr('ma công', "demonic arts"), yeu: tr('yêu thuật', "yao sorcery") }[r.path] : tr('võ', "martial arts");
   const pool: string[] = [];
   if (kind === 'dong_dao') {
     pool.push(
-      `${n} chắn đường, chắp tay thi lễ: "Nghe danh đã lâu, xin được lĩnh giáo vài chiêu."`,
-      `Trên đỉnh núi vắng, ${n} đang luyện ${pathName}. Thấy bạn, người ấy dừng tay mỉm cười: "Đến đúng lúc, cùng luận một trận chứ?"`,
-      `Hai người cùng nhắm một cây linh chi trên vách đá. ${n} cười: "Ai thắng thì người đó hái, thế nào?"`,
-      `Trong tửu lâu, ${n} nâng chén mời bạn. Uống đến chén thứ ba thì nói: "Rượu ngon phải có kiếm hay. Xin chỉ giáo!"`,
-      `Đại hội luận võ mở ở trấn bên. Bốc thăm thế nào lại trúng đúng ${n}.`,
-      `${n} được sư phụ dặn đi khắp thiên hạ tìm người ngang tài để mài giũa. Người ấy tìm đến bạn.`,
-      `Bến đò chỉ còn một chuyến cuối ngày. ${n} đề nghị: "Đấu một trận, ai thắng qua sông trước."`,
-      `${n} nhặt được bức thư bạn đánh rơi, trả lại rồi nói: "Coi như duyên phận, đấu với ta vài chiêu."`,
+      tr(`${n} chắn đường, chắp tay thi lễ: "Nghe danh đã lâu, xin được lĩnh giáo vài chiêu."`, `${n} blocks your way and bows with clasped hands: "Your name precedes you. I humbly ask to learn a few of your moves."`),
+      tr(`Trên đỉnh núi vắng, ${n} đang luyện ${pathName}. Thấy bạn, người ấy dừng tay mỉm cười: "Đến đúng lúc, cùng luận một trận chứ?"`, `On a lonely peak, ${n} is practicing ${pathName}. Seeing you, they stop and smile: "Perfect timing. A friendly bout?"`),
+      tr(`Hai người cùng nhắm một cây linh chi trên vách đá. ${n} cười: "Ai thắng thì người đó hái, thế nào?"`, `You both have your eye on the same lingzhi growing on a cliff face. ${n} grins: "Winner picks it. Deal?"`),
+      tr(`Trong tửu lâu, ${n} nâng chén mời bạn. Uống đến chén thứ ba thì nói: "Rượu ngon phải có kiếm hay. Xin chỉ giáo!"`, `In a tavern, ${n} raises a cup to you. At the third cup they say: "Good wine deserves a good blade. Teach me something!"`),
+      tr(`Đại hội luận võ mở ở trấn bên. Bốc thăm thế nào lại trúng đúng ${n}.`, `A martial tournament opens in the next town. As luck would have it, the draw puts you against ${n}.`),
+      tr(`${n} được sư phụ dặn đi khắp thiên hạ tìm người ngang tài để mài giũa. Người ấy tìm đến bạn.`, `${n} was sent by their master to roam the world in search of an equal to sharpen against. They have found you.`),
+      tr(`Bến đò chỉ còn một chuyến cuối ngày. ${n} đề nghị: "Đấu một trận, ai thắng qua sông trước."`, `Only one last ferry crossing remains today. ${n} proposes: "One bout. Winner crosses first."`),
+      tr(`${n} nhặt được bức thư bạn đánh rơi, trả lại rồi nói: "Coi như duyên phận, đấu với ta vài chiêu."`, `${n} picks up a letter you dropped and hands it back: "Call it fate. Spar with me a few moves."`),
     );
-    if (r.alive === false && r.player) pool.push(`Anh linh của ${n} chưa tan, vẫn ngồi bên bia mộ chờ người đáng mặt luận võ.`);
+    if (r.alive === false && r.player) pool.push(tr(`Anh linh của ${n} chưa tan, vẫn ngồi bên bia mộ chờ người đáng mặt luận võ.`, `The heroic spirit of ${n} has not yet dispersed; it still sits by its tombstone, waiting for an opponent worthy of a bout.`));
   } else if (kind === 'dich_thu') {
     pool.push(
-      `Sát khí ập tới. ${n} đã đợi bạn ở đây từ lâu. Hôm nay chỉ một người được rời đi.`,
-      `${n} nhận lệnh truy nã bạn với giá cao. "Đầu ngươi đáng giá lắm," hắn nói.`,
-      `Bạn vô tình giẫm vào lãnh địa của ${n}. Hắn không cần biết lý do.`,
-      `Hai người cùng phát hiện một bí cảnh vừa mở. Bí cảnh chỉ đủ cho một người vào.`,
-      `${n} tưởng bạn là kẻ đã giết đồng môn của hắn. Giải thích cũng vô ích.`,
-      `Giữa đường, ${n} chặn đoàn xe bạn đang hộ tống. "Để hàng lại, hoặc để mạng lại."`,
-      `Ở phường thị, bạn mua được món bảo vật ${n} để mắt từ lâu. Hắn theo bạn ra tận ngoài thành.`,
-      `${n} tuyên bố trước giang hồ: ai mạnh nhất vùng này thì hắn sẽ đến khiêu chiến. Hôm nay là lượt bạn.`,
+      tr(`Sát khí ập tới. ${n} đã đợi bạn ở đây từ lâu. Hôm nay chỉ một người được rời đi.`, `Killing intent rushes in. ${n} has long been waiting for you here. Only one of you leaves today.`),
+      tr(`${n} nhận lệnh truy nã bạn với giá cao. "Đầu ngươi đáng giá lắm," hắn nói.`, `${n} has taken a hefty bounty on your head. "Your head is worth a lot," he says.`),
+      tr(`Bạn vô tình giẫm vào lãnh địa của ${n}. Hắn không cần biết lý do.`, `You stray into ${n}'s territory by accident. He doesn't care why.`),
+      tr(`Hai người cùng phát hiện một bí cảnh vừa mở. Bí cảnh chỉ đủ cho một người vào.`, "You both discover a secret realm that has just opened. It only has room for one."),
+      tr(`${n} tưởng bạn là kẻ đã giết đồng môn của hắn. Giải thích cũng vô ích.`, `${n} thinks you're the one who killed his fellow disciple. Explaining is useless.`),
+      tr(`Giữa đường, ${n} chặn đoàn xe bạn đang hộ tống. "Để hàng lại, hoặc để mạng lại."`, `Halfway down the road, ${n} stops the caravan you're escorting. "Leave the goods, or leave your life."`),
+      tr(`Ở phường thị, bạn mua được món bảo vật ${n} để mắt từ lâu. Hắn theo bạn ra tận ngoài thành.`, `At the Market you buy a treasure ${n} has long had his eye on. He follows you all the way out of the city.`),
+      tr(`${n} tuyên bố trước giang hồ: ai mạnh nhất vùng này thì hắn sẽ đến khiêu chiến. Hôm nay là lượt bạn.`, `${n} has declared to the whole jianghu that he'll challenge whoever is strongest in these parts. Today it's your turn.`),
     );
     if (c.daoTam >= 20 && r.daoTam <= -20)
-      pool.push(`Ma đạo ${n} nghe tin bạn ra tay diệt ma, tìm đến báo thù cho đồng môn.`, `${n} cười gằn: "Chính đạo các ngươi giả nhân giả nghĩa, hôm nay ta lột mặt nạ."`);
+      pool.push(tr(`Ma đạo ${n} nghe tin bạn ra tay diệt ma, tìm đến báo thù cho đồng môn.`, `Demonic cultivator ${n} heard you've been slaying demons and comes to avenge his fellow disciples.`), tr(`${n} cười gằn: "Chính đạo các ngươi giả nhân giả nghĩa, hôm nay ta lột mặt nạ."`, `${n} sneers: "You righteous hypocrites! Today I tear off your mask."`));
     if (c.daoTam <= -20 && r.daoTam >= 20)
-      pool.push(`${n} của chính phái lần theo dấu máu bạn để lại. "Hôm nay thay trời hành đạo."`, `Chính phái treo thưởng đầu bạn. ${n} là người đầu tiên tìm tới.`);
-    if (c.enemy) pool.push(`${n} được ${c.enemy} thuê đến lấy mạng bạn.`);
-    if (c.partner) pool.push(`${n} từng thầm thương ${c.partner}. Thấy bạn, hắn rút vũ khí không nói một lời.`);
+      pool.push(tr(`${n} của chính phái lần theo dấu máu bạn để lại. "Hôm nay thay trời hành đạo."`, `${n} of the righteous sects has followed your trail of blood. "Today I act on behalf of Heaven."`), tr(`Chính phái treo thưởng đầu bạn. ${n} là người đầu tiên tìm tới.`, `The righteous sects have put a bounty on your head. ${n} is the first to come for it.`));
+    if (c.enemy) pool.push(tr(`${n} được ${c.enemy} thuê đến lấy mạng bạn.`, `${n} was hired by ${c.enemy} to take your life.`));
+    if (c.partner) pool.push(tr(`${n} từng thầm thương ${c.partner}. Thấy bạn, hắn rút vũ khí không nói một lời.`, `${n} once secretly loved ${c.partner}. On seeing you, he draws his weapon without a word.`));
   } else {
     pool.push(
-      `Mặt hồ phẳng lặng bỗng in bóng một người. Đó là bạn, của một kiếp đã qua. Muốn đi tiếp, phải vượt qua chính mình.`,
-      `Đang tọa thiền, bạn rơi vào tâm cảnh. ${n} đứng trước mặt, hỏi: "Kiếp này ngươi có sống tốt hơn ta không?"`,
-      `Trong giấc mơ, ${n} cầm vũ khí cũ của kiếp trước chặn đường: "Nợ cũ chưa trả, đừng mong đi xa."`,
-      `Đột phá đến cửa ải, tâm ma hóa thành hình dáng kiếp trước. ${n} cười nhạt: "Ngươi vẫn yếu như ta năm xưa."`,
-      `Đi qua nơi kiếp trước từng chết, bóng ${n} hiện lên giữa sương mù, ánh mắt đầy tiếc nuối.`,
-      `Chiếc gương đồng trong miếu cổ phản chiếu không phải bạn, mà là ${n}. Bóng trong gương bước ra.`,
+      tr(`Mặt hồ phẳng lặng bỗng in bóng một người. Đó là bạn, của một kiếp đã qua. Muốn đi tiếp, phải vượt qua chính mình.`, "A figure suddenly appears on the still surface of the lake. It is you, from a life gone by. To go on, you must overcome yourself."),
+      tr(`Đang tọa thiền, bạn rơi vào tâm cảnh. ${n} đứng trước mặt, hỏi: "Kiếp này ngươi có sống tốt hơn ta không?"`, `In meditation, you sink into your inner world. ${n} stands before you and asks: "Have you lived this life better than I did?"`),
+      tr(`Trong giấc mơ, ${n} cầm vũ khí cũ của kiếp trước chặn đường: "Nợ cũ chưa trả, đừng mong đi xa."`, `In a dream, ${n} blocks your path with the old weapon of your past life: "Old debts unpaid - don't think you'll get far."`),
+      tr(`Đột phá đến cửa ải, tâm ma hóa thành hình dáng kiếp trước. ${n} cười nhạt: "Ngươi vẫn yếu như ta năm xưa."`, `At the threshold of a breakthrough, your heart demon takes the form of your past life. ${n} smiles thinly: "You're as weak as I was back then."`),
+      tr(`Đi qua nơi kiếp trước từng chết, bóng ${n} hiện lên giữa sương mù, ánh mắt đầy tiếc nuối.`, `Passing the place where your past life died, the shadow of ${n} rises in the mist, eyes full of regret.`),
+      tr(`Chiếc gương đồng trong miếu cổ phản chiếu không phải bạn, mà là ${n}. Bóng trong gương bước ra.`, `The bronze mirror in the old temple reflects not you, but ${n}. The figure in the mirror steps out.`),
     );
   }
   return pool[Math.floor(rnd() * pool.length)];
@@ -614,29 +616,29 @@ function reasonFor(c: Character, kind: DuelKind, r: RivalChar, rnd: () => number
 export type TeaResult = { kind: 'am_toan'; text: string } | { kind: 'tro_mat'; text: string } | { kind: 'that_long' };
 
 const AM_TOAN: ((w: string, h: string) => string)[] = [
-  (w, h) => `Chén trà của ${w} có vị đắng lạ. Uống xong, bụng bạn quặn thắt: trà có độc.`,
-  (w, h) => `${w} đốt một nén "an thần hương". Bạn ngửi một lúc thì mê man, tỉnh dậy đã nằm giữa bãi cỏ.`,
-  (w, h) => `Rượu ${w} mời ngấm Thập Hương Nhuyễn Cân Tán, gân cốt bạn mềm nhũn như bún.`,
-  (w, h) => `Trong ấm trà của ${w} có thả cổ trùng. Mấy ngày sau bạn mới thấy nó cựa quậy trong bụng.`,
-  (w, h) => `${w} rót trà bằng chiếc ấm hai ngăn: chén của ${h} trà thường, chén của bạn trà độc.`,
-  (w, h) => `Đang luận đạo say sưa, ${w} vỗ vai thân thiết. Trên tay ${h} dính kim độc mảnh như lông trâu.`,
-  (w, h) => `Bánh ngọt ${w} mời có trộn Tán Công Tán. Bạn vận khí thì thấy chân khí tán loạn.`,
-  (w, h) => `${w} dùng "Tỏa Hồn Khúc" thổi sáo giúp vui. Bạn nghe xong đầu óc quay cuồng, ngã gục.`,
+  (w, h) => tr(`Chén trà của ${w} có vị đắng lạ. Uống xong, bụng bạn quặn thắt: trà có độc.`, `The tea ${w} serves tastes strangely bitter. After you drink it, your gut twists: poison.`),
+  (w, h) => tr(`${w} đốt một nén "an thần hương". Bạn ngửi một lúc thì mê man, tỉnh dậy đã nằm giữa bãi cỏ.`, `${w} lights a stick of "calming incense". After a few breaths you black out, and wake lying in a field.`),
+  (w, h) => tr(`Rượu ${w} mời ngấm Thập Hương Nhuyễn Cân Tán, gân cốt bạn mềm nhũn như bún.`, `The wine ${w} offers is laced with Ten Fragrance Sinew-Softening Powder; your bones go limp as noodles.`),
+  (w, h) => tr(`Trong ấm trà của ${w} có thả cổ trùng. Mấy ngày sau bạn mới thấy nó cựa quậy trong bụng.`, `${w} slipped a gu worm into the teapot. Only days later do you feel it squirming in your belly.`),
+  (w, h) => tr(`${w} rót trà bằng chiếc ấm hai ngăn: chén của ${h} trà thường, chén của bạn trà độc.`, `${w} pours from a two-chambered pot: ${h} drinks plain tea, you drink poison.`),
+  (w, h) => tr(`Đang luận đạo say sưa, ${w} vỗ vai thân thiết. Trên tay ${h} dính kim độc mảnh như lông trâu.`, `Deep in a lively Yao discussion, ${w} claps you warmly on the shoulder - and ${h} is hiding a poison needle as fine as an ox hair.`),
+  (w, h) => tr(`Bánh ngọt ${w} mời có trộn Tán Công Tán. Bạn vận khí thì thấy chân khí tán loạn.`, `The sweet cakes ${w} offers are mixed with Qi-Scattering Powder. When you circulate your qi, your true qi goes wild.`),
+  (w, h) => tr(`${w} dùng "Tỏa Hồn Khúc" thổi sáo giúp vui. Bạn nghe xong đầu óc quay cuồng, ngã gục.`, `${w} plays the "Soul-Locking Tune" on a flute for fun. When it ends your head is spinning, and you collapse.`),
 ];
 const TRO_MAT: ((w: string, h: string) => string)[] = [
-  (w, h) => `Chén trà vừa nâng lên, ${w} đã rút kiếm đâm thẳng tới: "Đồng đạo? Giang hồ làm gì có đồng đạo!"`,
-  (w, h) => `Uống được nửa chén, từ bụi rậm nhảy ra ba tên phục binh. ${w} cười nhạt rồi cùng xông vào.`,
-  (w, h) => `${w} thấy túi đồ của bạn căng phồng, bỗng nổi lòng tham, hất bàn trà ra tay.`,
-  (w, h) => `Hóa ra ${w} nhận tiền thưởng truy nã cái đầu của bạn. Ấm trà chỉ là cái cớ để lại gần.`,
-  (w, h) => `${w} nhắc chuyện cũ, càng nói càng cay: hóa ra sư phụ ${h} từng chết dưới tay người cùng môn với bạn.`,
-  (w, h) => `Bàn tới công pháp, ${w} đòi bạn đưa bí kíp ra xem. Bạn chưa kịp từ chối, ${h} đã ra tay cướp.`,
-  (w, h) => `${w} uống say, tâm ma nổi dậy, mắt đỏ ngầu, quay sang đánh bạn như đánh kẻ thù.`,
-  (w, h) => `Ấm trà vỡ tan, bên trong giấu một con dao găm. ${w} đã chuẩn bị từ trước.`,
+  (w, h) => tr(`Chén trà vừa nâng lên, ${w} đã rút kiếm đâm thẳng tới: "Đồng đạo? Giang hồ làm gì có đồng đạo!"`, `You've barely raised the cup when ${w} draws a sword and lunges: "Kindred spirit? There's no such thing in the jianghu!"`),
+  (w, h) => tr(`Uống được nửa chén, từ bụi rậm nhảy ra ba tên phục binh. ${w} cười nhạt rồi cùng xông vào.`, `Half a cup in, three ambushers leap out of the bushes. ${w} smirks and charges in with them.`),
+  (w, h) => tr(`${w} thấy túi đồ của bạn căng phồng, bỗng nổi lòng tham, hất bàn trà ra tay.`, `${w} sees how stuffed your pouch is, gets greedy, flips the tea table and attacks.`),
+  (w, h) => tr(`Hóa ra ${w} nhận tiền thưởng truy nã cái đầu của bạn. Ấm trà chỉ là cái cớ để lại gần.`, `Turns out ${w} took the bounty on your head. The teapot was just an excuse to get close.`),
+  (w, h) => tr(`${w} nhắc chuyện cũ, càng nói càng cay: hóa ra sư phụ ${h} từng chết dưới tay người cùng môn với bạn.`, `${w} brings up old history and grows more bitter by the word: turns out ${h} once had a master who died at the hands of someone from your sect.`),
+  (w, h) => tr(`Bàn tới công pháp, ${w} đòi bạn đưa bí kíp ra xem. Bạn chưa kịp từ chối, ${h} đã ra tay cướp.`, `Talk turns to cultivation methods, and ${w} demands to see your manual. Before you can refuse, ${h} lunges to snatch it.`),
+  (w, h) => tr(`${w} uống say, tâm ma nổi dậy, mắt đỏ ngầu, quay sang đánh bạn như đánh kẻ thù.`, `${w} gets drunk, a heart demon rises, eyes bloodshot, and turns on you as if you were a sworn enemy.`),
+  (w, h) => tr(`Ấm trà vỡ tan, bên trong giấu một con dao găm. ${w} đã chuẩn bị từ trước.`, `The teapot shatters, revealing a hidden dagger. ${w} had planned this all along.`),
 ];
 
 export function teaTrap(c: Character, f: DuelFoe, ctx: EffectCtx): TeaResult {
   const who = f.rival.name;
-  const h = f.rival.gender === 'nu' ? 'ả' : 'hắn';
+  const h = f.rival.gender === 'nu' ? tr('ả', "she") : tr('hắn', "he");
   // huynh đệ kết nghĩa thì trà luôn là trà thật
   if (f.sworn) return { kind: 'that_long' };
   const r = ctx.rnd();
@@ -646,18 +648,18 @@ export function teaTrap(c: Character, f: DuelFoe, ctx: EffectCtx): TeaResult {
     const hurt = 18 + Math.floor(ctx.rnd() * 14);
     stat(c, 'sucKhoe', -hurt);
     c.cultivation = Math.max(0, Math.round(c.cultivation * 0.95));
-    ctx.fx('hurt', 'Trúng ám toán');
-    text += ` (-${hurt} sức khỏe, tu vi tổn hao).`;
+    ctx.fx('hurt', tr('Trúng ám toán', "Ambushed"));
+    text += tr(` (-${hurt} sức khỏe, tu vi tổn hao).`, ` (-${hurt} Health, cultivation damaged).`);
     // lúc bạn mê man, hắn lục túi
     if (ctx.rnd() < 0.5) {
       const ids: string[] = [];
       const taken = robGear(c, ctx, 1, ids);
-      addVendetta(c, f, ids, `${who} bỏ độc vào trà rồi lục túi bạn`);
+      addVendetta(c, f, ids, tr(`${who} bỏ độc vào trà rồi lục túi bạn`, `${who} poisoned your tea and rifled your pouch`));
       const lost = Math.round(c.linhThach * 0.15);
       money(c, -lost);
-      text += ` Lúc bạn mê man, ${h} lấy mất ${taken.length ? taken.join(', ') + ' và ' : ''}${lost} linh thạch.`;
+      text += tr(` Lúc bạn mê man, ${h} lấy mất ${taken.length ? taken.join(', ') + tr(' và ', " and ") : ''}${lost} linh thạch.`, ` While you lay dazed, ${h} took ${taken.length ? taken.join(', ') + tr(' và ', " and ") : ''}${lost} spirit stones.`);
     }
-    const fl = fatal(c, ctx, 0.3, `Độc trong chén trà của ${who} ngấm vào tâm mạch. Bạn chết bên bàn trà còn ấm.`);
+    const fl = fatal(c, ctx, 0.3, tr(`Độc trong chén trà của ${who} ngấm vào tâm mạch. Bạn chết bên bàn trà còn ấm.`, `The poison in ${who}'s tea seeps into your heart meridian. You die at a tea table that is still warm.`));
     if (fl) text += fl;
     return { kind: 'am_toan', text };
   }

@@ -3,6 +3,7 @@ import { ELEMENTS, elemMul, elemRel, elementOf, type ElemRel } from './nguhanh';
 import { addMile } from './miles';
 import { fatal, giveItem } from './helpers';
 import type { Character, EffectCtx, Element } from './types';
+import { tr } from '../i18n';
 
 /**
  * Ngũ Hành Vấn Tâm Đài: trước khi phi thăng phải lần lượt hạ 5 bóng của chính mình, mỗi bóng một hệ.
@@ -23,7 +24,7 @@ const sinhBy = (e: Element): Element => (Object.keys(SINH) as Element[]).find((k
 export function nhdOrder(me: Element): Element[] {
   return [KHAC[me], me, SINH[me], sinhBy(me), khacBy(me)];
 }
-export const ROUND_NAME = ['Bóng bạn khắc', 'Bóng cùng mệnh', 'Bóng bạn sinh', 'Bóng sinh bạn', 'Bóng khắc bạn'];
+export const ROUND_NAME = [tr('Bóng bạn khắc', "Shadow you overcome"), tr('Bóng cùng mệnh', "Shadow of your element"), tr('Bóng bạn sinh', "Shadow you nourish"), tr('Bóng sinh bạn', "Shadow that nourishes you"), tr('Bóng khắc bạn', "Shadow that overcomes you")];
 /** bóng mạnh dần qua từng vòng */
 const ROUND_POW = [0.95, 1.02, 1.06, 1.1, 1.15];
 /** thua vòng nào thì có thể chết: vòng 1-4 là 6%, vòng cuối 20% */
@@ -37,9 +38,9 @@ export const PHU_PRICE = 1500;
 
 export type Stance = 'cong' | 'thu' | 'hoa';
 export const STANCES: Record<Stance, { name: string; desc: string; tell: string }> = {
-  cong: { name: 'Công', desc: 'Đòn của bạn +25%.', tell: 'Bóng của bạn dồn khí xuống quyền, sát khí bốc lên ngùn ngụt.' },
-  thu: { name: 'Thủ', desc: 'Sát thương nhận vào -35%.', tell: 'Bóng của bạn lùi nửa bước, khí bao quanh thân như một tấm khiên.' },
-  hoa: { name: 'Hóa', desc: 'Xóa khắc chế của cả hai bên, coi như cùng mệnh. Đòn của bạn -10%.', tell: 'Bóng của bạn khép mắt, ngũ hành quanh người xoay tròn rồi tan vào nhau.' },
+  cong: { name: tr('Công', "Attack"), desc: tr('Đòn của bạn +25%.', "Your strikes +25%."), tell: tr('Bóng của bạn dồn khí xuống quyền, sát khí bốc lên ngùn ngụt.', "Your shadow sinks its qi into its fists, killing intent boiling up.") },
+  thu: { name: tr('Thủ', "Guard"), desc: tr('Sát thương nhận vào -35%.', "Damage taken -35%."), tell: tr('Bóng của bạn lùi nửa bước, khí bao quanh thân như một tấm khiên.', "Your shadow steps back half a pace, qi wrapped around it like a shield.") },
+  hoa: { name: tr('Hóa', "Merge"), desc: tr('Xóa khắc chế của cả hai bên, coi như cùng mệnh. Đòn của bạn -10%.', "Cancels element counters on both sides, as if you shared an element. Your strikes -10%."), tell: tr('Bóng của bạn khép mắt, ngũ hành quanh người xoay tròn rồi tan vào nhau.', "Your shadow closes its eyes; the five elements swirl around it and melt into one.") },
 };
 /** thế thắng thế: Thủ chặn Công, Hóa phá Thủ, Công đánh trước khi Hóa kịp thành */
 export const BEATS: Record<Stance, Stance> = { thu: 'cong', hoa: 'thu', cong: 'hoa' };
@@ -64,9 +65,9 @@ export function mirrorMind(c: Character): { mul: number; text: string } {
   const down = Math.abs(c.daoTam) >= 70 ? 0.1 : Math.abs(c.daoTam) >= 40 ? 0.05 : 0;
   const mul = 1 + up - down;
   const parts: string[] = [];
-  if (up >= 0.02) parts.push(`tâm ma làm bóng mạnh thêm ${Math.round(up * 100)}%`);
-  if (down) parts.push(`đạo tâm vững làm bóng yếu đi ${Math.round(down * 100)}%`);
-  return { mul, text: parts.length ? parts.join(', ') : 'tâm cảnh bình thường, bóng ngang bạn' };
+  if (up >= 0.02) parts.push(tr(`tâm ma làm bóng mạnh thêm ${Math.round(up * 100)}%`, `heart demons make the shadow ${Math.round(up * 100)}% stronger`));
+  if (down) parts.push(tr(`đạo tâm vững làm bóng yếu đi ${Math.round(down * 100)}%`, `a steady Yao Heart makes the shadow ${Math.round(down * 100)}% weaker`));
+  return { mul, text: parts.length ? parts.join(', ') : tr('tâm cảnh bình thường, bóng ngang bạn', "your mind is calm, the shadow matches you") };
 }
 
 /** Bóng chọn thế: vòng cuối hay chọn Công vì biết mình đang khắc bạn */
@@ -98,11 +99,11 @@ export function elemPart(c: Character, round: number, usePhu: boolean, hoa = fal
   const foeEl = nhdOrder(base)[round];
   const myEl = usePhu ? khacBy(foeEl) : base;
   const notes: string[] = [];
-  if (usePhu) notes.push(`Ngũ Hành Phù đổi bản mệnh của bạn sang ${ELEMENTS[myEl].name}`);
+  if (usePhu) notes.push(tr(`Ngũ Hành Phù đổi bản mệnh của bạn sang ${ELEMENTS[myEl].name}`, `A Five Elements Talisman changes your natal element to ${ELEMENTS[myEl].name}`));
   let pMul = hoa ? 1 : elemMul(myEl, foeEl);
   let fMul = hoa ? 1 : elemMul(foeEl, myEl);
   const rel: ElemRel = hoa ? 'dong' : elemRel(myEl, foeEl);
-  if (hoa) notes.push('Thế Hóa xóa khắc chế, hai bên như cùng mệnh');
+  if (hoa) notes.push(tr('Thế Hóa xóa khắc chế, hai bên như cùng mệnh', "Merge stance cancels counters - both sides as if one element"));
   // Ngũ Hành Ấn: mỗi ấn của hệ khắc được bóng gỡ 20% phần thiệt khi bị khắc
   if (rel === 'bi_khac') {
     const n = Math.min(AN_MAX, anOf(c, khacBy(foeEl)));
@@ -110,7 +111,7 @@ export function elemPart(c: Character, round: number, usePhu: boolean, hoa = fal
       const k = n / AN_MAX;
       pMul = pMul + (1 - pMul) * k;
       fMul = fMul - (fMul - 1) * k;
-      notes.push(`${n} ấn ${ELEMENTS[khacBy(foeEl)].name} gỡ ${n * 20}% phần thiệt vì bị khắc`);
+      notes.push(tr(`${n} ấn ${ELEMENTS[khacBy(foeEl)].name} gỡ ${n * 20}% phần thiệt vì bị khắc`, `${n} ${ELEMENTS[khacBy(foeEl)].name} Seal(s) remove ${n * 20}% of the penalty for being overcome`));
     }
   }
   return { myEl, foeEl, rel, pMul, fMul, notes };
@@ -130,11 +131,11 @@ export function roundMods(c: Character, round: number, my: Stance, foe: Stance, 
   if (BEATS[my] === foe) {
     pMul *= 1 + COUNTER_BONUS;
     fMul *= 1 - COUNTER_BONUS;
-    notes.push(`Thế ${STANCES[my].name} của bạn khắc thế ${STANCES[foe].name} của bóng`);
+    notes.push(tr(`Thế ${STANCES[my].name} của bạn khắc thế ${STANCES[foe].name} của bóng`, `Your ${STANCES[my].name} stance beats the shadow's ${STANCES[foe].name} stance`));
   } else if (BEATS[foe] === my) {
     fMul *= 1 + COUNTER_BONUS;
     pMul *= 1 - COUNTER_BONUS;
-    notes.push(`Thế ${STANCES[foe].name} của bóng khắc thế ${STANCES[my].name} của bạn`);
+    notes.push(tr(`Thế ${STANCES[foe].name} của bóng khắc thế ${STANCES[my].name} của bạn`, `The shadow's ${STANCES[foe].name} stance beats your ${STANCES[my].name} stance`));
   }
   return { ...e, pMul, fMul, notes };
 }
@@ -150,7 +151,7 @@ export function mirrorStats(c: Character, round: number): Fighter {
 /** Nhân vật của bóng để vẽ: giống hệt bạn, chỉ đổi bản mệnh */
 export function mirrorChar(c: Character, round: number): Character {
   const el = nhdOrder(elementOf(c))[round];
-  return { ...c, element: el, name: `Bóng ${ELEMENTS[el].name}` };
+  return { ...c, element: el, name: tr(`Bóng ${ELEMENTS[el].name}`, `${ELEMENTS[el].name} Shadow`) };
 }
 
 export const NHD_MAX_TURNS = 10;
@@ -179,14 +180,14 @@ export function winRound(c: Character): string {
   if (s.won >= NHD_ROUNDS) {
     s.done = true;
     c.kiepBonus = (c.kiepBonus ?? 0) + 0.1;
-    addMile(c, 'duel', 'Qua Ngũ Hành Vấn Tâm Đài, ngũ hành viên mãn');
+    addMile(c, 'duel', tr('Qua Ngũ Hành Vấn Tâm Đài, ngũ hành viên mãn', "Passed the Five Elements Heart-Trial Platform - the five elements perfected"));
     // vật phẩm của đài: ai qua cũng có mảnh gương vỡ; thắng cả năm bóng mà chưa từng ngã thì có Viên Mãn châu
     giveItem(c, 'guong_van_tam', false);
     const perfect = !s.lost;
     if (perfect) giveItem(c, 'ngu_hanh_vien_man_chau', false);
-    return `Bóng ${ELEMENTS[el].name} vỡ tan như gương. Năm bóng của bạn hợp lại làm một, ngũ hành viên mãn. Cửa trời đã mở, thiên kiếp đang chờ (tỉ lệ vượt kiếp +10%). Bạn nhặt được mảnh Gương vỡ Vấn Tâm${perfect ? '. Năm sắc khí còn ngưng lại thành Ngũ Hành Viên Mãn châu, chỉ người chưa từng ngã trên đài mới có' : ''}.`;
+    return tr(`Bóng ${ELEMENTS[el].name} vỡ tan như gương. Năm bóng của bạn hợp lại làm một, ngũ hành viên mãn. Cửa trời đã mở, thiên kiếp đang chờ (tỉ lệ vượt kiếp +10%). Bạn nhặt được mảnh Gương vỡ Vấn Tâm${perfect ? tr('. Năm sắc khí còn ngưng lại thành Ngũ Hành Viên Mãn châu, chỉ người chưa từng ngã trên đài mới có', ". The five-colored qi also condenses into a Five Elements Perfection Pearl, granted only to those who never fell on the platform") : ''}.`, `The ${ELEMENTS[el].name} Shadow shatters like a mirror. Your five shadows merge into one, the five elements perfected. The gate of Heaven stands open and the tribulation awaits (tribulation success +10%). You pick up a Shard of the Heart-Questioning Mirror${perfect ? tr('. Năm sắc khí còn ngưng lại thành Ngũ Hành Viên Mãn châu, chỉ người chưa từng ngã trên đài mới có', ". The five-colored qi also condenses into a Five Elements Perfection Pearl, granted only to those who never fell on the platform") : ''}.`);
   }
-  return `Bóng ${ELEMENTS[el].name} tan thành khói. Còn ${NHD_ROUNDS - s.won} bóng.`;
+  return tr(`Bóng ${ELEMENTS[el].name} tan thành khói. Còn ${NHD_ROUNDS - s.won} bóng.`, `The ${ELEMENTS[el].name} Shadow dissolves into smoke. ${NHD_ROUNDS - s.won} shadow(s) remain.`);
 }
 
 /**
@@ -199,20 +200,20 @@ export function loseRound(c: Character, ctx: EffectCtx): string {
   const el = nhdOrder(elementOf(c))[round];
   if (round >= 4) s.lose5 += 1;
   s.lost = (s.lost ?? 0) + 1;
-  const f = fatal(c, ctx, deathChance(round), `Gục ngã trước bóng ${ELEMENTS[el].name} của chính mình trên Ngũ Hành Đài.`);
-  if (c.dead) return `Bóng ${ELEMENTS[el].name} đâm xuyên ngực bạn. Bạn nhìn thấy chính mình mỉm cười, rồi mọi thứ tối sầm.`;
+  const f = fatal(c, ctx, deathChance(round), tr(`Gục ngã trước bóng ${ELEMENTS[el].name} của chính mình trên Ngũ Hành Đài.`, `Fell before your own ${ELEMENTS[el].name} Shadow on the Five Elements Platform.`));
+  if (c.dead) return tr(`Bóng ${ELEMENTS[el].name} đâm xuyên ngực bạn. Bạn nhìn thấy chính mình mỉm cười, rồi mọi thứ tối sầm.`, `The ${ELEMENTS[el].name} Shadow runs you through the chest. You see yourself smiling, then everything goes dark.`);
   if (round >= 4 && s.lose5 >= GUONG_LOSSES) {
     c.dead = true;
     c.endTag = 'ket_guong';
-    c.cause = 'Thua chính mình quá nhiều lần, bị giam trong gương Ngũ Hành Đài.';
+    c.cause = tr('Thua chính mình quá nhiều lần, bị giam trong gương Ngũ Hành Đài.', "Lost to yourself too many times and was sealed inside the mirror of the Five Elements Platform.");
     c.stats.sucKhoe = 0;
     ctx.fx('death');
-    return 'Lần nữa ngã xuống, mặt gương gợn sóng rồi nuốt lấy bạn. Bóng của bạn bước ra ngoài, sống tiếp phần đời còn lại. Còn bạn, ở trong gương, nhìn mãi.';
+    return tr('Lần nữa ngã xuống, mặt gương gợn sóng rồi nuốt lấy bạn. Bóng của bạn bước ra ngoài, sống tiếp phần đời còn lại. Còn bạn, ở trong gương, nhìn mãi.', "You fall once more; the mirror's surface ripples and swallows you. Your shadow steps out and lives out the rest of your life. And you, inside the mirror, watch forever.");
   }
   c.cultivation = Math.round(c.cultivation * 0.85);
   c.stats.tamMa = Math.min(100, c.stats.tamMa + 6);
   c.breakDelay = Math.max(c.breakDelay, NHD_DELAY);
-  return `Bóng ${ELEMENTS[el].name} hạ gục bạn.${f ?? ''} Bạn bị hất khỏi Ngũ Hành Đài, tu vi tổn hao, tâm ma tăng. ${NHD_DELAY} năm nữa mới được lên đài lại${round ? `, ${round} bóng đã hạ vẫn được giữ` : ''}.`;
+  return tr(`Bóng ${ELEMENTS[el].name} hạ gục bạn.${f ?? ''} Bạn bị hất khỏi Ngũ Hành Đài, tu vi tổn hao, tâm ma tăng. ${NHD_DELAY} năm nữa mới được lên đài lại${round ? tr(`, ${round} bóng đã hạ vẫn được giữ`, `, the ${round} shadow(s) you defeated still count`) : ''}.`, `The ${ELEMENTS[el].name} Shadow strikes you down.${f ?? ''} You are thrown off the Five Elements Platform, cultivation lost, heart demons rising. You may climb the platform again in ${NHD_DELAY} years${round ? tr(`, ${round} bóng đã hạ vẫn được giữ`, `, the ${round} shadow(s) you defeated still count`) : ''}.`);
 }
 
 /** Ấn khi diệt quái có hệ: chỉ quái không quá yếu, AN_CHANCE mỗi con */
@@ -221,7 +222,7 @@ export function gainAn(c: Character, el: Element | undefined, easy: boolean, rnd
   const n = anOf(c, el);
   if (n >= AN_MAX || rnd() >= AN_CHANCE) return null;
   c.an = { ...(c.an ?? {}), [el]: n + 1 };
-  return `Thu được 1 Ngũ Hành Ấn hệ ${ELEMENTS[el].name} (${n + 1}/${AN_MAX}). Ấn giúp chống lại bóng bị hệ ${ELEMENTS[el].name} khắc chế trên Ngũ Hành Đài.`;
+  return tr(`Thu được 1 Ngũ Hành Ấn hệ ${ELEMENTS[el].name} (${n + 1}/${AN_MAX}). Ấn giúp chống lại bóng bị hệ ${ELEMENTS[el].name} khắc chế trên Ngũ Hành Đài.`, `Obtained 1 ${ELEMENTS[el].name} Five Elements Seal (${n + 1}/${AN_MAX}). On the Five Elements Platform, seals help against shadows that ${ELEMENTS[el].name} overcomes.`);
 }
 
 /** Hệ ấn cần nhất cho bóng cuối */

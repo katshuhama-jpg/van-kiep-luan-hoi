@@ -9,6 +9,7 @@ import { currentPlayer, signIn, signUp, usernameIssue } from '@/lib/auth';
 import { carryGuest } from '@/lib/storage';
 import { demoChar } from '@/lib/game/demo';
 import { useAuth } from '@/lib/useAuth';
+import { tr } from '@/lib/i18n';
 
 const demo = demoChar({ path: 'kiem', equipped: { ao: 'thanh_sam', vu_khi: 'thanh_phong' } });
 
@@ -37,7 +38,7 @@ export default function LoginPage() {
     setBusy(false);
     if (err) {
       setError(err);
-      if (mode === 'up' && err.includes('đã có người dùng')) setSuggest(`${username.slice(0, 13)}${10 + Math.floor(Math.random() * 90)}`);
+      if (mode === 'up' && /đã có người dùng|already taken/.test(err)) setSuggest(`${username.slice(0, 13)}${10 + Math.floor(Math.random() * 90)}`);
       track('auth_fail', { mode, err: String(err).slice(0, 80) });
       return;
     }
@@ -54,27 +55,30 @@ export default function LoginPage() {
         <Sprite c={demo} size={130} />
       </div>
       <h1 className="logo" style={{ fontSize: 44 }}>
-        {mode === 'in' ? 'Nhập Môn' : 'Bái Sư'}
-        <small>{mode === 'in' ? 'Đạo hữu quay lại rồi sao?' : 'Ghi danh vào sổ luân hồi'}</small>
+        {mode === 'in' ? tr('Nhập Môn', "Enter the Gate") : tr('Bái Sư', "Join a Master")}
+        <small>{mode === 'in' ? tr('Đạo hữu quay lại rồi sao?', "Back again, fellow Daoist?") : tr('Ghi danh vào sổ luân hồi', "Register in the Book of Reincarnation")}</small>
       </h1>
 
       <form className="panel" onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: 10, textAlign: 'left' }}>
         <div className="tabs" role="tablist">
           <button type="button" role="tab" aria-selected={mode === 'in'} className={mode === 'in' ? 'on' : ''} onClick={() => setMode('in')}>
-            Đăng nhập
+            
+            {tr("Đăng nhập", "Log in")}
           </button>
           <button type="button" role="tab" aria-selected={mode === 'up'} className={mode === 'up' ? 'on' : ''} onClick={() => setMode('up')}>
-            Đăng ký
+            
+            {tr("Đăng ký", "Sign up")}
           </button>
         </div>
 
-        {!enabled && <p className="error">Chưa kết nối được máy chủ, thử lại sau ít phút.</p>}
+        {!enabled && <p className="error">{tr("Chưa kết nối được máy chủ, thử lại sau ít phút.", "Can't reach the server, try again in a few minutes.")}</p>}
         <p className="note" style={{ margin: 0 }}>
-          Ghi danh để khắc bia ở Nghĩa trang tu sĩ, lên Bảng xếp hạng, ra Lôi đài. Tiến độ lưu trên mây, đổi máy vẫn chơi tiếp. Các kiếp đã chơi thử trên máy này được giữ lại.
+          
+          {tr("Ghi danh để khắc bia ở Nghĩa trang tu sĩ, lên Bảng xếp hạng, ra Lôi đài. Tiến độ lưu trên mây, đổi máy vẫn chơi tiếp. Các kiếp đã chơi thử trên máy này được giữ lại.", "Register to carve your tombstone in the Cultivators' Cemetery, climb the Leaderboard and enter the Arena. Progress is saved to the cloud, so you can switch devices and keep playing. Lives played as a guest on this device are kept.")}
         </p>
 
         <label className="field">
-          <span>Tên đăng nhập</span>
+          <span>{tr("Tên đăng nhập", "Username")}</span>
           <input
             value={username}
             onChange={(e) => setUsername(e.target.value)}
@@ -91,11 +95,11 @@ export default function LoginPage() {
               {issue}
             </small>
           ) : (
-            <small className="note">3-16 ký tự, viết liền: chữ thường không dấu, số, dấu _</small>
+            <small className="note">{tr("3-16 ký tự, viết liền: chữ thường không dấu, số, dấu _", "3-16 characters, no spaces: lowercase letters without accents, digits, _")}</small>
           )}
         </label>
         <label className="field">
-          <span>Mật khẩu</span>
+          <span>{tr("Mật khẩu", "Password")}</span>
           <input
             type="password"
             value={password}
@@ -105,27 +109,30 @@ export default function LoginPage() {
             maxLength={6}
             required
           />
-          <small className="note">3-6 ký tự</small>
+          <small className="note">{tr("3-6 ký tự", "3-6 characters")}</small>
         </label>
 
         {error && <p className="error" role="alert">{error}</p>}
         {suggest && (
           <button type="button" className="btn" onClick={() => (setUsername(suggest), setSuggest(null), setError(null))}>
-            Dùng tên {suggest}
+            
+            {tr("Dùng tên ", "Use the name ")}{suggest}
           </button>
         )}
 
         <button className="btn btn-red btn-big" disabled={busy || !enabled || !!issue}>
-          {busy ? 'Đang vận công...' : mode === 'in' ? 'Vào game' : 'Tạo tài khoản'}
+          {busy ? tr('Đang vận công...', "Circulating qi...") : mode === 'in' ? tr('Vào game', "Enter game") : tr('Tạo tài khoản', "Create account")}
         </button>
       </form>
 
       <div className="menu">
         <Link href="/choi" className="note">
-          Chơi thử, chưa cần tài khoản ›
+          
+          {tr("Chơi thử, chưa cần tài khoản ›", "Play as guest, no account needed ›")}
         </Link>
         <Link href="/" className="note">
-          ‹ Về trang đầu
+          
+          {tr("‹ Về trang đầu", "‹ Back to home")}
         </Link>
       </div>
     </main>

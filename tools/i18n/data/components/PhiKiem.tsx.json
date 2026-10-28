@@ -1,0 +1,54 @@
+[
+ {
+  "vi": "Phá tầng hộ thể thứ {0}!",
+  "ph": [
+   "s.layer"
+  ],
+  "en": "Broke protective layer {0}!"
+ },
+ {
+  "vi": "Phản phệ!",
+  "en": "Backlash!"
+ },
+ {
+  "vi": "Liên kích x{0}",
+  "ph": [
+   "s.combo"
+  ],
+  "en": "Combo x{0}"
+ },
+ {
+  "vi": "Thu kiếm! {0} phi kiếm",
+  "ph": [
+   "s.swords"
+  ],
+  "en": "Swords recalled! {0} flying swords"
+ },
+ {
+  "vi": "Chạm để phóng phi kiếm",
+  "en": "Tap to launch a flying sword"
+ },
+ {
+  "vi": "Còn {0} giây",
+  "ph": [
+   "Math.ceil(hud.left)"
+  ],
+  "en": "{0}s left"
+ },
+ {
+  "vi": " kiếm · sức mạnh ",
+  "en": " swords · power "
+ },
+ {
+  "vi": "Liên kích ",
+  "en": "Combo "
+ },
+ {
+  "vi": "Tránh đâm vào kiếm đã cắm",
+  "en": "Don't hit the swords already stuck"
+ },
+ {
+  "vi": "Chạm để phóng kiếm!",
+  "en": "Tap to launch a sword!"
+ }
+]

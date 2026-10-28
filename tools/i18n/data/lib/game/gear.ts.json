@@ -1,0 +1,2402 @@
+[
+ {
+  "vi": "Gậy tre đầu làng",
+  "en": "Village Bamboo Staff"
+ },
+ {
+  "vi": "Đánh chó cũng được, chống gậy đi đường cũng xong.",
+  "en": "Good for beating dogs, good for leaning on along the road."
+ },
+ {
+  "vi": "Dao rựa",
+  "en": "Machete"
+ },
+ {
+  "vi": "Phát bờ chặt củi, gặp cướp cũng vung lên được.",
+  "en": "Clears brush, chops firewood - and gets waved at bandits."
+ },
+ {
+  "vi": "Cung gỗ dâu",
+  "en": "Mulberry Bow"
+ },
+ {
+  "vi": "Cung trẻ chăn trâu, bắn chim sẻ là chính.",
+  "en": "A buffalo boy's bow, mostly for shooting sparrows."
+ },
+ {
+  "vi": "Chùy gỗ lim",
+  "en": "Ironwood Mace"
+ },
+ {
+  "vi": "Gỗ lim nặng trịch, đập đâu bẹp đó.",
+  "en": "Heavy ironwood: whatever it hits stays flat."
+ },
+ {
+  "vi": "Thiết thương",
+  "en": "Iron Spear"
+ },
+ {
+  "vi": "Cây thương sắt của lính trấn thủ.",
+  "en": "The iron spear of a garrison soldier."
+ },
+ {
+  "vi": "Phi tiêu sắt",
+  "en": "Iron Darts"
+ },
+ {
+  "vi": "Ném trúng ba con quạ trên một cành.",
+  "en": "Knocks three crows off a single branch."
+ },
+ {
+  "vi": "Đoản đao giang hồ",
+  "en": "Jianghu Short Blade"
+ },
+ {
+  "vi": "Lưỡi ngắn, dễ giấu trong ống tay áo.",
+  "en": "A short blade, easy to hide up a sleeve."
+ },
+ {
+  "vi": "Cung sừng trâu",
+  "en": "Buffalo Horn Bow"
+ },
+ {
+  "vi": "Dây gân trâu, kéo căng nghe rắc rắc.",
+  "en": "Buffalo-sinew string that creaks when drawn."
+ },
+ {
+  "vi": "Thanh Cương kiếm",
+  "en": "Azure Steel Sword"
+ },
+ {
+  "vi": "Thép tôi chín lần, sáng xanh như nước.",
+  "en": "Steel tempered nine times, gleaming blue as water."
+ },
+ {
+  "vi": "Lưu Tinh chùy",
+  "en": "Meteor Hammer"
+ },
+ {
+  "vi": "Quả chùy gai xích sắt, quay tít như sao băng.",
+  "en": "A spiked ball on an iron chain, whirling like a falling star."
+ },
+ {
+  "vi": "Bạch Lạp thương",
+  "en": "White Wax Spear"
+ },
+ {
+  "vi": "Cán sáp trắng dẻo dai, đâm như rắn mổ.",
+  "en": "A supple white-wax shaft that strikes like a snake."
+ },
+ {
+  "vi": "Truy Hồn tiêu",
+  "en": "Soul-Chasing Darts"
+ },
+ {
+  "vi": "Tiêu bay không tiếng, kẻ trúng chưa kịp kêu.",
+  "en": "Silent in flight - the victim never gets to scream."
+ },
+ {
+  "vi": "Phá Quân đao",
+  "en": "Army-Breaker Saber"
+ },
+ {
+  "vi": "Đao của tướng tiên phong, một đao mở đường máu.",
+  "en": "A vanguard general's saber; one stroke cuts a road of blood."
+ },
+ {
+  "vi": "Xuyên Vân cung",
+  "en": "Cloud-Piercing Bow"
+ },
+ {
+  "vi": "Tên bắn xuyên mây, rơi xuống còn mang hơi lạnh.",
+  "en": "Its arrows pierce the clouds and come down still frosted."
+ },
+ {
+  "vi": "Lôi Âm chùy",
+  "en": "Thunder-Roar Hammer"
+ },
+ {
+  "vi": "Mỗi nhát nện vang như sấm rền.",
+  "en": "Every blow rumbles like thunder."
+ },
+ {
+  "vi": "Tử Điện kiếm",
+  "en": "Purple Lightning Sword"
+ },
+ {
+  "vi": "Lưỡi kiếm lấp lóe tia chớp tím.",
+  "en": "Violet lightning flickers along the blade."
+ },
+ {
+  "vi": "Bá Vương thương",
+  "en": "Overlord Spear"
+ },
+ {
+  "vi": "Thương nặng tám mươi cân, kẻ yếu không nhấc nổi.",
+  "en": "Eighty catties heavy; the weak can't even lift it."
+ },
+ {
+  "vi": "Hàn Nguyệt đao",
+  "en": "Cold Moon Saber"
+ },
+ {
+  "vi": "Đao cong như trăng lưỡi liềm, chém ra hơi băng.",
+  "en": "Curved like a crescent moon, its cuts breathe ice."
+ },
+ {
+  "vi": "Lạc Nhật cung",
+  "en": "Sun-Felling Bow"
+ },
+ {
+  "vi": "Tương truyền từng bắn rơi một vầng mặt trời giả.",
+  "en": "Legend says it once shot down a false sun."
+ },
+ {
+  "vi": "Thiên Cương kiếm",
+  "en": "Heavenly Star Sword"
+ },
+ {
+  "vi": "Kiếm khí ba mươi sáu đường như sao Thiên Cương.",
+  "en": "Thirty-six streaks of sword qi, like the thirty-six Heavenly Stars."
+ },
+ {
+  "vi": "Phong Lôi chùy",
+  "en": "Wind-Thunder Hammers"
+ },
+ {
+  "vi": "Một cặp chùy gọi gió kéo sấm.",
+  "en": "A pair of hammers that summon wind and thunder."
+ },
+ {
+  "vi": "Bách Bộ Xuyên Dương cung",
+  "en": "Hundred-Pace Willow-Piercer Bow"
+ },
+ {
+  "vi": "Trăm bước bắn trúng lá liễu, chưa từng trượt.",
+  "en": "Hits a willow leaf at a hundred paces. Never misses."
+ },
+ {
+  "vi": "Phương Thiên Họa Kích",
+  "en": "Sky Piercer Halberd"
+ },
+ {
+  "vi": "Binh khí của chiến thần, ngựa xích thố mới xứng.",
+  "en": "The war god's weapon - only a Red Hare steed is worthy of it."
+ },
+ {
+  "vi": "Thanh Long Yển Nguyệt đao",
+  "en": "Green Dragon Crescent Blade"
+ },
+ {
+  "vi": "Đao rồng xanh tám mươi hai cân, chém tướng như chém chuối.",
+  "en": "An eighty-two-catty dragon blade that cuts down generals like banana trees."
+ },
+ {
+  "vi": "Bạo Vũ Lê Hoa châm",
+  "en": "Pear Blossom Storm Needles"
+ },
+ {
+  "vi": "Một hộp hai mươi bảy mũi kim, bắn ra như mưa hoa lê.",
+  "en": "A case of twenty-seven needles that bursts out like a rain of pear blossoms."
+ },
+ {
+  "vi": "Hiên Viên kiếm",
+  "en": "Hiên Viên Sword"
+ },
+ {
+  "vi": "Thánh kiếm của Hoàng Đế, một mặt khắc nhật nguyệt, một mặt khắc sơn hà.",
+  "en": "The Yellow Emperor's holy sword: sun and moon on one face, mountains and rivers on the other."
+ },
+ {
+  "vi": "Bàn Cổ phủ",
+  "en": "Bàn Cổ's Axe"
+ },
+ {
+  "vi": "Rìu khai thiên lập địa, một nhát tách trời đất.",
+  "en": "The axe that split heaven from earth in a single stroke."
+ },
+ {
+  "vi": "Hậu Nghệ thần cung",
+  "en": "Hậu Nghệ's Divine Bow"
+ },
+ {
+  "vi": "Cung bắn rơi chín mặt trời năm xưa.",
+  "en": "The bow that shot down nine suns of old."
+ },
+ {
+  "vi": "Thu Thủy kiếm",
+  "en": "Autumn Water Sword"
+ },
+ {
+  "vi": "Lưỡi kiếm trong như nước mùa thu.",
+  "en": "A blade clear as autumn water."
+ },
+ {
+  "vi": "Ngư Trường kiếm",
+  "en": "Fish-Gut Sword"
+ },
+ {
+  "vi": "Kiếm nhỏ giấu trong bụng cá, chuyên dùng hành thích.",
+  "en": "A tiny sword hidden in a fish's belly, made for assassination."
+ },
+ {
+  "vi": "Long Tuyền kiếm",
+  "en": "Dragon Spring Sword"
+ },
+ {
+  "vi": "Đúc bên suối rồng, đêm đêm ngân như rồng ngâm.",
+  "en": "Forged beside a dragon spring; every night it hums like a dragon's cry."
+ },
+ {
+  "vi": "Thất Tinh kiếm",
+  "en": "Seven Stars Sword"
+ },
+ {
+  "vi": "Bảy viên ngọc trên chuôi xếp như chòm Bắc Đẩu.",
+  "en": "Seven gems on the hilt, set like the Big Dipper."
+ },
+ {
+  "vi": "Thanh Sương kiếm",
+  "en": "Azure Frost Sword"
+ },
+ {
+  "vi": "Rút ra là sương phủ trắng một vùng.",
+  "en": "Draw it and frost whitens everything around."
+ },
+ {
+  "vi": "Trảm Long kiếm",
+  "en": "Dragon-Slaying Sword"
+ },
+ {
+  "vi": "Kiếm từng chém đứt sừng giao long.",
+  "en": "It once cut off a flood dragon's horn."
+ },
+ {
+  "vi": "Can Tương kiếm",
+  "en": "Can Tương Sword"
+ },
+ {
+  "vi": "Kiếm đực trong cặp kiếm phu thê.",
+  "en": "The male blade of the husband-and-wife swords."
+ },
+ {
+  "vi": "Mạc Tà kiếm",
+  "en": "Mạc Tà Sword"
+ },
+ {
+  "vi": "Kiếm cái, đúc bằng tóc và móng của Mạc Tà.",
+  "en": "The female blade, forged with Mạc Tà's own hair and nails."
+ },
+ {
+  "vi": "Thái A kiếm",
+  "en": "Thái A Sword"
+ },
+ {
+  "vi": "Kiếm uy đạo, cầm lên tự có khí thế đế vương.",
+  "en": "The sword of authority: hold it and an emperor's aura rises on its own."
+ },
+ {
+  "vi": "Trạm Lư kiếm",
+  "en": "Trạm Lư Sword"
+ },
+ {
+  "vi": "Kiếm nhân đạo, người bất nghĩa cầm sẽ tự rời tay.",
+  "en": "The sword of benevolence - it slips free of any unrighteous hand."
+ },
+ {
+  "vi": "Tru Tiên kiếm",
+  "en": "Immortal-Slaying Sword"
+ },
+ {
+  "vi": "Một trong bốn thanh kiếm phá Tru Tiên trận.",
+  "en": "One of the four swords that break the Immortal-Slaying Formation."
+ },
+ {
+  "vi": "Vô Cực kiếm",
+  "en": "Limitless Sword"
+ },
+ {
+  "vi": "Không lưỡi, không mũi, chỉ có kiếm ý.",
+  "en": "No edge, no point - only sword intent."
+ },
+ {
+  "vi": "Dược sừ",
+  "en": "Herb Hoe"
+ },
+ {
+  "vi": "Cuốc nhỏ đào linh thảo, không làm đứt rễ.",
+  "en": "A little hoe for digging spirit herbs without snapping the roots."
+ },
+ {
+  "vi": "Hỏa Linh phiến",
+  "en": "Fire Spirit Fan"
+ },
+ {
+  "vi": "Quạt lửa lò đan, quạt người cũng bỏng.",
+  "en": "Fans the pill furnace - and burns whoever it fans."
+ },
+ {
+  "vi": "Bách Thảo trượng",
+  "en": "Hundred Herbs Staff"
+ },
+ {
+  "vi": "Gậy khắc trăm loài thảo dược.",
+  "en": "A staff carved with a hundred kinds of herbs."
+ },
+ {
+  "vi": "Đan Tâm bút",
+  "en": "Pill Heart Brush"
+ },
+ {
+  "vi": "Bút viết đan phương, mực pha chu sa.",
+  "en": "For writing pill recipes in cinnabar ink."
+ },
+ {
+  "vi": "Tử Diễm phiến",
+  "en": "Purple Flame Fan"
+ },
+ {
+  "vi": "Quạt ra lửa tím, luyện đan nhanh gấp đôi.",
+  "en": "Fans out violet fire; pills refine twice as fast."
+ },
+ {
+  "vi": "Thần Nông xẻng",
+  "en": "Thần Nông's Spade"
+ },
+ {
+  "vi": "Xẻng của Thần Nông nếm trăm thảo.",
+  "en": "The spade of Thần Nông, who tasted a hundred herbs."
+ },
+ {
+  "vi": "Linh Chi trượng",
+  "en": "Lingzhi Staff"
+ },
+ {
+  "vi": "Đầu gậy là cây linh chi nghìn năm.",
+  "en": "Its head is a thousand-year-old lingzhi."
+ },
+ {
+  "vi": "Cửu Chuyển phiến",
+  "en": "Nine Revolutions Fan"
+ },
+ {
+  "vi": "Quạt chín vòng, lửa đan đổi chín màu.",
+  "en": "Nine rings; the pill fire shifts through nine colors."
+ },
+ {
+  "vi": "Thái Ất bút",
+  "en": "Supreme Unity Brush"
+ },
+ {
+  "vi": "Viết một nét, đan phương tự hiện.",
+  "en": "One stroke and the pill recipe writes itself."
+ },
+ {
+  "vi": "Dược Vương trượng",
+  "en": "Medicine King Staff"
+ },
+ {
+  "vi": "Gậy của Dược Vương, gõ đâu cỏ mọc đó.",
+  "en": "The Medicine King's staff - wherever it taps, grass sprouts."
+ },
+ {
+  "vi": "Tam Muội Chân Hỏa phiến",
+  "en": "Samadhi True Fire Fan"
+ },
+ {
+  "vi": "Quạt ra Tam Muội Chân Hỏa, luyện được cả sắt đá.",
+  "en": "Fans out Samadhi True Fire, hot enough to refine iron and stone."
+ },
+ {
+  "vi": "Thần Nông xích",
+  "en": "Thần Nông's Ruler"
+ },
+ {
+  "vi": "Thước đo dược tính của trời đất.",
+  "en": "A ruler for measuring the medicinal nature of heaven and earth."
+ },
+ {
+  "vi": "Bát Quái phiến",
+  "en": "Bagua Fan"
+ },
+ {
+  "vi": "Quạt vẽ bát quái, phẩy ra một trận gió mê.",
+  "en": "Painted with the eight trigrams; one flick stirs a bewildering wind."
+ },
+ {
+  "vi": "Thiên Cơ bút",
+  "en": "Heavenly Secret Brush"
+ },
+ {
+  "vi": "Bút vẽ trận đồ, nét nào cũng tính trước ba bước.",
+  "en": "Draws formation diagrams; every stroke thinks three moves ahead."
+ },
+ {
+  "vi": "Kỳ Môn trượng",
+  "en": "Qimen Staff"
+ },
+ {
+  "vi": "Cắm xuống đất là thành trận nhãn.",
+  "en": "Plant it in the ground and it becomes a formation eye."
+ },
+ {
+  "vi": "Lục Hợp phiến",
+  "en": "Six Harmonies Fan"
+ },
+ {
+  "vi": "Sáu nan quạt ứng sáu phương.",
+  "en": "Six ribs answering the six directions."
+ },
+ {
+  "vi": "Cửu Cung bút",
+  "en": "Nine Palaces Brush"
+ },
+ {
+  "vi": "Viết chín cung, giam người trong chín ô.",
+  "en": "Writes nine palaces and traps a foe in nine squares."
+ },
+ {
+  "vi": "Tinh Bàn trượng",
+  "en": "Star Disc Staff"
+ },
+ {
+  "vi": "Đầu trượng là bàn sao xoay theo trời.",
+  "en": "Its head is a star disc that turns with the heavens."
+ },
+ {
+  "vi": "Hà Đồ phiến",
+  "en": "River Chart Fan"
+ },
+ {
+  "vi": "Quạt chép lại Hà Đồ cổ.",
+  "en": "A fan inscribed with the ancient River Chart."
+ },
+ {
+  "vi": "Lạc Thư bút",
+  "en": "Luo Writing Brush"
+ },
+ {
+  "vi": "Bút viết Lạc Thư, số trời hiện trên giấy.",
+  "en": "Writes the Luo Writing; heaven's numbers appear on the page."
+ },
+ {
+  "vi": "Chu Thiên trượng",
+  "en": "Celestial Cycle Staff"
+ },
+ {
+  "vi": "Gõ ba cái, chu thiên tinh đấu dịch chuyển.",
+  "en": "Tap it three times and the stars of the heavens shift."
+ },
+ {
+  "vi": "Tứ Tượng phiến",
+  "en": "Four Symbols Fan"
+ },
+ {
+  "vi": "Thanh Long, Bạch Hổ, Chu Tước, Huyền Vũ vẽ trên bốn mặt.",
+  "en": "Azure Dragon, White Tiger, Vermilion Bird and Black Tortoise on its four faces."
+ },
+ {
+  "vi": "Thái Cực bút",
+  "en": "Taiji Brush"
+ },
+ {
+  "vi": "Một nét âm, một nét dương, thành trận vô hình.",
+  "en": "One stroke yin, one stroke yang - an invisible formation."
+ },
+ {
+  "vi": "Hồng Mông trượng",
+  "en": "Primordial Chaos Staff"
+ },
+ {
+  "vi": "Gậy từ thuở hồng mông, trận nào cũng phá được.",
+  "en": "A staff from the primordial chaos; no formation can hold against it."
+ },
+ {
+  "vi": "Thiền trượng gỗ",
+  "en": "Wooden Monk's Staff"
+ },
+ {
+  "vi": "Gậy của sư hành cước, mòn nhẵn vì đi vạn dặm.",
+  "en": "A wandering monk's staff, worn smooth over ten thousand miles."
+ },
+ {
+  "vi": "Kim cương xử",
+  "en": "Vajra Pestle"
+ },
+ {
+  "vi": "Pháp khí hàng ma của Mật tông.",
+  "en": "A demon-subduing tool of the Esoteric school."
+ },
+ {
+  "vi": "Bạch Mã phất trần",
+  "en": "White Horse Whisk"
+ },
+ {
+  "vi": "Lông đuôi ngựa trắng, phẩy bụi trần.",
+  "en": "White horsetail hair that sweeps away worldly dust."
+ },
+ {
+  "vi": "Hàng Ma xử",
+  "en": "Demon-Subduing Pestle"
+ },
+ {
+  "vi": "Tà ma thấy là run sợ.",
+  "en": "Evil spirits tremble at the sight of it."
+ },
+ {
+  "vi": "Cửu Hoàn tích trượng",
+  "en": "Nine-Ring Monk's Staff"
+ },
+ {
+  "vi": "Chín vòng đồng, mỗi bước leng keng tiếng kinh.",
+  "en": "Nine bronze rings that chime a sutra with every step."
+ },
+ {
+  "vi": "Liên Hoa phất trần",
+  "en": "Lotus Whisk"
+ },
+ {
+  "vi": "Cán khắc hoa sen, phẩy ra hương thơm.",
+  "en": "Lotus-carved handle; each flick leaves a fragrance."
+ },
+ {
+  "vi": "Kim Cang trượng",
+  "en": "Vajra Staff"
+ },
+ {
+  "vi": "Gậy vàng nặng như núi Tu Di.",
+  "en": "A golden staff heavy as Mount Sumeru."
+ },
+ {
+  "vi": "Bồ Đề phất trần",
+  "en": "Bodhi Whisk"
+ },
+ {
+  "vi": "Sợi phất trần dệt từ tơ cây bồ đề.",
+  "en": "Its strands are woven from bodhi tree silk."
+ },
+ {
+  "vi": "Phục Hổ côn",
+  "en": "Tiger-Taming Staff"
+ },
+ {
+  "vi": "Côn của La Hán phục hổ.",
+  "en": "The staff of the Tiger-Taming Arhat."
+ },
+ {
+  "vi": "Như Ý kim cương xử",
+  "en": "Ruyi Vajra Pestle"
+ },
+ {
+  "vi": "Pháp khí như ý, nhỏ to tùy tâm.",
+  "en": "An as-you-wish treasure that grows or shrinks at a thought."
+ },
+ {
+  "vi": "Thất Bảo phất trần",
+  "en": "Seven Treasures Whisk"
+ },
+ {
+  "vi": "Khảm bảy báu vật của nhà Phật.",
+  "en": "Inlaid with the seven treasures of Buddhism."
+ },
+ {
+  "vi": "Đại Bi tích trượng",
+  "en": "Great Compassion Staff"
+ },
+ {
+  "vi": "Tích trượng của Bồ Tát Địa Tạng, mở cửa địa ngục.",
+  "en": "The staff of Địa Tạng Bodhisattva, which opens the gates of hell."
+ },
+ {
+  "vi": "Huyết Ảnh đao",
+  "en": "Blood Shadow Saber"
+ },
+ {
+  "vi": "Lưỡi đao hút máu, càng chém càng đỏ.",
+  "en": "A blood-drinking blade that reddens with every cut."
+ },
+ {
+  "vi": "Thực Hồn liêm",
+  "en": "Soul-Devouring Scythe"
+ },
+ {
+  "vi": "Lưỡi hái gặt hồn người.",
+  "en": "A scythe that reaps human souls."
+ },
+ {
+  "vi": "Câu Hồn tiên",
+  "en": "Soul-Hooking Whip"
+ },
+ {
+  "vi": "Roi móc hồn, quất trúng là mất vía.",
+  "en": "A soul-snaring whip; one lash and your wits are gone."
+ },
+ {
+  "vi": "Âm Phong song đao",
+  "en": "Yin Wind Twin Sabers"
+ },
+ {
+  "vi": "Đôi đao rít gió âm.",
+  "en": "Twin sabers that shriek with yin wind."
+ },
+ {
+  "vi": "Tu La đao",
+  "en": "Asura Saber"
+ },
+ {
+  "vi": "Đao của chiến sĩ Tu La, không giết người thì không yên.",
+  "en": "An Asura warrior's saber, restless until it kills."
+ },
+ {
+  "vi": "Hắc Sát liêm",
+  "en": "Black Fiend Sickle"
+ },
+ {
+  "vi": "Lưỡi liềm đen như đêm không trăng.",
+  "en": "A sickle black as a moonless night."
+ },
+ {
+  "vi": "Thị Huyết tiên",
+  "en": "Bloodthirsty Whip"
+ },
+ {
+  "vi": "Roi khát máu, quấn lấy là hút khô.",
+  "en": "Once it coils around you, it drains you dry."
+ },
+ {
+  "vi": "Diêm La song nhận",
+  "en": "Yama's Twin Blades"
+ },
+ {
+  "vi": "Đôi dao của phán quan địa phủ.",
+  "en": "The twin knives of an underworld judge."
+ },
+ {
+  "vi": "Phệ Thiên đao",
+  "en": "Heaven-Devouring Saber"
+ },
+ {
+  "vi": "Đao muốn nuốt cả trời.",
+  "en": "A saber that hungers to swallow the sky."
+ },
+ {
+  "vi": "Vong Xuyên liêm",
+  "en": "Vong Xuyên Scythe"
+ },
+ {
+  "vi": "Rèn bằng nước sông Vong Xuyên.",
+  "en": "Forged in the waters of the Vong Xuyên River."
+ },
+ {
+  "vi": "Cửu U tiên",
+  "en": "Nine Netherworlds Whip"
+ },
+ {
+  "vi": "Roi luyện từ gân chín loài quỷ.",
+  "en": "Braided from the sinews of nine kinds of ghosts."
+ },
+ {
+  "vi": "Ma Thần đao",
+  "en": "Demon God Saber"
+ },
+ {
+  "vi": "Thanh đao của Ma Thần thượng cổ, cầm lên tâm ma nổi dậy.",
+  "en": "The saber of an ancient Demon God; grip it and your heart demons rise."
+ },
+ {
+  "vi": "Lang Nha thủ sáo",
+  "en": "Wolf Fang Gauntlets"
+ },
+ {
+  "vi": "Găng gắn nanh sói.",
+  "en": "Gloves studded with wolf fangs."
+ },
+ {
+  "vi": "Hổ Trảo",
+  "en": "Tiger Claws"
+ },
+ {
+  "vi": "Móng hổ thép, cào rách cả giáp sắt.",
+  "en": "Steel tiger claws that rip through iron armor."
+ },
+ {
+  "vi": "Xà Mâu",
+  "en": "Serpent Spear"
+ },
+ {
+  "vi": "Mũi mâu uốn lượn như rắn.",
+  "en": "Its head winds like a snake."
+ },
+ {
+  "vi": "Ưng Trảo câu",
+  "en": "Eagle Claw Hook"
+ },
+ {
+  "vi": "Móc sắt như vuốt chim ưng.",
+  "en": "An iron hook like an eagle's talon."
+ },
+ {
+  "vi": "Hùng Chưởng thủ sáo",
+  "en": "Bear Paw Gauntlets"
+ },
+ {
+  "vi": "Găng tay to như bàn tay gấu.",
+  "en": "Gloves as big as a bear's paws."
+ },
+ {
+  "vi": "Giao Long thương",
+  "en": "Flood Dragon Spear"
+ },
+ {
+  "vi": "Cán thương bọc da giao long.",
+  "en": "Its shaft is wrapped in flood dragon hide."
+ },
+ {
+  "vi": "Hồ Vĩ liêm",
+  "en": "Fox Tail Scythe"
+ },
+ {
+  "vi": "Lưỡi hái cong như đuôi cáo.",
+  "en": "A blade curved like a fox's tail."
+ },
+ {
+  "vi": "Bạch Hổ trảo",
+  "en": "White Tiger Claws"
+ },
+ {
+  "vi": "Vuốt của Bạch Hổ thần thú.",
+  "en": "Claws of the divine beast White Tiger."
+ },
+ {
+  "vi": "Thanh Xà mâu",
+  "en": "Green Serpent Spear"
+ },
+ {
+  "vi": "Mâu tẩm nọc thanh xà.",
+  "en": "Tipped with green serpent venom."
+ },
+ {
+  "vi": "Kim Sí câu",
+  "en": "Golden Wing Hook"
+ },
+ {
+  "vi": "Móc vàng làm từ móng Kim Sí Đại Bằng.",
+  "en": "A gold hook made from a talon of the Golden-Winged Roc."
+ },
+ {
+  "vi": "Kỳ Lân trảo",
+  "en": "Qilin Claws"
+ },
+ {
+  "vi": "Vuốt lửa của kỳ lân.",
+  "en": "The fiery claws of a qilin."
+ },
+ {
+  "vi": "Yêu Đế mâu",
+  "en": "Yao Emperor's Spear"
+ },
+ {
+  "vi": "Binh khí của Yêu Đế, vạn yêu cúi đầu.",
+  "en": "The Yao Emperor's weapon; ten thousand yao bow their heads."
+ },
+ {
+  "vi": "Áo nâu sồng",
+  "en": "Coarse Brown Tunic"
+ },
+ {
+  "vi": "Áo mặc đi cày, bền như đất.",
+  "en": "Plowing clothes, tough as the earth."
+ },
+ {
+  "vi": "Áo bà ba lam",
+  "en": "Blue Peasant Shirt"
+ },
+ {
+  "vi": "Gọn nhẹ, mát mẻ.",
+  "en": "Light and cool."
+ },
+ {
+  "vi": "Áo vải gai",
+  "en": "Hemp Shirt"
+ },
+ {
+  "vi": "Thô ráp nhưng chịu được gió rét.",
+  "en": "Rough, but it keeps out the cold wind."
+ },
+ {
+  "vi": "Áo đuôi tôm",
+  "en": "Swallowtail Coat"
+ },
+ {
+  "vi": "Áo của trai làng ngày hội.",
+  "en": "What the village lads wear on festival days."
+ },
+ {
+  "vi": "Võ phục lam",
+  "en": "Blue Martial Garb"
+ },
+ {
+  "vi": "Võ phục của võ quán trong trấn.",
+  "en": "The uniform of the town's martial school."
+ },
+ {
+  "vi": "Giáp da trâu",
+  "en": "Buffalo Hide Armor"
+ },
+ {
+  "vi": "Da trâu thuộc kỹ, đỡ được dao găm.",
+  "en": "Well-tanned hide that can stop a dagger."
+ },
+ {
+  "vi": "Áo choàng lữ khách",
+  "en": "Traveler's Cloak"
+ },
+ {
+  "vi": "Áo choàng sờn vai của người đi xa.",
+  "en": "A cloak worn thin at the shoulders by long roads."
+ },
+ {
+  "vi": "Tiêu cục phục",
+  "en": "Escort Uniform"
+ },
+ {
+  "vi": "Đồ của tiêu sư áp tải hàng.",
+  "en": "Worn by caravan guards escorting cargo."
+ },
+ {
+  "vi": "Thiết giáp binh",
+  "en": "Soldier's Iron Armor"
+ },
+ {
+  "vi": "Giáp sắt của quan binh.",
+  "en": "The iron armor of government troops."
+ },
+ {
+  "vi": "Thanh Vân bào",
+  "en": "Azure Cloud Robe"
+ },
+ {
+  "vi": "Áo thêu mây xanh.",
+  "en": "Embroidered with blue clouds."
+ },
+ {
+  "vi": "Dạ Hành hắc y",
+  "en": "Night-Walker's Black Garb"
+ },
+ {
+  "vi": "Đi đêm không ai thấy.",
+  "en": "Walk at night and no one sees you."
+ },
+ {
+  "vi": "Áo lụa Hàng Châu",
+  "en": "Hàng Châu Silk Robe"
+ },
+ {
+  "vi": "Lụa mềm như nước, thêu hoa đào.",
+  "en": "Silk soft as water, embroidered with peach blossoms."
+ },
+ {
+  "vi": "Ngân Lân giáp",
+  "en": "Silver Scale Armor"
+ },
+ {
+  "vi": "Giáp vảy bạc sáng loáng.",
+  "en": "Gleaming silver scale mail."
+ },
+ {
+  "vi": "Tử Vân bào",
+  "en": "Purple Cloud Robe"
+ },
+ {
+  "vi": "Mây tím quấn quanh vạt áo.",
+  "en": "Purple clouds coil around its hem."
+ },
+ {
+  "vi": "Lam Ngọc bào",
+  "en": "Sapphire Robe"
+ },
+ {
+  "vi": "Áo xanh ngọc, tay áo rộng.",
+  "en": "Jade-blue, with wide sleeves."
+ },
+ {
+  "vi": "Hồng Vân bào",
+  "en": "Crimson Cloud Robe"
+ },
+ {
+  "vi": "Ráng chiều đỏ rực trên vai.",
+  "en": "A blazing sunset across the shoulders."
+ },
+ {
+  "vi": "Kim Lân giáp",
+  "en": "Golden Scale Armor"
+ },
+ {
+  "vi": "Giáp vảy vàng, đao kiếm khó xuyên.",
+  "en": "Gold scales that blades can barely pierce."
+ },
+ {
+  "vi": "Thiên Tằm y",
+  "en": "Heavenly Silk Garment"
+ },
+ {
+  "vi": "Dệt từ tơ tằm trời, nước lửa không vào.",
+  "en": "Woven from celestial silkworm silk; neither water nor fire gets in."
+ },
+ {
+  "vi": "Huyền Băng bào",
+  "en": "Mystic Ice Robe"
+ },
+ {
+  "vi": "Lạnh như băng nghìn năm.",
+  "en": "Cold as thousand-year ice."
+ },
+ {
+  "vi": "Long Lân giáp",
+  "en": "Dragon Scale Armor"
+ },
+ {
+  "vi": "Ghép từ vảy rồng đã lột.",
+  "en": "Pieced together from shed dragon scales."
+ },
+ {
+  "vi": "Phượng Vũ y",
+  "en": "Phoenix Feather Garment"
+ },
+ {
+  "vi": "Lông phượng hoàng, khoác vào ấm như lửa.",
+  "en": "Phoenix feathers, warm as fire to wear."
+ },
+ {
+  "vi": "Tinh Hà bào",
+  "en": "Star River Robe"
+ },
+ {
+  "vi": "Vạt áo lấp lánh như dải ngân hà.",
+  "en": "Its hem glitters like the Milky Way."
+ },
+ {
+  "vi": "Thiên Y vô phùng",
+  "en": "Seamless Heavenly Garment"
+ },
+ {
+  "vi": "Áo tiên không một đường may.",
+  "en": "An immortal's robe without a single seam."
+ },
+ {
+  "vi": "Ngũ Sắc thần y",
+  "en": "Five-Colored Divine Robe"
+ },
+ {
+  "vi": "Năm màu ngũ hành hòa trong một tấm áo.",
+  "en": "The five colors of the Five Elements in a single robe."
+ },
+ {
+  "vi": "Vân Long chiến giáp",
+  "en": "Cloud Dragon War Armor"
+ },
+ {
+  "vi": "Giáp chạm rồng mây của đại tướng quân.",
+  "en": "A grand general's armor, carved with dragons and clouds."
+ },
+ {
+  "vi": "Hỗn Độn tiên bào",
+  "en": "Chaos Immortal Robe"
+ },
+ {
+  "vi": "Màu áo đổi theo người nhìn.",
+  "en": "Its color changes with whoever looks at it."
+ },
+ {
+  "vi": "Thái Thượng đạo bào",
+  "en": "Supreme Daoist Robe"
+ },
+ {
+  "vi": "Đạo bào của Thái Thượng Lão Quân.",
+  "en": "The Daoist robe of Thái Thượng Lão Quân."
+ },
+ {
+  "vi": "Cửu Thiên huyền y",
+  "en": "Nine Heavens Mystic Garment"
+ },
+ {
+  "vi": "Áo của tiên nữ chín tầng trời.",
+  "en": "Worn by the fairies of the nine heavens."
+ },
+ {
+  "vi": "Kiếm khách thanh sam",
+  "en": "Swordsman's Azure Robe"
+ },
+ {
+  "vi": "Áo xanh của kiếm khách giang hồ.",
+  "en": "The blue robe of a wandering swordsman."
+ },
+ {
+  "vi": "Bạch y kiếm khách",
+  "en": "White-Clad Swordsman's Robe"
+ },
+ {
+  "vi": "Áo trắng không vướng bụi.",
+  "en": "White, untouched by dust."
+ },
+ {
+  "vi": "Lăng Vân kiếm bào",
+  "en": "Cloud-Soaring Sword Robe"
+ },
+ {
+  "vi": "Kiếm bào bay như mây.",
+  "en": "A sword robe that flutters like clouds."
+ },
+ {
+  "vi": "Thu Thủy y",
+  "en": "Autumn Water Garment"
+ },
+ {
+  "vi": "Màu nước hồ mùa thu.",
+  "en": "The color of a lake in autumn."
+ },
+ {
+  "vi": "Kiếm Tông chiến bào",
+  "en": "Kiếm Tông Battle Robe"
+ },
+ {
+  "vi": "Chiến bào của Kiếm Tông.",
+  "en": "The battle robe of the Kiếm Tông sect."
+ },
+ {
+  "vi": "Hàn Sương y",
+  "en": "Cold Frost Garment"
+ },
+ {
+  "vi": "Kiếm khí đọng thành sương trên vai.",
+  "en": "Sword qi condenses into frost on its shoulders."
+ },
+ {
+  "vi": "Thiên Kiếm bào",
+  "en": "Heavenly Sword Robe"
+ },
+ {
+  "vi": "Thêu chín thanh kiếm bay.",
+  "en": "Embroidered with nine flying swords."
+ },
+ {
+  "vi": "Vô Ngân y",
+  "en": "Traceless Garment"
+ },
+ {
+  "vi": "Đi qua tuyết không để lại dấu.",
+  "en": "Walk across snow without leaving a mark."
+ },
+ {
+  "vi": "Kiếm Thánh bào",
+  "en": "Sword Saint Robe"
+ },
+ {
+  "vi": "Áo của Kiếm Thánh, kiếm ý tỏa ra lạnh người.",
+  "en": "The Sword Saint's robe, radiating chilling sword intent."
+ },
+ {
+  "vi": "Tuyết Ảnh y",
+  "en": "Snow Shadow Garment"
+ },
+ {
+  "vi": "Bóng trắng lướt qua, đầu kẻ địch đã rơi.",
+  "en": "A white shadow passes, and the enemy's head has already fallen."
+ },
+ {
+  "vi": "Kiếm Tiên bào",
+  "en": "Sword Immortal Robe"
+ },
+ {
+  "vi": "Ngự kiếm phi hành, áo bay phần phật.",
+  "en": "Riding the sword through the sky, robes snapping in the wind."
+ },
+ {
+  "vi": "Nhất Kiếm Hàn Quang y",
+  "en": "One Sword Cold Light Garment"
+ },
+ {
+  "vi": "Một kiếm hàn quang lạnh mười chín châu.",
+  "en": "One sword's cold light chills nineteen provinces."
+ },
+ {
+  "vi": "Dược đồng y",
+  "en": "Herb Boy's Clothes"
+ },
+ {
+  "vi": "Áo của tiểu đồng trông lò đan.",
+  "en": "Worn by the boy who watches the pill furnace."
+ },
+ {
+  "vi": "Đan sư bào",
+  "en": "Alchemist's Robe"
+ },
+ {
+  "vi": "Thêu lò đan ba chân.",
+  "en": "Embroidered with a three-legged cauldron."
+ },
+ {
+  "vi": "Hỏa Văn bào",
+  "en": "Fire Pattern Robe"
+ },
+ {
+  "vi": "Vân lửa chạy dọc thân áo.",
+  "en": "Fire patterns run down the length of the robe."
+ },
+ {
+  "vi": "Bách Thảo y",
+  "en": "Hundred Herbs Garment"
+ },
+ {
+  "vi": "Thêu trăm loài thảo dược.",
+  "en": "Embroidered with a hundred kinds of herbs."
+ },
+ {
+  "vi": "Tử Đan bào",
+  "en": "Purple Pill Robe"
+ },
+ {
+  "vi": "Áo tím của đan sư bậc cao.",
+  "en": "The purple robe of a high-ranking alchemist."
+ },
+ {
+  "vi": "Thần Hỏa y",
+  "en": "Divine Fire Garment"
+ },
+ {
+  "vi": "Mặc vào lửa lò ngoan như mèo.",
+  "en": "Wear it and the furnace fire purrs like a cat."
+ },
+ {
+  "vi": "Đan Vương bào",
+  "en": "Pill King Robe"
+ },
+ {
+  "vi": "Áo của Đan Vương, đi đâu cũng có người xin đan.",
+  "en": "The Pill King's robe - wherever he goes, someone begs for pills."
+ },
+ {
+  "vi": "Linh Dược y",
+  "en": "Spirit Medicine Garment"
+ },
+ {
+  "vi": "Thấm mùi linh dược trăm năm.",
+  "en": "Steeped in a century of spirit herbs."
+ },
+ {
+  "vi": "Cửu Chuyển đan bào",
+  "en": "Nine Revolutions Pill Robe"
+ },
+ {
+  "vi": "Chín vòng đan văn trên ngực.",
+  "en": "Nine rings of pill runes across the chest."
+ },
+ {
+  "vi": "Xích Diễm y",
+  "en": "Crimson Flame Garment"
+ },
+ {
+  "vi": "Lửa đỏ bám quanh vạt áo không tắt.",
+  "en": "Red flames cling to the hem and never die out."
+ },
+ {
+  "vi": "Dược Thánh bào",
+  "en": "Medicine Saint Robe"
+ },
+ {
+  "vi": "Áo của Dược Thánh, người bệnh chạm vào là khỏi.",
+  "en": "The Medicine Saint's robe; the sick are healed at a touch."
+ },
+ {
+  "vi": "Thái Thượng đan y",
+  "en": "Supreme Pill Garment"
+ },
+ {
+  "vi": "Đan y của Thái Thượng, đan thành ắt có kim quang.",
+  "en": "Thái Thượng's alchemy robe; every pill comes out haloed in golden light."
+ },
+ {
+  "vi": "Bát Quái đạo bào",
+  "en": "Bagua Daoist Robe"
+ },
+ {
+  "vi": "Áo đạo sĩ vẽ bát quái sau lưng.",
+  "en": "A Daoist robe with the eight trigrams on its back."
+ },
+ {
+  "vi": "Thiên Cơ y",
+  "en": "Heavenly Secret Garment"
+ },
+ {
+  "vi": "Đoán trước ba bước, áo không bao giờ bẩn.",
+  "en": "Sees three steps ahead, so it never gets dirty."
+ },
+ {
+  "vi": "Tinh Đồ bào",
+  "en": "Star Chart Robe"
+ },
+ {
+  "vi": "Thêu bản đồ sao trời.",
+  "en": "Embroidered with a map of the heavens."
+ },
+ {
+  "vi": "Kỳ Môn y",
+  "en": "Qimen Garment"
+ },
+ {
+  "vi": "Ẩn tám cửa kỳ môn trong nếp áo.",
+  "en": "The eight Qimen gates hidden in its folds."
+ },
+ {
+  "vi": "Lục Hợp bào",
+  "en": "Six Harmonies Robe"
+ },
+ {
+  "vi": "Sáu phương hợp nhất.",
+  "en": "Six directions united as one."
+ },
+ {
+  "vi": "Huyền Cơ y",
+  "en": "Mystic Mechanism Garment"
+ },
+ {
+  "vi": "Mặc vào thấy được trận văn trong không khí.",
+  "en": "Wear it and see formation runes in the air."
+ },
+ {
+  "vi": "Tứ Tượng bào",
+  "en": "Four Symbols Robe"
+ },
+ {
+  "vi": "Bốn thần thú trên bốn vạt áo.",
+  "en": "Four divine beasts on four panels."
+ },
+ {
+  "vi": "Chu Thiên y",
+  "en": "Celestial Cycle Garment"
+ },
+ {
+  "vi": "Áo xoay theo chu thiên tinh đấu.",
+  "en": "A robe that turns with the stars of the heavens."
+ },
+ {
+  "vi": "Hà Lạc bào",
+  "en": "River-Luo Robe"
+ },
+ {
+  "vi": "Chép trọn Hà Đồ Lạc Thư.",
+  "en": "Holds the entire River Chart and Luo Writing."
+ },
+ {
+  "vi": "Vô Cực y",
+  "en": "Limitless Garment"
+ },
+ {
+  "vi": "Trắng đen giao hòa, không đầu không cuối.",
+  "en": "Black and white intertwined, without beginning or end."
+ },
+ {
+  "vi": "Trận Hoàng bào",
+  "en": "Formation Emperor Robe"
+ },
+ {
+  "vi": "Áo của Trận Hoàng, phẩy tay là thành trận.",
+  "en": "The Formation Emperor's robe - a wave of the hand raises an array."
+ },
+ {
+  "vi": "Hồng Mông y",
+  "en": "Primordial Chaos Garment"
+ },
+ {
+  "vi": "Từ thuở trời đất chưa phân.",
+  "en": "From the time before heaven and earth divided."
+ },
+ {
+  "vi": "Tăng y vải thô",
+  "en": "Coarse Monk's Robe"
+ },
+ {
+  "vi": "Áo sư hành cước, vá nhiều chỗ.",
+  "en": "A wandering monk's robe, patched all over."
+ },
+ {
+  "vi": "Hoàng y cà sa",
+  "en": "Yellow Kasaya"
+ },
+ {
+  "vi": "Cà sa vàng của sư trong chùa.",
+  "en": "The yellow kasaya of a temple monk."
+ },
+ {
+  "vi": "Hồng cà sa",
+  "en": "Red Kasaya"
+ },
+ {
+  "vi": "Cà sa đỏ của Mật tông.",
+  "en": "The red kasaya of the Esoteric school."
+ },
+ {
+  "vi": "Bồ Đề y",
+  "en": "Bodhi Robe"
+ },
+ {
+  "vi": "Dệt dưới gốc bồ đề.",
+  "en": "Woven beneath the bodhi tree."
+ },
+ {
+  "vi": "Kim Lan cà sa",
+  "en": "Golden Orchid Kasaya"
+ },
+ {
+  "vi": "Cà sa chỉ vàng, khoác lên sáng cả điện.",
+  "en": "Gold-threaded; it lights up the whole hall."
+ },
+ {
+  "vi": "Huyền Trang bào",
+  "en": "Huyền Trang Robe"
+ },
+ {
+  "vi": "Áo của cao tăng đi Tây Thiên thỉnh kinh.",
+  "en": "Worn by the eminent monk who journeyed west for the scriptures."
+ },
+ {
+  "vi": "La Hán y",
+  "en": "Arhat Robe"
+ },
+ {
+  "vi": "Áo của mười tám La Hán.",
+  "en": "The robe of the Eighteen Arhats."
+ },
+ {
+  "vi": "Kim Cang cà sa",
+  "en": "Vajra Kasaya"
+ },
+ {
+  "vi": "Đao kiếm chém vào như chém kim cương.",
+  "en": "Blades striking it might as well strike diamond."
+ },
+ {
+  "vi": "Bát Nhã y",
+  "en": "Prajna Robe"
+ },
+ {
+  "vi": "Mặc vào lòng tự sáng.",
+  "en": "Wear it and the heart lights up on its own."
+ },
+ {
+  "vi": "Như Lai bào",
+  "en": "Tathagata Robe"
+ },
+ {
+  "vi": "Hào quang Như Lai thêu sau lưng.",
+  "en": "The Tathagata's halo embroidered on its back."
+ },
+ {
+  "vi": "Đại Bi cà sa",
+  "en": "Great Compassion Kasaya"
+ },
+ {
+  "vi": "Cà sa trắng của Bồ Tát Đại Bi.",
+  "en": "The white kasaya of the Bodhisattva of Great Compassion."
+ },
+ {
+  "vi": "Vạn Phật kim y",
+  "en": "Ten Thousand Buddhas Golden Robe"
+ },
+ {
+  "vi": "Vạn tượng Phật thu nhỏ thêu trên áo.",
+  "en": "Ten thousand tiny Buddhas embroidered across it."
+ },
+ {
+  "vi": "Hắc bào ma môn",
+  "en": "Demonic Sect Black Robe"
+ },
+ {
+  "vi": "Áo đen của đệ tử ma môn.",
+  "en": "The black robe of a demonic sect disciple."
+ },
+ {
+  "vi": "Huyết Sát y",
+  "en": "Blood Fiend Garment"
+ },
+ {
+  "vi": "Nhuộm bằng máu kẻ thù.",
+  "en": "Dyed in the blood of enemies."
+ },
+ {
+  "vi": "U Minh bào",
+  "en": "Netherworld Robe"
+ },
+ {
+  "vi": "Áo từ cõi u minh, lạnh buốt.",
+  "en": "From the netherworld, and bone-chillingly cold."
+ },
+ {
+  "vi": "Thi Cốt giáp",
+  "en": "Corpse Bone Armor"
+ },
+ {
+  "vi": "Giáp ghép từ xương người.",
+  "en": "Armor pieced together from human bones."
+ },
+ {
+  "vi": "Tu La bào",
+  "en": "Asura Robe"
+ },
+ {
+  "vi": "Áo của chiến sĩ Tu La.",
+  "en": "The robe of an Asura warrior."
+ },
+ {
+  "vi": "Cửu U y",
+  "en": "Nine Netherworlds Garment"
+ },
+ {
+  "vi": "Chín tầng u minh trong một tấm áo.",
+  "en": "Nine layers of the netherworld in one robe."
+ },
+ {
+  "vi": "Huyết Hải bào",
+  "en": "Blood Sea Robe"
+ },
+ {
+  "vi": "Áo như vừa ngoi lên từ biển máu.",
+  "en": "Looks like it just rose from a sea of blood."
+ },
+ {
+  "vi": "Diêm Ma giáp",
+  "en": "Yama Armor"
+ },
+ {
+  "vi": "Giáp của Diêm Ma Vương.",
+  "en": "The armor of King Yama."
+ },
+ {
+  "vi": "Vạn Quỷ bào",
+  "en": "Ten Thousand Ghosts Robe"
+ },
+ {
+  "vi": "Vạn quỷ gào thét trên vạt áo.",
+  "en": "Ten thousand ghosts wail across its hem."
+ },
+ {
+  "vi": "Hắc Liên y",
+  "en": "Black Lotus Garment"
+ },
+ {
+  "vi": "Thêu sen đen nở trong đêm.",
+  "en": "Embroidered with black lotuses that bloom at night."
+ },
+ {
+  "vi": "Ma Tôn bào",
+  "en": "Demon Sovereign Robe"
+ },
+ {
+  "vi": "Áo của Ma Tôn, khoác vào vạn ma thần phục.",
+  "en": "The Demon Sovereign's robe; wear it and ten thousand demons kneel."
+ },
+ {
+  "vi": "Thiên Ma y",
+  "en": "Heavenly Demon Garment"
+ },
+ {
+  "vi": "Thiên Ma giáng thế, trời đất u ám.",
+  "en": "The Heavenly Demon descends; heaven and earth go dark."
+ },
+ {
+  "vi": "Áo da báo",
+  "en": "Leopard Hide Coat"
+ },
+ {
+  "vi": "Da báo hoa mai, mặc vào chạy nhanh như gió.",
+  "en": "Plum-spotted leopard hide - wear it and run like the wind."
+ },
+ {
+  "vi": "Áo lông sói",
+  "en": "Wolf Fur Coat"
+ },
+ {
+  "vi": "Lông sói xám dày ấm.",
+  "en": "Thick, warm grey wolf fur."
+ },
+ {
+  "vi": "Xà bì y",
+  "en": "Snakeskin Garment"
+ },
+ {
+  "vi": "Áo da rắn, trơn như lươn.",
+  "en": "Snakeskin, slippery as an eel."
+ },
+ {
+  "vi": "Hồ cừu",
+  "en": "Fox Fur Coat"
+ },
+ {
+  "vi": "Áo lông cáo đỏ.",
+  "en": "A coat of red fox fur."
+ },
+ {
+  "vi": "Hổ bì chiến giáp",
+  "en": "Tiger Hide War Armor"
+ },
+ {
+  "vi": "Da hổ vằn, uy phong lẫm liệt.",
+  "en": "Striped tiger hide, awe-inspiring to behold."
+ },
+ {
+  "vi": "Ưng vũ y",
+  "en": "Eagle Feather Garment"
+ },
+ {
+  "vi": "Lông chim ưng, nhẹ như không.",
+  "en": "Eagle feathers, light as air."
+ },
+ {
+  "vi": "Hùng bì giáp",
+  "en": "Bear Hide Armor"
+ },
+ {
+  "vi": "Da gấu đen dày cả tấc.",
+  "en": "Black bear hide an inch thick."
+ },
+ {
+  "vi": "Giao lân y",
+  "en": "Flood Dragon Scale Garment"
+ },
+ {
+  "vi": "Vảy giao long xanh biếc.",
+  "en": "Emerald flood dragon scales."
+ },
+ {
+  "vi": "Bạch hổ cừu",
+  "en": "White Tiger Fur"
+ },
+ {
+  "vi": "Da Bạch Hổ thần thú, vằn đen trên nền trắng.",
+  "en": "Hide of the divine White Tiger, black stripes on white."
+ },
+ {
+  "vi": "Kim sí vũ y",
+  "en": "Golden Wing Feather Garment"
+ },
+ {
+  "vi": "Lông cánh Kim Sí Đại Bằng.",
+  "en": "Wing feathers of the Golden-Winged Roc."
+ },
+ {
+  "vi": "Kỳ lân giáp",
+  "en": "Qilin Armor"
+ },
+ {
+  "vi": "Vảy kỳ lân đỏ rực.",
+  "en": "Blazing red qilin scales."
+ },
+ {
+  "vi": "Yêu Hoàng bào",
+  "en": "Yao Sovereign Robe"
+ },
+ {
+  "vi": "Áo của Yêu Hoàng, vạn yêu quỳ lạy.",
+  "en": "The Yao Sovereign's robe; ten thousand yao kneel before it."
+ },
+ {
+  "vi": "Bùa bình an",
+  "en": "Peace Amulet"
+ },
+ {
+  "vi": "Mẹ xin ở chùa, đeo cho yên lòng.",
+  "en": "Mom got it at the temple; wear it so she can rest easy."
+ },
+ {
+  "vi": "Vòng gỗ trầm",
+  "en": "Agarwood Bracelet"
+ },
+ {
+  "vi": "Thơm nhẹ, đeo vào ngủ ngon.",
+  "en": "Faintly fragrant; helps you sleep."
+ },
+ {
+  "vi": "Túi thơm ngải cứu",
+  "en": "Mugwort Sachet"
+ },
+ {
+  "vi": "Đuổi muỗi, đuổi tà.",
+  "en": "Keeps off mosquitoes and evil spirits."
+ },
+ {
+  "vi": "Lông gà rừng",
+  "en": "Pheasant Feather"
+ },
+ {
+  "vi": "Cài lên mũ cho oai.",
+  "en": "Stick it in your hat to look impressive."
+ },
+ {
+  "vi": "Ngọc bội xanh",
+  "en": "Green Jade Pendant"
+ },
+ {
+  "vi": "Ngọc thường, nhưng trơn bóng.",
+  "en": "Ordinary jade, but polished smooth."
+ },
+ {
+  "vi": "Nhẫn đồng",
+  "en": "Copper Ring"
+ },
+ {
+  "vi": "Nhẫn của thợ rèn tặng.",
+  "en": "A gift from the blacksmith."
+ },
+ {
+  "vi": "Lệnh bài tiêu cục",
+  "en": "Escort Agency Token"
+ },
+ {
+  "vi": "Đi đường cướp thấy cũng nể.",
+  "en": "Even bandits on the road show it respect."
+ },
+ {
+  "vi": "Hồ lô rượu",
+  "en": "Wine Gourd"
+ },
+ {
+  "vi": "Rượu ngon, uống vào hăng máu.",
+  "en": "Good wine - one swig and your blood runs hot."
+ },
+ {
+  "vi": "Bích Ngọc bội",
+  "en": "Emerald Pendant"
+ },
+ {
+  "vi": "Ngọc bích thượng hạng, mát lạnh.",
+  "en": "Top-grade emerald, cool to the touch."
+ },
+ {
+  "vi": "Tụ Linh thạch",
+  "en": "Spirit Gathering Stone"
+ },
+ {
+  "vi": "Đá gom linh khí quanh người.",
+  "en": "A stone that draws spiritual qi to its bearer."
+ },
+ {
+  "vi": "Kinh thư tàn quyển",
+  "en": "Tattered Scripture"
+ },
+ {
+  "vi": "Nửa cuốn công pháp không rõ tên.",
+  "en": "Half a cultivation manual of unknown name."
+ },
+ {
+  "vi": "Ngân linh",
+  "en": "Silver Bell"
+ },
+ {
+  "vi": "Chuông bạc nhỏ, rung lên trừ tà.",
+  "en": "A small silver bell that rings away evil."
+ },
+ {
+  "vi": "Hộ Tâm kính",
+  "en": "Heart-Guarding Mirror"
+ },
+ {
+  "vi": "Gương đồng che trước ngực.",
+  "en": "A bronze mirror worn over the chest."
+ },
+ {
+  "vi": "Tử Kim nhẫn",
+  "en": "Purple Gold Ring"
+ },
+ {
+  "vi": "Nhẫn vàng tím, nặng tay.",
+  "en": "A purple-gold ring, heavy on the hand."
+ },
+ {
+  "vi": "Phong Hỏa phù",
+  "en": "Wind-Fire Talisman"
+ },
+ {
+  "vi": "Bùa gọi gió lửa.",
+  "en": "A talisman that summons wind and fire."
+ },
+ {
+  "vi": "Thủy Linh châu",
+  "en": "Water Spirit Pearl"
+ },
+ {
+  "vi": "Hạt châu chứa một giọt linh thủy.",
+  "en": "A pearl holding a single drop of spirit water."
+ },
+ {
+  "vi": "Định Hồn châu",
+  "en": "Soul-Anchoring Pearl"
+ },
+ {
+  "vi": "Giữ hồn không tán khi tẩu hỏa.",
+  "en": "Keeps your soul from scattering during qi deviation."
+ },
+ {
+  "vi": "Long văn bội",
+  "en": "Dragon-Pattern Pendant"
+ },
+ {
+  "vi": "Ngọc bội chạm rồng.",
+  "en": "A jade pendant carved with a dragon."
+ },
+ {
+  "vi": "Càn Khôn đại",
+  "en": "Universe Bag"
+ },
+ {
+  "vi": "Túi nhỏ đựng được cả núi.",
+  "en": "A little pouch that can hold a whole mountain."
+ },
+ {
+  "vi": "Thiên Cơ lệnh",
+  "en": "Heavenly Secret Token"
+ },
+ {
+  "vi": "Lệnh bài của Thiên Cơ Các.",
+  "en": "A token of the Thiên Cơ Pavilion."
+ },
+ {
+  "vi": "Hỗn Nguyên châu",
+  "en": "Primordial Pearl"
+ },
+ {
+  "vi": "Hạt châu hỗn nguyên nhất khí.",
+  "en": "A pearl of primordial unified qi."
+ },
+ {
+  "vi": "Vạn Lý phù",
+  "en": "Ten-Thousand-Mile Talisman"
+ },
+ {
+  "vi": "Đốt lên là đi được vạn dặm.",
+  "en": "Burn it and travel ten thousand miles."
+ },
+ {
+  "vi": "Tử Vi tinh bàn",
+  "en": "Purple Star Disc"
+ },
+ {
+  "vi": "Bàn sao Tử Vi đoán mệnh trời.",
+  "en": "The Purple Star disc that reads heaven's decree."
+ },
+ {
+  "vi": "Côn Lôn kính",
+  "en": "Côn Lôn Mirror"
+ },
+ {
+  "vi": "Gương thần soi được quá khứ.",
+  "en": "A divine mirror that reveals the past."
+ },
+ {
+  "vi": "Nữ Oa thạch",
+  "en": "Nữ Oa Stone"
+ },
+ {
+  "vi": "Đá vá trời còn sót lại.",
+  "en": "A stone left over from mending the sky."
+ },
+ {
+  "vi": "Hà Đồ",
+  "en": "River Chart"
+ },
+ {
+  "vi": "Bức đồ cổ nhất trời đất.",
+  "en": "The oldest chart under heaven."
+ },
+ {
+  "vi": "Lạc Thư",
+  "en": "Luo Writing"
+ },
+ {
+  "vi": "Chín cung số trời.",
+  "en": "Heaven's numbers in nine palaces."
+ },
+ {
+  "vi": "Thiên Đạo ấn",
+  "en": "Heavenly Dao Seal"
+ },
+ {
+  "vi": "Ấn của Thiên Đạo, đóng xuống là thành luật.",
+  "en": "The seal of the Heavenly Dao; whatever it stamps becomes law."
+ },
+ {
+  "vi": "Kiếm tuệ",
+  "en": "Sword Tassel"
+ },
+ {
+  "vi": "Tua kiếm đỏ, múa kiếm bay phấp phới.",
+  "en": "A red tassel that flutters as you dance the sword."
+ },
+ {
+  "vi": "Kiếm phổ tàn thiên",
+  "en": "Tattered Sword Manual"
+ },
+ {
+  "vi": "Ba chiêu kiếm cuối bị xé mất.",
+  "en": "The last three moves have been torn out."
+ },
+ {
+  "vi": "Kiếm tâm ngọc",
+  "en": "Sword Heart Jade"
+ },
+ {
+  "vi": "Đeo vào kiếm tâm sáng tỏ.",
+  "en": "Wear it and your sword heart turns clear."
+ },
+ {
+  "vi": "Kiếm ý phù",
+  "en": "Sword Intent Talisman"
+ },
+ {
+  "vi": "Phong ấn một đạo kiếm ý.",
+  "en": "Seals away a strand of sword intent."
+ },
+ {
+  "vi": "Kiếm hoàn",
+  "en": "Sword Ring"
+ },
+ {
+  "vi": "Vòng kiếm nhỏ, ném ra hóa kiếm.",
+  "en": "A small ring that becomes a sword when thrown."
+ },
+ {
+  "vi": "Thanh Phong kiếm phổ",
+  "en": "Thanh Phong Sword Manual"
+ },
+ {
+  "vi": "Kiếm phổ của phái Thanh Phong.",
+  "en": "The sword manual of the Thanh Phong sect."
+ },
+ {
+  "vi": "Kiếm cốt châu",
+  "en": "Sword Bone Pearl"
+ },
+ {
+  "vi": "Châu luyện từ kiếm cốt của tiền bối.",
+  "en": "Refined from the sword bones of a senior."
+ },
+ {
+  "vi": "Vạn Kiếm lệnh",
+  "en": "Ten Thousand Swords Token"
+ },
+ {
+  "vi": "Lệnh bài triệu vạn kiếm.",
+  "en": "A token that summons ten thousand swords."
+ },
+ {
+  "vi": "Kiếm hồn bội",
+  "en": "Sword Soul Pendant"
+ },
+ {
+  "vi": "Trong ngọc có một đạo kiếm hồn.",
+  "en": "A sword soul sleeps inside the jade."
+ },
+ {
+  "vi": "Độc Cô kiếm phổ",
+  "en": "Độc Cô Sword Manual"
+ },
+ {
+  "vi": "Chín thức kiếm không chiêu thắng có chiêu.",
+  "en": "Nine sword forms where no move beats every move."
+ },
+ {
+  "vi": "Kiếm tâm thông minh châu",
+  "en": "Sword Heart Clarity Pearl"
+ },
+ {
+  "vi": "Kiếm tâm thông minh, nhìn thấu mọi chiêu.",
+  "en": "A clear sword heart sees through every move."
+ },
+ {
+  "vi": "Kiếm Tiên lệnh",
+  "en": "Sword Immortal Token"
+ },
+ {
+  "vi": "Lệnh bài của Kiếm Tiên, kiếm tu thiên hạ nhường đường.",
+  "en": "The Sword Immortal's token; every sword cultivator under heaven makes way."
+ },
+ {
+  "vi": "Dược nang",
+  "en": "Herb Pouch"
+ },
+ {
+  "vi": "Túi đựng thảo dược.",
+  "en": "A pouch for medicinal herbs."
+ },
+ {
+  "vi": "Tử Kim hồ lô",
+  "en": "Purple Gold Gourd"
+ },
+ {
+  "vi": "Hồ lô đựng đan, đan không bao giờ hỏng.",
+  "en": "A gourd for pills; pills inside never spoil."
+ },
+ {
+  "vi": "Đan phương tàn quyển",
+  "en": "Tattered Pill Recipe"
+ },
+ {
+  "vi": "Đan phương cổ, thiếu vài vị thuốc.",
+  "en": "An ancient pill recipe missing a few ingredients."
+ },
+ {
+  "vi": "Hỏa linh châu",
+  "en": "Fire Spirit Pearl"
+ },
+ {
+  "vi": "Hạt châu chứa hỏa linh.",
+  "en": "A pearl holding a fire spirit."
+ },
+ {
+  "vi": "Bách thảo kinh",
+  "en": "Hundred Herbs Classic"
+ },
+ {
+  "vi": "Ghi dược tính trăm loài cỏ.",
+  "en": "Records the properties of a hundred herbs."
+ },
+ {
+  "vi": "Đỉnh đan nhỏ",
+  "en": "Small Pill Cauldron"
+ },
+ {
+  "vi": "Lò đan bỏ túi.",
+  "en": "A pocket-sized pill furnace."
+ },
+ {
+  "vi": "Linh hỏa phù",
+  "en": "Spirit Fire Talisman"
+ },
+ {
+  "vi": "Bùa giữ lửa lò đan.",
+  "en": "Keeps the furnace fire burning."
+ },
+ {
+  "vi": "Thần Nông bản thảo",
+  "en": "Thần Nông's Herbal"
+ },
+ {
+  "vi": "Bản chép tay của Thần Nông.",
+  "en": "Thần Nông's handwritten copy."
+ },
+ {
+  "vi": "Cửu Chuyển hồ lô",
+  "en": "Nine Revolutions Gourd"
+ },
+ {
+  "vi": "Hồ lô từng đựng Cửu Chuyển Kim Đan.",
+  "en": "It once held a Nine Revolutions Golden Pill."
+ },
+ {
+  "vi": "Đan tâm ngọc",
+  "en": "Pill Heart Jade"
+ },
+ {
+  "vi": "Ngọc giúp cảm nhận dược lực.",
+  "en": "Jade that helps you sense medicinal power."
+ },
+ {
+  "vi": "Tam Muội hỏa chủng",
+  "en": "Samadhi Fire Seed"
+ },
+ {
+  "vi": "Mồi lửa Tam Muội Chân Hỏa.",
+  "en": "An ember of Samadhi True Fire."
+ },
+ {
+  "vi": "Thái Thượng đan kinh",
+  "en": "Supreme Pill Classic"
+ },
+ {
+  "vi": "Đan kinh của Thái Thượng Lão Quân.",
+  "en": "The pill classic of Thái Thượng Lão Quân."
+ },
+ {
+  "vi": "La bàn đồng",
+  "en": "Bronze Compass"
+ },
+ {
+  "vi": "Kim chỉ linh mạch dưới đất.",
+  "en": "Its needle points to spirit veins underground."
+ },
+ {
+  "vi": "Trận kỳ",
+  "en": "Formation Flag"
+ },
+ {
+  "vi": "Lá cờ cắm trận nhãn.",
+  "en": "A flag planted at a formation's eye."
+ },
+ {
+  "vi": "Bát quái kính",
+  "en": "Bagua Mirror"
+ },
+ {
+  "vi": "Gương bát quái phản tà.",
+  "en": "An eight-trigram mirror that reflects evil."
+ },
+ {
+  "vi": "Trận nhãn tinh thạch",
+  "en": "Formation Eye Crystal"
+ },
+ {
+  "vi": "Viên đá làm mắt trận.",
+  "en": "A stone that serves as the eye of a formation."
+ },
+ {
+  "vi": "Kỳ Môn độn giáp thư",
+  "en": "Qimen Dunjia Book"
+ },
+ {
+  "vi": "Sách độn giáp, học xong đi mất tăm.",
+  "en": "A book of the hiding arts - finish it and you vanish without a trace."
+ },
+ {
+  "vi": "Lục Hợp châu",
+  "en": "Six Harmonies Pearl"
+ },
+ {
+  "vi": "Hạt châu sáu phương.",
+  "en": "A pearl of the six directions."
+ },
+ {
+  "vi": "Thiên Cơ phù",
+  "en": "Heavenly Secret Talisman"
+ },
+ {
+  "vi": "Bùa tính trước thiên cơ.",
+  "en": "A talisman that calculates heaven's secrets in advance."
+ },
+ {
+  "vi": "Tinh đồ ngọc giản",
+  "en": "Star Chart Jade Slip"
+ },
+ {
+  "vi": "Ngọc giản ghi bản đồ sao.",
+  "en": "A jade slip recording a map of the stars."
+ },
+ {
+  "vi": "Chu Thiên tinh đẩu bàn",
+  "en": "Celestial Star Disc"
+ },
+ {
+  "vi": "Bàn xoay chu thiên tinh đẩu.",
+  "en": "A disc that turns with the stars of the heavens."
+ },
+ {
+  "vi": "Hà Lạc ngọc phù",
+  "en": "River-Luo Jade Talisman"
+ },
+ {
+  "vi": "Ngọc phù khắc Hà Lạc.",
+  "en": "A jade talisman carved with the River Chart and Luo Writing."
+ },
+ {
+  "vi": "Vô Cực trận đồ",
+  "en": "Limitless Formation Diagram"
+ },
+ {
+  "vi": "Trận đồ không có điểm đầu.",
+  "en": "A formation diagram with no starting point."
+ },
+ {
+  "vi": "Hồng Mông trận bàn",
+  "en": "Primordial Chaos Formation Disc"
+ },
+ {
+  "vi": "Trận bàn từ thuở hồng mông.",
+  "en": "A formation disc from the primordial chaos."
+ },
+ {
+  "vi": "Tràng hạt gỗ",
+  "en": "Wooden Prayer Beads"
+ },
+ {
+  "vi": "Một trăm lẻ tám hạt, lần mãi thành nhẵn.",
+  "en": "One hundred and eight beads, worn smooth by endless counting."
+ },
+ {
+  "vi": "Mõ gỗ",
+  "en": "Wooden Fish"
+ },
+ {
+  "vi": "Gõ mõ tụng kinh, tâm yên như nước.",
+  "en": "Tap it while chanting and the heart grows still as water."
+ },
+ {
+  "vi": "Xá lợi tử",
+  "en": "Śarīra Relic"
+ },
+ {
+  "vi": "Xá lợi của một vị sư đã viên tịch.",
+  "en": "The relic of a monk who passed into nirvana."
+ },
+ {
+  "vi": "Kinh Kim Cang",
+  "en": "Diamond Sutra"
+ },
+ {
+  "vi": "Ưng vô sở trụ nhi sinh kỳ tâm.",
+  "en": "Abide nowhere, and let the mind arise."
+ },
+ {
+  "vi": "Bồ Đề tử",
+  "en": "Bodhi Seed"
+ },
+ {
+  "vi": "Hạt bồ đề, đeo vào dễ ngộ.",
+  "en": "A bodhi seed; wear it and enlightenment comes easier."
+ },
+ {
+  "vi": "Tâm Kinh ngọc giản",
+  "en": "Heart Sutra Jade Slip"
+ },
+ {
+  "vi": "Sắc tức thị không.",
+  "en": "Form is emptiness."
+ },
+ {
+  "vi": "Phật quang phù",
+  "en": "Buddha Light Talisman"
+ },
+ {
+  "vi": "Bùa tỏa Phật quang.",
+  "en": "A talisman radiating Buddha light."
+ },
+ {
+  "vi": "Liên hoa đài",
+  "en": "Lotus Throne"
+ },
+ {
+  "vi": "Đài sen nhỏ để ngồi thiền.",
+  "en": "A small lotus seat for meditation."
+ },
+ {
+  "vi": "Kim bát",
+  "en": "Golden Alms Bowl"
+ },
+ {
+  "vi": "Bát vàng khất thực.",
+  "en": "A golden bowl for begging alms."
+ },
+ {
+  "vi": "Đại Bi chú",
+  "en": "Great Compassion Mantra"
+ },
+ {
+  "vi": "Đeo chú Đại Bi, tà ma không gần.",
+  "en": "Wear the Great Compassion Mantra and evil stays away."
+ },
+ {
+  "vi": "Phật cốt xá lợi",
+  "en": "Buddha Bone Relic"
+ },
+ {
+  "vi": "Xá lợi cốt Phật, thần thánh vô song.",
+  "en": "A relic of the Buddha's bones, holy beyond compare."
+ },
+ {
+  "vi": "Vạn Phật triều tông ấn",
+  "en": "Ten Thousand Buddhas Homage Seal"
+ },
+ {
+  "vi": "Ấn vạn Phật triều tông.",
+  "en": "The seal of ten thousand Buddhas paying homage."
+ },
+ {
+  "vi": "Huyết ngọc",
+  "en": "Blood Jade"
+ },
+ {
+  "vi": "Ngọc đỏ như máu, ấm như da người.",
+  "en": "Red as blood, warm as human skin."
+ },
+ {
+  "vi": "Đầu lâu bội",
+  "en": "Skull Pendant"
+ },
+ {
+  "vi": "Đầu lâu nhỏ đeo bên hông.",
+  "en": "A little skull hung at the hip."
+ },
+ {
+  "vi": "Phệ hồn phù",
+  "en": "Soul-Devouring Talisman"
+ },
+ {
+  "vi": "Bùa nuốt hồn.",
+  "en": "A talisman that swallows souls."
+ },
+ {
+  "vi": "Ma đồng",
+  "en": "Demon Eye"
+ },
+ {
+  "vi": "Con mắt ma luyện từ yêu thú.",
+  "en": "A demonic eye refined from a demon beast."
+ },
+ {
+  "vi": "Huyết Sát lệnh",
+  "en": "Blood Fiend Token"
+ },
+ {
+  "vi": "Lệnh bài Huyết Sát Môn.",
+  "en": "A token of the Huyết Sát Sect."
+ },
+ {
+  "vi": "U Minh châu",
+  "en": "Netherworld Pearl"
+ },
+ {
+  "vi": "Châu đen từ cõi u minh.",
+  "en": "A black pearl from the netherworld."
+ },
+ {
+  "vi": "Thi cốt chuỗi",
+  "en": "Corpse Bone Rosary"
+ },
+ {
+  "vi": "Chuỗi xương ngón tay.",
+  "en": "A string of finger bones."
+ },
+ {
+  "vi": "Vạn Hồn phiên",
+  "en": "Ten Thousand Souls Banner"
+ },
+ {
+  "vi": "Cờ nhỏ giam vạn hồn.",
+  "en": "A small banner imprisoning ten thousand souls."
+ },
+ {
+  "vi": "Ma tâm ngọc",
+  "en": "Demon Heart Jade"
+ },
+ {
+  "vi": "Ngọc nuôi tâm ma.",
+  "en": "Jade that feeds heart demons."
+ },
+ {
+  "vi": "Huyết thần kinh",
+  "en": "Blood God Scripture"
+ },
+ {
+  "vi": "Kinh luyện máu thành thần.",
+  "en": "A scripture for refining blood into godhood."
+ },
+ {
+  "vi": "Cửu U ấn",
+  "en": "Nine Netherworlds Seal"
+ },
+ {
+  "vi": "Ấn của chúa tể Cửu U.",
+  "en": "The seal of the lord of the Nine Netherworlds."
+ },
+ {
+  "vi": "Thiên Ma xá lợi",
+  "en": "Heavenly Demon Relic"
+ },
+ {
+  "vi": "Xá lợi của Thiên Ma, ma khí ngút trời.",
+  "en": "The Heavenly Demon's relic, its demonic qi soaring to the sky."
+ },
+ {
+  "vi": "Nanh sói",
+  "en": "Wolf Fang"
+ },
+ {
+  "vi": "Nanh sói xâu dây đeo cổ.",
+  "en": "A wolf fang strung on a cord around the neck."
+ },
+ {
+  "vi": "Vảy mãng xà",
+  "en": "Python Scale"
+ },
+ {
+  "vi": "Vảy rắn cứng như sắt.",
+  "en": "A snake scale hard as iron."
+ },
+ {
+  "vi": "Lông cáo đỏ",
+  "en": "Red Fox Fur"
+ },
+ {
+  "vi": "Lông đuôi hồ ly.",
+  "en": "Fur from a fox spirit's tail."
+ },
+ {
+  "vi": "Yêu đan nhỏ",
+  "en": "Small Demon Core"
+ },
+ {
+  "vi": "Yêu đan trăm năm.",
+  "en": "A hundred-year-old demon core."
+ },
+ {
+  "vi": "Mắt ưng",
+  "en": "Eagle Eye"
+ },
+ {
+  "vi": "Đeo vào nhìn xa nghìn dặm.",
+  "en": "Wear it and see a thousand miles."
+ },
+ {
+  "vi": "Móng hổ",
+  "en": "Tiger Talon"
+ },
+ {
+  "vi": "Móng hổ đeo trừ tà.",
+  "en": "A tiger talon worn to ward off evil."
+ },
+ {
+  "vi": "Hồ châu",
+  "en": "Fox Pearl"
+ },
+ {
+  "vi": "Châu của Cửu Vĩ Hồ.",
+  "en": "The pearl of the Nine-Tailed Fox."
+ },
+ {
+  "vi": "Long lân",
+  "en": "Dragon Scale"
+ },
+ {
+  "vi": "Một chiếc vảy rồng.",
+  "en": "A single dragon scale."
+ },
+ {
+  "vi": "Phượng vũ",
+  "en": "Phoenix Feather"
+ },
+ {
+  "vi": "Lông phượng hoàng, cháy mãi không tàn.",
+  "en": "A phoenix feather that burns forever without turning to ash."
+ },
+ {
+  "vi": "Vạn Yêu lệnh",
+  "en": "Ten Thousand Yao Token"
+ },
+ {
+  "vi": "Lệnh bài hiệu triệu vạn yêu.",
+  "en": "A token that rallies ten thousand yao."
+ },
+ {
+  "vi": "Kỳ Lân giác",
+  "en": "Qilin Horn"
+ },
+ {
+  "vi": "Sừng kỳ lân.",
+  "en": "A qilin's horn."
+ },
+ {
+  "vi": "Yêu Hoàng ấn",
+  "en": "Yao Sovereign Seal"
+ },
+ {
+  "vi": "Ấn của Yêu Hoàng.",
+  "en": "The seal of the Yao Sovereign."
+ }
+]

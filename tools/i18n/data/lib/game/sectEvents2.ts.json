@@ -1,0 +1,692 @@
+[
+ {
+  "vi": "Từ chối, tiếp tục làm tán tu",
+  "en": "Decline, stay a rogue cultivator"
+ },
+ {
+  "vi": "Chuông sớm Phổ Đà Sơn",
+  "en": "Morning bell of Phổ Đà Sơn"
+ },
+ {
+  "vi": "Một vị lão tăng chống tích trượng đi ngang, dừng lại nhìn bạn rất lâu: \"Thí chủ có tuệ căn. Phổ Đà Sơn ngoài biển Đông còn thiếu một người thắp đèn.\"",
+  "en": "An old monk with a ringed staff passes by, stops, and studies you for a long time: \"Benefactor, you have wisdom roots. Phổ Đà Sơn out in the Eastern Sea still lacks someone to tend the lamps.\""
+ },
+ {
+  "vi": "Theo lão tăng ra đảo",
+  "en": "Follow the old monk to the island"
+ },
+ {
+  "vi": "chính phái · tâm ma tăng chậm · cấm sát sinh",
+  "en": "righteous · slower heart demons · no killing"
+ },
+ {
+  "vi": "Phổ Đà Sơn",
+  "en": "Phổ Đà Sơn"
+ },
+ {
+  "vi": "Bạn cạo tóc dưới gốc bồ đề, thành {0} Phổ Đà Sơn. Mỗi sáng tụng kinh, tâm ma khó lòng xâm nhập. Nhưng giới luật nghiêm: diệt yêu quá tay sẽ bị Giới luật viện gọi lên.",
+  "ph": [
+   "rankName(c)"
+  ],
+  "en": "You shave your head beneath the bodhi tree and become a {0} of Phổ Đà Sơn. Every morning you chant sutras, and heart demons can hardly get in. But the precepts are strict: overdo the demon hunting and the Precepts Hall will summon you."
+ },
+ {
+  "vi": "Lão tăng chắp tay, không nói thêm. Tiếng chuông xa dần về phía biển.",
+  "en": "The old monk presses his palms together and says no more. The bell fades away toward the sea."
+ },
+ {
+  "vi": "Kiếm Cốc mở cửa",
+  "en": "Kiếm Cốc opens its gates"
+ },
+ {
+  "vi": "Trên vách đá Kiếm Cốc cắm chín nghìn thanh kiếm cổ. Ai rút được một thanh thì được nhận làm đệ tử. Hôm nay cốc mở cửa.",
+  "en": "Nine thousand ancient swords are embedded in the cliffs of Kiếm Cốc. Whoever pulls one out is taken as a disciple. Today the valley opens its gates."
+ },
+ {
+  "vi": "Thử rút kiếm",
+  "en": "Try to draw a sword"
+ },
+ {
+  "vi": "chính phái · Đại bỉ 3 năm một lần",
+  "en": "righteous · Grand Contest every 3 years"
+ },
+ {
+  "vi": "Bạn dồn hết sức mà thanh kiếm không nhúc nhích. Kiếm khí phản chấn làm bạn ho ra máu. Kiếm Cốc đóng cửa, ba năm sau mới mở lại.",
+  "en": "You strain with all your might, but the sword won't budge. Its recoiling sword qi makes you cough blood. Kiếm Cốc closes its gates for another three years."
+ },
+ {
+  "vi": "Kiếm Cốc",
+  "en": "Kiếm Cốc"
+ },
+ {
+  "vi": "Thanh kiếm rỉ sét rời vách đá với một tiếng ngân dài. Bạn thành {0} Kiếm Cốc. Ở đây ba năm một lần Đại bỉ, thắng là lên bậc.",
+  "ph": [
+   "rankName(c)"
+  ],
+  "en": "The rusty sword leaves the cliff with a long ring. You become a {0} of Kiếm Cốc. Here a Grand Contest is held every three years, and winners rise in rank."
+ },
+ {
+  "vi": "Bạn đứng nhìn người khác rút kiếm, rồi quay đi. Kiếm của mình, tự mình rèn.",
+  "en": "You watch the others draw swords, then turn away. Your own sword, you'll forge yourself."
+ },
+ {
+  "vi": "Thư mời của Vạn Độc Môn",
+  "en": "An invitation from Vạn Độc Môn"
+ },
+ {
+  "vi": "Sáng ra, trên bàn có một phong thư tẩm hương lạ, chữ viết bằng mực xanh lục: \"Tay luyện đan của ngươi phí ở chốn này. Vạn Độc Môn đợi ở Hắc Thủy Đàm.\"",
+  "en": "In the morning there's a strangely perfumed letter on your table, written in green ink: \"Your alchemist's hands are wasted here. Vạn Độc Môn awaits at Hắc Thủy Pool.\""
+ },
+ {
+  "vi": "Tới Hắc Thủy Đàm",
+  "en": "Go to Hắc Thủy Pool"
+ },
+ {
+  "vi": "tà phái · luyện độc đan, thử độc",
+  "en": "evil · brew poison pills, test poisons"
+ },
+ {
+  "vi": "Vạn Độc Môn",
+  "en": "Vạn Độc Môn"
+ },
+ {
+  "vi": "Môn chủ đưa bạn một chén nước xanh: \"Uống đi. Sống thì là người nhà.\" Bạn uống, sống, thành {0} Vạn Độc Môn.",
+  "ph": [
+   "rankName(c)"
+  ],
+  "en": "The Sect Leader hands you a cup of green liquid: \"Drink. If you live, you're family.\" You drink, you live, and you become a {0} of Vạn Độc Môn."
+ },
+ {
+  "vi": "Đốt thư",
+  "en": "Burn the letter"
+ },
+ {
+  "vi": "Thư cháy ra khói xanh, bạn hít phải, ho mất ba ngày.",
+  "en": "The letter burns with green smoke. You breathe it in and cough for three days."
+ },
+ {
+  "vi": "Tiếng gọi của Yêu Thần Điện",
+  "en": "The call of Yêu Thần Điện"
+ },
+ {
+  "vi": "Trăng đỏ. Huyết mạch trong người bạn sôi lên. Từ sâu trong Vạn Yêu Lâm, có tiếng tù và gọi: Yêu Thần Điện nhận mọi yêu tộc, không hỏi linh căn.",
+  "en": "A red moon. The blood in your veins boils. From deep in Vạn Yêu Forest a horn calls: Yêu Thần Điện takes in every yao, no spiritual root asked."
+ },
+ {
+  "vi": "Theo tiếng tù và",
+  "en": "Follow the horn"
+ },
+ {
+  "vi": "tà phái · không xét linh căn",
+  "en": "evil · no spiritual root check"
+ },
+ {
+  "vi": "Yêu Thần Điện",
+  "en": "Yêu Thần Điện"
+ },
+ {
+  "vi": "Đại điện dựng bằng xương thú cổ. Yêu Thần không hỏi bạn từ đâu tới, chỉ hỏi bạn dám cắn ai. Bạn thành {0} Yêu Thần Điện.",
+  "ph": [
+   "rankName(c)"
+  ],
+  "en": "The great hall is built from ancient beast bones. The Yao God doesn't ask where you came from, only whom you dare to bite. You become a {0} of Yêu Thần Điện."
+ },
+ {
+  "vi": "Bạn bịt tai lại. Tiếng tù và vang đến sáng rồi tắt.",
+  "en": "You cover your ears. The horn sounds until dawn, then falls silent."
+ },
+ {
+  "vi": "Giới luật viện",
+  "en": "Precepts Hall"
+ },
+ {
+  "vi": "Giới luật viện gọi bạn lên. Thủ tọa gõ mõ ba tiếng: \"Sát nghiệp trên người ngươi nặng rồi. Phổ Đà Sơn không phải đất của đồ tể.\"",
+  "en": "The Precepts Hall summons you. The Head Monk strikes the wooden fish three times: \"Your killing karma grows heavy. Phổ Đà Sơn is no place for a butcher.\""
+ },
+ {
+  "vi": "Sám hối, chép kinh trăm ngày",
+  "en": "Repent, copy sutras for 100 days"
+ },
+ {
+  "vi": "mất tiền, tâm ma giảm",
+  "en": "lose money, less heart demon"
+ },
+ {
+  "vi": "Bạn chép kinh tới mỏi tay, nộp tiền đèn dầu cho chùa. Lòng nhẹ đi, túi cũng nhẹ đi.",
+  "en": "You copy sutras until your hand aches and pay the temple for lamp oil. Your heart grows lighter, and so does your purse."
+ },
+ {
+  "vi": "\"Yêu hại người, giết là cứu người\"",
+  "en": "\"Demons harm people - killing them saves people\""
+ },
+ {
+  "vi": "cãi lại, có thể bị giáng bậc",
+  "en": "argue back, may be demoted"
+ },
+ {
+  "vi": "Thủ tọa lắc đầu: \"Còn chấp.\" Bạn bị giáng làm {0}.",
+  "ph": [
+   "rankName(c)"
+  ],
+  "en": "The Head Monk shakes his head: \"Still attached.\" You are demoted to {0}."
+ },
+ {
+  "vi": "Thủ tọa im lặng rất lâu, rồi cười: \"Cũng là một cách hiểu.\" Ông cho bạn lui, không phạt.",
+  "en": "The Head Monk is silent a long while, then smiles: \"That too is a way of understanding.\" He dismisses you without punishment."
+ },
+ {
+  "vi": "Pháp hội Triều Âm",
+  "en": "Triều Âm Dharma Assembly"
+ },
+ {
+  "vi": "Sóng vỗ vào Triều Âm Động. Phương trượng mở pháp hội, giảng một bộ kinh trăm năm mới giảng một lần.",
+  "en": "Waves crash into Triều Âm Cave. The Abbot opens a Dharma assembly to expound a sutra taught only once a century."
+ },
+ {
+  "vi": "Ngồi nghe trọn ba ngày",
+  "en": "Listen for all three days"
+ },
+ {
+  "vi": "ngộ tính, tâm cảnh",
+  "en": "Insight, Mind"
+ },
+ {
+  "vi": "Tới câu cuối, bạn bỗng hiểu ra. {0}",
+  "ph": [
+   "promote(c, ctx, 'Phương trượng thấy ánh mắt bạn, gật đầu.') ?? 'Phương trượng gật đầu với bạn.'"
+  ],
+  "en": "At the final verse, it suddenly clicks. {0}"
+ },
+ {
+  "vi": "Phương trượng thấy ánh mắt bạn, gật đầu.",
+  "en": "The Abbot sees the look in your eyes and nods."
+ },
+ {
+  "vi": "Phương trượng gật đầu với bạn.",
+  "en": "The Abbot nods at you."
+ },
+ {
+  "vi": "Tiếng kinh hòa vào tiếng sóng. Ba ngày như một hơi thở.",
+  "en": "The chanting blends with the waves. Three days pass like a single breath."
+ },
+ {
+  "vi": "Lẻn ra bãi đá tu luyện",
+  "en": "Sneak off to cultivate on the rocks"
+ },
+ {
+  "vi": "tu vi",
+  "en": "cultivation"
+ },
+ {
+  "vi": "Bãi đá vắng người, linh khí biển dồi dào. Bạn tu được một mạch dài.",
+  "en": "The rocky shore is deserted and the sea's spiritual qi is rich. You cultivate a long stretch."
+ },
+ {
+  "vi": "Kiếm Trủng",
+  "en": "Sword Tomb"
+ },
+ {
+  "vi": "Sâu trong Kiếm Cốc là Kiếm Trủng, mộ của những thanh kiếm đã gãy. Đêm nay kiếm khí trong mộ dâng lên, đệ tử nào cũng có thể vào ngộ kiếm.",
+  "en": "Deep in Kiếm Cốc lies the Sword Tomb, a grave of broken swords. Tonight its sword qi surges, and every disciple may enter to comprehend the sword."
+ },
+ {
+  "vi": "Vào sâu nhất",
+  "en": "Go in deepest"
+ },
+ {
+  "vi": "tu vi lớn, có thể bị kiếm khí làm bị thương",
+  "en": "big cultivation, sword qi may wound you"
+ },
+ {
+  "vi": "Một sợi kiếm ý cổ chui vào thức hải bạn. Bạn ngồi đó tới sáng, kiếm pháp tiến một tầng.",
+  "en": "A strand of ancient sword intent slips into your sea of consciousness. You sit there till dawn, and your swordplay rises a level."
+ },
+ {
+  "vi": "Kiếm khí cuồn cuộn như bão. Bạn chạy ra được nhưng người đầy vết cắt.",
+  "en": "The sword qi rages like a storm. You make it out, but covered in cuts."
+ },
+ {
+  "vi": "Ngồi ở rìa, ngộ chậm mà chắc",
+  "en": "Sit at the edge, slow but steady"
+ },
+ {
+  "vi": "tu vi vừa",
+  "en": "some cultivation"
+ },
+ {
+  "vi": "Bạn ngồi ở rìa mộ, nghe kiếm khí rít như gió. Không nhiều, nhưng không mất gì.",
+  "en": "You sit at the tomb's edge, listening to the sword qi whistle like wind. Not much gained, but nothing lost."
+ },
+ {
+  "vi": "Khách tới luận kiếm",
+  "en": "A guest comes to spar"
+ },
+ {
+  "vi": "Một kiếm khách áo đen đứng trước cửa cốc, đòi đấu với đệ tử Kiếm Cốc mạnh nhất. Trưởng lão nhìn quanh rồi nhìn bạn.",
+  "en": "A swordsman in black stands at the valley gate, demanding to duel Kiếm Cốc's strongest disciple. The Elder looks around, then at you."
+ },
+ {
+  "vi": "Bước ra nhận đấu",
+  "en": "Step up and accept"
+ },
+ {
+  "vi": "thắng được thăng bậc",
+  "en": "win to be promoted"
+ },
+ {
+  "vi": "Kiếm khách lùi ba bước, tra kiếm vào vỏ: \"Kiếm Cốc còn người.\" {0}",
+  "ph": [
+   "promote(c, ctx, 'Cả cốc reo hò.') ?? 'Trưởng lão thưởng cho bạn một bình đan.'"
+  ],
+  "en": "The swordsman steps back three paces and sheathes his sword: \"Kiếm Cốc still has worthy men.\" {0}"
+ },
+ {
+  "vi": "Cả cốc reo hò.",
+  "en": "The whole valley cheers."
+ },
+ {
+  "vi": "Trưởng lão thưởng cho bạn một bình đan.",
+  "en": "The Elder rewards you with a bottle of pills."
+ },
+ {
+  "vi": "Một kiếm. Chỉ một kiếm, bạn đã thua. Kiếm khách bỏ đi không nói một lời.",
+  "en": "One strike. Just one strike, and you've lost. The swordsman leaves without a word."
+ },
+ {
+  "vi": "Nhường sư huynh",
+  "en": "Let your senior brother go"
+ },
+ {
+  "vi": "Bạn đứng xem từ đầu tới cuối. Thua, nhưng học được nhiều.",
+  "en": "You watch from start to finish. You lost, but you learned plenty."
+ },
+ {
+  "vi": "Thử độc",
+  "en": "Poison testing"
+ },
+ {
+  "vi": "Lò độc đan mới ra. Trưởng lão cần người thử: \"Sống qua được thì độc lực hóa tu vi. Không qua được thì... môn ta thiếu gì người.\"",
+  "en": "A new batch of poison pills is out. The Elder needs a tester: \"Survive, and the poison turns into cultivation. Don't, and... we have no shortage of people.\""
+ },
+ {
+  "vi": "Uống",
+  "en": "Drink"
+ },
+ {
+  "vi": "tu vi lớn, mất sức khỏe, có thể chết",
+  "en": "big cultivation, lose health, may die"
+ },
+ {
+  "vi": "Độc đan quá mạnh. Bạn co giật một đêm rồi tắt thở, mặt xanh như lá.",
+  "en": "The poison pill is too strong. You convulse all night and stop breathing, your face green as a leaf."
+ },
+ {
+  "vi": "Ruột gan như bị lửa xanh thiêu. Ba ngày sau tỉnh dậy, tu vi đã tăng vọt.",
+  "en": "Your guts burn as if with green fire. Three days later you wake, your cultivation soaring."
+ },
+ {
+  "vi": "Đẩy cho tên dược nô bên cạnh",
+  "en": "Push it on the herb slave next to you"
+ },
+ {
+  "vi": "tà, được chia công",
+  "en": "evil, share the credit"
+ },
+ {
+  "vi": "Tên dược nô uống, ngã vật ra. Trưởng lão ghi công cho bạn vì \"tìm được người thử\".",
+  "en": "The herb slave drinks and collapses. The Elder credits you for \"finding a tester\"."
+ },
+ {
+  "vi": "Xin để lần sau",
+  "en": "Maybe next time"
+ },
+ {
+  "vi": "Trưởng lão cười khẩy, không nói gì.",
+  "en": "The Elder sneers and says nothing."
+ },
+ {
+  "vi": "Độc đan bán chợ đen",
+  "en": "Poison pills for the black market"
+ },
+ {
+  "vi": "Mẻ độc đan dư ra mười viên. Chợ đen dưới núi trả giá cao, nhưng mua về để làm gì thì ai cũng biết.",
+  "en": "Ten poison pills are left over from the batch. The black market below the mountain pays well, and everyone knows what they're bought for."
+ },
+ {
+  "vi": "Bán hết",
+  "en": "Sell them all"
+ },
+ {
+  "vi": "nhiều linh thạch, nghiêng tà",
+  "en": "lots of spirit stones, leans evil"
+ },
+ {
+  "vi": "Túi bạn nặng thêm. Mấy tháng sau, dưới núi có thêm vài đám tang.",
+  "en": "Your purse grows heavier. A few months later, there are a few more funerals below the mountain."
+ },
+ {
+  "vi": "Luyện thành giải dược đem cho",
+  "en": "Turn them into antidotes and give them away"
+ },
+ {
+  "vi": "mất công, nghiêng chính",
+  "en": "lose effort, leans righteous"
+ },
+ {
+  "vi": "Bạn đảo ngược dược tính, thành mười viên giải độc, đem cho làng bị dịch. Môn chủ biết chuyện, nhìn bạn rất lạ.",
+  "en": "You reverse the pills' nature into ten antidotes and give them to a plague-stricken village. When the Sect Leader hears, he looks at you very strangely."
+ },
+ {
+  "vi": "Huyết tế Yêu Thần",
+  "en": "Blood sacrifice to the Yao God"
+ },
+ {
+  "vi": "Đêm trăng tròn, cả điện quỳ trước tượng Yêu Thần. Ai dám nhỏ máu lên tượng sẽ được huyết mạch tổ tiên thức tỉnh thêm một phần.",
+  "en": "On the full-moon night the whole hall kneels before the Yao God's statue. Whoever dares drip blood on it will awaken a little more of their ancestral bloodline."
+ },
+ {
+  "vi": "Nhỏ máu lên tượng",
+  "en": "Drip blood on the statue"
+ },
+ {
+  "vi": "sức khỏe, tu vi, tâm ma",
+  "en": "health, cultivation, heart demon"
+ },
+ {
+  "vi": "Mắt tượng sáng lên một thoáng. {0}",
+  "ph": [
+   "promote(c, ctx, 'Điện chủ quỳ xuống trước bạn.') ?? 'Điện chủ nhìn bạn đầy kính nể.'"
+  ],
+  "en": "The statue's eyes flash for an instant. {0}"
+ },
+ {
+  "vi": "Điện chủ quỳ xuống trước bạn.",
+  "en": "The Hall Master kneels before you."
+ },
+ {
+  "vi": "Điện chủ nhìn bạn đầy kính nể.",
+  "en": "The Hall Master looks at you in awe."
+ },
+ {
+  "vi": "Máu thấm vào đá. Bạn nghe tiếng gầm của tổ tiên vọng lên trong xương.",
+  "en": "Your blood seeps into the stone. You hear your ancestors' roar echo in your bones."
+ },
+ {
+  "vi": "Chỉ quỳ lạy",
+  "en": "Just kneel and bow"
+ },
+ {
+  "vi": "Bạn quỳ tới sáng. Tượng không động, lòng bạn cũng không.",
+  "en": "You kneel till dawn. The statue doesn't stir, and neither does your heart."
+ },
+ {
+  "vi": "Lệnh săn",
+  "en": "Hunting order"
+ },
+ {
+  "vi": "Yêu tướng truyền lệnh: một đoàn tu sĩ nhân tộc đi qua Vạn Yêu Lâm, trên người họ có linh dược. Yêu Thần Điện muốn cả người lẫn đồ.",
+  "en": "The yao general gives the order: a band of human cultivators is passing through Vạn Yêu Forest, carrying spirit herbs. Yêu Thần Điện wants both the people and their goods."
+ },
+ {
+  "vi": "Dẫn đầu cuộc săn",
+  "en": "Lead the hunt"
+ },
+ {
+  "vi": "linh thạch, thăng bậc, nghiêng tà",
+  "en": "spirit stones, promotion, leans evil"
+ },
+ {
+  "vi": "Cả đoàn không ai thoát. {0}",
+  "ph": [
+   "promote(c, ctx, 'Yêu tướng vỗ vai bạn.') ?? ''"
+  ],
+  "en": "Not one of them escapes. {0}"
+ },
+ {
+  "vi": "Yêu tướng vỗ vai bạn.",
+  "en": "The yao general claps you on the shoulder."
+ },
+ {
+  "vi": "Đoàn người bỏ chạy để lại hành lý. Bạn bị một nhát kiếm ở vai.",
+  "en": "The travelers flee, abandoning their baggage. You take a sword cut to the shoulder."
+ },
+ {
+  "vi": "Lén báo cho đoàn người đổi đường",
+  "en": "Secretly warn them to change route"
+ },
+ {
+  "vi": "nghiêng chính, có thể bị phát hiện",
+  "en": "leans righteous, may be caught"
+ },
+ {
+  "vi": "Có kẻ thấy bạn. Bạn bị giáng làm {0}, bị đánh ba mươi roi.",
+  "ph": [
+   "rankName(c)"
+  ],
+  "en": "Someone saw you. You are demoted to {0} and given thirty lashes."
+ },
+ {
+  "vi": "Đoàn người đổi đường trong đêm. Sáng ra, yêu tướng đập nát cả một gốc cây vì tức.",
+  "en": "The travelers change course in the night. In the morning the yao general smashes a whole tree in rage."
+ },
+ {
+  "vi": "Huyết Trì tẩy thân",
+  "en": "Blood Pool cleansing"
+ },
+ {
+  "vi": "Kẻ mới tới Ma giới phải xuống Huyết Trì, rửa sạch hơi người. Bọt máu sôi lục bục dưới chân {0} mới.",
+  "ph": [
+   "realmName(c.realm, 'ma')"
+  ],
+  "en": "Newcomers to the Demon Realm must enter the Blood Pool to wash away the human scent. Blood bubbles and boils beneath the new {0}'s feet."
+ },
+ {
+  "vi": "Ngâm bảy ngày bảy đêm",
+  "en": "Soak seven days and nights"
+ },
+ {
+  "vi": "tu vi lớn, tâm ma +",
+  "en": "big cultivation, heart demon +"
+ },
+ {
+  "vi": "Huyết Trì",
+  "en": "Blood Pool"
+ },
+ {
+  "vi": "Máu thấm vào tận tủy. Bước lên bờ, da bạn đỏ như than, ma khí cuộn quanh người. (Bước 1/4)",
+  "en": "The blood seeps into your marrow. When you climb out, your skin is red as embers and demonic qi swirls around you. (Step 1/4)"
+ },
+ {
+  "vi": "Ngâm một ngày rồi lên",
+  "en": "Soak one day and get out"
+ },
+ {
+  "vi": "vừa đủ",
+  "en": "just enough"
+ },
+ {
+  "vi": "Bạn lên bờ sớm. Ma binh gác Huyết Trì cười nhạo, nhưng đầu bạn vẫn còn tỉnh. (Bước 1/4)",
+  "en": "You climb out early. The demon guards at the Blood Pool jeer, but your head stays clear. (Step 1/4)"
+ },
+ {
+  "vi": "Nhận chủ",
+  "en": "Choose a master"
+ },
+ {
+  "vi": "Ở Ma giới, kẻ không có chủ chỉ là thịt. Ba vị Ma quân gửi thiệp mời cùng một đêm.",
+  "en": "In the Demon Realm, one without a master is just meat. Three Demon Lords send invitations on the same night."
+ },
+ {
+  "vi": "Huyết Ma Quân",
+  "en": "Blood Demon Lord"
+ },
+ {
+  "vi": "tu luyện nhanh hơn 12% cả kiếp",
+  "en": "cultivate 12% faster all life"
+ },
+ {
+  "vi": "Huyết Ma Quân rạch tay, nhỏ một giọt máu lên trán bạn. Từ nay ma công của bạn chạy nhanh hơn. (Bước 2/4)",
+  "en": "The Blood Demon Lord slits his hand and drips a drop of blood on your forehead. From now on your demonic arts run faster. (Step 2/4)"
+ },
+ {
+  "vi": "Cốt Ma Quân",
+  "en": "Bone Demon Lord"
+ },
+ {
+  "vi": "mỗi năm hồi sức khỏe, tâm ma giảm",
+  "en": "yearly health regen, less heart demon"
+ },
+ {
+  "vi": "Cốt Ma Quân gõ lên xương sống bạn ba cái. Thân thể bạn cứng như đá, lòng cũng lặng hơn. (Bước 2/4)",
+  "en": "The Bone Demon Lord taps your spine three times. Your body turns hard as stone, your heart calmer too. (Step 2/4)"
+ },
+ {
+  "vi": "Ảnh Ma Quân",
+  "en": "Shadow Demon Lord"
+ },
+ {
+  "vi": "khí vận +, mỗi năm có thể nhặt được của",
+  "en": "Luck +, may find treasure each year"
+ },
+ {
+  "vi": "Ảnh Ma Quân không hiện thân, chỉ có bóng của bạn khẽ gật đầu. Từ nay bóng bạn biết đường tới chỗ có của. (Bước 2/4)",
+  "en": "The Shadow Demon Lord never appears; only your shadow gives a slight nod. From now on your shadow knows the way to treasure. (Step 2/4)"
+ },
+ {
+  "vi": "Tranh địa bàn",
+  "en": "Turf war"
+ },
+ {
+  "vi": "Một {0} khác chiếm khe Huyết Phong, thu linh thạch của cả vùng. Chủ của bạn nói: \"Muốn có chỗ đứng thì giành lấy.\"",
+  "ph": [
+   "realmName(c.realm, 'ma')"
+  ],
+  "en": "Another {0} has seized Huyết Phong Gorge and collects the whole region's spirit stones. Your master says: \"Want a place to stand? Take it.\""
+ },
+ {
+  "vi": "Đánh chiếm Huyết Phong",
+  "en": "Seize Huyết Phong"
+ },
+ {
+  "vi": "thắng: thu linh thạch mỗi năm · thua: trọng thương",
+  "en": "win: yearly spirit stones · lose: grave wounds"
+ },
+ {
+  "vi": "Huyết Phong",
+  "en": "Huyết Phong"
+ },
+ {
+  "vi": "Đối thủ quỳ xuống, dâng ấn khe Huyết Phong. Từ nay mỗi năm vùng này nộp linh thạch cho bạn. (Bước 3/4)",
+  "en": "Your rival kneels and offers up the seal of Huyết Phong Gorge. From now on the region pays you spirit stones every year. (Step 3/4)"
+ },
+ {
+  "vi": "Bạn thua, bị đá văng khỏi khe. Ở Ma giới, thua một lần chưa chết là may. (Bước 3/4)",
+  "en": "You lose and get kicked out of the gorge. In the Demon Realm, losing once and living is lucky. (Step 3/4)"
+ },
+ {
+  "vi": "Thương lượng chia đôi",
+  "en": "Negotiate a split"
+ },
+ {
+  "vi": "thu ít hơn, không phải đánh",
+  "en": "earn less, no fighting"
+ },
+ {
+  "vi": "Hắn cân nhắc rất lâu rồi gật đầu. Mỗi năm bạn được nửa phần thu của Huyết Phong. (Bước 3/4)",
+  "en": "He weighs it a long while, then nods. Each year you get half of Huyết Phong's take. (Step 3/4)"
+ },
+ {
+  "vi": "Hắn cười vào mặt bạn: \"Ma giới không có chữ chia.\" Bạn ra về tay trắng. (Bước 3/4)",
+  "en": "He laughs in your face: \"The Demon Realm has no word for sharing.\" You leave empty-handed. (Step 3/4)"
+ },
+ {
+  "vi": "Ma Đế triệu kiến",
+  "en": "Summoned by the Demon Emperor"
+ },
+ {
+  "vi": "Hắc kỳ cắm trước cửa nhà bạn: Ma Đế triệu kiến. Từ trước tới nay, kẻ mới lên được gọi vào Vạn Ma Điện không quá mười người.",
+  "en": "A black banner is planted before your door: the Demon Emperor summons you. Never have more than ten newcomers been called into the Hall of Ten Thousand Demons."
+ },
+ {
+  "vi": "Vào điện, quỳ một gối",
+  "en": "Enter and kneel on one knee"
+ },
+ {
+  "vi": "nhận danh hiệu và bảo vật theo con đường tu",
+  "en": "get a title and a treasure for your Path"
+ },
+ {
+  "vi": "Huyết Kiếm Ma Soái",
+  "en": "Blood Sword Demon Marshal"
+ },
+ {
+  "vi": "Độc Đan Ma Sư",
+  "en": "Poison Pill Demon Master"
+ },
+ {
+  "vi": "Phản Phật Ma Tăng",
+  "en": "Apostate Demon Monk"
+ },
+ {
+  "vi": "Vạn Huyết Ma Soái",
+  "en": "Myriad Blood Demon Marshal"
+ },
+ {
+  "vi": "Yêu Ma Đại Tướng",
+  "en": "Yao Demon Grand General"
+ },
+ {
+  "vi": "Ma Soái",
+  "en": "Demon Marshal"
+ },
+ {
+  "vi": "Ma Đế phong bạn làm {0}. {1} (Bước 4/4, xong chuỗi nhập Ma giới)",
+  "ph": [
+   "ch.maTitle",
+   "had ? 'Bảo vật bạn đã có, Ma Đế đổi thành 1.500 linh thạch.' : 'Ngài ban thêm một món bảo vật, mở Túi đồ để xem.'"
+  ],
+  "en": "The Demon Emperor names you {0}. {1} (Step 4/4, Demon Realm chain complete)"
+ },
+ {
+  "vi": "Bảo vật bạn đã có, Ma Đế đổi thành 1.500 linh thạch.",
+  "en": "You already own the treasure, so the Demon Emperor gives you 1,500 spirit stones instead."
+ },
+ {
+  "vi": "Ngài ban thêm một món bảo vật, mở Túi đồ để xem.",
+  "en": "He also bestows a treasure; open your Inventory to see it."
+ },
+ {
+  "vi": "Đứng thẳng, không quỳ",
+  "en": "Stand tall, don't kneel"
+ },
+ {
+  "vi": "khí vận +, Ma Đế có thể nổi giận",
+  "en": "Luck +, the Demon Emperor may rage"
+ },
+ {
+  "vi": "Ma Giới Cuồng Nhân",
+  "en": "Madman of the Demon Realm"
+ },
+ {
+  "vi": "Ma Đế cười to tới rung cả điện: \"Lâu lắm mới thấy kẻ không quỳ.\" Ngài gọi bạn là {0}. (Bước 4/4)",
+  "ph": [
+   "ch.maTitle"
+  ],
+  "en": "The Demon Emperor laughs until the hall shakes: \"It's been ages since I saw one who won't kneel.\" He calls you {0}. (Step 4/4)"
+ },
+ {
+  "vi": "Ma Đế không nói gì, chỉ phẩy tay. Bạn bị hất văng ra ngoài điện.",
+  "en": "The Demon Emperor says nothing, just flicks his hand. You are flung out of the hall."
+ },
+ {
+  "vi": " (Bước 4/4)",
+  "en": " (Step 4/4)"
+ },
+ {
+  "vi": "Bóng của bạn dẫn tới một ma huyệt bỏ hoang, trong có {0} linh thạch.",
+  "ph": [
+   "g"
+  ],
+  "en": "Your shadow leads you to an abandoned demon lair holding {0} spirit stones."
+ }
+]

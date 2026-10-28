@@ -1,0 +1,239 @@
+[
+ {
+  "vi": "Mạnh nhất",
+  "en": "Strongest"
+ },
+ {
+  "vi": "Hạng {0}",
+  "ph": [
+   "rank"
+  ],
+  "en": "Rank {0}"
+ },
+ {
+  "vi": "Nhân vật đang chơi",
+  "en": "Current character"
+ },
+ {
+  "vi": "Kiếp thứ {0} của bạn",
+  "ph": [
+   "r.lifeNo ?? 1"
+  ],
+  "en": "Your life #{0}"
+ },
+ {
+  "vi": "Hợp luật hôm nay",
+  "en": "Fits today's rule"
+ },
+ {
+  "vi": "Phàm nhân",
+  "en": "Mortal"
+ },
+ {
+  "vi": "Chưa chọn đường",
+  "en": "No Path yet"
+ },
+ {
+  "vi": " · Mệnh ",
+  "en": " · Natal "
+ },
+ {
+  "vi": " tuổi",
+  "en": " yrs"
+ },
+ {
+  "vi": "Công ",
+  "en": "Atk "
+ },
+ {
+  "vi": "Thủ ",
+  "en": "Def "
+ },
+ {
+  "vi": "Huyết ",
+  "en": "HP "
+ },
+ {
+  "vi": "Luật lôi đài hôm nay · ngày ",
+  "en": "Today's arena rule · day "
+ },
+ {
+  "vi": "Luật 7 ngày tới",
+  "en": "Rules for the next 7 days"
+ },
+ {
+  "vi": "Hôm nay",
+  "en": "Today"
+ },
+ {
+  "vi": "Bạn chưa có kiếp nào. Sống trọn một kiếp rồi quay lại lôi đài.",
+  "en": "You have no lives yet. Live a full life, then come back to the arena."
+ },
+ {
+  "vi": "Chưa chọn được bóng, thử lại sau.",
+  "en": "Couldn't pick a shadow, try again later."
+ },
+ {
+  "vi": "Hôm nay đã đánh đủ 3 trận. Mai lôi đài mở lại với luật mới.",
+  "en": "You've fought all 3 matches today. The arena reopens tomorrow with a new rule."
+ },
+ {
+  "vi": "Chưa có đối thủ nào để rút.",
+  "en": "No opponents to draw yet."
+ },
+ {
+  "vi": "Lôi đài đang đông, thử lại sau.",
+  "en": "The arena is crowded, try again later."
+ },
+ {
+  "vi": "Không tìm thấy bóng của đối thủ.",
+  "en": "Couldn't find your opponent's shadow."
+ },
+ {
+  "vi": "Đang dựng lôi đài...",
+  "en": "Setting up the arena..."
+ },
+ {
+  "vi": " điểm",
+  "en": " pts"
+ },
+ {
+  "vi": " · còn {0} lên {1}",
+  "ph": [
+   "t.next.need",
+   "t.next.name"
+  ],
+  "en": " · {0} more to {1}"
+ },
+ {
+  "vi": "Còn {0} trên {1} lượt hôm nay",
+  "ph": [
+   "left",
+   "ARENA_TURNS"
+  ],
+  "en": "{0} of {1} turns left today"
+ },
+ {
+  "vi": "Đăng nhập",
+  "en": "Log in"
+ },
+ {
+  "vi": " để lên lôi đài.",
+  "en": " to enter the arena."
+ },
+ {
+  "vi": "Bóng của bạn",
+  "en": "Your shadow"
+ },
+ {
+  "vi": "Đóng",
+  "en": "Close"
+ },
+ {
+  "vi": "Đổi bóng",
+  "en": "Change shadow"
+ },
+ {
+  "vi": "Đối thủ ngẫu nhiên",
+  "en": "Random opponent"
+ },
+ {
+  "vi": "Luật hôm nay: ",
+  "en": "Today's rule: "
+ },
+ {
+  "vi": "Giữ {0} cả ngày",
+  "ph": [
+   "cands[pick].name"
+  ],
+  "en": "Keep {0} all day"
+ },
+ {
+  "vi": "Chọn một bóng",
+  "en": "Pick a shadow"
+ },
+ {
+  "vi": "Xếp hạng",
+  "en": "Leaderboard"
+ },
+ {
+  "vi": "Báo thù",
+  "en": "Revenge"
+ },
+ {
+  "vi": "Cách chơi",
+  "en": "How to play"
+ },
+ {
+  "vi": "Long ỷ còn trống tuần này, hãy là người đầu tiên.",
+  "en": "The Dragon Throne is empty this week - be the first."
+ },
+ {
+  "vi": "Tuần trước: ",
+  "en": "Last week: "
+ },
+ {
+  "vi": "Bá Chủ",
+  "en": "Overlord"
+ },
+ {
+  "vi": "Á Chủ",
+  "en": "Runner-up"
+ },
+ {
+  "vi": "Tam Kiệt",
+  "en": "Third Hero"
+ },
+ {
+  "vi": " hạ bóng của bạn",
+  "en": " defeated your shadow"
+ },
+ {
+  "vi": "Không tốn lượt, hạn 48 giờ",
+  "en": "No turn cost, 48-hour limit"
+ },
+ {
+  "vi": "Chưa ai hạ được bóng của bạn.",
+  "en": "No one has defeated your shadow yet."
+ },
+ {
+  "vi": "Chạm để phóng phi kiếm trong 12 giây, đừng đâm vào kiếm đã cắm.",
+  "en": "Tap to launch flying swords for 12 seconds - don't hit the swords already stuck in."
+ },
+ {
+  "vi": "Càng nhiều kiếm, bóng của bạn càng mạnh. Sau đó hai bóng tự đánh.",
+  "en": "The more swords, the stronger your shadow. Then the two shadows fight on their own."
+ },
+ {
+  "vi": "Thắng +3 điểm, 10 phúc. Thua +1 điểm, 3 phúc. Đủ 3 trận +15 Hồn lực.",
+  "en": "Win +3 pts, 10 Fortune. Lose +1 pt, 3 Fortune. Finish 3 matches +15 Soul Power."
+ },
+ {
+  "vi": "Cuối tuần mỗi bậc thưởng 5 phúc. Top 3 lên bục Long Ỷ.",
+  "en": "At week's end, each tier earns 5 Fortune. Top 3 take the Dragon Throne podium."
+ },
+ {
+  "vi": "Đang rút đối thủ...",
+  "en": "Drawing an opponent..."
+ },
+ {
+  "vi": "⚔ Ra đài",
+  "en": "⚔ Enter the arena"
+ },
+ {
+  "vi": "Mai đánh tiếp",
+  "en": "Fight again tomorrow"
+ },
+ {
+  "vi": "còn {0}/{1} lượt · 25 giây một trận",
+  "ph": [
+   "left",
+   "ARENA_TURNS"
+  ],
+  "en": "{0}/{1} turns left · 25 seconds per match"
+ },
+ {
+  "vi": "Hôm nay đã đủ 3 trận",
+  "en": "3 matches done today"
+ }
+]

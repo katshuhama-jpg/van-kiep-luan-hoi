@@ -1,0 +1,222 @@
+[
+ {
+  "vi": "Phàm nhân",
+  "en": "Mortal"
+ },
+ {
+  "vi": "Chí mạng!",
+  "en": "Critical!"
+ },
+ {
+  "vi": "Khắc!",
+  "en": "Counter!"
+ },
+ {
+  "vi": "{0}: Tuyệt địa phản kích!",
+  "ph": [
+   "me.name"
+  ],
+  "en": "{0}: Last-stand counterattack!"
+ },
+ {
+  "vi": "{0} {1} {2}, cắm {3} phi kiếm, {4} {5}% máu. Luật hôm nay: {6}.",
+  "ph": [
+   "me.name",
+   "clash.win ? 'hạ' : 'bại dưới tay'",
+   "foe.name",
+   "swords",
+   "clash.win ? 'còn' : 'đối thủ còn'",
+   "hp",
+   "rule.name"
+  ],
+  "en": "{0} {1} {2}, landing {3} flying swords, {4} {5}% HP. Today's rule: {6}."
+ },
+ {
+  "vi": "hạ",
+  "en": "defeated"
+ },
+ {
+  "vi": "bại dưới tay",
+  "en": "fell to"
+ },
+ {
+  "vi": "còn",
+  "en": "keeping"
+ },
+ {
+  "vi": "đối thủ còn",
+  "en": "opponent keeping"
+ },
+ {
+  "vi": "Chưa ghi được chiến thư, thử lại sau.",
+  "en": "Couldn't record the challenge, try again later."
+ },
+ {
+  "vi": "Lôi đài đang đông, kết quả chưa ghi được.",
+  "en": "The arena is crowded; the result wasn't recorded."
+ },
+ {
+  "vi": "Chưa tạo được link, đã tải ảnh về máy.",
+  "en": "Couldn't create a link; the image was downloaded instead."
+ },
+ {
+  "vi": "Chưa khoe được, thử lại sau.",
+  "en": "Couldn't share, try again later."
+ },
+ {
+  "vi": " phi kiếm, sức mạnh ",
+  "en": " flying swords, power "
+ },
+ {
+  "vi": "%. Hai bóng bước lên lôi đài!",
+  "en": "%. Two shadows step into the arena!"
+ },
+ {
+  "vi": "Lôi đài với @{0}",
+  "ph": [
+   "opp"
+  ],
+  "en": "Arena vs @{0}"
+ },
+ {
+  "vi": "Chạm để vào trận",
+  "en": "Tap to enter the fight"
+ },
+ {
+  "vi": "Chưa chọn đường",
+  "en": "No path chosen"
+ },
+ {
+  "vi": "Ngang cảnh giới ",
+  "en": "Leveled to "
+ },
+ {
+  "vi": " · Luật hôm nay: ",
+  "en": " · Today's rule: "
+ },
+ {
+  "vi": " · Trận báo thù",
+  "en": " · Revenge match"
+ },
+ {
+  "vi": "THẮNG",
+  "en": "VICTORY"
+ },
+ {
+  "vi": "BẠI",
+  "en": "DEFEAT"
+ },
+ {
+  "vi": "{0}% sức",
+  "ph": [
+   "pw"
+  ],
+  "en": "{0}% power"
+ },
+ {
+  "vi": "Đòn kết liễu",
+  "en": "Finishing blow"
+ },
+ {
+  "vi": "Vạn Kiếm Quy Tông",
+  "en": "Ten Thousand Swords Return"
+ },
+ {
+  "vi": "Tua tới đòn cuối",
+  "en": "Skip to the final blow"
+ },
+ {
+  "vi": "Bạn hạ @{0}",
+  "ph": [
+   "opp"
+  ],
+  "en": "You defeated @{0}"
+ },
+ {
+  "vi": "@{0} thắng bạn",
+  "ph": [
+   "opp"
+  ],
+  "en": "@{0} defeated you"
+ },
+ {
+  "vi": " phi kiếm · ",
+  "en": " flying swords · "
+ },
+ {
+  "vi": "% máu",
+  "en": "% HP"
+ },
+ {
+  "vi": "Hôm nay đã hết lượt.",
+  "en": "No turns left today."
+ },
+ {
+  "vi": "Lượt báo thù đã hết hạn.",
+  "en": "Your revenge chance has expired."
+ },
+ {
+  "vi": "Lượt này không còn hiệu lực.",
+  "en": "This turn is no longer valid."
+ },
+ {
+  "vi": " điểm",
+  "en": " points"
+ },
+ {
+  "vi": "Còn ",
+  "en": "You have "
+ },
+ {
+  "vi": " chiến thư hôm nay",
+  "en": " challenges left today"
+ },
+ {
+  "vi": " phúc",
+  "en": " Fortune"
+ },
+ {
+  "vi": " Hồn lực",
+  "en": " Soul Power"
+ },
+ {
+  "vi": " · còn {0} lên {1}",
+  "ph": [
+   "tier.next.need",
+   "tier.next.name"
+  ],
+  "en": " · {0} more to {1}"
+ },
+ {
+  "vi": "Đang ghi kết quả lên bảng...",
+  "en": "Recording result on the board..."
+ },
+ {
+  "vi": "Trận tiếp · còn ",
+  "en": "Next match · "
+ },
+ {
+  "vi": " lượt",
+  "en": " turns left"
+ },
+ {
+  "vi": "Rời lôi đài",
+  "en": "Leave the arena"
+ },
+ {
+  "vi": "Đang tạo link...",
+  "en": "Creating link..."
+ },
+ {
+  "vi": "Khoe trận",
+  "en": "Show off match"
+ },
+ {
+  "vi": "Nghỉ đã",
+  "en": "Take a break"
+ },
+ {
+  "vi": "Diễn biến trận",
+  "en": "Match log"
+ }
+]

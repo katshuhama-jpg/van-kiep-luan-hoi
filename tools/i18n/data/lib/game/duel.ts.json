@@ -1,0 +1,850 @@
+[
+ {
+  "vi": "Gặp đồng đạo",
+  "en": "A kindred spirit"
+ },
+ {
+  "vi": "Đồng đạo",
+  "en": "Kindred"
+ },
+ {
+  "vi": "Một tu sĩ cùng chí hướng chắn đường, chắp tay thi lễ: \"Nghe danh đã lâu, xin được lĩnh giáo vài chiêu.\"",
+  "en": "A like-minded cultivator blocks your way and bows with clasped hands: \"Your name precedes you. I humbly ask to learn a few of your moves.\""
+ },
+ {
+  "vi": "Địch thủ xuất hiện!",
+  "en": "A rival appears!"
+ },
+ {
+  "vi": "Địch thủ",
+  "en": "Rival"
+ },
+ {
+  "vi": "Sát khí ập tới. Kẻ khác đạo đã đợi bạn ở đây từ lâu. Hôm nay chỉ một người được rời đi.",
+  "en": "Killing intent rushes in. Someone of a different Dao has long been waiting for you here. Only one of you leaves today."
+ },
+ {
+  "vi": "Đồng môn tỷ thí",
+  "en": "Sect sparring"
+ },
+ {
+  "vi": "Đồng môn",
+  "en": "Fellow disciple"
+ },
+ {
+  "vi": "Một đồng môn chặn bạn ở diễn võ trường: \"Sư môn dạy ta, hôm nay xem ai học giỏi hơn.\"",
+  "en": "A fellow disciple blocks you on the training ground: \"We had the same teachers. Today we see who learned better.\""
+ },
+ {
+  "vi": "Tâm ma kiếp trước",
+  "en": "Heart demon of a past life"
+ },
+ {
+  "vi": "Kiếp trước",
+  "en": "Past life"
+ },
+ {
+  "vi": "Mặt hồ phẳng lặng bỗng in bóng một người. Đó là bạn, của một kiếp đã qua. Muốn đi tiếp, phải vượt qua chính mình.",
+  "en": "A figure suddenly appears on the still surface of the lake. It is you, from a life gone by. To go on, you must overcome yourself."
+ },
+ {
+  "vi": "Ma đầu chặn đường!",
+  "en": "A demon lord blocks the road!"
+ },
+ {
+  "vi": "Ma đầu",
+  "en": "Demon lord"
+ },
+ {
+  "vi": "Một bóng người mắt đỏ như máu chặn ngang đường, sát khí ngút trời.",
+  "en": "A figure with blood-red eyes stands across the road, killing intent soaring to the heavens."
+ },
+ {
+  "vi": "Ngũ Hành Vấn Tâm Đài",
+  "en": "Five Elements Heart-Trial Platform"
+ },
+ {
+  "vi": "Ngũ Hành Đài",
+  "en": "Five Elements Platform"
+ },
+ {
+  "vi": "Năm tấm gương dựng quanh đài đá. Trong mỗi tấm là bạn, mang một bản mệnh khác.",
+  "en": "Five mirrors stand around a stone platform. In each one is you, with a different natal element."
+ },
+ {
+  "vi": "Đối thủ luân hồi nhiều hơn bạn {0} kiếp, hồn phách đã mòn: công và thủ {1}%.",
+  "ph": [
+   "d",
+   "Math.round((lifeMul(foeLife, myLife) - 1) * 100)"
+  ],
+  "en": "Your opponent has reincarnated {0} more lives than you; their soul is worn thin: Attack and Defense {1}%."
+ },
+ {
+  "vi": "Bạn luân hồi nhiều hơn {0} kiếp, hồn phách đã mòn: công và thủ {1}%.",
+  "ph": [
+   "-d",
+   "Math.round((lifeMul(myLife, foeLife) - 1) * 100)"
+  ],
+  "en": "You have reincarnated {0} more lives; your soul is worn thin: Attack and Defense {1}%."
+ },
+ {
+  "vi": "Cùng số kiếp luân hồi, không ai hơn ai.",
+  "en": "Same number of lives reincarnated. Neither has the edge."
+ },
+ {
+  "vi": "Huyết Kiếm Ma Soái",
+  "en": "Blood Sword Demon Marshal"
+ },
+ {
+  "vi": "Huyết Ma Lão Tổ",
+  "en": "Blood Demon Patriarch"
+ },
+ {
+  "vi": "Hắc Phật Ma Tăng",
+  "en": "Black Buddha Demon Monk"
+ },
+ {
+  "vi": "Âm Trận Ma Quân",
+  "en": "Yin Formation Demon Lord"
+ },
+ {
+  "vi": "Độc Đan Ma Y",
+  "en": "Poison Pill Demon Physician"
+ },
+ {
+  "vi": "Thiên Yêu Ma Vương",
+  "en": "Heavenly Yao Demon King"
+ },
+ {
+  "vi": "Vô Danh Ma Đầu",
+  "en": "Nameless Demon Lord"
+ },
+ {
+  "vi": "vừa hạ {0} người trong giang hồ",
+  "ph": [
+   "m.kills"
+  ],
+  "en": "fresh from cutting down {0} people in the jianghu"
+ },
+ {
+  "vi": "vừa thắng liền hai trận trên lôi đài",
+  "en": "fresh from two straight wins in the Arena"
+ },
+ {
+  "vi": "{0} {1} (@{2}) chặn đường. Mắt hắn đỏ như máu, {3}. Không tránh được, phải đánh.",
+  "ph": [
+   "maTitle(rival)",
+   "rival.name",
+   "m.owner",
+   "kills"
+  ],
+  "en": "{0} {1} (@{2}) blocks your path. His eyes are blood-red, {3}. There's no avoiding it - you must fight."
+ },
+ {
+  "vi": "Sư tỷ",
+  "en": "Senior sister"
+ },
+ {
+  "vi": "Sư huynh",
+  "en": "Senior brother"
+ },
+ {
+  "vi": "Đại bỉ {0} khai mạc! Bốc thăm trúng {1} {2}. Thắng trận này, bạn được thăng bậc ngay trước mặt các trưởng lão.",
+  "ph": [
+   "c.sect",
+   "g.toLowerCase()",
+   "n"
+  ],
+  "en": "The {0} Grand Tournament begins! The draw pits you against {1} {2}. Win this bout and you'll be promoted right before the elders."
+ },
+ {
+  "vi": "{0} {1} chặn bạn trong hang tối: \"Ở {2}, muốn lên thì phải giẫm lên đầu người khác.\"",
+  "ph": [
+   "g",
+   "n",
+   "c.sect"
+  ],
+  "en": "{0} {1} corners you in a dark cave: \"In {2}, if you want to climb, you step on other people's heads.\""
+ },
+ {
+  "vi": "{0} {1} gặp bạn ở diễn võ trường {2}: \"Lâu rồi chưa luận kiếm, đấu một trận chứ?\"",
+  "ph": [
+   "g",
+   "n",
+   "c.sect"
+  ],
+  "en": "{0} {1} meets you on the {2} training ground: \"It's been a while since we crossed swords. A bout?\""
+ },
+ {
+  "vi": "Người bạn thuê đã dò ra tung tích của @{0}. {1} đang đứng ngay trước mặt, không còn đường lui. Thắng được thưởng gấp đôi và lấy lại đồ từng bị cướp.",
+  "ph": [
+   "rival.player",
+   "rival.name"
+  ],
+  "en": "The one you hired has tracked down @{0}. {1} stands right before you, with nowhere left to run. Win for double rewards and take back what was stolen from you."
+ },
+ {
+  "vi": "@{0} có tên trong sổ thù của bạn",
+  "ph": [
+   "p"
+  ],
+  "en": "@{0} is in your book of grudges"
+ },
+ {
+  "vi": "Oan gia ngõ hẹp! Bạn chưa quên: {0}. Nay người của @{1} lại xuất hiện trước mặt. Báo thù được thưởng gấp đôi và lấy lại đồ đã mất.",
+  "ph": [
+   "v.why",
+   "v.player"
+  ],
+  "en": "Enemies meet on a narrow road! You haven't forgotten: {0}. Now @{1}'s character stands before you again. Take revenge for double rewards and reclaim what you lost."
+ },
+ {
+  "vi": "Giữa đường gặp lại huynh đệ kết nghĩa {0} (@{1}). Hai người mừng rỡ, rủ nhau luận võ một trận cho đã tay.",
+  "ph": [
+   "rival.name",
+   "rival.player"
+  ],
+  "en": "On the road you run into your sworn brother {0} (@{1}). Overjoyed, you two agree to a sparring match just for the fun of it."
+ },
+ {
+  "vi": "Phàm nhân",
+  "en": "Mortal"
+ },
+ {
+  "vi": "Phàm",
+  "en": "Common"
+ },
+ {
+  "vi": "Tốt",
+  "en": "Fine"
+ },
+ {
+  "vi": "Hiếm",
+  "en": "Rare"
+ },
+ {
+  "vi": "Cực phẩm",
+  "en": "Supreme"
+ },
+ {
+  "vi": "{0} Bạn đã có món này nên đem bán được {1} linh thạch.",
+  "ph": [
+   "say(`${tag} ${it.name}`)",
+   "sell"
+  ],
+  "en": "{0} You already own this, so you sell it for {1} spirit stones."
+ },
+ {
+  "vi": "{0} ({1}) Mở Túi đồ để mặc.",
+  "ph": [
+   "say(`${tag} ${it.name}`)",
+   "fxText(it.fx)"
+  ],
+  "en": "{0} ({1}) Open your Inventory to equip it."
+ },
+ {
+  "vi": "một món đồ",
+  "en": "an item"
+ },
+ {
+  "vi": "Bị lột đồ",
+  "en": "Stripped of gear"
+ },
+ {
+  "vi": "Hai bên từng khiêu khích nhau, trận này thắng thua đều gấp rưỡi.",
+  "en": "You two have provoked each other before - this bout's wins and losses count one and a half times."
+ },
+ {
+  "vi": "Bạn đánh tan {0} của @{1}. Ma khí tan thành khói đen (+{2} tu vi, +10 phúc duyên).",
+  "ph": [
+   "t",
+   "r.player",
+   "exp"
+  ],
+  "en": "You shatter @{1}'s {0}. The demonic qi dissolves into black smoke (+{2} cultivation, +10 Fortune)."
+ },
+ {
+  "vi": "Bóng ma đầu tan đi, rơi lại {0}.",
+  "ph": [
+   "n"
+  ],
+  "en": "The demon lord's shadow fades, leaving behind {0}."
+ },
+ {
+  "vi": "Trọng thương",
+  "en": "Badly wounded"
+ },
+ {
+  "vi": "{0} đánh bạn gục xuống, cướp {1} linh thạch rồi cười dài bỏ đi. Bạn trọng thương nhưng còn sống (-{2} sức khỏe).",
+  "ph": [
+   "t",
+   "lost",
+   "hurt"
+  ],
+  "en": "{0} strikes you down, steals {1} spirit stones and leaves with a long laugh. You're badly wounded but alive (-{2} Health)."
+ },
+ {
+  "vi": "Hai bên đánh tới kiệt sức. {0} giật được {1} linh thạch rồi hóa khói đen bỏ đi (-{2} sức khỏe).",
+  "ph": [
+   "t",
+   "lost",
+   "hurt"
+  ],
+  "en": "You fight to exhaustion. {0} snatches {1} spirit stones and vanishes in black smoke (-{2} Health)."
+ },
+ {
+  "vi": "Chưởng môn gật đầu tán thưởng.",
+  "en": "The Sect Leader nods in approval."
+ },
+ {
+  "vi": "Theo luật ma môn, kẻ thua phải nộp {0} cho bạn.",
+  "ph": [
+   "n"
+  ],
+  "en": "By the law of the demonic sect, the loser must hand {0} over to you."
+ },
+ {
+  "vi": " Đại bỉ lần này bạn chưa được thăng bậc.",
+  "en": " No promotion for you at this Grand Tournament."
+ },
+ {
+  "vi": "Đồng môn {0} ra tay tàn độc giữa hang tối. Ở {1}, kẻ yếu không có quyền sống.",
+  "ph": [
+   "who",
+   "c.sect"
+  ],
+  "en": "Fellow disciple {0} strikes viciously in the dark cave. In {1}, the weak have no right to live."
+ },
+ {
+  "vi": "{0} còn lột mất {1} của bạn.{2}",
+  "ph": [
+   "r.name",
+   "taken.join(', ')",
+   "fl ?? ''"
+  ],
+  "en": "{0} also strips you of {1}.{2}"
+ },
+ {
+  "vi": "{0} phục tài, tháo {1} tặng bạn làm kỷ niệm.",
+  "ph": [
+   "r.name",
+   "n"
+  ],
+  "en": "{0}, won over by your skill, takes off {1} and gives it to you as a keepsake."
+ },
+ {
+  "vi": "{0} giả nhân giả nghĩa lột đồ bạn",
+  "ph": [
+   "r.name"
+  ],
+  "en": "{0}, the two-faced hypocrite, stripped your gear"
+ },
+ {
+  "vi": "Nào ngờ {0} là kẻ giả nhân giả nghĩa. Thấy bạn kiệt sức, hắn trở mặt lột mất {1} rồi cười lớn bỏ đi.",
+  "ph": [
+   "r.name",
+   "taken.join(' và ')"
+  ],
+  "en": "Who knew {0} was a two-faced hypocrite? Seeing you spent, he turns on you, strips off {1} and leaves laughing."
+ },
+ {
+  "vi": " và ",
+  "en": " and "
+ },
+ {
+  "vi": "Báo được đại thù với {0} (@{1})",
+  "ph": [
+   "r.name",
+   "r.player"
+  ],
+  "en": "Avenged a great grudge against {0} (@{1})"
+ },
+ {
+  "vi": "Đánh bại địch thủ {0} (@{1})",
+  "ph": [
+   "r.name",
+   "r.player"
+  ],
+  "en": "Defeated rival {0} (@{1})"
+ },
+ {
+  "vi": "{0} (+{1} tu vi, +{2} linh thạch, gấp đôi).",
+  "ph": [
+   "dichThuRevenge(who, ctx.rnd)",
+   "exp",
+   "loot"
+  ],
+  "en": "{0} (+{1} cultivation, +{2} spirit stones, doubled)."
+ },
+ {
+  "vi": "{0} (+{1} tu vi, +{2} linh thạch).",
+  "ph": [
+   "dichThuWin(who, marginOf(pLoss), chieuOf(c, ctx.rnd), ctx.rnd)",
+   "exp",
+   "loot"
+  ],
+  "en": "{0} (+{1} cultivation, +{2} spirit stones)."
+ },
+ {
+  "vi": "Bạn lấy lại {0} từng bị cướp.",
+  "ph": [
+   "back.map((id) => ITEMS.find((i) => i.id === id)?.name).join(', ')"
+  ],
+  "en": "You reclaim {0}, once stolen from you."
+ },
+ {
+  "vi": "Bạn lột được {0} của {1} làm chiến lợi phẩm.",
+  "ph": [
+   "n",
+   "r.name"
+  ],
+  "en": "You strip {0} from {1} as spoils of war."
+ },
+ {
+  "vi": "Lục thêm được {0}.",
+  "ph": [
+   "n"
+  ],
+  "en": "You also scrounge up {0}."
+ },
+ {
+  "vi": "Bạn tin nhầm {0}. Chén trà còn chưa nguội, người đã thành thi thể.",
+  "ph": [
+   "who"
+  ],
+  "en": "You trusted {0} wrongly. Before the tea had cooled, you were a corpse."
+ },
+ {
+  "vi": "{0} trở mặt giết bạn bên bàn trà",
+  "ph": [
+   "r.name"
+  ],
+  "en": "{0} turned on you and killed you at the tea table"
+ },
+ {
+  "vi": "{0} đã giết bạn",
+  "ph": [
+   "r.name"
+  ],
+  "en": "{0} killed you"
+ },
+ {
+  "vi": "{0} còn lột mất {1} của bạn.",
+  "ph": [
+   "r.name",
+   "taken.join(' và ')"
+  ],
+  "en": "{0} also strips you of {1}."
+ },
+ {
+  "vi": "{0} trở mặt đánh úp bạn",
+  "ph": [
+   "r.name"
+  ],
+  "en": "{0} turned on you in an ambush"
+ },
+ {
+  "vi": "{0} đánh bại và cướp của bạn",
+  "ph": [
+   "r.name"
+  ],
+  "en": "{0} defeated and robbed you"
+ },
+ {
+  "vi": "Vượt qua tâm ma của chính mình kiếp trước",
+  "en": "Overcame the heart demon of your own past life"
+ },
+ {
+  "vi": "Bóng kiếp trước tan đi, để lại {0}, di vật bạn từng mang kiếp trước.",
+  "ph": [
+   "n"
+  ],
+  "en": "The shadow of your past life fades, leaving {0}, a relic you carried in that life."
+ },
+ {
+  "vi": "Bạn thua chính mình kiếp trước. Hai kiếp người hóa thành một nắm tro bên hồ.",
+  "en": "You lose to your own past self. Two lifetimes turn into a handful of ash by the lake."
+ },
+ {
+  "vi": "kiếm",
+  "en": "the sword"
+ },
+ {
+  "vi": "đan",
+  "en": "alchemy"
+ },
+ {
+  "vi": "trận",
+  "en": "formations"
+ },
+ {
+  "vi": "Phật",
+  "en": "Buddhist arts"
+ },
+ {
+  "vi": "ma công",
+  "en": "demonic arts"
+ },
+ {
+  "vi": "yêu thuật",
+  "en": "yao sorcery"
+ },
+ {
+  "vi": "võ",
+  "en": "martial arts"
+ },
+ {
+  "vi": "{0} chắn đường, chắp tay thi lễ: \"Nghe danh đã lâu, xin được lĩnh giáo vài chiêu.\"",
+  "ph": [
+   "n"
+  ],
+  "en": "{0} blocks your way and bows with clasped hands: \"Your name precedes you. I humbly ask to learn a few of your moves.\""
+ },
+ {
+  "vi": "Trên đỉnh núi vắng, {0} đang luyện {1}. Thấy bạn, người ấy dừng tay mỉm cười: \"Đến đúng lúc, cùng luận một trận chứ?\"",
+  "ph": [
+   "n",
+   "pathName"
+  ],
+  "en": "On a lonely peak, {0} is practicing {1}. Seeing you, they stop and smile: \"Perfect timing. A friendly bout?\""
+ },
+ {
+  "vi": "Hai người cùng nhắm một cây linh chi trên vách đá. {0} cười: \"Ai thắng thì người đó hái, thế nào?\"",
+  "ph": [
+   "n"
+  ],
+  "en": "You both have your eye on the same lingzhi growing on a cliff face. {0} grins: \"Winner picks it. Deal?\""
+ },
+ {
+  "vi": "Trong tửu lâu, {0} nâng chén mời bạn. Uống đến chén thứ ba thì nói: \"Rượu ngon phải có kiếm hay. Xin chỉ giáo!\"",
+  "ph": [
+   "n"
+  ],
+  "en": "In a tavern, {0} raises a cup to you. At the third cup they say: \"Good wine deserves a good blade. Teach me something!\""
+ },
+ {
+  "vi": "Đại hội luận võ mở ở trấn bên. Bốc thăm thế nào lại trúng đúng {0}.",
+  "ph": [
+   "n"
+  ],
+  "en": "A martial tournament opens in the next town. As luck would have it, the draw puts you against {0}."
+ },
+ {
+  "vi": "{0} được sư phụ dặn đi khắp thiên hạ tìm người ngang tài để mài giũa. Người ấy tìm đến bạn.",
+  "ph": [
+   "n"
+  ],
+  "en": "{0} was sent by their master to roam the world in search of an equal to sharpen against. They have found you."
+ },
+ {
+  "vi": "Bến đò chỉ còn một chuyến cuối ngày. {0} đề nghị: \"Đấu một trận, ai thắng qua sông trước.\"",
+  "ph": [
+   "n"
+  ],
+  "en": "Only one last ferry crossing remains today. {0} proposes: \"One bout. Winner crosses first.\""
+ },
+ {
+  "vi": "{0} nhặt được bức thư bạn đánh rơi, trả lại rồi nói: \"Coi như duyên phận, đấu với ta vài chiêu.\"",
+  "ph": [
+   "n"
+  ],
+  "en": "{0} picks up a letter you dropped and hands it back: \"Call it fate. Spar with me a few moves.\""
+ },
+ {
+  "vi": "Anh linh của {0} chưa tan, vẫn ngồi bên bia mộ chờ người đáng mặt luận võ.",
+  "ph": [
+   "n"
+  ],
+  "en": "The heroic spirit of {0} has not yet dispersed; it still sits by its tombstone, waiting for an opponent worthy of a bout."
+ },
+ {
+  "vi": "Sát khí ập tới. {0} đã đợi bạn ở đây từ lâu. Hôm nay chỉ một người được rời đi.",
+  "ph": [
+   "n"
+  ],
+  "en": "Killing intent rushes in. {0} has long been waiting for you here. Only one of you leaves today."
+ },
+ {
+  "vi": "{0} nhận lệnh truy nã bạn với giá cao. \"Đầu ngươi đáng giá lắm,\" hắn nói.",
+  "ph": [
+   "n"
+  ],
+  "en": "{0} has taken a hefty bounty on your head. \"Your head is worth a lot,\" he says."
+ },
+ {
+  "vi": "Bạn vô tình giẫm vào lãnh địa của {0}. Hắn không cần biết lý do.",
+  "ph": [
+   "n"
+  ],
+  "en": "You stray into {0}'s territory by accident. He doesn't care why."
+ },
+ {
+  "vi": "Hai người cùng phát hiện một bí cảnh vừa mở. Bí cảnh chỉ đủ cho một người vào.",
+  "en": "You both discover a secret realm that has just opened. It only has room for one."
+ },
+ {
+  "vi": "{0} tưởng bạn là kẻ đã giết đồng môn của hắn. Giải thích cũng vô ích.",
+  "ph": [
+   "n"
+  ],
+  "en": "{0} thinks you're the one who killed his fellow disciple. Explaining is useless."
+ },
+ {
+  "vi": "Giữa đường, {0} chặn đoàn xe bạn đang hộ tống. \"Để hàng lại, hoặc để mạng lại.\"",
+  "ph": [
+   "n"
+  ],
+  "en": "Halfway down the road, {0} stops the caravan you're escorting. \"Leave the goods, or leave your life.\""
+ },
+ {
+  "vi": "Ở phường thị, bạn mua được món bảo vật {0} để mắt từ lâu. Hắn theo bạn ra tận ngoài thành.",
+  "ph": [
+   "n"
+  ],
+  "en": "At the Market you buy a treasure {0} has long had his eye on. He follows you all the way out of the city."
+ },
+ {
+  "vi": "{0} tuyên bố trước giang hồ: ai mạnh nhất vùng này thì hắn sẽ đến khiêu chiến. Hôm nay là lượt bạn.",
+  "ph": [
+   "n"
+  ],
+  "en": "{0} has declared to the whole jianghu that he'll challenge whoever is strongest in these parts. Today it's your turn."
+ },
+ {
+  "vi": "Ma đạo {0} nghe tin bạn ra tay diệt ma, tìm đến báo thù cho đồng môn.",
+  "ph": [
+   "n"
+  ],
+  "en": "Demonic cultivator {0} heard you've been slaying demons and comes to avenge his fellow disciples."
+ },
+ {
+  "vi": "{0} cười gằn: \"Chính đạo các ngươi giả nhân giả nghĩa, hôm nay ta lột mặt nạ.\"",
+  "ph": [
+   "n"
+  ],
+  "en": "{0} sneers: \"You righteous hypocrites! Today I tear off your mask.\""
+ },
+ {
+  "vi": "{0} của chính phái lần theo dấu máu bạn để lại. \"Hôm nay thay trời hành đạo.\"",
+  "ph": [
+   "n"
+  ],
+  "en": "{0} of the righteous sects has followed your trail of blood. \"Today I act on behalf of Heaven.\""
+ },
+ {
+  "vi": "Chính phái treo thưởng đầu bạn. {0} là người đầu tiên tìm tới.",
+  "ph": [
+   "n"
+  ],
+  "en": "The righteous sects have put a bounty on your head. {0} is the first to come for it."
+ },
+ {
+  "vi": "{0} được {1} thuê đến lấy mạng bạn.",
+  "ph": [
+   "n",
+   "c.enemy"
+  ],
+  "en": "{0} was hired by {1} to take your life."
+ },
+ {
+  "vi": "{0} từng thầm thương {1}. Thấy bạn, hắn rút vũ khí không nói một lời.",
+  "ph": [
+   "n",
+   "c.partner"
+  ],
+  "en": "{0} once secretly loved {1}. On seeing you, he draws his weapon without a word."
+ },
+ {
+  "vi": "Đang tọa thiền, bạn rơi vào tâm cảnh. {0} đứng trước mặt, hỏi: \"Kiếp này ngươi có sống tốt hơn ta không?\"",
+  "ph": [
+   "n"
+  ],
+  "en": "In meditation, you sink into your inner world. {0} stands before you and asks: \"Have you lived this life better than I did?\""
+ },
+ {
+  "vi": "Trong giấc mơ, {0} cầm vũ khí cũ của kiếp trước chặn đường: \"Nợ cũ chưa trả, đừng mong đi xa.\"",
+  "ph": [
+   "n"
+  ],
+  "en": "In a dream, {0} blocks your path with the old weapon of your past life: \"Old debts unpaid - don't think you'll get far.\""
+ },
+ {
+  "vi": "Đột phá đến cửa ải, tâm ma hóa thành hình dáng kiếp trước. {0} cười nhạt: \"Ngươi vẫn yếu như ta năm xưa.\"",
+  "ph": [
+   "n"
+  ],
+  "en": "At the threshold of a breakthrough, your heart demon takes the form of your past life. {0} smiles thinly: \"You're as weak as I was back then.\""
+ },
+ {
+  "vi": "Đi qua nơi kiếp trước từng chết, bóng {0} hiện lên giữa sương mù, ánh mắt đầy tiếc nuối.",
+  "ph": [
+   "n"
+  ],
+  "en": "Passing the place where your past life died, the shadow of {0} rises in the mist, eyes full of regret."
+ },
+ {
+  "vi": "Chiếc gương đồng trong miếu cổ phản chiếu không phải bạn, mà là {0}. Bóng trong gương bước ra.",
+  "ph": [
+   "n"
+  ],
+  "en": "The bronze mirror in the old temple reflects not you, but {0}. The figure in the mirror steps out."
+ },
+ {
+  "vi": "Chén trà của {0} có vị đắng lạ. Uống xong, bụng bạn quặn thắt: trà có độc.",
+  "ph": [
+   "w"
+  ],
+  "en": "The tea {0} serves tastes strangely bitter. After you drink it, your gut twists: poison."
+ },
+ {
+  "vi": "{0} đốt một nén \"an thần hương\". Bạn ngửi một lúc thì mê man, tỉnh dậy đã nằm giữa bãi cỏ.",
+  "ph": [
+   "w"
+  ],
+  "en": "{0} lights a stick of \"calming incense\". After a few breaths you black out, and wake lying in a field."
+ },
+ {
+  "vi": "Rượu {0} mời ngấm Thập Hương Nhuyễn Cân Tán, gân cốt bạn mềm nhũn như bún.",
+  "ph": [
+   "w"
+  ],
+  "en": "The wine {0} offers is laced with Ten Fragrance Sinew-Softening Powder; your bones go limp as noodles."
+ },
+ {
+  "vi": "Trong ấm trà của {0} có thả cổ trùng. Mấy ngày sau bạn mới thấy nó cựa quậy trong bụng.",
+  "ph": [
+   "w"
+  ],
+  "en": "{0} slipped a gu worm into the teapot. Only days later do you feel it squirming in your belly."
+ },
+ {
+  "vi": "{0} rót trà bằng chiếc ấm hai ngăn: chén của {1} trà thường, chén của bạn trà độc.",
+  "ph": [
+   "w",
+   "h"
+  ],
+  "en": "{0} pours from a two-chambered pot: {1} drinks plain tea, you drink poison."
+ },
+ {
+  "vi": "Đang luận đạo say sưa, {0} vỗ vai thân thiết. Trên tay {1} dính kim độc mảnh như lông trâu.",
+  "ph": [
+   "w",
+   "h"
+  ],
+  "en": "Deep in a lively Dao discussion, {0} claps you warmly on the shoulder - and {1} is hiding a poison needle as fine as an ox hair."
+ },
+ {
+  "vi": "Bánh ngọt {0} mời có trộn Tán Công Tán. Bạn vận khí thì thấy chân khí tán loạn.",
+  "ph": [
+   "w"
+  ],
+  "en": "The sweet cakes {0} offers are mixed with Qi-Scattering Powder. When you circulate your qi, your true qi goes wild."
+ },
+ {
+  "vi": "{0} dùng \"Tỏa Hồn Khúc\" thổi sáo giúp vui. Bạn nghe xong đầu óc quay cuồng, ngã gục.",
+  "ph": [
+   "w"
+  ],
+  "en": "{0} plays the \"Soul-Locking Tune\" on a flute for fun. When it ends your head is spinning, and you collapse."
+ },
+ {
+  "vi": "Chén trà vừa nâng lên, {0} đã rút kiếm đâm thẳng tới: \"Đồng đạo? Giang hồ làm gì có đồng đạo!\"",
+  "ph": [
+   "w"
+  ],
+  "en": "You've barely raised the cup when {0} draws a sword and lunges: \"Kindred spirit? There's no such thing in the jianghu!\""
+ },
+ {
+  "vi": "Uống được nửa chén, từ bụi rậm nhảy ra ba tên phục binh. {0} cười nhạt rồi cùng xông vào.",
+  "ph": [
+   "w"
+  ],
+  "en": "Half a cup in, three ambushers leap out of the bushes. {0} smirks and charges in with them."
+ },
+ {
+  "vi": "{0} thấy túi đồ của bạn căng phồng, bỗng nổi lòng tham, hất bàn trà ra tay.",
+  "ph": [
+   "w"
+  ],
+  "en": "{0} sees how stuffed your pouch is, gets greedy, flips the tea table and attacks."
+ },
+ {
+  "vi": "Hóa ra {0} nhận tiền thưởng truy nã cái đầu của bạn. Ấm trà chỉ là cái cớ để lại gần.",
+  "ph": [
+   "w"
+  ],
+  "en": "Turns out {0} took the bounty on your head. The teapot was just an excuse to get close."
+ },
+ {
+  "vi": "{0} nhắc chuyện cũ, càng nói càng cay: hóa ra sư phụ {1} từng chết dưới tay người cùng môn với bạn.",
+  "ph": [
+   "w",
+   "h"
+  ],
+  "en": "{0} brings up old history and grows more bitter by the word: turns out {1} once had a master who died at the hands of someone from your sect."
+ },
+ {
+  "vi": "Bàn tới công pháp, {0} đòi bạn đưa bí kíp ra xem. Bạn chưa kịp từ chối, {1} đã ra tay cướp.",
+  "ph": [
+   "w",
+   "h"
+  ],
+  "en": "Talk turns to cultivation methods, and {0} demands to see your manual. Before you can refuse, {1} lunges to snatch it."
+ },
+ {
+  "vi": "{0} uống say, tâm ma nổi dậy, mắt đỏ ngầu, quay sang đánh bạn như đánh kẻ thù.",
+  "ph": [
+   "w"
+  ],
+  "en": "{0} gets drunk, a heart demon rises, eyes bloodshot, and turns on you as if you were a sworn enemy."
+ },
+ {
+  "vi": "Ấm trà vỡ tan, bên trong giấu một con dao găm. {0} đã chuẩn bị từ trước.",
+  "ph": [
+   "w"
+  ],
+  "en": "The teapot shatters, revealing a hidden dagger. {0} had planned this all along."
+ },
+ {
+  "vi": "ả",
+  "en": "she"
+ },
+ {
+  "vi": "hắn",
+  "en": "he"
+ },
+ {
+  "vi": "Trúng ám toán",
+  "en": "Ambushed"
+ },
+ {
+  "vi": " (-{0} sức khỏe, tu vi tổn hao).",
+  "ph": [
+   "hurt"
+  ],
+  "en": " (-{0} Health, cultivation damaged)."
+ },
+ {
+  "vi": "{0} bỏ độc vào trà rồi lục túi bạn",
+  "ph": [
+   "who"
+  ],
+  "en": "{0} poisoned your tea and rifled your pouch"
+ },
+ {
+  "vi": " Lúc bạn mê man, {0} lấy mất {1}{2} linh thạch.",
+  "ph": [
+   "h",
+   "taken.length ? taken.join(', ') + ' và ' : ''",
+   "lost"
+  ],
+  "en": " While you lay dazed, {0} took {1}{2} spirit stones."
+ },
+ {
+  "vi": "Độc trong chén trà của {0} ngấm vào tâm mạch. Bạn chết bên bàn trà còn ấm.",
+  "ph": [
+   "who"
+  ],
+  "en": "The poison in {0}'s tea seeps into your heart meridian. You die at a tea table that is still warm."
+ }
+]

@@ -1,0 +1,234 @@
+[
+ {
+  "vi": "Tất cả",
+  "en": "All"
+ },
+ {
+  "vi": "Chính phái",
+  "en": "Righteous"
+ },
+ {
+  "vi": "Trung lập",
+  "en": "Neutral"
+ },
+ {
+  "vi": "Tà phái",
+  "en": "Evil"
+ },
+ {
+  "vi": "Tuần này",
+  "en": "This week"
+ },
+ {
+  "vi": "Mọi kiếp",
+  "en": "All lives"
+ },
+ {
+  "vi": "Đang sống",
+  "en": "Alive"
+ },
+ {
+  "vi": "Đã mất",
+  "en": "Dead"
+ },
+ {
+  "vi": "Mọi con đường",
+  "en": "All Paths"
+ },
+ {
+  "vi": "Chưa chọn đường",
+  "en": "No Path yet"
+ },
+ {
+  "vi": "Hạng {0}",
+  "ph": [
+   "rank"
+  ],
+  "en": "Rank {0}"
+ },
+ {
+  "vi": "Thu gọn danh hiệu",
+  "en": "Collapse titles"
+ },
+ {
+  "vi": "Xem thêm {0} danh hiệu",
+  "ph": [
+   "titles.length - 2"
+  ],
+  "en": "Show {0} more titles"
+ },
+ {
+  "vi": "Thu gọn",
+  "en": "Collapse"
+ },
+ {
+  "vi": "Xếp hạng",
+  "en": "Rankings"
+ },
+ {
+  "vi": "Anh hùng các đời",
+  "en": "Heroes of all ages"
+ },
+ {
+  "vi": "Năng lực",
+  "en": "Power"
+ },
+ {
+  "vi": "Phú hào",
+  "en": "Tycoons"
+ },
+ {
+  "vi": "Trường thọ",
+  "en": "Longevity"
+ },
+ {
+  "vi": "Truy nã",
+  "en": "Wanted"
+ },
+ {
+  "vi": "Bảng truy nã",
+  "en": "Wanted board"
+ },
+ {
+  "vi": "Đang dán cáo thị...",
+  "en": "Posting notices..."
+ },
+ {
+  "vi": "Chưa ai bị treo thưởng. Vào game, mở Giang hồ để treo đầu kẻ thù.",
+  "en": "No bounties yet. Enter the game and open Jianghu to put a price on your enemy's head."
+ },
+ {
+  "vi": " lệnh · treo bởi ",
+  "en": " bounties · posted by "
+ },
+ {
+  "vi": "Những cặp đối đầu nhiều nhất giang hồ.",
+  "en": "The fiercest rivalries in the jianghu."
+ },
+ {
+  "vi": "Chưa có cặp oan gia nào.",
+  "en": "No sworn enemies yet."
+ },
+ {
+  "vi": " trận",
+  "en": " fights"
+ },
+ {
+  "vi": ", {0} trận hòa",
+  "ph": [
+   "p.fights - p.w1 - p.w2"
+  ],
+  "en": ", {0} draws"
+ },
+ {
+  "vi": "Thời gian",
+  "en": "Time"
+ },
+ {
+  "vi": "Lọc theo sống chết",
+  "en": "Filter by alive or dead"
+ },
+ {
+  "vi": "Lọc theo phái",
+  "en": "Filter by side"
+ },
+ {
+  "vi": "Mọi phe",
+  "en": "All sides"
+ },
+ {
+  "vi": "Con đường",
+  "en": "Path"
+ },
+ {
+  "vi": "Lọc theo con đường",
+  "en": "Filter by Path"
+ },
+ {
+  "vi": "Mọi đạo",
+  "en": "All Paths"
+ },
+ {
+  "vi": "Tính lại mỗi thứ Hai. Top 3 tuần và người mạnh nhất mỗi phe được treo danh hiệu.",
+  "en": "Resets every Monday. The weekly top 3 and the strongest of each side earn titles."
+ },
+ {
+  "vi": "Chưa kết nối được máy chủ xếp hạng.",
+  "en": "Can't reach the ranking server."
+ },
+ {
+  "vi": "Đang xem thiên bảng...",
+  "en": "Reading the Heaven Ranking..."
+ },
+ {
+  "vi": "Chưa có tu sĩ nào ở mục này.",
+  "en": "No cultivators here yet."
+ },
+ {
+  "vi": "Chứng đạo",
+  "en": "Attained the Dao"
+ },
+ {
+  "vi": "Ma giới",
+  "en": "Demon Realm"
+ },
+ {
+  "vi": "Thái Hư",
+  "en": "Great Void"
+ },
+ {
+  "vi": "Tiên giới",
+  "en": "Immortal Realm"
+ },
+ {
+  "vi": "Phàm nhân",
+  "en": "Mortal"
+ },
+ {
+  "vi": "Thọ {0} tuổi · {1}",
+  "ph": [
+   "Math.floor(c.age)",
+   "c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer, c.cosmos)"
+  ],
+  "en": "Lived to {0} · {1}"
+ },
+ {
+  "vi": "{0} linh thạch",
+  "ph": [
+   "fmt(c.linhThach)"
+  ],
+  "en": "{0} spirit stones"
+ },
+ {
+  "vi": "Kiếp Số ",
+  "en": "Calamity Count "
+ },
+ {
+  "vi": " (bạn)",
+  "en": " (you)"
+ },
+ {
+  "vi": " · Kiếp ",
+  "en": " · Life "
+ },
+ {
+  "vi": " tuổi · ",
+  "en": " yrs · "
+ },
+ {
+  "vi": "chưa chọn đường",
+  "en": "no Path yet"
+ },
+ {
+  "vi": "⚔ Hạ chiến thư",
+  "en": "⚔ Issue a challenge"
+ },
+ {
+  "vi": "Đăng nhập",
+  "en": "Log in"
+ },
+ {
+  "vi": " để ghi danh lên bảng.",
+  "en": " to register on the board."
+ }
+]

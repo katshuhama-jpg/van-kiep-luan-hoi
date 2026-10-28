@@ -10,6 +10,7 @@ import { RARE_COLOR, type Ending } from '@/lib/game/endings';
 import type { Character } from '@/lib/game/types';
 import { supabase } from '@/lib/supabase';
 import { CH, CW, OH, OW, P, SITE, blk, box, canvas, copyText, deliver, hero, paper, seal, txt, wrapTxt, type ShareOut } from '@/lib/shareCard';
+import { tr } from './i18n';
 
 export type Grade = 'S' | 'A' | 'B' | 'C' | 'D';
 export const GRADE_COL: Record<Grade, string> = { S: '#d0202e', A: '#d9822b', B: '#8a3ad0', C: '#3d6fb0', D: '#6a5a44' };
@@ -41,7 +42,7 @@ export function memorable(c: Character): string[] {
     const s = clean(t);
     if (!s || s.length > 110 || seen.has(s)) return;
     seen.add(s);
-    out.push(`${age} tuổi: ${s}`);
+    out.push(tr(`${age} tuổi: ${s}`, `Age ${age}: ${s}`));
   };
   const miles = (c.miles ?? []).filter((m) => m.kind !== 'birth' && m.kind !== 'death');
   const logs = c.log ?? [];
@@ -53,11 +54,12 @@ export function memorable(c: Character): string[] {
   return out.slice(0, 3).sort((a, b) => parseInt(a) - parseInt(b));
 }
 
-const realmOf = (c: Character) => (c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer, c.cosmos));
+const realmOf = (c: Character) => (c.realm === 0 ? tr('Phàm nhân', "Mortal") : realmLabel(c.realm, c.layer, c.cosmos));
 
 /** Bản chữ ngắn để dán vào nhóm */
 export function lifeText(c: Character, ending: Ending, grade: Grade, pct: number | null): string {
-  return `Kiếp ${c.lifeNo} · ${c.name} · ${realmOf(c)} · ${Math.floor(c.age)} tuổi · ${ending.name} · Xếp loại ${grade}${pct !== null ? ` · vượt ${pct}% giang hồ` : ''}\n${SITE}`;
+  return tr(`Kiếp ${c.lifeNo} · ${c.name} · ${realmOf(c)} · ${Math.floor(c.age)} tuổi · ${ending.name} · Xếp loại ${grade}${pct !== null ? tr(` · vượt ${pct}% giang hồ`, ` · beat ${pct}% of the jianghu`) : ''}\n${SITE}`, `Life ${c.lifeNo} · ${c.name} · ${realmOf(c)} · age ${Math.floor(c.age)} · ${ending.name} · Grade ${grade}${pct !== null ? tr(` · vượt ${pct}% giang hồ`, ` · beat ${pct}% of the jianghu`) : ''}
+${SITE}`);
 }
 
 /** Vẽ Thẻ Một đời, trả về canvas */
@@ -68,27 +70,27 @@ export async function drawLife(c: Character, ending: Ending, isNew: boolean, epi
   const { grade } = gradeOf(c, ending, isNew);
   const rc = RARE_COLOR[ending.rare];
   paper(x);
-  txt(x, 'VẠN KIẾP LUÂN HỒI', CW / 2, 138, 56, '#9a2a1e', { w: 700 });
-  txt(x, `Kiếp thứ ${c.lifeNo}`, CW / 2, 186, 34, '#6a5a44');
+  txt(x, tr('VẠN KIẾP LUÂN HỒI', "VẠN KIẾP LUÂN HỒI"), CW / 2, 138, 56, '#9a2a1e', { w: 700 });
+  txt(x, tr(`Kiếp thứ ${c.lifeNo}`, `Life #${c.lifeNo}`), CW / 2, 186, 34, '#6a5a44');
   // khung nhân vật
   box(x, 150, 216, 504, 504, ending.rare >= 3 ? '#2a1f3d' : '#d8c79a', rc);
   if (ending.rare >= 3) for (let k = 0; k < 22; k++) blk(x, 168 + ((k * 61) % 460), 234 + ((k * 37) % 460), P, P, rc);
   await hero(x, { ...c, dead: false }, 150 + 252, 228, 6, 2);
   // ấn xếp loại ở góc
   seal(x, 702, 240, 228, grade, GRADE_COL[grade], 170);
-  txt(x, 'XẾP LOẠI', 702 + 114, 506, 30, '#4a3a2a', { w: 700 });
+  txt(x, tr('XẾP LOẠI', "GRADE"), 702 + 114, 506, 30, '#4a3a2a', { w: 700 });
   if (pct !== null) {
     box(x, 690, 540, 252, 174, '#1f160d', '#ffd36b');
-    txt(x, 'Vượt', 816, 588, 30, '#c8b89a');
+    txt(x, tr('Vượt', "Beat"), 816, 588, 30, '#c8b89a');
     txt(x, `${pct}%`, 816, 648, 60, '#ffd36b', { w: 700 });
-    txt(x, 'giang hồ', 816, 690, 28, '#c8b89a');
+    txt(x, tr('giang hồ', "the jianghu"), 816, 690, 28, '#c8b89a');
   }
   // tên và thân thế
   txt(x, c.name, CW / 2, 800, 72, '#2a2018', { w: 700, max: CW - 200 });
-  txt(x, `${Math.floor(c.age)} tuổi · ${realmOf(c)}${c.path ? ' · ' + PATHS[c.path].name : ''}`, CW / 2, 852, 36, '#4a3a2a', { max: CW - 200 });
+  txt(x, tr(`${Math.floor(c.age)} tuổi · ${realmOf(c)}${c.path ? ' · ' + PATHS[c.path].name : ''}`, `Age ${Math.floor(c.age)} · ${realmOf(c)}${c.path ? ' · ' + PATHS[c.path].name : ''}`), CW / 2, 852, 36, '#4a3a2a', { max: CW - 200 });
   // kết cục
   box(x, 120, 880, CW - 240, 108, rc, '#1f160d');
-  txt(x, `KẾT CỤC · ${['PHÀM', 'LINH', 'HUYỀN', 'ĐỊA', 'THIÊN'][ending.rare]} PHẨM${isNew ? ' · LẦN ĐẦU' : ''}`, CW / 2, 922, 28, '#fff8e6', { w: 700 });
+  txt(x, tr(`KẾT CỤC · ${[tr('PHÀM', "MORTAL"), tr('LINH', "SPIRIT"), tr('HUYỀN', "MYSTIC"), tr('ĐỊA', "EARTH"), tr('THIÊN', "HEAVEN")][ending.rare]} PHẨM${isNew ? tr(' · LẦN ĐẦU', " · FIRST TIME") : ''}`, `ENDING · ${[tr('PHÀM', "MORTAL"), tr('LINH', "SPIRIT"), tr('HUYỀN', "MYSTIC"), tr('ĐỊA', "EARTH"), tr('THIÊN', "HEAVEN")][ending.rare]} GRADE${isNew ? tr(' · LẦN ĐẦU', " · FIRST TIME") : ''}`), CW / 2, 922, 28, '#fff8e6', { w: 700 });
   txt(x, ending.name, CW / 2, 970, 48, '#fff8e6', { w: 700, max: CW - 300 });
   // 3 dòng đáng nhớ
   const lines = memorable(c);
@@ -115,17 +117,17 @@ export async function drawLifeOg(c: Character, ending: Ending, isNew: boolean, p
   if (ending.rare >= 3) for (let k = 0; k < 16; k++) blk(x, 102 + ((k * 61) % 390), 102 + ((k * 37) % 420), P, P, rc);
   await hero(x, { ...c, dead: false }, 300, 96, 5.4, 2);
   txt(x, c.name, 560, 150, 60, '#2a2018', { w: 700, align: 'left', max: 420 });
-  txt(x, `Kiếp ${c.lifeNo} · ${Math.floor(c.age)} tuổi`, 560, 200, 32, '#4a3a2a', { align: 'left', max: 420 });
+  txt(x, tr(`Kiếp ${c.lifeNo} · ${Math.floor(c.age)} tuổi`, `Life ${c.lifeNo} · age ${Math.floor(c.age)}`), 560, 200, 32, '#4a3a2a', { align: 'left', max: 420 });
   txt(x, `${realmOf(c)}${c.path ? ' · ' + PATHS[c.path].name : ''}`, 560, 244, 32, '#4a3a2a', { align: 'left', max: 420 });
   box(x, 560, 274, 420, 104, rc, '#1f160d');
-  txt(x, `KẾT CỤC ${['PHÀM', 'LINH', 'HUYỀN', 'ĐỊA', 'THIÊN'][ending.rare]} PHẨM`, 770, 310, 24, '#fff8e6', { w: 700 });
+  txt(x, tr(`KẾT CỤC ${[tr('PHÀM', "MORTAL"), tr('LINH', "SPIRIT"), tr('HUYỀN', "MYSTIC"), tr('ĐỊA', "EARTH"), tr('THIÊN', "HEAVEN")][ending.rare]} PHẨM`, `${[tr('PHÀM', "MORTAL"), tr('LINH', "SPIRIT"), tr('HUYỀN', "MYSTIC"), tr('ĐỊA', "EARTH"), tr('THIÊN', "HEAVEN")][ending.rare]}-GRADE ENDING`), 770, 310, 24, '#fff8e6', { w: 700 });
   txt(x, ending.name, 770, 356, 40, '#fff8e6', { w: 700, max: 390 });
   seal(x, 560, 400, 150, grade, GRADE_COL[grade], 110);
   if (pct !== null) {
-    txt(x, `Vượt ${pct}%`, 730, 466, 44, '#9a2a1e', { w: 700, align: 'left' });
-    txt(x, 'các kiếp trong giang hồ', 730, 506, 28, '#4a3a2a', { align: 'left' });
+    txt(x, tr(`Vượt ${pct}%`, `Beat ${pct}%`), 730, 466, 44, '#9a2a1e', { w: 700, align: 'left' });
+    txt(x, tr('các kiếp trong giang hồ', "of all lives in the jianghu"), 730, 506, 28, '#4a3a2a', { align: 'left' });
   }
-  txt(x, 'VẠN KIẾP LUÂN HỒI', OW - 96, OH - 74, 26, '#9a2a1e', { w: 700, align: 'right' });
+  txt(x, tr('VẠN KIẾP LUÂN HỒI', "VẠN KIẾP LUÂN HỒI"), OW - 96, OH - 74, 26, '#9a2a1e', { w: 700, align: 'right' });
   return cv;
 }
 
@@ -133,8 +135,8 @@ export async function shareLife(c: Character, ending: Ending, isNew: boolean, ep
   const [cv, og] = await Promise.all([drawLife(c, ending, isNew, epitaph, pct), drawLifeOg(c, ending, isNew, pct)]);
   if (!cv || !og) return null;
   const { grade } = gradeOf(c, ending, isNew);
-  const title = `${c.name}, kiếp ${c.lifeNo}: ${ending.name} · Xếp loại ${grade}`;
-  const desc = `${Math.floor(c.age)} tuổi, ${realmOf(c)}${c.path ? ', ' + PATHS[c.path].name : ''}.${pct !== null ? ` Vượt ${pct}% các kiếp trong giang hồ.` : ''} ${(memorable(c)[0] ?? '').replace(/([^.!?])$/, '$1.')} Đầu thai thử một kiếp ở Vạn Kiếp Luân Hồi.`.replace(/\s+/g, ' ').trim();
+  const title = tr(`${c.name}, kiếp ${c.lifeNo}: ${ending.name} · Xếp loại ${grade}`, `${c.name}, life ${c.lifeNo}: ${ending.name} · Grade ${grade}`);
+  const desc = tr(`${Math.floor(c.age)} tuổi, ${realmOf(c)}${c.path ? ', ' + PATHS[c.path].name : ''}.${pct !== null ? tr(` Vượt ${pct}% các kiếp trong giang hồ.`, ` Beat ${pct}% of all lives in the jianghu.`) : ''} ${(memorable(c)[0] ?? '').replace(/([^.!?])$/, '$1.')} Đầu thai thử một kiếp ở Vạn Kiếp Luân Hồi.`, `Age ${Math.floor(c.age)}, ${realmOf(c)}${c.path ? ', ' + PATHS[c.path].name : ''}.${pct !== null ? tr(` Vượt ${pct}% các kiếp trong giang hồ.`, ` Beat ${pct}% of all lives in the jianghu.`) : ''} ${(memorable(c)[0] ?? '').replace(/([^.!?])$/, '$1.')} Try a life of your own in Vạn Kiếp Luân Hồi.`).replace(/\s+/g, ' ').trim();
   return deliver(cv, og, 'life', `kiep-${c.lifeNo}-${c.name.replace(/\s+/g, '-')}`, title, desc, lifeText(c, ending, grade, pct).split('\n')[0]);
 }
 

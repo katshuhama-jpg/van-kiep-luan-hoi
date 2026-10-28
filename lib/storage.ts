@@ -5,6 +5,8 @@ import { emptyMeta } from './game/engine';
 import type { Character, Grave, Meta, PendingEvent, WorldEcho, RivalChar } from './game/types';
 import { REALMS, realmLabel } from './game/data';
 import { supabase } from './supabase';
+import { tr } from './i18n';
+import { nameOf } from './hanviet';
 
 export interface SaveState {
   v: 1;
@@ -56,7 +58,7 @@ function writeLocal(key: string, value: unknown) {
 }
 
 export function displayName(user: Player | null): string {
-  return user?.username ?? 'Khách';
+  return user?.username ?? tr('Khách', "Guest");
 }
 
 /** Tải hồ sơ + bản lưu. Người chơi khách dùng dữ liệu trên máy. */
@@ -143,7 +145,8 @@ export async function listMemorials(user: Player | null): Promise<{ all: Memoria
           .then((r) => (r.data as Memorial[] | null) ?? [])
       : Promise.resolve(local),
   ]);
-  return { all: (all as Memorial[] | null) ?? [], mine };
+  const nm = (l: Memorial[]) => l.map((m) => ({ ...m, char_name: nameOf(m.char_name) }));
+  return { all: nm((all as Memorial[] | null) ?? []), mine: nm(mine) };
 }
 
 /** Chi tiết một ngôi mộ để xem hồi ký: dáng vẻ, cột mốc, cảnh giới cuối */
@@ -161,7 +164,7 @@ export async function topIncense(): Promise<Memorial[]> {
   const sb = supabase();
   if (!sb) return [];
   const { data } = await sb.from('vkl_lives').select(COLS).gt('incense', 0).order('incense', { ascending: false }).limit(12);
-  return ((data as Memorial[] | null) ?? []).filter((m) => !isTest(m.player_name));
+  return ((data as Memorial[] | null) ?? []).filter((m) => !isTest(m.player_name)).map((m) => ({ ...m, char_name: nameOf(m.char_name) }));
 }
 
 export async function thapHuong(user: Player | null, id: number | string): Promise<number | null> {
@@ -185,6 +188,7 @@ export async function leaderboard(kind: RankKind, lean: RankLean, path: string, 
     alive: r.alive,
     c: {
       ...r.c,
+      name: nameOf(r.c.name),
       stats: r.c.stats ?? { tamCanh: 50, ngoTinh: 50, khiVan: 50, tamMa: 0, sucKhoe: 80 },
       equipped: r.c.equipped ?? {},
       log: [],
@@ -211,13 +215,13 @@ export async function fetchWorld(user: Player | null): Promise<WorldEcho | null>
     me ? sb.from('vkl_lives').select('char_name, age, realm_no, layer_no, dao_tam, look').eq('player_name', me).order('created_at', { ascending: false }).limit(1) : Promise.resolve({ data: null }),
   ]);
   const rows = ((lives as { player_name: string; char_name: string; age: number; realm: string; cause: string | null; epitaph: string | null; dao_tam: number }[] | null) ?? []).filter(
-    (r) => r.player_name !== me && r.player_name !== 'Khách' && !isTest(r.player_name),
+    (r) => r.player_name !== me && r.player_name !== 'Khách' && r.player_name !== 'Guest' && !isTest(r.player_name),
   );
   for (let i = rows.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [rows[i], rows[j]] = [rows[j], rows[i]];
   }
-  const graves: Grave[] = rows.slice(0, 6).map((r) => ({ char: r.char_name, player: r.player_name, age: r.age, realm: r.realm, cause: r.cause, epitaph: r.epitaph, dao: r.dao_tam }));
+  const graves: Grave[] = rows.slice(0, 6).map((r) => ({ char: nameOf(r.char_name), player: r.player_name, age: r.age, realm: r.realm, cause: r.cause, epitaph: r.epitaph, dao: r.dao_tam }));
   const top = (list: { username: string; c: Character }[] | null) => {
     const r = list?.find((x) => x.username !== me && !isTest(x.username) && (x.c.realm ?? 0) >= 1);
     return r ? { name: r.c.name, player: r.username, realm: r.c.realm, realmName: realmLabel(r.c.realm, r.c.layer ?? 1) || REALMS[r.c.realm]?.name || '' } : null;
@@ -281,13 +285,13 @@ export async function listFeedback(user: Player | null): Promise<Feedback[] | nu
   if (error) ({ data, error } = await sb.rpc('vkl_feedback_list', { p_token: user?.token ?? null }));
   if (error) return null;
   // đánh giá nhanh ở màn chết chỉ dành cho người làm game đọc, không hiện ở trang góp ý chung
-  return ((data as Feedback[]) ?? []).filter((f) => !f.content.startsWith('[Đánh giá kiếp'));
+  return ((data as Feedback[]) ?? []).filter((f) => !/^\[(Đánh giá kiếp|Life rating)/.test(f.content));
 }
 
 const FB_ERR: Record<string, string> = {
-  NOT_LOGGED_IN: 'Cần đăng nhập để góp ý.',
-  TOO_FAST: 'Chậm lại một chút, 30 giây mới gửi được một góp ý.',
-  TOO_MANY: 'Hôm nay bạn đã gửi đủ 20 góp ý rồi.',
+  NOT_LOGGED_IN: tr('Cần đăng nhập để góp ý.', "Log in to send feedback."),
+  TOO_FAST: tr('Chậm lại một chút, 30 giây mới gửi được một góp ý.', "Slow down a little - one request every 30 seconds."),
+  TOO_MANY: tr('Hôm nay bạn đã gửi đủ 20 góp ý rồi.', "You've already sent 20 requests today."),
 };
 
 export async function addFeedback(user: Player | null, kind: FeedbackKind, content: string): Promise<string | null> {
@@ -296,7 +300,7 @@ export async function addFeedback(user: Player | null, kind: FeedbackKind, conte
   const { error } = await sb.rpc('vkl_feedback_add', { p_token: user.token, p_kind: kind, p_content: content });
   if (!error) return null;
   const code = Object.keys(FB_ERR).find((k) => error.message.includes(k));
-  return code ? FB_ERR[code] : 'Gửi chưa được, thử lại sau nhé.';
+  return code ? FB_ERR[code] : tr('Gửi chưa được, thử lại sau nhé.', "Couldn't send it, please try again later.");
 }
 
 export async function voteFeedback(user: Player | null, id: number): Promise<number | null> {
@@ -339,17 +343,17 @@ export async function unreadMail(user: Player | null): Promise<number> {
 
 // ---------- Danh hiệu tuần, thống kê kết cục ----------
 const TITLE_ORDER = [
-  'Thiên Hạ Đệ Nhất',
-  'Võ Lâm Minh Chủ',
-  'Đệ Nhất Ma Đầu',
-  'Đệ Nhị Cao Thủ',
-  'Đệ Tam Cao Thủ',
-  'Phú Khả Địch Quốc',
-  'Thọ Tỷ Nam Sơn',
-  'Đệ Nhị Phú Hào',
-  'Đệ Nhị Thọ Tinh',
-  'Đệ Tam Phú Hào',
-  'Đệ Tam Thọ Tinh',
+  tr('Thiên Hạ Đệ Nhất', "Number One Under Heaven"),
+  tr('Võ Lâm Minh Chủ', "Martial Alliance Leader"),
+  tr('Đệ Nhất Ma Đầu', "Foremost Demon Lord"),
+  tr('Đệ Nhị Cao Thủ', "Second Master"),
+  tr('Đệ Tam Cao Thủ', "Third Master"),
+  tr('Phú Khả Địch Quốc', "Richer Than Nations"),
+  tr('Thọ Tỷ Nam Sơn', "Long as the Southern Hills"),
+  tr('Đệ Nhị Phú Hào', "Second Richest"),
+  tr('Đệ Nhị Thọ Tinh', "Second Longest-Lived"),
+  tr('Đệ Tam Phú Hào', "Third Richest"),
+  tr('Đệ Tam Thọ Tinh', "Third Longest-Lived"),
 ];
 let titlesCache: Promise<Record<string, string[]>> | null = null;
 

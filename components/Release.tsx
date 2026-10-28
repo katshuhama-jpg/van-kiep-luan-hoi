@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { CURRENT_VERSION, RELEASES, markSeenLocal, seenLocal, type Release } from '@/lib/releases';
+import { tr } from '@/lib/i18n';
 
 /** Nội dung một bản cập nhật, dùng cho cáo thị và trang lịch sử */
 export function ReleaseBody({ r }: { r: Release }) {
@@ -62,15 +63,17 @@ export default function ReleaseNotice({ onClose }: { onClose: (v: string) => voi
           <span className="rel-seal" aria-hidden="true">
             {r.v}
           </span>
-          <p className="rel-kick">Cáo thị giang hồ · {r.date}</p>
+          <p className="rel-kick">{tr("Cáo thị giang hồ · ", "Jianghu Proclamation · ")}{r.date}</p>
           <h2 id="rel-title">{r.title}</h2>
           <ReleaseBody r={r} />
           <div className="rel-acts">
             <button className="btn btn-red btn-big" onClick={close}>
-              Đã rõ, vào luân hồi
+              
+              {tr("Đã rõ, vào luân hồi", "Understood, enter the Cycle")}
             </button>
             <Link href="/cap-nhat" className="rel-link" onClick={close}>
-              Xem lịch sử cập nhật
+              
+              {tr("Xem lịch sử cập nhật", "View update history")}
             </Link>
           </div>
         </div>
@@ -89,19 +92,21 @@ export function GiftNotice({ gifts, onClose }: { gifts: { amount: number; note: 
         <i className="rod" aria-hidden="true" />
         <div className="rel-body gift-body">
           <span className="rel-seal" aria-hidden="true">
-            Phúc
+            
+            {tr("Phúc", "Fortune")}
           </span>
-          <p className="rel-kick">Phúc duyên tìm đến</p>
-          <h2 id="gift-title">+{total} phúc duyên</h2>
+          <p className="rel-kick">{tr("Phúc duyên tìm đến", "Fortune finds you")}</p>
+          <h2 id="gift-title">+{total}{tr(" phúc duyên", " Fortune")}</h2>
           {gifts.map((g, i) => (
             <p key={i} className="rel-intro">
               {g.note}
             </p>
           ))}
-          <p className="gift-hint">Phúc duyên theo bạn qua mọi kiếp, dùng để chọn thiên phú khi đầu thai. Xem thư trong Hộp thư giang hồ.</p>
+          <p className="gift-hint">{tr("Phúc duyên theo bạn qua mọi kiếp, dùng để chọn thiên phú khi đầu thai. Xem thư trong Hộp thư giang hồ.", "Fortune follows you through every life and is spent on talents when you are reborn. Check the letter in your Jianghu Mailbox.")}</p>
           <div className="rel-acts">
             <button className="btn btn-red btn-big" onClick={onClose}>
-              Đa tạ
+              
+              {tr("Đa tạ", "Many thanks")}
             </button>
           </div>
         </div>

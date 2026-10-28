@@ -1,0 +1,477 @@
+[
+ {
+  "vi": "Phản môn",
+  "en": "Betraying the sect"
+ },
+ {
+  "vi": "Tin bạn {0} lan tới tổng đàn {1}. Đêm nay, mấy tên hộ pháp đứng chặn trước cửa phòng bạn, tay đặt sẵn lên chuôi đao.",
+  "ph": [
+   "c.path === 'phat' ? 'quy y cửa Phật' : 'làm việc thiện'",
+   "c.sect"
+  ],
+  "en": "Word that you {0} reaches the headquarters of {1}. Tonight, several enforcers stand blocking your door, hands already on their sabers."
+ },
+ {
+  "vi": "quy y cửa Phật",
+  "en": "have taken Buddhist vows"
+ },
+ {
+  "vi": "làm việc thiện",
+  "en": "have been doing good deeds"
+ },
+ {
+  "vi": "Các trưởng lão {0} phát hiện trên người bạn có {1}. Chính phái không dung kẻ theo tà. Sáng mai bạn bị gọi lên chính điện.",
+  "ph": [
+   "c.sect",
+   "c.path === 'ma' ? 'ma khí' : 'mùi huyết tinh'"
+  ],
+  "en": "The elders of {0} detect {1} on you. A righteous sect does not tolerate followers of evil. Tomorrow morning you are summoned to the main hall."
+ },
+ {
+  "vi": "ma khí",
+  "en": "demonic qi"
+ },
+ {
+  "vi": "mùi huyết tinh",
+  "en": "the stench of blood"
+ },
+ {
+  "vi": "Tự xin rời tông môn",
+  "en": "Ask to leave the sect"
+ },
+ {
+  "vi": "ma môn không tha kẻ bỏ đi · có thể bị truy sát",
+  "en": "demonic sects don't spare deserters · you may be hunted"
+ },
+ {
+  "vi": "rời đi êm thấm, giữ đồ",
+  "en": "leave peacefully, keep your gear"
+ },
+ {
+  "vi": "Rời {0} chưa được ba ngày, sát thủ ma môn đuổi kịp. Kẻ phản môn không được sống.",
+  "ph": [
+   "name"
+  ],
+  "en": "Not three days after leaving {0}, demonic sect assassins catch up with you. Traitors don't get to live."
+ },
+ {
+  "vi": "Bạn lẳng lặng xuống núi trong đêm...",
+  "en": "You slip down the mountain quietly at night..."
+ },
+ {
+  "vi": "ma môn truy sát kẻ phản đồ",
+  "en": "the demonic sect hunting a traitor"
+ },
+ {
+  "vi": "Bạn trả lại lệnh bài, xuống núi trong đêm. Từ nay {0} coi bạn là kẻ phản đồ.{1}",
+  "ph": [
+   "name",
+   "f ?? ''"
+  ],
+  "en": "You return your token and leave the mountain by night. From now on {0} counts you a traitor.{1}"
+ },
+ {
+  "vi": "Bạn quỳ trước chính điện, xin rời {0}. Chưởng môn thở dài phất tay áo: \"Đạo khác nhau, không cùng mưu. Đi đi.\"",
+  "ph": [
+   "name"
+  ],
+  "en": "You kneel before the main hall and ask to leave {0}. The Sect Leader sighs and waves his sleeve: \"Different paths, different plans. Go.\""
+ },
+ {
+  "vi": "Giấu thân phận, ở lại",
+  "en": "Hide it and stay"
+ },
+ {
+  "vi": "giữ tông môn, mỗi năm có thể bị lộ · lộ thì bị trục xuất, mất áo bào",
+  "en": "keep your sect, risk exposure each year · if exposed, expelled and robe stripped"
+ },
+ {
+  "vi": "Bạn cúi đầu nhận sai, thề không tái phạm. Trưởng lão nửa tin nửa ngờ. Từ nay mỗi bước đi trong sơn môn đều phải giữ ý.",
+  "en": "You bow your head, admit your fault, and swear never to do it again. The elder half believes you. From now on, every step within the sect gates must be careful."
+ },
+ {
+  "vi": "Phản sư diệt tổ, cướp bảo vật",
+  "en": "Betray the master, rob the treasury"
+ },
+ {
+  "vi": "đánh với trưởng lão · thắng được bảo vật và bị cả tông truy sát · thua có thể chết",
+  "en": "fight an elder · win: treasure, but the whole sect hunts you · lose: may die"
+ },
+ {
+  "vi": "{0} truy sát kẻ phản sư",
+  "ph": [
+   "name"
+  ],
+  "en": "{0} hunts the master-betrayer"
+ },
+ {
+  "vi": "Phản sư diệt tổ",
+  "en": "Betraying the master"
+ },
+ {
+  "vi": "Bạn đánh trọng thương trưởng lão giữa chính điện, cướp bảo khố rồi phá vòng vây mà đi. Tu vi tăng vọt, túi đầy linh thạch. Từ nay {0} treo thưởng đầu bạn.",
+  "ph": [
+   "name"
+  ],
+  "en": "You gravely wound the elder in the middle of the main hall, loot the treasury and break through the encirclement. Your cultivation soars and your purse overflows with spirit stones. From now on {0} has a bounty on your head."
+ },
+ {
+  "vi": "Bạn phản sư không thành, bị trưởng lão {0} một chưởng đánh nát tâm mạch.",
+  "ph": [
+   "name"
+  ],
+  "en": "Your betrayal fails; elder {0} shatters your heart meridian with a single palm."
+ },
+ {
+  "vi": "Trưởng lão chỉ cần một chưởng...",
+  "en": "The elder needs only one palm..."
+ },
+ {
+  "vi": "Trưởng lão một chưởng đánh bạn văng ra khỏi chính điện. Bạn bị phế bỏ thân phận đệ tử, lột áo bào, bò xuống núi.{0}",
+  "ph": [
+   "f ?? ''"
+  ],
+  "en": "One palm from the elder sends you flying out of the main hall. Your disciple status is revoked, your robe stripped, and you crawl down the mountain.{0}"
+ },
+ {
+  "vi": "Chính tà vây Thiên Cơ Các",
+  "en": "Righteous and evil besiege Thiên Cơ Pavilion"
+ },
+ {
+  "vi": "Thiên Cơ Các vốn đứng ngoài chính tà, nhưng bạn đã nghiêng hẳn về một phía. Đêm nay, {0} kéo tới vây kín Các, đòi giao bạn ra.",
+  "ph": [
+   "(c.lookSeed ?? c.name.length) % 2 ? 'người của Huyết Sát Môn' : 'đệ tử Thanh Vân Tông'"
+  ],
+  "en": "Thiên Cơ Pavilion has always stood apart from righteous and evil, but you have leaned hard to one side. Tonight, {0} surround the Pavilion and demand you be handed over."
+ },
+ {
+  "vi": "người của Huyết Sát Môn",
+  "en": "men of Huyết Sát Sect"
+ },
+ {
+  "vi": "đệ tử Thanh Vân Tông",
+  "en": "disciples of Thanh Vân Sect"
+ },
+ {
+  "vi": "Ra trận, một mình chặn cửa",
+  "en": "Fight, hold the door alone"
+ },
+ {
+  "vi": "cảnh giới càng cao càng dễ thắng · thắng được Các chủ thưởng · thua trọng thương",
+  "en": "higher realm, better odds · win: Pavilion Master's reward · lose: grave wounds"
+ },
+ {
+  "vi": "Các chủ đứng trên lầu nhìn bạn đánh lui cả đoàn người.",
+  "en": "The Pavilion Master watches from the tower as you drive back the whole mob."
+ },
+ {
+  "vi": "Giữ được Thiên Cơ Các",
+  "en": "Thiên Cơ Pavilion held"
+ },
+ {
+  "vi": "Bạn chặn cửa suốt một đêm, đánh lui kẻ tới gây sự. {0}",
+  "ph": [
+   "up ?? 'Các chủ ban cho bạn một quẻ tốt: khí vận +4.'"
+  ],
+  "en": "You hold the door all night and drive off the troublemakers. {0}"
+ },
+ {
+  "vi": "Các chủ ban cho bạn một quẻ tốt: khí vận +4.",
+  "en": "The Pavilion Master casts you a lucky divination: Luck +4."
+ },
+ {
+  "vi": "Một mình chặn cửa Thiên Cơ Các, bạn ngã xuống dưới làn kiếm khí của cả đoàn người.",
+  "en": "Holding the door of Thiên Cơ Pavilion alone, you fall beneath the sword qi of the entire mob."
+ },
+ {
+  "vi": "Bạn ra trận...",
+  "en": "You go out to fight..."
+ },
+ {
+  "vi": "Bạn không chặn nổi. Trọng thương, bị cướp {0} linh thạch, Các chủ phải ra mặt mới giải được vây.{1}",
+  "ph": [
+   "lost",
+   "f ?? ''"
+  ],
+  "en": "You can't hold them. Gravely wounded and robbed of {0} spirit stones, the Pavilion Master has to step in to lift the siege.{1}"
+ },
+ {
+  "vi": "Trốn vào mật thất, để Các chủ lo",
+  "en": "Hide in the secret room, let the Master handle it"
+ },
+ {
+  "vi": "an toàn, tâm cảnh -, Các chủ không vui",
+  "en": "safe, Mind -, Pavilion Master displeased"
+ },
+ {
+  "vi": "Bạn trốn trong mật thất ba ngày. Khi bước ra, vòng vây đã tan, nhưng ánh mắt Các chủ nhìn bạn đã khác. Bạn bị giáng một bậc.",
+  "en": "You hide in the secret room for three days. When you come out, the siege is over, but the Pavilion Master looks at you differently now. You are demoted one rank."
+ },
+ {
+  "vi": "Tạp dịch quét lá",
+  "en": "Sweeping leaves"
+ },
+ {
+  "vi": "Làm {0} ở {1}, ngày nào bạn cũng quét lá ở hậu sơn. Hôm nay dưới gốc tùng cổ thụ, chổi chạm phải một hộp đá phủ rêu.",
+  "ph": [
+   "rankName(c)",
+   "c.sect"
+  ],
+  "en": "As a {0} of {1}, you sweep leaves on the back mountain every day. Today, beneath an ancient pine, your broom strikes a moss-covered stone box."
+ },
+ {
+  "vi": "Mở hộp ra xem",
+  "en": "Open the box"
+ },
+ {
+  "vi": "có thể đổi đời",
+  "en": "could change your life"
+ },
+ {
+  "vi": "Trong hộp là công pháp thất truyền của một vị tổ sư. Đêm nào bạn cũng lén luyện. {0}",
+  "ph": [
+   "promote(c, ctx, 'Trưởng lão thấy tu vi bạn tăng vọt, nghi ngờ rồi kinh ngạc.') ?? ''"
+  ],
+  "en": "Inside is a lost technique of a sect patriarch. You secretly practice it every night. {0}"
+ },
+ {
+  "vi": "Trưởng lão thấy tu vi bạn tăng vọt, nghi ngờ rồi kinh ngạc.",
+  "en": "The elders notice your cultivation soaring, first suspicious, then amazed."
+ },
+ {
+  "vi": "Hộp đá có cấm chế. Một luồng kình lực hất bạn văng ra, nằm liệt ba ngày.",
+  "en": "The stone box is sealed with a restriction. A burst of force flings you away, and you're bedridden for three days."
+ },
+ {
+  "vi": "Nộp cho trưởng lão",
+  "en": "Hand it to an elder"
+ },
+ {
+  "vi": "được khen, ít rủi ro",
+  "en": "praised, low risk"
+ },
+ {
+  "vi": "Trưởng lão vuốt râu: \"Thật thà hiếm có.\" {0}",
+  "ph": [
+   "promote(c, ctx, 'Ông đề cử bạn với tông môn.') ?? ''"
+  ],
+  "en": "The elder strokes his beard: \"Such honesty is rare.\" {0}"
+ },
+ {
+  "vi": "Ông đề cử bạn với tông môn.",
+  "en": "He recommends you to the sect."
+ },
+ {
+  "vi": "Trưởng lão thưởng cho bốn mươi linh thạch rồi phẩy tay cho lui.",
+  "en": "The elder rewards you forty spirit stones and waves you off."
+ },
+ {
+  "vi": "Kệ, quét tiếp",
+  "en": "Ignore it, keep sweeping"
+ },
+ {
+  "vi": "Bạn quét tiếp. Có những cơ duyên đến rồi đi như lá rụng.",
+  "en": "You keep sweeping. Some opportunities come and go like falling leaves."
+ },
+ {
+  "vi": "Việc vặt của ngoại môn",
+  "en": "Outer sect chores"
+ },
+ {
+  "vi": "Hộ pháp nội đường sai bạn đi thu \"tiền bảo kê\" ở trấn dưới núi. Ai không nộp thì... tùy bạn.",
+  "en": "An inner-hall enforcer sends you to collect \"protection money\" in the town below the mountain. Whoever won't pay... is up to you."
+ },
+ {
+  "vi": "Sư huynh nội môn ném cho bạn một xấp nhiệm vụ: gánh nước, canh lò đan, trông dược viên. Hắn còn cười: \"Ngoại môn thì biết thân biết phận.\"",
+  "en": "An inner-sect senior brother tosses you a stack of tasks: haul water, mind the pill furnace, tend the herb garden. He even sneers: \"Outer disciples should know their place.\""
+ },
+ {
+  "vi": "Thu đủ, ai chống thì đánh",
+  "en": "Collect it all, beat whoever resists"
+ },
+ {
+  "vi": "linh thạch, nghiêng tà",
+  "en": "spirit stones, leans evil"
+ },
+ {
+  "vi": "Bạn mang về một trăm hai mươi linh thạch và tiếng xấu khắp trấn.",
+  "en": "You bring back a hundred and twenty spirit stones and a bad name all over town."
+ },
+ {
+  "vi": "Tha cho người nghèo, tự bù tiền",
+  "en": "Spare the poor, pay for them yourself"
+ },
+ {
+  "vi": "mất tiền, nghiêng chính",
+  "en": "lose money, leans righteous"
+ },
+ {
+  "vi": "Bạn tự bỏ tiền túi nộp thay. Hộ pháp nhìn bạn rất lâu, không nói gì.",
+  "en": "You pay out of your own pocket on their behalf. The enforcer looks at you for a long time and says nothing."
+ },
+ {
+  "vi": "Làm cho xong, không than",
+  "en": "Just get it done, no complaints"
+ },
+ {
+  "vi": "tâm cảnh +",
+  "en": "Mind +"
+ },
+ {
+  "vi": "Gánh nước mãi, bạn chợt ngộ ra chút đạo lý về nhịp thở.",
+  "en": "Hauling water over and over, you suddenly grasp a little truth about breathing."
+ },
+ {
+  "vi": "Thách sư huynh tỷ thí",
+  "en": "Challenge the senior brother to a duel"
+ },
+ {
+  "vi": "thắng thì được nể, thua thì nhục",
+  "en": "win: respect, lose: humiliation"
+ },
+ {
+  "vi": "Bạn hạ hắn trước mặt cả ngoại môn. {0}",
+  "ph": [
+   "promote(ch, ctx, 'Chuyện đến tai chấp sự.') ?? ''"
+  ],
+  "en": "You beat him in front of the whole outer sect. {0}"
+ },
+ {
+  "vi": "Chuyện đến tai chấp sự.",
+  "en": "Word reaches the deacon."
+ },
+ {
+  "vi": "Bạn bị đánh bầm dập, còn phải làm thêm việc của hắn một tháng.",
+  "en": "You get beaten black and blue, and have to do his chores for a month on top."
+ },
+ {
+  "vi": "Tàng Kinh Các",
+  "en": "Scripture Pavilion"
+ },
+ {
+  "vi": "Là {0}, bạn được vào {1} một tháng. Ba kệ sách, chỉ kịp đọc một.",
+  "ph": [
+   "rankName(c)",
+   "sectSide(c) === 'ta' ? 'Huyết Kinh Động' : 'Tàng Kinh Các'"
+  ],
+  "en": "As a {0}, you're allowed into the {1} for one month. Three shelves of books, time to read only one."
+ },
+ {
+  "vi": "Huyết Kinh Động",
+  "en": "Blood Scripture Cave"
+ },
+ {
+  "vi": "Kệ công pháp",
+  "en": "Technique shelf"
+ },
+ {
+  "vi": "tu vi",
+  "en": "cultivation"
+ },
+ {
+  "vi": "Bạn chép lại một bộ tâm pháp thượng thừa, chân khí lưu chuyển nhanh hẳn.",
+  "en": "You copy down a superior mental technique, and your true qi flows much faster."
+ },
+ {
+  "vi": "Kệ y thư, đan phương",
+  "en": "Medicine and pill recipe shelf"
+ },
+ {
+  "vi": "đan dược",
+  "en": "pills"
+ },
+ {
+  "vi": "Bạn học được hai đan phương, luyện thử thành công ngay lần đầu.",
+  "en": "You learn two pill recipes and succeed on your very first try."
+ },
+ {
+  "vi": "Tầng cấm, không ai được lên",
+  "en": "Forbidden floor, no entry"
+ },
+ {
+  "vi": "liều",
+  "en": "risky"
+ },
+ {
+  "vi": "Bạn đọc trộm được một trang cấm thư. Đầu óc sáng ra, nhưng đêm nào cũng nghe tiếng thì thầm.",
+  "en": "You sneak a read of one page of a forbidden text. Your mind clears, but every night you hear whispers."
+ },
+ {
+  "vi": "Cấm chế tầng cao nhất Tàng Kinh Các kích hoạt. Người ta chỉ tìm thấy tro.",
+  "en": "The restriction on the top floor of the Scripture Pavilion activates. All they find is ash."
+ },
+ {
+  "vi": "Bạn chạm vào cấm chế.",
+  "en": "You touch the restriction."
+ },
+ {
+  "vi": "Bạn bị bắt quả tang, giáng xuống {0}.{1}",
+  "ph": [
+   "rankName(c)",
+   "f ?? ''"
+  ],
+  "en": "You're caught red-handed and demoted to {0}.{1}"
+ },
+ {
+  "vi": "Sư phụ chỉ điểm",
+  "en": "Master's guidance"
+ },
+ {
+  "vi": "Lão tổ {0} gọi bạn vào huyết trì: \"Muốn mạnh hơn, phải trả giá. Ngươi chọn đi.\"",
+  "ph": [
+   "c.sect"
+  ],
+  "en": "The Patriarch of {0} calls you into the blood pool: \"To grow stronger, you must pay a price. Choose.\""
+ },
+ {
+  "vi": "Sư phụ ở {0} gọi bạn lên đỉnh núi lúc bình minh: \"Hôm nay ta dạy con một điều. Con muốn học gì?\"",
+  "ph": [
+   "c.sect"
+  ],
+  "en": "Your Master at {0} calls you to the mountaintop at dawn: \"Today I will teach you one thing. What would you learn?\""
+ },
+ {
+  "vi": "Tắm huyết trì",
+  "en": "Bathe in the blood pool"
+ },
+ {
+  "vi": "Học kiếm",
+  "en": "Learn the sword"
+ },
+ {
+  "vi": "tu vi lớn",
+  "en": "big cultivation"
+ },
+ {
+  "vi": "Máu sôi sùng sục, xương cốt bạn nứt ra rồi liền lại, mạnh hơn trước.",
+  "en": "The blood boils and bubbles; your bones crack and knit back together, stronger than before."
+ },
+ {
+  "vi": "Một kiếm của sư phụ chém đôi mây trời. Bạn nhìn mãi, đến khi trong đầu chỉ còn đường kiếm ấy.",
+  "en": "One sword stroke from your Master cleaves the clouds in two. You stare until that single stroke is all that's left in your mind."
+ },
+ {
+  "vi": "Học tâm pháp tĩnh tâm",
+  "en": "Learn a heart-calming technique"
+ },
+ {
+  "vi": "tâm ma giảm",
+  "en": "heart demon down"
+ },
+ {
+  "vi": "Sư phụ ngồi cùng bạn đến tận hoàng hôn, không nói một lời. Lòng bạn tĩnh như mặt hồ.",
+  "en": "Your Master sits with you until dusk without a word. Your heart grows still as a lake."
+ },
+ {
+  "vi": "Xin một viên Trúc Cơ Đan",
+  "en": "Ask for a Foundation Pill"
+ },
+ {
+  "vi": "đan dược đột phá",
+  "en": "breakthrough pill"
+ },
+ {
+  "vi": "Sư phụ cười, ném cho bạn một bình ngọc: \"Tham lam. Nhưng giống ta hồi trẻ.\"",
+  "en": "Your Master laughs and tosses you a jade bottle: \"Greedy. But just like me when I was young.\""
+ }
+]

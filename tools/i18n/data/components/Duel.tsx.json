@@ -1,0 +1,141 @@
+[
+ {
+  "vi": "Yếu hơn bạn",
+  "en": "Weaker than you"
+ },
+ {
+  "vi": "Ngang tài ngang sức",
+  "en": "Evenly matched"
+ },
+ {
+  "vi": "Mạnh hơn bạn!",
+  "en": "Stronger than you!"
+ },
+ {
+  "vi": "☠ Ma đầu",
+  "en": "☠ Demon lord"
+ },
+ {
+  "vi": "⚠ Sát khí",
+  "en": "⚠ Killing intent"
+ },
+ {
+  "vi": "◈ Tâm cảnh",
+  "en": "◈ Inner world"
+ },
+ {
+  "vi": "⚑ Đại bỉ tông môn",
+  "en": "⚑ Grand Sect Tournament"
+ },
+ {
+  "vi": "⚑ Đồng môn",
+  "en": "⚑ Fellow disciple"
+ },
+ {
+  "vi": "✦ Kỳ ngộ",
+  "en": "✦ Fortuitous encounter"
+ },
+ {
+  "vi": "Chính bạn, kiếp trước",
+  "en": "Yourself, from a past life"
+ },
+ {
+  "vi": "Giang hồ vô danh",
+  "en": "Nameless wanderer"
+ },
+ {
+  "vi": " · đã khuất",
+  "en": " · deceased"
+ },
+ {
+  "vi": "Bạn đang truy sát",
+  "en": "You are hunting them"
+ },
+ {
+  "vi": "Kẻ thù của bạn",
+  "en": "Your enemy"
+ },
+ {
+  "vi": "Huynh đệ kết nghĩa: luận võ không ai lột đồ ai, trà luôn là trà thật.",
+  "en": "Sworn brothers: no one strips anyone's gear when sparring, and the tea is always just tea."
+ },
+ {
+  "vi": "Hai bên từng khiêu khích nhau: thắng thua đều gấp rưỡi.",
+  "en": "You've provoked each other before: wins and losses count one and a half times."
+ },
+ {
+  "vi": "Hạ được người này, lĩnh ",
+  "en": "Defeat this person to claim "
+ },
+ {
+  "vi": " linh thạch tiền truy nã.",
+  "en": " spirit stones in bounty."
+ },
+ {
+  "vi": "Kiếp ",
+  "en": "Life "
+ },
+ {
+  "vi": "Đối thủ không yếu hơn bạn: không đánh mà rời đi thì có thể bị trọng thương, thậm chí mất mạng.",
+  "en": "Your opponent is no weaker than you: walking away without a fight could leave you badly wounded, or even dead."
+ },
+ {
+  "vi": "Luận võ",
+  "en": "Spar"
+ },
+ {
+  "vi": "Kết giao, uống trà luận đạo",
+  "en": "Make friends over tea and Dao talk"
+ },
+ {
+  "vi": "Cáo từ",
+  "en": "Take your leave"
+ },
+ {
+  "vi": " (có thể bị đánh lén)",
+  "en": " (may be ambushed)"
+ },
+ {
+  "vi": "Nghênh chiến",
+  "en": "Accept the fight"
+ },
+ {
+  "vi": "Bỏ đi, không chấp kẻ yếu",
+  "en": "Walk away, don't stoop to the weak"
+ },
+ {
+  "vi": "Liều bỏ chạy ({0}%, dễ trúng đòn sau lưng)",
+  "ph": [
+   "Math.round(fleeChance * 100)"
+  ],
+  "en": "Risk fleeing ({0}%, easy to get hit in the back)"
+ },
+ {
+  "vi": "Lên lôi đài",
+  "en": "Enter the arena"
+ },
+ {
+  "vi": "Tỷ thí",
+  "en": "Compete"
+ },
+ {
+  "vi": "Bỏ lượt Đại bỉ (chờ kỳ sau)",
+  "en": "Skip this Grand Tournament (wait for the next)"
+ },
+ {
+  "vi": "Nhường một bước",
+  "en": "Yield a step"
+ },
+ {
+  "vi": "Đối diện chính mình",
+  "en": "Face yourself"
+ },
+ {
+  "vi": "Nghênh chiến ma đầu",
+  "en": "Face the demon lord"
+ },
+ {
+  "vi": "Thắng: +10 phúc duyên và đồ rơi. Thua: trọng thương, mất 10% linh thạch, không chết.",
+  "en": "Win: +10 Fortune and loot. Lose: badly wounded, lose 10% of spirit stones, but no death."
+ }
+]

@@ -1,0 +1,188 @@
+[
+ {
+  "vi": "Kiếp Số ",
+  "en": "Calamity Count "
+ },
+ {
+  "vi": "Chưa bị làm khó, chưa có thưởng thêm",
+  "en": "No extra difficulty, no extra rewards yet"
+ },
+ {
+  "vi": "Khó hơn {0} bậc, bù lại phúc +{1}%, đồ rơi +{2}%",
+  "ph": [
+   "ks",
+   "ks * 5",
+   "ks * 3"
+  ],
+  "en": "{0} levels harder, but Fortune +{1}%, drops +{2}%"
+ },
+ {
+  "vi": "Bạn tu càng giỏi qua nhiều kiếp, Thiên đạo càng làm khó nhưng thưởng càng nhiều.",
+  "en": "The better you cultivate across lives, the harder the Heavenly Dao makes it - and the bigger the rewards."
+ },
+ {
+  "vi": "Đã uống canh giảm ",
+  "en": "Soup lowered it by "
+ },
+ {
+  "vi": " bậc (gốc là ",
+  "en": " levels (base "
+ },
+ {
+  "vi": "Xem đang bị làm khó những gì",
+  "en": "See what's making it harder"
+ },
+ {
+  "vi": "Chưa có kiếp nạn nào.",
+  "en": "No calamities yet."
+ },
+ {
+  "vi": "Kiếp Số tăng từ những việc sau:",
+  "en": "Calamity Count rises from the following:"
+ },
+ {
+  "vi": "Kiếp Số 5 trở lên mà phi thăng mở kết cục Nghịch Thiên Hành Đạo. Kiếp Số 10 mà Chứng Đạo mở Vạn Kiếp Bất Diệt.",
+  "en": "Ascend with Calamity Count 5+ to unlock the Defy Heaven ending. Attain the Dao at Calamity Count 10 to unlock Ten Thousand Lives Undying."
+ },
+ {
+  "vi": "Hồn lực ",
+  "en": "Soul Power "
+ },
+ {
+  "vi": "Mỗi lần đầu thai tốn ",
+  "en": "Each rebirth costs "
+ },
+ {
+  "vi": ", tự hồi ",
+  "en": ", regenerates "
+ },
+ {
+  "vi": " mỗi giờ",
+  "en": " per hour"
+ },
+ {
+  "vi": " (đầy sau {0} giờ)",
+  "ph": [
+   "honFullIn(hon)"
+  ],
+  "en": " (full in {0} h)"
+ },
+ {
+  "vi": ". Đầu thai liên tục làm hồn mòn, kiếp sau sinh ra yếu hơn. Mỗi nhiệm vụ ngày xong hồi thêm ",
+  "en": ". Rebirthing back to back wears down your soul, and your next life is born weaker. Each daily quest completed restores another "
+ },
+ {
+  "vi": "Kiếp trước là Đan tu, đan rẻ hơn 30% · ",
+  "en": "Past life was an Alchemist, pills 30% cheaper · "
+ },
+ {
+  "vi": "Đan hồi hồn · hôm nay còn {0} viên giá gốc, sau đó mỗi viên đắt thêm 50% · có {1} phúc",
+  "ph": [
+   "HON_PILL_FREE - used",
+   "meta.phucDuyen"
+  ],
+  "en": "Soul pills · {0} left at base price today, then each costs 50% more · {1} Fortune"
+ },
+ {
+  "vi": "Đan hồi hồn · đã dùng {0} viên hôm nay, giá đang tăng · có {1} phúc",
+  "ph": [
+   "used",
+   "meta.phucDuyen"
+  ],
+  "en": "Soul pills · {0} used today, price rising · {1} Fortune"
+ },
+ {
+  "vi": "{0} ({1}): hồi {2} Hồn lực",
+  "ph": [
+   "p.name",
+   "p.grade",
+   "p.gain"
+  ],
+  "en": "{0} ({1}): restores {2} Soul Power"
+ },
+ {
+  "vi": "đầy",
+  "en": "full"
+ },
+ {
+  "vi": " hồn · ",
+  "en": " soul · "
+ },
+ {
+  "vi": " phúc",
+  "en": " Fortune"
+ },
+ {
+  "vi": "Hồn khi sinh: ",
+  "en": "Soul at birth: "
+ },
+ {
+  "vi": "Cầu Nại Hà",
+  "en": "Nại Hà Bridge"
+ },
+ {
+  "vi": "‹ Lá số",
+  "en": "‹ Fate chart"
+ },
+ {
+  "vi": "1 Lá số",
+  "en": "1 Fate chart"
+ },
+ {
+  "vi": "2 Cầu Nại Hà",
+  "en": "2 Nại Hà Bridge"
+ },
+ {
+  "vi": "Mạnh Bà múc một chén canh, khói xanh bốc lên: ",
+  "en": "Meng Po ladles out a bowl of soup, green vapor rising: "
+ },
+ {
+  "vi": "&ldquo;Uống đi, quên hết mà đi cho nhẹ.&rdquo;",
+  "en": "&ldquo;Drink, forget it all, and go on lighter.&rdquo;"
+ },
+ {
+  "vi": "Uống canh",
+  "en": "Drink the soup"
+ },
+ {
+  "vi": "Được: khí vận +15, phúc +20%, hồi 30 Hồn lực",
+  "en": "Gain: Luck +15, Fortune +20%, restore 30 Soul Power"
+ },
+ {
+  "vi": ", Kiếp Số giảm 1",
+  "en": ", Calamity Count -1"
+ },
+ {
+  "vi": "Mất: thần binh truyền kiếp và rương kiếp trước",
+  "en": "Lose: inherited divine weapon and past-life chest"
+ },
+ {
+  "vi": "Uống rồi đầu thai ▶",
+  "en": "Drink and be reborn ▶"
+ },
+ {
+  "vi": "Hất chén, không quên",
+  "en": "Toss the bowl, don't forget"
+ },
+ {
+  "vi": "Được: giữ thần binh và rương kiếp trước",
+  "en": "Gain: keep divine weapon and past-life chest"
+ },
+ {
+  "vi": "Mất: lần này Câu hồn sứ giả sẽ tới bắt hồn bạn!",
+  "en": "Lose: this time the Soul-Hooking Envoy will come for your soul!"
+ },
+ {
+  "vi": "Mất: không được thưởng. Hất {0} lần liền thì Câu hồn sứ giả tới bắt (đang {1}/{2})",
+  "ph": [
+   "CAU_HON_AT",
+   "nd",
+   "CAU_HON_AT"
+  ],
+  "en": "Lose: no rewards. Toss it {0} times in a row and the Soul-Hooking Envoy comes for you (now {1}/{2})"
+ },
+ {
+  "vi": "Hất chén rồi đầu thai ▶",
+  "en": "Toss and be reborn ▶"
+ }
+]

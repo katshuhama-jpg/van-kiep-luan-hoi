@@ -1,0 +1,1770 @@
+[
+ {
+  "vi": "Phàm Nhân",
+  "en": "Mortal"
+ },
+ {
+  "vi": "Luyện Khí",
+  "en": "Qi Refining"
+ },
+ {
+  "vi": "Trúc Cơ",
+  "en": "Foundation Establishment"
+ },
+ {
+  "vi": "Kim Đan",
+  "en": "Golden Core"
+ },
+ {
+  "vi": "Nguyên Anh",
+  "en": "Nascent Soul"
+ },
+ {
+  "vi": "Hóa Thần",
+  "en": "Spirit Transformation"
+ },
+ {
+  "vi": "Luyện Hư",
+  "en": "Void Refinement"
+ },
+ {
+  "vi": "Độ Kiếp",
+  "en": "Tribulation Transcendence"
+ },
+ {
+  "vi": "Chân Tiên",
+  "en": "True Immortal"
+ },
+ {
+  "vi": "Huyền Tiên",
+  "en": "Mystic Immortal"
+ },
+ {
+  "vi": "Kim Tiên",
+  "en": "Golden Immortal"
+ },
+ {
+  "vi": "Đại La Kim Tiên",
+  "en": "Daluo Golden Immortal"
+ },
+ {
+  "vi": "Ma Tướng",
+  "en": "Demon General"
+ },
+ {
+  "vi": "Ma Vương",
+  "en": "Demon King"
+ },
+ {
+  "vi": "Ma Hoàng",
+  "en": "Demon Monarch"
+ },
+ {
+  "vi": "Ma Đế",
+  "en": "Demon Emperor"
+ },
+ {
+  "vi": "Hư Tiên",
+  "en": "Void Immortal"
+ },
+ {
+  "vi": "Huyền Tôn",
+  "en": "Mystic Sovereign"
+ },
+ {
+  "vi": "Thái Hư Chân Quân",
+  "en": "Great Void True Lord"
+ },
+ {
+  "vi": "Hỗn Nguyên Đạo Tổ",
+  "en": "Primordial Dao Ancestor"
+ },
+ {
+  "vi": "Tiên giới",
+  "en": "Immortal Realm"
+ },
+ {
+  "vi": "Ma giới",
+  "en": "Demon Realm"
+ },
+ {
+  "vi": "Thái Hư giới",
+  "en": "Great Void Realm"
+ },
+ {
+  "vi": "Phi Thăng",
+  "en": "Ascension"
+ },
+ {
+  "vi": "Sơ kỳ",
+  "en": "Early"
+ },
+ {
+  "vi": "Trung kỳ",
+  "en": "Middle"
+ },
+ {
+  "vi": "Hậu kỳ",
+  "en": "Late"
+ },
+ {
+  "vi": "{0} tầng {1}",
+  "ph": [
+   "r.name",
+   "layer"
+  ],
+  "en": "{0} Layer {1}"
+ },
+ {
+  "vi": "Kiếm tu",
+  "en": "Sword Cultivator"
+ },
+ {
+  "vi": "Kiếm",
+  "en": "Sword"
+ },
+ {
+  "vi": "Lấy kiếm nhập đạo. Công mạnh nhất, tu nhanh. Hay chết trận vì ham đánh.",
+  "en": "Enter the Dao through the sword. Strongest attack, fast cultivation. Often dies in battle from loving a fight too much."
+ },
+ {
+  "vi": "Đan tu",
+  "en": "Alchemist"
+ },
+ {
+  "vi": "Đan",
+  "en": "Alchemy"
+ },
+ {
+  "vi": "Sống lâu nhất trong các con đường. Luyện đan kiếm nhiều linh thạch, tự chế đan đột phá, tu nhanh hơn chút, có đan dược hộ thân nên khó chết, nhưng ra đòn không mạnh. Kiếp sau còn nhớ cách luyện: đan hồi hồn rẻ hơn 30%.",
+  "en": "The longest-lived of all Paths. Alchemy earns plenty of spirit stones, you brew your own breakthrough pills, cultivate a little faster, and your pills keep you alive, but your strikes are weak. Next life you still remember the recipes: soul-return pills cost 30% less."
+ },
+ {
+  "vi": "Trận tu",
+  "en": "Formation Master"
+ },
+ {
+  "vi": "Trận",
+  "en": "Formation"
+ },
+ {
+  "vi": "Bày trận, vẽ phù. Thủ cực chắc, bế quan an toàn, ít bị tập kích. Thường sống rất thọ.",
+  "en": "Lay formations, draw talismans. Rock-solid defense, safe seclusion, rarely ambushed. Usually lives very long."
+ },
+ {
+  "vi": "Phật tu",
+  "en": "Buddhist Cultivator"
+ },
+ {
+  "vi": "Phật",
+  "en": "Buddhist"
+ },
+ {
+  "vi": "Từ bi hỷ xả. Máu và thủ dày, thọ nguyên dài, tâm ma khó xâm nhập, đột phá vững vàng.",
+  "en": "Compassion and equanimity. Thick HP and defense, long lifespan, heart demons find no way in, steady breakthroughs."
+ },
+ {
+  "vi": "Ma tu",
+  "en": "Demonic Cultivator"
+ },
+ {
+  "vi": "Hút linh lực, luyện huyết công. Tu nhanh nhất, nhưng tâm ma cực nặng.",
+  "en": "Drain spiritual power, refine blood arts. Fastest cultivation, but brutal heart demons."
+ },
+ {
+  "vi": "Yêu tu",
+  "en": "Yao Cultivator"
+ },
+ {
+  "vi": "Yêu",
+  "en": "Yao"
+ },
+ {
+  "vi": "Thức tỉnh huyết mạch yêu tộc. Thân thể khỏe, có thể hóa hình. Sống thọ nhất trong các đạo.",
+  "en": "Awaken the bloodline of the yao race. Sturdy body, can take human form. The longest lifespan of all Paths."
+ },
+ {
+  "vi": "Thiên linh căn",
+  "en": "Heavenly Spiritual Root"
+ },
+ {
+  "vi": "Địa linh căn",
+  "en": "Earthly Spiritual Root"
+ },
+ {
+  "vi": "Huyền linh căn",
+  "en": "Mystic Spiritual Root"
+ },
+ {
+  "vi": "Tạp linh căn",
+  "en": "Mixed Spiritual Root"
+ },
+ {
+  "vi": "Phế linh căn",
+  "en": "Crippled Spiritual Root"
+ },
+ {
+  "vi": "Con nhà nông ở Thanh Thủy thôn",
+  "en": "A farmer's child from Thanh Thủy Village"
+ },
+ {
+  "vi": "Con tiểu thương ở trấn Lạc Hà",
+  "en": "A small trader's child from Lạc Hà Town"
+ },
+ {
+  "vi": "Chi thứ của Lâm gia, một tu tiên thế gia",
+  "en": "A branch scion of the Lâm clan, a cultivation family"
+ },
+ {
+  "vi": "Cô nhi được lão ăn mày nuôi lớn",
+  "en": "An orphan raised by an old beggar"
+ },
+ {
+  "vi": "Đứa trẻ bị bỏ trước cổng chùa Vân Tịch",
+  "en": "A child abandoned at the gate of Vân Tịch Temple"
+ },
+ {
+  "vi": "Tiểu yêu sinh ra ở Vạn Yêu Lâm",
+  "en": "A little yao born in Vạn Yêu Forest"
+ },
+ {
+  "vi": "Huyền",
+  "en": "Huyền"
+ },
+ {
+  "vi": "Thiên",
+  "en": "Thiên"
+ },
+ {
+  "vi": "Vô",
+  "en": "Vô"
+ },
+ {
+  "vi": "Trường",
+  "en": "Trường"
+ },
+ {
+  "vi": "Lăng",
+  "en": "Lăng"
+ },
+ {
+  "vi": "Vân",
+  "en": "Vân"
+ },
+ {
+  "vi": "Hạo",
+  "en": "Hạo"
+ },
+ {
+  "vi": "Tử",
+  "en": "Tử"
+ },
+ {
+  "vi": "Mặc",
+  "en": "Mặc"
+ },
+ {
+  "vi": "Dạ",
+  "en": "Dạ"
+ },
+ {
+  "vi": "Cảnh",
+  "en": "Cảnh"
+ },
+ {
+  "vi": "Nhất",
+  "en": "Nhất"
+ },
+ {
+  "vi": "Thừa",
+  "en": "Thừa"
+ },
+ {
+  "vi": "Bách",
+  "en": "Bách"
+ },
+ {
+  "vi": "Lạc",
+  "en": "Lạc"
+ },
+ {
+  "vi": "Tiêu",
+  "en": "Tiêu"
+ },
+ {
+  "vi": "Hà",
+  "en": "Hà"
+ },
+ {
+  "vi": "Trần",
+  "en": "Trần"
+ },
+ {
+  "vi": "Ngôn",
+  "en": "Ngôn"
+ },
+ {
+  "vi": "Dật",
+  "en": "Dật"
+ },
+ {
+  "vi": "Khuyết",
+  "en": "Khuyết"
+ },
+ {
+  "vi": "Thần",
+  "en": "Thần"
+ },
+ {
+  "vi": "Sơn",
+  "en": "Sơn"
+ },
+ {
+  "vi": "Hải",
+  "en": "Hải"
+ },
+ {
+  "vi": "Uyên",
+  "en": "Uyên"
+ },
+ {
+  "vi": "Hàn",
+  "en": "Hàn"
+ },
+ {
+  "vi": "Lâm",
+  "en": "Lâm"
+ },
+ {
+  "vi": "Kỳ",
+  "en": "Kỳ"
+ },
+ {
+  "vi": "Hành",
+  "en": "Hành"
+ },
+ {
+  "vi": "Viễn",
+  "en": "Viễn"
+ },
+ {
+  "vi": "Tuyệt",
+  "en": "Tuyệt"
+ },
+ {
+  "vi": "Tuyết",
+  "en": "Tuyết"
+ },
+ {
+  "vi": "Nguyệt",
+  "en": "Nguyệt"
+ },
+ {
+  "vi": "Uyển",
+  "en": "Uyển"
+ },
+ {
+  "vi": "Băng",
+  "en": "Băng"
+ },
+ {
+  "vi": "Vũ",
+  "en": "Vũ"
+ },
+ {
+  "vi": "Ngưng",
+  "en": "Ngưng"
+ },
+ {
+  "vi": "Tiểu",
+  "en": "Tiểu"
+ },
+ {
+  "vi": "Mộng",
+  "en": "Mộng"
+ },
+ {
+  "vi": "Hàm",
+  "en": "Hàm"
+ },
+ {
+  "vi": "Như",
+  "en": "Như"
+ },
+ {
+  "vi": "Ỷ",
+  "en": "Ỷ"
+ },
+ {
+  "vi": "Vãn",
+  "en": "Vãn"
+ },
+ {
+  "vi": "Tố",
+  "en": "Tố"
+ },
+ {
+  "vi": "Yên",
+  "en": "Yên"
+ },
+ {
+  "vi": "Tâm",
+  "en": "Tâm"
+ },
+ {
+  "vi": "Đồng",
+  "en": "Đồng"
+ },
+ {
+  "vi": "Sương",
+  "en": "Sương"
+ },
+ {
+  "vi": "Điệp",
+  "en": "Điệp"
+ },
+ {
+  "vi": "Âm",
+  "en": "Âm"
+ },
+ {
+  "vi": "Hương",
+  "en": "Hương"
+ },
+ {
+  "vi": "Thường",
+  "en": "Thường"
+ },
+ {
+  "vi": "Cầm",
+  "en": "Cầm"
+ },
+ {
+  "vi": "Âu Dương",
+  "en": "Âu Dương"
+ },
+ {
+  "vi": "Thượng Quan",
+  "en": "Thượng Quan"
+ },
+ {
+  "vi": "Tư Mã",
+  "en": "Tư Mã"
+ },
+ {
+  "vi": "Độc Cô",
+  "en": "Độc Cô"
+ },
+ {
+  "vi": "Lệnh Hồ",
+  "en": "Lệnh Hồ"
+ },
+ {
+  "vi": "Hoàng Phủ",
+  "en": "Hoàng Phủ"
+ },
+ {
+  "vi": "Mộ Dung",
+  "en": "Mộ Dung"
+ },
+ {
+  "vi": "Đông Phương",
+  "en": "Đông Phương"
+ },
+ {
+  "vi": "Tây Môn",
+  "en": "Tây Môn"
+ },
+ {
+  "vi": "Gia Cát",
+  "en": "Gia Cát"
+ },
+ {
+  "vi": "Công Tôn",
+  "en": "Công Tôn"
+ },
+ {
+  "vi": "Tạ",
+  "en": "Tạ"
+ },
+ {
+  "vi": "Phương",
+  "en": "Phương"
+ },
+ {
+  "vi": "Ôn",
+  "en": "Ôn"
+ },
+ {
+  "vi": "Cố",
+  "en": "Cố"
+ },
+ {
+  "vi": "Liễu",
+  "en": "Liễu"
+ },
+ {
+  "vi": "Kỷ",
+  "en": "Kỷ"
+ },
+ {
+  "vi": "Sở",
+  "en": "Sở"
+ },
+ {
+  "vi": "Yến",
+  "en": "Yến"
+ },
+ {
+  "vi": "Mạc",
+  "en": "Mạc"
+ },
+ {
+  "vi": "Thôi",
+  "en": "Thôi"
+ },
+ {
+  "vi": "Lục",
+  "en": "Lục"
+ },
+ {
+  "vi": "Diệp",
+  "en": "Diệp"
+ },
+ {
+  "vi": "Tô",
+  "en": "Tô"
+ },
+ {
+  "vi": "Lý",
+  "en": "Lý"
+ },
+ {
+  "vi": "Thẩm",
+  "en": "Thẩm"
+ },
+ {
+  "vi": "Bạch",
+  "en": "Bạch"
+ },
+ {
+  "vi": "Đường",
+  "en": "Đường"
+ },
+ {
+  "vi": "Tần",
+  "en": "Tần"
+ },
+ {
+  "vi": "Thanh Vân",
+  "en": "Thanh Vân"
+ },
+ {
+  "vi": "Phàm",
+  "en": "Phàm"
+ },
+ {
+  "vi": "Trường Sinh",
+  "en": "Trường Sinh"
+ },
+ {
+  "vi": "Vô Kỵ",
+  "en": "Vô Kỵ"
+ },
+ {
+  "vi": "Thiên Hành",
+  "en": "Thiên Hành"
+ },
+ {
+  "vi": "Tử Kỳ",
+  "en": "Tử Kỳ"
+ },
+ {
+  "vi": "Tuyết Nhi",
+  "en": "Tuyết Nhi"
+ },
+ {
+  "vi": "Nguyệt Hoa",
+  "en": "Nguyệt Hoa"
+ },
+ {
+  "vi": "Tử Yên",
+  "en": "Tử Yên"
+ },
+ {
+  "vi": "Băng Tâm",
+  "en": "Băng Tâm"
+ },
+ {
+  "vi": "Vũ Đồng",
+  "en": "Vũ Đồng"
+ },
+ {
+  "vi": "Ngưng Sương",
+  "en": "Ngưng Sương"
+ },
+ {
+  "vi": "Tiểu Điệp",
+  "en": "Tiểu Điệp"
+ },
+ {
+  "vi": "Diệp Ngưng Sương",
+  "en": "Diệp Ngưng Sương"
+ },
+ {
+  "vi": "Tô Vũ Đồng",
+  "en": "Tô Vũ Đồng"
+ },
+ {
+  "vi": "Hàn Mặc",
+  "en": "Hàn Mặc"
+ },
+ {
+  "vi": "Bạch Tử Kỳ",
+  "en": "Bạch Tử Kỳ"
+ },
+ {
+  "vi": "Giang Nguyệt Hoa",
+  "en": "Giang Nguyệt Hoa"
+ },
+ {
+  "vi": "Lý Huyền",
+  "en": "Lý Huyền"
+ },
+ {
+  "vi": "Vân Băng Tâm",
+  "en": "Vân Băng Tâm"
+ },
+ {
+  "vi": "Tiêu Hạo",
+  "en": "Tiêu Hạo"
+ },
+ {
+  "vi": "Tu luyện",
+  "en": "Cultivate"
+ },
+ {
+  "vi": "Tăng tu vi",
+  "en": "Raise cultivation"
+ },
+ {
+  "vi": "Luyện đan",
+  "en": "Alchemy"
+ },
+ {
+  "vi": "Ra đan dược, linh thạch",
+  "en": "Pills, spirit stones"
+ },
+ {
+  "vi": "Du ngoạn",
+  "en": "Wander"
+ },
+ {
+  "vi": "Nhiều kỳ ngộ",
+  "en": "Many encounters"
+ },
+ {
+  "vi": "Kiếm tiền",
+  "en": "Earn money"
+ },
+ {
+  "vi": "Linh thạch",
+  "en": "Spirit stones"
+ },
+ {
+  "vi": "Kết duyên",
+  "en": "Romance"
+ },
+ {
+  "vi": "Tâm cảnh, đạo lữ",
+  "en": "Mind, Dao companion"
+ },
+ {
+  "vi": "Trừ yêu",
+  "en": "Hunt demons"
+ },
+ {
+  "vi": "Đánh quái lên cấp",
+  "en": "Slay monsters, level up"
+ },
+ {
+  "vi": "Áo vải thô",
+  "en": "Coarse cloth robe"
+ },
+ {
+  "vi": "Áo mặc từ nhỏ.",
+  "en": "Worn since childhood."
+ },
+ {
+  "vi": "Có sẵn từ lúc sinh",
+  "en": "Owned since birth"
+ },
+ {
+  "vi": "Áo da thú",
+  "en": "Beast-hide coat"
+ },
+ {
+  "vi": "Da thú may vụng, chắc chắn.",
+  "en": "Clumsily stitched hide, but sturdy."
+ },
+ {
+  "vi": "Nho y thư sinh",
+  "en": "Scholar's robe"
+ },
+ {
+  "vi": "Áo của người đọc sách.",
+  "en": "The robe of a bookish man."
+ },
+ {
+  "vi": "Thanh Sam",
+  "en": "Azure Robe"
+ },
+ {
+  "vi": "Áo xanh ngọc của đệ tử.",
+  "en": "Jade-green disciple robe."
+ },
+ {
+  "vi": "Võ phục đỏ",
+  "en": "Red martial garb"
+ },
+ {
+  "vi": "Áo bó gọn của võ sinh.",
+  "en": "Snug clothes of a martial student."
+ },
+ {
+  "vi": "Dạ hành y",
+  "en": "Night-walker garb"
+ },
+ {
+  "vi": "Đồ đen của kẻ đi đêm.",
+  "en": "Black clothes for those who prowl at night."
+ },
+ {
+  "vi": "Gấm vóc thương nhân",
+  "en": "Merchant's brocade"
+ },
+ {
+  "vi": "Mặc vào ai cũng tin bạn có tiền.",
+  "en": "Wear it and everyone believes you are rich."
+ },
+ {
+  "vi": "Bạch Y Tuyết Văn",
+  "en": "Snow-Cloud White Robe"
+ },
+ {
+  "vi": "Áo trắng thêu mây. Tà khí khó gần.",
+  "en": "White robe embroidered with clouds. Evil qi keeps its distance."
+ },
+ {
+  "vi": "Huyết Sát Bào",
+  "en": "Blood Fiend Robe"
+ },
+ {
+  "vi": "Áo đen viền máu.",
+  "en": "Black robe trimmed with blood."
+ },
+ {
+  "vi": "Cà sa Kim Lan",
+  "en": "Golden Orchid Kasaya"
+ },
+ {
+  "vi": "Cà sa của cao tăng.",
+  "en": "The kasaya of an eminent monk."
+ },
+ {
+  "vi": "Đạo bào Thái Cực",
+  "en": "Taiji Daoist Robe"
+ },
+ {
+  "vi": "Áo đạo sĩ thêu âm dương.",
+  "en": "A Daoist robe embroidered with yin and yang."
+ },
+ {
+  "vi": "Đồng giáp",
+  "en": "Bronze armor"
+ },
+ {
+  "vi": "Giáp đồng nặng trịch.",
+  "en": "Heavy bronze plates."
+ },
+ {
+  "vi": "Tử Kim Bào",
+  "en": "Purple-Gold Robe"
+ },
+ {
+  "vi": "Áo tím chỉ vàng của chân nhân.",
+  "en": "Purple robe with gold thread, worn by true masters."
+ },
+ {
+  "vi": "Tiên y Lưu Vân",
+  "en": "Flowing Cloud Immortal Robe"
+ },
+ {
+  "vi": "Áo dệt từ mây, nhẹ như không.",
+  "en": "Woven from clouds, light as nothing."
+ },
+ {
+  "vi": "Áo tơi lá",
+  "en": "Leaf raincoat"
+ },
+ {
+  "vi": "Áo tơi của khách giang hồ.",
+  "en": "The raincoat of a jianghu wanderer."
+ },
+ {
+  "vi": "Hỉ phục đỏ",
+  "en": "Red wedding robe"
+ },
+ {
+  "vi": "Áo cưới của ai bỏ quên.",
+  "en": "A wedding robe someone left behind."
+ },
+ {
+  "vi": "Áo trăm mảnh Cái Bang",
+  "en": "Beggar Sect patchwork robe"
+ },
+ {
+  "vi": "Nghèo mà có khí tiết.",
+  "en": "Poor, but with dignity."
+ },
+ {
+  "vi": "Khi túng quẫn",
+  "en": "When broke"
+ },
+ {
+  "vi": "Long bào cũ",
+  "en": "Old dragon robe"
+ },
+ {
+  "vi": "Áo rồng của một vị vua mất nước.",
+  "en": "The dragon robe of a king who lost his kingdom."
+ },
+ {
+  "vi": "Du ngoạn, rất hiếm",
+  "en": "Wander, very rare"
+ },
+ {
+  "vi": "Áo da sói",
+  "en": "Wolfskin coat"
+ },
+ {
+  "vi": "Lột từ sói xám thành tinh.",
+  "en": "Flayed from a grey wolf turned demon."
+ },
+ {
+  "vi": "Giáp vảy mãng",
+  "en": "Python-scale armor"
+ },
+ {
+  "vi": "Ghép từ vảy mãng xà.",
+  "en": "Pieced together from python scales."
+ },
+ {
+  "vi": "Cửu Vĩ hồ cừu",
+  "en": "Nine-Tailed Fox Fur"
+ },
+ {
+  "vi": "Áo lông hồ ly chín đuôi, mê hoặc lòng người.",
+  "en": "Nine-tailed fox fur that bewitches all who see it."
+ },
+ {
+  "vi": "Hắc Hùng trọng giáp",
+  "en": "Black Bear Heavy Armor"
+ },
+ {
+  "vi": "Da gấu ngàn năm, đao kiếm khó xuyên.",
+  "en": "Thousand-year bear hide; blades barely pierce it."
+ },
+ {
+  "vi": "Kim Vũ thần y",
+  "en": "Golden Feather Divine Robe"
+ },
+ {
+  "vi": "Dệt từ lông cánh Kim Sí Đại Bằng.",
+  "en": "Woven from the wing feathers of the Golden-Winged Roc."
+ },
+ {
+  "vi": "Băng Giao lân giáp",
+  "en": "Ice Jiao Scale Armor"
+ },
+ {
+  "vi": "Lạnh buốt, đóng băng kẻ dám chạm vào.",
+  "en": "Bitterly cold; it freezes anyone who dares touch it."
+ },
+ {
+  "vi": "Hỏa Lân chiến bào",
+  "en": "Fire Qilin War Robe"
+ },
+ {
+  "vi": "Lửa kỳ lân cháy mãi không tắt.",
+  "en": "Qilin flame that never goes out."
+ },
+ {
+  "vi": "Hắc Long đế bào",
+  "en": "Black Dragon Imperial Robe"
+ },
+ {
+  "vi": "Áo của long tộc thượng cổ.",
+  "en": "A robe of the ancient dragon race."
+ },
+ {
+  "vi": "Huyết Ma y",
+  "en": "Blood Demon Garb"
+ },
+ {
+  "vi": "Nhuộm từ biển máu.",
+  "en": "Dyed in a sea of blood."
+ },
+ {
+  "vi": "Minh chủ cẩm bào",
+  "en": "Alliance Leader's Brocade"
+ },
+ {
+  "vi": "Tước được từ cao thủ võ lâm.",
+  "en": "Stripped from a martial arts master."
+ },
+ {
+  "vi": "Mộc kiếm",
+  "en": "Wooden sword"
+ },
+ {
+  "vi": "Kiếm gỗ tập võ.",
+  "en": "A wooden practice sword."
+ },
+ {
+  "vi": "Cuốc sắt",
+  "en": "Iron hoe"
+ },
+ {
+  "vi": "Làm lụng chăm chỉ.",
+  "en": "For honest hard work."
+ },
+ {
+  "vi": "Quạt thư sinh",
+  "en": "Scholar's fan"
+ },
+ {
+  "vi": "Phe phẩy cho có phong thái.",
+  "en": "Waved about for the air of refinement."
+ },
+ {
+  "vi": "Thiết kiếm",
+  "en": "Iron sword"
+ },
+ {
+  "vi": "Kiếm sắt rèn thường.",
+  "en": "An ordinary forged iron sword."
+ },
+ {
+  "vi": "Cung săn",
+  "en": "Hunting bow"
+ },
+ {
+  "vi": "Bắn từ xa, ít khi bị thương.",
+  "en": "Shoots from afar, rarely gets hurt."
+ },
+ {
+  "vi": "Trường thương",
+  "en": "Long spear"
+ },
+ {
+  "vi": "Một tấc dài, một tấc mạnh.",
+  "en": "An inch longer, an inch stronger."
+ },
+ {
+  "vi": "Ngọc tiêu",
+  "en": "Jade flute"
+ },
+ {
+  "vi": "Tiếng tiêu trấn tâm ma.",
+  "en": "Its notes calm heart demons."
+ },
+ {
+  "vi": "Phất trần",
+  "en": "Horsetail whisk"
+ },
+ {
+  "vi": "Phất trần của đạo nhân.",
+  "en": "A Daoist's whisk."
+ },
+ {
+  "vi": "Phán quan bút",
+  "en": "Judge's brush"
+ },
+ {
+  "vi": "Điểm huyệt như viết chữ.",
+  "en": "Strikes acupoints like writing calligraphy."
+ },
+ {
+  "vi": "Thanh Phong Kiếm",
+  "en": "Clear Wind Sword"
+ },
+ {
+  "vi": "Phi kiếm cấp thấp.",
+  "en": "A low-grade flying sword."
+ },
+ {
+  "vi": "Bát lăng chùy",
+  "en": "Eight-edged mace"
+ },
+ {
+  "vi": "Nặng ngàn cân, một chùy vỡ đá.",
+  "en": "A thousand catties heavy; one blow shatters stone."
+ },
+ {
+  "vi": "Tử Kim Đan Lô",
+  "en": "Purple-Gold Pill Furnace"
+ },
+ {
+  "vi": "Lò luyện đan mang theo người.",
+  "en": "A portable alchemy furnace."
+ },
+ {
+  "vi": "Huyết Ma Đao",
+  "en": "Blood Demon Saber"
+ },
+ {
+  "vi": "Đao uống máu.",
+  "en": "A saber that drinks blood."
+ },
+ {
+  "vi": "Âm Dương song kiếm",
+  "en": "Yin-Yang Twin Swords"
+ },
+ {
+  "vi": "Một âm một dương, công thủ vẹn toàn.",
+  "en": "One yin, one yang, perfect in offense and defense."
+ },
+ {
+  "vi": "Dao phay nhà bếp",
+  "en": "Kitchen cleaver"
+ },
+ {
+  "vi": "Đồ nghề của mẹ. Chém gì cũng ngọt.",
+  "en": "Mom's tool of the trade. Cuts through anything."
+ },
+ {
+  "vi": "Tuổi thơ",
+  "en": "Childhood"
+ },
+ {
+  "vi": "Roi da trâu",
+  "en": "Buffalo-hide whip"
+ },
+ {
+  "vi": "Roi chăn trâu, quất kêu đét đét.",
+  "en": "A buffalo-herding whip that cracks like thunder."
+ },
+ {
+  "vi": "Tuổi thơ, kiếm tiền",
+  "en": "Childhood, earning money"
+ },
+ {
+  "vi": "Cần câu Khương Tử Nha",
+  "en": "Jiang Ziya's fishing rod"
+ },
+ {
+  "vi": "Câu thẳng không mồi, kẻ nguyện mắc câu.",
+  "en": "Straight hook, no bait - only the willing get caught."
+ },
+ {
+  "vi": "Kiếm gãy vô danh",
+  "en": "Nameless broken sword"
+ },
+ {
+  "vi": "Kiếm gãy cắm trên mộ cổ. Vẫn còn kiếm ý.",
+  "en": "A broken sword stuck in an ancient grave. Its sword intent lingers."
+ },
+ {
+  "vi": "Du ngoạn, tu luyện",
+  "en": "Wander, cultivate"
+ },
+ {
+  "vi": "Lang Nha đao",
+  "en": "Wolf Fang Saber"
+ },
+ {
+  "vi": "Răng sói mài thành lưỡi đao.",
+  "en": "Wolf fangs ground into a blade."
+ },
+ {
+  "vi": "Như Ý côn",
+  "en": "Ruyi Staff"
+ },
+ {
+  "vi": "Cướp được từ Ác Hầu. Dài ngắn tùy ý.",
+  "en": "Taken from the Wicked Ape. Grows long or short at will."
+ },
+ {
+  "vi": "Khai sơn đại đao",
+  "en": "Mountain-Splitting Saber"
+ },
+ {
+  "vi": "Đao của trùm sơn tặc.",
+  "en": "The saber of a bandit king."
+ },
+ {
+  "vi": "Độc Hạt kiếm",
+  "en": "Poison Scorpion Sword"
+ },
+ {
+  "vi": "Tẩm độc ong chúa, trúng là tê liệt.",
+  "en": "Laced with queen-wasp venom; one hit paralyzes."
+ },
+ {
+  "vi": "Thiết chưởng thủ sáo",
+  "en": "Iron Palm gauntlets"
+ },
+ {
+  "vi": "Găng sắt của bang chủ Thiết Chưởng.",
+  "en": "Iron gloves of the Iron Palm Gang leader."
+ },
+ {
+  "vi": "Vạn Độc phiến",
+  "en": "Myriad Poison Fan"
+ },
+ {
+  "vi": "Phẩy một cái, độc bay mười dặm.",
+  "en": "One wave and poison flies ten miles."
+ },
+ {
+  "vi": "Cuồng Đao",
+  "en": "Mad Saber"
+ },
+ {
+  "vi": "Đao chưa ra khỏi vỏ đã có người chết.",
+  "en": "Men die before it even leaves the sheath."
+ },
+ {
+  "vi": "Huyết Ma liêm",
+  "en": "Blood Demon Scythe"
+ },
+ {
+  "vi": "Lưỡi hái gặt mạng người.",
+  "en": "A scythe that reaps lives."
+ },
+ {
+  "vi": "Băng Giao thương",
+  "en": "Ice Jiao Spear"
+ },
+ {
+  "vi": "Mũi thương đóng băng máu kẻ địch.",
+  "en": "Its tip freezes the enemy's blood."
+ },
+ {
+  "vi": "Vô Danh kiếm",
+  "en": "Nameless Sword"
+ },
+ {
+  "vi": "Kiếm của Kiếm Si. Chưa từng thua.",
+  "en": "The sword of the Sword Fanatic. Never lost a fight."
+ },
+ {
+  "vi": "Hỏa Lân cung",
+  "en": "Fire Qilin Bow"
+ },
+ {
+  "vi": "Tên bắn ra cháy thành lửa.",
+  "en": "Its arrows burst into flame."
+ },
+ {
+  "vi": "Ngọc bội hộ thân",
+  "en": "Protective jade pendant"
+ },
+ {
+  "vi": "Đỡ một lần chí mạng.",
+  "en": "Blocks one fatal blow."
+ },
+ {
+  "vi": "Hồ lô rượu",
+  "en": "Wine gourd"
+ },
+ {
+  "vi": "Ung dung tự tại.",
+  "en": "Carefree and at ease."
+ },
+ {
+  "vi": "Bản mệnh phi kiếm",
+  "en": "Natal flying sword"
+ },
+ {
+  "vi": "Kiếm bay vòng quanh chủ.",
+  "en": "A sword that circles its master."
+ },
+ {
+  "vi": "Công",
+  "en": "Attack"
+ },
+ {
+  "vi": "Thủ",
+  "en": "Defense"
+ },
+ {
+  "vi": "Máu",
+  "en": "HP"
+ },
+ {
+  "vi": "Bạo kích",
+  "en": "Crit"
+ },
+ {
+  "vi": "Rút lui",
+  "en": "Flee"
+ },
+ {
+  "vi": "Tu vi trảm yêu",
+  "en": "Demon-slaying cultivation"
+ },
+ {
+  "vi": "Rơi đồ",
+  "en": "Drops"
+ },
+ {
+  "vi": "Tâm cảnh/năm",
+  "en": "Mind/yr"
+ },
+ {
+  "vi": "Tâm ma/năm",
+  "en": "Heart demon/yr"
+ },
+ {
+  "vi": "Tụ Khí Đan",
+  "en": "Qi Gathering Pill"
+ },
+ {
+  "vi": "+tu vi ngay. Mỗi năm chỉ viên đầu đủ dược lực",
+  "en": "+cultivation now. Only the first pill each year has full potency"
+ },
+ {
+  "vi": "Trúc Cơ Đan",
+  "en": "Foundation Pill"
+ },
+ {
+  "vi": "Tăng tỉ lệ đột phá đại cảnh giới",
+  "en": "Raises major breakthrough odds"
+ },
+ {
+  "vi": "Diên Thọ Đan",
+  "en": "Longevity Pill"
+ },
+ {
+  "vi": "+thọ nguyên. Uống nhiều thì kháng dược, mua nhiều thì đắt dần",
+  "en": "+lifespan. Tolerance builds with use, price climbs with each purchase"
+ },
+ {
+  "vi": "Thanh Tâm Đan",
+  "en": "Clear Heart Pill"
+ },
+ {
+  "vi": "-tâm ma",
+  "en": "-heart demon"
+ },
+ {
+  "vi": "Hồi Xuân Đan",
+  "en": "Spring Revival Pill"
+ },
+ {
+  "vi": "Hồi sức khỏe",
+  "en": "Restores health"
+ },
+ {
+  "vi": "Huyết Sát Đan",
+  "en": "Blood Fiend Pill"
+ },
+ {
+  "vi": "Tà tu: -tâm ma mạnh, đổi bằng máu. Chính đạo uống vào thì tâm ma tăng",
+  "en": "Evil cultivators: strong -heart demon, paid for in blood. Righteous drinkers get more heart demon"
+ },
+ {
+  "vi": "Ký ức tiền kiếp",
+  "en": "Past-life memories"
+ },
+ {
+  "vi": "Ngộ tính khởi đầu +20",
+  "en": "Starting Insight +20"
+ },
+ {
+  "vi": "Nghịch thiên cải mệnh",
+  "en": "Defy fate"
+ },
+ {
+  "vi": "Linh căn ít nhất là Huyền linh căn",
+  "en": "Spiritual root at least Mystic"
+ },
+ {
+  "vi": "Trường thọ huyết mạch",
+  "en": "Longevity bloodline"
+ },
+ {
+  "vi": "Thọ nguyên +20%",
+  "en": "Lifespan +20%"
+ },
+ {
+  "vi": "Đầu thai nhà giàu",
+  "en": "Born rich"
+ },
+ {
+  "vi": "Khởi đầu thêm 300 linh thạch",
+  "en": "Start with 300 extra spirit stones"
+ },
+ {
+  "vi": "Phúc tinh chiếu mệnh",
+  "en": "Lucky star"
+ },
+ {
+  "vi": "Khí vận khởi đầu +25",
+  "en": "Starting Luck +25"
+ },
+ {
+  "vi": "Kiếm tâm thông minh",
+  "en": "Sword-heart prodigy"
+ },
+ {
+  "vi": "Sinh ra đã có Mộc kiếm, du ngoạn an toàn hơn",
+  "en": "Born with a Wooden sword, safer wandering"
+ },
+ {
+  "vi": "Sinh ra đã đeo ngọc bội, đỡ được một lần chết",
+  "en": "Born wearing a jade pendant that blocks one death"
+ },
+ {
+  "vi": "Linh thú bầu bạn",
+  "en": "Spirit beast companion"
+ },
+ {
+  "vi": "Một linh thú hiếm theo bạn từ lúc lọt lòng",
+  "en": "A rare spirit beast follows you from birth"
+ },
+ {
+  "vi": "Vạn kiếp bất diệt",
+  "en": "Undying through ages"
+ },
+ {
+  "vi": "Trời thương như kiếp đầu: trước 16 tuổi không chết",
+  "en": "Heaven pities you as in your first life: no death before 16"
+ },
+ {
+  "vi": "Thiên mệnh chi tử",
+  "en": "Child of destiny"
+ },
+ {
+  "vi": "Khí vận tối đa, linh căn biến dị, đột phá dễ hơn 10%",
+  "en": "Max Luck, mutated spiritual root, breakthroughs 10% easier"
+ },
+ {
+  "vi": "Tiên cốt trời sinh",
+  "en": "Born immortal bones"
+ },
+ {
+  "vi": "Chắc chắn mang Thiên linh căn, tu luyện nhanh hơn hẳn",
+  "en": "Guaranteed Heavenly Spiritual Root, much faster cultivation"
+ },
+ {
+  "vi": "Huyết mạch ma tộc",
+  "en": "Demon bloodline"
+ },
+ {
+  "vi": "Sinh ra đã nghiêng về tà (đạo tâm -30), ngộ tính +10",
+  "en": "Born leaning evil (Dao Heart -30), Insight +10"
+ },
+ {
+  "vi": "Huyết Ma Đao chờ chủ",
+  "en": "Blood Demon Saber awaits"
+ },
+ {
+  "vi": "Huyết Ma Đao nằm sẵn trong túi, đủ Trúc Cơ là cầm được",
+  "en": "The Blood Demon Saber waits in your bag, usable at Foundation"
+ },
+ {
+  "vi": "Ma tâm kiên cố",
+  "en": "Iron demonic heart"
+ },
+ {
+  "vi": "Tâm ma tăng chậm hơn 35% suốt kiếp này",
+  "en": "Heart demons grow 35% slower this life"
+ },
+ {
+  "vi": "Ma công nhập thể",
+  "en": "Demonic arts in the body"
+ },
+ {
+  "vi": "Linh căn mạnh hơn 20%, đổi lại tâm ma khởi đầu +10",
+  "en": "Spiritual root 20% stronger, but starting heart demon +10"
+ },
+ {
+  "vi": "Oan hồn hộ thể",
+  "en": "Vengeful ghost guardian"
+ },
+ {
+  "vi": "Oan hồn kiếp trước đỡ cho một lần chết",
+  "en": "A vengeful ghost from a past life blocks one death"
+ },
+ {
+  "vi": "Ma tôn chuyển thế",
+  "en": "Reincarnated Demon Sovereign"
+ },
+ {
+  "vi": "Đạo tâm -60, khí vận +15, tu luyện nhanh hơn 15%",
+  "en": "Dao Heart -60, Luck +15, cultivation 15% faster"
+ },
+ {
+  "vi": "Xuân",
+  "en": "Spring"
+ },
+ {
+  "vi": "Hạ",
+  "en": "Summer"
+ },
+ {
+  "vi": "Đông",
+  "en": "Winter"
+ },
+ {
+  "vi": "đen tuyền",
+  "en": "jet-black"
+ },
+ {
+  "vi": "nâu sẫm",
+  "en": "dark brown"
+ },
+ {
+  "vi": "màu hạt dẻ",
+  "en": "chestnut"
+ },
+ {
+  "vi": "đỏ rượu",
+  "en": "wine-red"
+ },
+ {
+  "vi": "lam đen",
+  "en": "blue-black"
+ },
+ {
+  "vi": "tím than",
+  "en": "charcoal-purple"
+ },
+ {
+  "vi": "bạc trắng từ lúc lọt lòng",
+  "en": "silver-white since birth"
+ },
+ {
+  "vi": "cam lửa hồ ly",
+  "en": "fox-fire orange"
+ },
+ {
+  "vi": "trắng tuyết hồ ly",
+  "en": "fox snow-white"
+ },
+ {
+  "vi": "búi tóc cao",
+  "en": "a high topknot"
+ },
+ {
+  "vi": "tóc buộc dài sau gáy",
+  "en": "long hair tied at the nape"
+ },
+ {
+  "vi": "tóc dài xõa vai",
+  "en": "long hair over the shoulders"
+ },
+ {
+  "vi": "tóc dài rối kiểu lãng tử",
+  "en": "long, messy wanderer's hair"
+ },
+ {
+  "vi": "tóc buộc thấp",
+  "en": "a low ponytail"
+ },
+ {
+  "vi": "tóc dài buộc khăn",
+  "en": "long hair wrapped in a headband"
+ },
+ {
+  "vi": "tóc dài rẽ ngôi lệch",
+  "en": "long hair parted to the side"
+ },
+ {
+  "vi": "tóc bù xù",
+  "en": "a wild mop of hair"
+ },
+ {
+  "vi": "tóc rẽ ngôi giữa",
+  "en": "hair parted in the middle"
+ },
+ {
+  "vi": "đầu cạo trọc",
+  "en": "a shaved head"
+ },
+ {
+  "vi": "đầu cạo sát",
+  "en": "a close-cropped head"
+ },
+ {
+  "vi": "đầu hói đỉnh",
+  "en": "a bald crown"
+ },
+ {
+  "vi": "tóc dài buông xõa",
+  "en": "long flowing hair"
+ },
+ {
+  "vi": "búi đôi",
+  "en": "twin buns"
+ },
+ {
+  "vi": "đuôi ngựa cao",
+  "en": "a high ponytail"
+ },
+ {
+  "vi": "tóc tết bím dài",
+  "en": "a long braid"
+ },
+ {
+  "vi": "búi tóc cung đình",
+  "en": "a palace-style bun"
+ },
+ {
+  "vi": "một bím tóc",
+  "en": "a single braid"
+ },
+ {
+  "vi": "nửa búi nửa xõa",
+  "en": "a half-up, half-down style"
+ },
+ {
+  "vi": "búi tóc có mái",
+  "en": "a bun with bangs"
+ },
+ {
+  "vi": "tóc dài gợn sóng",
+  "en": "long wavy hair"
+ },
+ {
+  "vi": "hai bím tóc",
+  "en": "two braids"
+ },
+ {
+  "vi": "tóc dài suôn thẳng",
+  "en": "long straight hair"
+ },
+ {
+  "vi": "tóc dài mái rủ",
+  "en": "long hair with bangs"
+ },
+ {
+  "vi": "tóc dài rẽ ngôi giữa",
+  "en": "long hair parted in the middle"
+ },
+ {
+  "vi": "tóc buông lơi",
+  "en": "loose hair"
+ },
+ {
+  "vi": "tóc vắt một bên vai",
+  "en": "hair swept over one shoulder"
+ },
+ {
+  "vi": "đoản thọ",
+  "en": "short-lived"
+ },
+ {
+  "vi": "thọ mệnh bình thường",
+  "en": "an ordinary lifespan"
+ },
+ {
+  "vi": "trường thọ",
+  "en": "long-lived"
+ },
+ {
+  "vi": "Thanh Châu",
+  "en": "Thanh Châu"
+ },
+ {
+  "vi": "đồng bằng trù phú",
+  "en": "fertile plains"
+ },
+ {
+  "vi": "thôn Hạnh Hoa",
+  "en": "Hạnh Hoa Village"
+ },
+ {
+  "vi": "trấn Lạc Hà",
+  "en": "Lạc Hà Town"
+ },
+ {
+  "vi": "làng Đào Nguyên",
+  "en": "Đào Nguyên Village"
+ },
+ {
+  "vi": "bến Thanh Thủy",
+  "en": "Thanh Thủy Pier"
+ },
+ {
+  "vi": "Trung Châu",
+  "en": "Trung Châu"
+ },
+ {
+  "vi": "đất kinh kỳ phồn hoa",
+  "en": "the bustling imperial heartland"
+ },
+ {
+  "vi": "kinh thành Thiên Khải",
+  "en": "Thiên Khải Capital"
+ },
+ {
+  "vi": "phủ Vạn An",
+  "en": "Vạn An Prefecture"
+ },
+ {
+  "vi": "phố Tây Thị",
+  "en": "Tây Thị Street"
+ },
+ {
+  "vi": "Bắc Mạc",
+  "en": "Bắc Mạc"
+ },
+ {
+  "vi": "sa mạc gió cát khắc nghiệt",
+  "en": "a harsh desert of wind and sand"
+ },
+ {
+  "vi": "ốc đảo Lục Châu",
+  "en": "Lục Châu Oasis"
+ },
+ {
+  "vi": "thành Hoàng Sa",
+  "en": "Hoàng Sa City"
+ },
+ {
+  "vi": "trạm ngựa Bạch Đà",
+  "en": "Bạch Đà Horse Station"
+ },
+ {
+  "vi": "Nam Cương",
+  "en": "Nam Cương"
+ },
+ {
+  "vi": "rừng thiêng nhiều độc trùng",
+  "en": "sacred jungles full of venomous bugs"
+ },
+ {
+  "vi": "bản Miêu Cổ",
+  "en": "Miêu Cổ Hamlet"
+ },
+ {
+  "vi": "trại Thạch Đầu",
+  "en": "Thạch Đầu Camp"
+ },
+ {
+  "vi": "động Bách Độc",
+  "en": "Bách Độc Cave"
+ },
+ {
+  "vi": "Đông Hải",
+  "en": "Đông Hải"
+ },
+ {
+  "vi": "miền biển sóng gió",
+  "en": "stormy seas"
+ },
+ {
+  "vi": "làng chài Vọng Hải",
+  "en": "Vọng Hải Fishing Village"
+ },
+ {
+  "vi": "đảo Bồng Lai ngoại vi",
+  "en": "Outer Bồng Lai Isle"
+ },
+ {
+  "vi": "cảng Minh Châu",
+  "en": "Minh Châu Port"
+ },
+ {
+  "vi": "Tây Vực",
+  "en": "Tây Vực"
+ },
+ {
+  "vi": "Phật quốc vạn chùa",
+  "en": "a Buddhist land of ten thousand temples"
+ },
+ {
+  "vi": "thành Đại Lôi Âm",
+  "en": "Đại Lôi Âm City"
+ },
+ {
+  "vi": "chùa Tu Di",
+  "en": "Tu Di Temple"
+ },
+ {
+  "vi": "làng Tháp Trắng",
+  "en": "Tháp Trắng Village"
+ },
+ {
+  "vi": "Tuyết Vực",
+  "en": "Tuyết Vực"
+ },
+ {
+  "vi": "băng nguyên ngàn năm tuyết phủ",
+  "en": "a thousand-year frozen plain"
+ },
+ {
+  "vi": "bộ lạc Băng Lang",
+  "en": "Băng Lang Tribe"
+ },
+ {
+  "vi": "thành Hàn Nguyệt",
+  "en": "Hàn Nguyệt City"
+ },
+ {
+  "vi": "Ma Vực",
+  "en": "Ma Vực"
+ },
+ {
+  "vi": "vùng đất ma khí bao phủ",
+  "en": "a land shrouded in demonic qi"
+ },
+ {
+  "vi": "thành Huyết Nguyệt",
+  "en": "Huyết Nguyệt City"
+ },
+ {
+  "vi": "trấn Hắc Thủy",
+  "en": "Hắc Thủy Town"
+ },
+ {
+  "vi": "Vạn Yêu Lâm",
+  "en": "Vạn Yêu Lâm"
+ },
+ {
+  "vi": "rừng của yêu tộc",
+  "en": "the forest of the yao race"
+ },
+ {
+  "vi": "hang Thanh Khâu",
+  "en": "Thanh Khâu Cave"
+ },
+ {
+  "vi": "cây Thiên Niên Tùng",
+  "en": "Thiên Niên Tùng Tree"
+ },
+ {
+  "vi": "bần hàn",
+  "en": "destitute"
+ },
+ {
+  "vi": "bình dân",
+  "en": "a commoner"
+ },
+ {
+  "vi": "khá giả",
+  "en": "well-off"
+ },
+ {
+  "vi": "phú hộ",
+  "en": "wealthy"
+ },
+ {
+  "vi": "đại phú",
+  "en": "immensely rich"
+ }
+]

@@ -1,0 +1,394 @@
+[
+ {
+  "vi": "Kiếm trủng gọi tên",
+  "en": "The Sword Tomb calls your name"
+ },
+ {
+  "vi": "Có nơi chôn vạn thanh kiếm, kiếm cũng biết chọn chủ.",
+  "en": "There is a place where ten thousand swords lie buried, and swords too choose their masters."
+ },
+ {
+  "vi": "Kiếm khách mù trên cầu",
+  "en": "The blind swordsman on the bridge"
+ },
+ {
+  "vi": "Người không thấy đường lại thấy rõ đường kiếm.",
+  "en": "A man who cannot see the road sees the way of the sword clearly."
+ },
+ {
+  "vi": "Lò đan bỏ hoang",
+  "en": "The abandoned furnace"
+ },
+ {
+  "vi": "Lửa trong lò đã tắt trăm năm mà tro vẫn còn ấm.",
+  "en": "The furnace fire died a hundred years ago, yet the ashes are still warm."
+ },
+ {
+  "vi": "Dược Vương trăng trối",
+  "en": "The Medicine King's last words"
+ },
+ {
+  "vi": "Người chữa cả đời cho thiên hạ, cuối cùng không chữa được cho mình.",
+  "en": "He healed the world all his life, but in the end could not heal himself."
+ },
+ {
+  "vi": "Bàn cờ trong núi",
+  "en": "The Go board in the mountain"
+ },
+ {
+  "vi": "Một ván cờ dang dở, đi sai một nước là kẹt lại trong núi.",
+  "en": "An unfinished game - one wrong move and you are trapped in the mountain."
+ },
+ {
+  "vi": "Thiên cơ tinh đồ",
+  "en": "Star chart of heavenly secrets"
+ },
+ {
+  "vi": "Đêm không trăng, sao trên trời xếp thành một trận đồ.",
+  "en": "On a moonless night, the stars arrange themselves into a formation."
+ },
+ {
+  "vi": "Buông dao thành Phật",
+  "en": "Lay down the blade, become a Buddha"
+ },
+ {
+  "vi": "Tay dính máu càng nhiều, tiếng chuông càng nghe rõ.",
+  "en": "The more blood on your hands, the clearer the bell rings."
+ },
+ {
+  "vi": "Huyết thư dưới đáy giếng",
+  "en": "Blood letter at the bottom of the well"
+ },
+ {
+  "vi": "Có cái giếng cạn mà đêm đêm vẫn nghe tiếng nước.",
+  "en": "There is a dry well that still echoes with water every night."
+ },
+ {
+  "vi": "Tâm ma mở cửa",
+  "en": "The heart demon opens the door"
+ },
+ {
+  "vi": "Khi tâm ma đủ lớn, nó không còn muốn giết bạn nữa.",
+  "en": "When a heart demon grows large enough, it no longer wants to kill you."
+ },
+ {
+  "vi": "Huyết mạch thức tỉnh",
+  "en": "Bloodline awakening"
+ },
+ {
+  "vi": "Uống nhầm máu một con yêu thú sắp chết.",
+  "en": "You drank the blood of a dying demon beast by mistake."
+ },
+ {
+  "vi": "tán tu",
+  "en": "rogue cultivator"
+ },
+ {
+  "vi": "Tán công chuyển đạo: bỏ {0}, theo {1} ({2})",
+  "ph": [
+   "from",
+   "PATHS[cd.to].name",
+   "cd.name"
+  ],
+  "en": "Disperse and switch Paths: abandon {0}, follow {1} ({2})"
+ },
+ {
+  "vi": "Chuyển đạo: {0}",
+  "ph": [
+   "PATHS[cd.to].name"
+  ],
+  "en": "Path change: {0}"
+ },
+ {
+  "vi": "Bạn tán đi công pháp {0}, chuyển sang {1} (-{2} tu vi{3}).",
+  "ph": [
+   "from",
+   "PATHS[cd.to].name",
+   "lost",
+   "off.length ? `, tháo ${off.join(', ')}` : ''"
+  ],
+  "en": "You disperse your {0} technique and switch to {1} (-{2} cultivation{3})."
+ },
+ {
+  "vi": ", tháo {0}",
+  "ph": [
+   "off.join(', ')"
+  ],
+  "en": ", unequipped {0}"
+ },
+ {
+  "vi": "Giữ con đường của mình",
+  "en": "Keep to your own Path"
+ },
+ {
+  "vi": "đổi sang {0} · mất 30% tu vi · tâm ma tăng · mỗi kiếp một lần",
+  "ph": [
+   "PATHS[to].name"
+  ],
+  "en": "switch to {0} · lose 30% cultivation · heart demon rises · once per life"
+ },
+ {
+  "vi": "Đi ngang một thung lũng cắm đầy kiếm gãy, một thanh kiếm cổ bỗng rung lên rồi tự rút khỏi đất, bay tới lơ lửng trước mặt bạn. Chuôi kiếm khắc đúng tên bạn.",
+  "en": "Passing through a valley bristling with broken swords, an ancient blade suddenly trembles, pulls itself from the earth, and hovers before you. Your name is carved on its hilt."
+ },
+ {
+  "vi": "Nắm lấy chuôi kiếm",
+  "en": "Grasp the hilt"
+ },
+ {
+  "vi": "{0} Kiếm ý tràn vào kinh mạch, công pháp cũ vỡ vụn. Từ nay bạn là Kiếm tu.",
+  "ph": [
+   "switchPath(c, ev('cd_kiem_trung'), ctx)"
+  ],
+  "en": "{0} Sword intent floods your meridians, shattering your old technique. From now on you are a Sword Cultivator."
+ },
+ {
+  "vi": "Bạn cúi đầu cảm tạ, đặt thanh kiếm trở lại đất. Kiếm rung lên một tiếng như thở dài.",
+  "en": "You bow your thanks and set the sword back in the earth. It hums once, like a sigh."
+ },
+ {
+  "vi": "Một lão già mù ngồi chặn giữa cầu, gậy trúc gác ngang đùi: \"Ta nghe tiếng bước chân là biết ngươi đi sai đường. Đỡ được ba gậy, ta dạy ngươi đường kiếm.\"",
+  "en": "A blind old man sits blocking the bridge, a bamboo staff across his lap: \"I can tell from your footsteps you're on the wrong path. Block three strikes and I'll teach you the way of the sword.\""
+ },
+ {
+  "vi": "Đỡ ba gậy",
+  "en": "Block three strikes"
+ },
+ {
+  "vi": "{0} · có thể bị thương",
+  "ph": [
+   "cost('kiem')"
+  ],
+  "en": "{0} · may get hurt"
+ },
+ {
+  "vi": "Gậy thứ hai đã quất trúng cổ tay bạn. Lão già lắc đầu bỏ đi, tiếng gậy gõ xa dần (-15 sức khỏe).",
+  "en": "The second strike catches your wrist. The old man shakes his head and leaves, the tap of his staff fading away (-15 Health)."
+ },
+ {
+  "vi": "Ba gậy, bạn đỡ trọn. Lão già cười: \"Đường kiếm không ở mắt.\" {0}",
+  "ph": [
+   "switchPath(c, ev('cd_kiem_mu'), ctx)"
+  ],
+  "en": "You block all three. The old man laughs: \"The way of the sword is not in the eyes.\" {0}"
+ },
+ {
+  "vi": "Bạn vòng qua cầu khác. Sau lưng lão già hát một câu không rõ lời.",
+  "en": "You take another bridge. Behind you, the old man sings a line you can't make out."
+ },
+ {
+  "vi": "Trong động đá có một lò đan đồng xanh phủ rêu. Lửa tắt đã trăm năm mà tro vẫn còn ấm. Dưới đáy lò ép một cuốn đan kinh viết dở.",
+  "en": "In a stone cave sits a moss-covered bronze furnace. Its fire died a century ago, yet the ashes are still warm. Pressed under it is a half-finished alchemy manual."
+ },
+ {
+  "vi": "Nhóm lại lửa lò, học theo đan kinh",
+  "en": "Rekindle the furnace and follow the manual"
+ },
+ {
+  "vi": "Lửa lò bùng lên xanh biếc như nhận ra chủ mới. {0} Mẻ đan đầu tiên ra lò thơm cả núi.",
+  "ph": [
+   "switchPath(c, ev('cd_dan_lo'), ctx)"
+  ],
+  "en": "The furnace flares emerald green, as if recognising its new master. {0} Your first batch of pills perfumes the whole mountain."
+ },
+ {
+  "vi": "Bạn lấy cuốn đan kinh làm gối đầu, đọc vài trang rồi ngủ thiếp đi.",
+  "en": "You use the alchemy manual as a pillow, read a few pages, and doze off."
+ },
+ {
+  "vi": "Một ông lão nằm thoi thóp bên đường, tay vẫn nắm chặt giỏ thuốc. Ông nhận ra bạn: \"Ta chữa cả đời cho người, không có ai nối nghề. Ngươi có muốn không?\"",
+  "en": "An old man lies dying by the road, still clutching his herb basket. He recognises you: \"I healed people all my life and have no one to carry on. Will you?\""
+ },
+ {
+  "vi": "Quỳ xuống nhận nghề",
+  "en": "Kneel and accept the craft"
+ },
+ {
+  "vi": "{0} · đạo tâm thêm chính",
+  "ph": [
+   "cost('dan')"
+  ],
+  "en": "{0} · Dao Heart turns more righteous"
+ },
+ {
+  "vi": "Ông lão đặt giỏ thuốc vào tay bạn rồi nhắm mắt. {0} Bạn chôn ông dưới gốc cây thuốc ông trồng.",
+  "ph": [
+   "switchPath(c, ev('cd_dan_duoc_vuong'), ctx, { tamMa: 8 })"
+  ],
+  "en": "The old man places the basket in your hands and closes his eyes. {0} You bury him beneath the medicinal tree he planted."
+ },
+ {
+  "vi": "Ở lại chăm ông những ngày cuối",
+  "en": "Stay and care for him in his last days"
+ },
+ {
+  "vi": "Bạn ở lại bảy ngày, ông đi thanh thản. Ông để lại cho bạn một viên đan tự tay luyện.",
+  "en": "You stay seven days, and he passes in peace. He leaves you a pill he refined himself."
+ },
+ {
+  "vi": "Hai ông lão đánh cờ trên tảng đá giữa núi, một người đã hóa đá từ lâu. Người còn lại chỉ vào ghế trống: \"Đi tiếp nước của y. Đi sai thì ở lại đây với ta.\"",
+  "en": "Two old men play Go on a boulder in the mountains, one long since turned to stone. The other points to the empty seat: \"Play his move. Get it wrong and you stay here with me.\""
+ },
+ {
+  "vi": "Ngồi xuống đi tiếp ván cờ",
+  "en": "Sit down and continue the game"
+ },
+ {
+  "vi": "{0} · đi sai mất mấy năm",
+  "ph": [
+   "cost('tran')"
+  ],
+  "en": "{0} · a wrong move costs years"
+ },
+ {
+  "vi": "Bạn đi sai một nước. Khi tỉnh lại, ông lão đã biến mất, râu bạn dài ra một gang. Năm năm đã trôi qua.",
+  "en": "You make a wrong move. When you come to, the old man is gone and your beard has grown a hand's length. Five years have passed."
+ },
+ {
+  "vi": "Nước cờ của bạn mở ra một con đường giữa thế cờ chết. Ông lão gật đầu: \"Trận cũng như cờ.\" {0}",
+  "ph": [
+   "switchPath(c, ev('cd_tran_co'), ctx)"
+  ],
+  "en": "Your move opens a path through a dead position. The old man nods: \"Formations are like Go.\" {0}"
+ },
+ {
+  "vi": "Bạn chắp tay xin kiếu. Ông lão không ngẩng lên, chỉ đặt thêm một quân cờ.",
+  "en": "You bow and take your leave. The old man doesn't look up, only places another stone."
+ },
+ {
+  "vi": "Đêm không trăng, bạn nằm trên mái nhà và chợt thấy sao trời xếp thành một trận đồ khổng lồ, mỗi ngôi sao là một mắt trận. Nhìn thêm một chút nữa là hiểu.",
+  "en": "On a moonless night, lying on the roof, you suddenly see the stars form a vast formation, each star an eye of the array. Just a little longer and you'd understand it."
+ },
+ {
+  "vi": "Thức trắng chép lại tinh đồ",
+  "en": "Stay up all night copying the star chart"
+ },
+ {
+  "vi": "Gà gáy thì bạn chép xong. Công pháp cũ trong người tự tán đi như sương sớm. {0}",
+  "ph": [
+   "switchPath(c, ev('cd_tran_tinh_do'), ctx)"
+  ],
+  "en": "By cockcrow you've finished. Your old technique dissolves like morning mist. {0}"
+ },
+ {
+  "vi": "Bạn ngắm đến khi mây kéo tới. Trong lòng sáng ra được vài điều.",
+  "en": "You gaze until the clouds roll in. A few things become clear in your heart."
+ },
+ {
+  "vi": "Đêm ấy bạn mơ thấy những kẻ đã chết dưới tay mình đứng kín sân. Sáng ra, có tiếng chuông chùa vọng tới mà quanh đây trăm dặm không có chùa nào.",
+  "en": "That night you dream the yard is packed with everyone who died by your hand. In the morning a temple bell rings out, though there's no temple within a hundred miles."
+ },
+ {
+  "vi": "Đi theo tiếng chuông",
+  "en": "Follow the bell"
+ },
+ {
+  "vi": "{0} · tâm ma giảm thay vì tăng",
+  "ph": [
+   "cost('phat')"
+  ],
+  "en": "{0} · heart demon falls instead of rising"
+ },
+ {
+  "vi": "Bạn quỳ trước một ngôi chùa đổ nát, tự tay cắt tóc. {0} Đêm đó không còn mơ thấy ai nữa.",
+  "ph": [
+   "r"
+  ],
+  "en": "You kneel before a ruined temple and cut your own hair. {0} That night, you dream of no one."
+ },
+ {
+  "vi": "Bạn bịt tai lại. Tiếng chuông vẫn vang tới tận trưa.",
+  "en": "You cover your ears. The bell keeps ringing until noon."
+ },
+ {
+  "vi": "Cái giếng cạn sau làng đêm đêm vẫn có tiếng nước. Bạn thả dây xuống, dưới đáy là một cuốn sách viết bằng máu, chữ vẫn còn ướt.",
+  "en": "The dry well behind the village echoes with water every night. You lower a rope - at the bottom lies a book written in blood, the ink still wet."
+ },
+ {
+  "vi": "Đọc hết cuốn huyết thư",
+  "en": "Read the whole blood letter"
+ },
+ {
+  "vi": "{0} · đạo tâm thêm tà",
+  "ph": [
+   "cost('ma')"
+  ],
+  "en": "{0} · Dao Heart turns more evil"
+ },
+ {
+  "vi": "Chữ máu bò lên tay bạn, chui vào kinh mạch. {0} Từ đó giếng không còn tiếng nước.",
+  "ph": [
+   "switchPath(c, ev('cd_ma_huyet_thu'), ctx, { tamMa: 20 })"
+  ],
+  "en": "The blood characters crawl up your arm and into your meridians. {0} From then on, the well falls silent."
+ },
+ {
+  "vi": "Đốt cuốn sách",
+  "en": "Burn the book"
+ },
+ {
+  "vi": "Sách cháy ra khói đỏ, có tiếng ai đó hét lên dưới đáy giếng rồi im bặt.",
+  "en": "It burns with red smoke. Someone screams at the bottom of the well, then falls silent."
+ },
+ {
+  "vi": "Lúc bế quan, tâm ma không gào thét như mọi khi. Nó ngồi xuống trước mặt bạn, giọng rất hiền: \"Đừng chống lại ta nữa. Để ta dẫn đường, ngươi sẽ đi xa hơn.\"",
+  "en": "In seclusion, your heart demon doesn't howl as usual. It sits before you and speaks gently: \"Stop fighting me. Let me lead, and you will go further.\""
+ },
+ {
+  "vi": "Mở cửa cho tâm ma",
+  "en": "Open the door to your heart demon"
+ },
+ {
+  "vi": "{0} · tâm ma giảm vì đã hòa làm một",
+  "ph": [
+   "cost('ma')"
+  ],
+  "en": "{0} · heart demon falls as you become one"
+ },
+ {
+  "vi": "Bạn và tâm ma hòa làm một. {0} Đầu óc chưa bao giờ nhẹ như vậy.",
+  "ph": [
+   "r"
+  ],
+  "en": "You and your heart demon become one. {0} Your mind has never felt so light."
+ },
+ {
+  "vi": "Trấn áp nó một lần nữa",
+  "en": "Suppress it once more"
+ },
+ {
+  "vi": "Bạn nghiến răng niệm chú suốt ba ngày. Tâm ma lui vào bóng tối, để lại một câu: \"Ta sẽ chờ.\"",
+  "en": "You grit your teeth and chant for three days. The heart demon retreats into the dark, leaving one line: \"I will wait.\""
+ },
+ {
+  "vi": "Đêm trăng tròn, cái đuôi bạn giấu bao năm bỗng ngứa ran. Máu yêu tộc trong người sôi lên, đòi được trở về.",
+  "en": "On the night of the full moon, the tail you've hidden for years starts to tingle. The yao blood in you boils, demanding to return."
+ },
+ {
+  "vi": "Một con yêu thú hấp hối gục dưới chân bạn, máu nó bắn lên môi. Vị máu ngọt lạ, toàn thân nóng ran như có lửa.",
+  "en": "A dying demon beast collapses at your feet, its blood spattering your lips. It tastes strangely sweet, and your whole body burns as if on fire."
+ },
+ {
+  "vi": "Thả cho huyết mạch thức tỉnh",
+  "en": "Let the bloodline awaken"
+ },
+ {
+  "vi": "Nuốt luôn ngụm máu",
+  "en": "Swallow the blood"
+ },
+ {
+  "vi": "Xương cốt kêu răng rắc, mắt bạn đổi màu. {0}",
+  "ph": [
+   "switchPath(ch, ev('cd_yeu_huyet_mach'), ctx)"
+  ],
+  "en": "Your bones crack and your eyes change colour. {0}"
+ },
+ {
+  "vi": "Bạn ngâm mình dưới suối lạnh tới sáng, giữ lại hình người.",
+  "en": "You soak in a cold spring until dawn, holding on to your human form."
+ },
+ {
+  "vi": "Bạn nhổ ra, súc miệng bằng rượu mạnh. Đêm đó sốt cao rồi khỏi.",
+  "en": "You spit it out and rinse your mouth with strong liquor. That night you run a high fever, then recover."
+ }
+]

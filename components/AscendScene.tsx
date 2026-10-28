@@ -3,11 +3,12 @@
 import { useEffect, useState } from 'react';
 import Sprite from './Sprite';
 import type { Character } from '@/lib/game/types';
+import { tr } from '@/lib/i18n';
 
 const TEXT = {
-  tien: { big: 'Phi thăng Tiên giới', sub: 'Tiên quang giáng xuống, cửa trời mở rộng' },
-  ma: { big: 'Nhập Ma giới', sub: 'Chín đạo huyết lôi tan, vạn ma cúi đầu' },
-  hu: { big: 'Lạc vào Thái Hư', sub: 'Không trời, không vực, chỉ còn hư không' },
+  tien: { big: tr('Phi thăng Tiên giới', "Ascend to the Immortal Realm"), sub: tr('Tiên quang giáng xuống, cửa trời mở rộng', "Immortal light descends and the gate of heaven swings wide") },
+  ma: { big: tr('Nhập Ma giới', "Enter the Demon Realm"), sub: tr('Chín đạo huyết lôi tan, vạn ma cúi đầu', "Nine bolts of blood lightning fade, and ten thousand demons bow") },
+  hu: { big: tr('Lạc vào Thái Hư', "Lost in the Taixu"), sub: tr('Không trời, không vực, chỉ còn hư không', "No heaven, no abyss, only the void") },
 } as const;
 
 /** Cảnh phi thăng vài giây: cột sáng giáng xuống, nhân vật bay lên, nền đổi sang cõi mới. Chạm để bỏ qua. */
@@ -31,7 +32,7 @@ export default function AscendScene({ c, cos, onDone }: { c: Character; cos: 'ti
         <b>{t.big}</b>
         <span>{t.sub}</span>
       </div>
-      <small className="asc-skip">Chạm để tiếp tục</small>
+      <small className="asc-skip">{tr("Chạm để tiếp tục", "Tap to continue")}</small>
     </div>
   );
 }

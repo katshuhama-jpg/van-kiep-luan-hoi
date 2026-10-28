@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { tr } from '@/lib/i18n';
 
 const KEY = 'vkl.nav';
 
@@ -23,7 +24,7 @@ export default function BackButton({ fallback = '/' }: { fallback?: string }) {
   return (
     <button
       className="icon-btn"
-      aria-label="Quay lại"
+      aria-label={tr("Quay lại", "Back")}
       onClick={() => {
         let n = 0;
         try {
