@@ -67,15 +67,28 @@ export async function loadAll(user: Player | null): Promise<{ meta: Meta; save: 
     const { data, error } = await sb.rpc('vkl_me', { p_token: user.token });
     if (!error && data) {
       const d = data as { meta: Partial<Meta> | null; state: SaveState | null };
-      // bản lưu trên máy có thể mới hơn bản trên mây (mây lưu chậm hơn, hoặc bị ngắt khi chuyển trang)
-      const local = readLocal<SaveState>(userKey(user));
-      const remote = d.state;
+      const meta = { ...emptyMeta(), ...(d.meta ?? {}) };
+      // bản lưu trên máy có thể mới hơn bản trên mây (mây lưu chậm hơn, hoặc bị ngắt khi chuyển trang).
+      // Bản nào là kiếp đã xong (máy cũ còn giữ kiếp cũ, mây đã xóa khi sang kiếp mới) thì bỏ, không được hồi sinh kiếp cũ.
+      const rawLocal = readLocal<SaveState>(userKey(user));
+      const local = live(rawLocal, meta) ? rawLocal : null;
+      const remote = live(d.state, meta) ? d.state : null;
+      if (rawLocal && !local) writeLocal(userKey(user), null);
+      if (d.state && !remote && sb) sb.rpc('vkl_save_game', { p_token: user.token, p_state: null }).then(() => {}, () => {});
       const save = local && (local.t ?? 0) > (remote?.t ?? 0) ? local : remote;
-      return { meta: { ...emptyMeta(), ...(d.meta ?? {}) }, save };
+      return { meta, save };
     }
     if (!error && !data) dropSession();
   }
-  return { meta: { ...emptyMeta(), ...(readLocal<Meta>(K.meta) ?? {}) }, save: readLocal<SaveState>(K.save) };
+  const meta = { ...emptyMeta(), ...(readLocal<Meta>(K.meta) ?? {}) };
+  const raw = readLocal<SaveState>(K.save);
+  if (raw && !live(raw, meta)) writeLocal(K.save, null);
+  return { meta, save: live(raw, meta) ? raw : null };
+}
+
+/** Bản lưu còn dùng được: kiếp trong bản lưu chưa được ghi là đã xong (kiếp đang chơi luôn là meta.lives + 1) */
+function live(s: SaveState | null | undefined, meta: Meta): s is SaveState {
+  return !!s?.char && (s.char.lifeNo ?? 0) > (meta.lives ?? 0);
 }
 
 export async function saveMeta(user: Player | null, meta: Meta) {
