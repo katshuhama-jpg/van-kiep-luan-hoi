@@ -1,0 +1,37 @@
+[
+ {
+  "vi": "Bản {0}",
+  "ph": [
+   "r.v"
+  ],
+  "en": "Version {0}"
+ },
+ {
+  "vi": "Lịch sử cập nhật",
+  "en": "Update history"
+ },
+ {
+  "vi": "Những lần thiên hạ đổi thay",
+  "en": "Every time the world changed"
+ },
+ {
+  "vi": "Về danh sách phiên bản",
+  "en": "Back to version list"
+ },
+ {
+  "vi": "Bản ",
+  "en": "Version "
+ },
+ {
+  "vi": " · mới nhất",
+  "en": " · latest"
+ },
+ {
+  "vi": "‹ Về danh sách phiên bản",
+  "en": "‹ Back to version list"
+ },
+ {
+  "vi": " mục",
+  "en": " items"
+ }
+]

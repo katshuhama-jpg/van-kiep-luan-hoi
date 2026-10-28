@@ -1,0 +1,92 @@
+[
+ {
+  "vi": "Phàm nhân",
+  "en": ""
+ },
+ {
+  "vi": "Chiến thư",
+  "en": ""
+ },
+ {
+  "vi": "Đấu với bóng một kiếp của đạo hữu khác",
+  "en": ""
+ },
+ {
+  "vi": "Đang mở chiến thư...",
+  "en": ""
+ },
+ {
+  "vi": "Không tìm thấy kiếp này. Vào ",
+  "en": ""
+ },
+ {
+  "vi": "Nghĩa trang",
+  "en": ""
+ },
+ {
+  "vi": " hoặc ",
+  "en": ""
+ },
+ {
+  "vi": "Bảng xếp hạng",
+  "en": ""
+ },
+ {
+  "vi": " để chọn người muốn thách đấu.",
+  "en": ""
+ },
+ {
+  "vi": "Đăng nhập",
+  "en": ""
+ },
+ {
+  "vi": " để hạ chiến thư.",
+  "en": ""
+ },
+ {
+  "vi": "Bóng của bạn",
+  "en": ""
+ },
+ {
+  "vi": " · Kiếp ",
+  "en": ""
+ },
+ {
+  "vi": "Hai bên được kéo ngang cảnh giới bóng của bạn. Thắng +5 phúc duyên, thua +2. Người kia nhận thư và được báo thù ở Lôi đài. ",
+  "en": ""
+ },
+ {
+  "vi": "Đối thủ là {0}.",
+  "ph": [
+   "PATHS[f!.shadow.path].name"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "Chọn bóng ra trận",
+  "en": ""
+ },
+ {
+  "vi": "Bạn chưa có kiếp nào. Sống trọn một kiếp rồi quay lại.",
+  "en": ""
+ },
+ {
+  "vi": "Không tự thách chính mình",
+  "en": ""
+ },
+ {
+  "vi": "⚔ Hạ chiến thư",
+  "en": ""
+ },
+ {
+  "vi": "Hết chiến thư hôm nay",
+  "en": ""
+ },
+ {
+  "vi": "còn {0}/3 chiến thư hôm nay",
+  "ph": [
+   "left"
+  ],
+  "en": ""
+ }
+]

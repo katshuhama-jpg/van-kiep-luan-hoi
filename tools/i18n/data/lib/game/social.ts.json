@@ -1,0 +1,33 @@
+[
+ {
+  "vi": "Huynh đệ",
+  "en": "Sworn brother"
+ },
+ {
+  "vi": "Kẻ thù của bạn",
+  "en": "Your enemy"
+ },
+ {
+  "vi": "Đang thù bạn",
+  "en": "Holds a grudge"
+ },
+ {
+  "vi": "Đã hòa giải",
+  "en": "Reconciled"
+ },
+ {
+  "vi": "Khiêu khích",
+  "en": "Provoke"
+ },
+ {
+  "vi": "Truy nã {0} linh thạch",
+  "ph": [
+   "s.bounty[player]"
+  ],
+  "en": "Bounty {0} spirit stones"
+ },
+ {
+  "vi": "Kẻ né chiến",
+  "en": "Duel dodger"
+ }
+]

@@ -115,7 +115,7 @@ export default function LifeStory({
     cosmos?: 'tien' | 'ma' | 'hu' | null;
   };
   const finalRealm = r.realm_no ?? 0;
-  const maTon = look.endTag === 'ma_ton_do_kiep' || (r.cause ?? '').includes('Ma Tôn');
+  const maTon = look.endTag === 'ma_ton_do_kiep' || /Ma Tôn|Demon Sovereign/.test(r.cause ?? '');
   const story = useMemo(
     () =>
       pickStory(look.miles, {

@@ -1,0 +1,160 @@
+[
+ {
+  "vi": "Sổ Sinh Tử",
+  "en": "Book of Life and Death"
+ },
+ {
+  "vi": "Đã mở ",
+  "en": "Unlocked "
+ },
+ {
+  "vi": " kết cục · ",
+  "en": " endings · "
+ },
+ {
+  "vi": " bí ẩn",
+  "en": " secret"
+ },
+ {
+  "vi": " · {0} kiếp",
+  "ph": [
+   "meta.lives"
+  ],
+  "en": " · {0} lives"
+ },
+ {
+  "vi": " phẩm",
+  "en": " grade"
+ },
+ {
+  "vi": "Cách mở",
+  "en": "How to unlock"
+ },
+ {
+  "vi": "Bí ẩn",
+  "en": "Secret"
+ },
+ {
+  "vi": " Chưa ai tiết lộ cách mở, tự mình tìm hiểu.",
+  "en": " No one has revealed how to unlock this. Find out yourself."
+ },
+ {
+  "vi": "Kết cục bí ẩn",
+  "en": "Secret ending"
+ },
+ {
+  "vi": "Đã gặp ",
+  "en": "Encountered "
+ },
+ {
+  "vi": " lần",
+  "en": " times"
+ },
+ {
+  "vi": "Chưa ai trong giang hồ mở được",
+  "en": "No one in the jianghu has unlocked this yet"
+ },
+ {
+  "vi": "{0} người đã mở ({1}%)",
+  "ph": [
+   "stats.counts[e.id]",
+   "pct(e.id)"
+  ],
+  "en": "{0} unlocked ({1}%)"
+ },
+ {
+  "vi": " · đầu tiên: @{0}",
+  "ph": [
+   "firsts[e.id]"
+  ],
+  "en": " · first: @{0}"
+ },
+ {
+  "vi": "Kỳ ngộ chuyển đạo",
+  "en": "Path-changing encounters"
+ },
+ {
+  "vi": ". Mỗi kỳ ngộ cho đổi sang một con đường giữa kiếp, mất 30% tu vi, mỗi kiếp một lần, từ Trúc Cơ trở lên.",
+  "en": ". Each encounter lets you switch to another Path mid-life at the cost of 30% of your cultivation, once per life, from Foundation Establishment up."
+ },
+ {
+  "vi": "Thành tựu",
+  "en": "Achievements"
+ },
+ {
+  "vi": "Đã đạt ",
+  "en": "Earned "
+ },
+ {
+  "vi": ". Mỗi thành tựu thưởng phúc duyên, chấm khi một kiếp kết thúc.",
+  "en": ". Each achievement grants Fortune, tallied when a life ends."
+ },
+ {
+  "vi": " phúc",
+  "en": " Fortune"
+ },
+ {
+  "vi": "Sổ linh thú",
+  "en": "Spirit beast register"
+ },
+ {
+  "vi": "Đã từng nuôi ",
+  "en": "Raised "
+ },
+ {
+  "vi": " loài. Linh thú được ghi vào sổ khi một kiếp kết thúc mà nó còn theo bạn.",
+  "en": " species. A spirit beast is recorded when a life ends with it still at your side."
+ },
+ {
+  "vi": "Thiên phú có thể gieo được",
+  "en": "Rollable talents"
+ },
+ {
+  "vi": " loại. Tỉ lệ: Phàm 58% · Linh 28% · Huyền 11% · Địa 2.9% · Thiên 0.1%",
+  "en": " kinds. Odds: Mortal 58% · Spirit 28% · Mystic 11% · Earth 2.9% · Heaven 0.1%"
+ },
+ {
+  "vi": "Chơi tiếp",
+  "en": "Keep playing"
+ },
+ {
+  "vi": "Thiên thư · Vạn Kiếp",
+  "en": "Heavenly Tome · Ten Thousand Lives"
+ },
+ {
+  "vi": "Quyển I · Vạn Kiếp ",
+  "en": "Volume I · Ten Thousand Lives "
+ },
+ {
+  "vi": "Quyển II · Vạn Mảnh",
+  "en": "Volume II · Ten Thousand Shards"
+ },
+ {
+  "vi": "🔒 Quyển II",
+  "en": "🔒 Volume II"
+ },
+ {
+  "vi": "phong ấn",
+  "en": "sealed"
+ },
+ {
+  "vi": "Vì sao bạn cứ phải luân hồi mãi? Mỗi mảnh ký ức mở khi đạt một cột mốc lớn qua các kiếp. Đã mở ",
+  "en": "Why must you keep reincarnating? Each memory shard unlocks when you reach a major milestone across your lives. Unlocked "
+ },
+ {
+  "vi": " Đã đủ: kiếp sau, bạn sẽ gặp lại chính mình.",
+  "en": " Complete: in your next life, you will meet yourself again."
+ },
+ {
+  "vi": " Bạn đã gom lại chính mình. Nhưng tiếng chuông vẫn chưa im.",
+  "en": " You have gathered yourself back together. But the bell has not yet fallen silent."
+ },
+ {
+  "vi": "Chân Nhân không chỉ vỡ làm một mảnh là bạn. Những đạo hữu trên giang hồ cũng là mảnh vỡ, và có kẻ vẫn đang đếm. Mảnh mới mở khi một kiếp khép lại. Đã mở ",
+  "en": "The True One did not shatter into just one shard that is you. The fellow Daoists of the jianghu are shards too, and someone is still counting. A new shard unlocks when a life closes. Unlocked "
+ },
+ {
+  "vi": "Quyển sách bị niêm bằng một sợi chỉ vàng. Gom đủ 10 mảnh Quyển I và đạt kết cục Vạn Kiếp Quy Nhất để mở phong ấn.",
+  "en": "The book is sealed with a golden thread. Collect all 10 shards of Volume I and reach the ending Vạn Kiếp Quy Nhất to break the seal."
+ }
+]

@@ -1,0 +1,89 @@
+[
+ {
+  "vi": "Lôi Đài Bá Chủ",
+  "en": "Arena Overlord"
+ },
+ {
+  "vi": "Lôi Đài Á Chủ",
+  "en": "Arena Second Lord"
+ },
+ {
+  "vi": "Lôi Đài Tam Kiệt",
+  "en": "Arena Third Hero"
+ },
+ {
+  "vi": "Ba người đứng đầu lôi đài tuần này",
+  "en": "This week's top three in the Arena"
+ },
+ {
+  "vi": "Hạng {0}: @{1}, {2} điểm. Bấm xem chi tiết",
+  "ph": [
+   "i + 1",
+   "t.username",
+   "t.pts"
+  ],
+  "en": "Rank {0}: @{1}, {2} points. Tap for details"
+ },
+ {
+  "vi": "Hạng {0} còn trống",
+  "ph": [
+   "i + 1"
+  ],
+  "en": "Rank {0} is empty"
+ },
+ {
+  "vi": " · Bạn",
+  "en": " · You"
+ },
+ {
+  "vi": " điểm",
+  "en": " pts"
+ },
+ {
+  "vi": " · Liên thắng {0}",
+  "ph": [
+   "t.winRun"
+  ],
+  "en": " · {0}-win streak"
+ },
+ {
+  "vi": "Còn trống",
+  "en": "Empty"
+ },
+ {
+  "vi": " (bạn)",
+  "en": " (you)"
+ },
+ {
+  "vi": " điểm lôi đài · ",
+  "en": " arena points · "
+ },
+ {
+  "vi": " thắng, ",
+  "en": " wins, "
+ },
+ {
+  "vi": " thua tuần này",
+  "en": " losses this week"
+ },
+ {
+  "vi": "Phàm nhân",
+  "en": "Mortal"
+ },
+ {
+  "vi": " · Kiếp ",
+  "en": " · Life "
+ },
+ {
+  "vi": " · đang sống",
+  "en": " · alive"
+ },
+ {
+  "vi": " · đã mất",
+  "en": " · deceased"
+ },
+ {
+  "vi": "Bóng người chơi này đã cầm ra lôi đài gần nhất.",
+  "en": "The shadow this player most recently took into the arena."
+ }
+]

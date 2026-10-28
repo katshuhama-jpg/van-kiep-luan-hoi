@@ -1,0 +1,52 @@
+app/bang-xep-hang/page.tsx:57 [call:includes] Ma Đầu
+app/bang-xep-hang/page.tsx:57 [call:includes] Minh Chủ
+app/bang-xep-hang/page.tsx:57 [call:includes] Phú
+app/bang-xep-hang/page.tsx:57 [call:includes] Thọ
+app/choi/page.tsx:456 [call:includes] lột
+app/choi/page.tsx:456 [call:includes] tặng bạn
+app/choi/page.tsx:456 [call:includes] lấy lại
+app/choi/page.tsx:459 [call:replace] Bạn 
+app/choi/page.tsx:461 [call:includes] lột mất
+app/choi/page.tsx:678 [call:startsWith] Thắng nhưng
+app/choi/page.tsx:848 [call:startsWith] Củng cố
+app/choi/page.tsx:858 [call:startsWith] Củng cố
+app/dang-nhap/page.tsx:40 [call:includes] đã có người dùng
+app/nghia-trang/page.tsx:56 [call:includes] Ma Tôn
+app/nghia-trang/page.tsx:56 [call:includes] Ma Tôn
+components/ArenaMatch.tsx:302 [compare] khắc
+components/Hook.tsx:120 [call:includes] Ma Đầu
+components/Hook.tsx:120 [call:includes] Minh Chủ
+components/Hook.tsx:120 [call:includes] Phú
+components/Hook.tsx:120 [call:includes] Thọ
+components/LifeStory.tsx:118 [call:includes] Ma Tôn
+components/Scene.tsx:388 [compare] PHI THĂNG
+lib/game/collect.ts:27 [call:includes] rất hiếm
+lib/game/duel.ts:232 [compare] Kiếm Cốc
+lib/game/endings.ts:161 [call:includes] thọ nguyên
+lib/game/endings.ts:207 [call:includes] thọ nguyên
+lib/game/endings.ts:287 [call:includes] thiên kiếp
+lib/game/endings.ts:287 [call:includes] lôi
+lib/game/endings.ts:296 [call:includes] tẩu hỏa
+lib/game/endings.ts:296 [call:includes] tâm ma
+lib/game/endings.ts:329 [call:includes] thọ nguyên
+lib/game/helpers.ts:63 [compare] Phổ Đà Sơn
+lib/game/items2.ts:547 [key] Phổ Đà Sơn
+lib/game/items2.ts:548 [key] Kiếm Cốc
+lib/game/items2.ts:549 [key] Vạn Độc Môn
+lib/game/items2.ts:550 [key] Yêu Thần Điện
+lib/game/luanHoi.ts:122 [compare] Đan tu
+lib/game/sect.ts:19 [key] Phổ Đà Sơn
+lib/game/sect.ts:20 [key] Kiếm Cốc
+lib/game/sect.ts:21 [key] Vạn Độc Môn
+lib/game/sect.ts:22 [key] Yêu Thần Điện
+lib/game/sect.ts:73 [compare] Kiếm Cốc
+lib/game/sectEvents2.ts:146 [compare] Phổ Đà Sơn
+lib/game/sectEvents2.ts:182 [compare] Phổ Đà Sơn
+lib/game/sectEvents2.ts:216 [compare] Kiếm Cốc
+lib/game/sectEvents2.ts:250 [compare] Kiếm Cốc
+lib/game/sectEvents2.ts:283 [compare] Vạn Độc Môn
+lib/game/sectEvents2.ts:321 [compare] Vạn Độc Môn
+lib/game/sectEvents2.ts:354 [compare] Yêu Thần Điện
+lib/game/sectEvents2.ts:385 [compare] Yêu Thần Điện
+lib/storage.ts:214 [compare] Khách
+lib/storage.ts:284 [call:startsWith] [Đánh giá kiếp

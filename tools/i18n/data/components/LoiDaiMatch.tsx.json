@@ -1,0 +1,222 @@
+[
+ {
+  "vi": "Phàm nhân",
+  "en": ""
+ },
+ {
+  "vi": "Chí mạng!",
+  "en": ""
+ },
+ {
+  "vi": "Khắc!",
+  "en": ""
+ },
+ {
+  "vi": "{0}: Tuyệt địa phản kích!",
+  "ph": [
+   "me.name"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "{0} {1} {2}, cắm {3} phi kiếm, {4} {5}% máu. Luật hôm nay: {6}.",
+  "ph": [
+   "me.name",
+   "clash.win ? 'hạ' : 'bại dưới tay'",
+   "foe.name",
+   "swords",
+   "clash.win ? 'còn' : 'đối thủ còn'",
+   "hp",
+   "rule.name"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "hạ",
+  "en": ""
+ },
+ {
+  "vi": "bại dưới tay",
+  "en": ""
+ },
+ {
+  "vi": "còn",
+  "en": ""
+ },
+ {
+  "vi": "đối thủ còn",
+  "en": ""
+ },
+ {
+  "vi": "Chưa ghi được chiến thư, thử lại sau.",
+  "en": ""
+ },
+ {
+  "vi": "Lôi đài đang đông, kết quả chưa ghi được.",
+  "en": ""
+ },
+ {
+  "vi": "Chưa tạo được link, đã tải ảnh về máy.",
+  "en": ""
+ },
+ {
+  "vi": "Chưa khoe được, thử lại sau.",
+  "en": ""
+ },
+ {
+  "vi": " phi kiếm, sức mạnh ",
+  "en": ""
+ },
+ {
+  "vi": "%. Hai bóng bước lên lôi đài!",
+  "en": ""
+ },
+ {
+  "vi": "Lôi đài với @{0}",
+  "ph": [
+   "opp"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "Chạm để vào trận",
+  "en": ""
+ },
+ {
+  "vi": "Chưa chọn đường",
+  "en": ""
+ },
+ {
+  "vi": "Ngang cảnh giới ",
+  "en": ""
+ },
+ {
+  "vi": " · Luật hôm nay: ",
+  "en": ""
+ },
+ {
+  "vi": " · Trận báo thù",
+  "en": ""
+ },
+ {
+  "vi": "THẮNG",
+  "en": ""
+ },
+ {
+  "vi": "BẠI",
+  "en": ""
+ },
+ {
+  "vi": "{0}% sức",
+  "ph": [
+   "pw"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "Đòn kết liễu",
+  "en": ""
+ },
+ {
+  "vi": "Vạn Kiếm Quy Tông",
+  "en": ""
+ },
+ {
+  "vi": "Tua tới đòn cuối",
+  "en": ""
+ },
+ {
+  "vi": "Bạn hạ @{0}",
+  "ph": [
+   "opp"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "@{0} thắng bạn",
+  "ph": [
+   "opp"
+  ],
+  "en": ""
+ },
+ {
+  "vi": " phi kiếm · ",
+  "en": ""
+ },
+ {
+  "vi": "% máu",
+  "en": ""
+ },
+ {
+  "vi": "Hôm nay đã hết lượt.",
+  "en": ""
+ },
+ {
+  "vi": "Lượt báo thù đã hết hạn.",
+  "en": ""
+ },
+ {
+  "vi": "Lượt này không còn hiệu lực.",
+  "en": ""
+ },
+ {
+  "vi": " điểm",
+  "en": ""
+ },
+ {
+  "vi": "Còn ",
+  "en": ""
+ },
+ {
+  "vi": " chiến thư hôm nay",
+  "en": ""
+ },
+ {
+  "vi": " phúc",
+  "en": ""
+ },
+ {
+  "vi": " Hồn lực",
+  "en": ""
+ },
+ {
+  "vi": " · còn {0} lên {1}",
+  "ph": [
+   "tier.next.need",
+   "tier.next.name"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "Đang ghi kết quả lên bảng...",
+  "en": ""
+ },
+ {
+  "vi": "Trận tiếp · còn ",
+  "en": ""
+ },
+ {
+  "vi": " lượt",
+  "en": ""
+ },
+ {
+  "vi": "Rời lôi đài",
+  "en": ""
+ },
+ {
+  "vi": "Đang tạo link...",
+  "en": ""
+ },
+ {
+  "vi": "Khoe trận",
+  "en": ""
+ },
+ {
+  "vi": "Nghỉ đã",
+  "en": ""
+ },
+ {
+  "vi": "Diễn biến trận",
+  "en": ""
+ }
+]

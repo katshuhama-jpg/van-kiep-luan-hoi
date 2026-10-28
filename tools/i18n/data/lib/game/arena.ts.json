@@ -1,0 +1,583 @@
+[
+ {
+  "vi": "Hỏa vận",
+  "en": ""
+ },
+ {
+  "vi": "Bóng mang bản mệnh Hỏa mạnh thêm 15%.",
+  "en": ""
+ },
+ {
+  "vi": "Vô tướng",
+  "en": ""
+ },
+ {
+  "vi": "Đối thủ không để lộ ý đồ. Chỉ còn đoán theo thói quen.",
+  "en": ""
+ },
+ {
+  "vi": "Kiếm khí tung hoành",
+  "en": ""
+ },
+ {
+  "vi": "Kiếm tu mạnh thêm 15%.",
+  "en": ""
+ },
+ {
+  "vi": "Thủ thế như sơn",
+  "en": ""
+ },
+ {
+  "vi": "Thế Thủ khi thắng thế được thêm 10%.",
+  "en": ""
+ },
+ {
+  "vi": "Thủy vận",
+  "en": ""
+ },
+ {
+  "vi": "Bóng mang bản mệnh Thủy mạnh thêm 15%.",
+  "en": ""
+ },
+ {
+  "vi": "Âm dương đảo lộn",
+  "en": ""
+ },
+ {
+  "vi": "Khắc chế đảo ngược: Công chặn Thủ, Thủ phá Hóa, Hóa giải Công.",
+  "en": ""
+ },
+ {
+  "vi": "Phật quang phổ chiếu",
+  "en": ""
+ },
+ {
+  "vi": "Phật tu mạnh thêm 15%.",
+  "en": ""
+ },
+ {
+  "vi": "Tiên phát chế nhân",
+  "en": ""
+ },
+ {
+  "vi": "Hiệp đầu cả hai bắt buộc ra Công.",
+  "en": ""
+ },
+ {
+  "vi": "Chính khí hạo nhiên",
+  "en": ""
+ },
+ {
+  "vi": "Bóng chính đạo (đạo tâm từ 20) mạnh thêm 12%.",
+  "en": ""
+ },
+ {
+  "vi": "Mộc vận",
+  "en": ""
+ },
+ {
+  "vi": "Bóng mang bản mệnh Mộc mạnh thêm 15%.",
+  "en": ""
+ },
+ {
+  "vi": "Cuồng phong",
+  "en": ""
+ },
+ {
+  "vi": "Thế Công luôn mạnh thêm 8%, kể cả khi bị chặn.",
+  "en": ""
+ },
+ {
+  "vi": "Tử chiến",
+  "en": ""
+ },
+ {
+  "vi": "Hiệp cuối, thế khắc nặng gấp rưỡi.",
+  "en": ""
+ },
+ {
+  "vi": "Ma khí ngập trời",
+  "en": ""
+ },
+ {
+  "vi": "Ma tu mạnh thêm 15%.",
+  "en": ""
+ },
+ {
+  "vi": "Loạn tượng",
+  "en": ""
+ },
+ {
+  "vi": "Ý đồ đối thủ để lộ phần lớn là giả.",
+  "en": ""
+ },
+ {
+  "vi": "Kim vận",
+  "en": ""
+ },
+ {
+  "vi": "Bóng mang bản mệnh Kim mạnh thêm 15%.",
+  "en": ""
+ },
+ {
+  "vi": "Nhất chiêu định thắng bại",
+  "en": ""
+ },
+ {
+  "vi": "Chỉ đánh một hiệp. Một lần đoán quyết định tất cả.",
+  "en": ""
+ },
+ {
+  "vi": "Tà khí thịnh",
+  "en": ""
+ },
+ {
+  "vi": "Bóng tà đạo (đạo tâm từ -20 trở xuống) mạnh thêm 12%.",
+  "en": ""
+ },
+ {
+  "vi": "Thăm dò",
+  "en": ""
+ },
+ {
+  "vi": "Hiệp đầu cả hai bắt buộc ra Thủ.",
+  "en": ""
+ },
+ {
+  "vi": "Đan hương",
+  "en": ""
+ },
+ {
+  "vi": "Đan tu mạnh thêm 15%.",
+  "en": ""
+ },
+ {
+  "vi": "Như thủy hóa giải",
+  "en": ""
+ },
+ {
+  "vi": "Thế Hóa khi thắng thế được thêm 10%.",
+  "en": ""
+ },
+ {
+  "vi": "Thổ vận",
+  "en": ""
+ },
+ {
+  "vi": "Bóng mang bản mệnh Thổ mạnh thêm 15%.",
+  "en": ""
+ },
+ {
+  "vi": "Ngũ chiến tam thắng",
+  "en": ""
+ },
+ {
+  "vi": "Đánh tối đa năm hiệp, thắng ba hiệp mới là thắng.",
+  "en": ""
+ },
+ {
+  "vi": "Trung dung chi đạo",
+  "en": ""
+ },
+ {
+  "vi": "Bóng trung lập (đạo tâm từ -19 tới 19) mạnh thêm 12%.",
+  "en": ""
+ },
+ {
+  "vi": "Trận đồ bát quái",
+  "en": ""
+ },
+ {
+  "vi": "Trận tu mạnh thêm 15%.",
+  "en": ""
+ },
+ {
+  "vi": "Ngũ hành tề phục",
+  "en": ""
+ },
+ {
+  "vi": "Không còn khắc chế ngũ hành, chỉ còn đấu trí.",
+  "en": ""
+ },
+ {
+  "vi": "Hậu sinh khả úy",
+  "en": ""
+ },
+ {
+  "vi": "Bóng dưới 80 tuổi mạnh thêm 12%.",
+  "en": ""
+ },
+ {
+  "vi": "Yêu phong",
+  "en": ""
+ },
+ {
+  "vi": "Yêu tu mạnh thêm 15%.",
+  "en": ""
+ },
+ {
+  "vi": "Liên hoàn",
+  "en": ""
+ },
+ {
+  "vi": "Thắng một hiệp thì hiệp sau mạnh thêm 8%.",
+  "en": ""
+ },
+ {
+  "vi": "Tương khắc song bội",
+  "en": ""
+ },
+ {
+  "vi": "Khắc chế ngũ hành nặng gấp đôi.",
+  "en": ""
+ },
+ {
+  "vi": "Gừng càng già càng cay",
+  "en": ""
+ },
+ {
+  "vi": "Bóng từ 150 tuổi mạnh thêm 12%.",
+  "en": ""
+ },
+ {
+  "vi": "Nghịch cảnh",
+  "en": ""
+ },
+ {
+  "vi": "Thua một hiệp thì hiệp sau mạnh thêm 10%; bên yếu hơn được kéo lại gần.",
+  "en": ""
+ },
+ {
+  "vi": "Kiếm tu thường ra tay trước.",
+  "en": ""
+ },
+ {
+  "vi": "Ma tu ưa đánh mạnh, đôi khi giấu chiêu.",
+  "en": ""
+ },
+ {
+  "vi": "Phật tu thích giữ thế thủ.",
+  "en": ""
+ },
+ {
+  "vi": "Trận tu hay bày thế phòng ngự.",
+  "en": ""
+ },
+ {
+  "vi": "Đan tu khó đoán, hay hóa giải.",
+  "en": ""
+ },
+ {
+  "vi": "Yêu tu dựa vào sức, thích xông lên.",
+  "en": ""
+ },
+ {
+  "vi": "dồn khí xuống tay, sát khí bốc lên",
+  "en": ""
+ },
+ {
+  "vi": "nhón chân, như sắp lao tới",
+  "en": ""
+ },
+ {
+  "vi": "siết chặt binh khí, mắt đỏ ngầu",
+  "en": ""
+ },
+ {
+  "vi": "lùi nửa bước, khí bao quanh thân",
+  "en": ""
+ },
+ {
+  "vi": "trụ chân thật vững, mắt không rời bạn",
+  "en": ""
+ },
+ {
+  "vi": "thu tay về trước ngực",
+  "en": ""
+ },
+ {
+  "vi": "khép hờ mắt, khí quanh người xoay tròn",
+  "en": ""
+ },
+ {
+  "vi": "buông lỏng hai tay, như chờ đòn tới",
+  "en": ""
+ },
+ {
+  "vi": "thở rất chậm, thân nhẹ như lá",
+  "en": ""
+ },
+ {
+  "vi": "Đối thủ đứng im như tượng, không đoán được gì.",
+  "en": ""
+ },
+ {
+  "vi": "Đối thủ {0}.",
+  "ph": [
+   "t"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "Bạn đọc trúng ý đồ, một chưởng đẩy bóng đối thủ lùi ba bước.",
+  "en": ""
+ },
+ {
+  "vi": "Đòn của bạn tới trước một nhịp, đối thủ loạng choạng.",
+  "en": ""
+ },
+ {
+  "vi": "Bạn hóa giải gọn gàng rồi phản đòn.",
+  "en": ""
+ },
+ {
+  "vi": "Đối thủ chặn đúng đòn của bạn rồi trả lại gấp đôi.",
+  "en": ""
+ },
+ {
+  "vi": "Bạn trúng kế, ngực đau nhói.",
+  "en": ""
+ },
+ {
+  "vi": "Một đòn hiểm lách qua thế thủ của bạn.",
+  "en": ""
+ },
+ {
+  "vi": "Nhất Kiếm Phá Không",
+  "en": ""
+ },
+ {
+  "vi": "Lưu Tinh Kiếm Vũ",
+  "en": ""
+ },
+ {
+  "vi": "Kiếm Võng Hộ Thân",
+  "en": ""
+ },
+ {
+  "vi": "Bích Thủy Kiếm Bích",
+  "en": ""
+ },
+ {
+  "vi": "Dĩ Nhu Khắc Cương",
+  "en": ""
+ },
+ {
+  "vi": "Kiếm Ý Như Phong",
+  "en": ""
+ },
+ {
+  "vi": "Đan Hỏa Phần Thiên",
+  "en": ""
+ },
+ {
+  "vi": "Liệt Diễm Đan Châm",
+  "en": ""
+ },
+ {
+  "vi": "Hộ Thể Đan Khí",
+  "en": ""
+ },
+ {
+  "vi": "Ngọc Dịch Kim Thân",
+  "en": ""
+ },
+ {
+  "vi": "Hóa Độc Thành Dược",
+  "en": ""
+ },
+ {
+  "vi": "Vạn Thảo Quy Nguyên",
+  "en": ""
+ },
+ {
+  "vi": "Sát Trận Khởi Động",
+  "en": ""
+ },
+ {
+  "vi": "Vạn Kiếm Quy Tông Trận",
+  "en": ""
+ },
+ {
+  "vi": "Bát Môn Kim Tỏa Trận",
+  "en": ""
+ },
+ {
+  "vi": "Huyền Vũ Hộ Trận",
+  "en": ""
+ },
+ {
+  "vi": "Mê Tung Ảo Trận",
+  "en": ""
+ },
+ {
+  "vi": "Càn Khôn Đảo Chuyển",
+  "en": ""
+ },
+ {
+  "vi": "Đại Lực Kim Cang Chưởng",
+  "en": ""
+ },
+ {
+  "vi": "Phục Ma Côn Pháp",
+  "en": ""
+ },
+ {
+  "vi": "Kim Cang Bất Hoại Thể",
+  "en": ""
+ },
+ {
+  "vi": "Cà Sa Hộ Thân",
+  "en": ""
+ },
+ {
+  "vi": "Niêm Hoa Vi Tiếu",
+  "en": ""
+ },
+ {
+  "vi": "Lục Tự Chân Ngôn",
+  "en": ""
+ },
+ {
+  "vi": "Huyết Ma Trảo",
+  "en": ""
+ },
+ {
+  "vi": "Thiên Ma Giải Thể",
+  "en": ""
+ },
+ {
+  "vi": "Ma Khí Hộ Thể",
+  "en": ""
+ },
+ {
+  "vi": "Huyết Hải Hộ Thân",
+  "en": ""
+ },
+ {
+  "vi": "Hấp Tinh Ma Công",
+  "en": ""
+ },
+ {
+  "vi": "Ảnh Ma Phân Thân",
+  "en": ""
+ },
+ {
+  "vi": "Yêu Thú Cuồng Kích",
+  "en": ""
+ },
+ {
+  "vi": "Hổ Khiếu Sơn Lâm",
+  "en": ""
+ },
+ {
+  "vi": "Thạch Bì Yêu Giáp",
+  "en": ""
+ },
+ {
+  "vi": "Quy Giáp Thần Công",
+  "en": ""
+ },
+ {
+  "vi": "Huyễn Hình Độn Ảnh",
+  "en": ""
+ },
+ {
+  "vi": "Hồ Mị Mê Tâm",
+  "en": ""
+ },
+ {
+  "vi": "Mãnh Hổ Quyền",
+  "en": ""
+ },
+ {
+  "vi": "Khai Sơn Chưởng",
+  "en": ""
+ },
+ {
+  "vi": "Thiết Bố Sam",
+  "en": ""
+ },
+ {
+  "vi": "Trầm Thạch Bộ",
+  "en": ""
+ },
+ {
+  "vi": "Phiêu Diêu Bộ Pháp",
+  "en": ""
+ },
+ {
+  "vi": "Lưu Thủy Thân Pháp",
+  "en": ""
+ },
+ {
+  "vi": "{0} thi triển “{1}” ({2}).",
+  "ph": [
+   "me.name",
+   "a",
+   "names[my]"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "{0} đáp lại bằng “{1}” ({2}).",
+  "ph": [
+   "foe.name",
+   "b",
+   "names[fs]"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "“{0}” khắc đúng “{1}”, đối thủ trở tay không kịp.",
+  "ph": [
+   "a",
+   "b"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "“{0}” khắc thế, nhưng nội lực đối thủ quá dày, đòn bị đỡ lại.",
+  "ph": [
+   "a"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "“{0}” khắc thế, nhưng bạn liều mình lách qua, phản đòn trúng đích!",
+  "ph": [
+   "b"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "“{0}” khắc đúng “{1}”, bạn trúng kế.",
+  "ph": [
+   "b",
+   "a"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "Hai chiêu cùng thế va vào nhau, bạn nhỉnh hơn một nhịp.",
+  "en": ""
+ },
+ {
+  "vi": "Hai chiêu cùng thế va vào nhau, đối thủ nhỉnh hơn một nhịp.",
+  "en": ""
+ },
+ {
+  "vi": "Bạn thắng hiệp {0}.",
+  "ph": [
+   "n"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "Bạn thua hiệp {0}.",
+  "ph": [
+   "n"
+  ],
+  "en": ""
+ }
+]

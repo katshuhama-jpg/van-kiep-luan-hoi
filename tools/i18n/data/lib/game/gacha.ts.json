@@ -1,0 +1,218 @@
+[
+ {
+  "vi": "Phàm",
+  "en": "Mortal"
+ },
+ {
+  "vi": "Linh",
+  "en": ""
+ },
+ {
+  "vi": "Huyền",
+  "en": "Mystic"
+ },
+ {
+  "vi": "Địa",
+  "en": "Earth"
+ },
+ {
+  "vi": "Thiên",
+  "en": "Heaven"
+ },
+ {
+  "vi": "Khỏe như trâu",
+  "en": "Strong as an ox"
+ },
+ {
+  "vi": "Sức khỏe +12",
+  "en": "Health +12"
+ },
+ {
+  "vi": "Lanh lợi",
+  "en": "Quick-witted"
+ },
+ {
+  "vi": "Ngộ tính +6",
+  "en": "Insight +6"
+ },
+ {
+  "vi": "Mồm mép tép nhảy",
+  "en": "Silver tongue"
+ },
+ {
+  "vi": "+40 linh thạch, nói gì cũng lọt tai",
+  "en": "+40 spirit stones, and everything you say goes down smooth"
+ },
+ {
+  "vi": "Mặt đầy mụn",
+  "en": "Pimple face"
+ },
+ {
+  "vi": "Khí vận -3, nhưng tâm chẳng vướng bụi hồng: tâm cảnh +8",
+  "en": "Luck -3, but no romance to cloud your heart: Mind +8"
+ },
+ {
+  "vi": "Ham ăn",
+  "en": "Glutton"
+ },
+ {
+  "vi": "Sức khỏe +6, mỗi năm tốn thêm tiền ăn",
+  "en": "Health +6, costs extra food money every year"
+ },
+ {
+  "vi": "Ngủ nhiều",
+  "en": "Sleepyhead"
+ },
+ {
+  "vi": "Tâm ma -5, ngộ tính -3",
+  "en": "Heart demon -5, Insight -3"
+ },
+ {
+  "vi": "Nhà nghèo chí lớn",
+  "en": "Poor but ambitious"
+ },
+ {
+  "vi": "Mất hết của cải ban đầu, khí vận +8",
+  "en": "Lose all starting wealth, Luck +8"
+ },
+ {
+  "vi": "Sao chổi giáng thế",
+  "en": "Born a jinx"
+ },
+ {
+  "vi": "Khí vận -15, ngộ tính +15",
+  "en": "Luck -15, Insight +15"
+ },
+ {
+  "vi": "Tham lam",
+  "en": ""
+ },
+ {
+  "vi": "Nhà bỗng giàu to (+400). Nhưng tham thì thâm...",
+  "en": "Sudden fortune (+400). But greed brings grief..."
+ },
+ {
+  "vi": "Mệnh đào hoa",
+  "en": "Peach-blossom fate"
+ },
+ {
+  "vi": "Dễ gặp đạo lữ gấp 3, tâm cảnh +5",
+  "en": "3x more likely to meet a Dao companion, Mind +5"
+ },
+ {
+  "vi": "Mệnh cứng",
+  "en": "Hard to kill"
+ },
+ {
+  "vi": "Khó chết hơn 30% trong mọi hiểm cảnh",
+  "en": "30% less likely to die in any danger"
+ },
+ {
+  "vi": "Trời sinh thần lực",
+  "en": "Born with divine strength"
+ },
+ {
+  "vi": "Công khi trừ yêu +25%",
+  "en": "Attack +25% when hunting demons"
+ },
+ {
+  "vi": "Trời sinh u uất",
+  "en": "Born melancholy"
+ },
+ {
+  "vi": "Tâm ma +20, ngộ tính +12",
+  "en": "Heart demon +20, Insight +12"
+ },
+ {
+  "vi": "Thiên sinh kiếm cốt",
+  "en": "Born with sword bones"
+ },
+ {
+  "vi": "Sinh ra cầm kiếm, du ngoạn và trừ yêu mạnh hơn",
+  "en": "Born holding a sword - stronger when wandering and hunting demons"
+ },
+ {
+  "vi": "Ngậm ngọc mà sinh",
+  "en": "Born with jade in mouth"
+ },
+ {
+  "vi": "Chào đời đã đeo Ngọc bội hộ thân",
+  "en": "Enters the world wearing a protective jade pendant"
+ },
+ {
+  "vi": "Đốn ngộ",
+  "en": "Sudden enlightenment"
+ },
+ {
+  "vi": "Ngộ tính +25",
+  "en": "Insight +25"
+ },
+ {
+  "vi": "Thánh thể",
+  "en": "Saint body"
+ },
+ {
+  "vi": "Sức khỏe +20, thọ nguyên +10%",
+  "en": "Health +20, lifespan +10%"
+ },
+ {
+  "vi": "Thiên đố anh tài",
+  "en": "Heaven envies genius"
+ },
+ {
+  "vi": "Thọ nguyên -30%, ngộ tính +30, tu luyện nhanh hơn",
+  "en": "Lifespan -30%, Insight +30, faster cultivation"
+ },
+ {
+  "vi": "Thiên sát cô tinh",
+  "en": "Lone heavenly star"
+ },
+ {
+  "vi": "Khí vận +20, nhưng khắc cha mẹ từ nhỏ, người thân cận khó bền",
+  "en": "Luck +20, but you bring doom to your parents and those close to you rarely last"
+ },
+ {
+  "vi": "Chiếc hộp bí ẩn",
+  "en": "Mysterious box"
+ },
+ {
+  "vi": "Một chiếc hộp không mở được. Bà mụ dặn: đến năm 80 tuổi hãy mở.",
+  "en": "A box that won't open. The midwife says: open it when you turn 80."
+ },
+ {
+  "vi": "Hệ Thống",
+  "en": "The System"
+ },
+ {
+  "vi": "Đinh! Một giọng nói lạ vang lên trong đầu bạn...",
+  "en": "Ding! A strange voice rings out in your head..."
+ },
+ {
+  "vi": "Trùng sinh giả",
+  "en": "Reincarnator"
+ },
+ {
+  "vi": "Nhớ rõ kiếp trước. Ngộ tính +15, khởi đầu có tu vi",
+  "en": "Remembers the past life clearly. Insight +15, starts with some cultivation"
+ },
+ {
+  "vi": "Thiên mệnh chi tử",
+  "en": "Child of Destiny"
+ },
+ {
+  "vi": "Khí vận tối đa, linh căn biến dị, đột phá dễ hơn",
+  "en": "Maxed Luck, mutated spiritual root, easier breakthroughs"
+ },
+ {
+  "vi": "Hỗn Độn linh căn",
+  "en": "Chaos Spiritual Root"
+ },
+ {
+  "vi": "Chân tiên chuyển thế",
+  "en": "Reincarnated True Immortal"
+ },
+ {
+  "vi": "Một vị tiên nhân đầu thai. Tu luyện gấp đôi, thọ +20%",
+  "en": "An immortal reborn. Double cultivation speed, lifespan +20%"
+ }
+]

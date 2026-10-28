@@ -1,0 +1,803 @@
+[
+ {
+  "vi": "Phi Kiếm Luận Anh Hùng",
+  "en": "Flying Swords and Heroes"
+ },
+ {
+  "vi": "Lôi đài giờ chỉ cần một ngón tay và 25 giây. Bóng mạnh nhất được thả vào giang hồ làm ma đầu. Đời nào đáng khoe thì có thẻ để khoe, dán link lên mạng là hiện hình nhân vật.",
+  "en": "The Arena now takes one finger and 25 seconds. The strongest shadows are unleashed on the jianghu as demon lords. Lives worth bragging about get a card to brag with - paste the link anywhere and your character shows up."
+ },
+ {
+  "vi": "một trận lôi đài",
+  "en": "per arena match"
+ },
+ {
+  "vi": "ngày điểm danh",
+  "en": "daily check-ins"
+ },
+ {
+  "vi": "tử nạn 3 kiếp đầu",
+  "en": "death rate, first 3 lives"
+ },
+ {
+  "vi": "Lôi đài Phi Kiếm",
+  "en": "Flying Sword Arena"
+ },
+ {
+  "vi": "Bấm Ra đài là vào trận ngay: game tự lấy kiếp mạnh nhất của bạn làm bóng và rút đối thủ. Vẫn tự chọn bóng được.",
+  "en": "Tap Enter the arena and you're in: the game picks your strongest life as your shadow and draws an opponent. You can still choose your shadow yourself."
+ },
+ {
+  "vi": "12 giây phóng phi kiếm phá hộ thể đối thủ: chạm để phóng, đâm vào kiếm đã cắm là Phản phệ. Đủ 10 kiếm vỡ một tầng, tầng sau xoay thất thường hơn.",
+  "en": "12 seconds to hurl flying swords at your opponent's protective barrier: tap to throw, and hitting a sword already stuck in it means Backlash. Every 10 swords shatter a layer, and the next layer spins more erratically."
+ },
+ {
+  "vi": "Càng nhiều kiếm, bóng càng mạnh: 0 kiếm còn 70% sức, mỗi kiếm thêm 2%, tối đa 130%. Sau đó hai bóng tự đánh, sắp gục được tuyệt địa phản kích một lần.",
+  "en": "More swords, stronger shadow: 0 swords leaves 70% power, each sword adds 2%, up to 130%. Then the two shadows fight on their own, and one about to fall gets a single desperate counterattack."
+ },
+ {
+  "vi": "Thắng +3 điểm và 10 phúc duyên. Thua vẫn +1 điểm và 3 phúc duyên. Đủ 3 trận trong ngày thêm 15 Hồn lực.",
+  "en": "Win for +3 points and 10 Fortune. Lose and still get +1 point and 3 Fortune. Play 3 matches in a day for an extra 15 Soul Power."
+ },
+ {
+  "vi": "Bậc lôi đài theo điểm tuần: Luyện Khí 3, Trúc Cơ 9, Kim Đan 18, Nguyên Anh 30, Hóa Thần 42, Độ Kiếp 54. Đầu tuần mới nhận 5 phúc duyên mỗi bậc.",
+  "en": "Arena tiers by weekly points: Qi Refining 3, Foundation 9, Golden Core 18, Nascent Soul 30, Spirit Transformation 42, Tribulation 54. Each new week pays 5 Fortune per tier."
+ },
+ {
+  "vi": "Bị ai hạ thì có thư và nút Báo thù, không tốn lượt. Nút Lôi đài có chấm đỏ khi còn lượt.",
+  "en": "Get beaten and you receive a letter and a Revenge button that costs no turn. The Arena button shows a red dot while you have turns left."
+ },
+ {
+  "vi": "Bóng thành ma đầu",
+  "en": "Shadows become demon lords"
+ },
+ {
+  "vi": "Bóng thắng 2 trận lôi đài trong một ngày hóa ma đầu, được thả vào giang hồ 24 giờ, chặn đường người chơi khác (từ Trúc Cơ, tối đa 2 lần mỗi kiếp).",
+  "en": "A shadow that wins 2 arena matches in a day turns into a demon lord and is unleashed on the jianghu for 24 hours, blocking other players' paths (from Foundation, at most 2 times per life)."
+ },
+ {
+  "vi": "Đánh tan ma đầu: +10 phúc duyên và đồ rơi. Thua: trọng thương, mất 10% linh thạch (tối đa 500), nhưng không chết.",
+  "en": "Defeat a demon lord: +10 Fortune and loot. Lose: grievous wounds and 10% of your spirit stones gone (max 500), but you don't die."
+ },
+ {
+  "vi": "Bóng của bạn hạ được ai thì bạn nhận thư và 5 phúc duyên, tối đa 30 mỗi ngày.",
+  "en": "Whenever your shadow takes someone down, you get a letter and 5 Fortune, up to 30 a day."
+ },
+ {
+  "vi": "Thẻ Một đời",
+  "en": "Life Card"
+ },
+ {
+  "vi": "Màn lập bia có thẻ khoe: xếp loại S, A, B, C, D, đời này vượt bao nhiêu phần trăm các kiếp trong giang hồ, 3 dòng đáng nhớ.",
+  "en": "The tombstone screen now has a card to show off: an S, A, B, C or D grade, what percent of lives in the jianghu this one beat, and 3 memorable lines."
+ },
+ {
+  "vi": "Bấm Khoe đời này để chia sẻ link. Dán lên Facebook, Threads, Zalo sẽ hiện hình nhân vật của bạn. Có nút Chép chữ để dán vào nhóm.",
+  "en": "Tap Show off this life to share a link. Paste it on Facebook, Threads or Zalo and your character appears. There's a Copy text button for pasting into group chats."
+ },
+ {
+  "vi": "Bảng khoe có nút đi thẳng Threads, Facebook, Messenger và Chép link để dán Zalo, không phải tìm trong bảng chia sẻ của máy.",
+  "en": "The share panel has direct buttons for Threads, Facebook, Messenger, plus Copy link for Zalo - no digging through your phone's share sheet."
+ },
+ {
+  "vi": "Sau mỗi trận lôi đài cũng có nút Khoe trận.",
+  "en": "Every arena match also ends with a Show off match button."
+ },
+ {
+  "vi": "Người mới và điểm danh",
+  "en": "Newcomers and check-ins"
+ },
+ {
+  "vi": "Ba kiếp đầu trời thương: hiểm cảnh khó giết người hơn nhiều cho tới khi chọn con đường. Mỗi kiếp đầu có một mục tiêu, đạt thì thưởng phúc duyên.",
+  "en": "Heaven pities your first three lives: perils are far less deadly until you choose a Path. Each early life has a goal that pays Fortune when reached."
+ },
+ {
+  "vi": "Điểm danh 7 ngày ngay ở màn đầu thai: phúc duyên, đan hồi hồn, linh thạch, ngày 7 là Hoàn Hồn Đan và ngọc bội. Bỏ một ngày thì về ngày 1.",
+  "en": "7-day check-in right on the rebirth screen: Fortune, soul pills, spirit stones, and on day 7 a Soul Return Pill and a jade pendant. Miss a day and you're back to day 1."
+ },
+ {
+  "vi": "Nhiệm vụ ngày nằm ngay dưới hàng điểm danh.",
+  "en": "Daily quests sit right below the check-in row."
+ },
+ {
+  "vi": "Đan tu và tiếng đồn",
+  "en": "Alchemists and rumours"
+ },
+ {
+  "vi": "Kiếp sau một đời Đan tu mua đan hồi hồn rẻ hơn 30%: còn nhớ cách luyện.",
+  "en": "After a life as an Alchemist, your next life buys soul pills 30% cheaper: you still remember the recipe."
+ },
+ {
+  "vi": "Mỗi ngày một tiếng đồn ở màn đầu thai, gợi mờ một kết cục ít người mở nhất.",
+  "en": "A daily rumour on the rebirth screen hints at one of the least-unlocked endings."
+ },
+ {
+  "vi": "Ai mở một kết cục đầu tiên trong giang hồ, cả server nhận thư Thiên Đạo. Sổ Sinh Tử ghi số người đã mở và người đầu tiên.",
+  "en": "Whoever unlocks an ending first in the jianghu, the whole server gets a letter from the Heavenly Dao. The Book of Life and Death records how many have unlocked it and who was first."
+ },
+ {
+  "vi": "Hoàn Hồn Đan",
+  "en": "Soul Return Pill"
+ },
+ {
+  "vi": "Đạo hữu nghiện quá mà hồn không theo kịp? Tiệm đan dưới chân cầu Nại Hà đã mở. Cùng lúc, Thiên Đạo cân lại đường tu: thọ dài hơn thì tu cũng phải chậm lại một chút.",
+  "en": "Fellow Daoist, too hooked for your soul to keep up? A pill shop has opened at the foot of Nại Hà Bridge. Meanwhile, the Heavenly Dao rebalances cultivation: a longer lifespan means a slightly slower climb."
+ },
+ {
+  "vi": "phẩm đan hồi hồn",
+  "en": "grades of soul pill"
+ },
+ {
+  "vi": "Hồn lực mỗi nhiệm vụ",
+  "en": "Soul Power per quest"
+ },
+ {
+  "vi": "tu vi cần từ Kim Đan",
+  "en": "cultivation needed from Golden Core"
+ },
+ {
+  "vi": "Đan hồi hồn",
+  "en": "Soul pills"
+ },
+ {
+  "vi": "Ở Cầu Nại Hà, ngay trước khi đầu thai, giờ mua được đan hồi Hồn lực bằng phúc duyên. Cũng mua được trong mục Kiếp Số và Hồn lực ở lá số.",
+  "en": "At Nại Hà Bridge, right before rebirth, you can now buy Soul Power pills with Fortune. They're also sold in the Calamity Count and Soul Power section of your fate chart."
+ },
+ {
+  "vi": "Tụ Hồn Đan (hạ phẩm): +20 Hồn lực, 20 phúc. Dưỡng Hồn Đan (trung phẩm): +45 Hồn lực, 55 phúc. Hoàn Hồn Đan (thượng phẩm): hồi đầy, 140 phúc.",
+  "en": "Soul Gathering Pill (low grade): +20 Soul Power, 20 Fortune. Soul Nurturing Pill (mid grade): +45 Soul Power, 55 Fortune. Soul Return Pill (high grade): full restore, 140 Fortune."
+ },
+ {
+  "vi": "Mỗi ngày 3 viên đầu giá gốc. Từ viên thứ 4, mỗi viên đắt thêm 50% so với viên trước. Nghiện thì vẫn chơi tiếp được, chỉ là tốn phúc.",
+  "en": "The first 3 pills each day are base price. From the 4th, each costs 50% more than the last. Hooked? You can keep playing - it just costs Fortune."
+ },
+ {
+  "vi": "Mỗi nhiệm vụ ngày hoàn thành hồi thêm 10 Hồn lực.",
+  "en": "Each completed daily quest restores an extra 10 Soul Power."
+ },
+ {
+  "vi": "Cân bằng lại cơ chế tu luyện",
+  "en": "Cultivation rebalance"
+ },
+ {
+  "vi": "Bản 3.1.0 làm thọ dài ra 1,5 lần nên phi thăng dễ quá (người chơi lâu năm phi thăng gần 1/4 số kiếp). Nay tu luyện chậm lại cho cân: tu vi cần để lên tầng từ Kim Đan trở lên tăng 1,5 lần.",
+  "en": "Version 3.1.0 made lifespans 1.5x longer, so Ascension got too easy (veteran players ascended in nearly 1/4 of their lives). Cultivation now slows to match: cultivation needed per layer from Golden Core up is 1.5x."
+ },
+ {
+  "vi": "Cõi trên: mỗi tầng cần ít nhất 24 năm (trước 17 năm), cảnh giới cuối 16 năm (trước 12 năm).",
+  "en": "Upper realms: each layer takes at least 24 years (was 17), the final realm 16 years (was 12)."
+ },
+ {
+  "vi": "Thiên kiếp phi thăng khó thêm 5%.",
+  "en": "The Ascension tribulation is 5% harder."
+ },
+ {
+  "vi": "Nhân vật đang chơi giữa kiếp sẽ thấy thanh tu vi tụt một đoạn: tu vi vẫn giữ nguyên, chỉ là mức cần để lên tầng cao hơn.",
+  "en": "Characters mid-life will see their cultivation bar drop a bit: your cultivation is untouched, the next layer just costs more."
+ },
+ {
+  "vi": "Theo góp ý của đạo hữu",
+  "en": "From fellow Daoists' feedback"
+ },
+ {
+  "vi": "Đạo hữu trên Threads xin tắt Hồn lực vì \"đang nghiện mà phải dừng\". Không tắt được, nhưng có đan rồi.",
+  "en": "A fellow Daoist on Threads begged us to remove Soul Power because \"I'm hooked and have to stop\". Can't remove it, but now there are pills."
+ },
+ {
+  "vi": "Vạn Tông Triều Bái",
+  "en": "Ten Thousand Sects Pay Homage"
+ },
+ {
+  "vi": "Bản này làm theo góp ý của đạo hữu. Thêm bốn tông môn, một con đường nhập Ma giới, mười cốt truyện cho người đã phi thăng, thọ nguyên dài hơn mà đột phá khó hơn, linh thạch không còn dễ như nhặt lá.",
+  "en": "This version is built on fellow Daoists' feedback. Four new sects, a path into the Demon Realm, ten storylines for the ascended, longer lifespans but harder breakthroughs, and spirit stones no longer as easy as picking up leaves."
+ },
+ {
+  "vi": "tông môn",
+  "en": "sects"
+ },
+ {
+  "vi": "sự kiện cốt truyện",
+  "en": "story events"
+ },
+ {
+  "vi": "thọ nguyên",
+  "en": "lifespan"
+ },
+ {
+  "vi": "Bốn tông môn mới",
+  "en": "Four new sects"
+ },
+ {
+  "vi": "Phổ Đà Sơn (chính): mời Phật tu và người đạo tâm từ 40. Tâm ma tăng chậm, nhưng diệt yêu quá tay sẽ bị Giới luật viện gọi lên.",
+  "en": "Phổ Đà Sơn (Righteous): welcomes Buddhist Cultivators and anyone with Dao Heart 40+. Heart demons grow slowly, but slay demons too zealously and the Discipline Hall will summon you."
+ },
+ {
+  "vi": "Kiếm Cốc (chính): mời Kiếm tu. Phải rút được kiếm trên vách đá mới được nhận. Đại bỉ 3 năm một lần, thăng bậc nhanh.",
+  "en": "Kiếm Cốc (Righteous): welcomes Sword Cultivators. You must pull the sword from the cliff face to be accepted. A Grand Contest every 3 years, fast promotion."
+ },
+ {
+  "vi": "Vạn Độc Môn (tà): mời Đan tu, Ma tu. Có việc thử độc: tu vi tăng mạnh, đổi lại mất sức khỏe, có thể chết.",
+  "en": "Vạn Độc Môn (Evil): welcomes Alchemists and Demonic Cultivators. Poison-testing jobs: big cultivation gains in exchange for Health, and you might die."
+ },
+ {
+  "vi": "Yêu Thần Điện (tà): nhận mọi yêu tộc, không xét linh căn. Có huyết tế và lệnh săn.",
+  "en": "Yêu Thần Điện (Evil): accepts all yao races, no spiritual root check. Blood sacrifices and hunting orders."
+ },
+ {
+  "vi": "Mỗi tông có tên bậc đệ tử riêng, áo bào và bảo vật riêng cho từng bậc.",
+  "en": "Each sect has its own disciple rank names, plus robes and treasures for every rank."
+ },
+ {
+  "vi": "Mười cốt truyện sau phi thăng",
+  "en": "Ten post-Ascension storylines"
+ },
+ {
+  "vi": "Tổng cộng bản này thêm 33 sự kiện cốt truyện mới: 15 sự kiện sau phi thăng, 16 sự kiện tông môn và chuỗi Ma giới, 2 sự kiện Phản môn.",
+  "en": "In total this version adds 33 new story events: 15 post-Ascension events, 16 sect and Demon Realm chain events, 2 Betrayal events."
+ },
+ {
+  "vi": "Tiên giới: Canh bến Thiên Hà (thả hay bắt con giao long, tám năm sau nó quay lại), Cây quế Quảng Hàn (uống rượu với Ngô Cương), Trông lò Bát Quái (đừng mở nắp), Miếu thờ ở nhân gian (lén làm mưa cho hậu nhân).",
+  "en": "Immortal Realm: Guarding the Heavenly River Ford (free or catch the flood dragon - it comes back eight years later), The Osmanthus of Guanghan (drinks with Wu Gang), Minding the Eight Trigrams Furnace (don't lift the lid), A Shrine in the Mortal World (secretly make rain for your descendants)."
+ },
+ {
+  "vi": "Ma giới: Huyết Nguyệt, Ma Đế bệnh nặng (theo Đại hoàng tử, Tam công chúa hay đứng ngoài, qua chính biến tới ngày tân Ma Đế lên ngôi), Cửu U Thâm Uyên chín tầng, mỗi lần xuống sâu hơn, tầng cuối có Cửu U Ma Long.",
+  "en": "Demon Realm: Blood Moon, The Demon Emperor Falls Ill (back the Eldest Prince, the Third Princess, or stay out, through the coup to the new Demon Emperor's coronation), the nine-layered Nine Netherworld Abyss, deeper each time, with the Nine Netherworld Demon Dragon at the bottom."
+ },
+ {
+  "vi": "Thái Hư giới: Kẻ giữ đồng hồ cát (đổi thọ lấy đạo hay đạo lấy thọ), Bóng kiếp trước (gặp lại chính mình kiếp trước), Hư không rách (vá trời hay hút linh khí, bảy năm sau trả giá).",
+  "en": "Great Void Realm: The Hourglass Keeper (trade lifespan for Dao or Dao for lifespan), Shadow of a Past Life (meet yourself from a past life), The Torn Void (mend the sky or drink its spirit qi, and pay the price seven years later)."
+ },
+ {
+  "vi": "Nhiều chuyện kéo dài qua nhiều bước, lựa chọn bước trước quyết định bước sau. Vài chuyện lặp lại để người sống lâu ở cõi trên luôn có việc để làm.",
+  "en": "Many stories span several steps, and your choice in one step decides the next. Some repeat, so those who live long in the upper realms always have something to do."
+ },
+ {
+  "vi": "Phản môn",
+  "en": "Betrayal"
+ },
+ {
+  "vi": "Đạo và tông môn ngược phe (đang ở chính phái mà theo Ma tu hoặc đạo tâm từ -40, đang ở ma môn mà theo Phật tu hoặc đạo tâm từ 40) sẽ gặp sự kiện Phản môn: tự xin rời, giấu thân phận, hoặc phản sư diệt tổ.",
+  "en": "When your Dao and your sect are on opposite sides (in a righteous sect but following the Demonic Path or Dao Heart -40 or below, in a demonic sect but a Buddhist Cultivator or Dao Heart 40+), you'll face a Betrayal event: ask to leave, hide your identity, or betray your master and destroy your sect."
+ },
+ {
+  "vi": "Giấu thân phận thì mỗi năm có thể bị lộ: bị trục xuất, mất áo bào và lệnh bài tông môn.",
+  "en": "Hide your identity and each year you might be exposed: expelled, stripped of your robe and sect token."
+ },
+ {
+  "vi": "Thiên Cơ Các trung lập không đuổi ai, nhưng người nghiêng hẳn về một phía sẽ kéo chính hoặc tà tới vây đánh cả Các.",
+  "en": "The neutral Thiên Cơ Các expels no one, but those leaning hard to one side will draw the Righteous or the Evil to besiege the whole Pavilion."
+ },
+ {
+  "vi": "Chuỗi nhập Ma giới",
+  "en": "Demon Realm entry chain"
+ },
+ {
+  "vi": "Vừa lên Ma giới, đạo hữu đi qua 4 bước trong khoảng 20 năm đầu: Huyết Trì tẩy thân, Nhận chủ, Tranh địa bàn, Ma Đế triệu kiến.",
+  "en": "Fresh in the Demon Realm, fellow Daoists go through 4 steps over the first ~20 years: Blood Pool Cleansing, Choosing a Lord, Turf War, Summoned by the Demon Emperor."
+ },
+ {
+  "vi": "Ba Ma quân cho ba lợi thế suốt kiếp: Huyết Ma Quân tu nhanh hơn, Cốt Ma Quân hồi sức khỏe và giảm tâm ma, Ảnh Ma Quân có thể dẫn tới của cải.",
+  "en": "Three Demon Lords grant three lifelong perks: the Blood Demon Lord speeds cultivation, the Bone Demon Lord restores Health and reduces heart demons, the Shadow Demon Lord may lead you to riches."
+ },
+ {
+  "vi": "Giành được khe Huyết Phong thì mỗi năm thu linh thạch. Ma Đế ban danh hiệu và bảo vật theo con đường tu.",
+  "en": "Seize the Huyết Phong Rift and collect spirit stones every year. The Demon Emperor grants titles and treasures by Path."
+ },
+ {
+  "vi": "Thọ nguyên và đột phá",
+  "en": "Lifespan and breakthroughs"
+ },
+ {
+  "vi": "Thọ nguyên mỗi cảnh giới tăng khoảng 1,5 lần: Trúc Cơ 150, Độ Kiếp 300, Ma Đế và Đại La tới 1.050. Trần thọ phàm giới 300, sau phi thăng 1.050.",
+  "en": "Lifespan per realm is up about 1.5x: Foundation 150, Tribulation 300, Demon Emperor and Daluo up to 1,050. Mortal-world lifespan cap 300, after Ascension 1,050."
+ },
+ {
+  "vi": "Đột phá từ Kim Đan trở lên phụ thuộc linh căn: Phế -15%, Tạp -8%, Địa +3%, Thiên +6%.",
+  "en": "Breakthroughs from Golden Core up depend on spiritual root: Crippled -15%, Mixed -8%, Earth +3%, Heavenly +6%."
+ },
+ {
+  "vi": "Hỏng 3 lần liền ở cùng cảnh giới thì rơi vào bình cảnh, phải bế quan 10 năm mới thử lại.",
+  "en": "Fail 3 times in a row at the same realm and you hit a bottleneck: 10 years of closed-door cultivation before you can try again."
+ },
+ {
+  "vi": "Cảnh giới càng cao, năm trôi càng nhanh, nên mỗi kiếp không dài thêm.",
+  "en": "The higher the realm, the faster the years fly, so lives don't get longer."
+ },
+ {
+  "vi": "Linh thạch và phường thị",
+  "en": "Spirit stones and the Market"
+ },
+ {
+  "vi": "Đồ phường thị đắt dần theo cảnh giới của đạo hữu. Đồ hiếm (Luyện Hư, Độ Kiếp) mỗi kiếp chỉ mua được một lần.",
+  "en": "Market prices rise with your realm. Rare goods (Void Refinement, Tribulation) can be bought only once per life."
+ },
+ {
+  "vi": "Kiếm tiền và luyện đan liền nhiều năm thì thu ít dần, đổi việc một năm là về lại như cũ. % tiền từ trang bị tối đa +100%.",
+  "en": "Earning money or doing alchemy for many years straight yields less and less; switch jobs for a year and it resets. % money from gear caps at +100%."
+ },
+ {
+  "vi": "Đan Tụ Khí, Trúc Cơ đắt theo cảnh giới, Tụ Khí mỗi năm chỉ viên đầu đủ lực. Diên Thọ Đan càng dùng càng kém và càng đắt.",
+  "en": "Qi Gathering and Foundation pills scale in price with realm, and only the first Qi Gathering pill each year works at full strength. Longevity Pills get weaker and pricier the more you use them."
+ },
+ {
+  "vi": "Quá độ nhắc muộn hơn ở cảnh giới cao (Trúc Cơ 10 năm, Nguyên Anh 15, Luyện Hư 20, sau phi thăng 40). Tu luyện không còn bị tính quá độ.",
+  "en": "Overwork warnings come later at high realms (Foundation 10 years, Nascent Soul 15, Void Refinement 20, after Ascension 40). Cultivation no longer counts as overwork."
+ },
+ {
+  "vi": "Lôi đài",
+  "en": "Arena"
+ },
+ {
+  "vi": "Trận đấu mới kiểu máu: mỗi lượt chọn một ấn ngũ hành, có nội lực và tuyệt kỹ theo con đường, đỡ tuyệt kỹ của đối thủ bằng nhịp.",
+  "en": "New HP-style matches: each turn pick a Five Elements seal, with inner force and Path-based ultimates, and parry your opponent's ultimate with timing."
+ },
+ {
+  "vi": "Rút đối thủ bằng 3 lá bài thay cho ống xăm. Lá bài ghi rõ cảnh giới thật của bóng và việc lên đài được kéo ngang cảnh giới với bóng của đạo hữu.",
+  "en": "Draw opponents with 3 cards instead of a fortune-stick tube. Cards show the shadow's true realm and that entering the arena scales it to your shadow's realm."
+ },
+ {
+  "vi": "Bớt may rủi: tuyệt kỹ tối đa 30% máu một đòn, chí mạng ít hơn. Chơi khéo vẫn thắng nhiều hơn chơi bừa.",
+  "en": "Less luck: ultimates deal at most 30% HP per hit, fewer crits. Skilled play still beats button mashing."
+ },
+ {
+  "vi": "Bục Long Ỷ có rồng vàng chầu hai bên, hiện đúng bóng người chơi đã cầm ra đài.",
+  "en": "The Dragon Throne podium now has golden dragons on both sides and shows exactly the shadow each player took into the arena."
+ },
+ {
+  "vi": "@thien: thêm tông môn và nội dung Ma giới, Phản môn khi đổi phe, lôi đài nói rõ việc kéo ngang cảnh giới, thọ nguyên dài hơn, quá độ nhắc muộn hơn, linh thạch khó kiếm hơn.",
+  "en": "@thien: more sects and Demon Realm content, Betrayal when switching sides, arena explains realm scaling, longer lifespans, later overwork warnings, harder-earned spirit stones."
+ },
+ {
+  "vi": "@thienkhue: túi đồ có tab và sắp xếp.",
+  "en": "@thienkhue: inventory tabs and sorting."
+ },
+ {
+  "vi": "@xiaoyu: báo lỗi thọ nguyên Bàn Đào hội bị tụt về.",
+  "en": "@xiaoyu: reported the Peach Banquet lifespan bonus reverting."
+ },
+ {
+  "vi": "Sửa lỗi và giao diện",
+  "en": "Fixes and UI"
+ },
+ {
+  "vi": "Túi đồ có tab theo loại (Pháp y, Vũ khí, Phụ kiện, Đan dược) và sắp xếp theo mới nhận, phẩm, công, thủ. Đồ đang mặc luôn ở trên.",
+  "en": "The inventory has tabs by type (Robes, Weapons, Accessories, Pills) and sorts by newest, grade, attack, defense. Equipped items always stay on top."
+ },
+ {
+  "vi": "Sửa lỗi thọ nguyên thêm từ Bàn Đào hội, tiên đan, Diên Thọ Đan đấu giá bị tụt về sau một năm. Thọ thêm từ đan, đào, kỳ ngộ giờ được giữ, cộng ngoài trần thọ.",
+  "en": "Fixed bonus lifespan from the Peach Banquet, immortal pills and auctioned Longevity Pills reverting after a year. Lifespan from pills, peaches and fortuitous encounters now sticks, on top of the lifespan cap."
+ },
+ {
+  "vi": "Sửa lỗi Diên Thọ Đan. Lôi kiếp khó hơn và đổi giao diện pixel. Quái còn hình tự vẽ đã đổi hết sang hình LPC.",
+  "en": "Fixed Longevity Pills. Lightning tribulations are harder and got a pixel UI makeover. Monsters that still had hand-drawn art are all LPC sprites now."
+ },
+ {
+  "vi": "Lời kể giao đấu thắng, thua, hòa đa dạng hơn. Màn đầu thai bố cục 2 bước dễ hiểu hơn.",
+  "en": "More varied combat narration for wins, losses and draws. The rebirth screen is a clearer 2-step layout."
+ },
+ {
+  "vi": "Luân Hồi Đạo",
+  "en": "The Way of Reincarnation"
+ },
+ {
+  "vi": "Vạn kiếp luân hồi không còn là con đường tắt. Kẻ chết càng nhiều, Thiên đạo càng để mắt; linh hồn đầu thai dồn dập thì mòn đi. Muốn đi xa, phải biết nghỉ, biết quên, và biết đứng trên lôi đài.",
+  "en": "Ten thousand rebirths are no longer a shortcut. The more you die, the more the Heavenly Dao watches; souls reborn too often wear thin. To go far, learn to rest, to forget, and to stand in the arena."
+ },
+ {
+  "vi": "bậc Kiếp Số",
+  "en": "Calamity Count tiers"
+ },
+ {
+  "vi": "kết cục",
+  "en": "endings"
+ },
+ {
+  "vi": "luật lôi đài",
+  "en": "arena rules"
+ },
+ {
+  "vi": "Kiếp Số: Thiên đạo để mắt",
+  "en": "Calamity Count: the Heavenly Dao is watching"
+ },
+ {
+  "vi": "Tài khoản có Kiếp Số từ 0 tới 10, tăng theo thành tích: số kiếp đã sống, Thiên thư, phi thăng, chạm đỉnh, Chứng Đạo.",
+  "en": "Accounts have a Calamity Count from 0 to 10, rising with achievements: lives lived, Heavenly Tome, Ascensions, reaching the peak, Attaining the Dao."
+ },
+ {
+  "vi": "Mỗi bậc thêm một kiếp nạn: thiên kiếp nặng hơn, thần binh truyền kiếp yếu đi, bóng Ngũ Hành Đài và quái mạnh hơn, mỗi kiếp chỉ mua được một thiên phú lớn...",
+  "en": "Each tier adds a calamity: heavier tribulations, weaker inherited divine weapons, stronger Five Elements Platform shadows and monsters, only one major talent purchase per life..."
+ },
+ {
+  "vi": "Bù lại, mỗi bậc thêm 5% phúc duyên và 3% đồ rơi. Bảng xếp hạng ghi Kiếp Số cạnh cảnh giới.",
+  "en": "In return, each tier adds 5% Fortune and 3% loot. The Leaderboard shows Calamity Count next to realm."
+ },
+ {
+  "vi": "Kết cục mới: Nghịch Thiên Hành Đạo (phi thăng khi Kiếp Số từ 5), Vạn Kiếp Bất Diệt (Chứng Đạo ở Kiếp Số 10).",
+  "en": "New endings: Defying Heaven (ascend at Calamity Count 5+), Eternal Through Ten Thousand Lives (Attain the Dao at Calamity Count 10)."
+ },
+ {
+  "vi": "Kiếp tích: người Kiếp Số thấp mà ngã ở Độ Kiếp thì kiếp sau đột phá dễ hơn, tối đa 3 lần.",
+  "en": "Calamity Scars: low Calamity Count players who fall at Tribulation get easier breakthroughs next life, up to 3 times."
+ },
+ {
+  "vi": "Hồn lực và cầu Nại Hà",
+  "en": "Soul Power and Nại Hà Bridge"
+ },
+ {
+  "vi": "Từ kiếp thứ 15, mỗi lần đầu thai tốn Hồn lực, hồi lại theo giờ thật. Đầu thai dồn dập thì sinh ra hồn mỏi, hồn khuyết, hồn tàn. Nghỉ đủ lâu thì được Hồn viên mãn.",
+  "en": "From your 15th life, each rebirth costs Soul Power, which regenerates in real time. Reincarnate too fast and you're born with a weary, flawed or shattered soul. Rest long enough for a Perfect Soul."
+ },
+ {
+  "vi": "Trước mỗi lần đầu thai, Mạnh Bà đưa chén canh. Uống thì quên thần binh và rương kiếp trước, được tĩnh tâm hạ Kiếp Số, khí vận và phúc duyên dồi dào. Hất chén thì giữ hết, nhưng nợ Địa phủ dồn lại.",
+  "en": "Before each rebirth, Meng Po hands you a bowl of soup. Drink it to forget your divine weapon and past-life chest, gain calm that lowers Calamity Count, and plenty of luck and Fortune. Toss the bowl to keep everything, but your debt to the Underworld piles up."
+ },
+ {
+  "vi": "Năm lần liền không uống, Câu hồn sứ giả tìm tới. Đánh lui được thì nhận Câu hồn lệnh, thua thì có thể mất mạng.",
+  "en": "Refuse five times in a row and the Soul Reaper comes for you. Drive him off for a Soul Reaper Token; lose and you may lose your life."
+ },
+ {
+  "vi": "Luân hồi nhiều không còn là lợi thế khi giao đấu: bên đã đầu thai nhiều hơn thì hồn phách mòn hơn, công và thủ giảm tới 15%.",
+  "en": "Reincarnating a lot is no longer an edge in duels: whoever has been reborn more has a more worn soul, with up to 15% less attack and defense."
+ },
+ {
+  "vi": "Lôi đài hằng ngày",
+  "en": "Daily Arena"
+ },
+ {
+  "vi": "Lôi đài có trang riêng, mở ngay ở trang đầu và menu trong game.",
+  "en": "The Arena has its own page, opened right from the home page and the in-game menu."
+ },
+ {
+  "vi": "Mỗi ngày chọn bóng xuất chiến: 1 trong 6 nhân vật mạnh nhất bạn từng chơi, giữ nguyên cả ngày.",
+  "en": "Each day pick a shadow to fight: 1 of the 6 strongest characters you've played, locked in for the day."
+ },
+ {
+  "vi": "Lắc ống xăm để rút đối thủ ngẫu nhiên. Màu que báo phẩm của bóng: Phàm, Linh, Huyền, Thiên. Quẻ chưa giải thì không rút lại được.",
+  "en": "Shake the fortune-stick tube to draw a random opponent. Stick colour shows the shadow's grade: Mortal, Spirit, Mystic, Heaven. Until the draw is resolved, no redraws."
+ },
+ {
+  "vi": "Bóng đối thủ được kéo về cùng cảnh giới với bóng của bạn. Thắng thua nằm ở bản mệnh, con đường và cách đoán thế.",
+  "en": "The opponent's shadow is scaled to your shadow's realm. Victory comes down to natal element, Path, and reading the stance."
+ },
+ {
+  "vi": "Mỗi trận ba hiệp, mỗi hiệp chọn Công, Thủ hay Hóa như Ngũ Hành Đài nhưng khó hơn: đối thủ để lộ ý đồ không phải lúc nào cũng thật, và biết đọc thế của bạn.",
+  "en": "Three rounds per match, each round pick Attack, Defend or Deflect like the Five Elements Platform, but harder: the opponent's tells aren't always honest, and they can read yours."
+ },
+ {
+  "vi": "Mỗi ngày 3 lượt. Thắng trận được 3 điểm, thua 0. Điểm tính lại mỗi thứ Hai; top 3 tuần đứng trên bục Long Ỷ với danh hiệu Bá Chủ, Á Chủ, Tam Kiệt.",
+  "en": "3 turns a day. Win a match for 3 points, lose for 0. Points reset every Monday; the weekly top 3 stand on the Dragon Throne podium as Overlord, Second Lord and Third Hero."
+ },
+ {
+  "vi": "Bị ai thắng bóng thì có một lượt báo thù không tính lượt, hạn 48 giờ.",
+  "en": "If someone beats your shadow, you get one free revenge match, valid for 48 hours."
+ },
+ {
+  "vi": "Thiên thư mảnh XV nay mở khi thắng 3 trận lôi đài.",
+  "en": "Heavenly Tome fragment XV now unlocks after winning 3 arena matches."
+ },
+ {
+  "vi": "Lịch 31 luật lôi đài",
+  "en": "Calendar of 31 arena rules"
+ },
+ {
+  "vi": "Ngày {0} · {1}: {2}",
+  "ph": [
+   "r.day",
+   "r.name",
+   "r.desc"
+  ],
+  "en": "Day {0} · {1}: {2}"
+ },
+ {
+  "vi": "Khác",
+  "en": "Other"
+ },
+ {
+  "vi": "Lịch sử cập nhật gọn lại thành danh sách phiên bản, bấm vào một bản để xem chi tiết.",
+  "en": "Update history is now a compact version list; tap a version for details."
+ },
+ {
+  "vi": "Vạn Mảnh",
+  "en": "Ten Thousand Shards"
+ },
+ {
+  "vi": "Bạn tưởng tiếng chuông đã im. Nhưng nó lại vang lên, lần này không đếm bạn mà đếm những người khác. Vạn Kiếp Chân Nhân không chỉ vỡ làm một mảnh là bạn. Và có kẻ vẫn đang gõ chuông.",
+  "en": "You thought the bell had gone silent. But it rings again, and this time it counts not you but others. Vạn Kiếp Chân Nhân did not shatter into just one shard named you. And someone is still striking the bell."
+ },
+ {
+  "vi": "mảnh Thiên thư",
+  "en": "Heavenly Tome fragments"
+ },
+ {
+  "vi": "đại địch",
+  "en": "archenemy"
+ },
+ {
+  "vi": "Thiên thư Quyển II",
+  "en": "Heavenly Tome Volume II"
+ },
+ {
+  "vi": "Quyển II \"Vạn Mảnh\" mở sau khi đạt Vạn Kiếp Quy Nhất: 10 mảnh ký ức mới, từ XI tới XX.",
+  "en": "Volume II \"Ten Thousand Shards\" opens after reaching Ten Thousand Lives Become One: 10 new memory fragments, XI to XX."
+ },
+ {
+  "vi": "Những đạo hữu trên giang hồ cũng là mảnh vỡ. Có mảnh chỉ mở khi kết nghĩa, truyền công, viếng mộ hay giao chiến thư với người chơi khác.",
+  "en": "Fellow Daoists in the jianghu are shards too. Some fragments unlock only by swearing brotherhood, passing on cultivation, visiting graves, or trading challenges with other players."
+ },
+ {
+  "vi": "Có mảnh chỉ dành cho bậc cao thủ: từng lên đủ Tiên, Ma, Thái Hư, qua Ngũ Hành Đài mà không ngã lần nào, mở 30 kết cục.",
+  "en": "Some fragments are for true masters only: reached all of Immortal, Demon and Great Void, cleared the Five Elements Platform without a single fall, unlocked 30 endings."
+ },
+ {
+  "vi": "Kẻ Gõ Chuông chờ ở đỉnh cao nhất của các cõi. Phải đỡ đủ ba tiếng chuông, đỡ hụt có thể thân tử đạo tiêu.",
+  "en": "The Bell Ringer waits at the highest peak of all realms. You must withstand all three tolls; fail one and body and Dao may perish together."
+ },
+ {
+  "vi": "Thắng hắn, kiếp sau cầm dùi chuông và tự chọn: gõ tiếp hay đập vỡ. Hai kết cục mới, hai danh hiệu mới.",
+  "en": "Beat him, and next life you hold the bell mallet and choose: keep ringing or smash it. Two new endings, two new titles."
+ },
+ {
+  "vi": "Trang Sổ Sinh Tử chia Thiên thư thành hai quyển. Quyển II bị phong ấn tới khi bạn gặp lại chính mình.",
+  "en": "The Book of Life and Death splits the Heavenly Tome into two volumes. Volume II stays sealed until you meet yourself again."
+ },
+ {
+  "vi": "Mười kết cục ba cõi",
+  "en": "Ten endings across three realms"
+ },
+ {
+  "vi": "Tiên giới: Hạ Phàm Vì Tình, Thủ Môn Thiên Giới, Hóa Chữ Thiên Thư, Thiên Đế Vạn Thế.",
+  "en": "Immortal Realm: Descending for Love, Gatekeeper of Heaven, Becoming the Tome's Words, Heavenly Emperor of All Ages."
+ },
+ {
+  "vi": "Ma giới: Hóa Thân Huyết Hải, Buông Đao Thành Phật, Chết Dưới Tay Tâm Phúc.",
+  "en": "Demon Realm: One with the Blood Sea, Drop the Blade, Become a Buddha, Slain by a Trusted Aide."
+ },
+ {
+  "vi": "Thái Hư giới: ba kết cục bí ẩn, không ghi cách mở. Tự đi tìm.",
+  "en": "Great Void Realm: three mysterious endings, unlock conditions unlisted. Find them yourself."
+ },
+ {
+  "vi": "Mỗi kết cục đi kèm một kỳ ngộ hiếm, phần lớn chỉ đến ở cảnh giới cao, và không phải kiếp nào cũng có duyên gặp.",
+  "en": "Each ending comes with a rare fortuitous encounter, mostly at high realms, and not every life is fated to meet it."
+ },
+ {
+  "vi": "Chết ở cảnh giới cuối theo một kết cục khác thì Sổ Sinh Tử vẫn ghi nhận Đại La Kim Tiên, Ma Đế hay Hỗn Nguyên Đạo Tổ.",
+  "en": "Die at the final realm through a different ending and the Book of Life and Death still records Daluo Golden Immortal, Demon Emperor or Hỗn Nguyên Đạo Tổ."
+ },
+ {
+  "vi": "Vạn Kiếp Quy Nhất",
+  "en": "Ten Thousand Lives Become One"
+ },
+ {
+  "vi": "Mỗi tài khoản chỉ gặp lại chính mình một lần. Từ đó, đường đi tiếp nằm trong Quyển II.",
+  "en": "Each account meets itself only once. From then on, the road ahead lies in Volume II."
+ },
+ {
+  "vi": "Lần đầu Quy Nhất được 100 phúc duyên, một chiếc chuông vàng theo bên vai qua mọi kiếp, và danh hiệu 🔔 trên bảng xếp hạng. Ai đã đạt trước đây sẽ nhận ở lần luân hồi tới.",
+  "en": "Your first Becoming One grants 100 Fortune, a golden bell floating by your shoulder through every life, and a 🔔 title on the Leaderboard. Those who reached it before get theirs on their next reincarnation."
+ },
+ {
+  "vi": "@minimoni báo: mệnh thiên sát cô tinh mà tuổi thơ vẫn có cha mẹ, ông bà; nhận bao nhiêu đồ đệ cũng là \"đồ đệ đầu tiên\". Nay cô tinh, cô nhi và trẻ bị bỏ ở chùa lớn lên không còn cảnh cha mẹ, ông bà; đồ đệ được đếm thứ hai, thứ ba... Đa tạ đạo hữu!",
+  "en": "@minimoni reported: a Lone Star fate still had parents and grandparents in childhood, and every disciple taken was \"the first disciple\". Now Lone Stars, orphans and children abandoned at temples grow up without parent and grandparent scenes, and disciples are counted second, third... Many thanks, fellow Daoist!"
+ },
+ {
+  "vi": "Thiên đạo khắt khe hơn",
+  "en": "A stricter Heavenly Dao"
+ },
+ {
+  "vi": "Đột phá khó hơn, càng lên cao càng khó. Thiên mệnh chi tử chỉ còn giúp đột phá dễ hơn 10%.",
+  "en": "Breakthroughs are harder, and harder still the higher you go. Child of Destiny now only makes breakthroughs 10% easier."
+ },
+ {
+  "vi": "Thiên linh căn và Tiên cốt trời sinh tu nhanh ít hơn trước. Tiên cốt giá 250 phúc, Thiên mệnh 180 phúc.",
+  "en": "Heavenly Spiritual Root and Innate Immortal Bones speed cultivation less than before. Immortal Bones cost 250 Fortune, Child of Destiny 180 Fortune."
+ },
+ {
+  "vi": "Phúc duyên mỗi kiếp ít đi khoảng một phần tư.",
+  "en": "Fortune per life is down by about a quarter."
+ },
+ {
+  "vi": "Sau phi thăng, mỗi cảnh giới mất ít nhất khoảng 50 năm. Thọ nguyên vẫn tối đa 350: chỉ ai phi thăng sớm mới kịp chạm đỉnh và thử Chứng Đạo.",
+  "en": "After Ascension, each realm takes at least about 50 years. Lifespan still caps at 350: only early ascenders can reach the peak and attempt to Attain the Dao."
+ },
+ {
+  "vi": "Tu tới Kim Đan, Hóa Thần vẫn như cũ, người mới không bị làm khó.",
+  "en": "Cultivating up to Golden Core and Spirit Transformation is unchanged - no extra pain for newcomers."
+ },
+ {
+  "vi": "Tam Giới Khai Môn",
+  "en": "The Three Realms Open"
+ },
+ {
+  "vi": "Cửa trời đã mở. Phi thăng không còn là hồi kết: bên kia là Tiên giới, Ma giới và Thái Hư giới. Nhưng trước cửa trời, mỗi người phải đánh bại chính mình năm lần.",
+  "en": "The gates of heaven are open. Ascension is no longer the end: beyond lie the Immortal Realm, the Demon Realm and the Great Void Realm. But before the gate, everyone must defeat themselves five times."
+ },
+ {
+  "vi": "giới mới",
+  "en": "new realms"
+ },
+ {
+  "vi": "cảnh giới",
+  "en": "realms"
+ },
+ {
+  "vi": "vật phẩm",
+  "en": "items"
+ },
+ {
+  "vi": "quái vật",
+  "en": "monsters"
+ },
+ {
+  "vi": "kỳ ngộ",
+  "en": "fortuitous encounters"
+ },
+ {
+  "vi": "Tam giới sau phi thăng",
+  "en": "Three realms after Ascension"
+ },
+ {
+  "vi": "Phi thăng xong vẫn sống tiếp trong cùng kiếp. Chính đạo lên Tiên giới, tà đạo vào Ma giới, người trung lập lạc vào Thái Hư giới.",
+  "en": "After Ascension you keep living the same life. The Righteous rise to the Immortal Realm, the Evil enter the Demon Realm, and the Neutral drift into the Great Void Realm."
+ },
+ {
+  "vi": "Mỗi giới 4 cảnh giới, có sự kiện, quái, bảo vật và cảnh nền riêng: Chân Tiên tới Đại La Kim Tiên, Ma Tướng tới Ma Đế, Hư Tiên tới Hỗn Nguyên Đạo Tổ. Kiếp cuối là Chứng Đạo, vượt được thì thoát khỏi mọi giới.",
+  "en": "Each realm has 4 cultivation realms plus its own events, monsters, treasures and backdrops: True Immortal to Daluo Golden Immortal, Demon General to Demon Emperor, Void Immortal to Hỗn Nguyên Đạo Tổ. The final trial is Attaining the Dao - pass it and escape every realm."
+ },
+ {
+  "vi": "Cảnh phi thăng: cột sáng giáng xuống, nhân vật bay lên cõi mới.",
+  "en": "Ascension scene: a pillar of light descends and your character flies up to the new realm."
+ },
+ {
+  "vi": "Hào quang riêng mỗi cõi, mạnh dần theo cảnh giới: tiên quang và mây ngũ sắc, huyết nguyệt và xích ma, vòng xoáy hư không và tinh tú.",
+  "en": "Each realm has its own aura that grows with your realm: immortal light and five-coloured clouds, blood moon and crimson demons, void vortex and stars."
+ },
+ {
+  "vi": "Quà phi thăng: mỗi cõi một bộ áo, vũ khí, phụ kiện, trao dần khi lên cảnh giới.",
+  "en": "Ascension gifts: each realm has a robe, weapon and accessory set, granted as you climb realms."
+ },
+ {
+  "vi": "Ngũ Hành Vấn Tâm Đài",
+  "en": "Five Elements Heart-Questioning Platform"
+ },
+ {
+  "vi": "Trước khi phi thăng phải hạ 5 bóng của chính mình, mỗi bóng một hệ. Bóng cuối khắc bản mệnh của bạn. Phi thăng từ 120 tuổi.",
+  "en": "Before Ascension you must defeat 5 shadows of yourself, one per element. The last overcomes your natal element. Ascension from age 120."
+ },
+ {
+  "vi": "Lật thế bằng Ngũ Hành Ấn (săn quái đúng hệ), lá bùa Công, Thủ, Hóa, Ngũ Hành Phù và tâm cảnh. 15 sân đấu theo giới và theo hệ của bóng.",
+  "en": "Turn the tide with Five Elements Seals (hunt monsters of the right element), Attack, Defend and Deflect talismans, Five Elements Charms and your state of mind. 15 arenas by realm and by the shadow's element."
+ },
+ {
+  "vi": "Qua đài nhận Gương vỡ Vấn Tâm; qua mà chưa ngã lần nào nhận Ngũ Hành Viên Mãn châu. Thua có thể thân tử đạo tiêu, hãy chuẩn bị từ Hóa Thần.",
+  "en": "Clear the platform for a Broken Heart-Questioning Mirror; clear it without falling once for a Five Elements Perfection Pearl. Losing can mean body and Dao perish, so prepare from Spirit Transformation."
+ },
+ {
+  "vi": "Sinh tử ba cõi",
+  "en": "Life and death in three realms"
+ },
+ {
+  "vi": "Mỗi cõi có cách chết riêng: Thiên Nhân Ngũ Suy, Lôi Phạt, Trảm Tiên Đài, Ma Thể Mục Ruỗng, Tâm Ma Đoạt Xá, Bị Thôn Phệ, Hóa Thành Tinh Tú, Lạc Khe Nứt Thời Gian, Tử Trận Tiên Ma.",
+  "en": "Each realm has its own deaths: Five Decays of the Heavenly Being, Thunder Punishment, Immortal-Slaying Platform, Rotting Demon Body, Heart Demon Possession, Devoured, Turned to Stars, Lost in a Time Rift, Fallen in the Immortal-Demon War."
+ },
+ {
+  "vi": "20 năm cuối đời ở ba cõi hiện dần 5 dấu hiệu suy tàn. Tiên nhân để đạo tâm tụt dưới -20 có ngày lên Trảm Tiên Đài.",
+  "en": "In the last 20 years of life in the three realms, 5 signs of decline appear one by one. Immortals who let their Dao Heart drop below -20 will one day face the Immortal-Slaying Platform."
+ },
+ {
+  "vi": "Bia mộ riêng: Tiên Trủng, Ma Trủng, Hư Trủng.",
+  "en": "Unique tombs: Immortal Tomb, Demon Tomb, Void Tomb."
+ },
+ {
+  "vi": "Ở Độ Kiếp mà không kịp phi thăng: tự chọn tọa hóa chuyển thế (kiếp sau mang theo linh thức) hoặc truyền công cho một đạo hữu trên giang hồ.",
+  "en": "At Tribulation without time to ascend: choose to pass away and reincarnate (carrying your spiritual sense into the next life) or pass on your cultivation to a fellow Daoist in the jianghu."
+ },
+ {
+  "vi": "Tông môn ba phe",
+  "en": "Sects of three factions"
+ },
+ {
+  "vi": "Thanh Vân Tông xếp bậc theo linh căn, Huyết Sát Môn theo độ tàn nhẫn, Thiên Cơ Các theo ngộ tính.",
+  "en": "Thanh Vân Tông ranks by spiritual root, Huyết Sát Môn by ruthlessness, Thiên Cơ Các by insight."
+ },
+ {
+  "vi": "Bốn bậc đệ tử, Đại bỉ tông môn, đồng môn tỷ thí cùng cấp, quái thí luyện riêng, áo bào và lệnh bài theo bậc.",
+  "en": "Four disciple ranks, sect Grand Contests, same-rank sparring, special trial monsters, robes and tokens by rank."
+ },
+ {
+  "vi": "Thiên thư",
+  "en": "Heavenly Tome"
+ },
+ {
+  "vi": "Mạch truyện chính 10 mảnh ký ức: vì sao bạn cứ phải luân hồi mãi? Gom đủ để gặp lại chính mình thuở ban đầu.",
+  "en": "A 10-fragment main storyline of memories: why must you keep reincarnating forever? Collect them all to meet the self you were at the very beginning."
+ },
+ {
+  "vi": "@minimoni xin thêm cốt truyện, thêm cảnh giới sau phi thăng, và bái sư theo căn cốt: căn cốt tốt làm nội môn, căn cốt thường làm ngoại môn. Cả ba đều đã có trong bản này. Đa tạ đạo hữu!",
+  "en": "@minimoni asked for more story, realms after Ascension, and apprenticeship by aptitude: good aptitude for inner sect, ordinary for outer sect. All three are in this version. Many thanks, fellow Daoist!"
+ },
+ {
+  "vi": "Cân bằng",
+  "en": "Balance"
+ },
+ {
+  "vi": "Quái và người đều mang ngũ hành, khắc chế khi giao đấu.",
+  "en": "Monsters and people all carry an element, and elements counter each other in combat."
+ },
+ {
+  "vi": "Rơi đồ giảm khoảng 25% (quái, người chơi, bóng kiếp trước). Đánh quái quá yếu gần như không rơi đồ; đồ rơi theo cấp của quái.",
+  "en": "Loot down about 25% (monsters, players, past-life shadows). Monsters far too weak barely drop anything; loot scales with monster level."
+ },
+ {
+  "vi": "Thọ nguyên tối đa: 200 khi chưa phi thăng, 350 khi đã lên ba cõi. Sau phi thăng, mỗi cảnh giới mất ít nhất khoảng 50 năm, chỉ ai phi thăng sớm mới kịp chạm tới đỉnh.",
+  "en": "Max lifespan: 200 before Ascension, 350 in the three realms. After Ascension each realm takes at least about 50 years, so only early ascenders reach the peak."
+ },
+ {
+  "vi": "Giang Hồ Ân Oán",
+  "en": "Grudges and Debts of the Jianghu"
+ },
+ {
+  "vi": "Giang hồ không chỉ có một mình bạn. Ân phải trả, oán phải báo, và mỗi kiếp đều để lại một câu chuyện.",
+  "en": "You're not alone in the jianghu. Kindness must be repaid, grudges avenged, and every life leaves a story behind."
+ },
+ {
+  "vi": "Tính năng",
+  "en": "Features"
+ },
+ {
+  "vi": "Giang hồ: ân oán, kết nghĩa, truy nã, chiến thư, truy sát, lời viếng.",
+  "en": "Jianghu: kindness and grudges, sworn brotherhood, bounties, challenges, assassinations, condolences."
+ },
+ {
+  "vi": "Nghĩa trang: hồi ký một kiếp kể lại 7-10 cột mốc như truyện tranh pixel.",
+  "en": "Cemetery: a life memoir retelling 7-10 milestones like a pixel comic."
+ },
+ {
+  "vi": "Bảo khố đồ ẩn, báo khi mở khóa, lời đồn trên Thiên tượng, danh hiệu sưu tầm, cách mở chi tiết cho các kết cục.",
+  "en": "Hidden item vault, unlock alerts, rumours in the Celestial Signs, collector titles, detailed unlock guides for endings."
+ },
+ {
+  "vi": "Tà đạo: nghiệp lực thành tiền tệ mua thiên phú tà, Huyết Sát Đan, huyết tế; Ma Tôn Độ Kiếp ngang phi thăng.",
+  "en": "Evil Path: Karma becomes currency for evil talents, Blood Fiend Pills, blood sacrifices; a Demon Sovereign's Tribulation counts as Ascension."
+ },
+ {
+  "vi": "Vạn Tượng Canh Tân",
+  "en": "All Things Renewed"
+ },
+ {
+  "vi": "Thế giới khoác áo mới: nhân vật, quái, cảnh vật đều vẽ lại theo phong cách pixel LPC.",
+  "en": "The world gets a new coat: characters, monsters and scenery all redrawn in LPC pixel style."
+ },
+ {
+  "vi": "Nhân vật, quái, nền 4 mùa vẽ lại bằng LPC; dáng vẻ, kiểu tóc, phụ kiện đa dạng; thú cưng; cánh từ Hóa Thần.",
+  "en": "Characters, monsters and four-season backgrounds redrawn in LPC; varied looks, hairstyles, accessories; pets; wings from Spirit Transformation."
+ },
+ {
+  "vi": "300 trang bị mới chia theo phái, quái chặn đường, tuổi thơ mỗi người một khác.",
+  "en": "300 new pieces of gear by faction, roadblock monsters, and a different childhood for everyone."
+ },
+ {
+  "vi": "Thiên tượng hôm nay, chuỗi ngày, nhiệm vụ ngày, thư giang hồ, danh hiệu tuần, 16 thành tựu dài hạn.",
+  "en": "Today's Celestial Signs, streaks, daily quests, jianghu letters, weekly titles, 16 long-term achievements."
+ },
+ {
+  "vi": "Giảm độ khó khoảng 20%, kiếp đầu được trời thương, cảnh báo sức khỏe nguy kịch.",
+  "en": "Difficulty down about 20%, heaven pities your first life, critical Health warnings."
+ },
+ {
+  "vi": "Khai Thiên",
+  "en": "Genesis"
+ },
+ {
+  "vi": "Vạn Kiếp Luân Hồi ra đời: một kiếp người, vạn con đường tu tiên.",
+  "en": "Vạn Kiếp Luân Hồi is born: one human life, ten thousand paths to immortality."
+ },
+ {
+  "vi": "Đầu thai ngẫu nhiên, 8 cảnh giới từ Phàm Nhân tới Độ Kiếp, 6 con đường tu tập, đạo tâm chính tà.",
+  "en": "Random rebirths, 8 realms from Mortal to Tribulation, 6 cultivation Paths, Righteous and Evil Dao Hearts."
+ },
+ {
+  "vi": "Trừ yêu kiểu idle, boss, bế quan, thiên kiếp, Sổ Sinh Tử, bảng xếp hạng, nhân quả xuyên kiếp, góp ý tính năng.",
+  "en": "Idle demon hunting, bosses, seclusion, heavenly tribulations, the Book of Life and Death, Leaderboard, karma across lives, feature requests."
+ }
+]

@@ -1,0 +1,602 @@
+[
+ {
+  "vi": "Độc Cô Cửu Kiếm",
+  "en": "Độc Cô Nine Swords"
+ },
+ {
+  "vi": "Tịch Tà Kiếm Pháp",
+  "en": "Evil-Warding Sword Art"
+ },
+ {
+  "vi": "Thái Cực Kiếm",
+  "en": "Taiji Sword"
+ },
+ {
+  "vi": "Ngọc Nữ Kiếm Pháp",
+  "en": "Jade Maiden Sword Art"
+ },
+ {
+  "vi": "Toàn Chân Kiếm Pháp",
+  "en": "Quanzhen Sword Art"
+ },
+ {
+  "vi": "Hoa Sơn Kiếm Pháp",
+  "en": "Hoa Sơn Sword Art"
+ },
+ {
+  "vi": "Thái Nhạc Tam Thanh Phong",
+  "en": "Three Clear Peaks of Mount Tai"
+ },
+ {
+  "vi": "Hồi Phong Phất Liễu Kiếm",
+  "en": "Willow-Brushing Whirlwind Sword"
+ },
+ {
+  "vi": "Kim Xà Kiếm Pháp",
+  "en": "Golden Serpent Sword Art"
+ },
+ {
+  "vi": "Việt Nữ Kiếm",
+  "en": "Yue Maiden Sword"
+ },
+ {
+  "vi": "Thiên Ngoại Phi Tiên",
+  "en": "Immortal Flying from Beyond the Sky"
+ },
+ {
+  "vi": "Đoạt Mệnh Thập Tam Kiếm",
+  "en": "Thirteen Life-Taking Swords"
+ },
+ {
+  "vi": "Vạn Kiếm Quy Tông",
+  "en": "Ten Thousand Swords Return to the Source"
+ },
+ {
+  "vi": "Nhất Kiếm Đông Lai",
+  "en": "One Sword from the East"
+ },
+ {
+  "vi": "Song Kiếm Hợp Bích",
+  "en": "Twin Swords in Unison"
+ },
+ {
+  "vi": "Lưỡng Nghi Kiếm Pháp",
+  "en": "Two Forms Sword Art"
+ },
+ {
+  "vi": "Thư Hùng Song Kiếm",
+  "en": "Male and Female Twin Swords"
+ },
+ {
+  "vi": "Âm Dương Song Sát",
+  "en": "Yin-Yang Twin Fiends"
+ },
+ {
+  "vi": "Uyên Ương Song Phi",
+  "en": "Mandarin Ducks Fly Together"
+ },
+ {
+  "vi": "Nhật Nguyệt Đồng Huy",
+  "en": "Sun and Moon Shine as One"
+ },
+ {
+  "vi": "Hồ Gia Đao Pháp",
+  "en": "Hồ Family Saber Art"
+ },
+ {
+  "vi": "Huyết Đao Đao Pháp",
+  "en": "Blood Saber Art"
+ },
+ {
+  "vi": "Uyên Ương Đao",
+  "en": "Mandarin Duck Saber"
+ },
+ {
+  "vi": "Cuồng Phong Khoái Đao",
+  "en": "Gale Swift Saber"
+ },
+ {
+  "vi": "Bát Quái Đao",
+  "en": "Eight Trigrams Saber"
+ },
+ {
+  "vi": "Phách Quải Đao",
+  "en": "Chopping Hook Saber"
+ },
+ {
+  "vi": "Thiên Nhai Nhất Đao",
+  "en": "One Saber at the World's End"
+ },
+ {
+  "vi": "Lực Phách Hoa Sơn",
+  "en": "Mighty Chop Splits Hoa Sơn"
+ },
+ {
+  "vi": "Hoành Tảo Thiên Quân",
+  "en": "Sweep a Thousand Armies"
+ },
+ {
+  "vi": "Dương Gia Thương Pháp",
+  "en": "Dương Family Spear Art"
+ },
+ {
+  "vi": "Lê Hoa Thương",
+  "en": "Pear Blossom Spear"
+ },
+ {
+  "vi": "Nhạc Gia Thương Pháp",
+  "en": "Nhạc Family Spear Art"
+ },
+ {
+  "vi": "Bách Điểu Triều Phụng",
+  "en": "Hundred Birds Pay Homage to the Phoenix"
+ },
+ {
+  "vi": "Bá Vương Thương",
+  "en": "Overlord's Spear"
+ },
+ {
+  "vi": "Hồi Mã Thương",
+  "en": "Horse-Turning Spear"
+ },
+ {
+  "vi": "Độc Long Xuất Động",
+  "en": "Lone Dragon Leaves Its Cave"
+ },
+ {
+  "vi": "Thất Tinh Thương Pháp",
+  "en": "Seven Stars Spear Art"
+ },
+ {
+  "vi": "Đả Cẩu Bổng Pháp",
+  "en": "Dog-Beating Staff Art"
+ },
+ {
+  "vi": "Tề Mi Côn",
+  "en": "Brow-Height Staff"
+ },
+ {
+  "vi": "La Hán Côn",
+  "en": "Arhat Staff"
+ },
+ {
+  "vi": "Phục Ma Trượng Pháp",
+  "en": "Demon-Subduing Staff Art"
+ },
+ {
+  "vi": "Như Ý Côn Pháp",
+  "en": "Ruyi Staff Art"
+ },
+ {
+  "vi": "Bát Quái Côn",
+  "en": "Eight Trigrams Staff"
+ },
+ {
+  "vi": "Thiên Hạ Vô Cẩu",
+  "en": "No Dogs Under Heaven"
+ },
+ {
+  "vi": "Phong Ma Trượng Pháp",
+  "en": "Mad Demon Staff Art"
+ },
+ {
+  "vi": "Xạ Điêu Thần Tiễn",
+  "en": "Divine Eagle-Shooting Arrow"
+ },
+ {
+  "vi": "Liên Châu Tiễn",
+  "en": "Chain Pearl Arrows"
+ },
+ {
+  "vi": "Hậu Nghệ Xạ Nhật",
+  "en": "Hậu Nghệ Shoots the Suns"
+ },
+ {
+  "vi": "Bách Bộ Xuyên Dương",
+  "en": "Pierce the Willow at a Hundred Paces"
+ },
+ {
+  "vi": "Truy Tinh Tiễn",
+  "en": "Star-Chasing Arrow"
+ },
+ {
+  "vi": "Phá Vân Tiễn",
+  "en": "Cloud-Piercing Arrow"
+ },
+ {
+  "vi": "Tiểu Lý Phi Đao",
+  "en": "Little Lý's Flying Dagger"
+ },
+ {
+  "vi": "Bạo Vũ Lê Hoa Châm",
+  "en": "Storm of Pear Blossom Needles"
+ },
+ {
+  "vi": "Mãn Thiên Hoa Vũ",
+  "en": "Petals Raining Across the Sky"
+ },
+ {
+  "vi": "Băng Phách Ngân Châm",
+  "en": "Frost Soul Silver Needles"
+ },
+ {
+  "vi": "Ngọc Phong Châm",
+  "en": "Jade Bee Needles"
+ },
+ {
+  "vi": "Đạn Chỉ Thần Thông",
+  "en": "Divine Finger Flick"
+ },
+ {
+  "vi": "Phi Hoàng Thạch",
+  "en": "Flying Locust Stones"
+ },
+ {
+  "vi": "Hàm Sa Xạ Ảnh",
+  "en": "Sand-Spitting Shadow Strike"
+ },
+ {
+  "vi": "Bích Hải Triều Sinh Khúc",
+  "en": "Tide Rising on the Azure Sea"
+ },
+ {
+  "vi": "Ngọc Tiêu Kiếm Pháp",
+  "en": "Jade Flute Sword Art"
+ },
+ {
+  "vi": "Tiếu Ngạo Giang Hồ Khúc",
+  "en": "Song of the Proud Jianghu"
+ },
+ {
+  "vi": "Thiên Ma Cầm Âm",
+  "en": "Heavenly Demon Zither"
+ },
+ {
+  "vi": "Lạc Anh Tân Phân",
+  "en": "Falling Petals in Flurries"
+ },
+ {
+  "vi": "Phiến Ảnh Điểm Huyệt",
+  "en": "Fan Shadow Acupoint Strike"
+ },
+ {
+  "vi": "Khổng Tước Khai Bình",
+  "en": "Peacock Spreads Its Tail"
+ },
+ {
+  "vi": "Bát Phong Phiến Pháp",
+  "en": "Eight Winds Fan Art"
+ },
+ {
+  "vi": "Thanh Phong Từ Lai",
+  "en": "Clear Breeze Comes Gently"
+ },
+ {
+  "vi": "Thiết Phiến Đoạn Hồn",
+  "en": "Iron Fan Soul Severer"
+ },
+ {
+  "vi": "Phong Quyển Tàn Vân",
+  "en": "Wind Sweeps the Last Clouds"
+ },
+ {
+  "vi": "Phán Quan Điểm Huyệt",
+  "en": "Judge's Acupoint Strike"
+ },
+ {
+  "vi": "Bùi Tướng Quân Thiếp",
+  "en": "General Bùi's Calligraphy"
+ },
+ {
+  "vi": "Nhất Dương Thư Chỉ",
+  "en": "One Yang Brush Finger"
+ },
+ {
+  "vi": "Thạch Cổ Đả Huyệt",
+  "en": "Stone Drum Acupoint Strike"
+ },
+ {
+  "vi": "Long Phi Phượng Vũ",
+  "en": "Dragon Flies, Phoenix Dances"
+ },
+ {
+  "vi": "Thiết Họa Ngân Câu",
+  "en": "Iron Strokes, Silver Hooks"
+ },
+ {
+  "vi": "Lưu Tinh Chùy Pháp",
+  "en": "Meteor Hammer Art"
+ },
+ {
+  "vi": "Kim Cương Xử Pháp",
+  "en": "Vajra Pestle Art"
+ },
+ {
+  "vi": "Bát Lăng Chùy",
+  "en": "Eight-Edged Mace"
+ },
+ {
+  "vi": "Lôi Công Chùy",
+  "en": "Thunder God Hammer"
+ },
+ {
+  "vi": "Khai Sơn Phá Thạch",
+  "en": "Split Mountains, Shatter Stone"
+ },
+ {
+  "vi": "Thái Sơn Áp Đỉnh",
+  "en": "Mount Tai Crushes the Summit"
+ },
+ {
+  "vi": "Ngân Tác Kim Linh",
+  "en": "Silver Rope, Golden Bell"
+ },
+ {
+  "vi": "Câu Hồn Tiên Pháp",
+  "en": "Soul-Hooking Whip Art"
+ },
+ {
+  "vi": "Ngũ Độc Tiên",
+  "en": "Five Poisons Whip"
+ },
+ {
+  "vi": "Linh Xà Tiên Pháp",
+  "en": "Spirit Serpent Whip Art"
+ },
+ {
+  "vi": "Cửu Tiết Tiên",
+  "en": "Nine-Section Whip"
+ },
+ {
+  "vi": "Thị Huyết Tiên Pháp",
+  "en": "Bloodthirsty Whip Art"
+ },
+ {
+  "vi": "Ngư Ông Điếu Nguyệt",
+  "en": "Old Fisherman Angles for the Moon"
+ },
+ {
+  "vi": "Thái Công Điếu Ngư",
+  "en": "Taigong Goes Fishing"
+ },
+ {
+  "vi": "Nguyện Giả Thượng Câu",
+  "en": "The Willing Take the Hook"
+ },
+ {
+  "vi": "Độc Điếu Hàn Giang",
+  "en": "Lone Angler on the Cold River"
+ },
+ {
+  "vi": "Bàn Cổ Khai Thiên",
+  "en": "Pangu Splits the Heavens"
+ },
+ {
+  "vi": "Tam Bản Phủ",
+  "en": "Three-Move Axe"
+ },
+ {
+  "vi": "Khai Sơn Phủ Pháp",
+  "en": "Mountain-Splitting Axe Art"
+ },
+ {
+  "vi": "Huyết Liêm Đoạt Hồn",
+  "en": "Blood Scythe Soul Reaper"
+ },
+ {
+  "vi": "Toàn Phong Song Phủ",
+  "en": "Whirlwind Twin Axes"
+ },
+ {
+  "vi": "Thu Hồn Liêm Pháp",
+  "en": "Soul-Reaping Scythe Art"
+ },
+ {
+  "vi": "Phất Trần Công",
+  "en": "Horsetail Whisk Art"
+ },
+ {
+  "vi": "Thái Ất Phất Trần",
+  "en": "Taiyi Whisk"
+ },
+ {
+  "vi": "Hồi Phong Phất Liễu",
+  "en": "Whirlwind Willow Brush"
+ },
+ {
+  "vi": "Tam Thanh Phất Vân",
+  "en": "Three Pure Ones Sweep the Clouds"
+ },
+ {
+  "vi": "Thiên Tơ Vạn Lũ",
+  "en": "A Thousand Threads, Ten Thousand Strands"
+ },
+ {
+  "vi": "Thần Nông Khai Hoang",
+  "en": "Shennong Clears the Wilds"
+ },
+ {
+  "vi": "Lão Nông Phạt Thổ",
+  "en": "Old Farmer Tills the Earth"
+ },
+ {
+  "vi": "Khai Cương Phá Thổ",
+  "en": "Break New Ground"
+ },
+ {
+  "vi": "Xuân Canh Thu Hoạch",
+  "en": "Spring Plowing, Autumn Harvest"
+ },
+ {
+  "vi": "Bát Quái Lô Hỏa",
+  "en": "Eight Trigrams Furnace Fire"
+ },
+ {
+  "vi": "Đan Hỏa Phần Thiên",
+  "en": "Pill Fire Burns the Heavens"
+ },
+ {
+  "vi": "Tam Muội Chân Hỏa",
+  "en": "Samadhi True Fire"
+ },
+ {
+  "vi": "Cửu Chuyển Kim Đan",
+  "en": "Nine-Turn Golden Pill"
+ },
+ {
+  "vi": "Hàng Long Thập Bát Chưởng",
+  "en": "Eighteen Dragon-Subduing Palms"
+ },
+ {
+  "vi": "Kháng Long Hữu Hối",
+  "en": "Arrogant Dragon Regrets"
+ },
+ {
+  "vi": "Thần Long Bãi Vĩ",
+  "en": "Divine Dragon Swings Its Tail"
+ },
+ {
+  "vi": "Thất Thương Quyền",
+  "en": "Seven Injuries Fist"
+ },
+ {
+  "vi": "Không Minh Quyền",
+  "en": "Empty Bright Fist"
+ },
+ {
+  "vi": "Thái Tổ Trường Quyền",
+  "en": "Grand Ancestor Long Fist"
+ },
+ {
+  "vi": "Cửu Âm Bạch Cốt Trảo",
+  "en": "Nine Yin White Bone Claw"
+ },
+ {
+  "vi": "Hổ Trảo Công",
+  "en": "Tiger Claw Art"
+ },
+ {
+  "vi": "Ưng Trảo Công",
+  "en": "Eagle Claw Art"
+ },
+ {
+  "vi": "Thiên Sơn Lục Dương Chưởng",
+  "en": "Thiên Sơn Six Yang Palm"
+ },
+ {
+  "vi": "Ảm Nhiên Tiêu Hồn Chưởng",
+  "en": "Melancholic Soul-Dispersing Palm"
+ },
+ {
+  "vi": "Bàn Nhược Chưởng",
+  "en": "Prajna Palm"
+ },
+ {
+  "vi": "Hàm Mô Công",
+  "en": "Toad Art"
+ },
+ {
+  "vi": "Phật Sơn Vô Ảnh Cước",
+  "en": "Phật Sơn Shadowless Kick"
+ },
+ {
+  "vi": "La Hán Quyền",
+  "en": "Arhat Fist"
+ },
+ {
+  "vi": "Kiếm Khí Chưởng",
+  "en": "Sword Qi Palm"
+ },
+ {
+  "vi": "Lục Mạch Thần Kiếm",
+  "en": "Six Meridians Divine Sword"
+ },
+ {
+  "vi": "Lạc Anh Thần Kiếm Chưởng",
+  "en": "Falling Petals Divine Sword Palm"
+ },
+ {
+  "vi": "Liệt Hỏa Chưởng",
+  "en": "Blazing Fire Palm"
+ },
+ {
+  "vi": "Đan Hỏa Chưởng",
+  "en": "Pill Fire Palm"
+ },
+ {
+  "vi": "Thiết Sa Chưởng",
+  "en": "Iron Sand Palm"
+ },
+ {
+  "vi": "Bát Quái Chưởng",
+  "en": "Eight Trigrams Palm"
+ },
+ {
+  "vi": "Cửu Cung Chưởng",
+  "en": "Nine Palaces Palm"
+ },
+ {
+  "vi": "Thái Cực Quyền",
+  "en": "Taiji Fist"
+ },
+ {
+  "vi": "Như Lai Thần Chưởng",
+  "en": "Buddha's Divine Palm"
+ },
+ {
+  "vi": "Đại Lực Kim Cang Chỉ",
+  "en": "Great Strength Vajra Finger"
+ },
+ {
+  "vi": "Nhất Dương Chỉ",
+  "en": "One Yang Finger"
+ },
+ {
+  "vi": "Huyền Minh Thần Chưởng",
+  "en": "Mystic Dark Divine Palm"
+ },
+ {
+  "vi": "Hóa Cốt Miên Chưởng",
+  "en": "Bone-Melting Cotton Palm"
+ },
+ {
+  "vi": "Huyết Ảnh Chưởng",
+  "en": "Blood Shadow Palm"
+ },
+ {
+  "vi": "Hấp Tinh Đại Pháp",
+  "en": "Star-Absorbing Great Art"
+ },
+ {
+  "vi": "Bắc Minh Thần Công",
+  "en": "Northern Abyss Divine Art"
+ },
+ {
+  "vi": "Yêu Lang Trảo",
+  "en": "Demon Wolf Claw"
+ },
+ {
+  "vi": "Hồ Vĩ Chưởng",
+  "en": "Fox Tail Palm"
+ },
+ {
+  "vi": "Vạn Yêu Chưởng",
+  "en": "Myriad Yao Palm"
+ },
+ {
+  "vi": "Miên Chưởng",
+  "en": "Cotton Palm"
+ },
+ {
+  "vi": "Phách Không Chưởng",
+  "en": "Void-Splitting Palm"
+ },
+ {
+  "vi": "Hàng Long Chưởng",
+  "en": "Dragon-Subduing Palm"
+ },
+ {
+  "vi": "Thái Cực Chưởng",
+  "en": "Taiji Palm"
+ }
+]

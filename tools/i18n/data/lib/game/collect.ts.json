@@ -1,0 +1,98 @@
+[
+ {
+  "vi": "Bách Hiểu Sinh",
+  "en": "Sage of All Knowledge"
+ },
+ {
+  "vi": "Kỳ Văn Khách",
+  "en": "Collector of Wonders"
+ },
+ {
+  "vi": "dễ gặp",
+  "en": "common"
+ },
+ {
+  "vi": "khoảng 3/10 lần",
+  "en": "about 3 in 10 kills"
+ },
+ {
+  "vi": "khoảng 1/12 lần",
+  "en": "about 1 in 12 kills"
+ },
+ {
+  "vi": "chỉ khoảng 1/50 lần",
+  "en": "only about 1 in 50 kills"
+ },
+ {
+  "vi": "một kỳ ngộ",
+  "en": "an encounter"
+ },
+ {
+  "vi": "Có được qua kỳ ngộ khi {0}{1}{2}.",
+  "ph": [
+   "w.charAt(0).toLowerCase() + w.slice(1)",
+   "i.where?.includes('rất hiếm') ? ', rất hiếm gặp' : ''",
+   "i.minRealm ? `, từ ${REALMS[i.minRealm]?.name}` : ''"
+  ],
+  "en": "Obtained through a fortuitous encounter: {0}{1}{2}."
+ },
+ {
+  "vi": ", rất hiếm gặp",
+  "en": ", very rare"
+ },
+ {
+  "vi": ", từ {0}",
+  "ph": [
+   "REALMS[i.minRealm]?.name"
+  ],
+  "en": ", from {0}"
+ },
+ {
+  "vi": "Phàm Nhân",
+  "en": "Mortal"
+ },
+ {
+  "vi": "Rơi khi trừ yêu lúc bạn ở {0}{1}, {2} hạ quái.{3} Khí vận cao, đồ tăng rơi đồ, đánh quái mạnh hơn mình và ngày Cát tinh chiếu mệnh thì dễ rơi hơn.",
+  "ph": [
+   "lo",
+   "hi && hi !== lo ? ` đến ${hi}` : ''",
+   "RARE_ODDS[i.rare ?? 0]",
+   "names.length ? ` Hay thấy trên ${names.slice(0, 2).join(', ')}.` : ''"
+  ],
+  "en": "Drops from demon hunting while you're at {0}{1} ({2}).{3} High Luck, drop-boosting gear, monsters stronger than you and Lucky Star days all raise the drop rate."
+ },
+ {
+  "vi": " đến {0}",
+  "ph": [
+   "hi"
+  ],
+  "en": " to {0}"
+ },
+ {
+  "vi": " Hay thấy trên {0}.",
+  "ph": [
+   "names.slice(0, 2).join(', ')"
+  ],
+  "en": " Often seen on {0}."
+ },
+ {
+  "vi": "Có kẻ nói",
+  "en": "Someone says"
+ },
+ {
+  "vi": "Trong quán trà người ta thì thầm",
+  "en": "In the teahouse, people whisper"
+ },
+ {
+  "vi": "Một lão ăn mày say rượu kể",
+  "en": "A drunk old beggar tells"
+ },
+ {
+  "vi": "Đồn rằng",
+  "en": "Rumor has it"
+ },
+ {
+  "vi": "Có người thề đã tận mắt thấy",
+  "en": "Someone swears they saw with their own eyes"
+ }
+]

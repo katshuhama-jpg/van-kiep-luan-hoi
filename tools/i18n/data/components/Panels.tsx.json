@@ -1,0 +1,930 @@
+[
+ {
+  "vi": "Đóng",
+  "en": "Close"
+ },
+ {
+  "vi": "Chỉ số",
+  "en": "Stats"
+ },
+ {
+  "vi": "Tu vi (chưa nhập đạo)",
+  "en": "Cultivation (not yet on the Dao)"
+ },
+ {
+  "vi": "Thọ nguyên",
+  "en": "Lifespan"
+ },
+ {
+  "vi": "Sức khỏe",
+  "en": "Health"
+ },
+ {
+  "vi": "Tâm cảnh",
+  "en": "Mind"
+ },
+ {
+  "vi": "Tâm ma",
+  "en": "Heart demon"
+ },
+ {
+  "vi": "Ngộ tính",
+  "en": "Insight"
+ },
+ {
+  "vi": "Khí vận",
+  "en": "Luck"
+ },
+ {
+  "vi": "Chính",
+  "en": "Righteous"
+ },
+ {
+  "vi": "Đạo tâm: ",
+  "en": "Dao Heart: "
+ },
+ {
+  "vi": "Tà",
+  "en": "Evil"
+ },
+ {
+  "vi": "Đạo tâm",
+  "en": "Dao Heart"
+ },
+ {
+  "vi": "❚❚ dừng",
+  "en": "❚❚ pause"
+ },
+ {
+  "vi": "Gia phả kiếp này",
+  "en": "This life's family chronicle"
+ },
+ {
+  "vi": "Xem các ghi chép trước",
+  "en": "View earlier records"
+ },
+ {
+  "vi": "Tốt",
+  "en": "Fine"
+ },
+ {
+  "vi": "Hiếm",
+  "en": "Rare"
+ },
+ {
+  "vi": "Cực phẩm",
+  "en": "Supreme"
+ },
+ {
+  "vi": "Rơi từ: ",
+  "en": "Dropped by: "
+ },
+ {
+  "vi": "Nhặt được khi: ",
+  "en": "Found when: "
+ },
+ {
+  "vi": "đi khắp nơi",
+  "en": "wandering everywhere"
+ },
+ {
+  "vi": "Bán ở phường thị",
+  "en": "Sold at the Market"
+ },
+ {
+  "vi": "Cần {0}",
+  "ph": [
+   "REALMS[it.minRealm].name"
+  ],
+  "en": "Requires {0}"
+ },
+ {
+  "vi": "Chỉ cho {0}",
+  "ph": [
+   "PATHS[it.path].name"
+  ],
+  "en": "{0} only"
+ },
+ {
+  "vi": "Cần Đạo tâm nghiêng Chính",
+  "en": "Requires a Righteous-leaning Dao Heart"
+ },
+ {
+  "vi": "Cần Đạo tâm nghiêng Tà",
+  "en": "Requires an Evil-leaning Dao Heart"
+ },
+ {
+  "vi": "Tất cả",
+  "en": "All"
+ },
+ {
+  "vi": "Vũ khí",
+  "en": "Weapon"
+ },
+ {
+  "vi": "Pháp y",
+  "en": "Robe"
+ },
+ {
+  "vi": "Phụ kiện",
+  "en": "Accessory"
+ },
+ {
+  "vi": " Chỉ hiện đồ hợp với mình",
+  "en": " Only show gear that suits me"
+ },
+ {
+  "vi": "Phường thị",
+  "en": "Market"
+ },
+ {
+  "vi": "Linh thạch: ",
+  "en": "Spirit stones: "
+ },
+ {
+  "vi": " · Đồ mua xong tự mặc lên người.",
+  "en": " · Gear is equipped as soon as you buy it."
+ },
+ {
+  "vi": "Pháp y, pháp bảo",
+  "en": "Robes, treasures"
+ },
+ {
+  "vi": "Đan dược",
+  "en": "Pills"
+ },
+ {
+  "vi": "Đồ hiếm",
+  "en": "Rare goods"
+ },
+ {
+  "vi": "Hàng hiếm: mỗi kiếp chỉ bán một lần",
+  "en": "Rare goods: sold only once per life"
+ },
+ {
+  "vi": "Đã có",
+  "en": "Owned"
+ },
+ {
+  "vi": "Hết hàng",
+  "en": "Sold out"
+ },
+ {
+  "vi": "Không bán ở đâu cả. Phải trừ yêu hoặc gặp cơ duyên trong đời mới có. Đã có",
+  "en": "Not sold anywhere. Only obtained by hunting demons or through a stroke of fate. Owned"
+ },
+ {
+  "vi": "Chưa có",
+  "en": "Not owned"
+ },
+ {
+  "vi": "(có ",
+  "en": "(have "
+ },
+ {
+  "vi": "Túi trữ vật",
+  "en": "Storage pouch"
+ },
+ {
+  "vi": "Túi đồ",
+  "en": "Inventory"
+ },
+ {
+  "vi": "Bảo khố ",
+  "en": "Treasury "
+ },
+ {
+  "vi": "Đồ ẩn không bán ở phường thị, chỉ rơi từ yêu thú hoặc có được qua kỳ ngộ. Món nào từng có trong bất kỳ kiếp nào cũng được ghi lại mãi mãi.",
+  "en": "Hidden items aren't sold at the Market; they only drop from demon beasts or come from fortuitous encounters. Any item you've ever owned in any life is recorded forever."
+ },
+ {
+  "vi": "Lọc Bảo khố",
+  "en": "Filter Treasury"
+ },
+ {
+  "vi": "Gợi ý: ",
+  "en": "Hint: "
+ },
+ {
+  "vi": "Chưa có, xem gợi ý",
+  "en": "Not owned, see hint"
+ },
+ {
+  "vi": "Bảo khố",
+  "en": "Treasury"
+ },
+ {
+  "vi": "Bế quan",
+  "en": "Seclusion"
+ },
+ {
+  "vi": "Đóng cửa động phủ, tu vi tăng gấp rưỡi nhưng không gặp kỳ ngộ nào. Sẽ tự xuất quan khi chạm bình cảnh. Thọ nguyên còn khoảng",
+  "en": "Seal your cave abode: cultivation grows half again as fast, but no fortuitous encounters happen. You will emerge on your own upon hitting a bottleneck. Lifespan left: about"
+ },
+ {
+  "vi": " năm",
+  "en": " years"
+ },
+ {
+  "vi": "Phải nhập đạo (Luyện Khí) mới bế quan được.",
+  "en": "You must enter the Dao (Qi Refining) before you can go into seclusion."
+ },
+ {
+  "vi": "một việc",
+  "en": "one task"
+ },
+ {
+  "vi": "Quá độ: đã {0} năm liền {1}. Mỗi năm thêm đều có thể mất mạng, hãy đổi việc khác.",
+  "ph": [
+   "n",
+   "name.toLowerCase()"
+  ],
+  "en": "Overdoing it: {0} years straight of {1}. Each extra year could cost your life, switch to something else."
+ },
+ {
+  "vi": "Đã {0} năm liền {1}. Sang năm là quá độ, nên đổi việc khác.",
+  "ph": [
+   "n",
+   "name.toLowerCase()"
+  ],
+  "en": "{0} years straight of {1}. Next year counts as overdoing it, better switch."
+ },
+ {
+  "vi": "Trọng tâm năm nay",
+  "en": "This year's focus"
+ },
+ {
+  "vi": "Mở khi {0} tuổi",
+  "ph": [
+   "FOCUS[f].minAge"
+  ],
+  "en": "Unlocks at age {0}"
+ },
+ {
+  "vi": "Quá độ {0}n",
+  "ph": [
+   "n"
+  ],
+  "en": "Overdone {0}y"
+ },
+ {
+  "vi": "{0}/{1} năm",
+  "ph": [
+   "n",
+   "safe"
+  ],
+  "en": "{0}/{1} yrs"
+ },
+ {
+  "vi": "Mục tiêu · Thiên thư ",
+  "en": "Goal · Heavenly Tome "
+ },
+ {
+  "vi": "Chậm",
+  "en": "Slow"
+ },
+ {
+  "vi": "Vừa",
+  "en": "Normal"
+ },
+ {
+  "vi": "tiếp theo: Cầu Nại Hà",
+  "en": "next: Nại Hà Bridge"
+ },
+ {
+  "vi": "{0} thiên phú",
+  "ph": [
+   "picked.length + gifts.length"
+  ],
+  "en": "{0} talents"
+ },
+ {
+  "vi": "thời gian {0}",
+  "ph": [
+   "speed.toLowerCase()"
+  ],
+  "en": "speed: {0}"
+ },
+ {
+  "vi": "Cách chơi",
+  "en": "How to play"
+ },
+ {
+  "vi": "Lần đầu luân hồi",
+  "en": "First reincarnation"
+ },
+ {
+  "vi": "lá số",
+  "en": "fate chart"
+ },
+ {
+  "vi": ", không ưng thì ",
+  "en": ", not happy with it? "
+ },
+ {
+  "vi": "Gieo lại",
+  "en": "Reroll"
+ },
+ {
+  "vi": "Bấm ",
+  "en": "Press "
+ },
+ {
+  "vi": "Đầu thai",
+  "en": "Be reborn"
+ },
+ {
+  "vi": ", năm tháng tự trôi",
+  "en": ", and the years roll on by themselves"
+ },
+ {
+  "vi": "Gặp chuyện thì chọn cách xử lý, có cách mạnh lên, có cách chết",
+  "en": "When things happen, choose how to handle them - some ways make you stronger, some get you killed"
+ },
+ {
+  "vi": "Mục tiêu: ",
+  "en": "Goal: "
+ },
+ {
+  "vi": "sống trọn một kiếp",
+  "en": "live out one full life"
+ },
+ {
+  "vi": ", rồi ",
+  "en": ", then "
+ },
+ {
+  "vi": "kết Kim Đan",
+  "en": "form a Golden Core"
+ },
+ {
+  "vi": " để biết vì sao mình cứ phải luân hồi.",
+  "en": " to learn why you keep being reincarnated."
+ },
+ {
+  "vi": "Đã trải",
+  "en": "Lived"
+ },
+ {
+  "vi": " kiếp",
+  "en": " lives"
+ },
+ {
+  "vi": "Phúc duyên",
+  "en": "Fortune"
+ },
+ {
+  "vi": "Nghiệp",
+  "en": "Karma"
+ },
+ {
+  "vi": "Kiếp Số",
+  "en": "Calamity Count"
+ },
+ {
+  "vi": "Chuẩn bị trước khi đầu thai",
+  "en": "Prepare before rebirth"
+ },
+ {
+  "vi": "Mua thiên phú",
+  "en": "Buy talents"
+ },
+ {
+  "vi": "đã chọn {0} · còn {1} phúc",
+  "ph": [
+   "bought",
+   "left"
+  ],
+  "en": "{0} chosen · {1} Fortune left"
+ },
+ {
+  "vi": "{0} phúc duyên",
+  "ph": [
+   "left"
+  ],
+  "en": "{0} Fortune"
+ },
+ {
+  "vi": "Chưa có phúc duyên. Sống tốt một kiếp, chết đi sẽ được phúc duyên để mua ở đây.",
+  "en": "No Fortune yet. Live a good life, and when you die you'll earn Fortune to spend here."
+ },
+ {
+  "vi": "Kiếp Số từ 5: mỗi kiếp chỉ chọn một thiên phú lớn",
+  "en": "Calamity Count 5+: only one major talent per life"
+ },
+ {
+  "vi": " phúc",
+  "en": " Fortune"
+ },
+ {
+  "vi": "Thiên phú tà đạo",
+  "en": "Evil talents"
+ },
+ {
+  "vi": "đã chọn {0} · còn {1}",
+  "ph": [
+   "boughtTa",
+   "leftTa"
+  ],
+  "en": "{0} chosen · {1} left"
+ },
+ {
+  "vi": "{0} nghiệp lực",
+  "ph": [
+   "leftTa"
+  ],
+  "en": "{0} Karma"
+ },
+ {
+  "vi": "Nghiệp lực tích từ những kiếp đi tà. Tích quá ",
+  "en": "Karma builds up over lives spent on the evil path. Hoard more than "
+ },
+ {
+  "vi": " nghiệp mà không tiêu thì kiếp sau bị trời phạt.",
+  "en": " Karma without spending it and heaven will punish your next life."
+ },
+ {
+  "vi": " nghiệp",
+  "en": " Karma"
+ },
+ {
+  "vi": "Kiếp Số và Hồn lực",
+  "en": "Calamity Count and Soul Power"
+ },
+ {
+  "vi": "Kiếp Số ",
+  "en": "Calamity Count "
+ },
+ {
+  "vi": "Tốc độ thời gian",
+  "en": "Time speed"
+ },
+ {
+  "vi": "1 năm khoảng {0} giây",
+  "ph": [
+   "sec"
+  ],
+  "en": "1 year ≈ {0} sec"
+ },
+ {
+  "vi": "Hôm nay · ",
+  "en": "Today · "
+ },
+ {
+  "vi": "Nhiệm vụ ",
+  "en": "Quests "
+ },
+ {
+  "vi": "Kiếp ",
+  "en": "Life "
+ },
+ {
+  "vi": "Hành trình",
+  "en": "Journey"
+ },
+ {
+  "vi": "Kiếp trước: ",
+  "en": "Past life: "
+ },
+ {
+  "vi": " tuổi, ",
+  "en": " years old, "
+ },
+ {
+  "vi": " Có chôn lại một chiếc rương...",
+  "en": " A chest was buried for you..."
+ },
+ {
+  "vi": "Sổ Sinh Tử",
+  "en": "Book of Life and Death"
+ },
+ {
+  "vi": "Thiên thư II",
+  "en": "Heavenly Tome II"
+ },
+ {
+  "vi": "Thiên thư",
+  "en": "Heavenly Tome"
+ },
+ {
+  "vi": "Kiếp này chơi thấy thế nào?",
+  "en": "How did this life play?"
+ },
+ {
+  "vi": "Chấm điểm kiếp này",
+  "en": "Rate this life"
+ },
+ {
+  "vi": "Điều gì làm bạn chưa vui?",
+  "en": "What made you unhappy?"
+ },
+ {
+  "vi": "Điều gì bạn thích nhất?",
+  "en": "What did you like most?"
+ },
+ {
+  "vi": "[Đánh giá kiếp {0}] {1} {2} · {3} tuổi, {4}, {5}",
+  "ph": [
+   "c.lifeNo",
+   "'★'.repeat(star)",
+   "text.trim() || '(không ghi chú)'",
+   "Math.floor(c.age)",
+   "realmLabel(c.realm, c.layer, c.cosmos)",
+   "c.cause ?? ''"
+  ],
+  "en": "[Life review {0}] {1} {2} · age {3}, {4}, {5}"
+ },
+ {
+  "vi": "(không ghi chú)",
+  "en": "(no note)"
+ },
+ {
+  "vi": "Cảm ơn bạn! Góp ý đã được ghi lại.",
+  "en": "Thank you! Your feedback has been recorded."
+ },
+ {
+  "vi": "Gửi",
+  "en": "Send"
+ },
+ {
+  "vi": "Còn {0} nhiệm vụ hôm nay: {1} (+{2} phúc mỗi việc, xong cả ba thêm {3})",
+  "ph": [
+   "left.length",
+   "left.map(questName).join(', ')",
+   "QUEST_REWARD",
+   "QUEST_BONUS"
+  ],
+  "en": "{0} quests left today: {1} (+{2} Fortune each, finish all three for {3} more)"
+ },
+ {
+  "vi": "Có {0} phúc duyên: kiếp sau mua được {1}{2}",
+  "ph": [
+   "total",
+   "best.name",
+   "next ? `, thêm ${next.cost - total} phúc nữa là đủ ${next.name}` : ''"
+  ],
+  "en": "You have {0} Fortune: next life you can buy {1}{2}"
+ },
+ {
+  "vi": ", thêm {0} phúc nữa là đủ {1}",
+  "ph": [
+   "next.cost - total",
+   "next.name"
+  ],
+  "en": ", {0} more Fortune for {1}"
+ },
+ {
+  "vi": "Thêm {0} phúc duyên nữa là mua được {1} cho kiếp sau",
+  "ph": [
+   "next.cost - total",
+   "next.name"
+  ],
+  "en": "{0} more Fortune to buy {1} for your next life"
+ },
+ {
+  "vi": "Thiên thư sắp mở {0}: {1}",
+  "ph": [
+   "lore.title.split('.')[0]",
+   "lore.hint"
+  ],
+  "en": "Heavenly Tome about to open {0}: {1}"
+ },
+ {
+  "vi": "Kiếp sau đang chờ",
+  "en": "Your next life awaits"
+ },
+ {
+  "vi": "Chứng đạo!",
+  "en": "Dao attained!"
+ },
+ {
+  "vi": "Bị giáng trần",
+  "en": "Banished to the mortal world"
+ },
+ {
+  "vi": "Ma hồn tan biến",
+  "en": "Demon soul dispersed"
+ },
+ {
+  "vi": "Tan vào hư không",
+  "en": "Dissolved into the void"
+ },
+ {
+  "vi": "Tọa hóa nơi tiên giới",
+  "en": "Passed away in the Immortal Realm"
+ },
+ {
+  "vi": "Một kiếp đã hết",
+  "en": "A life has ended"
+ },
+ {
+  "vi": "Ma Trủng",
+  "en": "Demon Tomb"
+ },
+ {
+  "vi": "Hư Trủng",
+  "en": "Void Tomb"
+ },
+ {
+  "vi": "Tiên Trủng",
+  "en": "Immortal Tomb"
+ },
+ {
+  "vi": " tuổi · ",
+  "en": " years old · "
+ },
+ {
+  "vi": "Kết cục mới",
+  "en": "New ending"
+ },
+ {
+  "vi": "Kết cục ",
+  "en": "Ending: "
+ },
+ {
+  "vi": "phàm",
+  "en": "mortal"
+ },
+ {
+  "vi": "huyền",
+  "en": "mystic"
+ },
+ {
+  "vi": "địa",
+  "en": "earth"
+ },
+ {
+  "vi": "thiên",
+  "en": "heaven"
+ },
+ {
+  "vi": " phẩm",
+  "en": " grade"
+ },
+ {
+  "vi": " · MỚI MỞ!",
+  "en": " · NEWLY UNLOCKED!"
+ },
+ {
+  "vi": "Sổ Sinh Tử ",
+  "en": "Book of Life and Death "
+ },
+ {
+  "vi": "Mang sang kiếp sau: ",
+  "en": "Carried to the next life: "
+ },
+ {
+  "vi": " phúc duyên",
+  "en": " Fortune"
+ },
+ {
+  "vi": "và ",
+  "en": "and "
+ },
+ {
+  "vi": " nghiệp lực",
+  "en": " Karma"
+ },
+ {
+  "vi": " (tiêu được cho thiên phú tà đạo)",
+  "en": " (spendable on evil talents)"
+ },
+ {
+  "vi": "Nhiệm vụ hôm nay hoàn thành: ",
+  "en": "Today's quests complete: "
+ },
+ {
+  "vi": " phúc duyên)",
+  "en": " Fortune)"
+ },
+ {
+  "vi": "Lời tiên tri cho kiếp sau",
+  "en": "Prophecy for your next life"
+ },
+ {
+  "vi": "Kết cục chưa mở trong Sổ Sinh Tử",
+  "en": "Endings not yet unlocked in the Book of Life and Death"
+ },
+ {
+  "vi": "Mối thù mang theo: ",
+  "en": "Grudge carried over: "
+ },
+ {
+  "vi": ". Kiếp sau gặp lại có thể báo thù.",
+  "en": ". Meet them in the next life and you can take revenge."
+ },
+ {
+  "vi": "Khắc lên bia mộ (không bắt buộc)",
+  "en": "Carve on your tombstone (optional)"
+ },
+ {
+  "vi": "vd: Kiếp này không phụ kiếm trong tay",
+  "en": "e.g. In this life I never failed the sword in my hand"
+ },
+ {
+  "vi": "Chôn rương cho kiếp sau (",
+  "en": "Bury a chest for your next life ("
+ },
+ {
+  "vi": " linh thạch",
+  "en": " spirit stones"
+ },
+ {
+  "vi": " và một món đồ",
+  "en": " and one item"
+ },
+ {
+  "vi": "Lời nhắn bỏ vào rương",
+  "en": "Note to leave in the chest"
+ },
+ {
+  "vi": "vd: Kiếp sau đừng tin ai họ Mộ Dung",
+  "en": "e.g. Next life, never trust anyone surnamed Mộ Dung"
+ },
+ {
+  "vi": "Truyền ",
+  "en": "Pass down "
+ },
+ {
+  "vi": " thành thần binh cho kiếp sau",
+  "en": " as a divine weapon to your next life"
+ },
+ {
+  "vi": " (đời thứ {0}, công +{1}%)",
+  "ph": [
+   "c.legend!.lv + 1",
+   "Math.min(10, c.legend!.lv + 1) * 8"
+  ],
+  "en": " (generation {0}, attack +{1}%)"
+ },
+ {
+  "vi": " (công +8%, mỗi kiếp truyền tiếp mạnh thêm)",
+  "en": " (attack +8%, grows stronger each time it's passed on)"
+ },
+ {
+  "vi": "Tên thần binh",
+  "en": "Divine weapon name"
+ },
+ {
+  "vi": "vd: Thanh Minh Kiếm",
+  "en": "e.g. Thanh Minh Sword"
+ },
+ {
+  "vi": "Đi trọn ",
+  "en": "Lived "
+ },
+ {
+  "vi": " kiếp rồi. Thấy vui thì mời tác giả chén trà ›",
+  "en": " lives already. Having fun? Treat the author to a cup of tea ›"
+ },
+ {
+  "vi": "Lập bia và luân hồi",
+  "en": "Raise a tombstone and reincarnate"
+ },
+ {
+  "vi": "Nữ",
+  "en": "Female"
+ },
+ {
+  "vi": "Phàm nhân",
+  "en": "Mortal"
+ },
+ {
+  "vi": "Tu vi",
+  "en": "Cultivation"
+ },
+ {
+  "vi": "Đủ phi thăng · còn {0} năm · chạm xem",
+  "ph": [
+   "wait"
+  ],
+  "en": "Ready to ascend · {0} yrs left · tap to see"
+ },
+ {
+  "vi": "Thọ",
+  "en": "Life"
+ },
+ {
+  "vi": "⚠ Khỏe",
+  "en": "⚠ Health"
+ },
+ {
+  "vi": "Khỏe",
+  "en": "Health"
+ },
+ {
+  "vi": "Tâm",
+  "en": "Mind"
+ },
+ {
+  "vi": "Ma",
+  "en": "Demonic"
+ },
+ {
+  "vi": "Ngộ",
+  "en": "Insight"
+ },
+ {
+  "vi": "Vận",
+  "en": "Luck"
+ },
+ {
+  "vi": "Đạo tâm: {0}",
+  "ph": [
+   "describeLean(c.daoTam)"
+  ],
+  "en": "Dao Heart: {0}"
+ },
+ {
+  "vi": "Trừ yêu luyện công",
+  "en": "Hunt demons, train"
+ },
+ {
+  "vi": "Cấp chiến đấu của bạn: ",
+  "en": "Your combat level: "
+ },
+ {
+  "vi": " · Công ",
+  "en": " · Atk "
+ },
+ {
+  "vi": " · Thủ ",
+  "en": " · Def "
+ },
+ {
+  "vi": " · Máu ",
+  "en": " · HP "
+ },
+ {
+  "vi": "Quái càng mạnh càng nhiều tu vi, nhưng thua là có thể bỏ mạng. Ngọc bội hộ thân đỡ được một lần.",
+  "en": "Stronger monsters give more cultivation, but losing can cost you your life. A protective jade pendant can save you once."
+ },
+ {
+  "vi": "Tự rút lui khi máu dưới 30%",
+  "en": "Auto-retreat when HP is below 30%"
+ },
+ {
+  "vi": "??? (chưa đủ tầm để biết)",
+  "en": "??? (too weak to tell)"
+ },
+ {
+  "vi": "Tà phái",
+  "en": "Evil sect"
+ },
+ {
+  "vi": "Chính phái",
+  "en": "Righteous sect"
+ },
+ {
+  "vi": " (gốc {0})",
+  "ph": [
+   "m.lv"
+  ],
+  "en": " (base {0})"
+ },
+ {
+  "vi": "Thí luyện",
+  "en": "Trial"
+ },
+ {
+  "vi": "Cao thủ",
+  "en": "Master"
+ },
+ {
+  "vi": "{0} · {1} Chưa từng ai thắng.",
+  "ph": [
+   "m.place",
+   "m.desc"
+  ],
+  "en": "{0} · {1} No one has ever won."
+ },
+ {
+  "vi": "{0} · ~{1} tu vi/con · {2} đã trảm",
+  "ph": [
+   "m.place",
+   "fmt(killExp(c, m))",
+   "c.kills?.[m.id] ?? 0"
+  ],
+  "en": "{0} · ~{1} cultivation each · {2} slain"
+ },
+ {
+  "vi": "Rơi ",
+  "en": "Drops "
+ },
+ {
+  "vi": " món · đã có ",
+  "en": " items · owned "
+ },
+ {
+  "vi": " · xem trong Bảo khố",
+  "en": " · see in Treasury"
+ },
+ {
+  "vi": "quá yếu, không rơi đồ",
+  "en": "too weak, drops nothing"
+ },
+ {
+  "vi": "yếu hơn bạn, ít rơi đồ",
+  "en": "weaker than you, rarely drops"
+ }
+]

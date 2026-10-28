@@ -37,7 +37,7 @@ export default function LoginPage() {
     setBusy(false);
     if (err) {
       setError(err);
-      if (mode === 'up' && err.includes('đã có người dùng')) setSuggest(`${username.slice(0, 13)}${10 + Math.floor(Math.random() * 90)}`);
+      if (mode === 'up' && /đã có người dùng|already taken/.test(err)) setSuggest(`${username.slice(0, 13)}${10 + Math.floor(Math.random() * 90)}`);
       track('auth_fail', { mode, err: String(err).slice(0, 80) });
       return;
     }

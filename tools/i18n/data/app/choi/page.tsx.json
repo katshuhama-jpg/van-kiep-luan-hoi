@@ -1,0 +1,686 @@
+[
+ {
+  "vi": "Lần đầu có được {0}, đã ghi vào Bảo khố ({1}/{2}).",
+  "ph": [
+   "it?.name ?? 'một món đồ ẩn'",
+   "n",
+   "HIDDEN_ITEMS.length"
+  ],
+  "en": "First time obtaining {0} - recorded in the Treasury ({1}/{2})."
+ },
+ {
+  "vi": "một món đồ ẩn",
+  "en": "a hidden item"
+ },
+ {
+  "vi": "Vô hiệu",
+  "en": "Immune"
+ },
+ {
+  "vi": "Bạn về động phủ dưỡng thương, tạm gác việc trừ yêu.",
+  "en": "You return to your cave abode to heal, setting demon hunting aside for now."
+ },
+ {
+  "vi": "Rút lui!",
+  "en": "Retreat!"
+ },
+ {
+  "vi": "Huynh đệ kết nghĩa @{0} nghe tin, từ xa phóng tới trợ quyền: \"Đụng tới huynh đệ ta là đụng tới ta!\" (sinh lực +30%, công +15% trận này)",
+  "ph": [
+   "bro"
+  ],
+  "en": "Your sworn brother @{0} hears the news and comes flying from afar to back you up: \"Touch my brother and you touch me!\" (HP +30%, attack +15% this fight)"
+ },
+ {
+  "vi": "Bóng của bạn đã ra tay trợ quyền cho huynh đệ @{0} ({1}) trước {2}.",
+  "ph": [
+   "userRef.current.username",
+   "c.name",
+   "f.rival.name"
+  ],
+  "en": "Your shadow stepped in to help your sworn brother @{0} ({1}) against {2}."
+ },
+ {
+  "vi": "Bị chặn lại!",
+  "en": "Blocked!"
+ },
+ {
+  "vi": "Xuất chiêu!",
+  "en": "Strike!"
+ },
+ {
+  "vi": "{0} · Kiếp {1}",
+  "ph": [
+   "DUEL_INFO[f.kind].tag",
+   "f.rival.lifeNo ?? 1"
+  ],
+  "en": "{0} · Life {1}"
+ },
+ {
+  "vi": "NGŨ HÀNH VIÊN MÃN",
+  "en": "FIVE ELEMENTS PERFECTED"
+ },
+ {
+  "vi": "Gương {0}/5",
+  "ph": [
+   "nhdOf(c).won"
+  ],
+  "en": "Mirror {0}/5"
+ },
+ {
+  "vi": "Đánh tan bóng ma đầu {0} của @{1}",
+  "ph": [
+   "fo.rival.name",
+   "fo.rival.player"
+  ],
+  "en": "Shattered the demon lord shadow {0} of @{1}"
+ },
+ {
+  "vi": "Bị bóng ma đầu {0} của @{1} đánh trọng thương",
+  "ph": [
+   "fo.rival.name",
+   "fo.rival.player"
+  ],
+  "en": "Gravely wounded by the demon lord shadow {0} of @{1}"
+ },
+ {
+  "vi": "bóng {0} của bạn",
+  "ph": [
+   "fo.rival.name"
+  ],
+  "en": "your shadow {0}"
+ },
+ {
+  "vi": "đã báo thù, hạ",
+  "en": "took revenge and struck down"
+ },
+ {
+  "vi": "đánh bại",
+  "en": "defeated"
+ },
+ {
+  "vi": "Người ấy ",
+  "en": ""
+ },
+ {
+  "vi": "{0} đã {1}{2} @{3} ({4}).{5}",
+  "ph": [
+   "shadow[0].toUpperCase() + shadow.slice(1)",
+   "fo.betray ? 'trở mặt bên bàn trà, ' : ''",
+   "c.dead ? 'giết chết' : 'hạ gục'",
+   "me",
+   "c.name",
+   "notes.some((n) => n.includes('lột mất')) ? ' Còn lột được đồ của họ.' : ''"
+  ],
+  "en": "{0} {1}{2} @{3} ({4}).{5}"
+ },
+ {
+  "vi": "trở mặt bên bàn trà, ",
+  "en": "broke the truce over tea and "
+ },
+ {
+  "vi": "giết chết",
+  "en": "killed"
+ },
+ {
+  "vi": "hạ gục",
+  "en": "struck down"
+ },
+ {
+  "vi": " Còn lột được đồ của họ.",
+  "en": " And stripped them of their gear."
+ },
+ {
+  "vi": "@{0} ({1}) đấu với {2} năm hiệp, bất phân thắng bại.",
+  "ph": [
+   "me",
+   "c.name",
+   "shadow"
+  ],
+  "en": "@{0} ({1}) fought {2} for five rounds - neither could win."
+ },
+ {
+  "vi": "Ba kiếp ân oán với @{0}. Giang hồ gọi bạn là kẻ \"Báo thù 3 đời\".",
+  "ph": [
+   "fo.rival.player"
+  ],
+  "en": "Three lives of grudges with @{0}. The jianghu calls you \"the Three-Lifetime Avenger\"."
+ },
+ {
+  "vi": "Bạn mang thủ cấp bóng {0} (@{1}) về lĩnh thưởng truy nã: +{2} linh thạch.",
+  "ph": [
+   "fo.rival.name",
+   "who",
+   "n"
+  ],
+  "en": "You bring the head of shadow {0} (@{1}) back for the bounty: +{2} spirit stones."
+ },
+ {
+  "vi": "Bất phân thắng bại",
+  "en": "A draw"
+ },
+ {
+  "vi": "Vừa quay lưng, một đạo kình lực của {0} đánh xuyên tâm mạch. Bạn ngã xuống giữa đường chạy.",
+  "ph": [
+   "who"
+  ],
+  "en": "The moment you turn your back, a surge of force from {0} pierces your heart meridian. You fall mid-flight."
+ },
+ {
+  "vi": "{0} cười lạnh: \"Muốn đi dễ vậy sao?\" Một chưởng sau lưng, bạn không bao giờ đứng dậy nữa.",
+  "ph": [
+   "who"
+  ],
+  "en": "{0} laughs coldly: \"Think you can leave that easily?\" One palm to the back, and you never rise again."
+ },
+ {
+  "vi": " Chạy thoát nhưng lưng trúng một chưởng của {0}, trọng thương.{1}",
+  "ph": [
+   "who",
+   "fl ?? ''"
+  ],
+  "en": " You escape, but take a palm strike from {0} in the back - grave wounds.{1}"
+ },
+ {
+  "vi": " {0} không vui, tiễn bạn bằng một chưởng. Bạn trọng thương.{1}",
+  "ph": [
+   "who",
+   "fl ?? ''"
+  ],
+  "en": " {0} is displeased and sees you off with a palm strike. You are gravely wounded.{1}"
+ },
+ {
+  "vi": "Bạn thi triển khinh công thoát khỏi {0}.{1}",
+  "ph": [
+   "who",
+   "extra"
+  ],
+  "en": "You unleash your lightness skill and escape {0}.{1}"
+ },
+ {
+  "vi": "Bỏ chạy không thành, {0} chặn đầu đánh úp.",
+  "ph": [
+   "who"
+  ],
+  "en": "Your escape fails - {0} cuts you off and strikes."
+ },
+ {
+  "vi": "Bóng {0} của bạn đã bỏ độc vào trà mời {1}{2}",
+  "ph": [
+   "f.rival.name",
+   "meName",
+   "c.dead ? '. Người ấy chết bên bàn trà.' : '.'"
+  ],
+  "en": "Your shadow {0} poisoned the tea it served {1}{2}"
+ },
+ {
+  "vi": ". Người ấy chết bên bàn trà.",
+  "en": ". They died at the tea table."
+ },
+ {
+  "vi": "{0} cùng bóng {1} của bạn uống trà luận đạo suốt đêm, kết làm bằng hữu.",
+  "ph": [
+   "meName",
+   "f.rival.name"
+  ],
+  "en": "{0} and your shadow {1} drank tea and discussed the Dao all night, and became friends."
+ },
+ {
+  "vi": "Huynh đệ gặp nhau, trà thật lòng thật. Hai người cùng luận đạo, cả hai cùng tiến (+{0} tu vi).",
+  "ph": [
+   "exp"
+  ],
+  "en": "Brothers meet, the tea is real and so are the hearts. You discuss the Dao together and both of you advance (+{0} cultivation)."
+ },
+ {
+  "vi": "Ngũ hành tương sinh, hai người càng nói càng hợp. Khí vận của bạn khởi sắc.",
+  "en": "The five elements nourish each other - the more you talk, the better you click. Your Luck brightens."
+ },
+ {
+  "vi": "Trà thật, người cũng thật. Bạn cùng {0} uống trà luận đạo suốt đêm, kết làm bằng hữu giang hồ.",
+  "ph": [
+   "who"
+  ],
+  "en": "The tea is real, and so is the person. You and {0} drink tea and discuss the Dao all night, becoming friends of the jianghu."
+ },
+ {
+  "vi": "Bạn chắp tay cáo từ {0}.{1}",
+  "ph": [
+   "who",
+   "extra || ' Núi xanh còn đó, ngày sau gặp lại.'"
+  ],
+  "en": "You cup your fists and take your leave of {0}.{1}"
+ },
+ {
+  "vi": " Núi xanh còn đó, ngày sau gặp lại.",
+  "en": " The green mountains remain; we shall meet again."
+ },
+ {
+  "vi": "Chặn đường!",
+  "en": "Ambushed!"
+ },
+ {
+  "vi": "{0} ({1}, Lv{2}, hệ {3})",
+  "ph": [
+   "m.sect ? `Thí luyện tông môn: ${m.name} ở ${m.place} chặn đường, đệ tử nào cũng phải qua.` : AMBUSH_INTRO[tier]",
+   "monsterName(c, m)",
+   "effLv(c, m)",
+   "ELEMENTS[m.el ?? 'tho'].name"
+  ],
+  "en": "{0} ({1}, Lv{2}, {3})"
+ },
+ {
+  "vi": "Thí luyện tông môn: {0} ở {1} chặn đường, đệ tử nào cũng phải qua.",
+  "ph": [
+   "m.name",
+   "m.place"
+  ],
+  "en": "Sect trial: {0} at {1} blocks the way - every disciple must get past it."
+ },
+ {
+  "vi": "Quái bỏ chạy",
+  "en": "Monster fled"
+ },
+ {
+  "vi": "Bỏ chạy!",
+  "en": "Flee!"
+ },
+ {
+  "vi": "Ngũ Hành Đài, gương {0}: bạn rút lá {1}, bóng ra thế {2}.{3}",
+  "ph": [
+   "r + 1",
+   "STANCES[my].name",
+   "STANCES[n.foe].name",
+   "mods.notes.length ? ' ' + mods.notes.join('. ') + '.' : ''"
+  ],
+  "en": "Five Elements Platform, mirror {0}: you draw {1}, the shadow plays {2}.{3}"
+ },
+ {
+  "vi": "Bóng bước ra!",
+  "en": "The shadow steps out!"
+ },
+ {
+  "vi": "Gương {0}/5 · {1} đấu {2}",
+  "ph": [
+   "r + 1",
+   "STANCES[my].name",
+   "STANCES[n.foe].name"
+  ],
+  "en": "Mirror {0}/5 · {1} vs {2}"
+ },
+ {
+  "vi": "Bạn bước xuống Ngũ Hành Đài, về củng cố thêm. Năm tấm gương vẫn chờ.",
+  "en": "You step down from the Five Elements Platform to consolidate further. The five mirrors are still waiting."
+ },
+ {
+  "vi": "Sứ giả Thiên Cơ Các bán cho bạn một tấm Ngũ Hành Phù (-{0} linh thạch).",
+  "ph": [
+   "price"
+  ],
+  "en": "An envoy of Thiên Cơ Các sells you a Five Elements Talisman (-{0} spirit stones)."
+ },
+ {
+  "vi": "Bạn vận công đỡ được {0}/9 đạo thiên lôi.",
+  "ph": [
+   "blocked"
+  ],
+  "en": "You channel your power and block {0}/9 heavenly thunderbolts."
+ },
+ {
+  "vi": "Mua {0} ở phường thị. (-{1} linh thạch)",
+  "ph": [
+   "it.name",
+   "fmt(price)"
+  ],
+  "en": "Bought {0} at the Market. (-{1} spirit stones)"
+ },
+ {
+  "vi": "Kiếp Số {0} · {1}. Thiên đạo đã để mắt tới linh hồn này, kiếp nạn sẽ nặng hơn, phúc báo cũng dày hơn.",
+  "ph": [
+   "c.kiepSo",
+   "KS_NAME[c.kiepSo ?? 0]"
+  ],
+  "en": "Calamity Count {0} · {1}. The Heavenly Dao has its eye on this soul: calamities will be heavier, and blessings richer."
+ },
+ {
+  "vi": "Kiếp tích {0}: những lần ngã trước cửa trời đã thành kinh nghiệm. Đột phá dễ hơn {1}%.",
+  "ph": [
+   "c.kiepTich",
+   "(c.kiepTich ?? 0) * 5"
+  ],
+  "en": "Calamity Scars {0}: past falls at Heaven's gate have become experience. Breakthroughs {1}% easier."
+ },
+ {
+  "vi": "Bạn uống cạn chén canh Mạnh Bà. Kiếp trước tan như khói, linh hồn nhẹ bẫng. Khí vận +15, phúc duyên kiếp này +20%.",
+  "en": "You drain the bowl of Meng Po's soup. Your past life fades like smoke and your soul feels light as a feather. Luck +15, Fortune this life +20%."
+ },
+ {
+  "vi": "Bạn hất đổ chén canh Mạnh Bà, mang theo ký ức mà đầu thai ({0} lần liền).",
+  "ph": [
+   "m2.noDrink"
+  ],
+  "en": "You knock over Meng Po's soup and are reborn with your memories intact ({0} times in a row)."
+ },
+ {
+  "vi": "Sau lưng vang tiếng xích sắt. Địa phủ đã ghi tên bạn vào sổ nợ.",
+  "en": "Iron chains clank behind you. The underworld has entered your name in its book of debts."
+ },
+ {
+  "vi": "Quà điểm danh: {0}.",
+  "ph": [
+   "[cn.money ? `+${cn.money} linh thạch` : '', cn.item ? 'ngọc bội hộ thân' : ''].filter(Boolean).join(', ')"
+  ],
+  "en": "Check-in gift: {0}."
+ },
+ {
+  "vi": "+{0} linh thạch",
+  "ph": [
+   "cn.money"
+  ],
+  "en": "+{0} spirit stones"
+ },
+ {
+  "vi": "ngọc bội hộ thân",
+  "en": "a protective jade pendant"
+ },
+ {
+  "vi": "@{0} từng khiến bạn ôm hận",
+  "ph": [
+   "player"
+  ],
+  "en": "@{0} once left you seething with hatred"
+ },
+ {
+  "vi": "{0}: +{1} Hồn lực.",
+  "ph": [
+   "p.note",
+   "p.amount"
+  ],
+  "en": "{0}: +{1} Soul Power."
+ },
+ {
+  "vi": "{0}: +{1} phúc duyên.",
+  "ph": [
+   "p.note",
+   "Math.round(p.amount / 2)"
+  ],
+  "en": "{0}: +{1} Fortune."
+ },
+ {
+  "vi": "{0}: +{1} linh thạch.",
+  "ph": [
+   "p.note",
+   "p.amount"
+  ],
+  "en": "{0}: +{1} spirit stones."
+ },
+ {
+  "vi": "{0}: -{1} linh thạch.",
+  "ph": [
+   "why",
+   "n"
+  ],
+  "en": "{0}: -{1} spirit stones."
+ },
+ {
+  "vi": "Bạn gửi lời hòa giải tới @{0}. Buông được mối thù, đạo tâm sáng thêm (+5 đạo tâm).",
+  "ph": [
+   "player"
+  ],
+  "en": "You send words of reconciliation to @{0}. Letting go of the feud, your Dao Heart shines brighter (+5 Dao Heart)."
+ },
+ {
+  "vi": "Bạn thuê người dò tung tích {0} (@{1}). Trong vòng một năm sẽ chạm mặt.",
+  "ph": [
+   "rival.name",
+   "rival.player"
+  ],
+  "en": "You hire someone to track down {0} (@{1}). You will cross paths within a year."
+ },
+ {
+  "vi": "Phàm nhân",
+  "en": "Mortal"
+ },
+ {
+  "vi": "gốc đa đầu làng",
+  "en": "under the banyan at the village gate"
+ },
+ {
+  "vi": "dưới nền ngôi miếu cũ",
+  "en": "beneath the floor of the old temple"
+ },
+ {
+  "vi": "bên bờ suối sau núi",
+  "en": "by the stream behind the mountain"
+ },
+ {
+  "vi": "{0} (+{1} phúc)",
+  "ph": [
+   "a.name",
+   "a.reward"
+  ],
+  "en": "{0} (+{1} Fortune)"
+ },
+ {
+  "vi": "Vạn Kiếp Quy Nhất: +{0} phúc, đeo chuông vàng qua mọi kiếp",
+  "ph": [
+   "QUY_NHAT_PHUC"
+  ],
+  "en": "Ten Thousand Lives Return to One: +{0} Fortune, wear the golden bell through every life"
+ },
+ {
+  "vi": "Đang mở luân hồi đài...",
+  "en": "Opening the reincarnation platform..."
+ },
+ {
+  "vi": "Luân hồi",
+  "en": "Reincarnation"
+ },
+ {
+  "vi": "Đạo hữu {0}",
+  "ph": [
+   "displayName(user)"
+  ],
+  "en": "Fellow Daoist {0}"
+ },
+ {
+  "vi": "Đang chơi thử · ",
+  "en": "Playing as guest · "
+ },
+ {
+  "vi": "Đăng nhập",
+  "en": "Log in"
+ },
+ {
+  "vi": "Về trang đầu",
+  "en": "Back to home"
+ },
+ {
+  "vi": "📜 Thiên thư mở thêm: ",
+  "en": "📜 Heavenly Tome unlocked: "
+ },
+ {
+  "vi": " · chạm để đọc",
+  "en": " · tap to read"
+ },
+ {
+  "vi": "🏆 Thành tựu mới: ",
+  "en": "🏆 New achievement: "
+ },
+ {
+  "vi": "Nhiệm vụ vừa hoàn thành: ",
+  "en": "Quest completed: "
+ },
+ {
+  "vi": "tuổi · ",
+  "en": "yrs · "
+ },
+ {
+  "vi": " · Kiếp ",
+  "en": " · Life "
+ },
+ {
+  "vi": " linh thạch · ",
+  "en": " spirit stones · "
+ },
+ {
+  "vi": " · +{0}/năm",
+  "ph": [
+   "c.income"
+  ],
+  "en": " · +{0}/yr"
+ },
+ {
+  "vi": "Mục tiêu kiếp ",
+  "en": "Goal for life "
+ },
+ {
+  "vi": " phúc)",
+  "en": " Fortune)"
+ },
+ {
+  "vi": "Thiên tượng và nhiệm vụ hôm nay",
+  "en": "Today's omens and quests"
+ },
+ {
+  "vi": "Giang hồ{0}",
+  "ph": [
+   "unread ? `, ${unread} thư mới` : ''"
+  ],
+  "en": "Jianghu{0}"
+ },
+ {
+  "vi": ", {0} thư mới",
+  "ph": [
+   "unread"
+  ],
+  "en": ", {0} new letters"
+ },
+ {
+  "vi": "Mở menu{0}",
+  "ph": [
+   "newBook ? ', có mục mới trong Sổ Sinh Tử hoặc Bảo khố' : ''"
+  ],
+  "en": "Open menu{0}"
+ },
+ {
+  "vi": ", có mục mới trong Sổ Sinh Tử hoặc Bảo khố",
+  "en": ", new entries in the Book of Life and Death or Treasury"
+ },
+ {
+  "vi": "Tạm dừng",
+  "en": "Pause"
+ },
+ {
+  "vi": "Tiếp tục",
+  "en": "Resume"
+ },
+ {
+  "vi": "Tua tới sự kiện kế tiếp",
+  "en": "Skip to next event"
+ },
+ {
+  "vi": "Xem bảng chỉ số nhân vật",
+  "en": "View character stats"
+ },
+ {
+  "vi": "Phường thị",
+  "en": "Market"
+ },
+ {
+  "vi": "Túi đồ",
+  "en": "Inventory"
+ },
+ {
+  "vi": "Bế quan",
+  "en": "Seclusion"
+ },
+ {
+  "vi": " · Thiên phú: {0}",
+  "ph": [
+   "c.gifts.map((g) => giftOf(g)?.name).join(', ')"
+  ],
+  "en": " · Talent: {0}"
+ },
+ {
+  "vi": " · {0} {1} (tu luyện +{2}%)",
+  "ph": [
+   "rankName(c)",
+   "c.sect",
+   "Math.round((sectCultMul(c) - 1) * 100)"
+  ],
+  "en": " · {0} of {1} (cultivation +{2}%)"
+ },
+ {
+  "vi": "Trang đầu",
+  "en": "Home"
+ },
+ {
+  "vi": "Bảng xếp hạng",
+  "en": "Leaderboard"
+ },
+ {
+  "vi": "Nghĩa trang",
+  "en": "Cemetery"
+ },
+ {
+  "vi": "Sổ Sinh Tử ",
+  "en": "Book of Life and Death "
+ },
+ {
+  "vi": "mới",
+  "en": "new"
+ },
+ {
+  "vi": "Bảo khố ",
+  "en": "Treasury "
+ },
+ {
+  "vi": "Hướng dẫn chơi",
+  "en": "How to play"
+ },
+ {
+  "vi": "Lịch sử cập nhật · bản ",
+  "en": "Update history · version "
+ },
+ {
+  "vi": "Tiếng Việt",
+  "en": ""
+ },
+ {
+  "vi": "Góp ý tính năng",
+  "en": "Feature requests"
+ },
+ {
+  "vi": "Đăng xuất (",
+  "en": "Log out ("
+ },
+ {
+  "vi": "Đăng nhập để lưu lên mây",
+  "en": "Log in to save to the cloud"
+ },
+ {
+  "vi": "Bảo khố +1",
+  "en": "Treasury +1"
+ },
+ {
+  "vi": " · chạm để xem",
+  "en": " · tap to view"
+ },
+ {
+  "vi": "Chứng Đạo",
+  "en": "Attaining the Dao"
+ },
+ {
+  "vi": "Ma Giới",
+  "en": "Demon Realm"
+ },
+ {
+  "vi": "Thái Hư",
+  "en": "Great Void"
+ },
+ {
+  "vi": "Phi Thăng",
+  "en": "Ascension"
+ }
+]

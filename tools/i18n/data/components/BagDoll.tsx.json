@@ -1,0 +1,132 @@
+[
+ {
+  "vi": "Thường",
+  "en": "Common"
+ },
+ {
+  "vi": "Tốt",
+  "en": "Fine"
+ },
+ {
+  "vi": "Hiếm",
+  "en": "Rare"
+ },
+ {
+  "vi": "Cực phẩm",
+  "en": "Supreme"
+ },
+ {
+  "vi": "Áo",
+  "en": "Robe"
+ },
+ {
+  "vi": "Vũ khí",
+  "en": "Weapon"
+ },
+ {
+  "vi": "Phụ kiện",
+  "en": "Accessory"
+ },
+ {
+  "vi": "Tất cả",
+  "en": "All"
+ },
+ {
+  "vi": "Đan",
+  "en": "Pills"
+ },
+ {
+  "vi": "{0} trống",
+  "ph": [
+   "SLOT_NAME[s]"
+  ],
+  "en": "{0} empty"
+ },
+ {
+  "vi": "Công",
+  "en": "Attack"
+ },
+ {
+  "vi": "Thủ",
+  "en": "Defense"
+ },
+ {
+  "vi": "Sinh lực",
+  "en": "HP"
+ },
+ {
+  "vi": "Trang bị chưa có chỉ số",
+  "en": "No equipment stats yet"
+ },
+ {
+  "vi": "Tinh thiết ",
+  "en": "Refined iron "
+ },
+ {
+  "vi": "Loại đồ",
+  "en": "Item type"
+ },
+ {
+  "vi": "Mặc",
+  "en": "Wear"
+ },
+ {
+  "vi": "Hệ ",
+  "en": "Element: "
+ },
+ {
+  "vi": "Đang dùng",
+  "en": "Equipped"
+ },
+ {
+  "vi": "Dùng",
+  "en": "Use"
+ },
+ {
+  "vi": "Bán · +",
+  "en": "Sell · +"
+ },
+ {
+  "vi": " linh thạch",
+  "en": " spirit stones"
+ },
+ {
+  "vi": "Phân giải · +",
+  "en": "Dismantle · +"
+ },
+ {
+  "vi": " tinh thiết",
+  "en": " refined iron"
+ },
+ {
+  "vi": "⚒ Mở lò rèn",
+  "en": "⚒ Open the forge"
+ },
+ {
+  "vi": "đã +{0}",
+  "ph": [
+   "FORGE_MAX"
+  ],
+  "en": "maxed +{0}"
+ },
+ {
+  "vi": "đang +{0} · tinh thiết {1}",
+  "ph": [
+   "lv",
+   "c.tinhHoa ?? 0"
+  ],
+  "en": "now +{0} · refined iron {1}"
+ },
+ {
+  "vi": "Đan dược",
+  "en": "Pills"
+ },
+ {
+  "vi": "Uống",
+  "en": "Take"
+ },
+ {
+  "vi": "Chạm vào một món để xem và dùng. Mỗi món mang một hệ ngũ hành. Đồ thừa đem bán lấy linh thạch hoặc phân giải ra tinh thiết để rèn vũ khí.",
+  "en": "Tap an item to inspect and use it. Every item carries one of the Five Elements. Sell spares for spirit stones or dismantle them into refined iron for forging weapons."
+ }
+]

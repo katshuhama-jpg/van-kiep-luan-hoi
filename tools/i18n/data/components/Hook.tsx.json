@@ -1,0 +1,119 @@
+[
+ {
+  "vi": "Tiếng đồn",
+  "en": "Rumour"
+ },
+ {
+  "vi": " Chưa ai trong giang hồ chạm tới.",
+  "en": " No one in the jianghu has reached it yet."
+ },
+ {
+  "vi": " Mới {0} người chạm tới.",
+  "ph": [
+   "n"
+  ],
+  "en": " Only {0} have reached it."
+ },
+ {
+  "vi": "Thiên tượng hôm nay: {0}",
+  "ph": [
+   "o.name"
+  ],
+  "en": "Today's Celestial Signs: {0}"
+ },
+ {
+  "vi": "Thiên tượng hôm nay",
+  "en": "Today's Celestial Signs"
+ },
+ {
+  "vi": "Ngày ",
+  "en": "Day "
+ },
+ {
+  "vi": "Nên",
+  "en": "Favourable"
+ },
+ {
+  "vi": "Kiêng",
+  "en": "Avoid"
+ },
+ {
+  "vi": "Chuỗi tu luyện ",
+  "en": "Cultivation streak: "
+ },
+ {
+  "vi": " ngày",
+  "en": " days"
+ },
+ {
+  "vi": "Nhiệm vụ hôm nay, mỗi việc +{0} phúc duyên, xong cả 3 thêm +{1}",
+  "ph": [
+   "QUEST_REWARD",
+   "QUEST_BONUS"
+  ],
+  "en": "Today's quests: +{0} Fortune each, +{1} more for all 3"
+ },
+ {
+  "vi": "Nhiệm vụ +",
+  "en": "Quests +"
+ },
+ {
+  "vi": " phúc duyên mỗi việc, xong cả 3 thêm +",
+  "en": " Fortune each, all 3 for +"
+ },
+ {
+  "vi": "Hôm nay",
+  "en": "Today"
+ },
+ {
+  "vi": "{0} phúc{1}",
+  "ph": [
+   "g.honPhuc",
+   "g.item ? ', ngọc bội' : ''"
+  ],
+  "en": "{0} Fortune{1}"
+ },
+ {
+  "vi": ", ngọc bội",
+  "en": ", jade pendant"
+ },
+ {
+  "vi": "Điểm danh 7 ngày và nhiệm vụ hôm nay",
+  "en": "7-day check-in and today's quests"
+ },
+ {
+  "vi": "Điểm danh",
+  "en": "Daily check-in"
+ },
+ {
+  "vi": "Ngày {0}: {1}",
+  "ph": [
+   "n",
+   "labelOf(i)"
+  ],
+  "en": "Day {0}: {1}"
+ },
+ {
+  "vi": "Nhiệm vụ ",
+  "en": "Quests "
+ },
+ {
+  "vi": "Nhiệm vụ hôm nay, mỗi việc +{0} phúc duyên",
+  "ph": [
+   "QUEST_REWARD"
+  ],
+  "en": "Today's quests: +{0} Fortune each"
+ },
+ {
+  "vi": " phúc mỗi việc, xong cả 3 thêm +",
+  "en": " Fortune each, all 3 for +"
+ },
+ {
+  "vi": ", mỗi việc hồi 10 Hồn lực",
+  "en": ", each restores 10 Soul Power"
+ },
+ {
+  "vi": "Nhận ",
+  "en": "Claim "
+ }
+]

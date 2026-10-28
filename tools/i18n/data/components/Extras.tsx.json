@@ -1,0 +1,333 @@
+[
+ {
+  "vi": "Lá số ",
+  "en": "Fate chart: "
+ },
+ {
+  "vi": "kiếp {0}",
+  "ph": [
+   "lifeNo"
+  ],
+  "en": "life {0}"
+ },
+ {
+  "vi": "kiếp này",
+  "en": "this life"
+ },
+ {
+  "vi": "Ẩn chỉ số",
+  "en": "Hide stats"
+ },
+ {
+  "vi": "Xem chỉ số",
+  "en": "Show stats"
+ },
+ {
+  "vi": "Trời ban thiên phú ",
+  "en": "Heaven-sent talents "
+ },
+ {
+  "vi": "chọn tối đa 2 lá, không bắt buộc",
+  "en": "pick up to 2, optional"
+ },
+ {
+  "vi": "có họa",
+  "en": "has a catch"
+ },
+ {
+  "vi": "✓ Đã chọn",
+  "en": "✓ Chosen"
+ },
+ {
+  "vi": "Gieo lại",
+  "en": "Reroll"
+ },
+ {
+  "vi": "-{0} phúc",
+  "ph": [
+   "cost"
+  ],
+  "en": "-{0} Fortune"
+ },
+ {
+  "vi": "miễn phí",
+  "en": "free"
+ },
+ {
+  "vi": "Đầu thai ▶",
+  "en": "Be reborn ▶"
+ },
+ {
+  "vi": "Nữ",
+  "en": "Female"
+ },
+ {
+  "vi": " · lớn lên sẽ thế này",
+  "en": " · all grown up"
+ },
+ {
+  "vi": "Quê",
+  "en": "Hometown"
+ },
+ {
+  "vi": "Nhà",
+  "en": "Family"
+ },
+ {
+  "vi": " linh thạch",
+  "en": " spirit stones"
+ },
+ {
+  "vi": "Căn",
+  "en": "Root"
+ },
+ {
+  "vi": "Thọ",
+  "en": "Lifespan"
+ },
+ {
+  "vi": "khoảng ",
+  "en": "about "
+ },
+ {
+  "vi": "Mệnh",
+  "en": "Element"
+ },
+ {
+  "vi": "Vùng đỏ: chỉ số sau khi nhận thiên phú. Vùng xám: lá số gốc.",
+  "en": "Red area: stats after your talents. Gray area: the original fate chart."
+ },
+ {
+  "vi": "Chỉ số của lá số này. Chọn thiên phú để xem thay đổi.",
+  "en": "This fate chart's stats. Pick talents to see the changes."
+ },
+ {
+  "vi": " Tu luyện x{0}.",
+  "ph": [
+   "after.linhCanMul.toFixed(1)"
+  ],
+  "en": " Cultivation x{0}."
+ },
+ {
+  "vi": "Thiên kiếp",
+  "en": "Heavenly tribulation"
+ },
+ {
+  "vi": "Lôi kiếp ",
+  "en": "Lightning tribulation · "
+ },
+ {
+  "vi": "Đạo ",
+  "en": "Bolt "
+ },
+ {
+  "vi": "Đã đỡ {0} đạo",
+  "ph": [
+   "blocked"
+  ],
+  "en": "Blocked {0} bolts"
+ },
+ {
+  "vi": "GIẢ?",
+  "en": "FAKE?"
+ },
+ {
+  "vi": "ĐỠ",
+  "en": "BLOCK"
+ },
+ {
+  "vi": "CHÍN ĐẠO LÔI KIẾP",
+  "en": "NINE BOLTS OF TRIBULATION"
+ },
+ {
+  "vi": "Sét đánh xuống ",
+  "en": "Lightning strikes "
+ },
+ {
+  "vi": "trái, giữa hoặc phải",
+  "en": "left, middle or right"
+ },
+ {
+  "vi": ". Chạm đúng bên có khung ngắm.",
+  "en": ". Tap the side with the target frame."
+ },
+ {
+  "vi": "Chờ ô ngắm co lọt vào khung ",
+  "en": "Wait for the target to shrink inside the frame "
+ },
+ {
+  "vi": "rồi mới chạm",
+  "en": "before you tap"
+ },
+ {
+  "vi": ". Chạm sớm hay chậm đều trúng sấm.",
+  "en": ". Too early or too late and the lightning hits you."
+ },
+ {
+  "vi": "tím",
+  "en": "purple"
+ },
+ {
+  "vi": " là lôi giả. Chạm vào là mất một đạo đã đỡ.",
+  "en": " frames are fake lightning. Tapping one costs you a bolt you already blocked."
+ },
+ {
+  "vi": "Ba đạo cuối tới dồn dập, không kịp thở.",
+  "en": "The last three bolts come thick and fast, no time to breathe."
+ },
+ {
+  "vi": "Chạm để bắt đầu",
+  "en": "Tap to begin"
+ },
+ {
+  "vi": "Mây đang tụ...",
+  "en": "Clouds gathering..."
+ },
+ {
+  "vi": "Đỡ được!",
+  "en": "Blocked!"
+ },
+ {
+  "vi": "Trúng sấm!",
+  "en": "Struck by lightning!"
+ },
+ {
+  "vi": "Trúng lôi giả! Mất một đạo",
+  "en": "Fake bolt! Lost one block"
+ },
+ {
+  "vi": "Lôi giả tan...",
+  "en": "The fake bolt fades..."
+ },
+ {
+  "vi": "Đỡ được ",
+  "en": "Blocked "
+ },
+ {
+  "vi": " đạo",
+  "en": " bolts"
+ },
+ {
+  "vi": "Tỉ lệ vượt kiếp +{0}%",
+  "ph": [
+   "Math.round(bonus * 100)"
+  ],
+  "en": "Tribulation survival chance +{0}%"
+ },
+ {
+  "vi": "Tỉ lệ vượt kiếp {0}%",
+  "ph": [
+   "Math.round(bonus * 100)"
+  ],
+  "en": "Tribulation survival chance {0}%"
+ },
+ {
+  "vi": "Xem kết quả",
+  "en": "See the result"
+ },
+ {
+  "vi": "Phó mặc số trời",
+  "en": "Leave it to fate"
+ },
+ {
+  "vi": "Chưa tạo được link, đã tải ảnh về máy.",
+  "en": "Couldn't create a link; the image was saved to your device."
+ },
+ {
+  "vi": "Chưa khoe được, thử lại sau.",
+  "en": "Couldn't share, try again later."
+ },
+ {
+  "vi": "Xếp loại đời này",
+  "en": "This life's grade"
+ },
+ {
+  "vi": "Vượt {0}% giang hồ",
+  "ph": [
+   "pct"
+  ],
+  "en": "Beat {0}% of the jianghu"
+ },
+ {
+  "vi": "Thẻ Một đời của {0}",
+  "ph": [
+   "c.name"
+  ],
+  "en": "{0}'s Life Card"
+ },
+ {
+  "vi": "Đang tạo link...",
+  "en": "Creating link..."
+ },
+ {
+  "vi": "Khoe đời này",
+  "en": "Show off this life"
+ },
+ {
+  "vi": "Đây là bạn",
+  "en": "This is you"
+ },
+ {
+  "vi": "Thời gian tự trôi. Thanh vàng phía trên chạy hết là bạn thêm 1 tuổi.",
+  "en": "Time flows on its own. When the gold bar at the top fills, you're 1 year older."
+ },
+ {
+  "vi": "Năm nay làm gì?",
+  "en": "What to do this year?"
+ },
+ {
+  "vi": "Chạm để chọn việc. Tu luyện để lên cảnh giới, Kiếm tiền để mua đồ, Trừ yêu để đánh quái. Làm một việc quá lâu sẽ bị quá độ, nhớ đổi việc.",
+  "en": "Tap to pick an activity. Cultivate to climb realms, Earn money to buy gear, Hunt demons to fight monsters. Doing one thing too long leads to burnout, so switch it up."
+ },
+ {
+  "vi": "Nhanh hay chậm",
+  "en": "Fast or slow"
+ },
+ {
+  "vi": "Tua 2× đến 16×. Nút ❚❚ để dừng, nút » để nhảy tới chuyện kế tiếp.",
+  "en": "Speed up from 2× to 16×. ❚❚ pauses, » skips to the next event."
+ },
+ {
+  "vi": "Chỉ số của bạn",
+  "en": "Your stats"
+ },
+ {
+  "vi": "Chạm vào tên để xem chỉ số. Sức khỏe về 0 hoặc tâm ma lên 100 là chết.",
+  "en": "Tap your name to see your stats. Health at 0 or heart demon at 100 means death."
+ },
+ {
+  "vi": "Mua đồ, bế quan",
+  "en": "Shopping, seclusion"
+ },
+ {
+  "vi": "Phường thị bán áo, vũ khí, đan dược. Túi đồ để mặc đồ. Bế quan để tu nhanh nhưng xuất quan sẽ có mất mát.",
+  "en": "The Market sells robes, weapons and pills. Use the Inventory to equip gear. Seclusion speeds up cultivation, but leaving it comes at a cost."
+ },
+ {
+  "vi": "Sắp có chuyện xảy ra",
+  "en": "Something is about to happen"
+ },
+ {
+  "vi": "Khi gặp chuyện, game tự dừng và hiện 4 cách xử lý. Đọc kỹ, có cách khiến bạn chết. Chúc đạo hữu sống lâu!",
+  "en": "When an event happens, the game pauses and shows 4 ways to respond. Read carefully - some of them get you killed. May you live long, fellow Daoist!"
+ },
+ {
+  "vi": "Hướng dẫn: {0}",
+  "ph": [
+   "step.title"
+  ],
+  "en": "Tutorial: {0}"
+ },
+ {
+  "vi": "Bỏ qua",
+  "en": "Skip"
+ },
+ {
+  "vi": "Bắt đầu!",
+  "en": "Start!"
+ },
+ {
+  "vi": "Tiếp",
+  "en": "Next"
+ }
+]

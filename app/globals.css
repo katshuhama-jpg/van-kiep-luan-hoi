@@ -4340,3 +4340,6 @@ button.shadow-card { cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .lc-msg { animation: none; } }
 .ldm-chat { max-height: 52vh; max-height: 52dvh; overflow-y: auto; overscroll-behavior: contain; padding: 2px 4px 6px 0; }
 .ldm-chat.static .lc-msg { animation: none; }
+
+/* Nút đổi ngôn ngữ */
+.lang-btn { font: inherit; font-size: 14px; font-weight: 700; letter-spacing: 0.04em; }

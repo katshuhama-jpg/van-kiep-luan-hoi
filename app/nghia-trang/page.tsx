@@ -53,7 +53,7 @@ function Tomb({
         {m.path ? ` · ${m.path}` : ''}
       </small>
       {m.ascended ? (
-        <small style={{ color: m.cause?.includes('Ma Tôn') ? 'var(--ta)' : 'var(--jade)' }}>{m.cause?.includes('Ma Tôn') ? 'Đã thành Ma Tôn' : 'Đã phi thăng'}</small>
+        <small style={{ color: /Ma Tôn|Demon Sovereign/.test(m.cause ?? '') ? 'var(--ta)' : 'var(--jade)' }}>{/Ma Tôn|Demon Sovereign/.test(m.cause ?? '') ? 'Đã thành Ma Tôn' : 'Đã phi thăng'}</small>
       ) : (
         m.cause && <small>{m.cause}</small>
       )}

@@ -281,7 +281,7 @@ export async function listFeedback(user: Player | null): Promise<Feedback[] | nu
   if (error) ({ data, error } = await sb.rpc('vkl_feedback_list', { p_token: user?.token ?? null }));
   if (error) return null;
   // đánh giá nhanh ở màn chết chỉ dành cho người làm game đọc, không hiện ở trang góp ý chung
-  return ((data as Feedback[]) ?? []).filter((f) => !f.content.startsWith('[Đánh giá kiếp'));
+  return ((data as Feedback[]) ?? []).filter((f) => !/^\[(Đánh giá kiếp|Life rating)/.test(f.content));
 }
 
 const FB_ERR: Record<string, string> = {

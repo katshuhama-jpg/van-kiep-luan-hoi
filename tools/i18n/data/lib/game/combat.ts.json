@@ -1,0 +1,865 @@
+[
+ {
+  "vi": "Thỏ Yêu",
+  "en": ""
+ },
+ {
+  "vi": "Bãi cỏ đầu làng",
+  "en": ""
+ },
+ {
+  "vi": "Thỏ mới khai linh trí, cắn hơi đau.",
+  "en": ""
+ },
+ {
+  "vi": "Sói Xám Thành Tinh",
+  "en": ""
+ },
+ {
+  "vi": "Rừng Thanh Tùng",
+  "en": ""
+ },
+ {
+  "vi": "Đi theo bầy, đêm trăng rất hung.",
+  "en": ""
+ },
+ {
+  "vi": "Hoa Văn Mãng",
+  "en": ""
+ },
+ {
+  "vi": "Đầm Lầy Xanh",
+  "en": ""
+ },
+ {
+  "vi": "Rắn lớn hoa văn, có độc nhẹ.",
+  "en": ""
+ },
+ {
+  "vi": "Ác Hầu",
+  "en": ""
+ },
+ {
+  "vi": "Hoa Quả Sơn",
+  "en": ""
+ },
+ {
+  "vi": "Khỉ yêu tinh ranh, thích cướp đồ.",
+  "en": ""
+ },
+ {
+  "vi": "Thiết Nha Trư",
+  "en": ""
+ },
+ {
+  "vi": "Rừng Hắc Mộc",
+  "en": ""
+ },
+ {
+  "vi": "Heo rừng nanh sắt, da dày như giáp.",
+  "en": ""
+ },
+ {
+  "vi": "Sơn Tặc Đầu Lĩnh",
+  "en": ""
+ },
+ {
+  "vi": "Hắc Phong Trại",
+  "en": ""
+ },
+ {
+  "vi": "Trùm cướp núi, đao pháp thô bạo.",
+  "en": ""
+ },
+ {
+  "vi": "Hắc Y Thích Khách",
+  "en": ""
+ },
+ {
+  "vi": "Ám Ảnh Lâu",
+  "en": ""
+ },
+ {
+  "vi": "Sát thủ đến không tiếng, đi không dấu.",
+  "en": ""
+ },
+ {
+  "vi": "Huyết Phong Vương",
+  "en": ""
+ },
+ {
+  "vi": "Sa Mạc Hoàng Sa",
+  "en": ""
+ },
+ {
+  "vi": "Ong chúa khổng lồ, kim chích chứa kịch độc.",
+  "en": ""
+ },
+ {
+  "vi": "Cửu Vĩ Hồ Yêu",
+  "en": ""
+ },
+ {
+  "vi": "Thanh Khâu",
+  "en": ""
+ },
+ {
+  "vi": "Hồ ly mê hoặc lòng người.",
+  "en": ""
+ },
+ {
+  "vi": "Thiết Chưởng Bang Chủ",
+  "en": ""
+ },
+ {
+  "vi": "Thiết Chưởng Bang",
+  "en": ""
+ },
+ {
+  "vi": "Một chưởng đánh vỡ tảng đá ngàn cân.",
+  "en": ""
+ },
+ {
+  "vi": "Thiết Giáp Cương Thi",
+  "en": ""
+ },
+ {
+  "vi": "Nghĩa Trang Cổ",
+  "en": ""
+ },
+ {
+  "vi": "Xác chết ngàn năm, đao kiếm khó chém.",
+  "en": ""
+ },
+ {
+  "vi": "Hắc Hùng Tinh",
+  "en": ""
+ },
+ {
+  "vi": "Hắc Phong Sơn",
+  "en": ""
+ },
+ {
+  "vi": "Gấu đen tu luyện ngàn năm, sức mạnh vô song.",
+  "en": ""
+ },
+ {
+  "vi": "Độc Thủ Dược Vương",
+  "en": ""
+ },
+ {
+  "vi": "Vạn Độc Cốc",
+  "en": ""
+ },
+ {
+  "vi": "Phẩy quạt là độc bay mười dặm.",
+  "en": ""
+ },
+ {
+  "vi": "Ngân Giác Mãng",
+  "en": ""
+ },
+ {
+  "vi": "Vạn Xà Cốc",
+  "en": ""
+ },
+ {
+  "vi": "Mãng xà có sừng bạc, sắp hóa giao.",
+  "en": ""
+ },
+ {
+  "vi": "Kim Sí Đại Bằng",
+  "en": ""
+ },
+ {
+  "vi": "Đỉnh Vân Tiêu",
+  "en": ""
+ },
+ {
+  "vi": "Chim thần cánh vàng, một cái vỗ cánh chín vạn dặm.",
+  "en": ""
+ },
+ {
+  "vi": "Cuồng Đao Khách",
+  "en": ""
+ },
+ {
+  "vi": "Đoạn Hồn Nhai",
+  "en": ""
+ },
+ {
+  "vi": "Đao chưa ra khỏi vỏ đã có người chết.",
+  "en": ""
+ },
+ {
+  "vi": "Huyết Ma",
+  "en": ""
+ },
+ {
+  "vi": "Huyết Hải",
+  "en": ""
+ },
+ {
+  "vi": "Ma đầu sinh ra từ biển máu.",
+  "en": ""
+ },
+ {
+  "vi": "Băng Giao",
+  "en": ""
+ },
+ {
+  "vi": "Bắc Hải Băng Nguyên",
+  "en": ""
+ },
+ {
+  "vi": "Giao long băng giá, hơi thở đóng băng vạn vật.",
+  "en": ""
+ },
+ {
+  "vi": "Kiếm Si Vô Danh",
+  "en": ""
+ },
+ {
+  "vi": "Kiếm Trủng",
+  "en": ""
+ },
+ {
+  "vi": "Cả đời chỉ luyện một kiếm. Một kiếm ấy chưa từng thua.",
+  "en": ""
+ },
+ {
+  "vi": "Hỏa Kỳ Lân",
+  "en": ""
+ },
+ {
+  "vi": "Hỏa Diệm Sơn",
+  "en": ""
+ },
+ {
+  "vi": "Thần thú lửa, giẫm đâu cháy đó.",
+  "en": ""
+ },
+ {
+  "vi": "Thượng Cổ Hắc Long",
+  "en": ""
+ },
+ {
+  "vi": "Vực Vô Tận",
+  "en": ""
+ },
+ {
+  "vi": "Long tộc thượng cổ. Phi thăng giả cũng phải dè chừng.",
+  "en": ""
+ },
+ {
+  "vi": "Độc Nhện Tinh",
+  "en": ""
+ },
+ {
+  "vi": "Bàn Ti Động",
+  "en": ""
+ },
+ {
+  "vi": "Nhện tinh giăng tơ độc khắp động, con mồi dính vào là xong.",
+  "en": ""
+ },
+ {
+  "vi": "Huyết Lang Vương",
+  "en": ""
+ },
+ {
+  "vi": "Bắc Mạc Hoang Nguyên",
+  "en": ""
+ },
+ {
+  "vi": "Sói chúa đầu đàn, hú một tiếng trăm sói kéo về.",
+  "en": ""
+ },
+ {
+  "vi": "Âm Hồn Quỷ Tướng",
+  "en": ""
+ },
+ {
+  "vi": "Quỷ Môn Quan",
+  "en": ""
+ },
+ {
+  "vi": "Tướng quân chết trận không siêu thoát, dẫn âm binh đi tuần.",
+  "en": ""
+ },
+ {
+  "vi": "Huyết Y Lão Quái",
+  "en": ""
+ },
+ {
+  "vi": "Hắc Thủy Trại",
+  "en": ""
+ },
+ {
+  "vi": "Lão ma đầu áo đỏ, sống nhờ hút máu người luyện công.",
+  "en": ""
+ },
+ {
+  "vi": "Xích Diễm Giao Long",
+  "en": ""
+ },
+ {
+  "vi": "Nham Tương Hải",
+  "en": ""
+ },
+ {
+  "vi": "Giao long tắm trong dung nham, vảy nóng chảy sắt.",
+  "en": ""
+ },
+ {
+  "vi": "Bích Nhãn Kim Thiềm",
+  "en": ""
+ },
+ {
+  "vi": "Kim Thiềm Động",
+  "en": ""
+ },
+ {
+  "vi": "Cóc vàng ngậm tiền, nuốt cả linh bảo của tu sĩ.",
+  "en": ""
+ },
+ {
+  "vi": "Đồng Nhân Khôi Lỗi",
+  "en": ""
+ },
+ {
+  "vi": "Thí Luyện Đường Thanh Vân",
+  "en": ""
+ },
+ {
+  "vi": "Người đồng trăm khớp, ngoại môn đệ tử nào cũng phải qua.",
+  "en": ""
+ },
+ {
+  "vi": "Hộ Sơn Tiên Hạc",
+  "en": ""
+ },
+ {
+  "vi": "Hậu sơn Thanh Vân",
+  "en": ""
+ },
+ {
+  "vi": "Hạc giữ núi, chỉ chịu nhường đường cho người thắng được nó.",
+  "en": ""
+ },
+ {
+  "vi": "Kiếm Linh Thí Luyện",
+  "en": ""
+ },
+ {
+  "vi": "Kiếm Các Thanh Vân",
+  "en": ""
+ },
+ {
+  "vi": "Kiếm ý của tổ sư hóa hình, thử lòng đệ tử chân truyền.",
+  "en": ""
+ },
+ {
+  "vi": "Tỏa Yêu Tháp Thủ Giao",
+  "en": ""
+ },
+ {
+  "vi": "Tỏa Yêu Tháp",
+  "en": ""
+ },
+ {
+  "vi": "Giao long bị trấn dưới tháp ngàn năm, canh giữ tầng cuối.",
+  "en": ""
+ },
+ {
+  "vi": "Huyết Khôi",
+  "en": ""
+ },
+ {
+  "vi": "Huyết Trì Ngoại Đường",
+  "en": ""
+ },
+ {
+  "vi": "Xác người luyện thành khôi lỗi, huyết nô dùng để tập giết.",
+  "en": ""
+ },
+ {
+  "vi": "Bãi Xương Huyết Sát",
+  "en": ""
+ },
+ {
+  "vi": "Sói ăn xác chết trong môn, đói thì cắn cả đệ tử.",
+  "en": ""
+ },
+ {
+  "vi": "Cổ Trùng Vương",
+  "en": ""
+ },
+ {
+  "vi": "Vạn Cổ Quật",
+  "en": ""
+ },
+ {
+  "vi": "Con cổ sống sót sau khi ăn hết vạn con cổ khác.",
+  "en": ""
+ },
+ {
+  "vi": "Huyết Trì Ma Giao",
+  "en": ""
+ },
+ {
+  "vi": "Đáy Huyết Trì",
+  "en": ""
+ },
+ {
+  "vi": "Giao long nuôi bằng máu ba nghìn người, Thánh tử phải giết nó mới được công nhận.",
+  "en": ""
+ },
+ {
+  "vi": "Khôi Lỗi Cơ Quan",
+  "en": ""
+ },
+ {
+  "vi": "Cơ Quan Đường Thiên Cơ",
+  "en": ""
+ },
+ {
+  "vi": "Người gỗ bánh răng, mỗi khớp là một ám khí.",
+  "en": ""
+ },
+ {
+  "vi": "Kính Ảnh Phân Thân",
+  "en": ""
+ },
+ {
+  "vi": "Kính Các Thiên Cơ",
+  "en": ""
+ },
+ {
+  "vi": "Bóng của chính bạn bước ra từ gương, biết hết chiêu bạn sắp ra.",
+  "en": ""
+ },
+ {
+  "vi": "Cửu Cung Trận Linh",
+  "en": ""
+ },
+ {
+  "vi": "Cửu Cung Trận Thiên Cơ",
+  "en": ""
+ },
+ {
+  "vi": "Linh hồn của đại trận, đi sai một ô là trận nuốt người.",
+  "en": ""
+ },
+ {
+  "vi": "Thiên Cơ Thạch Nhân",
+  "en": ""
+ },
+ {
+  "vi": "Đỉnh Quan Tinh Đài",
+  "en": ""
+ },
+ {
+  "vi": "Tượng đá canh đài xem sao, khắc đầy thiên văn, ai đọc sai bị đá nghiền.",
+  "en": ""
+ },
+ {
+  "vi": "Hư Không Thú",
+  "en": ""
+ },
+ {
+  "vi": "Rìa Thái Hư",
+  "en": ""
+ },
+ {
+  "vi": "Thú sống trong khe nứt không gian, cắn một miếng là mất một khoảng trời.",
+  "en": ""
+ },
+ {
+  "vi": "Tinh Hà Cự Kình",
+  "en": ""
+ },
+ {
+  "vi": "Dải Ngân Hà",
+  "en": ""
+ },
+ {
+  "vi": "Cá voi bơi giữa các vì sao, hát một tiếng sao rơi như mưa.",
+  "en": ""
+ },
+ {
+  "vi": "Hỗn Độn Linh",
+  "en": ""
+ },
+ {
+  "vi": "Hỗn Độn Hải",
+  "en": ""
+ },
+ {
+  "vi": "Sinh linh từ thuở chưa có trời đất, không hình không dạng.",
+  "en": ""
+ },
+ {
+  "vi": "Thái Hư Thôn Thiên Thú",
+  "en": ""
+ },
+ {
+  "vi": "Tâm Thái Hư",
+  "en": ""
+ },
+ {
+  "vi": "Con thú nuốt cả ngày lẫn đêm, Thái Hư sinh ra là để giam nó.",
+  "en": ""
+ },
+ {
+  "vi": "Thiên Binh Tuần Tra",
+  "en": ""
+ },
+ {
+  "vi": "Nam Thiên Môn",
+  "en": ""
+ },
+ {
+  "vi": "Lính tuần của Thiên đình, thấy tiên nhân mới lên là hạch hỏi.",
+  "en": ""
+ },
+ {
+  "vi": "Cửu Thiên Lôi Thú",
+  "en": ""
+ },
+ {
+  "vi": "Lôi Trì",
+  "en": ""
+ },
+ {
+  "vi": "Thú nuôi của Lôi Bộ, lông dựng lên là sét giáng.",
+  "en": ""
+ },
+ {
+  "vi": "Côn Bằng Thiên Ngoại",
+  "en": ""
+ },
+ {
+  "vi": "Bắc Minh Thiên Hải",
+  "en": ""
+ },
+ {
+  "vi": "Cá Côn hóa chim Bằng, một cánh che nửa bầu trời tiên giới.",
+  "en": ""
+ },
+ {
+  "vi": "Thái Cổ Kim Long",
+  "en": ""
+ },
+ {
+  "vi": "Long Cung Thiên Thượng",
+  "en": ""
+ },
+ {
+  "vi": "Kim long từ thuở khai thiên, vảy rụng một mảnh cũng thành thần binh.",
+  "en": ""
+ },
+ {
+  "vi": "Huyết Ma Binh",
+  "en": ""
+ },
+ {
+  "vi": "Ma Thành Ngoại Ô",
+  "en": ""
+ },
+ {
+  "vi": "Lính ma sinh ra từ huyết hải, chết rồi lại mọc lên.",
+  "en": ""
+ },
+ {
+  "vi": "Địa Ngục Tam Đầu Khuyển",
+  "en": ""
+ },
+ {
+  "vi": "Cửa Cửu U",
+  "en": ""
+ },
+ {
+  "vi": "Chó ba đầu canh cửa Cửu U, đầu nào cũng phun lửa.",
+  "en": ""
+ },
+ {
+  "vi": "Cửu U Ma Bằng",
+  "en": ""
+ },
+ {
+  "vi": "Bầu trời Ma giới",
+  "en": ""
+ },
+ {
+  "vi": "Chim ma cánh đen, bay qua đâu ma khí phủ đó.",
+  "en": ""
+ },
+ {
+  "vi": "Diệt Thế Ma Long",
+  "en": ""
+ },
+ {
+  "vi": "Đáy Huyết Hải",
+  "en": ""
+ },
+ {
+  "vi": "Ma long nuốt ba thế giới, Ma Đế cũng phải kiêng dè.",
+  "en": ""
+ },
+ {
+  "vi": "Huyết Ma Lão Tổ",
+  "en": ""
+ },
+ {
+  "vi": "Tổng đàn Huyết Sát Môn",
+  "en": ""
+ },
+ {
+  "vi": "Ma đầu sống qua ba lần thiên kiếp, giết người như ngóe.",
+  "en": ""
+ },
+ {
+  "vi": "Thái Thượng Kiếm Tôn",
+  "en": ""
+ },
+ {
+  "vi": "Đỉnh Thanh Vân",
+  "en": ""
+ },
+ {
+  "vi": "Đệ nhất kiếm tiên chính đạo, một kiếm phá vạn pháp.",
+  "en": ""
+ },
+ {
+  "vi": "Tinh Anh ",
+  "en": ""
+ },
+ {
+  "vi": "Yêu Vương ",
+  "en": ""
+ },
+ {
+  "vi": "Yêu Thánh ",
+  "en": ""
+ },
+ {
+  "vi": "Cao Thủ ",
+  "en": ""
+ },
+ {
+  "vi": "Tông Sư ",
+  "en": ""
+ },
+ {
+  "vi": "Đại Tông Sư ",
+  "en": ""
+ },
+ {
+  "vi": "Dễ",
+  "en": ""
+ },
+ {
+  "vi": "Vừa sức",
+  "en": ""
+ },
+ {
+  "vi": "Nguy hiểm",
+  "en": ""
+ },
+ {
+  "vi": "Tử địa",
+  "en": ""
+ },
+ {
+  "vi": "Lần đầu hạ được {0} ở {1}. Lĩnh ngộ được cách đánh của nó (+{2} tu vi).",
+  "ph": [
+   "m.name",
+   "m.place",
+   "bonus"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "Trảm {0}",
+  "ph": [
+   "n"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "Đã trảm {0} {1}. Chiến kỹ tinh thông hơn (+{2} tu vi).",
+  "ph": [
+   "n",
+   "m.name",
+   "bonus"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "{0} rơi ra thêm một {1}. Bạn đã có rồi nên bán được {2} linh thạch.",
+  "ph": [
+   "m.name",
+   "it.name",
+   "sell"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "{0} rơi ra {1}! ({2}) Mở Túi đồ để mặc.",
+  "ph": [
+   "m.name",
+   "it.name",
+   "fxText(it.fx)"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "Bị săn quá nhiều, loài {0} tiến hóa thành {1} (Lv{2})! Chúng mạnh lên nhanh hơn bạn.",
+  "ph": [
+   "m.name",
+   "monsterName(c, m)",
+   "effLv(c, m)"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "Đã trảm 100 con {0}. Giang hồ gọi bạn là khắc tinh của chúng.",
+  "ph": [
+   "m.name"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "Yêu đan!",
+  "en": ""
+ },
+ {
+  "vi": "{0} rơi ra một viên yêu đan, nuốt vào tu vi tăng vọt.",
+  "ph": [
+   "m.name"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "+Trúc Cơ Đan",
+  "en": ""
+ },
+ {
+  "vi": "+Tụ Khí Đan",
+  "en": ""
+ },
+ {
+  "vi": "+Hồi Xuân Đan",
+  "en": ""
+ },
+ {
+  "vi": "Ngũ Hành Phù",
+  "en": ""
+ },
+ {
+  "vi": "{0} rơi ra một tấm Ngũ Hành Phù ({1}/3). Trên Ngũ Hành Đài, phù đổi bản mệnh của bạn sang hệ khắc bóng trong một vòng.",
+  "ph": [
+   "m.name",
+   "c.phu"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "Phàm",
+  "en": ""
+ },
+ {
+  "vi": "Tốt",
+  "en": ""
+ },
+ {
+  "vi": "Hiếm",
+  "en": ""
+ },
+ {
+  "vi": "Cực phẩm",
+  "en": ""
+ },
+ {
+  "vi": "{0} rơi ra {1} {2}, bạn đã có rồi nên đem bán được {3} linh thạch.",
+  "ph": [
+   "m.name",
+   "tag",
+   "it.name",
+   "sell"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "Cực phẩm: {0}",
+  "ph": [
+   "it.name"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "Lục được trên xác {0} một {1} cũ kỹ {2}. ({3})",
+  "ph": [
+   "m.name",
+   "it.name",
+   "tag",
+   "fxText(it.fx)"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "{0} rơi ra {1} {2}{3} ({4}) Mở Túi đồ để mặc.",
+  "ph": [
+   "m.name",
+   "tag",
+   "it.name",
+   "rare >= 2 ? '!' : '.'",
+   "fxText(it.fx)"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "Huyết Ma Lão Tổ chỉ khẽ búng tay. Máu trong người bạn sôi lên rồi nổ tung. Bạn chết ở tổng đàn Huyết Sát Môn.",
+  "en": ""
+ },
+ {
+  "vi": "Thái Thượng Kiếm Tôn không rút kiếm, chỉ một đạo kiếm ý đã chém bạn làm đôi. Bạn chết dưới chân đỉnh Thanh Vân.",
+  "en": ""
+ },
+ {
+  "vi": "Bạn không biết lượng sức.{0}",
+  "ph": [
+   "f"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "Huyết Ma Lão Tổ cười khẩy, hút đi một phần tu vi rồi ném bạn ra khỏi tổng đàn. Bạn trọng thương, may còn giữ được mạng.{0}",
+  "ph": [
+   "f ?? ''"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "Kiếm Tôn thu kiếm: \"Còn trẻ, đừng phí mạng.\" Kiếm khí phế mất một phần tu vi của bạn. Bạn trọng thương trở về.{0}",
+  "ph": [
+   "f ?? ''"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "Bạn thua {0}, may có người qua đường kịp xua nó đi. Bạn được cõng về, trọng thương nhưng còn sống.",
+  "ph": [
+   "m.name"
+  ],
+  "en": ""
+ },
+ {
+  "vi": "Trừ yêu thất bại.{0}",
+  "ph": [
+   "f"
+  ],
+  "en": ""
+ }
+]

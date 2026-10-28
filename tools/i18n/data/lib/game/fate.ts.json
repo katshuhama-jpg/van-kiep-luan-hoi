@@ -1,0 +1,146 @@
+[
+ {
+  "vi": "Thấy bạn hiền lành nhịn nhục, đám côn đồ đầu làng chặn đường lấy {0} linh thạch, còn đánh cho một trận nhừ tử.{1}",
+  "ph": [
+   "lost",
+   "t"
+  ],
+  "en": "Seeing how meek and long-suffering you are, the village thugs block your way, take {0} spirit stones and beat you black and blue.{1}"
+ },
+ {
+  "vi": "Nhà giàu mất trộm, thấy bạn hiền không dám cãi nên đổ hết tội lên đầu. Bạn bị đánh ba mươi trượng, bồi thường gần hết của cải.{0}",
+  "ph": [
+   "t"
+  ],
+  "en": "A rich family is robbed, and since you're too meek to argue, they pin it all on you. You get thirty strokes of the cane and pay back nearly everything you own.{0}"
+ },
+ {
+  "vi": "Sát thủ nhận nhầm người. Một mũi tên tẩm độc bay ra từ bóng tối. Bạn chết mà không biết vì sao.",
+  "en": "An assassin mistakes you for someone else. A poisoned arrow flies from the shadows. You die without ever knowing why."
+ },
+ {
+  "vi": "Đêm khuya, sát thủ nhận nhầm bạn là mục tiêu. Bạn trúng một đao, may mà kêu cứu kịp.{0}{1}",
+  "ph": [
+   "t",
+   "f ?? ''"
+  ],
+  "en": "Late at night, an assassin mistakes you for his target. You take a blade, but luckily cry for help in time.{0}{1}"
+ },
+ {
+  "vi": "Đồng môn thấy bạn hiền, lén hút trộm linh khí trong lúc bạn tọa thiền. Tu vi tụt mất ba phần.{0}",
+  "ph": [
+   "t"
+  ],
+  "en": "A fellow disciple, seeing how meek you are, secretly siphons your spirit qi while you meditate. You lose three-tenths of your cultivation.{0}"
+ },
+ {
+  "vi": "Người quen mượn {0} linh thạch, thề sống thề chết sẽ trả. Hôm sau hắn bỏ trốn khỏi trấn. Bạn tức đến mất ngủ.",
+  "ph": [
+   "lost"
+  ],
+  "en": "An acquaintance borrows {0} spirit stones, swearing on his life to repay. The next day he flees town. You're so furious you can't sleep."
+ },
+ {
+  "vi": "Hai phe giao chiến, chẳng ai thèm hỏi ý kiến người đứng giữa. Bạn bị đẩy ra làm bia đỡ đạn và không bao giờ về nữa.",
+  "en": "Two factions clash, and nobody bothers asking the one caught in the middle. You're shoved forward as cannon fodder and never come back."
+ },
+ {
+  "vi": "Bạn hiền quá nên bị sai đi đầu khi môn phái đánh nhau. Mình đầy thương tích mới lết được về.{0}{1}",
+  "ph": [
+   "t",
+   "f ?? ''"
+  ],
+  "en": "You're so meek they send you in first when the sect goes to war. You crawl back covered in wounds.{0}{1}"
+ },
+ {
+  "vi": "Ăn bánh trôi vội quá, bạn bị nghẹn. Tu tiên cả đời, chết vì một viên bánh.",
+  "en": "You eat your rice balls too fast and choke. A lifetime of cultivation, killed by a dumpling."
+ },
+ {
+  "vi": "Đang ăn thì nghẹn, trợn mắt mãi mới khạc ra được.{0}{1}",
+  "ph": [
+   "t",
+   "f ?? ''"
+  ],
+  "en": "You choke mid-meal, eyes bulging, before finally coughing it up.{0}{1}"
+ },
+ {
+  "vi": "Trời mưa trơn, bạn trượt chân ngã xuống giếng. Sáng hôm sau người ta mới vớt lên.",
+  "en": "The rain makes everything slick; you slip and fall into a well. They only fish you out the next morning."
+ },
+ {
+  "vi": "Trời mưa trơn, bạn trượt chân ngã gãy tay.{0}{1}",
+  "ph": [
+   "t",
+   "f ?? ''"
+  ],
+  "en": "The rain makes everything slick; you slip and break your arm.{0}{1}"
+ },
+ {
+  "vi": "Một con rắn lục đuôi đỏ cắn vào gót chân. Độc lan nhanh hơn bạn chạy.",
+  "en": "A red-tailed green viper bites your heel. The venom spreads faster than you can run."
+ },
+ {
+  "vi": "Bị rắn cắn, sốt mê man ba ngày.{0}{1}",
+  "ph": [
+   "t",
+   "f ?? ''"
+  ],
+  "en": "Bitten by a snake, you lie in a fever for three days.{0}{1}"
+ },
+ {
+  "vi": "Ăn phải nấm lạ trong rừng, nôn mửa cả tuần.{0}",
+  "ph": [
+   "t"
+  ],
+  "en": "You eat a strange mushroom in the forest and throw up for a week.{0}"
+ },
+ {
+  "vi": "Người trong trấn bắt đầu xì xào: kẻ này hiền như cục đất, bắt nạt cũng chẳng dám kêu.",
+  "en": "The townsfolk start whispering: this one's as meek as a lump of dirt - bully them and they won't even squeak."
+ },
+ {
+  "vi": "Ma đạo nghe danh bạn đã lâu. Đêm ấy bảy tên sát thủ cùng ra tay, bạn chết khi đang ngồi thiền.",
+  "en": "The Demonic Path has long heard of you. That night seven assassins strike together, and you die while meditating."
+ },
+ {
+  "vi": "Ma đạo coi bạn là cái gai trong mắt, phái sát thủ đến trừ khử. Bạn đánh lui được nhưng thân mang trọng thương.{0}{1}",
+  "ph": [
+   "hurt(c, r(ctx, 25, 40), ctx)",
+   "f ?? ''"
+  ],
+  "en": "The Demonic Path sees you as a thorn in its side and sends assassins to remove you. You drive them off, but are gravely wounded.{0}{1}"
+ },
+ {
+  "vi": "Bạn ra tay cứu một cô gái giữa phố, không ngờ sau lưng ác bá là cả một bang phái. Bạn bị vây đánh đến chết.",
+  "en": "You step in to save a girl in the street, never guessing the bully has a whole gang behind him. They surround you and beat you to death."
+ },
+ {
+  "vi": "Thấy chuyện bất bình, bạn ra tay trượng nghĩa. Đồng bọn của ác bá kéo đến vây đánh, bạn trọng thương mới thoát được.{0}{1}",
+  "ph": [
+   "hurt(c, r(ctx, 20, 35), ctx)",
+   "f ?? ''"
+  ],
+  "en": "Seeing an injustice, you step in to right it. The bully's cronies swarm you, and you barely escape, gravely wounded.{0}{1}"
+ },
+ {
+  "vi": "Kẻ tiểu nhân lợi dụng lòng tốt của bạn, giả làm người gặp nạn rồi gài bẫy. Bạn mất {0} linh thạch, còn bị đâm một nhát.{1}",
+  "ph": [
+   "lost",
+   "hurt(c, r(ctx, 15, 25), ctx)"
+  ],
+  "en": "A scoundrel exploits your kindness, posing as someone in trouble to set a trap. You lose {0} spirit stones and get stabbed too.{1}"
+ },
+ {
+  "vi": "Chính tà giao tranh, bạn xung phong đi đầu. Trận ấy chính phái thắng, nhưng bạn không trở về.",
+  "en": "In the clash of righteous and evil, you volunteer for the front line. The righteous win that battle, but you never return."
+ },
+ {
+  "vi": "Chính phái triệu tập đi diệt ma, bạn là người xung phong đầu tiên. Thắng trận, nhưng bạn mang về đầy mình thương tích.{0}{1}",
+  "ph": [
+   "hurt(c, r(ctx, 25, 40), ctx)",
+   "f ?? ''"
+  ],
+  "en": "The righteous sects muster to wipe out the demons, and you're the first to volunteer. They win, but you come back riddled with wounds.{0}{1}"
+ }
+]

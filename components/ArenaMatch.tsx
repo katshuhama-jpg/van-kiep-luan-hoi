@@ -299,7 +299,7 @@ export default function ArenaMatch({ me, foe0, opp, rule, revenge, user, onDone 
                   {hand.map((e) => (
                     <button key={e} role="radio" aria-checked={sel === e} className={`af-seal ${sel === e ? 'on' : ''}`} style={{ ['--ec' as string]: ELEMENTS[e].color }} onClick={() => setSel(e)} disabled={phase !== 'idle'}>
                       <b>{EL_NAME[e]}</b>
-                      {elTag(e) && <small className={elTag(e) === 'khắc' ? 'good' : 'bad'}>{elTag(e)}</small>}
+                      {elTag(e) && <small className={intent?.elShown && elemMul(e, intent.elShown) > 1.2 ? 'good' : 'bad'}>{elTag(e)}</small>}
                     </button>
                   ))}
                 </div>

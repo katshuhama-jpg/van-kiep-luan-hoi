@@ -1,0 +1,94 @@
+[
+ {
+  "vi": "Một con quái nhỏ lao ra chặn đường.",
+  "en": "A small monster leaps out to block your path."
+ },
+ {
+  "vi": "Quái vật chặn đường! Không tránh được, phải đánh.",
+  "en": "A monster blocks the road! No way around it - you have to fight."
+ },
+ {
+  "vi": "Một con quái mạnh hơn bạn chặn đường. Nguy rồi!",
+  "en": "A monster stronger than you blocks the road. This is bad!"
+ },
+ {
+  "vi": "Thắng nhưng cũng mang thương tích (-{0} sức khỏe).",
+  "ph": [
+   "hurt"
+  ],
+  "en": "You win, but not without wounds (-{0} Health)."
+ },
+ {
+  "vi": "Trọng thương",
+  "en": "Grave wounds"
+ },
+ {
+  "vi": "Bị thương",
+  "en": "Wounded"
+ },
+ {
+  "vi": " Túi bị rách, rơi mất {0} linh thạch.",
+  "ph": [
+   "drop"
+  ],
+  "en": " Your pouch tears open and {0} spirit stones spill out."
+ },
+ {
+  "vi": "Bị {0} chặn đường giữa nơi hoang vắng. Không ai tới cứu.",
+  "ph": [
+   "m.name"
+  ],
+  "en": "Waylaid by {0} in the middle of nowhere. No one came to help."
+ },
+ {
+  "vi": "{0} chặn đường, bạn không địch nổi.{1}",
+  "ph": [
+   "m.name",
+   "f ?? ''"
+  ],
+  "en": "{0} blocks your path and you are no match for it.{1}"
+ },
+ {
+  "vi": "{0} (-{1} sức khỏe, tu vi tổn hao).{2}{3}",
+  "ph": [
+   "ambushLose(m.name, ctx.rnd)",
+   "Math.round(35 * danger)",
+   "lost",
+   "f ?? ''"
+  ],
+  "en": "{0} (-{1} Health, cultivation lost).{2}{3}"
+ },
+ {
+  "vi": "{0} Bạn rút được chút kinh nghiệm (+{1} tu vi, -{2} sức khỏe).",
+  "ph": [
+   "ambushDrawWin(m.name, ctx.rnd)",
+   "exp",
+   "hurt"
+  ],
+  "en": "{0} You take away a little experience (+{1} cultivation, -{2} Health)."
+ },
+ {
+  "vi": "{0} (-{1} sức khỏe).{2}",
+  "ph": [
+   "ambushFlee(m.name, ctx.rnd)",
+   "hurt",
+   "lost"
+  ],
+  "en": "{0} (-{1} Health).{2}"
+ },
+ {
+  "vi": "Bỏ chạy khỏi {0}, vết thương sau lưng nhiễm độc. Bạn gục xuống giữa đường.",
+  "ph": [
+   "m.name"
+  ],
+  "en": "You fled from {0}, but the wound on your back festered with poison. You collapsed by the roadside."
+ },
+ {
+  "vi": "Vết thương sau lưng mưng mủ mãi không lành, đêm nằm mơ thấy {0} đuổi theo (+tâm ma).{1}",
+  "ph": [
+   "m.name",
+   "f ?? ''"
+  ],
+  "en": "The wound on your back festers and will not heal; at night you dream of {0} giving chase (+heart demon).{1}"
+ }
+]

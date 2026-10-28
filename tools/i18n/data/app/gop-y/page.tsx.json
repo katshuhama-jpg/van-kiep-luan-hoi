@@ -1,0 +1,192 @@
+[
+ {
+  "vi": "Tính năng mới",
+  "en": "New feature"
+ },
+ {
+  "vi": "Cân bằng game",
+  "en": "Game balance"
+ },
+ {
+  "vi": "Báo lỗi",
+  "en": "Bug report"
+ },
+ {
+  "vi": "Khác",
+  "en": "Other"
+ },
+ {
+  "vi": "Đang làm",
+  "en": "In progress"
+ },
+ {
+  "vi": "Đã xong",
+  "en": "Done"
+ },
+ {
+  "vi": "Tạm gác",
+  "en": "On hold"
+ },
+ {
+  "vi": "vừa xong",
+  "en": "just now"
+ },
+ {
+  "vi": "{0} phút trước",
+  "ph": [
+   "m"
+  ],
+  "en": "{0} min ago"
+ },
+ {
+  "vi": "{0} giờ trước",
+  "ph": [
+   "h"
+  ],
+  "en": "{0}h ago"
+ },
+ {
+  "vi": "{0} ngày trước",
+  "ph": [
+   "Math.floor(h / 24)"
+  ],
+  "en": "{0}d ago"
+ },
+ {
+  "vi": "Viết dài hơn chút nhé (ít nhất 5 ký tự).",
+  "en": "Write a bit more (at least 5 characters)."
+ },
+ {
+  "vi": "Đã gửi! Cảm ơn đạo hữu đã góp ý.",
+  "en": "Sent! Thank you for the feedback, fellow Daoist."
+ },
+ {
+  "vi": "Góp ý",
+  "en": "Feature requests"
+ },
+ {
+  "vi": "Muốn game có gì, cứ viết. Nhiều người đồng ý sẽ được làm trước.",
+  "en": "Want something in the game? Write it. The most-backed ideas get built first."
+ },
+ {
+  "vi": "Viết góp ý",
+  "en": "Write a request"
+ },
+ {
+  "vi": "Loại góp ý",
+  "en": "Request type"
+ },
+ {
+  "vi": "Nội dung (",
+  "en": "Content ("
+ },
+ {
+  "vi": "vd: Thêm chức năng kết bái huynh đệ với người chơi khác",
+  "en": "e.g. Let me become sworn brothers with other players"
+ },
+ {
+  "vi": "Đang gửi...",
+  "en": "Sending..."
+ },
+ {
+  "vi": "Gửi góp ý",
+  "en": "Send request"
+ },
+ {
+  "vi": "Đăng nhập",
+  "en": "Log in"
+ },
+ {
+  "vi": " để viết góp ý và bấm đồng ý. Khách vẫn xem được.",
+  "en": " to write requests and vote. Guests can still browse."
+ },
+ {
+  "vi": "Trạng thái",
+  "en": "Status"
+ },
+ {
+  "vi": "Đã giải quyết",
+  "en": "Resolved"
+ },
+ {
+  "vi": "Chưa giải quyết",
+  "en": "Unresolved"
+ },
+ {
+  "vi": "Tất cả",
+  "en": "All"
+ },
+ {
+  "vi": "Mọi loại",
+  "en": "All types"
+ },
+ {
+  "vi": "Sắp xếp",
+  "en": "Sort"
+ },
+ {
+  "vi": "Nhiều đồng ý",
+  "en": "Most votes"
+ },
+ {
+  "vi": "Mới nhất",
+  "en": "Newest"
+ },
+ {
+  "vi": "Đang tải...",
+  "en": "Loading..."
+ },
+ {
+  "vi": "Chưa có góp ý nào được giải quyết ở mục này.",
+  "en": "No resolved requests in this category yet."
+ },
+ {
+  "vi": "Mọi góp ý ở mục này đã được giải quyết.",
+  "en": "Every request in this category has been resolved."
+ },
+ {
+  "vi": "Chưa có góp ý nào. Hãy là người đầu tiên!",
+  "en": "No requests yet. Be the first!"
+ },
+ {
+  "vi": "Đã đồng ý, {0} phiếu",
+  "ph": [
+   "f.votes"
+  ],
+  "en": "Voted, {0} votes"
+ },
+ {
+  "vi": "Đồng ý, hiện {0} phiếu",
+  "ph": [
+   "f.votes"
+  ],
+  "en": "Vote, {0} so far"
+ },
+ {
+  "vi": " (bạn)",
+  "en": " (you)"
+ },
+ {
+  "vi": "Thiên",
+  "en": "Heaven"
+ },
+ {
+  "vi": "Đạo",
+  "en": "Dao"
+ },
+ {
+  "vi": "Thiên Đạo hồi đáp",
+  "en": "The Heavenly Dao replies"
+ },
+ {
+  "vi": " · bản {0}",
+  "ph": [
+   "f.reply_ver"
+  ],
+  "en": " · version {0}"
+ },
+ {
+  "vi": "Xem cáo thị bản ",
+  "en": "See the proclamation for version "
+ }
+]

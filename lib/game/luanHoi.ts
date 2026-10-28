@@ -119,7 +119,7 @@ export function honPillCost(base: number, used: number, danTu = false): number {
 export const DAN_TU_DISCOUNT = 0.7;
 export const pastDanTu = (m: Meta | null | undefined) => {
   const p = m?.past?.path;
-  return p === 'dan' || p === 'Đan tu';
+  return p === 'dan' || p === 'Đan tu' || p === 'Alchemist';
 };
 /** Cộng Hồn lực (không quá tối đa), tính từ mức hiện tại */
 export function addHon(m: Meta, amount: number, now: number): Meta {

@@ -1,0 +1,580 @@
+[
+ {
+  "vi": "vừa xong",
+  "en": "just now"
+ },
+ {
+  "vi": "{0} phút trước",
+  "ph": [
+   "m"
+  ],
+  "en": "{0} min ago"
+ },
+ {
+  "vi": "{0} giờ trước",
+  "ph": [
+   "h"
+  ],
+  "en": "{0}h ago"
+ },
+ {
+  "vi": "{0} ngày trước",
+  "ph": [
+   "Math.round(h / 24)"
+  ],
+  "en": "{0}d ago"
+ },
+ {
+  "vi": "Không tìm thấy người này.",
+  "en": "Couldn't find this person."
+ },
+ {
+  "vi": "Số linh thạch không hợp lệ.",
+  "en": "Invalid amount of spirit stones."
+ },
+ {
+  "vi": "Bạn làm việc này quá nhiều, đợi một lúc nữa.",
+  "en": "You're doing this too often - wait a while."
+ },
+ {
+  "vi": "Bạn đã gửi chiến thư cho người này rồi, đợi họ trả lời.",
+  "en": "You've already challenged this person. Wait for their reply."
+ },
+ {
+  "vi": "Hai người đã là huynh đệ.",
+  "en": "You two are already sworn brothers."
+ },
+ {
+  "vi": "Lời mời không còn nữa.",
+  "en": "This invitation no longer exists."
+ },
+ {
+  "vi": "Mạng chập chờn, thử lại sau.",
+  "en": "Connection is shaky, try again later."
+ },
+ {
+  "vi": "Cần đăng nhập.",
+  "en": "Login required."
+ },
+ {
+  "vi": "@{0} hồi âm: \"{1}\"",
+  "ph": [
+   "api.user.username",
+   "note.trim()"
+  ],
+  "en": "@{0} replies: \"{1}\""
+ },
+ {
+  "vi": "Hai người cùng mời nhau, nay đã thành huynh đệ kết nghĩa với @{0}.",
+  "ph": [
+   "who"
+  ],
+  "en": "You both invited each other - you are now sworn brothers with @{0}."
+ },
+ {
+  "vi": "Không làm được.",
+  "en": "Couldn't do that."
+ },
+ {
+  "vi": "Nhắn kèm (không bắt buộc): vd Lần sau gặp lại, ta không nương tay",
+  "en": "Attach a note (optional): e.g. Next time we meet, I won't hold back"
+ },
+ {
+  "vi": "Kết thân",
+  "en": "Befriend"
+ },
+ {
+  "vi": "Đã gửi lời kết nghĩa tới @{0}. Họ nhận lời thì hai người thành huynh đệ.",
+  "ph": [
+   "who"
+  ],
+  "en": "Sworn-brother invite sent to @{0}. If they accept, you become sworn brothers."
+ },
+ {
+  "vi": "Gặp nhau thì trà luôn thật, hay ra tay trợ giúp khi bị đánh úp, hôm nào cùng chơi tu luyện thêm 5%",
+  "en": "Their tea is always real when you meet, they often help when you're ambushed, and on days you both play you cultivate 5% faster"
+ },
+ {
+  "vi": "Đã mời kết nghĩa",
+  "en": "Invite sent"
+ },
+ {
+  "vi": "Kết nghĩa",
+  "en": "Become sworn brothers"
+ },
+ {
+  "vi": "Đã gửi lời hòa giải. Ân oán với @{0} xóa bỏ, đạo tâm bạn sáng thêm.",
+  "ph": [
+   "who"
+  ],
+  "en": "Peace offering sent. Your grudge with @{0} is erased, and your Dao Heart grows brighter."
+ },
+ {
+  "vi": "Hòa giải",
+  "en": "Make peace"
+ },
+ {
+  "vi": "Đã gửi hồi âm.",
+  "en": "Reply sent."
+ },
+ {
+  "vi": "Chỉ gửi lời",
+  "en": "Just send words"
+ },
+ {
+  "vi": "Kết oán",
+  "en": "Make an enemy"
+ },
+ {
+  "vi": "Đã ghi thù @{0}. Lần tới gặp trong giang hồ có thể báo thù.",
+  "ph": [
+   "who"
+  ],
+  "en": "Marked @{0} as an enemy. Next time you meet in the jianghu, you can take revenge."
+ },
+ {
+  "vi": "Đã ghi thù",
+  "en": "Marked as enemy"
+ },
+ {
+  "vi": "Ghi thù",
+  "en": "Mark as enemy"
+ },
+ {
+  "vi": "Đã gửi thư khiêu khích. Lần tới chạm mặt @{0}, thắng thua đều gấp rưỡi.",
+  "ph": [
+   "who"
+  ],
+  "en": "Taunt sent. Next time you face @{0}, wins and losses both count one and a half times."
+ },
+ {
+  "vi": "Khiêu khích",
+  "en": "Taunt"
+ },
+ {
+  "vi": "Treo thưởng",
+  "en": "Bounty"
+ },
+ {
+  "vi": "⚔ Hạ chiến thư",
+  "en": "⚔ Issue a challenge"
+ },
+ {
+  "vi": "Treo thưởng lấy đầu, ai hạ được bóng của họ sẽ lĩnh hết:",
+  "en": "Put a price on their head - whoever defeats their shadow claims it all:"
+ },
+ {
+  "vi": "Hẹn đấu có cược. Họ nhận lời thì hai bóng tự đấu, kẻ thắng lấy cả hai phần cược:",
+  "en": "A duel with stakes. If they accept, your two shadows fight it out and the winner takes both stakes:"
+ },
+ {
+  "vi": "Cần một nhân vật đang sống để bỏ linh thạch.",
+  "en": "You need a living character to put up spirit stones."
+ },
+ {
+  "vi": "Treo thưởng lấy đầu @{0}",
+  "ph": [
+   "who"
+  ],
+  "en": "Put a bounty on @{0}'s head"
+ },
+ {
+  "vi": "Đặt cược chiến thư với @{0}",
+  "ph": [
+   "who"
+  ],
+  "en": "Stake a challenge against @{0}"
+ },
+ {
+  "vi": "Hoàn lại linh thạch",
+  "en": "Refund spirit stones"
+ },
+ {
+  "vi": "Đã treo {0} linh thạch lấy đầu @{1} trên Bảng truy nã.",
+  "ph": [
+   "n",
+   "who"
+  ],
+  "en": "Posted a {0} spirit stone bounty on @{1}'s head on the Wanted Board."
+ },
+ {
+  "vi": "Đã gửi chiến thư{0}. Chờ @{1} trả lời.",
+  "ph": [
+   "n ? `, cược ${n} linh thạch` : ''",
+   "who"
+  ],
+  "en": "Challenge sent{0}. Waiting for @{1} to reply."
+ },
+ {
+  "vi": ", cược {0} linh thạch",
+  "ph": [
+   "n"
+  ],
+  "en": ", staking {0} spirit stones"
+ },
+ {
+  "vi": "{0} linh thạch",
+  "ph": [
+   "n"
+  ],
+  "en": "{0} spirit stones"
+ },
+ {
+  "vi": "Không cược",
+  "en": "No stake"
+ },
+ {
+  "vi": "Đã kết nghĩa kim lan với @{0}.",
+  "ph": [
+   "from"
+  ],
+  "en": "You are now sworn brothers with @{0}."
+ },
+ {
+  "vi": "Nhận lời kết nghĩa",
+  "en": "Accept the oath"
+ },
+ {
+  "vi": "Đã từ chối.",
+  "en": "Declined."
+ },
+ {
+  "vi": "Từ chối",
+  "en": "Decline"
+ },
+ {
+  "vi": "Xem chiến thư",
+  "en": "View challenge"
+ },
+ {
+  "vi": "📜 Gửi chiến thư",
+  "en": "📜 Send a challenge"
+ },
+ {
+  "vi": "Hồi âm ▾",
+  "en": "Reply ▾"
+ },
+ {
+  "vi": "đang chờ trả lời",
+  "en": "awaiting reply"
+ },
+ {
+  "vi": "bị từ chối, đã hoàn cược",
+  "en": "declined, stake refunded"
+ },
+ {
+  "vi": "bạn đã từ chối",
+  "en": "you declined"
+ },
+ {
+  "vi": "hòa, hoàn cược",
+  "en": "draw, stake refunded"
+ },
+ {
+  "vi": "bạn thắng{0}",
+  "ph": [
+   "ch.stake ? `, +${ch.stake * 2} linh thạch` : ''"
+  ],
+  "en": "you won{0}"
+ },
+ {
+  "vi": ", +{0} linh thạch",
+  "ph": [
+   "ch.stake * 2"
+  ],
+  "en": ", +{0} spirit stones"
+ },
+ {
+  "vi": "bạn thua",
+  "en": "you lost"
+ },
+ {
+  "vi": "Gửi @{0}",
+  "ph": [
+   "other"
+  ],
+  "en": "To @{0}"
+ },
+ {
+  "vi": "Từ @{0}",
+  "ph": [
+   "other"
+  ],
+  "en": "From @{0}"
+ },
+ {
+  "vi": " · cược {0}",
+  "ph": [
+   "ch.stake"
+  ],
+  "en": " · stake {0}"
+ },
+ {
+  "vi": "Cần một nhân vật đang sống để nhận chiến thư.",
+  "en": "You need a living character to accept a challenge."
+ },
+ {
+  "vi": "Không đủ {0} linh thạch để theo cược.",
+  "ph": [
+   "ch.stake"
+  ],
+  "en": "Not enough spirit stones to match the {0} stake."
+ },
+ {
+  "vi": "Không tìm thấy bóng của đối thủ.",
+  "en": "Couldn't find your opponent's shadow."
+ },
+ {
+  "vi": "{0} và {1} đấu {2} hiệp, bất phân thắng bại.",
+  "ph": [
+   "me.name",
+   "foe.name",
+   "sim.rounds"
+  ],
+  "en": "{0} and {1} fought {2} rounds with no victor."
+ },
+ {
+  "vi": "{0} (@{1}) thắng sau {2} hiệp, còn {3}% sinh lực.",
+  "ph": [
+   "sim.result === 'win' ? me.name : foe.name",
+   "winner",
+   "sim.rounds",
+   "sim.result === 'win' ? sim.hpMe : sim.hpFoe"
+  ],
+  "en": "{0} (@{1}) wins after {2} rounds with {3}% HP left."
+ },
+ {
+  "vi": "Chiến thư không còn hiệu lực.",
+  "en": "This challenge is no longer valid."
+ },
+ {
+  "vi": " Bạn lấy {0} linh thạch.",
+  "ph": [
+   "ch.stake * 2"
+  ],
+  "en": " You take {0} spirit stones."
+ },
+ {
+  "vi": " gửi chiến thư",
+  "en": " sends you a challenge"
+ },
+ {
+  "vi": "Nhận lời thì bóng hai bên tự đấu 5 hiệp. Từ chối thì bị gắn tiếng \"Kẻ né chiến\" một ngày.",
+  "en": "Accept and both shadows fight 5 rounds on their own. Decline and you're branded \"Duel Dodger\" for a day."
+ },
+ {
+  "vi": "Nhận lời",
+  "en": "Accept"
+ },
+ {
+  "vi": "Bạn đã từ chối. Giang hồ gọi bạn là kẻ né chiến trong một ngày.",
+  "en": "You declined. The jianghu calls you a duel dodger for a day."
+ },
+ {
+  "vi": "Báo thù ",
+  "en": "Revenge across "
+ },
+ {
+  "vi": " đời",
+  "en": " lives"
+ },
+ {
+  "vi": "Khác ▾",
+  "en": "More ▾"
+ },
+ {
+  "vi": "Cần một nhân vật đang sống để truy sát.",
+  "en": "You need a living character to hunt someone down."
+ },
+ {
+  "vi": "Cần {0} linh thạch để thuê người dò tung tích.",
+  "ph": [
+   "HUNT_COST"
+  ],
+  "en": "You need {0} spirit stones to hire a tracker."
+ },
+ {
+  "vi": "Không dò ra tung tích của @{0}.",
+  "ph": [
+   "who"
+  ],
+  "en": "Couldn't pick up @{0}'s trail."
+ },
+ {
+  "vi": "Thuê người dò tung tích @{0}",
+  "ph": [
+   "who"
+  ],
+  "en": "Hire a tracker for @{0}"
+ },
+ {
+  "vi": "Người dò tin đã lên đường. Trong vòng một năm, bạn sẽ chạm mặt {0} (@{1}). Thắng được thưởng gấp đôi và lấy lại đồ bị cướp.",
+  "ph": [
+   "rival.name",
+   "who"
+  ],
+  "en": "The tracker is on the move. Within a year you will cross paths with {0} (@{1}). Win for a double reward and get back what was stolen."
+ },
+ {
+  "vi": "Giang hồ",
+  "en": "Jianghu"
+ },
+ {
+  "vi": "Thư",
+  "en": "Letters"
+ },
+ {
+  "vi": "Ân oán",
+  "en": "Grudges"
+ },
+ {
+  "vi": "Truy nã",
+  "en": "Wanted"
+ },
+ {
+  "vi": "Giang hồ yên ắng, chưa ai nhắc tới bạn.",
+  "en": "The jianghu is quiet. No one has mentioned you yet."
+ },
+ {
+  "vi": "Lúc bạn vắng mặt, bóng nhân vật của bạn vẫn lang bạt giang hồ. Bấm Hồi âm để kết thân hay kết oán.",
+  "en": "While you're away, your character's shadow still roams the jianghu. Tap Reply to make friends or enemies."
+ },
+ {
+  "vi": "☠ Đầu bạn đang bị treo ",
+  "en": "☠ There's a bounty on your head: "
+ },
+ {
+  "vi": " linh thạch.",
+  "en": " spirit stones."
+ },
+ {
+  "vi": "Ai hạ được bóng của bạn sẽ lĩnh thưởng. Bỏ ra đúng số đó để chuộc lệnh truy nã.",
+  "en": "Whoever defeats your shadow claims the reward. Pay the same amount to buy off the warrant."
+ },
+ {
+  "vi": "Chuộc lệnh truy nã",
+  "en": "Buy off the warrant"
+ },
+ {
+  "vi": "Lệnh truy nã trên đầu bạn đã được gỡ.",
+  "en": "The warrant on your head has been lifted."
+ },
+ {
+  "vi": "Chuộc lệnh (",
+  "en": "Buy off ("
+ },
+ {
+  "vi": " linh thạch)",
+  "en": " spirit stones)"
+ },
+ {
+  "vi": "Chiến thư",
+  "en": "Challenges"
+ },
+ {
+  "vi": "Lời mời kết nghĩa",
+  "en": "Sworn-brother invites"
+ },
+ {
+  "vi": " muốn kết nghĩa kim lan với bạn.",
+  "en": " wants to become your sworn brother."
+ },
+ {
+  "vi": "Đã kết nghĩa với @{0}. Từ nay có phúc cùng hưởng, có họa cùng chịu.",
+  "ph": [
+   "p"
+  ],
+  "en": "Sworn brothers with @{0}. From now on, you share fortune and misfortune alike."
+ },
+ {
+  "vi": "Huynh đệ kết nghĩa",
+  "en": "Sworn brothers"
+ },
+ {
+  "vi": "Chưa kết nghĩa với ai. Huynh đệ gặp nhau thì trà luôn là trà thật, hay ra tay trợ giúp khi bạn bị đánh úp, và hôm nào cùng vào chơi thì tu luyện nhanh thêm 5%.",
+  "en": "No sworn brothers yet. Their tea is always real when you meet, they often help when you're ambushed, and on days you both play you cultivate 5% faster."
+ },
+ {
+  "vi": "Hôm nay có vào chơi: bạn tu luyện nhanh thêm 5%",
+  "en": "Played today: you cultivate 5% faster"
+ },
+ {
+  "vi": "Hôm nay chưa thấy mặt",
+  "en": "Not seen today"
+ },
+ {
+  "vi": "Đã cắt nghĩa với @{0}.",
+  "ph": [
+   "p"
+  ],
+  "en": "Cut ties with @{0}."
+ },
+ {
+  "vi": "Cắt nghĩa",
+  "en": "Cut ties"
+ },
+ {
+  "vi": "Sổ thù",
+  "en": "Grudge book"
+ },
+ {
+  "vi": "Sổ thù trống. Ai hại bạn sẽ được ghi vào đây.",
+  "en": "Your grudge book is empty. Anyone who wrongs you will be written here."
+ },
+ {
+  "vi": "Người dò tin đang lần theo dấu, sắp chạm mặt",
+  "en": "The tracker is on their trail - you'll cross paths soon"
+ },
+ {
+  "vi": "Bỏ linh thạch thuê người dò tung tích, năm sau chắc chắn chạm mặt",
+  "en": "Spend spirit stones on a tracker, guaranteed to meet them next year"
+ },
+ {
+  "vi": "Truy sát (",
+  "en": "Hunt down ("
+ },
+ {
+  "vi": "Kẻ đang thù bạn",
+  "en": "Holding a grudge against you"
+ },
+ {
+  "vi": "Bảng truy nã",
+  "en": "Wanted Board"
+ },
+ {
+  "vi": "Chưa ai bị treo thưởng. Mở thư hoặc sổ thù, chọn Treo thưởng để treo đầu kẻ thù.",
+  "en": "No bounties yet. Open a letter or your grudge book and choose Bounty to put a price on an enemy's head."
+ },
+ {
+  "vi": " lệnh · treo bởi ",
+  "en": " warrants · posted by "
+ },
+ {
+  "vi": "Gặp kẻ bị truy nã trong giang hồ và hạ được bóng của họ, bạn lĩnh toàn bộ tiền thưởng.",
+  "en": "Meet a wanted cultivator in the jianghu and defeat their shadow to claim the entire bounty."
+ },
+ {
+  "vi": "Chưa có cặp oan gia nào.",
+  "en": "No sworn rivals yet."
+ },
+ {
+  "vi": " và ",
+  "en": " and "
+ },
+ {
+  "vi": " trận · ",
+  "en": " fights · "
+ },
+ {
+  "vi": " thắng, ",
+  "en": " wins, "
+ },
+ {
+  "vi": " thua, ",
+  "en": ""
+ },
+ {
+  "vi": " hòa",
+  "en": " draws"
+ }
+]

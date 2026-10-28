@@ -1,0 +1,130 @@
+[
+ {
+  "vi": "Kiếp ",
+  "en": "Life "
+ },
+ {
+  "vi": " tuổi · ",
+  "en": " years old · "
+ },
+ {
+  "vi": "Đã thành Ma Tôn",
+  "en": "Became a Demon Sovereign"
+ },
+ {
+  "vi": "Đã phi thăng",
+  "en": "Ascended"
+ },
+ {
+  "vi": "Kết cục",
+  "en": "Ending"
+ },
+ {
+  "vi": "Bạn chưa từng chết như vậy",
+  "en": "You have never died like this"
+ },
+ {
+  "vi": " lời viếng · “",
+  "en": " epitaphs · “"
+ },
+ {
+  "vi": "Xem hồi ký {0}",
+  "ph": [
+   "m.char_name"
+  ],
+  "en": "Read the memoir of {0}"
+ },
+ {
+  "vi": "Xem hồi ký",
+  "en": "Read memoir"
+ },
+ {
+  "vi": "Hạ chiến thư cho {0}",
+  "ph": [
+   "m.char_name"
+  ],
+  "en": "Issue a challenge to {0}"
+ },
+ {
+  "vi": "⚔ Hạ chiến thư",
+  "en": "⚔ Issue a challenge"
+ },
+ {
+  "vi": "Thắp hương cho {0}",
+  "ph": [
+   "m.char_name"
+  ],
+  "en": "Burn incense for {0}"
+ },
+ {
+  "vi": "Thắp hương · ",
+  "en": "Incense · "
+ },
+ {
+  "vi": "Hoặc tự viết lời viếng",
+  "en": "Or write your own epitaph"
+ },
+ {
+  "vi": "Lời viếng cho {0}",
+  "ph": [
+   "m.char_name"
+  ],
+  "en": "Epitaph for {0}"
+ },
+ {
+  "vi": "Gửi",
+  "en": "Send"
+ },
+ {
+  "vi": "Tiên Trủng",
+  "en": "Immortal Tombs"
+ },
+ {
+  "vi": "Ma Trủng",
+  "en": "Demon Tombs"
+ },
+ {
+  "vi": "Hư Trủng",
+  "en": "Void Tombs"
+ },
+ {
+  "vi": "Nghĩa trang",
+  "en": "Cemetery"
+ },
+ {
+  "vi": "Nơi các kiếp đã qua yên nghỉ",
+  "en": "Where past lives rest"
+ },
+ {
+  "vi": "Mọi người",
+  "en": "Everyone"
+ },
+ {
+  "vi": "Các kiếp của tôi",
+  "en": "My lives"
+ },
+ {
+  "vi": "Đền danh nhân",
+  "en": "Hall of Fame"
+ },
+ {
+  "vi": "Đăng nhập để thắp hương và để bia của bạn hiện cho mọi người.",
+  "en": "Log in to burn incense and let everyone see your tombstones."
+ },
+ {
+  "vi": "Những ngôi mộ được giang hồ thắp hương nhiều nhất. Danh nhân được ghi tên ở đây mãi mãi.",
+  "en": "The graves the jianghu has burned the most incense at. The famous are remembered here forever."
+ },
+ {
+  "vi": "Đang dọn cỏ...",
+  "en": "Clearing the weeds..."
+ },
+ {
+  "vi": "Chưa có ngôi mộ nào. Hãy sống trọn một kiếp rồi quay lại.",
+  "en": "No graves yet. Live one full life and come back."
+ },
+ {
+  "vi": "Vào luân hồi",
+  "en": "Enter the Cycle"
+ }
+]

@@ -15,6 +15,7 @@ import { giftOf } from '@/lib/game/gacha';
 import type { BattleView } from '@/components/Battle';
 import { MONSTERS, combatLevel, effLv, fleeChance, hit, killExp, killReward, loseFight, monsterName, monsterStats, playerStats, tierOf, type Fighter } from '@/lib/game/combat';
 import { sessionDropped, signOut } from '@/lib/auth';
+import { lang, setLang } from '@/lib/i18n';
 import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, itemPrice, pillPrice, RARE_STOCK_REALM, realmLabel, realmName, soldOut, yearSpeed, youthPace } from '@/lib/game/data';
 import { genName, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick } from '@/lib/game/engine';
 import { addCult, addPill, dao, fatal, fmt, giveItem, money, reward, stat, wealthTier } from '@/lib/game/helpers';
@@ -585,9 +586,9 @@ export default function PlayPage() {
     } else if (a === 'befriend') {
       // lòng người khó đoán: 40% ám toán, 40% trở mặt ra tay, 20% thật lòng
       const out0: Fx[] = [];
-      const tr = teaTrap(c, f, makeCtx(c, out0));
-      if (tr.kind === 'tro_mat') {
-        c.log.push({ age: Math.floor(c.age), tone: 'bad', text: tr.text });
+      const trap = teaTrap(c, f, makeCtx(c, out0));
+      if (trap.kind === 'tro_mat') {
+        c.log.push({ age: Math.floor(c.age), tone: 'bad', text: trap.text });
         pushFx(out0);
         // trở mặt thành địch thủ, bạn bị đánh úp (mất trước một phần máu)
         startDuel(c, { ...f, kind: 'dich_thu', betray: true }, true);
@@ -595,8 +596,8 @@ export default function PlayPage() {
       }
       const realP = f.rival.player && !f.npc ? f.rival.player : null;
       const meName = `@${userRef.current?.username ?? ''} (${c.name})`;
-      if (tr.kind === 'am_toan') {
-        c.log.push({ age: Math.floor(c.age), tone: c.dead ? 'big' : 'bad', text: tr.text });
+      if (trap.kind === 'am_toan') {
+        c.log.push({ age: Math.floor(c.age), tone: c.dead ? 'big' : 'bad', text: trap.text });
         if (!c.dead) qmark(c, 'teaSurvive');
         if (realP) sendMail(userRef.current, realP, 'doc', `Bóng ${f.rival.name} của bạn đã bỏ độc vào trà mời ${meName}${c.dead ? '. Người ấy chết bên bàn trà.' : '.'}`).catch(() => {});
         pushFx(out0);
@@ -1740,6 +1741,15 @@ export default function PlayPage() {
             <Link className="btn" href="/cap-nhat" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
               Lịch sử cập nhật · bản {CURRENT_VERSION}
             </Link>
+            <button
+              className="btn"
+              onClick={() => {
+                persist(true);
+                setLang(lang() === 'en' ? 'vi' : 'en');
+              }}
+            >
+              {lang() === 'en' ? 'Tiếng Việt' : 'English'}
+            </button>
             <Link className="btn btn-jade" href="/gop-y" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
               Góp ý tính năng
             </Link>

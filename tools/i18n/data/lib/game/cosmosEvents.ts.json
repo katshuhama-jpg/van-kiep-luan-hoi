@@ -1,0 +1,497 @@
+[
+ {
+  "vi": "Nam Thiên Môn",
+  "en": "The Southern Heavenly Gate"
+ },
+ {
+  "vi": "Bạn vừa phi thăng, áo còn vương khói lôi kiếp. Thiên binh ở Nam Thiên Môn chặn lại: \"Tiên nhân mới lên phải ghi danh. Ngươi muốn vào bộ nào?\"",
+  "en": "You have just ascended, robes still wreathed in tribulation smoke. A heavenly soldier at the Southern Heavenly Gate stops you: \"Newly ascended immortals must register. Which ministry do you wish to join?\""
+ },
+ {
+  "vi": "Vào Lôi Bộ, chuyên giáng sét phạt kẻ ác",
+  "en": "Join the Ministry of Thunder, smiting the wicked"
+ },
+ {
+  "vi": "công +, đạo tâm +",
+  "en": "Attack +, Dao Heart +"
+ },
+ {
+  "vi": "Bạn nhận lệnh bài Lôi Bộ. Lần đầu cầm búa sét, tay còn run.",
+  "en": "You receive the Ministry of Thunder's token. Holding the thunder hammer for the first time, your hand still trembles."
+ },
+ {
+  "vi": "Vào Dược Viên, trông vườn tiên thảo",
+  "en": "Join the Herb Garden, tending immortal herbs"
+ },
+ {
+  "vi": "đan dược",
+  "en": "pills"
+ },
+ {
+  "vi": "Việc nhàn, lại được hái lén vài cây tiên thảo. Bạn bắt đầu thấy tiên giới cũng không tệ.",
+  "en": "An easy job, plus a few immortal herbs pocketed on the sly. You start to think the Immortal Realm isn't so bad."
+ },
+ {
+  "vi": "Không ghi danh, làm tán tiên tự do",
+  "en": "Don't register - be a free loose immortal"
+ },
+ {
+  "vi": "khí vận +, có thể bị làm khó",
+  "en": "Luck +, may be hassled"
+ },
+ {
+  "vi": "Thiên binh không vui, cho bạn một trận \"dạy dỗ\" rồi mới thả đi. Tự do cũng có giá.",
+  "en": "The heavenly soldier is not pleased and gives you a \"lesson\" before letting you go. Freedom has its price."
+ },
+ {
+  "vi": "Bạn mỉm cười đi thẳng. Tiên giới rộng lớn, đâu cũng là nhà.",
+  "en": "You smile and walk straight on. The Immortal Realm is vast; anywhere can be home."
+ },
+ {
+  "vi": "Bàn Đào hội",
+  "en": "The Peach Banquet"
+ },
+ {
+  "vi": "Tây Vương Mẫu mở Bàn Đào hội. Đào ba nghìn năm mới chín một lần, ăn một quả thọ thêm vạn tuổi. Bạn không có thiệp mời.",
+  "en": "The Queen Mother of the West is holding the Peach Banquet. The peaches ripen once every three thousand years, and one adds ten thousand years of life. You have no invitation."
+ },
+ {
+  "vi": "Xin làm người hầu rượu để vào",
+  "en": "Sign on as a wine server to get in"
+ },
+ {
+  "vi": "thọ nguyên +, an toàn",
+  "en": "lifespan +, safe"
+ },
+ {
+  "vi": "Bạn bưng rượu suốt ba ngày, cuối buổi được thưởng nửa quả đào. Thọ nguyên thêm 30 năm.",
+  "en": "You serve wine for three days and are rewarded half a peach at the end. Lifespan +30 years."
+ },
+ {
+  "vi": "Lẻn vào vườn đào hái trộm",
+  "en": "Sneak into the orchard and steal some"
+ },
+ {
+  "vi": "thọ nguyên ++, rủi ro lớn",
+  "en": "lifespan ++, high risk"
+ },
+ {
+  "vi": "Bạn nuốt chửng ba quả đào chín đỏ rồi chuồn mất. Thọ nguyên thêm 80 năm, tu vi tăng vọt. Thiên đình đang truy tìm kẻ trộm.",
+  "en": "You wolf down three ripe red peaches and slip away. Lifespan +80 years, cultivation soars. The Heavenly Court is hunting for the thief."
+ },
+ {
+  "vi": "Thiên binh bắt quả tang bạn trong vườn đào. Tội trộm đào tiên, chém đầu răn chúng.",
+  "en": "Heavenly soldiers catch you red-handed in the orchard. The crime of stealing immortal peaches: beheading, as a warning to all."
+ },
+ {
+  "vi": "Bạn bị bắt.",
+  "en": "You are caught."
+ },
+ {
+  "vi": "Bạn bị bắt, ăn ba trăm roi tiên trượng.{0}",
+  "ph": [
+   "f ?? ''"
+  ],
+  "en": "You are caught and take three hundred lashes of the immortal staff.{0}"
+ },
+ {
+  "vi": "Không đi, bế quan",
+  "en": "Don't go - seclusion"
+ },
+ {
+  "vi": "tu vi",
+  "en": ""
+ },
+ {
+  "vi": "Ngoài kia tiên nhạc vang trời, trong động phủ bạn chỉ nghe tiếng chân khí lưu chuyển.",
+  "en": "Outside, immortal music fills the sky; inside your cave abode, you hear only the flow of true qi."
+ },
+ {
+  "vi": "Ngoảnh lại nhân gian",
+  "en": "Looking Back at the Mortal World"
+ },
+ {
+  "vi": "Từ mép mây nhìn xuống, nhân gian đã qua {0} năm. Nơi bạn từng sống{1}. Con cháu đời sau đang gặp nạn hạn hán.",
+  "ph": [
+   "Math.max(1, Math.floor(c.age - (c.ascendAge ?? c.age)))",
+   "c.partner ? `, mộ ${c.partner} đã phủ rêu xanh` : ''"
+  ],
+  "en": "From the edge of the clouds you look down: {0} years have passed in the mortal world. The place you once lived has long changed{1}. Your distant descendants are suffering a drought."
+ },
+ {
+  "vi": ", mộ {0} đã phủ rêu xanh",
+  "ph": [
+   "c.partner"
+  ],
+  "en": ", and {0}'s grave is covered in green moss"
+ },
+ {
+  "vi": "Hạ phàm làm mưa cứu dân",
+  "en": "Descend and bring rain to save the people"
+ },
+ {
+  "vi": "đạo tâm ++, phạm thiên quy",
+  "en": "Dao Heart ++, breaks heavenly law"
+ },
+ {
+  "vi": "Tự ý hạ phàm làm mưa, phạm thiên quy, bị giáng xuống trần làm người phàm",
+  "en": "Descended without permission to bring rain, broke the laws of heaven, and was banished to live as a mortal"
+ },
+ {
+  "vi": "Giáng trần",
+  "en": "Banished"
+ },
+ {
+  "vi": "Mưa xuống, đồng ruộng xanh lại. Nhưng Thiên đình không tha. Bạn bị tước tiên tịch, giáng xuống trần. Kiếp sau, bạn sẽ đầu thai với ký ức tiên nhân.",
+  "en": "The rain falls and the fields turn green again. But the Heavenly Court shows no mercy. You are stripped of your immortal status and banished to the mortal world. Next life, you will be reborn with an immortal's memories."
+ },
+ {
+  "vi": "Mưa xuống ba ngày ba đêm. Dân làng lập miếu thờ một vị tiên không rõ tên. Thiên đình nhắm mắt cho qua.",
+  "en": "It rains for three days and three nights. The villagers build a shrine to a nameless immortal. The Heavenly Court looks the other way."
+ },
+ {
+  "vi": "Để lại một giấc mộng chỉ đường",
+  "en": "Send a guiding dream"
+ },
+ {
+  "vi": "tâm cảnh +",
+  "en": "Mind +"
+ },
+ {
+  "vi": "Đêm ấy, một đứa cháu đời thứ mười mơ thấy người mặc áo trắng chỉ về phía mạch nước ngầm.",
+  "en": "That night, a tenth-generation descendant dreams of a figure in white pointing toward an underground spring."
+ },
+ {
+  "vi": "Tiên phàm cách biệt, quay đi",
+  "en": "Immortals and mortals are apart - turn away"
+ },
+ {
+  "vi": "Bạn quay lưng. Tiên nhân không nên vướng bận trần duyên. Chỉ là đêm đó tu luyện không yên.",
+  "en": "You turn your back. An immortal should not cling to mortal ties. Only, your cultivation is restless that night."
+ },
+ {
+  "vi": "Thiên quy",
+  "en": "Heavenly Law"
+ },
+ {
+  "vi": "Một tiên nữ bị phạt quỳ ở Dao Trì vì yêu một người phàm. Nàng ngước nhìn bạn, không cầu xin, chỉ hỏi: \"Yêu người thì có tội sao?\"",
+  "en": "A fairy is forced to kneel at the Jade Pool as punishment for loving a mortal. She looks up at you, not begging, only asking: \"Is it a crime to love someone?\""
+ },
+ {
+  "vi": "Lên tiếng xin tha cho nàng",
+  "en": "Speak up and plead for her"
+ },
+ {
+  "vi": "đạo tâm +, có thể bị phạt",
+  "en": "Dao Heart +, may be punished"
+ },
+ {
+  "vi": "Ngọc Đế nể lời, giảm án cho nàng. Từ đó tiên giới truyền tai nhau tên bạn.",
+  "en": "The Jade Emperor heeds your words and lightens her sentence. From then on, your name spreads through the Immortal Realm."
+ },
+ {
+  "vi": "Bạn bị phạt cùng, quỳ bảy ngày ở Dao Trì. Tu vi tổn hao, nhưng lòng không hối hận.",
+  "en": "You are punished with her, kneeling seven days at the Jade Pool. Your cultivation suffers, but your heart has no regrets."
+ },
+ {
+  "vi": "Lặng lẽ đưa cho nàng một viên đan",
+  "en": "Quietly slip her a pill"
+ },
+ {
+  "vi": "nhẹ nhàng",
+  "en": "gentle"
+ },
+ {
+  "vi": "Nàng nắm chặt viên đan, mắt đỏ hoe. Bạn đi tiếp, không ai thấy.",
+  "en": "She clutches the pill, eyes red. You walk on, and no one sees."
+ },
+ {
+  "vi": "Thiên quy là thiên quy",
+  "en": "Heavenly law is heavenly law"
+ },
+ {
+  "vi": "tâm ma +",
+  "en": "heart demon +"
+ },
+ {
+  "vi": "Bạn bước qua. Phía sau, tiếng nàng khóc nhỏ dần.",
+  "en": "You walk past. Behind you, her sobs fade away."
+ },
+ {
+  "vi": "Tiên Ma đại chiến",
+  "en": "The Immortal-Demon War"
+ },
+ {
+  "vi": "Tiên Ma giao chiến ngay rìa Thái Hư. Cả hai bên đều muốn kéo bạn vào. Bạn đứng giữa hai làn đạn.",
+  "en": "Immortals and demons clash at the edge of the Great Void. Both sides want to drag you in. You're caught in the crossfire."
+ },
+ {
+  "vi": "Ma Đế hạ lệnh đánh lên Thiên đình. Trăm vạn ma binh đứng chờ ở Cửa Cửu U. Ngươi đi tiên phong chứ?",
+  "en": "The Demon Emperor orders an assault on the Heavenly Court. A million demon soldiers wait at the Gate of the Nine Netherworlds. Will you lead the vanguard?"
+ },
+ {
+  "vi": "Ma giới tràn qua giới tuyến. Thiên đình gióng trống tụ tướng, mọi tiên nhân phải ra trận.",
+  "en": "The Demon Realm floods across the border. The Heavenly Court beats the war drums, and every immortal must go to battle."
+ },
+ {
+  "vi": "Dẫn ma binh đánh tiên phong",
+  "en": "Lead the demon vanguard"
+ },
+ {
+  "vi": "Xông lên tuyến đầu",
+  "en": "Charge the front line"
+ },
+ {
+  "vi": "tu vi lớn, có thể chết",
+  "en": "big cultivation, may die"
+ },
+ {
+  "vi": "Bạn bị Lôi Bộ vây đánh trước Nam Thiên Môn. Ma hồn tan thành tro dưới vạn đạo sét.",
+  "en": "The Ministry of Thunder surrounds you before the Southern Heavenly Gate. Your demon soul turns to ash under ten thousand bolts of lightning."
+ },
+ {
+  "vi": "Bạn ngã xuống trên chiến trường Tiên Ma, giữa biển máu và tiên quang.",
+  "en": "You fall on the Immortal-Demon battlefield, amid a sea of blood and immortal light."
+ },
+ {
+  "vi": "Trận chiến kéo dài bảy ngày.",
+  "en": "The battle rages for seven days."
+ },
+ {
+  "vi": "Bạn chém tướng đoạt cờ, công lao đứng đầu. Tu vi tăng vọt.{0}",
+  "ph": [
+   "f ?? ''"
+  ],
+  "en": "You slay generals and seize banners, earning top merit. Your cultivation soars.{0}"
+ },
+ {
+  "vi": "Giữ hậu phương, chữa thương binh",
+  "en": "Hold the rear, heal the wounded"
+ },
+ {
+  "vi": "an toàn, đạo tâm +",
+  "en": "safe, Dao Heart +"
+ },
+ {
+  "vi": "Bạn cứu được hàng trăm người. Chiến công không vang dội, nhưng ai cũng nhớ ơn.",
+  "en": "You save hundreds. Your deeds are not glorious, but everyone remembers your kindness."
+ },
+ {
+  "vi": "Đứng ngoài, chờ ngư ông đắc lợi",
+  "en": "Stay out and reap the spoils"
+ },
+ {
+  "vi": "linh thạch, mất uy tín",
+  "en": "spirit stones, lose prestige"
+ },
+ {
+  "vi": "Hai bên đánh nhau tơi bời, bạn lặng lẽ nhặt bảo vật trên chiến trường. Giàu to, nhưng cả hai giới đều khinh bạn.",
+  "en": "While both sides tear each other apart, you quietly loot treasures from the battlefield. You get rich, but both realms despise you."
+ },
+ {
+  "vi": "Vảy rồng rơi",
+  "en": "Falling Dragon Scale"
+ },
+ {
+  "vi": "Thái Cổ Kim Long lột vảy trên Long Cung Thiên Thượng. Một mảnh vảy vàng rơi xuống ngay trước mặt bạn, còn nóng hổi.",
+  "en": "The Ancient Golden Dragon is shedding scales above the Celestial Dragon Palace. A golden scale lands right in front of you, still hot."
+ },
+ {
+  "vi": "Nhặt lấy, đem rèn",
+  "en": "Pick it up and forge it"
+ },
+ {
+  "vi": "thần binh",
+  "en": "divine weapon"
+ },
+ {
+  "vi": "Kim Long Lân kiếm",
+  "en": "Golden Dragon Scale Sword"
+ },
+ {
+  "vi": "Bạn mang mảnh vảy tới lò rèn của Thái Thượng Lão Quân. Bốn mươi chín ngày sau, Kim Long Lân kiếm ra lò. Mở Túi đồ để dùng.",
+  "en": "You bring the scale to Taishang Laojun's forge. Forty-nine days later, the Golden Dragon Scale Sword is born. Open your Inventory to use it."
+ },
+ {
+  "vi": "Trả lại cho Kim Long",
+  "en": "Return it to the Golden Dragon"
+ },
+ {
+  "vi": "khí vận ++",
+  "en": "Luck ++"
+ },
+ {
+  "vi": "Kim Long nhìn bạn rất lâu rồi gật đầu. Từ đó mây lành theo bạn mỗi bước.",
+  "en": "The Golden Dragon gazes at you for a long time, then nods. From then on, auspicious clouds follow your every step."
+ },
+ {
+  "vi": "Bờ Huyết Hải",
+  "en": "Shore of the Blood Sea"
+ },
+ {
+  "vi": "Bạn bước qua cửa Ma giới. Trước mặt là Huyết Hải mênh mông, sóng đỏ như máu. Ba vị ma chúa đang chờ xem {0} mới tới đứng về phe ai.",
+  "ph": [
+   "realmName(c.realm, 'ma')"
+  ],
+  "en": "You step through the gate of the Demon Realm. Before you stretches the vast Blood Sea, its waves red as blood. Three demon lords wait to see whose side the new {0} will take."
+ },
+ {
+  "vi": "Theo Huyết Ma Chúa, kẻ mạnh nhất",
+  "en": "Follow the Blood Demon Lord, the strongest"
+ },
+ {
+  "vi": "tu vi +, tâm ma +",
+  "en": "cultivation +, heart demon +"
+ },
+ {
+  "vi": "Huyết Ma Chúa cười lớn, rót cho bạn một chén huyết tửu. Chén rượu cháy bỏng tận xương.",
+  "en": "The Blood Demon Lord laughs loudly and pours you a cup of blood wine. It burns down to your bones."
+ },
+ {
+  "vi": "Không theo ai, tự lập một phương",
+  "en": "Follow no one, carve out your own domain"
+ },
+ {
+  "vi": "khí vận +, nguy hiểm",
+  "en": "Luck +, dangerous"
+ },
+ {
+  "vi": "Cả ba ma chúa đều sai người tới \"thăm hỏi\". Bạn sống sót, nhưng thân thể đầy vết thương.",
+  "en": "All three demon lords send people to \"pay their respects\". You survive, but your body is covered in wounds."
+ },
+ {
+  "vi": "Bạn chiếm một hòn đảo giữa Huyết Hải, xưng vương một cõi. Ma giới bắt đầu nhắc tên bạn.",
+  "en": "You seize an island in the Blood Sea and proclaim yourself its king. The Demon Realm begins to speak your name."
+ },
+ {
+  "vi": "Tìm đường quay về",
+  "en": "Look for a way back"
+ },
+ {
+  "vi": "đạo tâm +",
+  "en": "Dao Heart +"
+ },
+ {
+  "vi": "Bạn quay lưng với Huyết Hải. Đường về không có, nhưng lòng bạn lần đầu thấy nhẹ.",
+  "en": "You turn your back on the Blood Sea. There is no way back, but for the first time your heart feels light."
+ },
+ {
+  "vi": "Tranh ngôi ma chúa",
+  "en": "Contest for the Demon Throne"
+ },
+ {
+  "vi": "Một ma chúa già yếu đi. Trăm ma vương rình rập ngai vàng xương trắng. Đây là cơ hội.",
+  "en": "An old demon lord is weakening. A hundred demon kings eye the throne of white bone. This is your chance."
+ },
+ {
+  "vi": "Ra tay đoạt ngôi",
+  "en": "Strike and seize the throne"
+ },
+ {
+  "vi": "tu vi ++, có thể chết",
+  "en": "cultivation ++, may die"
+ },
+ {
+  "vi": "Bạn bị chính thuộc hạ đâm sau lưng khi vừa ngồi lên ngai xương. Ma giới không có lòng trung thành.",
+  "en": "Your own subordinate stabs you in the back the moment you sit on the bone throne. The Demon Realm knows no loyalty."
+ },
+ {
+  "vi": "Bạn ra tay.",
+  "en": "You strike."
+ },
+ {
+  "vi": "Bạn chém ma chúa già, ngồi lên ngai xương. Trăm ma vương quỳ xuống.{0}",
+  "ph": [
+   "f ?? ''"
+  ],
+  "en": "You cut down the old demon lord and take the bone throne. A hundred demon kings kneel.{0}"
+ },
+ {
+  "vi": "Đứng sau giật dây",
+  "en": "Pull the strings from behind"
+ },
+ {
+  "vi": "linh thạch, an toàn",
+  "en": "spirit stones, safe"
+ },
+ {
+  "vi": "Bạn bán tin cho cả ba phe. Ai thắng cũng nợ bạn một ân tình.",
+  "en": "You sell information to all three factions. Whoever wins owes you a favor."
+ },
+ {
+  "vi": "Bảo vệ ma chúa già",
+  "en": "Protect the old demon lord"
+ },
+ {
+  "vi": "Bạn đứng chắn trước ngai. Ma chúa già nhìn bạn, lần đầu tiên trong vạn năm biết cảm động.",
+  "en": "You stand before the throne as a shield. The old demon lord looks at you, moved for the first time in ten thousand years."
+ },
+ {
+  "vi": "Tâm ma vạn kiếp",
+  "en": "Heart Demon of Ten Thousand Lives"
+ },
+ {
+  "vi": "Ở Ma giới, tâm ma không ở trong lòng mà đứng ngay trước mặt. Nó mang khuôn mặt của tất cả những người bạn từng giết.",
+  "en": "In the Demon Realm, the heart demon is not within you but standing right in front of you. It wears the faces of everyone you've ever killed."
+ },
+ {
+  "vi": "Nuốt chửng tâm ma",
+  "en": "Devour the heart demon"
+ },
+ {
+  "vi": "tu vi ++, tâm ma ++",
+  "en": "cultivation ++, heart demon ++"
+ },
+ {
+  "vi": "Bạn nuốt nó vào. Sức mạnh dâng trào, và giọng nói trong đầu bạn đông hơn.",
+  "en": "You swallow it. Power surges through you, and the voices in your head grow more numerous."
+ },
+ {
+  "vi": "Đối diện từng khuôn mặt",
+  "en": "Face each face"
+ },
+ {
+  "vi": "tâm ma giảm mạnh",
+  "en": "heart demon greatly reduced"
+ },
+ {
+  "vi": "Bạn nhìn từng người một, nhớ lại tên họ. Tâm ma nhạt dần, rồi tan như sương.",
+  "en": "You look at each of them, remembering their names. The heart demon fades, then dissolves like mist."
+ },
+ {
+  "vi": "Ma binh làm phản",
+  "en": "The Demon Army Rebels"
+ },
+ {
+  "vi": "Đêm Huyết Nguyệt, ma binh dưới trướng bạn nổi loạn. Kẻ cầm đầu là phó tướng bạn tin nhất.",
+  "en": "On the night of the Blood Moon, the demon soldiers under you revolt. Their leader is your most trusted lieutenant."
+ },
+ {
+  "vi": "Giết sạch, răn đe",
+  "en": "Kill them all as a warning"
+ },
+ {
+  "vi": "tu vi +, đạo tâm --",
+  "en": "cultivation +, Dao Heart --"
+ },
+ {
+  "vi": "Huyết Hải đỏ thêm một màu. Từ đó không ai dám ngẩng đầu trước mặt bạn.",
+  "en": "The Blood Sea turns a shade redder. From then on, no one dares raise their head before you."
+ },
+ {
+  "vi": "Tha cho kẻ bị ép theo",
+  "en": "Spare those who were forced"
+ },
+ {
+  "vi": "đạo tâm +, có thể bị đánh lén",
+  "en": "Dao Heart +, may be ambushed"
+ },
+ {
+  "vi": "Một kẻ được tha quay lại đâm bạn một nhát. Ma giới là vậy.",
+  "en": "One you spared turns back and stabs you. That's the Demon Realm."
+ },
+ {
+  "vi": "Những kẻ được tha quỳ rạp, thề chết theo bạn. Lần này họ giữ lời.",
+  "en": "Those you spared prostrate themselves and swear to follow you unto death. This time, they keep their word."
+ }
+]

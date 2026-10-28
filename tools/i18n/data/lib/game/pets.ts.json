@@ -1,0 +1,709 @@
+[
+ {
+  "vi": "sói con",
+  "en": "wolf cub"
+ },
+ {
+  "vi": "Một con sói con bị thương nằm thoi thóp bên suối. Bạn băng bó cho nó, từ đó nó lẽo đẽo theo sau.",
+  "en": "A wounded wolf cub lies gasping by the stream. You bandage it, and from then on it trots along behind you."
+ },
+ {
+  "vi": "tiểu hồ ly",
+  "en": "little fox"
+ },
+ {
+  "vi": "Một con hồ ly đỏ bám theo bạn ba ngày liền, đuổi thế nào cũng không đi.",
+  "en": "A red fox trails you for three days straight and refuses to be chased off."
+ },
+ {
+  "vi": "tuyết hồ",
+  "en": "snow fox"
+ },
+ {
+  "vi": "Con hồ ly trắng như tuyết dụi đầu vào tay bạn rồi không chịu rời nữa.",
+  "en": "A snow-white fox nuzzles your hand and will not leave you again."
+ },
+ {
+  "vi": "chó vàng",
+  "en": "yellow dog"
+ },
+ {
+  "vi": "Con chó vàng lang thang đi theo bạn về nhà, vẫy đuôi rối rít.",
+  "en": "A stray yellow dog follows you home, wagging its tail like mad."
+ },
+ {
+  "vi": "bạch thử",
+  "en": "white mouse"
+ },
+ {
+  "vi": "Một con chuột bạch chui vào tay áo bạn ngủ. Từ đó bạn có thêm một miệng ăn.",
+  "en": "A white mouse crawls into your sleeve to sleep. Now you have one more mouth to feed."
+ },
+ {
+  "vi": "chuột xám",
+  "en": "grey rat"
+ },
+ {
+  "vi": "Con chuột xám tinh khôn trộm bánh của bạn, bị bắt quả tang rồi ở lại luôn.",
+  "en": "A clever grey rat steals your bun, gets caught red-handed, and simply stays."
+ },
+ {
+  "vi": "nấm linh",
+  "en": "spirit mushroom"
+ },
+ {
+  "vi": "Cây nấm sau nhà mọc chân, lạch bạch đi theo bạn như con vịt.",
+  "en": "The mushroom behind your house grows legs and waddles after you like a duckling."
+ },
+ {
+  "vi": "ưng con",
+  "en": "eaglet"
+ },
+ {
+  "vi": "Con ưng non rơi khỏi tổ được bạn nuôi lớn, giờ cứ bay lượn trên đầu bạn.",
+  "en": "An eaglet that fell from its nest, raised by you, now keeps circling above your head."
+ },
+ {
+  "vi": "dơi tinh",
+  "en": "bat spirit"
+ },
+ {
+  "vi": "Một con dơi đen treo ngược ở xà nhà. Đêm nào nó cũng bay theo bạn.",
+  "en": "A black bat hangs upside down from the rafters. Every night it flies after you."
+ },
+ {
+  "vi": "kim phong",
+  "en": "golden bee"
+ },
+ {
+  "vi": "Con ong vàng to bằng ngón tay vo ve quanh bạn, chẳng bao giờ đốt.",
+  "en": "A golden bee as big as a finger buzzes around you and never stings."
+ },
+ {
+  "vi": "linh dịch",
+  "en": "spirit slime"
+ },
+ {
+  "vi": "Một khối linh dịch xanh nhảy tưng tưng theo bạn từ con suối linh khí.",
+  "en": "A blob of green spirit slime bounces after you from a spirit spring."
+ },
+ {
+  "vi": "tiểu thanh xà",
+  "en": "little green snake"
+ },
+ {
+  "vi": "Con rắn xanh nhỏ quấn lên cổ tay bạn như chiếc vòng, không chịu xuống.",
+  "en": "A small green snake coils around your wrist like a bangle and won't come off."
+ },
+ {
+  "vi": "hắc lang",
+  "en": "black wolf"
+ },
+ {
+  "vi": "Con sói đen đầu đàn bị thợ săn bắn trọng thương, nằm chờ chết dưới gốc tùng.",
+  "en": "A black alpha wolf, badly wounded by hunters, lies dying under a pine."
+ },
+ {
+  "vi": "xích lang",
+  "en": "red wolf"
+ },
+ {
+  "vi": "Sói lông đỏ như lửa, nghe nói chỉ theo người có sát khí.",
+  "en": "A wolf with fire-red fur, said to follow only those with killing intent."
+ },
+ {
+  "vi": "băng lang",
+  "en": "ice wolf"
+ },
+ {
+  "vi": "Sói băng ở Tuyết Vực, hơi thở đóng thành sương giá.",
+  "en": "An ice wolf of Tuyết Vực whose breath turns to frost."
+ },
+ {
+  "vi": "bạch lang",
+  "en": "white wolf"
+ },
+ {
+  "vi": "Sói trắng như tuyết, mắt xanh biếc, chỉ xuất hiện đêm trăng tròn.",
+  "en": "A snow-white wolf with jade-blue eyes, seen only on full-moon nights."
+ },
+ {
+  "vi": "mai hoa lộc",
+  "en": "plum-blossom deer"
+ },
+ {
+  "vi": "Con hươu sao lông lốm đốm như hoa mai, đứng uống nước dưới trăng.",
+  "en": "A sika deer with fur spotted like plum blossoms, drinking under the moon."
+ },
+ {
+  "vi": "kim thử",
+  "en": "golden rat"
+ },
+ {
+  "vi": "Con chuột lông vàng óng ôm một đồng tiền cổ, đi đến đâu tiền rơi đến đó.",
+  "en": "A golden-furred rat hugging an ancient coin; wherever it goes, money falls."
+ },
+ {
+  "vi": "thực nhân hoa",
+  "en": "man-eating flower"
+ },
+ {
+  "vi": "Bông hoa ăn thịt trong vườn hoang, được bạn cho ăn thịt nên rễ nhổ lên đi theo.",
+  "en": "A carnivorous flower in an abandoned garden. You fed it meat, so it pulled up its roots to follow you."
+ },
+ {
+  "vi": "bạch xà",
+  "en": "white snake"
+ },
+ {
+  "vi": "Con rắn trắng như ngọc cuộn mình bên tượng Phật, mắt long lanh như người.",
+  "en": "A jade-white snake coiled beside a Buddha statue, its eyes glistening like a person's."
+ },
+ {
+  "vi": "thổ long",
+  "en": "earth dragon"
+ },
+ {
+  "vi": "Đào giếng gặp con giun đất to bằng bắp chân, nó chui ra quấn lấy bạn.",
+  "en": "Digging a well, you find an earthworm as thick as a calf. It crawls out and wraps around you."
+ },
+ {
+  "vi": "tằm linh",
+  "en": "spirit silkworm"
+ },
+ {
+  "vi": "Con tằm ăn lá dâu linh khí lớn dần, cứ bò theo bạn đòi ăn.",
+  "en": "A silkworm fed on spirit mulberry leaves keeps growing and crawls after you begging for food."
+ },
+ {
+  "vi": "thử vương",
+  "en": "rat king"
+ },
+ {
+  "vi": "Vua chuột trong kho thóc dẫn cả đàn đến quy phục bạn.",
+  "en": "The king of the granary rats leads his whole horde to submit to you."
+ },
+ {
+  "vi": "xích chi",
+  "en": "red lingzhi"
+ },
+ {
+  "vi": "Cây nấm đỏ đốm trắng mọc chân, lạch bạch chạy theo bạn.",
+  "en": "A red mushroom with white spots grows legs and toddles after you."
+ },
+ {
+  "vi": "hùng con",
+  "en": "bear cub"
+ },
+ {
+  "vi": "Chú gấu đen con lạc mẹ, ôm chân bạn không chịu buông.",
+  "en": "A black bear cub that lost its mother hugs your leg and won't let go."
+ },
+ {
+  "vi": "tuyết hùng",
+  "en": "snow bear"
+ },
+ {
+  "vi": "Gấu trắng con ở Tuyết Vực, lông mềm như mây, ôm vào ấm cả mùa đông.",
+  "en": "A white bear cub of Tuyết Vực, fur soft as clouds; hug it and you stay warm all winter."
+ },
+ {
+  "vi": "sư tử con",
+  "en": "lion cub"
+ },
+ {
+  "vi": "Sư tử con của thương đoàn Tây Vực, bờm mới nhú, gầm nghe như mèo.",
+  "en": "A lion cub from a Tây Vực caravan; its mane is just sprouting and its roar sounds like a cat."
+ },
+ {
+  "vi": "linh lộc",
+  "en": "spirit deer"
+ },
+ {
+  "vi": "Con hươu sừng ngọc trong rừng sâu, ăn cỏ trong lòng bàn tay bạn.",
+  "en": "A jade-antlered deer deep in the forest, eating grass from your palm."
+ },
+ {
+  "vi": "hỏa hồ",
+  "en": "fire fox"
+ },
+ {
+  "vi": "Hồ ly đuôi lửa, đi qua đâu cỏ khô bén lửa đó.",
+  "en": "A fox with a flaming tail; dry grass catches fire wherever it walks."
+ },
+ {
+  "vi": "hỏa linh dịch",
+  "en": "fire slime"
+ },
+ {
+  "vi": "Khối linh dịch đỏ rực từ miệng núi lửa, ấm như cục than hồng.",
+  "en": "A blazing red slime from a volcano's mouth, warm as a glowing coal."
+ },
+ {
+  "vi": "huyết bức",
+  "en": "blood bat"
+ },
+ {
+  "vi": "Con dơi máu trong hang tối, chỉ uống máu của kẻ thù bạn.",
+  "en": "A blood bat from a dark cave that drinks only your enemies' blood."
+ },
+ {
+  "vi": "băng phong",
+  "en": "ice bee"
+ },
+ {
+  "vi": "Con ong băng từ tổ trên đỉnh tuyết, đốt ai người đó đóng băng.",
+  "en": "An ice bee from a nest on a snowy peak; whoever it stings freezes solid."
+ },
+ {
+  "vi": "Có đứa đi theo",
+  "en": "Someone's following you"
+ },
+ {
+  "vi": "Nhận nuôi {0}",
+  "ph": [
+   "p.name"
+  ],
+  "en": "Adopt the {0}"
+ },
+ {
+  "vi": "Có thú cưng",
+  "en": "Got a pet"
+ },
+ {
+  "vi": "Từ nay {0} chạy theo bạn khắp nơi.",
+  "ph": [
+   "p.name"
+  ],
+  "en": "From now on, the {0} follows you everywhere."
+ },
+ {
+  "vi": "Cho ăn rồi đuổi đi",
+  "en": "Feed it and shoo it away"
+ },
+ {
+  "vi": "{0} ăn xong, ngoái nhìn bạn rồi đi mất.",
+  "ph": [
+   "p.name[0].toUpperCase() + p.name.slice(1)"
+  ],
+  "en": "{0} finishes eating, looks back at you, and is gone."
+ },
+ {
+  "vi": "Bắt đem bán",
+  "en": "Catch and sell it"
+ },
+ {
+  "vi": "Bạn bán {0} được 25 linh thạch. Đêm đó bạn nằm mơ thấy nó.",
+  "ph": [
+   "p.name"
+  ],
+  "en": "You sell the {0} for 25 spirit stones. That night you dream of it."
+ },
+ {
+  "vi": " Con {0} ghen tị, bỏ vào rừng không về.",
+  "ph": [
+   "old"
+  ],
+  "en": " The jealous {0} runs off into the forest and never returns."
+ },
+ {
+  "vi": "Đêm trăng sói tru",
+  "en": "Wolves howl at the moon"
+ },
+ {
+  "vi": "Đêm trăng tròn, tiếng sói tru vọng từ núi. {0}",
+  "ph": [
+   "p.meet"
+  ],
+  "en": "Under the full moon, wolf howls echo from the mountains. {0}"
+ },
+ {
+  "vi": "Băng bó, đưa về nuôi",
+  "en": "Bandage it and take it home"
+ },
+ {
+  "vi": "Từ đêm ấy, {0} chạy theo bạn như cái bóng.",
+  "ph": [
+   "p.name"
+  ],
+  "en": "From that night on, the {0} follows you like a shadow."
+ },
+ {
+  "vi": "Để lại ít thịt rồi đi",
+  "en": "Leave some meat and go"
+ },
+ {
+  "vi": "Sáng hôm sau, dưới cửa nhà có một con thỏ rừng.",
+  "en": "The next morning there is a wild rabbit at your door."
+ },
+ {
+  "vi": "Lột da bán",
+  "en": "Skin it and sell the hide"
+ },
+ {
+  "vi": "Da sói bán được giá. Đêm đó cả bầy tru quanh nhà bạn.",
+  "en": "The wolf pelt fetches a good price. That night the whole pack howls around your house."
+ },
+ {
+  "vi": "Bạch xà trong miếu",
+  "en": "White snake in the shrine"
+ },
+ {
+  "vi": "Trú mưa trong miếu cổ ven hồ. {0}",
+  "ph": [
+   "p.meet"
+  ],
+  "en": "You shelter from the rain in an old shrine by the lake. {0}"
+ },
+ {
+  "vi": "Đưa tay cho nó quấn",
+  "en": "Hold out your hand"
+ },
+ {
+  "vi": "Bạch xà quấn lên cổ tay bạn như chiếc vòng ngọc. Từ đó không rời.",
+  "en": "The white snake coils around your wrist like a jade bangle. It never leaves again."
+ },
+ {
+  "vi": "Thắp nhang rồi đi",
+  "en": "Light incense and go"
+ },
+ {
+  "vi": "Bạch xà gật đầu ba cái như lạy tạ.",
+  "en": "The white snake nods three times, as if bowing in thanks."
+ },
+ {
+  "vi": "Bắt lấy mật rắn",
+  "en": "Take its gallbladder"
+ },
+ {
+  "vi": "Mật rắn trắng đắng ngắt. Đêm ấy mưa to, như trời khóc.",
+  "en": "The white snake's gall is bitter. That night it pours, as if Heaven weeps."
+ },
+ {
+  "vi": "Đồng tiền dưới giếng",
+  "en": "Coins in the well"
+ },
+ {
+  "vi": "Thả gàu xuống giếng cổ, kéo lên toàn tiền xu. {0}",
+  "ph": [
+   "p.meet"
+  ],
+  "en": "You lower a bucket into an old well and pull up nothing but coins. {0}"
+ },
+ {
+  "vi": "Nuôi nó",
+  "en": "Keep it"
+ },
+ {
+  "vi": "Kim thử chui vào túi bạn, thỉnh thoảng nhả ra một đồng tiền.",
+  "en": "The golden rat crawls into your pouch and spits out a coin now and then."
+ },
+ {
+  "vi": "Thả lại xuống giếng",
+  "en": "Put it back in the well"
+ },
+ {
+  "vi": "Đêm đó bạn mơ thấy thần tài.",
+  "en": "That night you dream of the God of Wealth."
+ },
+ {
+  "vi": "Vét sạch tiền trong giếng",
+  "en": "Scoop out every coin"
+ },
+ {
+  "vi": "Bạn vét được một túi tiền. Giếng từ đó cạn khô.",
+  "en": "You scoop up a bag of money. The well dries up from that day on."
+ },
+ {
+  "vi": "Vườn hoang",
+  "en": "Abandoned garden"
+ },
+ {
+  "vi": "Trong vườn hoang có tiếng răng nghiến ken két. {0}",
+  "ph": [
+   "p.meet"
+  ],
+  "en": "Teeth gnash and grind in an abandoned garden. {0}"
+ },
+ {
+  "vi": "Cho ăn, mang về",
+  "en": "Feed it and take it home"
+ },
+ {
+  "vi": "Thực nhân hoa ngoan như mèo, chỉ hơi tốn thịt.",
+  "en": "The man-eating flower is as tame as a cat, if a bit costly in meat."
+ },
+ {
+  "vi": "Tưới nước rồi đi",
+  "en": "Water it and go"
+ },
+ {
+  "vi": "Bông hoa khẽ nghiêng mình như cảm ơn.",
+  "en": "The flower bows gently, as if in thanks."
+ },
+ {
+  "vi": "Nhổ lấy rễ luyện độc",
+  "en": "Pull its roots for poison"
+ },
+ {
+  "vi": "Rễ hoa luyện ra thứ độc không màu không mùi.",
+  "en": "The roots yield a colorless, odorless poison."
+ },
+ {
+  "vi": "Đêm trăng bên suối",
+  "en": "Moonlit stream"
+ },
+ {
+  "vi": "Đêm Trung Thu, bạn ra suối ngắm trăng. {0}",
+  "ph": [
+   "p.meet"
+  ],
+  "en": "On Mid-Autumn night you go to the stream to admire the moon. {0}"
+ },
+ {
+  "vi": "Chìa tay mời nó lại gần",
+  "en": "Reach out and invite it closer"
+ },
+ {
+  "vi": "Mai hoa lộc dụi đầu vào tay bạn rồi lững thững đi theo.",
+  "en": "The plum-blossom deer nuzzles your hand, then ambles after you."
+ },
+ {
+  "vi": "Ngồi yên ngắm nó",
+  "en": "Sit still and watch"
+ },
+ {
+  "vi": "Trăng, suối, hươu sao. Lòng bạn tĩnh lặng lạ thường.",
+  "en": "Moon, stream, spotted deer. Your heart is strangely at peace."
+ },
+ {
+  "vi": "Giương cung săn",
+  "en": "Draw your bow"
+ },
+ {
+  "vi": "Nhung hươu bán được giá. Suối ấy từ đó không ai thấy hươu nữa.",
+  "en": "The antler velvet sells well. No one ever sees deer at that stream again."
+ },
+ {
+  "vi": "Đào giếng, nuôi tằm",
+  "en": "Well-digging and silkworms"
+ },
+ {
+  "vi": "Giữ lại nuôi",
+  "en": "Keep and raise it"
+ },
+ {
+  "vi": "{0} bò quanh chân bạn, chẳng chịu rời.",
+  "ph": [
+   "p.name[0].toUpperCase() + p.name.slice(1)"
+  ],
+  "en": "{0} crawls around your feet and won't leave."
+ },
+ {
+  "vi": "Thả về đồng",
+  "en": "Release it to the fields"
+ },
+ {
+  "vi": "Mùa ấy lúa nhà bạn tốt bất thường.",
+  "en": "That season your rice grows unusually well."
+ },
+ {
+  "vi": "Đem làm mồi câu",
+  "en": "Use it as bait"
+ },
+ {
+  "vi": "Câu được con cá chép đỏ to, bán được giá.",
+  "en": "You hook a big red carp and sell it for a good price."
+ },
+ {
+  "vi": "Kho thóc",
+  "en": "The granary"
+ },
+ {
+  "vi": "Dọn kho thóc sau nhà. {0}",
+  "ph": [
+   "p.meet"
+  ],
+  "en": "You clear out the granary behind the house. {0}"
+ },
+ {
+  "vi": "Nhận làm bạn",
+  "en": "Befriend it"
+ },
+ {
+  "vi": "Từ đó {0} theo bạn khắp nơi, kho thóc cũng chẳng mất hạt nào.",
+  "ph": [
+   "p.name"
+  ],
+  "en": "From then on the {0} goes everywhere with you, and the granary never loses a grain."
+ },
+ {
+  "vi": "Đuổi đi",
+  "en": "Chase it off"
+ },
+ {
+  "vi": "Nó chạy mất, để lại một hạt thóc vàng óng.",
+  "en": "It runs away, leaving behind one shining golden grain."
+ },
+ {
+  "vi": "Đặt bẫy diệt sạch",
+  "en": "Set traps, wipe them out"
+ },
+ {
+  "vi": "Kho sạch sẽ. Nhưng mùa sau rắn kéo đến.",
+  "en": "The granary is spotless. But next season the snakes move in."
+ },
+ {
+  "vi": "Gấu con lạc mẹ",
+  "en": "Lost bear cub"
+ },
+ {
+  "vi": "Trong rừng sâu có tiếng rên ư ử. {0}",
+  "ph": [
+   "p.meet"
+  ],
+  "en": "A whimpering sound comes from deep in the forest. {0}"
+ },
+ {
+  "vi": "Nhận nuôi",
+  "en": "Adopt it"
+ },
+ {
+  "vi": "{0} lớn nhanh như thổi, ăn bằng ba người.",
+  "ph": [
+   "p.name[0].toUpperCase() + p.name.slice(1)"
+  ],
+  "en": "{0} grows like a weed and eats as much as three people."
+ },
+ {
+  "vi": "Đưa về hang mẹ",
+  "en": "Take it back to its mother's den"
+ },
+ {
+  "vi": "Gấu mẹ tưởng bạn bắt con nó, đuổi bạn chạy trối chết.",
+  "en": "The mother bear thinks you stole her cub and chases you for your life."
+ },
+ {
+  "vi": "Gấu mẹ liếm con rồi nhìn bạn rất lâu. Bạn thấy lòng nhẹ bẫng.",
+  "en": "The mother bear licks her cub and gazes at you a long while. Your heart feels light."
+ },
+ {
+  "vi": "Lấy mật gấu",
+  "en": "Take its bile"
+ },
+ {
+  "vi": "Mật gấu bán được giá cao. Tiếng gấu mẹ gào cả đêm.",
+  "en": "The bear bile sells for a high price. The mother bear roars all night."
+ },
+ {
+  "vi": "Thương đoàn Tây Vực",
+  "en": "Tây Vực caravan"
+ },
+ {
+  "vi": "Thương đoàn từ phương xa dừng chân trong trấn, đem theo thú lạ. {0}",
+  "ph": [
+   "p.meet"
+  ],
+  "en": "A caravan from distant lands stops in town with strange beasts. {0}"
+ },
+ {
+  "vi": "Mua về nuôi (-80 linh thạch)",
+  "en": "Buy it (-80 spirit stones)"
+ },
+ {
+  "vi": "Bạn trả tiền, dắt {0} về. Cả trấn kéo đến xem.",
+  "ph": [
+   "p.name"
+  ],
+  "en": "You pay up and lead the {0} home. The whole town comes to look."
+ },
+ {
+  "vi": "Chỉ đứng xem",
+  "en": "Just watch"
+ },
+ {
+  "vi": "Bạn nghe thương nhân kể chuyện xứ cát vàng đến tận khuya.",
+  "en": "You listen to the merchants' tales of the golden sands until late at night."
+ },
+ {
+  "vi": "Đêm lẻn vào trộm",
+  "en": "Sneak in at night to steal"
+ },
+ {
+  "vi": "Bị lính canh phát hiện, đánh cho một trận.",
+  "en": "The guards catch you and give you a beating."
+ },
+ {
+  "vi": "Bạn trộm được hàng, bán lại cho chợ đen.",
+  "en": "You steal the goods and resell them on the black market."
+ },
+ {
+  "vi": "Núi lửa",
+  "en": "Volcano"
+ },
+ {
+  "vi": "Đi qua chân núi lửa, đá còn nóng bỏng. {0}",
+  "ph": [
+   "p.meet"
+  ],
+  "en": "You pass the foot of a volcano; the rocks are still scorching. {0}"
+ },
+ {
+  "vi": "Thu phục",
+  "en": "Tame it"
+ },
+ {
+  "vi": "{0} nằm gọn bên chân bạn, sưởi ấm cả mùa đông.",
+  "ph": [
+   "p.name[0].toUpperCase() + p.name.slice(1)"
+  ],
+  "en": "{0} curls up by your feet, keeping you warm all winter."
+ },
+ {
+  "vi": "Né đi đường khác",
+  "en": "Take another way"
+ },
+ {
+  "vi": "Nó nhìn theo bạn rất lâu.",
+  "en": "It watches you go for a long time."
+ },
+ {
+  "vi": "Bắt lấy hỏa tinh luyện đan",
+  "en": "Catch its fire essence for pills"
+ },
+ {
+  "vi": "Lò đan bùng lửa đỏ rực. Đan thành, tu vi tăng.",
+  "en": "The pill furnace roars with red flame. The pill forms and your cultivation rises."
+ },
+ {
+  "vi": "Hang tối, tổ băng",
+  "en": "Dark cave, icy nest"
+ },
+ {
+  "vi": "Nhận làm linh sủng",
+  "en": "Take it as a spirit pet"
+ },
+ {
+  "vi": "{0} bay vòng quanh đầu bạn, không cho ai đến gần.",
+  "ph": [
+   "p.name[0].toUpperCase() + p.name.slice(1)"
+  ],
+  "en": "{0} circles your head and lets no one near."
+ },
+ {
+  "vi": "Rời đi lặng lẽ",
+  "en": "Leave quietly"
+ },
+ {
+  "vi": "Bạn rời đi, không ngoảnh lại.",
+  "en": "You leave without looking back."
+ },
+ {
+  "vi": "Phá tổ lấy độc",
+  "en": "Smash the nest for venom"
+ },
+ {
+  "vi": "Lấy được ít độc dịch quý, đổi được linh thạch.",
+  "en": "You collect some precious venom and trade it for spirit stones."
+ }
+]

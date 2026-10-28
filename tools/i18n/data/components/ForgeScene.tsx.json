@@ -1,0 +1,121 @@
+[
+ {
+  "vi": "Lò rèn",
+  "en": "Forge"
+ },
+ {
+  "vi": "Tinh thiết ",
+  "en": "Refined iron "
+ },
+ {
+  "vi": "Đóng lò rèn",
+  "en": "Close the forge"
+ },
+ {
+  "vi": "VỠ!",
+  "en": "SHATTERED!"
+ },
+ {
+  "vi": "Hỏng",
+  "en": "Failed"
+ },
+ {
+  "vi": "Hệ ",
+  "en": "Element "
+ },
+ {
+  "vi": " mỗi cấp ",
+  "en": " per level "
+ },
+ {
+  "vi": "(đang cấp {0})",
+  "ph": [
+   "lv"
+  ],
+  "en": "(currently level {0})"
+ },
+ {
+  "vi": "Rời lò rèn",
+  "en": "Leave the forge"
+ },
+ {
+  "vi": "Đã rèn tới +",
+  "en": "Forged to +"
+ },
+ {
+  "vi": ", cao nhất.",
+  "en": ", the maximum."
+ },
+ {
+  "vi": "Lên +",
+  "en": "To +"
+ },
+ {
+  "vi": "công +",
+  "en": "attack +"
+ },
+ {
+  "vi": "%, hệ ",
+  "en": "%, element "
+ },
+ {
+  "vi": " cấp ",
+  "en": " level "
+ },
+ {
+  "vi": "Nguyên liệu",
+  "en": "Materials"
+ },
+ {
+  "vi": " tinh thiết (đang có ",
+  "en": " refined iron (you have "
+ },
+ {
+  "vi": "Thành",
+  "en": "Success"
+ },
+ {
+  "vi": "Vỡ mất đồ",
+  "en": "Item shatters"
+ },
+ {
+  "vi": "không",
+  "en": "none"
+ },
+ {
+  "vi": "Đang rèn...",
+  "en": "Forging..."
+ },
+ {
+  "vi": "⚒ Gõ búa",
+  "en": "⚒ Strike"
+ },
+ {
+  "vi": "Thiếu tinh thiết",
+  "en": "Not enough refined iron"
+ },
+ {
+  "vi": "mất ",
+  "en": "costs "
+ },
+ {
+  "vi": " tinh thiết · còn ",
+  "en": " refined iron · left "
+ },
+ {
+  "vi": "Mua tinh thiết · ",
+  "en": "Buy refined iron · "
+ },
+ {
+  "vi": " linh thạch/cục · đang có ",
+  "en": " spirit stones/lump · you have "
+ },
+ {
+  "vi": " (đủ gõ)",
+  "en": " (enough to strike)"
+ },
+ {
+  "vi": "Thần binh truyền đời không vỡ, rèn hỏng chỉ mất tinh thiết.",
+  "en": "A divine weapon passed down through lives never shatters; a failed forge only costs refined iron."
+ }
+]

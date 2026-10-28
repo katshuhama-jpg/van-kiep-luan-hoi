@@ -1,0 +1,76 @@
+[
+ {
+  "vi": "Kim",
+  "en": ""
+ },
+ {
+  "vi": "Mộc",
+  "en": "Wood"
+ },
+ {
+  "vi": "Thủy",
+  "en": "Water"
+ },
+ {
+  "vi": "Hỏa",
+  "en": "Fire"
+ },
+ {
+  "vi": "Thổ",
+  "en": "Earth"
+ },
+ {
+  "vi": "{0} khắc {1}!",
+  "ph": [
+   "ELEMENTS[a].sym",
+   "ELEMENTS[b].sym"
+  ],
+  "en": "{0} overcomes {1}!"
+ },
+ {
+  "vi": "{0} bị khắc",
+  "ph": [
+   "ELEMENTS[a].sym"
+  ],
+  "en": "{0} is overcome"
+ },
+ {
+  "vi": "Bạn mệnh {0}, khắc {1} của đối thủ. Đòn của bạn +50%, đòn của đối thủ -30%.",
+  "ph": [
+   "A",
+   "B"
+  ],
+  "en": "Your element is {0}, which overcomes your opponent's {1}. Your hits +50%, their hits -30%."
+ },
+ {
+  "vi": "Đối thủ mệnh {0}, khắc {1} của bạn. Bất lợi: đòn của bạn -30%, đòn của đối thủ +50%.",
+  "ph": [
+   "B",
+   "A"
+  ],
+  "en": "Your opponent's element is {0}, which overcomes your {1}. Disadvantage: your hits -30%, their hits +50%."
+ },
+ {
+  "vi": "{0} sinh {1}: đánh nhau không hơn không kém, nhưng kết giao thì hợp nhau.",
+  "ph": [
+   "A",
+   "B"
+  ],
+  "en": "{0} generates {1}: evenly matched in a fight, but a good match as friends."
+ },
+ {
+  "vi": "{0} sinh {1}: khí của đối thủ nuôi dưỡng bạn, đòn của bạn +10%. Kết giao rất có lợi.",
+  "ph": [
+   "B",
+   "A"
+  ],
+  "en": "{0} generates {1}: your opponent's qi nourishes you, your hits +10%. A very fruitful bond."
+ },
+ {
+  "vi": "Cùng mệnh {0}: ngang ngửa, không ai khắc ai.",
+  "ph": [
+   "A"
+  ],
+  "en": "Both {0}: evenly matched, neither overcomes the other."
+ }
+]

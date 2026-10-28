@@ -1,0 +1,536 @@
+[
+ {
+  "vi": "Linh khí triều dâng",
+  "en": "Spirit Qi Tide"
+ },
+ {
+  "vi": "Linh khí trời đất dồi dào: ai tu luyện cũng nhanh hơn 15%.",
+  "en": "Heaven and earth overflow with spirit qi: everyone cultivates 15% faster."
+ },
+ {
+  "vi": "Bế quan, tu luyện",
+  "en": "Seclusion, cultivation"
+ },
+ {
+  "vi": "Bỏ phí thời gian",
+  "en": "Wasting time"
+ },
+ {
+  "vi": "Huyết nguyệt",
+  "en": "Blood Moon"
+ },
+ {
+  "vi": "Trăng máu treo cao: tà tu tu luyện nhanh hơn 25%, chính đạo chậm đi một chút.",
+  "en": "A blood moon hangs high: evil cultivators cultivate 25% faster, the Righteous Path a little slower."
+ },
+ {
+  "vi": "Tà công, sát phạt",
+  "en": "Evil arts, slaughter"
+ },
+ {
+  "vi": "Đi đêm, tin người lạ",
+  "en": "Night walks, trusting strangers"
+ },
+ {
+  "vi": "Phật quang phổ chiếu",
+  "en": "Buddha's Light Shines"
+ },
+ {
+  "vi": "Chính đạo tu luyện nhanh hơn 20%, tâm ma ai cũng tăng chậm hơn.",
+  "en": "The Righteous Path cultivates 20% faster, and everyone's heart demon grows slower."
+ },
+ {
+  "vi": "Hành thiện, tĩnh tọa",
+  "en": "Good deeds, meditation"
+ },
+ {
+  "vi": "Sát sinh",
+  "en": "Killing"
+ },
+ {
+  "vi": "Cát tinh chiếu mệnh",
+  "en": "Lucky Star Overhead"
+ },
+ {
+  "vi": "Sao lành soi xuống: hạ quái dễ rơi đồ xịn gấp rưỡi.",
+  "en": "An auspicious star shines down: monsters are 1.5x as likely to drop good loot."
+ },
+ {
+  "vi": "Trừ yêu, tìm bảo vật",
+  "en": "Hunting demons, treasure seeking"
+ },
+ {
+  "vi": "Ngồi không",
+  "en": "Sitting idle"
+ },
+ {
+  "vi": "Yêu triều",
+  "en": "Demon Tide"
+ },
+ {
+  "vi": "Yêu ma tràn khỏi núi: quái chặn đường nhiều gấp đôi, hạ được thì nhiều tu vi hơn.",
+  "en": "Demons pour out of the mountains: twice as many monsters block the road, but beating them gives more cultivation."
+ },
+ {
+  "vi": "Trừ yêu luyện công",
+  "en": "Hunting demons to train"
+ },
+ {
+  "vi": "Đi đường một mình",
+  "en": "Traveling alone"
+ },
+ {
+  "vi": "Giang hồ đại loạn",
+  "en": "Jianghu in Chaos"
+ },
+ {
+  "vi": "Võ lâm dậy sóng: gặp người chơi khác nhiều gấp đôi.",
+  "en": "The martial world is in upheaval: you meet other players twice as often."
+ },
+ {
+  "vi": "Luận võ, báo thù",
+  "en": "Sparring, revenge"
+ },
+ {
+  "vi": "Uống trà với người lạ",
+  "en": "Tea with strangers"
+ },
+ {
+  "vi": "Lôi vân tụ đỉnh",
+  "en": "Thunderclouds Gather"
+ },
+ {
+  "vi": "Mây sấm vần vũ: đột phá cảnh giới dễ hơn 6%.",
+  "en": "Thunderclouds churn: realm breakthroughs are 6% easier."
+ },
+ {
+  "vi": "Đột phá, độ kiếp",
+  "en": "Breakthrough, tribulation"
+ },
+ {
+  "vi": "Chần chừ",
+  "en": "Hesitating"
+ },
+ {
+  "vi": "Giáp",
+  "en": "Giáp"
+ },
+ {
+  "vi": "Ất",
+  "en": "Ất"
+ },
+ {
+  "vi": "Bính",
+  "en": "Bính"
+ },
+ {
+  "vi": "Đinh",
+  "en": "Đinh"
+ },
+ {
+  "vi": "Mậu",
+  "en": "Mậu"
+ },
+ {
+  "vi": "Kỷ",
+  "en": "Kỷ"
+ },
+ {
+  "vi": "Tân",
+  "en": "Tân"
+ },
+ {
+  "vi": "Nhâm",
+  "en": "Nhâm"
+ },
+ {
+  "vi": "Quý",
+  "en": "Quý"
+ },
+ {
+  "vi": "Tý",
+  "en": "Tý"
+ },
+ {
+  "vi": "Sửu",
+  "en": "Sửu"
+ },
+ {
+  "vi": "Dần",
+  "en": "Dần"
+ },
+ {
+  "vi": "Mão",
+  "en": "Mão"
+ },
+ {
+  "vi": "Thìn",
+  "en": "Thìn"
+ },
+ {
+  "vi": "Tỵ",
+  "en": "Tỵ"
+ },
+ {
+  "vi": "Ngọ",
+  "en": "Ngọ"
+ },
+ {
+  "vi": "Mùi",
+  "en": "Mùi"
+ },
+ {
+  "vi": "Thân",
+  "en": "Thân"
+ },
+ {
+  "vi": "Dậu",
+  "en": "Dậu"
+ },
+ {
+  "vi": "Tuất",
+  "en": "Tuất"
+ },
+ {
+  "vi": "Hợi",
+  "en": "Hợi"
+ },
+ {
+  "vi": "Chuỗi tu luyện {0} ngày: +{1} linh thạch{2}{3}.",
+  "ph": [
+   "n",
+   "money",
+   "khiVan ? `, khí vận +${khiVan}` : ''",
+   "item ? ', ngọc bội hộ thân' : ''"
+  ],
+  "en": "{0}-day cultivation streak: +{1} spirit stones{2}{3}."
+ },
+ {
+  "vi": ", khí vận +{0}",
+  "ph": [
+   "khiVan"
+  ],
+  "en": ", Luck +{0}"
+ },
+ {
+  "vi": ", ngọc bội hộ thân",
+  "en": ", a protective jade pendant"
+ },
+ {
+  "vi": "Sống qua 80 tuổi",
+  "en": "Live past 80"
+ },
+ {
+  "vi": "Kết Kim Đan",
+  "en": "Form a Golden Core"
+ },
+ {
+  "vi": "Đạt Nguyên Anh",
+  "en": "Reach Nascent Soul"
+ },
+ {
+  "vi": "Thắng một người chơi khác trong kỳ ngộ",
+  "en": "Beat another player in an encounter"
+ },
+ {
+  "vi": "Hạ 3 con quái chặn đường",
+  "en": "Defeat 3 roadblock monsters"
+ },
+ {
+  "vi": "Trảm 20 yêu quái trong một đời",
+  "en": "Slay 20 demons in one life"
+ },
+ {
+  "vi": "Nuôi một linh thú",
+  "en": "Raise a spirit beast"
+ },
+ {
+  "vi": "Kết thành đạo lữ",
+  "en": "Take a Dao companion"
+ },
+ {
+  "vi": "Có 1.500 linh thạch",
+  "en": "Have 1,500 spirit stones"
+ },
+ {
+  "vi": "Mở một kết cục mới trong Sổ Sinh Tử",
+  "en": "Unlock a new ending in the Book of Life and Death"
+ },
+ {
+  "vi": "Uống trà với đồng đạo mà sống sót",
+  "en": "Have tea with a fellow Daoist and survive"
+ },
+ {
+  "vi": "Đạo tâm chính trực từ 50 trở lên",
+  "en": "Righteous Dao Heart of 50 or more"
+ },
+ {
+  "vi": "Đạo tâm tà ác từ -50 trở xuống",
+  "en": "Evil Dao Heart of -50 or lower"
+ },
+ {
+  "vi": "Có được một món đồ ẩn chưa từng thấy",
+  "en": "Obtain a never-before-seen hidden item"
+ },
+ {
+  "vi": "Tiên tịch đã bị tước, nhưng ký ức tiên nhân vẫn còn. Kiếp sau, ngươi sẽ nhớ.",
+  "en": "Your immortal status was stripped, but your immortal memories remain. Next life, you will remember."
+ },
+ {
+  "vi": "Lời tiên tri ứng nghiệm: bạn sinh ra với ký ức của một vị tiên bị giáng trần (ngộ tính +25, khí vận +15, tu luyện nhanh từ nhỏ).",
+  "en": "The prophecy comes true: you are born with the memories of a banished immortal (Insight +25, Luck +15, fast cultivation from childhood)."
+ },
+ {
+  "vi": "Một tia linh thức đã gói ghém những gì ngươi ngộ ra. Kiếp sau, nó sẽ tìm về.",
+  "en": "A thread of spirit sense has bundled up all you came to understand. Next life, it will find its way back."
+ },
+ {
+  "vi": "Lời tiên tri ứng nghiệm: tia linh thức kiếp trước tìm về (ngộ tính +20, linh căn ít nhất Địa, tâm cảnh +10).",
+  "en": "The prophecy comes true: a thread of spirit sense from your past life returns (Insight +20, spiritual root at least Earth, Mind +10)."
+ },
+ {
+  "vi": "Cho đi cả đời công lực, phúc báo sẽ theo ngươi sang kiếp sau.",
+  "en": "You gave away a lifetime of power; the blessing will follow you into the next life."
+ },
+ {
+  "vi": "Lời tiên tri ứng nghiệm: phúc báo của kiếp trước (khí vận +20, sức khỏe +10, +300 linh thạch).",
+  "en": "The prophecy comes true: blessings from your past life (Luck +20, Health +10, +300 spirit stones)."
+ },
+ {
+  "vi": "Kiếp sau, ngươi sẽ sống lâu hơn người thường.",
+  "en": "Next life, you will live longer than ordinary folk."
+ },
+ {
+  "vi": "Lời tiên tri ứng nghiệm: thọ nguyên của bạn dài hơn người thường.",
+  "en": "The prophecy comes true: your lifespan is longer than ordinary folk's."
+ },
+ {
+  "vi": "Kiếp sau, ngươi vừa sinh ra đã thông tuệ hơn người.",
+  "en": "Next life, you will be born brighter than others."
+ },
+ {
+  "vi": "Lời tiên tri ứng nghiệm: bạn sáng dạ lạ thường (ngộ tính +15).",
+  "en": "The prophecy comes true: you are unusually quick-witted (Insight +15)."
+ },
+ {
+  "vi": "Kiếp sau, sao lành sẽ chiếu mệnh ngươi.",
+  "en": "Next life, a lucky star will shine on your destiny."
+ },
+ {
+  "vi": "Lời tiên tri ứng nghiệm: sao lành chiếu mệnh (khí vận +15).",
+  "en": "The prophecy comes true: a lucky star shines on your destiny (Luck +15)."
+ },
+ {
+  "vi": "Kiếp sau, ngươi sinh ra trong nhung lụa.",
+  "en": "Next life, you will be born into silk and luxury."
+ },
+ {
+  "vi": "Lời tiên tri ứng nghiệm: nhà bạn có của ăn của để (+400 linh thạch).",
+  "en": "The prophecy comes true: your family is well off (+400 spirit stones)."
+ },
+ {
+  "vi": "Kiếp sau, ngươi sẽ gặp lại kẻ đã giết ngươi.",
+  "en": "Next life, you will meet again the one who killed you."
+ },
+ {
+  "vi": "Lời tiên tri ứng nghiệm: trong mơ bạn thấy lại kẻ thù kiếp trước. Hắn vẫn còn ở giang hồ.",
+  "en": "The prophecy comes true: in your dreams you see your past life's enemy. He is still out there in the jianghu."
+ },
+ {
+  "vi": "Kiếp sau, tâm ngươi sẽ tĩnh như mặt hồ.",
+  "en": "Next life, your heart will be as still as a lake."
+ },
+ {
+  "vi": "Lời tiên tri ứng nghiệm: tâm bạn tĩnh lặng lạ thường (tâm cảnh +15, tâm ma giảm).",
+  "en": "The prophecy comes true: your heart is unusually calm (Mind +15, heart demon reduced)."
+ },
+ {
+  "vi": "Kiếp sau, ngươi sinh ra đã có sức trâu.",
+  "en": "Next life, you will be born strong as an ox."
+ },
+ {
+  "vi": "Lời tiên tri ứng nghiệm: bạn khỏe như trâu từ nhỏ (sức khỏe +15).",
+  "en": "The prophecy comes true: you have been strong as an ox since childhood (Health +15)."
+ },
+ {
+  "vi": "Kiếp sau, ngươi sẽ trả nợ cho những gì đã làm. Hãy cẩn thận.",
+  "en": "Next life, you will pay for what you have done. Beware."
+ },
+ {
+  "vi": "Lời tiên tri ứng nghiệm: nghiệp cũ đeo bám (khí vận -10), nhưng ý chí bạn sắt đá hơn (tâm cảnh +10).",
+  "en": "The prophecy comes true: old karma clings to you (Luck -10), but your will is iron (Mind +10)."
+ },
+ {
+  "vi": "Thập thế luân hồi",
+  "en": "Ten Lives of Rebirth"
+ },
+ {
+  "vi": "Trải qua 10 kiếp",
+  "en": "Live through 10 lives"
+ },
+ {
+  "vi": "Ngũ thập thế",
+  "en": "Fifty Lives"
+ },
+ {
+  "vi": "Trải qua 50 kiếp",
+  "en": "Live through 50 lives"
+ },
+ {
+  "vi": "Bách thế bất diệt",
+  "en": "Undying Through a Hundred Lives"
+ },
+ {
+  "vi": "Trải qua 100 kiếp",
+  "en": "Live through 100 lives"
+ },
+ {
+  "vi": "Nguyên Anh xuất khiếu",
+  "en": "Nascent Soul Emerges"
+ },
+ {
+  "vi": "Lần đầu đạt Nguyên Anh",
+  "en": "Reach Nascent Soul for the first time"
+ },
+ {
+  "vi": "Hóa Thần đại năng",
+  "en": "Spirit Transformation Master"
+ },
+ {
+  "vi": "Lần đầu đạt Hóa Thần",
+  "en": "Reach Spirit Transformation for the first time"
+ },
+ {
+  "vi": "Độ Kiếp chân nhân",
+  "en": "Tribulation Adept"
+ },
+ {
+  "vi": "Lần đầu đạt Độ Kiếp",
+  "en": "Reach Tribulation for the first time"
+ },
+ {
+  "vi": "Bạch nhật phi thăng",
+  "en": "Ascension in Broad Daylight"
+ },
+ {
+  "vi": "Phi thăng tiên giới lần đầu",
+  "en": "Ascend to the Immortal Realm for the first time"
+ },
+ {
+  "vi": "Tam đạo phi thăng",
+  "en": "Three Paths to Ascension"
+ },
+ {
+  "vi": "Phi thăng bằng 3 con đường khác nhau",
+  "en": "Ascend via 3 different Paths"
+ },
+ {
+  "vi": "Lục đạo luân hồi",
+  "en": "Six Paths of Rebirth"
+ },
+ {
+  "vi": "Từng đi đủ 6 con đường tu tập",
+  "en": "Have walked all 6 cultivation Paths"
+ },
+ {
+  "vi": "Trường sinh",
+  "en": "Longevity"
+ },
+ {
+  "vi": "Sống tới 150 tuổi",
+  "en": "Live to 150"
+ },
+ {
+  "vi": "Nửa cuốn Sổ Sinh Tử",
+  "en": "Half the Book of Life and Death"
+ },
+ {
+  "vi": "Mở 10 kết cục",
+  "en": "Unlock 10 endings"
+ },
+ {
+  "vi": "Thấu hiểu sinh tử",
+  "en": "Master of Life and Death"
+ },
+ {
+  "vi": "Mở 20 kết cục",
+  "en": "Unlock 20 endings"
+ },
+ {
+  "vi": "Vạn thú chi chủ",
+  "en": "Lord of Ten Thousand Beasts"
+ },
+ {
+  "vi": "Từng nuôi 10 loài linh thú",
+  "en": "Have raised 10 kinds of spirit beasts"
+ },
+ {
+  "vi": "Thần binh ngũ thế",
+  "en": "Divine Weapon of Five Lives"
+ },
+ {
+  "vi": "Truyền một thần binh qua 5 kiếp",
+  "en": "Pass a divine weapon down through 5 lives"
+ },
+ {
+  "vi": "Có thù tất báo",
+  "en": "Every Grudge Repaid"
+ },
+ {
+  "vi": "Báo thù được một người chơi khác",
+  "en": "Take revenge on another player"
+ },
+ {
+  "vi": "Giang hồ sát thần",
+  "en": "Death God of the Jianghu"
+ },
+ {
+  "vi": "Thắng người chơi khác 10 lần",
+  "en": "Beat other players 10 times"
+ },
+ {
+  "vi": "Lên Trúc Cơ",
+  "en": "Reach Foundation Establishment"
+ },
+ {
+  "vi": "Chọn con đường và sống qua 60 tuổi",
+  "en": "Choose a Path and live past 60"
+ },
+ {
+  "vi": "Đạt mục tiêu kiếp {0}: {1}. Luân hồi xong sẽ nhận {2} phúc duyên.",
+  "ph": [
+   "c.lifeNo",
+   "g.name",
+   "g.reward"
+  ],
+  "en": "Life {0} goal reached: {1}. You'll receive {2} Fortune after reincarnating."
+ },
+ {
+  "vi": "10 phúc",
+  "en": "10 Fortune"
+ },
+ {
+  "vi": "Tụ Hồn Đan",
+  "en": "Soul Gathering Pill"
+ },
+ {
+  "vi": "20 phúc",
+  "en": "20 Fortune"
+ },
+ {
+  "vi": "Dưỡng Hồn Đan",
+  "en": "Soul Nurturing Pill"
+ },
+ {
+  "vi": "30 phúc",
+  "en": "30 Fortune"
+ },
+ {
+  "vi": "600 linh thạch",
+  "en": "600 spirit stones"
+ },
+ {
+  "vi": "Hoàn Hồn Đan, ngọc bội",
+  "en": "Soul Return Pill, jade pendant"
+ }
+]

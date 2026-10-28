@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Sprite from '@/components/Sprite';
 import MusicToggle from '@/components/MusicToggle';
+import LangToggle from '@/components/LangToggle';
 import { signOut } from '@/lib/auth';
 import { demoChar } from '@/lib/game/demo';
 import { displayName } from '@/lib/storage';
@@ -32,7 +33,8 @@ export default function Home() {
   }, []);
   return (
     <main className="app title-screen">
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: -10 }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginBottom: -10 }}>
+        <LangToggle />
         <MusicToggle />
       </div>
       <h1 className="logo">

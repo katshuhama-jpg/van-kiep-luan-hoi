@@ -1,0 +1,1271 @@
+[
+ {
+  "vi": "Phàm nhân",
+  "en": "Mortal"
+ },
+ {
+  "vi": "Chiếc rương kiếp trước",
+  "en": "The chest from a past life"
+ },
+ {
+  "vi": "Cuốc đất ở {0}, bạn chạm phải một chiếc rương gỗ mục. Trên nắp khắc: \"{1} - kiếp thứ {2}\". Tim bạn thắt lại. Đó là tên của chính bạn ở kiếp trước.",
+  "ph": [
+   "c.stash!.place",
+   "c.stash!.from",
+   "c.stash!.lifeNo"
+  ],
+  "en": "Digging {0}, your hoe strikes a rotting wooden chest. Carved on the lid: \"{1} - life {2}\". Your heart clenches. That was your own name in a past life."
+ },
+ {
+  "vi": " Trong rương có lá thư, nét chữ quen thuộc lạ lùng: \"{0}\"",
+  "ph": [
+   "s.note"
+  ],
+  "en": " Inside is a letter in strangely familiar handwriting: \"{0}\""
+ },
+ {
+  "vi": " Trong rương không có thư, chỉ có một nhúm tóc đã bạc.",
+  "en": " There is no letter inside, only a lock of white hair."
+ },
+ {
+  "vi": "Bạn nhận lại {0} linh thạch{1}.{2}",
+  "ph": [
+   "Math.round(s.money * mul)",
+   "s.item ? ` và ${itemName(s.item)}` : ''",
+   "note"
+  ],
+  "en": "You reclaim {0} spirit stones{1}.{2}"
+ },
+ {
+  "vi": " và {0}",
+  "ph": [
+   "itemName(s.item)"
+  ],
+  "en": " and {0}"
+ },
+ {
+  "vi": "Mở rương",
+  "en": "Open the chest"
+ },
+ {
+  "vi": "Thắp hương cho chính mình rồi mới mở",
+  "en": "Burn incense for yourself first"
+ },
+ {
+  "vi": "tâm cảnh +",
+  "en": "Mind +"
+ },
+ {
+  "vi": "Khói hương bay lên, bạn thấy như được ai đó vỗ vai. ",
+  "en": "As the incense smoke rises, you feel as if someone has patted you on the shoulder. "
+ },
+ {
+  "vi": "Đem cả rương cúng chùa",
+  "en": "Donate the whole chest to the temple"
+ },
+ {
+  "vi": "đạo tâm +, khí vận +",
+  "en": "Dao Heart +, Luck +"
+ },
+ {
+  "vi": "Sư trụ trì chắp tay: \"Thí chủ đã buông được cả chính mình.\" Đêm đó bạn ngủ rất ngon.",
+  "en": "The abbot presses his palms together: \"Benefactor, you have let go even of yourself.\" You sleep soundly that night."
+ },
+ {
+  "vi": "Bán cả rương cho thương nhân",
+  "en": "Sell the whole chest to a merchant"
+ },
+ {
+  "vi": "x1.5 tiền, mất thư và đồ",
+  "en": "x1.5 money, lose the letter and items"
+ },
+ {
+  "vi": "Thương nhân trả giá hời. Bạn không bao giờ biết kiếp trước mình muốn nhắn gì.",
+  "en": "The merchant pays handsomely. You will never know what your past self wanted to tell you."
+ },
+ {
+  "vi": "Ân nhân kiếp trước",
+  "en": "Benefactor from a past life"
+ },
+ {
+  "vi": "Một đoàn xe ngựa dừng trước cửa nhà. Vị tông chủ tóc bạc phơ bước xuống, quỳ sụp trước mặt bạn: \"Ân công! Ngày ấy con chỉ là đứa bé ăn mày, chính ngài, {0}, đã cứu con. Con đợi ngài luân hồi đã bao năm.\"",
+  "ph": [
+   "c.past!.name"
+  ],
+  "en": "A caravan of carriages stops at your door. A white-haired sect master steps down and drops to his knees before you: \"Benefactor! Back then I was just a beggar child, and it was you, {0}, who saved me. I have waited so many years for you to be reborn.\""
+ },
+ {
+  "vi": "Nhận lễ tạ ơn",
+  "en": "Accept his gifts of thanks"
+ },
+ {
+  "vi": "+linh thạch",
+  "en": "+spirit stones"
+ },
+ {
+  "vi": "Ông dâng lên {0} linh thạch và một hộp đan dược.",
+  "ph": [
+   "m"
+  ],
+  "en": "He presents {0} spirit stones and a box of pills."
+ },
+ {
+  "vi": "Xin được bái vào tông môn",
+  "en": "Ask to join his sect"
+ },
+ {
+  "vi": "có sư môn",
+  "en": "gain a sect"
+ },
+ {
+  "vi": "Báo Ân Tông",
+  "en": "Báo Ân Tông"
+ },
+ {
+  "vi": "Bạn trở thành thái thượng trưởng lão danh dự của Báo Ân Tông khi còn chưa kịp lớn.",
+  "en": "Before you've even grown up, you become an honorary Grand Elder of Báo Ân Tông."
+ },
+ {
+  "vi": "Xin ông truyền công",
+  "en": "Ask him to pass on his power"
+ },
+ {
+  "vi": "tu vi lớn",
+  "en": "big cultivation"
+ },
+ {
+  "vi": "Truyền công",
+  "en": "Power Transfer"
+ },
+ {
+  "vi": "Ông đặt tay lên đỉnh đầu bạn. Một dòng chân khí ấm áp chảy khắp kinh mạch.",
+  "en": "He lays a hand on the crown of your head. A warm stream of true qi flows through your meridians."
+ },
+ {
+  "vi": "\"Ta không nhớ gì cả. Ông về đi.\"",
+  "en": "\"I remember nothing. Go home, old man.\""
+ },
+ {
+  "vi": "phúc duyên",
+  "en": "Fortune"
+ },
+ {
+  "vi": "Ông khóc rồi cười: \"Vẫn y như ngày ấy.\" Ông để lại một lá bùa hộ mệnh rồi đi.",
+  "en": "He weeps, then laughs: \"Just the same as back then.\" He leaves you a protective talisman and goes."
+ },
+ {
+  "vi": "Món nợ kiếp trước",
+  "en": "A debt from a past life"
+ },
+ {
+  "vi": "Một kẻ lạ mặt chặn đường, mắt đỏ ngầu: \"Ta nhận ra hồn phách ngươi. Kiếp trước ngươi là {0}, đã thảm sát cả nhà ta. Ta luân hồi chỉ để chờ ngày hôm nay.\"",
+  "ph": [
+   "c.past!.name"
+  ],
+  "en": "A stranger blocks your path, eyes bloodshot: \"I recognize your soul. In your past life you were {0}, and you slaughtered my whole family. I reincarnated just to wait for this day.\""
+ },
+ {
+  "vi": "Quỳ xuống chuộc tội",
+  "en": "Kneel and atone"
+ },
+ {
+  "vi": "-100 linh thạch",
+  "en": "-100 spirit stones"
+ },
+ {
+  "vi": "đạo tâm +",
+  "en": "Dao Heart +"
+ },
+ {
+  "vi": "Hắn đứng lặng rất lâu, rồi quay đi. \"Món nợ này... coi như ta xóa.\"",
+  "en": "He stands frozen for a long time, then turns away. \"This debt... consider it wiped clean.\""
+ },
+ {
+  "vi": "Ra tay trước",
+  "en": "Strike first"
+ },
+ {
+  "vi": "nguy hiểm",
+  "en": "dangerous"
+ },
+ {
+  "vi": "Kẻ thù kiếp trước đâm một nhát xuyên tim. \"Nợ máu, trả bằng máu.\"",
+  "en": "Your enemy from a past life drives a blade through your heart. \"A blood debt is paid in blood.\""
+ },
+ {
+  "vi": "Hắn mạnh hơn bạn tưởng.",
+  "en": "He is stronger than you thought."
+ },
+ {
+  "vi": "Bạn giết hắn. Thêm một vòng oán hận nữa trong luân hồi.",
+  "en": "You kill him. One more turn of hatred on the wheel of reincarnation."
+ },
+ {
+  "vi": "Bạn trọng thương nhưng chạy thoát.",
+  "en": "You are gravely wounded but manage to escape."
+ },
+ {
+  "vi": "Bỏ chạy",
+  "en": "Flee"
+ },
+ {
+  "vi": "kẻ thù từ kiếp trước",
+  "en": "an enemy from a past life"
+ },
+ {
+  "vi": "Bạn chạy thoát. Nhưng từ nay luôn có kẻ bám theo.",
+  "en": "You escape. But from now on, someone is always on your trail."
+ },
+ {
+  "vi": "Hắn ném theo một mũi tiêu độc.",
+  "en": "He flings a poisoned dart after you."
+ },
+ {
+  "vi": "Mời thầy cầu siêu cho cả nhà hắn",
+  "en": "Hire a monk to pray for his family's souls"
+ },
+ {
+  "vi": "-60 linh thạch",
+  "en": "-60 spirit stones"
+ },
+ {
+  "vi": "Ba ngày ba đêm tụng kinh. Kẻ lạ mặt bật khóc, rồi biến mất như chưa từng tồn tại.",
+  "en": "Three days and three nights of sutras. The stranger bursts into tears, then vanishes as if he had never existed."
+ },
+ {
+  "vi": "Ngôi mộ quen thuộc",
+  "en": "A familiar grave"
+ },
+ {
+  "vi": "Đi ngang một gò đất phủ đầy cỏ dại, bạn khựng lại. Bia mộ ghi: \"{0}, {1} tuổi, {2}\". Dòng chữ nhỏ bên dưới: \"{3}\". Không hiểu sao nước mắt bạn rơi.",
+  "ph": [
+   "c.past!.name",
+   "c.past!.age",
+   "c.past!.realmName",
+   "c.past!.cause ?? 'Không rõ nguyên do.'"
+  ],
+  "en": "Passing a mound overgrown with weeds, you stop short. The tombstone reads: \"{0}, {1} years old, {2}\". Small letters beneath: \"{3}\". For some reason, tears fall from your eyes."
+ },
+ {
+  "vi": "Không rõ nguyên do.",
+  "en": "Cause unknown."
+ },
+ {
+  "vi": "Nhổ cỏ, thắp hương",
+  "en": "Pull the weeds, burn incense"
+ },
+ {
+  "vi": "tâm cảnh +, khí vận +",
+  "en": "Mind +, Luck +"
+ },
+ {
+  "vi": "Gió thổi qua, lá rơi đầy vai bạn như một cái ôm.",
+  "en": "The wind blows and leaves fall on your shoulders like an embrace."
+ },
+ {
+  "vi": "Ngồi thiền bên mộ",
+  "en": "Meditate by the grave"
+ },
+ {
+  "vi": "nhớ lại công pháp cũ",
+  "en": "recall old techniques"
+ },
+ {
+  "vi": "Ký ức",
+  "en": "Memories"
+ },
+ {
+  "vi": "Từng mảnh ký ức ùa về. Bạn nhớ lại cách vận khí của {0}.",
+  "ph": [
+   "c.past!.realmName"
+  ],
+  "en": "Fragments of memory flood back. You remember how qi flowed at {0}."
+ },
+ {
+  "vi": "Đào mộ xem có gì",
+  "en": "Dig up the grave to see what's inside"
+ },
+ {
+  "vi": "tà, có thể bị nguyền",
+  "en": "evil, may be cursed"
+ },
+ {
+  "vi": "Trong quan tài có ít đồ tùy táng. Bạn đang đào mộ chính mình.",
+  "en": "There are a few burial goods in the coffin. You are robbing your own grave."
+ },
+ {
+  "vi": "Bộ xương trong quan tài quay đầu nhìn bạn. Đêm đó bạn sốt cao, mê sảng gọi tên kiếp trước.",
+  "en": "The skeleton in the coffin turns its head to look at you. That night you burn with fever, deliriously calling your past-life name."
+ },
+ {
+  "vi": "Hỏi thăm về {0}",
+  "ph": [
+   "c.past!.partner"
+  ],
+  "en": "Ask about {0}"
+ },
+ {
+  "vi": "Ông lão giữ mộ kể: {0} đã ngồi bên mộ này suốt mười năm, rồi một ngày không đến nữa.",
+  "ph": [
+   "c.past!.partner"
+  ],
+  "en": "The old grave keeper says {0} sat by this grave for ten years, then one day stopped coming."
+ },
+ {
+  "vi": "Lặng lẽ bỏ đi",
+  "en": "Quietly walk away"
+ },
+ {
+  "vi": "Bạn tự nhủ: kiếp này, mình sẽ sống khác.",
+  "en": "You tell yourself: this life, I will live differently."
+ },
+ {
+  "vi": "Mộ của một đạo hữu",
+  "en": "A fellow Daoist's grave"
+ },
+ {
+  "vi": "Bên đường có một ngôi mộ: \"{0}, {1} tuổi, {2}\". Phía dưới khắc nhỏ: \"Linh hồn của đạo hữu {3}\". {4}",
+  "ph": [
+   "g.char",
+   "g.age",
+   "g.realm",
+   "g.player",
+   "g.epitaph ? `Bia đề: \"${g.epitaph}\"` : 'Bia không đề chữ nào.'"
+  ],
+  "en": "By the roadside is a grave: \"{0}, {1} years old, {2}\". Carved small beneath: \"Soul of fellow Daoist {3}\". {4}"
+ },
+ {
+  "vi": "Bia đề: \"{0}\"",
+  "ph": [
+   "g.epitaph"
+  ],
+  "en": "The epitaph reads: \"{0}\""
+ },
+ {
+  "vi": "Bia không đề chữ nào.",
+  "en": "The tombstone bears no epitaph."
+ },
+ {
+  "vi": "Thắp nén nhang",
+  "en": "Burn a stick of incense"
+ },
+ {
+  "vi": "khí vận +",
+  "en": "Luck +"
+ },
+ {
+  "vi": "Bạn vái ba vái. Không biết {0} ở phương nào, có cảm nhận được không.",
+  "ph": [
+   "g.player"
+  ],
+  "en": "You bow three times. Wherever {0} may be, you wonder if they can feel it."
+ },
+ {
+  "vi": "Đọc di thư trong bia",
+  "en": "Read the last letter in the tombstone"
+ },
+ {
+  "vi": "tu vi",
+  "en": "cultivation"
+ },
+ {
+  "vi": "Di thư",
+  "en": "Last letter"
+ },
+ {
+  "vi": "Trong khe bia giấu mấy trang tâm đắc tu luyện của {0}. {1}",
+  "ph": [
+   "g.char",
+   "g.cause ? `Trang cuối viết: \"${g.cause}\"` : ''"
+  ],
+  "en": "Hidden in a crack of the tombstone are a few pages of {0}'s cultivation insights. {1}"
+ },
+ {
+  "vi": "Trang cuối viết: \"{0}\"",
+  "ph": [
+   "g.cause"
+  ],
+  "en": "The last page reads: \"{0}\""
+ },
+ {
+  "vi": "Đào lấy đồ tùy táng",
+  "en": "Dig up the burial goods"
+ },
+ {
+  "vi": "tà, có thể gặp oán hồn",
+  "en": "evil, may meet a vengeful ghost"
+ },
+ {
+  "vi": "Bạn lấy được {0} linh thạch. Gió rít lên như tiếng ai chửi rủa.",
+  "ph": [
+   "m"
+  ],
+  "en": "You get {0} spirit stones. The wind howls like someone cursing."
+ },
+ {
+  "vi": "Oán hồn của {0} bóp cổ bạn đến chết ngay trên miệng huyệt.",
+  "ph": [
+   "g.char"
+  ],
+  "en": "The vengeful ghost of {0} strangles you to death right at the mouth of the grave."
+ },
+ {
+  "vi": "Nắp quan tài bật mở...",
+  "en": "The coffin lid flies open..."
+ },
+ {
+  "vi": "Oán hồn của {0} hiện ra. Bạn bỏ chạy, mất mấy năm không dám ngủ tối.",
+  "ph": [
+   "g.char"
+  ],
+  "en": "The vengeful ghost of {0} appears. You flee, and for years you don't dare sleep at night."
+ },
+ {
+  "vi": "Khắc thêm một dòng lên bia",
+  "en": "Carve another line on the tombstone"
+ },
+ {
+  "vi": "Bạn khắc: \"{0} từng ghé qua\". Có lẽ một ngày ai đó cũng sẽ đọc được.",
+  "ph": [
+   "ch.name"
+  ],
+  "en": "You carve: \"{0} was here\". Perhaps someday someone will read it too."
+ },
+ {
+  "vi": "Ma đầu hiện thế",
+  "en": "A demon lord appears"
+ },
+ {
+  "vi": "Tin dữ truyền khắp nơi: ma đầu {0} ({1}) - kẻ đứng đầu Tà phái, linh hồn của đạo hữu {2} - đang tàn sát một trấn nhỏ gần đây.",
+  "ph": [
+   "c.world!.ma!.name",
+   "c.world!.ma!.realmName",
+   "c.world!.ma!.player"
+  ],
+  "en": "Grim news spreads everywhere: the demon lord {0} ({1}) - leader of the Evil sects, soul of fellow Daoist {2} - is massacring a small town nearby."
+ },
+ {
+  "vi": "Xông tới ngăn hắn lại",
+  "en": "Rush in to stop him"
+ },
+ {
+  "vi": "rất nguy hiểm",
+  "en": "very dangerous"
+ },
+ {
+  "vi": "có cơ hội",
+  "en": "a chance"
+ },
+ {
+  "vi": "Ma đầu {0} chỉ phẩy tay. Bạn chết, trở thành một cái tên trong danh sách nạn nhân của hắn.",
+  "ph": [
+   "m.name"
+  ],
+  "en": "The demon lord {0} merely waves a hand. You die, just another name on his list of victims."
+ },
+ {
+  "vi": "Bạn lao tới...",
+  "en": "You charge in..."
+ },
+ {
+  "vi": "Trảm ma",
+  "en": "Demon Slayer"
+ },
+ {
+  "vi": "Bạn đánh lui {0}! Dân trấn lập đền thờ sống cho bạn.",
+  "ph": [
+   "m.name"
+  ],
+  "en": "You drive back {0}! The townsfolk build a shrine to you while you still live."
+ },
+ {
+  "vi": "{0} cười khẩy rồi bỏ đi. Bạn may mắn giữ được mạng.",
+  "ph": [
+   "m.name"
+  ],
+  "en": "{0} sneers and leaves. You are lucky to keep your life."
+ },
+ {
+  "vi": "Xin làm thuộc hạ của hắn",
+  "en": "Ask to become his underling"
+ },
+ {
+  "vi": "tà, được công pháp",
+  "en": "evil, gain a technique"
+ },
+ {
+  "vi": "Nhập ma môn",
+  "en": "Joined a demonic sect"
+ },
+ {
+  "vi": "{0} nhìn bạn một hồi: \"Được. Từ nay ngươi là chó của ta.\" Hắn ném cho bạn một cuốn ma công.",
+  "ph": [
+   "m.name"
+  ],
+  "en": "{0} looks you over for a while: \"Fine. From now on you are my dog.\" He tosses you a demonic manual."
+ },
+ {
+  "vi": "Sơ tán dân làng",
+  "en": "Evacuate the villagers"
+ },
+ {
+  "vi": "Bạn dẫn được hơn trăm người chạy thoát, nhưng bị ma khí quét trúng.",
+  "en": "You lead over a hundred people to safety, but get swept by demonic qi."
+ },
+ {
+  "vi": "Bạn dẫn được hơn trăm người chạy thoát trong đêm.",
+  "en": "You lead over a hundred people to safety in the night."
+ },
+ {
+  "vi": "Đóng cửa trốn",
+  "en": "Bolt the door and hide"
+ },
+ {
+  "vi": "Tiếng kêu khóc vọng về suốt ba đêm. Bạn bịt tai lại.",
+  "en": "Cries and wails echo for three nights. You cover your ears."
+ },
+ {
+  "vi": "Gặp minh chủ chính đạo",
+  "en": "Meeting the Righteous Path's leader"
+ },
+ {
+  "vi": "Trên quan đạo, một người áo trắng cưỡi hạc đi qua. Người qua đường xì xào: đó là {0} ({1}), đệ nhất chính đạo đương thời, linh hồn của đạo hữu {2}.",
+  "ph": [
+   "c.world!.chinh!.name",
+   "c.world!.chinh!.realmName",
+   "c.world!.chinh!.player"
+  ],
+  "en": "On the high road, a figure in white rides past on a crane. Passersby whisper: that is {0} ({1}), foremost of the Righteous Path in this age, soul of fellow Daoist {2}."
+ },
+ {
+  "vi": "Quỳ xin chỉ điểm",
+  "en": "Kneel and beg for guidance"
+ },
+ {
+  "vi": "Chỉ điểm",
+  "en": "Guidance"
+ },
+ {
+  "vi": "{0} chỉ nói một câu, mà bạn ngẫm cả mười năm.",
+  "ph": [
+   "m.name"
+  ],
+  "en": "{0} says just one sentence, and you ponder it for ten years."
+ },
+ {
+  "vi": "Thách đấu",
+  "en": "Challenge them"
+ },
+ {
+  "vi": "liều",
+  "en": "reckless"
+ },
+ {
+  "vi": "Bạn đỡ được ba chiêu của {0}! Cả giang hồ biết tên bạn.",
+  "ph": [
+   "m.name"
+  ],
+  "en": "You withstand three moves from {0}! The whole jianghu learns your name."
+ },
+ {
+  "vi": "{0} chỉ dùng một ngón tay đã hạ bạn. \"Còn non lắm.\"",
+  "ph": [
+   "m.name"
+  ],
+  "en": "{0} takes you down with a single finger. \"Still green.\""
+ },
+ {
+  "vi": "Trộm túi càn khôn của người",
+  "en": "Steal their qiankun pouch"
+ },
+ {
+  "vi": "rất tà",
+  "en": "very evil"
+ },
+ {
+  "vi": "{0} quay lại, ánh kiếm lóe lên. Bạn chết trước khi kịp chạm vào túi.",
+  "ph": [
+   "m.name"
+  ],
+  "en": "{0} turns, and a sword flashes. You die before you can touch the pouch."
+ },
+ {
+  "vi": "Bạn vừa đưa tay...",
+  "en": "You reach out..."
+ },
+ {
+  "vi": "Bạn móc được ít linh thạch rồi lặn mất. Người cố ý tha cho bạn chăng?",
+  "en": "You fish out a few spirit stones and slip away. Did they let you go on purpose?"
+ },
+ {
+  "vi": "Đứng nhìn theo",
+  "en": "Watch them go"
+ },
+ {
+  "vi": "Bạn thầm thề: một ngày nào đó mình cũng sẽ bay như thế.",
+  "en": "You swear silently: one day, you too will fly like that."
+ },
+ {
+  "vi": "Quả trứng lạ",
+  "en": "A strange egg"
+ },
+ {
+  "vi": "Sau trận lũ, bạn nhặt được một quả trứng to bằng cái gáo, vỏ có vảy, ấm như hòn than.",
+  "en": "After the flood, you find an egg the size of a water ladle, its shell scaled and warm as a live coal."
+ },
+ {
+  "vi": "Ôm về ấp",
+  "en": "Take it home to hatch"
+ },
+ {
+  "vi": "bắt đầu một chuyện dài",
+  "en": "the start of a long story"
+ },
+ {
+  "vi": "Bạn quấn trứng trong chăn bông, đêm nào cũng ôm ngủ.",
+  "en": "You wrap the egg in a cotton quilt and hug it to sleep every night."
+ },
+ {
+  "vi": "Bán ở phường thị",
+  "en": "Sell it at the Market"
+ },
+ {
+  "vi": "Lão thương nhân trả 120 linh thạch mà mắt sáng rực. Bạn hơi chột dạ.",
+  "en": "The old merchant pays 120 spirit stones, his eyes gleaming. You feel a little uneasy."
+ },
+ {
+  "vi": "Luộc ăn",
+  "en": "Boil and eat it"
+ },
+ {
+  "vi": "sức khỏe ++",
+  "en": "Health ++"
+ },
+ {
+  "vi": "Ngon đến mức bạn liếm cả vỏ. Người nóng như lửa suốt ba ngày.",
+  "en": "So tasty you lick the shell. You burn like fire for three days."
+ },
+ {
+  "vi": "Trả về chỗ cũ",
+  "en": "Put it back where you found it"
+ },
+ {
+  "vi": "Đêm đó có tiếng gầm rất xa vọng về, như một lời cảm ơn.",
+  "en": "That night a distant roar echoes back, like a thank-you."
+ },
+ {
+  "vi": "Trứng nở",
+  "en": "The egg hatches"
+ },
+ {
+  "vi": "Rắc! Quả trứng nứt đôi. Một con rồng con bằng con mèo bò ra, kêu \"éc éc\" rồi cắn vào ngón tay bạn.",
+  "en": "Crack! The egg splits in two. A baby dragon the size of a cat crawls out, squeaks, and bites your finger."
+ },
+ {
+  "vi": "Cho ăn linh thạch",
+  "en": "Feed it spirit stones"
+ },
+ {
+  "vi": "-80 linh thạch",
+  "en": "-80 spirit stones"
+ },
+ {
+  "vi": "Nó nhai linh thạch rau ráu, vảy sáng lên như ngọc.",
+  "en": "It crunches the spirit stones, its scales shining like jade."
+ },
+ {
+  "vi": "Cho uống máu của mình",
+  "en": "Feed it your own blood"
+ },
+ {
+  "vi": "tà, rồng mạnh hơn",
+  "en": "evil, stronger dragon"
+ },
+ {
+  "vi": "Nó uống máu bạn, mắt đỏ rực lên. Từ đó nó chỉ nghe lời mình bạn.",
+  "en": "It drinks your blood and its eyes glow red. From then on it obeys only you."
+ },
+ {
+  "vi": "Đặt tên là Bé Bự",
+  "en": "Name it Chunky"
+ },
+ {
+  "vi": "Bé Bự vẫy đuôi. Bạn có thêm một người nhà.",
+  "en": "Chunky wags its tail. You have a new family member."
+ },
+ {
+  "vi": "Thả về rừng",
+  "en": "Release it into the forest"
+ },
+ {
+  "vi": "Nó ngoái lại ba lần trước khi biến vào rừng.",
+  "en": "It looks back three times before vanishing into the trees."
+ },
+ {
+  "vi": "Rồng con nổi điên",
+  "en": "The baby dragon runs wild"
+ },
+ {
+  "vi": "Con rồng giờ đã dài ba trượng. Đêm qua nó {0}. Dân làng kéo đến đòi giết nó.",
+  "ph": [
+   "arc(c, 'rong')?.v === 'ma' ? 'cắn chết cả đàn bò của làng bên' : 'phá nát nửa vườn nhà hàng xóm'"
+  ],
+  "en": "The dragon is now three zhang long. Last night it {0}. The villagers come demanding its death."
+ },
+ {
+  "vi": "cắn chết cả đàn bò của làng bên",
+  "en": "killed a whole herd of the next village's cattle"
+ },
+ {
+  "vi": "phá nát nửa vườn nhà hàng xóm",
+  "en": "wrecked half the neighbor's garden"
+ },
+ {
+  "vi": "Đền bù cho dân làng",
+  "en": "Compensate the villagers"
+ },
+ {
+  "vi": "-200 linh thạch",
+  "en": "-200 spirit stones"
+ },
+ {
+  "vi": "Bạn bồi thường đến đồng cuối cùng. Rồng gục đầu vào lòng bạn.",
+  "en": "You pay them back to the last coin. The dragon lays its head in your lap."
+ },
+ {
+  "vi": "Đứng chắn trước rồng",
+  "en": "Stand in front of the dragon"
+ },
+ {
+  "vi": "có thể bị thương",
+  "en": "may get hurt"
+ },
+ {
+  "vi": "Dân làng ném đá trúng đầu bạn.",
+  "en": "A villager's stone hits you in the head."
+ },
+ {
+  "vi": "Dân làng thấy bạn liều mạng, đành bỏ về.",
+  "en": "Seeing you risk your life, the villagers give up and go home."
+ },
+ {
+  "vi": "Thả rồng ra cho nó xử",
+  "en": "Let the dragon deal with them"
+ },
+ {
+  "vi": "tà",
+  "en": "evil"
+ },
+ {
+  "vi": "Một tiếng gầm. Rồi im lặng. Không ai dám đến nữa.",
+  "en": "A roar. Then silence. No one dares come again."
+ },
+ {
+  "vi": "Đành bán rồng cho tông môn",
+  "en": "Sell the dragon to a sect"
+ },
+ {
+  "vi": "+600 linh thạch",
+  "en": "+600 spirit stones"
+ },
+ {
+  "vi": "Lúc bị dắt đi, nó vẫn ngoái nhìn bạn.",
+  "en": "As it is led away, it keeps looking back at you."
+ },
+ {
+  "vi": "Long kỵ",
+  "en": "Dragon Rider"
+ },
+ {
+  "vi": "Một buổi sáng, con rồng cúi đầu xuống trước mặt bạn, như mời bạn trèo lên lưng.",
+  "en": "One morning, the dragon lowers its head before you, as if inviting you onto its back."
+ },
+ {
+  "vi": "Trèo lên!",
+  "en": "Climb on!"
+ },
+ {
+  "vi": "có tọa kỵ",
+  "en": "gain a mount"
+ },
+ {
+  "vi": "Rồng vút lên mây. Cả làng ngửa cổ nhìn theo, há hốc mồm. Từ nay bạn là Long Kỵ Sĩ.",
+  "en": "The dragon soars into the clouds. The whole village cranes their necks, jaws dropping. From now on you are a Dragon Rider."
+ },
+ {
+  "vi": "Để nó tự do bay đi",
+  "en": "Let it fly free"
+ },
+ {
+  "vi": "Nó bay vòng quanh nhà ba vòng rồi biến mất giữa trời xanh.",
+  "en": "It circles the house three times, then vanishes into the blue sky."
+ },
+ {
+  "vi": "Lấy một vảy rồng làm kỷ niệm",
+  "en": "Take a dragon scale as a keepsake"
+ },
+ {
+  "vi": "Vảy rồng nóng hổi trong tay, linh khí cuồn cuộn. Rồng vẫn ở lại bên bạn.",
+  "en": "The dragon scale is hot in your hand, surging with spiritual qi. The dragon stays by your side."
+ },
+ {
+  "vi": "Đứa trẻ quỳ trước cửa",
+  "en": "A child kneeling at the door"
+ },
+ {
+  "vi": "Một đứa trẻ rách rưới quỳ trước động phủ suốt ba ngày ba đêm giữa trời tuyết, chỉ để xin được làm đồ đệ.",
+  "en": "A ragged child kneels before your cave abode for three days and nights in the snow, just to beg to become your disciple."
+ },
+ {
+  "vi": "Nhận làm đồ đệ",
+  "en": "Take them as a disciple"
+ },
+ {
+  "vi": "Bạn khoác áo cho nó. Nó lạy chín lạy, trán chảy máu.",
+  "en": "You wrap your coat around the child. They kowtow nine times until their forehead bleeds."
+ },
+ {
+  "vi": "Cho ít tiền rồi đuổi đi",
+  "en": "Give some money and send them away"
+ },
+ {
+  "vi": "Đứa trẻ cầm tiền, nhìn bạn rất lâu rồi đi.",
+  "en": "The child takes the money, looks at you for a long time, then leaves."
+ },
+ {
+  "vi": "Bắt làm nô bộc",
+  "en": "Make them a servant"
+ },
+ {
+  "vi": "Nó gánh nước bổ củi cho bạn không công. Ánh mắt nó ngày càng lạnh.",
+  "en": "The child hauls water and chops wood for you unpaid. Their eyes grow colder by the day."
+ },
+ {
+  "vi": "Truyền nghề",
+  "en": "Passing on the art"
+ },
+ {
+  "vi": "Đồ đệ ngày càng giỏi. Đêm nay nó xin bạn truyền tuyệt học áp đáy hòm.",
+  "en": "Your disciple grows more skilled by the day. Tonight they ask you to teach your secret ultimate technique."
+ },
+ {
+  "vi": "Truyền hết, không giữ gì",
+  "en": "Teach everything, hold nothing back"
+ },
+ {
+  "vi": "Bạn dạy nó tất cả. Nó cảm động đến bật khóc.",
+  "en": "You teach them everything. They are moved to tears."
+ },
+ {
+  "vi": "Giữ lại một chiêu",
+  "en": "Hold back one move"
+ },
+ {
+  "vi": "phòng thân",
+  "en": "just in case"
+ },
+ {
+  "vi": "Bạn dạy chín phần, giữ lại một. Sư phụ nào cũng vậy.",
+  "en": "You teach nine parts and keep one. Every master does."
+ },
+ {
+  "vi": "Dạy nó ma công",
+  "en": "Teach them demonic arts"
+ },
+ {
+  "vi": "Nó học rất nhanh. Quá nhanh.",
+  "en": "They learn very fast. Too fast."
+ },
+ {
+  "vi": "Dùng nó làm lô đỉnh tu luyện",
+  "en": "Use them as a cultivation cauldron"
+ },
+ {
+  "vi": "rất tà, tu vi lớn",
+  "en": "very evil, big cultivation"
+ },
+ {
+  "vi": "Hút công",
+  "en": "Absorb Power"
+ },
+ {
+  "vi": "Bạn hút cạn tu vi của nó. Thân xác nó khô quắt như lá mùa thu.",
+  "en": "You drain all of their cultivation. Their body withers like an autumn leaf."
+ },
+ {
+  "vi": "Đồ đệ trở về",
+  "en": "The disciple returns"
+ },
+ {
+  "vi": "Đồ đệ trở về sau nhiều năm du lịch. Nhưng ánh mắt nó lạ lắm. Sau lưng nó là một đám hắc y nhân.",
+  "en": "Your disciple returns after many years of travel. But there's something strange in their eyes. Behind them stands a band of men in black."
+ },
+ {
+  "vi": "Đồ đệ trở về, mặt lạnh như băng: \"Sư phụ, xin người giao ra chức chưởng môn.\"",
+  "en": "Your disciple returns, face cold as ice: \"Master, please hand over the position of Sect Leader.\""
+ },
+ {
+  "vi": "Dùng chiêu giữ lại",
+  "en": "Use the move you held back"
+ },
+ {
+  "vi": "Giao đấu với đồ đệ",
+  "en": "Duel your disciple"
+ },
+ {
+  "vi": "nó không biết chiêu này",
+  "en": "they don't know this move"
+ },
+ {
+  "vi": "nó biết hết chiêu của bạn",
+  "en": "they know all your moves"
+ },
+ {
+  "vi": "Nó dùng đúng chiêu bạn dạy. Bạn dùng chiêu bạn chưa dạy. Nó quỳ xuống, máu ứa nơi khóe miệng.",
+  "en": "They use exactly the moves you taught. You use the one you never taught. They fall to their knees, blood trickling from the corner of their mouth."
+ },
+ {
+  "vi": "Đồ đệ dùng chính chiêu bạn dạy, một kiếm xuyên tim. \"Sư phụ, người dạy con chu đáo quá.\"",
+  "en": "Your disciple uses the very move you taught - one sword through the heart. \"Master, you taught me so thoroughly.\""
+ },
+ {
+  "vi": "Hai thầy trò giao chiến...",
+  "en": "Master and disciple clash..."
+ },
+ {
+  "vi": "Bạn thắng sát nút. Đồ đệ bỏ đi trong đêm.",
+  "en": "You win by a hair. Your disciple leaves in the night."
+ },
+ {
+  "vi": "Nhường chức cho nó",
+  "en": "Hand over the position"
+ },
+ {
+  "vi": "Nó lên ngôi rồi đuổi bạn xuống núi giữa mùa đông.",
+  "en": "They take the seat, then drive you down the mountain in the dead of winter."
+ },
+ {
+  "vi": "Nó lên ngôi, rồi quỳ trước mặt bạn: \"Con chỉ muốn sư phụ được nghỉ ngơi.\"",
+  "en": "They take the seat, then kneel before you: \"I only wanted you to finally rest, Master.\""
+ },
+ {
+  "vi": "Bỏ trốn khỏi sơn môn",
+  "en": "Flee the sect"
+ },
+ {
+  "vi": "đồ đệ phản sư",
+  "en": "disciple betrays master"
+ },
+ {
+  "vi": "Bạn mang theo được một ít, còn lại đều để lại cho nó.",
+  "en": "You manage to take a little with you; the rest you leave to them."
+ },
+ {
+  "vi": "Từ hôn",
+  "en": "Broken engagement"
+ },
+ {
+  "vi": "{0} từ nhỏ của bạn - nay đã là đệ tử nội môn Thiên Kiếm Tông - đến tận nhà, ném tờ hôn thư xuống đất trước mặt cả họ: \"Phế vật như ngươi, không xứng với ta.\"",
+  "ph": [
+   "c.gender === 'nam' ? 'Hôn thê' : 'Hôn phu'"
+  ],
+  "en": "Your childhood {0} - now an inner disciple of Thiên Kiếm Tông - comes to your house and throws the marriage contract on the floor before your whole clan: \"Trash like you is not worthy of me.\""
+ },
+ {
+  "vi": "Hôn thê",
+  "en": "fiancée"
+ },
+ {
+  "vi": "Hôn phu",
+  "en": "fiancé"
+ },
+ {
+  "vi": "\"Ba mươi năm Hà Đông, ba mươi năm Hà Tây! Hẹn ba năm sau!\"",
+  "en": "\"Thirty years east of the river, thirty years west! Three years from now - we'll see!\""
+ },
+ {
+  "vi": "hẹn ước 3 năm",
+  "en": "three-year pact"
+ },
+ {
+  "vi": "Cả sảnh đường im phăng phắc. Rồi ai đó bật cười. Bạn nắm chặt tay đến bật máu.",
+  "en": "The whole hall falls silent. Then someone laughs. You clench your fists until they bleed."
+ },
+ {
+  "vi": "Nhặt hôn thư lên, xé đôi",
+  "en": "Pick up the contract and tear it in two"
+ },
+ {
+  "vi": "\"Ngươi đi đi.\" Bạn quay lưng. Lòng nhẹ bẫng.",
+  "en": "\"Just go.\" You turn your back. Your heart feels light."
+ },
+ {
+  "vi": "Quỳ xuống van xin",
+  "en": "Kneel and beg"
+ },
+ {
+  "vi": "Người ấy cười khinh rồi bỏ đi. Cả làng bàn tán suốt mấy năm.",
+  "en": "They laugh with contempt and leave. The village gossips about it for years."
+ },
+ {
+  "vi": "Tát hộ vệ của người ấy",
+  "en": "Slap their bodyguard"
+ },
+ {
+  "vi": "Tên hộ vệ Trúc Cơ kỳ phản đòn một chưởng. Bạn chết ngay trong ngày bị từ hôn.",
+  "en": "The Foundation Establishment bodyguard strikes back with one palm. You die on the very day your engagement is broken."
+ },
+ {
+  "vi": "Bạn vung tay...",
+  "en": "You swing your hand..."
+ },
+ {
+  "vi": "Bạn bị đánh gãy ba cái xương sườn, nhưng thấy rất đã.",
+  "en": "You get three ribs broken, but it felt great."
+ },
+ {
+  "vi": "Ước hẹn ba năm",
+  "en": "The three-year pact"
+ },
+ {
+  "vi": "Ba năm đã đến. Trên lôi đài Thiên Kiếm Tông, người từng từ hôn bạn đang đợi, đã là {0}. Cả thiên hạ đến xem.",
+  "ph": [
+   "realmName(Math.max(2, c.realm))"
+  ],
+  "en": "Three years have passed. On the arena of Thiên Kiếm Tông, the one who broke off your engagement waits, now at {0}. The whole world has come to watch."
+ },
+ {
+  "vi": "Vả mặt!",
+  "en": "Face slap!"
+ },
+ {
+  "vi": "Một chưởng. Người ấy bay khỏi lôi đài. Cả quảng trường nín thở rồi vỡ òa. \"Đừng khinh thiếu niên nghèo!\"",
+  "en": "One palm. They fly off the arena. The whole square holds its breath, then erupts. \"Never look down on a poor youth!\""
+ },
+ {
+  "vi": "Bạn thua thảm. Người ấy nói nhỏ: \"Ba năm nữa, ta vẫn đợi.\" Hóa ra người ấy chưa từng quên bạn.",
+  "en": "You lose badly. They say softly: \"In three more years, I'll still be waiting.\" Turns out they never forgot you."
+ },
+ {
+  "vi": "Bước lên lôi đài",
+  "en": "Step onto the arena"
+ },
+ {
+  "vi": "Uống cấm đan trước khi lên đài",
+  "en": "Take a forbidden pill before the fight"
+ },
+ {
+  "vi": "tà, mạnh hơn, hại thân",
+  "en": "evil, stronger, harms the body"
+ },
+ {
+  "vi": "Nhờ sư phụ đứng sau lưng",
+  "en": "Have your Master stand behind you"
+ },
+ {
+  "vi": "Không đến",
+  "en": "Don't show up"
+ },
+ {
+  "vi": "Bạn trốn trong núi. Thiên hạ cười suốt mười năm.",
+  "en": "You hide in the mountains. The world laughs for ten years."
+ },
+ {
+  "vi": "Đinh!",
+  "en": "Ding!"
+ },
+ {
+  "vi": "\"Đinh! Phát hiện ký chủ phù hợp. Hệ Thống Tu Tiên Vô Địch Siêu Cấp đang được kích hoạt... 99%... Xin ký chủ xác nhận trói định.\"",
+  "en": "\"Ding! Suitable host detected. Super Invincible Cultivation System activating... 99%... Host, please confirm binding.\""
+ },
+ {
+  "vi": "Đồng ý trói định",
+  "en": "Agree to bind"
+ },
+ {
+  "vi": "nhận quà tân thủ",
+  "en": "get a newbie gift"
+ },
+ {
+  "vi": "Quà tân thủ",
+  "en": "Newbie gift"
+ },
+ {
+  "vi": "\"Đinh! Trói định thành công. Tặng ký chủ gói quà tân thủ: 100 linh thạch, 3 Tụ Khí Đan.\"",
+  "en": "\"Ding! Binding successful. Gifting host a newbie pack: 100 spirit stones, 3 Qi Gathering Pills.\""
+ },
+ {
+  "vi": "Hỏi có gói VIP không",
+  "en": "Ask if there's a VIP pack"
+ },
+ {
+  "vi": "-648 linh thạch",
+  "en": "-648 spirit stones"
+ },
+ {
+  "vi": "\"Đinh! Ký chủ nạp {0} linh thạch. Tặng danh hiệu: Đại Gia Tu Tiên.\" Không hiểu sao bạn thấy mình bị lừa.",
+  "ph": [
+   "pay"
+  ],
+  "en": "\"Ding! Host has topped up {0} spirit stones. Title granted: Cultivation Big Spender.\" For some reason you feel scammed."
+ },
+ {
+  "vi": "Từ chối",
+  "en": "Refuse"
+ },
+ {
+  "vi": "\"Đinh! Ký chủ từ chối. Hệ thống tự hủy sau 3... 2... 1...\" Bùm.",
+  "en": "\"Ding! Host refused. System self-destructing in 3... 2... 1...\" Boom."
+ },
+ {
+  "vi": "Đi chùa trừ tà",
+  "en": "Go to a temple for an exorcism"
+ },
+ {
+  "vi": "Sư thầy gõ mõ ba ngày. Giọng nói lẩm bẩm \"Đinh... đinh...\" rồi tắt hẳn.",
+  "en": "The monk taps his wooden fish for three days. The voice mutters \"Ding... ding...\" then goes silent for good."
+ },
+ {
+  "vi": "Nhiệm vụ hệ thống",
+  "en": "System quest"
+ },
+ {
+  "vi": "\"Đinh! Nhiệm vụ hằng ngày: hãy đi tát một tên công tử nhà giàu. Phần thưởng: bí ẩn.\"",
+  "en": "\"Ding! Daily quest: go slap a rich young master. Reward: mystery.\""
+ },
+ {
+  "vi": "\"Đinh! Nhiệm vụ chính tuyến: tỏ tình với người đẹp nhất trấn trong vòng 1 canh giờ. Thất bại: điện giật.\"",
+  "en": "\"Ding! Main quest: confess your love to the prettiest person in town within 1 hour. Failure: electric shock.\""
+ },
+ {
+  "vi": "Làm nhiệm vụ",
+  "en": "Do the quest"
+ },
+ {
+  "vi": "Hoàn thành",
+  "en": "Complete"
+ },
+ {
+  "vi": "\"Đinh! Hoàn thành.\" Bạn nhận phần thưởng, nhưng cũng nhận một trận đòn.",
+  "en": "\"Ding! Complete.\" You receive the reward, and also a beating."
+ },
+ {
+  "vi": "\"Đinh! Nhiệm vụ hoàn thành. Thưởng: tu vi.\" Thiên hạ nhìn bạn như nhìn kẻ điên.",
+  "en": "\"Ding! Quest complete. Reward: cultivation.\" Everyone looks at you like a madman."
+ },
+ {
+  "vi": "Mặc cả với hệ thống",
+  "en": "Haggle with the system"
+ },
+ {
+  "vi": "\"Đinh! Hệ thống không hiểu ký chủ nói gì... nhưng thôi, thưởng 50 linh thạch cho đỡ phiền.\"",
+  "en": "\"Ding! System does not understand what host is saying... but fine, here's 50 spirit stones to make you go away.\""
+ },
+ {
+  "vi": "Phớt lờ",
+  "en": "Ignore it"
+ },
+ {
+  "vi": "\"Đinh! Nhiệm vụ thất bại. Trừng phạt: điện giật 10 vạn vôn.\" Tóc bạn dựng đứng suốt một tháng.",
+  "en": "\"Ding! Quest failed. Penalty: 100,000-volt electric shock.\" Your hair stands on end for a month."
+ },
+ {
+  "vi": "Khe nứt không gian",
+  "en": "A crack in space"
+ },
+ {
+  "vi": "Trời quang mây tạnh, không gian trước mặt bỗng nứt toác. Bên kia có ánh đèn rực rỡ, tiếng còi inh ỏi và mùi... phở?",
+  "en": "On a clear, cloudless day, the space before you suddenly splits open. On the other side: dazzling lights, blaring horns, and the smell of... pho?"
+ },
+ {
+  "vi": "Bước vào",
+  "en": "Step in"
+ },
+ {
+  "vi": "Bước qua khe nứt không gian. Bạn tỉnh dậy giữa ngã tư Cửa Nam, Hà Nội năm 2026. Một bác xe ôm hỏi: \"Đi đâu cháu?\"",
+  "en": "Stepped through a crack in space. You wake up at the Cửa Nam intersection, Hanoi, in 2026. A motorbike-taxi driver asks: \"Where to, kid?\""
+ },
+ {
+  "vi": "XUYÊN KHÔNG",
+  "en": "TRANSMIGRATION"
+ },
+ {
+  "vi": "Ném một hòn đá sang",
+  "en": "Throw a stone through"
+ },
+ {
+  "vi": "Một lúc sau có thứ bay ngược lại: một cục gạch phát sáng, có chữ \"Nokia\". Nó không bao giờ vỡ.",
+  "en": "A while later something flies back: a glowing brick with the word \"Nokia\" on it. It never breaks."
+ },
+ {
+  "vi": "Kéo một người bên kia sang",
+  "en": "Pull someone from the other side"
+ },
+ {
+  "vi": "có đạo lữ?",
+  "en": "a Dao companion?"
+ },
+ {
+  "vi": "Bạn kéo được một anh shipper. Anh ấy giao xong đơn rồi đòi về.",
+  "en": "You pull through a delivery guy. He finishes dropping off his order and demands to go back."
+ },
+ {
+  "vi": "Linh, cô nhân viên văn phòng",
+  "en": "Linh, an office worker"
+ },
+ {
+  "vi": "Tùng, anh shipper",
+  "en": "Tùng, a delivery guy"
+ },
+ {
+  "vi": "Bạn kéo sang được {0}. Hai người nhìn nhau ngơ ngác, rồi phá lên cười.",
+  "ph": [
+   "c.partner"
+  ],
+  "en": "You pull {0} through. You stare at each other, baffled, then burst out laughing."
+ },
+ {
+  "vi": "Lấy bùa dán kín lại",
+  "en": "Seal it shut with talismans"
+ },
+ {
+  "vi": "Khe nứt khép lại. Bạn mãi không biết bên kia là thế giới nào.",
+  "en": "The crack closes. You never learn what world lay on the other side."
+ },
+ {
+  "vi": "Chiếc hộp bí ẩn",
+  "en": "The mysterious box"
+ },
+ {
+  "vi": "Năm nay bạn tròn bảy mươi. Chiếc hộp mang theo từ lúc lọt lòng bỗng tự phát sáng, nắp hé mở.",
+  "en": "This year you turn seventy. The box you have carried since birth suddenly glows, and its lid creaks open."
+ },
+ {
+  "vi": "Mở hộp",
+  "en": "Open the box"
+ },
+ {
+  "vi": "Tiên duyên",
+  "en": "Immortal affinity"
+ },
+ {
+  "vi": "Trong hộp là một viên tiên đan cổ. Bạn trẻ lại ba mươi tuổi, tu vi tăng vọt.",
+  "en": "Inside is an ancient immortal pill. You grow thirty years younger and your cultivation soars."
+ },
+ {
+  "vi": "Trong hộp là một tấm bản đồ kho báu. Bạn trở thành phú ông.",
+  "en": "Inside is a treasure map. You become a rich man."
+ },
+ {
+  "vi": "Trong hộp là một tờ giấy: \"Cảm ơn đã chờ đợi. Đây chỉ là một cái hộp.\" Bạn cười đến chảy nước mắt.",
+  "en": "Inside is a slip of paper: \"Thanks for waiting. This is just a box.\" You laugh until you cry."
+ },
+ {
+  "vi": "Không mở, truyền lại cho con cháu",
+  "en": "Don't open it, pass it down to your descendants"
+ },
+ {
+  "vi": "Có những bí ẩn để dành mới đẹp.",
+  "en": "Some mysteries are more beautiful kept."
+ }
+]
