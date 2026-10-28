@@ -14,7 +14,7 @@ import Radar, { charAxes, wealthScore } from '@/components/Radar';
 import { giftOf } from '@/lib/game/gacha';
 import type { BattleView } from '@/components/Battle';
 import { MONSTERS, combatLevel, effLv, fleeChance, hit, killExp, killReward, loseFight, monsterName, monsterStats, playerStats, tierOf, type Fighter } from '@/lib/game/combat';
-import { signOut } from '@/lib/auth';
+import { sessionDropped, signOut } from '@/lib/auth';
 import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, itemPrice, pillPrice, RARE_STOCK_REALM, realmLabel, realmName, soldOut, yearSpeed, youthPace } from '@/lib/game/data';
 import { genName, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick } from '@/lib/game/engine';
 import { addCult, addPill, dao, fatal, fmt, giveItem, money, reward, stat, wealthTier } from '@/lib/game/helpers';
@@ -157,6 +157,11 @@ export default function PlayPage() {
   useEffect(() => {
     if (!ready) return;
     // chơi thử: chưa đăng nhập vẫn chơi được, lưu trên máy, không ghi danh lên giang hồ
+    // phiên vừa hết hạn thì về trang đăng nhập, để người chơi cũ không tưởng mất tiến độ
+    if (!user && sessionDropped()) {
+      window.location.replace('/dang-nhap?next=/choi');
+      return;
+    }
     let cancel = false;
     (async () => {
       const { meta: m0, save } = await loadAll(user);
@@ -1472,7 +1477,15 @@ export default function PlayPage() {
             <span className="age-big" style={{ fontSize: 28 }}>
               Luân hồi
             </span>
-            <span className="meta">{user ? `Đạo hữu ${displayName(user)}` : ''}</span>
+            <span className="meta">
+              {user ? (
+                `Đạo hữu ${displayName(user)}`
+              ) : (
+                <>
+                  Đang chơi thử · <Link href="/dang-nhap?next=/choi">Đăng nhập</Link>
+                </>
+              )}
+            </span>
             <Link href="/" className="icon-btn" style={{ textDecoration: 'none', display: 'grid', placeItems: 'center' }} aria-label="Về trang đầu">
               ‹
             </Link>

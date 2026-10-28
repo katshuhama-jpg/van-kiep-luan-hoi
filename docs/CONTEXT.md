@@ -625,9 +625,12 @@ Làm theo plan "Plan 3.1.0 - Xử lý góp ý người chơi" (trừ góp ý #7 
   - Chỗ đặt: khối "Mời tác giả chén trà" ở trang Tác giả (QR, vài câu tếu kiểu tu tiên, có thể có bảng "Công đức" ghi tên người ủng hộ nếu họ đồng ý); một dòng nhỏ ở màn lập bia, chỉ thỉnh thoảng (ví dụ mỗi 10 kiếp hoặc khi vừa phi thăng).
   - Không tặng gì trong game cho người ủng hộ (kể cả danh hiệu, phúc duyên), để giữ là ủng hộ thuần túy.
   - Đo: ghi sự kiện mở khối chén trà và bấm xem QR.
-- **Người mới (28/10, trên `next`):**
-  - Ba kiếp đầu tuổi thơ trôi nhanh gấp 2,5 (`youthPace` trong `lib/game/data.ts`). Tiên duyên đầu đời có từ 4 tuổi.
+- **Chơi thử (28/10, bản vá trên `main`):**
   - Mở lại chơi thử không cần tài khoản (bỏ chuyển hướng ở `/choi`). Khách lưu trên máy, không ghi danh lên Nghĩa trang hay Bảng xếp hạng.
   - Khách chết từ Kim Đan trở lên, phi thăng hoặc sống trên 150 tuổi (`worthGhiDanh`) thì hiện lời mời ghi danh (`components/GhiDanh.tsx`). Bia được giữ trên máy (`vkl.pendingGraves`, tối đa 5), đăng ký xong `carryGuest` khắc lên Nghĩa trang. Chết sớm thì không hiện gì.
   - Người vào lần đầu, và tài khoản chưa đi kiếp nào, không hiện Cáo thị. Game ghi nhận đã xem.
   - Màn đầu thai của người chưa đi kiếp nào ẩn điểm danh và nhiệm vụ.
+
+## Danh sách ý tưởng (chưa ra bản, chờ Tyler chọn)
+- **Giữ người mới qua kiếp đầu:** ba kiếp đầu tuổi thơ (dưới 16) trôi nhanh gấp 2,5 và Tiên duyên đầu đời tới sớm hơn (từ 4 tuổi). Mô phỏng: lựa chọn đầu tiên từ giây 60 xuống giây 24, tới 16 tuổi từ 6 phút xuống 2,8 phút. Code đã có trên nhánh `next` (commit 12d522a, `youthPace`).
+- **Khoe và bia mộ:** bỏ ô viết bia riêng (1/343 kiếp dùng), thay bằng câu bia game tự viết từ khoảnh khắc đáng nhớ nhất của kiếp và in lên thẻ khoe. Nút Khoe chỉ nổi bật khi kiếp đáng khoe (hạng A/S, phi thăng, phá kỷ lục, kết cục mới). Chưa làm.
