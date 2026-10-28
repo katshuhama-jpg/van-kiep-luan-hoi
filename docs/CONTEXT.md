@@ -92,6 +92,15 @@ Vòng chơi một kiếp:
 - Quái riêng mỗi giới (4 loài, Lv28-37; Thái Hư: Hư Không Thú, Tinh Hà Kình, Hỗn Độn Linh, Thôn Thiên Thú), đồ riêng (minRealm 8-11; Thái Hư: Hư Không Y, Tinh Hà Châu, Hỗn Độn Trượng, Thôn Thiên Giáp). Chỉ gặp người chơi cùng giới.
 - Hạ phàm làm mưa có thể bị **giáng trần**: kiếp kết thúc, kiếp sau nhận lời tiên tri "ký ức tiên nhân" (ngộ tính +25, khí vận +15, linh căn ít nhất Địa).
 
+## 4b1. Chứng Đạo mới và Vạn Kiếp (28/10, góp ý #19 của thien)
+
+- Áp dụng ở Tiên giới và Ma giới (`usesVanDao` trong `lib/game/vanDao.ts`); Thái Hư giữ cách cũ. Sự kiện đột phá ở bậc 11 chỉ còn 2 lựa chọn: "Bước lên đỉnh lôi" và "Củng cố thêm 5 năm".
+- **Tứ Kiếp Vấn Đạo** (`TuKiepOverlay` trong `components/VanKiep.tsx`): Tâm Ma, Ái Nộ (đạo lữ hoặc kẻ thù đời này), Vấn Tâm (hỏi lại một dòng trong gia phả), Vấn Thiên (vì sao tu đạo). Mỗi lựa chọn hiện sẵn tỉ lệ, người chơi chỉ đọc và bấm. Trượt một kiếp: máu 1, rớt về Kim Tiên/Ma Hoàng hậu kỳ, tu vi 50%, chờ 10 năm (`failVanDao`).
+- **13 đạo lôi**: dùng lại mini-game thiên kiếp (`TribulationOverlay` có `total`, `title`). Hụt tối đa 3 đạo thì tự chứng đạo (`chungDao` trong engine).
+- **Vạn Kiếp Hộ Đạo** (`HoDaoScene`): hụt từ 4 đạo, các kiếp trước (bảng `vkl_lives` của chính mình, khách lấy `vkl.lives`) hiện về thành bóng pixel, lần lượt lao lên đỡ thay, mỗi bóng để lại câu khắc bia người chơi từng viết. Sức đỡ theo cảnh giới lúc chết (`hoDaoPower`: phàm 0,2; Luyện Khí-Trúc Cơ 0,4; Kim Đan-Nguyên Anh 0,6; Hóa Thần-Luyện Hư 1; Độ Kiếp 1,4; phi thăng 2). Đủ thì chứng đạo kèm kết cục `van_kiep_ho_dao`; thiếu thì kết cục `dao_khon` (Đứng Đầu Vạn Kiếp).
+- **Thấy ngay:** màn cáo biệt của mọi kiếp có hàng bóng kiếp trước (`VanKiepRow`), kiếp vừa hết bước vào hàng, kèm số đạo lôi họ đủ sức đỡ.
+- Phần chung dùng lại được: `lib/vanKiep.ts` (`loadPastSelves`, `hoDaoPower`, `hoDaoTeam`, `lastWords`), `PastSelfSprite`. Ý tưởng dựng tiếp: Tàng Kiếp Các, Luân Hồi Wrapped, hộ đạo ở Ngũ Hành Đài và thiên kiếp Độ Kiếp, ngày giỗ, sư phụ kiếp trước, tiền duyên, hộ đạo cho bằng hữu.
+
 ## 4b2. Ngũ Hành Vấn Tâm Đài và điều kiện phi thăng
 
 - Phi thăng cần đủ **Độ Kiếp hậu kỳ, tu vi đầy và từ 120 tuổi** (`ASCEND_MIN_AGE` trong `lib/game/nguHanhDai.ts`). Chưa đủ tuổi thì sự kiện phi thăng không hiện, tu vi đứng yên, cứ 10 năm có dòng nhắc. Ở dock có dải **Ngũ Hành Đài** (từ Hóa Thần): ấn, phù, số năm còn phải chờ; chạm vào mở luật kèm hướng dẫn nên làm gì trong lúc chờ.

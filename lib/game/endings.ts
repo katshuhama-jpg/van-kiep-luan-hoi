@@ -55,6 +55,24 @@ export const ENDINGS: Ending[] = [
     rare: 4,
     test: (c) => c.endTag === 'chung_dao',
   },
+  {
+    id: 'van_kiep_ho_dao',
+    name: tr('Vạn Kiếp Hộ Đạo', "Guarded by Ten Thousand Lives"),
+    desc: tr('Đạo cơ rạn vỡ giữa lôi kiếp. Từng kiếp trước của bạn hiện về, lao lên đỡ sét thay. Bạn không chứng đạo một mình.', "Your Dao foundation shattered mid-tribulation. One by one your past lives returned and leapt up to take the lightning. You did not attain the Dao alone."),
+    hint: tr('Những người bạn từng là vẫn đứng sau lưng bạn.', "Everyone you have ever been is still standing behind you."),
+    how: tr('Ở bước Chứng Đạo, hụt từ 4 đạo lôi trở lên nhưng các kiếp trước đủ sức đỡ thay.', "At the Dao Attainment step, miss 4 or more bolts, but have past lives strong enough to take them for you."),
+    rare: 4,
+    test: () => false,
+  },
+  {
+    id: 'dao_khon',
+    name: tr('Đứng Đầu Vạn Kiếp', "Head of Ten Thousand Lives"),
+    desc: tr('Lôi kiếp đánh tan đạo cơ, vạn kiếp trước chưa đủ sức đỡ. Bạn hóa thành bóng, đứng đầu hàng chờ lần sau đỡ lôi cho chính mình.', "The tribulation shattered your Dao foundation and your past lives were not yet strong enough. You became a shadow at the head of the line, waiting to shield yourself next time."),
+    hint: tr('Có những thất bại là để lần sau.', "Some failures are for next time."),
+    how: tr('Ở bước Chứng Đạo, hụt từ 4 đạo lôi trở lên mà các kiếp trước không đủ sức đỡ.', "At the Dao Attainment step, miss 4 or more bolts without enough strength in your past lives."),
+    rare: 3,
+    test: (c) => c.endTag === 'dao_khon',
+  },
   // ---- 10 kết cục hiếm ở ba cõi (2.0.0) ----
   { id: 'ha_pham', name: tr('Hạ Phàm Vì Tình', "Descending for Love"), desc: tr('Tự xóa tên khỏi tiên tịch, xuống trần sống nốt những mùa xuân cuối cùng với người mình thương.', "You struck your own name from the immortal registry and came down to spend the last springs with the one you love."), hint: tr('Bên kia Thiên Hà có người đang già đi.', "Across the Heavenly River, someone is growing old."), how: tr('Ở Tiên giới khi đã có đạo lữ, đêm thất tịch chọn bỏ tiên tịch hạ phàm.', "In the Immortal Realm with a Dao companion, choose to renounce your immortal status and descend on the Qixi night."), rare: 4, test: (c) => c.endTag === 'ha_pham' },
   { id: 'thu_mon', name: tr('Thủ Môn Thiên Giới', "Warden of the Heavenly Gate"), desc: tr('Một mình giữ Nam Thiên Môn trước mười vạn ma quân, đứng chết mà không lùi.', "Alone you held the Southern Heavenly Gate against a hundred thousand demon soldiers, and died on your feet without retreating a step."), hint: tr('Có ngày cổng trời chỉ còn một người giữ.', "One day the gate of heaven will have only one guard left."), how: tr('Ở Tiên giới từ cảnh giới thứ hai, khi ma quân phá cổng, chọn một mình giữ cổng và tử trận.', "In the Immortal Realm, from the second realm up, when the demon army breaks the gate, choose to hold it alone and fall in battle."), rare: 3, test: (c) => c.endTag === 'thu_mon' },
@@ -351,6 +369,7 @@ export function alsoEndings(c: Character): string[] {
   if (top && main !== top && main !== 'chung_dao') out.push(top);
   if ((c.kiepSo ?? 0) >= 5) out.push('nghich_thien');
   if ((c.kiepSo ?? 0) >= 10 && c.endTag === 'chung_dao') out.push('van_kiep_bat_diet');
+  if (c.qf?.hoDao && c.endTag === 'chung_dao') out.push('van_kiep_ho_dao');
   return out;
 }
 

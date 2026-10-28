@@ -1,5 +1,6 @@
 'use client';
 
+import { VanKiepRow } from './VanKiep';
 import Link from 'next/link';
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { ENDINGS, RARE_COLOR, endingOf } from '@/lib/game/endings';
@@ -1173,6 +1174,7 @@ export function DeathSheet({
           </small>
         </span>
       </div>
+      <VanKiepRow c={c} />
       <p>
         
         {tr("Mang sang kiếp sau: ", "Carried to the next life: ")}<b style={{ fontWeight: 700, color: 'var(--jade)' }}>+{karma.phuc}{tr(" phúc duyên", " Fortune")}</b>

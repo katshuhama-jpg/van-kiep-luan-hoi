@@ -45,6 +45,7 @@ import { BREAK_EVENT_ID, EVENTS, PATH_EVENT_ID, pathChoices } from './events';
 import { maChainYear } from './sectEvents2';
 import { ASCEND_MIN_AGE, anOf, destOf, keyAn, needTrial } from './nguHanhDai';
 import { ASCEND_GEAR } from './items2';
+import { usesVanDao } from './vanDao';
 import { DO_KIEP_REALM, FAMILY_RE, isOrphan, addCult, addLife, addPill, clamp, cosmosCause, fatal, reward, wealthTier, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
 import type { Character, Choice, EffectCtx, Fx, FxKind, GameEvent, Meta, PendingEvent, Tone } from './types';
 import { applyGifts, giftOf, hasGift } from './gacha';
@@ -916,11 +917,30 @@ function breakEvent(c: Character): GameEvent {
     id: BREAK_EVENT_ID,
     title: kiep ? tr(`Thiên kiếp - đột phá ${name}`, `Heavenly tribulation - break through to ${name}`) : tr(`Đột phá ${name}`, `Break through to ${name}`),
     text: () =>
-      kiep
+      usesVanDao(c)
+        ? tr('Bầu trời im lặng lạ thường. Đây là bước cuối cùng: bốn kiếp vấn đạo, rồi mười ba đạo lôi. Hụt từ bốn đạo, những kiếp trước của bạn sẽ hiện về đỡ thay.', "The sky is strangely silent. This is the final step: four trials of the Dao, then thirteen bolts of lightning. Miss four or more, and your past lives will return to take them for you.")
+        : kiep
         ? tr(`Mây đen kéo tới che kín trời. Lôi kiếp đang chờ. Tỉ lệ ước tính khoảng ${Math.round(breakChance(c) * 100)}%.`, `Dark clouds gather and blot out the sky. The lightning tribulation awaits. Estimated chance about ${Math.round(breakChance(c) * 100)}%.`)
         : tr(`Tu vi đã đến đỉnh, bình cảnh rung động. Tỉ lệ ước tính khoảng ${Math.round(breakChance(c) * 100)}%.`, `Your cultivation has peaked and the bottleneck trembles. Estimated chance about ${Math.round(breakChance(c) * 100)}%.`),
     choices: breakChoices,
   };
+}
+
+/** Vượt kiếp cuối của Đại La Kim Tiên, Ma Đế: chứng đạo, thoát khỏi mọi giới. hoDao: được vạn kiếp đỡ lôi thay */
+export function chungDao(c: Character, ctx: EffectCtx, hoDao = false): string {
+  c.dead = true;
+  c.endTag = 'chung_dao';
+  if (hoDao) c.qf = { ...(c.qf ?? {}), hoDao: 1 };
+  c.cause = hoDao
+    ? tr('Vạn kiếp đứng ra đỡ lôi thay, chứng đạo vĩnh hằng', "Ten thousand past lives stood up to take the lightning, and you attained the eternal Dao")
+    : c.cosmos === 'ma'
+      ? tr('Vượt Diệt Thế Ma Kiếp, chứng đạo Ma Thần bất diệt', "Survive the World-Ending Demon Tribulation and attain the Dao as an undying Demon God")
+      : tr('Vượt Hỗn Nguyên Đại Kiếp, chứng đạo vĩnh hằng', "Survive the Primordial Great Tribulation and attain the eternal Dao");
+  ctx.fx('breakthrough', tr('CHỨNG ĐẠO', "DAO ATTAINED"));
+  if (hoDao) return tr('Bạn không chứng đạo một mình. Vạn kiếp của bạn đã đưa bạn tới đây.', "You did not attain the Dao alone. Ten thousand lives of yours carried you here.");
+  return c.cosmos === 'ma'
+    ? tr('Ma kiếp cuối cùng nổ tung cả ma giới. Khi khói máu tan đi, bạn đã không còn là ma, cũng không còn là người. Bạn chứng đạo Ma Thần, đứng ngoài mọi luân hồi.', "The final demon tribulation blasts the entire Demon Realm. When the bloody smoke clears, you are no longer demon, nor human. You attain the Dao as a Demon God, standing outside all reincarnation.")
+    : tr('Hỗn Nguyên Đại Kiếp giáng xuống chín chín tám mươi mốt ngày. Ngày cuối cùng, bạn mỉm cười bước vào ánh sáng. Bạn chứng đạo, vĩnh viễn đứng ngoài luân hồi.', "The Primordial Great Tribulation rains down for eighty-one days. On the last day, you smile and step into the light. You attain the Dao, forever outside reincarnation.");
 }
 
 function attempt(c: Character, ctx: EffectCtx, bonus: number): string {
@@ -938,15 +958,7 @@ function attempt(c: Character, ctx: EffectCtx, bonus: number): string {
   const ok = rnd() < clamp(breakChance(c) + bonus + kb, 0.05, 0.97);
   if (ok) {
     // vượt kiếp cuối của Đại La Kim Tiên, Ma Đế: chứng đạo, thoát khỏi mọi giới
-    if (target > TOP_REALM) {
-      c.dead = true;
-      c.endTag = 'chung_dao';
-      c.cause = c.cosmos === 'ma' ? tr('Vượt Diệt Thế Ma Kiếp, chứng đạo Ma Thần bất diệt', "Survive the World-Ending Demon Tribulation and attain the Dao as an undying Demon God") : tr('Vượt Hỗn Nguyên Đại Kiếp, chứng đạo vĩnh hằng', "Survive the Primordial Great Tribulation and attain the eternal Dao");
-      ctx.fx('breakthrough', tr('CHỨNG ĐẠO', "DAO ATTAINED"));
-      return c.cosmos === 'ma'
-        ? tr('Ma kiếp cuối cùng nổ tung cả ma giới. Khi khói máu tan đi, bạn đã không còn là ma, cũng không còn là người. Bạn chứng đạo Ma Thần, đứng ngoài mọi luân hồi.', "The final demon tribulation blasts the entire Demon Realm. When the bloody smoke clears, you are no longer demon, nor human. You attain the Dao as a Demon God, standing outside all reincarnation.")
-        : tr('Hỗn Nguyên Đại Kiếp giáng xuống chín chín tám mươi mốt ngày. Ngày cuối cùng, bạn mỉm cười bước vào ánh sáng. Bạn chứng đạo, vĩnh viễn đứng ngoài luân hồi.', "The Primordial Great Tribulation rains down for eighty-one days. On the last day, you smile and step into the light. You attain the Dao, forever outside reincarnation.");
-    }
+    if (target > TOP_REALM) return chungDao(c, ctx);
     // phi thăng: không còn là hồi kết, mà mở ra tiên giới (hoặc ma giới cho tà tu)
     if (target === ASCEND_REALM) {
       c.ascended = true;
@@ -1031,6 +1043,23 @@ function breakChoices(c: Character): Choice[] {
               },
             }
           : { label: tr('Chọn ngày lành, cầu trời', "Pick an auspicious day, pray"), hint: '+8%', lean: 'trung', run: (ch, ctx) => attempt(ch, ctx, 0.08) };
+  // Chứng Đạo mới: chỉ có bước lên đỉnh lôi hoặc củng cố, không còn cộng tỉ lệ
+  if (usesVanDao(c))
+    return [
+      { label: tr('Bước lên đỉnh lôi', "Step onto the thunder peak"), hint: tr('tứ kiếp, rồi 13 đạo lôi', "four trials, then 13 bolts"), lean: 'trung', run: (ch, ctx) => attempt(ch, ctx, 0) },
+      {
+        label: tr('Củng cố thêm 5 năm', "Consolidate 5 more years"),
+        hint: tr('tâm cảnh +, ngộ tính +', "Mind +, Insight +"),
+        lean: 'chinh',
+        run: (ch) => {
+          ch.breakDelay = 5;
+          stat(ch, 'tamCanh', 8);
+          stat(ch, 'ngoTinh', 4);
+          stat(ch, 'tamMa', -6);
+          return tr('Bạn quyết định chưa vội. Đạo cơ cần thêm thời gian.', "You decide not to rush. Your Dao foundation needs more time.");
+        },
+      },
+    ];
   return [
     {
       label: havePill ? tr('Uống Trúc Cơ Đan rồi xung quan', "Take a Foundation Pill, then break through") : tr('Mua đan dược rồi xung quan', "Buy a pill, then break through"),

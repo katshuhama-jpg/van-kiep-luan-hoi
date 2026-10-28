@@ -6,6 +6,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Scene from '@/components/Scene';
 import MusicToggle from '@/components/MusicToggle';
 import { TribulationOverlay, Tutorial, clearLaSo } from '@/components/Extras';
+import { HoDaoScene, TuKiepOverlay } from '@/components/VanKiep';
+import { LOI_ALLOW, LOI_TOTAL, daoKhon, failVanDao, usesVanDao } from '@/lib/game/vanDao';
 import { BREAK_EVENT_ID } from '@/lib/game/events';
 import { ENDINGS, alsoEndings, endingOf } from '@/lib/game/endings';
 import { buyTinh, forge, sell, smelt } from '@/lib/game/forge';
@@ -19,7 +21,7 @@ import { lang, setLang } from '@/lib/i18n';
 import { nameOf } from '@/lib/hanviet';
 import { charLang, convertChar, convertMeta, loadDict, looksVi } from '@/lib/retrans';
 import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, itemPrice, pillPrice, RARE_STOCK_REALM, realmLabel, realmName, soldOut, yearSpeed, youthPace } from '@/lib/game/data';
-import { genName, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick } from '@/lib/game/engine';
+import { genName, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick, chungDao } from '@/lib/game/engine';
 import { addCult, addPill, dao, fatal, fmt, giveItem, money, reward, stat, wealthTier } from '@/lib/game/helpers';
 import type { Character, Element, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
 import DuelWarning from '@/components/Duel';
@@ -72,6 +74,7 @@ export default function PlayPage() {
   const [speed, setSpeed] = useState(1);
   const [running, setRunning] = useState(true);
   const [kiep, setKiep] = useState<number | null>(null); // lựa chọn đang chờ mini-game thiên kiếp
+  const [vanDao, setVanDao] = useState<{ phase: 'tu' | 'loi' | 'hodao'; need?: number } | null>(null); // Chứng Đạo mới: tứ kiếp, 13 đạo lôi, vạn kiếp hộ đạo
   // Ngũ Hành Đài trước phi thăng: giữ lựa chọn đột phá và sự kiện để độ kiếp sau khi thắng đủ 5 bóng
   const [nhdPeek, setNhdPeek] = useState(false); // xem luật Ngũ Hành Đài từ dải nhắc
   const [nhd, setNhd] = useState<{ i: number; p: PendingEvent; view: NhdView | 'fight'; foe: Stance; tell: Stance; msg?: string; end?: 'next' | 'done' | 'lose' | 'dead' } | null>(null);
@@ -254,7 +257,7 @@ export default function PlayPage() {
   const speedRef = useRef(speed);
   speedRef.current = speed;
   const activeRef = useRef(false);
-  activeRef.current = running && sheet === null && phase === 'play' && kiep === null && !tut && duelWarn === null && !nhdPeek && !relOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
+  activeRef.current = running && sheet === null && phase === 'play' && kiep === null && vanDao === null && !tut && duelWarn === null && !nhdPeek && !relOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
 
   /** Ngũ hành giữa bạn và loài quái */
   function monElem(c: Character, m: { el?: Element }) {
@@ -871,6 +874,12 @@ export default function PlayPage() {
       persist(true);
       return;
     }
+    // Chứng Đạo ở Tiên giới, Ma giới: Tứ Kiếp Vấn Đạo, rồi 13 đạo lôi, hụt nhiều thì vạn kiếp hộ đạo
+    if (p && c && p.id === BREAK_EVENT_ID && usesVanDao(c) && !/^(Củng cố|Consolidate)/.test(p.choices[i]?.label ?? '')) {
+      track('van_dao_start', { lifeNo: c.lifeNo });
+      setVanDao({ phase: 'tu' });
+      return;
+    }
     // đột phá có thiên kiếp: chơi mini-game đỡ sấm trước
     if (p && c && p.id === BREAK_EVENT_ID && c.realm + 1 >= 3 && !/^(Củng cố|Consolidate)/.test(p.choices[i]?.label ?? '')) {
       setKiep(i);
@@ -969,6 +978,26 @@ export default function PlayPage() {
     c.kiepBonus = bonus;
     if (blocked >= 0) c.log.push({ age: Math.floor(c.age), tone: bonus >= 0 ? 'good' : 'bad', text: tr(`Bạn vận công đỡ được ${blocked}/9 đạo thiên lôi.`, `You channel your power and block ${blocked}/9 heavenly thunderbolts.`) });
     resolveNow(i);
+  };
+
+  /** Chứng Đạo mới: kết thúc luồng, bỏ sự kiện đột phá đang chờ */
+  const vanDaoEnd = (fn: (ch: Character, ctx: ReturnType<typeof makeCtx>) => string, tone: 'big' | 'bad') => {
+    setVanDao(null);
+    act((ch, out) => {
+      pendingRef.current = null;
+      const text = fn(ch, makeCtx(ch, out));
+      ch.log.push({ age: Math.floor(ch.age), tone, text });
+    });
+  };
+  const vanDaoLoi = (_b: number, blocked: number) => {
+    const c = charRef.current;
+    if (!c) return;
+    // phó mặc số trời: để trời quyết định số đạo hụt
+    const miss = blocked < 0 ? (rnd() < 0.55 ? 1 + Math.floor(rnd() * 3) : 4 + Math.floor(rnd() * 4)) : LOI_TOTAL - blocked;
+    c.log.push({ age: Math.floor(c.age), tone: miss <= LOI_ALLOW ? 'good' : 'bad', text: tr(`Mười ba đạo lôi kiếp: bạn đỡ được ${LOI_TOTAL - miss}/${LOI_TOTAL} đạo.`, `Thirteen bolts of tribulation: you block ${LOI_TOTAL - miss}/${LOI_TOTAL}.`) });
+    track('van_dao_loi', { miss });
+    if (miss <= LOI_ALLOW) return vanDaoEnd((ch, ctx) => chungDao(ch, ctx), 'big');
+    setVanDao({ phase: 'hodao', need: miss });
   };
 
   const skipAhead = () =>
@@ -1866,6 +1895,28 @@ export default function PlayPage() {
           onLeave={nhdLeave}
           onNext={nhdNext}
           onRules={() => setNhd({ ...nhd, view: nhd.view === 'rules' ? 'prep' : 'rules' })}
+        />
+      )}
+      {vanDao?.phase === 'tu' && !c.dead && (
+        <TuKiepOverlay
+          c={c}
+          rnd={rnd}
+          onPass={() => setVanDao({ phase: 'loi' })}
+          onFail={(name) => {
+            track('van_dao_fail', { kiep: name });
+            vanDaoEnd((ch, ctx) => failVanDao(ch, ctx, name), 'bad');
+          }}
+        />
+      )}
+      {vanDao?.phase === 'loi' && !c.dead && <TribulationOverlay realmName={tr('Chứng Đạo', 'Attaining the Dao')} title={tr('MƯỜI BA ĐẠO LÔI KIẾP', 'THIRTEEN BOLTS OF TRIBULATION')} total={LOI_TOTAL} onDone={vanDaoLoi} c={c} />}
+      {vanDao?.phase === 'hodao' && !c.dead && (
+        <HoDaoScene
+          c={c}
+          need={vanDao.need ?? 4}
+          onDone={(saved) => {
+            track('van_dao_ho', { saved });
+            vanDaoEnd((ch, ctx) => (saved ? chungDao(ch, ctx, true) : daoKhon(ch)), saved ? 'big' : 'bad');
+          }}
         />
       )}
       {kiep !== null && !c.dead && (

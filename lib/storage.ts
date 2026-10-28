@@ -109,6 +109,11 @@ export async function addMemorial(user: Player | null, m: Omit<Memorial, 'id' | 
   writeLocal(K.lives, [entry, ...local].slice(0, 100));
 }
 
+/** Bia các kiếp đã qua của khách (lưu trên máy) */
+export function localLives(): Memorial[] {
+  return readLocal<Memorial[]>(K.lives) ?? [];
+}
+
 // ---------- Chơi thử: bia chờ ghi danh ----------
 /** Chơi thử chết từ Kim Đan trở lên, hoặc phi thăng, hoặc sống trên 150 tuổi thì mời ghi danh */
 export const GHI_DANH_REALM = 3;

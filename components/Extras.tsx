@@ -211,7 +211,7 @@ function GiftRadar({ base, picked }: { base: Character; picked: string[] }) {
 }
 
 /* ================= Mini-game thiên kiếp: đúng nhịp, đúng hướng, né lôi giả ================= */
-type KPhase = 'intro' | 'calm' | 'warn' | 'fake' | 'hit' | 'block' | 'trap' | 'fakeGone' | 'done';
+export type KPhase = 'intro' | 'calm' | 'warn' | 'fake' | 'hit' | 'block' | 'trap' | 'fakeGone' | 'done';
 const K_TOTAL = 9;
 const LANE_X = [17, 50, 83];
 /** Đạo thứ idx: thời gian vòng co lại (ms) và cỡ ban đầu. Vòng lọt vào khung (cỡ <= 1.25) mới đỡ được. */
@@ -219,7 +219,7 @@ const kWin = (idx: number) => Math.round(1050 - idx * 45);
 const kStart = (idx: number) => 2.2 + idx * 0.1;
 const kZoneFrom = (idx: number) => (kStart(idx) - 1.25) / (kStart(idx) - 0.8);
 
-function KiepSky({ phase }: { phase: KPhase }) {
+export function KiepSky({ phase }: { phase: KPhase }) {
   const dark = phase === 'warn' || phase === 'fake';
   return (
     <svg className="kiep-px" viewBox="0 0 90 160" preserveAspectRatio="xMidYMid slice" shapeRendering="crispEdges" aria-hidden="true">
@@ -277,7 +277,7 @@ function KiepBolt({ lane, kind }: { lane: number; kind: 'hit' | 'block' | 'trap'
   );
 }
 
-export function TribulationOverlay({ realmName, onDone, c }: { realmName: string; onDone: (bonus: number, blocked: number) => void; c?: Character }) {
+export function TribulationOverlay({ realmName, onDone, c, total = K_TOTAL, title }: { realmName: string; onDone: (bonus: number, blocked: number) => void; c?: Character; total?: number; title?: string }) {
   const [phase, setPhase] = useState<KPhase>('intro');
   const [i, setI] = useState(0);
   const [lane, setLane] = useState(1);
@@ -318,14 +318,14 @@ export function TribulationOverlay({ realmName, onDone, c }: { realmName: string
   };
 
   const nextBolt = (idx: number) => {
-    if (idx >= K_TOTAL) {
+    if (idx >= total) {
       setPhase('done');
       return;
     }
     setI(idx);
     setPhase('calm');
     // ba đạo cuối dồn dập
-    const calm = idx >= 6 ? 220 + Math.random() * 260 : 450 + Math.random() * 900;
+    const calm = idx >= total - 3 ? 220 + Math.random() * 260 : 450 + Math.random() * 900;
     after(calm, () => warn(idx));
   };
 
@@ -364,7 +364,7 @@ export function TribulationOverlay({ realmName, onDone, c }: { realmName: string
     }
   };
 
-  const bonus = Math.round(((blocked - 4.5) / K_TOTAL) * 0.3 * 100) / 100;
+  const bonus = Math.round(((blocked - total / 2) / total) * 0.3 * 100) / 100;
   const showBolt = phase === 'hit' || phase === 'block' || phase === 'trap';
   return (
     <div className={`kiep kiep-${phase}`} role="dialog" aria-label={tr("Thiên kiếp", "Heavenly tribulation")} onPointerDown={phase === 'done' ? undefined : tap}>
@@ -375,11 +375,11 @@ export function TribulationOverlay({ realmName, onDone, c }: { realmName: string
           <b>{tr("Lôi kiếp ", "Lightning tribulation · ")}{realmName}</b>
           <span>
             
-            {tr("Đạo ", "Bolt ")}{Math.min(K_TOTAL, i + 1)}/{K_TOTAL}
+            {tr("Đạo ", "Bolt ")}{Math.min(total, i + 1)}/{total}
           </span>
         </div>
         <div className="kh-pips" aria-label={tr(`Đã đỡ ${blocked} đạo`, `Blocked ${blocked} bolts`)}>
-          {Array.from({ length: K_TOTAL }, (_, k) => (
+          {Array.from({ length: total }, (_, k) => (
             <i key={k} className={res[k] ?? (k === i && phase !== 'intro' && phase !== 'done' ? 'now' : '')} />
           ))}
           {lost > 0 && <em>-{lost}</em>}
@@ -397,7 +397,7 @@ export function TribulationOverlay({ realmName, onDone, c }: { realmName: string
       <div className="kiep-center">
         {phase === 'intro' && (
           <div className="kiep-card">
-            <p className="kiep-big">{tr("CHÍN ĐẠO LÔI KIẾP", "NINE BOLTS OF TRIBULATION")}</p>
+            <p className="kiep-big">{title ?? tr("CHÍN ĐẠO LÔI KIẾP", "NINE BOLTS OF TRIBULATION")}</p>
             <ul>
               <li>
                 
@@ -425,9 +425,9 @@ export function TribulationOverlay({ realmName, onDone, c }: { realmName: string
           <div className="kiep-card">
             <p className="kiep-big">
               
-              {tr("Đỡ được ", "Blocked ")}{blocked}/{K_TOTAL}{tr(" đạo", " bolts")}
+              {tr("Đỡ được ", "Blocked ")}{blocked}/{total}{tr(" đạo", " bolts")}
             </p>
-            <p>{bonus >= 0 ? tr(`Tỉ lệ vượt kiếp +${Math.round(bonus * 100)}%`, `Tribulation survival chance +${Math.round(bonus * 100)}%`) : tr(`Tỉ lệ vượt kiếp ${Math.round(bonus * 100)}%`, `Tribulation survival chance ${Math.round(bonus * 100)}%`)}</p>
+            <p>{title ? (total - blocked <= 3 ? tr(`Hụt ${total - blocked} đạo. Đạo cơ vẫn vững!`, `Missed ${total - blocked}. Your Dao foundation holds!`) : tr(`Hụt ${total - blocked} đạo. Đạo cơ rạn vỡ...`, `Missed ${total - blocked}. Your Dao foundation cracks...`)) : bonus >= 0 ? tr(`Tỉ lệ vượt kiếp +${Math.round(bonus * 100)}%`, `Tribulation survival chance +${Math.round(bonus * 100)}%`) : tr(`Tỉ lệ vượt kiếp ${Math.round(bonus * 100)}%`, `Tribulation survival chance ${Math.round(bonus * 100)}%`)}</p>
             <button className="btn btn-red btn-big" onClick={() => onDone(bonus, blocked)}>
               
               {tr("Xem kết quả", "See the result")}
