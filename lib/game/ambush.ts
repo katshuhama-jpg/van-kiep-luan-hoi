@@ -1,3 +1,4 @@
+import { DO_KIEP_REALM } from './helpers';
 import { MONSTERS, combatLevel, effLv, growth, killExp, killReward, monsterStats, type Fighter, type Monster } from './combat';
 import { ambushDrawWin, ambushFlee, ambushLose, ambushWin, chieuOf, marginOf } from './fightLines';
 import { addCult, fatal, money, stat } from './helpers';
@@ -30,7 +31,11 @@ export function pickAmbush(c: Character, rnd: () => number): { m: Monster; tier:
   // đệ tử tông môn: 30% là quái thí luyện trong môn
   const side = sectSide(c);
   const inSect = !!side && rnd() < 0.3;
-  const pool = c.cosmos ? MONSTERS.filter((m) => m.cosmos === c.cosmos) : MONSTERS.filter((m) => !m.boss && !m.cosmos && (inSect ? m.sect === side : !m.sect));
+  // Độ Kiếp ở phàm giới: chỉ quái Độ Kiếp chặn đường, không còn rắn rết thấp cấp bị đẩy cấp lên cho khớp
+  const doKiep = !c.cosmos && c.realm >= DO_KIEP_REALM;
+  const pool = c.cosmos
+    ? MONSTERS.filter((m) => m.cosmos === c.cosmos)
+    : MONSTERS.filter((m) => !m.boss && !m.cosmos && (inSect ? m.sect === side : !m.sect) && (doKiep ? !!m.doKiep || (inSect && !!m.sect) : !m.doKiep));
   const cl = combatLevel(c);
   const r = rnd();
   const tier: AmbushTier = r < 0.3 ? 'kem' : r < 0.9 ? 'bang' : 'hon';

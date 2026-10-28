@@ -1,4 +1,4 @@
-import { fatal, hurt, money, riskMeter, stat } from './helpers';
+import { DO_KIEP_REALM, fatal, hurt, money, riskMeter, stat } from './helpers';
 import type { Character, Choice, EffectCtx } from './types';
 import { tr } from '../i18n';
 
@@ -47,7 +47,8 @@ const BULLY: Mishap[] = [
     id: 'am_sat_nham',
     w: (c) => (c.realm >= 1 ? 1 : 0.3),
     run: (c, ctx) => {
-      const f = fatal(c, ctx, 0.12, tr('Sát thủ nhận nhầm người. Một mũi tên tẩm độc bay ra từ bóng tối. Bạn chết mà không biết vì sao.', "An assassin mistakes you for someone else. A poisoned arrow flies from the shadows. You die without ever knowing why."));
+      // đã Độ Kiếp thì mũi tên phàm tục không lấy nổi mạng
+      const f = c.realm >= DO_KIEP_REALM ? null : fatal(c, ctx, 0.12, tr('Sát thủ nhận nhầm người. Một mũi tên tẩm độc bay ra từ bóng tối. Bạn chết mà không biết vì sao.', "An assassin mistakes you for someone else. A poisoned arrow flies from the shadows. You die without ever knowing why."));
       if (c.dead) return f ?? '';
       const t = hurt(c, r(ctx, 30, 50), ctx);
       return tr(`Đêm khuya, sát thủ nhận nhầm bạn là mục tiêu. Bạn trúng một đao, may mà kêu cứu kịp.${t}${f ?? ''}`, `Late at night, an assassin mistakes you for his target. You take a blade, but luckily cry for help in time.${t}${f ?? ''}`);

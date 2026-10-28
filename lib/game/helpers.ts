@@ -7,6 +7,9 @@ import type { Character, EffectCtx, Stats } from './types';
 import { tr } from '../i18n';
 
 /** Bộ sinh số ngẫu nhiên có hạt giống (mulberry32) */
+
+/** Cảnh giới Độ Kiếp: từ đây ở phàm giới mới gặp quái Độ Kiếp, hiểm họa phàm tục không còn lấy được mạng */
+export const DO_KIEP_REALM = 7;
 export function seeded(seed: number): () => number {
   let a = seed >>> 0;
   return () => {

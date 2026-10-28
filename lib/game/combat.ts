@@ -3,7 +3,7 @@ import { ksDrop, ksLegendPer, ksMonster } from './luanHoi';
 import { huntDeath, huntLose } from './fightLines';
 import { omenIs } from './hook';
 import { ITEMS, REALMS, fxText, gearFx } from './data';
-import { addCult, addPill, clamp, fatal, giveItem, money, needFor, stat } from './helpers';
+import { DO_KIEP_REALM, addCult, addPill, clamp, fatal, giveItem, money, needFor, stat } from './helpers';
 import type { Character, EffectCtx, Element } from './types';
 import { gainAn } from './nguHanhDai';
 import { tr } from '../i18n';
@@ -26,6 +26,7 @@ export interface Monster {
   el?: Element; // ngũ hành của loài quái
   sect?: 'chinh' | 'ta' | 'trung'; // quái trong tông môn: chỉ đệ tử môn đó mới gặp
   cosmos?: 'tien' | 'ma' | 'hu'; // quái tiên giới, ma giới: chỉ gặp sau phi thăng
+  doKiep?: boolean; // quái Độ Kiếp: chỉ gặp khi đã Độ Kiếp ở phàm giới
 }
 
 /** 15 loại quái, xếp theo cấp. Cấp người chơi: Luyện Khí 1-9, Trúc Cơ 10-12, Kim Đan 13-15... */
@@ -486,6 +487,27 @@ export const MONSTERS: Monster[] = [
     el: 'tho',
     cosmos: 'ma',
   },
+  // Quái Độ Kiếp: chỉ gặp khi đã Độ Kiếp ở phàm giới (thay quái thấp cấp bị đẩy cấp lên cho khớp)
+  { id: 'loi_co_dieu', name: tr('Lôi Cổ Điêu', "Thunder Drum Eagle"), lv: 24, place: tr('Lôi Trạch', "Thunder Marsh"), shape: 'chim', body: '#4a5ab0', accent: '#ffe27a', eye: '#ffffff', desc: tr('Đại bàng vỗ cánh như gõ trống trời, chuyên rình người sắp độ kiếp.', "Its wingbeats sound like heaven's war drums; it stalks those about to face tribulation."), el: 'kim', doKiep: true },
+  { id: 'xich_luyen', name: tr('Xích Luyện Xà Vương', "Crimson Chain Serpent King"), lv: 24, place: tr('Xích Luyện Cốc', "Chilian Valley"), shape: 'ran', body: '#c02a1a', accent: '#ffb04a', eye: '#ffe27a', desc: tr('Rắn chúa vảy đỏ, nọc độc đốt cháy cả nguyên anh.', "A red-scaled serpent king whose venom burns even a Nascent Soul."), el: 'hoa', doKiep: true },
+  { id: 'kiep_loi_thu', name: tr('Thiên Kiếp Lôi Thú', "Tribulation Thunder Beast"), lv: 25, place: tr('Thiên Lôi Cốc', "Heavenly Thunder Valley"), shape: 'thu', body: '#2a3a7a', accent: '#9fd8ff', eye: '#ffffff', desc: tr('Sinh ra từ tàn lôi của ngàn lần thiên kiếp, ăn sấm sét mà lớn.', "Born from the leftover lightning of a thousand tribulations; it grows by eating thunder."), el: 'kim', doKiep: true },
+  { id: 'thu_yeu', name: tr('Thiên Niên Thụ Yêu', "Millennial Tree Demon"), lv: 25, place: tr('Hắc Mộc Lâm', "Black Wood Forest"), shape: 'nguoi', body: '#3a5a2a', accent: '#9ac06a', eye: '#ffd36b', desc: tr('Cây cổ thụ ngàn năm thành tinh, rễ hút cạn tu vi người qua đường.', "A thousand-year tree turned spirit; its roots drain the cultivation of passers-by."), el: 'moc', doKiep: true },
+  { id: 'bach_cot', name: tr('Bạch Cốt Yêu Cơ', "White Bone Enchantress"), lv: 25, place: tr('Bạch Cốt Lĩnh', "White Bone Ridge"), shape: 'nguoi', body: '#eae2d0', accent: '#6a5a7a', eye: '#e0202e', desc: tr('Mỹ nhân bằng xương trắng, ba lần đổi dạng lừa người.', "A beauty made of white bone who changes form three times to deceive."), el: 'tho', doKiep: true },
+  { id: 'thien_ngo', name: tr('Kim Giáp Thiên Ngô', "Golden-Armored Centipede"), lv: 26, place: tr('Thiên Ngô Lĩnh', "Centipede Ridge"), shape: 'bo', body: '#c09a2a', accent: '#5a3a1a', eye: '#e0202e', desc: tr('Rết trăm chân giáp vàng, phi kiếm chém vào chỉ tóe lửa.', "A hundred-legged centipede in golden armor; flying swords only throw sparks off it."), el: 'kim', doKiep: true },
+  { id: 'bang_phach', name: tr('Băng Phách Tuyết Ma', "Frost Soul Snow Fiend"), lv: 26, place: tr('Tuyết Vực Tận Cùng', "Edge of the Snow Domain"), shape: 'nguoi', body: '#d8eeff', accent: '#5a8ac0', eye: '#2a3a6a', desc: tr('Hồn ma chết cóng ở nơi lạnh nhất nhân gian, chạm vào là đóng băng kinh mạch.', "A ghost frozen in the coldest place in the mortal world; its touch freezes your meridians."), el: 'thuy', doKiep: true },
+  { id: 'thi_vuong', name: tr('Độ Ách Thi Vương', "Calamity Corpse King"), lv: 26, place: tr('Vạn Thi Lĩnh', "Ten Thousand Corpse Ridge"), shape: 'nguoi', body: '#5a6a4a', accent: '#2a2a1a', eye: '#9ff0c8', desc: tr('Xác của một tu sĩ chết dưới thiên kiếp, oán khí nuôi thành vua cương thi.', "The corpse of a cultivator killed by tribulation, raised by resentment into a jiangshi king."), el: 'tho', doKiep: true },
+  { id: 'ba_xa', name: tr('Ba Xà', "Bashe Serpent"), lv: 27, place: tr('Hồ Động Đình', "Dongting Lake"), shape: 'ran', body: '#2a4a5a', accent: '#7fc8ff', eye: '#ffd36b', desc: tr('Rắn thượng cổ nuốt voi, ba năm mới nhả xương.', "An ancient serpent that swallows elephants and spits out the bones three years later."), el: 'thuy', doKiep: true },
+  { id: 'tu_la', name: tr('Tu La Đao Tôn', "Asura Blade Venerable"), lv: 27, place: tr('Tu La Trường', "Asura Field"), shape: 'vo_lam', body: '#5a0a14', accent: '#ff6a2a', eye: '#ffd36b', desc: tr('Giết đủ vạn người thì thành Tu La. Hắn còn thiếu một.', "Kill ten thousand and you become an Asura. He is one short."), human: { weapon: 'dao', hat: true }, el: 'hoa', doKiep: true },
+  { id: 'phi', name: tr('Phỉ Thú', "Fei Plague Beast"), lv: 28, place: tr('Thái Sơn Hậu Cốc', "Valley behind Mount Tai"), shape: 'thu', body: '#6a7a3a', accent: '#e6eaf6', eye: '#e0202e', desc: tr('Trâu một mắt đầu trắng, đi qua sông thì sông cạn, qua cỏ thì cỏ chết.', "A one-eyed white-headed ox; rivers dry and grass dies wherever it walks."), el: 'moc', doKiep: true },
+  { id: 'tat_phuong', name: tr('Tất Phương', "Bifang Fire Crane"), lv: 28, place: tr('Chương Nga Sơn', "Zhang'e Mountain"), shape: 'chim', body: '#e0502a', accent: '#3a8a5a', eye: '#ffffff', desc: tr('Hạc lửa một chân, kêu một tiếng là cả thành bốc cháy.', "A one-legged fire crane; one cry and the whole city burns."), el: 'hoa', doKiep: true },
+  { id: 'vong_kiep', name: tr('Vong Kiếp Tán Nhân', "Tribulation-Lost Wanderer"), lv: 29, place: tr('Lôi Kiếp Nhai', "Tribulation Cliff"), shape: 'vo_lam', body: '#3a6a4a', accent: '#e6e6ee', eye: '#ff2a3a', desc: tr('Độ kiếp thất bại ba lần, hóa điên, chặn đường ai sắp độ kiếp.', "Failed his tribulation three times, went mad, and now blocks anyone about to face theirs."), human: { weapon: 'kiem', hat: true }, el: 'moc', doKiep: true },
+  { id: 'huyen_vu', name: tr('Huyền Vũ Cự Quy', "Black Tortoise Colossus"), lv: 30, place: tr('Bắc Minh', "Northern Abyss"), shape: 'thu', body: '#1e3a3a', accent: '#5a8a7a', eye: '#ffd36b', desc: tr('Rùa thần mang cả hòn đảo trên lưng, ngủ một giấc ngàn năm.', "A divine tortoise that carries an island on its back and sleeps a thousand years at a time."), el: 'thuy', doKiep: true },
+  { id: 'dao_ngot', name: tr('Đào Ngột', "Taowu"), lv: 30, place: tr('Hoang Sơn Tây', "Western Wilds"), shape: 'thu', body: '#5a4a2a', accent: '#c09a6a', eye: '#e0202e', desc: tr('Hung thú mặt người chân hổ, cố chấp không bao giờ lùi.', "A fiend with a human face and tiger legs; it never retreats."), el: 'tho', doKiep: true },
+  { id: 'thanh_moc_giao', name: tr('Thanh Mộc Thần Giao', "Verdant Wood Flood Dragon"), lv: 31, place: tr('Vạn Mộc Lâm', "Ten Thousand Trees Forest"), shape: 'rong', body: '#2a6a3a', accent: '#9ac06a', eye: '#ffd36b', desc: tr('Giao long trú trong rừng cổ, một hơi thở mọc ra cả khu rừng gai.', "A flood dragon of the ancient forest; one breath grows a whole thicket of thorns."), el: 'moc', doKiep: true },
+  { id: 'huyet_than', name: tr('Huyết Thần Tử', "Blood God Scion"), lv: 31, place: tr('Huyết Thần Điện', "Blood God Hall"), shape: 'nguoi', body: '#8a0a1e', accent: '#1e0a0e', eye: '#ff2a3a', desc: tr('Đứa con của biển máu, nuốt tinh huyết người độ kiếp để thành thần.', "A child of the blood sea that devours the essence of those facing tribulation to become a god."), el: 'hoa', doKiep: true },
+  { id: 'cung_ky', name: tr('Cùng Kỳ', "Qiongqi"), lv: 32, place: tr('Ngoại vi Bất Chu Sơn', "Outskirts of Mount Buzhou"), shape: 'thu', body: '#7a7a8a', accent: '#3a2a4a', eye: '#ffd36b', desc: tr('Hổ có cánh, ăn người thiện, nuôi kẻ ác. Một trong tứ hung.', "A winged tiger that eats the good and feeds the wicked. One of the Four Fiends."), el: 'kim', doKiep: true },
+  { id: 'ung_long', name: tr('Ứng Long', "Yinglong"), lv: 33, place: tr('Hung Lê Thổ Khâu', "Xiongli Mound"), shape: 'rong', body: '#2a4a7a', accent: '#ffe27a', eye: '#ffffff', desc: tr('Rồng có cánh từng giúp Hoàng Đế trị thủy. Không phục ai dưới Tiên.', "A winged dragon that once helped the Yellow Emperor tame the floods. It bows to none below the Immortals."), el: 'thuy', doKiep: true },
+  { id: 'thao_thiet', name: tr('Thao Thiết', "Taotie"), lv: 33, place: tr('Câu Ngô Sơn', "Gouwu Mountain"), shape: 'thu', body: '#3a2a1a', accent: '#c0882a', eye: '#e0202e', desc: tr('Hung thú tham ăn nhất tứ hung, nuốt cả linh khí lẫn lôi kiếp.', "The greediest of the Four Fiends; it swallows spiritual qi and tribulation lightning alike."), el: 'tho', doKiep: true },
   // Boss: không thể thắng
   {
     id: 'boss_ta',
@@ -726,7 +748,7 @@ export function monsterRealm(lv: number): number {
 /** Loài quái người chơi gặp được ở giới hiện tại: phàm giới, tiên giới hay ma giới, cộng quái thí luyện tông môn */
 export function monstersFor(c: Character, sectSide: 'chinh' | 'ta' | 'trung' | null): Monster[] {
   if (c.cosmos) return MONSTERS.filter((m) => m.cosmos === c.cosmos);
-  return MONSTERS.filter((m) => !m.cosmos && (!m.sect || m.sect === sectSide));
+  return MONSTERS.filter((m) => !m.cosmos && (!m.doKiep || c.realm >= DO_KIEP_REALM) && (!m.sect || m.sect === sectSide));
 }
 
 /**

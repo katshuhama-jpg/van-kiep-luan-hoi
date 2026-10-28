@@ -45,7 +45,7 @@ import { BREAK_EVENT_ID, EVENTS, PATH_EVENT_ID, pathChoices } from './events';
 import { maChainYear } from './sectEvents2';
 import { ASCEND_MIN_AGE, anOf, destOf, keyAn, needTrial } from './nguHanhDai';
 import { ASCEND_GEAR } from './items2';
-import { FAMILY_RE, isOrphan, addCult, addLife, addPill, clamp, cosmosCause, fatal, reward, wealthTier, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
+import { DO_KIEP_REALM, FAMILY_RE, isOrphan, addCult, addLife, addPill, clamp, cosmosCause, fatal, reward, wealthTier, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
 import type { Character, Choice, EffectCtx, Fx, FxKind, GameEvent, Meta, PendingEvent, Tone } from './types';
 import { applyGifts, giftOf, hasGift } from './gacha';
 import { afterChoice, beforeChoice, righteousPeril } from './fate';
@@ -1369,7 +1369,8 @@ const OVERWORK: Record<string, { warn: string; hits: { p: number; run: (c: Chara
       {
         p: 1,
         run: (c, ctx) => {
-          const f = fatal(c, ctx, 0.25, tr('Mang nhiều tiền đi đêm quá thường xuyên, bạn bị cướp giết bên bờ sông.', "Carrying too much money at night too often, you are robbed and killed by the river."));
+          // đã Độ Kiếp thì cướp phàm tục không lấy nổi mạng
+          const f = c.realm >= DO_KIEP_REALM ? null : fatal(c, ctx, 0.25, tr('Mang nhiều tiền đi đêm quá thường xuyên, bạn bị cướp giết bên bờ sông.', "Carrying too much money at night too often, you are robbed and killed by the river."));
           return f ? tr(`Lại một chuyến hàng đêm...${f}`, `Another night run with the goods...${f}`) : tr('Bị cướp chặn đường lúc đêm khuya, bạn bỏ của chạy lấy người.', "Robbers block your way late at night; you abandon the goods and run for your life.");
         },
       },
