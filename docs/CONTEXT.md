@@ -625,3 +625,9 @@ Làm theo plan "Plan 3.1.0 - Xử lý góp ý người chơi" (trừ góp ý #7 
   - Chỗ đặt: khối "Mời tác giả chén trà" ở trang Tác giả (QR, vài câu tếu kiểu tu tiên, có thể có bảng "Công đức" ghi tên người ủng hộ nếu họ đồng ý); một dòng nhỏ ở màn lập bia, chỉ thỉnh thoảng (ví dụ mỗi 10 kiếp hoặc khi vừa phi thăng).
   - Không tặng gì trong game cho người ủng hộ (kể cả danh hiệu, phúc duyên), để giữ là ủng hộ thuần túy.
   - Đo: ghi sự kiện mở khối chén trà và bấm xem QR.
+- **Người mới (28/10, trên `next`):**
+  - Ba kiếp đầu tuổi thơ trôi nhanh gấp 2,5 (`youthPace` trong `lib/game/data.ts`). Tiên duyên đầu đời có từ 4 tuổi.
+  - Mở lại chơi thử không cần tài khoản (bỏ chuyển hướng ở `/choi`). Khách lưu trên máy, không ghi danh lên Nghĩa trang hay Bảng xếp hạng.
+  - Khách chết từ Kim Đan trở lên, phi thăng hoặc sống trên 150 tuổi (`worthGhiDanh`) thì hiện lời mời ghi danh (`components/GhiDanh.tsx`). Bia được giữ trên máy (`vkl.pendingGraves`, tối đa 5), đăng ký xong `carryGuest` khắc lên Nghĩa trang. Chết sớm thì không hiện gì.
+  - Người vào lần đầu, và tài khoản chưa đi kiếp nào, không hiện Cáo thị. Game ghi nhận đã xem.
+  - Màn đầu thai của người chưa đi kiếp nào ẩn điểm danh và nhiệm vụ.

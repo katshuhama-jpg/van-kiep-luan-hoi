@@ -3,7 +3,7 @@
 import { track } from '@/lib/track';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Sprite from '@/components/Sprite';
 import { currentPlayer, signIn, signUp, usernameIssue } from '@/lib/auth';
 import { carryGuest } from '@/lib/storage';
@@ -16,6 +16,10 @@ export default function LoginPage() {
   const router = useRouter();
   const { enabled } = useAuth();
   const [mode, setMode] = useState<'in' | 'up'>('in');
+  // từ lời mời ghi danh (chơi thử) thì mở thẳng tab Đăng ký
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('up')) setMode('up');
+  }, []);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -66,7 +70,7 @@ export default function LoginPage() {
 
         {!enabled && <p className="error">Chưa kết nối được máy chủ, thử lại sau ít phút.</p>}
         <p className="note" style={{ margin: 0 }}>
-          Cần một tài khoản để vào luân hồi. Tiến độ được lưu trên mây, đổi máy vẫn chơi tiếp được.
+          Ghi danh để khắc bia ở Nghĩa trang tu sĩ, lên Bảng xếp hạng, ra Lôi đài. Tiến độ lưu trên mây, đổi máy vẫn chơi tiếp. Các kiếp đã chơi thử trên máy này được giữ lại.
         </p>
 
         <label className="field">
@@ -117,6 +121,9 @@ export default function LoginPage() {
       </form>
 
       <div className="menu">
+        <Link href="/choi" className="note">
+          Chơi thử, chưa cần tài khoản ›
+        </Link>
         <Link href="/" className="note">
           ‹ Về trang đầu
         </Link>

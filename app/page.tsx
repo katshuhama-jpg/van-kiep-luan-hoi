@@ -8,7 +8,7 @@ import { demoChar } from '@/lib/game/demo';
 import { displayName } from '@/lib/storage';
 import { useAuth } from '@/lib/useAuth';
 import { useEffect, useState } from 'react';
-import ReleaseNotice, { needNotice } from '@/components/Release';
+import ReleaseNotice, { firstVisit, markSeenLocal, needNotice } from '@/components/Release';
 import { CURRENT_VERSION } from '@/lib/releases';
 import LoiDaiButton from '@/components/LoiDaiButton';
 
@@ -26,7 +26,9 @@ export default function Home() {
   const { user, ready, enabled } = useAuth();
   const [rel, setRel] = useState(false);
   useEffect(() => {
-    if (needNotice()) setRel(true);
+    // người vào lần đầu chưa cần đọc cáo thị bản mới: ghi nhận đã xem, bản sau mới hiện
+    if (firstVisit()) markSeenLocal();
+    else if (needNotice()) setRel(true);
   }, []);
   return (
     <main className="app title-screen">
@@ -47,9 +49,10 @@ export default function Home() {
       </div>
 
       <div className="menu">
-        <Link href={ready && !user ? '/dang-nhap?next=/choi' : '/choi'} className="btn btn-red btn-big" style={link}>
+        <Link href="/choi" className="btn btn-red btn-big" style={link}>
           Vào luân hồi
         </Link>
+        {ready && !user && <small className="guest-note">Chơi ngay, chưa cần tài khoản</small>}
         <LoiDaiButton />
         <Link href="/bang-xep-hang" className="btn" style={link}>
           Bảng xếp hạng

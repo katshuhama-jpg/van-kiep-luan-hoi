@@ -35,7 +35,7 @@ export interface Memorial {
   end_tag?: string | null;
 }
 
-const K = { save: 'vkl.save', meta: 'vkl.meta', lives: 'vkl.lives' };
+const K = { save: 'vkl.save', meta: 'vkl.meta', lives: 'vkl.lives', pending: 'vkl.pendingGraves' };
 
 function readLocal<T>(key: string): T | null {
   try {
@@ -106,6 +106,23 @@ export async function addMemorial(user: Player | null, m: Omit<Memorial, 'id' | 
   const local = readLocal<Memorial[]>(K.lives) ?? [];
   const entry: Memorial = { ...m, id: `local-${Date.now()}`, incense: 0, created_at: new Date().toISOString() };
   writeLocal(K.lives, [entry, ...local].slice(0, 100));
+}
+
+// ---------- Chơi thử: bia chờ ghi danh ----------
+/** Chơi thử chết từ Kim Đan trở lên, hoặc phi thăng, hoặc sống trên 150 tuổi thì mời ghi danh */
+export const GHI_DANH_REALM = 3;
+export function worthGhiDanh(c: Pick<Character, 'realm' | 'ascended' | 'age'>): boolean {
+  return c.realm >= GHI_DANH_REALM || !!c.ascended || c.age >= 150;
+}
+type GraveIn = Parameters<typeof addMemorial>[1];
+/** Giữ tối đa 5 bia đáng ghi danh nhất trên máy, chờ đăng ký */
+export function addPendingGrave(g: GraveIn) {
+  const ls = readLocal<GraveIn[]>(K.pending) ?? [];
+  const score = (x: GraveIn) => (x.ascended ? 1e6 : 0) + (x.realm_no ?? 0) * 1e4 + x.age;
+  writeLocal(K.pending, [g, ...ls].sort((a, b) => score(b) - score(a)).slice(0, 5));
+}
+export function pendingGraves(): GraveIn[] {
+  return readLocal<GraveIn[]>(K.pending) ?? [];
 }
 
 const COLS = 'id, player_name, char_name, life_no, age, realm, path, dao_tam, cause, epitaph, ascended, incense, created_at, realm_no, wealth, ending:look->>ending, end_tag:look->>endTag';
@@ -423,6 +440,9 @@ export async function carryGuest(user: Player | null) {
     saveLocal(user, save);
     await saveRemote(user, save);
   }
+  // khắc các bia đáng ghi danh từ lúc chơi thử lên Nghĩa trang tu sĩ, đứng tên tài khoản mới
+  for (const g of pendingGraves().reverse()) await addMemorial(user, { ...g, player_name: user.username }).catch(() => {});
+  writeLocal(K.pending, null);
   writeLocal(K.meta, null);
   writeLocal(K.save, null);
 }

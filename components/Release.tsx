@@ -32,6 +32,16 @@ export function ReleaseBody({ r }: { r: Release }) {
   );
 }
 
+export { markSeenLocal };
+/** Người vào game lần đầu trên máy này: chưa từng xem cáo thị, chưa đăng nhập, chưa chơi thử */
+export function firstVisit(): boolean {
+  try {
+    return !seenLocal() && !localStorage.getItem('vkl.session') && !localStorage.getItem('vkl.meta');
+  } catch {
+    return false;
+  }
+}
+
 /** Người chơi chưa xem cáo thị bản mới nhất (xét cả bản lưu trên tài khoản và trên máy) */
 export function needNotice(seen?: string | null): boolean {
   return seen !== CURRENT_VERSION && seenLocal() !== CURRENT_VERSION;
