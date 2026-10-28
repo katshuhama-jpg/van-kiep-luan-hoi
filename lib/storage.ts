@@ -6,7 +6,6 @@ import type { Character, Grave, Meta, PendingEvent, WorldEcho, RivalChar } from 
 import { REALMS, realmLabel } from './game/data';
 import { supabase } from './supabase';
 import { tr } from './i18n';
-import { nameOf } from './hanviet';
 
 export interface SaveState {
   v: 1;
@@ -145,8 +144,7 @@ export async function listMemorials(user: Player | null): Promise<{ all: Memoria
           .then((r) => (r.data as Memorial[] | null) ?? [])
       : Promise.resolve(local),
   ]);
-  const nm = (l: Memorial[]) => l.map((m) => ({ ...m, char_name: nameOf(m.char_name) }));
-  return { all: nm((all as Memorial[] | null) ?? []), mine: nm(mine) };
+  return { all: (all as Memorial[] | null) ?? [], mine };
 }
 
 /** Chi tiết một ngôi mộ để xem hồi ký: dáng vẻ, cột mốc, cảnh giới cuối */
@@ -164,7 +162,7 @@ export async function topIncense(): Promise<Memorial[]> {
   const sb = supabase();
   if (!sb) return [];
   const { data } = await sb.from('vkl_lives').select(COLS).gt('incense', 0).order('incense', { ascending: false }).limit(12);
-  return ((data as Memorial[] | null) ?? []).filter((m) => !isTest(m.player_name)).map((m) => ({ ...m, char_name: nameOf(m.char_name) }));
+  return ((data as Memorial[] | null) ?? []).filter((m) => !isTest(m.player_name));
 }
 
 export async function thapHuong(user: Player | null, id: number | string): Promise<number | null> {
@@ -188,7 +186,6 @@ export async function leaderboard(kind: RankKind, lean: RankLean, path: string, 
     alive: r.alive,
     c: {
       ...r.c,
-      name: nameOf(r.c.name),
       stats: r.c.stats ?? { tamCanh: 50, ngoTinh: 50, khiVan: 50, tamMa: 0, sucKhoe: 80 },
       equipped: r.c.equipped ?? {},
       log: [],
@@ -221,7 +218,7 @@ export async function fetchWorld(user: Player | null): Promise<WorldEcho | null>
     const j = Math.floor(Math.random() * (i + 1));
     [rows[i], rows[j]] = [rows[j], rows[i]];
   }
-  const graves: Grave[] = rows.slice(0, 6).map((r) => ({ char: nameOf(r.char_name), player: r.player_name, age: r.age, realm: r.realm, cause: r.cause, epitaph: r.epitaph, dao: r.dao_tam }));
+  const graves: Grave[] = rows.slice(0, 6).map((r) => ({ char: r.char_name, player: r.player_name, age: r.age, realm: r.realm, cause: r.cause, epitaph: r.epitaph, dao: r.dao_tam }));
   const top = (list: { username: string; c: Character }[] | null) => {
     const r = list?.find((x) => x.username !== me && !isTest(x.username) && (x.c.realm ?? 0) >= 1);
     return r ? { name: r.c.name, player: r.username, realm: r.c.realm, realmName: realmLabel(r.c.realm, r.c.layer ?? 1) || REALMS[r.c.realm]?.name || '' } : null;

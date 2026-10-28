@@ -188,9 +188,6 @@ export default function PlayPage() {
       weeklyTitles().then((t) => !cancel && setTitles(t));
       if (user) loadSocial(user).catch(() => {});
       if (save?.char && !save.char.dead) {
-        // bản lưu chơi bằng tiếng Việt, mở lại bằng tiếng Anh: tên đổi sang pinyin
-        save.char.name = nameOf(save.char.name);
-        if (save.char.partner) save.char.partner = nameOf(save.char.partner);
         charRef.current = save.char;
         pendingRef.current = save.pending;
         yearSecRef.current = save.yearSec || 30;
