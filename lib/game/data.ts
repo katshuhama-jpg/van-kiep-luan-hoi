@@ -70,7 +70,7 @@ export const PATHS: Record<PathId, PathInfo> = {
   dan: { id: 'dan', name: tr('Đan tu', "Alchemist"), short: tr('Đan', "Alchemy"), desc: tr('Sống lâu nhất trong các con đường. Luyện đan kiếm nhiều linh thạch, tự chế đan đột phá, tu nhanh hơn chút, có đan dược hộ thân nên khó chết, nhưng ra đòn không mạnh. Kiếp sau còn nhớ cách luyện: đan hồi hồn rẻ hơn 30%.', "The longest-lived of all Paths. Alchemy earns plenty of spirit stones, you brew your own breakthrough pills, cultivate a little faster, and your pills keep you alive, but your strikes are weak. Next life you still remember the recipes: soul-return pills cost 30% less."), lean: 'trung', aura: '#ffb057' },
   tran: { id: 'tran', name: tr('Trận tu', "Formation Master"), short: tr('Trận', "Formation"), desc: tr('Bày trận, vẽ phù. Thủ cực chắc, bế quan an toàn, ít bị tập kích. Thường sống rất thọ.', "Lay formations, draw talismans. Rock-solid defense, safe seclusion, rarely ambushed. Usually lives very long."), lean: 'trung', aura: '#b59cff' },
   phat: { id: 'phat', name: tr('Phật tu', "Buddhist Cultivator"), short: tr('Phật', "Buddhist"), desc: tr('Từ bi hỷ xả. Máu và thủ dày, thọ nguyên dài, tâm ma khó xâm nhập, đột phá vững vàng.', "Compassion and equanimity. Thick HP and defense, long lifespan, heart demons find no way in, steady breakthroughs."), lean: 'chinh', aura: '#ffe27a' },
-  ma: { id: 'ma', name: tr('Ma tu', "Demonic Cultivator"), short: 'Ma', desc: tr('Hút linh lực, luyện huyết công. Tu nhanh nhất, nhưng tâm ma cực nặng.', "Drain spiritual power, refine blood arts. Fastest cultivation, but brutal heart demons."), lean: 'ta', aura: '#ff3448' },
+  ma: { id: 'ma', name: tr('Ma tu', "Demonic Cultivator"), short: tr('Ma', "Demonic"), desc: tr('Hút linh lực, luyện huyết công. Tu nhanh nhất, nhưng tâm ma cực nặng.', "Drain spiritual power, refine blood arts. Fastest cultivation, but brutal heart demons."), lean: 'ta', aura: '#ff3448' },
   yeu: { id: 'yeu', name: tr('Yêu tu', "Yao Cultivator"), short: tr('Yêu', "Yao"), desc: tr('Thức tỉnh huyết mạch yêu tộc. Thân thể khỏe, có thể hóa hình. Sống thọ nhất trong các đạo.', "Awaken the bloodline of the yao race. Sturdy body, can take human form. The longest lifespan of all Paths."), lean: 'trung', aura: '#7be3a4' },
 };
 
@@ -928,7 +928,7 @@ export const TALENTS: Talent[] = [
   { id: 'ta_ton', name: tr('Ma tôn chuyển thế', "Reincarnated Demon Sovereign"), desc: tr('Đạo tâm -60, khí vận +15, tu luyện nhanh hơn 15%', "Yao Heart -60, Luck +15, cultivation 15% faster"), cost: 120, ta: true },
 ];
 
-export const SEASONS = [tr('Xuân', "Spring"), tr('Hạ', "Summer"), 'Thu', tr('Đông', "Winter")];
+export const SEASONS = [tr('Xuân', "Spring"), tr('Hạ', "Summer"), tr('Thu', "Autumn"), tr('Đông', "Winter")];
 
 /** Màu tóc bẩm sinh. w = độ hiếm */
 export const HAIR_COLORS: Record<string, { name: string; hex: string; w: number; yeu?: boolean }> = {
@@ -990,12 +990,12 @@ export const REGIONS = [
   { id: 'thanh_chau', name: tr('Thanh Châu', "Qingzhou"), desc: tr('đồng bằng trù phú', "fertile plains"), w: 22, places: [tr('thôn Hạnh Hoa', "Xinghua Village"), tr('trấn Lạc Hà', "Luo He Town"), tr('làng Đào Nguyên', "Taoyuan Village"), tr('bến Thanh Thủy', "Qingshui Pier")], mod: { money: 1.3 } },
   { id: 'trung_chau', name: tr('Trung Châu', "Zhongzhou"), desc: tr('đất kinh kỳ phồn hoa', "the bustling imperial heartland"), w: 12, places: [tr('kinh thành Thiên Khải', "Tianqi Capital"), tr('phủ Vạn An', "Wanan Prefecture"), tr('phố Tây Thị', "Xishi Street")], mod: { money: 1.8, tamMa: 6 } },
   { id: 'bac_mac', name: tr('Bắc Mạc', "Beimo"), desc: tr('sa mạc gió cát khắc nghiệt', "a harsh desert of wind and sand"), w: 12, places: [tr('ốc đảo Lục Châu', "Lu Zhou Oasis"), tr('thành Hoàng Sa', "Huang Sha City"), tr('trạm ngựa Bạch Đà', "Bai Tuo Horse Station")], mod: { sucKhoe: 12, khiVan: -6 } },
-  { id: 'nam_cuong', name: tr('Nam Cương', "Nangang"), desc: tr('rừng thiêng nhiều độc trùng', "sacred jungles full of venomous bugs"), w: 12, places: [tr('bản Miêu Cổ', "Miaogu Hamlet"), tr('trại Thạch Đầu', "Shitou Camp"), tr('động Bách Độc', "Baidu Cave")], mod: { ngoTinh: 4, sucKhoe: -4 } },
+  { id: 'nam_cuong', name: tr('Nam Cương', "Nanjiang"), desc: tr('rừng thiêng nhiều độc trùng', "sacred jungles full of venomous bugs"), w: 12, places: [tr('bản Miêu Cổ', "Miaogu Hamlet"), tr('trại Thạch Đầu', "Shitou Camp"), tr('động Bách Độc', "Baidu Cave")], mod: { ngoTinh: 4, sucKhoe: -4 } },
   { id: 'dong_hai', name: tr('Đông Hải', "Donghai"), desc: tr('miền biển sóng gió', "stormy seas"), w: 14, places: [tr('làng chài Vọng Hải', "Wanghai Fishing Village"), tr('đảo Bồng Lai ngoại vi', "Outer Penglai Isle"), tr('cảng Minh Châu', "Mingzhou Port")], mod: { ngoTinh: 6 } },
   { id: 'tay_vuc', name: tr('Tây Vực', "Xiyu"), desc: tr('Phật quốc vạn chùa', "a Buddhist land of ten thousand temples"), w: 10, places: [tr('thành Đại Lôi Âm', "Dalei Yin City"), tr('chùa Tu Di', "Tu Di Temple"), tr('làng Tháp Trắng', "Tabai Village")], mod: { daoTam: 12, tamCanh: 6 } },
   { id: 'tuyet_vuc', name: tr('Tuyết Vực', "Xueyu"), desc: tr('băng nguyên ngàn năm tuyết phủ', "a thousand-year frozen plain"), w: 8, places: [tr('bộ lạc Băng Lang', "Binglang Tribe"), tr('thành Hàn Nguyệt', "Han Yue City")], mod: { lifeMul: 1.06, khiVan: -3 } },
   { id: 'ma_vuc', name: tr('Ma Vực', "Moyu"), desc: tr('vùng đất ma khí bao phủ', "a land shrouded in demonic qi"), w: 6, places: [tr('thành Huyết Nguyệt', "Xueyue City"), tr('trấn Hắc Thủy', "Heishui Town")], mod: { daoTam: -15, ngoTinh: 6, tamMa: 10 } },
-  { id: 'van_yeu', name: tr('Vạn Yêu Lâm', "Wanyao Lin"), desc: tr('rừng của yêu tộc', "the forest of the yao race"), w: 0, places: [tr('hang Thanh Khâu', "Qingqiu Cave"), tr('cây Thiên Niên Tùng', "Tiannian Song Tree")], mod: {} },
+  { id: 'van_yeu', name: tr('Vạn Yêu Lâm', "Wanyao Forest"), desc: tr('rừng của yêu tộc', "the forest of the yao race"), w: 0, places: [tr('hang Thanh Khâu', "Qingqiu Cave"), tr('cây Thiên Niên Tùng', "Tiannian Song Tree")], mod: {} },
 ] as const;
 
 /** Gia cảnh lúc sinh: tiền khởi đầu và tiền gia đình chu cấp mỗi năm đến 16 tuổi */

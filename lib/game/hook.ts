@@ -42,7 +42,7 @@ export const OMENS: Omen[] = [
   { id: 'loi_van', name: tr('Lôi vân tụ đỉnh', "Thunderclouds Gather"), desc: tr('Mây sấm vần vũ: đột phá cảnh giới dễ hơn 6%.', "Thunderclouds churn: realm breakthroughs are 6% easier."), icon: '⚡', nghi: tr('Đột phá, độ kiếp', "Breakthrough, tribulation"), ky: tr('Chần chừ', "Hesitating") },
 ];
 
-const CAN = [tr('Giáp', "Jia"), tr('Ất', "Ất"), tr('Bính', "Bing"), tr('Đinh', "Ding"), tr('Mậu', "Wu"), tr('Kỷ', "Ji"), 'Canh', tr('Tân', "Xin"), tr('Nhâm', "Ren"), tr('Quý', "Gui")];
+const CAN = [tr('Giáp', "Jia"), tr('Ất', "Yi"), tr('Bính', "Bing"), tr('Đinh', "Ding"), tr('Mậu', "Wu"), tr('Kỷ', "Ji"), tr('Canh', "Geng"), tr('Tân', "Xin"), tr('Nhâm', "Ren"), tr('Quý', "Gui")];
 const CHI = [tr('Tý', "Zi"), tr('Sửu', "Chou"), tr('Dần', "Yin"), tr('Mão', "Mao"), tr('Thìn', "Chen"), tr('Tỵ', "Si"), tr('Ngọ', "Wu"), tr('Mùi', "Wei"), tr('Thân', "Shen"), tr('Dậu', "You"), tr('Tuất', "Xu"), tr('Hợi', "Hai")];
 /** Can chi của ngày (theo lịch âm dương), ví dụ "Mậu Ngọ" */
 export function canChiDay(day: string = vnDay()): string {

@@ -66,7 +66,7 @@ export const EVENTS3: GameEvent[] = [
     choices: () => [
       {
         label: tr('Nhận chén rượu', "Accept the wine"),
-        hint: 'nguy',
+        hint: tr('nguy', "risky"),
         lean: 'trung',
         run: (c, ctx) =>
           gamble(c, ctx, 0.35, tr('Sáng hôm sau, tiều phu tìm thấy một cái xác khô quắt trong miếu. Yêu tinh đã hút cạn dương khí của bạn.', "The next morning a woodcutter finds a shrivelled corpse in the temple. A demon drained every drop of your yang essence."), tr('Rượu ngọt lạ thường...', "The wine is strangely sweet..."), (ch) => {
@@ -169,7 +169,7 @@ export const EVENTS3: GameEvent[] = [
     choices: () => [
       {
         label: tr('Uống cạn cho phải phép', "Drain it, as etiquette demands"),
-        hint: 'nguy',
+        hint: tr('nguy', "risky"),
         lean: 'trung',
         run: (c, ctx) =>
           gamble(c, ctx, 0.4, tr('Rượu có Đoạn Trường Tán. Bạn gục xuống bàn tiệc, máu đen trào ra khóe miệng.', "The wine was laced with Gut-Severing Powder. You slump over the table, black blood trickling from your lips."), tr('Bạn nâng chén...', "You raise the cup..."), (ch) => {
