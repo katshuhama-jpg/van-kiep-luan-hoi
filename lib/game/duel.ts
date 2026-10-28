@@ -22,9 +22,9 @@ import { nameOf } from '../hanviet';
  */
 
 
-/** Oan gia ngõ hẹp: cảnh giới tối thiểu để gặp lại kẻ thù cũ (2 = Trúc Cơ), và độ chênh cấp chiến đấu tối đa (3 cấp = 1 đại cảnh giới) */
-export const OAN_GIA_MIN_REALM = 2;
-export const OAN_GIA_MAX_GAP = 3;
+/** Oan gia ngõ hẹp: tỉ lệ gặp lại kẻ thù cũ, và phần chênh lệch sức mạnh còn giữ lại khi kẻ thù mạnh hơn (0.8 = dễ hơn 20%) */
+export const OAN_GIA_RATE = 0.28;
+export const OAN_GIA_GAP_KEEP = 0.8;
 export type DuelKind = 'dong_dao' | 'dich_thu' | 'kiep_truoc' | 'dong_mon' | 'ngu_hanh' | 'ma_dau';
 export const DUEL_PER_YEAR = 0.1; // trung bình khoảng 10 năm gặp một lần
 export const DUEL_TURNS = 5;
@@ -243,15 +243,16 @@ function pickDuel0(c: Character, rnd: () => number): DuelFoe | null {
     ...(c.vendettas ?? []),
     ...S.foes.filter((p) => !(c.vendettas ?? []).some((v) => v.player === p)).map((p) => ({ player: p, name: '', items: [], why: tr(`@${p} có tên trong sổ thù của bạn`, `@${p} is in your book of grudges`) })),
   ];
-  // oan gia ngõ hẹp: có thù với người chơi thật thì 35% gặp lại họ.
-  // Cân bằng: còn ở Luyện Khí thì chưa gặp lại; kẻ thù mạnh hơn quá 1 đại cảnh giới thì cũng chưa gặp,
-  // tránh vòng lặp kiếp nào cũng bị cùng một người mạnh hơn rất nhiều giết ngay từ những năm mới tu.
+  // oan gia ngõ hẹp: có thù với người chơi thật thì 28% gặp lại họ (trước là 35%).
+  // Kẻ thù mạnh hơn thì chỉ giữ 80% khoảng cách sức mạnh: vẫn khó nhưng bớt cảnh kiếp nào cũng bị cùng một người nghiền nát.
   const meCl = combatLevel(c);
   for (const v of foesV) {
-    if (c.realm < OAN_GIA_MIN_REALM) break;
-    const cands = (w?.rivals ?? []).filter((x) => x.player === v.player && combatLevel(foeChar(x)) <= meCl + OAN_GIA_MAX_GAP);
-    if (!cands.length || rnd() >= 0.35) continue;
-    const rival = cands.find((x) => x.name === v.name) ?? cands[0];
+    const cands = (w?.rivals ?? []).filter((x) => x.player === v.player);
+    if (!cands.length || rnd() >= OAN_GIA_RATE) continue;
+    const r0 = cands.find((x) => x.name === v.name) ?? cands[0];
+    const gap = combatLevel(foeChar(r0)) - meCl;
+    const t = gap > 1 ? clToRealm(Math.max(1, Math.min(39, meCl + Math.round(gap * OAN_GIA_GAP_KEEP)))) : null;
+    const rival = t && (t.realm < r0.realm || (t.realm === r0.realm && t.layer < r0.layer)) ? { ...r0, realm: t.realm, layer: t.layer } : r0;
     return {
       kind: 'dich_thu',
       rival,
@@ -298,8 +299,8 @@ function pickDuel0(c: Character, rnd: () => number): DuelFoe | null {
   const [pw, pn] = W[kind];
   const r = rnd();
   const ri = (a: number, b: number) => a + Math.floor(rnd() * (b - a + 1));
-  // còn ở Luyện Khí: đối thủ mạnh hơn chỉ hơn tối đa một đại cảnh giới, để người mới tu không bị nghiền nát
-  const strong = c.realm <= 1 ? ri(2, 3) : ri(3, 6);
+  // còn ở Luyện Khí: đối thủ mạnh hơn bớt 20% độ chênh (3-6 cấp thành 2-5 cấp)
+  const strong = c.realm <= 1 ? ri(2, 5) : ri(3, 6);
   const delta = r < pw ? -ri(3, 6) : r < pw + pn ? ri(-1, 1) : strong;
   const targetCl = Math.max(1, Math.min(39, me0 + delta));
   const tgt = clToRealm(targetCl);
