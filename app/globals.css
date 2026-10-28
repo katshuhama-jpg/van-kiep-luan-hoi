@@ -4176,3 +4176,9 @@ button.shadow-card { cursor: pointer; }
 .ss-link { display: block; padding: 6px 8px; font-size: 12px; word-break: break-all; user-select: all; background: rgba(0, 0, 0, 0.06); border: 2px solid rgba(0, 0, 0, 0.15); }
 .lc-share { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 1px; }
 .lc-share small { font-size: 12px; font-weight: 500; opacity: 0.9; }
+/* Chơi thử: mời ghi danh khi chết ở cảnh giới cao */
+.gd-who { margin: 0; font-size: 18px; }
+.gd-who b { color: var(--red-d, #8a1f14); }
+.gd-text { margin: 0; font-size: 15px; line-height: 1.45; }
+.guest-note { display: block; margin-top: -4px; text-align: center; font-size: 14px; color: var(--muted, #6a5a44); }
+.gd-sheet .btn-big small { display: block; font-size: 14px; font-weight: 400; }

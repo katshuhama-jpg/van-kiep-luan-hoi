@@ -619,3 +619,12 @@ Làm theo plan "Plan 3.1.0 - Xử lý góp ý người chơi" (trừ góp ý #7 
 - Ma đầu: bảng `vkl_mad`, `vkl_priv.mad_release` (gọi trong fight3 khi thắng đủ 2 trận/ngày), `vkl_mad_list`, `vkl_mad_result`. Trong game là DuelKind `ma_dau` (duel.ts `pickMaDau`), không chết khi thua.
 - Tiếng đồn: `RumorLine` ở Hành trình màn đầu thai; `vkl_ending_first` gửi thư Thiên Đạo cho cả giang hồ khi có người mở đầu tiên; Sổ Sinh Tử ghi số người mở và người đầu tiên.
 - Tài khoản thử: `test_card` (mật khẩu tk2610), tên `test_` bị loại khỏi bảng xếp hạng.
+- **Chơi thử (28/10, bản vá trên `main`):**
+  - Mở lại chơi thử không cần tài khoản (bỏ chuyển hướng ở `/choi`). Khách lưu trên máy, không ghi danh lên Nghĩa trang hay Bảng xếp hạng.
+  - Khách chết từ Kim Đan trở lên, phi thăng hoặc sống trên 150 tuổi (`worthGhiDanh`) thì hiện lời mời ghi danh (`components/GhiDanh.tsx`). Bia được giữ trên máy (`vkl.pendingGraves`, tối đa 5), đăng ký xong `carryGuest` khắc lên Nghĩa trang. Chết sớm thì không hiện gì.
+  - Người vào lần đầu, và tài khoản chưa đi kiếp nào, không hiện Cáo thị. Game ghi nhận đã xem.
+  - Màn đầu thai của người chưa đi kiếp nào ẩn điểm danh và nhiệm vụ.
+
+## Danh sách ý tưởng (chưa ra bản, chờ Tyler chọn)
+- **Giữ người mới qua kiếp đầu:** ba kiếp đầu tuổi thơ (dưới 16) trôi nhanh gấp 2,5 và Tiên duyên đầu đời tới sớm hơn (từ 4 tuổi). Mô phỏng: lựa chọn đầu tiên từ giây 60 xuống giây 24, tới 16 tuổi từ 6 phút xuống 2,8 phút. Code đã có trên nhánh `next` (commit 12d522a, `youthPace`).
+- **Khoe và bia mộ:** bỏ ô viết bia riêng (1/343 kiếp dùng), thay bằng câu bia game tự viết từ khoảnh khắc đáng nhớ nhất của kiếp và in lên thẻ khoe. Nút Khoe chỉ nổi bật khi kiếp đáng khoe (hạng A/S, phi thăng, phá kỷ lục, kết cục mới). Chưa làm.

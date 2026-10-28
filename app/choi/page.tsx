@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import GhiDanh from '@/components/GhiDanh';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Scene from '@/components/Scene';
 import MusicToggle from '@/components/MusicToggle';
@@ -32,14 +33,14 @@ import { HON_PILLS, QUEST_HON, addHon, pastDanTu, honPillCost, honPillUsed, honD
 import { serverNow } from '@/lib/serverTime';
 import LoiDaiButton from '@/components/LoiDaiButton';
 import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, pickAmbush } from '@/lib/game/ambush';
-import { endingFirst, titleKey, addMemorial, displayName, fetchWorld, listMail, loadAll, saveLocal, saveMeta, saveRemote, sendMail, unreadMail, weeklyTitles, type Mail, type SaveState } from '@/lib/storage';
+import { endingFirst, titleKey, addMemorial, addPendingGrave, worthGhiDanh, displayName, fetchWorld, listMail, loadAll, saveLocal, saveMeta, saveRemote, sendMail, unreadMail, weeklyTitles, type Mail, type SaveState } from '@/lib/storage';
 import { CHECKIN, checkinClaimed, checkinDay, updateCareer, bumpStreak, evalQuests, newbieGoal, omenIs, qmark, questName, vnDay } from '@/lib/game/hook';
 import { HookSheet, TitleBadge } from '@/components/Hook';
 import { omenToday } from '@/lib/game/hook';
 import { useAuth } from '@/lib/useAuth';
 import ReleaseNotice, { GiftNotice, needNotice } from '@/components/Release';
 import AscendScene from '@/components/AscendScene';
-import { CURRENT_VERSION } from '@/lib/releases';
+import { CURRENT_VERSION, markSeenLocal } from '@/lib/releases';
 import NguHanhDai, { NhdMirror, waiting, type NhdView } from '@/components/NguHanhDai';
 import { arenaBg, NHD_MAX_TURNS, PHU_PRICE, STANCES, loseRound, mirrorChar, mirrorStance, mirrorStats, needTrial, nhdOf, roundMods, tellOf, winRound, type RoundMods, type Stance } from '@/lib/game/nguHanhDai';
 import { sectSide } from '@/lib/game/sect';
@@ -81,6 +82,7 @@ export default function PlayPage() {
   const [titles, setTitles] = useState<Record<string, string[]>>({});
   const [questNews, setQuestNews] = useState<string[]>([]); // nhiệm vụ vừa xong ở đời trước
   const [achNews, setAchNews] = useState<string[]>([]); // thành tựu vừa đạt
+  const [ghiDanh, setGhiDanh] = useState<{ name: string; realm: string; age: number; ascended: boolean } | null>(null); // chơi thử mà chết ở cảnh giới cao: mời ghi danh
   const [loreNews, setLoreNews] = useState<string[]>([]); // mảnh Thiên thư vừa mở
 
   const charRef = useRef<Character | null>(null);
@@ -153,11 +155,7 @@ export default function PlayPage() {
   // Tải dữ liệu khi biết đã đăng nhập hay chưa
   useEffect(() => {
     if (!ready) return;
-    // không còn chế độ khách: chưa đăng nhập thì sang trang đăng nhập (phiên đã có giữ nguyên)
-    if (!user) {
-      window.location.replace('/dang-nhap?next=/choi');
-      return;
-    }
+    // chơi thử: chưa đăng nhập vẫn chơi được, lưu trên máy, không ghi danh lên giang hồ
     let cancel = false;
     (async () => {
       const { meta: m0, save } = await loadAll(user);
@@ -1277,7 +1275,12 @@ export default function PlayPage() {
   // cáo thị bản cập nhật: một lần cho mỗi bản, nhường hướng dẫn lần đầu
   const metaReady = !!meta;
   useEffect(() => {
-    if (metaReady && phase !== 'loading' && !tut && needNotice(metaRef.current?.seenVer)) setRelOpen(true);
+    if (!metaReady || phase === 'loading' || tut || !needNotice(metaRef.current?.seenVer)) return;
+    // người chưa đi kiếp nào: chưa cần đọc cáo thị, ghi nhận đã xem để bản sau mới hiện
+    if ((metaRef.current?.lives ?? 0) === 0) {
+      markSeenLocal();
+      closeRel(CURRENT_VERSION);
+    } else setRelOpen(true);
   }, [metaReady, phase, tut]);
   const closeRel = (v: string) => {
     setRelOpen(false);
@@ -1320,7 +1323,7 @@ export default function PlayPage() {
     }
     // số liệu giang hồ cho Thiên thư Quyển II (chỉ cần sau Quy Nhất)
     const social = quyNhatDone(meta) || c.endTag === 'thoat_van_kiep' ? await loreSocial(user).catch(() => null) : null;
-    await addMemorial(user, {
+    const grave = {
       player_name: displayName(user),
       char_name: c.name,
       life_no: c.lifeNo,
@@ -1359,7 +1362,14 @@ export default function PlayPage() {
         cosmos: c.cosmos ?? null,
         kiepSo: c.kiepSo ?? 0,
       },
-    }).catch(() => {});
+    };
+    await addMemorial(user, grave).catch(() => {});
+    // chơi thử: kiếp đáng ghi danh thì giữ bia lại, đăng ký xong sẽ khắc lên Nghĩa trang tu sĩ
+    if (!user && worthGhiDanh(c)) {
+      addPendingGrave(grave);
+      setGhiDanh({ name: c.name, realm: grave.realm, age: grave.age, ascended: !!c.ascended });
+      track('ghi_danh_show', { lifeNo: c.lifeNo, realm: c.realm });
+    }
     // kết cục lần đầu mở: hỏi máy chủ xem có phải người đầu tiên trong giang hồ không
     const freshIds = Array.from(new Set([ending.id, ...alsoEndings(c)])).filter((id) => !meta.endings?.[id]);
     if (freshIds.length)
@@ -1492,8 +1502,9 @@ export default function PlayPage() {
           />
         )}
         {(setScreen('dau_thai'), null)}
-        <BirthPanel meta={meta} onCheckin={checkin} onHoanHon={hoanHon} onBorn={born} onKho={() => setSheet('kho')} onSoSinhTu={() => seeBook('e')} />
-        {relOpen && <ReleaseNotice onClose={closeRel} />}
+        <BirthPanel meta={meta} onCheckin={meta.lives > 0 ? checkin : undefined} onHoanHon={hoanHon} onBorn={born} onKho={() => setSheet('kho')} onSoSinhTu={() => seeBook('e')} />
+        {relOpen && !ghiDanh && <ReleaseNotice onClose={closeRel} />}
+        {ghiDanh && <GhiDanh {...ghiDanh} lives={meta.lives} onClose={() => setGhiDanh(null)} />}
       </main>
     );
   }
