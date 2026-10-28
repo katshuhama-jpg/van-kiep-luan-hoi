@@ -4423,3 +4423,33 @@ button.shadow-card { cursor: pointer; }
 @keyframes ldStorm { 0%, 88% { filter: none; } 92% { filter: brightness(1.7) saturate(0.6); } 96% { filter: brightness(1.2); } }
 
 .th-pick.far { opacity: 0.45; filter: grayscale(0.8); }
+
+/* ===== Trang đầu: giang hồ đang sống (học từ 1in8b) ===== */
+.title-screen.has-bar { padding-bottom: 96px; }
+.lw { text-align: left; margin: 6px 0 12px; display: flex; flex-direction: column; gap: 8px; }
+.lw-count { display: grid; grid-template-columns: auto 1fr; align-items: baseline; column-gap: 10px; background: var(--paper, #f6ead0); border: 3px solid var(--ink, #3b2a1a); padding: 8px 12px; box-shadow: 0 3px 0 var(--ink, #3b2a1a); }
+.lw-count b { font-size: 40px; line-height: 1; color: var(--red-d, #8a1a1a); font-weight: 700; grid-row: span 2; }
+.lw-count span { font-weight: 700; font-size: 16px; }
+.lw-count small { color: #6a5a46; font-size: 13px; }
+.lw-news { margin: 0; font-size: 14px; line-height: 1.4; padding: 6px 10px; background: #2a2018; color: #f6ead0; border-left: 4px solid #2f6b5a; animation: vkIn 0.4s steps(3); }
+.lw-news i { display: inline-block; width: 8px; height: 8px; background: #9ff0c8; margin-right: 6px; animation: kpBlink 1s steps(2) infinite; }
+.lw-news small { color: #9ff0c8; margin-right: 4px; }
+.lw-omen { display: flex; gap: 10px; align-items: flex-start; background: #1c1430; color: #f2e6ff; border: 3px solid #3a2864; padding: 8px 10px; }
+.lw-omen-ic { font-size: 28px; line-height: 1; color: #ffe27a; }
+.lw-omen small { display: block; color: #b8a8e0; font-size: 12px; }
+.lw-omen b { display: block; color: #ffe27a; font-size: 17px; }
+.lw-omen span { display: block; font-size: 14px; line-height: 1.4; }
+.lw-omen em { display: block; font-style: normal; font-size: 12px; color: #9ff0c8; margin-top: 2px; }
+.lw-h { display: flex; justify-content: space-between; align-items: baseline; margin: 4px 0 0; font-size: 17px; }
+.lw-h a { font-size: 13px; font-weight: 500; }
+.lw-graves { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.lw-grave { background: var(--paper, #f6ead0); border: 2px solid var(--ink, #3b2a1a); padding: 6px; display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 0; }
+.lw-grave-pic { height: 60px; display: flex; align-items: flex-end; }
+.lw-grave b { font-size: 14px; line-height: 1.2; overflow-wrap: anywhere; }
+.lw-grave small { font-size: 11px; color: #6a5a46; }
+.lw-grave p { margin: 4px 0; font-size: 12px; line-height: 1.35; font-style: italic; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.lw-burn { font-size: 12px; padding: 4px 6px; margin-top: auto; }
+.lw-inc { margin-top: auto; }
+.lw-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; padding: 8px 12px calc(8px + env(safe-area-inset-bottom)); background: #f6ead0; border-top: 3px solid var(--ink, #3b2a1a); display: flex; justify-content: center; }
+.lw-bar-go { width: 100%; max-width: 460px; display: flex !important; flex-direction: column; align-items: center; line-height: 1.15; text-decoration: none; }
+.lw-bar-go small { font-size: 13px; font-weight: 500; opacity: 0.9; }

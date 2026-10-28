@@ -13,6 +13,7 @@ import ReleaseNotice, { firstVisit, markSeenLocal, needNotice } from '@/componen
 import { CURRENT_VERSION } from '@/lib/releases';
 import LoiDaiButton from '@/components/LoiDaiButton';
 import { tr } from '@/lib/i18n';
+import { ContinueBar, LiveWorld } from '@/components/LiveWorld';
 
 const SHOW = [
   demoChar({ lookSeed: 2, age: 9, lifespan: 70, realm: 0, gender: 'nu', equipped: { ao: 'ao_vai' } }),
@@ -33,7 +34,7 @@ export default function Home() {
     else if (needNotice()) setRel(true);
   }, []);
   return (
-    <main className="app title-screen">
+    <main className="app title-screen has-bar">
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginBottom: -10 }}>
         <LangToggle />
         <MusicToggle />
@@ -52,6 +53,8 @@ export default function Home() {
           <Sprite key={i} c={c} size={i === 2 ? 96 : 68} />
         ))}
       </div>
+
+      <LiveWorld user={user} />
 
       <div className="menu">
         <Link href="/choi" className="btn btn-red btn-big" style={link}>
@@ -107,6 +110,7 @@ export default function Home() {
           {tr("Bạn đầu thai ngẫu nhiên: linh căn, xuất thân, giới tính đều do trời định. Thời gian tự trôi, mỗi năm chọn một trọng tâm. Gặp kỳ ngộ thì có 4 lựa chọn, mỗi lựa chọn đẩy Đạo tâm về phía Chính hoặc Tà. Lên Luyện Khí tầng 5 sẽ chọn con đường tu tập. Hết thọ nguyên thì chết, để lại bia mộ và mang phúc duyên sang kiếp sau.", "You are reborn at random: spiritual root, origin and gender are all decided by Heaven. Time flows on its own, and each year you pick a Focus. Fortuitous encounters offer 4 choices, each pushing your Dao Heart toward Righteous or Evil. At Qi Refining Layer 5 you choose your Path. When your lifespan runs out you die, leave a tombstone, and carry your Fortune into the next life.")}
         </p>
       </section>
+      <ContinueBar user={user} ready={ready} />
       {rel && <ReleaseNotice onClose={() => setRel(false)} />}
     </main>
   );

@@ -11,7 +11,17 @@ export default function Tracker() {
   const shownAt = useRef(Date.now());
 
   useEffect(() => {
-    if (first.current) {
+    // trang tự tải lại (đổi ngôn ngữ qua ?lang=en, /en) vẫn là cùng một lượt vào: chỉ ghi 'open' một lần mỗi tab,
+    // nếu không lượt thứ hai ghi nguồn là chính trang mình và đếm trùng người mới
+    let again = false;
+    try {
+      again = !!sessionStorage.getItem('vkl.opened');
+      sessionStorage.setItem('vkl.opened', '1');
+    } catch {}
+    if (first.current && again) {
+      first.current = false;
+      track('page');
+    } else if (first.current) {
       first.current = false;
       let ret = false;
       try {
