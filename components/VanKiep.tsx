@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Sprite from './Sprite';
 import { foeChar } from '@/lib/game/duel';
-import { HO_DAO_MAX, hoDaoCap, hoDaoPower, lastWords, loadPastSelves, type PastSelf } from '@/lib/vanKiep';
+import { HO_DAO_MAX, helpersFor, hoDaoCap, hoDaoPower, lastWords, lightningGrudge, loadPastSelves, type PastSelf } from '@/lib/vanKiep';
 import { tuKiep, type KiepCard } from '@/lib/game/vanDao';
 import { realmLabel } from '@/lib/game/data';
 import type { Character } from '@/lib/game/types';
@@ -46,6 +46,9 @@ export function VanKiepRow({ c }: { c: Character }) {
         <b>{tr(`${c.name} bước vào hàng vạn kiếp.`, `${c.name} joins the line of your lives.`)}</b>{' '}
         {tr(`Sau lưng bạn giờ có ${n} kiếp, 13 kiếp mạnh nhất đủ sức đỡ ${power}/13 đạo lôi. Tới ngày Chứng Đạo, họ sẽ đỡ lôi thay bạn.`, `${n} lives now stand behind you, and your 13 strongest can take ${power}/13 bolts. On the day you attain the Dao, they will take the lightning for you.`)}
       </p>
+      <a className="vk-link" href="/tang-kiep-cac">
+        {tr('Vào Tàng Kiếp Các ›', 'Enter the Hall of Lives ›')}
+      </a>
     </div>
   );
 }
@@ -111,7 +114,6 @@ export function TuKiepOverlay({ c, onPass, onFail, rnd }: { c: Character; onPass
 type HPhase = 'fall' | 'gather' | 'pick' | 'finale' | 'end';
 
 /** Kiếp từng chết dưới thiên kiếp: lần này đỡ lôi mạnh gấp rưỡi (báo thù thiên kiếp) */
-const lightningGrudge = (p: PastSelf) => /thiên kiếp|lôi kiếp|thiên lôi|tribulation|lightning/i.test(p.cause ?? '');
 const powerOf = (p: PastSelf) => Math.round(hoDaoPower(p) * (lightningGrudge(p) ? 1.5 : 1) * 10) / 10;
 
 /**
@@ -263,6 +265,104 @@ export function HoDaoScene({ c, need, onDone }: { c: Character; need: number; on
             </button>
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Hộ đạo nhỏ: dùng ở thiên kiếp phi thăng (mỗi kiếp Hóa Thần trở lên đỡ 1 đạo hụt, tối đa max)
+ * và Ngũ Hành Đài (một kiếp đỡ đòn chí mạng, đánh lại gương đó, mỗi đời một lần).
+ * Không có kiếp nào đủ sức thì gọi onDone([]) ngay, người chơi không thấy gì.
+ */
+export function HoTroScene({ c, mode, max, missed = 0, bg, onDone }: { c: Character; mode: 'kiep' | 'nhd'; max: number; missed?: number; bg?: string; onDone: (sent: PastSelf[]) => void }) {
+  const { user, ready } = useAuth();
+  const [helpers, setHelpers] = useState<PastSelf[] | null>(null);
+  const [sent, setSent] = useState<PastSelf[]>([]);
+  const [cur, setCur] = useState<PastSelf | null>(null);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const doneRef = useRef(onDone);
+  doneRef.current = onDone;
+  useEffect(() => () => void (timer.current && clearTimeout(timer.current)), []);
+  useEffect(() => {
+    if (!ready) return;
+    loadPastSelves(user, 400)
+      .then((l) => setHelpers(helpersFor(l).slice(0, 8)))
+      .catch(() => setHelpers([]));
+  }, [ready, user]);
+  useEffect(() => {
+    if (helpers && !helpers.length) doneRef.current([]);
+  }, [helpers]);
+  if (!helpers || !helpers.length) return null;
+  const full = sent.length >= max;
+  const can = (p: PastSelf) => !cur && !full && !sent.some((x) => x.id === p.id);
+  const send = (p: PastSelf) => {
+    if (!can(p)) return;
+    setCur(p);
+    timer.current = setTimeout(() => {
+      setSent((s) => [...s, p]);
+      setCur(null);
+    }, 1900);
+  };
+  const last = cur ?? sent[sent.length - 1] ?? null;
+  return (
+    <div className={`kiep hd ht ht-${mode}`} role="dialog" aria-label={tr('Kiếp trước hộ đạo', 'Past lives step in')}>
+      <i className={`kiep-px ${bg ? '' : 'ld-bg storm'}`} style={bg ? { background: `#06040e url(${bg}) center bottom / cover no-repeat` } : undefined} aria-hidden="true" />
+      {cur && <i key={cur.id} className="hd-bolt" aria-hidden="true" />}
+      <div className="hd-text">
+        <div className="kiep-card">
+          <p className="kiep-big">{mode === 'kiep' ? tr(`Hụt ${missed} đạo thiên lôi`, `${missed} bolts missed`) : tr('Bóng gương sắp hạ bạn', 'The shadow is about to strike you down')}</p>
+          <p>
+            {mode === 'kiep'
+              ? tr(`Sau lưng bạn, ${helpers.length} kiếp từng tới Hóa Thần trở lên bước ra. Chạm một kiếp để họ đỡ thay 1 đạo, tối đa ${max} đạo.`, `Behind you, ${helpers.length} lives that reached Spirit Severing or beyond step forward. Tap one to have them take 1 bolt for you, up to ${max}.`)
+              : tr('Một kiếp trước có thể lao ra đỡ đòn này. Bạn không mất gì, đứng dậy đánh lại gương này. Mỗi đời chỉ gọi được một lần.', 'One of your past lives can leap in and take this blow. You lose nothing and fight this mirror again. Only once per life.')}
+          </p>
+        </div>
+      </div>
+      <div className="hd-crowd ht-crowd">
+        {helpers.map((p, i) => {
+          const gone = sent.some((t) => t.id === p.id);
+          return (
+            <button key={p.id} type="button" className={`hd-ghost ${gone ? 'gone' : ''} ${cur?.id === p.id ? 'cur' : ''} ${can(p) ? 'can' : ''}`} style={{ ['--i' as string]: i }} onClick={() => send(p)} disabled={!can(p)} aria-label={tr(`Gọi kiếp ${p.lifeNo} ${p.name}`, `Call life ${p.lifeNo} ${p.name}`)}>
+              <PastSelfSprite p={p} size={52} />
+              {lightningGrudge(p) && <em className="zap">⚡</em>}
+            </button>
+          );
+        })}
+      </div>
+      <div className="hd-stage" aria-hidden="true">
+        {cur && (
+          <span key={cur.id} className="hd-front">
+            <PastSelfSprite p={cur} size={92} anim="spellcast" />
+          </span>
+        )}
+        <span className={`hd-hero ${cur ? 'back' : ''}`}>
+          <Sprite c={c} size={96} anim={sent.length ? 'spellcast' : 'idle'} dir={2} />
+        </span>
+      </div>
+      <div className="hd-text">
+        <div className="hd-words">
+          {mode === 'kiep' && <p className="hd-count">{tr(`Kiếp trước đã đỡ ${sent.length}/${max} đạo`, `Past lives took ${sent.length}/${max} bolts`)}</p>}
+          {last ? (
+            <p key={last.id} className="hd-line">
+              <small>
+                {tr('Kiếp', 'Life')} {last.lifeNo} · {last.name} · {realmLabel(last.realm, 1)}
+                {lightningGrudge(last) ? tr(' · từng chết dưới thiên kiếp', ' · once killed by tribulation') : ''}
+              </small>
+              “{lastWords(last)}”
+            </p>
+          ) : (
+            <p className="hd-hint">{tr('Chạm vào một bóng để gọi họ ra.', 'Tap a shadow to call them out.')}</p>
+          )}
+          {!full && !cur && (
+            <button className="btn btn-red btn-big" onClick={() => helpers.find(can) && send(helpers.find(can)!)}>
+              {tr('Gọi kiếp mạnh nhất', 'Call the strongest')}
+            </button>
+          )}
+          <button className={`btn btn-big ${sent.length && (full || mode === 'nhd') ? 'btn-red' : ''}`} disabled={!!cur} onClick={() => onDone(sent)}>
+            {sent.length ? (mode === 'kiep' ? tr('Độ kiếp tiếp', 'Continue the tribulation') : tr('Đứng dậy, đánh lại', 'Get up and fight again')) : tr('Tự gánh', 'Bear it myself')}
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -14,6 +14,7 @@ import { CURRENT_VERSION } from '@/lib/releases';
 import LoiDaiButton from '@/components/LoiDaiButton';
 import { tr } from '@/lib/i18n';
 import { ContinueBar, LiveWorld } from '@/components/LiveWorld';
+import { HomeVanKiep } from '@/components/TangKiep';
 
 const SHOW = [
   demoChar({ lookSeed: 2, age: 9, lifespan: 70, realm: 0, gender: 'nu', equipped: { ao: 'ao_vai' } }),
@@ -55,6 +56,7 @@ export default function Home() {
       </div>
 
       <LiveWorld user={user} />
+      <HomeVanKiep user={user} ready={ready} />
 
       <div className="menu">
         <Link href="/choi" className="btn btn-red btn-big" style={link}>
@@ -66,6 +68,9 @@ export default function Home() {
         <Link href="/bang-xep-hang" className="btn" style={link}>
           
           {tr("Bảng xếp hạng", "Leaderboard")}
+        </Link>
+        <Link href="/tang-kiep-cac" className="btn" style={link}>
+          {tr("Tàng Kiếp Các", "Hall of Past Lives")}
         </Link>
         <Link href="/nghia-trang" className="btn" style={link}>
           

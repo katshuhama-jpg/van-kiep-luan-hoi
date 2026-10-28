@@ -6,7 +6,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Scene from '@/components/Scene';
 import MusicToggle from '@/components/MusicToggle';
 import { TribulationOverlay, Tutorial, clearLaSo } from '@/components/Extras';
-import { HoDaoScene, TuKiepOverlay } from '@/components/VanKiep';
+import { HoDaoScene, HoTroScene, TuKiepOverlay } from '@/components/VanKiep';
+import type { PastSelf } from '@/lib/vanKiep';
 import { LOI_ALLOW, LOI_TOTAL, daoKhon, failVanDao, usesVanDao } from '@/lib/game/vanDao';
 import { BREAK_EVENT_ID } from '@/lib/game/events';
 import { ENDINGS, alsoEndings, endingOf } from '@/lib/game/endings';
@@ -22,7 +23,7 @@ import { nameOf } from '@/lib/hanviet';
 import { charLang, convertChar, convertMeta, loadDict, looksVi } from '@/lib/retrans';
 import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, itemPrice, pillPrice, RARE_STOCK_REALM, realmLabel, realmName, soldOut, yearSpeed, youthPace } from '@/lib/game/data';
 import { genName, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick, chungDao } from '@/lib/game/engine';
-import { addCult, addPill, dao, fatal, fmt, giveItem, money, reward, stat, wealthTier } from '@/lib/game/helpers';
+import { addCult, addPill, dao, fatal, fmt, giveItem, money, reward, stat, wealthTier, DO_KIEP_REALM } from '@/lib/game/helpers';
 import type { Character, Element, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
 import DuelWarning from '@/components/Duel';
 import { artOf } from '@/lib/game/vocong';
@@ -73,11 +74,12 @@ export default function PlayPage() {
   const [sheet, setSheet] = useState<SheetName>(null);
   const [speed, setSpeed] = useState(1);
   const [running, setRunning] = useState(true);
+  const [hoTro, setHoTro] = useState<{ i: number; blocked: number } | null>(null); // kiếp trước đỡ thiên lôi phi thăng
   const [kiep, setKiep] = useState<number | null>(null); // lựa chọn đang chờ mini-game thiên kiếp
   const [vanDao, setVanDao] = useState<{ phase: 'tu' | 'loi' | 'hodao'; need?: number } | null>(null); // Chứng Đạo mới: tứ kiếp, 13 đạo lôi, vạn kiếp hộ đạo
   // Ngũ Hành Đài trước phi thăng: giữ lựa chọn đột phá và sự kiện để độ kiếp sau khi thắng đủ 5 bóng
   const [nhdPeek, setNhdPeek] = useState(false); // xem luật Ngũ Hành Đài từ dải nhắc
-  const [nhd, setNhd] = useState<{ i: number; p: PendingEvent; view: NhdView | 'fight'; foe: Stance; tell: Stance; msg?: string; end?: 'next' | 'done' | 'lose' | 'dead' } | null>(null);
+  const [nhd, setNhd] = useState<{ i: number; p: PendingEvent; view: NhdView | 'fight' | 'hodao'; foe: Stance; tell: Stance; msg?: string; end?: 'next' | 'done' | 'lose' | 'dead' } | null>(null);
   const [tut, setTut] = useState(false); // hướng dẫn lần đầu
   const [relOpen, setRelOpen] = useState(false); // cáo thị bản cập nhật mới
   const [ascend, setAscend] = useState<'tien' | 'ma' | 'hu' | null>(null); // cảnh phi thăng vừa xảy ra
@@ -257,7 +259,7 @@ export default function PlayPage() {
   const speedRef = useRef(speed);
   speedRef.current = speed;
   const activeRef = useRef(false);
-  activeRef.current = running && sheet === null && phase === 'play' && kiep === null && vanDao === null && !tut && duelWarn === null && !nhdPeek && !relOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
+  activeRef.current = running && sheet === null && phase === 'play' && kiep === null && hoTro === null && vanDao === null && !tut && duelWarn === null && !nhdPeek && !relOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
 
   /** Ngũ hành giữa bạn và loài quái */
   function monElem(c: Character, m: { el?: Element }) {
@@ -446,6 +448,14 @@ export default function PlayPage() {
       const ctx = makeCtx(c, out);
       if (b.foe.kind === 'ngu_hanh') {
         const won = result === 'win';
+        // thua mà đời này chưa gọi kiếp trước: cho kiếp trước ra đỡ (không có ai đủ sức thì xử thua như thường)
+        if (!won && !nhdOf(c).hoDao) {
+          b.phase = 'rest';
+          b.rest = 4;
+          b.outcome = 'lose';
+          setNhd((n) => (n ? { ...n, view: 'hodao' } : n));
+          return;
+        }
         const msg = won ? winRound(c) : loseRound(c, ctx);
         const ek = won ? (nhdOf(c).done ? 'done' : 'next') : c.dead ? 'dead' : 'lose';
         ctx.log(msg, c.dead ? 'big' : won ? 'good' : 'bad');
@@ -947,6 +957,33 @@ export default function PlayPage() {
     rerender();
   };
 
+  /** Ngũ Hành Đài: kiếp trước đỡ đòn thì đánh lại gương này, không ai ra thì thua như thường */
+  const nhdHoTro = (sent: PastSelf[]) => {
+    const c = charRef.current;
+    const n = nhd;
+    duelRef.current = null;
+    if (!c || !n) return setNhd(null);
+    const p = sent[0];
+    if (p) {
+      nhdOf(c).hoDao = true;
+      const msg = tr(`Kiếp ${p.lifeNo}, ${p.name}, lao ra đỡ đòn chí mạng thay bạn rồi tan vào mặt gương. Bạn đứng dậy, tấm gương này vẫn chờ.`, `Life ${p.lifeNo}, ${p.name}, leaps in to take the killing blow, then fades into the mirror. You rise; this mirror is still waiting.`);
+      c.log.push({ age: Math.floor(c.age), tone: 'good', text: msg });
+      track('ho_tro', { mode: 'nhd', lifeNo: p.lifeNo });
+      const foe = mirrorStance(nhdOf(c).won, rnd);
+      persist(true);
+      setNhd({ ...n, view: 'prep', msg: undefined, end: undefined, foe, tell: tellOf(foe, rnd) });
+      rerender();
+      return;
+    }
+    const out: Fx[] = [];
+    const ctx = makeCtx(c, out);
+    const msg = loseRound(c, ctx);
+    ctx.log(msg, c.dead ? 'big' : 'bad');
+    pushFx(out);
+    persist(true);
+    setNhd({ ...n, view: 'result', msg, end: c.dead ? 'dead' : 'lose' });
+  };
+
   const nhdLeave = () => {
     const c = charRef.current;
     setNhd(null);
@@ -975,9 +1012,29 @@ export default function PlayPage() {
     setKiep(null);
     const c = charRef.current;
     if (i === null || !c) return;
+    // thiên kiếp phi thăng từ Độ Kiếp: hụt đạo nào thì kiếp trước (Hóa Thần trở lên) có thể ra đỡ, tối đa 3 đạo
+    if (blocked >= 0 && blocked < 9 && !c.cosmos && c.realm === DO_KIEP_REALM) {
+      setHoTro({ i, blocked });
+      return;
+    }
+    finishKiep(c, i, bonus, blocked);
+  };
+  const finishKiep = (c: Character, i: number, bonus: number, blocked: number) => {
     c.kiepBonus = bonus;
     if (blocked >= 0) c.log.push({ age: Math.floor(c.age), tone: bonus >= 0 ? 'good' : 'bad', text: tr(`Bạn vận công đỡ được ${blocked}/9 đạo thiên lôi.`, `You channel your power and block ${blocked}/9 heavenly thunderbolts.`) });
     resolveNow(i);
+  };
+  const afterHoTro = (sent: PastSelf[]) => {
+    const h = hoTro;
+    setHoTro(null);
+    const c = charRef.current;
+    if (!h || !c) return;
+    const blocked = Math.min(9, h.blocked + sent.length);
+    if (sent.length) {
+      c.log.push({ age: Math.floor(c.age), tone: 'good', text: tr(`${sent.map((p) => `Kiếp ${p.lifeNo} (${p.name})`).join(', ')} hiện về, đỡ thay ${sent.length} đạo thiên lôi.`, `${sent.map((p) => `Life ${p.lifeNo} (${p.name})`).join(', ')} returned and took ${sent.length} heavenly bolt(s) for you.`) });
+      track('ho_tro', { mode: 'kiep', n: sent.length });
+    }
+    finishKiep(c, h.i, Math.round(((blocked - 4.5) / 9) * 0.3 * 100) / 100, blocked);
   };
 
   /** Chứng Đạo mới: kết thúc luồng, bỏ sự kiện đột phá đang chờ */
@@ -1882,7 +1939,9 @@ export default function PlayPage() {
       {nhdPeek && !nhd && (
         <NguHanhDai c={c} view="rules" tell="cong" preview onFight={() => {}} onBuyPhu={() => {}} onLeave={() => setNhdPeek(false)} onNext={() => {}} onRules={() => setNhdPeek(false)} />
       )}
-      {nhd && nhd.view !== 'fight' && (
+      {nhd?.view === 'hodao' && <HoTroScene c={c} mode="nhd" max={1} bg={arenaBg(c, nhdOf(c).won)} onDone={nhdHoTro} />}
+      {hoTro && !c.dead && <HoTroScene c={c} mode="kiep" max={Math.min(3, 9 - hoTro.blocked)} missed={9 - hoTro.blocked} onDone={afterHoTro} />}
+      {nhd && nhd.view !== 'fight' && nhd.view !== 'hodao' && (
         <NguHanhDai
           key={`${nhdOf(c).won}-${nhd.view}`}
           c={c}

@@ -53,6 +53,7 @@ export interface NhdState {
   done?: boolean;
   warned?: boolean;
   lost?: number; // tổng số lần thua trên đài
+  hoDao?: boolean; // đời này đã gọi kiếp trước đỡ một đòn
 }
 
 export const nhdOf = (c: Character): NhdState => (c.nhd ??= { won: 0, lose5: 0, tries: 0 });

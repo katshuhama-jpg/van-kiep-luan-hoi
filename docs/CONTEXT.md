@@ -103,6 +103,13 @@ Vòng chơi một kiếp:
 - **Bảng Chứng Đạo** (29/10): tab thứ 5 ở Xếp hạng (`components/ChungDaoBoard.tsx`, dữ liệu `lib/chungDaoBoard.ts` đọc `vkl_lives` có `look->>endTag = chung_dao`). Ba cách xếp: Nhiều lần nhất, Nhanh nhất (kiếp số nhỏ nhất), Vạn kiếp hộ đạo (số lần chứng đạo nhờ kiếp trước, nhận qua câu `cause`). Có dòng hạng của mình.
 - **Con đường sau chứng đạo** (`components/SauChungDao.tsx`): hiện ngay trên màn cáo biệt khi kết cục là chứng đạo. Hạng trên Bảng Chứng Đạo, "Bước tiếp theo" (kết cục gần nhất, thiên thư, Kẻ Gõ Chuông, bảo khố), nút xem cả con đường, và ô hỏi "Muốn Thiên Đạo thêm gì cho giang hồ?" gửi vào góp ý loại `tinh_nang` với tiền tố `[Sau chứng đạo]`.
 
+- **Hộ đạo nhỏ** (`HoTroScene` trong `components/VanKiep.tsx`, chọn bóng bằng `helpersFor`: kiếp Hóa Thần trở lên hoặc phi thăng):
+  - Thiên kiếp phi thăng (từ Độ Kiếp, chưa lên cõi trên): hụt đạo nào thì mỗi kiếp gọi ra đỡ thêm 1 đạo, tối đa 3. Thưởng/phạt thiên kiếp tính lại theo số đạo mới.
+  - Ngũ Hành Đài: thua một vòng mà đời này chưa gọi (`nhd.hoDao`) thì một kiếp trước ra đỡ, không mất gì, đánh lại gương đó. Mỗi đời một lần. Không có kiếp đủ sức thì thua như thường, người chơi không thấy màn này.
+- **Tàng Kiếp Các** (`/tang-kiep-cac`, `components/TangKiep.tsx`): hàng bóng, 4 ô số (số kiếp, cao nhất, sống lâu nhất, sức hộ đạo), kệ các kiếp xếp theo mới, mạnh, sống lâu; chạm một kiếp xem chi tiết. Lối vào: nút ở trang đầu, link "Vào Tàng Kiếp Các" dưới hàng bóng ở màn cáo biệt.
+- **Thất Nhật Lục** (bảy ngày luân hồi, `weekWrap` trong `lib/vanKiep.ts`, thẻ vẽ ở `lib/wrapCard.ts`): số kiếp, tổng năm, cao nhất, sống lâu nhất, yểu mệnh nhất, cách chết hay gặp, danh hiệu bảy ngày. Khoe qua link /k/<mã> (kind `life`), khách thì tải ảnh. Trang đầu nhắc khi 7 ngày qua có từ 3 kiếp.
+- **Ngày giỗ** (`gioToday`, `GioNotice`): kiếp mất tròn 7, 49, 100 ngày hay tròn năm thì trang đầu và Tàng Kiếp Các hiện bàn thờ pixel, thắp hương được +3 phúc duyên (mỗi mốc một lần, đánh dấu `vkl.gio.<id>.<ngày>` trên máy), đồng thời thắp hương lên mộ.
+
 ## 4b0. Trang đầu kiểu 1in8b (29/10)
 
 - `components/LiveWorld.tsx`: số người đang tu (RPC `vkl_online_now`, đếm sid trong 3 phút), số kiếp vừa hết trong 1 giờ, dải tin chạy 30 kiếp mới nhất, điềm trời hôm nay, 3 mộ mới nhất có nút thắp hương. `ContinueBar`: thanh dính đáy "Tiếp tục" hoặc "Đầu thai ngay".
