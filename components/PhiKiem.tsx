@@ -5,6 +5,7 @@ import Sprite from '@/components/Sprite';
 import { foeChar } from '@/lib/game/duel';
 import { PK_COOLDOWN, PK_HIT_DEG, PK_PER_LAYER, PK_SECONDS, powerOf, ringSpeed } from '@/lib/game/phiKiem';
 import type { RivalChar } from '@/lib/game/types';
+import { tr } from '@/lib/i18n';
 
 // Hình đều lấy từ bộ 496 pixel art icons (Henrique Lazarini, CC0), không tự vẽ.
 // Canvas theo điểm CSS, nhân với dpr nguyên và tắt làm mịn: mỗi điểm của icon thành ô vuông sắc nét.
@@ -124,7 +125,7 @@ export default function PhiKiem({ foe, base, onDone }: { foe: RivalChar; base: n
     s.nextFlip = now + 1200 + Math.random() * 1200;
     s.stopTo = now + 170;
     s.flashTo = now + 140;
-    say(`Phá tầng hộ thể thứ ${s.layer}!`, 'brk');
+    say(tr(`Phá tầng hộ thể thứ ${s.layer}!`, `Broke protective layer ${s.layer}!`), 'brk');
     try {
       navigator.vibrate?.([30, 40, 60]);
     } catch {}
@@ -184,7 +185,7 @@ export default function PhiKiem({ foe, base, onDone }: { foe: RivalChar; base: n
               s.loose.push({ x: CX, y: CY + R - 22, vx: (Math.random() < 0.5 ? -1 : 1) * (80 + Math.random() * 60), vy: 160, ang: -90, va: 1100, t0: now });
               s.combo = 0;
               s.shakeTo = now + 260;
-              say('Phản phệ!', 'bad');
+              say(tr('Phản phệ!', "Backlash!"), 'bad');
               try {
                 navigator.vibrate?.(90);
               } catch {}
@@ -200,7 +201,7 @@ export default function PhiKiem({ foe, base, onDone }: { foe: RivalChar; base: n
                 const sp = 60 + Math.random() * 90;
                 s.sparks.push({ x: CX, y: CY + R - 20, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, t0: now, col: i % 2 ? '#fff8dc' : col, life: 320 });
               }
-              if (s.combo >= 3 && s.combo % 3 === 0) say(`Liên kích x${s.combo}`, 'good');
+              if (s.combo >= 3 && s.combo % 3 === 0) say(tr(`Liên kích x${s.combo}`, `Combo x${s.combo}`), 'good');
               if (s.inLayer >= PK_PER_LAYER) newLayer(now);
             }
           }
@@ -211,7 +212,7 @@ export default function PhiKiem({ foe, base, onDone }: { foe: RivalChar; base: n
       if (s.t0 && !s.ended && now - s.t0 >= PK_SECONDS * 1000) {
         s.ended = true;
         s.fly = null;
-        say(`Thu kiếm! ${s.swords} phi kiếm`, 'end');
+        say(tr(`Thu kiếm! ${s.swords} phi kiếm`, `Swords recalled! ${s.swords} flying swords`), 'end');
         setTimeout(() => doneRef.current(s.swords, s.best), 900);
       }
 
@@ -298,14 +299,14 @@ export default function PhiKiem({ foe, base, onDone }: { foe: RivalChar; base: n
         fire();
       }}
       role="button"
-      aria-label="Chạm để phóng phi kiếm"
+      aria-label={tr("Chạm để phóng phi kiếm", "Tap to launch a flying sword")}
     >
       <div className="pk-hud">
-        <span className="pk-time" aria-label={`Còn ${Math.ceil(hud.left)} giây`}>
+        <span className="pk-time" aria-label={tr(`Còn ${Math.ceil(hud.left)} giây`, `${Math.ceil(hud.left)}s left`)}>
           <i style={{ width: `${(hud.left / PK_SECONDS) * 100}%` }} className={hud.left < 3 ? 'low' : ''} />
         </span>
         <span className="pk-stats">
-          <b>{hud.swords}</b> kiếm · sức mạnh <b className={pw >= 100 ? 'up' : 'down'}>{pw}%</b>
+          <b>{hud.swords}</b>{tr(" kiếm · sức mạnh ", " swords · power ")}<b className={pw >= 100 ? 'up' : 'down'}>{pw}%</b>
         </span>
       </div>
       <div className="pk-stage">
@@ -315,7 +316,8 @@ export default function PhiKiem({ foe, base, onDone }: { foe: RivalChar; base: n
         <canvas ref={cv} style={{ width: W, height: H }} />
         {hud.combo >= 2 && (
           <span className="pk-combo" key={hud.combo}>
-            Liên kích <b>x{hud.combo}</b>
+            
+            {tr("Liên kích ", "Combo ")}<b>x{hud.combo}</b>
           </span>
         )}
         {msg && (
@@ -324,7 +326,7 @@ export default function PhiKiem({ foe, base, onDone }: { foe: RivalChar; base: n
           </span>
         )}
       </div>
-      <p className="pk-hint">{hud.started ? 'Tránh đâm vào kiếm đã cắm' : 'Chạm để phóng kiếm!'}</p>
+      <p className="pk-hint">{hud.started ? tr('Tránh đâm vào kiếm đã cắm', "Don't hit the swords already stuck") : tr('Chạm để phóng kiếm!', "Tap to launch a sword!")}</p>
     </div>
   );
 }

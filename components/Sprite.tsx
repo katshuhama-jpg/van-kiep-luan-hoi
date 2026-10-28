@@ -7,6 +7,7 @@ import { equippedLook } from '@/lib/game/helpers';
 import { PETS, petOf } from '@/lib/game/pets';
 import { PixelFx, fxEmbers, fxHuStars, fxHuVortex, fxMaHoa, fxMaXich, fxNguSacVan, fxTienHalo, fxTienPetals, fxChuongVang, fxOrbit, fxPillar, fxRays, fxRing, fxMotes, fxBatQuai, fxCuuVi, fxDanHoan, fxHuyetNguyet, fxKiem, fxLua, fxLuaTien, fxMaKhi, fxPhatQuang, fxSen, fxTuongVan } from './PixelFx';
 import type { Character } from '@/lib/game/types';
+import { tr } from '@/lib/i18n';
 
 type R = [number, number, number, number, string];
 
@@ -51,7 +52,7 @@ const ROBES: Record<string, Robe[]> = {
   ],
 };
 
-export const OUTFIT_CUTS = ['áo dài thẳng', 'áo thắt đai tua', 'áo khoác choàng vai', 'áo ngắn quần túm'];
+export const OUTFIT_CUTS = [tr('áo dài thẳng', "long straight robe"), tr('áo thắt đai tua', "tasseled belted robe"), tr('áo khoác choàng vai', "shoulder-cape coat"), tr('áo ngắn quần túm', "short tunic and trousers")];
 
 export interface Look {
   stage: 'baby' | 'child' | 'adult';
@@ -367,7 +368,7 @@ export function PixelSprite({ c, size = 140, focus }: { c: Character; size?: num
       height={size}
       shapeRendering="crispEdges"
       role="img"
-      aria-label={`${c.name}, ${c.age < 13 ? 'trẻ con' : 'người lớn'}${l.path ? ', ' + PATHS[l.path].name : ''}`}
+      aria-label={`${c.name}, ${c.age < 13 ? tr('trẻ con', "child") : tr('người lớn', "adult")}${l.path ? ', ' + PATHS[l.path].name : ''}`}
     >
       {aura && !l.dead && (
         <g className="aura" style={{ ['--aura' as string]: aura }}>
@@ -861,7 +862,7 @@ export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Charact
       className={`lpc ${l.dead ? 'is-dead' : ''}`}
       style={{ width: box, height: box }}
       role="img"
-      aria-label={`${c.name}, ${c.age < 13 ? 'trẻ con' : 'người lớn'}${l.path ? ', ' + PATHS[l.path].name : ''}`}
+      aria-label={`${c.name}, ${c.age < 13 ? tr('trẻ con', "child") : tr('người lớn', "adult")}${l.path ? ', ' + PATHS[l.path].name : ''}`}
     >
       {/* chưa ghép xong hình thì hiện bóng chờ, chưa hiện hiệu ứng để khỏi thấy hào quang mà không thấy người */}
       {!url && <span className="lpc-wait" style={{ width: box * 0.36, height: box * 0.62, left: box * 0.32, top: box * 0.2 }} />}

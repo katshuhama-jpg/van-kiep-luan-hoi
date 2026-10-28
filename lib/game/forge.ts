@@ -1,5 +1,6 @@
 import { ITEMS } from './data';
 import type { Character, EffectCtx, Element } from './types';
+import { tr } from '../i18n';
 
 /**
  * Phân giải, bán và Rèn (bản sau 3.2.0): đồ thừa trong túi có chỗ dùng mà không cần chợ.
@@ -40,8 +41,8 @@ export function sell(c: Character, id: string, ctx: EffectCtx): string | null {
   const v = sellValue(id);
   c.inventory = c.inventory.filter((x) => x !== id);
   c.linhThach += v;
-  ctx.fx('buy', `+${v} linh thạch`);
-  return `Bán ${item(id)?.name} được ${v} linh thạch.`;
+  ctx.fx('buy', tr(`+${v} linh thạch`, `+${v} spirit stones`));
+  return tr(`Bán ${item(id)?.name} được ${v} linh thạch.`, `Sold ${item(id)?.name} for ${v} spirit stones.`);
 }
 
 export function buyTinh(c: Character, n: number, ctx: EffectCtx): string | null {
@@ -49,8 +50,8 @@ export function buyTinh(c: Character, n: number, ctx: EffectCtx): string | null 
   if (c.linhThach < cost || n <= 0) return null;
   c.linhThach -= cost;
   c.tinhHoa = (c.tinhHoa ?? 0) + n;
-  ctx.fx('buy', `+${n} tinh thiết`);
-  return `Mua ${n} tinh thiết ở lò rèn, tốn ${cost} linh thạch.`;
+  ctx.fx('buy', tr(`+${n} tinh thiết`, `+${n} refined iron`));
+  return tr(`Mua ${n} tinh thiết ở lò rèn, tốn ${cost} linh thạch.`, `Bought ${n} refined iron at the forge for ${cost} spirit stones.`);
 }
 
 /** Món này có bán hay phân giải được không: không đang mặc, không phải thần binh truyền đời */
@@ -61,8 +62,8 @@ export function smelt(c: Character, id: string, ctx: EffectCtx): string | null {
   const v = smeltValue(id);
   c.inventory = c.inventory.filter((x) => x !== id);
   c.tinhHoa = (c.tinhHoa ?? 0) + v;
-  ctx.fx('buy', `+${v} tinh thiết`);
-  return `Phân giải ${item(id)?.name}, thu ${v} tinh thiết (đang có ${c.tinhHoa}).`;
+  ctx.fx('buy', tr(`+${v} tinh thiết`, `+${v} refined iron`));
+  return tr(`Phân giải ${item(id)?.name}, thu ${v} tinh thiết (đang có ${c.tinhHoa}).`, `Dismantled ${item(id)?.name}, got ${v} refined iron (now ${c.tinhHoa}).`);
 }
 
 /** Cấp rèn của vũ khí đang cầm */
@@ -73,11 +74,11 @@ export const forgeMul = (c: Character) => 1 + forgeLevel(c) * FORGE_PER;
  * Mỗi món trang bị ngẫu nhiên mang một hệ (mỗi kiếp một khác). Rèn vũ khí lên cấp nào thì hiệu ứng hệ đó lên cấp đó.
  */
 export const EL_FX: { el: Element; name: string; per: string; short: string }[] = [
-  { el: 'kim', name: 'Kim', per: 'công +4%', short: 'Sắc bén' },
-  { el: 'moc', name: 'Mộc', per: 'sinh lực +4%, mỗi năm hồi 1 sức khỏe', short: 'Sinh cơ' },
-  { el: 'thuy', name: 'Thủy', per: 'thủ +5%', short: 'Nhu thủy' },
-  { el: 'hoa', name: 'Hỏa', per: 'trừ yêu thêm 6% tu vi', short: 'Bạo viêm' },
-  { el: 'tho', name: 'Thổ', per: 'hiểm cảnh khó giết hơn 5%', short: 'Hậu thổ' },
+  { el: 'kim', name: tr('Kim', "Metal"), per: tr('công +4%', "Attack +4%"), short: tr('Sắc bén', "Keen") },
+  { el: 'moc', name: tr('Mộc', "Wood"), per: tr('sinh lực +4%, mỗi năm hồi 1 sức khỏe', "HP +4%, recover 1 Health per year"), short: tr('Sinh cơ', "Vital") },
+  { el: 'thuy', name: tr('Thủy', "Water"), per: tr('thủ +5%', "Defense +5%"), short: tr('Nhu thủy', "Flowing") },
+  { el: 'hoa', name: tr('Hỏa', "Fire"), per: tr('trừ yêu thêm 6% tu vi', "+6% cultivation from hunting demons"), short: tr('Bạo viêm', "Blaze") },
+  { el: 'tho', name: tr('Thổ', "Earth"), per: tr('hiểm cảnh khó giết hơn 5%', "5% harder to kill in perilous situations"), short: tr('Hậu thổ', "Bedrock") },
 ];
 const ELS: Element[] = ['kim', 'moc', 'thuy', 'hoa', 'tho'];
 const hashStr = (s: string) => {
@@ -110,13 +111,13 @@ export function forge(c: Character, ctx: EffectCtx): ForgeResult | null {
   const costN = FORGE_COST[lv];
   if ((c.tinhHoa ?? 0) < costN) return null;
   c.tinhHoa = (c.tinhHoa ?? 0) - costN;
-  const name = item(w)?.name ?? 'vũ khí';
+  const name = item(w)?.name ?? tr('vũ khí', "weapon");
   const el = elFx(itemEl(c, w));
   if (ctx.rnd() < FORGE_CHANCE[lv]) {
     c.forgeItem = w;
     c.forge = lv + 1;
     ctx.fx('layer', `${name} +${lv + 1}`);
-    return { kind: 'ok', lv: lv + 1, text: `Lửa lò đỏ rực, ${name} lên +${lv + 1}: công +${Math.round((lv + 1) * FORGE_PER * 100)}%, hệ ${el.name} cấp ${lv + 1} (-${costN} tinh thiết).` };
+    return { kind: 'ok', lv: lv + 1, text: tr(`Lửa lò đỏ rực, ${name} lên +${lv + 1}: công +${Math.round((lv + 1) * FORGE_PER * 100)}%, hệ ${el.name} cấp ${lv + 1} (-${costN} tinh thiết).`, `The forge fire blazes red, ${name} rises to +${lv + 1}: Attack +${Math.round((lv + 1) * FORGE_PER * 100)}%, ${el.name} element level ${lv + 1} (-${costN} refined iron).`) };
   }
   if (ctx.rnd() < breakChance(c)) {
     // vỡ: mất luôn vũ khí
@@ -124,9 +125,9 @@ export function forge(c: Character, ctx: EffectCtx): ForgeResult | null {
     delete c.equipped.vu_khi;
     c.forge = 0;
     c.forgeItem = undefined;
-    ctx.fx('hurt', 'Vỡ vũ khí');
-    return { kind: 'break', lv: 0, text: `Một tiếng "choang", ${name} +${lv} vỡ làm đôi dưới búa. Mất luôn vũ khí (-${costN} tinh thiết).` };
+    ctx.fx('hurt', tr('Vỡ vũ khí', "Weapon shattered"));
+    return { kind: 'break', lv: 0, text: tr(`Một tiếng "choang", ${name} +${lv} vỡ làm đôi dưới búa. Mất luôn vũ khí (-${costN} tinh thiết).`, `With a loud "clang", ${name} +${lv} splits in two under the hammer. The weapon is gone (-${costN} refined iron).`) };
   }
-  ctx.fx('hurt', 'Rèn hỏng');
-  return { kind: 'fail', lv, text: `Búa giáng lệch một nhịp, tinh thiết bốc thành khói. ${name} vẫn giữ +${lv} (-${costN} tinh thiết).` };
+  ctx.fx('hurt', tr('Rèn hỏng', "Forging failed"));
+  return { kind: 'fail', lv, text: tr(`Búa giáng lệch một nhịp, tinh thiết bốc thành khói. ${name} vẫn giữ +${lv} (-${costN} tinh thiết).`, `The hammer falls a beat off and the refined iron goes up in smoke. ${name} stays at +${lv} (-${costN} refined iron).`) };
 }

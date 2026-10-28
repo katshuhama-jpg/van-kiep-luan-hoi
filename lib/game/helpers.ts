@@ -4,6 +4,7 @@ import { swornCultMul } from './social';
 import { masterSaves } from './sect';
 import { ITEMS, REALMS } from './data';
 import type { Character, EffectCtx, Stats } from './types';
+import { tr } from '../i18n';
 
 /** Bộ sinh số ngẫu nhiên có hạt giống (mulberry32) */
 export function seeded(seed: number): () => number {
@@ -31,11 +32,11 @@ export function sample<T>(seed: number, arr: readonly T[], n: number): T[] {
 /** Bậc gia cảnh theo linh thạch và thu nhập */
 export function wealthTier(c: { linhThach: number; income?: number }): { id: number; name: string } {
   const w = c.linhThach + (c.income ?? 0) * 10;
-  if (w < 50) return { id: 0, name: 'Bần hàn' };
-  if (w < 300) return { id: 1, name: 'Bình dân' };
-  if (w < 1500) return { id: 2, name: 'Khá giả' };
-  if (w < 6000) return { id: 3, name: 'Phú hộ' };
-  return { id: 4, name: 'Đại phú hào' };
+  if (w < 50) return { id: 0, name: tr('Bần hàn', "Destitute") };
+  if (w < 300) return { id: 1, name: tr('Bình dân', "Commoner") };
+  if (w < 1500) return { id: 2, name: tr('Khá giả', "Well-off") };
+  if (w < 6000) return { id: 3, name: tr('Phú hộ', "Wealthy") };
+  return { id: 4, name: tr('Đại phú hào', "Tycoon") };
 }
 
 export const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
@@ -162,8 +163,8 @@ export function hurt(c: Character, amount: number, ctx: EffectCtx): string {
     c.equipped.phu_kien = undefined;
     c.inventory = c.inventory.filter((i) => i !== 'ngoc_boi');
     c.stats.sucKhoe = 25;
-    ctx.fx('heal', 'Ngọc bội vỡ');
-    return ' Ngọc bội hộ thân vỡ vụn, đỡ cho bạn một kiếp.';
+    ctx.fx('heal', tr('Ngọc bội vỡ', "Jade pendant shattered"));
+    return tr(' Ngọc bội hộ thân vỡ vụn, đỡ cho bạn một kiếp.', " Your protective jade pendant shatters, taking the blow for you and saving your life.");
   }
   return '';
 }
@@ -205,27 +206,27 @@ export function fatal(c: Character, ctx: EffectCtx, chance: number, cause: strin
   if (c.oanHon) {
     c.oanHon = false;
     c.stats.sucKhoe = Math.max(20, c.stats.sucKhoe);
-    ctx.fx('heal', 'Oan hồn hộ thể');
-    return ' Một bóng oan hồn từ kiếp trước lao ra chắn đòn rồi tan biến. Bạn thoát chết trong gang tấc.';
+    ctx.fx('heal', tr('Oan hồn hộ thể', "Wronged spirit's shield"));
+    return tr(' Một bóng oan hồn từ kiếp trước lao ra chắn đòn rồi tan biến. Bạn thoát chết trong gang tấc.', " A wronged spirit from a past life lunges out to block the blow, then fades away. You escape death by a hair.");
   }
   // chân truyền chính phái: sư phụ cứu một lần
   const saved = masterSaves(c);
   if (saved) {
-    ctx.fx('heal', 'Sư phụ cứu');
+    ctx.fx('heal', tr('Sư phụ cứu', "Saved by Master"));
     return saved;
   }
   // kiếp đầu tiên được trời thương: chưa đủ 16 tuổi thì không chết, chỉ bị thương
   if ((c.lifeNo === 1 || c.grace16) && c.age < 16) {
     c.stats.sucKhoe = Math.max(10, c.stats.sucKhoe - 20);
-    ctx.fx('heal', 'Trời thương');
-    return ' Tưởng đã mất mạng, nhưng trời cao như còn thương đứa trẻ này. Bạn tỉnh lại, người đầy thương tích.';
+    ctx.fx('heal', tr('Trời thương', "Heaven's pity"));
+    return tr(' Tưởng đã mất mạng, nhưng trời cao như còn thương đứa trẻ này. Bạn tỉnh lại, người đầy thương tích.', " You thought you were done for, but the heavens seem to still pity this child. You wake up, covered in wounds.");
   }
   if (c.equipped.phu_kien === 'ngoc_boi') {
     c.equipped.phu_kien = undefined;
     c.inventory = c.inventory.filter((i) => i !== 'ngoc_boi');
     c.stats.sucKhoe = 20;
-    ctx.fx('heal', 'Ngọc bội vỡ');
-    return ' Đúng lúc tưởng chết, ngọc bội hộ thân vỡ tan, giữ lại cho bạn một hơi thở.';
+    ctx.fx('heal', tr('Ngọc bội vỡ', "Jade pendant shattered"));
+    return tr(' Đúng lúc tưởng chết, ngọc bội hộ thân vỡ tan, giữ lại cho bạn một hơi thở.', " Just as death seems certain, your protective jade pendant shatters, leaving you one last breath.");
   }
   c.dead = true;
   c.cause = cosmosCause(c, cause);
@@ -236,16 +237,16 @@ export function fatal(c: Character, ctx: EffectCtx, chance: number, cause: strin
 
 /** Chết ở ba cõi vì nguyên nhân thường (quái, hiểm cảnh, thương thế...): thêm câu kết riêng của cõi, để không chết như người phàm */
 const COSMOS_EPI: Record<'tien' | 'ma' | 'hu', string> = {
-  tien: 'Tiên thể vỡ vụn, chỉ còn chút tiên quang rơi xuống nhân gian như mưa sao.',
-  ma: 'Ma hồn tan vào huyết hải, Ma giới chẳng ai còn nhắc tên.',
-  hu: 'Thân thể tan vào hư không, như chưa từng tồn tại.',
+  tien: tr('Tiên thể vỡ vụn, chỉ còn chút tiên quang rơi xuống nhân gian như mưa sao.', "Your immortal body shattered, and only a little immortal light fell to the mortal world like a meteor shower."),
+  ma: tr('Ma hồn tan vào huyết hải, Ma giới chẳng ai còn nhắc tên.', "Your demon soul dissolved into the blood sea, and no one in the Demon Realm speaks your name anymore."),
+  hu: tr('Thân thể tan vào hư không, như chưa từng tồn tại.', "Your body dissolved into the void, as if you had never existed."),
 };
 export function cosmosCause(c: Character, cause: string): string {
-  if (!c.cosmos || /tiên giới|Tiên Ma|Trảm Tiên|Thiên Đình|Ma giới|huyết hải|hư không|Lôi Bộ|tiên quang/i.test(cause)) return cause;
+  if (!c.cosmos || /tiên giới|Tiên Ma|Trảm Tiên|Thiên Đình|Ma giới|huyết hải|hư không|Lôi Bộ|tiên quang|immortal realm|demon realm|heavenly court|blood sea|sea of blood|the void|thunder ministry|immortal light/i.test(cause)) return cause;
   return `${cause} ${COSMOS_EPI[c.cosmos]}`;
 }
 
 /** Không cha không mẹ: cô nhi, trẻ bị bỏ ở chùa, mệnh thiên sát cô tinh. Tuổi thơ không có cảnh cha mẹ, ông bà. */
 export const isOrphan = (c: Character) => c.originId === 'co_nhi' || c.originId === 'chua' || !!c.gifts?.includes('g_co_tinh');
 /** Câu chữ nhắc tới cha mẹ, ông bà ruột */
-export const FAMILY_RE = /(^|[^\p{L}])(mẹ|cha|ông nội|bà nội|ông ngoại|bà ngoại|ông bà|cha mẹ|bà ru|nhà mình|anh họ)(?![\p{L}])/iu;
+export const FAMILY_RE = /(^|[^\p{L}])(mẹ|cha|ông nội|bà nội|ông ngoại|bà ngoại|ông bà|cha mẹ|bà ru|nhà mình|anh họ|mother|father|mom|dad|grandma|grandpa|grandmother|grandfather|parents|cousin)(?![\p{L}])/iu;

@@ -1,14 +1,15 @@
 import type { Character } from './types';
+import { tr } from '../i18n';
 
 /** Nhân vật mẫu cố định (không ngẫu nhiên) để trưng bày ở trang đầu */
 export function demoChar(p: Partial<Character>): Character {
   return {
-    name: 'Lâm Thanh Vân',
+    name: tr('Lâm Thanh Vân', "Lin Qingyun"),
     gender: 'nam',
     race: 'nhan',
     origin: '',
     originId: 'nong',
-    linhCan: 'Huyền linh căn',
+    linhCan: tr('Huyền linh căn', "Mystic Spiritual Root"),
     linhCanMul: 1.2,
     lifeNo: 1,
     age: 30,

@@ -5,42 +5,42 @@
    "TRA_BANK.bank",
    "TRA_BANK.acctText"
   ],
-  "en": ""
+  "en": "Bank transfer QR code {0} {1}"
  },
  {
   "vi": "Đã chép số tài khoản. Đa tạ đạo hữu!",
-  "en": ""
+  "en": "Account number copied. Many thanks, fellow Daoist!"
  },
  {
   "vi": "Máy không cho chép, giữ ngón tay lên số tài khoản để chép.",
-  "en": ""
+  "en": "Your device won't allow copying - press and hold the account number to copy it."
  },
  {
   "vi": "Ngộ đạo trà quán",
-  "en": ""
+  "en": "Enlightenment Tea House"
  },
  {
   "vi": "Mời tác giả một chén ngộ đạo trà!",
-  "en": ""
+  "en": "Treat the author to a cup of Enlightenment Tea!"
  },
  {
   "vi": "Nếu cảm thấy cõi tiên đồ họa hữu tình, game cuốn hút, đạo hữu có thể hoan hỉ mời bần đạo một chén trà để tái tạo linh lực, tiếp tục độ kiếp fix bug và có tiền mua sữa bỉm nuôi tiểu quỷ ở nhà.",
-  "en": ""
+  "en": "If this immortal world's art charms you and the game has you hooked, fellow Daoist, you may joyfully treat this humble Daoist to a cup of tea - to restore my spiritual energy, keep braving the tribulation of bug fixing, and buy milk and diapers for the little demon at home."
  },
  {
   "vi": "Quét bằng app ngân hàng",
-  "en": ""
+  "en": "Scan with your banking app"
  },
  {
   "vi": "Chép số",
-  "en": ""
+  "en": "Copy number"
  },
  {
   "vi": "Bần đạo",
-  "en": ""
+  "en": "This humble Daoist"
  },
  {
   "vi": "đa tạ",
-  "en": ""
+  "en": "thanks you"
  }
 ]

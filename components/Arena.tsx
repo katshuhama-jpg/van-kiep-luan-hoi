@@ -14,6 +14,7 @@ import { fitsRule, ruleOf, vnDate, type ArenaRule } from '@/lib/game/arena';
 import { ARENA_TIERS, tierOfPts } from '@/lib/game/phiKiem';
 import { track } from '@/lib/track';
 import { arena2State, arenaCandidates, arenaDraw, arenaPick, arenaShadow, toRival, type Arena2State } from '@/lib/social';
+import { tr } from '@/lib/i18n';
 
 export const ARENA_TURNS = 3;
 
@@ -23,24 +24,24 @@ function ShadowCard({ r, on, onPick, small, rank, rule, vert }: { r: RivalChar; 
   const el = elementOf(r);
   const body = (
     <>
-      {rank !== undefined && <span className={`sc-rank r${rank}`}>{rank === 1 ? 'Mạnh nhất' : `Hạng ${rank}`}</span>}
+      {rank !== undefined && <span className={`sc-rank r${rank}`}>{rank === 1 ? tr('Mạnh nhất', "Strongest") : tr(`Hạng ${rank}`, `Rank ${rank}`)}</span>}
       <span className="sc-fig">
         <Sprite c={foeChar(r)} size={vert ? 84 : small ? 56 : 72} />
       </span>
       <span className="sc-info">
         <span className="sc-tags">
-          <i className={r.alive ? 'live' : 'past'}>{r.alive ? 'Nhân vật đang chơi' : `Kiếp thứ ${r.lifeNo ?? 1} của bạn`}</i>
-          {rule && fitsRule(r, rule) && <i className="fit">Hợp luật hôm nay</i>}
+          <i className={r.alive ? 'live' : 'past'}>{r.alive ? tr('Nhân vật đang chơi', "Current character") : tr(`Kiếp thứ ${r.lifeNo ?? 1} của bạn`, `Your life #${r.lifeNo ?? 1}`)}</i>
+          {rule && fitsRule(r, rule) && <i className="fit">{tr("Hợp luật hôm nay", "Fits today's rule")}</i>}
         </span>
         <b>{r.name}</b>
-        <small>{r.realm === 0 ? 'Phàm nhân' : realmLabel(r.realm, r.layer, r.cosmos)}</small>
+        <small>{r.realm === 0 ? tr('Phàm nhân', "Mortal") : realmLabel(r.realm, r.layer, r.cosmos)}</small>
         <small>
-          {r.path ? PATHS[r.path].name : 'Chưa chọn đường'} · Mệnh {ELEMENTS[el].name} · {r.age} tuổi
+          {r.path ? PATHS[r.path].name : tr('Chưa chọn đường', "No Path yet")}{tr(" · Mệnh ", " · Natal ")}{ELEMENTS[el].name} · {r.age}{tr(" tuổi", " yrs")}
         </small>
         <span className="sc-stats">
-          <i>Công {s.atk}</i>
-          <i>Thủ {s.def}</i>
-          <i>Huyết {s.hp}</i>
+          <i>{tr("Công ", "Atk ")}{s.atk}</i>
+          <i>{tr("Thủ ", "Def ")}{s.def}</i>
+          <i>{tr("Huyết ", "HP ")}{s.hp}</i>
         </span>
       </span>
     </>
@@ -60,14 +61,14 @@ export function RuleBanner({ compact }: { compact?: boolean }) {
   const week = Array.from({ length: 7 }, (_, i) => ({ d: vnDate(i), r: ruleOf(vnDate(i)) }));
   return (
     <section className="rule-banner">
-      <small>Luật lôi đài hôm nay · ngày {today.day}</small>
+      <small>{tr("Luật lôi đài hôm nay · ngày ", "Today's arena rule · day ")}{today.day}</small>
       <b>{today.name}</b>
       <p>{today.desc}</p>
       {!compact && (
-        <ol className="rule-week" aria-label="Luật 7 ngày tới">
+        <ol className="rule-week" aria-label={tr("Luật 7 ngày tới", "Rules for the next 7 days")}>
           {week.map((w, i) => (
             <li key={w.d} className={i === 0 ? 'today' : ''}>
-              <small>{i === 0 ? 'Hôm nay' : i === 1 ? 'Mai' : `${w.d.slice(8, 10)}/${w.d.slice(5, 7)}`}</small>
+              <small>{i === 0 ? tr('Hôm nay', "Today") : i === 1 ? 'Mai' : `${w.d.slice(8, 10)}/${w.d.slice(5, 7)}`}</small>
               <span>{w.r.name}</span>
             </li>
           ))}
@@ -124,12 +125,12 @@ export default function Arena({ user }: { user: Player | null }) {
       target = list[0];
     }
     if (!target) {
-      setErr('Bạn chưa có kiếp nào. Sống trọn một kiếp rồi quay lại lôi đài.');
+      setErr(tr('Bạn chưa có kiếp nào. Sống trọn một kiếp rồi quay lại lôi đài.', "You have no lives yet. Live a full life, then come back to the arena."));
       return null;
     }
     const r = await arenaPick(user, target.lifeId ?? 0);
     if (!r || (r.error && r.error !== 'LOCKED')) {
-      setErr('Chưa chọn được bóng, thử lại sau.');
+      setErr(tr('Chưa chọn được bóng, thử lại sau.', "Couldn't pick a shadow, try again later."));
       return null;
     }
     const ch = toRival(user.username, r.champ) ?? target;
@@ -148,7 +149,7 @@ export default function Arena({ user }: { user: Player | null }) {
     const r = await arenaDraw(user);
     setBusy(null);
     if (!r || r.error || !r.opp || !r.shadow) {
-      setErr(r?.error === 'NO_TURNS' ? 'Hôm nay đã đánh đủ 3 trận. Mai lôi đài mở lại với luật mới.' : r?.error === 'NO_OPP' ? 'Chưa có đối thủ nào để rút.' : 'Lôi đài đang đông, thử lại sau.');
+      setErr(r?.error === 'NO_TURNS' ? tr('Hôm nay đã đánh đủ 3 trận. Mai lôi đài mở lại với luật mới.', "You've fought all 3 matches today. The arena reopens tomorrow with a new rule.") : r?.error === 'NO_OPP' ? tr('Chưa có đối thủ nào để rút.', "No opponents to draw yet.") : tr('Lôi đài đang đông, thử lại sau.', "The arena is crowded, try again later."));
       load();
       return;
     }
@@ -176,13 +177,13 @@ export default function Arena({ user }: { user: Player | null }) {
     setBusy(null);
     if (!ch) return;
     if (!foe) {
-      setErr('Không tìm thấy bóng của đối thủ.');
+      setErr(tr('Không tìm thấy bóng của đối thủ.', "Couldn't find your opponent's shadow."));
       return;
     }
     setMatch({ me: ch, foe, opp, revenge: id, leftAfter: Math.max(0, ARENA_TURNS - usedRef.current.n), key: Date.now() });
   }
 
-  if (!st) return <p>Đang dựng lôi đài...</p>;
+  if (!st) return <p>{tr("Đang dựng lôi đài...", "Setting up the arena...")}</p>;
   const left = st.me ? Math.max(0, ARENA_TURNS - st.me.used) : 0;
   const hero = champ ?? cands?.[0] ?? null;
   const t = tierOfPts(st.me?.pts ?? 0);
@@ -193,14 +194,14 @@ export default function Arena({ user }: { user: Player | null }) {
         <div className="ar-top">
           <span className="ar-top-tier">
             <b>{t.name}</b>
-            <small>{st.me.pts} điểm{t.next ? ` · còn ${t.next.need} lên ${t.next.name}` : ''}</small>
+            <small>{st.me.pts}{tr(" điểm", " pts")}{t.next ? tr(` · còn ${t.next.need} lên ${t.next.name}`, ` · ${t.next.need} more to ${t.next.name}`) : ''}</small>
           </span>
           <ol className="ar-tier-steps" aria-hidden="true">
             {ARENA_TIERS.map((x, i) => (
               <li key={x.name} className={i < t.n ? 'got' : i === t.n ? 'next' : ''} />
             ))}
           </ol>
-          <span className="ar-pips" aria-label={`Còn ${left} trên ${ARENA_TURNS} lượt hôm nay`}>
+          <span className="ar-pips" aria-label={tr(`Còn ${left} trên ${ARENA_TURNS} lượt hôm nay`, `${left} of ${ARENA_TURNS} turns left today`)}>
             {Array.from({ length: ARENA_TURNS }, (_, i) => (
               <img key={i} src="/icons/g_long_tuyen_kiem.png" width={32} height={32} alt="" className={i < left ? 'on' : ''} />
             ))}
@@ -208,17 +209,17 @@ export default function Arena({ user }: { user: Player | null }) {
         </div>
       ) : (
         <p className="note">
-          <Link href="/dang-nhap?next=/loi-dai">Đăng nhập</Link> để lên lôi đài.
+          <Link href="/dang-nhap?next=/loi-dai">{tr("Đăng nhập", "Log in")}</Link>{tr(" để lên lôi đài.", " to enter the arena.")}
         </p>
       )}
 
       <div className="ar-stage" style={{ backgroundImage: `url(${bg})` }}>
         <div className="ar-side me">
           {hero ? <Sprite c={foeChar(hero)} size={120} anim="idle" dir={3} /> : <span className="ar-unknown">?</span>}
-          <b>{hero ? hero.name : 'Bóng của bạn'}</b>
+          <b>{hero ? hero.name : tr('Bóng của bạn', "Your shadow")}</b>
           {st.me && !champ && hero && (
             <button className="linklike ar-swap" onClick={() => setPicking((v) => !v)}>
-              {picking ? 'Đóng' : 'Đổi bóng'}
+              {picking ? tr('Đóng', "Close") : tr('Đổi bóng', "Change shadow")}
             </button>
           )}
         </div>
@@ -231,10 +232,11 @@ export default function Arena({ user }: { user: Player | null }) {
           ) : (
             <span className="ar-unknown">?</span>
           )}
-          <b>Đối thủ ngẫu nhiên</b>
+          <b>{tr("Đối thủ ngẫu nhiên", "Random opponent")}</b>
         </div>
         <span className="ar-rule-tag">
-          Luật hôm nay: <b>{rule.name}</b>
+          
+          {tr("Luật hôm nay: ", "Today's rule: ")}<b>{rule.name}</b>
         </span>
       </div>
       {err && <p className="note ar-err">{err}</p>}
@@ -247,20 +249,23 @@ export default function Arena({ user }: { user: Player | null }) {
             ))}
           </div>
           <button className="btn btn-red ar-keep" disabled={!!busy || pick === null} onClick={lockPicked}>
-            {busy === 'pick' ? '...' : pick !== null ? `Giữ ${cands[pick].name} cả ngày` : 'Chọn một bóng'}
+            {busy === 'pick' ? '...' : pick !== null ? tr(`Giữ ${cands[pick].name} cả ngày`, `Keep ${cands[pick].name} all day`) : tr('Chọn một bóng', "Pick a shadow")}
           </button>
         </>
       ) : (
         <>
           <nav className="ar-tabs" role="tablist">
             <button role="tab" aria-selected={tab === 'top'} className={tab === 'top' ? 'on' : ''} onClick={() => setTab('top')}>
-              Xếp hạng
+              
+              {tr("Xếp hạng", "Leaderboard")}
             </button>
             <button role="tab" aria-selected={tab === 'thu'} className={tab === 'thu' ? 'on' : ''} onClick={() => setTab('thu')}>
-              Báo thù{st.revenge.length ? <i className="ar-tab-dot">{st.revenge.length}</i> : null}
+              
+              {tr("Báo thù", "Revenge")}{st.revenge.length ? <i className="ar-tab-dot">{st.revenge.length}</i> : null}
             </button>
             <button role="tab" aria-selected={tab === 'how'} className={tab === 'how' ? 'on' : ''} onClick={() => setTab('how')}>
-              Cách chơi
+              
+              {tr("Cách chơi", "How to play")}
             </button>
           </nav>
           <div className="ar-tab-body">
@@ -283,10 +288,11 @@ export default function Arena({ user }: { user: Player | null }) {
                     ))}
                   </ol>
                 )}
-                {!st.top.length && <p className="note">Long ỷ còn trống tuần này, hãy là người đầu tiên.</p>}
+                {!st.top.length && <p className="note">{tr("Long ỷ còn trống tuần này, hãy là người đầu tiên.", "The Dragon Throne is empty this week - be the first.")}</p>}
                 {st.champs.length > 0 && (
                   <p className="note ar-last">
-                    Tuần trước: {st.champs.map((c) => `${['Bá Chủ', 'Á Chủ', 'Tam Kiệt'][c.rank - 1]} @${c.username}`).join(' · ')}
+                    
+                    {tr("Tuần trước: ", "Last week: ")}{st.champs.map((c) => `${[tr('Bá Chủ', "Overlord"), tr('Á Chủ', "Runner-up"), tr('Tam Kiệt', "Third Hero")][c.rank - 1]} @${c.username}`).join(' · ')}
                   </p>
                 )}
               </>
@@ -297,25 +303,25 @@ export default function Arena({ user }: { user: Player | null }) {
                   {st.revenge.map((r) => (
                     <li key={r.id}>
                       <span>
-                        <b>@{r.target} hạ bóng của bạn</b>
-                        <small>Không tốn lượt, hạn 48 giờ</small>
+                        <b>@{r.target}{tr(" hạ bóng của bạn", " defeated your shadow")}</b>
+                        <small>{tr("Không tốn lượt, hạn 48 giờ", "No turn cost, 48-hour limit")}</small>
                       </span>
                       <button className="btn btn-red" disabled={!!busy} onClick={() => revenge(r.target, r.id)}>
-                        {busy === r.target ? '...' : 'Báo thù'}
+                        {busy === r.target ? '...' : tr('Báo thù', "Revenge")}
                       </button>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="note">Chưa ai hạ được bóng của bạn.</p>
+                <p className="note">{tr("Chưa ai hạ được bóng của bạn.", "No one has defeated your shadow yet.")}</p>
               ))}
             {tab === 'how' && (
               <>
                 <ul className="ar-how-list">
-                  <li>Chạm để phóng phi kiếm trong 12 giây, đừng đâm vào kiếm đã cắm.</li>
-                  <li>Càng nhiều kiếm, bóng của bạn càng mạnh. Sau đó hai bóng tự đánh.</li>
-                  <li>Thắng +3 điểm, 10 phúc. Thua +1 điểm, 3 phúc. Đủ 3 trận +15 Hồn lực.</li>
-                  <li>Cuối tuần mỗi bậc thưởng 5 phúc. Top 3 lên bục Long Ỷ.</li>
+                  <li>{tr("Chạm để phóng phi kiếm trong 12 giây, đừng đâm vào kiếm đã cắm.", "Tap to launch flying swords for 12 seconds - don't hit the swords already stuck in.")}</li>
+                  <li>{tr("Càng nhiều kiếm, bóng của bạn càng mạnh. Sau đó hai bóng tự đánh.", "The more swords, the stronger your shadow. Then the two shadows fight on their own.")}</li>
+                  <li>{tr("Thắng +3 điểm, 10 phúc. Thua +1 điểm, 3 phúc. Đủ 3 trận +15 Hồn lực.", "Win +3 pts, 10 Fortune. Lose +1 pt, 3 Fortune. Finish 3 matches +15 Soul Power.")}</li>
+                  <li>{tr("Cuối tuần mỗi bậc thưởng 5 phúc. Top 3 lên bục Long Ỷ.", "At week's end, each tier earns 5 Fortune. Top 3 take the Dragon Throne podium.")}</li>
                 </ul>
                 <RuleBanner />
               </>
@@ -327,8 +333,8 @@ export default function Arena({ user }: { user: Player | null }) {
       {st.me && (
         <div className="ar-dock">
           <button className="btn btn-red btn-big ar-go-btn" disabled={!!busy || left <= 0} onClick={raDai}>
-            {busy === 'go' ? 'Đang rút đối thủ...' : left > 0 ? '⚔ Ra đài' : 'Mai đánh tiếp'}
-            <small>{left > 0 ? `còn ${left}/${ARENA_TURNS} lượt · 25 giây một trận` : 'Hôm nay đã đủ 3 trận'}</small>
+            {busy === 'go' ? tr('Đang rút đối thủ...', "Drawing an opponent...") : left > 0 ? tr('⚔ Ra đài', "⚔ Enter the arena") : tr('Mai đánh tiếp', "Fight again tomorrow")}
+            <small>{left > 0 ? tr(`còn ${left}/${ARENA_TURNS} lượt · 25 giây một trận`, `${left}/${ARENA_TURNS} turns left · 25 seconds per match`) : tr('Hôm nay đã đủ 3 trận', "3 matches done today")}</small>
           </button>
         </div>
       )}

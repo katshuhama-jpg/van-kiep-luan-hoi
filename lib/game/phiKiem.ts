@@ -9,6 +9,7 @@
 import { equalize, type ArenaRule } from './arena';
 import { KI_MAX, TURN_CAP, apply, autoPick, foeIntent, foeUlt, handOf, myUlt, newFight, trade, type FightState, type Parry, type TurnResult } from './arenaFight';
 import type { RivalChar } from './types';
+import { tr } from '../i18n';
 
 export const PK_SECONDS = 12;
 export const PK_PER_LAYER = 10;
@@ -93,19 +94,19 @@ export function autoClash(me: RivalChar, foe0: RivalChar, base: number, rule: Ar
 
 /** Bậc lôi đài theo điểm tuần */
 export const ARENA_TIERS = [
-  { pts: 3, name: 'Luyện Khí' },
-  { pts: 9, name: 'Trúc Cơ' },
-  { pts: 18, name: 'Kim Đan' },
-  { pts: 30, name: 'Nguyên Anh' },
-  { pts: 42, name: 'Hóa Thần' },
-  { pts: 54, name: 'Độ Kiếp' },
+  { pts: 3, name: tr('Luyện Khí', "Qi Refining") },
+  { pts: 9, name: tr('Trúc Cơ', "Foundation") },
+  { pts: 18, name: tr('Kim Đan', "Golden Core") },
+  { pts: 30, name: tr('Nguyên Anh', "Nascent Soul") },
+  { pts: 42, name: tr('Hóa Thần', "Spirit Transformation") },
+  { pts: 54, name: tr('Độ Kiếp', "Tribulation") },
 ];
 /** Bậc hiện tại (0 = chưa vào bậc) và điểm còn thiếu để lên bậc kế */
 export function tierOfPts(pts: number): { n: number; name: string; next: { name: string; need: number } | null } {
   let n = 0;
   for (let i = 0; i < ARENA_TIERS.length; i++) if (pts >= ARENA_TIERS[i].pts) n = i + 1;
   const nx = ARENA_TIERS[n];
-  return { n, name: n ? ARENA_TIERS[n - 1].name : 'Chưa vào bậc', next: nx ? { name: nx.name, need: nx.pts - pts } : null };
+  return { n, name: n ? ARENA_TIERS[n - 1].name : tr('Chưa vào bậc', "Unranked"), next: nx ? { name: nx.name, need: nx.pts - pts } : null };
 }
 
 export const ARENA_WIN_PHUC = 10;

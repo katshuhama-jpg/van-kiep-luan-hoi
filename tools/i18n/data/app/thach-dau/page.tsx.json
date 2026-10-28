@@ -1,92 +1,92 @@
 [
  {
   "vi": "Phàm nhân",
-  "en": ""
+  "en": "Mortal"
  },
  {
   "vi": "Chiến thư",
-  "en": ""
+  "en": "Challenge letter"
  },
  {
   "vi": "Đấu với bóng một kiếp của đạo hữu khác",
-  "en": ""
+  "en": "Fight the shadow of another fellow Daoist's life"
  },
  {
   "vi": "Đang mở chiến thư...",
-  "en": ""
+  "en": "Opening the challenge letter..."
  },
  {
   "vi": "Không tìm thấy kiếp này. Vào ",
-  "en": ""
+  "en": "Life not found. Visit the "
  },
  {
   "vi": "Nghĩa trang",
-  "en": ""
+  "en": "Cemetery"
  },
  {
   "vi": " hoặc ",
-  "en": ""
+  "en": " or "
  },
  {
   "vi": "Bảng xếp hạng",
-  "en": ""
+  "en": "Leaderboard"
  },
  {
   "vi": " để chọn người muốn thách đấu.",
-  "en": ""
+  "en": " to pick someone to challenge."
  },
  {
   "vi": "Đăng nhập",
-  "en": ""
+  "en": "Log in"
  },
  {
   "vi": " để hạ chiến thư.",
-  "en": ""
+  "en": " to issue a challenge."
  },
  {
   "vi": "Bóng của bạn",
-  "en": ""
+  "en": "Your shadow"
  },
  {
   "vi": " · Kiếp ",
-  "en": ""
+  "en": " · Life "
  },
  {
   "vi": "Hai bên được kéo ngang cảnh giới bóng của bạn. Thắng +5 phúc duyên, thua +2. Người kia nhận thư và được báo thù ở Lôi đài. ",
-  "en": ""
+  "en": "Both sides are leveled to your shadow's realm. Win +5 Fortune, lose +2. The other player receives the letter and can take revenge in the Arena. "
  },
  {
   "vi": "Đối thủ là {0}.",
   "ph": [
    "PATHS[f!.shadow.path].name"
   ],
-  "en": ""
+  "en": "Opponent: {0}."
  },
  {
   "vi": "Chọn bóng ra trận",
-  "en": ""
+  "en": "Choose a shadow to send in"
  },
  {
   "vi": "Bạn chưa có kiếp nào. Sống trọn một kiếp rồi quay lại.",
-  "en": ""
+  "en": "You have no lives yet. Live one full life, then come back."
  },
  {
   "vi": "Không tự thách chính mình",
-  "en": ""
+  "en": "You can't challenge yourself"
  },
  {
   "vi": "⚔ Hạ chiến thư",
-  "en": ""
+  "en": "⚔ Issue a challenge"
  },
  {
   "vi": "Hết chiến thư hôm nay",
-  "en": ""
+  "en": "No challenges left today"
  },
  {
   "vi": "còn {0}/3 chiến thư hôm nay",
   "ph": [
    "left"
   ],
-  "en": ""
+  "en": "{0}/3 challenges left today"
  }
 ]

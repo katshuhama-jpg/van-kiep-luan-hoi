@@ -64,9 +64,12 @@ const FORCE = {
   'lib/game/sectEvents2.ts': ['tu vi'],
   'lib/game/wuxiaChat.ts': ['Kim'],
   'lib/shareCard.ts': ['thua'],
+  'lib/lifeCard.ts': ['LINH'],
+  'components/Extras.tsx': ['Khung'],
+  'components/LifeStory.tsx': ['tam'],
 };
 let curFile = '';
-const forced = (t) => (FORCE[curFile] || []).includes(t);
+const forced = (t) => (FORCE[curFile] || []).includes(t) || (FORCE[curFile] || []).includes(t.trim());
 
 function isUnitNode(node) {
   if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) return VN.test(node.text) || forced(node.text);

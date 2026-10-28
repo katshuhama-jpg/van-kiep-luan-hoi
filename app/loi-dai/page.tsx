@@ -3,6 +3,7 @@
 import BackButton from '@/components/BackButton';
 import Arena from '@/components/Arena';
 import { useAuth } from '@/lib/useAuth';
+import { tr } from '@/lib/i18n';
 
 /** Lôi đài hằng ngày: trang riêng, mở từ trang đầu và menu trong game */
 export default function LoiDai() {
@@ -12,13 +13,14 @@ export default function LoiDai() {
       <header className="topbar">
         <div className="topbar-row">
           <span className="age-big" style={{ fontSize: 28 }}>
-            Lôi đài
+            
+            {tr("Lôi đài", "Arena")}
           </span>
-          <span className="meta">Mỗi ngày ba trận, mỗi tuần một bá chủ</span>
+          <span className="meta">{tr("Mỗi ngày ba trận, mỗi tuần một bá chủ", "Three matches a day, one champion a week")}</span>
           <BackButton fallback="/" />
         </div>
       </header>
-      {ready ? <Arena user={user} /> : <p>Đang dựng lôi đài...</p>}
+      {ready ? <Arena user={user} /> : <p>{tr("Đang dựng lôi đài...", "Setting up the arena...")}</p>}
     </main>
   );
 }

@@ -13,6 +13,7 @@ import CondoPresets from '@/components/CondoPresets';
 import type { Player } from '@/lib/auth';
 import { cosOfGrave, endingOfGrave } from '@/lib/game/collect';
 import { RARE_COLOR } from '@/lib/game/endings';
+import { tr } from '@/lib/i18n';
 
 type Condo = Record<string, { n: number; last: string }>;
 
@@ -45,34 +46,37 @@ function Tomb({
     <article className={`grave ${m.ascended ? 'ascended' : ''} ${cosOfGrave(m) ? `cos-${cosOfGrave(m)}` : ''}`}>
       {cosOfGrave(m) && <span className="grave-cos">{TRUNG[cosOfGrave(m)!]}</span>}
       <small>
-        Kiếp {m.life_no} · {m.player_name} <RelChips player={m.player_name} s={social} />
+        
+        {tr("Kiếp ", "Life ")}{m.life_no} · {m.player_name} <RelChips player={m.player_name} s={social} />
       </small>
       <span className="gname">{m.char_name}</span>
       <small>
-        {m.age} tuổi · {m.realm}
+        {m.age}{tr(" tuổi · ", " years old · ")}{m.realm}
         {m.path ? ` · ${m.path}` : ''}
       </small>
       {m.ascended ? (
-        <small style={{ color: /Ma Tôn|Demon Sovereign/.test(m.cause ?? '') ? 'var(--ta)' : 'var(--jade)' }}>{/Ma Tôn|Demon Sovereign/.test(m.cause ?? '') ? 'Đã thành Ma Tôn' : 'Đã phi thăng'}</small>
+        <small style={{ color: /Ma Tôn|Demon Sovereign/.test(m.cause ?? '') ? 'var(--ta)' : 'var(--jade)' }}>{/Ma Tôn|Demon Sovereign/.test(m.cause ?? '') ? tr('Đã thành Ma Tôn', "Became a Demon Sovereign") : tr('Đã phi thăng', "Ascended")}</small>
       ) : (
         m.cause && <small>{m.cause}</small>
       )}
       <span className={`tomb-ending ${unseen ? 'unseen' : ''}`} style={{ ['--rc' as string]: RARE_COLOR[end.rare] } as React.CSSProperties}>
-        <i>Kết cục</i> {end.name}
-        {unseen && <small>Bạn chưa từng chết như vậy</small>}
+        <i>{tr("Kết cục", "Ending")}</i> {end.name}
+        {unseen && <small>{tr("Bạn chưa từng chết như vậy", "You have never died like this")}</small>}
       </span>
       {m.epitaph && <span className="epitaph">“{m.epitaph}”</span>}
       {condo && (
         <span className="tomb-condo">
-          {condo.n} lời viếng · “{condo.last}”
+          {condo.n}{tr(" lời viếng · “", " epitaphs · “")}{condo.last}”
         </span>
       )}
-      <button className="btn btn-red story-btn" style={{ marginTop: 'auto', fontSize: 17 }} onClick={onStory} aria-label={`Xem hồi ký ${m.char_name}`}>
-        Xem hồi ký
+      <button className="btn btn-red story-btn" style={{ marginTop: 'auto', fontSize: 17 }} onClick={onStory} aria-label={tr(`Xem hồi ký ${m.char_name}`, `Read the memoir of ${m.char_name}`)}>
+        
+        {tr("Xem hồi ký", "Read memoir")}
       </button>
       {user && user.username !== m.player_name && (
-        <Link className="btn btn-dark th-btn" href={`/thach-dau?l=${m.id}`} aria-label={`Hạ chiến thư cho ${m.char_name}`}>
-          ⚔ Hạ chiến thư
+        <Link className="btn btn-dark th-btn" href={`/thach-dau?l=${m.id}`} aria-label={tr(`Hạ chiến thư cho ${m.char_name}`, `Issue a challenge to ${m.char_name}`)}>
+          
+          {tr("⚔ Hạ chiến thư", "⚔ Issue a challenge")}
         </Link>
       )}
       <button
@@ -83,9 +87,10 @@ function Tomb({
           onIncense();
           if (user) setWriting(true);
         }}
-        aria-label={`Thắp hương cho ${m.char_name}`}
+        aria-label={tr(`Thắp hương cho ${m.char_name}`, `Burn incense for ${m.char_name}`)}
       >
-        Thắp hương · {m.incense}
+        
+        {tr("Thắp hương · ", "Incense · ")}{m.incense}
       </button>
       {writing && (
         <CondoPresets
@@ -98,7 +103,7 @@ function Tomb({
       )}
       {writing && (
         <span className="condo-input">
-          <input autoFocus value={text} maxLength={120} onChange={(e) => setText(e.target.value)} placeholder="Hoặc tự viết lời viếng" aria-label={`Lời viếng cho ${m.char_name}`} />
+          <input autoFocus value={text} maxLength={120} onChange={(e) => setText(e.target.value)} placeholder={tr("Hoặc tự viết lời viếng", "Or write your own epitaph")} aria-label={tr(`Lời viếng cho ${m.char_name}`, `Epitaph for ${m.char_name}`)} />
           <button
             className="btn"
             disabled={!text.trim()}
@@ -108,7 +113,8 @@ function Tomb({
               setWriting(false);
             }}
           >
-            Gửi
+            
+            {tr("Gửi", "Send")}
           </button>
         </span>
       )}
@@ -116,7 +122,7 @@ function Tomb({
   );
 }
 
-const TRUNG = { tien: 'Tiên Trủng', ma: 'Ma Trủng', hu: 'Hư Trủng' } as const;
+const TRUNG = { tien: tr('Tiên Trủng', "Immortal Tombs"), ma: tr('Ma Trủng', "Demon Tombs"), hu: tr('Hư Trủng', "Void Tombs") } as const;
 
 export default function Graveyard() {
   const { user, ready } = useAuth();
@@ -165,42 +171,48 @@ export default function Graveyard() {
       <header className="topbar">
         <div className="topbar-row">
           <span className="age-big" style={{ fontSize: 28 }}>
-            Nghĩa trang
+            
+            {tr("Nghĩa trang", "Cemetery")}
           </span>
-          <span className="meta">Nơi các kiếp đã qua yên nghỉ</span>
+          <span className="meta">{tr("Nơi các kiếp đã qua yên nghỉ", "Where past lives rest")}</span>
           <BackButton fallback="/" />
         </div>
       </header>
 
       <div className="tabs">
         <button className={tab === 'all' ? 'on' : ''} onClick={() => setTab('all')}>
-          Mọi người
+          
+          {tr("Mọi người", "Everyone")}
         </button>
         <button className={tab === 'mine' ? 'on' : ''} onClick={() => setTab('mine')}>
-          Các kiếp của tôi
+          
+          {tr("Các kiếp của tôi", "My lives")}
         </button>
         <button className={tab === 'den' ? 'on' : ''} onClick={() => setTab('den')}>
-          Đền danh nhân
+          
+          {tr("Đền danh nhân", "Hall of Fame")}
         </button>
       </div>
 
       {!user && (
         <p className="note" style={{ margin: 0 }}>
-          Đăng nhập để thắp hương và để bia của bạn hiện cho mọi người.
+          
+          {tr("Đăng nhập để thắp hương và để bia của bạn hiện cho mọi người.", "Log in to burn incense and let everyone see your tombstones.")}
         </p>
       )}
 
       {tab === 'den' && (
         <p className="note" style={{ margin: 0 }}>
-          Những ngôi mộ được giang hồ thắp hương nhiều nhất. Danh nhân được ghi tên ở đây mãi mãi.
+          
+          {tr("Những ngôi mộ được giang hồ thắp hương nhiều nhất. Danh nhân được ghi tên ở đây mãi mãi.", "The graves the jianghu has burned the most incense at. The famous are remembered here forever.")}
         </p>
       )}
 
       {!data ? (
-        <p>Đang dọn cỏ...</p>
+        <p>{tr("Đang dọn cỏ...", "Clearing the weeds...")}</p>
       ) : list.length === 0 ? (
         <section className="panel">
-          <p style={{ margin: 0 }}>Chưa có ngôi mộ nào. Hãy sống trọn một kiếp rồi quay lại.</p>
+          <p style={{ margin: 0 }}>{tr("Chưa có ngôi mộ nào. Hãy sống trọn một kiếp rồi quay lại.", "No graves yet. Live one full life and come back.")}</p>
         </section>
       ) : (
         <div className="grave-list">
@@ -236,7 +248,8 @@ export default function Graveyard() {
       )}
 
       <Link href="/choi" className="btn btn-red btn-big" style={{ textDecoration: 'none', textAlign: 'center' }}>
-        Vào luân hồi
+        
+        {tr("Vào luân hồi", "Enter the Cycle")}
       </Link>
     </main>
   );

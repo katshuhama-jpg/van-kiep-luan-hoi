@@ -5,6 +5,7 @@ import ItemIcon from './ItemIcon';
 import { ITEMS } from '@/lib/game/data';
 import { FORGE_CHANCE, FORGE_COST, FORGE_MAX, FORGE_PER, breakChance, elFx, forgeLevel, itemEl, tinhPrice, type ForgeResult } from '@/lib/game/forge';
 import type { Character } from '@/lib/game/types';
+import { tr } from '@/lib/i18n';
 
 const EL_COL: Record<string, string> = { kim: '#d8d8e8', moc: '#5ac86a', thuy: '#5a9ae0', hoa: '#e85a3a', tho: '#c8963a' };
 
@@ -51,12 +52,12 @@ export default function ForgeScene({ c, onForge, onBuy, onClose }: { c: Characte
   }
 
   return (
-    <div className="forge-wrap" role="dialog" aria-modal="true" aria-label="Lò rèn">
+    <div className="forge-wrap" role="dialog" aria-modal="true" aria-label={tr("Lò rèn", "Forge")}>
       <div className="forge-scene">
         <div className="fs-head">
-          <b>Lò rèn</b>
-          <span className="fs-tinh">Tinh thiết {c.tinhHoa ?? 0}</span>
-          <button className="ss-x" onClick={onClose} aria-label="Đóng lò rèn" disabled={phase === 'hit'}>
+          <b>{tr("Lò rèn", "Forge")}</b>
+          <span className="fs-tinh">{tr("Tinh thiết ", "Refined iron ")}{c.tinhHoa ?? 0}</span>
+          <button className="ss-x" onClick={onClose} aria-label={tr("Đóng lò rèn", "Close the forge")} disabled={phase === 'hit'}>
             ✕
           </button>
         </div>
@@ -73,7 +74,7 @@ export default function ForgeScene({ c, onForge, onBuy, onClose }: { c: Characte
               ))}
             </span>
           )}
-          {res && <span className={`fs-stamp ${res.kind}`}>{res.kind === 'ok' ? `+${res.lv}!` : res.kind === 'break' ? 'VỠ!' : 'Hỏng'}</span>}
+          {res && <span className={`fs-stamp ${res.kind}`}>{res.kind === 'ok' ? `+${res.lv}!` : res.kind === 'break' ? tr('VỠ!', "SHATTERED!") : tr('Hỏng', "Failed")}</span>}
         </div>
         <div className="fs-info">
           <b className="fs-name">
@@ -81,51 +82,55 @@ export default function ForgeScene({ c, onForge, onBuy, onClose }: { c: Characte
             {res?.kind !== 'break' && lv > 0 ? ` +${lv}` : ''}
           </b>
           <span className="fs-el" style={{ ['--ec' as string]: EL_COL[el.el] }}>
-            Hệ {el.name} · {el.short}: {el.per} mỗi cấp {lv > 0 && res?.kind !== 'break' ? `(đang cấp ${lv})` : ''}
+            
+            {tr("Hệ ", "Element ")}{el.name} · {el.short}: {el.per}{tr(" mỗi cấp ", " per level ")}{lv > 0 && res?.kind !== 'break' ? tr(`(đang cấp ${lv})`, `(currently level ${lv})`) : ''}
           </span>
           {res && <p className={`fs-res ${res.kind}`}>{res.text}</p>}
           {res?.kind === 'break' ? (
             <button className="btn btn-big" onClick={onClose}>
-              Rời lò rèn
+              
+              {tr("Rời lò rèn", "Leave the forge")}
             </button>
           ) : max ? (
-            <p className="note">Đã rèn tới +{FORGE_MAX}, cao nhất.</p>
+            <p className="note">{tr("Đã rèn tới +", "Forged to +")}{FORGE_MAX}{tr(", cao nhất.", ", the maximum.")}</p>
           ) : (
             <>
               <dl className="fs-odds">
-                <dt>Lên +{lv + 1}</dt>
+                <dt>{tr("Lên +", "To +")}{lv + 1}</dt>
                 <dd>
-                  công +{Math.round((lv + 1) * FORGE_PER * 100)}%, hệ {el.name} cấp {lv + 1}
+                  
+                  {tr("công +", "attack +")}{Math.round((lv + 1) * FORGE_PER * 100)}{tr("%, hệ ", "%, element ")}{el.name}{tr(" cấp ", " level ")}{lv + 1}
                 </dd>
-                <dt>Nguyên liệu</dt>
+                <dt>{tr("Nguyên liệu", "Materials")}</dt>
                 <dd className={enough ? '' : 'bad'}>
-                  {cost} tinh thiết (đang có {c.tinhHoa ?? 0})
+                  {cost}{tr(" tinh thiết (đang có ", " refined iron (you have ")}{c.tinhHoa ?? 0})
                 </dd>
-                <dt>Thành</dt>
+                <dt>{tr("Thành", "Success")}</dt>
                 <dd>{Math.round(ok * 100)}%</dd>
-                <dt>Vỡ mất đồ</dt>
-                <dd className={brk > 0 ? 'bad' : ''}>{brk > 0 ? `${Math.round(brk * 100)}%` : 'không'}</dd>
+                <dt>{tr("Vỡ mất đồ", "Item shatters")}</dt>
+                <dd className={brk > 0 ? 'bad' : ''}>{brk > 0 ? `${Math.round(brk * 100)}%` : tr('không', "none")}</dd>
               </dl>
               <button className="btn btn-red btn-big fs-go" disabled={phase === 'hit' || !enough} onClick={strike}>
-                {phase === 'hit' ? 'Đang rèn...' : enough ? '⚒ Gõ búa' : 'Thiếu tinh thiết'}
+                {phase === 'hit' ? tr('Đang rèn...', "Forging...") : enough ? tr('⚒ Gõ búa', "⚒ Strike") : tr('Thiếu tinh thiết', "Not enough refined iron")}
                 <small>
-                  mất {cost} tinh thiết · còn {Math.max(0, (c.tinhHoa ?? 0) - cost)}
+                  
+                  {tr("mất ", "costs ")}{cost}{tr(" tinh thiết · còn ", " refined iron · left ")}{Math.max(0, (c.tinhHoa ?? 0) - cost)}
                 </small>
               </button>
               {onBuy && (
                 <div className="fs-buy">
-                  <small>Mua tinh thiết · {tinhPrice(c)} linh thạch/cục · đang có {Math.floor(c.linhThach)}</small>
+                  <small>{tr("Mua tinh thiết · ", "Buy refined iron · ")}{tinhPrice(c)}{tr(" linh thạch/cục · đang có ", " spirit stones/lump · you have ")}{Math.floor(c.linhThach)}</small>
                   <span>
                     {[1, 5, Math.max(1, cost - (c.tinhHoa ?? 0))].filter((n, i, a) => a.indexOf(n) === i).map((n) => (
                       <button key={n} className="btn" disabled={phase === 'hit' || c.linhThach < tinhPrice(c) * n} onClick={() => onBuy(n)}>
                         +{n}
-                        {n === Math.max(1, cost - (c.tinhHoa ?? 0)) && !enough ? ' (đủ gõ)' : ''}
+                        {n === Math.max(1, cost - (c.tinhHoa ?? 0)) && !enough ? tr(' (đủ gõ)', " (enough to strike)") : ''}
                       </button>
                     ))}
                   </span>
                 </div>
               )}
-              {c.legend?.item === it.id && <small className="note">Thần binh truyền đời không vỡ, rèn hỏng chỉ mất tinh thiết.</small>}
+              {c.legend?.item === it.id && <small className="note">{tr("Thần binh truyền đời không vỡ, rèn hỏng chỉ mất tinh thiết.", "A divine weapon passed down through lives never shatters; a failed forge only costs refined iron.")}</small>}
             </>
           )}
         </div>

@@ -10,6 +10,7 @@ import { beats, counterOf, foeStance, moveOf, roundChance, tellOf, type ArenaRul
 import type { Stance } from './nguHanhDai';
 import { ELEMENT_IDS, elemMul, elementOf } from './nguhanh';
 import type { Element, RivalChar } from './types';
+import { tr } from '../i18n';
 
 export const KI_MAX = 5;
 export const TURN_CAP = 14;
@@ -180,33 +181,33 @@ export function autoPick(it: Intent, hand: Element[], rule: ArenaRule, rnd: () =
 
 /** Tên tuyệt kỹ theo con đường */
 export const ULT_NAME: Record<string, string> = {
-  kiem: 'Vạn Kiếm Quy Tông',
-  ma: 'Huyết Hải Ma Đao',
-  phat: 'Kim Cang La Hán',
-  tran: 'Tru Tiên Kiếm Trận',
-  dan: 'Cửu Chuyển Đan Hỏa',
-  yeu: 'Yêu Thần Giáng Thế',
-  '': 'Toàn Lực Nhất Kích',
+  kiem: tr('Vạn Kiếm Quy Tông', "Ten Thousand Swords Return"),
+  ma: tr('Huyết Hải Ma Đao', "Blood Sea Demon Blade"),
+  phat: tr('Kim Cang La Hán', "Vajra Arhat"),
+  tran: tr('Tru Tiên Kiếm Trận', "Immortal-Slaying Sword Array"),
+  dan: tr('Cửu Chuyển Đan Hỏa', "Nine-Turn Pill Flame"),
+  yeu: tr('Yêu Thần Giáng Thế', "Yao God Descends"),
+  '': tr('Toàn Lực Nhất Kích', "All-Out Strike"),
 };
 export const ultName = (r: RivalChar) => ULT_NAME[r.path ?? ''] ?? ULT_NAME[''];
 
 /** Lời bình một lượt: chiêu hai bên (theo con đường và hành), kết quả, số máu */
 export function turnLines(r: TurnResult, me: RivalChar, foe: RivalChar, rnd: () => number): string[] {
-  const elName: Record<Element, string> = { kim: 'Kim', moc: 'Mộc', thuy: 'Thủy', hoa: 'Hỏa', tho: 'Thổ' };
-  if (r.kind === 'ult_me') return [`${me.name} dồn toàn bộ nội lực, tung tuyệt kỹ “${ultName(me)}”!`, `${foe.name} trúng trọn, mất ${r.toFoe} máu.${r.elemTag === 'khac' ? ' Bản mệnh khắc chế, uy lực tăng vọt.' : ''}`];
+  const elName: Record<Element, string> = { kim: tr('Kim', "Metal"), moc: tr('Mộc', "Wood"), thuy: tr('Thủy', "Water"), hoa: tr('Hỏa', "Fire"), tho: tr('Thổ', "Earth") };
+  if (r.kind === 'ult_me') return [tr(`${me.name} dồn toàn bộ nội lực, tung tuyệt kỹ “${ultName(me)}”!`, `${me.name} pours out all their inner force and unleashes the ultimate move “${ultName(me)}”!`), tr(`${foe.name} trúng trọn, mất ${r.toFoe} máu.${r.elemTag === 'khac' ? tr(' Bản mệnh khắc chế, uy lực tăng vọt.', " Natal element overcome - the power soars.") : ''}`, `${foe.name} takes it head on, losing ${r.toFoe} HP.${r.elemTag === 'khac' ? tr(' Bản mệnh khắc chế, uy lực tăng vọt.', " Natal element overcome - the power soars.") : ''}`)];
   if (r.kind === 'ult_foe') {
-    const head = `${foe.name} tung tuyệt kỹ “${ultName(foe)}”!`;
-    if (r.parry === 'perfect') return [head, `Bạn đón đúng nhịp, hóa giải toàn bộ rồi phản đòn: ${foe.name} mất ${r.toFoe} máu.`];
-    if (r.parry === 'good') return [head, `Bạn đỡ được phần lớn, vẫn mất ${r.toMe} máu.`];
-    return [head, `Bạn chậm một nhịp, trúng trọn, mất ${r.toMe} máu.`];
+    const head = tr(`${foe.name} tung tuyệt kỹ “${ultName(foe)}”!`, `${foe.name} unleashes the ultimate move “${ultName(foe)}”!`);
+    if (r.parry === 'perfect') return [head, tr(`Bạn đón đúng nhịp, hóa giải toàn bộ rồi phản đòn: ${foe.name} mất ${r.toFoe} máu.`, `You meet it right on the beat, neutralize it all and counter: ${foe.name} loses ${r.toFoe} HP.`)];
+    if (r.parry === 'good') return [head, tr(`Bạn đỡ được phần lớn, vẫn mất ${r.toMe} máu.`, `You block most of it, but still lose ${r.toMe} HP.`)];
+    return [head, tr(`Bạn chậm một nhịp, trúng trọn, mất ${r.toMe} máu.`, `You're a beat too slow and take it full on, losing ${r.toMe} HP.`)];
   }
   const a = moveOf(me, r.my!, rnd);
   const b = moveOf(foe, r.foe!, rnd);
-  const lines = [`${me.name}: “${a}” hệ ${elName[r.myEl!]}.`, `${foe.name}: “${b}” hệ ${elName[r.foeEl!]}.`];
-  const tag = r.elemTag === 'khac' ? ' Hành khắc chế!' : r.elemTag === 'bi_khac' ? ' Hành bị khắc, đòn nhẹ đi.' : '';
-  const crit = r.crit ? ' Chí mạng!' : '';
-  if (r.winner === 'clash') lines.push(`Hai chiêu cùng thế va nhau. Bạn mất ${r.toMe}, đối thủ mất ${r.toFoe} máu.${tag}`);
-  else if (r.winner === 'me') lines.push(r.toMe === 0 && r.my === 'thu' ? `Bạn chặn gọn rồi phản đòn, đối thủ mất ${r.toFoe} máu.${tag}${crit}` : `Bạn đánh trúng, đối thủ mất ${r.toFoe} máu.${tag}${crit}`);
-  else lines.push(r.foe === 'thu' && r.toFoe === 0 ? `Đối thủ chặn gọn rồi phản đòn, bạn mất ${r.toMe} máu.${tag}${crit}` : `Bạn trúng đòn, mất ${r.toMe} máu.${tag}${crit}`);
+  const lines = [tr(`${me.name}: “${a}” hệ ${elName[r.myEl!]}.`, `${me.name}: “${a}”, ${elName[r.myEl!]} element.`), tr(`${foe.name}: “${b}” hệ ${elName[r.foeEl!]}.`, `${foe.name}: “${b}”, ${elName[r.foeEl!]} element.`)];
+  const tag = r.elemTag === 'khac' ? tr(' Hành khắc chế!', " Element advantage!") : r.elemTag === 'bi_khac' ? tr(' Hành bị khắc, đòn nhẹ đi.', " Element countered, the blow weakens.") : '';
+  const crit = r.crit ? tr(' Chí mạng!', " Critical!") : '';
+  if (r.winner === 'clash') lines.push(tr(`Hai chiêu cùng thế va nhau. Bạn mất ${r.toMe}, đối thủ mất ${r.toFoe} máu.${tag}`, `Two moves of the same stance collide. You lose ${r.toMe}, your opponent loses ${r.toFoe} HP.${tag}`));
+  else if (r.winner === 'me') lines.push(r.toMe === 0 && r.my === 'thu' ? tr(`Bạn chặn gọn rồi phản đòn, đối thủ mất ${r.toFoe} máu.${tag}${crit}`, `You block cleanly and counter; your opponent loses ${r.toFoe} HP.${tag}${crit}`) : tr(`Bạn đánh trúng, đối thủ mất ${r.toFoe} máu.${tag}${crit}`, `You land a hit; your opponent loses ${r.toFoe} HP.${tag}${crit}`));
+  else lines.push(r.foe === 'thu' && r.toFoe === 0 ? tr(`Đối thủ chặn gọn rồi phản đòn, bạn mất ${r.toMe} máu.${tag}${crit}`, `Your opponent blocks cleanly and counters; you lose ${r.toMe} HP.${tag}${crit}`) : tr(`Bạn trúng đòn, mất ${r.toMe} máu.${tag}${crit}`, `You get hit, losing ${r.toMe} HP.${tag}${crit}`));
   return lines;
 }

@@ -110,7 +110,7 @@
    "c.dead ? 'giết chết' : 'hạ gục'",
    "me",
    "c.name",
-   "notes.some((n) => n.includes('lột mất')) ? ' Còn lột được đồ của họ.' : ''"
+   "notes.some((n) => /lột mất|strips you of/.test(n)) ? ' Còn lột được đồ của họ.' : ''"
   ],
   "en": "{0} {1}{2} @{3} ({4}).{5}"
  },

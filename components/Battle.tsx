@@ -8,6 +8,7 @@ import type { Element } from '@/lib/game/types';
 import Sprite from './Sprite';
 import MonsterLpc from './MonsterLpc';
 import { MONSTER_LOOK } from '@/lib/game/monsterLook';
+import { tr } from '@/lib/i18n';
 
 type R = [number, number, number, number, string];
 
@@ -244,7 +245,7 @@ export interface BattleView {
 function ElemBanner({ e }: { e: { me: Element; foe: Element; rel: ElemRel } }) {
   const A = ELEMENTS[e.me];
   const B = ELEMENTS[e.foe];
-  const txt = e.rel === 'khac' ? 'Khắc chế · +50%' : e.rel === 'bi_khac' ? 'Bị khắc · -30%' : e.rel === 'duoc_sinh' ? `Được sinh · +10%` : e.rel === 'sinh' ? `${A.name} sinh ${B.name}` : 'Cùng mệnh';
+  const txt = e.rel === 'khac' ? tr('Khắc chế · +50%', "Overcomes · +50%") : e.rel === 'bi_khac' ? tr('Bị khắc · -30%', "Overcome · -30%") : e.rel === 'duoc_sinh' ? tr(`Được sinh · +10%`, "Nourished · +10%") : e.rel === 'sinh' ? `${A.name} sinh ${B.name}` : tr('Cùng mệnh', "Same element");
   return (
     <div className={`elem-banner ${e.rel}`}>
       <span className="el" style={{ background: A.color }}>
@@ -267,7 +268,7 @@ export function BattleOverlay({ b }: { b: BattleView }) {
   return (
     <div className="battle" aria-live="off">
       <div className="hpbox p">
-        <span>Bạn</span>
+        <span>{tr("Bạn", "You")}</span>
         <div className="hpbar">
           <div style={{ width: `${(b.pHp / b.pMax) * 100}%` }} />
         </div>
@@ -352,14 +353,16 @@ export function BattleOverlay({ b }: { b: BattleView }) {
       ))}
       {b.duel ? (
         <span className={`kill-count ambush-tag duel-turn ${b.duel.kind}`}>
-          Hiệp {Math.max(1, b.duel.turn)}/{b.duel.max}
+          
+          {tr("Hiệp ", "Round ")}{Math.max(1, b.duel.turn)}/{b.duel.max}
         </span>
       ) : b.ambush ? (
         <span className={`kill-count ambush-tag ${b.ambush.kind}`}>
-          Chặn đường · Hiệp {Math.max(1, b.ambush.turn)}/{b.ambush.max}
+          
+          {tr("Chặn đường · Hiệp ", "Ambush · Round ")}{Math.max(1, b.ambush.turn)}/{b.ambush.max}
         </span>
       ) : (
-        <span className="kill-count">Đã trảm: {b.kills}</span>
+        <span className="kill-count">{tr("Đã trảm: ", "Slain: ")}{b.kills}</span>
       )}
     </div>
   );

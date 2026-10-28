@@ -26,6 +26,7 @@ import { FORGE_CHANCE, FORGE_COST, FORGE_MAX, FORGE_PER, canSmelt, forgeLevel, s
 import { ArenaNudge } from './LoiDaiButton';
 import { useAuth } from '@/lib/useAuth';
 import { addFeedback } from '@/lib/storage';
+import { tr } from '@/lib/i18n';
 
 /* ---------------- Khung hộp thoại ---------------- */
 export function Sheet({ title, onClose, children }: { title: string; onClose?: () => void; children: ReactNode }) {
@@ -35,8 +36,9 @@ export function Sheet({ title, onClose, children }: { title: string; onClose?: (
         <div className="sheet-head">
           <h2>{title}</h2>
           {onClose && (
-            <button className="btn" onClick={onClose} aria-label="Đóng">
-              Đóng
+            <button className="btn" onClick={onClose} aria-label={tr("Đóng", "Close")}>
+              
+              {tr("Đóng", "Close")}
             </button>
           )}
         </div>
@@ -65,28 +67,28 @@ export function StatsPanel({ c }: { c: Character }) {
   const s = c.stats;
   const daoPct = (c.daoTam + 100) / 200;
   return (
-    <section className="panel" aria-label="Chỉ số">
+    <section className="panel" aria-label={tr("Chỉ số", "Stats")}>
       <div className="stats">
         <Bar
           wide
-          label={c.realm === 0 ? 'Tu vi (chưa nhập đạo)' : `Tu vi · ${realmLabel(c.realm, c.layer, c.cosmos)}`}
+          label={c.realm === 0 ? tr('Tu vi (chưa nhập đạo)', "Cultivation (not yet on the Yao)") : tr(`Tu vi · ${realmLabel(c.realm, c.layer, c.cosmos)}`, `Cultivation · ${realmLabel(c.realm, c.layer, c.cosmos)}`)}
           value={c.realm === 0 ? `${fmt(c.cultivation)}/40` : `${fmt(c.cultivation)}/${fmt(needFor(c))}`}
           pct={c.realm === 0 ? c.cultivation / 40 : cultPct(c)}
           color="#2f6b5a"
         />
-        <Bar label="Thọ nguyên" value={`${Math.floor(c.age)}/${c.lifespan}`} pct={c.age / c.lifespan} color="#b8432f" />
-        <Bar label="Sức khỏe" value={`${s.sucKhoe}`} pct={s.sucKhoe / 100} color="#d96a4a" />
-        <Bar label="Tâm cảnh" value={`${s.tamCanh}`} pct={s.tamCanh / 100} color="#c9962e" />
-        <Bar label="Tâm ma" value={`${s.tamMa}`} pct={s.tamMa / 100} color="#5a1a2a" />
-        <Bar label="Ngộ tính" value={`${s.ngoTinh}`} pct={s.ngoTinh / 100} color="#5b6fb0" />
-        <Bar label="Khí vận" value={`${s.khiVan}`} pct={s.khiVan / 100} color="#7a5ab0" />
+        <Bar label={tr("Thọ nguyên", "Lifespan")} value={`${Math.floor(c.age)}/${c.lifespan}`} pct={c.age / c.lifespan} color="#b8432f" />
+        <Bar label={tr("Sức khỏe", "Health")} value={`${s.sucKhoe}`} pct={s.sucKhoe / 100} color="#d96a4a" />
+        <Bar label={tr("Tâm cảnh", "Mind")} value={`${s.tamCanh}`} pct={s.tamCanh / 100} color="#c9962e" />
+        <Bar label={tr("Tâm ma", "Heart demon")} value={`${s.tamMa}`} pct={s.tamMa / 100} color="#5a1a2a" />
+        <Bar label={tr("Ngộ tính", "Insight")} value={`${s.ngoTinh}`} pct={s.ngoTinh / 100} color="#5b6fb0" />
+        <Bar label={tr("Khí vận", "Luck")} value={`${s.khiVan}`} pct={s.khiVan / 100} color="#7a5ab0" />
         <div className="dao">
           <div className="row">
-            <span style={{ color: 'var(--chinh)' }}>Chính</span>
-            <span>Đạo tâm: {describeLean(c.daoTam)}</span>
-            <span style={{ color: 'var(--ta)' }}>Tà</span>
+            <span style={{ color: 'var(--chinh)' }}>{tr("Chính", "Righteous")}</span>
+            <span>{tr("Đạo tâm: ", "Yao Heart: ")}{describeLean(c.daoTam)}</span>
+            <span style={{ color: 'var(--ta)' }}>{tr("Tà", "Evil")}</span>
           </div>
-          <div className="dao-track" role="meter" aria-label="Đạo tâm" aria-valuemin={-100} aria-valuemax={100} aria-valuenow={c.daoTam}>
+          <div className="dao-track" role="meter" aria-label={tr("Đạo tâm", "Yao Heart")} aria-valuemin={-100} aria-valuemax={100} aria-valuenow={c.daoTam}>
             <div style={{ background: '#a8c4e6' }} />
             <div style={{ background: '#d8cfc0' }} />
             <div style={{ background: '#e4a0a6' }} />
@@ -99,14 +101,14 @@ export function StatsPanel({ c }: { c: Character }) {
 }
 
 /* ---------------- Sự kiện 4 lựa chọn ---------------- */
-const LEAN_TEXT = { chinh: 'Chính', ta: 'Tà', trung: '' };
+const LEAN_TEXT = { chinh: tr('Chính', "Righteous"), ta: tr('Tà', "Evil"), trung: '' };
 
 export function EventCard({ p, onChoose }: { p: PendingEvent; onChoose: (i: number) => void }) {
   return (
     <section className="dialog event" aria-live="assertive" key={p.id + p.text}>
       <div className="event-head">
         <h2>{p.title}</h2>
-        <span>❚❚ dừng</span>
+        <span>{tr("❚❚ dừng", "❚❚ pause")}</span>
       </div>
       <p>{p.text}</p>
       <div className="choices">
@@ -149,19 +151,20 @@ export function LogPanel({ log }: { log: LogEntry[] }) {
     box.scrollTo({ top: 0, behavior: 'smooth' });
   }, [log.length]);
   return (
-    <section className="panel" aria-label="Gia phả kiếp này" ref={ref}>
-      <h2>Gia phả kiếp này</h2>
+    <section className="panel" aria-label={tr("Gia phả kiếp này", "This life's family chronicle")} ref={ref}>
+      <h2>{tr("Gia phả kiếp này", "This life's family chronicle")}</h2>
       <div className="log">
         {items.map((e, i) => (
           <div key={log.length - i} className={`log-item ${e.tone}`}>
-            <span className="a">{e.age}t</span>
+            <span className="a">{e.age}{tr("t", "y")}</span>
             <span className="t">{e.text}</span>
           </div>
         ))}
       </div>
       {log.length > 25 && !all && (
         <button className="btn" style={{ marginTop: 8, width: '100%' }} onClick={() => setAll(true)}>
-          Xem các ghi chép trước
+          
+          {tr("Xem các ghi chép trước", "View earlier records")}
         </button>
       )}
     </section>
@@ -353,19 +356,19 @@ function WeaponIcon({ k, a, b }: { k: string; a: string; b: string }) {
   );
 }
 
-const RARE_TXT = ['', 'Tốt', 'Hiếm', 'Cực phẩm'];
+const RARE_TXT = ['', tr('Tốt', "Fine"), tr('Hiếm', "Rare"), tr('Cực phẩm', "Supreme")];
 function srcText(it: Item): string {
-  if (it.src === 'drop') return 'Rơi từ: ' + (it.from ?? []).map((id) => MONSTERS.find((m) => m.id === id)?.name ?? id).join(', ');
-  if (it.src === 'event') return 'Nhặt được khi: ' + (it.where ?? 'đi khắp nơi');
-  return 'Bán ở phường thị';
+  if (it.src === 'drop') return tr('Rơi từ: ', "Dropped by: ") + (it.from ?? []).map((id) => MONSTERS.find((m) => m.id === id)?.name ?? id).join(', ');
+  if (it.src === 'event') return tr('Nhặt được khi: ', "Found when: ") + (it.where ?? tr('đi khắp nơi', "wandering everywhere"));
+  return tr('Bán ở phường thị', "Sold at the Market");
 }
 
 /* ---------------- Phường thị ---------------- */
 function lockReason(c: Character, it: Item): string | null {
-  if (c.realm < it.minRealm) return `Cần ${REALMS[it.minRealm].name}`;
-  if (it.path && c.path !== it.path) return `Chỉ cho ${PATHS[it.path].name}`;
-  if (it.lean === 'chinh' && c.daoTam < 20) return 'Cần Đạo tâm nghiêng Chính';
-  if (it.lean === 'ta' && c.daoTam > -20) return 'Cần Đạo tâm nghiêng Tà';
+  if (c.realm < it.minRealm) return tr(`Cần ${REALMS[it.minRealm].name}`, `Requires ${REALMS[it.minRealm].name}`);
+  if (it.path && c.path !== it.path) return tr(`Chỉ cho ${PATHS[it.path].name}`, `${PATHS[it.path].name} only`);
+  if (it.lean === 'chinh' && c.daoTam < 20) return tr('Cần Đạo tâm nghiêng Chính', "Requires a Righteous-leaning Yao Heart");
+  if (it.lean === 'ta' && c.daoTam > -20) return tr('Cần Đạo tâm nghiêng Tà', "Requires an Evil-leaning Yao Heart");
   return null;
 }
 
@@ -380,10 +383,10 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; 
       <div className="chips">
         {(
           [
-            ['all', 'Tất cả'],
-            ['vu_khi', 'Vũ khí'],
-            ['ao', 'Pháp y'],
-            ['phu_kien', 'Phụ kiện'],
+            ['all', tr('Tất cả', "All")],
+            ['vu_khi', tr('Vũ khí', "Weapon")],
+            ['ao', tr('Pháp y', "Robe")],
+            ['phu_kien', tr('Phụ kiện', "Accessory")],
           ] as const
         ).map(([k, t]) => (
           <button key={k} className={`chip-btn ${slot === k ? 'on' : ''}`} onClick={() => setSlot(k)}>
@@ -392,24 +395,28 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; 
         ))}
       </div>
       <label className="fit-toggle">
-        <input type="checkbox" checked={fit} onChange={(e) => setFit(e.target.checked)} /> Chỉ hiện đồ hợp với mình
+        <input type="checkbox" checked={fit} onChange={(e) => setFit(e.target.checked)} />{tr(" Chỉ hiện đồ hợp với mình", " Only show gear that suits me")}
       </label>
     </div>
   );
   return (
-    <Sheet title="Phường thị" onClose={onClose}>
+    <Sheet title={tr("Phường thị", "Market")} onClose={onClose}>
       <p className="note" style={{ marginTop: 0 }}>
-        Linh thạch: <b style={{ color: 'var(--red-d)', fontWeight: 700 }}>{fmt(c.linhThach)}</b> · Đồ mua xong tự mặc lên người.
+        
+        {tr("Linh thạch: ", "Spirit stones: ")}<b style={{ color: 'var(--red-d)', fontWeight: 700 }}>{fmt(c.linhThach)}</b>{tr(" · Đồ mua xong tự mặc lên người.", " · Gear is equipped as soon as you buy it.")}
       </p>
       <div className="tabs">
         <button className={tab === 'do' ? 'on' : ''} onClick={() => setTab('do')}>
-          Pháp y, pháp bảo
+          
+          {tr("Pháp y, pháp bảo", "Robes, treasures")}
         </button>
         <button className={tab === 'dan' ? 'on' : ''} onClick={() => setTab('dan')}>
-          Đan dược
+          
+          {tr("Đan dược", "Pills")}
         </button>
         <button className={tab === 'kho' ? 'on' : ''} onClick={() => setTab('kho')}>
-          Đồ hiếm
+          
+          {tr("Đồ hiếm", "Rare goods")}
         </button>
       </div>
       <div className="items">
@@ -431,10 +438,10 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; 
                     <span>{it.name}</span>
                     {it.fx && <small className="fx-line">{fxText(it.fx)}</small>}
                     <small>{lock ?? it.desc}</small>
-                    {it.minRealm >= RARE_STOCK_REALM && !owned && !out && <small className="stock-tag">Hàng hiếm: mỗi kiếp chỉ bán một lần</small>}
+                    {it.minRealm >= RARE_STOCK_REALM && !owned && !out && <small className="stock-tag">{tr("Hàng hiếm: mỗi kiếp chỉ bán một lần", "Rare goods: sold only once per life")}</small>}
                   </div>
                   <button className="btn btn-red" disabled={owned || out || !!lock || c.linhThach < price} onClick={() => onBuyItem(it.id)}>
-                    {owned ? 'Đã có' : out ? 'Hết hàng' : fmt(price)}
+                    {owned ? tr('Đã có', "Owned") : out ? tr('Hết hàng', "Sold out") : fmt(price)}
                   </button>
                 </div>
               );
@@ -442,7 +449,8 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; 
         {tab === 'kho' && (
           <>
             <p className="note" style={{ margin: 0 }}>
-              Không bán ở đâu cả. Phải trừ yêu hoặc gặp cơ duyên trong đời mới có. Đã có{' '}
+              
+              {tr("Không bán ở đâu cả. Phải trừ yêu hoặc gặp cơ duyên trong đời mới có. Đã có", "Not sold anywhere. Only obtained by hunting demons or through a stroke of fate. Owned")}{' '}
               {ITEMS.filter((i) => (i.src === 'drop' || i.src === 'event') && i.id !== 'ao_vai' && c.inventory.includes(i.id)).length}/
               {ITEMS.filter((i) => (i.src === 'drop' || i.src === 'event') && i.id !== 'ao_vai').length}.
             </p>
@@ -462,7 +470,7 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; 
                       {it.fx && <small className="fx-line">{fxText(it.fx)}</small>}
                       <small>{srcText(it)}</small>
                     </div>
-                    <span className="owned-tag">{owned ? 'Đã có' : 'Chưa có'}</span>
+                    <span className="owned-tag">{owned ? tr('Đã có', "Owned") : tr('Chưa có', "Not owned")}</span>
                   </div>
                 );
               })}
@@ -476,7 +484,7 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; 
               </div>
               <div className="item-body">
                 <span>
-                  {p.name} {c.pills[p.id] ? <small>(có {c.pills[p.id]})</small> : null}
+                  {p.name} {c.pills[p.id] ? <small>{tr("(có ", "(have ")}{c.pills[p.id]})</small> : null}
                 </span>
                 <small>{p.desc}</small>
               </div>
@@ -494,11 +502,11 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; 
 type BagKind = 'all' | Slot | 'dan';
 type BagSort = 'new' | 'rare' | 'atk' | 'def';
 const BAG_KINDS: [BagKind, string][] = [
-  ['all', 'Tất cả'],
-  ['ao', 'Pháp y'],
-  ['vu_khi', 'Vũ khí'],
-  ['phu_kien', 'Phụ kiện'],
-  ['dan', 'Đan dược'],
+  ['all', tr('Tất cả', "All")],
+  ['ao', tr('Pháp y', "Robe")],
+  ['vu_khi', tr('Vũ khí', "Weapon")],
+  ['phu_kien', tr('Phụ kiện', "Accessory")],
+  ['dan', tr('Đan dược', "Pills")],
 ];
 function readPref(k: string): string {
   try {
@@ -562,13 +570,15 @@ export function BagSheet({
   }, [tab]);
   const got = book.filter(isHidden).length;
   return (
-    <Sheet title="Túi trữ vật" onClose={onClose}>
+    <Sheet title={tr("Túi trữ vật", "Storage pouch")} onClose={onClose}>
       <div className="tabs">
         <button className={tab === 'tui' ? 'on' : ''} onClick={() => setTab('tui')}>
-          Túi đồ
+          
+          {tr("Túi đồ", "Inventory")}
         </button>
         <button className={tab === 'kho' ? 'on' : ''} onClick={() => setTab('kho')}>
-          Bảo khố {got}/{HIDDEN_ITEMS.length}
+          
+          {tr("Bảo khố ", "Treasury ")}{got}/{HIDDEN_ITEMS.length}
         </button>
       </div>
       {tab === 'kho' ? <BaoKho book={book} /> : <BagDoll c={c} onEquip={onEquip} onUsePill={onUsePill} onSmelt={onSmelt} onSell={onSell} onBuy={onBuy} onForge={onForge} />}
@@ -595,14 +605,15 @@ export function BaoKho({ book }: { book: string[] }) {
         </span>
       </div>
       <p className="note" style={{ margin: '4px 0 6px' }}>
-        Đồ ẩn không bán ở phường thị, chỉ rơi từ yêu thú hoặc có được qua kỳ ngộ. Món nào từng có trong bất kỳ kiếp nào cũng được ghi lại mãi mãi.
+        
+        {tr("Đồ ẩn không bán ở phường thị, chỉ rơi từ yêu thú hoặc có được qua kỳ ngộ. Món nào từng có trong bất kỳ kiếp nào cũng được ghi lại mãi mãi.", "Hidden items aren't sold at the Market; they only drop from demon beasts or come from fortuitous encounters. Any item you've ever owned in any life is recorded forever.")}
       </p>
-      <div className="chips" role="radiogroup" aria-label="Lọc Bảo khố">
+      <div className="chips" role="radiogroup" aria-label={tr("Lọc Bảo khố", "Filter Treasury")}>
         {(
           [
-            ['all', 'Tất cả'],
-            ['co', 'Đã có'],
-            ['chua', 'Chưa có'],
+            ['all', tr('Tất cả', "All")],
+            ['co', tr('Đã có', "Owned")],
+            ['chua', tr('Chưa có', "Not owned")],
           ] as const
         ).map(([k, n]) => (
           <button key={k} role="radio" aria-checked={f === k} className={`chip-btn ${f === k ? 'on' : ''}`} onClick={() => setF(k)}>
@@ -623,7 +634,7 @@ export function BaoKho({ book }: { book: string[] }) {
                 <small>{sel.desc}</small>
               </>
             ) : (
-              <small>Gợi ý: {itemHint(sel)}</small>
+              <small>{tr("Gợi ý: ", "Hint: ")}{itemHint(sel)}</small>
             )}
           </span>
         </div>
@@ -634,7 +645,7 @@ export function BaoKho({ book }: { book: string[] }) {
             key={i.id}
             className={`bk-cell r${i.rare ?? 0} ${has.has(i.id) ? '' : 'locked'} ${pick === i.id ? 'on' : ''}`}
             onClick={() => setPick(i.id)}
-            aria-label={has.has(i.id) ? i.name : 'Chưa có, xem gợi ý'}
+            aria-label={has.has(i.id) ? i.name : tr('Chưa có, xem gợi ý', "Not owned, see hint")}
           >
             <ItemIcon item={i} silhouette={!has.has(i.id)} />
             {!has.has(i.id) && <span className="bk-q">?</span>}
@@ -647,7 +658,7 @@ export function BaoKho({ book }: { book: string[] }) {
 
 export function BaoKhoSheet({ book, onClose }: { book: string[]; onClose: () => void }) {
   return (
-    <Sheet title="Bảo khố" onClose={onClose}>
+    <Sheet title={tr("Bảo khố", "Treasury")} onClose={onClose}>
       <BaoKho book={book} />
     </Sheet>
   );
@@ -657,18 +668,19 @@ export function BaoKhoSheet({ book, onClose }: { book: string[]; onClose: () => 
 export function BeQuanSheet({ c, onGo, onClose }: { c: Character; onGo: (years: number) => void; onClose: () => void }) {
   const left = Math.max(0, Math.floor(c.lifespan - c.age));
   return (
-    <Sheet title="Bế quan" onClose={onClose}>
+    <Sheet title={tr("Bế quan", "Seclusion")} onClose={onClose}>
       <p style={{ marginTop: 0 }}>
-        Đóng cửa động phủ, tu vi tăng gấp rưỡi nhưng không gặp kỳ ngộ nào. Sẽ tự xuất quan khi chạm bình cảnh. Thọ nguyên còn khoảng{' '}
-        <b style={{ fontWeight: 700, color: 'var(--red-d)' }}>{left} năm</b>.
+        
+        {tr("Đóng cửa động phủ, tu vi tăng gấp rưỡi nhưng không gặp kỳ ngộ nào. Sẽ tự xuất quan khi chạm bình cảnh. Thọ nguyên còn khoảng", "Seal your cave abode: cultivation grows half again as fast, but no fortuitous encounters happen. You will emerge on your own upon hitting a bottleneck. Lifespan left: about")}{' '}
+        <b style={{ fontWeight: 700, color: 'var(--red-d)' }}>{left}{tr(" năm", " years")}</b>.
       </p>
       {c.realm < 1 ? (
-        <p className="note">Phải nhập đạo (Luyện Khí) mới bế quan được.</p>
+        <p className="note">{tr("Phải nhập đạo (Luyện Khí) mới bế quan được.", "You must enter the Yao (Qi Refining) before you can go into seclusion.")}</p>
       ) : (
         <div className="choice-row">
           {[5, 10, 20].map((y) => (
             <button key={y} className="btn btn-big" onClick={() => onGo(y)} disabled={y > left}>
-              {y} năm
+              {y}{tr(" năm", " years")}
             </button>
           ))}
         </div>
@@ -683,17 +695,17 @@ export function OverworkBar({ c }: { c: Character }) {
   const n = c.streak?.f === c.focus ? c.streak.n : 0;
   const safe = safeYears(c);
   if (overworkFree(c.focus) || n < safe - 1 || c.dead) return null;
-  const name = FOCUS[c.focus as Focus]?.name ?? 'một việc';
+  const name = FOCUS[c.focus as Focus]?.name ?? tr('một việc', "one task");
   return (
     <p className={`overwork-bar ${n >= safe ? 'hot' : ''}`} role="alert">
-      ⚠ {n >= safe ? `Quá độ: đã ${n} năm liền ${name.toLowerCase()}. Mỗi năm thêm đều có thể mất mạng, hãy đổi việc khác.` : `Đã ${n} năm liền ${name.toLowerCase()}. Sang năm là quá độ, nên đổi việc khác.`}
+      ⚠ {n >= safe ? tr(`Quá độ: đã ${n} năm liền ${name.toLowerCase()}. Mỗi năm thêm đều có thể mất mạng, hãy đổi việc khác.`, `Overdoing it: ${n} years straight of ${name.toLowerCase()}. Each extra year could cost your life, switch to something else.`) : tr(`Đã ${n} năm liền ${name.toLowerCase()}. Sang năm là quá độ, nên đổi việc khác.`, `${n} years straight of ${name.toLowerCase()}. Next year counts as overdoing it, better switch.`)}
     </p>
   );
 }
 
 export function FocusGrid({ c, onPick }: { c: Character; onPick: (f: Focus) => void }) {
   return (
-    <div className="focus-grid" role="radiogroup" aria-label="Trọng tâm năm nay">
+    <div className="focus-grid" role="radiogroup" aria-label={tr("Trọng tâm năm nay", "This year's focus")}>
       {(Object.keys(FOCUS) as Focus[]).map((f) => {
         const locked = c.age < FOCUS[f].minAge;
         const n = c.focus === f && c.streak?.f === f && !overworkFree(f) ? c.streak.n : 0;
@@ -706,11 +718,11 @@ export function FocusGrid({ c, onPick }: { c: Character; onPick: (f: Focus) => v
             className={`${c.focus === f ? 'on' : ''} ${n >= safe ? 'tired' : n >= safe - 2 ? 'warm' : ''}`}
             disabled={locked || c.dead}
             onClick={() => onPick(f)}
-            title={locked ? `Mở khi ${FOCUS[f].minAge} tuổi` : FOCUS[f].desc}
+            title={locked ? tr(`Mở khi ${FOCUS[f].minAge} tuổi`, `Unlocks at age ${FOCUS[f].minAge}`) : FOCUS[f].desc}
           >
             <FocusIcon f={f} />
-            <span>{locked ? `${FOCUS[f].minAge}t` : FOCUS[f].name}</span>
-            {n >= 2 && <i className="streak">{n >= safe ? `Quá độ ${n}n` : `${n}/${safe} năm`}</i>}
+            <span>{locked ? `${FOCUS[f].minAge}${tr("t", "y")}` : FOCUS[f].name}</span>
+            {n >= 2 && <i className="streak">{n >= safe ? tr(`Quá độ ${n}n`, `Overdone ${n}y`) : tr(`${n}/${safe} năm`, `${n}/${safe} yrs`)}</i>}
           </button>
         );
       })}
@@ -726,7 +738,7 @@ function LifeGoal({ meta }: { meta: Meta }) {
   if (!f) return null;
   return (
     <Link href="/so-sinh-tu#thien-thu" className="life-goal">
-      <small>Mục tiêu · Thiên thư {f.title.split('.')[0]}</small>
+      <small>{tr("Mục tiêu · Thiên thư ", "Goal · Heavenly Tome ")}{f.title.split('.')[0]}</small>
       <span>{f.hint}</span>
     </Link>
   );
@@ -773,46 +785,48 @@ export function BirthPanel({
   const doneQ = daily.quests.filter((q) => daily.done.includes(q)).length;
   const bought = picked.filter((id) => !tal(id)?.ta).length;
   const boughtTa = picked.filter((id) => tal(id)?.ta).length;
-  const speed = yearSec === 10 ? 'Nhanh' : yearSec === 30 ? 'Chậm' : 'Vừa';
-  const barNote = lhOn ? 'tiếp theo: Cầu Nại Hà' : [picked.length + gifts.length ? `${picked.length + gifts.length} thiên phú` : '', `thời gian ${speed.toLowerCase()}`].filter(Boolean).join(' · ');
+  const speed = yearSec === 10 ? 'Nhanh' : yearSec === 30 ? tr('Chậm', "Slow") : tr('Vừa', "Normal");
+  const barNote = lhOn ? tr('tiếp theo: Cầu Nại Hà', "next: Naihe Bridge") : [picked.length + gifts.length ? tr(`${picked.length + gifts.length} thiên phú`, `${picked.length + gifts.length} talents`) : '', tr(`thời gian ${speed.toLowerCase()}`, `speed: ${speed.toLowerCase()}`)].filter(Boolean).join(' · ');
   const go = (d: boolean) => onBorn(picked, yearSec, gifts, gSpent, base, d);
   return (
     <div className="birth-flow">
       {first ? (
-        <section className="howto-strip" aria-label="Cách chơi">
-          <b className="hs-title">Lần đầu luân hồi</b>
+        <section className="howto-strip" aria-label={tr("Cách chơi", "How to play")}>
+          <b className="hs-title">{tr("Lần đầu luân hồi", "First reincarnation")}</b>
           <ol>
             <li>
-              Xem <b>lá số</b>, không ưng thì <b>Gieo lại</b>
+              {tr("Xem ", "Check your ")}<b>{tr("lá số", "fate chart")}</b>{tr(", không ưng thì ", ", not happy with it? ")}<b>{tr("Gieo lại", "Reroll")}</b>
             </li>
             <li>
-              Bấm <b>Đầu thai</b>, năm tháng tự trôi
+              
+              {tr("Bấm ", "Press ")}<b>{tr("Đầu thai", "Be reborn")}</b>{tr(", năm tháng tự trôi", ", and the years roll on by themselves")}
             </li>
-            <li>Gặp chuyện thì chọn cách xử lý, có cách mạnh lên, có cách chết</li>
+            <li>{tr("Gặp chuyện thì chọn cách xử lý, có cách mạnh lên, có cách chết", "When things happen, choose how to handle them - some ways make you stronger, some get you killed")}</li>
           </ol>
           <small>
-            Mục tiêu: <b>sống trọn một kiếp</b>, rồi <b>kết Kim Đan</b> để biết vì sao mình cứ phải luân hồi.
+            
+            {tr("Mục tiêu: ", "Goal: ")}<b>{tr("sống trọn một kiếp", "live out one full life")}</b>{tr(", rồi ", ", then ")}<b>{tr("kết Kim Đan", "form a Golden Core")}</b>{tr(" để biết vì sao mình cứ phải luân hồi.", " to learn why you keep being reincarnated.")}
           </small>
         </section>
       ) : (
         <div className="bf-stats">
           <span>
-            <small>Đã trải</small>
-            <b>{meta.lives} kiếp</b>
+            <small>{tr("Đã trải", "Lived")}</small>
+            <b>{meta.lives}{tr(" kiếp", " lives")}</b>
           </span>
           <span className="jade">
-            <small>Phúc duyên</small>
+            <small>{tr("Phúc duyên", "Fortune")}</small>
             <b>{left}</b>
           </span>
           {meta.nghiep > 0 && (
             <span className="ta">
-              <small>Nghiệp</small>
+              <small>{tr("Nghiệp", "Karma")}</small>
               <b>{leftTa}</b>
             </span>
           )}
           {ksOn && (
             <span className="ks">
-              <small>Kiếp Số</small>
+              <small>{tr("Kiếp Số", "Calamity Count")}</small>
               <b>{lh.ks}</b>
             </span>
           )}
@@ -834,16 +848,16 @@ export function BirthPanel({
       />
 
       <section className="prep">
-        <h2 className="prep-title">Chuẩn bị trước khi đầu thai</h2>
+        <h2 className="prep-title">{tr("Chuẩn bị trước khi đầu thai", "Prepare before rebirth")}</h2>
 
         {!first && (
           <details className="prep-row" open={meta.phucDuyen >= cheapest && meta.lives < 5}>
             <summary>
-              <span className="pr-name">Mua thiên phú</span>
-              <span className="pr-val jade">{bought ? `đã chọn ${bought} · còn ${left} phúc` : `${left} phúc duyên`}</span>
+              <span className="pr-name">{tr("Mua thiên phú", "Buy talents")}</span>
+              <span className="pr-val jade">{bought ? tr(`đã chọn ${bought} · còn ${left} phúc`, `${bought} chosen · ${left} Fortune left`) : tr(`${left} phúc duyên`, `${left} Fortune`)}</span>
             </summary>
             <div className="pr-body">
-              {meta.phucDuyen <= 0 && <p className="note">Chưa có phúc duyên. Sống tốt một kiếp, chết đi sẽ được phúc duyên để mua ở đây.</p>}
+              {meta.phucDuyen <= 0 && <p className="note">{tr("Chưa có phúc duyên. Sống tốt một kiếp, chết đi sẽ được phúc duyên để mua ở đây.", "No Fortune yet. Live a good life, and when you die you'll earn Fortune to spend here.")}</p>}
               <div className="talent-list">
                 {TALENTS.filter((t) => !t.ta).map((t) => {
                   const on = picked.includes(t.id);
@@ -851,13 +865,13 @@ export function BirthPanel({
                   const blocked = oneBig && BIG_TALENTS.includes(t.id) && picked.some((x) => x !== t.id && BIG_TALENTS.includes(x));
                   const can = on || (left >= t.cost && !blocked);
                   return (
-                    <button key={t.id} className={`talent ${on ? 'on' : ''}`} disabled={!can} title={blocked ? 'Kiếp Số từ 5: mỗi kiếp chỉ chọn một thiên phú lớn' : undefined} aria-pressed={on} onClick={() => setPicked(on ? picked.filter((x) => x !== t.id) : [...picked, t.id])}>
+                    <button key={t.id} className={`talent ${on ? 'on' : ''}`} disabled={!can} title={blocked ? tr('Kiếp Số từ 5: mỗi kiếp chỉ chọn một thiên phú lớn', "Calamity Count 5+: only one major talent per life") : undefined} aria-pressed={on} onClick={() => setPicked(on ? picked.filter((x) => x !== t.id) : [...picked, t.id])}>
                       <span>
                         {t.name}
                         <br />
                         <small className="note">{t.desc}</small>
                       </span>
-                      <span className="cost">{t.cost} phúc</span>
+                      <span className="cost">{t.cost}{tr(" phúc", " Fortune")}</span>
                     </button>
                   );
                 })}
@@ -869,12 +883,13 @@ export function BirthPanel({
         {meta.nghiep > 0 && (
           <details className="prep-row ta-row">
             <summary>
-              <span className="pr-name">Thiên phú tà đạo</span>
-              <span className="pr-val ta">{boughtTa ? `đã chọn ${boughtTa} · còn ${leftTa}` : `${leftTa} nghiệp lực`}</span>
+              <span className="pr-name">{tr("Thiên phú tà đạo", "Evil talents")}</span>
+              <span className="pr-val ta">{boughtTa ? tr(`đã chọn ${boughtTa} · còn ${leftTa}`, `${boughtTa} chosen · ${leftTa} left`) : tr(`${leftTa} nghiệp lực`, `${leftTa} Karma`)}</span>
             </summary>
             <div className="pr-body">
               <p className="note" style={{ marginTop: 0 }}>
-                Nghiệp lực tích từ những kiếp đi tà. Tích quá {150} nghiệp mà không tiêu thì kiếp sau bị trời phạt.
+                
+                {tr("Nghiệp lực tích từ những kiếp đi tà. Tích quá ", "Karma builds up over lives spent on the evil path. Hoard more than ")}{150}{tr(" nghiệp mà không tiêu thì kiếp sau bị trời phạt.", " Karma without spending it and heaven will punish your next life.")}
               </p>
               <div className="talent-list">
                 {TALENTS.filter((t) => t.ta).map((t) => {
@@ -887,7 +902,7 @@ export function BirthPanel({
                         <br />
                         <small className="note">{t.desc}</small>
                       </span>
-                      <span className="cost">{t.cost} nghiệp</span>
+                      <span className="cost">{t.cost}{tr(" nghiệp", " Karma")}</span>
                     </button>
                   );
                 })}
@@ -899,9 +914,10 @@ export function BirthPanel({
         {ksOn && (
           <details className="prep-row">
             <summary>
-              <span className="pr-name">Kiếp Số và Hồn lực</span>
+              <span className="pr-name">{tr("Kiếp Số và Hồn lực", "Calamity Count and Soul Power")}</span>
               <span className="pr-val">
-                Kiếp Số {lh.ks}
+                
+                {tr("Kiếp Số ", "Calamity Count ")}{lh.ks}
                 {lhOn ? ` · ${lh.honName} ${lh.hon}` : ''}
               </span>
             </summary>
@@ -912,14 +928,14 @@ export function BirthPanel({
         )}
 
         <div className="prep-row prep-inline">
-          <span className="pr-name">Tốc độ thời gian</span>
-          <div className="seg" role="radiogroup" aria-label="Tốc độ thời gian">
+          <span className="pr-name">{tr("Tốc độ thời gian", "Time speed")}</span>
+          <div className="seg" role="radiogroup" aria-label={tr("Tốc độ thời gian", "Time speed")}>
             {[
               [10, 'Nhanh'],
-              [20, 'Vừa'],
-              [30, 'Chậm'],
+              [20, tr('Vừa', "Normal")],
+              [30, tr('Chậm', "Slow")],
             ].map(([sec, label]) => (
-              <button key={sec} role="radio" className={yearSec === sec ? 'on' : ''} onClick={() => setYearSec(sec as number)} aria-checked={yearSec === sec} title={`1 năm khoảng ${sec} giây`}>
+              <button key={sec} role="radio" className={yearSec === sec ? 'on' : ''} onClick={() => setYearSec(sec as number)} aria-checked={yearSec === sec} title={tr(`1 năm khoảng ${sec} giây`, `1 year ≈ ${sec} sec`)}>
                 {label}
               </button>
             ))}
@@ -929,9 +945,10 @@ export function BirthPanel({
 
       <details className="prep-row today-row">
         <summary>
-          <span className="pr-name">Hôm nay · {omen.name}</span>
+          <span className="pr-name">{tr("Hôm nay · ", "Today · ")}{omen.name}</span>
           <span className="pr-val">
-            Nhiệm vụ {doneQ}/{daily.quests.length}
+            
+            {tr("Nhiệm vụ ", "Quests ")}{doneQ}/{daily.quests.length}
           </span>
         </summary>
         <div className="pr-body">
@@ -953,7 +970,7 @@ export function BirthPanel({
                   <Sprite c={{ ...base, age: 22, lifespan: 90 }} size={56} />
                 </span>
                 <span>
-                  <small>Kiếp {meta.lives + 1}</small>
+                  <small>{tr("Kiếp ", "Life ")}{meta.lives + 1}</small>
                   <b>{base.name}</b>
                 </span>
               </>
@@ -964,17 +981,18 @@ export function BirthPanel({
 
       {!first && (
         <section className="journey">
-          <h2 className="prep-title">Hành trình</h2>
+          <h2 className="prep-title">{tr("Hành trình", "Journey")}</h2>
           <RumorLine meta={meta} />
           {meta.past && (
             <p className="jr-past">
-              Kiếp trước: <b>{meta.past.name}</b>, {meta.past.age} tuổi, {meta.past.realmName}.{meta.stash ? ' Có chôn lại một chiếc rương...' : ''}
+              
+              {tr("Kiếp trước: ", "Past life: ")}<b>{meta.past.name}</b>, {meta.past.age}{tr(" tuổi, ", " years old, ")}{meta.past.realmName}.{meta.stash ? tr(' Có chôn lại một chiếc rương...', " A chest was buried for you...") : ''}
             </p>
           )}
           <LifeGoal meta={meta} />
           <div className="collect-strip">
             <Link href="/so-sinh-tu" onClick={onSoSinhTu} className="cs-item">
-              <small>Sổ Sinh Tử</small>
+              <small>{tr("Sổ Sinh Tử", "Book of Life and Death")}</small>
               <b>
                 {cs.endings}/{cs.endingsTotal}
               </b>
@@ -983,14 +1001,14 @@ export function BirthPanel({
               </span>
             </Link>
             <Link href="/so-sinh-tu#thien-thu" className="cs-item cs-lore">
-              <small>{quyNhatDone(meta) ? 'Thiên thư II' : 'Thiên thư'}</small>
+              <small>{quyNhatDone(meta) ? tr('Thiên thư II', "Heavenly Tome II") : tr('Thiên thư', "Heavenly Tome")}</small>
               <b>{quyNhatDone(meta) ? `${lore2Count(meta)}/${LORE2_TOTAL}` : `${lore1Count(meta)}/${LORE_TOTAL}`}</b>
               <span className="bk-bar" aria-hidden="true">
                 <i style={{ width: `${(quyNhatDone(meta) ? lore2Count(meta) / LORE2_TOTAL : lore1Count(meta) / LORE_TOTAL) * 100}%` }} />
               </span>
             </Link>
             <button className="cs-item" onClick={onKho}>
-              <small>Bảo khố</small>
+              <small>{tr("Bảo khố", "Treasury")}</small>
               <b>
                 {cs.items}/{cs.itemsTotal}
               </b>
@@ -1016,8 +1034,8 @@ function LifeFeedback({ c }: { c: Character }) {
   if (sent) return <p className="note life-fb-done">{sent}</p>;
   return (
     <div className="life-fb">
-      <small>Kiếp này chơi thấy thế nào?</small>
-      <div className="life-fb-stars" role="radiogroup" aria-label="Chấm điểm kiếp này">
+      <small>{tr("Kiếp này chơi thấy thế nào?", "How did this life play?")}</small>
+      <div className="life-fb-stars" role="radiogroup" aria-label={tr("Chấm điểm kiếp này", "Rate this life")}>
         {[1, 2, 3, 4, 5].map((n) => (
           <button key={n} role="radio" aria-checked={star === n} className={n <= star ? 'on' : ''} onClick={() => setStar(n)} aria-label={`${n} sao`}>
             ★
@@ -1026,22 +1044,23 @@ function LifeFeedback({ c }: { c: Character }) {
       </div>
       {star > 0 && (
         <div className="life-fb-row">
-          <input value={text} maxLength={200} onChange={(e) => setText(e.target.value)} placeholder={star <= 3 ? 'Điều gì làm bạn chưa vui?' : 'Điều gì bạn thích nhất?'} />
+          <input value={text} maxLength={200} onChange={(e) => setText(e.target.value)} placeholder={star <= 3 ? tr('Điều gì làm bạn chưa vui?', "What made you unhappy?") : tr('Điều gì bạn thích nhất?', "What did you like most?")} />
           <button
             className="btn"
             onClick={async () => {
               const err = await addFeedback(
                 user,
                 'khac',
-                `[Đánh giá kiếp ${c.lifeNo}] ${'★'.repeat(star)} ${text.trim() || '(không ghi chú)'} · ${Math.floor(c.age)} tuổi, ${realmLabel(c.realm, c.layer, c.cosmos)}, ${c.cause ?? ''}`.slice(
+                tr(`[Đánh giá kiếp ${c.lifeNo}] ${'★'.repeat(star)} ${text.trim() || tr('(không ghi chú)', "(no note)")} · ${Math.floor(c.age)} tuổi, ${realmLabel(c.realm, c.layer, c.cosmos)}, ${c.cause ?? ''}`, `[Life review ${c.lifeNo}] ${'★'.repeat(star)} ${text.trim() || tr('(không ghi chú)', "(no note)")} · age ${Math.floor(c.age)}, ${realmLabel(c.realm, c.layer, c.cosmos)}, ${c.cause ?? ''}`).slice(
                   0,
                   480,
                 ),
               );
-              setSent(err ?? 'Cảm ơn bạn! Góp ý đã được ghi lại.');
+              setSent(err ?? tr('Cảm ơn bạn! Góp ý đã được ghi lại.', "Thank you! Your feedback has been recorded."));
             }}
           >
-            Gửi
+            
+            {tr("Gửi", "Send")}
           </button>
         </div>
       )}
@@ -1058,14 +1077,14 @@ function NextLife({ meta, c, gain, left }: { meta: Meta; c: Character; gain: num
   const book2 = quyNhatDone(meta) || c.endTag === 'thoat_van_kiep';
   const lore = LORE.find((f) => !have.has(f.id) && (!f.book || book2));
   const rows: { k: string; t: string }[] = [];
-  if (left.length) rows.push({ k: 'q', t: `Còn ${left.length} nhiệm vụ hôm nay: ${left.map(questName).join(', ')} (+${QUEST_REWARD} phúc mỗi việc, xong cả ba thêm ${QUEST_BONUS})` });
-  if (best) rows.push({ k: 't', t: `Có ${total} phúc duyên: kiếp sau mua được ${best.name}${next ? `, thêm ${next.cost - total} phúc nữa là đủ ${next.name}` : ''}` });
-  else if (next) rows.push({ k: 't', t: `Thêm ${next.cost - total} phúc duyên nữa là mua được ${next.name} cho kiếp sau` });
-  if (lore) rows.push({ k: 'l', t: `Thiên thư sắp mở ${lore.title.split('.')[0]}: ${lore.hint}` });
+  if (left.length) rows.push({ k: 'q', t: tr(`Còn ${left.length} nhiệm vụ hôm nay: ${left.map(questName).join(', ')} (+${QUEST_REWARD} phúc mỗi việc, xong cả ba thêm ${QUEST_BONUS})`, `${left.length} quests left today: ${left.map(questName).join(', ')} (+${QUEST_REWARD} Fortune each, finish all three for ${QUEST_BONUS} more)`) });
+  if (best) rows.push({ k: 't', t: tr(`Có ${total} phúc duyên: kiếp sau mua được ${best.name}${next ? tr(`, thêm ${next.cost - total} phúc nữa là đủ ${next.name}`, `, ${next.cost - total} more Fortune for ${next.name}`) : ''}`, `You have ${total} Fortune: next life you can buy ${best.name}${next ? tr(`, thêm ${next.cost - total} phúc nữa là đủ ${next.name}`, `, ${next.cost - total} more Fortune for ${next.name}`) : ''}`) });
+  else if (next) rows.push({ k: 't', t: tr(`Thêm ${next.cost - total} phúc duyên nữa là mua được ${next.name} cho kiếp sau`, `${next.cost - total} more Fortune to buy ${next.name} for your next life`) });
+  if (lore) rows.push({ k: 'l', t: tr(`Thiên thư sắp mở ${lore.title.split('.')[0]}: ${lore.hint}`, `Heavenly Tome about to open ${lore.title.split('.')[0]}: ${lore.hint}`) });
   if (!rows.length) return null;
   return (
     <div className="next-life">
-      <small>Kiếp sau đang chờ</small>
+      <small>{tr("Kiếp sau đang chờ", "Your next life awaits")}</small>
       {rows.map((r) => (
         <span key={r.k} className={`nl-${r.k}`}>
           {r.t}
@@ -1105,40 +1124,42 @@ export function DeathSheet({
     <Sheet
       title={
         c.endTag === 'chung_dao'
-          ? 'Chứng đạo!'
+          ? tr('Chứng đạo!', "Yao attained!")
           : c.endTag === 'giang_tran'
-            ? 'Bị giáng trần'
+            ? tr('Bị giáng trần', "Banished to the mortal world")
             : c.cosmos === 'ma'
-              ? 'Ma hồn tan biến'
+              ? tr('Ma hồn tan biến', "Demon soul dispersed")
               : c.cosmos === 'hu'
-                ? 'Tan vào hư không'
+                ? tr('Tan vào hư không', "Dissolved into the void")
                 : c.cosmos === 'tien'
-                ? 'Tọa hóa nơi tiên giới'
-                : 'Một kiếp đã hết'
+                ? tr('Tọa hóa nơi tiên giới', "Passed away in the Immortal Realm")
+                : tr('Một kiếp đã hết', "A life has ended")
       }
     >
       {c.cosmos && (
         <div className={`cos-tomb ${c.cosmos}`} aria-hidden="true">
           <i className="sky" />
           <i className="stele" />
-          <b>{c.cosmos === 'ma' ? 'Ma Trủng' : c.cosmos === 'hu' ? 'Hư Trủng' : 'Tiên Trủng'}</b>
+          <b>{c.cosmos === 'ma' ? tr('Ma Trủng', "Demon Tomb") : c.cosmos === 'hu' ? tr('Hư Trủng', "Void Tomb") : tr('Tiên Trủng', "Immortal Tomb")}</b>
         </div>
       )}
       <p style={{ marginTop: 0 }}>
         <b style={{ fontWeight: 700, color: 'var(--red-d)', fontSize: 24 }}>{c.name}</b>
         <br />
-        {Math.floor(c.age)} tuổi · {realmLabel(c.realm, c.layer, c.cosmos)}
+        {Math.floor(c.age)}{tr(" tuổi · ", " years old · ")}{realmLabel(c.realm, c.layer, c.cosmos)}
         {c.path ? ` · ${PATHS[c.path].name}` : ''} · {describeLean(c.daoTam)}
       </p>
       <p className="note">{c.cause}</p>
       <div className={`ending-box r${ending.rare} ${isNew ? 'is-new' : ''}`} style={{ ['--rc' as string]: RARE_COLOR[ending.rare] } as CSSProperties}>
         {isNew && (
           <span className="new-stamp" aria-hidden="true">
-            Kết cục mới
+            
+            {tr("Kết cục mới", "New ending")}
           </span>
         )}
         <small>
-          Kết cục {['phàm', 'linh', 'huyền', 'địa', 'thiên'][ending.rare]} phẩm{isNew ? ' · MỚI MỞ!' : ''}
+          
+          {tr("Kết cục ", "Ending: ")}{[tr('phàm', "mortal"), 'linh', tr('huyền', "mystic"), tr('địa', "earth"), tr('thiên', "heaven")][ending.rare]}{tr(" phẩm", " grade")}{isNew ? tr(' · MỚI MỞ!', " · NEWLY UNLOCKED!") : ''}
         </small>
         <b>{ending.name}</b>
         <span>{ending.desc}</span>
@@ -1147,33 +1168,37 @@ export function DeathSheet({
             <i style={{ width: `${((Object.keys(meta.endings ?? {}).length + (isNew ? 1 : 0)) / ENDINGS.length) * 100}%` }} />
           </span>
           <small>
-            Sổ Sinh Tử {Object.keys(meta.endings ?? {}).length + (isNew ? 1 : 0)}/{ENDINGS.length}
+            
+            {tr("Sổ Sinh Tử ", "Book of Life and Death ")}{Object.keys(meta.endings ?? {}).length + (isNew ? 1 : 0)}/{ENDINGS.length}
           </small>
         </span>
       </div>
       <p>
-        Mang sang kiếp sau: <b style={{ fontWeight: 700, color: 'var(--jade)' }}>+{karma.phuc} phúc duyên</b>
+        
+        {tr("Mang sang kiếp sau: ", "Carried to the next life: ")}<b style={{ fontWeight: 700, color: 'var(--jade)' }}>+{karma.phuc}{tr(" phúc duyên", " Fortune")}</b>
         {karma.nghiep > 0 && (
           <>
             {' '}
-            và <b style={{ fontWeight: 700, color: 'var(--ta)' }}>+{karma.nghiep} nghiệp lực</b> (tiêu được cho thiên phú tà đạo)
+            
+            {tr("và ", "and ")}<b style={{ fontWeight: 700, color: 'var(--ta)' }}>+{karma.nghiep}{tr(" nghiệp lực", " Karma")}</b>{tr(" (tiêu được cho thiên phú tà đạo)", " (spendable on evil talents)")}
           </>
         )}
         .
       </p>
       {q.newly.length > 0 && (
         <p className="death-quests">
-          Nhiệm vụ hôm nay hoàn thành: <b>{q.newly.map(questName).join(', ')}</b> (+{q.reward} phúc duyên)
+          
+          {tr("Nhiệm vụ hôm nay hoàn thành: ", "Today's quests complete: ")}<b>{q.newly.map(questName).join(', ')}</b> (+{q.reward}{tr(" phúc duyên)", " Fortune)")}
         </p>
       )}
       <NextLife meta={meta} c={c} gain={karma.phuc + q.reward} left={q.daily.quests.filter((id) => !q.daily.done.includes(id))} />
       <div className="prophecy">
-        <small>Lời tiên tri cho kiếp sau</small>
+        <small>{tr("Lời tiên tri cho kiếp sau", "Prophecy for your next life")}</small>
         <b>“{prophecy.text}”</b>
       </div>
       {near.length > 0 && (
         <div className="near-endings">
-          <small>Kết cục chưa mở trong Sổ Sinh Tử</small>
+          <small>{tr("Kết cục chưa mở trong Sổ Sinh Tử", "Endings not yet unlocked in the Book of Life and Death")}</small>
           {near.map((e) => (
             <span key={e.name}>
               <b>{e.name}</b>: {e.hint}
@@ -1183,23 +1208,25 @@ export function DeathSheet({
       )}
       {!!c.vendettas?.length && (
         <p className="note" style={{ margin: '6px 0' }}>
-          Mối thù mang theo: {c.vendettas.map((v) => `@${v.player} (${v.name})`).join(', ')}. Kiếp sau gặp lại có thể báo thù.
+          
+          {tr("Mối thù mang theo: ", "Grudge carried over: ")}{c.vendettas.map((v) => `@${v.player} (${v.name})`).join(', ')}{tr(". Kiếp sau gặp lại có thể báo thù.", ". Meet them in the next life and you can take revenge.")}
         </p>
       )}
       <label className="field">
-        <span>Khắc lên bia mộ (không bắt buộc)</span>
-        <input value={text} maxLength={120} onChange={(e) => setText(e.target.value)} placeholder="vd: Kiếp này không phụ kiếm trong tay" />
+        <span>{tr("Khắc lên bia mộ (không bắt buộc)", "Carve on your tombstone (optional)")}</span>
+        <input value={text} maxLength={120} onChange={(e) => setText(e.target.value)} placeholder={tr("vd: Kiếp này không phụ kiếm trong tay", "e.g. In this life I never failed the sword in my hand")} />
       </label>
       {!c.ascended && c.endTag !== 'xuyen_khong' && (
         <>
           <label className="toggle" style={{ marginTop: 8 }}>
             <input type="checkbox" checked={bury} onChange={(e) => setBury(e.target.checked)} />
-            Chôn rương cho kiếp sau ({buryMoney} linh thạch{c.equipped.vu_khi || c.equipped.phu_kien ? ' và một món đồ' : ''})
+            
+            {tr("Chôn rương cho kiếp sau (", "Bury a chest for your next life (")}{buryMoney}{tr(" linh thạch", " spirit stones")}{c.equipped.vu_khi || c.equipped.phu_kien ? tr(' và một món đồ', " and one item") : ''})
           </label>
           {bury && (
             <label className="field">
-              <span>Lời nhắn bỏ vào rương</span>
-              <input value={note} maxLength={100} onChange={(e) => setNote(e.target.value)} placeholder="vd: Kiếp sau đừng tin ai họ Mộ Dung" />
+              <span>{tr("Lời nhắn bỏ vào rương", "Note to leave in the chest")}</span>
+              <input value={note} maxLength={100} onChange={(e) => setNote(e.target.value)} placeholder={tr("vd: Kiếp sau đừng tin ai họ Mộ Dung", "e.g. Next life, never trust anyone surnamed Murong")} />
             </label>
           )}
         </>
@@ -1208,13 +1235,14 @@ export function DeathSheet({
         <>
           <label className="toggle" style={{ marginTop: 8 }}>
             <input type="checkbox" checked={passOn} onChange={(e) => setPassOn(e.target.checked)} />
-            Truyền {weapon.name} thành thần binh cho kiếp sau
-            {sameLegend ? ` (đời thứ ${c.legend!.lv + 1}, công +${Math.min(10, c.legend!.lv + 1) * 8}%)` : ' (công +8%, mỗi kiếp truyền tiếp mạnh thêm)'}
+            
+            {tr("Truyền ", "Pass down ")}{weapon.name}{tr(" thành thần binh cho kiếp sau", " as a divine weapon to your next life")}
+            {sameLegend ? tr(` (đời thứ ${c.legend!.lv + 1}, công +${Math.min(10, c.legend!.lv + 1) * 8}%)`, ` (generation ${c.legend!.lv + 1}, attack +${Math.min(10, c.legend!.lv + 1) * 8}%)`) : tr(' (công +8%, mỗi kiếp truyền tiếp mạnh thêm)', " (attack +8%, grows stronger each time it's passed on)")}
           </label>
           {passOn && (
             <label className="field">
-              <span>Tên thần binh</span>
-              <input value={legendName} maxLength={40} onChange={(e) => setLegendName(e.target.value)} placeholder="vd: Thanh Minh Kiếm" />
+              <span>{tr("Tên thần binh", "Divine weapon name")}</span>
+              <input value={legendName} maxLength={40} onChange={(e) => setLegendName(e.target.value)} placeholder={tr("vd: Thanh Minh Kiếm", "e.g. Qingming Sword")} />
             </label>
           )}
         </>
@@ -1226,7 +1254,8 @@ export function DeathSheet({
       <ArenaNudge />
       {((meta.lives + 1) % 10 === 0 || c.ascended) && (
         <a className="tra-nudge" href="/tac-gia#moi-tra" onClick={() => track('tra_open', { from: 'death' })}>
-          Đi trọn {meta.lives + 1} kiếp rồi. Thấy vui thì mời tác giả chén trà ›
+          
+          {tr("Đi trọn ", "Lived ")}{meta.lives + 1}{tr(" kiếp rồi. Thấy vui thì mời tác giả chén trà ›", " lives already. Having fun? Treat the author to a cup of tea ›")}
         </a>
       )}
       <button
@@ -1238,7 +1267,8 @@ export function DeathSheet({
           onDone(text.trim(), note.trim(), bury, { prophecy, legendName: passOn && weapon ? legendName.trim() || weapon.name : null });
         }}
       >
-        Lập bia và luân hồi
+        
+        {tr("Lập bia và luân hồi", "Raise a tombstone and reincarnate")}
       </button>
     </Sheet>
   );
@@ -1267,38 +1297,38 @@ export function StageStrip({ c, compact, wait = 0 }: { c: Character; compact: bo
     <div className="strip">
       <div className="strip-who">
         <span className="strip-name">{c.name}</span>
-        <span className={`badge sex ${c.gender}`}>{c.gender === 'nam' ? 'Nam' : 'Nữ'}</span>
+        <span className={`badge sex ${c.gender}`}>{c.gender === 'nam' ? 'Nam' : tr('Nữ', "Female")}</span>
         {c.path && <span className="badge path">{PATHS[c.path].short}</span>}
         {c.sect && !c.cosmos && (
           <span className={`badge sect-badge ${sectSide(c) ?? ''}`} title={`${rankName(c)} ${c.sect}`}>
             {rankShort(c)}
           </span>
         )}
-        <span className="strip-realm">{c.realm === 0 ? 'Phàm nhân' : realmLabel(c.realm, c.layer, c.cosmos)}</span>
+        <span className="strip-realm">{c.realm === 0 ? tr('Phàm nhân', "Mortal") : realmLabel(c.realm, c.layer, c.cosmos)}</span>
       </div>
-      <div className={`cult ${wait ? 'wait' : ''}`} role="progressbar" aria-label="Tu vi" aria-valuenow={Math.round(cult * 100)} aria-valuemin={0} aria-valuemax={100}>
+      <div className={`cult ${wait ? 'wait' : ''}`} role="progressbar" aria-label={tr("Tu vi", "Cultivation")} aria-valuenow={Math.round(cult * 100)} aria-valuemin={0} aria-valuemax={100}>
         <span className="cult-fill" style={{ width: `${Math.min(1, cult) * 100}%` }} />
-        <span className="cult-text">{wait ? `Đủ phi thăng · còn ${wait} năm · chạm xem` : `Tu vi ${Math.round(cult * 100)}%`}</span>
+        <span className="cult-text">{wait ? tr(`Đủ phi thăng · còn ${wait} năm · chạm xem`, `Ready to ascend · ${wait} yrs left · tap to see`) : tr(`Tu vi ${Math.round(cult * 100)}%`, `Cultivation ${Math.round(cult * 100)}%`)}</span>
       </div>
       {!compact && (
         <>
           <div className="minis">
-            <Mini label="Thọ" value={`${Math.floor(c.age)}/${c.lifespan}`} pct={1 - c.age / c.lifespan} color="#b8432f" />
-            <Mini label={s.sucKhoe <= 25 ? '⚠ Khỏe' : 'Khỏe'} value={s.sucKhoe} pct={s.sucKhoe / 100} color="#d96a4a" danger={s.sucKhoe <= 25} />
-            <Mini label="Tâm" value={s.tamCanh} pct={s.tamCanh / 100} color="#c9962e" />
-            <Mini label="Ma" value={s.tamMa} pct={s.tamMa / 100} color="#6a1a2e" />
-            <Mini label="Ngộ" value={s.ngoTinh} pct={s.ngoTinh / 100} color="#5b6fb0" />
-            <Mini label="Vận" value={s.khiVan} pct={s.khiVan / 100} color="#7a5ab0" />
+            <Mini label={tr("Thọ", "Life")} value={`${Math.floor(c.age)}/${c.lifespan}`} pct={1 - c.age / c.lifespan} color="#b8432f" />
+            <Mini label={s.sucKhoe <= 25 ? tr('⚠ Khỏe', "⚠ Health") : tr('Khỏe', "Health")} value={s.sucKhoe} pct={s.sucKhoe / 100} color="#d96a4a" danger={s.sucKhoe <= 25} />
+            <Mini label={tr("Tâm", "Mind")} value={s.tamCanh} pct={s.tamCanh / 100} color="#c9962e" />
+            <Mini label={tr("Ma", "Demonic")} value={s.tamMa} pct={s.tamMa / 100} color="#6a1a2e" />
+            <Mini label={tr("Ngộ", "Insight")} value={s.ngoTinh} pct={s.ngoTinh / 100} color="#5b6fb0" />
+            <Mini label={tr("Vận", "Luck")} value={s.khiVan} pct={s.khiVan / 100} color="#7a5ab0" />
           </div>
-          <div className="dao-line" role="meter" aria-label={`Đạo tâm: ${describeLean(c.daoTam)}`} aria-valuemin={-100} aria-valuemax={100} aria-valuenow={c.daoTam}>
-            <span className="dl">Chính</span>
+          <div className="dao-line" role="meter" aria-label={tr(`Đạo tâm: ${describeLean(c.daoTam)}`, `Yao Heart: ${describeLean(c.daoTam)}`)} aria-valuemin={-100} aria-valuemax={100} aria-valuenow={c.daoTam}>
+            <span className="dl">{tr("Chính", "Righteous")}</span>
             <span className="dao-track thin">
               <span style={{ background: '#a8c4e6' }} />
               <span style={{ background: '#d8cfc0' }} />
               <span style={{ background: '#e4a0a6' }} />
               <span className="dao-mark" style={{ left: `${(1 - daoPct) * 100}%` }} />
             </span>
-            <span className="dr">Tà</span>
+            <span className="dr">{tr("Tà", "Evil")}</span>
             <span className="dao-name">{describeLean(c.daoTam)}</span>
           </div>
         </>
@@ -1372,16 +1402,19 @@ export function HuntSheet({ c, onPick, onToggleFlee, onClose }: { c: Character; 
   const L = combatLevel(c);
   const me = playerStats(c);
   return (
-    <Sheet title="Trừ yêu luyện công" onClose={onClose}>
+    <Sheet title={tr("Trừ yêu luyện công", "Hunt demons, train")} onClose={onClose}>
       <p style={{ marginTop: 0 }}>
-        Cấp chiến đấu của bạn: <b style={{ fontWeight: 700, color: 'var(--red-d)' }}>Lv{L}</b> · Công {fmt(me.atk)} · Thủ {fmt(me.def)} · Máu {fmt(me.hp)}
+        
+        {tr("Cấp chiến đấu của bạn: ", "Your combat level: ")}<b style={{ fontWeight: 700, color: 'var(--red-d)' }}>Lv{L}</b>{tr(" · Công ", " · Atk ")}{fmt(me.atk)}{tr(" · Thủ ", " · Def ")}{fmt(me.def)}{tr(" · Máu ", " · HP ")}{fmt(me.hp)}
       </p>
       <p className="note" style={{ marginTop: 0 }}>
-        Quái càng mạnh càng nhiều tu vi, nhưng thua là có thể bỏ mạng. Ngọc bội hộ thân đỡ được một lần.
+        
+        {tr("Quái càng mạnh càng nhiều tu vi, nhưng thua là có thể bỏ mạng. Ngọc bội hộ thân đỡ được một lần.", "Stronger monsters give more cultivation, but losing can cost you your life. A protective jade pendant can save you once.")}
       </p>
       <label className="toggle">
         <input type="checkbox" checked={c.autoFlee !== false} onChange={(e) => onToggleFlee(e.target.checked)} />
-        Tự rút lui khi máu dưới 30%
+        
+        {tr("Tự rút lui khi máu dưới 30%", "Auto-retreat when HP is below 30%")}
       </label>
       <div className="items">
         {monstersFor(c, sectSide(c)).map((m) => {
@@ -1396,10 +1429,10 @@ export function HuntSheet({ c, onPick, onToggleFlee, onClose }: { c: Character; 
               </span>
               <span>
                 {hidden
-                  ? '??? (chưa đủ tầm để biết)'
+                  ? tr('??? (chưa đủ tầm để biết)', "??? (too weak to tell)")
                   : m.boss
-                    ? `BOSS ${m.boss === 'ta' ? 'Tà phái' : 'Chính phái'} · ${m.name}`
-                    : `${monsterName(c, m)} · Lv${elv}${elv > m.lv ? ` (gốc ${m.lv})` : ''}`}
+                    ? `BOSS ${m.boss === 'ta' ? tr('Tà phái', "Evil sect") : tr('Chính phái', "Righteous sect")} · ${m.name}`
+                    : `${monsterName(c, m)} · Lv${elv}${elv > m.lv ? tr(` (gốc ${m.lv})`, ` (base ${m.lv})`) : ''}`}
                 {!hidden && m.el && (
                   <span className="badge el-badge" style={{ marginLeft: 4, background: ELEMENTS[m.el].color }}>
                     {ELEMENTS[m.el].name}
@@ -1407,19 +1440,22 @@ export function HuntSheet({ c, onPick, onToggleFlee, onClose }: { c: Character; 
                 )}
                 {!hidden && m.sect && (
                   <span className="badge" style={{ marginLeft: 4 }}>
-                    Thí luyện
+                    
+                    {tr("Thí luyện", "Trial")}
                   </span>
                 )}
                 {!hidden && m.human && !m.boss && (
                   <span className="badge" style={{ marginLeft: 4 }}>
-                    Cao thủ
+                    
+                    {tr("Cao thủ", "Master")}
                   </span>
                 )}
-                <small>{hidden ? m.place : m.boss ? `${m.place} · ${m.desc} Chưa từng ai thắng.` : `${m.place} · ~${fmt(killExp(c, m))} tu vi/con · ${c.kills?.[m.id] ?? 0} đã trảm`}</small>
+                <small>{hidden ? m.place : m.boss ? tr(`${m.place} · ${m.desc} Chưa từng ai thắng.`, `${m.place} · ${m.desc} No one has ever won.`) : tr(`${m.place} · ~${fmt(killExp(c, m))} tu vi/con · ${c.kills?.[m.id] ?? 0} đã trảm`, `${m.place} · ~${fmt(killExp(c, m))} cultivation each · ${c.kills?.[m.id] ?? 0} slain`)}</small>
                 {!hidden && !m.boss && ITEMS.some((i) => i.from?.includes(m.id)) && (
                   <small className="drop-line">
-                    Rơi {ITEMS.filter((i) => i.from?.includes(m.id)).length} món · đã có {ITEMS.filter((i) => i.from?.includes(m.id) && c.inventory.includes(i.id)).length} · xem trong Bảo khố
-                    {dropFactor(c, m) < 1 && <b className="drop-warn"> · {dropFactor(c, m) === 0 ? 'quá yếu, không rơi đồ' : 'yếu hơn bạn, ít rơi đồ'}</b>}
+                    
+                    {tr("Rơi ", "Drops ")}{ITEMS.filter((i) => i.from?.includes(m.id)).length}{tr(" món · đã có ", " items · owned ")}{ITEMS.filter((i) => i.from?.includes(m.id) && c.inventory.includes(i.id)).length}{tr(" · xem trong Bảo khố", " · see in Treasury")}
+                    {dropFactor(c, m) < 1 && <b className="drop-warn"> · {dropFactor(c, m) === 0 ? tr('quá yếu, không rơi đồ', "too weak, drops nothing") : tr('yếu hơn bạn, ít rơi đồ', "weaker than you, rarely drops")}</b>}
                   </small>
                 )}
               </span>

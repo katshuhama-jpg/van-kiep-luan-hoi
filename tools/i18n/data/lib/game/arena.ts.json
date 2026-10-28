@@ -1,514 +1,514 @@
 [
  {
   "vi": "Hỏa vận",
-  "en": ""
+  "en": "Fire Fortune"
  },
  {
   "vi": "Bóng mang bản mệnh Hỏa mạnh thêm 15%.",
-  "en": ""
+  "en": "Shadows of the Fire element are 15% stronger."
  },
  {
   "vi": "Vô tướng",
-  "en": ""
+  "en": "Formless"
  },
  {
   "vi": "Đối thủ không để lộ ý đồ. Chỉ còn đoán theo thói quen.",
-  "en": ""
+  "en": "Opponents reveal nothing. You can only guess from their habits."
  },
  {
   "vi": "Kiếm khí tung hoành",
-  "en": ""
+  "en": "Sword Qi Unleashed"
  },
  {
   "vi": "Kiếm tu mạnh thêm 15%.",
-  "en": ""
+  "en": "Sword Cultivators are 15% stronger."
  },
  {
   "vi": "Thủ thế như sơn",
-  "en": ""
+  "en": "Defense Like a Mountain"
  },
  {
   "vi": "Thế Thủ khi thắng thế được thêm 10%.",
-  "en": ""
+  "en": "A winning Defense gains an extra 10%."
  },
  {
   "vi": "Thủy vận",
-  "en": ""
+  "en": "Water Fortune"
  },
  {
   "vi": "Bóng mang bản mệnh Thủy mạnh thêm 15%.",
-  "en": ""
+  "en": "Shadows of the Water element are 15% stronger."
  },
  {
   "vi": "Âm dương đảo lộn",
-  "en": ""
+  "en": "Yin and Yang Inverted"
  },
  {
   "vi": "Khắc chế đảo ngược: Công chặn Thủ, Thủ phá Hóa, Hóa giải Công.",
-  "en": ""
+  "en": "Counters reversed: Attack blocks Defense, Defense breaks Deflect, Deflect dissolves Attack."
  },
  {
   "vi": "Phật quang phổ chiếu",
-  "en": ""
+  "en": "Buddha Light Shines"
  },
  {
   "vi": "Phật tu mạnh thêm 15%.",
-  "en": ""
+  "en": "Buddhist Cultivators are 15% stronger."
  },
  {
   "vi": "Tiên phát chế nhân",
-  "en": ""
+  "en": "Strike First"
  },
  {
   "vi": "Hiệp đầu cả hai bắt buộc ra Công.",
-  "en": ""
+  "en": "In round one, both sides must Attack."
  },
  {
   "vi": "Chính khí hạo nhiên",
-  "en": ""
+  "en": "Vast Righteous Qi"
  },
  {
   "vi": "Bóng chính đạo (đạo tâm từ 20) mạnh thêm 12%.",
-  "en": ""
+  "en": "Righteous shadows (Dao Heart 20+) are 12% stronger."
  },
  {
   "vi": "Mộc vận",
-  "en": ""
+  "en": "Wood Fortune"
  },
  {
   "vi": "Bóng mang bản mệnh Mộc mạnh thêm 15%.",
-  "en": ""
+  "en": "Shadows of the Wood element are 15% stronger."
  },
  {
   "vi": "Cuồng phong",
-  "en": ""
+  "en": "Raging Gale"
  },
  {
   "vi": "Thế Công luôn mạnh thêm 8%, kể cả khi bị chặn.",
-  "en": ""
+  "en": "Attack is always 8% stronger, even when blocked."
  },
  {
   "vi": "Tử chiến",
-  "en": ""
+  "en": "Fight to the Death"
  },
  {
   "vi": "Hiệp cuối, thế khắc nặng gấp rưỡi.",
-  "en": ""
+  "en": "In the final round, counters hit 1.5 times as hard."
  },
  {
   "vi": "Ma khí ngập trời",
-  "en": ""
+  "en": "Demonic Qi Fills the Sky"
  },
  {
   "vi": "Ma tu mạnh thêm 15%.",
-  "en": ""
+  "en": "Demonic Cultivators are 15% stronger."
  },
  {
   "vi": "Loạn tượng",
-  "en": ""
+  "en": "Chaotic Omens"
  },
  {
   "vi": "Ý đồ đối thủ để lộ phần lớn là giả.",
-  "en": ""
+  "en": "Most of the intentions opponents reveal are fake."
  },
  {
   "vi": "Kim vận",
-  "en": ""
+  "en": "Metal Fortune"
  },
  {
   "vi": "Bóng mang bản mệnh Kim mạnh thêm 15%.",
-  "en": ""
+  "en": "Shadows of the Metal element are 15% stronger."
  },
  {
   "vi": "Nhất chiêu định thắng bại",
-  "en": ""
+  "en": "One Move Decides All"
  },
  {
   "vi": "Chỉ đánh một hiệp. Một lần đoán quyết định tất cả.",
-  "en": ""
+  "en": "Only one round. A single guess decides everything."
  },
  {
   "vi": "Tà khí thịnh",
-  "en": ""
+  "en": "Evil Qi Rising"
  },
  {
   "vi": "Bóng tà đạo (đạo tâm từ -20 trở xuống) mạnh thêm 12%.",
-  "en": ""
+  "en": "Evil shadows (Dao Heart -20 or lower) are 12% stronger."
  },
  {
   "vi": "Thăm dò",
-  "en": ""
+  "en": "Probing"
  },
  {
   "vi": "Hiệp đầu cả hai bắt buộc ra Thủ.",
-  "en": ""
+  "en": "In round one, both sides must Defend."
  },
  {
   "vi": "Đan hương",
-  "en": ""
+  "en": "Pill Fragrance"
  },
  {
   "vi": "Đan tu mạnh thêm 15%.",
-  "en": ""
+  "en": "Alchemists are 15% stronger."
  },
  {
   "vi": "Như thủy hóa giải",
-  "en": ""
+  "en": "Yield Like Water"
  },
  {
   "vi": "Thế Hóa khi thắng thế được thêm 10%.",
-  "en": ""
+  "en": "A winning Deflect gains an extra 10%."
  },
  {
   "vi": "Thổ vận",
-  "en": ""
+  "en": "Earth Fortune"
  },
  {
   "vi": "Bóng mang bản mệnh Thổ mạnh thêm 15%.",
-  "en": ""
+  "en": "Shadows of the Earth element are 15% stronger."
  },
  {
   "vi": "Ngũ chiến tam thắng",
-  "en": ""
+  "en": "Best of Five"
  },
  {
   "vi": "Đánh tối đa năm hiệp, thắng ba hiệp mới là thắng.",
-  "en": ""
+  "en": "Up to five rounds; win three to take the match."
  },
  {
   "vi": "Trung dung chi đạo",
-  "en": ""
+  "en": "The Middle Way"
  },
  {
   "vi": "Bóng trung lập (đạo tâm từ -19 tới 19) mạnh thêm 12%.",
-  "en": ""
+  "en": "Neutral shadows (Dao Heart -19 to 19) are 12% stronger."
  },
  {
   "vi": "Trận đồ bát quái",
-  "en": ""
+  "en": "Bagua Formation"
  },
  {
   "vi": "Trận tu mạnh thêm 15%.",
-  "en": ""
+  "en": "Formation Masters are 15% stronger."
  },
  {
   "vi": "Ngũ hành tề phục",
-  "en": ""
+  "en": "Five Elements Subdued"
  },
  {
   "vi": "Không còn khắc chế ngũ hành, chỉ còn đấu trí.",
-  "en": ""
+  "en": "No more element counters - only a battle of wits."
  },
  {
   "vi": "Hậu sinh khả úy",
-  "en": ""
+  "en": "Fear the Young"
  },
  {
   "vi": "Bóng dưới 80 tuổi mạnh thêm 12%.",
-  "en": ""
+  "en": "Shadows under 80 years old are 12% stronger."
  },
  {
   "vi": "Yêu phong",
-  "en": ""
+  "en": "Yao Wind"
  },
  {
   "vi": "Yêu tu mạnh thêm 15%.",
-  "en": ""
+  "en": "Yao Cultivators are 15% stronger."
  },
  {
   "vi": "Liên hoàn",
-  "en": ""
+  "en": "Chain Strikes"
  },
  {
   "vi": "Thắng một hiệp thì hiệp sau mạnh thêm 8%.",
-  "en": ""
+  "en": "Win a round and the next one is 8% stronger."
  },
  {
   "vi": "Tương khắc song bội",
-  "en": ""
+  "en": "Double Counter"
  },
  {
   "vi": "Khắc chế ngũ hành nặng gấp đôi.",
-  "en": ""
+  "en": "Element counters are twice as strong."
  },
  {
   "vi": "Gừng càng già càng cay",
-  "en": ""
+  "en": "Old Ginger Bites Hardest"
  },
  {
   "vi": "Bóng từ 150 tuổi mạnh thêm 12%.",
-  "en": ""
+  "en": "Shadows aged 150 or more are 12% stronger."
  },
  {
   "vi": "Nghịch cảnh",
-  "en": ""
+  "en": "Adversity"
  },
  {
   "vi": "Thua một hiệp thì hiệp sau mạnh thêm 10%; bên yếu hơn được kéo lại gần.",
-  "en": ""
+  "en": "Lose a round and the next one is 10% stronger; the weaker side is pulled closer."
  },
  {
   "vi": "Kiếm tu thường ra tay trước.",
-  "en": ""
+  "en": "Sword Cultivators usually strike first."
  },
  {
   "vi": "Ma tu ưa đánh mạnh, đôi khi giấu chiêu.",
-  "en": ""
+  "en": "Demonic Cultivators love heavy blows, and sometimes hide their moves."
  },
  {
   "vi": "Phật tu thích giữ thế thủ.",
-  "en": ""
+  "en": "Buddhist Cultivators prefer to hold a defensive stance."
  },
  {
   "vi": "Trận tu hay bày thế phòng ngự.",
-  "en": ""
+  "en": "Formation Masters tend to set up defenses."
  },
  {
   "vi": "Đan tu khó đoán, hay hóa giải.",
-  "en": ""
+  "en": "Alchemists are hard to read and like to deflect."
  },
  {
   "vi": "Yêu tu dựa vào sức, thích xông lên.",
-  "en": ""
+  "en": "Yao Cultivators rely on brute strength and love to charge."
  },
  {
   "vi": "dồn khí xuống tay, sát khí bốc lên",
-  "en": ""
+  "en": "sinks qi into their hands, killing intent rising"
  },
  {
   "vi": "nhón chân, như sắp lao tới",
-  "en": ""
+  "en": "rises onto their toes, as if about to lunge"
  },
  {
   "vi": "siết chặt binh khí, mắt đỏ ngầu",
-  "en": ""
+  "en": "grips their weapon tight, eyes bloodshot"
  },
  {
   "vi": "lùi nửa bước, khí bao quanh thân",
-  "en": ""
+  "en": "steps half a pace back, qi wrapped around their body"
  },
  {
   "vi": "trụ chân thật vững, mắt không rời bạn",
-  "en": ""
+  "en": "plants their feet firmly, eyes never leaving you"
  },
  {
   "vi": "thu tay về trước ngực",
-  "en": ""
+  "en": "draws their hands back to their chest"
  },
  {
   "vi": "khép hờ mắt, khí quanh người xoay tròn",
-  "en": ""
+  "en": "half-closes their eyes, qi swirling around them"
  },
  {
   "vi": "buông lỏng hai tay, như chờ đòn tới",
-  "en": ""
+  "en": "lets both arms hang loose, as if waiting for a blow"
  },
  {
   "vi": "thở rất chậm, thân nhẹ như lá",
-  "en": ""
+  "en": "breathes very slowly, body light as a leaf"
  },
  {
   "vi": "Đối thủ đứng im như tượng, không đoán được gì.",
-  "en": ""
+  "en": "Your opponent stands still as a statue. Nothing to read."
  },
  {
   "vi": "Đối thủ {0}.",
   "ph": [
    "t"
   ],
-  "en": ""
+  "en": "Your opponent {0}."
  },
  {
   "vi": "Bạn đọc trúng ý đồ, một chưởng đẩy bóng đối thủ lùi ba bước.",
-  "en": ""
+  "en": "You read their intent - one palm drives your opponent's shadow back three steps."
  },
  {
   "vi": "Đòn của bạn tới trước một nhịp, đối thủ loạng choạng.",
-  "en": ""
+  "en": "Your blow lands a beat earlier; your opponent staggers."
  },
  {
   "vi": "Bạn hóa giải gọn gàng rồi phản đòn.",
-  "en": ""
+  "en": "You deflect cleanly and counter."
  },
  {
   "vi": "Đối thủ chặn đúng đòn của bạn rồi trả lại gấp đôi.",
-  "en": ""
+  "en": "Your opponent blocks your blow perfectly and returns it twofold."
  },
  {
   "vi": "Bạn trúng kế, ngực đau nhói.",
-  "en": ""
+  "en": "You fall for the trick - pain stabs through your chest."
  },
  {
   "vi": "Một đòn hiểm lách qua thế thủ của bạn.",
-  "en": ""
+  "en": "A vicious blow slips past your guard."
  },
  {
   "vi": "Nhất Kiếm Phá Không",
-  "en": ""
+  "en": "One Sword Splits the Void"
  },
  {
   "vi": "Lưu Tinh Kiếm Vũ",
-  "en": ""
+  "en": "Meteor Sword Rain"
  },
  {
   "vi": "Kiếm Võng Hộ Thân",
-  "en": ""
+  "en": "Sword Net Shield"
  },
  {
   "vi": "Bích Thủy Kiếm Bích",
-  "en": ""
+  "en": "Jade Water Sword Wall"
  },
  {
   "vi": "Dĩ Nhu Khắc Cương",
-  "en": ""
+  "en": "Soft Overcomes Hard"
  },
  {
   "vi": "Kiếm Ý Như Phong",
-  "en": ""
+  "en": "Sword Intent Like Wind"
  },
  {
   "vi": "Đan Hỏa Phần Thiên",
-  "en": ""
+  "en": "Pill Fire Burns Heaven"
  },
  {
   "vi": "Liệt Diễm Đan Châm",
-  "en": ""
+  "en": "Blazing Pill Needles"
  },
  {
   "vi": "Hộ Thể Đan Khí",
-  "en": ""
+  "en": "Protective Pill Qi"
  },
  {
   "vi": "Ngọc Dịch Kim Thân",
-  "en": ""
+  "en": "Jade Elixir Golden Body"
  },
  {
   "vi": "Hóa Độc Thành Dược",
-  "en": ""
+  "en": "Poison into Medicine"
  },
  {
   "vi": "Vạn Thảo Quy Nguyên",
-  "en": ""
+  "en": "Ten Thousand Herbs Return to Origin"
  },
  {
   "vi": "Sát Trận Khởi Động",
-  "en": ""
+  "en": "Killing Array Unleashed"
  },
  {
   "vi": "Vạn Kiếm Quy Tông Trận",
-  "en": ""
+  "en": "Ten Thousand Swords Formation"
  },
  {
   "vi": "Bát Môn Kim Tỏa Trận",
-  "en": ""
+  "en": "Eight Gates Golden Lock Formation"
  },
  {
   "vi": "Huyền Vũ Hộ Trận",
-  "en": ""
+  "en": "Black Tortoise Guardian Formation"
  },
  {
   "vi": "Mê Tung Ảo Trận",
-  "en": ""
+  "en": "Maze of Illusions"
  },
  {
   "vi": "Càn Khôn Đảo Chuyển",
-  "en": ""
+  "en": "Heaven and Earth Reversed"
  },
  {
   "vi": "Đại Lực Kim Cang Chưởng",
-  "en": ""
+  "en": "Great Strength Vajra Palm"
  },
  {
   "vi": "Phục Ma Côn Pháp",
-  "en": ""
+  "en": "Demon-Subduing Staff Art"
  },
  {
   "vi": "Kim Cang Bất Hoại Thể",
-  "en": ""
+  "en": "Indestructible Vajra Body"
  },
  {
   "vi": "Cà Sa Hộ Thân",
-  "en": ""
+  "en": "Kasaya Shield"
  },
  {
   "vi": "Niêm Hoa Vi Tiếu",
-  "en": ""
+  "en": "Holding a Flower, Smiling"
  },
  {
   "vi": "Lục Tự Chân Ngôn",
-  "en": ""
+  "en": "Six-Syllable Mantra"
  },
  {
   "vi": "Huyết Ma Trảo",
-  "en": ""
+  "en": "Blood Demon Claw"
  },
  {
   "vi": "Thiên Ma Giải Thể",
-  "en": ""
+  "en": "Heavenly Demon Dissolution"
  },
  {
   "vi": "Ma Khí Hộ Thể",
-  "en": ""
+  "en": "Demonic Qi Shield"
  },
  {
   "vi": "Huyết Hải Hộ Thân",
-  "en": ""
+  "en": "Blood Sea Shield"
  },
  {
   "vi": "Hấp Tinh Ma Công",
-  "en": ""
+  "en": "Essence-Draining Demonic Art"
  },
  {
   "vi": "Ảnh Ma Phân Thân",
-  "en": ""
+  "en": "Shadow Demon Clone"
  },
  {
   "vi": "Yêu Thú Cuồng Kích",
-  "en": ""
+  "en": "Beast Frenzy Strike"
  },
  {
   "vi": "Hổ Khiếu Sơn Lâm",
-  "en": ""
+  "en": "Tiger Roars Through the Forest"
  },
  {
   "vi": "Thạch Bì Yêu Giáp",
-  "en": ""
+  "en": "Stone Skin Yao Armor"
  },
  {
   "vi": "Quy Giáp Thần Công",
-  "en": ""
+  "en": "Turtle Shell Divine Art"
  },
  {
   "vi": "Huyễn Hình Độn Ảnh",
-  "en": ""
+  "en": "Phantom Form Shadow Escape"
  },
  {
   "vi": "Hồ Mị Mê Tâm",
-  "en": ""
+  "en": "Fox Charm Bewitchment"
  },
  {
   "vi": "Mãnh Hổ Quyền",
-  "en": ""
+  "en": "Fierce Tiger Fist"
  },
  {
   "vi": "Khai Sơn Chưởng",
-  "en": ""
+  "en": "Mountain-Splitting Palm"
  },
  {
   "vi": "Thiết Bố Sam",
-  "en": ""
+  "en": "Iron Shirt"
  },
  {
   "vi": "Trầm Thạch Bộ",
-  "en": ""
+  "en": "Sinking Stone Step"
  },
  {
   "vi": "Phiêu Diêu Bộ Pháp",
-  "en": ""
+  "en": "Drifting Footwork"
  },
  {
   "vi": "Lưu Thủy Thân Pháp",
-  "en": ""
+  "en": "Flowing Water Body Art"
  },
  {
   "vi": "{0} thi triển “{1}” ({2}).",
@@ -517,7 +517,7 @@
    "a",
    "names[my]"
   ],
-  "en": ""
+  "en": "{0} unleashes “{1}” ({2})."
  },
  {
   "vi": "{0} đáp lại bằng “{1}” ({2}).",
@@ -526,7 +526,7 @@
    "b",
    "names[fs]"
   ],
-  "en": ""
+  "en": "{0} answers with “{1}” ({2})."
  },
  {
   "vi": "“{0}” khắc đúng “{1}”, đối thủ trở tay không kịp.",
@@ -534,21 +534,21 @@
    "a",
    "b"
   ],
-  "en": ""
+  "en": "“{0}” counters “{1}” perfectly - your opponent can't react in time."
  },
  {
   "vi": "“{0}” khắc thế, nhưng nội lực đối thủ quá dày, đòn bị đỡ lại.",
   "ph": [
    "a"
   ],
-  "en": ""
+  "en": "“{0}” has the edge, but your opponent's inner force is too deep and the blow is blocked."
  },
  {
   "vi": "“{0}” khắc thế, nhưng bạn liều mình lách qua, phản đòn trúng đích!",
   "ph": [
    "b"
   ],
-  "en": ""
+  "en": "“{0}” has the edge, but you risk it all, slip past and land a counter!"
  },
  {
   "vi": "“{0}” khắc đúng “{1}”, bạn trúng kế.",
@@ -556,28 +556,28 @@
    "b",
    "a"
   ],
-  "en": ""
+  "en": "“{0}” counters “{1}” perfectly - you fell for it."
  },
  {
   "vi": "Hai chiêu cùng thế va vào nhau, bạn nhỉnh hơn một nhịp.",
-  "en": ""
+  "en": "The two moves clash in the same stance; you're a beat faster."
  },
  {
   "vi": "Hai chiêu cùng thế va vào nhau, đối thủ nhỉnh hơn một nhịp.",
-  "en": ""
+  "en": "The two moves clash in the same stance; your opponent is a beat faster."
  },
  {
   "vi": "Bạn thắng hiệp {0}.",
   "ph": [
    "n"
   ],
-  "en": ""
+  "en": "You win round {0}."
  },
  {
   "vi": "Bạn thua hiệp {0}.",
   "ph": [
    "n"
   ],
-  "en": ""
+  "en": "You lose round {0}."
  }
 ]

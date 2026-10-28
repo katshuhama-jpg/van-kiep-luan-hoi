@@ -1,3 +1,4 @@
+import { tr } from '../i18n';
 /**
  * Quan hệ giang hồ giữa người chơi thật: huynh đệ kết nghĩa, sổ thù, khiêu khích, truy nã, kẻ né chiến.
  * Dữ liệu tải từ máy chủ rồi giữ ở đây để logic trận đấu dùng (không lưu vào bản lưu nhân vật).
@@ -35,13 +36,13 @@ export type RelTag = { id: 'thu' | 'huynh_de' | 'hoa' | 'khieu' | 'truy_na' | 'n
 export function relTags(player: string | null | undefined, s: SocialState = SOCIAL.cur): RelTag[] {
   if (!player || player === s.me) return [];
   const out: RelTag[] = [];
-  if (s.sworn.includes(player)) out.push({ id: 'huynh_de', text: 'Huynh đệ' });
-  if (s.foes.includes(player)) out.push({ id: 'thu', text: 'Kẻ thù của bạn' });
-  else if (s.hatedBy.includes(player)) out.push({ id: 'bi_thu', text: 'Đang thù bạn' });
-  if (s.peace.includes(player) && !s.sworn.includes(player)) out.push({ id: 'hoa', text: 'Đã hòa giải' });
-  if (s.provoke.includes(player)) out.push({ id: 'khieu', text: 'Khiêu khích' });
-  if (s.bounty[player]) out.push({ id: 'truy_na', text: `Truy nã ${s.bounty[player]} linh thạch` });
-  if (s.dodgers.includes(player)) out.push({ id: 'ne_chien', text: 'Kẻ né chiến' });
+  if (s.sworn.includes(player)) out.push({ id: 'huynh_de', text: tr('Huynh đệ', "Sworn brother") });
+  if (s.foes.includes(player)) out.push({ id: 'thu', text: tr('Kẻ thù của bạn', "Your enemy") });
+  else if (s.hatedBy.includes(player)) out.push({ id: 'bi_thu', text: tr('Đang thù bạn', "Holds a grudge") });
+  if (s.peace.includes(player) && !s.sworn.includes(player)) out.push({ id: 'hoa', text: tr('Đã hòa giải', "Reconciled") });
+  if (s.provoke.includes(player)) out.push({ id: 'khieu', text: tr('Khiêu khích', "Provoke") });
+  if (s.bounty[player]) out.push({ id: 'truy_na', text: tr(`Truy nã ${s.bounty[player]} linh thạch`, `Bounty ${s.bounty[player]} spirit stones`) });
+  if (s.dodgers.includes(player)) out.push({ id: 'ne_chien', text: tr('Kẻ né chiến', "Duel dodger") });
   return out;
 }
 

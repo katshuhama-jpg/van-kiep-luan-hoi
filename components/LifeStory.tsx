@@ -9,6 +9,7 @@ import { pickStory } from '@/lib/game/miles';
 import { condolences, type Condolence } from '@/lib/social';
 import CondoPresets from './CondoPresets';
 import type { Character, Focus, Fx, FxKind, Mile, PathId } from '@/lib/game/types';
+import { tr } from '@/lib/i18n';
 
 /**
  * Hồi ký một kiếp: xem lại các cột mốc chính của người đã khuất như một cuốn truyện tranh pixel.
@@ -36,24 +37,24 @@ export interface LifeRecord {
 type Slide = { t: 'title' } | { t: 'mile'; m: Mile; n: number } | { t: 'end' };
 
 const KIND: Record<Mile['kind'], { label: string; focus: Focus; fx: FxKind[]; season: number; tone: string }> = {
-  birth: { label: 'Chào đời', focus: 'du_ngoan', fx: ['heal'], season: 0, tone: 'dawn' },
-  path: { label: 'Nhập đạo', focus: 'tu_luyen', fx: ['breakthrough'], season: 1, tone: 'jade' },
-  realm: { label: 'Đột phá', focus: 'tu_luyen', fx: ['lightning', 'breakthrough'], season: 2, tone: 'storm' },
-  love: { label: 'Nhân duyên', focus: 'ket_duyen', fx: ['love'], season: 0, tone: 'rose' },
-  pet: { label: 'Linh thú', focus: 'du_ngoan', fx: ['love'], season: 1, tone: 'jade' },
-  mount: { label: 'Long kỵ', focus: 'du_ngoan', fx: ['breakthrough'], season: 1, tone: 'gold' },
-  duel: { label: 'Giao đấu', focus: 'tu_luyen', fx: ['hurt'], season: 2, tone: 'blood' },
-  revenge: { label: 'Báo thù', focus: 'tu_luyen', fx: ['evil'], season: 3, tone: 'blood' },
-  sect: { label: 'Bái sư', focus: 'tu_luyen', fx: ['heal'], season: 1, tone: 'jade' },
-  wealth: { label: 'Phát tài', focus: 'kiem_tien', fx: ['buy'], season: 0, tone: 'gold' },
-  treasure: { label: 'Bảo vật', focus: 'du_ngoan', fx: ['layer'], season: 2, tone: 'gold' },
-  hunt: { label: 'Trừ yêu', focus: 'tru_yeu', fx: ['hurt'], season: 2, tone: 'storm' },
-  journey: { label: 'Lên đường', focus: 'du_ngoan', fx: ['heal'], season: 1, tone: 'dawn' },
-  fate: { label: 'Mệnh số', focus: 'du_ngoan', fx: ['love'], season: 0, tone: 'dawn' },
-  death: { label: 'Tạ thế', focus: 'tu_luyen', fx: ['death'], season: 3, tone: 'night' },
+  birth: { label: tr('Chào đời', "Birth"), focus: 'du_ngoan', fx: ['heal'], season: 0, tone: 'dawn' },
+  path: { label: tr('Nhập đạo', "Entering the Yao"), focus: 'tu_luyen', fx: ['breakthrough'], season: 1, tone: 'jade' },
+  realm: { label: tr('Đột phá', "Breakthrough"), focus: 'tu_luyen', fx: ['lightning', 'breakthrough'], season: 2, tone: 'storm' },
+  love: { label: tr('Nhân duyên', "Fated bonds"), focus: 'ket_duyen', fx: ['love'], season: 0, tone: 'rose' },
+  pet: { label: tr('Linh thú', "Spirit beast"), focus: 'du_ngoan', fx: ['love'], season: 1, tone: 'jade' },
+  mount: { label: tr('Long kỵ', "Dragon rider"), focus: 'du_ngoan', fx: ['breakthrough'], season: 1, tone: 'gold' },
+  duel: { label: tr('Giao đấu', "Duel"), focus: 'tu_luyen', fx: ['hurt'], season: 2, tone: 'blood' },
+  revenge: { label: tr('Báo thù', "Revenge"), focus: 'tu_luyen', fx: ['evil'], season: 3, tone: 'blood' },
+  sect: { label: tr('Bái sư', "Taking a Master"), focus: 'tu_luyen', fx: ['heal'], season: 1, tone: 'jade' },
+  wealth: { label: tr('Phát tài', "Fortune made"), focus: 'kiem_tien', fx: ['buy'], season: 0, tone: 'gold' },
+  treasure: { label: tr('Bảo vật', "Treasure"), focus: 'du_ngoan', fx: ['layer'], season: 2, tone: 'gold' },
+  hunt: { label: tr('Trừ yêu', "Hunting demons"), focus: 'tru_yeu', fx: ['hurt'], season: 2, tone: 'storm' },
+  journey: { label: tr('Lên đường', "Setting out"), focus: 'du_ngoan', fx: ['heal'], season: 1, tone: 'dawn' },
+  fate: { label: tr('Mệnh số', "Destiny"), focus: 'du_ngoan', fx: ['love'], season: 0, tone: 'dawn' },
+  death: { label: tr('Tạ thế', "Passing"), focus: 'tu_luyen', fx: ['death'], season: 3, tone: 'night' },
 };
 
-const HOI = ['nhất', 'nhị', 'tam', 'tứ', 'ngũ', 'lục', 'thất', 'bát'];
+const HOI = [tr('nhất', "One"), tr('nhị', "Two"), tr('tam', "Three"), tr('tứ', "Four"), tr('ngũ', "Five"), tr('lục', "Six"), tr('thất', "Seven"), tr('bát', "Eight")];
 const SLIDE_MS = 5200;
 
 /** Dựng lại nhân vật ở một thời điểm trong đời từ dáng vẻ đã lưu */
@@ -141,7 +142,7 @@ export default function LifeStory({
         m: {
           age: 0,
           kind: 'birth',
-          text: look.birthPlace ? `Chào đời ở ${look.birthPlace}${look.origin ? `, ${look.origin.toLowerCase()}` : ''}.` : 'Một tiếng khóc chào đời, một kiếp người bắt đầu.',
+          text: look.birthPlace ? tr(`Chào đời ở ${look.birthPlace}${look.origin ? `, ${look.origin.toLowerCase()}` : ''}.`, `Born in ${look.birthPlace}${look.origin ? `, ${look.origin.toLowerCase()}` : ''}.`) : tr('Một tiếng khóc chào đời, một kiếp người bắt đầu.', "A first cry, and a new life begins."),
         },
       },
       ...story.map((m, i) => ({ t: 'mile' as const, n: i + 1, m })),
@@ -176,7 +177,7 @@ export default function LifeStory({
   const tone = s.t === 'mile' ? KIND[s.m.kind].tone : s.t === 'end' ? (r.ascended ? (maTon ? 'blood' : 'gold') : 'night') : 'title';
 
   return (
-    <div className={`ls tone-${tone}`} role="dialog" aria-modal="true" aria-label={`Hồi ký ${r.char_name}`}>
+    <div className={`ls tone-${tone}`} role="dialog" aria-modal="true" aria-label={tr(`Hồi ký ${r.char_name}`, `Memoir of ${r.char_name}`)}>
       <div className="ls-stars" aria-hidden="true" />
       <div className="ls-col">
         <div className="ls-bars" aria-hidden="true">
@@ -186,12 +187,13 @@ export default function LifeStory({
         </div>
         <div className="ls-top">
           <span>
-            Hồi ký · {r.char_name}{' '}
+            
+            {tr("Hồi ký · ", "Memoir · ")}{r.char_name}{' '}
             <small>
-              @{r.player_name} · Kiếp {r.life_no}
+              @{r.player_name}{tr(" · Kiếp ", " · Life ")}{r.life_no}
             </small>
           </span>
-          <button className="ls-x" onClick={onClose} aria-label="Đóng hồi ký">
+          <button className="ls-x" onClick={onClose} aria-label={tr("Đóng hồi ký", "Close memoir")}>
             ✕
           </button>
         </div>
@@ -201,10 +203,10 @@ export default function LifeStory({
             <div className="ls-title">
               <span className="ls-lantern l" aria-hidden="true" />
               <span className="ls-lantern r" aria-hidden="true" />
-              <small className="ls-kicker">Một kiếp người</small>
+              <small className="ls-kicker">{tr("Một kiếp người", "One mortal life")}</small>
               <h2>{r.char_name}</h2>
               <p className="ls-sub">
-                {r.age} năm dương thế · {finalRealm === 0 ? 'Phàm nhân' : realmLabel(finalRealm, r.layer_no ?? 1, look.cosmos)}
+                {r.age}{tr(" năm dương thế · ", " years in the world · ")}{finalRealm === 0 ? tr('Phàm nhân', "Mortal") : realmLabel(finalRealm, r.layer_no ?? 1, look.cosmos)}
                 {r.path ? ` · ${r.path}` : ''}
               </p>
               <div className="ls-hero">
@@ -220,11 +222,11 @@ export default function LifeStory({
             <div className="ls-end">
               <div className="ls-scene">
                 <SceneAt r={r} age={r.age} realm={finalRealm} kind="death" ascended={r.ascended} />
-                <span className="ls-chap">{r.ascended ? (maTon ? 'Thành Ma Tôn' : 'Phi thăng') : 'Hồi kết'}</span>
+                <span className="ls-chap">{r.ascended ? (maTon ? tr('Thành Ma Tôn', "Became a Demon Sovereign") : tr('Phi thăng', "Ascended")) : tr('Hồi kết', "The end")}</span>
               </div>
               <div className="ls-cap">
-                <b className="ls-age">Năm {r.age} tuổi</b>
-                <p>{r.cause ?? 'Một kiếp người khép lại.'}</p>
+                <b className="ls-age">{tr("Năm ", "Year ")}{r.age}{tr(" tuổi", " years old")}</b>
+                <p>{r.cause ?? tr('Một kiếp người khép lại.', "A life draws to a close.")}</p>
               </div>
               <div className="ls-tomb">
                 <span className="ls-stone" aria-hidden="true">
@@ -233,14 +235,15 @@ export default function LifeStory({
                 <div>
                   <b>{r.char_name}</b>
                   <small>
-                    Hưởng thọ {r.age} · {r.realm}
+                    
+                    {tr("Hưởng thọ ", "Lived to ")}{r.age} · {r.realm}
                   </small>
                   {r.epitaph && <em>“{r.epitaph}”</em>}
-                  <small>{r.incense} nén hương</small>
+                  <small>{r.incense}{tr(" nén hương", " sticks of incense")}</small>
                 </div>
               </div>
               {condo.length > 0 && (
-                <ul className="condo-list" aria-label="Lời viếng">
+                <ul className="condo-list" aria-label={tr("Lời viếng", "Condolences")}>
                   {condo.slice(0, 4).map((x, k) => (
                     <li key={k}>
                       <b>@{x.from_player}</b>: {x.body}
@@ -253,34 +256,37 @@ export default function LifeStory({
                   seed={lifeId ?? 7}
                   onPick={(b) => {
                     onCondole(b);
-                    setCondo((x) => [{ from_player: 'bạn', body: b, created_at: new Date().toISOString() }, ...x]);
+                    setCondo((x) => [{ from_player: tr('bạn', "you"), body: b, created_at: new Date().toISOString() }, ...x]);
                   }}
                 />
               )}
               {onCondole && (
                 <span className="condo-input">
-                  <input value={text} maxLength={120} onChange={(e) => setText(e.target.value)} placeholder="Hoặc tự viết lời viếng" aria-label="Lời viếng" />
+                  <input value={text} maxLength={120} onChange={(e) => setText(e.target.value)} placeholder={tr("Hoặc tự viết lời viếng", "Or write your own condolence")} aria-label={tr("Lời viếng", "Condolences")} />
                   <button
                     className="btn"
                     disabled={!text.trim()}
                     onClick={() => {
                       const b = text.trim();
                       onCondole(b);
-                      setCondo((x) => [{ from_player: 'bạn', body: b, created_at: new Date().toISOString() }, ...x]);
+                      setCondo((x) => [{ from_player: tr('bạn', "you"), body: b, created_at: new Date().toISOString() }, ...x]);
                       setText('');
                     }}
                   >
-                    Viếng
+                    
+                    {tr("Viếng", "Pay respects")}
                   </button>
                 </span>
               )}
               <div className="ls-actions">
                 <button className="btn" onClick={() => setI(0)}>
-                  Xem lại từ đầu
+                  
+                  {tr("Xem lại từ đầu", "Watch from the start")}
                 </button>
                 {onIncense && (
                   <button className="btn btn-red" disabled={!canIncense} onClick={onIncense}>
-                    Thắp một nén hương
+                    
+                    {tr("Thắp một nén hương", "Burn a stick of incense")}
                   </button>
                 )}
               </div>
@@ -291,18 +297,18 @@ export default function LifeStory({
         {/* chạm nửa trái, nửa phải để lùi, tới; nút giữa tạm dừng */}
         {!last && (
           <>
-            <button className="ls-tap l" onClick={() => go(-1)} aria-label="Cảnh trước" />
-            <button className="ls-tap r" onClick={() => go(1)} aria-label="Cảnh sau" />
+            <button className="ls-tap l" onClick={() => go(-1)} aria-label={tr("Cảnh trước", "Previous scene")} />
+            <button className="ls-tap r" onClick={() => go(1)} aria-label={tr("Cảnh sau", "Next scene")} />
           </>
         )}
         <div className="ls-nav">
-          <button className="btn" onClick={() => go(-1)} disabled={i === 0} aria-label="Cảnh trước">
+          <button className="btn" onClick={() => go(-1)} disabled={i === 0} aria-label={tr("Cảnh trước", "Previous scene")}>
             ‹
           </button>
           <button className="btn" onClick={() => setPlaying(!playing)} disabled={last}>
-            {playing && !last ? '❚❚ Dừng' : '▶ Tự chạy'}
+            {playing && !last ? tr('❚❚ Dừng', "❚❚ Pause") : tr('▶ Tự chạy', "▶ Autoplay")}
           </button>
-          <button className="btn" onClick={() => go(1)} disabled={last} aria-label="Cảnh sau">
+          <button className="btn" onClick={() => go(1)} disabled={last} aria-label={tr("Cảnh sau", "Next scene")}>
             ›
           </button>
         </div>
@@ -334,13 +340,13 @@ function MileSlide({ r, m, n }: { r: LifeRecord; m: Mile; n: number }) {
     <div className={`ls-mile k-${m.kind}`}>
       <div className="ls-scene">
         <SceneAt r={r} age={m.age} realm={realm} kind={m.kind} />
-        <span className="ls-chap">Hồi thứ {HOI[n] ?? n + 1}</span>
+        <span className="ls-chap">{tr("Hồi thứ ", "Chapter ")}{HOI[n] ?? n + 1}</span>
         <span className="ls-kind">{k.label}</span>
         {m.kind === 'realm' && realm >= 1 && <span className="ls-realm">{realmName(realm, (r.look as { cosmos?: 'tien' | 'ma' } | null)?.cosmos)}</span>}
         {m.kind === 'path' && r.path && <span className="ls-realm">{r.path}</span>}
       </div>
       <div className="ls-cap">
-        <b className="ls-age">{m.age === 0 ? 'Năm đầu tiên' : `Năm ${m.age} tuổi`}</b>
+        <b className="ls-age">{m.age === 0 ? tr('Năm đầu tiên', "The first year") : tr(`Năm ${m.age} tuổi`, `Age ${m.age}`)}</b>
         <p>
           {m.text.slice(0, shown)}
           {shown < m.text.length && <i className="ls-caret" aria-hidden="true" />}

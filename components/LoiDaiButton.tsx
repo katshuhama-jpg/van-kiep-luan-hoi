@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { currentPlayer } from '@/lib/auth';
 import { ruleOf } from '@/lib/game/arena';
 import { arenaTierInfo } from '@/lib/social';
+import { tr } from '@/lib/i18n';
 
 /** Số lượt lôi đài còn hôm nay và nợ báo thù (null khi chưa đăng nhập hoặc chưa tải xong) */
 export function useArenaLeft(): { left: number; revenge: number } | null {
@@ -25,8 +26,9 @@ export function ArenaNudge({ onClick }: { onClick?: () => void }) {
   if (!v || (v.left <= 0 && v.revenge <= 0)) return null;
   return (
     <Link href="/loi-dai" className="btn arena-nudge" onClick={onClick}>
-      ⚔ Ra đài 25 giây
-      <small>{v.left > 0 ? `còn ${v.left} lượt hôm nay` : `${v.revenge} kẻ chờ báo thù`}</small>
+      
+      {tr("⚔ Ra đài 25 giây", "⚔ Enter the arena, 25s")}
+      <small>{v.left > 0 ? tr(`còn ${v.left} lượt hôm nay`, `${v.left} bouts left today`) : tr(`${v.revenge} kẻ chờ báo thù`, `${v.revenge} awaiting revenge`)}</small>
     </Link>
   );
 }
@@ -92,7 +94,7 @@ export default function LoiDaiButton({ onClick }: { onClick?: () => void }) {
   return (
     <Link href="/loi-dai" className="menu-loidai" onClick={onClick}>
       {dot > 0 && (
-        <b className="ml-dot" aria-label={`Còn ${v!.left} lượt`}>
+        <b className="ml-dot" aria-label={tr(`Còn ${v!.left} lượt`, `${v!.left} bouts left`)}>
           {dot}
         </b>
       )}
@@ -104,10 +106,11 @@ export default function LoiDaiButton({ onClick }: { onClick?: () => void }) {
       <i className="ml-star s2" aria-hidden="true" />
       <span className="ml-title">
         <Swords />
-        Lôi đài hằng ngày
+        
+        {tr("Lôi đài hằng ngày", "Daily Arena")}
         <Swords />
       </span>
-      <small className="ml-rule">Luật hôm nay: {ruleOf().name}</small>
+      <small className="ml-rule">{tr("Luật hôm nay: ", "Today's rule: ")}{ruleOf().name}</small>
     </Link>
   );
 }

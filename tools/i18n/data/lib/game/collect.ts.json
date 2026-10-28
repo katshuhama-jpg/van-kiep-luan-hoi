@@ -31,7 +31,7 @@
   "vi": "Có được qua kỳ ngộ khi {0}{1}{2}.",
   "ph": [
    "w.charAt(0).toLowerCase() + w.slice(1)",
-   "i.where?.includes('rất hiếm') ? ', rất hiếm gặp' : ''",
+   "/rất hiếm|very rare/.test(i.where ?? '') ? ', rất hiếm gặp' : ''",
    "i.minRealm ? `, từ ${REALMS[i.minRealm]?.name}` : ''"
   ],
   "en": "Obtained through a fortuitous encounter: {0}{1}{2}."

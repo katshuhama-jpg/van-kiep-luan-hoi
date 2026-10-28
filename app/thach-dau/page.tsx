@@ -12,8 +12,9 @@ import type { RivalChar } from '@/lib/game/types';
 import { arenaCandidates, arenaShadow, lifeShadow, thachLeft } from '@/lib/social';
 import { track } from '@/lib/track';
 import { useAuth } from '@/lib/useAuth';
+import { tr } from '@/lib/i18n';
 
-const realmOf = (r: RivalChar) => (r.realm === 0 ? 'Phàm nhân' : realmLabel(r.realm, r.layer, r.cosmos));
+const realmOf = (r: RivalChar) => (r.realm === 0 ? tr('Phàm nhân', "Mortal") : realmLabel(r.realm, r.layer, r.cosmos));
 
 /**
  * Hạ chiến thư: đấu Phi Kiếm với bóng một kiếp cụ thể của người khác (?l=<id kiếp> từ nghĩa trang, ?u=<tên> từ bảng xếp hạng).
@@ -50,28 +51,30 @@ export default function ThachDau() {
       <header className="topbar">
         <div className="topbar-row">
           <span className="age-big" style={{ fontSize: 28 }}>
-            Chiến thư
+            
+            {tr("Chiến thư", "Challenge letter")}
           </span>
-          <span className="meta">Đấu với bóng một kiếp của đạo hữu khác</span>
+          <span className="meta">{tr("Đấu với bóng một kiếp của đạo hữu khác", "Fight the shadow of another fellow Daoist's life")}</span>
           <BackButton fallback="/nghia-trang" />
         </div>
       </header>
       {!ready || foe === null ? (
-        <p>Đang mở chiến thư...</p>
+        <p>{tr("Đang mở chiến thư...", "Opening the challenge letter...")}</p>
       ) : foe === 'none' ? (
         <p className="note">
-          Không tìm thấy kiếp này. Vào <Link href="/nghia-trang">Nghĩa trang</Link> hoặc <Link href="/bang-xep-hang">Bảng xếp hạng</Link> để chọn người muốn thách đấu.
+          
+          {tr("Không tìm thấy kiếp này. Vào ", "Life not found. Visit the ")}<Link href="/nghia-trang">{tr("Nghĩa trang", "Cemetery")}</Link>{tr(" hoặc ", " or ")}<Link href="/bang-xep-hang">{tr("Bảng xếp hạng", "Leaderboard")}</Link>{tr(" để chọn người muốn thách đấu.", " to pick someone to challenge.")}
         </p>
       ) : !user ? (
         <p className="note">
-          <Link href={`/dang-nhap?next=${encodeURIComponent('/thach-dau' + location.search)}`}>Đăng nhập</Link> để hạ chiến thư.
+          <Link href={`/dang-nhap?next=${encodeURIComponent('/thach-dau' + location.search)}`}>{tr("Đăng nhập", "Log in")}</Link>{tr(" để hạ chiến thư.", " to issue a challenge.")}
         </p>
       ) : (
         <>
           <div className="ar-stage th-stage" style={{ backgroundImage: 'url(/bg/nhd-tien-kim.png)' }}>
             <div className="ar-side me">
               {me ? <Sprite c={foeChar(me)} size={120} anim="idle" dir={3} /> : <span className="ar-unknown">?</span>}
-              <b>{me ? me.name : 'Bóng của bạn'}</b>
+              <b>{me ? me.name : tr('Bóng của bạn', "Your shadow")}</b>
             </div>
             <span className="ar-vs">VS</span>
             <div className="ar-side foe">
@@ -79,15 +82,16 @@ export default function ThachDau() {
               <b>{f!.shadow.name}</b>
             </div>
             <span className="ar-rule-tag">
-              @{f!.player} · Kiếp {f!.shadow.lifeNo ?? 1} · {realmOf(f!.shadow)}
+              @{f!.player}{tr(" · Kiếp ", " · Life ")}{f!.shadow.lifeNo ?? 1} · {realmOf(f!.shadow)}
             </span>
           </div>
           <p className="note th-note">
-            Hai bên được kéo ngang cảnh giới bóng của bạn. Thắng +5 phúc duyên, thua +2. Người kia nhận thư và được báo thù ở Lôi đài. {f!.shadow.path ? `Đối thủ là ${PATHS[f!.shadow.path].name}.` : ''}
+            
+            {tr("Hai bên được kéo ngang cảnh giới bóng của bạn. Thắng +5 phúc duyên, thua +2. Người kia nhận thư và được báo thù ở Lôi đài. ", "Both sides are leveled to your shadow's realm. Win +5 Fortune, lose +2. The other player receives the letter and can take revenge in the Arena. ")}{f!.shadow.path ? tr(`Đối thủ là ${PATHS[f!.shadow.path].name}.`, `Opponent: ${PATHS[f!.shadow.path].name}.`) : ''}
           </p>
           {cands && cands.length > 1 && (
             <>
-              <h3 className="gh-h">Chọn bóng ra trận</h3>
+              <h3 className="gh-h">{tr("Chọn bóng ra trận", "Choose a shadow to send in")}</h3>
               <div className="th-picks">
                 {cands.map((c, i) => (
                   <button key={`${c.lifeId}-${i}`} className={`th-pick ${pick === i ? 'on' : ''}`} onClick={() => setPick(i)}>
@@ -99,7 +103,7 @@ export default function ThachDau() {
               </div>
             </>
           )}
-          {cands && !cands.length && <p className="note">Bạn chưa có kiếp nào. Sống trọn một kiếp rồi quay lại.</p>}
+          {cands && !cands.length && <p className="note">{tr("Bạn chưa có kiếp nào. Sống trọn một kiếp rồi quay lại.", "You have no lives yet. Live one full life, then come back.")}</p>}
           <div className="ar-dock">
             <button
               className="btn btn-red btn-big ar-go-btn"
@@ -109,8 +113,8 @@ export default function ThachDau() {
                 setFight(Date.now());
               }}
             >
-              {self ? 'Không tự thách chính mình' : left ? '⚔ Hạ chiến thư' : 'Hết chiến thư hôm nay'}
-              <small>{left === null ? '...' : `còn ${left}/3 chiến thư hôm nay`}</small>
+              {self ? tr('Không tự thách chính mình', "You can't challenge yourself") : left ? tr('⚔ Hạ chiến thư', "⚔ Issue a challenge") : tr('Hết chiến thư hôm nay', "No challenges left today")}
+              <small>{left === null ? '...' : tr(`còn ${left}/3 chiến thư hôm nay`, `${left}/3 challenges left today`)}</small>
             </button>
           </div>
         </>

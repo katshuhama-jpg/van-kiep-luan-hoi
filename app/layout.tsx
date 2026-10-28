@@ -6,13 +6,14 @@ import { cookies } from 'next/headers';
 import LangGate from '@/components/LangGate';
 import './globals.css';
 import { pageMeta, SITE_DESC, SITE_NAME, SITE_URL } from '@/lib/seo';
+import { tr } from '@/lib/i18n';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   ...pageMeta(null, SITE_DESC),
-  title: { default: `${SITE_NAME} - Game pixel tu tiên trùng sinh`, template: `%s · ${SITE_NAME}` },
+  title: { default: tr(`${SITE_NAME} - Game pixel tu tiên trùng sinh`, `${SITE_NAME} - Pixel xianxia rebirth game`), template: `%s · ${SITE_NAME}` },
   applicationName: SITE_NAME,
-  keywords: ['Vạn Kiếp Luân Hồi', 'game tu tiên', 'game pixel', 'trùng sinh', 'luân hồi', 'tu tiên online', 'game web', 'phi thăng', 'kiếm hiệp', 'game Việt'],
+  keywords: [tr('Vạn Kiếp Luân Hồi', "Vạn Kiếp Luân Hồi"), tr('game tu tiên', "xianxia game"), 'game pixel', tr('trùng sinh', "rebirth"), tr('luân hồi', "reincarnation"), tr('tu tiên online', "online cultivation"), 'game web', tr('phi thăng', "ascension"), tr('kiếm hiệp', "wuxia"), tr('game Việt', "Vietnamese game")],
   category: 'game',
   robots: { index: true, follow: true },
 };

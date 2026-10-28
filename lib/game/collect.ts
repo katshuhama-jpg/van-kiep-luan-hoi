@@ -3,6 +3,7 @@ import { MONSTERS } from './combat';
 import { ENDINGS, endingOf, type Ending } from './endings';
 import { vnDay } from './hook';
 import type { Character, Meta, PathId } from './types';
+import { tr } from '../i18n';
 
 /**
  * Sưu tầm: Sổ Sinh Tử (kết cục) và Bảo khố (đồ ẩn chỉ rơi từ quái hay có từ kỳ ngộ, không bán ở phường thị).
@@ -15,21 +16,21 @@ export const isHidden = (id: string) => HIDDEN.has(id);
 /** Danh hiệu sưu tầm theo số kết cục đã mở: gần 1/3 Sổ Sinh Tử là Kỳ Văn Khách, một nửa là Bách Hiểu Sinh */
 export const COLLECTOR_MIN = 8;
 export function collectorTitle(n: number): string | null {
-  return n >= Math.ceil(ENDINGS.length / 2) ? 'Bách Hiểu Sinh' : n >= COLLECTOR_MIN ? 'Kỳ Văn Khách' : null;
+  return n >= Math.ceil(ENDINGS.length / 2) ? tr('Bách Hiểu Sinh', "Sage of All Knowledge") : n >= COLLECTOR_MIN ? tr('Kỳ Văn Khách', "Collector of Wonders") : null;
 }
 
-const RARE_ODDS = ['dễ gặp', 'khoảng 3/10 lần', 'khoảng 1/12 lần', 'chỉ khoảng 1/50 lần'];
+const RARE_ODDS = [tr('dễ gặp', "common"), tr('khoảng 3/10 lần', "about 3 in 10 kills"), tr('khoảng 1/12 lần', "about 1 in 12 kills"), tr('chỉ khoảng 1/50 lần', "only about 1 in 50 kills")];
 
 /** Cách có được một món đồ ẩn: đủ chi tiết để người chơi biết phải làm gì */
 export function itemHint(i: Item): string {
   if (i.src === 'event') {
-    const w = (i.where ?? 'một kỳ ngộ').replace(/, rất hiếm$/, '');
-    return `Có được qua kỳ ngộ khi ${w.charAt(0).toLowerCase() + w.slice(1)}${i.where?.includes('rất hiếm') ? ', rất hiếm gặp' : ''}${i.minRealm ? `, từ ${REALMS[i.minRealm]?.name}` : ''}.`;
+    const w = (i.where ?? tr('một kỳ ngộ', "an encounter")).replace(/, rất hiếm$/, '');
+    return tr(`Có được qua kỳ ngộ khi ${w.charAt(0).toLowerCase() + w.slice(1)}${/rất hiếm|very rare/.test(i.where ?? '') ? tr(', rất hiếm gặp', ", very rare") : ''}${i.minRealm ? tr(`, từ ${REALMS[i.minRealm]?.name}`, `, from ${REALMS[i.minRealm]?.name}`) : ''}.`, `Obtained through a fortuitous encounter: ${w.charAt(0).toLowerCase() + w.slice(1)}${/rất hiếm|very rare/.test(i.where ?? '') ? tr(', rất hiếm gặp', ", very rare") : ''}${i.minRealm ? tr(`, từ ${REALMS[i.minRealm]?.name}`, `, from ${REALMS[i.minRealm]?.name}`) : ''}.`);
   }
-  const lo = REALMS[i.minRealm]?.name ?? 'Phàm Nhân';
+  const lo = REALMS[i.minRealm]?.name ?? tr('Phàm Nhân', "Mortal");
   const hi = REALMS[Math.min(REALMS.length - 1, i.minRealm + 2)]?.name;
   const names = (i.from ?? []).map((id) => MONSTERS.find((m) => m.id === id)?.name).filter(Boolean) as string[];
-  return `Rơi khi trừ yêu lúc bạn ở ${lo}${hi && hi !== lo ? ` đến ${hi}` : ''}, ${RARE_ODDS[i.rare ?? 0]} hạ quái.${names.length ? ` Hay thấy trên ${names.slice(0, 2).join(', ')}.` : ''} Khí vận cao, đồ tăng rơi đồ, đánh quái mạnh hơn mình và ngày Cát tinh chiếu mệnh thì dễ rơi hơn.`;
+  return tr(`Rơi khi trừ yêu lúc bạn ở ${lo}${hi && hi !== lo ? tr(` đến ${hi}`, ` to ${hi}`) : ''}, ${RARE_ODDS[i.rare ?? 0]} hạ quái.${names.length ? tr(` Hay thấy trên ${names.slice(0, 2).join(', ')}.`, ` Often seen on ${names.slice(0, 2).join(', ')}.`) : ''} Khí vận cao, đồ tăng rơi đồ, đánh quái mạnh hơn mình và ngày Cát tinh chiếu mệnh thì dễ rơi hơn.`, `Drops from demon hunting while you're at ${lo}${hi && hi !== lo ? tr(` đến ${hi}`, ` to ${hi}`) : ''} (${RARE_ODDS[i.rare ?? 0]}).${names.length ? tr(` Hay thấy trên ${names.slice(0, 2).join(', ')}.`, ` Often seen on ${names.slice(0, 2).join(', ')}.`) : ''} High Luck, drop-boosting gear, monsters stronger than you and Lucky Star days all raise the drop rate.`);
 }
 
 /** Đồ ẩn đang có trong túi mà Bảo khố chưa ghi */
@@ -80,7 +81,7 @@ export function rumorToday(meta: Meta, day = vnDay(), counts?: Record<string, nu
 }
 
 /** Câu mở đầu lời đồn, mỗi ngày một kiểu */
-export const RUMOR_HEAD = ['Có kẻ nói', 'Trong quán trà người ta thì thầm', 'Một lão ăn mày say rượu kể', 'Đồn rằng', 'Có người thề đã tận mắt thấy'];
+export const RUMOR_HEAD = [tr('Có kẻ nói', "Someone says"), tr('Trong quán trà người ta thì thầm', "In the teahouse, people whisper"), tr('Một lão ăn mày say rượu kể', "A drunk old beggar tells"), tr('Đồn rằng', "Rumor has it"), tr('Có người thề đã tận mắt thấy', "Someone swears they saw with their own eyes")];
 export const rumorHead = (day = vnDay()) => RUMOR_HEAD[hash('rh' + day) % RUMOR_HEAD.length];
 
 /** Đoán kết cục của một ngôi mộ từ thông tin trên bia (mộ cũ chưa ghi kết cục) */

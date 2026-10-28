@@ -1,4 +1,5 @@
 'use client';
+import { tr } from '@/lib/i18n';
 
 export interface RadarAxis {
   label: string;
@@ -27,7 +28,7 @@ export default function Radar({ axes, size = 220, color = '#b8432f' }: { axes: R
       .join(' ');
   const hasBase = axes.some((a) => a.base !== undefined);
   return (
-    <svg viewBox="0 0 120 120" width={size} height={size} className="radar" role="img" aria-label={'Biểu đồ chỉ số: ' + axes.map((a) => `${a.label} ${Math.round(a.value)}`).join(', ')}>
+    <svg viewBox="0 0 120 120" width={size} height={size} className="radar" role="img" aria-label={tr('Biểu đồ chỉ số: ', "Stats chart: ") + axes.map((a) => `${a.label} ${Math.round(a.value)}`).join(', ')}>
       {[25, 50, 75, 100].map((lv) => (
         <polygon
           key={lv}
@@ -81,12 +82,12 @@ export function charAxes(s: S, life: number, wealth: number, base?: { s: S; life
   // thọ: số năm sống được so với mức tối đa 300
   const lifeV = (l: number) => Math.max(0, Math.min(100, (l / 300) * 100));
   return [
-    { label: 'Khỏe', value: s.sucKhoe, base: base?.s.sucKhoe },
-    { label: 'Tâm', value: s.tamCanh, base: base?.s.tamCanh },
-    { label: 'Ngộ', value: s.ngoTinh, base: base?.s.ngoTinh },
-    { label: 'Vận', value: s.khiVan, base: base?.s.khiVan },
-    { label: 'Tài', value: wealth, base: base?.wealth },
-    { label: 'Định', value: 100 - s.tamMa, base: base ? 100 - base.s.tamMa : undefined },
-    { label: 'Thọ', value: lifeV(life), base: base ? lifeV(base.life) : undefined },
+    { label: tr('Khỏe', "Health"), value: s.sucKhoe, base: base?.s.sucKhoe },
+    { label: tr('Tâm', "Mind"), value: s.tamCanh, base: base?.s.tamCanh },
+    { label: tr('Ngộ', "Insight"), value: s.ngoTinh, base: base?.s.ngoTinh },
+    { label: tr('Vận', "Luck"), value: s.khiVan, base: base?.s.khiVan },
+    { label: tr('Tài', "Wealth"), value: wealth, base: base?.wealth },
+    { label: tr('Định', "Calm"), value: 100 - s.tamMa, base: base ? 100 - base.s.tamMa : undefined },
+    { label: tr('Thọ', "Life"), value: lifeV(life), base: base ? lifeV(base.life) : undefined },
   ];
 }

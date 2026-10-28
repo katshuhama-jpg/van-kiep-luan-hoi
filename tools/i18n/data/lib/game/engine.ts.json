@@ -35,7 +35,7 @@
   "ph": [
    "c.lifeNo"
   ],
-  "en": ""
+  "en": "Life #{0}."
  },
  {
   "vi": "oan hồn đòi nợ từ kiếp trước",
@@ -764,7 +764,7 @@
  },
  {
   "vi": "Bà hàng xóm ",
-  "en": ""
+  "en": "The neighbor woman "
  },
  {
   "vi": "Chọn con đường tu tập",

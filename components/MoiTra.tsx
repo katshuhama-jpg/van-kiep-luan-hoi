@@ -4,6 +4,7 @@ import { useState, type ReactElement } from 'react';
 import { TRA_BANK, TRA_QR } from '@/lib/moiTra';
 import { track } from '@/lib/track';
 import { PixelFx, fxMotes, fxRays } from './PixelFx';
+import { tr } from '@/lib/i18n';
 
 const Q = 3; // vùng trống quanh mã, tính theo ô
 
@@ -16,7 +17,7 @@ export function TraQR({ size = 240 }: { size?: number }) {
     for (let c = 0; c < n; c++) if (row[c] === '1') cells.push(<rect key={`${r}-${c}`} x={c + Q} y={r + Q} width={1} height={1} fill={finder(r, c) ? '#8a1a1a' : '#2a1f18'} />);
   });
   return (
-    <svg className="tra-qr" viewBox={`0 0 ${n + Q * 2} ${n + Q * 2}`} width={size} height={size} shapeRendering="crispEdges" role="img" aria-label={`Mã QR chuyển khoản ${TRA_BANK.bank} ${TRA_BANK.acctText}`}>
+    <svg className="tra-qr" viewBox={`0 0 ${n + Q * 2} ${n + Q * 2}`} width={size} height={size} shapeRendering="crispEdges" role="img" aria-label={tr(`Mã QR chuyển khoản ${TRA_BANK.bank} ${TRA_BANK.acctText}`, `Bank transfer QR code ${TRA_BANK.bank} ${TRA_BANK.acctText}`)}>
       <rect width={n + Q * 2} height={n + Q * 2} fill="#f3e6c4" />
       {cells}
     </svg>
@@ -30,20 +31,21 @@ export default function MoiTra() {
     track('tra_copy');
     try {
       await navigator.clipboard.writeText(TRA_BANK.acct);
-      setMsg('Đã chép số tài khoản. Đa tạ đạo hữu!');
+      setMsg(tr('Đã chép số tài khoản. Đa tạ đạo hữu!', "Account number copied. Many thanks, fellow Daoist!"));
     } catch {
-      setMsg('Máy không cho chép, giữ ngón tay lên số tài khoản để chép.');
+      setMsg(tr('Máy không cho chép, giữ ngón tay lên số tài khoản để chép.', "Your device won't allow copying - press and hold the account number to copy it."));
     }
   }
   return (
     <section className="moi-tra" id="moi-tra" aria-labelledby="mt-title">
       <i className="mt-rod" aria-hidden="true" />
       <div className="mt-paper">
-        <span className="mt-kick">Ngộ đạo trà quán</span>
+        <span className="mt-kick">{tr("Ngộ đạo trà quán", "Enlightenment Tea House")}</span>
         <h2 id="mt-title" className="mt-title">
-          Mời tác giả một chén ngộ đạo trà!
+          
+          {tr("Mời tác giả một chén ngộ đạo trà!", "Treat the author to a cup of Enlightenment Tea!")}
         </h2>
-        <p className="mt-text">Nếu cảm thấy cõi tiên đồ họa hữu tình, game cuốn hút, đạo hữu có thể hoan hỉ mời bần đạo một chén trà để tái tạo linh lực, tiếp tục độ kiếp fix bug và có tiền mua sữa bỉm nuôi tiểu quỷ ở nhà.</p>
+        <p className="mt-text">{tr("Nếu cảm thấy cõi tiên đồ họa hữu tình, game cuốn hút, đạo hữu có thể hoan hỉ mời bần đạo một chén trà để tái tạo linh lực, tiếp tục độ kiếp fix bug và có tiền mua sữa bỉm nuôi tiểu quỷ ở nhà.", "If this immortal world's art charms you and the game has you hooked, fellow Daoist, you may joyfully treat this humble Daoist to a cup of tea - to restore my spiritual energy, keep braving the tribulation of bug fixing, and buy milk and diapers for the little demon at home.")}</p>
         <div className="mt-altar">
           <PixelFx spec={fxRays('#ffd36b')} scale={3} dur={2.4} className="pa mt-rays" />
           <PixelFx spec={fxMotes(14, '#ffd36b')} scale={3} dur={2} className="pa mt-motes" />
@@ -54,7 +56,7 @@ export default function MoiTra() {
             <i className="ml-stud d" aria-hidden="true" />
             <TraQR />
           </div>
-          <span className="mt-scan">Quét bằng app ngân hàng</span>
+          <span className="mt-scan">{tr("Quét bằng app ngân hàng", "Scan with your banking app")}</span>
         </div>
         <div className="mt-plaque">
           <span>
@@ -63,14 +65,17 @@ export default function MoiTra() {
             <em>{TRA_BANK.acctText}</em>
           </span>
           <button className="btn btn-red" onClick={copy}>
-            Chép số
+            
+            {tr("Chép số", "Copy number")}
           </button>
         </div>
         {msg && <small className="mt-msg">{msg}</small>}
         <span className="mt-sign" aria-hidden="true">
-          Bần đạo
+          
+          {tr("Bần đạo", "This humble Daoist")}
           <br />
-          đa tạ
+          
+          {tr("đa tạ", "thanks you")}
         </span>
       </div>
       <i className="mt-rod" aria-hidden="true" />
