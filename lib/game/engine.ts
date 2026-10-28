@@ -1369,8 +1369,15 @@ const OVERWORK: Record<string, { warn: string; hits: { p: number; run: (c: Chara
       {
         p: 1,
         run: (c, ctx) => {
-          // đã Độ Kiếp thì cướp phàm tục không lấy nổi mạng
-          const f = c.realm >= DO_KIEP_REALM ? null : fatal(c, ctx, 0.25, tr('Mang nhiều tiền đi đêm quá thường xuyên, bạn bị cướp giết bên bờ sông.', "Carrying too much money at night too often, you are robbed and killed by the river."));
+          // đã Độ Kiếp: không còn là cướp phàm tục mà là bọn tán tu chuyên đoạt đồ của người sắp độ kiếp
+          if (c.realm >= DO_KIEP_REALM && !c.cosmos) {
+            const f = fatal(c, ctx, 0.25, tr('Đoạt Kiếp Minh liên thủ bày Khốn Long Trận. Kiếp chưa kịp độ, bạn đã bị luyện thành tro giữa trận.', "The Tribulation Plunderers' League joins hands in a Dragon-Binding Array. Before you can face your tribulation, you are refined to ash inside it."));
+            if (f) return tr(`Tin bạn sắp độ kiếp lan khắp tu chân giới...${f}`, `Word that you are about to face tribulation spreads across the cultivation world...${f}`);
+            const lost = Math.round(c.linhThach * 0.35);
+            money(c, -lost);
+            return tr(`Tin bạn sắp độ kiếp lan ra. Ba tên tán tu Đoạt Kiếp Minh bày Khốn Long Trận chặn đường đoạt bảo vật hộ kiếp. Bạn phá trận thoát ra, mất ${lost} linh thạch.`, `Word spreads that you are about to face tribulation. Three rogue cultivators of the Tribulation Plunderers' League set a Dragon-Binding Array to seize your protective treasures. You break out, losing ${lost} spirit stones.`) + hurt(c, 25, ctx);
+          }
+          const f = fatal(c, ctx, 0.25, tr('Mang nhiều tiền đi đêm quá thường xuyên, bạn bị cướp giết bên bờ sông.', "Carrying too much money at night too often, you are robbed and killed by the river."));
           return f ? tr(`Lại một chuyến hàng đêm...${f}`, `Another night run with the goods...${f}`) : tr('Bị cướp chặn đường lúc đêm khuya, bạn bỏ của chạy lấy người.', "Robbers block your way late at night; you abandon the goods and run for your life.");
         },
       },

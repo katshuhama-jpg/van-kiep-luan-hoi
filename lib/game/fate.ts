@@ -47,8 +47,15 @@ const BULLY: Mishap[] = [
     id: 'am_sat_nham',
     w: (c) => (c.realm >= 1 ? 1 : 0.3),
     run: (c, ctx) => {
-      // đã Độ Kiếp thì mũi tên phàm tục không lấy nổi mạng
-      const f = c.realm >= DO_KIEP_REALM ? null : fatal(c, ctx, 0.12, tr('Sát thủ nhận nhầm người. Một mũi tên tẩm độc bay ra từ bóng tối. Bạn chết mà không biết vì sao.', "An assassin mistakes you for someone else. A poisoned arrow flies from the shadows. You die without ever knowing why."));
+      // đã Độ Kiếp: không phải sát thủ nhận nhầm mà là lôi kiếp của người khác nhận nhầm khí tức
+      if (c.realm >= DO_KIEP_REALM && !c.cosmos) {
+        const f = fatal(c, ctx, 0.12, tr('Lôi kiếp của người khác nhận nhầm khí tức. Chín đạo thiên lôi đánh lệch sang, bạn hóa tro thay cho kẻ ấy.', "Someone else's tribulation mistakes your aura for theirs. Nine bolts of heavenly lightning veer toward you, and you turn to ash in their place."));
+        if (c.dead) return f ?? '';
+        ctx.fx('lightning');
+        const t = hurt(c, r(ctx, 30, 50), ctx);
+        return tr(`Một lão quái gần đó độ kiếp, lôi vân nhận nhầm khí tức của bạn. Ba đạo thiên lôi đánh lệch sang, bạn gồng mình đỡ được.${t}`, `An old monster nearby is facing tribulation, and the thunderclouds mistake your aura for his. Three heavenly bolts veer your way; you brace and withstand them.${t}`);
+      }
+      const f = fatal(c, ctx, 0.12, tr('Sát thủ nhận nhầm người. Một mũi tên tẩm độc bay ra từ bóng tối. Bạn chết mà không biết vì sao.', "An assassin mistakes you for someone else. A poisoned arrow flies from the shadows. You die without ever knowing why."));
       if (c.dead) return f ?? '';
       const t = hurt(c, r(ctx, 30, 50), ctx);
       return tr(`Đêm khuya, sát thủ nhận nhầm bạn là mục tiêu. Bạn trúng một đao, may mà kêu cứu kịp.${t}${f ?? ''}`, `Late at night, an assassin mistakes you for his target. You take a blade, but luckily cry for help in time.${t}${f ?? ''}`);
