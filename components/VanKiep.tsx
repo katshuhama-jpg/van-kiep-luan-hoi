@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Sprite from './Sprite';
 import { foeChar } from '@/lib/game/duel';
-import { hoDaoCap, hoDaoPower, hoDaoTeam, lastWords, loadPastSelves, type PastSelf } from '@/lib/vanKiep';
+import { HO_DAO_MAX, hoDaoCap, hoDaoPower, lastWords, loadPastSelves, type PastSelf } from '@/lib/vanKiep';
 import { tuKiep, type KiepCard } from '@/lib/game/vanDao';
 import { realmLabel } from '@/lib/game/data';
 import type { Character } from '@/lib/game/types';
@@ -109,71 +109,99 @@ export function TuKiepOverlay({ c, onPass, onFail, rnd }: { c: Character; onPass
   );
 }
 
-type HPhase = 'fall' | 'gather' | 'shield' | 'end';
+type HPhase = 'fall' | 'gather' | 'pick' | 'finale' | 'end';
 
-/** Vạn Kiếp Hộ Đạo: hụt từ 4 đạo lôi, các kiếp trước hiện về đỡ thay */
+/** Kiếp từng chết dưới thiên kiếp: lần này đỡ lôi mạnh gấp rưỡi (báo thù thiên kiếp) */
+const lightningGrudge = (p: PastSelf) => /thiên kiếp|lôi kiếp|thiên lôi|tribulation|lightning/i.test(p.cause ?? '');
+const powerOf = (p: PastSelf) => Math.round(hoDaoPower(p) * (lightningGrudge(p) ? 1.5 : 1) * 10) / 10;
+
+/**
+ * Vạn Kiếp Hộ Đạo: hụt từ 4 đạo lôi, các kiếp trước hiện về. Người chơi chạm vào từng bóng để gửi lên đỡ lôi
+ * (tối đa 13 kiếp). Kiếp từng chết dưới thiên kiếp có dấu sét, đỡ gấp rưỡi. Đủ thì vạn kiếp đồng thanh hộ đạo.
+ */
 export function HoDaoScene({ c, need, onDone }: { c: Character; need: number; onDone: (saved: boolean) => void }) {
   const { user, ready } = useAuth();
   const [lives, setLives] = useState<PastSelf[] | null>(null);
   const [phase, setPhase] = useState<HPhase>('fall');
   const [shown, setShown] = useState(0);
-  const [idx, setIdx] = useState(-1);
+  const [sent, setSent] = useState<PastSelf[]>([]);
+  const [cur, setCur] = useState<PastSelf | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => () => void (timer.current && clearTimeout(timer.current)), []);
   useEffect(() => {
     if (!ready) return;
     loadPastSelves(user, 400).then(setLives).catch(() => setLives([]));
   }, [ready, user]);
-  const plan = useMemo(() => (lives ? hoDaoTeam(lives, need) : null), [lives, need]);
-  const crowd = useMemo(() => (lives ? lives.slice(-24) : []), [lives]);
+  // hàng bóng: 18 kiếp mạnh nhất (kể cả kiếp từng chết dưới thiên kiếp), xếp theo thứ tự kiếp
+  const crowd = useMemo(() => (lives ? lives.slice().sort((x, y) => powerOf(y) - powerOf(x) || y.lifeNo - x.lifeNo).slice(0, 18).sort((x, y) => x.lifeNo - y.lifeNo) : []), [lives]);
+  const absorbed = Math.round(sent.reduce((a, p) => a + powerOf(p), 0) * 10) / 10;
+  const saved = absorbed >= need;
+  const left = HO_DAO_MAX - sent.length;
+  const canSend = (p: PastSelf) => phase === 'pick' && !cur && !sent.some((x) => x.id === p.id) && left > 0;
 
-  // vạn kiếp hiện dần sau lưng
   useEffect(() => {
-    if (phase !== 'gather' || !lives) return;
-    if (shown >= crowd.length) return;
-    timer.current = setTimeout(() => setShown((s) => s + 1), shown < 6 ? 260 : 90);
-  }, [phase, shown, crowd.length, lives]);
+    if (phase !== 'gather' || shown >= crowd.length) return;
+    timer.current = setTimeout(() => setShown((s) => s + 1), shown < 6 ? 260 : 110);
+  }, [phase, shown, crowd.length]);
 
-  // từng kiếp lao lên đỡ lôi
-  useEffect(() => {
-    if (phase !== 'shield' || !plan) return;
-    if (idx >= plan.team.length - 1) {
-      timer.current = setTimeout(() => setPhase('end'), 1400);
-      return;
-    }
-    timer.current = setTimeout(() => setIdx((i) => i + 1), idx < 0 ? 500 : 1900);
-  }, [phase, idx, plan]);
-
-  const absorbed = plan ? Math.round(plan.team.slice(0, idx + 1).reduce((a, p) => a + hoDaoPower(p), 0) * 10) / 10 : 0;
-  const cur = plan && idx >= 0 ? plan.team[idx] : null;
-  const skip = () => {
-    if (phase === 'shield' && plan) {
-      setIdx(plan.team.length - 1);
-      setPhase('end');
-    }
+  const send = (p: PastSelf) => {
+    if (!canSend(p)) return;
+    setCur(p);
+    timer.current = setTimeout(() => {
+      const next = [...sent, p];
+      setSent(next);
+      setCur(null);
+      const tot = next.reduce((a, x) => a + powerOf(x), 0);
+      const rest = crowd.filter((x) => !next.some((y) => y.id === x.id));
+      if (tot >= need) {
+        setPhase('finale');
+        timer.current = setTimeout(() => setPhase('end'), 2600);
+      } else if (next.length >= HO_DAO_MAX || !rest.length) timer.current = setTimeout(() => setPhase('end'), 700);
+    }, 1900);
+  };
+  // gửi nhanh: bóng mạnh nhất còn lại
+  const sendBest = () => {
+    const rest = crowd.filter((x) => !sent.some((y) => y.id === x.id)).sort((x, y) => powerOf(y) - powerOf(x));
+    if (rest[0]) send(rest[0]);
   };
 
   return (
-    <div className={`kiep hd hd-${phase}`} role="dialog" aria-label={tr('Vạn Kiếp Hộ Đạo', 'Guarded by Ten Thousand Lives')} onPointerDown={phase === 'shield' ? skip : undefined}>
-      <KiepSky phase={phase === 'shield' ? 'warn' : 'calm'} />
+    <div className={`kiep hd hd-${phase}`} role="dialog" aria-label={tr('Vạn Kiếp Hộ Đạo', 'Guarded by Ten Thousand Lives')}>
+      <KiepSky phase={phase === 'pick' || phase === 'finale' ? 'warn' : 'calm'} />
       {cur && <i key={cur.id} className="hd-bolt" aria-hidden="true" />}
-      <div className="hd-crowd" aria-hidden="true">
+      {phase === 'finale' && <i className="hd-flash" aria-hidden="true" />}
+      <div className="hd-crowd">
         {crowd.slice(0, phase === 'fall' ? 0 : phase === 'gather' ? shown : crowd.length).map((p, i) => {
-          const gone = plan ? plan.team.slice(0, idx + 1).some((t) => t.id === p.id) : false;
+          const gone = sent.some((t) => t.id === p.id);
+          const grudge = lightningGrudge(p);
           return (
-            <span key={p.id} className={`hd-ghost ${gone ? 'gone' : ''} ${cur?.id === p.id ? 'cur' : ''}`} style={{ ['--i' as string]: i }}>
+            <button
+              key={p.id}
+              type="button"
+              className={`hd-ghost ${gone ? 'gone' : ''} ${cur?.id === p.id ? 'cur' : ''} ${canSend(p) ? 'can' : ''} ${phase === 'finale' && !gone ? 'roar' : ''}`}
+              style={{ ['--i' as string]: i }}
+              onClick={() => send(p)}
+              disabled={!canSend(p)}
+              aria-label={tr(`Gửi kiếp ${p.lifeNo} ${p.name} lên đỡ ${powerOf(p)} đạo`, `Send life ${p.lifeNo} ${p.name} to take ${powerOf(p)} bolts`)}
+            >
               <PastSelfSprite p={p} size={48} />
-            </span>
+              {phase === 'pick' && !gone && (
+                <em className={grudge ? 'zap' : ''}>
+                  {grudge ? '⚡' : ''}
+                  {powerOf(p)}
+                </em>
+              )}
+            </button>
           );
         })}
       </div>
       <div className="hd-stage" aria-hidden="true">
-        {cur && phase === 'shield' && (
+        {cur && (
           <span key={cur.id} className="hd-front">
             <PastSelfSprite p={cur} size={92} anim="spellcast" />
           </span>
         )}
-        <span className={`hd-hero ${phase === 'fall' ? 'down' : ''} ${phase === 'shield' ? 'back' : ''}`}>
+        <span className={`hd-hero ${phase === 'fall' ? 'down' : ''} ${cur ? 'back' : ''} ${phase === 'finale' ? 'rise' : ''}`}>
           <Sprite c={c} size={96} anim={phase === 'fall' ? 'hurt' : 'spellcast'} dir={2} />
         </span>
       </div>
@@ -185,47 +213,54 @@ export function HoDaoScene({ c, need, onDone }: { c: Character; need: number; on
             <p>{tr(`Hụt ${need} đạo lôi. Đạo cơ rạn vỡ. Đạo lôi cuối cùng đang giáng xuống...`, `You missed ${need} bolts. Your Dao foundation shatters. The final bolt is coming down...`)}</p>
             <p className="vd-text">{tr('Sau lưng bạn, có tiếng bước chân.', 'Behind you, footsteps.')}</p>
             <button className="btn btn-red btn-big" onClick={() => setPhase('gather')} disabled={!lives}>
-              {lives ? tr('Quay lại nhìn', 'Look back') : tr('...', '...')}
+              {lives ? tr('Quay lại nhìn', 'Look back') : '...'}
             </button>
           </div>
         )}
-        {phase === 'gather' && lives && plan && (
+        {phase === 'gather' && lives && (
           <div className="kiep-card">
             <p className="kiep-big">{tr(`${lives.length} kiếp của bạn hiện về`, `${lives.length} of your lives return`)}</p>
-            <p>{tr('Những người bạn từng là, đứng thành hàng trên đỉnh lôi. Không ai nói gì.', 'Everyone you have ever been, standing in a line on the peak. No one says a word.')}</p>
-            <button className="btn btn-red btn-big" onClick={() => setPhase('shield')} disabled={shown < Math.min(crowd.length, 6)}>
+            <p>{tr('Những người bạn từng là, đứng thành hàng trên đỉnh lôi. Không ai nói gì. Họ chờ bạn gọi.', 'Everyone you have ever been, standing in a line on the peak. No one says a word. They are waiting for your call.')}</p>
+            <button className="btn btn-red btn-big" onClick={() => setPhase('pick')} disabled={shown < Math.min(crowd.length, 6)}>
               {tr('Đứng dậy', 'Stand up')}
             </button>
           </div>
         )}
-        {phase === 'shield' && plan && (
+        {phase === 'pick' && (
           <div className="hd-words">
-            <p className="hd-count">{tr(`Đã đỡ thay ${absorbed}/${need} đạo lôi`, `Took ${absorbed}/${need} bolts for you`)}</p>
+            <p className="hd-count">{tr(`Đã đỡ thay ${absorbed}/${need} đạo lôi · còn gọi được ${left} kiếp`, `Took ${absorbed}/${need} bolts · ${left} more can answer`)}</p>
             <div className="hd-bar" aria-hidden="true">
               <i style={{ width: `${Math.min(100, (absorbed / need) * 100)}%` }} />
             </div>
-            {cur && (
+            {cur ? (
               <p key={cur.id} className="hd-line">
                 <small>
                   {tr('Kiếp', 'Life')} {cur.lifeNo} · {cur.name} · {cur.realm === 0 ? tr('Phàm nhân', 'Mortal') : realmLabel(cur.realm, 1)}
-                  {hoDaoPower(cur) < 0.5 ? tr(' · vẫn lao lên', ' · leaps up anyway') : ''}
+                  {lightningGrudge(cur) ? tr(' · từng chết dưới thiên kiếp, lần này ta đỡ!', ' · once killed by tribulation - this time I hold it!') : hoDaoPower(cur) < 0.5 ? tr(' · vẫn lao lên', ' · leaps up anyway') : ''}
                 </small>
                 “{lastWords(cur)}”
               </p>
+            ) : (
+              <>
+                <p className="hd-hint">{tr('Chạm vào một kiếp để gọi họ lên đỡ lôi. Số trên đầu là số đạo họ đỡ được, có dấu ⚡ là kiếp từng chết dưới thiên kiếp, đỡ gấp rưỡi.', 'Tap a life to call them up. The number is how many bolts they can take; ⚡ marks a life once killed by tribulation, which takes 1.5x.')}</p>
+                <button className="btn hd-best" onClick={sendBest}>
+                  {tr('Gọi kiếp mạnh nhất', 'Call the strongest')}
+                </button>
+              </>
             )}
-            <small className="hd-skip">{tr('Chạm để xem nhanh', 'Tap to skip')}</small>
           </div>
         )}
-        {phase === 'end' && plan && (
+        {phase === 'finale' && <p className="hd-roar">{tr('Vạn kiếp đồng thanh: “Đi đi!”', 'Ten thousand lives cry out together: "Go!"')}</p>}
+        {phase === 'end' && (
           <div className="kiep-card">
-            <p className="kiep-big">{plan.saved ? tr('VẠN KIẾP HỘ ĐẠO', 'GUARDED BY TEN THOUSAND LIVES') : tr('Chưa đủ...', 'Not yet enough...')}</p>
+            <p className="kiep-big">{saved ? tr('VẠN KIẾP HỘ ĐẠO', 'GUARDED BY TEN THOUSAND LIVES') : tr('Chưa đủ...', 'Not yet enough...')}</p>
             <p>
-              {plan.saved
-                ? tr(`${plan.team.length} kiếp đã lao lên đỡ thay ${need} đạo lôi. Bạn không chứng đạo một mình.`, `${plan.team.length} lives leapt up and took ${need} bolts for you. You did not attain the Dao alone.`)
-                : tr(`${plan.team.length} kiếp đã lao lên, đỡ được ${plan.total}/${need} đạo. Bạn hóa thành bóng, đứng đầu hàng. Lần sau, bạn sẽ là người đỡ.`, `${plan.team.length} lives leapt up and took ${plan.total}/${need} bolts. You become a shadow at the head of the line. Next time, you will be the one who shields.`)}
+              {saved
+                ? tr(`${sent.length} kiếp đã lao lên đỡ thay ${need} đạo lôi, cả hàng vạn kiếp đồng thanh tiễn bạn. Bạn không chứng đạo một mình.`, `${sent.length} lives leapt up to take ${need} bolts, and the whole line cried out to send you on. You did not attain the Dao alone.`)
+                : tr(`${sent.length} kiếp đã lao lên, đỡ được ${absorbed}/${need} đạo. Bạn hóa thành bóng, đứng đầu hàng. Lần sau, bạn sẽ là người đỡ.`, `${sent.length} lives leapt up and took ${absorbed}/${need} bolts. You become a shadow at the head of the line. Next time, you will be the one who shields.`)}
             </p>
-            <button className="btn btn-red btn-big" onClick={() => onDone(plan.saved)}>
-              {plan.saved ? tr('Chứng đạo', 'Attain the Dao') : tr('Đứng vào hàng', 'Join the line')}
+            <button className="btn btn-red btn-big" onClick={() => onDone(saved)}>
+              {saved ? tr('Chứng đạo', 'Attain the Dao') : tr('Đứng vào hàng', 'Join the line')}
             </button>
           </div>
         )}

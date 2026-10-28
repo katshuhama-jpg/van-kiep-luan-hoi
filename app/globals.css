@@ -4361,7 +4361,7 @@ button.shadow-card { cursor: pointer; }
 @keyframes vkIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
 .vd { justify-content: flex-start; padding: 18px 14px; overflow-y: auto; background: #0e0a1a; }
-.vd > *:not(.kiep-px):not(.vd-redveil), .hd > *:not(.kiep-px):not(.hd-bolt) { position: relative; z-index: 1; }
+.vd > *:not(.kiep-px):not(.vd-redveil), .hd > *:not(.kiep-px):not(.hd-bolt):not(.hd-flash) { position: relative; z-index: 1; }
 .vd-redveil { position: absolute; inset: 0; background: #7a0a1e; opacity: 0.35; pointer-events: none; animation: kiepShake 0.3s steps(3); }
 .vd-steps { display: flex; gap: 6px; margin-bottom: 8px; }
 .vd-steps i { width: 26px; height: 8px; background: #3a2e5a; }
@@ -4400,3 +4400,19 @@ button.shadow-card { cursor: pointer; }
 .hd-skip { color: #6a5a8a; font-size: 12px; }
 .hd-bolt { position: absolute; top: 0; left: calc(50% - 4px); width: 8px; height: 52%; background: #fff6a8; box-shadow: 0 0 12px #fff6a8, 0 0 30px #9fd8ff; animation: hdBolt 0.6s steps(3) forwards; z-index: 3; }
 @keyframes hdBolt { 0% { opacity: 0; } 20% { opacity: 1; } 100% { opacity: 0; } }
+
+.hd-ghost { background: none; border: 0; padding: 0; position: relative; cursor: default; }
+.hd-ghost.can { cursor: pointer; animation: vkIn 0.4s steps(3) forwards, hdBreath 1.6s steps(4) 0.4s infinite alternate; }
+.hd-ghost.can:hover, .hd-ghost.can:active { filter: brightness(1.4) drop-shadow(0 0 6px #ffe27a); }
+.hd-ghost em { position: absolute; top: -4px; left: 50%; transform: translateX(-50%); font-style: normal; font-size: 11px; font-weight: 700; color: #0e0a1a; background: #9ff0c8; padding: 0 3px; line-height: 14px; }
+.hd-ghost em.zap { background: #ffe27a; }
+.hd-ghost.roar { animation: hdRoar 0.5s steps(2) 4 alternate; filter: brightness(1.6) drop-shadow(0 0 8px #ffe27a); }
+@keyframes hdBreath { to { transform: translateY(-2px); } }
+@keyframes hdRoar { to { transform: translateY(-10px); } }
+.hd-hint { font-size: 14px; line-height: 1.45; color: #e8dcff; margin: 10px 0; }
+.hd-best { background: #2a2048; color: #fff6d0; border: 2px solid #5a4a8a; padding: 8px 14px; }
+.hd-hero.rise { animation: hdRise 2.4s steps(8) forwards; }
+@keyframes hdRise { to { transform: translateY(-40px); filter: brightness(1.6) drop-shadow(0 0 14px #ffe27a); } }
+.hd-flash { position: absolute; inset: 0; background: #fff6c8; z-index: 4; pointer-events: none; animation: hdFlash 2.4s steps(6) forwards; }
+@keyframes hdFlash { 0% { opacity: 0; } 15% { opacity: 0.85; } 40% { opacity: 0.2; } 55% { opacity: 0.7; } 100% { opacity: 0; } }
+.hd-roar { position: relative; z-index: 5; font-size: 22px; font-weight: 700; color: #ffe27a; text-align: center; text-shadow: 0 2px 0 #3a2864; animation: kiepShake 0.3s steps(3) 3; }
