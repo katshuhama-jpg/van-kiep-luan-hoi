@@ -1757,7 +1757,7 @@ export default function PlayPage() {
                 setLang(lang() === 'en' ? 'vi' : 'en');
               }}
             >
-              {lang() === 'en' ? tr('Tiếng Việt', "Tiếng Việt") : 'English'}
+              {lang() === 'en' ? '🇻🇳 Tiếng Việt' : '🇬🇧 English'}
             </button>
             <Link className="btn btn-jade" href="/gop-y" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
               

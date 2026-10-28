@@ -4206,3 +4206,10 @@ button.shadow-card { cursor: pointer; }
 
 /* Nút đổi ngôn ngữ */
 .lang-btn { font: inherit; font-size: 14px; font-weight: 700; letter-spacing: 0.04em; }
+
+/* Chọn ngôn ngữ: hai nút có cờ */
+.lang-seg { display: inline-flex; border: 3px solid var(--ink, #1f160d); box-shadow: 2px 2px 0 #1f160d; background: #f3e6c4; }
+.lang-seg button { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; font: inherit; font-size: 15px; font-weight: 700; color: #1f160d; background: transparent; border: 0; cursor: pointer; }
+.lang-seg button + button { border-left: 3px solid var(--ink, #1f160d); }
+.lang-seg button.on { color: #fff8e6; background: #8a1a1a; }
+.lang-seg button span { font-size: 16px; line-height: 1; }
