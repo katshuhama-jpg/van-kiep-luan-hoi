@@ -15,6 +15,7 @@ import { collectorTitle } from '@/lib/game/collect';
 import { SOCIAL, type SocialState } from '@/lib/game/social';
 import { bountyBoard, loadSocial, oanGia, type BountyRow, type OanGia } from '@/lib/social';
 import { tr } from '@/lib/i18n';
+import ChungDaoBoard from '@/components/ChungDaoBoard';
 
 const LEANS: { id: RankLean; name: string }[] = [
   { id: 'all', name: tr('Tất cả', "All") },
@@ -85,6 +86,7 @@ export default function RankPage() {
   const [coll, setColl] = useState<Record<string, number>>({});
   const [lm, setLm] = useState<Record<string, string>>({});
   const [truy, setTruy] = useState(false);
+  const [cd, setCd] = useState(false); // Bảng Chứng Đạo
   // lôi đài đã có trang riêng
   useEffect(() => {
     if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('tab') === 'loi-dai') window.location.replace('/loi-dai');
@@ -141,14 +143,15 @@ export default function RankPage() {
         </div>
       </header>
 
-      <div className="tabs tabs-4" role="tablist" style={{ margin: 0 }}>
+      <div className="tabs tabs-4 tabs-5" role="tablist" style={{ margin: 0 }}>
         <button
           role="tab"
-          aria-selected={!truy && kind === 'power'}
-          className={!truy && kind === 'power' ? 'on' : ''}
+          aria-selected={!truy && !cd && kind === 'power'}
+          className={!truy && !cd && kind === 'power' ? 'on' : ''}
           onClick={() => {
             setKind('power');
             setTruy(false);
+            setCd(false);
           }}
         >
           
@@ -156,11 +159,12 @@ export default function RankPage() {
         </button>
         <button
           role="tab"
-          aria-selected={!truy && kind === 'wealth'}
-          className={!truy && kind === 'wealth' ? 'on' : ''}
+          aria-selected={!truy && !cd && kind === 'wealth'}
+          className={!truy && !cd && kind === 'wealth' ? 'on' : ''}
           onClick={() => {
             setKind('wealth');
             setTruy(false);
+            setCd(false);
           }}
         >
           
@@ -168,11 +172,12 @@ export default function RankPage() {
         </button>
         <button
           role="tab"
-          aria-selected={!truy && kind === 'age'}
-          className={!truy && kind === 'age' ? 'on' : ''}
+          aria-selected={!truy && !cd && kind === 'age'}
+          className={!truy && !cd && kind === 'age' ? 'on' : ''}
           onClick={() => {
             setKind('age');
             setTruy(false);
+            setCd(false);
           }}
         >
           
@@ -180,16 +185,32 @@ export default function RankPage() {
         </button>
         <button
           role="tab"
+          aria-selected={cd}
+          className={cd ? 'on' : ''}
+          onClick={() => {
+            setCd(true);
+            setTruy(false);
+          }}
+        >
+          {tr("Chứng Đạo", "Dao")}
+        </button>
+        <button
+          role="tab"
           aria-selected={truy}
           className={truy ? 'on' : ''}
-          onClick={() => setTruy(true)}
+          onClick={() => {
+            setTruy(true);
+            setCd(false);
+          }}
         >
           
           {tr("Truy nã", "Wanted")}
         </button>
       </div>
 
-      {truy ? (
+      {cd ? (
+        <ChungDaoBoard me={user?.username ?? null} />
+      ) : truy ? (
         <section className="gh-truy">
           <h3 className="gh-h">{tr("Bảng truy nã", "Wanted board")}</h3>
           {board === null ? (

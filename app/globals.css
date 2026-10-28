@@ -4453,3 +4453,24 @@ button.shadow-card { cursor: pointer; }
 .lw-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; padding: 8px 12px calc(8px + env(safe-area-inset-bottom)); background: #f6ead0; border-top: 3px solid var(--ink, #3b2a1a); display: flex; justify-content: center; }
 .lw-bar-go { width: 100%; max-width: 460px; display: flex !important; flex-direction: column; align-items: center; line-height: 1.15; text-decoration: none; }
 .lw-bar-go small { font-size: 13px; font-weight: 500; opacity: 0.9; }
+
+/* Bảng Chứng Đạo */
+.tabs-5 button { font-size: 13px; }
+.cdb-sort { display: flex; gap: 4px; margin: 6px 0; }
+.cdb-sort button { flex: 1; border: 2px solid var(--ink); background: var(--paper-2); min-height: 34px; font-size: 13px; }
+.cdb-sort button.on { background: #8a1a1a; color: #fff6dc; }
+.cdb-me { margin: 6px 0; font-weight: 700; color: var(--red-d); }
+
+/* Con đường sau chứng đạo */
+.scd { margin: 10px 0; padding: 10px 12px; background: #fff6dc; border: 3px solid #c9962e; box-shadow: 0 3px 0 #8a6a1a; }
+.scd > small { color: #8a6a1a; font-weight: 700; letter-spacing: 0.04em; }
+.scd-rank { margin: 4px 0; font-weight: 700; color: var(--red-d); }
+.scd-next { margin: 4px 0; font-size: 15px; line-height: 1.4; }
+.scd-next em { color: #6a5a46; }
+.scd-open { font-size: 13px; padding: 4px 10px; }
+.scd-road { list-style: none; padding: 0; margin: 6px 0; font-size: 14px; }
+.scd-road li { padding: 3px 0; }
+.scd-road li.done { color: #2f6b5a; }
+.scd-wish { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+.scd-wish label { font-weight: 700; font-size: 14px; }
+.scd-wish textarea { width: 100%; font: inherit; padding: 6px; border: 2px solid var(--ink); background: #fffaf0; }

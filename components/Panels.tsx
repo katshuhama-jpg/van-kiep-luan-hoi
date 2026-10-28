@@ -1,6 +1,7 @@
 'use client';
 
 import { VanKiepRow } from './VanKiep';
+import SauChungDao from './SauChungDao';
 import Link from 'next/link';
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { ENDINGS, RARE_COLOR, endingOf } from '@/lib/game/endings';
@@ -1199,6 +1200,7 @@ export function DeathSheet({
           </small>
         </span>
       </div>
+      {c.endTag === 'chung_dao' && <SauChungDao c={c} meta={meta} />}
       <VanKiepRow c={c} />
       <p>
         

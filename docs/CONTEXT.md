@@ -100,6 +100,15 @@ Vòng chơi một kiếp:
 - **Vạn Kiếp Hộ Đạo** (`HoDaoScene`, người chơi chạm từng bóng để gọi lên đỡ, có nút "Gọi kiếp mạnh nhất"; hàng hiện 18 kiếp mạnh nhất kèm số đạo đỡ được; kiếp từng chết dưới thiên kiếp có dấu ⚡ đỡ gấp rưỡi; đủ thì cả hàng đồng thanh "Đi đi!", chớp sáng, nhân vật bay lên): hụt từ 4 đạo, các kiếp trước (bảng `vkl_lives` của chính mình, khách lấy `vkl.lives`) hiện về thành bóng pixel, lần lượt lao lên đỡ thay, mỗi bóng để lại câu khắc bia người chơi từng viết. Sức đỡ theo cảnh giới lúc chết (`hoDaoPower`: phàm 0,2; Luyện Khí-Trúc Cơ 0,4; Kim Đan-Nguyên Anh 0,6; Hóa Thần-Luyện Hư 1; Độ Kiếp 1,4; phi thăng 2). Mỗi đạo lôi chỉ một kiếp đỡ, tối đa 13 kiếp mạnh nhất (`HO_DAO_MAX`, `hoDaoCap`), nên farm kiếp chết yểu không giúp gì (100 kiếp phàm nhân cũng chỉ đỡ 2,6 đạo). Đủ thì chứng đạo kèm kết cục `van_kiep_ho_dao`; thiếu thì kết cục `dao_khon` (Đứng Đầu Vạn Kiếp).
 - **Thấy ngay:** màn cáo biệt của mọi kiếp có hàng bóng kiếp trước (`VanKiepRow`), kiếp vừa hết bước vào hàng, kèm số đạo lôi họ đủ sức đỡ.
 - Phần chung dùng lại được: `lib/vanKiep.ts` (`loadPastSelves`, `hoDaoPower`, `hoDaoTeam`, `lastWords`), `PastSelfSprite`. Ý tưởng dựng tiếp: Tàng Kiếp Các, Luân Hồi Wrapped, hộ đạo ở Ngũ Hành Đài và thiên kiếp Độ Kiếp, ngày giỗ, sư phụ kiếp trước, tiền duyên, hộ đạo cho bằng hữu.
+- **Bảng Chứng Đạo** (29/10): tab thứ 5 ở Xếp hạng (`components/ChungDaoBoard.tsx`, dữ liệu `lib/chungDaoBoard.ts` đọc `vkl_lives` có `look->>endTag = chung_dao`). Ba cách xếp: Nhiều lần nhất, Nhanh nhất (kiếp số nhỏ nhất), Vạn kiếp hộ đạo (số lần chứng đạo nhờ kiếp trước, nhận qua câu `cause`). Có dòng hạng của mình.
+- **Con đường sau chứng đạo** (`components/SauChungDao.tsx`): hiện ngay trên màn cáo biệt khi kết cục là chứng đạo. Hạng trên Bảng Chứng Đạo, "Bước tiếp theo" (kết cục gần nhất, thiên thư, Kẻ Gõ Chuông, bảo khố), nút xem cả con đường, và ô hỏi "Muốn Thiên Đạo thêm gì cho giang hồ?" gửi vào góp ý loại `tinh_nang` với tiền tố `[Sau chứng đạo]`.
+
+## 4b0. Trang đầu kiểu 1in8b (29/10)
+
+- `components/LiveWorld.tsx`: số người đang tu (RPC `vkl_online_now`, đếm sid trong 3 phút), số kiếp vừa hết trong 1 giờ, dải tin chạy 30 kiếp mới nhất, điềm trời hôm nay, 3 mộ mới nhất có nút thắp hương. `ContinueBar`: thanh dính đáy "Tiếp tục" hoặc "Đầu thai ngay".
+- `/en`: trang server có OG tiếng Anh (`public/og-en.png`) rồi chuyển sang `/?lang=en`. Link chia sẻ cho người nước ngoài dùng `/en`.
+- Tracker chỉ ghi `open` một lần mỗi tab (sessionStorage `vkl.opened`), tải lại tính là `page`.
+- Xếp hạng hòa điểm: ai đạt trước đứng trên (`rankAt`, cần chạy `supabase/leaderboard_tie_order.sql`).
 
 ## 4b2. Ngũ Hành Vấn Tâm Đài và điều kiện phi thăng
 
