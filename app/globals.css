@@ -3316,19 +3316,18 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 
 /* bia mộ riêng của ba cõi */
 .cos-tomb { position: relative; height: 120px; margin: 0 0 10px; overflow: hidden; border: 3px solid var(--ink); image-rendering: pixelated; }
-.cos-tomb .sky { position: absolute; inset: 0; }
-.cos-tomb .stele { position: absolute; left: 50%; bottom: 10px; width: 54px; height: 78px; transform: translateX(-50%); border: 3px solid #1f160d; border-radius: 26px 26px 0 0; }
-.cos-tomb b { position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); writing-mode: vertical-rl; font-size: 12px; line-height: 1; letter-spacing: 0.05em; white-space: nowrap; }
-.cos-tomb.tien .sky { background: linear-gradient(#f6c27a, #fdf2e2 70%, #ffffff); }
-.cos-tomb.tien .sky::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 26px; background: repeating-radial-gradient(circle at 12px 18px, #fff 0 10px, transparent 11px 24px); }
-.cos-tomb.tien .stele { background: linear-gradient(90deg, #f2f6ff, #d8e4f4); box-shadow: 0 0 18px #ffe9a0; }
+.cos-tomb .sky { position: absolute; inset: 0; background: #0e0a1a center 62% / cover no-repeat; image-rendering: pixelated; }
+.cos-tomb.tien .sky { background-image: url(/bg/tien-0.png); }
+.cos-tomb.ma .sky { background-image: url(/bg/ma-0.png); }
+.cos-tomb.hu .sky { background-image: url(/bg/hu-0.png); }
+.cos-tomb .stele { position: absolute; left: 50%; bottom: 6px; width: 54px; height: 78px; transform: translateX(-50%); image-rendering: pixelated; }
+.cos-tomb b { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); writing-mode: vertical-rl; font-size: 12px; line-height: 1; letter-spacing: 0.05em; white-space: nowrap; }
 .cos-tomb.tien b { color: #8a6a1a; }
-.cos-tomb.ma .sky { background: radial-gradient(circle at 26% 30%, #d8402a 0 18px, #6a1218 19px 23px, transparent 24px), linear-gradient(#12070c, #4e1018 75%, #1a0608); }
-.cos-tomb.ma .stele { background: linear-gradient(90deg, #2a1c22, #120a10); border-color: #7a1420; box-shadow: 0 0 14px #c0102a; }
 .cos-tomb.ma b { color: #ff6a5a; }
-.cos-tomb.hu .sky { background: radial-gradient(circle at 70% 30%, #a08cff 0 1px, transparent 2px) 0 0 / 23px 19px, radial-gradient(circle at 30% 60%, #fff 0 1px, transparent 2px) 0 0 / 31px 27px, linear-gradient(#06061a, #1a1446); }
-.cos-tomb.hu .stele { bottom: 22px; background: linear-gradient(90deg, #6a52aa, #2a1a4a); border-radius: 8px; height: 66px; animation: huFloat 3s steps(6) infinite alternate; }
-.cos-tomb.hu b { color: #e8e4ff; bottom: 30px; animation: huFloat 3s steps(6) infinite alternate; }
+.cos-tomb.hu .stele, .cos-tomb.hu b { animation: huFloat 3s steps(6) infinite alternate; }
+.cos-tomb.hu b { color: #e8e4ff; }
+.cos-tomb .ct-beam { position: absolute; left: 50%; top: 0; width: 70px; height: 100%; transform: translateX(-50%); animation: ctBeam 1.6s steps(4) infinite alternate; }
+@keyframes ctBeam { from { opacity: 0.6; } to { opacity: 1; } }
 @keyframes huFloat { to { translate: 0 -6px; } }
 .grave-cos { align-self: center; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; padding: 0 6px; border: 1px solid currentColor; }
 .grave.cos-tien { background: linear-gradient(#fffaf0, #f2e8d0); border-color: #c9962e; box-shadow: 4px 4px 0 var(--shadow), 0 0 14px rgba(255, 226, 122, 0.6); }

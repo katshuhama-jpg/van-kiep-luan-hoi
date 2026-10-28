@@ -1138,9 +1138,34 @@ export function DeathSheet({
       }
     >
       {c.cosmos && (
-        <div className={`cos-tomb ${c.cosmos}`} aria-hidden="true">
+        <div className={`cos-tomb ${c.cosmos} ${c.endTag === 'chung_dao' ? 'cd' : ''}`} aria-hidden="true">
           <i className="sky" />
-          <i className="stele" />
+          {c.endTag === 'chung_dao' && (
+            <svg className="ct-beam" viewBox="0 0 32 40" preserveAspectRatio="none" shapeRendering="crispEdges">
+              <rect x="10" y="0" width="12" height="40" fill="#ffd36b" opacity="0.35" />
+              <rect x="13" y="0" width="6" height="40" fill="#ffe27a" opacity="0.7" />
+              <rect x="15" y="0" width="2" height="40" fill="#fff6c8" />
+            </svg>
+          )}
+          <svg className="stele" viewBox="0 0 18 26" shapeRendering="crispEdges">
+            {(() => {
+              const pal = c.cosmos === 'ma' ? ['#120a10', '#2a1c22', '#3a2a32', '#7a1420'] : c.cosmos === 'hu' ? ['#1a1030', '#2a1a4a', '#6a52aa', '#a08cff'] : ['#1f160d', '#b8c4d8', '#e8eef8', '#ffffff'];
+              return (
+                <>
+                  <rect x="5" y="0" width="8" height="1" fill={pal[0]} />
+                  <rect x="3" y="1" width="12" height="1" fill={pal[0]} />
+                  <rect x="2" y="2" width="14" height="1" fill={pal[0]} />
+                  <rect x="1" y="3" width="16" height="23" fill={pal[0]} />
+                  <rect x="5" y="1" width="8" height="1" fill={pal[2]} />
+                  <rect x="3" y="2" width="12" height="1" fill={pal[2]} />
+                  <rect x="2" y="3" width="14" height="22" fill={pal[1]} />
+                  <rect x="2" y="3" width="10" height="22" fill={pal[2]} />
+                  <rect x="3" y="3" width="2" height="20" fill={pal[3]} />
+                  <rect x="0" y="24" width="18" height="2" fill={pal[0]} />
+                </>
+              );
+            })()}
+          </svg>
           <b>{c.cosmos === 'ma' ? tr('Ma Trủng', "Demon Tomb") : c.cosmos === 'hu' ? tr('Hư Trủng', "Void Tomb") : tr('Tiên Trủng', "Immortal Tomb")}</b>
         </div>
       )}
