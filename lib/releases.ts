@@ -421,7 +421,7 @@ export const RELEASES: Release[] = [
     v: '1.0.0',
     date: '25/10/2026',
     title: tr('Khai Thiên', "Genesis"),
-    lead: tr('Vạn Kiếp Luân Hồi ra đời: một kiếp người, vạn con đường tu tiên.', "Vạn Kiếp Luân Hồi is born: one human life, ten thousand paths to immortality."),
+    lead: tr('Vạn Kiếp Luân Hồi ra đời: một kiếp người, vạn con đường tu tiên.', "Ten Thousand Rebirths is born: one human life, ten thousand paths to immortality."),
     groups: [
       {
         h: tr('Tính năng', "Features"),

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   ...pageMeta(null, SITE_DESC),
   title: { default: tr(`${SITE_NAME} - Game pixel tu tiên trùng sinh`, `${SITE_NAME} - Pixel xianxia rebirth game`), template: `%s · ${SITE_NAME}` },
   applicationName: SITE_NAME,
-  keywords: [tr('Vạn Kiếp Luân Hồi', "Vạn Kiếp Luân Hồi"), tr('game tu tiên', "xianxia game"), 'game pixel', tr('trùng sinh', "rebirth"), tr('luân hồi', "reincarnation"), tr('tu tiên online', "online cultivation"), 'game web', tr('phi thăng', "ascension"), tr('kiếm hiệp', "wuxia"), tr('game Việt', "Vietnamese game")],
+  keywords: [tr('Vạn Kiếp Luân Hồi', "Ten Thousand Rebirths"), tr('game tu tiên', "xianxia game"), 'game pixel', tr('trùng sinh', "rebirth"), tr('luân hồi', "reincarnation"), tr('tu tiên online', "online cultivation"), 'game web', tr('phi thăng', "ascension"), tr('kiếm hiệp', "wuxia"), tr('game Việt', "Vietnamese game")],
   category: 'game',
   robots: { index: true, follow: true },
 };

@@ -136,7 +136,7 @@ export async function shareLife(c: Character, ending: Ending, isNew: boolean, ep
   if (!cv || !og) return null;
   const { grade } = gradeOf(c, ending, isNew);
   const title = tr(`${c.name}, kiếp ${c.lifeNo}: ${ending.name} · Xếp loại ${grade}`, `${c.name}, life ${c.lifeNo}: ${ending.name} · Grade ${grade}`);
-  const desc = tr(`${Math.floor(c.age)} tuổi, ${realmOf(c)}${c.path ? ', ' + PATHS[c.path].name : ''}.${pct !== null ? tr(` Vượt ${pct}% các kiếp trong giang hồ.`, ` Beat ${pct}% of all lives in the jianghu.`) : ''} ${(memorable(c)[0] ?? '').replace(/([^.!?])$/, '$1.')} Đầu thai thử một kiếp ở Vạn Kiếp Luân Hồi.`, `Age ${Math.floor(c.age)}, ${realmOf(c)}${c.path ? ', ' + PATHS[c.path].name : ''}.${pct !== null ? tr(` Vượt ${pct}% các kiếp trong giang hồ.`, ` Beat ${pct}% of all lives in the jianghu.`) : ''} ${(memorable(c)[0] ?? '').replace(/([^.!?])$/, '$1.')} Try a life of your own in Vạn Kiếp Luân Hồi.`).replace(/\s+/g, ' ').trim();
+  const desc = tr(`${Math.floor(c.age)} tuổi, ${realmOf(c)}${c.path ? ', ' + PATHS[c.path].name : ''}.${pct !== null ? tr(` Vượt ${pct}% các kiếp trong giang hồ.`, ` Beat ${pct}% of all lives in the jianghu.`) : ''} ${(memorable(c)[0] ?? '').replace(/([^.!?])$/, '$1.')} Đầu thai thử một kiếp ở Vạn Kiếp Luân Hồi.`, `Age ${Math.floor(c.age)}, ${realmOf(c)}${c.path ? ', ' + PATHS[c.path].name : ''}.${pct !== null ? tr(` Vượt ${pct}% các kiếp trong giang hồ.`, ` Beat ${pct}% of all lives in the jianghu.`) : ''} ${(memorable(c)[0] ?? '').replace(/([^.!?])$/, '$1.')} Try a life of your own in Ten Thousand Rebirths.`).replace(/\s+/g, ' ').trim();
   return deliver(cv, og, 'life', `kiep-${c.lifeNo}-${c.name.replace(/\s+/g, '-')}`, title, desc, lifeText(c, ending, grade, pct).split('\n')[0]);
 }
 

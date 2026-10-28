@@ -40,10 +40,10 @@ export default function Home() {
       </div>
       <h1 className="logo">
         
-        {tr("Vạn Kiếp", "Wanjie")}
+        {tr("Vạn Kiếp", "Ten Thousand")}
         <br />
         
-        {tr("Luân Hồi", "Lunhui")}
+        {tr("Luân Hồi", "Rebirths")}
         <small>{tr("Một kiếp người, vạn con đường tu tiên", "One life, ten thousand paths to immortality")}</small>
       </h1>
 
