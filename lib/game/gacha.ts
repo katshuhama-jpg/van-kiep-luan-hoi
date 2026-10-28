@@ -66,7 +66,7 @@ export const GIFTS: Gift[] = [
     },
   },
   { id: 'g_tham', name: tr('Tham lam', "Greedy"), desc: tr('Nhà bỗng giàu to (+400). Nhưng tham thì thâm...', "Sudden fortune (+400). But greed brings grief..."), rare: 1, bad: true, apply: (c) => money(c, 400) },
-  { id: 'g_dao_hoa', name: tr('Mệnh đào hoa', "Peach-blossom fate"), desc: tr('Dễ gặp đạo lữ gấp 3, tâm cảnh +5', "3x more likely to meet a Yao companion, Mind +5"), rare: 1, apply: (c) => stat(c, 'tamCanh', 5) },
+  { id: 'g_dao_hoa', name: tr('Mệnh đào hoa', "Peach-blossom fate"), desc: tr('Dễ gặp đạo lữ gấp 3, tâm cảnh +5', "3x more likely to meet a Dao companion, Mind +5"), rare: 1, apply: (c) => stat(c, 'tamCanh', 5) },
   { id: 'g_menh_cung', name: tr('Mệnh cứng', "Hard to kill"), desc: tr('Khó chết hơn 30% trong mọi hiểm cảnh', "30% less likely to die in any danger"), rare: 1 },
   { id: 'g_than_luc', name: tr('Trời sinh thần lực', "Born with divine strength"), desc: tr('Công khi trừ yêu +25%', "Attack +25% when hunting demons"), rare: 1 },
   {

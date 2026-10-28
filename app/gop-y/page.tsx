@@ -168,10 +168,10 @@ export default function GopY() {
                     {tr("Thiên", "Heaven")}
                     <br />
                     
-                    {tr("Đạo", "Yao")}
+                    {tr("Đạo", "Dao")}
                   </span>
                   <div>
-                    <b>{tr("Thiên Đạo hồi đáp", "The Heavenly Yao replies")}{f.reply_ver ? tr(` · bản ${f.reply_ver}`, ` · version ${f.reply_ver}`) : ''}</b>
+                    <b>{tr("Thiên Đạo hồi đáp", "The Heavenly Dao replies")}{f.reply_ver ? tr(` · bản ${f.reply_ver}`, ` · version ${f.reply_ver}`) : ''}</b>
                     <p>{f.reply}</p>
                     {f.reply_ver && (
                       <Link href="/cap-nhat" className="fb-reply-link">

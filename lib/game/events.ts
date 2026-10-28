@@ -1058,27 +1058,27 @@ export const EVENTS: GameEvent[] = [
     text: (c) => tr(`Bên hồ sen, bạn gặp ${pick(Math.random, DAO_LU)}. Hai người trò chuyện từ chiều đến tận khi trăng lên.`, `By the lotus pond, you meet ${pick(Math.random, DAO_LU)}. The two of you talk from afternoon until the moon rises.`),
     choices: () => [
       {
-        label: tr('Ngỏ lời kết làm đạo lữ', "Propose becoming Yao companions"),
+        label: tr('Ngỏ lời kết làm đạo lữ', "Propose becoming Dao companions"),
         lean: 'chinh',
         run: (c, ctx) => {
           if (ctx.rnd() < luck(c, 0.55)) {
             c.partner = pick(ctx.rnd, DAO_LU);
             stat(c, 'tamCanh', 12);
             dao(c, 4);
-            ctx.fx('love', tr('Kết đạo lữ', "Yao companions"));
-            return tr(`Người ấy gật đầu. Từ nay bạn và ${c.partner} cùng nhau tu đạo.`, `They nod. From now on, you and ${c.partner} walk the Yao together.`);
+            ctx.fx('love', tr('Kết đạo lữ', "Dao companions"));
+            return tr(`Người ấy gật đầu. Từ nay bạn và ${c.partner} cùng nhau tu đạo.`, `They nod. From now on, you and ${c.partner} walk the Dao together.`);
           }
           stat(c, 'tamMa', 6);
           return tr('Người ấy mỉm cười từ chối. Đêm đó bạn không ngủ được.', "They smile and decline. You can't sleep that night.");
         },
       },
       {
-        label: tr('Làm bạn đồng đạo', "Be fellow travelers on the Yao"),
+        label: tr('Làm bạn đồng đạo', "Be fellow travelers on the Dao"),
         lean: 'trung',
         run: (c) => {
           stat(c, 'tamCanh', 6);
           stat(c, 'ngoTinh', 3);
-          return tr('Hai người hẹn gặp lại để luận đạo. Bạn thấy đầu óc sáng ra.', "You agree to meet again to discuss the Yao. Your mind feels clearer.");
+          return tr('Hai người hẹn gặp lại để luận đạo. Bạn thấy đầu óc sáng ra.', "You agree to meet again to discuss the Dao. Your mind feels clearer.");
         },
       },
       {
@@ -1086,7 +1086,7 @@ export const EVENTS: GameEvent[] = [
         lean: 'trung',
         run: (c) => {
           addCult(c, reward(c, 0.2));
-          return tr('Bạn lặng lẽ rời đi. Đại đạo không chỗ cho hồng trần.', "You quietly take your leave. The Great Yao has no room for mortal attachments.");
+          return tr('Bạn lặng lẽ rời đi. Đại đạo không chỗ cho hồng trần.', "You quietly take your leave. The Great Dao has no room for mortal attachments.");
         },
       },
       {
@@ -1925,7 +1925,7 @@ export const EVENTS: GameEvent[] = [
     weight: 6,
     cooldown: 60,
     when: (c) => !!c.partner,
-    title: tr('Đạo lữ gặp nạn', "Yao companion in peril"),
+    title: tr('Đạo lữ gặp nạn', "Dao companion in peril"),
     text: (c) => tr(`${c.partner} bị kẻ thù bắt đi, chỉ để lại một vệt máu và mảnh ngọc vỡ.`, `${c.partner} has been taken by enemies, leaving only a trail of blood and a shattered jade pendant.`),
     choices: () => [
       {
@@ -1963,7 +1963,7 @@ export const EVENTS: GameEvent[] = [
         },
       },
       {
-        label: tr('Bỏ mặc, đạo lữ chỉ là vướng bận', "Abandon them - a Yao companion is just baggage"),
+        label: tr('Bỏ mặc, đạo lữ chỉ là vướng bận', "Abandon them - a Dao companion is just baggage"),
         lean: 'ta',
         run: (c) => {
           const p = c.partner;

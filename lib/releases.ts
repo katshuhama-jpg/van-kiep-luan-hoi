@@ -67,7 +67,7 @@ export const RELEASES: Release[] = [
         items: [
           tr('Kiếp sau một đời Đan tu mua đan hồi hồn rẻ hơn 30%: còn nhớ cách luyện.', "After a life as an Alchemist, your next life buys soul pills 30% cheaper: you still remember the recipe."),
           tr('Mỗi ngày một tiếng đồn ở màn đầu thai, gợi mờ một kết cục ít người mở nhất.', "A daily rumour on the rebirth screen hints at one of the least-unlocked endings."),
-          tr('Ai mở một kết cục đầu tiên trong giang hồ, cả server nhận thư Thiên Đạo. Sổ Sinh Tử ghi số người đã mở và người đầu tiên.', "Whoever unlocks an ending first in the jianghu, the whole server gets a letter from the Heavenly Yao. The Book of Life and Death records how many have unlocked it and who was first."),
+          tr('Ai mở một kết cục đầu tiên trong giang hồ, cả server nhận thư Thiên Đạo. Sổ Sinh Tử ghi số người đã mở và người đầu tiên.', "Whoever unlocks an ending first in the jianghu, the whole server gets a letter from the Heavenly Dao. The Book of Life and Death records how many have unlocked it and who was first."),
         ],
       },
     ],
@@ -76,7 +76,7 @@ export const RELEASES: Release[] = [
     v: '3.1.1',
     date: '27/10/2026',
     title: tr('Hoàn Hồn Đan', "Soul Return Pill"),
-    lead: tr('Đạo hữu nghiện quá mà hồn không theo kịp? Tiệm đan dưới chân cầu Nại Hà đã mở. Cùng lúc, Thiên Đạo cân lại đường tu: thọ dài hơn thì tu cũng phải chậm lại một chút.', "Fellow Daoist, too hooked for your soul to keep up? A pill shop has opened at the foot of Naihe Bridge. Meanwhile, the Heavenly Yao rebalances cultivation: a longer lifespan means a slightly slower climb."),
+    lead: tr('Đạo hữu nghiện quá mà hồn không theo kịp? Tiệm đan dưới chân cầu Nại Hà đã mở. Cùng lúc, Thiên Đạo cân lại đường tu: thọ dài hơn thì tu cũng phải chậm lại một chút.', "Fellow Daoist, too hooked for your soul to keep up? A pill shop has opened at the foot of Naihe Bridge. Meanwhile, the Heavenly Dao rebalances cultivation: a longer lifespan means a slightly slower climb."),
     stats: [
       { n: '3', label: tr('phẩm đan hồi hồn', "grades of soul pill") },
       { n: '+10', label: tr('Hồn lực mỗi nhiệm vụ', "Soul Power per quest") },
@@ -123,7 +123,7 @@ export const RELEASES: Release[] = [
         h: tr('Bốn tông môn mới', "Four new sects"),
         hot: true,
         items: [
-          tr('Phổ Đà Sơn (chính): mời Phật tu và người đạo tâm từ 40. Tâm ma tăng chậm, nhưng diệt yêu quá tay sẽ bị Giới luật viện gọi lên.', "Putuo Shan (Righteous): welcomes Buddhist Cultivators and anyone with Yao Heart 40+. Heart demons grow slowly, but slay demons too zealously and the Discipline Hall will summon you."),
+          tr('Phổ Đà Sơn (chính): mời Phật tu và người đạo tâm từ 40. Tâm ma tăng chậm, nhưng diệt yêu quá tay sẽ bị Giới luật viện gọi lên.', "Putuo Shan (Righteous): welcomes Buddhist Cultivators and anyone with Dao Heart 40+. Heart demons grow slowly, but slay demons too zealously and the Discipline Hall will summon you."),
           tr('Kiếm Cốc (chính): mời Kiếm tu. Phải rút được kiếm trên vách đá mới được nhận. Đại bỉ 3 năm một lần, thăng bậc nhanh.', "Jian Valley (Righteous): welcomes Sword Cultivators. You must pull the sword from the cliff face to be accepted. A Grand Contest every 3 years, fast promotion."),
           tr('Vạn Độc Môn (tà): mời Đan tu, Ma tu. Có việc thử độc: tu vi tăng mạnh, đổi lại mất sức khỏe, có thể chết.', "Wandu Sect (Evil): welcomes Alchemists and Demonic Cultivators. Poison-testing jobs: big cultivation gains in exchange for Health, and you might die."),
           tr('Yêu Thần Điện (tà): nhận mọi yêu tộc, không xét linh căn. Có huyết tế và lệnh săn.', "Yaoshen Hall (Evil): accepts all yao races, no spiritual root check. Blood sacrifices and hunting orders."),
@@ -137,14 +137,14 @@ export const RELEASES: Release[] = [
           tr('Tổng cộng bản này thêm 33 sự kiện cốt truyện mới: 15 sự kiện sau phi thăng, 16 sự kiện tông môn và chuỗi Ma giới, 2 sự kiện Phản môn.', "In total this version adds 33 new story events: 15 post-Ascension events, 16 sect and Demon Realm chain events, 2 Betrayal events."),
           tr('Tiên giới: Canh bến Thiên Hà (thả hay bắt con giao long, tám năm sau nó quay lại), Cây quế Quảng Hàn (uống rượu với Ngô Cương), Trông lò Bát Quái (đừng mở nắp), Miếu thờ ở nhân gian (lén làm mưa cho hậu nhân).', "Immortal Realm: Guarding the Heavenly River Ford (free or catch the flood dragon - it comes back eight years later), The Osmanthus of Guanghan (drinks with Wu Gang), Minding the Eight Trigrams Furnace (don't lift the lid), A Shrine in the Mortal World (secretly make rain for your descendants)."),
           tr('Ma giới: Huyết Nguyệt, Ma Đế bệnh nặng (theo Đại hoàng tử, Tam công chúa hay đứng ngoài, qua chính biến tới ngày tân Ma Đế lên ngôi), Cửu U Thâm Uyên chín tầng, mỗi lần xuống sâu hơn, tầng cuối có Cửu U Ma Long.', "Demon Realm: Blood Moon, The Demon Emperor Falls Ill (back the Eldest Prince, the Third Princess, or stay out, through the coup to the new Demon Emperor's coronation), the nine-layered Nine Netherworld Abyss, deeper each time, with the Nine Netherworld Demon Dragon at the bottom."),
-          tr('Thái Hư giới: Kẻ giữ đồng hồ cát (đổi thọ lấy đạo hay đạo lấy thọ), Bóng kiếp trước (gặp lại chính mình kiếp trước), Hư không rách (vá trời hay hút linh khí, bảy năm sau trả giá).', "Great Void Realm: The Hourglass Keeper (trade lifespan for Yao or Yao for lifespan), Shadow of a Past Life (meet yourself from a past life), The Torn Void (mend the sky or drink its spirit qi, and pay the price seven years later)."),
+          tr('Thái Hư giới: Kẻ giữ đồng hồ cát (đổi thọ lấy đạo hay đạo lấy thọ), Bóng kiếp trước (gặp lại chính mình kiếp trước), Hư không rách (vá trời hay hút linh khí, bảy năm sau trả giá).', "Great Void Realm: The Hourglass Keeper (trade lifespan for Dao or Dao for lifespan), Shadow of a Past Life (meet yourself from a past life), The Torn Void (mend the sky or drink its spirit qi, and pay the price seven years later)."),
           tr('Nhiều chuyện kéo dài qua nhiều bước, lựa chọn bước trước quyết định bước sau. Vài chuyện lặp lại để người sống lâu ở cõi trên luôn có việc để làm.', "Many stories span several steps, and your choice in one step decides the next. Some repeat, so those who live long in the upper realms always have something to do."),
         ],
       },
       {
         h: tr('Phản môn', "Betrayal"),
         items: [
-          tr('Đạo và tông môn ngược phe (đang ở chính phái mà theo Ma tu hoặc đạo tâm từ -40, đang ở ma môn mà theo Phật tu hoặc đạo tâm từ 40) sẽ gặp sự kiện Phản môn: tự xin rời, giấu thân phận, hoặc phản sư diệt tổ.', "When your Yao and your sect are on opposite sides (in a righteous sect but following the Demonic Path or Yao Heart -40 or below, in a demonic sect but a Buddhist Cultivator or Yao Heart 40+), you'll face a Betrayal event: ask to leave, hide your identity, or betray your master and destroy your sect."),
+          tr('Đạo và tông môn ngược phe (đang ở chính phái mà theo Ma tu hoặc đạo tâm từ -40, đang ở ma môn mà theo Phật tu hoặc đạo tâm từ 40) sẽ gặp sự kiện Phản môn: tự xin rời, giấu thân phận, hoặc phản sư diệt tổ.', "When your Dao and your sect are on opposite sides (in a righteous sect but following the Demonic Path or Dao Heart -40 or below, in a demonic sect but a Buddhist Cultivator or Dao Heart 40+), you'll face a Betrayal event: ask to leave, hide your identity, or betray your master and destroy your sect."),
           tr('Giấu thân phận thì mỗi năm có thể bị lộ: bị trục xuất, mất áo bào và lệnh bài tông môn.', "Hide your identity and each year you might be exposed: expelled, stripped of your robe and sect token."),
           tr('Thiên Cơ Các trung lập không đuổi ai, nhưng người nghiêng hẳn về một phía sẽ kéo chính hoặc tà tới vây đánh cả Các.', "The neutral Tianji Pavilion expels no one, but those leaning hard to one side will draw the Righteous or the Evil to besiege the whole Pavilion."),
         ],
@@ -207,7 +207,7 @@ export const RELEASES: Release[] = [
     v: '3.0.0',
     date: '26/10/2026',
     title: tr('Luân Hồi Đạo', "The Way of Reincarnation"),
-    lead: tr('Vạn kiếp luân hồi không còn là con đường tắt. Kẻ chết càng nhiều, Thiên đạo càng để mắt; linh hồn đầu thai dồn dập thì mòn đi. Muốn đi xa, phải biết nghỉ, biết quên, và biết đứng trên lôi đài.', "Ten thousand rebirths are no longer a shortcut. The more you die, the more the Heavenly Yao watches; souls reborn too often wear thin. To go far, learn to rest, to forget, and to stand in the arena."),
+    lead: tr('Vạn kiếp luân hồi không còn là con đường tắt. Kẻ chết càng nhiều, Thiên đạo càng để mắt; linh hồn đầu thai dồn dập thì mòn đi. Muốn đi xa, phải biết nghỉ, biết quên, và biết đứng trên lôi đài.', "Ten thousand rebirths are no longer a shortcut. The more you die, the more the Heavenly Dao watches; souls reborn too often wear thin. To go far, learn to rest, to forget, and to stand in the arena."),
     stats: [
       { n: '10', label: tr('bậc Kiếp Số', "Calamity Count tiers") },
       { n: '+3', label: tr('kết cục', "endings") },
@@ -215,12 +215,12 @@ export const RELEASES: Release[] = [
     ],
     groups: [
       {
-        h: tr('Kiếp Số: Thiên đạo để mắt', "Calamity Count: the Heavenly Yao is watching"),
+        h: tr('Kiếp Số: Thiên đạo để mắt', "Calamity Count: the Heavenly Dao is watching"),
         items: [
-          tr('Tài khoản có Kiếp Số từ 0 tới 10, tăng theo thành tích: số kiếp đã sống, Thiên thư, phi thăng, chạm đỉnh, Chứng Đạo.', "Accounts have a Calamity Count from 0 to 10, rising with achievements: lives lived, Heavenly Tome, Ascensions, reaching the peak, Attaining the Yao."),
+          tr('Tài khoản có Kiếp Số từ 0 tới 10, tăng theo thành tích: số kiếp đã sống, Thiên thư, phi thăng, chạm đỉnh, Chứng Đạo.', "Accounts have a Calamity Count from 0 to 10, rising with achievements: lives lived, Heavenly Tome, Ascensions, reaching the peak, Attaining the Dao."),
           tr('Mỗi bậc thêm một kiếp nạn: thiên kiếp nặng hơn, thần binh truyền kiếp yếu đi, bóng Ngũ Hành Đài và quái mạnh hơn, mỗi kiếp chỉ mua được một thiên phú lớn...', "Each tier adds a calamity: heavier tribulations, weaker inherited divine weapons, stronger Five Elements Platform shadows and monsters, only one major talent purchase per life..."),
           tr('Bù lại, mỗi bậc thêm 5% phúc duyên và 3% đồ rơi. Bảng xếp hạng ghi Kiếp Số cạnh cảnh giới.', "In return, each tier adds 5% Fortune and 3% loot. The Leaderboard shows Calamity Count next to realm."),
-          tr('Kết cục mới: Nghịch Thiên Hành Đạo (phi thăng khi Kiếp Số từ 5), Vạn Kiếp Bất Diệt (Chứng Đạo ở Kiếp Số 10).', "New endings: Defying Heaven (ascend at Calamity Count 5+), Eternal Through Ten Thousand Lives (Attain the Yao at Calamity Count 10)."),
+          tr('Kết cục mới: Nghịch Thiên Hành Đạo (phi thăng khi Kiếp Số từ 5), Vạn Kiếp Bất Diệt (Chứng Đạo ở Kiếp Số 10).', "New endings: Defying Heaven (ascend at Calamity Count 5+), Eternal Through Ten Thousand Lives (Attain the Dao at Calamity Count 10)."),
           tr('Kiếp tích: người Kiếp Số thấp mà ngã ở Độ Kiếp thì kiếp sau đột phá dễ hơn, tối đa 3 lần.', "Calamity Scars: low Calamity Count players who fall at Tribulation get easier breakthroughs next life, up to 3 times."),
         ],
       },
@@ -275,7 +275,7 @@ export const RELEASES: Release[] = [
           tr('Quyển II "Vạn Mảnh" mở sau khi đạt Vạn Kiếp Quy Nhất: 10 mảnh ký ức mới, từ XI tới XX.', "Volume II \"Ten Thousand Shards\" opens after reaching Ten Thousand Lives Become One: 10 new memory fragments, XI to XX."),
           tr('Những đạo hữu trên giang hồ cũng là mảnh vỡ. Có mảnh chỉ mở khi kết nghĩa, truyền công, viếng mộ hay giao chiến thư với người chơi khác.', "Fellow Daoists in the jianghu are shards too. Some fragments unlock only by swearing brotherhood, passing on cultivation, visiting graves, or trading challenges with other players."),
           tr('Có mảnh chỉ dành cho bậc cao thủ: từng lên đủ Tiên, Ma, Thái Hư, qua Ngũ Hành Đài mà không ngã lần nào, mở 30 kết cục.', "Some fragments are for true masters only: reached all of Immortal, Demon and Great Void, cleared the Five Elements Platform without a single fall, unlocked 30 endings."),
-          tr('Kẻ Gõ Chuông chờ ở đỉnh cao nhất của các cõi. Phải đỡ đủ ba tiếng chuông, đỡ hụt có thể thân tử đạo tiêu.', "The Bell Ringer waits at the highest peak of all realms. You must withstand all three tolls; fail one and body and Yao may perish together."),
+          tr('Kẻ Gõ Chuông chờ ở đỉnh cao nhất của các cõi. Phải đỡ đủ ba tiếng chuông, đỡ hụt có thể thân tử đạo tiêu.', "The Bell Ringer waits at the highest peak of all realms. You must withstand all three tolls; fail one and body and Dao may perish together."),
           tr('Thắng hắn, kiếp sau cầm dùi chuông và tự chọn: gõ tiếp hay đập vỡ. Hai kết cục mới, hai danh hiệu mới.', "Beat him, and next life you hold the bell mallet and choose: keep ringing or smash it. Two new endings, two new titles."),
           tr('Trang Sổ Sinh Tử chia Thiên thư thành hai quyển. Quyển II bị phong ấn tới khi bạn gặp lại chính mình.', "The Book of Life and Death splits the Heavenly Tome into two volumes. Volume II stays sealed until you meet yourself again."),
         ],
@@ -304,12 +304,12 @@ export const RELEASES: Release[] = [
         ],
       },
       {
-        h: tr('Thiên đạo khắt khe hơn', "A stricter Heavenly Yao"),
+        h: tr('Thiên đạo khắt khe hơn', "A stricter Heavenly Dao"),
         items: [
           tr('Đột phá khó hơn, càng lên cao càng khó. Thiên mệnh chi tử chỉ còn giúp đột phá dễ hơn 10%.', "Breakthroughs are harder, and harder still the higher you go. Child of Destiny now only makes breakthroughs 10% easier."),
           tr('Thiên linh căn và Tiên cốt trời sinh tu nhanh ít hơn trước. Tiên cốt giá 250 phúc, Thiên mệnh 180 phúc.', "Heavenly Spiritual Root and Innate Immortal Bones speed cultivation less than before. Immortal Bones cost 250 Fortune, Child of Destiny 180 Fortune."),
           tr('Phúc duyên mỗi kiếp ít đi khoảng một phần tư.', "Fortune per life is down by about a quarter."),
-          tr('Sau phi thăng, mỗi cảnh giới mất ít nhất khoảng 50 năm. Thọ nguyên vẫn tối đa 350: chỉ ai phi thăng sớm mới kịp chạm đỉnh và thử Chứng Đạo.', "After Ascension, each realm takes at least about 50 years. Lifespan still caps at 350: only early ascenders can reach the peak and attempt to Attain the Yao."),
+          tr('Sau phi thăng, mỗi cảnh giới mất ít nhất khoảng 50 năm. Thọ nguyên vẫn tối đa 350: chỉ ai phi thăng sớm mới kịp chạm đỉnh và thử Chứng Đạo.', "After Ascension, each realm takes at least about 50 years. Lifespan still caps at 350: only early ascenders can reach the peak and attempt to Attain the Dao."),
           tr('Tu tới Kim Đan, Hóa Thần vẫn như cũ, người mới không bị làm khó.', "Cultivating up to Golden Core and Spirit Transformation is unchanged - no extra pain for newcomers."),
         ],
       },
@@ -333,7 +333,7 @@ export const RELEASES: Release[] = [
         h: tr('Tam giới sau phi thăng', "Three realms after Ascension"),
         items: [
           tr('Phi thăng xong vẫn sống tiếp trong cùng kiếp. Chính đạo lên Tiên giới, tà đạo vào Ma giới, người trung lập lạc vào Thái Hư giới.', "After Ascension you keep living the same life. The Righteous rise to the Immortal Realm, the Evil enter the Demon Realm, and the Neutral drift into the Great Void Realm."),
-          tr('Mỗi giới 4 cảnh giới, có sự kiện, quái, bảo vật và cảnh nền riêng: Chân Tiên tới Đại La Kim Tiên, Ma Tướng tới Ma Đế, Hư Tiên tới Hỗn Nguyên Đạo Tổ. Kiếp cuối là Chứng Đạo, vượt được thì thoát khỏi mọi giới.', "Each realm has 4 cultivation realms plus its own events, monsters, treasures and backdrops: True Immortal to Daluo Golden Immortal, Demon General to Demon Emperor, Void Immortal to Hunyuan Daozu. The final trial is Attaining the Yao - pass it and escape every realm."),
+          tr('Mỗi giới 4 cảnh giới, có sự kiện, quái, bảo vật và cảnh nền riêng: Chân Tiên tới Đại La Kim Tiên, Ma Tướng tới Ma Đế, Hư Tiên tới Hỗn Nguyên Đạo Tổ. Kiếp cuối là Chứng Đạo, vượt được thì thoát khỏi mọi giới.', "Each realm has 4 cultivation realms plus its own events, monsters, treasures and backdrops: True Immortal to Daluo Golden Immortal, Demon General to Demon Emperor, Void Immortal to Hunyuan Daozu. The final trial is Attaining the Dao - pass it and escape every realm."),
           tr('Cảnh phi thăng: cột sáng giáng xuống, nhân vật bay lên cõi mới.', "Ascension scene: a pillar of light descends and your character flies up to the new realm."),
           tr('Hào quang riêng mỗi cõi, mạnh dần theo cảnh giới: tiên quang và mây ngũ sắc, huyết nguyệt và xích ma, vòng xoáy hư không và tinh tú.', "Each realm has its own aura that grows with your realm: immortal light and five-coloured clouds, blood moon and crimson demons, void vortex and stars."),
           tr('Quà phi thăng: mỗi cõi một bộ áo, vũ khí, phụ kiện, trao dần khi lên cảnh giới.', "Ascension gifts: each realm has a robe, weapon and accessory set, granted as you climb realms."),
@@ -344,14 +344,14 @@ export const RELEASES: Release[] = [
         items: [
           tr('Trước khi phi thăng phải hạ 5 bóng của chính mình, mỗi bóng một hệ. Bóng cuối khắc bản mệnh của bạn. Phi thăng từ 120 tuổi.', "Before Ascension you must defeat 5 shadows of yourself, one per element. The last overcomes your natal element. Ascension from age 120."),
           tr('Lật thế bằng Ngũ Hành Ấn (săn quái đúng hệ), lá bùa Công, Thủ, Hóa, Ngũ Hành Phù và tâm cảnh. 15 sân đấu theo giới và theo hệ của bóng.', "Turn the tide with Five Elements Seals (hunt monsters of the right element), Attack, Defend and Deflect talismans, Five Elements Charms and your state of mind. 15 arenas by realm and by the shadow's element."),
-          tr('Qua đài nhận Gương vỡ Vấn Tâm; qua mà chưa ngã lần nào nhận Ngũ Hành Viên Mãn châu. Thua có thể thân tử đạo tiêu, hãy chuẩn bị từ Hóa Thần.', "Clear the platform for a Broken Heart-Questioning Mirror; clear it without falling once for a Five Elements Perfection Pearl. Losing can mean body and Yao perish, so prepare from Spirit Transformation."),
+          tr('Qua đài nhận Gương vỡ Vấn Tâm; qua mà chưa ngã lần nào nhận Ngũ Hành Viên Mãn châu. Thua có thể thân tử đạo tiêu, hãy chuẩn bị từ Hóa Thần.', "Clear the platform for a Broken Heart-Questioning Mirror; clear it without falling once for a Five Elements Perfection Pearl. Losing can mean body and Dao perish, so prepare from Spirit Transformation."),
         ],
       },
       {
         h: tr('Sinh tử ba cõi', "Life and death in three realms"),
         items: [
           tr('Mỗi cõi có cách chết riêng: Thiên Nhân Ngũ Suy, Lôi Phạt, Trảm Tiên Đài, Ma Thể Mục Ruỗng, Tâm Ma Đoạt Xá, Bị Thôn Phệ, Hóa Thành Tinh Tú, Lạc Khe Nứt Thời Gian, Tử Trận Tiên Ma.', "Each realm has its own deaths: Five Decays of the Heavenly Being, Thunder Punishment, Immortal-Slaying Platform, Rotting Demon Body, Heart Demon Possession, Devoured, Turned to Stars, Lost in a Time Rift, Fallen in the Immortal-Demon War."),
-          tr('20 năm cuối đời ở ba cõi hiện dần 5 dấu hiệu suy tàn. Tiên nhân để đạo tâm tụt dưới -20 có ngày lên Trảm Tiên Đài.', "In the last 20 years of life in the three realms, 5 signs of decline appear one by one. Immortals who let their Yao Heart drop below -20 will one day face the Immortal-Slaying Platform."),
+          tr('20 năm cuối đời ở ba cõi hiện dần 5 dấu hiệu suy tàn. Tiên nhân để đạo tâm tụt dưới -20 có ngày lên Trảm Tiên Đài.', "In the last 20 years of life in the three realms, 5 signs of decline appear one by one. Immortals who let their Dao Heart drop below -20 will one day face the Immortal-Slaying Platform."),
           tr('Bia mộ riêng: Tiên Trủng, Ma Trủng, Hư Trủng.', "Unique tombs: Immortal Tomb, Demon Tomb, Void Tomb."),
           tr('Ở Độ Kiếp mà không kịp phi thăng: tự chọn tọa hóa chuyển thế (kiếp sau mang theo linh thức) hoặc truyền công cho một đạo hữu trên giang hồ.', "At Tribulation without time to ascend: choose to pass away and reincarnate (carrying your spiritual sense into the next life) or pass on your cultivation to a fellow Daoist in the jianghu."),
         ],
@@ -426,7 +426,7 @@ export const RELEASES: Release[] = [
       {
         h: tr('Tính năng', "Features"),
         items: [
-          tr('Đầu thai ngẫu nhiên, 8 cảnh giới từ Phàm Nhân tới Độ Kiếp, 6 con đường tu tập, đạo tâm chính tà.', "Random rebirths, 8 realms from Mortal to Tribulation, 6 cultivation Paths, Righteous and Evil Yao Hearts."),
+          tr('Đầu thai ngẫu nhiên, 8 cảnh giới từ Phàm Nhân tới Độ Kiếp, 6 con đường tu tập, đạo tâm chính tà.', "Random rebirths, 8 realms from Mortal to Tribulation, 6 cultivation Paths, Righteous and Evil Dao Hearts."),
           tr('Trừ yêu kiểu idle, boss, bế quan, thiên kiếp, Sổ Sinh Tử, bảng xếp hạng, nhân quả xuyên kiếp, góp ý tính năng.', "Idle demon hunting, bosses, seclusion, heavenly tribulations, the Book of Life and Death, Leaderboard, karma across lives, feature requests."),
         ],
       },

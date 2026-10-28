@@ -31,7 +31,7 @@ export function trackMiles(c: Character | null) {
     addMile(c, 'realm', c.realm === 8 ? (c.cosmos === 'ma' ? tr('Vượt huyết kiếp, bước vào Ma giới', "Survived the blood tribulation and entered the Demon Realm") : c.cosmos === 'hu' ? tr('Vượt lôi kiếp, bước vào Thái Hư giới', "Survived the lightning tribulation and entered the Great Void Realm") : tr('Phi thăng tiên giới', "Ascended to the Immortal Realm")) : tr(`Bước vào ${realmName(c.realm, c.cosmos)}`, `Entered ${realmName(c.realm, c.cosmos)}`));
   if (c.path && c.path !== s.path) addMile(c, 'path', tr(`Chọn con đường ${PATHS[c.path].name}`, `Chose the path of ${PATHS[c.path].name}`));
   if (c.sect && c.sect !== s.sect && s.sect !== undefined) addMile(c, 'sect', tr(`Bái nhập ${c.sect}`, `Joined ${nameOf(c.sect)}`));
-  if (c.partner && c.partner !== s.partner) addMile(c, 'love', tr(`Kết thành đạo lữ với ${c.partner}`, `Became Yao companions with ${c.partner}`));
+  if (c.partner && c.partner !== s.partner) addMile(c, 'love', tr(`Kết thành đạo lữ với ${c.partner}`, `Became Dao companions with ${c.partner}`));
   const pet = c.pet ? (c.petKind ?? null) : null;
   if (pet && pet !== s.pet) addMile(c, 'pet', tr(`Thu nhận ${PETS[pet]?.name ?? tr('một linh thú', "a spirit beast")}`, `Took in ${PETS[pet]?.name ?? tr('một linh thú', "a spirit beast")}`));
   if (c.mount && c.mount !== s.mount) addMile(c, 'mount', tr('Thuần phục được rồng, thành Long Kỵ Sĩ', "Tamed a dragon and became a Dragon Rider"));

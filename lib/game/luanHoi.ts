@@ -36,7 +36,7 @@ export function ksParts(m: Meta | null | undefined): KsPart[] {
     { label: tr('Mỗi 3 mảnh Thiên thư Quyển II', "Every 3 fragments of Heavenly Tome Volume II"), pts: Math.min(3, Math.floor(b2 / 3)), max: 3 },
     { label: tr('Từng phi thăng', "Has ascended"), pts: (k?.ascPaths?.length ?? 0) > 0 || (k?.maxRealm ?? 0) >= 8 ? 1 : 0, max: 1 },
     { label: tr('Từng tới cảnh giới cuối của một cõi', "Has reached the final realm of a world"), pts: (k?.maxRealm ?? 0) >= 11 ? 1 : 0, max: 1 },
-    { label: tr('Từng Chứng Đạo', "Has attained the Yao"), pts: e.chung_dao ? 1 : 0, max: 1 },
+    { label: tr('Từng Chứng Đạo', "Has attained the Dao"), pts: e.chung_dao ? 1 : 0, max: 1 },
   ];
 }
 
@@ -59,7 +59,7 @@ export const KS_TIERS: { lv: number; hard: string }[] = [
 ];
 
 /** Tên gọi từng bậc, cho có vị kiếm hiệp */
-export const KS_NAME = [tr('Vô danh', "Nameless"), tr('Lộ diện', "Noticed"), tr('Có tiếng', "Known"), tr('Thành danh', "Renowned"), tr('Kinh động', "Stirring"), tr('Chấn động', "Earth-shaking"), tr('Thiên đạo chú ý', "Watched by the Heavenly Yao"), tr('Thiên đạo kiêng dè', "Feared by the Heavenly Yao"), tr('Thiên đạo truy xét', "Hunted by the Heavenly Yao"), tr('Nghịch thiên', "Defying Heaven"), tr('Vạn kiếp bất diệt', "Undying through ten thousand lives")];
+export const KS_NAME = [tr('Vô danh', "Nameless"), tr('Lộ diện', "Noticed"), tr('Có tiếng', "Known"), tr('Thành danh', "Renowned"), tr('Kinh động', "Stirring"), tr('Chấn động', "Earth-shaking"), tr('Thiên đạo chú ý', "Watched by the Heavenly Dao"), tr('Thiên đạo kiêng dè', "Feared by the Heavenly Dao"), tr('Thiên đạo truy xét', "Hunted by the Heavenly Dao"), tr('Nghịch thiên', "Defying Heaven"), tr('Vạn kiếp bất diệt', "Undying through ten thousand lives")];
 
 // ---------- Hiệu ứng lên nhân vật (đọc c.kiepSo, đặt lúc đầu thai) ----------
 const ks = (c: Character) => c.kiepSo ?? 0;

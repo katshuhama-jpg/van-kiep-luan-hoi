@@ -193,7 +193,7 @@ export const COSMOS_STORIES: GameEvent[] = [
     weight: 14,
     cooldown: 12,
     title: tr('Trông lò Bát Quái', "Minding the Eight Trigrams Furnace"),
-    text: () => tr('Thái Thượng Lão Quân đi giảng đạo ba năm, nhờ bạn trông lò Bát Quái. Dặn đúng một câu: "Đừng mở nắp."', "Taishang Laojun is off lecturing on the Yao for three years and asks you to mind the Eight Trigrams Furnace. He leaves exactly one instruction: \"Don't lift the lid.\""),
+    text: () => tr('Thái Thượng Lão Quân đi giảng đạo ba năm, nhờ bạn trông lò Bát Quái. Dặn đúng một câu: "Đừng mở nắp."', "Taishang Laojun is off lecturing on the Dao for three years and asks you to mind the Eight Trigrams Furnace. He leaves exactly one instruction: \"Don't lift the lid.\""),
     choices: () => [
       {
         label: tr('Canh lửa đúng ba năm', "Tend the fire for exactly three years"),
@@ -653,7 +653,7 @@ export const COSMOS_STORIES: GameEvent[] = [
     weight: 14,
     cooldown: 25,
     title: tr('Kẻ giữ đồng hồ cát', "The keeper of the hourglass"),
-    text: () => tr('Giữa hư không có một người ngồi lật đồng hồ cát. Mỗi hạt cát là một năm của ai đó. Lão ngẩng lên: "Muốn đổi không? Năm lấy đạo, hay đạo lấy năm."', "In the middle of the void someone sits turning an hourglass. Each grain of sand is a year of someone's life. The old man looks up: \"Care to trade? Years for Yao, or Yao for years.\""),
+    text: () => tr('Giữa hư không có một người ngồi lật đồng hồ cát. Mỗi hạt cát là một năm của ai đó. Lão ngẩng lên: "Muốn đổi không? Năm lấy đạo, hay đạo lấy năm."', "In the middle of the void someone sits turning an hourglass. Each grain of sand is a year of someone's life. The old man looks up: \"Care to trade? Years for Dao, or Dao for years.\""),
     choices: () => [
       {
         label: tr('Đổi 40 năm thọ lấy tu vi', "Trade 40 years of lifespan for cultivation"),

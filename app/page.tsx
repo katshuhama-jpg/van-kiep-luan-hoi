@@ -104,7 +104,7 @@ export default function Home() {
         <h2>{tr("Cách chơi", "How to play")}</h2>
         <p style={{ margin: 0 }}>
           
-          {tr("Bạn đầu thai ngẫu nhiên: linh căn, xuất thân, giới tính đều do trời định. Thời gian tự trôi, mỗi năm chọn một trọng tâm. Gặp kỳ ngộ thì có 4 lựa chọn, mỗi lựa chọn đẩy Đạo tâm về phía Chính hoặc Tà. Lên Luyện Khí tầng 5 sẽ chọn con đường tu tập. Hết thọ nguyên thì chết, để lại bia mộ và mang phúc duyên sang kiếp sau.", "You are reborn at random: spiritual root, origin and gender are all decided by Heaven. Time flows on its own, and each year you pick a Focus. Fortuitous encounters offer 4 choices, each pushing your Yao Heart toward Righteous or Evil. At Qi Refining Layer 5 you choose your Path. When your lifespan runs out you die, leave a tombstone, and carry your Fortune into the next life.")}
+          {tr("Bạn đầu thai ngẫu nhiên: linh căn, xuất thân, giới tính đều do trời định. Thời gian tự trôi, mỗi năm chọn một trọng tâm. Gặp kỳ ngộ thì có 4 lựa chọn, mỗi lựa chọn đẩy Đạo tâm về phía Chính hoặc Tà. Lên Luyện Khí tầng 5 sẽ chọn con đường tu tập. Hết thọ nguyên thì chết, để lại bia mộ và mang phúc duyên sang kiếp sau.", "You are reborn at random: spiritual root, origin and gender are all decided by Heaven. Time flows on its own, and each year you pick a Focus. Fortuitous encounters offer 4 choices, each pushing your Dao Heart toward Righteous or Evil. At Qi Refining Layer 5 you choose your Path. When your lifespan runs out you die, leave a tombstone, and carry your Fortune into the next life.")}
         </p>
       </section>
       {rel && <ReleaseNotice onClose={() => setRel(false)} />}

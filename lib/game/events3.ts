@@ -444,7 +444,7 @@ export const EVENTS3: GameEvent[] = [
           c.age += 5;
           if (ctx.rnd() < 0.3) {
             addCult(c, reward(c, 4));
-            return tr('Bạn thắng tiên nhân một nước! Ông cười lớn, truyền cho bạn một đạo pháp quyết. Xuống núi đã qua năm năm.', "You beat the immortal by a single move! He laughs heartily and teaches you a Yao technique. Five years have passed when you come down the mountain.");
+            return tr('Bạn thắng tiên nhân một nước! Ông cười lớn, truyền cho bạn một đạo pháp quyết. Xuống núi đã qua năm năm.', "You beat the immortal by a single move! He laughs heartily and teaches you a Dao technique. Five years have passed when you come down the mountain.");
           }
           stat(c, 'tamCanh', 5);
           return tr('Bạn thua tan tác. Xuống núi mới biết đã qua năm năm.', "You're crushed. Back down the mountain, you learn five years have passed.");

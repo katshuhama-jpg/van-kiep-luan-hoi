@@ -60,6 +60,7 @@ export interface Character {
   partner: string | null;
   pet: boolean;
   log: LogEntry[];
+  lang?: 'vi' | 'en'; // ngôn ngữ lúc chơi kiếp này, đổi ngôn ngữ thì dịch lại chữ đã lưu
   dead: boolean;
   cause: string | null;
   seenEvents: Record<string, number>;

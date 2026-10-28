@@ -153,7 +153,7 @@ export function dongMonLose(who: string, daiBi: boolean, rnd: Rnd): string {
 export function tamMaLine(name: string, result: 'win' | 'lose' | 'draw', rnd: Rnd): string {
   if (result === 'win')
     return pickLine(rnd, [
-      tr(`Bạn vượt qua bóng của ${name} kiếp trước. Nghiệp cũ tan như sương sớm, đạo tâm sáng rực.`, `You overcome the shadow of your past life as ${name}. Old karma melts like morning mist, and your Yao Heart blazes bright.`),
+      tr(`Bạn vượt qua bóng của ${name} kiếp trước. Nghiệp cũ tan như sương sớm, đạo tâm sáng rực.`, `You overcome the shadow of your past life as ${name}. Old karma melts like morning mist, and your Dao Heart blazes bright.`),
       tr(`Bóng ${name} kiếp trước mỉm cười lần cuối rồi vỡ thành ngàn mảnh sáng. Bạn thấy lòng nhẹ hẳn.`, `The shadow of ${name} from your past life smiles one last time, then shatters into a thousand shards of light. Your heart feels lighter.`),
       tr(`"Ta là ngươi, ngươi là ta." Bóng ${name} nói xong thì tan vào ngực bạn. Tâm ma đã hóa giải.`, `"I am you, you are me." With that, the shadow of ${name} melts into your chest. The heart demon is dissolved.`),
     ]);

@@ -97,12 +97,12 @@ export const QUESTS: Quest[] = [
   { id: 'chan_duong', name: tr('Hạ 3 con quái chặn đường', "Defeat 3 roadblock monsters"), check: (c) => (c.qf?.ambushWin ?? 0) >= 3 },
   { id: 'tram_yeu', name: tr('Trảm 20 yêu quái trong một đời', "Slay 20 demons in one life"), check: (c) => kills(c) >= 20 },
   { id: 'nuoi_thu', name: tr('Nuôi một linh thú', "Raise a spirit beast"), check: (c) => !!c.pet },
-  { id: 'ket_duyen', name: tr('Kết thành đạo lữ', "Take a Yao companion"), check: (c) => !!c.partner },
+  { id: 'ket_duyen', name: tr('Kết thành đạo lữ', "Take a Dao companion"), check: (c) => !!c.partner },
   { id: 'phu_ho', name: tr('Có 1.500 linh thạch', "Have 1,500 spirit stones"), check: (c) => c.linhThach >= 1500 },
   { id: 'ket_cuc_moi', name: tr('Mở một kết cục mới trong Sổ Sinh Tử', "Unlock a new ending in the Book of Life and Death"), check: (_c, n) => n },
   { id: 'uong_tra', name: tr('Uống trà với đồng đạo mà sống sót', "Have tea with a fellow Daoist and survive"), check: (c) => (c.qf?.teaSurvive ?? 0) >= 1 },
-  { id: 'chinh_dao', name: tr('Đạo tâm chính trực từ 50 trở lên', "Righteous Yao Heart of 50 or more"), check: (c) => c.daoTam >= 50 },
-  { id: 'ta_dao', name: tr('Đạo tâm tà ác từ -50 trở xuống', "Evil Yao Heart of -50 or lower"), check: (c) => c.daoTam <= -50 },
+  { id: 'chinh_dao', name: tr('Đạo tâm chính trực từ 50 trở lên', "Righteous Dao Heart of 50 or more"), check: (c) => c.daoTam >= 50 },
+  { id: 'ta_dao', name: tr('Đạo tâm tà ác từ -50 trở xuống', "Evil Dao Heart of -50 or lower"), check: (c) => c.daoTam <= -50 },
   { id: 'bao_vat_moi', name: tr('Có được một món đồ ẩn chưa từng thấy', "Obtain a never-before-seen hidden item"), check: (c) => (c.qf?.newItem ?? 0) >= 1 },
 ];
 export const QUEST_REWARD = 4; // phúc duyên mỗi nhiệm vụ

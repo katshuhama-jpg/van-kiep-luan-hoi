@@ -65,7 +65,7 @@ export const COSMOS_END_EVENTS: GameEvent[] = [
       },
       {
         label: tr('Quay lưng, tiên phàm đã khác đường', "Turn away, immortals and mortals walk different roads"),
-        hint: tr('tu vi +, đạo tâm -', "cultivation +, Yao Heart -"),
+        hint: tr('tu vi +, đạo tâm -', "cultivation +, Dao Heart -"),
         lean: 'ta',
         run: (ch) => {
           dao(ch, -6);
@@ -117,7 +117,7 @@ export const COSMOS_END_EVENTS: GameEvent[] = [
     when: (c) => fated(c, 'end_thien_thu', FATE),
     title: tr('Tàng Kinh Các của Văn Khúc', "Wenqu's Scripture Pavilion"),
     text: () =>
-      tr('Văn Khúc Tinh Quân dẫn bạn vào một tòa lầu không đáy, sách chất cao tận mây. "Mọi đạo pháp đều nằm ở đây, chỉ thiếu một người chép nốt trang cuối. Kẻ chép xong sẽ hóa vào sách mà sống mãi."', "Star Lord Wenqu leads you into a bottomless tower, its books stacked up to the clouds. \"Every Yao art lies here. All that's missing is someone to copy the final page. Whoever finishes it will become part of the book and live forever.\""),
+      tr('Văn Khúc Tinh Quân dẫn bạn vào một tòa lầu không đáy, sách chất cao tận mây. "Mọi đạo pháp đều nằm ở đây, chỉ thiếu một người chép nốt trang cuối. Kẻ chép xong sẽ hóa vào sách mà sống mãi."', "Star Lord Wenqu leads you into a bottomless tower, its books stacked up to the clouds. \"Every Dao art lies here. All that's missing is someone to copy the final page. Whoever finishes it will become part of the book and live forever.\""),
     choices: () => [
       {
         label: tr('Cầm bút, chép trang cuối của thiên thư', "Take up the brush and copy the Heavenly Tome's final page"),
@@ -160,7 +160,7 @@ export const COSMOS_END_EVENTS: GameEvent[] = [
         },
       },
       {
-        label: tr('Từ chối, tiên đạo không ở trên ngai', "Refuse, the immortal Yao does not lie on a throne"),
+        label: tr('Từ chối, tiên đạo không ở trên ngai', "Refuse, the immortal Dao does not lie on a throne"),
         hint: tr('tâm cảnh +, khí vận +', "Mind +, Luck +"),
         lean: 'trung',
         run: (c) => {
@@ -242,7 +242,7 @@ export const COSMOS_END_EVENTS: GameEvent[] = [
       },
       {
         label: tr('Giết lão tăng, ở Ma giới không có chỗ cho Phật', "Kill the old monk, the Demon Realm has no place for Buddhas"),
-        hint: tr('đạo tâm --', "Yao Heart --"),
+        hint: tr('đạo tâm --', "Dao Heart --"),
         lean: 'ta',
         run: (c) => {
           dao(c, -25);
@@ -276,7 +276,7 @@ export const COSMOS_END_EVENTS: GameEvent[] = [
       },
       {
         label: tr('Hất chén rượu, giết hắn trước', "Dash the cup away and kill him first"),
-        hint: tr('đạo tâm -, an toàn', "Yao Heart -, safe"),
+        hint: tr('đạo tâm -, an toàn', "Dao Heart -, safe"),
         lean: 'ta',
         run: (c) => {
           dao(c, -10);
@@ -298,7 +298,7 @@ export const COSMOS_END_EVENTS: GameEvent[] = [
       tr('Một bóng người không mặt chặn đường: "Ở Thái Hư, tên là gánh nặng. Bán tên cho ta, ta trả ngươi trăm năm tu vi. Chỉ là từ nay không ai nhớ ngươi là ai, kể cả ngươi."', "A faceless figure blocks your path: \"In the Great Void, a name is a burden. Sell me yours and I'll pay you a hundred years of cultivation. Only, from then on no one will remember who you are, not even you.\""),
     choices: () => [
       {
-        label: tr('Bán tên lấy đạo', "Sell your name for the Yao"),
+        label: tr('Bán tên lấy đạo', "Sell your name for the Dao"),
         hint: tr('tu vi +++, khi chết thành kẻ vô danh', "cultivation +++, die a nameless one"),
         lean: 'ta',
         run: (c) => {

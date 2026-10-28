@@ -81,7 +81,7 @@ export function KiepSoBlock({ meta, onHoanHon }: { meta: Meta; onHoanHon?: (id: 
         <span>
           <small>{tr("Kiếp Số ", "Calamity Count ")}{ks} · {KS_NAME[ks]}</small>
           <b>{ks === 0 ? tr('Chưa bị làm khó, chưa có thưởng thêm', "No extra difficulty, no extra rewards yet") : tr(`Khó hơn ${ks} bậc, bù lại phúc +${ks * 5}%, đồ rơi +${ks * 3}%`, `${ks} levels harder, but Fortune +${ks * 5}%, drops +${ks * 3}%`)}</b>
-          <em className="lh-why">{tr("Bạn tu càng giỏi qua nhiều kiếp, Thiên đạo càng làm khó nhưng thưởng càng nhiều.", "The better you cultivate across lives, the harder the Heavenly Yao makes it - and the bigger the rewards.")}</em>
+          <em className="lh-why">{tr("Bạn tu càng giỏi qua nhiều kiếp, Thiên đạo càng làm khó nhưng thưởng càng nhiều.", "The better you cultivate across lives, the harder the Heavenly Dao makes it - and the bigger the rewards.")}</em>
           {(meta.tinhTam ?? 0) > 0 && <small className="lh-tt">{tr("Đã uống canh giảm ", "Soup lowered it by ")}{base - ks}{tr(" bậc (gốc là ", " levels (base ")}{base})</small>}
         </span>
       </div>
@@ -106,7 +106,7 @@ export function KiepSoBlock({ meta, onHoanHon }: { meta: Meta; onHoanHon?: (id: 
             </li>
           ))}
         </ul>
-        <p className="note">{tr("Kiếp Số 5 trở lên mà phi thăng mở kết cục Nghịch Thiên Hành Đạo. Kiếp Số 10 mà Chứng Đạo mở Vạn Kiếp Bất Diệt.", "Ascend with Calamity Count 5+ to unlock the Defy Heaven ending. Attain the Yao at Calamity Count 10 to unlock Ten Thousand Lives Undying.")}</p>
+        <p className="note">{tr("Kiếp Số 5 trở lên mà phi thăng mở kết cục Nghịch Thiên Hành Đạo. Kiếp Số 10 mà Chứng Đạo mở Vạn Kiếp Bất Diệt.", "Ascend with Calamity Count 5+ to unlock the Defy Heaven ending. Attain the Dao at Calamity Count 10 to unlock Ten Thousand Lives Undying.")}</p>
       </details>
       {active && (
         <div className="lh-hon">

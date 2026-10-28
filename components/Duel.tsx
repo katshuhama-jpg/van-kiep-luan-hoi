@@ -112,7 +112,7 @@ export default function DuelWarning({
               {canBefriend && (
                 <button className="btn" onClick={() => onPick('befriend')}>
                   
-                  {tr("Kết giao, uống trà luận đạo", "Make friends over tea and Yao talk")}
+                  {tr("Kết giao, uống trà luận đạo", "Make friends over tea and Dao talk")}
                 </button>
               )}
               <button className="btn btn-dark" onClick={() => onPick('leave')}>

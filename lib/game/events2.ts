@@ -66,7 +66,7 @@ export const EVENTS2: GameEvent[] = [
         },
         {
           label: tr('Đem cả rương cúng chùa', "Donate the whole chest to the temple"),
-          hint: tr('đạo tâm +, khí vận +', "Yao Heart +, Luck +"),
+          hint: tr('đạo tâm +, khí vận +', "Dao Heart +, Luck +"),
           lean: 'chinh',
           run: (ch) => {
             dao(ch, 12);
@@ -153,7 +153,7 @@ export const EVENTS2: GameEvent[] = [
     choices: (c) => [
       {
         label: tr('Quỳ xuống chuộc tội', "Kneel and atone"),
-        hint: c.linhThach >= 100 ? tr('-100 linh thạch', "-100 spirit stones") : tr('đạo tâm +', "Yao Heart +"),
+        hint: c.linhThach >= 100 ? tr('-100 linh thạch', "-100 spirit stones") : tr('đạo tâm +', "Dao Heart +"),
         lean: 'chinh',
         run: (ch) => {
           money(ch, -100);
@@ -368,7 +368,7 @@ export const EVENTS2: GameEvent[] = [
         },
         {
           label: tr('Sơ tán dân làng', "Evacuate the villagers"),
-          hint: tr('đạo tâm +', "Yao Heart +"),
+          hint: tr('đạo tâm +', "Dao Heart +"),
           lean: 'chinh',
           run: (ch, ctx) => {
             dao(ch, 8);
@@ -953,7 +953,7 @@ export const EVENTS2: GameEvent[] = [
       },
       {
         label: tr('Đi chùa trừ tà', "Go to a temple for an exorcism"),
-        hint: tr('đạo tâm +', "Yao Heart +"),
+        hint: tr('đạo tâm +', "Dao Heart +"),
         lean: 'chinh',
         run: (c) => {
           setArc(c, 'he_thong', 9);
@@ -1034,7 +1034,7 @@ export const EVENTS2: GameEvent[] = [
       },
       {
         label: tr('Kéo một người bên kia sang', "Pull someone from the other side"),
-        hint: tr('có đạo lữ?', "a Yao companion?"),
+        hint: tr('có đạo lữ?', "a Dao companion?"),
         lean: 'trung',
         run: (c) => {
           if (c.partner) return tr('Bạn kéo được một anh shipper. Anh ấy giao xong đơn rồi đòi về.', "You pull through a delivery guy. He finishes dropping off his order and demands to go back.");

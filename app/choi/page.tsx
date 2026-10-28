@@ -17,6 +17,7 @@ import { MONSTERS, combatLevel, effLv, fleeChance, hit, killExp, killReward, los
 import { sessionDropped, signOut } from '@/lib/auth';
 import { lang, setLang } from '@/lib/i18n';
 import { nameOf } from '@/lib/hanviet';
+import { charLang, convertChar, convertMeta, loadDict, looksVi } from '@/lib/retrans';
 import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, itemPrice, pillPrice, RARE_STOCK_REALM, realmLabel, realmName, soldOut, yearSpeed, youthPace } from '@/lib/game/data';
 import { genName, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick } from '@/lib/game/engine';
 import { addCult, addPill, dao, fatal, fmt, giveItem, money, reward, stat, wealthTier } from '@/lib/game/helpers';
@@ -167,8 +168,18 @@ export default function PlayPage() {
     }
     let cancel = false;
     (async () => {
-      const { meta: m0, save } = await loadAll(user);
+      const { meta: m00, save } = await loadAll(user);
       if (cancel) return;
+      // đổi ngôn ngữ giữa chừng: dịch lại gia phả, sự kiện đang chờ, kiếp trước... sang ngôn ngữ đang dùng
+      let m0 = m00;
+      const want = lang();
+      const needChar = save?.char && !save.char.dead && charLang(save.char) !== want;
+      const needMeta = !!m00.past && (m00.past.cause ? looksVi(m00.past.cause) !== (want === 'vi') : false);
+      if ((needChar || needMeta) && (await loadDict())) {
+        if (cancel) return;
+        if (needChar && save?.char) convertChar(save.char, want, save.pending);
+        if (needMeta) m0 = convertMeta(m00, want);
+      }
       // chuỗi ngày tu luyện: vào game ngày mới thì cộng chuỗi
       const bumped = bumpStreak(m0);
       const m = bumped ?? m0;
@@ -607,20 +618,20 @@ export default function PlayPage() {
         rerender();
         return;
       }
-      if (realP) sendMail(userRef.current, realP, 'tra', tr(`${meName} cùng bóng ${f.rival.name} của bạn uống trà luận đạo suốt đêm, kết làm bằng hữu.`, `${meName} and your shadow ${f.rival.name} drank tea and discussed the Yao all night, and became friends.`)).catch(() => {});
+      if (realP) sendMail(userRef.current, realP, 'tra', tr(`${meName} cùng bóng ${f.rival.name} của bạn uống trà luận đạo suốt đêm, kết làm bằng hữu.`, `${meName} and your shadow ${f.rival.name} drank tea and discussed the Dao all night, and became friends.`)).catch(() => {});
       act((ch) => {
         qmark(ch, 'teaSurvive');
         if (f.sworn) {
           const exp = Math.round(reward(ch, 0.3));
           addCult(ch, exp);
-          ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: tr(`Huynh đệ gặp nhau, trà thật lòng thật. Hai người cùng luận đạo, cả hai cùng tiến (+${exp} tu vi).`, `Brothers meet, the tea is real and so are the hearts. You discuss the Yao together and both of you advance (+${exp} cultivation).`) });
+          ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: tr(`Huynh đệ gặp nhau, trà thật lòng thật. Hai người cùng luận đạo, cả hai cùng tiến (+${exp} tu vi).`, `Brothers meet, the tea is real and so are the hearts. You discuss the Dao together and both of you advance (+${exp} cultivation).`) });
           return;
         }
         const er = elemRel(elementOf(ch), elementOf(f.rival));
         stat(ch, 'khiVan', er === 'duoc_sinh' ? 5 : er === 'sinh' ? 3 : 2);
         stat(ch, 'tamCanh', 4);
         if (er === 'duoc_sinh' || er === 'sinh') ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: tr('Ngũ hành tương sinh, hai người càng nói càng hợp. Khí vận của bạn khởi sắc.', "The five elements nourish each other - the more you talk, the better you click. Your Luck brightens.") });
-        ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: tr(`Trà thật, người cũng thật. Bạn cùng ${who} uống trà luận đạo suốt đêm, kết làm bằng hữu giang hồ.`, `The tea is real, and so is the person. You and ${who} drink tea and discuss the Yao all night, becoming friends of the jianghu.`) });
+        ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: tr(`Trà thật, người cũng thật. Bạn cùng ${who} uống trà luận đạo suốt đêm, kết làm bằng hữu giang hồ.`, `The tea is real, and so is the person. You and ${who} drink tea and discuss the Dao all night, becoming friends of the jianghu.`) });
       });
     } else
       act((ch, out) => {
@@ -1094,11 +1105,12 @@ export default function PlayPage() {
     const m2: Meta = { ...mb, phucDuyen: Math.max(0, meta.phucDuyen - cost), nghiep: Math.max(0, meta.nghiep - costTa), talents };
     if (base && !base.name.trim()) base = { ...base, name: genName(base.gender) };
     const c = newCharacter(m2, gifts, base ?? undefined);
+    c.lang = lang();
     talentsRef.current = talents;
     lifeT0.current = Date.now();
     clearLaSo();
     track('life_start', { lifeNo: c.lifeNo, drink, talents: talents.length, gifts: gifts.length, picked: !!base });
-    if ((c.kiepSo ?? 0) > 0) c.log.push({ age: 0, tone: 'big', text: tr(`Kiếp Số ${c.kiepSo} · ${KS_NAME[c.kiepSo ?? 0]}. Thiên đạo đã để mắt tới linh hồn này, kiếp nạn sẽ nặng hơn, phúc báo cũng dày hơn.`, `Calamity Count ${c.kiepSo} · ${KS_NAME[c.kiepSo ?? 0]}. The Heavenly Yao has its eye on this soul: calamities will be heavier, and blessings richer.`) });
+    if ((c.kiepSo ?? 0) > 0) c.log.push({ age: 0, tone: 'big', text: tr(`Kiếp Số ${c.kiepSo} · ${KS_NAME[c.kiepSo ?? 0]}. Thiên đạo đã để mắt tới linh hồn này, kiếp nạn sẽ nặng hơn, phúc báo cũng dày hơn.`, `Calamity Count ${c.kiepSo} · ${KS_NAME[c.kiepSo ?? 0]}. The Heavenly Dao has its eye on this soul: calamities will be heavier, and blessings richer.`) });
     if ((c.kiepTich ?? 0) > 0) c.log.push({ age: 0, tone: 'good', text: tr(`Kiếp tích ${c.kiepTich}: những lần ngã trước cửa trời đã thành kinh nghiệm. Đột phá dễ hơn ${(c.kiepTich ?? 0) * 5}%.`, `Calamity Scars ${c.kiepTich}: past falls at Heaven's gate have become experience. Breakthroughs ${(c.kiepTich ?? 0) * 5}% easier.`) });
     if (lh) {
       applyHon(c, honV, rested && honV >= HON_MAX);
@@ -1239,7 +1251,7 @@ export default function PlayPage() {
         if (ch && !ch.dead) {
           ch.vendettas = (ch.vendettas ?? []).filter((v) => v.player !== player);
           dao(ch, 5);
-          ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: tr(`Bạn gửi lời hòa giải tới @${player}. Buông được mối thù, đạo tâm sáng thêm (+5 đạo tâm).`, `You send words of reconciliation to @${player}. Letting go of the feud, your Yao Heart shines brighter (+5 Yao Heart).`) });
+          ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: tr(`Bạn gửi lời hòa giải tới @${player}. Buông được mối thù, đạo tâm sáng thêm (+5 đạo tâm).`, `You send words of reconciliation to @${player}. Letting go of the feud, your Dao Heart shines brighter (+5 Dao Heart).`) });
           persist(true);
           rerender();
         }
@@ -1854,7 +1866,7 @@ export default function PlayPage() {
       )}
       {kiep !== null && !c.dead && (
         <TribulationOverlay
-          realmName={c.realm + 1 > 11 ? tr('Chứng Đạo', "Attaining the Yao") : c.realm + 1 === 8 ? (c.daoTam <= -40 || c.path === 'ma' ? tr('Ma Giới', "Demon Realm") : c.daoTam < 20 ? tr('Thái Hư', "Great Void") : tr('Phi Thăng', "Ascension")) : realmName(c.realm + 1, c.cosmos)}
+          realmName={c.realm + 1 > 11 ? tr('Chứng Đạo', "Attaining the Dao") : c.realm + 1 === 8 ? (c.daoTam <= -40 || c.path === 'ma' ? tr('Ma Giới', "Demon Realm") : c.daoTam < 20 ? tr('Thái Hư', "Great Void") : tr('Phi Thăng', "Ascension")) : realmName(c.realm + 1, c.cosmos)}
           onDone={afterKiep}
           c={c}
         />

@@ -152,7 +152,7 @@ export const CHUYEN_DAO_EVENTS: GameEvent[] = [
     choices: () => [
       {
         label: tr('Quỳ xuống nhận nghề', "Kneel and accept the craft"),
-        hint: tr(`${cost('dan')} · đạo tâm thêm chính`, `${cost('dan')} · Yao Heart turns more righteous`),
+        hint: tr(`${cost('dan')} · đạo tâm thêm chính`, `${cost('dan')} · Dao Heart turns more righteous`),
         lean: 'chinh',
         run: (c, ctx) => {
           dao(c, 8);
@@ -245,7 +245,7 @@ export const CHUYEN_DAO_EVENTS: GameEvent[] = [
     choices: () => [
       {
         label: tr('Đọc hết cuốn huyết thư', "Read the whole blood letter"),
-        hint: tr(`${cost('ma')} · đạo tâm thêm tà`, `${cost('ma')} · Yao Heart turns more evil`),
+        hint: tr(`${cost('ma')} · đạo tâm thêm tà`, `${cost('ma')} · Dao Heart turns more evil`),
         lean: 'ta',
         run: (c, ctx) => {
           dao(c, -10);
