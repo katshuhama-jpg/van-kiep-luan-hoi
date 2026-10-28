@@ -21,6 +21,10 @@ import { nameOf } from '../hanviet';
  * Có màn cảnh báo trước khi vào trận, nền sân đấu riêng, đánh tối đa 5 hiệp.
  */
 
+
+/** Oan gia ngõ hẹp: cảnh giới tối thiểu để gặp lại kẻ thù cũ (2 = Trúc Cơ), và độ chênh cấp chiến đấu tối đa (3 cấp = 1 đại cảnh giới) */
+export const OAN_GIA_MIN_REALM = 2;
+export const OAN_GIA_MAX_GAP = 3;
 export type DuelKind = 'dong_dao' | 'dich_thu' | 'kiep_truoc' | 'dong_mon' | 'ngu_hanh' | 'ma_dau';
 export const DUEL_PER_YEAR = 0.1; // trung bình khoảng 10 năm gặp một lần
 export const DUEL_TURNS = 5;
@@ -239,9 +243,13 @@ function pickDuel0(c: Character, rnd: () => number): DuelFoe | null {
     ...(c.vendettas ?? []),
     ...S.foes.filter((p) => !(c.vendettas ?? []).some((v) => v.player === p)).map((p) => ({ player: p, name: '', items: [], why: tr(`@${p} có tên trong sổ thù của bạn`, `@${p} is in your book of grudges`) })),
   ];
-  // oan gia ngõ hẹp: có thù với người chơi thật thì 35% gặp lại họ
+  // oan gia ngõ hẹp: có thù với người chơi thật thì 35% gặp lại họ.
+  // Cân bằng: còn ở Luyện Khí thì chưa gặp lại; kẻ thù mạnh hơn quá 1 đại cảnh giới thì cũng chưa gặp,
+  // tránh vòng lặp kiếp nào cũng bị cùng một người mạnh hơn rất nhiều giết ngay từ những năm mới tu.
+  const meCl = combatLevel(c);
   for (const v of foesV) {
-    const cands = (w?.rivals ?? []).filter((x) => x.player === v.player);
+    if (c.realm < OAN_GIA_MIN_REALM) break;
+    const cands = (w?.rivals ?? []).filter((x) => x.player === v.player && combatLevel(foeChar(x)) <= meCl + OAN_GIA_MAX_GAP);
     if (!cands.length || rnd() >= 0.35) continue;
     const rival = cands.find((x) => x.name === v.name) ?? cands[0];
     return {
@@ -290,7 +298,9 @@ function pickDuel0(c: Character, rnd: () => number): DuelFoe | null {
   const [pw, pn] = W[kind];
   const r = rnd();
   const ri = (a: number, b: number) => a + Math.floor(rnd() * (b - a + 1));
-  const delta = r < pw ? -ri(3, 6) : r < pw + pn ? ri(-1, 1) : ri(3, 6);
+  // còn ở Luyện Khí: đối thủ mạnh hơn chỉ hơn tối đa một đại cảnh giới, để người mới tu không bị nghiền nát
+  const strong = c.realm <= 1 ? ri(2, 3) : ri(3, 6);
+  const delta = r < pw ? -ri(3, 6) : r < pw + pn ? ri(-1, 1) : strong;
   const targetCl = Math.max(1, Math.min(39, me0 + delta));
   const tgt = clToRealm(targetCl);
 
