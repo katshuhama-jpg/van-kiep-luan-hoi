@@ -15,10 +15,13 @@ import { useAuth } from '@/lib/useAuth';
 import { tr } from '@/lib/i18n';
 
 const realmOf = (r: RivalChar) => (r.realm === 0 ? tr('Phàm nhân', "Mortal") : realmLabel(r.realm, r.layer, r.cosmos));
+/** Góp ý #17: chiến thư đấu bằng cảnh giới thật, hai bên không được lệch quá 3 đại cảnh giới */
+const THACH_MAX_GAP = 3;
+const gapOf = (a: RivalChar, b: RivalChar) => Math.abs((a.realm ?? 0) - (b.realm ?? 0));
 
 /**
  * Hạ chiến thư: đấu Phi Kiếm với bóng một kiếp cụ thể của người khác (?l=<id kiếp> từ nghĩa trang, ?u=<tên> từ bảng xếp hạng).
- * Không cần người kia đang chơi. Kéo ngang cảnh giới như lôi đài. 3 chiến thư mỗi ngày, không tính điểm tuần.
+ * Không cần người kia đang chơi. Đấu bằng cảnh giới thật, lệch tối đa 3 đại cảnh giới. 3 chiến thư mỗi ngày, không tính điểm tuần.
  */
 export default function ThachDau() {
   const { user, ready } = useAuth();
@@ -43,8 +46,16 @@ export default function ThachDau() {
     thachLeft(user).then(setLeft);
   }, [ready, user]);
 
-  const me = cands?.[pick] ?? null;
   const f = foe && foe !== 'none' ? foe : null;
+  // tự chọn bóng đầu tiên đủ gần cảnh giới đối thủ
+  useEffect(() => {
+    if (!cands || !f) return;
+    const i = cands.findIndex((c) => gapOf(c, f.shadow) <= THACH_MAX_GAP);
+    if (i >= 0) setPick(i);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cands, f?.lifeId, f?.player]);
+  const me = cands?.[pick] ?? null;
+  const tooFar = !!me && !!f && gapOf(me, f.shadow) > THACH_MAX_GAP;
   const self = !!f && f.player === user?.username;
   return (
     <main className="app thach">
@@ -87,14 +98,14 @@ export default function ThachDau() {
           </div>
           <p className="note th-note">
             
-            {tr("Hai bên được kéo ngang cảnh giới bóng của bạn. Thắng +5 phúc duyên, thua +2. Người kia nhận thư và được báo thù ở Lôi đài. ", "Both sides are leveled to your shadow's realm. Win +5 Fortune, lose +2. The other player receives the letter and can take revenge in the Arena. ")}{f!.shadow.path ? tr(`Đối thủ là ${PATHS[f!.shadow.path].name}.`, `Opponent: ${PATHS[f!.shadow.path].name}.`) : ''}
+            {tr("Đấu bằng cảnh giới thật, hai bên lệch tối đa 3 đại cảnh giới. Thắng +5 phúc duyên, thua +2. Người kia nhận thư và được báo thù ở Lôi đài. ", "Fought at true realms, at most 3 major realms apart. Win +5 Fortune, lose +2. The other player receives the letter and can take revenge in the Arena. ")}{f!.shadow.path ? tr(`Đối thủ là ${PATHS[f!.shadow.path].name}.`, `Opponent: ${PATHS[f!.shadow.path].name}.`) : ''}
           </p>
           {cands && cands.length > 1 && (
             <>
               <h3 className="gh-h">{tr("Chọn bóng ra trận", "Choose a shadow to send in")}</h3>
               <div className="th-picks">
                 {cands.map((c, i) => (
-                  <button key={`${c.lifeId}-${i}`} className={`th-pick ${pick === i ? 'on' : ''}`} onClick={() => setPick(i)}>
+                  <button key={`${c.lifeId}-${i}`} className={`th-pick ${pick === i ? 'on' : ''} ${gapOf(c, f!.shadow) > THACH_MAX_GAP ? 'far' : ''}`} onClick={() => setPick(i)}>
                     <Sprite c={foeChar(c)} size={56} />
                     <b>{c.name}</b>
                     <small>{realmOf(c)}</small>
@@ -107,13 +118,13 @@ export default function ThachDau() {
           <div className="ar-dock">
             <button
               className="btn btn-red btn-big ar-go-btn"
-              disabled={!me || self || !left}
+              disabled={!me || self || !left || tooFar}
               onClick={() => {
                 track('thach_go', { opp: f!.player });
                 setFight(Date.now());
               }}
             >
-              {self ? tr('Không tự thách chính mình', "You can't challenge yourself") : left ? tr('⚔ Hạ chiến thư', "⚔ Issue a challenge") : tr('Hết chiến thư hôm nay', "No challenges left today")}
+              {self ? tr('Không tự thách chính mình', "You can't challenge yourself") : tooFar ? tr('Lệch quá 3 đại cảnh giới', 'More than 3 major realms apart') : left ? tr('⚔ Hạ chiến thư', "⚔ Issue a challenge") : tr('Hết chiến thư hôm nay', "No challenges left today")}
               <small>{left === null ? '...' : tr(`còn ${left}/3 chiến thư hôm nay`, `${left}/3 challenges left today`)}</small>
             </button>
           </div>

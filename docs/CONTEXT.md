@@ -181,6 +181,7 @@ Mở từ nút thư (✉). Ba tab: Thư, Ân oán, Truy nã.
   - **Ghi thù:** 35% lần gặp kế tiếp là gặp lại người đó; báo thù thắng thì thưởng gấp đôi và lấy lại đồ bị cướp.
   - **Khiêu khích:** lần chạm mặt kế tiếp thắng thua đều gấp rưỡi (mất 30% tiền thay vì 20%), đánh xong thì hết.
   - **Treo thưởng** 100/300/1000 linh thạch lên Bảng truy nã. Ai hạ bóng người đó thì lĩnh hết. Người bị treo có thể bỏ ra đúng số đó để chuộc lệnh.
+  - **Hạ chiến thư** (`/thach-dau`, thay chiến thư cược cũ): đấu Phi Kiếm với bóng một kiếp cụ thể của người khác, 3 lần mỗi ngày. Từ 29/10 (góp ý #17): đấu bằng cảnh giới thật, không kéo ngang; bóng của mình và bóng đối thủ lệch tối đa 3 đại cảnh giới (`THACH_MAX_GAP`), bóng lệch xa bị làm mờ, nút khóa.
   - **Chiến thư** cược 0/100/300: bên nhận đồng ý thì hai bóng tự đấu 5 hiệp, người thắng lấy cả hai phần cược. Từ chối thì bị gắn **Kẻ né chiến** 24 giờ.
 - **Truy sát:** bỏ 200 linh thạch, trong vòng 1 năm game chắc chắn chạm mặt kẻ thù trong sổ thù.
 - **Huyết hải thâm thù:** đấu với cùng một người qua 3 kiếp thì có danh hiệu "Báo thù 3 đời". Bảng **Oan gia** là các cặp đấu nhau nhiều nhất.

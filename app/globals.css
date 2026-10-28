@@ -4421,3 +4421,5 @@ button.shadow-card { cursor: pointer; }
 .ld-bg { background: #06040e url(/bg/loi-dinh.png) center bottom / cover no-repeat; image-rendering: pixelated; }
 .ld-bg.storm { animation: ldStorm 2.2s steps(2) infinite; }
 @keyframes ldStorm { 0%, 88% { filter: none; } 92% { filter: brightness(1.7) saturate(0.6); } 96% { filter: brightness(1.2); } }
+
+.th-pick.far { opacity: 0.45; filter: grayscale(0.8); }

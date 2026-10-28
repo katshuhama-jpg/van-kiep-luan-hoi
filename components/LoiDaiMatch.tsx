@@ -54,7 +54,8 @@ export default function LoiDaiMatch({
   onNext: () => void;
   onDone: () => void;
 }) {
-  const foe = useMemo(() => equalize(foe0, me), [foe0, me]);
+  // lôi đài kéo ngang cảnh giới; chiến thư đấu bằng cảnh giới thật (đã chặn lệch quá 3 đại cảnh giới ở trang chiến thư)
+  const foe = useMemo(() => (mode === 'thach' ? foe0 : equalize(foe0, me)), [foe0, me, mode]);
   const base = useMemo(() => baseChance(me, foe, rule), [me, foe, rule]);
   const bg = useMemo(() => BGS[Math.floor(Math.random() * BGS.length)], []);
   const [phase, setPhase] = useState<Phase>('vs');
@@ -226,7 +227,7 @@ export default function LoiDaiMatch({
           </div>
           <p className="ldm-vs-rule">
             
-            {tr("Ngang cảnh giới ", "Leveled to ")}<b>{realmOf(me)}</b>{tr(" · Luật hôm nay: ", " · Today's rule: ")}<b>{rule.name}</b>
+            {mode === 'thach' ? (<>{tr("Cảnh giới thật: ", "True realms: ")}<b>{realmOf(me)}</b>{tr(" đấu ", " vs ")}<b>{realmOf(foe)}</b></>) : (<>{tr("Ngang cảnh giới ", "Leveled to ")}<b>{realmOf(me)}</b></>)}{tr(" · Luật hôm nay: ", " · Today's rule: ")}<b>{rule.name}</b>
             {revenge ? tr(' · Trận báo thù', " · Revenge match") : ''}
           </p>
         </div>
