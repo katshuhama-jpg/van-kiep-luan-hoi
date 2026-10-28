@@ -18,7 +18,7 @@ export const RANK_SHORT_TA = [tr('Huyết nô', "Blood Slave"), tr('Sát thủ',
 export const RANK_SHORT_TRUNG = [tr('Học đồ', "Apprentice"), tr('Ký danh', "Registered"), tr('Thân truyền', "Personal"), tr('Truyền nhân', "Heir")];
 /** 3.1.0: bốn tông môn mới, mỗi tông có tên bậc riêng */
 export const SECT_RANKS: Record<string, { full: string[]; short: string[] }> = {
-  'Phổ Đà Sơn': { full: [tr('Hỏa đầu tăng', "Kitchen monk"), 'Sa di', tr('Tỳ kheo', "Bhikkhu"), tr('Hộ pháp La Hán', "Arhat Protector")], short: [tr('Hỏa đầu', "Kitchen"), 'Sa di', tr('Tỳ kheo', "Bhikkhu"), tr('La Hán', "Arhat")] },
+  'Phổ Đà Sơn': { full: [tr('Hỏa đầu tăng', "Kitchen monk"), tr('Sa di', "Novice monk"), tr('Tỳ kheo', "Bhikkhu"), tr('Hộ pháp La Hán', "Arhat Protector")], short: [tr('Hỏa đầu', "Kitchen"), tr('Sa di', "Novice monk"), tr('Tỳ kheo', "Bhikkhu"), tr('La Hán', "Arhat")] },
   'Kiếm Cốc': { full: [tr('Mài kiếm đồng', "Sword-grinding boy"), tr('Kiếm đồng', "Sword boy"), tr('Kiếm sĩ', "Swordsman"), tr('Kiếm Cốc truyền nhân', "Heir of Jian Valley")], short: [tr('Mài kiếm', "Grinder"), tr('Kiếm đồng', "Sword boy"), tr('Kiếm sĩ', "Swordsman"), tr('Truyền nhân', "Heir")] },
   'Vạn Độc Môn': { full: [tr('Dược nô', "Herb slave"), tr('Độc đồng', "Poison boy"), tr('Độc sứ', "Poison envoy"), tr('Vạn Độc Thánh sứ', "Holy Envoy of Wandu")], short: [tr('Dược nô', "Herb slave"), tr('Độc đồng', "Poison boy"), tr('Độc sứ', "Poison envoy"), tr('Thánh sứ', "Holy Envoy")] },
   'Yêu Thần Điện': { full: [tr('Yêu bộc', "Yao servant"), tr('Yêu binh', "Yao soldier"), tr('Yêu tướng', "Yao general"), tr('Yêu Thần tử', "Yao Divine Son")], short: [tr('Yêu bộc', "Yao servant"), tr('Yêu binh', "Yao soldier"), tr('Yêu tướng', "Yao general"), tr('Thần tử', "Divine Son")] },

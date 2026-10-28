@@ -180,7 +180,7 @@ export const CHILD_EVENTS: GameEvent[] = [
     maxAge: 11,
     once: true,
     weight: 10,
-    title: 'Con chim non',
+    title: tr('Con chim non', "The fledgling"),
     text: () => tr('Sau trận bão, bạn thấy một con chim non rơi khỏi tổ, run rẩy dưới gốc cây.', "After a storm you find a baby bird fallen from its nest, shivering under a tree."),
     choices: () => [
       {

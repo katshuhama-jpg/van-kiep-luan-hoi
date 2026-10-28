@@ -148,7 +148,7 @@ function BirthCard({ c }: { c: Character }) {
     <div className="birth-card">
       <div className="bc-sprite">
         <Sprite c={grown} size={112} />
-        <small>{c.gender === 'nam' ? 'Nam' : tr('Nữ', "Female")}{tr(" · lớn lên sẽ thế này", " · all grown up")}</small>
+        <small>{c.gender === 'nam' ? tr('Nam', "Male") : tr('Nữ', "Female")}{tr(" · lớn lên sẽ thế này", " · all grown up")}</small>
       </div>
       <div className="bc-info">
         <b className="bc-title">{c.name}</b>

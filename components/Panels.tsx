@@ -1159,7 +1159,7 @@ export function DeathSheet({
         )}
         <small>
           
-          {tr("Kết cục ", "Ending: ")}{[tr('phàm', "mortal"), 'linh', tr('huyền', "mystic"), tr('địa', "earth"), tr('thiên', "heaven")][ending.rare]}{tr(" phẩm", " grade")}{isNew ? tr(' · MỚI MỞ!', " · NEWLY UNLOCKED!") : ''}
+          {tr("Kết cục ", "Ending: ")}{[tr('phàm', "mortal"), tr('linh', "spirit"), tr('huyền', "mystic"), tr('địa', "earth"), tr('thiên', "heaven")][ending.rare]}{tr(" phẩm", " grade")}{isNew ? tr(' · MỚI MỞ!', " · NEWLY UNLOCKED!") : ''}
         </small>
         <b>{ending.name}</b>
         <span>{ending.desc}</span>
@@ -1297,7 +1297,7 @@ export function StageStrip({ c, compact, wait = 0 }: { c: Character; compact: bo
     <div className="strip">
       <div className="strip-who">
         <span className="strip-name">{c.name}</span>
-        <span className={`badge sex ${c.gender}`}>{c.gender === 'nam' ? 'Nam' : tr('Nữ', "Female")}</span>
+        <span className={`badge sex ${c.gender}`}>{c.gender === 'nam' ? tr('Nam', "Male") : tr('Nữ', "Female")}</span>
         {c.path && <span className="badge path">{PATHS[c.path].short}</span>}
         {c.sect && !c.cosmos && (
           <span className={`badge sect-badge ${sectSide(c) ?? ''}`} title={`${rankName(c)} ${c.sect}`}>
