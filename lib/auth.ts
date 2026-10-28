@@ -39,6 +39,7 @@ export function currentPlayer(): Player | null {
 
 function setPlayer(p: Player | null) {
   try {
+    if (p) localStorage.removeItem('vkl.dropped');
     if (p) localStorage.setItem(KEY, JSON.stringify(p));
     else localStorage.removeItem(KEY);
   } catch {
@@ -94,5 +95,17 @@ export async function signOut() {
 
 /** Phiên hết hạn hoặc bị xóa thì tự đăng xuất */
 export function dropSession() {
+  // đánh dấu để màn chơi đưa về trang đăng nhập thay vì lặng lẽ chuyển sang chơi thử
+  try {
+    localStorage.setItem('vkl.dropped', '1');
+  } catch {}
   setPlayer(null);
+}
+/** Phiên vừa bị hết hạn (không phải tự đăng xuất) */
+export function sessionDropped(): boolean {
+  try {
+    return localStorage.getItem('vkl.dropped') === '1';
+  } catch {
+    return false;
+  }
 }
