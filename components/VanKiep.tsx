@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Sprite from './Sprite';
 import { foeChar } from '@/lib/game/duel';
-import { hoDaoPower, hoDaoTeam, lastWords, loadPastSelves, type PastSelf } from '@/lib/vanKiep';
+import { hoDaoCap, hoDaoPower, hoDaoTeam, lastWords, loadPastSelves, type PastSelf } from '@/lib/vanKiep';
 import { tuKiep, type KiepCard } from '@/lib/game/vanDao';
 import { realmLabel } from '@/lib/game/data';
 import type { Character } from '@/lib/game/types';
@@ -28,7 +28,8 @@ export function VanKiepRow({ c }: { c: Character }) {
   if (!lives) return null;
   const shown = lives.slice(-9);
   const n = lives.length + 1;
-  const power = Math.round(lives.reduce((a, p) => a + hoDaoPower(p), 0) * 10) / 10;
+  // kiếp vừa hết cũng tính vào (đã đứng vào hàng)
+  const power = hoDaoCap([...lives, { realm: c.realm, ascended: !!c.ascended }]);
   return (
     <div className="vk-row" aria-label={tr(`Vạn kiếp sau lưng bạn: ${n} kiếp`, `Lives behind you: ${n}`)}>
       <div className="vk-line">
@@ -44,7 +45,7 @@ export function VanKiepRow({ c }: { c: Character }) {
       </div>
       <p>
         <b>{tr(`${c.name} bước vào hàng vạn kiếp.`, `${c.name} joins the line of your lives.`)}</b>{' '}
-        {tr(`Sau lưng bạn giờ có ${n} kiếp, đủ sức đỡ ${Math.round((power + 0.2) * 10) / 10} đạo lôi. Tới ngày Chứng Đạo, họ sẽ đỡ lôi thay bạn.`, `${n} lives now stand behind you, strong enough to take ${Math.round((power + 0.2) * 10) / 10} bolts. On the day you attain the Dao, they will take the lightning for you.`)}
+        {tr(`Sau lưng bạn giờ có ${n} kiếp, 13 kiếp mạnh nhất đủ sức đỡ ${power}/13 đạo lôi. Tới ngày Chứng Đạo, họ sẽ đỡ lôi thay bạn.`, `${n} lives now stand behind you, and your 13 strongest can take ${power}/13 bolts. On the day you attain the Dao, they will take the lightning for you.`)}
       </p>
     </div>
   );

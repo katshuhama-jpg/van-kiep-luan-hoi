@@ -61,13 +61,22 @@ export function lastWords(p: Pick<PastSelf, 'epitaph' | 'cause'>): string {
   return (p.epitaph && p.epitaph.trim()) || p.cause || '...';
 }
 
-/** Đội hộ đạo: lấy các kiếp mạnh trước cho tới khi đủ số đạo lôi cần đỡ */
+/** Mỗi đạo lôi chỉ một kiếp đỡ được: tối đa 13 kiếp lao lên, nên farm nhiều kiếp chết yểu không giúp gì */
+export const HO_DAO_MAX = 13;
+
+/** Sức đỡ tối đa của vạn kiếp: cộng 13 kiếp mạnh nhất */
+export function hoDaoCap(lives: Pick<PastSelf, 'realm' | 'ascended'>[]): number {
+  const top = lives.map(hoDaoPower).sort((a, b) => b - a).slice(0, HO_DAO_MAX);
+  return Math.round(top.reduce((a, x) => a + x, 0) * 10) / 10;
+}
+
+/** Đội hộ đạo: lấy các kiếp mạnh trước cho tới khi đủ số đạo lôi cần đỡ, tối đa 13 kiếp */
 export function hoDaoTeam(lives: PastSelf[], need: number): { team: PastSelf[]; total: number; saved: boolean } {
   const sorted = lives.slice().sort((a, b) => hoDaoPower(b) - hoDaoPower(a) || a.lifeNo - b.lifeNo);
   const team: PastSelf[] = [];
   let total = 0;
   for (const p of sorted) {
-    if (total >= need) break;
+    if (total >= need || team.length >= HO_DAO_MAX) break;
     team.push(p);
     total += hoDaoPower(p);
   }
