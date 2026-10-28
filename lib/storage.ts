@@ -195,7 +195,10 @@ export async function leaderboard(kind: RankKind, lean: RankLean, path: string, 
     return [c.ascended ? 1 : 0, c.realm ?? 0, c.layer ?? 0, Math.floor(c.cultivation ?? 0)];
   };
   const same = (a: number[], b: number[]) => a.every((x, i) => x === b[i]);
+  // máy chủ có gửi lúc đạt (rankAt, xem supabase/leaderboard_tie_order.sql) thì ai đạt trước đứng trên; chưa có thì tạm xếp theo tuổi
+  const at = (x: { c: Character }) => (x.c as Character & { rankAt?: string }).rankAt;
   const tie = (a: { username: string; c: Character }, b: { username: string; c: Character }) =>
+    (at(a) && at(b) ? Date.parse(at(a)!) - Date.parse(at(b)!) : 0) ||
     Math.floor(b.c.age ?? 0) - Math.floor(a.c.age ?? 0) || (a.c.lifeNo ?? 0) - (b.c.lifeNo ?? 0) || a.username.localeCompare(b.username) || (a.c.name ?? '').localeCompare(b.c.name ?? '');
   for (let i = 0; i < list.length; ) {
     let j = i + 1;
