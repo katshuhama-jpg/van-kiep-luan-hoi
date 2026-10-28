@@ -173,7 +173,7 @@ export default function PlayPage() {
       // đổi ngôn ngữ giữa chừng: dịch lại gia phả, sự kiện đang chờ, kiếp trước... sang ngôn ngữ đang dùng
       let m0 = m00;
       const want = lang();
-      const needChar = save?.char && !save.char.dead && charLang(save.char) !== want;
+      const needChar = save?.char && charLang(save.char) !== want;
       const needMeta = !!m00.past && (m00.past.cause ? looksVi(m00.past.cause) !== (want === 'vi') : false);
       if ((needChar || needMeta) && (await loadDict())) {
         if (cancel) return;
@@ -199,7 +199,11 @@ export default function PlayPage() {
         });
       weeklyTitles().then((t) => !cancel && setTitles(t));
       if (user) loadSocial(user).catch(() => {});
-      if (save?.char && !save.char.dead) {
+      // chết rồi nhưng chưa bấm qua màn cáo biệt (tải lại, sang lôi đài, đóng trang): mở lại màn cáo biệt để kiếp vẫn được ghi.
+      // finishLife đã chạy thì meta.past là kiếp này, khi đó bỏ qua để không ghi trùng.
+      const deadPending = !!save?.char?.dead && !(m.past && m.past.lifeNo === save.char.lifeNo && m.past.name === save.char.name);
+      if (save?.char && (!save.char.dead || deadPending)) {
+        if (save.char.dead) deathSeen.current = save.char.lifeNo;
         charRef.current = save.char;
         pendingRef.current = save.pending;
         yearSecRef.current = save.yearSec || 30;
