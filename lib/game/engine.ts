@@ -421,7 +421,7 @@ const DOING: Record<string, string[]> = {
   luyen_dan: [tr('bạn canh lò đan suốt bảy ngày', "you watch over the pill furnace for seven days"), tr('bạn thử một đan phương mới', "you try a new pill recipe"), tr('bạn đi hái thảo dược', "you go gathering herbs"), tr('bạn ghi chép lại các lần nổ lò', "you write up notes on every furnace explosion"), tr('bạn phơi thảo dược trên mái nhà', "you dry herbs on the roof")],
   du_ngoan: [tr('bạn dừng chân ngắm cảnh', "you stop to take in the view"), tr('bạn nghe người kể chuyện giang hồ', "you listen to a storyteller's tales of the jianghu"), tr('bạn vẽ lại phong cảnh', "you paint the scenery"), tr('bạn uống rượu với một khách lạ', "you share wine with a stranger"), tr('bạn lạc đường mất ba ngày', "you get lost for three days")],
   kiem_tien: [tr('bạn bày sạp bán phù chú', "you set up a stall selling talismans"), tr('bạn nhận làm thuê cho thương hội', "you take a job with a merchant guild"), tr('bạn đi buôn linh thảo', "you trade in spirit herbs"), tr('bạn chép kinh thuê cho chùa', "you copy sutras for a temple"), tr('bạn đòi nợ giúp một lão chủ tiệm', "you collect a debt for an old shopkeeper")],
-  ket_duyen: [tr('bạn uống trà luận đạo với bạn cũ', "you discuss the Yao over tea with an old friend"), tr('bạn dự hội thơ của tu sĩ trẻ', "you attend a young cultivators' poetry gathering"), tr('bạn giúp một người lạ sửa xe', "you help a stranger fix a cart"), tr('bạn viết thư cho cố nhân', "you write a letter to an old friend"), tr('bạn kết giao thêm vài đạo hữu', "you make a few more fellow Daoist friends")],
+  ket_duyen: [tr('bạn uống trà luận đạo với bạn cũ', "you discuss the Dao over tea with an old friend"), tr('bạn dự hội thơ của tu sĩ trẻ', "you attend a young cultivators' poetry gathering"), tr('bạn giúp một người lạ sửa xe', "you help a stranger fix a cart"), tr('bạn viết thư cho cố nhân', "you write a letter to an old friend"), tr('bạn kết giao thêm vài đạo hữu', "you make a few more fellow Daoist friends")],
   tru_yeu: [tr('bạn lau sạch máu yêu thú trên vũ khí', "you wipe demon beast blood off your weapon"), tr('bạn băng bó vết cào trên tay', "you bandage the claw marks on your arm"), tr('bạn đếm lại chiến lợi phẩm', "you count your spoils"), tr('bạn nghe tiếng sói tru vọng về', "you hear wolves howling in the distance")],
 };
 const RESULT: Record<string, string[]> = {
@@ -475,7 +475,7 @@ function progress(c: Character, ctx: EffectCtx, talents: string[]): PendingEvent
         const left = Math.ceil(ASCEND_MIN_AGE - c.age);
         if (c.ascWait === undefined || c.age - c.ascWait >= 10) {
           c.ascWait = Math.floor(c.age);
-          ctx.log(tr(`Tu vi đã đủ phi thăng, nhưng đạo hạnh còn non: cửa trời chỉ mở cho người từ ${ASCEND_MIN_AGE} tuổi. Còn ${left} năm nữa. Tranh thủ săn quái tích Ngũ Hành Ấn cho Ngũ Hành Đài.`, `Your cultivation is enough to ascend, but your Yao is still green: the heavenly gate opens only to those aged ${ASCEND_MIN_AGE} or more. ${left} years to go. Hunt monsters meanwhile to gather Five Elements Seals for the Five Elements Platform.`), 'big');
+          ctx.log(tr(`Tu vi đã đủ phi thăng, nhưng đạo hạnh còn non: cửa trời chỉ mở cho người từ ${ASCEND_MIN_AGE} tuổi. Còn ${left} năm nữa. Tranh thủ săn quái tích Ngũ Hành Ấn cho Ngũ Hành Đài.`, `Your cultivation is enough to ascend, but your Dao is still green: the heavenly gate opens only to those aged ${ASCEND_MIN_AGE} or more. ${left} years to go. Hunt monsters meanwhile to gather Five Elements Seals for the Five Elements Platform.`), 'big');
         }
         return null;
       }
@@ -866,7 +866,7 @@ function pathEvent(c: Character): GameEvent {
     title: tr('Chọn con đường tu tập', "Choose a cultivation path"),
     text: () =>
       c.realm >= 2
-        ? tr('Trúc Cơ đã thành, đạo cơ vững chắc. Đã đến lúc chọn con đường sẽ đi suốt phần đời còn lại.', "Foundation Establishment is complete and your Yao foundation is solid. It is time to choose the path you will walk for the rest of your life.")
+        ? tr('Trúc Cơ đã thành, đạo cơ vững chắc. Đã đến lúc chọn con đường sẽ đi suốt phần đời còn lại.', "Foundation Establishment is complete and your Dao foundation is solid. It is time to choose the path you will walk for the rest of your life.")
         : tr('Luyện Khí đã qua nửa chặng, chân khí bắt đầu có tính khí riêng. Đã đến lúc chọn con đường sẽ đi suốt phần đời còn lại.', "You are halfway through Qi Refining and your true qi has begun to show a temper of its own. It is time to choose the path you will walk for the rest of your life."),
     choices: pathChoices,
   };
@@ -906,7 +906,7 @@ function breakChance(c: Character) {
 
 function breakEvent(c: Character): GameEvent {
   const target = c.realm + 1;
-  const name = target > TOP_REALM ? tr('Chứng Đạo', "Attain the Yao") : target === ASCEND_REALM ? tr('Phi Thăng', "Ascension") : realmName(target, c.cosmos);
+  const name = target > TOP_REALM ? tr('Chứng Đạo', "Attain the Dao") : target === ASCEND_REALM ? tr('Phi Thăng', "Ascension") : realmName(target, c.cosmos);
   const kiep = target >= 3;
   return {
     id: BREAK_EVENT_ID,
@@ -937,11 +937,11 @@ function attempt(c: Character, ctx: EffectCtx, bonus: number): string {
     if (target > TOP_REALM) {
       c.dead = true;
       c.endTag = 'chung_dao';
-      c.cause = c.cosmos === 'ma' ? tr('Vượt Diệt Thế Ma Kiếp, chứng đạo Ma Thần bất diệt', "Survive the World-Ending Demon Tribulation and attain the Yao as an undying Demon God") : tr('Vượt Hỗn Nguyên Đại Kiếp, chứng đạo vĩnh hằng', "Survive the Primordial Great Tribulation and attain the eternal Yao");
+      c.cause = c.cosmos === 'ma' ? tr('Vượt Diệt Thế Ma Kiếp, chứng đạo Ma Thần bất diệt', "Survive the World-Ending Demon Tribulation and attain the Dao as an undying Demon God") : tr('Vượt Hỗn Nguyên Đại Kiếp, chứng đạo vĩnh hằng', "Survive the Primordial Great Tribulation and attain the eternal Dao");
       ctx.fx('breakthrough', tr('CHỨNG ĐẠO', "DAO ATTAINED"));
       return c.cosmos === 'ma'
-        ? tr('Ma kiếp cuối cùng nổ tung cả ma giới. Khi khói máu tan đi, bạn đã không còn là ma, cũng không còn là người. Bạn chứng đạo Ma Thần, đứng ngoài mọi luân hồi.', "The final demon tribulation blasts the entire Demon Realm. When the bloody smoke clears, you are no longer demon, nor human. You attain the Yao as a Demon God, standing outside all reincarnation.")
-        : tr('Hỗn Nguyên Đại Kiếp giáng xuống chín chín tám mươi mốt ngày. Ngày cuối cùng, bạn mỉm cười bước vào ánh sáng. Bạn chứng đạo, vĩnh viễn đứng ngoài luân hồi.', "The Primordial Great Tribulation rains down for eighty-one days. On the last day, you smile and step into the light. You attain the Yao, forever outside reincarnation.");
+        ? tr('Ma kiếp cuối cùng nổ tung cả ma giới. Khi khói máu tan đi, bạn đã không còn là ma, cũng không còn là người. Bạn chứng đạo Ma Thần, đứng ngoài mọi luân hồi.', "The final demon tribulation blasts the entire Demon Realm. When the bloody smoke clears, you are no longer demon, nor human. You attain the Dao as a Demon God, standing outside all reincarnation.")
+        : tr('Hỗn Nguyên Đại Kiếp giáng xuống chín chín tám mươi mốt ngày. Ngày cuối cùng, bạn mỉm cười bước vào ánh sáng. Bạn chứng đạo, vĩnh viễn đứng ngoài luân hồi.', "The Primordial Great Tribulation rains down for eighty-one days. On the last day, you smile and step into the light. You attain the Dao, forever outside reincarnation.");
     }
     // phi thăng: không còn là hồi kết, mà mở ra tiên giới (hoặc ma giới cho tà tu)
     if (target === ASCEND_REALM) {
@@ -1047,7 +1047,7 @@ function breakChoices(c: Character): Choice[] {
         stat(ch, 'tamCanh', 8);
         stat(ch, 'ngoTinh', 4);
         stat(ch, 'tamMa', -6);
-        return tr('Bạn quyết định chưa vội. Đạo cơ cần thêm thời gian.', "You decide not to rush. Your Yao foundation needs more time.");
+        return tr('Bạn quyết định chưa vội. Đạo cơ cần thêm thời gian.', "You decide not to rush. Your Dao foundation needs more time.");
       },
     },
     fourth,
@@ -1093,7 +1093,7 @@ function cosmosYear(c: Character, ctx: EffectCtx) {
     }
     if (c.tqWarn === undefined || age - c.tqWarn >= 5) {
       c.tqWarn = age;
-      ctx.log(tr(`Thiên quy cảnh cáo: tiên nhân mà đạo tâm tà (${c.daoTam}). Tụt xuống -20 là có ngày lên Trảm Tiên Đài.`, `Heavenly law warns: an immortal with an evil Yao Heart (${c.daoTam}). Drop to -20 and one day you'll stand on the Immortal-Slaying Platform.`), 'big');
+      ctx.log(tr(`Thiên quy cảnh cáo: tiên nhân mà đạo tâm tà (${c.daoTam}). Tụt xuống -20 là có ngày lên Trảm Tiên Đài.`, `Heavenly law warns: an immortal with an evil Dao Heart (${c.daoTam}). Drop to -20 and one day you'll stand on the Immortal-Slaying Platform.`), 'big');
     }
   }
   const left = c.lifespan - c.age;

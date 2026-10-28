@@ -66,7 +66,7 @@ export function mirrorMind(c: Character): { mul: number; text: string } {
   const mul = 1 + up - down;
   const parts: string[] = [];
   if (up >= 0.02) parts.push(tr(`tâm ma làm bóng mạnh thêm ${Math.round(up * 100)}%`, `heart demons make the shadow ${Math.round(up * 100)}% stronger`));
-  if (down) parts.push(tr(`đạo tâm vững làm bóng yếu đi ${Math.round(down * 100)}%`, `a steady Yao Heart makes the shadow ${Math.round(down * 100)}% weaker`));
+  if (down) parts.push(tr(`đạo tâm vững làm bóng yếu đi ${Math.round(down * 100)}%`, `a steady Dao Heart makes the shadow ${Math.round(down * 100)}% weaker`));
   return { mul, text: parts.length ? parts.join(', ') : tr('tâm cảnh bình thường, bóng ngang bạn', "your mind is calm, the shadow matches you") };
 }
 

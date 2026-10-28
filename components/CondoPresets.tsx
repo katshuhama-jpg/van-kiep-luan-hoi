@@ -7,7 +7,7 @@ const PRESETS = [
   tr('Kiếp sau gặp lại, ta mời đạo hữu chén rượu.', "We'll meet again next life, and I'll buy you a drink."),
   tr('Đạo hữu đi trước, ta còn đi tiếp con đường này.', "You go on ahead, fellow Daoist. I'll keep walking this road."),
   tr('Mong kiếp sau đạo hữu được sống bình an.', "May your next life be a peaceful one, fellow Daoist."),
-  tr('Thiên đạo vô tình, nhân gian còn nhớ.', "The Heavenly Yao is heartless, but the mortal world remembers."),
+  tr('Thiên đạo vô tình, nhân gian còn nhớ.', "The Heavenly Dao is heartless, but the mortal world remembers."),
   tr('Một nén hương tiễn anh hùng.', "A stick of incense to send off a hero."),
   tr('Đường tu dài, nghỉ chân một chút cũng được.', "The road of cultivation is long. It's fine to rest a while."),
   tr('Giang hồ còn đó, chỉ thiếu một người.', "The jianghu is still here, just one person short."),

@@ -38,7 +38,7 @@ type Slide = { t: 'title' } | { t: 'mile'; m: Mile; n: number } | { t: 'end' };
 
 const KIND: Record<Mile['kind'], { label: string; focus: Focus; fx: FxKind[]; season: number; tone: string }> = {
   birth: { label: tr('Chào đời', "Birth"), focus: 'du_ngoan', fx: ['heal'], season: 0, tone: 'dawn' },
-  path: { label: tr('Nhập đạo', "Entering the Yao"), focus: 'tu_luyen', fx: ['breakthrough'], season: 1, tone: 'jade' },
+  path: { label: tr('Nhập đạo', "Entering the Dao"), focus: 'tu_luyen', fx: ['breakthrough'], season: 1, tone: 'jade' },
   realm: { label: tr('Đột phá', "Breakthrough"), focus: 'tu_luyen', fx: ['lightning', 'breakthrough'], season: 2, tone: 'storm' },
   love: { label: tr('Nhân duyên', "Fated bonds"), focus: 'ket_duyen', fx: ['love'], season: 0, tone: 'rose' },
   pet: { label: tr('Linh thú', "Spirit beast"), focus: 'du_ngoan', fx: ['love'], season: 1, tone: 'jade' },

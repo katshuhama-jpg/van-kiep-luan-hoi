@@ -48,11 +48,11 @@ export const HU_EVENTS: GameEvent[] = [
     cosmos: 'hu',
     weight: 8,
     cooldown: 20,
-    title: tr('Tinh hà luận đạo', "Discussing the Yao on the Star River"),
-    text: () => tr('Ba tán tiên ngồi trên ba vì sao, cãi nhau xem đạo nằm ở đâu. Thấy bạn đi ngang, họ đồng thanh: "Ngươi phân xử đi."', "Three wandering immortals sit on three stars, arguing over where the Yao lies. Seeing you pass, they cry in unison: \"You be the judge.\""),
+    title: tr('Tinh hà luận đạo', "Discussing the Dao on the Star River"),
+    text: () => tr('Ba tán tiên ngồi trên ba vì sao, cãi nhau xem đạo nằm ở đâu. Thấy bạn đi ngang, họ đồng thanh: "Ngươi phân xử đi."', "Three wandering immortals sit on three stars, arguing over where the Dao lies. Seeing you pass, they cry in unison: \"You be the judge.\""),
     choices: () => [
       {
-        label: tr('"Đạo ở trong lòng"', "\"The Yao is in the heart\""),
+        label: tr('"Đạo ở trong lòng"', "\"The Dao is in the heart\""),
         hint: tr('tâm cảnh +', "Mind +"),
         lean: 'chinh',
         run: (c) => {
@@ -61,7 +61,7 @@ export const HU_EVENTS: GameEvent[] = [
         },
       },
       {
-        label: tr('"Đạo ở sức mạnh"', "\"The Yao is in strength\""),
+        label: tr('"Đạo ở sức mạnh"', "\"The Dao is in strength\""),
         hint: tr('tu vi +', 'cultivation +'),
         lean: 'ta',
         run: (c) => {
@@ -75,7 +75,7 @@ export const HU_EVENTS: GameEvent[] = [
         lean: 'trung',
         run: (c) => {
           stat(c, 'ngoTinh', 10);
-          return tr('Ba người nhìn theo tay bạn rất lâu, rồi cùng cười lớn. Họ gọi bạn là "kẻ hiểu đạo không nói".', "The three follow your finger for a long time, then burst out laughing together. They call you \"the one who knows the Yao and says nothing\".");
+          return tr('Ba người nhìn theo tay bạn rất lâu, rồi cùng cười lớn. Họ gọi bạn là "kẻ hiểu đạo không nói".', "The three follow your finger for a long time, then burst out laughing together. They call you \"the one who knows the Dao and says nothing\".");
         },
       },
     ],
@@ -110,7 +110,7 @@ export const HU_EVENTS: GameEvent[] = [
       },
       {
         label: tr('Vá khe nứt lại', "Mend the rift"),
-        hint: tr('đạo tâm +, an toàn', "Yao Heart +, safe"),
+        hint: tr('đạo tâm +, an toàn', "Dao Heart +, safe"),
         lean: 'chinh',
         run: (c) => {
           dao(c, 6);
@@ -143,7 +143,7 @@ export const HU_EVENTS: GameEvent[] = [
       },
       {
         label: tr('Làm trung gian hòa giải', "Mediate between them"),
-        hint: tr('đạo tâm ++, khí vận +', "Yao Heart ++, Luck +"),
+        hint: tr('đạo tâm ++, khí vận +', "Dao Heart ++, Luck +"),
         lean: 'chinh',
         run: (c) => {
           dao(c, 10);

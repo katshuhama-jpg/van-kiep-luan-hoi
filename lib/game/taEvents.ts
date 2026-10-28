@@ -29,7 +29,7 @@ export const TA_EVENTS: GameEvent[] = [
       },
       {
         label: tr('Hút sinh khí một kẻ lạ', "Drain a stranger's life force"),
-        hint: tr('tâm ma -30, đạo tâm -6, có thể bị truy sát', "heart demon -30, Yao Heart -6, may be hunted"),
+        hint: tr('tâm ma -30, đạo tâm -6, có thể bị truy sát', "heart demon -30, Dao Heart -6, may be hunted"),
         lean: 'ta',
         run: (c, ctx) => {
           stat(c, 'tamMa', -30);
@@ -64,7 +64,7 @@ export const TA_EVENTS: GameEvent[] = [
     choices: () => [
       {
         label: tr('Luyện ngay tại chỗ', "Practice it on the spot"),
-        hint: tr('tu vi tăng vọt, tâm ma +, đạo tâm -', "cultivation soars, heart demon +, Yao Heart -"),
+        hint: tr('tu vi tăng vọt, tâm ma +, đạo tâm -', "cultivation soars, heart demon +, Dao Heart -"),
         lean: 'ta',
         run: (c, ctx) => {
           addCult(c, reward(c, 2.5));
@@ -77,7 +77,7 @@ export const TA_EVENTS: GameEvent[] = [
       },
       {
         label: tr('Mang nộp cho chính phái', "Hand it to a righteous sect"),
-        hint: tr('đạo tâm +, linh thạch', "Yao Heart +, spirit stones"),
+        hint: tr('đạo tâm +, linh thạch', "Dao Heart +, spirit stones"),
         lean: 'chinh',
         run: (c, ctx) => {
           dao(c, 10);
@@ -108,7 +108,7 @@ export const TA_EVENTS: GameEvent[] = [
     choices: () => [
       {
         label: tr('Chặn đường cướp tiêu', "Rob the caravan"),
-        hint: tr('nhiều linh thạch, đạo tâm -, có thể bị thương', "lots of spirit stones, Yao Heart -, may be hurt"),
+        hint: tr('nhiều linh thạch, đạo tâm -, có thể bị thương', "lots of spirit stones, Dao Heart -, may be hurt"),
         lean: 'ta',
         run: (c, ctx) => {
           const m = 300 + c.realm * 150;
@@ -121,7 +121,7 @@ export const TA_EVENTS: GameEvent[] = [
       },
       {
         label: tr('Xin đi hộ tống', "Offer to guard it"),
-        hint: tr('linh thạch, đạo tâm +, có thể bị thương', "spirit stones, Yao Heart +, may be hurt"),
+        hint: tr('linh thạch, đạo tâm +, có thể bị thương', "spirit stones, Dao Heart +, may be hurt"),
         lean: 'chinh',
         run: (c, ctx) => {
           const m = 120 + c.realm * 60;
@@ -158,7 +158,7 @@ export const TA_EVENTS: GameEvent[] = [
       },
       {
         label: tr('Phong ấn huyết trì', "Seal the blood pool"),
-        hint: tr('đạo tâm +, khí vận +', "Yao Heart +, Luck +"),
+        hint: tr('đạo tâm +, khí vận +', "Dao Heart +, Luck +"),
         lean: 'chinh',
         run: (c) => {
           dao(c, 8);
@@ -188,7 +188,7 @@ export const TA_EVENTS: GameEvent[] = [
     choices: () => [
       {
         label: tr('Luyện thành quỷ nô', "Bind it as a ghost servant"),
-        hint: tr('quỷ nô đỡ một lần chết, đạo tâm -', "ghost servant blocks one death, Yao Heart -"),
+        hint: tr('quỷ nô đỡ một lần chết, đạo tâm -', "ghost servant blocks one death, Dao Heart -"),
         lean: 'ta',
         run: (c, ctx) => {
           c.oanHon = true;
@@ -199,7 +199,7 @@ export const TA_EVENTS: GameEvent[] = [
       },
       {
         label: tr('Siêu độ cho nó', "Release its soul"),
-        hint: tr('đạo tâm +, tâm ma -', "Yao Heart +, heart demon -"),
+        hint: tr('đạo tâm +, tâm ma -', "Dao Heart +, heart demon -"),
         lean: 'chinh',
         run: (c) => {
           dao(c, 8);
@@ -221,7 +221,7 @@ export const TA_EVENTS: GameEvent[] = [
     choices: () => [
       {
         label: tr('Nhận lệnh bài', "Accept the token"),
-        hint: tr('Huyết Sát Bào, tu vi +, đạo tâm -', "Xuesha Robe, cultivation +, Yao Heart -"),
+        hint: tr('Huyết Sát Bào, tu vi +, đạo tâm -', "Xuesha Robe, cultivation +, Dao Heart -"),
         lean: 'ta',
         run: (c, ctx) => {
           giveItem(c, 'huyet_bao', false);
@@ -233,7 +233,7 @@ export const TA_EVENTS: GameEvent[] = [
       },
       {
         label: tr('Giả vờ nhận rồi tố giác', "Pretend to accept, then report them"),
-        hint: tr('đạo tâm +, có thể bị trả thù', "Yao Heart +, may face revenge"),
+        hint: tr('đạo tâm +, có thể bị trả thù', "Dao Heart +, may face revenge"),
         lean: 'chinh',
         run: (c, ctx) => {
           dao(c, 10);

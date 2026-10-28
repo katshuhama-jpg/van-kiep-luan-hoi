@@ -159,7 +159,7 @@ export default function NguHanhDai({
             <i />
             <i />
           </div>
-          <h2 id="nhd-title">{end === 'done' ? tr('Ngũ hành viên mãn', "Five Elements perfected") : end === 'next' ? tr(`Gương vỡ · ${st.won}/${NHD_ROUNDS}`, `Mirror shattered · ${st.won}/${NHD_ROUNDS}`) : end === 'dead' ? tr('Thân tử đạo tiêu', "Body and Yao destroyed") : tr('Bị hất khỏi đài', "Thrown off the platform")}</h2>
+          <h2 id="nhd-title">{end === 'done' ? tr('Ngũ hành viên mãn', "Five Elements perfected") : end === 'next' ? tr(`Gương vỡ · ${st.won}/${NHD_ROUNDS}`, `Mirror shattered · ${st.won}/${NHD_ROUNDS}`) : end === 'dead' ? tr('Thân tử đạo tiêu', "Body and Dao destroyed") : tr('Bị hất khỏi đài', "Thrown off the platform")}</h2>
           <p>{msg}</p>
           <button className="btn btn-red btn-big" onClick={onNext}>
             {end === 'done' ? tr('Đón thiên kiếp', "Face the tribulation") : end === 'next' ? tr('Tới gương tiếp theo', "On to the next mirror") : tr('Tiếp tục', "Continue")}
@@ -186,7 +186,7 @@ export default function NguHanhDai({
                     {tr("Săn quái hệ ", "Hunt ")}<Chip e={lastKey} small />{tr(" (Vừa sức trở lên) để đủ ", " monsters (Even match or harder) to collect ")}{AN_MAX}{tr(" ấn: gương cuối hết khắc được bạn. Đang có ", " seals: then the last mirror can no longer overcome you. You have ")}{anOf(c, lastKey)}/{AN_MAX}.
                   </li>
                   <li>{tr("Kiếm tiền mua Ngũ Hành Phù (", "Earn money to buy Five Elements Talismans (")}{sectSide(c) === 'trung' ? PHU_PRICE / 2 : PHU_PRICE}{tr(" linh thạch một tấm, tối đa 3). Dùng phù ở gương cuối là cách lật thế mạnh nhất.", " spirit stones each, max 3). A talisman at the last mirror is the strongest way to turn the tide.")}</li>
-                  <li>{tr("Hạ tâm ma (Thanh Tâm Đan, bế quan) để bóng yếu đi, giữ đạo tâm thật vững.", "Lower your heart demon (Clear Heart Pill, Seclusion) to weaken the shadows, and keep your Yao Heart steady.")}</li>
+                  <li>{tr("Hạ tâm ma (Thanh Tâm Đan, bế quan) để bóng yếu đi, giữ đạo tâm thật vững.", "Lower your heart demon (Clear Heart Pill, Seclusion) to weaken the shadows, and keep your Dao Heart steady.")}</li>
                   <li>{tr("Để ý thọ nguyên: thọ sắp hết thì uống Diên Thọ Đan.", "Watch your lifespan: if it's running out, take a Longevity Pill.")}</li>
                 </ul>
               </div>
@@ -217,7 +217,7 @@ export default function NguHanhDai({
                 <b>{tr("Ngũ Hành Phù.", "Five Elements Talisman.")}</b>{tr(" Đổi bản mệnh của bạn sang hệ khắc bóng trong một vòng. Rơi từ quái có hệ Lv16 trở lên, hoặc mua của sứ giả Thiên Cơ Các ngay trên đài. Mang tối đa 3 tấm, bạn có ", " Switches your natal element to the one that overcomes the shadow for one round. Dropped by elemental monsters Lv16 and up, or sold by the Tianji Pavilion envoy right on the platform. Carry up to 3; you have ")}{c.phu ?? 0}.
               </li>
               <li>
-                <b>{tr("Tâm cảnh.", "State of mind.")}</b>{tr(" Tâm ma cao thì bóng mạnh thêm, tối đa 20%. Đạo tâm vững (rất chính hoặc rất tà) thì bóng yếu đi 5-10%. Hiện tại: ", " A high heart demon makes the shadows up to 20% stronger. A steady Yao Heart (very Righteous or very Evil) weakens them by 5-10%. Currently: ")}{mind.text}.
+                <b>{tr("Tâm cảnh.", "State of mind.")}</b>{tr(" Tâm ma cao thì bóng mạnh thêm, tối đa 20%. Đạo tâm vững (rất chính hoặc rất tà) thì bóng yếu đi 5-10%. Hiện tại: ", " A high heart demon makes the shadows up to 20% stronger. A steady Dao Heart (very Righteous or very Evil) weakens them by 5-10%. Currently: ")}{mind.text}.
               </li>
             </ul>
             <h3>{tr("Thắng và thua", "Winning and losing")}</h3>
@@ -226,7 +226,7 @@ export default function NguHanhDai({
               <li>{tr("Vỡ đủ ", "Shatter all ")}{NHD_ROUNDS}{tr(" gương: được độ kiếp phi thăng, tỉ lệ vượt kiếp +10%.", " mirrors: you may face the tribulation and ascend, with +10% chance to survive it.")}</li>
               <li>
                 
-                {tr("Thua một vòng: ", "Lose a round: ")}{Math.round(deathChance(0) * 100)}{tr("% thân tử đạo tiêu (gương cuối ", "% chance your body and Yao are destroyed (last mirror ")}{Math.round(deathChance(4) * 100)}{tr("%). Sống sót thì mất 15% tu vi, tâm ma +6, ", "%). If you survive, you lose 15% cultivation, heart demon +6, and must wait ")}{NHD_DELAY}{tr(" năm sau mới được lên đài lại. Gương đã vỡ không lành lại.", " years before returning. Shattered mirrors stay shattered.")}
+                {tr("Thua một vòng: ", "Lose a round: ")}{Math.round(deathChance(0) * 100)}{tr("% thân tử đạo tiêu (gương cuối ", "% chance your body and Dao are destroyed (last mirror ")}{Math.round(deathChance(4) * 100)}{tr("%). Sống sót thì mất 15% tu vi, tâm ma +6, ", "%). If you survive, you lose 15% cultivation, heart demon +6, and must wait ")}{NHD_DELAY}{tr(" năm sau mới được lên đài lại. Gương đã vỡ không lành lại.", " years before returning. Shattered mirrors stay shattered.")}
               </li>
               <li>{tr("Thua gương cuối quá ", "Lose to the last mirror more than ")}{GUONG_LOSSES - 1}{tr(" lần thì... không ai biết điều gì xảy ra.", " times and... no one knows what happens.")}</li>
             </ul>

@@ -26,14 +26,14 @@ export const TOP_REALM = 11;
 /** Tên cảnh giới Ma giới, cùng bậc với tiên giới 8..11 */
 export const MA_REALMS = [tr('Ma Tướng', "Demon General"), tr('Ma Vương', "Demon King"), tr('Ma Hoàng', "Demon Monarch"), tr('Ma Đế', "Demon Emperor")];
 /** Thái Hư giới: cõi của người trung lập, không theo tiên cũng không theo ma */
-export const HU_REALMS = [tr('Hư Tiên', "Void Immortal"), tr('Huyền Tôn', "Mystic Sovereign"), tr('Thái Hư Chân Quân', "Great Void True Lord"), tr('Hỗn Nguyên Đạo Tổ', "Primordial Yao Ancestor")];
+export const HU_REALMS = [tr('Hư Tiên', "Void Immortal"), tr('Huyền Tôn', "Mystic Sovereign"), tr('Thái Hư Chân Quân', "Great Void True Lord"), tr('Hỗn Nguyên Đạo Tổ', "Primordial Dao Ancestor")];
 export type Cosmos = 'tien' | 'ma' | 'hu';
 export const COSMOS_NAME: Record<Cosmos, string> = { tien: tr('Tiên giới', "Immortal Realm"), ma: tr('Ma giới', "Demon Realm"), hu: tr('Thái Hư giới', "Great Void Realm") };
 
 /** Tên cảnh giới, theo tiên giới hay ma giới */
 export function realmName(realm: number, cosmos?: Cosmos | null): string {
   if (realm >= ASCEND_REALM && cosmos === 'ma') return MA_REALMS[realm - ASCEND_REALM] ?? tr('Ma Đế', "Demon Emperor");
-  if (realm >= ASCEND_REALM && cosmos === 'hu') return HU_REALMS[realm - ASCEND_REALM] ?? tr('Hỗn Nguyên Đạo Tổ', "Primordial Yao Ancestor");
+  if (realm >= ASCEND_REALM && cosmos === 'hu') return HU_REALMS[realm - ASCEND_REALM] ?? tr('Hỗn Nguyên Đạo Tổ', "Primordial Dao Ancestor");
   return REALMS[realm]?.name ?? tr('Phi Thăng', "Ascension");
 }
 
@@ -66,7 +66,7 @@ export interface PathInfo {
 }
 
 export const PATHS: Record<PathId, PathInfo> = {
-  kiem: { id: 'kiem', name: tr('Kiếm tu', "Sword Cultivator"), short: tr('Kiếm', "Sword"), desc: tr('Lấy kiếm nhập đạo. Công mạnh nhất, tu nhanh. Hay chết trận vì ham đánh.', "Enter the Yao through the sword. Strongest attack, fast cultivation. Often dies in battle from loving a fight too much."), lean: 'trung', aura: '#7fc8ff' },
+  kiem: { id: 'kiem', name: tr('Kiếm tu', "Sword Cultivator"), short: tr('Kiếm', "Sword"), desc: tr('Lấy kiếm nhập đạo. Công mạnh nhất, tu nhanh. Hay chết trận vì ham đánh.', "Enter the Dao through the sword. Strongest attack, fast cultivation. Often dies in battle from loving a fight too much."), lean: 'trung', aura: '#7fc8ff' },
   dan: { id: 'dan', name: tr('Đan tu', "Alchemist"), short: tr('Đan', "Alchemy"), desc: tr('Sống lâu nhất trong các con đường. Luyện đan kiếm nhiều linh thạch, tự chế đan đột phá, tu nhanh hơn chút, có đan dược hộ thân nên khó chết, nhưng ra đòn không mạnh. Kiếp sau còn nhớ cách luyện: đan hồi hồn rẻ hơn 30%.', "The longest-lived of all Paths. Alchemy earns plenty of spirit stones, you brew your own breakthrough pills, cultivate a little faster, and your pills keep you alive, but your strikes are weak. Next life you still remember the recipes: soul-return pills cost 30% less."), lean: 'trung', aura: '#ffb057' },
   tran: { id: 'tran', name: tr('Trận tu', "Formation Master"), short: tr('Trận', "Formation"), desc: tr('Bày trận, vẽ phù. Thủ cực chắc, bế quan an toàn, ít bị tập kích. Thường sống rất thọ.', "Lay formations, draw talismans. Rock-solid defense, safe seclusion, rarely ambushed. Usually lives very long."), lean: 'trung', aura: '#b59cff' },
   phat: { id: 'phat', name: tr('Phật tu', "Buddhist Cultivator"), short: tr('Phật', "Buddhist"), desc: tr('Từ bi hỷ xả. Máu và thủ dày, thọ nguyên dài, tâm ma khó xâm nhập, đột phá vững vàng.', "Compassion and equanimity. Thick HP and defense, long lifespan, heart demons find no way in, steady breakthroughs."), lean: 'chinh', aura: '#ffe27a' },
@@ -155,7 +155,7 @@ export const FOCUS: Record<Focus, { name: string; desc: string; minAge: number }
   luyen_dan: { name: tr('Luyện đan', "Alchemy"), desc: tr('Ra đan dược, linh thạch', "Pills, spirit stones"), minAge: 12 },
   du_ngoan: { name: tr('Du ngoạn', "Wander"), desc: tr('Nhiều kỳ ngộ', "Many encounters"), minAge: 10 },
   kiem_tien: { name: tr('Kiếm tiền', "Earn money"), desc: tr('Linh thạch', "Spirit stones"), minAge: 8 },
-  ket_duyen: { name: tr('Kết duyên', "Romance"), desc: tr('Tâm cảnh, đạo lữ', "Mind, Yao companion"), minAge: 16 },
+  ket_duyen: { name: tr('Kết duyên', "Romance"), desc: tr('Tâm cảnh, đạo lữ', "Mind, Dao companion"), minAge: 16 },
   tru_yeu: { name: tr('Trừ yêu', "Hunt demons"), desc: tr('Đánh quái lên cấp', "Slay monsters, level up"), minAge: 10 },
 };
 
@@ -920,12 +920,12 @@ export const TALENTS: Talent[] = [
   { id: 'thien_menh', name: tr('Thiên mệnh chi tử', "Child of destiny"), desc: tr('Khí vận tối đa, linh căn biến dị, đột phá dễ hơn 10%', "Max Luck, mutated spiritual root, breakthroughs 10% easier"), cost: 180 },
   { id: 'tien_cot', name: tr('Tiên cốt trời sinh', "Born immortal bones"), desc: tr('Chắc chắn mang Thiên linh căn, tu luyện nhanh hơn hẳn', "Guaranteed Heavenly Spiritual Root, much faster cultivation"), cost: 250 },
   // thiên phú của tà đạo, trả bằng nghiệp lực
-  { id: 'ta_huyet', name: tr('Huyết mạch ma tộc', "Demon bloodline"), desc: tr('Sinh ra đã nghiêng về tà (đạo tâm -30), ngộ tính +10', "Born leaning evil (Yao Heart -30), Insight +10"), cost: 30, ta: true },
+  { id: 'ta_huyet', name: tr('Huyết mạch ma tộc', "Demon bloodline"), desc: tr('Sinh ra đã nghiêng về tà (đạo tâm -30), ngộ tính +10', "Born leaning evil (Dao Heart -30), Insight +10"), cost: 30, ta: true },
   { id: 'ta_dao', name: tr('Huyết Ma Đao chờ chủ', "Blood Demon Saber awaits"), desc: tr('Huyết Ma Đao nằm sẵn trong túi, đủ Trúc Cơ là cầm được', "The Blood Demon Saber waits in your bag, usable at Foundation"), cost: 40, ta: true },
   { id: 'ta_kien', name: tr('Ma tâm kiên cố', "Iron demonic heart"), desc: tr('Tâm ma tăng chậm hơn 35% suốt kiếp này', "Heart demons grow 35% slower this life"), cost: 45, ta: true },
   { id: 'ta_cong', name: tr('Ma công nhập thể', "Demonic arts in the body"), desc: tr('Linh căn mạnh hơn 20%, đổi lại tâm ma khởi đầu +10', "Spiritual root 20% stronger, but starting heart demon +10"), cost: 50, ta: true },
   { id: 'ta_hon', name: tr('Oan hồn hộ thể', "Vengeful ghost guardian"), desc: tr('Oan hồn kiếp trước đỡ cho một lần chết', "A vengeful ghost from a past life blocks one death"), cost: 70, ta: true },
-  { id: 'ta_ton', name: tr('Ma tôn chuyển thế', "Reincarnated Demon Sovereign"), desc: tr('Đạo tâm -60, khí vận +15, tu luyện nhanh hơn 15%', "Yao Heart -60, Luck +15, cultivation 15% faster"), cost: 120, ta: true },
+  { id: 'ta_ton', name: tr('Ma tôn chuyển thế', "Reincarnated Demon Sovereign"), desc: tr('Đạo tâm -60, khí vận +15, tu luyện nhanh hơn 15%', "Dao Heart -60, Luck +15, cultivation 15% faster"), cost: 120, ta: true },
 ];
 
 export const SEASONS = [tr('Xuân', "Spring"), tr('Hạ', "Summer"), tr('Thu', "Autumn"), tr('Đông', "Winter")];

@@ -301,7 +301,7 @@ export default function RankPage() {
                       <span className="rank-head">
                         <span className="rank-name">{c.name}</span>
                         <span className={`rank-state rs-${r.alive ? 'alive' : c.endTag === 'chung_dao' ? 'dao' : c.cosmos || c.ascended ? 'asc' : 'gone'}`}>
-                          {r.alive ? tr('Đang sống', "Alive") : c.endTag === 'chung_dao' ? tr('Chứng đạo', "Attained the Yao") : c.cosmos === 'ma' ? tr('Ma giới', "Demon Realm") : c.cosmos === 'hu' ? tr('Thái Hư', "Great Void") : c.cosmos === 'tien' || c.ascended ? tr('Tiên giới', "Immortal Realm") : tr('Đã mất', "Dead")}
+                          {r.alive ? tr('Đang sống', "Alive") : c.endTag === 'chung_dao' ? tr('Chứng đạo', "Attained the Dao") : c.cosmos === 'ma' ? tr('Ma giới', "Demon Realm") : c.cosmos === 'hu' ? tr('Thái Hư', "Great Void") : c.cosmos === 'tien' || c.ascended ? tr('Tiên giới', "Immortal Realm") : tr('Đã mất', "Dead")}
                         </span>
                       </span>
                       <span className="rank-val">

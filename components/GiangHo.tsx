@@ -139,7 +139,7 @@ function Actions({ api, who, onDone, onTab, initMode = null }: { api: GiangHoApi
             {sentReq ? tr('Đã mời kết nghĩa', "Invite sent") : tr('Kết nghĩa', "Become sworn brothers")}
           </button>
         )}
-        <button className="chip-btn" disabled={busy} onClick={() => run('hoa', tr(`Đã gửi lời hòa giải. Ân oán với @${who} xóa bỏ, đạo tâm bạn sáng thêm.`, `Peace offering sent. Your grudge with @${who} is erased, and your Yao Heart grows brighter.`))}>
+        <button className="chip-btn" disabled={busy} onClick={() => run('hoa', tr(`Đã gửi lời hòa giải. Ân oán với @${who} xóa bỏ, đạo tâm bạn sáng thêm.`, `Peace offering sent. Your grudge with @${who} is erased, and your Dao Heart grows brighter.`))}>
           
           {tr("Hòa giải", "Make peace")}
         </button>

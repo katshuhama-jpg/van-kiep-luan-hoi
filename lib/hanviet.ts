@@ -41,7 +41,7 @@ const KEEP = ['Vạn Kiếp Luân Hồi', 'Tiếng Việt', 'Cửa Nam', 'Tấm'
 
 const VN = /[ăâđêôơưàáạảãằắặẳẵầấậẩẫèéẹẻẽềếệểễìíịỉĩòóọỏõồốộổỗờớợởỡùúụủũừứựửữỳýỵỷỹĂÂĐÊÔƠƯ]/;
 // âm tiết không dấu chỉ có trong tên Hán Việt (không trùng chữ tiếng Anh hay gặp)
-const BARE = new Set(['thanh', 'linh', 'nhi', 'phong', 'giang', 'chu', 'hoa', 'dao', 'thi', 'khinh', 'nhai', 'chi', 'ly', 'lan', 'ca', 'tinh', 'kim', 'minh', 'quang', 'trang', 'trung', 'thu', 'sinh', 'nam', 'gia', 'dung', 'thien', 'huyen', 'lai']);
+const BARE = new Set(['thanh', 'linh', 'nhi', 'phong', 'giang', 'chu', 'hoa', 'thi', 'khinh', 'nhai', 'ly', 'lan', 'tinh', 'kim', 'minh', 'quang', 'trang', 'trung', 'thu', 'sinh', 'nam', 'gia', 'dung', 'thien', 'huyen']);
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const TOK = /[A-ZÀ-ỸĐ][a-zà-ỹđ]*(?:[ -][A-ZÀ-ỸĐ][a-zà-ỹđ]*)*/g;

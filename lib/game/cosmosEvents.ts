@@ -20,7 +20,7 @@ export const COSMOS_EVENTS: GameEvent[] = [
     choices: () => [
       {
         label: tr('Vào Lôi Bộ, chuyên giáng sét phạt kẻ ác', "Join the Ministry of Thunder, smiting the wicked"),
-        hint: tr('công +, đạo tâm +', "Attack +, Yao Heart +"),
+        hint: tr('công +, đạo tâm +', "Attack +, Dao Heart +"),
         lean: 'chinh',
         run: (c) => {
           dao(c, 8);
@@ -109,7 +109,7 @@ export const COSMOS_EVENTS: GameEvent[] = [
     choices: () => [
       {
         label: tr('Hạ phàm làm mưa cứu dân', "Descend and bring rain to save the people"),
-        hint: tr('đạo tâm ++, phạm thiên quy', "Yao Heart ++, breaks heavenly law"),
+        hint: tr('đạo tâm ++, phạm thiên quy', "Dao Heart ++, breaks heavenly law"),
         lean: 'chinh',
         run: (c, ctx) => {
           dao(c, 15);
@@ -156,7 +156,7 @@ export const COSMOS_EVENTS: GameEvent[] = [
     choices: () => [
       {
         label: tr('Lên tiếng xin tha cho nàng', "Speak up and plead for her"),
-        hint: tr('đạo tâm +, có thể bị phạt', "Yao Heart +, may be punished"),
+        hint: tr('đạo tâm +, có thể bị phạt', "Dao Heart +, may be punished"),
         lean: 'chinh',
         run: (c, ctx) => {
           dao(c, 10);
@@ -227,7 +227,7 @@ export const COSMOS_EVENTS: GameEvent[] = [
       },
       {
         label: tr('Giữ hậu phương, chữa thương binh', "Hold the rear, heal the wounded"),
-        hint: tr('an toàn, đạo tâm +', "safe, Yao Heart +"),
+        hint: tr('an toàn, đạo tâm +', "safe, Dao Heart +"),
         lean: 'chinh',
         run: (ch) => {
           dao(ch, 6);
@@ -314,7 +314,7 @@ export const COSMOS_EVENTS: GameEvent[] = [
       },
       {
         label: tr('Tìm đường quay về', "Look for a way back"),
-        hint: tr('đạo tâm +', "Yao Heart +"),
+        hint: tr('đạo tâm +', "Dao Heart +"),
         lean: 'chinh',
         run: (c) => {
           dao(c, 20);
@@ -357,7 +357,7 @@ export const COSMOS_EVENTS: GameEvent[] = [
       },
       {
         label: tr('Bảo vệ ma chúa già', "Protect the old demon lord"),
-        hint: tr('đạo tâm +', "Yao Heart +"),
+        hint: tr('đạo tâm +', "Dao Heart +"),
         lean: 'chinh',
         run: (c) => {
           dao(c, 12);
@@ -407,7 +407,7 @@ export const COSMOS_EVENTS: GameEvent[] = [
     choices: () => [
       {
         label: tr('Giết sạch, răn đe', "Kill them all as a warning"),
-        hint: tr('tu vi +, đạo tâm --', "cultivation +, Yao Heart --"),
+        hint: tr('tu vi +, đạo tâm --', "cultivation +, Dao Heart --"),
         lean: 'ta',
         run: (c) => {
           dao(c, -12);
@@ -417,7 +417,7 @@ export const COSMOS_EVENTS: GameEvent[] = [
       },
       {
         label: tr('Tha cho kẻ bị ép theo', "Spare those who were forced"),
-        hint: tr('đạo tâm +, có thể bị đánh lén', "Yao Heart +, may be ambushed"),
+        hint: tr('đạo tâm +, có thể bị đánh lén', "Dao Heart +, may be ambushed"),
         lean: 'chinh',
         run: (c, ctx) => {
           dao(c, 10);

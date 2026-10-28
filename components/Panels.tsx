@@ -68,7 +68,7 @@ export function StatsPanel({ c }: { c: Character }) {
       <div className="stats">
         <Bar
           wide
-          label={c.realm === 0 ? tr('Tu vi (chưa nhập đạo)', "Cultivation (not yet on the Yao)") : tr(`Tu vi · ${realmLabel(c.realm, c.layer, c.cosmos)}`, `Cultivation · ${realmLabel(c.realm, c.layer, c.cosmos)}`)}
+          label={c.realm === 0 ? tr('Tu vi (chưa nhập đạo)', "Cultivation (not yet on the Dao)") : tr(`Tu vi · ${realmLabel(c.realm, c.layer, c.cosmos)}`, `Cultivation · ${realmLabel(c.realm, c.layer, c.cosmos)}`)}
           value={c.realm === 0 ? `${fmt(c.cultivation)}/40` : `${fmt(c.cultivation)}/${fmt(needFor(c))}`}
           pct={c.realm === 0 ? c.cultivation / 40 : cultPct(c)}
           color="#2f6b5a"
@@ -82,10 +82,10 @@ export function StatsPanel({ c }: { c: Character }) {
         <div className="dao">
           <div className="row">
             <span style={{ color: 'var(--chinh)' }}>{tr("Chính", "Righteous")}</span>
-            <span>{tr("Đạo tâm: ", "Yao Heart: ")}{describeLean(c.daoTam)}</span>
+            <span>{tr("Đạo tâm: ", "Dao Heart: ")}{describeLean(c.daoTam)}</span>
             <span style={{ color: 'var(--ta)' }}>{tr("Tà", "Evil")}</span>
           </div>
-          <div className="dao-track" role="meter" aria-label={tr("Đạo tâm", "Yao Heart")} aria-valuemin={-100} aria-valuemax={100} aria-valuenow={c.daoTam}>
+          <div className="dao-track" role="meter" aria-label={tr("Đạo tâm", "Dao Heart")} aria-valuemin={-100} aria-valuemax={100} aria-valuenow={c.daoTam}>
             <div style={{ background: '#a8c4e6' }} />
             <div style={{ background: '#d8cfc0' }} />
             <div style={{ background: '#e4a0a6' }} />
@@ -364,8 +364,8 @@ function srcText(it: Item): string {
 function lockReason(c: Character, it: Item): string | null {
   if (c.realm < it.minRealm) return tr(`Cần ${REALMS[it.minRealm].name}`, `Requires ${REALMS[it.minRealm].name}`);
   if (it.path && c.path !== it.path) return tr(`Chỉ cho ${PATHS[it.path].name}`, `${PATHS[it.path].name} only`);
-  if (it.lean === 'chinh' && c.daoTam < 20) return tr('Cần Đạo tâm nghiêng Chính', "Requires a Righteous-leaning Yao Heart");
-  if (it.lean === 'ta' && c.daoTam > -20) return tr('Cần Đạo tâm nghiêng Tà', "Requires an Evil-leaning Yao Heart");
+  if (it.lean === 'chinh' && c.daoTam < 20) return tr('Cần Đạo tâm nghiêng Chính', "Requires a Righteous-leaning Dao Heart");
+  if (it.lean === 'ta' && c.daoTam > -20) return tr('Cần Đạo tâm nghiêng Tà', "Requires an Evil-leaning Dao Heart");
   return null;
 }
 
@@ -741,7 +741,7 @@ export function BeQuanSheet({ c, onGo, onClose }: { c: Character; onGo: (years: 
         <b style={{ fontWeight: 700, color: 'var(--red-d)' }}>{left}{tr(" năm", " years")}</b>.
       </p>
       {c.realm < 1 ? (
-        <p className="note">{tr("Phải nhập đạo (Luyện Khí) mới bế quan được.", "You must enter the Yao (Qi Refining) before you can go into seclusion.")}</p>
+        <p className="note">{tr("Phải nhập đạo (Luyện Khí) mới bế quan được.", "You must enter the Dao (Qi Refining) before you can go into seclusion.")}</p>
       ) : (
         <div className="choice-row">
           {[5, 10, 20].map((y) => (
@@ -1190,7 +1190,7 @@ export function DeathSheet({
     <Sheet
       title={
         c.endTag === 'chung_dao'
-          ? tr('Chứng đạo!', "Yao attained!")
+          ? tr('Chứng đạo!', "Dao attained!")
           : c.endTag === 'giang_tran'
             ? tr('Bị giáng trần', "Banished to the mortal world")
             : c.cosmos === 'ma'
@@ -1380,7 +1380,7 @@ export function StageStrip({ c, compact, wait = 0 }: { c: Character; compact: bo
             <Mini label={tr("Ngộ", "Insight")} value={s.ngoTinh} pct={s.ngoTinh / 100} color="#5b6fb0" />
             <Mini label={tr("Vận", "Luck")} value={s.khiVan} pct={s.khiVan / 100} color="#7a5ab0" />
           </div>
-          <div className="dao-line" role="meter" aria-label={tr(`Đạo tâm: ${describeLean(c.daoTam)}`, `Yao Heart: ${describeLean(c.daoTam)}`)} aria-valuemin={-100} aria-valuemax={100} aria-valuenow={c.daoTam}>
+          <div className="dao-line" role="meter" aria-label={tr(`Đạo tâm: ${describeLean(c.daoTam)}`, `Dao Heart: ${describeLean(c.daoTam)}`)} aria-valuemin={-100} aria-valuemax={100} aria-valuenow={c.daoTam}>
             <span className="dl">{tr("Chính", "Righteous")}</span>
             <span className="dao-track thin">
               <span style={{ background: '#a8c4e6' }} />

@@ -14,6 +14,8 @@ import { rollBase } from '@/lib/game/engine';
 import type { Character } from '@/lib/game/types';
 import { ELEMENTS, elementOf } from '@/lib/game/nguhanh';
 import { tr } from '@/lib/i18n';
+import { charLang, convertChar, loadDict } from '@/lib/retrans';
+import { lang } from '@/lib/i18n';
 
 /* ================= Gieo quẻ: lá số nhân vật + thiên phú ================= */
 /** Lá số đang gieo dở được giữ lại tới khi đầu thai, rời trang rồi vào lại vẫn là lá số đó và số lần gieo đó */
@@ -64,6 +66,17 @@ export function GachaPanel({ phuc, onChange, onBorn, busy, lifeNo, barNote }: { 
   // vào màn là trời đã gieo sẵn một lá số; đang gieo dở thì lấy lại lá số cũ
   useEffect(() => {
     const saved = readLaSo(lifeNo);
+    // lá số gieo bằng ngôn ngữ kia: giữ nguyên lá số, chỉ dịch lại chữ (xuất thân, nơi sinh...)
+    if (saved && charLang(saved.base) !== lang()) {
+      loadDict().then((ok) => {
+        if (!ok) return;
+        const b = { ...saved.base };
+        convertChar(b, lang());
+        setBase(b);
+        writeLaSo({ ...saved, base: b });
+        onChange(saved.picked ?? [], Math.max(0, saved.rolls - 2) * 5, b);
+      });
+    }
     if (saved) {
       setCards(saved.cards);
       setPicked(saved.picked ?? []);

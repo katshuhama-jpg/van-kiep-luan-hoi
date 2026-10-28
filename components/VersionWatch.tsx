@@ -57,7 +57,7 @@ export default function VersionWatch() {
         
         {tr("Mới", "New")}
       </span>
-      <b id="ver-title">{tr("Thiên đạo đổi thay", "The Heavenly Yao shifts")}</b>
+      <b id="ver-title">{tr("Thiên đạo đổi thay", "The Heavenly Dao shifts")}</b>
       <p>{tr("Giang hồ vừa có bản mới. Tải lại để nhập thế cùng thiên hạ, kiếp đang chơi vẫn được giữ nguyên.", "The jianghu just got a new version. Reload to rejoin the world - your current life is kept intact.")}</p>
       <div className="ver-acts">
         <button className="btn btn-red" onClick={reload}>

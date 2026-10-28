@@ -147,7 +147,7 @@ export const HOOK_EVENTS: GameEvent[] = [
           c.dead = true;
           c.bell = 2;
           c.endTag = 'go_chuong';
-          c.cause = tr('Cầm dùi chuông, thay Thiên Đạo đếm vạn mảnh để không ai bị quên', "Took up the bell mallet and counted the ten thousand shards in the Heavenly Yao's stead, so no one is forgotten");
+          c.cause = tr('Cầm dùi chuông, thay Thiên Đạo đếm vạn mảnh để không ai bị quên', "Took up the bell mallet and counted the ten thousand shards in the Heavenly Dao's stead, so no one is forgotten");
           ctx.fx('breakthrough', tr('NGƯỜI GIỮ CHUÔNG', "KEEPER OF THE BELL"));
           return tr('Bạn gõ một tiếng. Khắp các cõi, vạn người cùng ngẩng lên, và lần đầu tiên tiếng chuông không làm ai sợ. Nó chỉ nói: ta vẫn nhớ các ngươi.', "You strike once. Across every realm, ten thousand people look up, and for the first time the bell frightens no one. It only says: I still remember you all.");
         },
@@ -160,7 +160,7 @@ export const HOOK_EVENTS: GameEvent[] = [
           c.dead = true;
           c.bell = 2;
           c.endTag = 'dap_chuong';
-          c.cause = tr('Đập vỡ quả chuông của Thiên Đạo, trả tự do cho vạn mảnh', "Smashed the Heavenly Yao's bell and set the ten thousand shards free");
+          c.cause = tr('Đập vỡ quả chuông của Thiên Đạo, trả tự do cho vạn mảnh', "Smashed the Heavenly Dao's bell and set the ten thousand shards free");
           ctx.fx('breakthrough', tr('CHUÔNG VỠ', "THE BELL SHATTERED"));
           return tr('Dùi chuông giáng xuống. Quả chuông vỡ thành vạn mảnh sáng, rơi xuống khắp các cõi như mưa sao. Từ nay không ai đếm nữa. Mỗi mảnh phải tự nhớ lấy mình.', "The mallet comes down. The bell breaks into ten thousand shining shards that fall across every realm like a meteor shower. From now on, no one counts. Each shard must remember itself.");
         },
