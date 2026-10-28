@@ -4182,3 +4182,24 @@ button.shadow-card { cursor: pointer; }
 .gd-text { margin: 0; font-size: 15px; line-height: 1.45; }
 .guest-note { display: block; margin-top: -4px; text-align: center; font-size: 14px; color: var(--muted, #6a5a44); }
 .gd-sheet .btn-big small { display: block; font-size: 14px; font-weight: 400; }
+
+/* Lôi đài: lời thoại kiểu phim chưởng */
+.ldm-chat { display: flex; flex-direction: column; gap: 8px; }
+.lc-msg { margin: 0; max-width: 86%; padding: 8px 10px; font-size: 16px; line-height: 1.4; border: 3px solid var(--ink, #1f160d); box-shadow: 3px 3px 0 rgba(31, 22, 13, 0.35); animation: lcIn 0.25s steps(3) both; }
+.lc-msg .lc-name { display: block; font-size: 13px; letter-spacing: 0.02em; opacity: 0.85; }
+.lc-msg.me { align-self: flex-start; background: #fff3d6; border-color: #8a1a1a; }
+.lc-msg.me .lc-name { color: #8a1a1a; }
+.lc-msg.foe { align-self: flex-end; text-align: right; background: #2a211a; color: #f3e6c4; }
+.lc-msg.foe .lc-name { color: #e8b04a; }
+.lc-msg.nar { align-self: center; max-width: 100%; font-style: italic; background: rgba(31, 22, 13, 0.06); border-style: dashed; border-width: 2px; box-shadow: none; }
+.lc-msg.big { font-weight: 700; }
+.lc-msg.me.big, .lc-msg.foe.big { font-size: 18px; }
+.lc-msg.nar.big { border-style: solid; border-color: #8a1a1a; background: #fde9c8; }
+.lc-hit { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; font-style: normal; }
+.lc-hit em { font-style: normal; font-weight: 700; font-size: 14px; padding: 1px 6px; color: #fff; background: #b3261e; border: 2px solid #1f160d; }
+.lc-hit em.me { background: #6a3ad0; }
+.lc-title { margin: 6px 0 0; font-size: 16px; }
+@keyframes lcIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .lc-msg { animation: none; } }
+.ldm-chat { max-height: 52vh; max-height: 52dvh; overflow-y: auto; overscroll-behavior: contain; padding: 2px 4px 6px 0; }
+.ldm-chat.static .lc-msg { animation: none; }
