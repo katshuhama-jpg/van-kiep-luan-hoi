@@ -1908,7 +1908,7 @@ export default function PlayPage() {
           }}
         />
       )}
-      {vanDao?.phase === 'loi' && !c.dead && <TribulationOverlay realmName={tr('Chứng Đạo', 'Attaining the Dao')} title={tr('MƯỜI BA ĐẠO LÔI KIẾP', 'THIRTEEN BOLTS OF TRIBULATION')} total={LOI_TOTAL} onDone={vanDaoLoi} c={c} />}
+      {vanDao?.phase === 'loi' && !c.dead && <TribulationOverlay realmName={tr('Chứng Đạo', 'Attaining the Dao')} title={tr('MƯỜI BA ĐẠO LÔI KIẾP', 'THIRTEEN BOLTS OF TRIBULATION')} total={LOI_TOTAL} bg="/bg/loi-dinh.png" onDone={vanDaoLoi} c={c} />}
       {vanDao?.phase === 'hodao' && !c.dead && (
         <HoDaoScene
           c={c}

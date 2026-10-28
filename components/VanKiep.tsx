@@ -9,7 +9,6 @@ import { realmLabel } from '@/lib/game/data';
 import type { Character } from '@/lib/game/types';
 import { useAuth } from '@/lib/useAuth';
 import { tr } from '@/lib/i18n';
-import { KiepSky } from './Extras';
 
 /** Bóng một kiếp trước, vẽ lại từ ngoại hình đã lưu */
 export function PastSelfSprite({ p, size = 56, anim = 'idle', dir = 2 }: { p: PastSelf; size?: number; anim?: 'idle' | 'hurt' | 'spellcast'; dir?: number }) {
@@ -73,7 +72,7 @@ export function TuKiepOverlay({ c, onPass, onFail, rnd }: { c: Character; onPass
   };
   return (
     <div className={`kiep vd vd-${res ? (res.ok ? 'ok' : 'bad') : 'ask'}`} role="dialog" aria-label={tr('Tứ Kiếp Vấn Đạo', 'Four Trials of the Dao')}>
-      <KiepSky phase={res ? (res.ok ? 'calm' : 'warn') : 'calm'} />
+      <i className="kiep-px ld-bg" aria-hidden="true" />
       {res && !res.ok && <i className="vd-redveil" aria-hidden="true" />}
       <div className="vd-steps" aria-hidden="true">
         {[0, 1, 2, 3].map((k) => (
@@ -167,7 +166,7 @@ export function HoDaoScene({ c, need, onDone }: { c: Character; need: number; on
 
   return (
     <div className={`kiep hd hd-${phase}`} role="dialog" aria-label={tr('Vạn Kiếp Hộ Đạo', 'Guarded by Ten Thousand Lives')}>
-      <KiepSky phase={phase === 'pick' || phase === 'finale' ? 'warn' : 'calm'} />
+      <i className={`kiep-px ld-bg ${phase === 'pick' ? 'storm' : ''}`} aria-hidden="true" />
       {cur && <i key={cur.id} className="hd-bolt" aria-hidden="true" />}
       {phase === 'finale' && <i className="hd-flash" aria-hidden="true" />}
       <div className="hd-crowd">

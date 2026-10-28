@@ -4416,3 +4416,8 @@ button.shadow-card { cursor: pointer; }
 .hd-flash { position: absolute; inset: 0; background: #fff6c8; z-index: 4; pointer-events: none; animation: hdFlash 2.4s steps(6) forwards; }
 @keyframes hdFlash { 0% { opacity: 0; } 15% { opacity: 0.85; } 40% { opacity: 0.2; } 55% { opacity: 0.7; } 100% { opacity: 0; } }
 .hd-roar { position: relative; z-index: 5; font-size: 22px; font-weight: 700; color: #ffe27a; text-align: center; text-shadow: 0 2px 0 #3a2864; animation: kiepShake 0.3s steps(3) 3; }
+
+/* Lôi Đỉnh: nền pixel ghép từ LPC (scripts/gen_loidinh.py) cho Chứng Đạo */
+.ld-bg { background: #06040e url(/bg/loi-dinh.png) center bottom / cover no-repeat; image-rendering: pixelated; }
+.ld-bg.storm { animation: ldStorm 2.2s steps(2) infinite; }
+@keyframes ldStorm { 0%, 88% { filter: none; } 92% { filter: brightness(1.7) saturate(0.6); } 96% { filter: brightness(1.2); } }

@@ -277,7 +277,7 @@ function KiepBolt({ lane, kind }: { lane: number; kind: 'hit' | 'block' | 'trap'
   );
 }
 
-export function TribulationOverlay({ realmName, onDone, c, total = K_TOTAL, title }: { realmName: string; onDone: (bonus: number, blocked: number) => void; c?: Character; total?: number; title?: string }) {
+export function TribulationOverlay({ realmName, onDone, c, total = K_TOTAL, title, bg }: { realmName: string; onDone: (bonus: number, blocked: number) => void; c?: Character; total?: number; title?: string; bg?: string }) {
   const [phase, setPhase] = useState<KPhase>('intro');
   const [i, setI] = useState(0);
   const [lane, setLane] = useState(1);
@@ -368,7 +368,7 @@ export function TribulationOverlay({ realmName, onDone, c, total = K_TOTAL, titl
   const showBolt = phase === 'hit' || phase === 'block' || phase === 'trap';
   return (
     <div className={`kiep kiep-${phase}`} role="dialog" aria-label={tr("Thiên kiếp", "Heavenly tribulation")} onPointerDown={phase === 'done' ? undefined : tap}>
-      <KiepSky phase={phase} />
+      {bg ? <i className={`kiep-px ld-bg ${phase === 'warn' || phase === 'fake' ? 'storm' : ''}`} style={{ backgroundImage: `url(${bg})` }} aria-hidden="true" /> : <KiepSky phase={phase} />}
       {showBolt && <KiepBolt lane={lane} kind={phase as 'hit' | 'block' | 'trap'} />}
       <div className="kiep-hud">
         <div className="kh-top">
