@@ -1,14 +1,23 @@
 'use client';
 
-import { lang, setLang } from '@/lib/i18n';
-import { tr } from '@/lib/i18n';
+import { lang, setLang, type Lang } from '@/lib/i18n';
 
-/** Nút đổi ngôn ngữ Việt / Anh, bấm thì tải lại trang */
-export default function LangToggle({ className = '' }: { className?: string }) {
-  const en = lang() === 'en';
+const OPTS: { l: Lang; flag: string; label: string }[] = [
+  { l: 'vi', flag: '🇻🇳', label: 'VI' },
+  { l: 'en', flag: '🇬🇧', label: 'EN' },
+];
+
+/** Chọn ngôn ngữ: hai nút có cờ, nút đang dùng tô đậm; bấm nút kia thì tải lại trang */
+export default function LangToggle() {
+  const cur = lang();
   return (
-    <button className={`icon-btn lang-btn ${className}`} onClick={() => setLang(en ? 'vi' : 'en')} aria-label={en ? tr('Chuyển sang tiếng Việt', "Switch to Vietnamese") : 'Switch to English'} title={en ? tr('Tiếng Việt', "Tiếng Việt") : 'English'}>
-      {en ? 'VI' : 'EN'}
-    </button>
+    <div className="lang-seg" role="radiogroup" aria-label={cur === 'en' ? 'Language' : 'Ngôn ngữ'}>
+      {OPTS.map((o) => (
+        <button key={o.l} role="radio" aria-checked={cur === o.l} className={cur === o.l ? 'on' : ''} onClick={() => cur !== o.l && setLang(o.l)} title={o.l === 'vi' ? 'Tiếng Việt' : 'English'}>
+          <span aria-hidden="true">{o.flag}</span>
+          {o.label}
+        </button>
+      ))}
+    </div>
   );
 }
