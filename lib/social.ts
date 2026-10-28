@@ -4,7 +4,6 @@ import type { Player } from './auth';
 import { supabase } from './supabase';
 import { SOCIAL, emptySocial, type SocialState } from './game/social';
 import type { Character, RivalChar } from './game/types';
-import { nameOf } from './hanviet';
 
 /** Quan hệ giang hồ với người chơi khác: tải từ máy chủ, giữ trong SOCIAL để logic trận đấu dùng */
 
@@ -265,7 +264,7 @@ export function toRival(username: string, data: unknown): RivalChar | null {
   if (!c.name) return null;
   return {
     player: username,
-    name: nameOf(c.name),
+    name: c.name,
     gender: c.gender === 'nu' ? 'nu' : 'nam',
     race: c.race,
     realm: c.realm ?? 0,
