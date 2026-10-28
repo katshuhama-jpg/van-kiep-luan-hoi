@@ -212,7 +212,7 @@ export function newCharacter(meta: Meta, gifts: string[] = [], base?: Character)
   c.legend = meta.legend ?? null;
   c.vendettas = meta.vendettas ?? [];
   applyProphecy(c, meta.prophecy);
-  if (c.lifeNo === 1) c.log.push({ age: 0, tone: 'good', text: 'Kiếp đầu tiên, trời cao thương đứa trẻ mới đến: trước 16 tuổi bạn sẽ không chết.' });
+  if (c.lifeNo === 1) c.log.push({ age: 0, tone: 'good', text: 'Kiếp đầu tiên, trời cao thương đứa trẻ mới đến: trước 16 tuổi bạn sẽ không chết. Ba kiếp đầu, tuổi thơ trôi nhanh hơn.' });
   if (c.lifeNo <= 3) c.log.push({ age: 0, tone: 'good', text: `Ba kiếp đầu được trời thương: tới khi chọn con đường tu luyện, hiểm cảnh khó lấy mạng bạn hơn. Mục tiêu kiếp này: ${newbieGoal(c)?.name ?? ''}.` });
   if (gifts.length) {
     applyGifts(c, gifts);

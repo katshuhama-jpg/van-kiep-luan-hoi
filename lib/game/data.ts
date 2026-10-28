@@ -92,6 +92,11 @@ export function linhCanBreak(mul: number): number {
 /** Bình cảnh: thất bại liên tiếp ở cùng cảnh giới thì phải bế quan */
 export const BINH_CANH_FAILS = 3;
 export const BINH_CANH_YEARS = 10;
+/** Ba kiếp đầu: tuổi thơ (dưới 16) trôi nhanh gấp 2,5 để người mới sớm gặp lựa chọn đầu tiên */
+export const YOUTH_PACE = 2.5;
+export function youthPace(c: { lifeNo: number; age: number }): number {
+  return c.lifeNo <= 3 && c.age < 16 ? YOUTH_PACE : 1;
+}
 /** Năm trôi nhanh hơn ở cảnh giới cao để mỗi kiếp vẫn gọn */
 export function yearSpeed(realm: number, cosmos?: unknown): number {
   if (cosmos || realm >= 8) return 2.5;

@@ -168,8 +168,8 @@ export const HOOK_EVENTS: GameEvent[] = [
   },
   {
     id: 'tien_duyen_dau',
-    minAge: 6,
-    maxAge: 15,
+    minAge: 4,
+    maxAge: 12,
     once: true,
     weight: 600,
     when: (c) => c.lifeNo === 1,
