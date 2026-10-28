@@ -181,7 +181,24 @@ export async function leaderboard(kind: RankKind, lean: RankLean, path: string, 
   if (!sb) return null;
   const { data, error } = await sb.rpc('vkl_leaderboard', { p_kind: kind, p_lean: lean, p_path: path, p_scope: scope });
   if (error) return null;
-  return ((data as { username: string; c: Character; alive: boolean }[] | null) ?? []).map((r) => ({
+  const list = ((data as { username: string; c: Character; alive: boolean }[] | null) ?? []).slice();
+  // máy chủ trả các người bằng điểm theo thứ tự ngẫu nhiên nên hạng nhảy mỗi lần tải: xếp lại các nhóm bằng điểm cho cố định
+  const key = (r: { c: Character }) => {
+    const c = r.c as Character & { ascended?: boolean; cultivation?: number };
+    if (kind === 'wealth') return [Math.round(c.linhThach ?? 0)];
+    if (kind === 'age') return [Math.floor(c.age ?? 0)];
+    return [c.ascended ? 1 : 0, c.realm ?? 0, c.layer ?? 0, Math.floor(c.cultivation ?? 0)];
+  };
+  const same = (a: number[], b: number[]) => a.every((x, i) => x === b[i]);
+  const tie = (a: { username: string; c: Character }, b: { username: string; c: Character }) =>
+    Math.floor(b.c.age ?? 0) - Math.floor(a.c.age ?? 0) || (a.c.lifeNo ?? 0) - (b.c.lifeNo ?? 0) || a.username.localeCompare(b.username) || (a.c.name ?? '').localeCompare(b.c.name ?? '');
+  for (let i = 0; i < list.length; ) {
+    let j = i + 1;
+    while (j < list.length && same(key(list[i]), key(list[j]))) j++;
+    if (j - i > 1) list.splice(i, j - i, ...list.slice(i, j).sort(tie));
+    i = j;
+  }
+  return list.map((r) => ({
     username: r.username,
     alive: r.alive,
     c: {
