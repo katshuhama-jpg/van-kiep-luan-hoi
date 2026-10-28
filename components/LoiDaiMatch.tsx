@@ -11,13 +11,15 @@ import { foeChar } from '@/lib/game/duel';
 import { ELEMENTS, elementOf } from '@/lib/game/nguhanh';
 import type { RivalChar } from '@/lib/game/types';
 import { baseChance, equalize, type ArenaRule } from '@/lib/game/arena';
-import { turnLines, ultName, type FightState } from '@/lib/game/arenaFight';
+import { ultName, type FightState } from '@/lib/game/arenaFight';
+import { chatOf, koLine, type ChatMsg } from '@/lib/game/wuxiaChat';
 import { ARENA_DAY_HON, ARENA_LOSE_PHUC, ARENA_WIN_PHUC, autoClash, powerOf, tierOfPts, type Clash } from '@/lib/game/phiKiem';
 import { arenaFight3, thachFight } from '@/lib/social';
 import { shareMatch, type ShareOut } from '@/lib/shareCard';
 import ShareSheet from '@/components/ShareSheet';
 import { track } from '@/lib/track';
 
+const MSG_GAP = 550; // ms giữa hai câu thoại
 const BGS = ['tien', 'ma', 'hu'].flatMap((c) => ['kim', 'moc', 'thuy', 'hoa', 'tho'].map((e) => `/bg/nhd-${c}-${e}.png`));
 type Phase = 'vs' | 'pk' | 'clash' | 'final' | 'res';
 type Pop = { id: number; side: 'me' | 'foe'; v: number; tag?: string };
@@ -59,7 +61,9 @@ export default function LoiDaiMatch({
   const [clash, setClash] = useState<Clash | null>(null);
   const [step, setStep] = useState(-1);
   const [pops, setPops] = useState<Pop[]>([]);
-  const [line, setLine] = useState('');
+  const [chat, setChat] = useState<(ChatMsg & { k: number; d: number })[]>([]);
+  const chatBoxRef = useRef<HTMLDivElement>(null);
+  const msgN = useRef(0);
   const [banner, setBanner] = useState<string | null>(null);
   const [res, setRes] = useState<Res | null>(null);
   const [shareMsg, setShareMsg] = useState<string | null>(null);
@@ -92,15 +96,23 @@ export default function LoiDaiMatch({
     if (phase !== 'clash' || !clash) return;
     const n = clash.steps.length;
     if (step >= n - 2) {
-      later(step < 0 ? 400 : 420, () => setPhase('final'));
+      later(step < 0 ? 400 : lastLen.current * MSG_GAP + 300, () => setPhase('final'));
       return;
     }
-    const gap = n > 12 ? 360 : 440;
-    later(step < 0 ? 500 : gap, () => showStep(step + 1));
+    // mỗi câu thoại hiện cách nhau một nhịp để kịp đọc như phim chưởng
+    const said = step >= 0 ? lastLen.current : 1;
+    later(step < 0 ? 600 : said * MSG_GAP + 350, () => showStep(step + 1));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, step, clash]);
 
-  function showStep(i: number) {
+  // thêm thoại vào khung chat; instant: tua nhanh thì hiện ngay không chờ
+  const lastLen = useRef(1);
+  function say(msgs: ChatMsg[], instant = false) {
+    lastLen.current = msgs.length;
+    setChat((c) => [...c, ...msgs.map((m, j) => ({ ...m, k: ++msgN.current, d: instant ? 0 : j * MSG_GAP }))]);
+  }
+
+  function showStep(i: number, instant = false) {
     if (!clash) return;
     const s = clash.steps[i];
     const id = Date.now();
@@ -109,8 +121,10 @@ export default function LoiDaiMatch({
     if (s.r.toMe) p.push({ id: id + 2, side: 'me', v: s.r.toMe, tag: s.r.crit ? 'Chí mạng!' : undefined });
     setPops(p);
     setBanner(s.comeback ? (s.comeback === 'me' ? `${me.name}: Tuyệt địa phản kích!` : `${foe.name}: Tuyệt địa phản kích!`) : null);
-    if (s.comeback) setLine(s.comeback === 'me' ? `Bị dồn tới đường cùng, ${me.name} bùng nổ đánh trả, ${foe.name} mất ${s.r.toFoe} máu.` : `${foe.name} bị dồn tới đường cùng, bùng nổ đánh trả, bạn mất ${s.r.toMe} máu.`);
-    else setLine(turnLines(s.r, me, foe, Math.random).slice(-1)[0] ?? '');
+    const last = i === clash.steps.length - 1;
+    const msgs = chatOf(s.r, me, foe, Math.random, { comeback: s.comeback, last });
+    if (last) msgs.push(koLine(clash.win ? foe.name : me.name));
+    say(msgs, instant);
     setStep(i);
   }
 
@@ -120,7 +134,8 @@ export default function LoiDaiMatch({
     const last = clash.steps.length - 1;
     later(1500, () => {
       showStep(last);
-      later(900, () => {
+      // đọc xong mấy câu kết liễu rồi mới hiện bảng kết quả
+      later(lastLen.current * MSG_GAP + 700, () => {
         setPhase('res');
         const hp = clash.hpPct;
         const detail = `${me.name} ${clash.win ? 'hạ' : 'bại dưới tay'} ${foe.name}, cắm ${swords} phi kiếm, ${clash.win ? 'còn' : 'đối thủ còn'} ${hp}% máu. Luật hôm nay: ${rule.name}.`;
@@ -135,8 +150,17 @@ export default function LoiDaiMatch({
 
   function skip() {
     if (phase !== 'clash' || !clash) return;
+    // tua: in hết thoại các nhịp còn lại ngay, rồi vào đòn kết liễu
+    for (let i = step + 1; i <= clash.steps.length - 2; i++) showStep(i, true);
     setStep(clash.steps.length - 2);
   }
+
+  // khung thoại luôn cuộn xuống câu mới nhất
+  useEffect(() => {
+    // cuộn trong khung thoại, sân đấu và thanh máu vẫn đứng yên ở trên
+    const el = chatBoxRef.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+  }, [chat.length]);
 
   async function share() {
     if (!clash) return;
@@ -156,6 +180,29 @@ export default function LoiDaiMatch({
   const winName = clash ? (clash.win ? me : foe) : me;
   const pw = Math.round(powerOf(swords) * 100);
   const tier = res?.pts !== undefined ? tierOfPts(res.pts) : null;
+
+  const chatBox = (
+    <div className={`ldm-chat ${phase === 'res' ? 'static' : ''}`} aria-live="polite" ref={chatBoxRef}>
+      <p className="lc-msg nar">
+        {me.name} mang {swords} phi kiếm, sức mạnh {pw}%. Hai bóng bước lên lôi đài!
+      </p>
+      {chat.map((m) => (
+        <p key={m.k} className={`lc-msg ${m.who} ${m.big ? 'big' : ''}`} style={m.d ? { animationDelay: `${m.d}ms` } : undefined}>
+          {m.who !== 'nar' && <b className="lc-name">{m.who === 'me' ? me.name : foe.name}</b>}
+          <span>{m.text}</span>
+          {m.hit && (
+            <span className="lc-hit">
+              {m.hit.map((h, j) => (
+                <em key={j} className={h.side}>
+                  {h.side === 'me' ? me.name : foe.name} -{h.v}
+                </em>
+              ))}
+            </span>
+          )}
+        </p>
+      ))}
+      </div>
+  );
 
   return (
     <div className="arena-match af ldm" role="dialog" aria-modal="true" aria-label={`Lôi đài với @${opp}`}>
@@ -235,9 +282,7 @@ export default function LoiDaiMatch({
           <div className="am-body">
             {phase !== 'res' ? (
               <>
-                <p className="am-tell ldm-line" aria-live="polite">
-                  {line || `${me.name} mang ${swords} phi kiếm, sức mạnh ${pw}%. Hai bóng lao vào nhau!`}
-                </p>
+                {chatBox}
                 {phase === 'clash' && (
                   <button className="btn am-auto" onClick={skip}>
                     Tua tới đòn cuối
@@ -245,6 +290,7 @@ export default function LoiDaiMatch({
                 )}
               </>
             ) : (
+              <>
               <div className={`ldm-res ${clash.win ? 'win' : 'lose'}`}>
                 <b className="ldm-res-head">{clash.win ? `Bạn hạ @${opp}` : `@${opp} thắng bạn`}</b>
                 <p>
@@ -286,6 +332,9 @@ export default function LoiDaiMatch({
                 {shareMsg && <small className="note">{shareMsg}</small>}
                 {sheet && <ShareSheet out={sheet} kind="match" onClose={() => setSheet(null)} />}
               </div>
+              <h3 className="lc-title">Diễn biến trận</h3>
+              {chatBox}
+              </>
             )}
           </div>
         </>
