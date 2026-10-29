@@ -156,6 +156,9 @@ export default function PlayPage() {
 
   const persist = useCallback(
     (forceRemote = false) => {
+      // đột phá đại cảnh giới: ghi để trang đầu hiện "vừa đột phá ..." (so với lần ghi cột mốc trước)
+      const cr = charRef.current;
+      if (cr && !cr.dead && cr.mileSnap && cr.realm > cr.mileSnap.realm && cr.realm >= 2) track('realm_up', { realm: cr.realm, cosmos: cr.cosmos ?? null, lifeNo: cr.lifeNo });
       trackMiles(charRef.current);
       // Bảo khố: lần đầu có được đồ ẩn thì ghi lại mãi mãi và báo cho người chơi
       const mm = metaRef.current;

@@ -5,11 +5,12 @@
  * thiên tượng hôm nay, ba bia mới nhất có thắp hương, và thanh "Tiếp tục" ghim dưới đáy.
  */
 import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { loadAll, thapHuong } from '@/lib/storage';
 import { omenToday } from '@/lib/game/hook';
-import { realmLabel } from '@/lib/game/data';
+import { realmLabel, realmName } from '@/lib/game/data';
+import { ENDINGS } from '@/lib/game/endings';
 import { toRival } from '@/lib/social';
 import { foeChar } from '@/lib/game/duel';
 import Sprite from './Sprite';
@@ -35,7 +36,8 @@ function lineOf(l: Life): string {
   return tr(`${who} vừa khép lại một kiếp, ${l.age} tuổi, ${realm}.`, `${who} ended a life at ${l.age}, ${realm}.`);
 }
 
-export type LiveData = { online: number | null; total: number | null; today: number | null; lives: Life[] };
+export type FeedItem = { k: 'play' | 'born' | 'up' | 'end1' | 'vandao' | 'arena'; who: string; at: string; name?: string; age?: number; realm?: number; layer?: number; cosmos?: string | null; life?: number; ids?: string; foe?: string; win?: boolean };
+export type LiveData = { online: number | null; total: number | null; today: number | null; lives: Life[]; feed: FeedItem[] };
 
 /** Số liệu giang hồ cho trang đầu: tải một lần, làm mới mỗi phút */
 export function useLive(): LiveData {
@@ -43,12 +45,14 @@ export function useLive(): LiveData {
   const [total, setTotal] = useState<number | null>(null);
   const [today, setToday] = useState<number | null>(null);
   const [lives, setLives] = useState<Life[]>([]);
+  const [feed, setFeed] = useState<FeedItem[]>([]);
   useEffect(() => {
     const sb = supabase();
     if (!sb) return;
     let live = true;
     const load = () => {
       sb.rpc('vkl_online_now').then(({ data }) => live && typeof data === 'number' && setOnline(data));
+      sb.rpc('vkl_live_feed').then(({ data }) => live && Array.isArray(data) && setFeed(data as FeedItem[]));
       // số luôn tăng (tổng kiếp) làm số lớn, thay cho số người đang chơi có lúc bằng 0
       sb.from('vkl_lives')
         .select('id', { count: 'exact', head: true })
@@ -67,13 +71,13 @@ export function useLive(): LiveData {
         .then(({ data }) => live && setLives(((data as Life[] | null) ?? []).filter((l) => !isTest(l.player_name))));
     };
     load();
-    const t = setInterval(load, 60000);
+    const t = setInterval(load, 45000);
     return () => {
       live = false;
       clearInterval(t);
     };
   }, []);
-  return { online, total, today, lives };
+  return { online, total, today, lives, feed };
 }
 
 /** Dải giang hồ gọn hai dòng: tổng kiếp (luôn tăng), đạo hữu hôm nay, người đang chơi; thiên tượng hôm nay */
@@ -97,38 +101,80 @@ export function LiveStrip({ d }: { d: LiveData }) {
   );
 }
 
+const realmOf = (realm?: number, layer?: number, cosmos?: string | null) => (!realm ? tr('phàm nhân', 'a mortal') : realmLabel(realm, layer ?? 1, (cosmos as 'tien' | 'ma' | 'hu' | null) ?? null));
+
+function feedLine(f: FeedItem): string {
+  const who = `@${f.who}`;
+  switch (f.k) {
+    case 'play':
+      return tr(`${who} đang tu: ${f.name}, ${f.age} tuổi, ${realmOf(f.realm, f.layer, f.cosmos)} (kiếp ${f.life})`, `${who} is cultivating: ${f.name}, age ${f.age}, ${realmOf(f.realm, f.layer, f.cosmos)} (life ${f.life})`);
+    case 'born':
+      return tr(`${who} vừa đầu thai kiếp thứ ${f.life}`, `${who} was just reborn into life #${f.life}`);
+    case 'up':
+      return tr(`${who} vừa đột phá ${realmName(f.realm ?? 1, (f.cosmos as 'tien' | 'ma' | 'hu' | null) ?? null)}`, `${who} just broke through to ${realmName(f.realm ?? 1, (f.cosmos as 'tien' | 'ma' | 'hu' | null) ?? null)}`);
+    case 'end1': {
+      const names = (f.ids ?? '').split(',').map((id) => ENDINGS.find((e) => e.id === id)?.name).filter(Boolean).join(', ');
+      return tr(`${who} vừa mở kết cục mới: ${names}`, `${who} unlocked a new ending: ${names}`);
+    }
+    case 'vandao':
+      return tr(`${who} đang bước lên đỉnh lôi, vấn đạo Chứng Đạo`, `${who} is climbing the thunder peak to attain the Dao`);
+    case 'arena':
+      return f.win ? tr(`${who} vừa hạ @${f.foe} trên lôi đài`, `${who} just beat @${f.foe} in the arena`) : tr(`@${f.foe} vừa đánh bại ${who} trên lôi đài`, `@${f.foe} just beat ${who} in the arena`);
+  }
+}
+
+type Toast = { id: string; at: string; text: string; now?: boolean };
+
 /**
- * Tin giang hồ hiện ra rồi tắt: mỗi tin 5 giây, nghỉ 4 giây, nổi ngay trên thanh Đầu thai.
- * Chỉ lấy tin trong 24 giờ, không che nội dung, không bấm được.
+ * Tin giang hồ hiện ra rồi tắt, nổi ngay trên thanh Đầu thai: ai đang tu, ai vừa đầu thai, đột phá,
+ * mở kết cục, thắng lôi đài, khép lại một kiếp. Tin trong 2 giờ, thiếu thì lấy kiếp đã hết trong 24 giờ.
+ * Mỗi tin 4,5 giây, nghỉ 2,5 giây.
  */
 export function NewsToast({ d }: { d: LiveData }) {
-  const recent = useMemo(() => d.lives.filter((l) => Date.now() - new Date(l.created_at).getTime() < 86400_000).slice(0, 12), [d.lives]);
+  const items = useMemo<Toast[]>(() => {
+    const now = Date.now();
+    const deaths: Toast[] = d.lives.map((l) => ({ id: `l${l.id}`, at: l.created_at, text: lineOf(l) }));
+    const feed: Toast[] = d.feed.map((f, k) => ({ id: `f${k}-${f.k}-${f.who}-${f.at}`, at: f.at, text: feedLine(f), now: f.k === "play" }));
+    const fresh = [...feed, ...deaths.filter((x) => now - new Date(x.at).getTime() < 2 * 3600_000)];
+    const list = fresh.length >= 3 ? fresh : [...fresh, ...deaths.filter((x) => now - new Date(x.at).getTime() < 86400_000)];
+    // gộp trùng, mới trước, xen kẽ người đang chơi với tin vừa xảy ra
+    const seen = new Set<string>();
+    const uniq = list.filter((x) => (seen.has(x.text) ? false : (seen.add(x.text), true))).sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime());
+    const playing = uniq.filter((x) => x.now);
+    const happened = uniq.filter((x) => !x.now);
+    const out: Toast[] = [];
+    for (let k = 0; out.length < 16 && (k < playing.length || k < happened.length); k++) {
+      if (happened[k]) out.push(happened[k]);
+      if (playing[k]) out.push(playing[k]);
+    }
+    return out;
+  }, [d.lives, d.feed]);
   const [i, setI] = useState(-1);
+  const kRef = useRef(0); // giữ vị trí khi dữ liệu làm mới, không quay lại tin đầu
   useEffect(() => {
-    if (!recent.length) return;
-    let k = 0;
+    if (!items.length) return;
     let shown = false;
     let t: ReturnType<typeof setTimeout>;
     const step = () => {
       shown = !shown;
       if (shown) {
-        setI(k % recent.length);
-        k++;
-        t = setTimeout(step, 5000);
+        setI(kRef.current % items.length);
+        kRef.current++;
+        t = setTimeout(step, 4500);
       } else {
         setI(-1);
-        t = setTimeout(step, 4000);
+        t = setTimeout(step, 2500);
       }
     };
-    t = setTimeout(step, 2500);
+    t = setTimeout(step, 2000);
     return () => clearTimeout(t);
-  }, [recent]);
-  const n = i >= 0 ? recent[i] : null;
+  }, [items]);
+  const n = i >= 0 ? items[i] : null;
   if (!n) return null;
   return (
     <p key={n.id} className="lw-toast" role="status">
-      <i aria-hidden="true" />
-      <small>{ago(n.created_at)}</small> {lineOf(n)}
+      <i aria-hidden="true" className={n.now ? 'live' : ''} />
+      <small>{n.now ? tr('đang chơi', 'playing now') : ago(n.at)}</small> {n.text}
     </p>
   );
 }

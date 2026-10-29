@@ -4582,7 +4582,7 @@ button.shadow-card { cursor: pointer; }
 .home-grid .ver-tag { font-size: 12px; }
 .home-foot { font-size: 13px; color: #6a5a46; margin-bottom: 4px; }
 .home-foot b { color: var(--red-d); }
-.lw-toast { position: fixed; left: 12px; right: 12px; bottom: calc(92px + env(safe-area-inset-bottom)); z-index: 41; max-width: 440px; margin: 0 auto; padding: 6px 10px; font-size: 13px; line-height: 1.35; text-align: left; background: #2a2018; color: #f6ead0; border: 2px solid #0e0a06; border-left: 4px solid #2f6b5a; box-shadow: 3px 3px 0 #0e0a06; pointer-events: none; animation: lwToast 5s steps(5) forwards; }
+.lw-toast { position: fixed; left: 12px; right: 12px; bottom: calc(92px + env(safe-area-inset-bottom)); z-index: 41; max-width: 440px; margin: 0 auto; padding: 6px 10px; font-size: 13px; line-height: 1.35; text-align: left; background: #2a2018; color: #f6ead0; border: 2px solid #0e0a06; border-left: 4px solid #2f6b5a; box-shadow: 3px 3px 0 #0e0a06; pointer-events: none; animation: lwToast 4.5s steps(5) forwards; }
 .lw-toast i { display: inline-block; width: 8px; height: 8px; background: #9ff0c8; margin-right: 6px; }
 .lw-toast small { color: #9ff0c8; margin-right: 4px; }
 @keyframes lwToast { 0% { opacity: 0; transform: translateY(12px); } 10% { opacity: 1; transform: none; } 85% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(6px); } }
@@ -4594,3 +4594,4 @@ button.shadow-card { cursor: pointer; }
 .wk-line .wk-ghosts { display: flex; align-items: flex-end; height: 36px; filter: grayscale(0.3) drop-shadow(0 0 2px #9a7aff); }
 .wk-line .wk-ghosts > * { margin: 0 -7px; }
 .gio-line { background: #3a1a1a; }
+.lw-toast i.live { background: #ff6b5a; animation: kpBlink 0.8s steps(2) infinite; }
