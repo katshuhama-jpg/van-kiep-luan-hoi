@@ -88,19 +88,30 @@ export function GioNotice({ user, lives }: { user: Player | null; lives: PastSel
 export function HomeVanKiep({ user, ready }: { user: Player | null; ready: boolean }) {
   const lives = usePastSelves(user, ready);
   if (!lives || !lives.length) return null;
-  if (gioToday(lives)) return <GioNotice user={user} lives={lives} />;
+  // một dòng gọn ngay dưới dải giang hồ để luôn thấy trong màn đầu
+  const g = gioToday(lives);
+  if (g)
+    return (
+      <Link href="/tang-kiep-cac" className="wk-line gio-line" onClick={() => track('gio_nudge')}>
+        <PastSelfSprite p={g.p} size={32} />
+        <span>
+          {tr(`Hôm nay ${g.label} kiếp ${g.p.lifeNo} (${g.p.name}) mất`, `${g.label} since life ${g.p.lifeNo} (${g.p.name}) passed`)}
+          <b>{tr(' · Thắp hương ›', ' · Light incense ›')}</b>
+        </span>
+      </Link>
+    );
   const w = weekWrap(lives);
-  if (w.n < 3) return null;
+  if (!w.n) return null;
   return (
-    <Link href="/tang-kiep-cac#tuan" className="wk-nudge" onClick={() => track('wrap_nudge')}>
+    <Link href="/tang-kiep-cac#tuan" className="wk-line" onClick={() => track('wrap_nudge')}>
       <span className="wk-ghosts" aria-hidden="true">
-        {lives.slice(-4).map((p) => (
-          <PastSelfSprite key={p.id} p={p} size={40} />
+        {lives.slice(-3).map((p) => (
+          <PastSelfSprite key={p.id} p={p} size={32} />
         ))}
       </span>
       <span>
-        <b>{tr(`Bảy ngày qua bạn đã sống ${w.n} kiếp`, `You lived ${w.n} lives in the past seven days`)}</b>
-        <small>{tr(`Danh hiệu tuần: ${w.title} · mở Thất Nhật Lục ›`, `Title of the week: ${w.title} · open your Seven-Day Chronicle ›`)}</small>
+        <b>{tr('Thất Nhật Lục', 'Seven-Day Chronicle')}</b>
+        {tr(` · ${w.title} · ${w.n} kiếp/7 ngày ›`, ` · ${w.title} · ${w.n} lives/7 days ›`)}
       </span>
     </Link>
   );

@@ -4588,3 +4588,9 @@ button.shadow-card { cursor: pointer; }
 @keyframes lwToast { 0% { opacity: 0; transform: translateY(12px); } 10% { opacity: 1; transform: none; } 85% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(6px); } }
 .home-tra { display: flex !important; flex-direction: column; align-items: center; line-height: 1.15; background: #2f6b5a; color: #fff3d0; border-color: #0e2a22; font-weight: 700; min-height: 40px; padding: 4px 10px; }
 .home-tra small { font-size: 12px; font-weight: 500; color: #c8f0dc; }
+.wk-line { display: flex; align-items: center; gap: 6px; margin-top: -4px; padding: 0 10px; height: 36px; overflow: hidden; background: #2a1f3d; color: #e8dcff; border: 3px solid #0e0a1a; border-top: 0; text-decoration: none; text-align: left; font-size: 13px; line-height: 1.2; }
+.wk-line > span:last-child { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wk-line b { color: #ffe27a; }
+.wk-line .wk-ghosts { display: flex; align-items: flex-end; height: 36px; filter: grayscale(0.3) drop-shadow(0 0 2px #9a7aff); }
+.wk-line .wk-ghosts > * { margin: 0 -7px; }
+.gio-line { background: #3a1a1a; }

@@ -38,6 +38,7 @@ export default function Home() {
       </h1>
 
       <LiveStrip d={live} />
+      <HomeVanKiep user={user} ready={ready} />
 
       <nav className="menu home-menu" aria-label={tr('Các tính năng', 'Features')}>
         <LoiDaiButton />
@@ -74,7 +75,6 @@ export default function Home() {
       </nav>
 
       <NewGraves d={live} user={user} />
-      <HomeVanKiep user={user} ready={ready} />
 
       <section className="panel" style={{ textAlign: 'left' }}>
         <h2>{tr("Cách chơi", "How to play")}</h2>
