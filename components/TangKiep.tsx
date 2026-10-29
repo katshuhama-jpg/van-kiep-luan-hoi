@@ -141,11 +141,13 @@ export function WeekBlock({ w, lives, who }: { w: WeekWrap; lives: PastSelf[]; w
       </section>
     );
   return (
-    <section id="tuan" className="wk">
-      <h2>
-        {tr('Thất Nhật Lục', 'Seven-Day Chronicle')} <small className="wk-sub">{tr('bảy ngày luân hồi', 'your last seven days')}</small>
-      </h2>
-      <p className="wk-title">{w.title}</p>
+    <section id="tuan" className="wk wk-dp">
+      <div className="wk-hero">
+        <h2>
+          {tr('Thất Nhật Lục', 'Seven-Day Chronicle')} <small className="wk-sub">{tr('bảy ngày luân hồi', 'your last seven days')}</small>
+        </h2>
+        <p className="wk-title">{w.title}</p>
+      </div>
       <div className="wk-grid">
         <div>
           <b>{w.n}</b>
