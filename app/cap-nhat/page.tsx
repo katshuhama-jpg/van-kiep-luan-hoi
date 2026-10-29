@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import BackButton from '@/components/BackButton';
 import { ReleaseBody } from '@/components/Release';
 import { RELEASES } from '@/lib/releases';
@@ -10,14 +10,29 @@ import { tr } from '@/lib/i18n';
 export default function CapNhat() {
   const [v, setV] = useState<string | null>(null);
   useEffect(() => {
-    const read = () => setV(new URLSearchParams(window.location.search).get('v'));
+    const read = () => {
+      const q = new URLSearchParams(window.location.search).get('v');
+      if (!q) pushed.current = false;
+      setV(q);
+    };
     read();
     window.addEventListener('popstate', read);
     return () => window.removeEventListener('popstate', read);
   }, []);
+  // mở chi tiết thì thêm một bước vào lịch sử; quay lại thì lùi đúng bước đó (không đẩy thêm bước mới, tránh kẹt qua lại hai màn)
+  const pushed = useRef(false);
   const open = (ver: string | null) => {
-    setV(ver);
-    window.history.pushState(null, '', ver ? `/cap-nhat?v=${ver}` : '/cap-nhat');
+    if (ver) {
+      setV(ver);
+      window.history.pushState(null, '', `/cap-nhat?v=${ver}`);
+      pushed.current = true;
+    } else if (pushed.current) {
+      pushed.current = false;
+      window.history.back();
+    } else {
+      setV(null);
+      window.history.replaceState(null, '', '/cap-nhat');
+    }
     window.scrollTo(0, 0);
   };
   const r = v ? RELEASES.find((x) => x.v === v) : null;
