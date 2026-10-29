@@ -4243,7 +4243,7 @@ button.shadow-card { cursor: pointer; }
 .forge-open small { font-size: 12px; font-weight: 500; opacity: 0.9; }
 .el-tag { padding: 0 4px; font-weight: 700; color: #1f160d; border: 1px solid #1f160d; }
 .el-tag.e-kim { background: #d8d8e8; } .el-tag.e-moc { background: #8ad89a; } .el-tag.e-thuy { background: #8ab8f0; } .el-tag.e-hoa { background: #f09a7a; } .el-tag.e-tho { background: #e0b870; }
-.forge-wrap { position: fixed; inset: 0; z-index: 95; display: flex; align-items: center; justify-content: center; padding: 12px; background: rgba(10, 6, 4, 0.75); }
+.forge-wrap { position: fixed; inset: 0; z-index: 97; display: flex; align-items: center; justify-content: center; padding: 12px; background: rgba(10, 6, 4, 0.75); }
 .forge-scene { width: 100%; max-width: 420px; max-height: calc(100dvh - 24px); overflow-y: auto; display: flex; flex-direction: column; background: #f3e6c4; border: 3px solid #1f160d; box-shadow: 4px 4px 0 #1f160d; }
 .fs-head { display: flex; align-items: center; gap: 8px; padding: 8px 10px; color: #fff3dc; background: #2a1f18; }
 .fs-head b { font-size: 20px; flex: 1; }

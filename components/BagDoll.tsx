@@ -250,7 +250,7 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
             </button>
           )}
           {onForge && isOn(selItem.id) && (
-            <button className="btn btn-red btn-big forge-open" onClick={() => setForging(selItem.slot)}>
+            <button className="btn btn-red btn-big forge-open" onClick={() => { setSel(null); setForging(selItem.slot); }}>
               {tr('⚒ Rèn món này', '⚒ Forge this')}
               <small>{forgeLv(c, selItem.slot) >= FORGE_MAX ? tr(`đã +${FORGE_MAX}`, `maxed +${FORGE_MAX}`) : tr(`đang +${forgeLv(c, selItem.slot)} · ${FORGE_STAT[selItem.slot]} +6% mỗi cấp · tinh thiết ${c.tinhHoa ?? 0}`, `now +${forgeLv(c, selItem.slot)} · ${FORGE_STAT[selItem.slot]} +6% per level · iron ${c.tinhHoa ?? 0}`)}</small>
             </button>
