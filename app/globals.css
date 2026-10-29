@@ -4487,7 +4487,7 @@ button.shadow-card { cursor: pointer; }
 
 /* Tàng Kiếp Các, ngày giỗ, Luân Hồi tuần này */
 .vk-link { display: block; margin-top: 6px; text-align: right; font-size: 14px; font-weight: 700; color: #ffe27a; }
-.tk-hall { margin: 10px 0 0; padding: 18px 8px 6px; background: #1c1430 url(/bg/tu_luyen-0.png) center bottom / cover no-repeat; image-rendering: pixelated; border: 3px solid #0e0a1a; box-shadow: inset 0 0 0 2px #c9962e; }
+.tk-hall { margin: 10px 0 0; padding: 74px 8px 2px; background: #06120e url(/bg/dia-phu.png) center 92% / cover no-repeat; image-rendering: pixelated; border: 3px solid #0e0a1a; box-shadow: inset 0 0 0 2px #c9962e; }
 .tk-hall .vk-line { min-height: 72px; }
 .tk-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 8px 0; }
 .tk-stats div, .wk-grid div { background: #fff8e6; border: 2px solid #3e3228; box-shadow: 2px 2px 0 #3e3228; padding: 6px 4px; text-align: center; min-width: 0; }
