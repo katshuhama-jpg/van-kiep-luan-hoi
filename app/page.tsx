@@ -1,11 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import Sprite from '@/components/Sprite';
 import MusicToggle from '@/components/MusicToggle';
 import LangToggle from '@/components/LangToggle';
 import { signOut } from '@/lib/auth';
-import { demoChar } from '@/lib/game/demo';
 import { displayName } from '@/lib/storage';
 import { useAuth } from '@/lib/useAuth';
 import { useEffect, useState } from 'react';
@@ -15,14 +13,6 @@ import LoiDaiButton from '@/components/LoiDaiButton';
 import { tr } from '@/lib/i18n';
 import { ContinueBar, LiveWorld } from '@/components/LiveWorld';
 import { HomeVanKiep } from '@/components/TangKiep';
-
-const SHOW = [
-  demoChar({ lookSeed: 2, age: 9, lifespan: 70, realm: 0, gender: 'nu', equipped: { ao: 'ao_vai' } }),
-  demoChar({ lookSeed: 13, age: 40, realm: 3, path: 'phat', daoTam: 60, equipped: { ao: 'ca_sa', vu_khi: 'phat_tran' } }),
-  demoChar({ lookSeed: 1, age: 80, lifespan: 400, realm: 4, path: 'kiem', equipped: { ao: 'tu_kim_bao', phu_kien: 'kiem_bay' } }),
-  demoChar({ lookSeed: 10, age: 60, realm: 3, path: 'ma', daoTam: -90, gender: 'nu', equipped: { ao: 'huyet_bao', vu_khi: 'huyet_dao' } }),
-  demoChar({ lookSeed: 8, age: 350, lifespan: 400, realm: 3, daoTam: 20, equipped: { ao: 'bach_y' } }),
-];
 
 const link = { textDecoration: 'none', display: 'block' } as const;
 
@@ -48,12 +38,6 @@ export default function Home() {
         {tr("Luân Hồi", "Rebirths")}
         <small>{tr("Một kiếp người, vạn con đường tu tiên", "One life, ten thousand paths to immortality")}</small>
       </h1>
-
-      <div className="showcase" aria-label={tr("Các hình dạng nhân vật", "Character appearances")}>
-        {SHOW.map((c, i) => (
-          <Sprite key={i} c={c} size={i === 2 ? 96 : 68} />
-        ))}
-      </div>
 
       <LiveWorld user={user} />
       <HomeVanKiep user={user} ready={ready} />
