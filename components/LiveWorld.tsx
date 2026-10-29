@@ -37,7 +37,8 @@ function lineOf(l: Life): string {
 
 export function LiveWorld({ user }: { user: Player | null }) {
   const [online, setOnline] = useState<number | null>(null);
-  const [hour, setHour] = useState<number | null>(null);
+  const [total, setTotal] = useState<number | null>(null);
+  const [today, setToday] = useState<number | null>(null);
   const [lives, setLives] = useState<Life[]>([]);
   const [tick, setTick] = useState(0);
   const [burnt, setBurnt] = useState<Record<number, number>>({});
@@ -49,10 +50,17 @@ export function LiveWorld({ user }: { user: Player | null }) {
     let live = true;
     const load = () => {
       sb.rpc('vkl_online_now').then(({ data }) => live && typeof data === 'number' && setOnline(data));
+      // số luôn tăng (tổng kiếp) làm số lớn, thay cho số người đang chơi có lúc bằng 0
       sb.from('vkl_lives')
         .select('id', { count: 'exact', head: true })
-        .gt('created_at', new Date(Date.now() - 3600_000).toISOString())
-        .then(({ count }) => live && setHour(count ?? 0));
+        .then(({ count }) => live && count !== null && setTotal(count));
+      const midnight = new Date();
+      midnight.setHours(0, 0, 0, 0);
+      sb.from('vkl_lives')
+        .select('player_name')
+        .gte('created_at', midnight.toISOString())
+        .limit(2000)
+        .then(({ data }) => live && data && setToday(new Set((data as { player_name: string }[]).map((r) => r.player_name).filter((n) => !isTest(n))).size));
       sb.from('vkl_lives')
         .select('id, player_name, char_name, life_no, age, realm, realm_no, layer_no, ascended, cause, epitaph, incense, created_at, look')
         .order('created_at', { ascending: false })
@@ -87,9 +95,12 @@ export function LiveWorld({ user }: { user: Player | null }) {
   return (
     <section className="lw" aria-label={tr('Giang hồ lúc này', 'The world right now')}>
       <div className="lw-count">
-        <b>{online ?? '…'}</b>
-        <span>{tr('đạo hữu đang luân hồi lúc này', 'fellow Daoists in the cycle right now')}</span>
-        {hour !== null && <small>{tr(`${hour} kiếp đã khép lại trong một giờ qua`, `${hour} lives ended in the past hour`)}</small>}
+        <b>{total !== null ? total.toLocaleString('vi-VN') : '…'}</b>
+        <span>{tr('kiếp đã luân hồi trong giang hồ', 'lives lived in the jianghu so far')}</span>
+        <small>
+          {today ? tr(`${today} đạo hữu đã tu luyện hôm nay`, `${today} Daoists cultivated today`) : tr('Hôm nay chưa ai khép lại kiếp nào, đạo hữu mở hàng đi', 'No life has ended yet today - be the first')}
+          {online !== null && online >= 2 ? tr(` · ${online} người đang chơi`, ` · ${online} playing now`) : ''}
+        </small>
       </div>
       {news && (
         <p key={news.id + '-' + tick} className="lw-news">
