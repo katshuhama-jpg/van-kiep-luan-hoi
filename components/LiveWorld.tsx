@@ -103,6 +103,14 @@ export function LiveStrip({ d }: { d: LiveData }) {
 
 const realmOf = (realm?: number, layer?: number, cosmos?: string | null) => (!realm ? tr('phàm nhân', 'a mortal') : realmLabel(realm, layer ?? 1, (cosmos as 'tien' | 'ma' | 'hu' | null) ?? null));
 
+function feedOk(f: FeedItem): boolean {
+  if (!f.who || isTest(f.who)) return false;
+  if (f.k === 'play') return !!f.name && f.age != null && f.life != null;
+  if (f.k === 'born') return f.life != null;
+  if (f.k === 'arena') return !!f.foe;
+  return true;
+}
+
 function feedLine(f: FeedItem): string {
   const who = `@${f.who}`;
   switch (f.k) {
@@ -134,7 +142,8 @@ export function NewsToast({ d }: { d: LiveData }) {
   const items = useMemo<Toast[]>(() => {
     const now = Date.now();
     const deaths: Toast[] = d.lives.map((l) => ({ id: `l${l.id}`, at: l.created_at, text: lineOf(l) }));
-    const feed: Toast[] = d.feed.map((f, k) => ({ id: `f${k}-${f.k}-${f.who}-${f.at}`, at: f.at, text: feedLine(f), now: f.k === "play" }));
+    // bản lưu giữa hai kiếp (chưa đầu thai) không có nhân vật: bỏ, khỏi hiện null
+    const feed: Toast[] = d.feed.filter(feedOk).map((f, k) => ({ id: `f${k}-${f.k}-${f.who}-${f.at}`, at: f.at, text: feedLine(f), now: f.k === "play" }));
     const fresh = [...feed, ...deaths.filter((x) => now - new Date(x.at).getTime() < 2 * 3600_000)];
     const list = fresh.length >= 3 ? fresh : [...fresh, ...deaths.filter((x) => now - new Date(x.at).getTime() < 86400_000)];
     // gộp trùng, mới trước, xen kẽ người đang chơi với tin vừa xảy ra
