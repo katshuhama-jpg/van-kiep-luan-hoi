@@ -3,7 +3,7 @@ import { ksDrop, ksLegendPer, ksMonster } from './luanHoi';
 import { huntDeath, huntLose } from './fightLines';
 import { omenIs } from './hook';
 import { ITEMS, REALMS, fxText, gearFx } from './data';
-import { DO_KIEP_REALM, addCult, addPill, clamp, fatal, giveItem, money, needFor, stat } from './helpers';
+import { DO_KIEP_REALM, addCult, addWound, atAge, markDeath, addPill, clamp, fatal, giveItem, money, needFor, stat } from './helpers';
 import type { Character, EffectCtx, Element } from './types';
 import { gainAn } from './nguHanhDai';
 import { tr } from '../i18n';
@@ -802,6 +802,11 @@ export function lootDrop(c: Character, m: Monster, ctx: EffectCtx): string | nul
   return tr(`${m.name} rơi ra ${tag} ${it.name}${rare >= 2 ? '!' : '.'} (${fxText(it.fx)}) Mở Túi đồ để mặc.`, `${m.name} dropped ${tag} ${it.name}${rare >= 2 ? '!' : '.'} (${fxText(it.fx)}) Open your Inventory to equip it.`);
 }
 
+/** 4.1.0: kết cục khi chết dưới tay quái. easy: quái yếu hơn hoặc ngang sức */
+export function monsterEndTag(m: Monster, easy: boolean): string {
+  return m.id === 'tho_yeu' ? 'tho_yeu' : m.sect ? 'thi_luyen' : m.human ? 'dao_giang_ho' : easy ? 'khinh_dich' : 'tu_dia';
+}
+
 /** Thua trận: có thể chết. Trả về câu mô tả. */
 export function loseFight(c: Character, m: Monster, ctx: EffectCtx): string {
   if (m.boss) {
@@ -825,12 +830,13 @@ export function loseFight(c: Character, m: Monster, ctx: EffectCtx): string {
     return tr(`Bạn thua ${m.name}, may có người qua đường kịp xua nó đi. Bạn được cõng về, trọng thương nhưng còn sống.`, `You lose to ${m.name}, but a passerby drives it off just in time. You're carried home, badly hurt but alive.`);
   }
   const d = dangerOf(c, m);
-  const f = fatal(c, ctx, d === 'de' || d === 'vua' ? 0.5 : 0.85, huntDeath(m.name, m.place, ctx.rnd));
+  const f = fatal(c, ctx, d === 'de' || d === 'vua' ? 0.5 : 0.85, huntDeath(m.name, m.place, ctx.rnd) + atAge(c));
   // kết cục riêng khi chết vì quái (ở ba cõi đã có kết cục của cõi)
-  if (c.dead && !c.cosmos && !c.endTag)
-    c.endTag = m.id === 'tho_yeu' ? 'tho_yeu' : m.sect ? 'thi_luyen' : m.human ? 'dao_giang_ho' : d === 'de' || d === 'vua' ? 'khinh_dich' : 'tu_dia';
+  const tag = monsterEndTag(m, d === 'de' || d === 'vua');
+  markDeath(c, tag, `${m.name} Lv${effLv(c, m)}`);
   if (c.dead) return tr(`Trừ yêu thất bại.${f}`, `The hunt failed.${f}`);
   stat(c, 'sucKhoe', -35);
+  addWound(c, 35, tr(`thua ${m.name} cấp ${effLv(c, m)} khi trừ yêu`, `lost to ${m.name} Lv${effLv(c, m)} while hunting`), tag, `${m.name} Lv${effLv(c, m)}`);
   return `${huntLose(m.name, ctx.rnd)}${f ?? ''}`;
 }
 

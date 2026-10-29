@@ -158,6 +158,26 @@ export function usePill(c: Character, id: string): boolean {
 export const riskMeter = { n: 0 };
 
 /** Bị thương. Ngọc bội hộ thân đỡ một đòn chí mạng. */
+/** 4.1.0: câu nhắc tuổi lúc chết, gắn vào nguyên nhân để văn bia nêu rõ chết năm nào */
+export function atAge(c: Character): string {
+  const n = Math.floor(c.age);
+  return tr(` Năm ấy bạn ${n} tuổi.`, ` You were ${n}.`);
+}
+
+/** 4.1.0: ghi lại một vết thương nặng (nguồn, kẻ gây ra) để khi chết vì thương thế biết gắn kết cục nào */
+export function addWound(c: Character, amt: number, text: string, tag?: string, by?: string) {
+  if (amt <= 0) return;
+  const age = Math.floor(c.age);
+  c.wounds = [...(c.wounds ?? []).filter((w) => w.age >= age - 6), { age, amt: Math.round(amt), tag, by, text }].slice(-8);
+}
+
+/** 4.1.0: gắn kết cục và kẻ giết khi vừa chết (không ghi đè kết cục đã gắn, không áp ở ba cõi) */
+export function markDeath(c: Character, tag?: string, by?: string) {
+  if (!c.dead) return;
+  if (tag && !c.cosmos && !c.endTag) c.endTag = tag;
+  if (by && !c.killer) c.killer = by;
+}
+
 export function hurt(c: Character, amount: number, ctx: EffectCtx): string {
   riskMeter.n++;
   c.stats.sucKhoe = clamp(c.stats.sucKhoe - amount, 0, 100);

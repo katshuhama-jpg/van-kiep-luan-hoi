@@ -92,6 +92,9 @@ export interface Character {
   world?: WorldEcho; // dấu vết của người chơi khác
   arcs?: Record<string, { s: number; at: number; v?: string }>; // chuỗi sự kiện nhiều năm
   endTag?: string; // đánh dấu kết cục đặc biệt
+  killer?: string; // 4.1.0: kẻ đã giết (tên quái, tên người), để văn bia và lời viếng nhắc đích danh
+  wounds?: { age: number; amt: number; tag?: string; by?: string; text: string }[]; // 4.1.0: vết thương nặng gần đây, để biết chết vì thương thế là do ai
+  lastForced?: number; // 4.1.0: tuổi lúc có trận bắt buộc gần nhất (chặn đường, gặp người), để đo khoảng lặng
   element?: Element; // ngũ hành bản mệnh
   danDoc?: { y: number; n: number }; // số viên đan đã uống trong năm (đan độc)
   petKind?: string; // loại thú cưng (xem lib/game/pets.ts)

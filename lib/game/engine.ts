@@ -46,7 +46,7 @@ import { maChainYear } from './sectEvents2';
 import { ASCEND_MIN_AGE, anOf, destOf, keyAn, needTrial } from './nguHanhDai';
 import { ASCEND_GEAR } from './items2';
 import { usesVanDao } from './vanDao';
-import { DO_KIEP_REALM, FAMILY_RE, isOrphan, addCult, addLife, addPill, clamp, cosmosCause, fatal, reward, wealthTier, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
+import { DO_KIEP_REALM, FAMILY_RE, isOrphan, addCult, markDeath, addLife, addPill, clamp, cosmosCause, fatal, reward, wealthTier, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
 import type { Character, Choice, EffectCtx, Fx, FxKind, GameEvent, Meta, PendingEvent, Tone } from './types';
 import { applyGifts, giftOf, hasGift } from './gacha';
 import { afterChoice, beforeChoice, righteousPeril } from './fate';
@@ -492,21 +492,37 @@ function progress(c: Character, ctx: EffectCtx, talents: string[]): PendingEvent
   return null;
 }
 
-/** Chết vì sức khỏe cạn: nói rõ vết thương gần nhất đến từ đâu, để người chơi hiểu vì sao */
-function hurtCause(c: Character): string {
+/**
+ * Chết vì sức khỏe cạn: nói rõ vết thương nặng nhất trong 4 năm gần đây đến từ đâu, để người chơi hiểu vì sao.
+ * 4.1.0: lấy vết thương nặng nhất (không phải gần nhất); vết thương có nguồn (quái, địch thủ, oan gia, sát thủ) thì gắn kết cục theo nguồn.
+ */
+function hurtCause(c: Character): { text: string; tag?: string; by?: string } {
   const age = Math.floor(c.age);
-  const last = [...c.log].reverse().find((l) => l.tone === 'bad' && l.age >= age - 4 && !l.text.startsWith('⚠') && !/tẩu hỏa|thiên kiếp|qi deviation|tribulation/i.test(l.text));
-  if (!last) return tr('Thương thế quá nặng, bạn trút hơi thở cuối cùng.', "Your wounds are too severe. You breathe your last.");
+  const amtOf = (t: string) => Number((t.match(/-(\d+) (?:sức khỏe|Health)/) ?? [])[1] ?? 0);
+  const lines = c.log.filter((l) => l.tone === 'bad' && l.age >= age - 4 && !l.text.startsWith('⚠') && !/tẩu hỏa|thiên kiếp|qi deviation|tribulation/i.test(l.text));
+  // dòng nhật ký: nặng nhất, bằng nhau thì lấy dòng gần nhất
+  const last = lines.reduce<(typeof lines)[number] | null>((b, l) => (!b || amtOf(l.text) >= amtOf(b.text) ? l : b), null);
+  const w = (c.wounds ?? []).filter((x) => x.age >= age - 4).reduce<NonNullable<Character['wounds']>[number] | null>((b, x) => (!b || x.amt >= b.amt ? x : b), null);
+  if (w && (!last || w.amt >= amtOf(last.text)))
+    return {
+      text: tr(`Thương thế chồng chất không kịp hồi phục (nặng nhất, năm ${w.age} tuổi: ${w.text}). Bạn trút hơi thở cuối cùng năm ${age} tuổi.`, `Wound piled on wound with no time to heal (the worst, at age ${w.age}: ${w.text}). You breathe your last at age ${age}.`),
+      tag: w.tag,
+      by: w.by,
+    };
+  if (!last) return { text: tr('Thương thế quá nặng, bạn trút hơi thở cuối cùng.', "Your wounds are too severe. You breathe your last.") };
   const t = last.text.length > 90 ? last.text.slice(0, 88).trimEnd() + '…' : last.text;
-  return tr(`Thương thế chồng chất không kịp hồi phục (lần cuối, năm ${last.age} tuổi: ${t}). Bạn trút hơi thở cuối cùng.`, `Wound piled on wound with no time to heal (the last, at age ${last.age}: ${t}). You breathe your last.`);
+  return { text: tr(`Thương thế chồng chất không kịp hồi phục (nặng nhất, năm ${last.age} tuổi: ${t}). Bạn trút hơi thở cuối cùng.`, `Wound piled on wound with no time to heal (the worst, at age ${last.age}: ${t}). You breathe your last.`) };
 }
 
 function checkDeath(c: Character, ctx: EffectCtx) {
   if (c.dead) return;
   // được cứu khỏi chết (oan hồn, sư phụ...) thì bỏ nhãn cách chết đã gắn
   if (c.endTag && ['loi_phat', 'tam_ma_doat_xa', 'lac_khe_nut', 'tu_tran', 'tram_tien_dai'].includes(c.endTag)) c.endTag = undefined;
-  if (c.stats.sucKhoe <= 0) die(c, hurtCause(c), ctx);
-  else if (c.stats.tamMa >= 100) {
+  if (c.stats.sucKhoe <= 0) {
+    const h = hurtCause(c);
+    die(c, h.text, ctx);
+    markDeath(c, h.tag, h.by);
+  } else if (c.stats.tamMa >= 100) {
     // tâm ma đầy chưa chắc đã chết: 40% tẩu hỏa nhập ma, còn lại trọng thương, rớt tu vi rồi gượng lại được
     if (rnd() < 0.4) {
       if (c.cosmos) c.endTag = COSMOS_DEATH_TAG[c.cosmos];

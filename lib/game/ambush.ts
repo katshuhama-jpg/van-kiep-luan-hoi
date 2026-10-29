@@ -1,7 +1,7 @@
 import { DO_KIEP_REALM } from './helpers';
-import { MONSTERS, combatLevel, effLv, growth, killExp, killReward, monsterStats, type Fighter, type Monster } from './combat';
+import { MONSTERS, combatLevel, effLv, growth, killExp, killReward, monsterEndTag, monsterStats, type Fighter, type Monster } from './combat';
 import { ambushDrawWin, ambushFlee, ambushLose, ambushWin, chieuOf, marginOf } from './fightLines';
-import { addCult, fatal, money, stat } from './helpers';
+import { addCult, addWound, fatal, markDeath, money, stat } from './helpers';
 import type { Character, EffectCtx } from './types';
 import { sectSide } from './sect';
 import { tr } from '../i18n';
@@ -89,10 +89,17 @@ export function finishAmbush(c: Character, m: Monster, result: 'win' | 'lose' | 
   const drop = Math.round(c.linhThach * (result === 'lose' ? 0.2 + ctx.rnd() * 0.15 : 0.05 + ctx.rnd() * 0.1));
   const lost = drop > 0 ? tr(` Túi bị rách, rơi mất ${drop} linh thạch.`, ` Your pouch tears open and ${drop} spirit stones spill out.`) : '';
   money(c, -drop);
+  // 4.1.0: chết vì quái chặn đường có kết cục riêng: quái yếu hơn hoặc ngang sức là khinh địch, quái mạnh hơn là tử địa
+  const lv = effLv(c, m);
+  const tag = monsterEndTag(m, tier !== 'hon');
+  const by = `${m.name} Lv${lv}`;
+  const age = Math.floor(c.age);
   if (result === 'lose') {
-    const f = fatal(c, ctx, c.age < 16 ? 0 : 0.3 * danger, tr(`Bị ${m.name} chặn đường giữa nơi hoang vắng. Không ai tới cứu.`, `Waylaid by ${m.name} in the middle of nowhere. No one came to help.`));
+    const f = fatal(c, ctx, c.age < 16 ? 0 : 0.3 * danger, tr(`Bị ${m.name} cấp ${lv} chặn đường giữa nơi hoang vắng, năm ${age} tuổi. Không ai tới cứu.`, `Waylaid by ${m.name} (Lv${lv}) in the middle of nowhere at age ${age}. No one came to help.`));
+    markDeath(c, tag, by);
     if (c.dead) return [tr(`${m.name} chặn đường, bạn không địch nổi.${f ?? ''}`, `${m.name} blocks your path and you are no match for it.${f ?? ''}`)];
     stat(c, 'sucKhoe', -Math.round(35 * danger));
+    addWound(c, 35 * danger, tr(`bị ${m.name} cấp ${lv} chặn đường đánh gục`, `struck down by ${m.name} (Lv${lv}) on the road`), tag, by);
     c.cultivation = Math.max(0, Math.round(c.cultivation * 0.93));
     return [tr(`${ambushLose(m.name, ctx.rnd)} (-${Math.round(35 * danger)} sức khỏe, tu vi tổn hao).${lost}${f ?? ''}`, `${ambushLose(m.name, ctx.rnd)} (-${Math.round(35 * danger)} Health, cultivation lost).${lost}${f ?? ''}`)];
   }
@@ -107,12 +114,21 @@ export function finishAmbush(c: Character, m: Monster, result: 'win' | 'lose' | 
   // phải bỏ chạy: bị đánh sau lưng, rơi linh thạch, có thể trọng thương
   const hurt = Math.round((12 + pLoss * 30) * danger);
   stat(c, 'sucKhoe', -hurt);
+  addWound(c, hurt, tr(`bỏ chạy khỏi ${m.name} cấp ${lv}, bị đánh sau lưng`, `fled from ${m.name} (Lv${lv}), struck from behind`), tag, by);
   const notes = [tr(`${ambushFlee(m.name, ctx.rnd)} (-${hurt} sức khỏe).${lost}`, `${ambushFlee(m.name, ctx.rnd)} (-${hurt} Health).${lost}`)];
   if (ctx.rnd() < 0.25 * danger) {
-    const f = fatal(c, ctx, c.age < 16 ? 0 : 0.08 * danger, tr(`Bỏ chạy khỏi ${m.name}, vết thương sau lưng nhiễm độc. Bạn gục xuống giữa đường.`, `You fled from ${m.name}, but the wound on your back festered with poison. You collapsed by the roadside.`));
+    const f = fatal(c, ctx, c.age < 16 ? 0 : 0.08 * danger, tr(`Bỏ chạy khỏi ${m.name}, vết thương sau lưng nhiễm độc. Bạn gục xuống giữa đường, năm ${age} tuổi.`, `You fled from ${m.name}, but the wound on your back festered with poison. You collapsed by the roadside at age ${age}.`));
+    markDeath(c, tag, by);
     if (c.dead) return [notes[0] + (f ?? '')];
     stat(c, 'tamMa', 6);
     notes.push(tr(`Vết thương sau lưng mưng mủ mãi không lành, đêm nằm mơ thấy ${m.name} đuổi theo (+tâm ma).${f ?? ''}`, `The wound on your back festers and will not heal; at night you dream of ${m.name} giving chase (+heart demon).${f ?? ''}`));
   }
   return notes;
+}
+
+/** 4.1.0: đánh dấu một trận bắt buộc (chặn đường, gặp người). Trả về số năm game kể từ trận bắt buộc trước (null nếu là trận đầu của kiếp) */
+export function markForced(c: Character): number | null {
+  const gap = c.lastForced === undefined ? null : Math.round((c.age - c.lastForced) * 10) / 10;
+  c.lastForced = c.age;
+  return gap;
 }

@@ -15,6 +15,7 @@ import { track } from '@/lib/track';
 import { ContinueBar, LiveStrip, NewGraves, NewsToast, useLive } from '@/components/LiveWorld';
 import { HomeVanKiep } from '@/components/TangKiep';
 import { HomeCheckin } from '@/components/HomeCheckin';
+import { DailyNote } from '@/components/DailyNote';
 
 const link = { textDecoration: 'none', display: 'block' } as const;
 
@@ -41,6 +42,7 @@ export default function Home() {
       <LiveStrip d={live} />
       <HomeVanKiep user={user} ready={ready} />
       <HomeCheckin user={user} ready={ready} />
+      <DailyNote />
 
       <nav className="menu home-menu" aria-label={tr('Các tính năng', 'Features')}>
         <LoiDaiButton />

@@ -1,4 +1,4 @@
-import { DO_KIEP_REALM, fatal, hurt, money, riskMeter, stat } from './helpers';
+import { DO_KIEP_REALM, addWound, atAge, fatal, hurt, markDeath, money, riskMeter, stat } from './helpers';
 import type { Character, Choice, EffectCtx } from './types';
 import { tr } from '../i18n';
 
@@ -184,9 +184,14 @@ export function afterChoice(c: Character, choice: Choice, mark: number, ctx: Eff
  */
 const PERILS: ((c: Character, ctx: EffectCtx) => string)[] = [
   (c, ctx) => {
-    const f = fatal(c, ctx, 0.3, tr('Ma đạo nghe danh bạn đã lâu. Đêm ấy bảy tên sát thủ cùng ra tay, bạn chết khi đang ngồi thiền.', "The Demonic Path has long heard of you. That night seven assassins strike together, and you die while meditating."));
+    const by = tr('Thất Sát của Ma đạo', 'the Seven Killers of the Demonic Path');
+    const f = fatal(c, ctx, 0.3, tr('Ma đạo nghe danh bạn đã lâu. Đêm ấy bảy tên sát thủ Thất Sát cùng ra tay ám sát, bạn chết khi đang ngồi thiền.', "The Demonic Path has long heard of you. That night the Seven Killers strike together as assassins, and you die while meditating.") + atAge(c));
+    markDeath(c, 'dao_giang_ho', by);
     if (c.dead) return f ?? '';
-    return tr(`Ma đạo coi bạn là cái gai trong mắt, phái sát thủ đến trừ khử. Bạn đánh lui được nhưng thân mang trọng thương.${hurt(c, r(ctx, 25, 40), ctx)}${f ?? ''}`, `The Demonic Path sees you as a thorn in its side and sends assassins to remove you. You drive them off, but are gravely wounded.${hurt(c, r(ctx, 25, 40), ctx)}${f ?? ''}`);
+    const dmg = r(ctx, 25, 40);
+    // câu bên dưới gọi hurt trong cả hai thứ tiếng (giữ như cũ), nên thương thế thật là gấp đôi
+    addWound(c, dmg * 2, tr('bị sát thủ Ma đạo ám sát', 'attacked by Demonic Path assassins'), 'dao_giang_ho', by);
+    return tr(`Ma đạo coi bạn là cái gai trong mắt, phái sát thủ đến trừ khử. Bạn đánh lui được nhưng thân mang trọng thương.${hurt(c, dmg, ctx)}${f ?? ''}`, `The Demonic Path sees you as a thorn in its side and sends assassins to remove you. You drive them off, but are gravely wounded.${hurt(c, dmg, ctx)}${f ?? ''}`);
   },
   (c, ctx) => {
     const f = fatal(c, ctx, 0.2, tr('Bạn ra tay cứu một cô gái giữa phố, không ngờ sau lưng ác bá là cả một bang phái. Bạn bị vây đánh đến chết.', "You step in to save a girl in the street, never guessing the bully has a whole gang behind him. They surround you and beat you to death."));

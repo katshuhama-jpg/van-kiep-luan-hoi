@@ -1,5 +1,5 @@
 import { DAO_LU, ITEMS, PATHS } from './data';
-import { addCult, addLife, addPill, dao, fatal, giveItem, hasItem, hurt, isOrphan, luck, money, pick, reward, sample, stat, usePill } from './helpers';
+import { addCult, addLife, addPill, addWound, atAge, dao, fatal, giveItem, hasItem, hurt, isOrphan, luck, markDeath, money, pick, reward, sample, stat, usePill } from './helpers';
 import type { Character, Choice, GameEvent } from './types';
 import { EVENTS2 } from './events2';
 import { EVENTS3 } from './events3';
@@ -1464,8 +1464,11 @@ export const EVENTS: GameEvent[] = [
             stat(c, 'tamCanh', 6);
             return tr('Một trận long trời lở đất. Bạn thắng, ân oán chấm dứt.', "A battle that shakes heaven and earth. You win, and the feud is over.");
           }
-          const f = fatal(c, ctx, 0.3, tr(`Bạn chết dưới tay ${c.enemy}. Nợ cũ, cuối cùng cũng trả bằng mạng.`, `You die at the hands of ${c.enemy}. The old debt is finally paid in blood.`));
+          const foe = c.enemy ?? '';
+          const f = fatal(c, ctx, 0.3, tr(`Bạn chết dưới tay oan gia ${foe}. Nợ cũ, cuối cùng cũng trả bằng mạng.`, `You die at the hands of your old enemy ${foe}. The old debt is finally paid in blood.`) + atAge(c));
+          markDeath(c, 'dao_giang_ho', foe);
           if (c.dead) return tr('Một trận long trời lở đất...', "A battle that shakes heaven and earth...") + f;
+          addWound(c, 45, tr(`thua oan gia ${foe}, bỏ động phủ chạy trốn`, `lost to your old enemy ${foe} and fled your cave`), 'dao_giang_ho', foe);
           return tr('Bạn thua, phải bỏ động phủ chạy trốn.', "You lose and must abandon your cave dwelling and flee.") + (f ?? '') + hurt(c, 45, ctx);
         },
       },

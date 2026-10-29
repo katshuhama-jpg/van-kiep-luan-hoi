@@ -39,7 +39,7 @@ import { QUY_NHAT_PHUC, newLore, quyNhatDone } from '@/lib/game/lore';
 import { HON_PILLS, QUEST_HON, addHon, pastDanTu, honPillCost, honPillUsed, honDay, type HonPillId, CAU_HON_AT, HON_COST, HON_MAX, KS_NAME, applyHon, honActive, honNow, ksOf, ksOneBig, manhBa, nextKiepTich } from '@/lib/game/luanHoi';
 import { serverNow } from '@/lib/serverTime';
 import LoiDaiButton from '@/components/LoiDaiButton';
-import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, pickAmbush } from '@/lib/game/ambush';
+import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, markForced, pickAmbush } from '@/lib/game/ambush';
 import { within } from '@/lib/supabase';
 import { endingFirst, titleKey, addMemorial, addPendingGrave, addRetryGrave, worthGhiDanh, displayName, fetchWorld, listMail, loadAll, saveLocal, saveMeta, saveRemote, sendMail, unreadMail, weeklyTitles, type Mail, type SaveState } from '@/lib/storage';
 import { CHECKIN, checkinClaimed, checkinDay, checkinItem, checkinLabel, checkinMoney, updateCareer, bumpStreak, evalQuests, newbieGoal, omenIs, qmark, questName, vnDay } from '@/lib/game/hook';
@@ -508,6 +508,10 @@ export default function PlayPage() {
         return;
       }
       const notes = finishDuel(c, b.foe, result, 1 - b.pHp / b.pMax, ctx);
+      // 4.1.0: đo trận giao đấu và khoảng cách giữa hai trận bắt buộc
+      const gap = markForced(c);
+      track('duel', { res: result, kind: b.foe.kind, npc: !!b.foe.npc, rel: b.foe.rel, realm: c.realm, age: Math.floor(c.age), hp: Math.round(c.stats.sucKhoe), dead: c.dead, gap });
+      if (gap !== null) track('forced_gap', { src: 'duel', gap, realm: c.realm });
       notes.forEach((n, i) => ctx.log(n, c.dead ? 'big' : i === 0 ? (result === 'win' ? 'good' : result === 'lose' ? 'bad' : 'normal') : 'good'));
       if (result === 'win' && b.foe.kind !== 'kiep_truoc') qmark(c, 'duelWin');
       // thư giang hồ cho chủ nhân của bóng nhân vật vừa gặp
@@ -744,6 +748,10 @@ export default function PlayPage() {
       const ctx = makeCtx(c, out);
       const notes = finishAmbush(c, b.m, result, 1 - b.pHp / b.pMax, 1 - b.mHp / b.mMax, ctx, b.ambush!.kind);
       if (result === 'win') qmark(c, 'ambushWin');
+      // 4.1.0: đo trận chặn đường và khoảng cách giữa hai trận bắt buộc
+      const gap = markForced(c);
+      track('ambush', { res: result, tier: b.ambush!.kind, mon: b.m.id, lv: b.lv, realm: c.realm, age: Math.floor(c.age), hp: Math.round(c.stats.sucKhoe), dead: c.dead, gap });
+      if (gap !== null) track('forced_gap', { src: 'ambush', gap, realm: c.realm });
       notes.forEach((n, i) => ctx.log(n, c.dead ? 'big' : result !== 'win' ? 'bad' : i === 0 ? 'good' : /^(Thắng nhưng|You win, but)/.test(n) ? 'bad' : 'good'));
       b.phase = 'rest';
       b.rest = 3;
@@ -1542,6 +1550,8 @@ export default function PlayPage() {
         ascended: c.ascended,
         endTag: c.endTag,
         ending: endingOf(c).id,
+        realm: c.realm,
+        killer: c.killer ?? null,
         cosmos: c.cosmos ?? null,
         kiepSo: c.kiepSo ?? 0,
       },
@@ -1720,7 +1730,7 @@ export default function PlayPage() {
   setScreen(c.dead ? 'chet' : pending ? 'su_kien' : sheet ? `bang_${sheet}` : 'choi');
   if (c.dead && deathSeen.current !== c.lifeNo) {
     deathSeen.current = c.lifeNo;
-    track('death', { lifeNo: c.lifeNo, realm: c.realm, age: Math.floor(c.age), path: c.path, cosmos: c.cosmos ?? null, min: lifeT0.current ? Math.round((Date.now() - lifeT0.current) / 6000) / 10 : null });
+    track('death', { lifeNo: c.lifeNo, realm: c.realm, age: Math.floor(c.age), path: c.path, cosmos: c.cosmos ?? null, endTag: c.endTag ?? null, ending: endingOf(c).id, killer: c.killer ?? null, min: lifeT0.current ? Math.round((Date.now() - lifeT0.current) / 6000) / 10 : null });
   }
   const battleNow = duelRef.current ?? ambushRef.current ?? (c.focus === 'tru_yeu' && c.age >= 10 && battleRef.current?.m.id === c.huntTarget ? battleRef.current : null);
   const paused = !running || !!pending || sheet !== null || ciOpen || c.dead;

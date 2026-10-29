@@ -6,7 +6,7 @@ import { ITEMS, REALMS, fxText, realmLabel } from './data';
 import { demoChar } from './demo';
 import { ELEMENT_IDS, elemMul, elemRel, elementOf, type ElemRel } from './nguhanh';
 import { genName } from './engine';
-import { addCult, fatal, giveItem, money, reward, stat } from './helpers';
+import { addCult, addWound, atAge, fatal, giveItem, markDeath, money, reward, stat } from './helpers';
 import { PROVOKE_MUL, SOCIAL } from './social';
 import { daiBiDue, promote, sectSide } from './sect';
 import type { Character, EffectCtx, RivalChar, Slot, Vendetta } from './types';
@@ -395,8 +395,19 @@ export function addVendetta(c: Character, f: DuelFoe, items: string[], why: stri
   c.vendettas = [...rest, { player: f.rival.player, name: f.rival.name, items: [...(old?.items ?? []), ...items].slice(-4), why }].slice(-3);
 }
 
-/** Kết thúc trận: thưởng phạt theo loại cuộc gặp */
+/** Kết thúc trận: thưởng phạt theo loại cuộc gặp. 4.1.0: chết dưới tay người thì gắn kết cục "Chết Dưới Đao Giang Hồ" và ghi tên kẻ giết */
 export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'draw', pLoss: number, ctx: EffectCtx): string[] {
+  const hp0 = c.stats.sucKhoe;
+  const out = finishDuel0(c, f, result, pLoss, ctx);
+  if (f.kind === 'kiep_truoc') return out;
+  const who = f.rival.player ? `${f.rival.name} (@${f.rival.player})` : f.rival.name;
+  markDeath(c, 'dao_giang_ho', who);
+  if (!c.dead && result !== 'win' && hp0 - c.stats.sucKhoe >= 10)
+    addWound(c, hp0 - c.stats.sucKhoe, tr(`thua ${who} khi giao đấu`, `lost a duel to ${who}`), 'dao_giang_ho', who);
+  return out;
+}
+
+function finishDuel0(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'draw', pLoss: number, ctx: EffectCtx): string[] {
   const r = f.rival;
   const who = r.player ? `${r.name} (@${r.player})` : r.name;
   const harder = (f.rel === 'manh' ? 1.6 : f.rel === 'yeu' ? 0.5 : 1) * (f.provoke ? PROVOKE_MUL : 1);
@@ -451,7 +462,7 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
       out.push(dongMonLose(who, !!f.daiBi, ctx.rnd));
       if (ta) {
         // ma môn: đồng môn cũng chẳng nương tay
-        const fl = fatal(c, ctx, 0.08, tr(`Đồng môn ${who} ra tay tàn độc giữa hang tối. Ở ${c.sect}, kẻ yếu không có quyền sống.`, `Fellow disciple ${who} strikes viciously in the dark cave. In ${nameOf(c.sect)}, the weak have no right to live.`));
+        const fl = fatal(c, ctx, 0.08, tr(`Đồng môn ${who} ra tay tàn độc giữa hang tối. Ở ${c.sect}, kẻ yếu không có quyền sống.`, `Fellow disciple ${who} strikes viciously in the dark cave. In ${nameOf(c.sect)}, the weak have no right to live.`) + atAge(c));
         if (c.dead) return [fl ?? ''];
         const ids: string[] = [];
         const taken = ctx.rnd() < 0.3 ? robGear(c, ctx, 1, ids) : [];
@@ -531,7 +542,7 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
         c,
         ctx,
         f.betray ? 0.45 : 0.25,
-        f.betray ? tr(`Bạn tin nhầm ${who}. Chén trà còn chưa nguội, người đã thành thi thể.`, `You trusted ${who} wrongly. Before the tea had cooled, you were a corpse.`) : dichThuDeath(who, ctx.rnd),
+        (f.betray ? tr(`Bạn tin nhầm ${who}. Chén trà còn chưa nguội, người đã thành thi thể.`, `You trusted ${who} wrongly. Before the tea had cooled, you were a corpse.`) : dichThuDeath(who, ctx.rnd)) + atAge(c),
       );
       if (c.dead) {
         addVendetta(c, f, [], f.betray ? tr(`${r.name} trở mặt giết bạn bên bàn trà`, `${r.name} turned on you and killed you at the tea table`) : tr(`${r.name} đã giết bạn`, `${r.name} killed you`));
