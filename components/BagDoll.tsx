@@ -13,6 +13,13 @@ import { tr } from '@/lib/i18n';
 const RARE_TXT = [tr('Thường', "Common"), tr('Tốt', "Fine"), tr('Hiếm', "Rare"), tr('Cực phẩm', "Supreme")];
 const SLOT_NAME: Record<Slot, string> = { ao: tr('Áo', "Robe"), vu_khi: tr('Vũ khí', "Weapon"), phu_kien: tr('Phụ kiện', "Accessory") };
 type Kind = 'all' | Slot | 'dan';
+const GROUPS: [Kind, string][] = [
+  ['vu_khi', tr('Vũ khí', 'Weapons')],
+  ['ao', tr('Áo', 'Robes')],
+  ['phu_kien', tr('Phụ kiện', 'Accessories')],
+  ['dan', tr('Đan dược', 'Pills')],
+];
+
 const KINDS: [Kind, string][] = [
   ['all', tr('Tất cả', "All")],
   ['vu_khi', tr('Vũ khí', "Weapon")],
@@ -54,6 +61,27 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
   const g = gearFx(c.equipped);
   const lv = forgeLevel(c);
   const isOn = (id: string) => Object.values(c.equipped).includes(id);
+  // đồ thừa: không mặc, không phải thần binh, phẩm không hơn món đang mặc cùng ô
+  // món kém hơn món đang mặc: phẩm thấp hơn, hoặc cùng phẩm mà giá thấp hơn hay bằng
+  const isSpare = (it: Item) => {
+    const onId = c.equipped[it.slot];
+    const on = onId ? ITEMS.find((i) => i.id === onId) : null;
+    if (!on || !canSmelt(c, it.id)) return false;
+    const r = it.rare ?? 0;
+    const ro = on.rare ?? 0;
+    return r < ro || (r === ro && it.price <= on.price);
+  };
+  const spares = owned.filter(isSpare);
+  const [sure, setSure] = useState(false);
+  useEffect(() => setSure(false), [spares.length]);
+  const sellSpares = () => {
+    if (!onSell) return;
+    if (!sure) return setSure(true);
+    spares.forEach((it) => onSell(it.id));
+    setSure(false);
+  };
+  // sắp xếp: đang mặc trước, rồi phẩm cao trước, đồ thừa xuống cuối
+  const order = (a: Item, b: Item) => Number(isOn(b.id)) - Number(isOn(a.id)) || Number(isSpare(a)) - Number(isSpare(b)) || (b.rare ?? 0) - (a.rare ?? 0);
   const selItem = sel && 'item' in sel ? ITEMS.find((i) => i.id === sel.item) : null;
   const selPill = sel && 'pill' in sel ? PILLS.find((p) => p.id === sel.pill) : null;
   // món đang chọn bị bán hay phân giải thì bỏ chọn
@@ -108,23 +136,44 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
           </button>
         ))}
       </div>
-      <div className="inv-grid">
-        {shownItems.map((it) => (
-          <button key={it.id} type="button" className={`inv-cell r${it.rare ?? 0} ${selItem?.id === it.id ? 'sel' : ''}`} onClick={() => setSel({ item: it.id })} aria-label={it.name}>
-            <ItemIcon item={it} />
-            {isOn(it.id) && <i className="inv-on">{tr("Mặc", "Wear")}</i>}
-          </button>
-        ))}
-        {shownPills.map((p) => (
-          <button key={p.id} type="button" className={`inv-cell pill ${selPill?.id === p.id ? 'sel' : ''}`} onClick={() => setSel({ pill: p.id })} aria-label={p.name}>
-            <ItemIcon pill={p.id} />
-            <i className="inv-n">{c.pills[p.id]}</i>
-          </button>
-        ))}
-        {Array.from({ length: Math.max(0, 10 - shownItems.length - shownPills.length) }, (_, i) => (
-          <span key={`e${i}`} className="inv-cell empty" aria-hidden="true" />
-        ))}
-      </div>
+      {onSell && spares.length > 0 && kind !== 'dan' && (
+        <button className={`btn inv-clean ${sure ? 'btn-red' : ''}`} onClick={sellSpares}>
+          {sure
+            ? tr(`Chắc chưa? Bấm lần nữa để bán ${spares.length} món`, `Sure? Tap again to sell ${spares.length} items`)
+            : tr(`Bán ${spares.length} món thừa · +${spares.reduce((x, it) => x + sellValue(it.id), 0)} linh thạch`, `Sell ${spares.length} spare items · +${spares.reduce((x, it) => x + sellValue(it.id), 0)} spirit stones`)}
+        </button>
+      )}
+      {(kind === 'all' ? GROUPS : [[kind, '']] as [Kind, string][]).map(([g, label]) => {
+        const items = kind === 'dan' || g === 'dan' ? [] : shownItems.filter((i) => i.slot === g).sort(order);
+        const ps = g === 'dan' || kind === 'dan' ? shownPills : [];
+        if (kind === 'all' && !items.length && !ps.length) return null;
+        const n = items.length + ps.length;
+        return (
+          <div key={g}>
+            {kind === 'all' && (
+              <h4 className="inv-group">
+                {label} <small>{n}</small>
+              </h4>
+            )}
+            <div className="inv-grid">
+              {items.map((it) => (
+                <button key={it.id} type="button" className={`inv-cell r${it.rare ?? 0} ${selItem?.id === it.id ? 'sel' : ''} ${isSpare(it) ? 'spare' : ''}`} onClick={() => setSel({ item: it.id })} aria-label={it.name}>
+                  <ItemIcon item={it} />
+                  {isOn(it.id) ? <i className="inv-on">{tr('Mặc', 'Wear')}</i> : isSpare(it) ? <i className="inv-spare">{tr('Thừa', 'Spare')}</i> : null}
+                </button>
+              ))}
+              {ps.map((p) => (
+                <button key={p.id} type="button" className={`inv-cell pill ${selPill?.id === p.id ? 'sel' : ''}`} onClick={() => setSel({ pill: p.id })} aria-label={p.name}>
+                  <ItemIcon pill={p.id} />
+                  <i className="inv-n">{c.pills[p.id]}</i>
+                </button>
+              ))}
+              {kind !== 'all' && Array.from({ length: Math.max(0, 5 - n) }, (_, i) => <span key={`e${i}`} className="inv-cell empty" aria-hidden="true" />)}
+            </div>
+          </div>
+        );
+      })}
+      {kind === 'all' && !owned.length && !pills.length && <p className="note">{tr('Túi trống.', 'Your bag is empty.')}</p>}
 
       {selItem && (
         <section className="inv-detail">

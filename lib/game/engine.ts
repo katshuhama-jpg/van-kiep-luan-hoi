@@ -615,6 +615,15 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
   const age = Math.floor(c.age);
   const talents = opts.talents ?? [];
   if (c.breakDelay > 0) c.breakDelay -= 1;
+  // đạo tâm ngược con đường: chỉ ghi một dòng gợi ý vào gia phả (kết cục Phá Giới Tăng, Ma Phật, Xá Lợi Đen / Ma Hiệp, Huyết Liên, Song Tâm)
+  if (!c.cosmos && c.path === 'phat' && c.daoTam <= -40 && !c.qf?.phaGioiHint) {
+    c.qf = { ...(c.qf ?? {}), phaGioiHint: 1 };
+    ctx.log(tr('Chuỗi hạt trên cổ bạn nứt một hạt. Phật tâm đã lung lay, Sổ Sinh Tử lật sang một trang khác.', 'A bead on your prayer string cracks. Your Buddha heart wavers, and the Book of Life and Death turns to a different page.'), 'bad');
+  }
+  if (!c.cosmos && c.path === 'ma' && c.daoTam >= 40 && !c.qf?.maThienHint) {
+    c.qf = { ...(c.qf ?? {}), maThienHint: 1 };
+    ctx.log(tr('Ma công trong người run rẩy, như sợ chính tấm lòng của bạn. Sổ Sinh Tử lật sang một trang khác.', 'The demonic arts within you tremble, as if afraid of your own heart. The Book of Life and Death turns to a different page.'), 'good');
+  }
   // ấn Mộc trên vũ khí: mỗi năm hồi thêm sức khỏe
   const moc = sealLv(c, 'moc');
   if (moc) stat(c, 'sucKhoe', moc);

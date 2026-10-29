@@ -293,6 +293,7 @@ export interface Meta {
   hon?: { v: number; at: number }; // Hồn lực lúc đầu thai gần nhất (at: giờ máy chủ, ms)
   tinhTam?: number; // tĩnh tâm từ canh Mạnh Bà: mỗi bậc giảm 1 Kiếp Số hiệu lực
   noDrink?: number; // số lần liên tiếp không uống canh
+  xaLoi?: boolean; // kiếp trước kết cục Xá Lợi Đen: kiếp sau tâm ma +15
   ttDecay?: number; // đếm để tĩnh tâm phai dần
   kiepTich?: number; // kiếp tích mang sang kiếp sau
 }

@@ -124,6 +124,9 @@ Vòng chơi một kiếp:
   - Sự kiện đo: `first_choice` (lifeNo, ms từ lúc đầu thai).
 - **Cáo thị dạng tóm tắt (4.0.0):** `Release` có thêm `asked` (ý người chơi yêu cầu: `who`, `short`, `text`) và `more` (điểm mới khác). Cáo thị mở ra là bảng tóm tắt (ý người chơi lên đầu), nút "Chơi tiếp" và "Xem chi tiết"; thanh nút ghim đáy. Trang `/cap-nhat` hiện `asked` thành nhóm "Theo góp ý của đạo hữu".
 
+- **Kết cục đạo tâm ngược con đường (29/10, theo Tyler):** Phật tu làm ác: Ma Phật (≤ -70, Hóa Thần, hết thọ), Xá Lợi Đen (≤ -50, Kim Đan, hết thọ; kiếp sau tâm ma +15, nghiệp lực +20 qua `meta.xaLoi`), Phá Giới Tăng (≤ -40, chết kiểu khác). Ma tu làm thiện: Huyết Liên Tịnh Độ (≥ 70, Nguyên Anh, hết thọ), Song Tâm Phản Phệ (≥ 40, chết vì tẩu hỏa/tâm ma), Ma Hiệp (≥ 40, chết kiểu khác). Chỉ ở phàm giới. Lần đầu vượt ngưỡng ±40 có một dòng gợi ý trong gia phả (`qf.phaGioiHint`, `qf.maThienHint`), không có sự kiện riêng.
+- **Túi đồ (29/10):** "Tất cả" chia nhóm Vũ khí, Áo, Phụ kiện, Đan dược; đang mặc lên đầu; đồ thừa (kém món đang mặc cùng ô: phẩm thấp hơn, hoặc cùng phẩm mà giá không cao hơn) mờ đi, nhãn "Thừa", xuống cuối; nút "Bán N món thừa" bấm hai lần để chắc.
+
 ## 4b2. Ngũ Hành Vấn Tâm Đài và điều kiện phi thăng
 
 - Phi thăng cần đủ **Độ Kiếp hậu kỳ, tu vi đầy và từ 120 tuổi** (`ASCEND_MIN_AGE` trong `lib/game/nguHanhDai.ts`). Chưa đủ tuổi thì sự kiện phi thăng không hiện, tu vi đứng yên, cứ 10 năm có dòng nhắc. Ở dock có dải **Ngũ Hành Đài** (từ Hóa Thần): ấn, phù, số năm còn phải chờ; chạm vào mở luật kèm hướng dẫn nên làm gì trong lúc chờ.

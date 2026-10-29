@@ -1263,7 +1263,11 @@ export default function PlayPage() {
       c.log.push({ age: 0, tone: 'good', text: tr(`Quà điểm danh: ${[cn.money ? tr(`+${cn.money} linh thạch`, `+${cn.money} spirit stones`) : '', cn.item ? tr('ngọc bội hộ thân', "a protective jade pendant") : ''].filter(Boolean).join(', ')}.`, `Check-in gift: ${[cn.money ? tr(`+${cn.money} linh thạch`, `+${cn.money} spirit stones`) : '', cn.item ? tr('ngọc bội hộ thân', "a protective jade pendant") : ''].filter(Boolean).join(', ')}.`) });
     }
     // rương kiếp trước, lời tiên tri, thần binh chỉ dùng cho một kiếp
-    const m3: Meta = { ...m2, talents: [], stash: null, prophecy: null, legend: null, checkinNext: undefined, hon: lh ? { v: Math.max(0, honV - HON_COST), at: now } : m2.hon };
+    if (m2.xaLoi) {
+      c.stats.tamMa = Math.min(100, c.stats.tamMa + 15);
+      c.log.push({ age: 0, tone: 'bad', text: tr('Bạn sinh ra trong tay nắm chặt một viên xá lợi đen. Nghiệp chướng kiếp trước còn đó: tâm ma +15.', 'You are born clutching a black relic. Last life\'s karma lingers: heart demon +15.') });
+    }
+    const m3: Meta = { ...m2, xaLoi: false, talents: [], stash: null, prophecy: null, legend: null, checkinNext: undefined, hon: lh ? { v: Math.max(0, honV - HON_COST), at: now } : m2.hon };
     // dấu vết người chơi khác: tải nền, không chặn việc đầu thai
     fetchWorld(user)
       .then((w) => {
@@ -1577,6 +1581,11 @@ export default function PlayPage() {
     // thành tựu dài hạn
     // Luân Hồi Đạo: kiếp tích cho người kẹt Độ Kiếp; đánh lui Câu hồn sứ giả thì xóa nợ không uống canh
     m.kiepTich = nextKiepTich(m, c);
+    // Xá Lợi Đen: nghiệp chướng theo sang kiếp sau
+    if (ending.id === 'xa_loi_den') {
+      m.xaLoi = true;
+      m.nghiep += 20;
+    }
     if (c.qf?.cauHonWin) m.noDrink = 0;
     const car = updateCareer(m, c);
     m.career = car.career;
