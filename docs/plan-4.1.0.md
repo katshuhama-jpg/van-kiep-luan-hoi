@@ -8,7 +8,7 @@ Mỗi lần chạy: làm khối **đầu tiên còn ô trống**, đánh dấu [
 - [x] Q1: gắn `endTag` cho chết vì quái chặn đường (`khinh_dich` khi quái yếu hơn hoặc ngang, `tu_dia` khi quái mạnh hơn; ambush.ts:92), thua giao đấu (`dao_giang_ho`; duel.ts:530, fightLines.ts:86-93), oan gia thắng (events.ts:1467), sát thủ "cây cao đón gió" (fate.ts:187). `hurtCause` lấy vết thương nặng nhất trong 4 năm gần nhất (engine.ts:496) và gắn tag theo nguồn. Câu nguyên nhân nêu đích danh kẻ giết và tuổi.
 - [x] Đo đạc: track `ambush` và `duel` (kết quả, cảnh giới, tuổi), `forced_gap` (năm game kể từ trận bắt buộc trước); lưu `endTag` và `realm` vào `look` của mộ (đã có endTag, kiểm lại).
 - [x] Dòng "Hôm nay Thiên Đạo đã sửa: ..." ở trang đầu: file `lib/dailyNotes.ts` (mảng `{day, vi, en}`), component nhỏ hiện ghi chú của hôm nay hoặc hôm qua (tối đa 2 ngày), không bật bảng cập nhật. Mỗi lần chạy sau thêm 1 dòng.
-- Xong:
+- Xong: 30/10/2026 3361e0c
 - Ghi chú: Mô phỏng 1.000 kiếp (`npx tsx scripts/sim-ket-cuc.ts 1000`): `bat_dac` 23,1% xuống khoảng 10%, có tên kẻ giết 37%. Chưa tới mốc dưới 8%: phần còn lại là chết vì sự kiện (bia đỡ đạn, sét, phản môn, nghẹn bánh...), để Q2 xử lý. `dao_giang_ho` thành kết cục đầu bảng (khoảng 22%) vì quái chặn đường dạng người và thua địch thủ đều gắn vào đây, cần xem số thật sau vài ngày. Chết vì thương thế giờ lấy vết thương nặng nhất, nên một phần cái chết trước kia rơi vào Chết Đói (22% trong mô phỏng) chuyển sang kết cục theo kẻ gây thương. Sự kiện đo mới: `ambush`, `duel`, `forced_gap`; `death` có thêm `endTag`, `ending`, `killer`; mộ lưu `look.realm`, `look.killer`.
 
 ## Ngày 2 - Hết chết oan theo cảnh giới, nhịp kẻ địch
