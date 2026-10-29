@@ -6,6 +6,7 @@ import type { Character, Grave, Meta, PendingEvent, WorldEcho, RivalChar } from 
 import { REALMS, realmLabel } from './game/data';
 import { supabase } from './supabase';
 import { tr } from './i18n';
+import { nameOf, pinyinize } from './hanviet';
 
 export interface SaveState {
   v: 1;
@@ -76,14 +77,23 @@ export async function loadAll(user: Player | null): Promise<{ meta: Meta; save: 
       if (rawLocal && !local) writeLocal(userKey(user), null);
       if (d.state && !remote && sb) sb.rpc('vkl_save_game', { p_token: user.token, p_state: null }).then(() => {}, () => {});
       const save = local && (local.t ?? 0) > (remote?.t ?? 0) ? local : remote;
-      return { meta, save };
+      return { meta, save: fixName(save) };
     }
     if (!error && !data) dropSession();
   }
   const meta = { ...emptyMeta(), ...(readLocal<Meta>(K.meta) ?? {}) };
   const raw = readLocal<SaveState>(K.save);
   if (raw && !live(raw, meta)) writeLocal(K.save, null);
-  return { meta, save: live(raw, meta) ? raw : null };
+  return { meta, save: live(raw, meta) ? fixName(raw) : null };
+}
+
+/** Tên nhân vật theo ngôn ngữ đang dùng: kiếp sinh ra lúc dùng tiếng Anh vẫn hiện tên Hán Việt khi về tiếng Việt (trừ khi người chơi tự đặt tên khác) */
+function fixName(s: SaveState | null): SaveState | null {
+  const c = s?.char;
+  if (!c?.nameVi) return s;
+  if (c.name !== c.nameVi && c.name !== pinyinize(c.nameVi)) return s;
+  c.name = nameOf(c.nameVi);
+  return s;
 }
 
 /** Bản lưu còn dùng được: kiếp trong bản lưu chưa được ghi là đã xong (kiếp đang chơi luôn là meta.lives + 1) */
@@ -114,7 +124,9 @@ export async function saveRemote(user: Player | null, state: SaveState | null) {
 export async function addMemorial(user: Player | null, m: Omit<Memorial, 'id' | 'incense' | 'created_at'> & { realm_no?: number; layer_no?: number; wealth?: number; look?: Record<string, unknown> }) {
   const sb = supabase();
   if (user && sb) {
-    await sb.rpc('vkl_add_life', { p_token: user.token, p_life: m });
+    const { error } = await sb.rpc('vkl_add_life', { p_token: user.token, p_life: m });
+    if (error) throw error;
+    flushRetry(user).catch(() => {});
     return;
   }
   const local = readLocal<Memorial[]>(K.lives) ?? [];
@@ -139,6 +151,18 @@ export function addPendingGrave(g: GraveIn) {
   const ls = readLocal<GraveIn[]>(K.pending) ?? [];
   const score = (x: GraveIn) => (x.ascended ? 1e6 : 0) + (x.realm_no ?? 0) * 1e4 + x.age;
   writeLocal(K.pending, [g, ...ls].sort((a, b) => score(b) - score(a)).slice(0, 5));
+}
+/** Bia khắc lỗi vì mạng (đã đăng nhập): giữ lại, lần lập bia sau khắc bù */
+const RETRY = 'vkl.retryGraves';
+export function addRetryGrave(g: GraveIn) {
+  writeLocal(RETRY, [...(readLocal<GraveIn[]>(RETRY) ?? []), g].slice(-5));
+}
+async function flushRetry(user: Player) {
+  const ls = readLocal<GraveIn[]>(RETRY);
+  if (!ls?.length) return;
+  writeLocal(RETRY, null);
+  const sb = supabase();
+  for (const g of ls) await sb?.rpc('vkl_add_life', { p_token: user.token, p_life: g }).then(({ error }) => error && addRetryGrave(g), () => addRetryGrave(g));
 }
 export function pendingGraves(): GraveIn[] {
   return readLocal<GraveIn[]>(K.pending) ?? [];

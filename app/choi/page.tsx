@@ -22,7 +22,7 @@ import { lang, setLang } from '@/lib/i18n';
 import { nameOf } from '@/lib/hanviet';
 import { charLang, convertChar, convertMeta, loadDict, looksVi } from '@/lib/retrans';
 import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, itemPrice, pillPrice, RARE_STOCK_REALM, realmLabel, realmName, soldOut, yearSpeed, youthPace } from '@/lib/game/data';
-import { genName, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick, chungDao, openingEvent } from '@/lib/game/engine';
+import { genNameVi, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick, chungDao, openingEvent } from '@/lib/game/engine';
 import { addCult, addPill, dao, fatal, fmt, giveItem, money, reward, stat, wealthTier, DO_KIEP_REALM } from '@/lib/game/helpers';
 import type { Character, Element, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
 import DuelWarning from '@/components/Duel';
@@ -40,7 +40,8 @@ import { HON_PILLS, QUEST_HON, addHon, pastDanTu, honPillCost, honPillUsed, honD
 import { serverNow } from '@/lib/serverTime';
 import LoiDaiButton from '@/components/LoiDaiButton';
 import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, pickAmbush } from '@/lib/game/ambush';
-import { endingFirst, titleKey, addMemorial, addPendingGrave, worthGhiDanh, displayName, fetchWorld, listMail, loadAll, saveLocal, saveMeta, saveRemote, sendMail, unreadMail, weeklyTitles, type Mail, type SaveState } from '@/lib/storage';
+import { within } from '@/lib/supabase';
+import { endingFirst, titleKey, addMemorial, addPendingGrave, addRetryGrave, worthGhiDanh, displayName, fetchWorld, listMail, loadAll, saveLocal, saveMeta, saveRemote, sendMail, unreadMail, weeklyTitles, type Mail, type SaveState } from '@/lib/storage';
 import { CHECKIN, checkinClaimed, checkinDay, updateCareer, bumpStreak, evalQuests, newbieGoal, omenIs, qmark, questName, vnDay } from '@/lib/game/hook';
 import { HookSheet, TitleBadge } from '@/components/Hook';
 import { omenToday } from '@/lib/game/hook';
@@ -1232,7 +1233,10 @@ export default function PlayPage() {
     const cost = talents.filter((id) => !tal(id)?.ta).reduce((s, id) => s + (tal(id)?.cost ?? 0), 0) + gachaSpent;
     const costTa = talents.filter((id) => tal(id)?.ta).reduce((s, id) => s + (tal(id)?.cost ?? 0), 0);
     const m2: Meta = { ...mb, phucDuyen: Math.max(0, meta.phucDuyen - cost), nghiep: Math.max(0, meta.nghiep - costTa), talents };
-    if (base && !base.name.trim()) base = { ...base, name: genName(base.gender) };
+    if (base && !base.name.trim()) {
+      const nv = genNameVi(base.gender);
+      base = { ...base, name: nameOf(nv), nameVi: nv };
+    }
     const c = newCharacter(m2, gifts, base ?? undefined);
     c.lang = lang();
     talentsRef.current = talents;
@@ -1476,10 +1480,10 @@ export default function PlayPage() {
     // truyền công: gửi phúc duyên cho một người chơi khác (ưu tiên huynh đệ kết nghĩa)
     if (c.truyenCong && user) {
       const bro = SOCIAL.cur.sworn[0] ?? null;
-      await truyenCong(user, bro, c.name).catch(() => {});
+      await within(truyenCong(user, bro, c.name), 8000).catch(() => {});
     }
     // số liệu giang hồ cho Thiên thư Quyển II (chỉ cần sau Quy Nhất)
-    const social = quyNhatDone(meta) || c.endTag === 'thoat_van_kiep' ? await loreSocial(user).catch(() => null) : null;
+    const social = quyNhatDone(meta) || c.endTag === 'thoat_van_kiep' ? await within(loreSocial(user), 8000).catch(() => null) : null;
     const grave = {
       player_name: displayName(user),
       char_name: c.name,
@@ -1520,7 +1524,10 @@ export default function PlayPage() {
         kiepSo: c.kiepSo ?? 0,
       },
     };
-    await addMemorial(user, grave).catch(() => {});
+    // mạng chập chờn thì không để người chơi kẹt ở màn lập bia: quá 10 giây thì giữ bia lại, lần sau khắc tiếp
+    await within(addMemorial(user, grave), 11000).catch(() => {
+      if (user) addRetryGrave(grave);
+    });
     // chơi thử: kiếp đáng ghi danh thì giữ bia lại, đăng ký xong sẽ khắc lên Nghĩa trang tu sĩ
     if (!user && worthGhiDanh(c)) {
       addPendingGrave(grave);
@@ -1608,7 +1615,7 @@ export default function PlayPage() {
     setLoreNews(lore.map((f) => f.title));
     if (quyNote) setAchNews((a) => [quyNote, ...a]);
     setMeta(m);
-    await saveMeta(user, m).catch(() => {});
+    await within(saveMeta(user, m), 6000).catch(() => {});
     charRef.current = null;
     pendingRef.current = null;
     saveLocal(user, null);

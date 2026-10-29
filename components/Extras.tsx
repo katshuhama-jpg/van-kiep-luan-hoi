@@ -1,4 +1,5 @@
 'use client';
+import { within } from '@/lib/supabase';
 
 import { useEffect, useRef, useState } from 'react';
 import Sprite, { lpcLayers } from './Sprite';
@@ -522,7 +523,7 @@ export function ShareCard({ c, ending, epitaph, isNew = false }: { c: Character;
     setBusy(true);
     setMsg(null);
     track('share', { kind: 'life', grade });
-    const r = await shareLife(c, ending, isNew, epitaph, pct);
+    const r = await within(shareLife(c, ending, isNew, epitaph, pct), 20000).catch(() => null);
     setBusy(false);
     if (r?.link) setSheet(r);
     else setMsg(r?.saved ? tr('Chưa tạo được link, đã tải ảnh về máy.', "Couldn't create a link; the image was saved to your device.") : tr('Chưa khoe được, thử lại sau.', "Couldn't share, try again later."));

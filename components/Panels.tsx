@@ -1298,7 +1298,7 @@ export function DeathSheet({
         }}
       >
         
-        {tr("Lập bia và luân hồi", "Raise a tombstone and reincarnate")}
+        {busy ? tr("Đang khắc bia...", "Carving the tombstone...") : tr("Lập bia và luân hồi", "Raise a tombstone and reincarnate")}
       </button>
     </Sheet>
   );

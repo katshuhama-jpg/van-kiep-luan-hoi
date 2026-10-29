@@ -32,6 +32,8 @@ export interface Stats {
 
 export interface Character {
   name: string;
+  /** tên gốc Hán Việt, để đổi ngôn ngữ thì tên đổi theo */
+  nameVi?: string;
   gender: Gender;
   race: Race;
   origin: string;

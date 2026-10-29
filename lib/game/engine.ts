@@ -73,6 +73,9 @@ function lifeMult(c: Character, talents: string[] = []) {
 }
 
 export function genName(gender: 'nam' | 'nu'): string {
+  return nameOf(genNameVi(gender));
+}
+export function genNameVi(gender: 'nam' | 'nu'): string {
   const ho = rnd() < 0.15 ? pick(rnd, HO_KEP) : pick(rnd, HO);
   const r = rnd();
   let ten: string;
@@ -80,7 +83,7 @@ export function genName(gender: 'nam' | 'nu'): string {
   else if (r < 0.35) ten = pick(rnd, gender === 'nam' ? TEN_NAM_2 : TEN_NU_1);
   else ten = gender === 'nam' ? `${pick(rnd, TEN_NAM_1)} ${pick(rnd, TEN_NAM_2)}` : `${pick(rnd, TEN_NU_1)} ${pick(rnd, TEN_NU_2)}`;
   // tên luôn dựng bằng âm Hán Việt; bản tiếng Anh đổi sang pinyin (Lâm Huyền Lâm -> Lin Xuanlin)
-  return nameOf(`${ho} ${ten}`);
+  return `${ho} ${ten}`;
 }
 
 /** Gieo lá số đầu thai: giới tính, tên, xuất thân, linh căn, nơi sinh, gia cảnh, tướng mạo. Chưa tính thiên phú. */
@@ -112,8 +115,10 @@ export function rollBase(): Character {
   const mod = region.mod as { money?: number; tamMa?: number; sucKhoe?: number; khiVan?: number; ngoTinh?: number; daoTam?: number; tamCanh?: number; lifeMul?: number };
   const lifeMul = Math.round((fate.lo + rnd() * (fate.hi - fate.lo)) * 100) / 100;
   const r = (lo: number, hi: number) => Math.round(lo + rnd() * (hi - lo));
+  const nameVi = genNameVi(gender);
   const c: Character = {
-    name: genName(gender),
+    name: nameOf(nameVi),
+    nameVi,
     gender,
     race,
     origin: origin.name,
