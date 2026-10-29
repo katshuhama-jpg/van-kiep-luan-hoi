@@ -1283,7 +1283,7 @@ export function DeathSheet({
       </div>
       <ArenaNudge />
       {((meta.lives + 1) % 10 === 0 || c.ascended) && (
-        <a className="tra-nudge" href="/tac-gia#moi-tra" onClick={() => track('tra_open', { from: 'death' })}>
+        <a className="tra-nudge" href="/moi-tra" onClick={() => track('tra_open', { from: 'death' })}>
           
           {tr("Đi trọn ", "Lived ")}{meta.lives + 1}{tr(" kiếp rồi. Thấy vui thì mời tác giả chén trà ›", " lives already. Having fun? Treat the author to a cup of tea ›")}
         </a>

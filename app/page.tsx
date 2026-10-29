@@ -11,6 +11,7 @@ import ReleaseNotice, { firstVisit, markSeenLocal, needNotice } from '@/componen
 import { CURRENT_VERSION } from '@/lib/releases';
 import LoiDaiButton from '@/components/LoiDaiButton';
 import { tr } from '@/lib/i18n';
+import { track } from '@/lib/track';
 import { ContinueBar, LiveStrip, NewGraves, NewsToast, useLive } from '@/components/LiveWorld';
 import { HomeVanKiep } from '@/components/TangKiep';
 
@@ -61,6 +62,10 @@ export default function Home() {
             <small className="ver-tag">{CURRENT_VERSION}</small>
           </Link>
         </div>
+        <Link href="/moi-tra" className="btn home-tra" style={link} onClick={() => track('tra_open', { from: 'home' })}>
+          {tr('Mời tác giả chén trà', 'Buy the author a tea')}
+          <small>{tr('game miễn phí, không quảng cáo', 'free, no ads')}</small>
+        </Link>
         {ready && enabled && !user && (
           <Link href="/dang-nhap" className="btn btn-dark" style={link}>
             {tr('Đăng nhập / Đăng ký', 'Log in / Sign up')}

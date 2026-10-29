@@ -2,7 +2,6 @@
 
 import BackButton from '@/components/BackButton';
 import credits from '@/lib/lpc-credits.json';
-import MoiTra from '@/components/MoiTra';
 import { tr } from '@/lib/i18n';
 
 export default function TacGia() {
@@ -18,7 +17,6 @@ export default function TacGia() {
           <BackButton fallback="/" />
         </div>
       </header>
-      <MoiTra />
       <section className="panel">
         <h2>{tr("Nhân vật", "Characters")}</h2>
         <p style={{ marginTop: 0 }}>
