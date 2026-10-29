@@ -35,15 +35,14 @@ function lineOf(l: Life): string {
   return tr(`${who} vừa khép lại một kiếp, ${l.age} tuổi, ${realm}.`, `${who} ended a life at ${l.age}, ${realm}.`);
 }
 
-export function LiveWorld({ user }: { user: Player | null }) {
+export type LiveData = { online: number | null; total: number | null; today: number | null; lives: Life[] };
+
+/** Số liệu giang hồ cho trang đầu: tải một lần, làm mới mỗi phút */
+export function useLive(): LiveData {
   const [online, setOnline] = useState<number | null>(null);
   const [total, setTotal] = useState<number | null>(null);
   const [today, setToday] = useState<number | null>(null);
   const [lives, setLives] = useState<Life[]>([]);
-  const [tick, setTick] = useState(0);
-  const [burnt, setBurnt] = useState<Record<number, number>>({});
-  const omen = useMemo(() => omenToday(), []);
-
   useEffect(() => {
     const sb = supabase();
     if (!sb) return;
@@ -74,89 +73,124 @@ export function LiveWorld({ user }: { user: Player | null }) {
       clearInterval(t);
     };
   }, []);
+  return { online, total, today, lives };
+}
+
+/** Dòng đếm: tổng kiếp (luôn tăng), số đạo hữu hôm nay, người đang chơi khi từ 2 người */
+export function LiveCount({ d }: { d: LiveData }) {
+  return (
+    <div className="lw-count">
+      <b>{d.total !== null ? d.total.toLocaleString(tr('vi-VN', 'en-US')) : '…'}</b>
+      <span>{tr('kiếp đã luân hồi trong giang hồ', 'lives lived in the jianghu so far')}</span>
+      <small>
+        {d.today ? tr(`${d.today} đạo hữu đã tu luyện hôm nay`, `${d.today} Daoists cultivated today`) : tr('Hôm nay chưa ai khép lại kiếp nào, đạo hữu mở hàng đi', 'No life has ended yet today - be the first')}
+        {d.online !== null && d.online >= 2 ? tr(` · ${d.online} người đang chơi`, ` · ${d.online} playing now`) : ''}
+      </small>
+    </div>
+  );
+}
+
+/** Thiên tượng hôm nay gọn một dòng */
+export function OmenLine() {
+  const omen = useMemo(() => omenToday(), []);
+  return (
+    <div className="lw-omen" title={tr('Mọi kiếp đầu thai hôm nay đều chịu thiên tượng này.', 'Every life born today lives under this omen.')}>
+      <span className="lw-omen-ic" aria-hidden="true">
+        {omen.icon}
+      </span>
+      <p>
+        <small>{tr('Thiên tượng hôm nay', "Today's omen")}</small>
+        <b>{omen.name}</b> {omen.desc}
+      </p>
+    </div>
+  );
+}
+
+/**
+ * Tin giang hồ hiện ra rồi tắt: mỗi tin 5 giây, nghỉ 4 giây, nổi ngay trên thanh Đầu thai.
+ * Chỉ lấy tin trong 24 giờ, không che nội dung, không bấm được.
+ */
+export function NewsToast({ d }: { d: LiveData }) {
+  const recent = useMemo(() => d.lives.filter((l) => Date.now() - new Date(l.created_at).getTime() < 86400_000).slice(0, 12), [d.lives]);
+  const [i, setI] = useState(-1);
   useEffect(() => {
-    const t = setInterval(() => setTick((x) => x + 1), 3500);
-    return () => clearInterval(t);
-  }, []);
+    if (!recent.length) return;
+    let k = 0;
+    let shown = false;
+    let t: ReturnType<typeof setTimeout>;
+    const step = () => {
+      shown = !shown;
+      if (shown) {
+        setI(k % recent.length);
+        k++;
+        t = setTimeout(step, 5000);
+      } else {
+        setI(-1);
+        t = setTimeout(step, 4000);
+      }
+    };
+    t = setTimeout(step, 2500);
+    return () => clearTimeout(t);
+  }, [recent]);
+  const n = i >= 0 ? recent[i] : null;
+  if (!n) return null;
+  return (
+    <p key={n.id} className="lw-toast" role="status">
+      <i aria-hidden="true" />
+      <small>{ago(n.created_at)}</small> {lineOf(n)}
+    </p>
+  );
+}
 
-  // ba bia mới nhất, ưu tiên bia có câu khắc
+/** Ba bia mới nhất, ưu tiên bia có câu khắc, có thắp hương */
+export function NewGraves({ d, user }: { d: LiveData; user: Player | null }) {
+  const [burnt, setBurnt] = useState<Record<number, number>>({});
   const graves = useMemo(() => {
-    const withWords = lives.filter((l) => l.epitaph && l.epitaph.trim());
-    return [...withWords, ...lives.filter((l) => !withWords.includes(l))].slice(0, 3);
-  }, [lives]);
-  const news = lives.length ? lives[tick % Math.min(lives.length, 12)] : null;
-
+    const withWords = d.lives.filter((l) => l.epitaph && l.epitaph.trim());
+    return [...withWords, ...d.lives.filter((l) => !withWords.includes(l))].slice(0, 3);
+  }, [d.lives]);
   const burn = async (l: Life) => {
     if (!user || burnt[l.id] !== undefined) return;
     const n = await thapHuong(user, l.id);
     if (n !== null) setBurnt((b) => ({ ...b, [l.id]: n }));
   };
-
+  if (!graves.length) return null;
   return (
-    <section className="lw" aria-label={tr('Giang hồ lúc này', 'The world right now')}>
-      <div className="lw-count">
-        <b>{total !== null ? total.toLocaleString('vi-VN') : '…'}</b>
-        <span>{tr('kiếp đã luân hồi trong giang hồ', 'lives lived in the jianghu so far')}</span>
-        <small>
-          {today ? tr(`${today} đạo hữu đã tu luyện hôm nay`, `${today} Daoists cultivated today`) : tr('Hôm nay chưa ai khép lại kiếp nào, đạo hữu mở hàng đi', 'No life has ended yet today - be the first')}
-          {online !== null && online >= 2 ? tr(` · ${online} người đang chơi`, ` · ${online} playing now`) : ''}
-        </small>
+    <section className="lw">
+      <h3 className="lw-h">
+        {tr('Bia mới dựng', 'Newest tombstones')}
+        <Link href="/nghia-trang">{tr('Xem nghĩa trang ›', 'Cemetery ›')}</Link>
+      </h3>
+      <div className="lw-graves">
+        {graves.map((l) => {
+          const r = toRival(l.player_name, { ...(l.look ?? {}), name: l.char_name, age: l.age, realm: l.realm_no ?? 0, layer: l.layer_no ?? 1, lifeNo: l.life_no, alive: false });
+          const n = burnt[l.id] ?? l.incense;
+          return (
+            <div key={l.id} className="lw-grave">
+              <div className="lw-grave-pic">{r && <Sprite c={foeChar(r) as Character} size={56} anim="idle" dir={2} />}</div>
+              <b>{l.char_name}</b>
+              <small>
+                @{l.player_name} · {l.age}
+                {tr(' tuổi', ' y/o')}
+              </small>
+              <p>“{(l.epitaph && l.epitaph.trim()) || l.cause}”</p>
+              {user ? (
+                <button className="btn lw-burn" onClick={() => burn(l)} disabled={burnt[l.id] !== undefined}>
+                  {burnt[l.id] !== undefined ? tr(`Đã thắp · ${n}`, `Lit · ${n}`) : tr(`Thắp hương · ${n}`, `Burn incense · ${n}`)}
+                </button>
+              ) : (
+                <small className="lw-inc">{tr(`${n} nén hương`, `${n} incense`)}</small>
+              )}
+            </div>
+          );
+        })}
       </div>
-      {news && (
-        <p key={news.id + '-' + tick} className="lw-news">
-          <i aria-hidden="true" />
-          <small>{ago(news.created_at)}</small> {lineOf(news)}
-        </p>
-      )}
-      <div className="lw-omen">
-        <span className="lw-omen-ic" aria-hidden="true">
-          {omen.icon}
-        </span>
-        <div>
-          <small>{tr('Thiên tượng hôm nay', "Today's omen")}</small>
-          <b>{omen.name}</b>
-          <span>{omen.desc}</span>
-          <em>{tr('Mọi kiếp đầu thai hôm nay đều chịu thiên tượng này.', 'Every life born today lives under this omen.')}</em>
-        </div>
-      </div>
-      {graves.length > 0 && (
-        <>
-          <h3 className="lw-h">
-            {tr('Bia mới dựng', 'Newest tombstones')}
-            <Link href="/nghia-trang">{tr('Xem nghĩa trang ›', 'Cemetery ›')}</Link>
-          </h3>
-          <div className="lw-graves">
-            {graves.map((l) => {
-              const r = toRival(l.player_name, { ...(l.look ?? {}), name: l.char_name, age: l.age, realm: l.realm_no ?? 0, layer: l.layer_no ?? 1, lifeNo: l.life_no, alive: false });
-              const n = burnt[l.id] ?? l.incense;
-              return (
-                <div key={l.id} className="lw-grave">
-                  <div className="lw-grave-pic">{r && <Sprite c={foeChar(r) as Character} size={56} anim="idle" dir={2} />}</div>
-                  <b>{l.char_name}</b>
-                  <small>
-                    @{l.player_name} · {l.age}
-                    {tr(' tuổi', ' y/o')}
-                  </small>
-                  <p>“{(l.epitaph && l.epitaph.trim()) || l.cause}”</p>
-                  {user ? (
-                    <button className="btn lw-burn" onClick={() => burn(l)} disabled={burnt[l.id] !== undefined}>
-                      {burnt[l.id] !== undefined ? tr(`Đã thắp · ${n}`, `Lit · ${n}`) : tr(`Thắp hương · ${n}`, `Burn incense · ${n}`)}
-                    </button>
-                  ) : (
-                    <small className="lw-inc">{tr(`${n} nén hương`, `${n} incense`)}</small>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </>
-      )}
     </section>
   );
 }
 
 /** Thanh ghim dưới đáy: tiếp tục kiếp đang dở hoặc đầu thai ngay, một chạm */
-export function ContinueBar({ user, ready }: { user: Player | null; ready: boolean }) {
+export function ContinueBar({ user, ready, guest }: { user: Player | null; ready: boolean; guest?: boolean }) {
   const [cur, setCur] = useState<Character | null | undefined>(undefined);
   useEffect(() => {
     if (!ready) return;
@@ -176,7 +210,10 @@ export function ContinueBar({ user, ready }: { user: Player | null; ready: boole
             </small>
           </>
         ) : (
-          tr('Đầu thai ngay', 'Be reborn now')
+          <>
+            {tr('Đầu thai ngay', 'Be reborn now')}
+            {guest && <small>{tr('Chơi ngay, chưa cần tài khoản', 'Play now, no account needed')}</small>}
+          </>
         )}
       </Link>
     </div>
