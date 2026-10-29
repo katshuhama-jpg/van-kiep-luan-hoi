@@ -542,7 +542,7 @@ export function BagSheet({
   onSmelt?: (id: string) => void;
   onSell?: (id: string) => void;
   onBuy?: (n: number) => void;
-  onForge?: () => import('@/lib/game/forge').ForgeResult | null;
+  onForge?: (slot: import('@/lib/game/types').Slot) => import('@/lib/game/forge').ForgeResult | null;
   onClose: () => void;
   book: string[];
   startTab?: 'tui' | 'kho';

@@ -678,3 +678,9 @@ Làm theo plan "Plan 3.1.0 - Xử lý góp ý người chơi" (trừ góp ý #7 
 - Tên người, địa danh, tông môn Hán Việt sang pinyin trong bản tiếng Anh (`lib/hanviet.ts`: `pinyinize`, `nameOf`). Tên sinh ra lúc chơi đi qua `genName` -> `nameOf`; tên lấy từ máy chủ đổi lúc tải (`toRival`, nghĩa trang, bảng xếp hạng). Bốn tông môn dùng làm khóa trong code (Phổ Đà Sơn, Kiếm Cốc, Vạn Độc Môn, Yêu Thần Điện) vẫn lưu bằng tiếng Việt, chỉ đổi lúc hiển thị bằng `nameOf(c.sect)`.
 - Những chỗ code dò chữ (nguyên nhân chết cho kết cục, danh hiệu, ghi chú trận) đã viết regex nhận cả hai thứ tiếng.
 - Công cụ: `tools/i18n/` (extract, check, apply, pinyin, GLOSSARY.md). Chữ mới thì viết thẳng `tr(...)`, không cần chạy lại công cụ.
+
+## Lò rèn mọi món (sau 4.0.0)
+- lib/game/forge.ts: forgeLv(c, slot). Vũ khí giữ c.forgeItem/c.forge (tương thích save cũ); áo, phụ kiện lưu c.forges[slot] = {id, lv}.
+- Mỗi cấp +6%: vũ khí công, áo thủ (forgeDefMul), phụ kiện sinh lực (forgeHpMul) - áp trong combat.ts.
+- Hiệu ứng hệ (sealLv) = tổng cấp rèn các món cùng hệ đang mặc, tối đa 5. Vỡ đồ từ +2 lên +3 trở đi như cũ.
+- BagDoll: mọi món có nút "Rèn món này" (đang mặc) hoặc "Mặc lên và rèn"; nút Lò rèn mở vũ khí, không có thì món đầu tiên đang mặc.

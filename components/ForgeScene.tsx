@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 import ItemIcon from './ItemIcon';
 import { ITEMS } from '@/lib/game/data';
-import { FORGE_CHANCE, FORGE_COST, FORGE_MAX, FORGE_PER, breakChance, elFx, forgeLevel, itemEl, tinhPrice, type ForgeResult } from '@/lib/game/forge';
-import type { Character } from '@/lib/game/types';
+import { FORGE_CHANCE, FORGE_COST, FORGE_MAX, FORGE_PER, FORGE_STAT, breakChance, elFx, forgeLv, itemEl, tinhPrice, type ForgeResult } from '@/lib/game/forge';
+import type { Character, Slot } from '@/lib/game/types';
 import { tr } from '@/lib/i18n';
 
 const EL_COL: Record<string, string> = { kim: '#d8d8e8', moc: '#5ac86a', thuy: '#5a9ae0', hoa: '#e85a3a', tho: '#c8963a' };
@@ -13,23 +13,23 @@ const EL_COL: Record<string, string> = { kim: '#d8d8e8', moc: '#5ac86a', thuy: '
  * Lò rèn: vũ khí đang cầm đứng giữa, bấm Gõ búa thì búa mới đập ba nhịp rồi ra kết quả.
  * Búa lấy từ bộ icon CC0 của Henrique Lazarini.
  */
-export default function ForgeScene({ c, onForge, onBuy, onClose }: { c: Character; onForge: () => ForgeResult | null; onBuy?: (n: number) => void; onClose: () => void }) {
+export default function ForgeScene({ c, slot = 'vu_khi', onForge, onBuy, onClose }: { c: Character; slot?: Slot; onForge: (slot: Slot) => ForgeResult | null; onBuy?: (n: number) => void; onClose: () => void }) {
   const [phase, setPhase] = useState<'idle' | 'hit' | 'res'>('idle');
   const [res, setRes] = useState<ForgeResult | null>(null);
   const [hits, setHits] = useState(0);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
-  const w = c.equipped.vu_khi ? ITEMS.find((i) => i.id === c.equipped.vu_khi) : null;
+  const w = c.equipped[slot] ? ITEMS.find((i) => i.id === c.equipped[slot]) : null;
   // vừa vỡ thì vẫn giữ hình món cũ để hiện kết quả
   const [shown] = useState(w);
   const it = w ?? shown;
   if (!it) return null;
-  const lv = forgeLevel(c);
+  const lv = forgeLv(c, slot);
   const el = elFx(itemEl(c, it.id));
   const max = lv >= FORGE_MAX;
   const cost = FORGE_COST[lv] ?? 0;
   const ok = FORGE_CHANCE[lv] ?? 0;
-  const brk = (1 - ok) * breakChance(c);
+  const brk = (1 - ok) * breakChance(c, slot);
   const enough = (c.tinhHoa ?? 0) >= cost;
 
   function strike() {
@@ -41,7 +41,7 @@ export default function ForgeScene({ c, onForge, onBuy, onClose }: { c: Characte
     [0, 1, 2].forEach((i) => timers.current.push(setTimeout(() => setHits(i + 1), 280 + i * 360)));
     timers.current.push(
       setTimeout(() => {
-        const r = onForge();
+        const r = onForge(slot);
         setRes(r);
         setPhase('res');
         try {
@@ -99,7 +99,7 @@ export default function ForgeScene({ c, onForge, onBuy, onClose }: { c: Characte
                 <dt>{tr("Lên +", "To +")}{lv + 1}</dt>
                 <dd>
                   
-                  {tr("công +", "attack +")}{Math.round((lv + 1) * FORGE_PER * 100)}{tr("%, hệ ", "%, element ")}{el.name}{tr(" cấp ", " level ")}{lv + 1}
+                  {FORGE_STAT[slot]} +{Math.round((lv + 1) * FORGE_PER * 100)}{tr("%, hệ ", "%, element ")}{el.name}{tr(" cấp ", " level ")}{lv + 1}
                 </dd>
                 <dt>{tr("Nguyên liệu", "Materials")}</dt>
                 <dd className={enough ? '' : 'bad'}>

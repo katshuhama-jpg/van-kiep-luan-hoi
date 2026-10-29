@@ -1,4 +1,4 @@
-import { forgeMul, sealAtk, sealDef, sealExp, sealHp } from './forge';
+import { forgeDefMul, forgeHpMul, forgeMul, sealAtk, sealDef, sealExp, sealHp } from './forge';
 import { ksDrop, ksLegendPer, ksMonster } from './luanHoi';
 import { huntDeath, huntLose } from './fightLines';
 import { omenIs } from './hook';
@@ -613,8 +613,8 @@ export function playerStats(c: Character): Fighter {
   if (c.legend && c.equipped.vu_khi === c.legend.item) atk *= 1 + Math.min(10, c.legend.lv) * ksLegendPer(c);
   // vũ khí đã rèn
   atk *= forgeMul(c) * sealAtk(c);
-  def *= sealDef(c);
-  hp *= sealHp(c);
+  def *= sealDef(c) * forgeDefMul(c);
+  hp *= sealHp(c) * forgeHpMul(c);
   // tuổi già sức yếu
   if (c.age / c.lifespan > 0.85) ((atk *= 0.85), (hp *= 0.85));
   return { hp: Math.round(hp), atk: Math.round(atk), def: Math.round(def) };

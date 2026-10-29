@@ -1,5 +1,5 @@
 import { ITEMS } from './data';
-import type { Character, EffectCtx, Element } from './types';
+import type { Character, EffectCtx, Element, Slot } from './types';
 import { tr } from '../i18n';
 
 /**
@@ -66,9 +66,21 @@ export function smelt(c: Character, id: string, ctx: EffectCtx): string | null {
   return tr(`Phân giải ${item(id)?.name}, thu ${v} tinh thiết (đang có ${c.tinhHoa}).`, `Dismantled ${item(id)?.name}, got ${v} refined iron (now ${c.tinhHoa}).`);
 }
 
+/** Cấp rèn của món đang mặc ở một ô (vũ khí lưu ở c.forge/c.forgeItem như cũ; áo, phụ kiện ở c.forges) */
+export function forgeLv(c: Character, slot: Slot = 'vu_khi'): number {
+  const id = c.equipped[slot];
+  if (!id) return 0;
+  if (slot === 'vu_khi') return c.forgeItem === id ? (c.forge ?? 0) : 0;
+  const f = c.forges?.[slot];
+  return f && f.id === id ? f.lv : 0;
+}
 /** Cấp rèn của vũ khí đang cầm */
-export const forgeLevel = (c: Character) => (c.equipped.vu_khi && c.forgeItem === c.equipped.vu_khi ? (c.forge ?? 0) : 0);
-export const forgeMul = (c: Character) => 1 + forgeLevel(c) * FORGE_PER;
+export const forgeLevel = (c: Character) => forgeLv(c, 'vu_khi');
+/** Rèn vũ khí: công; rèn áo: thủ; rèn phụ kiện: sinh lực. Mỗi cấp +6% */
+export const forgeMul = (c: Character) => 1 + forgeLv(c, 'vu_khi') * FORGE_PER;
+export const forgeDefMul = (c: Character) => 1 + forgeLv(c, 'ao') * FORGE_PER;
+export const forgeHpMul = (c: Character) => 1 + forgeLv(c, 'phu_kien') * FORGE_PER;
+export const FORGE_STAT: Record<Slot, string> = { vu_khi: tr('công', 'attack'), ao: tr('thủ', 'defense'), phu_kien: tr('sinh lực', 'HP') };
 
 /* ---------------- Thuộc tính ngũ hành của trang bị ----------------
  * Mỗi món trang bị ngẫu nhiên mang một hệ (mỗi kiếp một khác). Rèn vũ khí lên cấp nào thì hiệu ứng hệ đó lên cấp đó.
@@ -90,8 +102,15 @@ const hashStr = (s: string) => {
 export const itemEl = (c: Character, id: string): Element => ELS[hashStr(`${id}|${c.name}|${c.lifeNo}`) % 5];
 export const elFx = (el: Element) => EL_FX.find((x) => x.el === el)!;
 
-/** Cấp hiệu ứng hệ `el` đang có: bằng cấp rèn nếu vũ khí đang cầm mang hệ đó */
-export const sealLv = (c: Character, el: Element) => (c.equipped.vu_khi && itemEl(c, c.equipped.vu_khi) === el ? forgeLevel(c) : 0);
+/** Cấp hiệu ứng hệ `el` đang có: cộng cấp rèn của các món đang mặc mang hệ đó, tối đa 5 */
+export const sealLv = (c: Character, el: Element) =>
+  Math.min(
+    FORGE_MAX,
+    (['vu_khi', 'ao', 'phu_kien'] as Slot[]).reduce((a, s) => {
+      const id = c.equipped[s];
+      return a + (id && itemEl(c, id) === el ? forgeLv(c, s) : 0);
+    }, 0),
+  );
 export const sealAtk = (c: Character) => 1 + sealLv(c, 'kim') * 0.04;
 export const sealHp = (c: Character) => 1 + sealLv(c, 'moc') * 0.04;
 export const sealDef = (c: Character) => 1 + sealLv(c, 'thuy') * 0.05;
@@ -99,34 +118,38 @@ export const sealExp = (c: Character) => 1 + sealLv(c, 'hoa') * 0.06;
 export const sealFatal = (c: Character) => 1 - sealLv(c, 'tho') * 0.05;
 
 /** Tỉ lệ vỡ khi rèn hỏng ở cấp hiện tại (thần binh truyền đời không vỡ) */
-export const breakChance = (c: Character) => (c.legend?.item === c.equipped.vu_khi ? 0 : FORGE_BREAK[forgeLevel(c)] ?? 0);
+export const breakChance = (c: Character, slot: Slot = 'vu_khi') => (c.legend?.item && c.legend.item === c.equipped[slot] ? 0 : FORGE_BREAK[forgeLv(c, slot)] ?? 0);
 
 export type ForgeResult = { kind: 'ok' | 'fail' | 'break'; text: string; lv: number };
 
-export function forge(c: Character, ctx: EffectCtx): ForgeResult | null {
-  const w = c.equipped.vu_khi;
+export function forge(c: Character, ctx: EffectCtx, slot: Slot = 'vu_khi'): ForgeResult | null {
+  const w = c.equipped[slot];
   if (!w) return null;
-  const lv = forgeLevel(c);
+  const lv = forgeLv(c, slot);
   if (lv >= FORGE_MAX) return null;
   const costN = FORGE_COST[lv];
   if ((c.tinhHoa ?? 0) < costN) return null;
   c.tinhHoa = (c.tinhHoa ?? 0) - costN;
-  const name = item(w)?.name ?? tr('vũ khí', "weapon");
+  const name = item(w)?.name ?? tr('trang bị', 'gear');
   const el = elFx(itemEl(c, w));
+  const set = (n: number) => {
+    if (slot === 'vu_khi') {
+      c.forgeItem = n ? w : undefined;
+      c.forge = n;
+    } else c.forges = { ...(c.forges ?? {}), [slot]: { id: w, lv: n } };
+  };
   if (ctx.rnd() < FORGE_CHANCE[lv]) {
-    c.forgeItem = w;
-    c.forge = lv + 1;
+    set(lv + 1);
     ctx.fx('layer', `${name} +${lv + 1}`);
-    return { kind: 'ok', lv: lv + 1, text: tr(`Lửa lò đỏ rực, ${name} lên +${lv + 1}: công +${Math.round((lv + 1) * FORGE_PER * 100)}%, hệ ${el.name} cấp ${lv + 1} (-${costN} tinh thiết).`, `The forge fire blazes red, ${name} rises to +${lv + 1}: Attack +${Math.round((lv + 1) * FORGE_PER * 100)}%, ${el.name} element level ${lv + 1} (-${costN} refined iron).`) };
+    return { kind: 'ok', lv: lv + 1, text: tr(`Lửa lò đỏ rực, ${name} lên +${lv + 1}: ${FORGE_STAT[slot]} +${Math.round((lv + 1) * FORGE_PER * 100)}%, hệ ${el.name} cấp ${lv + 1} (-${costN} tinh thiết).`, `The forge fire blazes red, ${name} rises to +${lv + 1}: ${FORGE_STAT[slot]} +${Math.round((lv + 1) * FORGE_PER * 100)}%, ${el.name} element level ${lv + 1} (-${costN} refined iron).`) };
   }
-  if (ctx.rnd() < breakChance(c)) {
-    // vỡ: mất luôn vũ khí
+  if (ctx.rnd() < breakChance(c, slot)) {
+    // vỡ: mất luôn món đồ
     c.inventory = c.inventory.filter((x) => x !== w);
-    delete c.equipped.vu_khi;
-    c.forge = 0;
-    c.forgeItem = undefined;
-    ctx.fx('hurt', tr('Vỡ vũ khí', "Weapon shattered"));
-    return { kind: 'break', lv: 0, text: tr(`Một tiếng "choang", ${name} +${lv} vỡ làm đôi dưới búa. Mất luôn vũ khí (-${costN} tinh thiết).`, `With a loud "clang", ${name} +${lv} splits in two under the hammer. The weapon is gone (-${costN} refined iron).`) };
+    delete c.equipped[slot];
+    set(0);
+    ctx.fx('hurt', tr('Vỡ đồ', 'Gear shattered'));
+    return { kind: 'break', lv: 0, text: tr(`Một tiếng "choang", ${name} +${lv} vỡ nát dưới búa. Mất luôn món đồ (-${costN} tinh thiết).`, `With a loud "clang", ${name} +${lv} shatters under the hammer. The item is gone (-${costN} refined iron).`) };
   }
   ctx.fx('hurt', tr('Rèn hỏng', "Forging failed"));
   return { kind: 'fail', lv, text: tr(`Búa giáng lệch một nhịp, tinh thiết bốc thành khói. ${name} vẫn giữ +${lv} (-${costN} tinh thiết).`, `The hammer falls a beat off and the refined iron goes up in smoke. ${name} stays at +${lv} (-${costN} refined iron).`) };
