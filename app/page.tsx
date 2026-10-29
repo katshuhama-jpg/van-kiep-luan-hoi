@@ -11,7 +11,7 @@ import ReleaseNotice, { firstVisit, markSeenLocal, needNotice } from '@/componen
 import { CURRENT_VERSION } from '@/lib/releases';
 import LoiDaiButton from '@/components/LoiDaiButton';
 import { tr } from '@/lib/i18n';
-import { ContinueBar, LiveCount, NewGraves, NewsToast, OmenLine, useLive } from '@/components/LiveWorld';
+import { ContinueBar, LiveStrip, NewGraves, NewsToast, useLive } from '@/components/LiveWorld';
 import { HomeVanKiep } from '@/components/TangKiep';
 
 const link = { textDecoration: 'none', display: 'block' } as const;
@@ -27,21 +27,16 @@ export default function Home() {
   }, []);
   return (
     <main className="app title-screen has-bar">
-      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginBottom: -10 }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
         <LangToggle />
         <MusicToggle />
       </div>
-      <h1 className="logo">
-        
-        {tr("Vạn Kiếp", "Ten Thousand")}
-        <br />
-        
-        {tr("Luân Hồi", "Rebirths")}
-        <small>{tr("Một kiếp người, vạn con đường tu tiên", "One life, ten thousand paths to immortality")}</small>
+      <h1 className={`logo ${tr('', 'logo-en')}`}>
+        {tr('Vạn Kiếp Luân Hồi', 'Ten Thousand Rebirths')}
+        <small>{tr('Một kiếp người, vạn con đường tu tiên', 'One life, ten thousand paths to immortality')}</small>
       </h1>
 
-      <LiveCount d={live} />
-      <OmenLine />
+      <LiveStrip d={live} />
 
       <nav className="menu home-menu" aria-label={tr('Các tính năng', 'Features')}>
         <LoiDaiButton />
@@ -73,8 +68,8 @@ export default function Home() {
         )}
       </nav>
 
-      <HomeVanKiep user={user} ready={ready} />
       <NewGraves d={live} user={user} />
+      <HomeVanKiep user={user} ready={ready} />
 
       <section className="panel" style={{ textAlign: 'left' }}>
         <h2>{tr("Cách chơi", "How to play")}</h2>

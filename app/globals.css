@@ -4561,8 +4561,21 @@ button.shadow-card { cursor: pointer; }
 
 /* Trang đầu gọn: logo nhỏ lại, tính năng lưới 2 cột, tin giang hồ hiện rồi tắt */
 .title-screen.has-bar { gap: 10px; padding-top: 12px; }
-.title-screen.has-bar .logo { font-size: 52px; }
-.title-screen.has-bar .logo small { font-size: 17px; margin-top: 4px; }
+.title-screen.has-bar { gap: 8px; padding-top: 8px; }
+.title-screen.has-bar .logo { font-size: min(40px, 10.5vw); line-height: 1; margin-top: -2px; white-space: nowrap; }
+.title-screen.has-bar .logo.logo-en { font-size: min(40px, 8.6vw); }
+.title-screen.has-bar .logo small { font-size: 14px; margin-top: 2px; }
+.lw-strip { background: #1c1430; color: #f2e6ff; border: 3px solid #3a2864; box-shadow: 0 3px 0 #0e0a1a; padding: 5px 10px; text-align: left; }
+.lw-strip p { margin: 0; line-height: 1.35; }
+.lw-strip-count { font-size: 14px; }
+.lw-strip-count b { font-size: 20px; color: #ffe27a; font-weight: 700; }
+.lw-strip-count small { font-size: 13px; color: #b8a8e0; }
+.lw-strip-omen { font-size: 13px; color: #d8c8f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lw-strip-omen span, .lw-strip-omen b { color: #ffe27a; }
+.home-grid .btn { min-height: 36px; padding-top: 3px; padding-bottom: 3px; font-size: 16px; }
+.title-screen.has-bar .menu-loidai { padding: 6px 12px 5px; }
+.title-screen.has-bar .lw-grave-pic { height: 48px; }
+.title-screen.has-bar .lw-grave p { -webkit-line-clamp: 2; }
 .home-menu { gap: 8px; }
 .home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
 .home-grid .btn { padding-left: 4px; padding-right: 4px; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

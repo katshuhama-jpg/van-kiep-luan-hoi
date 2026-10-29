@@ -76,31 +76,22 @@ export function useLive(): LiveData {
   return { online, total, today, lives };
 }
 
-/** Dòng đếm: tổng kiếp (luôn tăng), số đạo hữu hôm nay, người đang chơi khi từ 2 người */
-export function LiveCount({ d }: { d: LiveData }) {
-  return (
-    <div className="lw-count">
-      <b>{d.total !== null ? d.total.toLocaleString(tr('vi-VN', 'en-US')) : '…'}</b>
-      <span>{tr('kiếp đã luân hồi trong giang hồ', 'lives lived in the jianghu so far')}</span>
-      <small>
-        {d.today ? tr(`${d.today} đạo hữu đã tu luyện hôm nay`, `${d.today} Daoists cultivated today`) : tr('Hôm nay chưa ai khép lại kiếp nào, đạo hữu mở hàng đi', 'No life has ended yet today - be the first')}
-        {d.online !== null && d.online >= 2 ? tr(` · ${d.online} người đang chơi`, ` · ${d.online} playing now`) : ''}
-      </small>
-    </div>
-  );
-}
-
-/** Thiên tượng hôm nay gọn một dòng */
-export function OmenLine() {
+/** Dải giang hồ gọn hai dòng: tổng kiếp (luôn tăng), đạo hữu hôm nay, người đang chơi; thiên tượng hôm nay */
+export function LiveStrip({ d }: { d: LiveData }) {
   const omen = useMemo(() => omenToday(), []);
   return (
-    <div className="lw-omen" title={tr('Mọi kiếp đầu thai hôm nay đều chịu thiên tượng này.', 'Every life born today lives under this omen.')}>
-      <span className="lw-omen-ic" aria-hidden="true">
-        {omen.icon}
-      </span>
-      <p>
-        <small>{tr('Thiên tượng hôm nay', "Today's omen")}</small>
-        <b>{omen.name}</b> {omen.desc}
+    <div className="lw-strip">
+      <p className="lw-strip-count">
+        <b>{d.total !== null ? d.total.toLocaleString(tr('vi-VN', 'en-US')) : '…'}</b> {tr('kiếp đã luân hồi', 'lives lived')}
+        <small>
+          {' · '}
+          {d.today ? tr(`${d.today} đạo hữu hôm nay`, `${d.today} Daoists today`) : tr('hôm nay chưa ai, đạo hữu mở hàng đi', 'be the first today')}
+          {d.online !== null && d.online >= 2 ? tr(` · ${d.online} đang chơi`, ` · ${d.online} playing`) : ''}
+        </small>
+      </p>
+      <p className="lw-strip-omen" title={omen.desc}>
+        <span aria-hidden="true">{omen.icon}</span> {tr('Thiên tượng: ', 'Omen: ')}
+        <b>{omen.name}</b> - {omen.desc}
       </p>
     </div>
   );
@@ -167,7 +158,7 @@ export function NewGraves({ d, user }: { d: LiveData; user: Player | null }) {
           const n = burnt[l.id] ?? l.incense;
           return (
             <div key={l.id} className="lw-grave">
-              <div className="lw-grave-pic">{r && <Sprite c={foeChar(r) as Character} size={56} anim="idle" dir={2} />}</div>
+              <div className="lw-grave-pic">{r && <Sprite c={foeChar(r) as Character} size={48} anim="idle" dir={2} />}</div>
               <b>{l.char_name}</b>
               <small>
                 @{l.player_name} · {l.age}
