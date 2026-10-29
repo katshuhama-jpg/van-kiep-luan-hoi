@@ -1,6 +1,7 @@
 import { ENDINGS } from './endings';
 import type { Career, Character, Meta } from './types';
 import { tr } from '../i18n';
+import { ITEMS, type Item } from './data';
 
 /**
  * Giữ chân người chơi: thiên tượng mỗi ngày, chuỗi ngày tu luyện, nhiệm vụ ngày, lời tiên tri cho kiếp sau.
@@ -329,25 +330,55 @@ export function checkNewbieGoal(c: Character): string | null {
   return tr(`Đạt mục tiêu kiếp ${c.lifeNo}: ${g.name}. Luân hồi xong sẽ nhận ${g.reward} phúc duyên.`, `Life ${c.lifeNo} goal reached: ${g.name}. You'll receive ${g.reward} Fortune after reincarnating.`);
 }
 
-// ---------------- Điểm danh 7 ngày (3.2.0) ----------------
-/** Quà theo ngày trong chuỗi (lặp lại sau ngày 7). hon: Hồn lực; khi chưa có Hồn lực (dưới kiếp 15) đổi sang phúc duyên */
+// ---------------- Điểm danh 7 ngày (3.2.0, quà tăng dần 4.0.1) ----------------
+/**
+ * Quà theo ngày trong chuỗi (lặp lại sau ngày 7). Bỏ một ngày là chuỗi về ngày 1.
+ * hon: Hồn lực; khi chưa có Hồn lực (dưới kiếp 15) đổi sang phúc duyên (honPhuc).
+ * money, tinh, rare trao ngay cho kiếp đang sống; đang giữa hai kiếp thì để dành cho kiếp sau.
+ */
 export interface CheckinGift {
   phuc?: number;
   hon?: number;
-  honPhuc?: number; // phúc thay cho Hồn lực khi chưa mở Hồn lực
-  money?: number; // linh thạch cho kiếp kế tiếp
-  item?: string; // đồ cho kiếp kế tiếp
-  label: string;
+  honPhuc?: number;
+  money?: number; // linh thạch gốc, nhân theo cảnh giới
+  tinh?: number; // tinh thiết cho lò rèn
+  rare?: 2 | 3; // một món đồ hiếm (2) hoặc cực phẩm (3) hợp cảnh giới
 }
 export const CHECKIN: CheckinGift[] = [
-  { phuc: 10, label: tr('10 phúc', "10 Fortune") },
-  { hon: 20, honPhuc: 10, label: tr('Tụ Hồn Đan', "Soul Gathering Pill") },
-  { phuc: 20, label: tr('20 phúc', "20 Fortune") },
-  { hon: 45, honPhuc: 20, label: tr('Dưỡng Hồn Đan', "Soul Nurturing Pill") },
-  { phuc: 30, label: tr('30 phúc', "30 Fortune") },
-  { money: 600, label: tr('600 linh thạch', "600 spirit stones") },
-  { hon: 100, honPhuc: 40, item: 'ngoc_boi', label: tr('Hoàn Hồn Đan, ngọc bội', "Soul Return Pill, jade pendant") },
+  { phuc: 15 },
+  { money: 300, tinh: 3 },
+  { hon: 20, honPhuc: 20 },
+  { tinh: 6, phuc: 25 },
+  { hon: 45, honPhuc: 30, money: 600 },
+  { rare: 2, tinh: 4 },
+  { rare: 3, hon: 100, honPhuc: 50 },
 ];
-/** Ngày thứ mấy trong vòng 7 ngày (1-7) theo chuỗi hiện tại */
+/** Linh thạch theo cảnh giới: lên cao quà cũng nặng tay hơn */
+export const checkinMoney = (base: number, realm: number) => base * Math.max(1, realm);
+/** Chữ mô tả quà một ngày */
+export function checkinLabel(g: CheckinGift, honOn: boolean, realm = 0): string {
+  const out: string[] = [];
+  if (g.rare) out.push(g.rare === 3 ? tr('1 món Cực phẩm', '1 Supreme item') : tr('1 món Hiếm', '1 Rare item'));
+  if (g.hon) out.push(honOn ? (g.hon >= 100 ? tr('Hoàn Hồn Đan', 'Soul Return Pill') : g.hon >= 45 ? tr('Dưỡng Hồn Đan', 'Soul Nurturing Pill') : tr('Tụ Hồn Đan', 'Soul Gathering Pill')) : tr(`${g.honPhuc} phúc`, `${g.honPhuc} Fortune`));
+  if (g.phuc) out.push(tr(`${g.phuc} phúc`, `${g.phuc} Fortune`));
+  if (g.money) out.push(tr(`${checkinMoney(g.money, realm)} linh thạch`, `${checkinMoney(g.money, realm)} spirit stones`));
+  if (g.tinh) out.push(tr(`${g.tinh} tinh thiết`, `${g.tinh} refined iron`));
+  return out.join(', ');
+}
+/** Ngày trong vòng 7 ngày nếu hôm nay vào game (chuỗi đứt thì về ngày 1) */
+export function checkinDayToday(meta: Meta, day: string = vnDay()): number {
+  const s = meta.streak;
+  const n = !s ? 1 : s.day === day ? s.n : dayIndex(day) - dayIndex(s.day) === 1 ? s.n + 1 : 1;
+  return ((n - 1) % 7) + 1;
+}
+/** Món quà điểm danh: đồ đúng độ hiếm, hợp cảnh giới và con đường, chưa có trong túi; ưu tiên đồ cao nhất mặc được */
+export function checkinItem(rare: 2 | 3, c: Pick<Character, 'realm' | 'path' | 'inventory'> | null): Item | null {
+  const realm = c?.realm ?? 0;
+  const ok = ITEMS.filter((i) => (i.rare ?? 0) === rare && i.minRealm <= realm && (!i.path || i.path === c?.path) && !c?.inventory?.includes(i.id));
+  if (!ok.length) return null;
+  const top = Math.max(...ok.map((i) => i.minRealm));
+  const pool = ok.filter((i) => i.minRealm >= top - 1);
+  return pool[Math.floor(Math.random() * pool.length)];
+}
 export const checkinDay = (meta: Meta) => (((meta.streak?.n ?? 1) - 1) % 7) + 1;
 export const checkinClaimed = (meta: Meta, day: string = vnDay()) => meta.checkin === day;

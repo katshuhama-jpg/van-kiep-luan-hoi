@@ -684,3 +684,9 @@ Làm theo plan "Plan 3.1.0 - Xử lý góp ý người chơi" (trừ góp ý #7 
 - Mỗi cấp +6%: vũ khí công, áo thủ (forgeDefMul), phụ kiện sinh lực (forgeHpMul) - áp trong combat.ts.
 - Hiệu ứng hệ (sealLv) = tổng cấp rèn các món cùng hệ đang mặc, tối đa 5. Vỡ đồ từ +2 lên +3 trở đi như cũ.
 - BagDoll: mọi món có nút "Rèn món này" (đang mặc) hoặc "Mặc lên và rèn"; nút Lò rèn mở vũ khí, không có thì món đầu tiên đang mặc.
+
+## Điểm danh 7 ngày quà tăng dần (sau 4.0.0)
+- lib/game/hook.ts CHECKIN: N1 15 phúc, N2 300 linh thạch x cảnh giới + 3 tinh thiết, N3 Tụ Hồn Đan, N4 6 tinh thiết + 25 phúc, N5 Dưỡng Hồn Đan + 600 linh thạch, N6 1 món Hiếm + 4 tinh thiết, N7 1 món Cực phẩm + Hoàn Hồn Đan. checkinItem chọn đồ hợp cảnh giới, con đường, chưa có.
+- Bỏ một ngày là về ngày 1 (bumpStreak). Kiếp đang sống nhận ngay; giữa hai kiếp để vào meta.checkinNext (money, item, tinh) cho kiếp sau.
+- components/Hook.tsx CheckinPop tự mở khi vào /choi ngày mới (meta.lives > 0), dừng thời gian; nhận xong nhắc quà mai. CheckinRow ở màn đầu thai mở cùng bảng này.
+- components/HomeCheckin.tsx: một dòng ở trang đầu (quà hôm nay hoặc quà mai).

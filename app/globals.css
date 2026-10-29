@@ -4633,3 +4633,22 @@ button.shadow-card { cursor: pointer; }
 .doll-forge small { font-size: 11px; font-weight: 500; color: #f3c8b0; }
 .forge-msg { margin: 4px 0; padding: 6px 8px; background: #fff3d0; border: 2px solid #8a5a2e; cursor: pointer; }
 .forge-note { margin: 0; font-size: 13px; }
+
+/* Quà điểm danh 7 ngày (4.0.1) */
+.cip { max-width: 440px; }
+.cip-days { list-style: none; margin: 8px 0 10px; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.cip-days li { display: flex; flex-direction: column; gap: 2px; padding: 6px; min-height: 58px; background: var(--paper-2); border: 2px solid var(--ink); font-size: 13px; line-height: 1.25; }
+.cip-days li small { font-size: 11px; color: var(--muted); font-weight: 700; }
+.cip-days li.got { background: #d8e8d0; color: #2f6b3a; }
+.cip-days li.got span { font-size: 20px; font-weight: 700; }
+.cip-days li.now { background: #ffe9b0; border-color: var(--red); box-shadow: 0 0 0 2px #ffd36b; animation: ci-pulse 1.2s steps(2) infinite; }
+.cip-days li.big { grid-column: 1 / -1; background: #3a1418; color: #ffe27a; border-color: #000; box-shadow: inset 0 0 0 2px #e0a030; }
+.cip-days li.big small { color: #f0c8a0; }
+.cip-days li.big.got { background: #d8e8d0; color: #2f6b3a; }
+.cip .btn-big { width: 100%; }
+.cip-got, .cip-next { margin: 6px 0; font-size: 15px; }
+.cip-got b { color: #2f6b3a; }
+.cip-next b { color: var(--red); }
+.wk-line.ci-home { background: #4a1418; color: #ffe9d0; border-color: #1a0608; }
+.wk-line.ci-home:not(.done) { animation: ci-pulse 1.2s steps(2) infinite; }
+.wk-line.ci-home.done { background: #2a2a1e; color: #d8d0b8; }

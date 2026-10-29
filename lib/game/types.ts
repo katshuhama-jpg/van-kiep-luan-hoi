@@ -291,7 +291,7 @@ export interface Meta {
   quyThuong?: boolean; // đã nhận thưởng Vạn Kiếp Quy Nhất
   chuongWin?: boolean; // đã đánh bại Kẻ Gõ Chuông
   checkin?: string; // 3.2.0 ngày (giờ VN) đã nhận quà điểm danh
-  checkinNext?: { money?: number; item?: string }; // quà điểm danh dành cho kiếp kế tiếp
+  checkinNext?: { money?: number; item?: string; tinh?: number }; // quà điểm danh dành cho kiếp kế tiếp
   honPill?: { day: string; n: number }; // Hoàn Hồn Đan đã uống trong ngày
   hon?: { v: number; at: number }; // Hồn lực lúc đầu thai gần nhất (at: giờ máy chủ, ms)
   tinhTam?: number; // tĩnh tâm từ canh Mạnh Bà: mỗi bậc giảm 1 Kiếp Số hiệu lực

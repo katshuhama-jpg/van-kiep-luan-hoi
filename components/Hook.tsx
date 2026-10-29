@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Sheet } from './Panels';
-import { CHECKIN, QUEST_BONUS, QUEST_REWARD, canChiDay, checkinClaimed, checkinDay, dailyOf, omenToday, questName } from '@/lib/game/hook';
+import { CHECKIN, checkinLabel, QUEST_BONUS, QUEST_REWARD, canChiDay, checkinClaimed, checkinDay, dailyOf, omenToday, questName } from '@/lib/game/hook';
 import { honActive } from '@/lib/game/luanHoi';
 import type { Meta } from '@/lib/game/types';
 import { rumorHead, rumorToday } from '@/lib/game/collect';
@@ -130,16 +130,79 @@ export function TitleBadge({ title }: { title?: string | string[] | null }) {
   );
 }
 
+/**
+ * Quà điểm danh 7 ngày, quà tăng dần, ngày 7 có đồ Cực phẩm. Tự mở khi vào game ngày mới.
+ * Nhận xong khoe quà vừa nhận và nhắc quà ngày mai, bỏ một ngày là về ngày 1.
+ */
+export function CheckinPop({ meta, realm, got, onClaim, onClose }: { meta: Meta; realm: number; got: { day: number; text: string } | null; onClaim: () => void; onClose: () => void }) {
+  const day = checkinDay(meta);
+  const claimed = checkinClaimed(meta);
+  const hon = honActive(meta);
+  const next = (day % 7) + 1;
+  const [busy, setBusy] = useState(false);
+  return (
+    <div className="ss-wrap" role="dialog" aria-modal="true" aria-label={tr('Quà điểm danh', 'Check-in gift')} onClick={claimed ? onClose : undefined}>
+      <div className="ss-sheet cip" onClick={(e) => e.stopPropagation()}>
+        <div className="ss-head">
+          <b>{tr(`Quà điểm danh · ngày ${day}/7`, `Check-in gift · day ${day}/7`)}</b>
+          <button className="ss-x" onClick={onClose} aria-label={tr('Đóng', 'Close')}>
+            ✕
+          </button>
+        </div>
+        <ol className="cip-days">
+          {CHECKIN.map((g, i) => {
+            const n = i + 1;
+            const st = n < day || (n === day && claimed) ? 'got' : n === day ? 'now' : '';
+            return (
+              <li key={n} className={`${st} ${n === 7 ? 'big' : ''}`}>
+                <small>{tr(`Ngày ${n}`, `Day ${n}`)}</small>
+                <span>{st === 'got' ? '✓' : checkinLabel(g, hon, realm)}</span>
+              </li>
+            );
+          })}
+        </ol>
+        {!claimed ? (
+          <button
+            className="btn btn-red btn-big"
+            disabled={busy}
+            onClick={() => {
+              setBusy(true);
+              onClaim();
+            }}
+          >
+            {tr('Nhận quà hôm nay', "Claim today's gift")}
+          </button>
+        ) : (
+          <>
+            {got && (
+              <p className="cip-got">
+                {tr('Đã nhận: ', 'Received: ')}
+                <b>{got.text}</b>
+              </p>
+            )}
+            <p className="cip-next">
+              {tr('Mai quay lại nhận: ', 'Come back tomorrow for: ')}
+              <b>{checkinLabel(CHECKIN[next - 1], hon, realm)}</b>
+              {next === 7 ? tr(' (quà lớn nhất tuần)', ' (the biggest gift of the week)') : ''}
+            </p>
+            <button className="btn btn-big" onClick={onClose}>
+              {tr('Chơi tiếp', 'Keep playing')}
+            </button>
+          </>
+        )}
+        <small className="note">{tr('Bỏ một ngày là chuỗi về lại ngày 1. Kiếp đang sống nhận ngay, đang giữa hai kiếp thì quà để dành cho kiếp sau.', 'Miss a day and the streak resets to day 1. A living character gets it now; between lives it waits for your next life.')}</small>
+      </div>
+    </div>
+  );
+}
+
 /** 3.2.0: điểm danh 7 ngày ở màn đầu thai, cùng nhiệm vụ ngày */
 export function CheckinRow({ meta, onClaim }: { meta: Meta; onClaim: () => void }) {
   const day = checkinDay(meta);
   const claimed = checkinClaimed(meta);
   const hon = honActive(meta);
   const d = dailyOf(meta);
-  const labelOf = (i: number) => {
-    const g = CHECKIN[i];
-    return g.hon && !hon ? tr(`${g.honPhuc} phúc${g.item ? tr(', ngọc bội', ", jade pendant") : ''}`, `${g.honPhuc} Fortune${g.item ? tr(', ngọc bội', ", jade pendant") : ''}`) : g.label;
-  };
+  const labelOf = (i: number) => checkinLabel(CHECKIN[i], hon);
   const done = d.quests.filter((id) => d.done.includes(id)).length;
   return (
     <section className="checkin" aria-label={tr("Điểm danh 7 ngày và nhiệm vụ hôm nay", "7-day check-in and today's quests")}>
@@ -188,3 +251,4 @@ export function CheckinRow({ meta, onClaim }: { meta: Meta; onClaim: () => void 
     </section>
   );
 }
+

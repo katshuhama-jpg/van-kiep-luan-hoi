@@ -42,8 +42,8 @@ import LoiDaiButton from '@/components/LoiDaiButton';
 import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, pickAmbush } from '@/lib/game/ambush';
 import { within } from '@/lib/supabase';
 import { endingFirst, titleKey, addMemorial, addPendingGrave, addRetryGrave, worthGhiDanh, displayName, fetchWorld, listMail, loadAll, saveLocal, saveMeta, saveRemote, sendMail, unreadMail, weeklyTitles, type Mail, type SaveState } from '@/lib/storage';
-import { CHECKIN, checkinClaimed, checkinDay, updateCareer, bumpStreak, evalQuests, newbieGoal, omenIs, qmark, questName, vnDay } from '@/lib/game/hook';
-import { HookSheet, TitleBadge } from '@/components/Hook';
+import { CHECKIN, checkinClaimed, checkinDay, checkinItem, checkinLabel, checkinMoney, updateCareer, bumpStreak, evalQuests, newbieGoal, omenIs, qmark, questName, vnDay } from '@/lib/game/hook';
+import { CheckinPop, HookSheet, TitleBadge } from '@/components/Hook';
 import { omenToday } from '@/lib/game/hook';
 import { useAuth } from '@/lib/useAuth';
 import ReleaseNotice, { GiftNotice, needNotice } from '@/components/Release';
@@ -225,6 +225,8 @@ export default function PlayPage() {
       const m = bumped ?? m0;
       if (bumped) saveMeta(user, m).catch(() => {});
       setMeta(m);
+      // ngày mới chưa nhận quà điểm danh: tự mở bảng quà (người chơi đã qua ít nhất một kiếp)
+      if (m.lives > 0 && !checkinClaimed(m)) setCiOpen(true);
       // thư giang hồ chưa đọc: tự mở hộp thư
       if (user)
         unreadMail(user).then((n) => {
@@ -294,7 +296,9 @@ export default function PlayPage() {
   const speedRef = useRef(speed);
   speedRef.current = speed;
   const activeRef = useRef(false);
-  activeRef.current = running && sheet === null && phase === 'play' && kiep === null && hoTro === null && vanDao === null && !tut && duelWarn === null && !nhdPeek && !relOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
+  const [ciGot, setCiGot] = useState<{ day: number; text: string } | null>(null);
+  const [ciOpen, setCiOpen] = useState(false);
+  activeRef.current = running && sheet === null && !ciOpen && phase === 'play' && kiep === null && hoTro === null && vanDao === null && !tut && duelWarn === null && !nhdPeek && !relOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
 
   /** Ngũ hành giữa bạn và loài quái */
   function monElem(c: Character, m: { el?: Element }) {
@@ -1178,15 +1182,17 @@ export default function PlayPage() {
     });
   };
 
-  // Điểm danh 7 ngày: nhận quà ngày hôm nay
+  // Điểm danh 7 ngày: nhận quà ngày hôm nay. Kiếp đang sống thì trao ngay, đang giữa hai kiếp thì để dành cho kiếp sau
   const checkin = async () => {
     if (!meta) return;
     const now = await serverNow();
     const day = vnDay();
     const base = bumpStreak(meta, day) ?? meta;
     if (checkinClaimed(base, day)) return;
-    const g = CHECKIN[checkinDay(base) - 1];
+    const n = checkinDay(base);
+    const g = CHECKIN[n - 1];
     const hon = honActive(base);
+    const c = charRef.current && !charRef.current.dead ? charRef.current : null;
     let m2: Meta = { ...base, checkin: day };
     let phuc = g.phuc ?? 0;
     if (g.hon) {
@@ -1194,8 +1200,22 @@ export default function PlayPage() {
       else phuc += g.honPhuc ?? 0;
     }
     if (phuc) m2 = { ...m2, phucDuyen: m2.phucDuyen + phuc };
-    if (g.money || g.item) m2 = { ...m2, checkinNext: { money: (base.checkinNext?.money ?? 0) + (g.money ?? 0) || undefined, item: g.item ?? base.checkinNext?.item } };
-    track('checkin', { day: checkinDay(base) });
+    const it = g.rare ? checkinItem(g.rare, c) : null;
+    const cash = g.money ? checkinMoney(g.money, c?.realm ?? 0) : 0;
+    if (c) {
+      act((ch) => {
+        if (cash) money(ch, cash);
+        if (g.tinh) ch.tinhHoa = (ch.tinhHoa ?? 0) + g.tinh;
+        if (it) giveItem(ch, it.id, true);
+        ch.log.push({ age: ch.age, tone: 'good', text: tr(`Quà điểm danh ngày ${n}: ${checkinLabel(g, hon, ch.realm).replace(/1 món (Cực phẩm|Hiếm)/, it ? it.name : '$&')}.`, `Day ${n} check-in gift: ${checkinLabel(g, hon, ch.realm).replace(/1 (Supreme|Rare) item/, it ? it.name : '$&')}.`) });
+      });
+    } else if (cash || it || g.tinh) {
+      const cn = base.checkinNext ?? {};
+      m2 = { ...m2, checkinNext: { money: (cn.money ?? 0) + cash || undefined, item: it?.id ?? cn.item, tinh: (cn.tinh ?? 0) + (g.tinh ?? 0) || undefined } };
+    }
+    track('checkin', { day: n, live: !!c });
+    const label = checkinLabel(g, hon, c?.realm ?? 0);
+    setCiGot({ day: n, text: it ? label.replace(/1 món (Cực phẩm|Hiếm)|1 (Supreme|Rare) item/, it.name) : label });
     setMeta(m2);
     saveMeta(user, m2).catch(() => {});
   };
@@ -1264,7 +1284,9 @@ export default function PlayPage() {
     if (cn) {
       if (cn.money) money(c, cn.money);
       if (cn.item) giveItem(c, cn.item, true);
-      c.log.push({ age: 0, tone: 'good', text: tr(`Quà điểm danh: ${[cn.money ? tr(`+${cn.money} linh thạch`, `+${cn.money} spirit stones`) : '', cn.item ? tr('ngọc bội hộ thân', "a protective jade pendant") : ''].filter(Boolean).join(', ')}.`, `Check-in gift: ${[cn.money ? tr(`+${cn.money} linh thạch`, `+${cn.money} spirit stones`) : '', cn.item ? tr('ngọc bội hộ thân', "a protective jade pendant") : ''].filter(Boolean).join(', ')}.`) });
+      if (cn.tinh) c.tinhHoa = (c.tinhHoa ?? 0) + cn.tinh;
+      const nm = cn.item ? ITEMS.find((x) => x.id === cn.item)?.name ?? '' : '';
+      c.log.push({ age: 0, tone: 'good', text: tr(`Quà điểm danh: ${[cn.money ? `+${cn.money} linh thạch` : '', nm, cn.tinh ? `+${cn.tinh} tinh thiết` : ''].filter(Boolean).join(', ')}.`, `Check-in gift: ${[cn.money ? `+${cn.money} spirit stones` : '', nm, cn.tinh ? `+${cn.tinh} refined iron` : ''].filter(Boolean).join(', ')}.`) });
     }
     // rương kiếp trước, lời tiên tri, thần binh chỉ dùng cho một kiếp
     if (m2.xaLoi) {
@@ -1675,6 +1697,7 @@ export default function PlayPage() {
           </p>
         )}
         {sheet === 'mail' && mail && giangHo() && <GiangHoSheet mail={mail} api={giangHo()!} onClose={() => setSheet(null)} />}
+        {ciOpen && meta && <CheckinPop meta={meta} realm={charRef.current && !charRef.current.dead ? charRef.current.realm : 0} got={ciGot} onClaim={checkin} onClose={() => setCiOpen(false)} />}
         {sheet === 'kho' && (
           <BaoKhoSheet
             book={meta.itemBook ?? []}
@@ -1685,7 +1708,7 @@ export default function PlayPage() {
           />
         )}
         {(setScreen('dau_thai'), null)}
-        <BirthPanel meta={meta} onCheckin={meta.lives > 0 ? checkin : undefined} onHoanHon={hoanHon} onBorn={born} onKho={() => setSheet('kho')} onSoSinhTu={() => seeBook('e')} />
+        <BirthPanel meta={meta} onCheckin={meta.lives > 0 ? () => setCiOpen(true) : undefined} onHoanHon={hoanHon} onBorn={born} onKho={() => setSheet('kho')} onSoSinhTu={() => seeBook('e')} />
         {relOpen && !ghiDanh && <ReleaseNotice onClose={closeRel} />}
         {ghiDanh && <GhiDanh {...ghiDanh} lives={meta.lives} onClose={() => setGhiDanh(null)} />}
       </main>
@@ -1700,7 +1723,7 @@ export default function PlayPage() {
     track('death', { lifeNo: c.lifeNo, realm: c.realm, age: Math.floor(c.age), path: c.path, cosmos: c.cosmos ?? null, min: lifeT0.current ? Math.round((Date.now() - lifeT0.current) / 6000) / 10 : null });
   }
   const battleNow = duelRef.current ?? ambushRef.current ?? (c.focus === 'tru_yeu' && c.age >= 10 && battleRef.current?.m.id === c.huntTarget ? battleRef.current : null);
-  const paused = !running || !!pending || sheet !== null || c.dead;
+  const paused = !running || !!pending || sheet !== null || ciOpen || c.dead;
   const season = seasonOf(c.age);
   const omenIcon = omenToday().icon;
   const stats = collectStats(meta);
@@ -1865,6 +1888,7 @@ export default function PlayPage() {
       )}
       {sheet === 'today' && <HookSheet meta={meta} onClose={() => setSheet(null)} />}
       {sheet === 'mail' && mail && giangHo() && <GiangHoSheet mail={mail} api={giangHo()!} onClose={() => setSheet(null)} />}
+        {ciOpen && meta && <CheckinPop meta={meta} realm={charRef.current && !charRef.current.dead ? charRef.current.realm : 0} got={ciGot} onClaim={checkin} onClose={() => setCiOpen(false)} />}
       {sheet === 'hunt' && <HuntSheet c={c} onPick={pickMonster} onToggleFlee={toggleFlee} onClose={() => setSheet(null)} />}
       {sheet === 'menu' && (
         <Sheet title="Menu" onClose={() => setSheet(null)}>
