@@ -195,7 +195,7 @@ export function ManhBaBridge({ meta, who, onPick, onBack, busy, onHoanHon }: { m
         <h2 className="mb-title">{tr("Cầu Nại Hà", "Naihe Bridge")}</h2>
         <p className="mb-say">
           
-          {tr("Mạnh Bà múc một chén canh, khói xanh bốc lên: ", "Meng Po ladles out a bowl of soup, green vapor rising: ")}<i>{tr("&ldquo;Uống đi, quên hết mà đi cho nhẹ.&rdquo;", "&ldquo;Drink, forget it all, and go on lighter.&rdquo;")}</i>
+          {tr("Mạnh Bà múc một chén canh, khói xanh bốc lên: ", "Meng Po ladles out a bowl of soup, green vapor rising: ")}<i>{tr("“Uống đi, quên hết mà đi cho nhẹ.”", "“Drink, forget it all, and go on lighter.”")}</i>
         </p>
         {onHoanHon && honActive(meta) && hon < HON_MAX - 10 && (
           <div className="mb-hoan">
