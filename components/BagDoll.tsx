@@ -10,6 +10,7 @@ import ForgeScene from './ForgeScene';
 import type { Character, Slot } from '@/lib/game/types';
 import { tr } from '@/lib/i18n';
 
+const RARE_SHORT = [tr('Thường', 'Com'), tr('Tốt', 'Fine'), tr('Hiếm', 'Rare'), tr('Cực', 'Supr')];
 const RARE_TXT = [tr('Thường', "Common"), tr('Tốt', "Fine"), tr('Hiếm', "Rare"), tr('Cực phẩm', "Supreme")];
 const SLOT_NAME: Record<Slot, string> = { ao: tr('Áo', "Robe"), vu_khi: tr('Vũ khí', "Weapon"), phu_kien: tr('Phụ kiện', "Accessory") };
 type Kind = 'all' | Slot | 'dan';
@@ -52,7 +53,8 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
   const [forging, setForging] = useState(false);
   const [kind, setKind] = useState<Kind>(() => (readPref('vkl.bagKind') as Kind) || 'all');
   useEffect(() => writePref('vkl.bagKind', kind), [kind]);
-  const [sel, setSel] = useState<Sel>(() => (c.equipped.vu_khi ? { item: c.equipped.vu_khi } : null));
+  const [sel, setSel] = useState<Sel>(null);
+  const [forgeMsg, setForgeMsg] = useState(false);
   const owned = ITEMS.filter((i) => c.inventory.includes(i.id)).sort((a, b) => c.inventory.lastIndexOf(b.id) - c.inventory.lastIndexOf(a.id));
   const pills = PILLS.filter((p) => (c.pills[p.id] ?? 0) > 0);
   const shownItems = kind === 'dan' ? [] : kind === 'all' ? owned : owned.filter((i) => i.slot === kind);
@@ -126,9 +128,25 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
       </div>
       <div className="doll-bar">
         <span>{fxTextData(g) || tr('Trang bị chưa có chỉ số', "No equipment stats yet")}</span>
-        <b>{tr("Tinh thiết ", "Refined iron ")}{c.tinhHoa ?? 0}</b>
+        <button
+          type="button"
+          className="doll-forge"
+          onClick={() => {
+            if (c.equipped.vu_khi && onForge) setForging(true);
+            else setForgeMsg(true);
+          }}
+        >
+          {tr('⚒ Lò rèn', '⚒ Forge')}
+          {c.equipped.vu_khi ? ` +${lv}` : ''}
+          <small>{tr(`tinh thiết ${c.tinhHoa ?? 0}`, `iron ${c.tinhHoa ?? 0}`)}</small>
+        </button>
       </div>
 
+      {forgeMsg && !c.equipped.vu_khi && (
+        <p className="note forge-msg" onClick={() => setForgeMsg(false)}>
+          {tr('Lò rèn nâng vũ khí đang cầm. Hãy mặc một vũ khí trước (nhóm Vũ khí bên dưới, hoặc mua ở Phường thị).', 'The forge upgrades the weapon you are holding. Equip a weapon first (Weapons below, or buy one at the Market).')}
+        </p>
+      )}
       <div className="inv-kinds" role="tablist" aria-label={tr("Loại đồ", "Item type")}>
         {KINDS.map(([k, n]) => (
           <button key={k} role="tab" aria-selected={kind === k} className={kind === k ? 'on' : ''} onClick={() => setKind(k)}>
@@ -160,6 +178,7 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
                 <button key={it.id} type="button" className={`inv-cell r${it.rare ?? 0} ${selItem?.id === it.id ? 'sel' : ''} ${isSpare(it) ? 'spare' : ''}`} onClick={() => setSel({ item: it.id })} aria-label={it.name}>
                   <ItemIcon item={it} />
                   {isOn(it.id) ? <i className="inv-on">{tr('Mặc', 'Wear')}</i> : isSpare(it) ? <i className="inv-spare">{tr('Thừa', 'Spare')}</i> : null}
+                  <i className={`inv-rare r${it.rare ?? 0}`}>{RARE_SHORT[it.rare ?? 0]}{it.slot === 'vu_khi' && isOn(it.id) && lv > 0 ? ` +${lv}` : ''}</i>
                 </button>
               ))}
               {ps.map((p) => (
@@ -175,8 +194,12 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
       })}
       {kind === 'all' && !owned.length && !pills.length && <p className="note">{tr('Túi trống.', 'Your bag is empty.')}</p>}
 
+      {(selItem || selPill) && <div className="inv-pop-back" onClick={() => setSel(null)} aria-hidden="true" />}
       {selItem && (
-        <section className="inv-detail">
+        <section className="inv-detail inv-pop" role="dialog" aria-label={selItem.name}>
+          <button type="button" className="inv-pop-x" onClick={() => setSel(null)} aria-label={tr('Đóng', 'Close')}>
+            ✕
+          </button>
           <div className="inv-d-head">
             <span className={`inv-cell r${selItem.rare ?? 0}`}>
               <ItemIcon item={selItem} />
@@ -220,7 +243,10 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
         </section>
       )}
       {selPill && (
-        <section className="inv-detail">
+        <section className="inv-detail inv-pop" role="dialog" aria-label={selPill.name}>
+          <button type="button" className="inv-pop-x" onClick={() => setSel(null)} aria-label={tr('Đóng', 'Close')}>
+            ✕
+          </button>
           <div className="inv-d-head">
             <span className="inv-cell pill">
               <ItemIcon pill={selPill.id} />
