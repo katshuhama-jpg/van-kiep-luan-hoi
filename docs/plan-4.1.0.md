@@ -12,7 +12,7 @@ Mỗi lần chạy: làm khối **đầu tiên còn ô trống**, đánh dấu [
 - Ghi chú:
 
 ## Ngày 2 - Hết chết oan theo cảnh giới, nhịp kẻ địch
-- [ ] Q2: rà 32 sự kiện phàm giới có lựa chọn `fatal` mà không có `maxRealm` (viết script đếm như báo cáo). Hoặc gắn `maxRealm`, hoặc nhân tỉ lệ chết theo khoảng cách cảnh giới. `ran_doc`: hết đan thì chết 0,4 chỉ khi realm ≤ 1, từ Trúc Cơ đổi thành mất sức khỏe và tăng tâm ma. `cuop_duong`: `maxRealm: 3`, từ Nguyên Anh trở lên thành bọn cướp quỳ xin tha (câu hài).
+- [ ] Q2: rà 32 sự kiện phàm giới có lựa chọn `fatal` mà không có `maxRealm` (viết script đếm như báo cáo). Hoặc gắn `maxRealm`, hoặc nhân tỉ lệ chết theo khoảng cách cảnh giới. `ran_doc`: hết đan thì chết 0,4 chỉ khi realm ≤ 1, từ Trúc Cơ đổi thành mất sức khỏe và tăng tâm ma. `cuop_duong`: `maxRealm: 3`, từ Nguyên Anh trở lên thành bọn cướp quỳ xin tha (câu hài). Góp ý #29 (29/10): Luyện Hư vẫn chết vì nhà sập đè (events3.ts:481-488, động đất kho linh thạch) hoặc sửa cầu trượt chân (events.ts:294 giếng cổ và sự kiện sửa cầu) - từ Trúc Cơ trở lên các tai nạn phàm tục này chỉ gây thương, không chết. Trả lời #29 cùng #23.
 - [ ] Q3: khoảng lặng giữa các trận bắt buộc (chặn đường, gặp người chơi, oan gia, cuop_duong, sat_thu): cách nhau ít nhất 3 năm game và 60 giây thời gian thực. Bỏ chặn đường khi sức khỏe dưới 35. Sau trận thua còn sống, tăng trọng số sự kiện cơ duyên trong 5 năm.
 - Xong:
 - Ghi chú:
