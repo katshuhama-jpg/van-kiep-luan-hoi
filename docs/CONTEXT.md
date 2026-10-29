@@ -117,6 +117,13 @@ Vòng chơi một kiếp:
 - Tracker chỉ ghi `open` một lần mỗi tab (sessionStorage `vkl.opened`), tải lại tính là `page`.
 - Xếp hạng hòa điểm: ai đạt trước đứng trên (`rankAt`, cần chạy `supabase/leaderboard_tie_order.sql`).
 
+- **Kiếp đầu cho người mới (29/10, bản 4.0.0):** đo ra người mới bỏ đi trung bình 17 giây sau khi đầu thai, đúng lúc 6 bảng hướng dẫn hiện liền. Nay:
+  - Bỏ 6 bảng lúc đầu thai, thay bằng `CoachHint` (`components/Extras.tsx`): mỗi lúc một bong bóng chỉ đúng chỗ, game không dừng. Thứ tự trong `nextHint` (`app/choi/page.tsx`): chọn cách xử lý (bong bóng ghim trên đầu màn), tua 16×, chọn việc năm nay (từ 6 tuổi), chỉ số (12 tuổi), phường thị/túi đồ/bế quan (16 tuổi). Đã xem lưu `vkl.hints`; xem đủ thì đặt `vkl.tut`. Bảng hướng dẫn đầy đủ vẫn mở được từ menu ☰.
+  - Kiếp 1: chuyện đầu tiên tới ngay lúc đầu thai (`openingEvent` trong engine: thôi nôi, trẻ mồ côi thì chuyện tuổi nhỏ khác), mặc định tốc độ Nhanh.
+  - Ba kiếp đầu: dưới 12 tuổi trôi nhanh gấp 4, 12-16 tuổi gấp 2,5 (`youthPace`), có dòng "Tuổi thơ trôi nhanh" dưới thanh năm. Đo thử: 12 tuổi ở giây 33, 16 tuổi ở giây 50.
+  - Sự kiện đo: `first_choice` (lifeNo, ms từ lúc đầu thai).
+- **Cáo thị dạng tóm tắt (4.0.0):** `Release` có thêm `asked` (ý người chơi yêu cầu: `who`, `short`, `text`) và `more` (điểm mới khác). Cáo thị mở ra là bảng tóm tắt (ý người chơi lên đầu), nút "Chơi tiếp" và "Xem chi tiết"; thanh nút ghim đáy. Trang `/cap-nhat` hiện `asked` thành nhóm "Theo góp ý của đạo hữu".
+
 ## 4b2. Ngũ Hành Vấn Tâm Đài và điều kiện phi thăng
 
 - Phi thăng cần đủ **Độ Kiếp hậu kỳ, tu vi đầy và từ 120 tuổi** (`ASCEND_MIN_AGE` trong `lib/game/nguHanhDai.ts`). Chưa đủ tuổi thì sự kiện phi thăng không hiện, tu vi đứng yên, cứ 10 năm có dòng nhắc. Ở dock có dải **Ngũ Hành Đài** (từ Hóa Thần): ấn, phù, số năm còn phải chờ; chạm vào mở luật kèm hướng dẫn nên làm gì trong lúc chờ.

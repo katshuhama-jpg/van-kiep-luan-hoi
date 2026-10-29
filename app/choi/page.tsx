@@ -5,7 +5,7 @@ import GhiDanh from '@/components/GhiDanh';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Scene from '@/components/Scene';
 import MusicToggle from '@/components/MusicToggle';
-import { TribulationOverlay, Tutorial, clearLaSo } from '@/components/Extras';
+import { CoachHint, TribulationOverlay, Tutorial, clearLaSo } from '@/components/Extras';
 import { HoDaoScene, HoTroScene, TuKiepOverlay } from '@/components/VanKiep';
 import type { PastSelf } from '@/lib/vanKiep';
 import { LOI_ALLOW, LOI_TOTAL, daoKhon, failVanDao, usesVanDao } from '@/lib/game/vanDao';
@@ -22,7 +22,7 @@ import { lang, setLang } from '@/lib/i18n';
 import { nameOf } from '@/lib/hanviet';
 import { charLang, convertChar, convertMeta, loadDict, looksVi } from '@/lib/retrans';
 import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, itemPrice, pillPrice, RARE_STOCK_REALM, realmLabel, realmName, soldOut, yearSpeed, youthPace } from '@/lib/game/data';
-import { genName, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick, chungDao } from '@/lib/game/engine';
+import { genName, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick, chungDao, openingEvent } from '@/lib/game/engine';
 import { addCult, addPill, dao, fatal, fmt, giveItem, money, reward, stat, wealthTier, DO_KIEP_REALM } from '@/lib/game/helpers';
 import type { Character, Element, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
 import DuelWarning from '@/components/Duel';
@@ -61,6 +61,18 @@ type SheetName = null | 'shop' | 'bag' | 'bequan' | 'menu' | 'hunt' | 'info' | '
 
 type Battle = BattleView & { t: number; rest: number; ps: Fighter; ms: Fighter };
 
+const HINT_ORDER = ['choice', 'speed', 'focus', 'stats', 'dock'];
+/** Bong bóng gợi ý kế tiếp cho người mới, theo đúng lúc cần dùng */
+function nextHint(h: Record<string, 1>, pending: boolean, age: number): { k: string; sel: string; text: string; top?: boolean } | null {
+  if (pending) return h.choice ? null : { k: 'choice', sel: '.choices', top: true, text: tr('Có chuyện xảy ra: chọn một cách xử lý. Đọc dòng nhỏ dưới mỗi lựa chọn, có cách khiến bạn chết.', 'Something happened: pick a response. Read the small line under each choice - some of them get you killed.') };
+  if (!h.choice) return null;
+  if (!h.speed) return { k: 'speed', sel: '.speeds', text: tr('Thời gian tự trôi. Bấm 16× để tua nhanh, ❚❚ để dừng.', 'Time flows on its own. Tap 16× to speed up, ❚❚ to pause.') };
+  if (!h.focus && age >= 6) return { k: 'focus', sel: '.focus-grid', text: tr('Chạm để chọn việc năm nay: Tu luyện lên cảnh giới, Kiếm tiền mua đồ, Trừ yêu đánh quái.', 'Tap to pick this year\'s focus: Cultivate to climb realms, Earn to buy gear, Hunt to fight monsters.') };
+  if (h.focus && !h.stats && age >= 12) return { k: 'stats', sel: '.strip-btn', text: tr('Chạm tên để xem chỉ số. Sức khỏe về 0 hoặc tâm ma lên 100 là chết.', 'Tap your name to see stats. Health at 0 or heart demons at 100 means death.') };
+  if (h.stats && !h.dock && age >= 16) return { k: 'dock', sel: '.dock-actions', text: tr('Phường thị bán đồ, Túi đồ để mặc, Bế quan để tu nhanh.', 'The Market sells gear, the Bag equips it, Seclusion speeds up cultivation.') };
+  return null;
+}
+
 export default function PlayPage() {
   const { user, ready } = useAuth();
   const [phase, setPhase] = useState<'loading' | 'birth' | 'play'>('loading');
@@ -80,7 +92,26 @@ export default function PlayPage() {
   // Ngũ Hành Đài trước phi thăng: giữ lựa chọn đột phá và sự kiện để độ kiếp sau khi thắng đủ 5 bóng
   const [nhdPeek, setNhdPeek] = useState(false); // xem luật Ngũ Hành Đài từ dải nhắc
   const [nhd, setNhd] = useState<{ i: number; p: PendingEvent; view: NhdView | 'fight' | 'hodao'; foe: Stance; tell: Stance; msg?: string; end?: 'next' | 'done' | 'lose' | 'dead' } | null>(null);
-  const [tut, setTut] = useState(false); // hướng dẫn lần đầu
+  const [tut, setTut] = useState(false); // hướng dẫn đầy đủ (mở từ menu)
+  // gợi ý đúng lúc cho người mới: mỗi lúc một bong bóng, đã xem thì thôi
+  const [hints, setHints] = useState<Record<string, 1>>(() => {
+    try {
+      if (localStorage.getItem('vkl.tut')) return { choice: 1, speed: 1, focus: 1, stats: 1, dock: 1 };
+      return JSON.parse(localStorage.getItem('vkl.hints') ?? '{}');
+    } catch {
+      return {};
+    }
+  });
+  const seeHint = (k: string) =>
+    setHints((h) => {
+      if (h[k]) return h;
+      const n = { ...h, [k]: 1 as const };
+      try {
+        localStorage.setItem('vkl.hints', JSON.stringify(n));
+        if (HINT_ORDER.every((x) => n[x])) localStorage.setItem('vkl.tut', '1');
+      } catch {}
+      return n;
+    });
   const [relOpen, setRelOpen] = useState(false); // cáo thị bản cập nhật mới
   const [ascend, setAscend] = useState<'tien' | 'ma' | 'hu' | null>(null); // cảnh phi thăng vừa xảy ra
   const cosSeen = useRef<string | null | undefined>(undefined);
@@ -874,6 +905,10 @@ export default function PlayPage() {
   const choose = (i: number) => {
     const p = pendingRef.current;
     const c = charRef.current;
+    if (c && !hints.choice) {
+      seeHint('choice');
+      track('first_choice', { lifeNo: c.lifeNo, ms: Date.now() - lifeT0.current });
+    }
     // phi thăng: phải qua Ngũ Hành Đài trước rồi mới độ kiếp
     if (p && c && p.id === BREAK_EVENT_ID && needTrial(c) && !/^(Củng cố|Consolidate)/.test(p.choices[i]?.label ?? '')) {
       pendingRef.current = null;
@@ -1076,6 +1111,7 @@ export default function PlayPage() {
       setSheet('hunt');
       return;
     }
+    seeHint('focus');
     act((c) => (c.focus = f));
   };
 
@@ -1242,9 +1278,12 @@ export default function PlayPage() {
     setPhase('play');
     persist(true);
     window.scrollTo(0, 0);
-    try {
-      if (!localStorage.getItem('vkl.tut')) setTut(true);
-    } catch {}
+    // kiếp đầu: chuyện thôi nôi tới ngay, người mới bấm lựa chọn đầu tiên trong vài giây (hướng dẫn thay bằng gợi ý đúng lúc)
+    const open = openingEvent(c);
+    if (open) {
+      pendingRef.current = open;
+      rerender();
+    }
   };
 
   // ghi thù từ thư giang hồ: đang chơi thì ghi vào nhân vật, chưa đầu thai thì ghi vào hồ sơ
@@ -1700,6 +1739,7 @@ export default function PlayPage() {
         <div className="year-bar" aria-hidden="true">
           <div style={{ width: `${yearPct}%` }} />
         </div>
+        {youthPace(c) > 1 && <small className="youth-tag">{tr(`Tuổi thơ trôi nhanh ×${youthPace(c)}`, `Childhood flies by ×${youthPace(c)}`)}</small>}
         <div className="speeds">
           <button className="play" onClick={() => setRunning(!running)} aria-label={running ? tr('Tạm dừng', "Pause") : tr('Tiếp tục', "Resume")} disabled={!!pending || c.dead}>
             {running ? '❚❚' : '▶'}
@@ -1711,6 +1751,7 @@ export default function PlayPage() {
               onClick={() => {
                 setSpeed(s);
                 setRunning(true);
+                if (s > 1) seeHint('speed');
               }}
               aria-pressed={speed === s}
             >
@@ -1896,6 +1937,11 @@ export default function PlayPage() {
         </Sheet>
       )}
       {c.dead && <DeathSheet c={c} meta={meta} karma={karmaOf(c)} isNew={!meta.endings?.[endingOf(c).id]} onDone={finishLife} />}
+      {(() => {
+        if (tut || c.dead || sheet !== null || kiep !== null || hoTro || vanDao || nhd || duelWarn || duelRef.current || ambushRef.current) return null;
+        const h = nextHint(hints, !!pending, c.age);
+        return h ? <CoachHint key={h.k} sel={h.sel} text={h.text} top={h.top} onOk={() => seeHint(h.k)} /> : null;
+      })()}
       {tut && !pending && !c.dead && (
         <Tutorial
           onDone={() => {

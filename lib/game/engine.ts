@@ -1574,3 +1574,14 @@ export function describeLean(daoTam: number) {
 }
 
 export { PATHS };
+
+/** Kiếp đầu tiên: chuyện thôi nôi tới ngay lúc vừa đầu thai, người mới bấm lựa chọn đầu tiên trong vài giây */
+export function openingEvent(c: Character): PendingEvent | null {
+  if (c.lifeNo !== 1) return null;
+  // trẻ mồ côi không có lễ thôi nôi (có cảnh cả nhà): lấy chuyện tuổi nhỏ đầu tiên hợp với bạn
+  for (const id of ['thoi_noi', 'sot_dau', 'gieng_co', 'ke_la', 'yeu_hoa_hinh', 'mat_mua']) {
+    const e = EVENTS.find((x) => x.id === id);
+    if (e && eligible({ ...c, age: Math.max(c.age, e.minAge ?? 0) } as Character, e)) return buildPending(c, e);
+  }
+  return null;
+}

@@ -765,7 +765,8 @@ export function BirthPanel({
   onSoSinhTu?: () => void;
 }) {
   const [picked, setPicked] = useState<string[]>([]);
-  const [yearSec, setYearSec] = useState(20);
+  // kiếp đầu tiên mặc định Nhanh để người mới sớm thấy trọn một kiếp
+  const [yearSec, setYearSec] = useState(meta.lives === 0 ? 10 : 20);
   const [gifts, setGifts] = useState<string[]>([]);
   const [gSpent, setGSpent] = useState(0);
   const [base, setBase] = useState<Character | null>(null);

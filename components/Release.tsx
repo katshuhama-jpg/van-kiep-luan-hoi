@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 import { CURRENT_VERSION, RELEASES, markSeenLocal, seenLocal, type Release } from '@/lib/releases';
 import { tr } from '@/lib/i18n';
 
@@ -9,6 +10,18 @@ export function ReleaseBody({ r }: { r: Release }) {
   return (
     <>
       <p className="rel-intro">{r.lead}</p>
+      {r.asked && (
+        <div className="rel-group hot">
+          <h3>{tr('Theo góp ý của đạo hữu', 'From your feedback')}</h3>
+          <ul className="rel-items">
+            {r.asked.map((a) => (
+              <li key={a.text}>
+                <b className="rel-who">{a.who}</b> {a.text}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       {r.stats && (
         <div className="rel-stats">
           {r.stats.map((s) => (
@@ -51,6 +64,8 @@ export function needNotice(seen?: string | null): boolean {
 /** Cáo thị giang hồ: hiện một lần cho mỗi bản mới, đóng thì ghi nhận đã xem */
 export default function ReleaseNotice({ onClose }: { onClose: (v: string) => void }) {
   const r = RELEASES[0];
+  // bảng tóm tắt trước: ý người chơi yêu cầu lên đầu, bấm mới mở chi tiết
+  const [full, setFull] = useState(!r.asked && !r.more);
   const close = () => {
     markSeenLocal();
     onClose(CURRENT_VERSION);
@@ -65,14 +80,45 @@ export default function ReleaseNotice({ onClose }: { onClose: (v: string) => voi
           </span>
           <p className="rel-kick">{tr("Cáo thị giang hồ · ", "Jianghu Proclamation · ")}{r.date}</p>
           <h2 id="rel-title">{r.title}</h2>
-          <ReleaseBody r={r} />
+          {full ? (
+            <ReleaseBody r={r} />
+          ) : (
+            <div className="rel-sum">
+              {r.asked && (
+                <>
+                  <h3>{tr('Đạo hữu yêu cầu, Thiên Đạo đã làm', 'You asked, the Heavenly Dao delivered')}</h3>
+                  <ul>
+                    {r.asked.map((a) => (
+                      <li key={a.text}>
+                        <span>{a.short}</span>
+                        <b>{a.who}</b>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+              {r.more && (
+                <>
+                  <h3>{tr('Còn có', 'Also new')}</h3>
+                  <div className="rel-chips">
+                    {r.more.map((m) => (
+                      <span key={m}>{m}</span>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          )}
           <div className="rel-acts">
             <button className="btn btn-red btn-big" onClick={close}>
-              
-              {tr("Đã rõ, vào luân hồi", "Understood, enter the Cycle")}
+              {tr('Chơi tiếp', 'Keep playing')}
             </button>
+            {!full && (
+              <button className="btn btn-big rel-more" onClick={() => setFull(true)}>
+                {tr('Xem chi tiết', 'See details')}
+              </button>
+            )}
             <Link href="/cap-nhat" className="rel-link" onClick={close}>
-              
               {tr("Xem lịch sử cập nhật", "View update history")}
             </Link>
           </div>

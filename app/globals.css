@@ -4531,3 +4531,29 @@ button.shadow-card { cursor: pointer; }
 .tk-cell, .tk-niche, .gio-altar { overflow: hidden; }
 .tk-niche > *, .gio-altar > * { flex: 0 0 auto; }
 .wk-sub { font-size: 14px; font-weight: 400; color: #6a5a48; }
+
+/* Gợi ý đúng lúc cho người mới */
+.coach { position: fixed; inset: 0; z-index: 85; pointer-events: none; }
+.coach-ring { position: absolute; border: 3px solid #ffd36b; box-shadow: 0 0 0 2px #3e3228; animation: coachPulse 1s steps(2) infinite alternate; }
+@keyframes coachPulse { from { border-color: #ffd36b; } to { border-color: #c0392b; } }
+.coach-card { position: absolute; left: 12px; right: 12px; max-width: 420px; margin: 0 auto; display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--paper-3); border: 3px solid var(--ink); box-shadow: 3px 3px 0 var(--ink-dark); pointer-events: auto; }
+.coach-card p { margin: 0; flex: 1; font-size: 16px; line-height: 1.3; }
+.coach-card .btn { flex: 0 0 auto; padding: 4px 10px; font-size: 15px; }
+.coach-arrow { position: fixed; width: 0; height: 0; }
+.coach-card.down .coach-arrow, .coach-card.up .coach-arrow { position: absolute; width: 12px; height: 12px; background: var(--paper-3); border: 3px solid var(--ink); transform: rotate(45deg); margin-left: -12px; }
+.coach-card.down .coach-arrow { top: -9px; border-right: 0; border-bottom: 0; }
+.coach-card.up .coach-arrow { bottom: -9px; border-left: 0; border-top: 0; }
+.youth-tag { display: block; text-align: center; font-size: 12px; color: #c8b89a; margin: -2px 0 2px; }
+
+/* Cáo thị dạng tóm tắt */
+.rel-sum h3 { margin: 10px 0 6px; font-size: 16px; color: #8a1a1a; text-transform: uppercase; letter-spacing: 0.5px; }
+.rel-sum ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.rel-sum ul { gap: 4px; }
+.rel-sum li { display: flex; align-items: center; gap: 6px; padding: 5px 8px; background: #fff8e6; border: 2px solid #3e3228; box-shadow: 2px 2px 0 #3e3228; font-size: 15px; line-height: 1.3; text-align: left; }
+.rel-sum li span { flex: 1; min-width: 0; }
+.rel-sum li b { flex: 0 0 auto; max-width: 40%; font-size: 12px; font-weight: 700; color: #fff8e6; background: #8a1a1a; padding: 0 5px; overflow-wrap: anywhere; }
+.rel-wrap .rel-acts { position: sticky; bottom: -16px; margin: 10px -16px -14px; padding: 8px 16px 12px; background: #f1e3c0; border-top: 2px solid #b8945a; }
+.rel-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.rel-chips span { font-size: 14px; padding: 2px 8px; background: #2a1f3d; color: #ffe27a; border: 2px solid #0e0a1a; }
+.rel-who { color: #8a1a1a; }
+.rel-acts .rel-more { width: 100%; margin-top: 6px; }

@@ -607,3 +607,48 @@ export function Tutorial({ onDone }: { onDone: () => void }) {
     </div>
   );
 }
+
+/**
+ * Gợi ý đúng lúc cho người mới: một bong bóng nhỏ chỉ vào đúng chỗ cần bấm, game không dừng, không phủ tối.
+ * Thay cho 6 bảng hướng dẫn liên tiếp lúc vừa đầu thai (người mới bỏ đi ngay ở đó).
+ */
+export function CoachHint({ sel, text, onOk, top }: { sel: string; text: string; onOk: () => void; top?: boolean }) {
+  const [rect, setRect] = useState<DOMRect | null>(null);
+  useEffect(() => {
+    let el: Element | null = null;
+    const update = () => {
+      el = document.querySelector(sel);
+      setRect(el ? el.getBoundingClientRect() : null);
+    };
+    update();
+    const t = setInterval(update, 400);
+    window.addEventListener('resize', update);
+    window.addEventListener('scroll', update, true);
+    return () => {
+      clearInterval(t);
+      window.removeEventListener('resize', update);
+      window.removeEventListener('scroll', update, true);
+    };
+  }, [sel]);
+  if (!rect || rect.height === 0) return null;
+  const vh = window.innerHeight;
+  const below = rect.top + rect.height / 2 < vh / 2;
+  // top: ghim bong bóng lên đầu màn hình (khi chỗ cần bấm chiếm gần hết màn, như bảng lựa chọn)
+  const style = top ? { top: 8 } : below ? { top: Math.min(vh - 140, rect.bottom + 12) } : { bottom: Math.min(vh - 140, vh - rect.top + 12) };
+  const vw = window.innerWidth;
+  const cardW = Math.min(420, vw - 24);
+  const cardLeft = (vw - cardW) / 2;
+  const arrowX = Math.max(20, Math.min(cardW - 20, rect.left + rect.width / 2 - cardLeft)) + 6;
+  return (
+    <div className="coach" aria-live="polite">
+      <div className="coach-ring" style={{ left: rect.left - 3, top: rect.top - 3, width: rect.width + 6, height: rect.height + 6 }} />
+      <div className={`coach-card ${below ? 'down' : 'up'}`} style={style}>
+        {!top && <i className="coach-arrow" style={{ left: arrowX }} />}
+        <p>{text}</p>
+        <button className="btn btn-red" onClick={onOk}>
+          {tr('Đã hiểu', 'Got it')}
+        </button>
+      </div>
+    </div>
+  );
+}

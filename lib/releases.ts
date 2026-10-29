@@ -10,9 +10,80 @@ export interface Release {
   lead: string;
   stats?: { n: string; label: string }[];
   groups: { h: string; items: string[]; hot?: boolean }[]; // hot: nhóm nổi bật
+  /** Ý người chơi yêu cầu đã làm: lên đầu bảng tóm tắt của cáo thị */
+  asked?: { who: string; short: string; text: string }[];
+  /** Điểm mới khác, mỗi ý vài chữ, cho bảng tóm tắt */
+  more?: string[];
 }
 
 export const RELEASES: Release[] = [
+  {
+    v: '4.0.0',
+    date: '29/10/2026',
+    title: tr('Vạn Kiếp Hộ Đạo', 'Guarded by Ten Thousand Lives'),
+    lead: tr('Bản này làm theo góp ý của đạo hữu: Chứng Đạo thành bốn kiếp vấn đạo và mười ba đạo lôi, các kiếp trước hiện về đỡ lôi thay bạn. Độ Kiếp có quái riêng, oan gia bớt dày, đồ thừa có chỗ dùng, được hạ chiến thư cho bóng của người khác.', 'This update follows your feedback: attaining the Dao now means four trials and thirteen bolts, and your past lives return to take the lightning for you. Tribulation has its own monsters, nemeses show up less, spare gear finally has a use, and you can challenge other players\' shadows.'),
+    asked: [
+      { who: '@thien', short: tr('Chứng Đạo mới: 4 kiếp vấn đạo, 13 đạo lôi, vạn kiếp hộ đạo', 'New Dao attainment: 4 trials, 13 bolts, past lives shield you'), text: tr('Chứng Đạo mới: Tứ Kiếp Vấn Đạo (Tâm Ma, Ái Nộ, Vấn Tâm, Vấn Thiên), rồi 13 đạo lôi. Hụt nhiều thì vạn kiếp trước hiện về đỡ thay.', 'New Dao attainment: the Four Trials (Heart Demon, Love and Wrath, Questioning the Heart, Questioning Heaven), then 13 bolts. Miss too many and your past lives return to take them for you.') },
+      { who: '@thien', short: tr('Độ Kiếp có 20 quái riêng, hết chết vì cướp vặt, rắn rết', 'Tribulation gets 20 monsters of its own, no more deaths to petty bandits'), text: tr('Độ Kiếp không còn chết vì cướp vặt, rắn rết: 20 loài quái chỉ gặp ở Độ Kiếp, cướp và sát thủ đổi thành kẻ thù xứng tầm.', 'No more Tribulation deaths to petty bandits and snakes: 20 monsters found only at Tribulation, and bandits and assassins are replaced by worthy foes.') },
+      { who: '@hna @thien @shizun', short: tr('Oan gia bớt dày, bớt chênh 20%', 'Nemeses 20% less frequent and less overpowered'), text: tr('Oan gia bớt dày: gặp lại ít hơn, kẻ thù mạnh hơn cũng bớt chênh, Luyện Khí không gặp địch quá mạnh.', 'Fewer nemeses: they return less often, stronger foes are less overpowered, and Qi Refining no longer meets enemies far above you.') },
+      { who: '@thien', short: tr('Hạ chiến thư cho bóng kiếp của người khác', 'Challenge other players\' shadows'), text: tr('Hạ chiến thư cho bóng một kiếp của người khác, đấu bằng cảnh giới thật, hai bên lệch tối đa 3 đại cảnh giới.', 'Challenge a shadow of another player\'s life, fought at true realms, at most 3 major realms apart.') },
+      { who: '@minimoni', short: tr('Bán, phân giải đồ thừa, lò rèn +5, túi đồ búp bê', 'Sell or salvage spare gear, forge to +5, paper-doll bag'), text: tr('Đồ thừa bán lấy linh thạch hoặc phân giải ra tinh thiết; lò rèn nâng vũ khí tới +5; túi đồ kiểu búp bê.', 'Sell spare gear for spirit stones or break it into refined iron; the forge upgrades weapons up to +5; a paper-doll inventory.') },
+    ],
+    more: [
+      tr('Tàng Kiếp Các', 'Hall of Past Lives'),
+      tr('Thất Nhật Lục', 'Seven-Day Chronicle'),
+      tr('Ngày giỗ các kiếp', 'Memorial days'),
+      tr('Bảng Chứng Đạo', 'Dao Board'),
+      tr('Kiếp trước hộ đạo ở Ngũ Hành Đài', 'Past lives at the Five Elements Platform'),
+      tr('Tán công chuyển đạo', 'Switching paths mid-life'),
+      tr('Trang đầu sống động', 'A livelier home page'),
+      tr('Kiếp đầu nhanh hơn', 'A faster first life'),
+    ],
+    stats: [
+      { n: '4+13', label: tr('kiếp vấn đạo + đạo lôi', 'trials + bolts') },
+      { n: '20', label: tr('quái Độ Kiếp mới', 'new Tribulation monsters') },
+      { n: '-20%', label: tr('độ dày oan gia', 'nemesis pressure') },
+    ],
+    groups: [
+      {
+        h: tr('Chứng Đạo mới và Vạn Kiếp', 'New Dao attainment and your past lives'),
+        hot: true,
+        items: [
+          tr('Ở Tiên giới, Ma giới, Chứng Đạo là bốn kiếp vấn đạo: mỗi kiếp chọn một trong mấy cách, tỉ lệ hiện sẵn. Trượt một kiếp là rớt một đại cảnh giới, còn 1 máu, 10 năm sau mới thử lại.', 'In the Immortal and Demon Realms, attaining the Dao means four trials: each offers a few answers with the odds shown. Fail one and you drop a major realm with 1 HP left, and must wait 10 years to try again.'),
+          tr('Qua đủ bốn kiếp thì đỡ 13 đạo lôi, hụt tối đa 3 đạo là chứng đạo.', 'Pass all four, then face 13 bolts; miss no more than 3 and you attain the Dao.'),
+          tr('Hụt từ 4 đạo: các kiếp trước của bạn hiện về thành bóng, chạm từng kiếp để gửi lên đỡ lôi, kèm câu khắc bia bạn từng viết. Kiếp từng chết dưới thiên kiếp đỡ gấp rưỡi. Tối đa 13 kiếp, nên chơi nhiều kiếp chết yểu không giúp gì.', 'Miss 4 or more and your past lives return as shadows: tap each one to send them up, each carrying the epitaph you once wrote. Lives once killed by tribulation take 1.5x. At most 13 lives answer, so farming short lives does not help.'),
+          tr('Thiên kiếp phi thăng hụt đạo nào thì kiếp trước từ Hóa Thần trở lên đỡ thêm, tối đa 3 đạo. Thua một vòng ở Ngũ Hành Đài thì một kiếp trước ra đỡ, đánh lại gương đó, mỗi đời một lần.', 'At the ascension tribulation, past lives from Spirit Transformation up can take up to 3 missed bolts. Lose a round at the Five Elements Platform and a past life steps in so you can fight that mirror again, once per life.'),
+          tr('Màn cáo biệt của mọi kiếp có hàng bóng các kiếp trước. Tàng Kiếp Các cất mọi kiếp bạn từng là, chạm vào xem lời để lại.', 'Every farewell screen shows the line of your past lives. The Hall of Past Lives keeps everyone you have been; tap one to read their last words.'),
+          tr('Thất Nhật Lục ghi bảy ngày luân hồi của bạn, khoe được thành thẻ. Ngày giỗ một kiếp (7, 49, 100 ngày, tròn năm) thắp hương được thêm phúc duyên.', 'The Seven-Day Chronicle records your last seven days and turns it into a card to share. On a past life\'s memorial day (7, 49, 100 days, each year) you can light incense for extra Fortune.'),
+          tr('Bảng Chứng Đạo: ai chứng đạo nhiều nhất, nhanh nhất, nhờ vạn kiếp hộ đạo. Chứng đạo xong có khung chỉ bước tiếp theo và ô hỏi đạo hữu muốn Thiên Đạo thêm gì.', 'The Dao Board: who attained the Dao most often, fastest, and with the help of past lives. Afterward a panel shows your next step and asks what you would like the Heavenly Dao to add.'),
+        ],
+      },
+      {
+        h: tr('Độ Kiếp và oan gia', 'Tribulation and nemeses'),
+        items: [
+          tr('20 loài quái chỉ gặp khi đã Độ Kiếp (Lv24-33, 4 loài mỗi hệ), hình pixel dáng mới. Quái chặn đường ở Độ Kiếp chỉ rút từ nhóm này.', '20 monsters found only at Tribulation (Lv24-33, 4 per element), with new pixel shapes. Ambushes at Tribulation draw only from them.'),
+          tr('Cướp đêm thành Đoạt Kiếp Minh bày Khốn Long Trận, sát thủ thành lôi kiếp người khác nhận nhầm. Vẫn nguy hiểm, nhưng hợp tầm Độ Kiếp.', 'Night bandits become the Calamity Thieves\' League with its Dragon-Trapping Array, and assassins become another cultivator\'s tribulation striking you by mistake. Still dangerous, but fit for Tribulation.'),
+          tr('Oan gia gặp lại 28% thay vì 35%, kẻ thù mạnh hơn chỉ giữ 80% khoảng cách sức mạnh, Luyện Khí gặp địch mạnh hơn 2-5 cấp thay vì 3-6.', 'Nemeses return 28% of the time instead of 35%, stronger foes keep only 80% of the power gap, and Qi Refining meets foes 2-5 levels above instead of 3-6.'),
+        ],
+      },
+      {
+        h: tr('Đồ đạc, lò rèn, chiến thư', 'Gear, forge and challenges'),
+        items: [
+          tr('Túi đồ kiểu búp bê: nhân vật đứng giữa, ô trang bị quanh người.', 'Paper-doll inventory: your character in the middle, gear slots around them.'),
+          tr('Đồ thừa bán lấy linh thạch hoặc phân giải ra tinh thiết. Lò rèn nâng vũ khí tới +5, mỗi món mang một hệ ngũ hành; từ +2 lên +3 trở đi có thể vỡ.', 'Sell spare gear for spirit stones or break it into refined iron. The forge upgrades weapons to +5, each carrying a random element; from +2 to +3 onward the item may shatter.'),
+          tr('Hạ chiến thư: đấu Phi Kiếm với bóng một kiếp của người khác (từ nghĩa trang, bảng xếp hạng, giang hồ), đấu bằng cảnh giới thật, lệch tối đa 3 đại cảnh giới.', 'Issue a challenge: a Flying Sword duel with a shadow of another player\'s life (from the cemetery, leaderboard or jianghu), at true realms, at most 3 major realms apart.'),
+          tr('Tán công chuyển đạo: 10 kỳ ngộ cho phép đổi con đường giữa kiếp, mất 30% tu vi, mỗi kiếp một lần.', 'Switching paths: 10 rare encounters let you change your path mid-life, losing 30% cultivation, once per life.'),
+        ],
+      },
+      {
+        h: tr('Trang đầu và người mới', 'Home page and newcomers'),
+        items: [
+          tr('Trang đầu hiện số đạo hữu đang luân hồi, dòng tin các kiếp vừa hết, thiên tượng hôm nay, 3 bia mới có thắp hương, và thanh Tiếp tục ghim dưới đáy.', 'The home page shows how many Daoists are playing, a ticker of lives just ended, today\'s omen, the 3 newest graves with incense, and a pinned Continue bar.'),
+          tr('Kiếp đầu: chuyện thôi nôi tới ngay, mặc định tốc độ Nhanh, tuổi thơ ba kiếp đầu trôi nhanh hơn. Sáu bảng hướng dẫn được thay bằng gợi ý nhỏ đúng lúc cần.', 'First life: the first-birthday event comes right away, speed defaults to Fast, and childhood in the first three lives passes faster. The six tutorial panels are replaced by small hints when you need them.'),
+        ],
+      },
+    ],
+  },
   {
     v: '3.2.0',
     date: '27/10/2026',
