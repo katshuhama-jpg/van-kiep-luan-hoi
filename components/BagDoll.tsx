@@ -5,7 +5,7 @@ import ItemIcon from './ItemIcon';
 import Sprite from './Sprite';
 import { ITEMS, PILLS, fxText as fxTextData, gearFx, type Item } from '@/lib/game/data';
 import { playerStats } from '@/lib/game/combat';
-import { FORGE_MAX, canSmelt, elFx, forgeLevel, itemEl, sellValue, smeltValue, type ForgeResult } from '@/lib/game/forge';
+import { FORGE_COST, FORGE_MAX, canSmelt, elFx, forgeLevel, itemEl, sellValue, smeltValue, type ForgeResult } from '@/lib/game/forge';
 import ForgeScene from './ForgeScene';
 import type { Character, Slot } from '@/lib/game/types';
 import { tr } from '@/lib/i18n';
@@ -133,7 +133,10 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
           className="doll-forge"
           onClick={() => {
             if (c.equipped.vu_khi && onForge) setForging(true);
-            else setForgeMsg(true);
+            else {
+              setForgeMsg(true);
+              if (owned.some((i) => i.slot === 'vu_khi')) setKind('vu_khi');
+            }
           }}
         >
           {tr('⚒ Lò rèn', '⚒ Forge')}
@@ -144,7 +147,9 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
 
       {forgeMsg && !c.equipped.vu_khi && (
         <p className="note forge-msg" onClick={() => setForgeMsg(false)}>
-          {tr('Lò rèn nâng vũ khí đang cầm. Hãy mặc một vũ khí trước (nhóm Vũ khí bên dưới, hoặc mua ở Phường thị).', 'The forge upgrades the weapon you are holding. Equip a weapon first (Weapons below, or buy one at the Market).')}
+          {owned.some((i) => i.slot === 'vu_khi')
+            ? tr('Lò rèn nâng vũ khí đang cầm. Chạm một vũ khí trong nhóm Vũ khí bên dưới rồi bấm "Cầm lên và rèn".', 'The forge upgrades the weapon you hold. Tap a weapon in the Weapons group below, then "Wield and forge".')
+            : tr('Lò rèn nâng vũ khí đang cầm. Túi chưa có vũ khí nào: mua ở Phường thị, hoặc diệt yêu thú để rơi đồ.', 'The forge upgrades the weapon you hold. You have no weapon yet: buy one at the Market, or hunt monsters for drops.')}
         </p>
       )}
       <div className="inv-kinds" role="tablist" aria-label={tr("Loại đồ", "Item type")}>
@@ -233,6 +238,20 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
               </button>
             )}
           </div>
+          {selItem.slot === 'vu_khi' && !isOn(selItem.id) && onForge && (
+            <button
+              className="btn btn-red btn-big forge-open"
+              onClick={() => {
+                onEquip(selItem.id);
+                setSel(null);
+                setForging(true);
+              }}
+            >
+              {tr('⚒ Cầm lên và rèn', '⚒ Wield and forge')}
+              <small>{tr(`rèn +1 tốn ${FORGE_COST[0]} tinh thiết · đang có ${c.tinhHoa ?? 0}`, `+1 costs ${FORGE_COST[0]} iron · you have ${c.tinhHoa ?? 0}`)}</small>
+            </button>
+          )}
+          {selItem.slot !== 'vu_khi' && <p className="note forge-note">{tr('Lò rèn chỉ rèn vũ khí. Chọn một vũ khí trong túi để rèn.', 'The forge only works on weapons. Pick a weapon in your bag to forge.')}</p>}
           {selItem.slot === 'vu_khi' && isOn(selItem.id) && onForge && (
             <button className="btn btn-red btn-big forge-open" onClick={() => setForging(true)}>
               

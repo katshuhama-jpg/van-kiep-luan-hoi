@@ -4631,3 +4631,4 @@ button.shadow-card { cursor: pointer; }
 .doll-forge { flex: none; display: flex; flex-direction: column; align-items: center; line-height: 1.1; padding: 3px 10px; font: inherit; font-weight: 700; font-size: 14px; color: #ffd36b; background: #5a1420; border: 2px solid #1f160d; box-shadow: 2px 2px 0 #1f160d; cursor: pointer; }
 .doll-forge small { font-size: 11px; font-weight: 500; color: #f3c8b0; }
 .forge-msg { margin: 4px 0; padding: 6px 8px; background: #fff3d0; border: 2px solid #8a5a2e; cursor: pointer; }
+.forge-note { margin: 0; font-size: 13px; }
