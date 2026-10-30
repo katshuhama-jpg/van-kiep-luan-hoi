@@ -1,15 +1,15 @@
 /**
  * Ghi chú sửa game theo ngày (giờ Việt Nam), hiện một dòng ở trang đầu: "Hôm nay Thiên Đạo đã sửa: ...".
  * Chỉ hiện ghi chú của hôm nay hoặc hôm qua, không bật bảng cập nhật. Mỗi lần đẩy bản sửa thì thêm một dòng ở cuối.
- * day: ngày giờ VN dạng YYYY-MM-DD. vi, en: một câu người chơi hiểu được.
+ * day: ngày giờ VN dạng YYYY-MM-DD. vi, en: một câu ngắn (khoảng 12-15 chữ) người chơi hiểu được, vì trang đầu chỉ hiện một dòng.
  */
 export type DailyNote = { day: string; vi: string; en: string };
 
 export const DAILY_NOTES: DailyNote[] = [
   {
     day: '2026-10-30',
-    vi: 'chết vì quái chặn đường, thua địch thủ, oan gia hay sát thủ giờ có kết cục riêng và văn bia ghi rõ kẻ giết cùng tuổi lúc chết.',
-    en: 'deaths to roadside monsters, rivals, old enemies and assassins now get their own ending, and the grave names the killer and your age.',
+    vi: 'chết vì quái, địch thủ, oan gia có kết cục riêng, bia ghi tên kẻ giết.',
+    en: 'deaths to monsters, rivals and old enemies get their own ending; graves name the killer.',
   },
 ];
 
