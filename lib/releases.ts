@@ -18,6 +18,63 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '4.0.1',
+    date: '30/10/2026',
+    title: tr('Hết Chết Oan', 'No More Senseless Deaths'),
+    lead: tr('Hai ngày sửa theo góp ý của đạo hữu: chết thì biết vì ai, tu cao thì phàm nhân phải tránh đường, kẻ thù không còn kéo tới ba trận liền. Hợp Hoan Tông cũng đã mở cửa.', 'Two days of fixes from your feedback: when you die you know who did it, once you are strong the mortals step aside, and enemies no longer come three fights in a row. Hehuan Sect has also opened its gates.'),
+    asked: [
+      { who: '@thien', short: tr('Từ Trúc Cơ, tai nạn phàm tục không giết được nữa', 'From Foundation on, mortal accidents can no longer kill you'), text: tr('Sập nhà, cầu treo, giếng, rắn độc, nấm độc, nghẹn bánh, trượt chân: từ Trúc Cơ chỉ làm bị thương. Cướp vặt chỉ chặn tới Kim Đan, gặp Nguyên Anh thì quỳ xin tha.', 'Collapsing houses, rope bridges, wells, snakes, poison mushrooms, choking, slipping: from Foundation on they only wound you. Petty bandits stop at Golden Core, and kneel for mercy before a Nascent Soul.') },
+      { who: '@vickary', short: tr('Tu cao không còn bị phàm nhân ăn hiếp', 'No more bullying by mortals once you are strong'), text: tr('Từ Trúc Cơ, côn đồ, vu oan, trộm, thương hội không làm gì được bạn, có lựa chọn Ra tay, Dọa cho chạy. Mất linh thạch tối đa 5%, từ Nguyên Anh phàm nhân không cướp được. Đồng môn hút tu vi thì tố cáo, thách đấu hay hút ngược.', 'From Foundation on, thugs, false accusers, thieves and merchant guilds cannot touch you, and you get Act and Scare Them Off choices. You lose at most 5% of your stones, and from Nascent Soul mortals cannot rob you at all. A disciple stealing your cultivation can be reported, challenged or drained back.') },
+      { who: '@shizun', short: tr('Hợp Hoan Tông: 15 sự kiện, 2 kết cục mới', 'Hehuan Sect: 15 events, 2 new endings'), text: tr('Hợp Hoan Tông, tông tà thứ ba: lô đỉnh, mị thuật, Bách Hoa Yến, tranh ngôi Thánh tử/Thánh nữ, người thật lòng, bỏ tông vì tình. Kết cục mới: Tình Cũ Đòi Mạng, Vì Tình Bỏ Tông.', 'Hehuan Sect, the third evil sect: cauldrons, charm arts, the Feast of a Hundred Flowers, the race for Holy Son or Daughter, someone who truly loves you, leaving the sect for love. New endings: An Old Flame Collects, Left the Sect for Love.') },
+      { who: '@shizun @thien', short: tr('Kẻ thù không dồn cục, thua thì dễ gặp cơ duyên', 'Enemies no longer pile up; losing brings more fortune'), text: tr('Hai trận bắt buộc (chặn đường, gặp người, oan gia, cướp đường, sát thủ) cách nhau ít nhất 3 năm và 60 giây. Sức khỏe dưới 35 không bị chặn đường. Thua trận còn sống thì 5 năm sau dễ gặp cơ duyên gấp 3.', 'Forced fights (ambushes, duels, nemeses, robbers, assassins) are at least 3 years and 60 seconds apart. Below 35 Health you will not be ambushed. Survive a loss and you are three times as likely to find good fortune for 5 years.') },
+    ],
+    more: [
+      tr('Văn bia nêu đích danh kẻ giết', 'Epitaphs name your killer'),
+      tr('Kết cục đúng cách chết', 'Endings that match how you died'),
+      tr('Chính đạo không bị coi là hiền nhát', 'Righteous choices are not seen as weakness'),
+    ],
+    stats: [
+      { n: '0', label: tr('cái chết vì rắn rết từ Trúc Cơ', 'snake deaths from Foundation on') },
+      { n: '3', label: tr('năm lặng giữa hai trận', 'quiet years between fights') },
+      { n: '15', label: tr('sự kiện Hợp Hoan Tông', 'Hehuan Sect events') },
+    ],
+    groups: [
+      {
+        h: tr('Chết thì biết vì ai', 'Know who killed you'),
+        hot: true,
+        items: [
+          tr('Chết vì quái chặn đường, thua giao đấu, oan gia, sát thủ giờ có kết cục riêng: Khinh Địch Mất Mạng khi quái yếu hơn hoặc ngang sức, Liều Mình Vào Tử Địa khi quái mạnh hơn, Chết Dưới Đao Giang Hồ khi thua người. Câu nguyên nhân nêu đích danh kẻ giết và tuổi.', 'Deaths to ambushes, duels, nemeses and assassins now have their own endings: Death by Overconfidence against a weaker or equal monster, Charging Into the Death Zone against a stronger one, Cut Down in the Jianghu when a person beats you. The cause names your killer and your age.'),
+          tr('Chết vì thương thế thì tính theo vết thương nặng nhất 4 năm gần đây, ai gây ra thì kết cục theo người ấy. "Chết Không Toàn Thây" giảm từ hơn 20% xuống dưới 7% số kiếp.', 'Dying of wounds now counts the worst wound of the last 4 years, and the ending follows whoever dealt it. "No Body Left Whole" drops from over 20% of lives to under 7%.'),
+        ],
+      },
+      {
+        h: tr('Tu cao thì phàm nhân tránh đường', 'Mortals step aside for the strong'),
+        items: [
+          tr('Từ Trúc Cơ, 25 tai họa phàm tục chỉ gây thương, không chết, và không thành giọt nước tràn ly khi đang yếu. Rắn độc hết đan thì sốt mấy ngày, thêm chút tâm ma.', 'From Foundation on, 25 mortal disasters only wound you, never kill, and never become the last straw when you are weak. A snake bite with no pills just means a few days of fever and a little heart demon.'),
+          tr('Ba tên tán tu chỉ chặn đường tới Kim Đan, và ở Trúc Cơ, Kim Đan thì đánh là thắng. Từ Nguyên Anh có chuyện mới: bọn cướp nhận ra bạn, quỳ xuống dập đầu.', 'The three rogue cultivators only rob up to Golden Core, and at Foundation and Golden Core you win if you fight. From Nascent Soul there is a new event: the robbers recognize you and kowtow.'),
+          tr('Côn đồ đầu làng, nhà giàu vu oan, kẻ tiểu nhân, trộm vào kho: từ Trúc Cơ thành chuyện cười. Thương hội chèn ép có lựa chọn Ra tay. Mất linh thạch vì kẻ yếu tối đa 5% và không quá 60 lần cảnh giới.', 'Village thugs, rich men framing you, swindlers, burglars: from Foundation on they become a joke. Merchant guilds get an Act choice. Losses to the weak are capped at 5% and at 60 times your realm.'),
+          tr('Đồng môn hút trộm tu vi: mất tối đa 5%, rồi chọn tố cáo trưởng lão, thách đấu lôi đài (thắng lấy lại gấp rưỡi), hút ngược hay nhịn.', 'A fellow disciple stealing your cultivation takes at most 5%, then you choose: report to the elders, challenge in the arena (win back 1.5x), drain them back, or let it go.'),
+          tr('Chọn đường chính nghĩa không còn làm người ta coi bạn hiền dễ bắt nạt. Trước đây người theo chính đạo bị ăn hiếp gấp nhiều lần tà đạo, nay ngang nhau.', 'Choosing the righteous option no longer marks you as easy prey. Righteous players used to be bullied many times more than evil ones; now it is even.'),
+        ],
+      },
+      {
+        h: tr('Nhịp kẻ địch', 'Enemy pacing'),
+        items: [
+          tr('Chặn đường, gặp người, oan gia, cướp đường, sát thủ cách nhau ít nhất 3 năm game và 60 giây thật. Không còn cảnh ba trận liền.', 'Ambushes, duels, nemeses, robbers and assassins are at least 3 game years and 60 real seconds apart. No more three fights in a row.'),
+          tr('Sức khỏe dưới 35 thì quái không chặn đường. Thua trận mà còn sống, 5 năm sau gặp kỳ ngộ, cao nhân, bí cảnh nhiều gấp 3.', 'Below 35 Health, monsters will not ambush you. Survive a loss and for 5 years you meet encounters, masters and secret realms three times as often.'),
+        ],
+      },
+      {
+        h: tr('Hợp Hoan Tông', 'Hehuan Sect'),
+        items: [
+          tr('Tán tu tà tâm, hoặc từng lợi dụng song tu, sẽ gặp Mị Cơ mời nhập môn. Bốn bậc: Hoa nô, Mị đồ, Hoan Hỷ sứ, Thánh tử/Thánh nữ. Bốn món đồ tông: hai áo sa, Hoan Hỷ đào hoa bào, Mị hồn châu.', 'Evil-hearted rogues, or anyone who once exploited dual cultivation, will meet the Charm Lady. Four ranks: Flower Slave, Charm Apprentice, Envoy of Joy, Holy Son or Daughter. Four sect items: gauze robes, the Peach Blossom Robe of Joy, the Soul-Charming Pearl.'),
+          tr('Mỗi lô đỉnh tu nhanh thêm 3% nhưng thêm tâm ma mỗi năm. Thắng giao đấu thì Thái âm bổ dương, hút thêm tu vi. Bách Hoa Yến thay Đại bỉ, Thánh tử/Thánh nữ phải qua tuyển.', 'Each cauldron speeds cultivation by 3% but adds heart demon every year. Win a duel and Yin nourishes yang for extra cultivation. The Feast of a Hundred Flowers replaces the Grand Tournament, and the Holy Son or Daughter must win the selection.'),
+          tr('15 sự kiện nối nhau: người bị hút cạn quay lại báo thù, gặp người thật lòng, tông chủ phát hiện, bỏ trốn vì tình, chính phái vây cốc. Hai kết cục mới: Tình Cũ Đòi Mạng, Vì Tình Bỏ Tông.', '15 linked events: those you drained come back for revenge, someone truly loves you, the Sect Master finds out, you run away for love, the righteous besiege the valley. Two new endings: An Old Flame Collects, Left the Sect for Love.'),
+        ],
+      },
+    ],
+  },
+  {
     v: '4.0.0',
     date: '29/10/2026',
     title: tr('Vạn Kiếp Hộ Đạo', 'Guarded by Ten Thousand Lives'),
