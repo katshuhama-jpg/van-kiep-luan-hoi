@@ -58,5 +58,8 @@ Mỗi lần chạy: làm khối **đầu tiên còn ô trống**, đánh dấu [
 - Xong:
 - Ghi chú:
 
+## Đã bỏ
+- Dòng "Hôm nay Thiên Đạo đã sửa" ở trang đầu: Tyler bỏ ngày 30/10 (không cần thiết). Đã xóa components/DailyNote.tsx và lib/dailyNotes.ts. Các ngày sau KHÔNG thêm ghi chú hằng ngày nữa.
+
 ## Chờ Tyler quyết (chưa làm)
 - Tình duyên (đạo lữ có tính cách, độ gắn bó, song tu, đỡ đòn thay): Tyler để nghĩ thêm (30/10). Không đổi cơ chế đạo lữ cho tới khi Tyler chốt.
