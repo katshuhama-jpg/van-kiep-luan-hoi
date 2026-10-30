@@ -39,7 +39,7 @@ import { QUY_NHAT_PHUC, newLore, quyNhatDone } from '@/lib/game/lore';
 import { HON_PILLS, QUEST_HON, addHon, pastDanTu, honPillCost, honPillUsed, honDay, type HonPillId, CAU_HON_AT, HON_COST, HON_MAX, KS_NAME, applyHon, honActive, honNow, ksOf, ksOneBig, manhBa, nextKiepTich } from '@/lib/game/luanHoi';
 import { serverNow } from '@/lib/serverTime';
 import LoiDaiButton from '@/components/LoiDaiButton';
-import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, markForced, pickAmbush } from '@/lib/game/ambush';
+import { AMBUSH_INTRO, AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, forcedReady, markForced, pickAmbush } from '@/lib/game/ambush';
 import { within } from '@/lib/supabase';
 import { endingFirst, titleKey, addMemorial, addPendingGrave, addRetryGrave, worthGhiDanh, displayName, fetchWorld, listMail, loadAll, saveLocal, saveMeta, saveRemote, sendMail, unreadMail, weeklyTitles, type Mail, type SaveState } from '@/lib/storage';
 import { CHECKIN, checkinClaimed, checkinDay, checkinItem, checkinLabel, checkinMoney, updateCareer, bumpStreak, evalQuests, newbieGoal, omenIs, qmark, questName, vnDay } from '@/lib/game/hook';
@@ -833,7 +833,7 @@ export default function PlayPage() {
           (c.age >= 15 || daiBiDue(c)) &&
           c.focus !== 'tru_yeu' &&
           !duelOpen.current &&
-          ((c.hunt && c.age >= c.hunt.at) || daiBiDue(c) || rnd() < DUEL_PER_YEAR * (omenIs('giang_ho_loan') ? 2 : 1) * dYear)
+          ((c.hunt && c.age >= c.hunt.at) || daiBiDue(c) || (forcedReady(c) && rnd() < DUEL_PER_YEAR * (omenIs('giang_ho_loan') ? 2 : 1) * dYear))
         ) {
           const f = pickDuel(c, rnd);
           if (f) {
@@ -844,7 +844,8 @@ export default function PlayPage() {
             return;
           }
         }
-        if (c.age >= 10 && c.focus !== 'tru_yeu' && rnd() < AMBUSH_PER_YEAR * (omenIs('yeu_trieu') ? 2 : 1) * dYear) {
+        // 4.1.0 Q3: chặn đường phải chờ khoảng lặng sau trận bắt buộc trước, và bỏ qua khi sức khỏe dưới 35
+        if (c.age >= 10 && c.focus !== 'tru_yeu' && c.stats.sucKhoe >= 35 && forcedReady(c) && rnd() < AMBUSH_PER_YEAR * (omenIs('yeu_trieu') ? 2 : 1) * dYear) {
           startAmbush(c);
           rerender();
           raf = requestAnimationFrame(step);

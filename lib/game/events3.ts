@@ -13,6 +13,7 @@ function gamble(c: Character, ctx: EffectCtx, chance: number, cause: string, lea
 export const EVENTS3: GameEvent[] = [
   {
     id: 'nam_phat_sang',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minAge: 6,
     once: true,
     weight: 6,
@@ -112,6 +113,7 @@ export const EVENTS3: GameEvent[] = [
   },
   {
     id: 'cau_treo',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minAge: 10,
     once: true,
     weight: 6,
@@ -212,6 +214,7 @@ export const EVENTS3: GameEvent[] = [
   },
   {
     id: 'ho_bang',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minAge: 7,
     once: true,
     weight: 5,
@@ -255,6 +258,7 @@ export const EVENTS3: GameEvent[] = [
   },
   {
     id: 'on_dich',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minAge: 10,
     once: true,
     weight: 5,
@@ -310,6 +314,7 @@ export const EVENTS3: GameEvent[] = [
   },
   {
     id: 'mang_xa_khong_lo',
+    pham: 4, // 4.1.0 Q2: tai họa phàm tục, từ Nguyên Anh chỉ bị thương
     minAge: 12,
     once: true,
     weight: 5,
@@ -357,6 +362,7 @@ export const EVENTS3: GameEvent[] = [
   },
   {
     id: 'set_danh',
+    pham: 4, // 4.1.0 Q2: tai họa phàm tục, từ Nguyên Anh chỉ bị thương
     minAge: 18,
     once: true,
     weight: 5,
@@ -474,6 +480,7 @@ export const EVENTS3: GameEvent[] = [
   },
   {
     id: 'dong_dat',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minAge: 15,
     once: true,
     weight: 5,

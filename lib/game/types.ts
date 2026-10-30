@@ -95,6 +95,9 @@ export interface Character {
   killer?: string; // 4.1.0: kẻ đã giết (tên quái, tên người), để văn bia và lời viếng nhắc đích danh
   wounds?: { age: number; amt: number; tag?: string; by?: string; text: string }[]; // 4.1.0: vết thương nặng gần đây, để biết chết vì thương thế là do ai
   lastForced?: number; // 4.1.0: tuổi lúc có trận bắt buộc gần nhất (chặn đường, gặp người), để đo khoảng lặng
+  forcedAt?: number; // 4.1.0 Q3: giờ thật (ms) lúc có trận bắt buộc gần nhất, để giữ khoảng lặng 60 giây
+  coDuyenUntil?: number; // 4.1.0 Q3: thua trận còn sống thì tới tuổi này dễ gặp cơ duyên hơn
+  hh?: { lo: number; thu: string[]; tinh?: string; rival?: string; bo?: boolean; at?: number; loAt?: number; tinhAt?: number; boAt?: number; thuAt?: number }; // 4.1.0: Hợp Hoan Tông - số lô đỉnh, người từng bị hút, người thật lòng, đối thủ trong tông, đã bỏ tông, mốc tuổi
   element?: Element; // ngũ hành bản mệnh
   danDoc?: { y: number; n: number }; // số viên đan đã uống trong năm (đan độc)
   petKind?: string; // loại thú cưng (xem lib/game/pets.ts)
@@ -237,8 +240,10 @@ export interface GameEvent {
   maxAge?: number;
   minRealm?: number;
   maxRealm?: number;
+  pham?: number; // 4.1.0: tai họa phàm tục - từ cảnh giới này trở lên, lựa chọn chết của sự kiện chỉ gây thương
   weight?: number;
   once?: boolean;
+  cap?: number; // số lần gặp tối đa mỗi kiếp (mặc định 2)
   cooldown?: number;
   when?: (c: Character) => boolean;
   title: string;

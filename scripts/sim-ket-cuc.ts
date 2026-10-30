@@ -2,6 +2,7 @@
  * Mô phỏng nhiều kiếp để đếm kết cục (4.1.0 Q1): tỉ lệ "Chết Không Toàn Thây" (bat_dac), chết trước khi chọn đường.
  * Giả lập theo /choi: mỗi năm yearTick, chọn bừa lựa chọn sự kiện; chặn đường 0,15/năm và gặp người 0,1/năm, đánh tay đôi theo stepAmbush.
  * Chạy: npx tsx scripts/sim-ket-cuc.ts [số kiếp]
+ * HH=1: thử Hợp Hoan Tông (đạo tâm khởi đầu -20, gặp Mị Cơ thì theo): đếm 15 sự kiện tông, kiểm điều kiện nối nhau, so tỉ lệ chết với Vạn Độc Môn
  */
 import { emptyMeta, makeCtx, newCharacter, resolveChoice, yearTick, checkProgress } from '../lib/game/engine';
 import { endingOf } from '../lib/game/endings';
@@ -9,6 +10,44 @@ import { AMBUSH_PER_YEAR, AMBUSH_TURNS, ambushMonsterStats, finishAmbush, pickAm
 import { DUEL_PER_YEAR, DUEL_TURNS, finishDuel, foeStats, pickDuel } from '../lib/game/duel';
 import { hit, playerStats } from '../lib/game/combat';
 import type { Character, Fx, PendingEvent } from '../lib/game/types';
+import { forcedClock, forcedReady, markForced } from '../lib/game/helpers';
+import { isHH, rankOf } from '../lib/game/sect';
+
+const HHMODE = !!process.env.HH;
+let clock = 0;
+forcedClock.now = () => clock;
+const hhSeen: Record<string, number> = {};
+const hhBad: Record<string, number> = {};
+const sectYears: Record<string, number> = { hh: 0, vd: 0 };
+const sectDeaths: Record<string, number> = { hh: 0, vd: 0 };
+let hhLives = 0;
+const HH_PRE: Record<string, (c: Character) => boolean> = {
+  hh_bai_su: (c) => !c.sect && c.realm >= 1 && c.realm <= 4,
+  hh_me_hon_tran: (c) => isHH(c) && c.hh?.at !== undefined,
+  hh_lo_dinh_dau: (c) => isHH(c) && (c.hh?.lo ?? 0) === 0,
+  hh_mi_thuat: (c) => isHH(c) && (c.hh?.lo ?? 0) >= 1,
+  hh_tranh_sung: (c) => isHH(c) && rankOf(c) >= 1,
+  hh_lo_dinh_them: (c) => isHH(c) && (c.hh?.lo ?? 0) >= 1,
+  hh_chinh_phai_truy: (c) => isHH(c) && (c.hh?.lo ?? 0) >= 2 && c.realm >= 2,
+  hh_bao_thu: (c) => (c.hh?.thu.length ?? 0) > 0,
+  hh_bach_hoa_yen: (c) => isHH(c),
+  hh_that_long: (c) => isHH(c) && (c.hh?.lo ?? 0) >= 2 && rankOf(c) >= 1,
+  hh_tong_chu_biet: (c) => isHH(c) && !!c.hh?.tinh,
+  hh_truy_phan_do: (c) => !!c.hh?.bo,
+  hh_phan_phe: (c) => isHH(c) && (c.hh?.lo ?? 0) >= 4 && c.stats.tamMa >= 60,
+  hh_thanh_tu_tuyen: (c) => isHH(c) && rankOf(c) === 2 && c.realm >= 3,
+  hh_vay_coc: (c) => isHH(c) && rankOf(c) >= 2 && c.realm >= 3,
+};
+function seeHH(c: Character, p: PendingEvent | null) {
+  if (!p || !p.id.startsWith('hh_')) return;
+  hhSeen[p.id] = (hhSeen[p.id] ?? 0) + 1;
+  if (HH_PRE[p.id] && !HH_PRE[p.id](c)) hhBad[p.id] = (hhBad[p.id] ?? 0) + 1;
+}
+function pickIdx(p: PendingEvent): number {
+  if (HHMODE && p.id === 'hh_bai_su') return 0;
+  if (HHMODE && p.id.startsWith('bai_')) return p.choices.length - 1;
+  return Math.floor(rnd() * p.choices.length);
+}
 
 const N = Number(process.argv[2] ?? 1000);
 const rnd = Math.random;
@@ -31,33 +70,52 @@ for (let i = 0; i < N; i++) {
   const meta = { ...emptyMeta(), lives: 10 };
   const c = newCharacter(meta);
   c.focus = 'tu_luyen' as Character['focus'];
+  if (HHMODE) c.daoTam = -20;
+  let wasHH = false;
   const out: Fx[] = [];
   const ctx = makeCtx(c, out);
   let guard = 0;
   while (!c.dead && guard++ < 400 && !c.cosmos) {
     c.age += 1;
+    clock += 20000;
+    const sk = isHH(c) ? 'hh' : c.sect === 'Vạn Độc Môn' ? 'vd' : '';
+    if (sk) sectYears[sk]++;
+    if (isHH(c)) wasHH = true;
     let p: PendingEvent | null = yearTick(c, ctx);
     let k = 0;
-    while (p && !c.dead && k++ < 10) p = resolveChoice(c, p, Math.floor(rnd() * p.choices.length), ctx);
-    if (c.dead) break;
-    if (c.realm >= 1 && c.age >= 15 && rnd() < DUEL_PER_YEAR) {
+    while (p && !c.dead && k++ < 10) {
+      seeHH(c, p);
+      p = resolveChoice(c, p, pickIdx(p), ctx);
+    }
+    if (c.dead) {
+      if (sk) sectDeaths[sk]++;
+      break;
+    }
+    if (forcedReady(c) && c.realm >= 1 && c.age >= 15 && rnd() < DUEL_PER_YEAR) {
       const f = pickDuel(c, rnd);
       if (f && f.kind !== 'kiep_truoc') {
         const r = fight(c, playerStats(c), foeStats(f.rival, c), DUEL_TURNS);
         finishDuel(c, f, r.r, r.pl, ctx);
+        markForced(c);
       }
     }
-    if (!c.dead && c.age >= 10 && rnd() < AMBUSH_PER_YEAR) {
+    if (!c.dead && forcedReady(c) && c.stats.sucKhoe >= 35 && c.age >= 10 && rnd() < AMBUSH_PER_YEAR) {
       const { m, tier } = pickAmbush(c, rnd);
       const r = fight(c, playerStats(c), ambushMonsterStats(c, m), AMBUSH_TURNS);
       finishAmbush(c, m, r.r, r.pl, r.md, ctx, tier);
+      markForced(c);
     }
     if (!c.dead) {
       let q = checkProgress(c, ctx);
       let j = 0;
-      while (q && !c.dead && j++ < 10) q = resolveChoice(c, q, Math.floor(rnd() * q.choices.length), ctx);
+      while (q && !c.dead && j++ < 10) {
+        seeHH(c, q);
+        q = resolveChoice(c, q, pickIdx(q), ctx);
+      }
     }
+    if (c.dead && sk) sectDeaths[sk]++;
   }
+  if (wasHH) hhLives++;
   if (!c.dead) continue;
   const e = endingOf(c).id;
   tally[e] = (tally[e] ?? 0) + 1;
@@ -71,3 +129,9 @@ console.log(`kiếp chết: ${dead}/${N}`);
 for (const [k, v] of Object.entries(tally).sort((a, b) => b[1] - a[1]).slice(0, 14)) console.log(`${k.padEnd(18)} ${v}  ${((v / dead) * 100).toFixed(1)}%`);
 console.log(`chết trước khi chọn đường: ${((noPath / dead) * 100).toFixed(1)}%, tuổi TB ${(noPathAge / Math.max(1, noPath)).toFixed(1)}`);
 console.log(`có tên kẻ giết: ${((killer / dead) * 100).toFixed(1)}%, chết vì thương thế: ${((hpDeath / dead) * 100).toFixed(1)}%`);
+if (HHMODE || hhLives) {
+  console.log(`\nHợp Hoan Tông: ${hhLives} kiếp từng vào tông`);
+  for (const id of Object.keys(HH_PRE)) console.log(`  ${id.padEnd(20)} gặp ${hhSeen[id] ?? 0}${hhBad[id] ? `  SAI ĐIỀU KIỆN ${hhBad[id]}` : ''}`);
+  const rate = (k: string) => ((sectDeaths[k] / Math.max(1, sectYears[k])) * 100).toFixed(2);
+  console.log(`  chết mỗi 100 năm trong tông: Hợp Hoan ${rate('hh')} (${sectDeaths.hh}/${sectYears.hh} năm), Vạn Độc Môn ${rate('vd')} (${sectDeaths.vd}/${sectYears.vd} năm)`);
+}

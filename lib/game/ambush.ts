@@ -1,7 +1,7 @@
 import { DO_KIEP_REALM } from './helpers';
 import { MONSTERS, combatLevel, effLv, growth, killExp, killReward, monsterEndTag, monsterStats, type Fighter, type Monster } from './combat';
 import { ambushDrawWin, ambushFlee, ambushLose, ambushWin, chieuOf, marginOf } from './fightLines';
-import { addCult, addWound, fatal, markDeath, money, stat } from './helpers';
+import { addCult, addWound, afterLoss, fatal, markDeath, money, stat } from './helpers';
 import type { Character, EffectCtx } from './types';
 import { sectSide } from './sect';
 import { tr } from '../i18n';
@@ -101,6 +101,7 @@ export function finishAmbush(c: Character, m: Monster, result: 'win' | 'lose' | 
     stat(c, 'sucKhoe', -Math.round(35 * danger));
     addWound(c, 35 * danger, tr(`bị ${m.name} cấp ${lv} chặn đường đánh gục`, `struck down by ${m.name} (Lv${lv}) on the road`), tag, by);
     c.cultivation = Math.max(0, Math.round(c.cultivation * 0.93));
+    afterLoss(c);
     return [tr(`${ambushLose(m.name, ctx.rnd)} (-${Math.round(35 * danger)} sức khỏe, tu vi tổn hao).${lost}${f ?? ''}`, `${ambushLose(m.name, ctx.rnd)} (-${Math.round(35 * danger)} Health, cultivation lost).${lost}${f ?? ''}`)];
   }
   // hòa: hết 3 hiệp chưa phân thắng bại
@@ -126,9 +127,5 @@ export function finishAmbush(c: Character, m: Monster, result: 'win' | 'lose' | 
   return notes;
 }
 
-/** 4.1.0: đánh dấu một trận bắt buộc (chặn đường, gặp người). Trả về số năm game kể từ trận bắt buộc trước (null nếu là trận đầu của kiếp) */
-export function markForced(c: Character): number | null {
-  const gap = c.lastForced === undefined ? null : Math.round((c.age - c.lastForced) * 10) / 10;
-  c.lastForced = c.age;
-  return gap;
-}
+/** 4.1.0: markForced, forcedReady nằm ở helpers để engine dùng chung */
+export { markForced, forcedReady } from './helpers';

@@ -6,9 +6,10 @@ import { ITEMS, REALMS, fxText, realmLabel } from './data';
 import { demoChar } from './demo';
 import { ELEMENT_IDS, elemMul, elemRel, elementOf, type ElemRel } from './nguhanh';
 import { genName } from './engine';
-import { addCult, addWound, atAge, fatal, giveItem, markDeath, money, reward, stat } from './helpers';
+import { addCult, addWound, afterLoss, atAge, fatal, giveItem, markDeath, money, reward, stat } from './helpers';
 import { PROVOKE_MUL, SOCIAL } from './social';
 import { daiBiDue, promote, sectSide } from './sect';
+import { hhDuelWin } from './hopHoan';
 import type { Character, EffectCtx, RivalChar, Slot, Vendetta } from './types';
 import { tr } from '../i18n';
 import { nameOf } from '../hanviet';
@@ -398,12 +399,19 @@ export function addVendetta(c: Character, f: DuelFoe, items: string[], why: stri
 /** Kết thúc trận: thưởng phạt theo loại cuộc gặp. 4.1.0: chết dưới tay người thì gắn kết cục "Chết Dưới Đao Giang Hồ" và ghi tên kẻ giết */
 export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'draw', pLoss: number, ctx: EffectCtx): string[] {
   const hp0 = c.stats.sucKhoe;
+  const cu0 = c.cultivation;
   const out = finishDuel0(c, f, result, pLoss, ctx);
   if (f.kind === 'kiep_truoc') return out;
   const who = f.rival.player ? `${f.rival.name} (@${f.rival.player})` : f.rival.name;
+  // 4.1.0 Hợp Hoan Tông: thắng giao đấu thì "Thái âm bổ dương"
+  if (result === 'win') {
+    const t = hhDuelWin(c, c.cultivation - cu0, who, ctx.rnd);
+    if (t) out.push(t);
+  }
   markDeath(c, 'dao_giang_ho', who);
   if (!c.dead && result !== 'win' && hp0 - c.stats.sucKhoe >= 10)
     addWound(c, hp0 - c.stats.sucKhoe, tr(`thua ${who} khi giao đấu`, `lost a duel to ${who}`), 'dao_giang_ho', who);
+  if (!c.dead && result === 'lose') afterLoss(c);
   return out;
 }
 
@@ -712,6 +720,12 @@ export function simulateDuel(me: RivalChar, foe: RivalChar, rnd: () => number): 
   const pb = Math.max(0, hb) / b.hp;
   const result = hb <= 0 ? 'win' : ha <= 0 ? 'lose' : Math.abs(pa - pb) < 0.05 ? 'draw' : pa > pb ? 'win' : 'lose';
   return { result, hpMe: Math.round(pa * 100), hpFoe: Math.round(pb * 100), rounds };
+}
+
+/** 4.1.0 Q2b: trận giao đấu nhanh trong sự kiện (thách đấu đồng môn, kẻ gây sự): bóng của bạn đấu với tu sĩ vô danh ở cảnh giới cho trước */
+export function eventDuel(c: Character, realm: number, rnd: () => number): { result: 'win' | 'lose' | 'draw'; foe: RivalChar } {
+  const foe = npcRival(c, Math.max(1, realm), 0, rnd);
+  return { result: simulateDuel(toRival('', c), foe, rnd).result, foe };
 }
 
 /** Rút gọn nhân vật đang chơi thành bóng để đem đi đấu */

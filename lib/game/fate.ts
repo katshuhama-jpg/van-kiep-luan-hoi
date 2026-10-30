@@ -1,4 +1,4 @@
-import { DO_KIEP_REALM, addWound, atAge, fatal, hurt, markDeath, money, riskMeter, stat } from './helpers';
+import { DO_KIEP_REALM, addWound, afterLoss, atAge, bullyCult, fatal, forcedReady, hurt, markDeath, markForced, money, phamFloor, riskMeter, stat, takeStones, withPham } from './helpers';
 import type { Character, Choice, EffectCtx } from './types';
 import { tr } from '../i18n';
 
@@ -20,6 +20,12 @@ interface Mishap {
 }
 
 const r = (ctx: EffectCtx, a: number, b: number) => Math.round(a + ctx.rnd() * (b - a));
+/** 4.1.0 Q2: xui rủi phàm tục: từ Trúc Cơ không chết, kể cả khi đang yếu */
+const phamRun = (c: Character, fn: () => string) => {
+  const t = withPham(2, fn);
+  phamFloor(c, 2);
+  return t;
+};
 
 /** họa vì hiền: chỉ xảy ra khi timid cao */
 const BULLY: Mishap[] = [
@@ -27,6 +33,11 @@ const BULLY: Mishap[] = [
     id: 'bat_nat',
     w: (c) => (c.realm <= 1 ? 4 : 1.5),
     run: (c, ctx) => {
+      // 4.1.0 Q2b: từ Trúc Cơ, côn đồ phàm tục không dám động vào người tu đạo
+      if (c.realm >= 2 && !c.cosmos) {
+        stat(c, 'khiVan', 1);
+        return tr('Đám côn đồ đầu làng định chặn đường bạn, thấy bạn đạp kiếm bay qua đầu thì dạt cả xuống ruộng. Từ đó cả bọn gọi bạn là "tiên sư", thấy bóng là cúi chào.', "The village thugs try to block your way, then see you fly overhead on your sword and dive into the paddy. Ever since, they call you \"Immortal Master\" and bow whenever your shadow passes.");
+      }
       const lost = Math.round(c.linhThach * 0.2);
       money(c, -lost);
       const t = hurt(c, r(ctx, 15, 30), ctx);
@@ -38,6 +49,10 @@ const BULLY: Mishap[] = [
     id: 'vu_oan',
     w: () => 2,
     run: (c, ctx) => {
+      if (c.realm >= 2 && !c.cosmos) {
+        stat(c, 'tamCanh', 2);
+        return tr('Nhà giàu mất trộm, định đổ tội cho bạn. Bạn chỉ quét thần thức một vòng là thấy túi bạc giấu dưới giường quản gia. Quan phủ rối rít tạ lỗi, còn mời bạn ở lại dùng trà.', "A rich family is robbed and tries to pin it on you. One sweep of your divine sense finds the silver hidden under the steward's bed. The magistrate apologizes profusely and invites you to stay for tea.");
+      }
       const t = hurt(c, r(ctx, 20, 35), ctx);
       money(c, -Math.round(c.linhThach * 0.3));
       return tr(`Nhà giàu mất trộm, thấy bạn hiền không dám cãi nên đổ hết tội lên đầu. Bạn bị đánh ba mươi trượng, bồi thường gần hết của cải.${t}`, `A rich family is robbed, and since you're too meek to argue, they pin it all on you. You get thirty strokes of the cane and pay back nearly everything you own.${t}`);
@@ -65,6 +80,13 @@ const BULLY: Mishap[] = [
     id: 'cuop_cong',
     w: (c) => (c.realm >= 1 ? 2 : 0),
     run: (c, ctx) => {
+      // 4.1.0 Q2b: từ Trúc Cơ, mất tối đa 5% tu vi và được chọn tố cáo hay thách đấu (sự kiện dong_mon_hut_cong)
+      if (c.realm >= 2 && !c.cosmos) {
+        const lost = bullyCult(c, c.cultivation * 0.3);
+        c.cultivation = Math.max(0, c.cultivation - lost);
+        c.qf = { ...(c.qf ?? {}), dmHut: lost };
+        return tr(`Đang tọa thiền, bạn giật mình thấy linh khí chảy ngược khỏi đan điền: có đồng môn lén hút trộm tu vi (-${lost} tu vi). Bạn mở mắt, kịp nhìn rõ mặt hắn.`, `Mid-meditation, you feel spirit qi flowing backward out of your dantian: a fellow disciple is siphoning your cultivation (-${lost} cultivation). You open your eyes in time to see his face.`);
+      }
       c.cultivation = Math.round(c.cultivation * 0.7);
       const t = hurt(c, r(ctx, 20, 35), ctx);
       return tr(`Đồng môn thấy bạn hiền, lén hút trộm linh khí trong lúc bạn tọa thiền. Tu vi tụt mất ba phần.${t}`, `A fellow disciple, seeing how meek you are, secretly siphons your spirit qi while you meditate. You lose three-tenths of your cultivation.${t}`);
@@ -74,9 +96,9 @@ const BULLY: Mishap[] = [
     id: 'bi_lua',
     w: () => 1.5,
     run: (c, ctx) => {
-      const lost = Math.round(c.linhThach * 0.4);
-      money(c, -lost);
-      stat(c, 'tamMa', 5);
+      if (c.realm >= 4 && !c.cosmos) return tr('Người quen định mượn tiền, vừa nhìn vào mắt bạn đã run run tự khai là định lừa, rồi tự tát mình hai cái. Bạn chưa kịp nói câu nào.', "An acquaintance comes to borrow money, takes one look into your eyes, confesses he meant to swindle you, and slaps himself twice. You haven't said a word.");
+      const lost = takeStones(c, 0.4);
+      stat(c, 'tamMa', c.realm >= 2 ? 2 : 5);
       return tr(`Người quen mượn ${lost} linh thạch, thề sống thề chết sẽ trả. Hôm sau hắn bỏ trốn khỏi trấn. Bạn tức đến mất ngủ.`, `An acquaintance borrows ${lost} spirit stones, swearing on his life to repay. The next day he flees town. You're so furious you can't sleep.`);
     },
   },
@@ -97,32 +119,38 @@ const BAD_LUCK: Mishap[] = [
   {
     id: 'nghen',
     w: (c) => (c.age >= c.lifespan * 0.6 ? 3 : 1),
-    run: (c, ctx) => {
-      const f = fatal(c, ctx, c.age >= c.lifespan * 0.6 ? 0.35 : 0.15, tr('Ăn bánh trôi vội quá, bạn bị nghẹn. Tu tiên cả đời, chết vì một viên bánh.', "You eat your rice balls too fast and choke. A lifetime of cultivation, killed by a dumpling."));
-      if (c.dead) return f ?? '';
-      const t = hurt(c, r(ctx, 8, 15), ctx);
-      return tr(`Đang ăn thì nghẹn, trợn mắt mãi mới khạc ra được.${t}${f ?? ''}`, `You choke mid-meal, eyes bulging, before finally coughing it up.${t}${f ?? ''}`);
-    },
+    // 4.1.0 Q2: xui rủi phàm tục, từ Trúc Cơ chỉ bị thương
+    run: (c, ctx) =>
+      phamRun(c, () => {
+        const f = fatal(c, ctx, c.age >= c.lifespan * 0.6 ? 0.35 : 0.15, tr('Ăn bánh trôi vội quá, bạn bị nghẹn. Tu tiên cả đời, chết vì một viên bánh.', "You eat your rice balls too fast and choke. A lifetime of cultivation, killed by a dumpling."));
+        if (c.dead) return f ?? '';
+        const t = hurt(c, r(ctx, 8, 15), ctx);
+        return tr(`Đang ăn thì nghẹn, trợn mắt mãi mới khạc ra được.${t}${f ?? ''}`, `You choke mid-meal, eyes bulging, before finally coughing it up.${t}${f ?? ''}`);
+      }),
   },
   {
     id: 'truot_chan',
     w: () => 1,
-    run: (c, ctx) => {
-      const f = fatal(c, ctx, 0.12, tr('Trời mưa trơn, bạn trượt chân ngã xuống giếng. Sáng hôm sau người ta mới vớt lên.', "The rain makes everything slick; you slip and fall into a well. They only fish you out the next morning."));
-      if (c.dead) return f ?? '';
-      const t = hurt(c, r(ctx, 12, 25), ctx);
-      return tr(`Trời mưa trơn, bạn trượt chân ngã gãy tay.${t}${f ?? ''}`, `The rain makes everything slick; you slip and break your arm.${t}${f ?? ''}`);
-    },
+    // 4.1.0 Q2: xui rủi phàm tục, từ Trúc Cơ chỉ bị thương
+    run: (c, ctx) =>
+      phamRun(c, () => {
+        const f = fatal(c, ctx, 0.12, tr('Trời mưa trơn, bạn trượt chân ngã xuống giếng. Sáng hôm sau người ta mới vớt lên.', "The rain makes everything slick; you slip and fall into a well. They only fish you out the next morning."));
+        if (c.dead) return f ?? '';
+        const t = hurt(c, r(ctx, 12, 25), ctx);
+        return tr(`Trời mưa trơn, bạn trượt chân ngã gãy tay.${t}${f ?? ''}`, `The rain makes everything slick; you slip and break your arm.${t}${f ?? ''}`);
+      }),
   },
   {
     id: 'ran_can',
     w: (c) => (c.realm <= 1 ? 1 : 0.3),
-    run: (c, ctx) => {
-      const f = fatal(c, ctx, 0.1, tr('Một con rắn lục đuôi đỏ cắn vào gót chân. Độc lan nhanh hơn bạn chạy.', "A red-tailed green viper bites your heel. The venom spreads faster than you can run."));
-      if (c.dead) return f ?? '';
-      const t = hurt(c, r(ctx, 15, 25), ctx);
-      return tr(`Bị rắn cắn, sốt mê man ba ngày.${t}${f ?? ''}`, `Bitten by a snake, you lie in a fever for three days.${t}${f ?? ''}`);
-    },
+    // 4.1.0 Q2: xui rủi phàm tục, từ Trúc Cơ chỉ bị thương
+    run: (c, ctx) =>
+      phamRun(c, () => {
+        const f = fatal(c, ctx, 0.1, tr('Một con rắn lục đuôi đỏ cắn vào gót chân. Độc lan nhanh hơn bạn chạy.', "A red-tailed green viper bites your heel. The venom spreads faster than you can run."));
+        if (c.dead) return f ?? '';
+        const t = hurt(c, r(ctx, 15, 25), ctx);
+        return tr(`Bị rắn cắn, sốt mê man ba ngày.${t}${f ?? ''}`, `Bitten by a snake, you lie in a fever for three days.${t}${f ?? ''}`);
+      }),
   },
   {
     id: 'ngo_doc',
@@ -162,11 +190,13 @@ export function afterChoice(c: Character, choice: Choice, mark: number, ctx: Eff
     c.timid = Math.max(0, (c.timid ?? 0) - 3);
     return null;
   }
-  const t = (c.timid = (c.timid ?? 0) + 1);
-  if (t === 3) ctx.log(tr('Người trong trấn bắt đầu xì xào: kẻ này hiền như cục đất, bắt nạt cũng chẳng dám kêu.', "The townsfolk start whispering: this one's as meek as a lump of dirt - bully them and they won't even squeak."), 'bad');
+  // 4.1.0 Q2b: chọn đường chính nghĩa không phải là hiền nhát, không làm người ta coi thường (trước đây chính đạo bị ăn hiếp gấp nhiều lần tà đạo)
+  const righteous = choice.lean === 'chinh';
+  const t = righteous ? (c.timid ?? 0) : (c.timid = (c.timid ?? 0) + 1);
+  if (t === 3 && !righteous) ctx.log(tr('Người trong trấn bắt đầu xì xào: kẻ này hiền như cục đất, bắt nạt cũng chẳng dám kêu.', "The townsfolk start whispering: this one's as meek as a lump of dirt - bully them and they won't even squeak."), 'bad');
   // kẻ mạnh, đồ xịn thì ít ai dám động vào
   const guard = 1 / (1 + c.realm * 0.35);
-  const bullyP = t >= 3 ? Math.min(0.32, (t - 2) * 0.065) * guard : 0;
+  const bullyP = t >= 3 && !righteous ? Math.min(0.32, (t - 2) * 0.065) * guard : 0;
   const luckP = 0.015;
   const roll = ctx.rnd();
   let m: Mishap | null = null;
@@ -199,8 +229,10 @@ const PERILS: ((c: Character, ctx: EffectCtx) => string)[] = [
     return tr(`Thấy chuyện bất bình, bạn ra tay trượng nghĩa. Đồng bọn của ác bá kéo đến vây đánh, bạn trọng thương mới thoát được.${hurt(c, r(ctx, 20, 35), ctx)}${f ?? ''}`, `Seeing an injustice, you step in to right it. The bully's cronies swarm you, and you barely escape, gravely wounded.${hurt(c, r(ctx, 20, 35), ctx)}${f ?? ''}`);
   },
   (c, ctx) => {
-    const lost = Math.round(c.linhThach * 0.35);
-    money(c, -lost);
+    // 4.1.0 Q2b: từ Nguyên Anh, kẻ tiểu nhân phàm tục không lừa nổi; Trúc Cơ, Kim Đan mất có trần và không bị đâm
+    if (c.realm >= 4 && !c.cosmos) return tr('Kẻ tiểu nhân giả làm người gặp nạn để gài bẫy bạn. Bạn chỉ nhìn hắn một cái, hắn đã quỳ xuống khai ra cả ổ đồng bọn. Quan phủ được một mẻ lưới lớn.', "A scoundrel poses as someone in trouble to trap you. One look from you and he's on his knees naming his whole gang. The magistrate makes a big haul.");
+    const lost = takeStones(c, 0.35);
+    if (c.realm >= 2 && !c.cosmos) return tr(`Kẻ tiểu nhân lợi dụng lòng tốt của bạn, giả làm người gặp nạn rồi gài bẫy, cuỗm được ${lost} linh thạch rồi chạy mất dép. Bạn lười đuổi.`, `A scoundrel exploits your kindness, posing as someone in trouble, and makes off with ${lost} spirit stones. You can't be bothered to chase him.`);
     return tr(`Kẻ tiểu nhân lợi dụng lòng tốt của bạn, giả làm người gặp nạn rồi gài bẫy. Bạn mất ${lost} linh thạch, còn bị đâm một nhát.${hurt(c, r(ctx, 15, 25), ctx)}`, `A scoundrel exploits your kindness, posing as someone in trouble to set a trap. You lose ${lost} spirit stones and get stabbed too.${hurt(c, r(ctx, 15, 25), ctx)}`);
   },
   (c, ctx) => {
@@ -215,6 +247,9 @@ export function righteousPeril(c: Character, ctx: EffectCtx): string | null {
   if (c.dead || c.age < 16 || c.cosmos) return null;
   const p = c.daoTam >= 70 ? 0.03 : c.daoTam >= 40 ? 0.018 : 0;
   if (!p || ctx.rnd() >= p) return null;
+  // 4.1.0 Q3: sát thủ cũng là trận bắt buộc, phải chờ khoảng lặng
+  if (!forcedReady(c)) return null;
+  markForced(c);
   ctx.fx('hurt');
   return PERILS[Math.floor(ctx.rnd() * PERILS.length)](c, ctx);
 }

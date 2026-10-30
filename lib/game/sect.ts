@@ -16,18 +16,28 @@ export const RANK_TRUNG = [tr('Học đồ', "Apprentice"), tr('Ký danh đệ t
 export const RANK_SHORT_CHINH = [tr('Tạp dịch', "Handyman"), tr('Ngoại môn', "Outer"), tr('Nội môn', "Inner"), tr('Chân truyền', "True")];
 export const RANK_SHORT_TA = [tr('Huyết nô', "Blood Slave"), tr('Sát thủ', "Assassin"), tr('Hộ pháp', "Protector"), tr('Thánh tử', "Holy Son")];
 export const RANK_SHORT_TRUNG = [tr('Học đồ', "Apprentice"), tr('Ký danh', "Registered"), tr('Thân truyền', "Personal"), tr('Truyền nhân', "Heir")];
+/** 4.1.0: Hợp Hoan Tông, tông tà thứ ba (xem lib/game/hopHoan.ts) */
+export const HH_SECT_VI = 'Hợp Hoan Tông';
+export const HH_SECT_EN = 'Hehuan Sect';
+export const hhSect = () => tr(HH_SECT_VI, HH_SECT_EN);
+export const isHH = (c: Pick<Character, 'sect'>) => c.sect === HH_SECT_VI || c.sect === HH_SECT_EN;
+const HH_RANKS = { full: [tr('Hoa nô', 'Flower Slave'), tr('Mị đồ', 'Charm Apprentice'), tr('Hoan Hỷ sứ', 'Envoy of Joy'), tr('Hợp Hoan Thánh tử', 'Hehuan Holy Son')], short: [tr('Hoa nô', 'Flower Slave'), tr('Mị đồ', 'Charm Apprentice'), tr('Hoan Hỷ sứ', 'Envoy of Joy'), tr('Thánh tử', 'Holy Son')] };
+const HH_TOP_NU = { full: tr('Hợp Hoan Thánh nữ', 'Hehuan Holy Daughter'), short: tr('Thánh nữ', 'Holy Daughter') };
 /** 3.1.0: bốn tông môn mới, mỗi tông có tên bậc riêng */
 export const SECT_RANKS: Record<string, { full: string[]; short: string[] }> = {
   'Phổ Đà Sơn': { full: [tr('Hỏa đầu tăng', "Kitchen monk"), tr('Sa di', "Novice monk"), tr('Tỳ kheo', "Bhikkhu"), tr('Hộ pháp La Hán', "Arhat Protector")], short: [tr('Hỏa đầu', "Kitchen"), tr('Sa di', "Novice monk"), tr('Tỳ kheo', "Bhikkhu"), tr('La Hán', "Arhat")] },
   'Kiếm Cốc': { full: [tr('Mài kiếm đồng', "Sword-grinding boy"), tr('Kiếm đồng', "Sword boy"), tr('Kiếm sĩ', "Swordsman"), tr('Kiếm Cốc truyền nhân', "Heir of Jian Valley")], short: [tr('Mài kiếm', "Grinder"), tr('Kiếm đồng', "Sword boy"), tr('Kiếm sĩ', "Swordsman"), tr('Truyền nhân', "Heir")] },
   'Vạn Độc Môn': { full: [tr('Dược nô', "Herb slave"), tr('Độc đồng', "Poison boy"), tr('Độc sứ', "Poison envoy"), tr('Vạn Độc Thánh sứ', "Holy Envoy of Wandu")], short: [tr('Dược nô', "Herb slave"), tr('Độc đồng', "Poison boy"), tr('Độc sứ', "Poison envoy"), tr('Thánh sứ', "Holy Envoy")] },
   'Yêu Thần Điện': { full: [tr('Yêu bộc', "Yao servant"), tr('Yêu binh', "Yao soldier"), tr('Yêu tướng', "Yao general"), tr('Yêu Thần tử', "Yao Divine Son")], short: [tr('Yêu bộc', "Yao servant"), tr('Yêu binh', "Yao soldier"), tr('Yêu tướng', "Yao general"), tr('Thần tử', "Divine Son")] },
+  'Hợp Hoan Tông': HH_RANKS,
+  'Hehuan Sect': HH_RANKS,
 };
 export function rankShort(c: Character): string {
   const r = rankOf(c);
   const side = sectSide(c);
   if (r < 0) return '';
   const own = c.sect ? SECT_RANKS[c.sect] : undefined;
+  if (own && isHH(c) && r === 3 && c.gender === 'nu') return HH_TOP_NU.short;
   if (own) return own.short[r] ?? '';
   return (side === 'ta' ? RANK_SHORT_TA : side === 'trung' ? RANK_SHORT_TRUNG : RANK_SHORT_CHINH)[r] ?? '';
 }
@@ -40,7 +50,7 @@ export const RANK_CULT = [1, 1.1, 1.25, 1.4];
 /** chân truyền: đột phá dễ hơn nhờ sư phụ chỉ điểm */
 export const CHAN_TRUYEN_BREAK = 0.08;
 
-const TA_SECTS = [tr('Huyết Sát Môn', "Xuesha Sect"), tr('Vạn Độc Môn', "Vạn Độc Môn"), tr('Yêu Thần Điện', "Yêu Thần Điện")];
+const TA_SECTS = [tr('Huyết Sát Môn', "Xuesha Sect"), tr('Vạn Độc Môn', "Vạn Độc Môn"), tr('Yêu Thần Điện', "Yêu Thần Điện"), HH_SECT_VI, HH_SECT_EN];
 const TRUNG_SECTS = [tr('Thiên Cơ Các', "Tianji Pavilion")];
 export const sectSide = (c: Pick<Character, 'sect'>): SectSide | null => (c.sect ? (TA_SECTS.includes(c.sect) ? 'ta' : TRUNG_SECTS.includes(c.sect) ? 'trung' : 'chinh') : null);
 export const rankOf = (c: Character): number => (c.sect ? (c.sectRank ?? 1) : -1);
@@ -48,6 +58,7 @@ export const rankOf = (c: Character): number => (c.sect ? (c.sectRank ?? 1) : -1
 export function rankName(c: Character, rank = rankOf(c)): string {
   if (rank < 0) return '';
   const own = c.sect ? SECT_RANKS[c.sect] : undefined;
+  if (own && isHH(c) && rank === 3 && c.gender === 'nu') return HH_TOP_NU.full;
   if (own) return own.full[rank] ?? '';
   const side = sectSide(c);
   return (side === 'ta' ? RANK_TA : side === 'trung' ? RANK_TRUNG : RANK_CHINH)[rank] ?? '';
@@ -65,7 +76,9 @@ export function rankByWit(ngoTinh: number): number {
 
 export function sectCultMul(c: Character): number {
   const r = rankOf(c);
-  return r < 0 ? 1 : (RANK_CULT[r] ?? 1);
+  // 4.1.0 Hợp Hoan Tông: mỗi lô đỉnh +3% tu luyện (tối đa 5 lô đỉnh)
+  const lo = isHH(c) ? 1 + 0.03 * Math.min(5, c.hh?.lo ?? 0) : 1;
+  return r < 0 ? 1 : (RANK_CULT[r] ?? 1) * lo;
 }
 
 /** Nhập môn: đặt bậc, hẹn lần Đại bỉ đầu tiên */
@@ -112,7 +125,8 @@ export function promoteByRealm(c: Character, ctx: EffectCtx): string | null {
   if (r < 0) return null;
   // ma môn: càng tàn nhẫn càng được trọng dụng
   const cruel = sectSide(c) === 'ta' ? (c.daoTam <= -70 ? 3 : c.daoTam <= -40 ? 2 : r) : r;
-  const want = Math.max(cruel, c.realm >= 3 ? 3 : c.realm >= 2 ? 2 : r);
+  // Hợp Hoan Tông: Thánh tử, Thánh nữ phải qua tuyển (hh_thanh_tu_tuyen), cảnh giới chỉ đưa tới Hoan Hỷ sứ
+  const want = Math.min(isHH(c) ? Math.max(r, 2) : 3, Math.max(cruel, c.realm >= 3 ? 3 : c.realm >= 2 ? 2 : r));
   let out: string | null = null;
   while (rankOf(c) < want)
     out = promote(
@@ -127,7 +141,8 @@ export function promoteByRealm(c: Character, ctx: EffectCtx): string | null {
 
 /** Đến kỳ Đại bỉ tông môn chưa (mỗi 5-8 năm, chỉ khi chưa là chân truyền) */
 export function daiBiDue(c: Character): boolean {
-  return !!c.sect && !c.cosmos && rankOf(c) < 3 && c.realm >= 1 && c.age >= (c.daiBiAt ?? 0) && c.age >= 12;
+  // Hợp Hoan Tông không có Đại bỉ, thay bằng Bách Hoa Yến (sự kiện hh_bach_hoa_yen)
+  return !!c.sect && !isHH(c) && !c.cosmos && rankOf(c) < 3 && c.realm >= 1 && c.age >= (c.daiBiAt ?? 0) && c.age >= 12;
 }
 
 /** Chân truyền: sư phụ cứu một lần khi sắp chết */

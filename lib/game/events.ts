@@ -1,6 +1,9 @@
 import { DAO_LU, ITEMS, PATHS } from './data';
-import { addCult, addLife, addPill, addWound, atAge, dao, fatal, giveItem, hasItem, hurt, isOrphan, luck, markDeath, money, pick, reward, sample, stat, usePill } from './helpers';
-import type { Character, Choice, GameEvent } from './types';
+import { addCult, addLife, addPill, addWound, atAge, bullyLoss, dao, fatal, giveItem, hasItem, hurt, isOrphan, luck, markDeath, money, pick, reward, sample, stat, takeStones, usePill } from './helpers';
+import type { Character, Choice, EffectCtx, GameEvent } from './types';
+import { eventDuel } from './duel';
+import { HH_EVENTS } from './hopHoan';
+import { isHH } from './sect';
 import { EVENTS2 } from './events2';
 import { EVENTS3 } from './events3';
 import { HOOK_EVENTS } from './hookEvents';
@@ -17,6 +20,85 @@ import { CHILD_EVENTS } from './childhood';
 import { PET_EVENT, PET_STORIES } from './pets';
 import { tr } from '../i18n';
 import { nameOf } from '../hanviet';
+
+/** 4.1.0 Q2b: đồng môn hút trộm tu vi (từ Trúc Cơ, do fate.ts kích hoạt): tố cáo, thách đấu hay hút ngược */
+export const HUT_CONG_ID = 'dong_mon_hut_cong';
+const hutCongEvent: GameEvent = {
+  id: HUT_CONG_ID,
+  when: () => false, // chỉ do engine mở sau khi bị hút trộm
+  title: tr('Đồng môn hút trộm tu vi', "A fellow disciple steals your cultivation"),
+  text: (c) => tr(`Kẻ vừa hút trộm ${c.qf?.dmHut ?? 0} tu vi của bạn là một đồng môn cảnh giới thấp hơn. Hắn vẫn ngồi ngay hàng ghế sau, mặt tỉnh bơ.`, `The one who just stole ${c.qf?.dmHut ?? 0} of your cultivation is a fellow disciple of a lower realm. He's sitting in the row behind you, face perfectly blank.`),
+  choices: (c) => {
+    const lost = c.qf?.dmHut ?? 0;
+    const done = (ch: Character) => {
+      if (ch.qf) delete ch.qf.dmHut;
+    };
+    return [
+      {
+        label: c.sect ? tr('Tố cáo lên trưởng lão', "Report him to the elders") : tr('Báo với lão tán tu đứng đầu vùng', "Report him to the local elder of the rogue cultivators"),
+        hint: tr('chính', "righteous"),
+        lean: 'chinh',
+        run: (ch, ctx) => {
+          done(ch);
+          if (ctx.rnd() < luck(ch, 0.7 + (ch.daoTam >= 30 ? 0.15 : 0))) {
+            addCult(ch, lost);
+            dao(ch, 3);
+            return tr(`Trưởng lão dùng thần thức soi một lượt là ra. Kẻ kia bị phế tu vi, phần hút của bạn được trả lại (+${lost} tu vi).`, `The elder sees the truth with one sweep of divine sense. The thief's cultivation is crippled and what he stole is returned to you (+${lost} cultivation).`);
+          }
+          stat(ch, 'tamMa', 5);
+          return tr('Hắn có người chống lưng trong tông. Trưởng lão bảo "không đủ chứng cứ" rồi phẩy tay cho lui.', "He has a patron in the sect. The elder says \"insufficient evidence\" and waves you away.");
+        },
+      },
+      {
+        label: tr('Thách đấu lôi đài', "Challenge him in the Arena"),
+        hint: tr('giao đấu, hắn thấp hơn bạn một cảnh giới', "a duel - he is one realm below you"),
+        lean: 'trung',
+        run: (ch, ctx) => {
+          done(ch);
+          const d = eventDuel(ch, ch.realm - 1, ctx.rnd);
+          if (d.result === 'win') {
+            const back = Math.round(lost * 1.5);
+            addCult(ch, back);
+            stat(ch, 'tamCanh', 4);
+            ctx.fx('breakthrough', tr('Thắng lôi đài', "Arena victory"));
+            return tr(`Ba chiêu, ${d.foe.name} nằm dưới chân lôi đài. Bạn ép hắn nôn ra cả vốn lẫn lời (+${back} tu vi).`, `Three moves and ${d.foe.name} is lying below the arena. You make him cough up what he took, with interest (+${back} cultivation).`);
+          }
+          if (d.result === 'draw') {
+            const back = Math.round(lost / 2);
+            addCult(ch, back);
+            return tr(`Hai bên bất phân thắng bại. Trưởng lão phân xử ${d.foe.name} trả lại một nửa (+${back} tu vi).`, `Neither side wins. The elder rules that ${d.foe.name} must return half (+${back} cultivation).`);
+          }
+          stat(ch, 'tamMa', 6);
+          return tr(`Không ngờ ${d.foe.name} giấu nghề, dùng chính tu vi hút của bạn đánh bạn văng khỏi lôi đài.`, `${d.foe.name} was hiding his skill and knocks you off the arena with your own stolen cultivation.`) + hurt(ch, 15, ctx);
+        },
+      },
+      {
+        label: tr('Hút ngược lại, còn hút thêm', "Siphon it back, and then some"),
+        hint: tr('tà', "evil"),
+        lean: 'ta',
+        run: (ch, ctx) => {
+          done(ch);
+          const back = Math.round(lost * 2);
+          addCult(ch, back);
+          dao(ch, -8);
+          stat(ch, 'tamMa', 4);
+          ctx.fx('evil', tr('Hút ngược', "Reverse siphon"));
+          return tr(`Đêm ấy bạn tới phòng hắn. Sáng ra hắn già đi mười tuổi, còn bạn thu về gấp đôi (+${back} tu vi).`, `That night you visit his room. By morning he looks ten years older, and you have taken back double (+${back} cultivation).`);
+        },
+      },
+      {
+        label: tr('Nhịn cho qua', "Let it go"),
+        lean: 'trung',
+        run: (ch) => {
+          done(ch);
+          stat(ch, 'tamMa', 6);
+          stat(ch, 'tamCanh', 2);
+          return tr('Bạn nhắm mắt tu tiếp. Hắn không biết rằng bạn đã nhớ mặt.', "You close your eyes and keep cultivating. He doesn't know you've memorized his face.");
+        },
+      },
+    ];
+  },
+};
 
 export const EVENTS: GameEvent[] = [
   // ---------------- Tuổi thơ: mỗi người một bộ lựa chọn khác nhau ----------------
@@ -123,6 +205,7 @@ export const EVENTS: GameEvent[] = [
   },
   {
     id: 'tuoi_tho',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minAge: 5,
     maxAge: 10,
     once: true,
@@ -222,6 +305,7 @@ export const EVENTS: GameEvent[] = [
   },
   {
     id: 'sot_dau',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minAge: 1,
     maxAge: 8,
     once: true,
@@ -277,6 +361,7 @@ export const EVENTS: GameEvent[] = [
   },
   {
     id: 'gieng_co',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minAge: 3,
     maxAge: 10,
     once: true,
@@ -349,6 +434,7 @@ export const EVENTS: GameEvent[] = [
   },
   {
     id: 'ke_la',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minAge: 3,
     maxAge: 9,
     once: true,
@@ -396,6 +482,7 @@ export const EVENTS: GameEvent[] = [
   },
   {
     id: 'song_lu',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minAge: 6,
     maxAge: 14,
     once: true,
@@ -462,6 +549,7 @@ export const EVENTS: GameEvent[] = [
   },
   {
     id: 'am_sat_the_gia',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minAge: 4,
     maxAge: 14,
     once: true,
@@ -514,6 +602,7 @@ export const EVENTS: GameEvent[] = [
   },
   {
     id: 'mat_mua',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minAge: 3,
     maxAge: 13,
     once: true,
@@ -677,6 +766,7 @@ export const EVENTS: GameEvent[] = [
   },
   {
     id: 'lac_rung',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minAge: 4,
     maxAge: 12,
     once: true,
@@ -996,6 +1086,7 @@ export const EVENTS: GameEvent[] = [
   {
     id: 'cuop_duong',
     minRealm: 1,
+    maxRealm: 3, // 4.1.0 Q2: từ Nguyên Anh, bọn cướp quỳ xin tha (cuop_duong_quy)
     cooldown: 15,
     weight: 10,
     title: tr('Chặn đường', "Highway robbery"),
@@ -1006,6 +1097,12 @@ export const EVENTS: GameEvent[] = [
         lean: 'trung',
         run: (c, ctx) => {
           const bonus = hasItem(c, 'thanh_phong') || hasItem(c, 'huyet_dao') || c.path === 'kiem' ? 0.2 : 0;
+          // 4.1.0 Q2b: từ Trúc Cơ, ba tên tán tu Luyện Khí không phải đối thủ
+          if (c.realm >= 2) {
+            money(c, 60 * (c.realm + 1));
+            stat(c, 'tamCanh', 3);
+            return tr('Ba tên còn chưa kịp rút đao đã bị uy áp Trúc Cơ ép quỳ rạp. Bạn lấy lại túi của chúng làm tiền "dạy dỗ".', "Before the three can even draw, your Foundation pressure forces them to their knees. You take their pouches as a \"tuition fee\".");
+          }
           if (ctx.rnd() < luck(c, 0.5 + bonus)) {
             money(c, 80 * (c.realm + 1));
             stat(c, 'tamCanh', 3);
@@ -1019,14 +1116,29 @@ export const EVENTS: GameEvent[] = [
       },
       {
         label: tr('Nộp tiền mua bình an', "Pay for safe passage"),
-        hint: tr(`-${Math.round(c.linhThach * 0.3)} linh thạch`, `-${Math.round(c.linhThach * 0.3)} spirit stones`),
+        hint: tr(`-${bullyLoss(c, 0.3)} linh thạch`, `-${bullyLoss(c, 0.3)} spirit stones`),
         lean: 'trung',
         run: (c) => {
-          money(c, -c.linhThach * 0.3);
+          const lost = takeStones(c, 0.3);
           stat(c, 'tamMa', 4);
+          if (c.realm >= 2) return tr(`Bạn ném ra ${lost} linh thạch. Chúng cầm tiền mà tay run, cúi đầu lủi mất, không dám đòi thêm.`, `You toss out ${lost} spirit stones. They take it with shaking hands and slink off, not daring to ask for more.`);
           return tr('Bạn ném túi linh thạch ra. Chúng cười khẩy rồi bỏ đi.', "You toss out a pouch of spirit stones. They sneer and leave.");
         },
       },
+      ...(c.realm >= 2
+        ? [
+            {
+              label: tr('Dọa cho chạy', "Scare them off"),
+              hint: tr('chính, không đổ máu', "righteous, no bloodshed"),
+              lean: 'chinh' as const,
+              run: (ch: Character) => {
+                dao(ch, 3);
+                stat(ch, 'tamCanh', 2);
+                return tr('Bạn chỉ thả ra một tia uy áp. Ba tên đánh rơi đao, vừa chạy vừa la "tiền bối tha mạng", dép văng mỗi chiếc một nơi.', "You release a single thread of pressure. The three drop their blades and run screaming \"spare us, senior!\", sandals flying in every direction.");
+              },
+            },
+          ]
+        : []),
       {
         label: tr('Bỏ chạy', "Flee"),
         lean: 'trung',
@@ -1044,6 +1156,50 @@ export const EVENTS: GameEvent[] = [
           money(c, 150 * (c.realm + 1));
           ctx.fx('evil', tr('Giết sạch', "Wiped out"));
           return tr('Bạn quỳ xuống van xin, đợi chúng lại gần rồi kích nổ phù chú. Không ai sống sót.', "You kneel and beg, wait for them to come close, then detonate a talisman. No one survives.");
+        },
+      },
+    ],
+  },
+  {
+    id: 'cuop_duong_quy',
+    minRealm: 4,
+    cooldown: 30,
+    weight: 4,
+    title: tr('Chặn nhầm người', "Wrong target"),
+    text: () => tr('Ba tên tán tu nhảy ra giữa đường, vừa hô "để lại túi trữ vật" thì nhìn rõ mặt bạn. Cả ba đồng loạt quỳ xuống, dập đầu côm cốp: "Tiền bối Nguyên Anh tha mạng, bọn tiểu nhân có mắt như mù!"', "Three rogue cultivators leap into the road and shout \"hand over your storage pouch\" - then get a good look at you. All three drop to their knees, banging their heads on the ground: \"Spare us, Nascent Soul senior, we were blind!\""),
+    choices: () => [
+      {
+        label: tr('Tha cho, dặn làm người lương thiện', "Let them go, tell them to go straight"),
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 4);
+          return tr('Ba tên cảm động khóc ròng, hứa về quê cày ruộng. Sáng hôm sau người ta thấy chúng bán bánh bao ở đầu trấn.', "The three weep with gratitude and swear to go home and farm. Next morning they're seen selling steamed buns at the edge of town.");
+        },
+      },
+      {
+        label: tr('Bắt nộp hết của phi nghĩa', "Make them hand over their ill-gotten loot"),
+        lean: 'trung',
+        run: (c) => {
+          money(c, 40 * c.realm);
+          return tr('Chúng dốc túi, móc cả linh thạch giấu trong giày. Bạn đếm được ít ỏi đến tội nghiệp.', "They empty their pouches, even the stones hidden in their shoes. The total is pitifully small.");
+        },
+      },
+      {
+        label: tr('Thu làm tạp dịch động phủ', "Take them on as cave-abode servants"),
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'tamCanh', 3);
+          return tr('Từ đó động phủ của bạn có ba tên quét lá. Lá thì chưa sạch, nhưng không còn tên trộm nào dám bén mảng.', "From then on your cave abode has three leaf-sweepers. The leaves aren't any cleaner, but no thief dares come near.");
+        },
+      },
+      {
+        label: tr('Không tha, diệt cỏ tận gốc', "No mercy - pull the weeds by the roots"),
+        lean: 'ta',
+        run: (c, ctx) => {
+          dao(c, -8);
+          money(c, 40 * c.realm);
+          ctx.fx('evil', tr('Diệt sạch', "Wiped out"));
+          return tr('Một cái phất tay, ba tên hóa tro. Giang hồ bớt ba kẻ cướp, thêm một lời đồn về ma đầu.', "One wave of your hand and the three turn to ash. The jianghu has three fewer bandits, and one more rumor of a demon.");
         },
       },
     ],
@@ -1094,7 +1250,9 @@ export const EVENTS: GameEvent[] = [
         lean: 'ta',
         run: (c, ctx) => {
           dao(c, -16);
-          const f = fatal(c, ctx, 0.12, tr('Đối phương là truyền nhân Hợp Hoan Tông, cao tay hơn bạn. Sáng hôm sau người ta thấy một cái xác khô.', "They're a successor of Hehuan Sect, far more skilled than you. The next morning, people find a withered corpse."));
+          // 4.1.0: từng lợi dụng song tu thì Mị Cơ để mắt (hh_bai_su); đã là đệ tử Hợp Hoan thì tỉ lệ chết giảm một nửa
+          c.qf = { ...(c.qf ?? {}), hutCong: 1 };
+          const f = fatal(c, ctx, isHH(c) ? 0.06 : 0.12, tr('Đối phương là truyền nhân Hợp Hoan Tông, cao tay hơn bạn. Sáng hôm sau người ta thấy một cái xác khô.', "They're a successor of Hehuan Sect, far more skilled than you. The next morning, people find a withered corpse."));
           if (c.dead) return tr('Đêm đó...', "That night...") + f;
           stat(c, 'tamMa', 10);
           addCult(c, reward(c, 0.8));
@@ -1166,6 +1324,7 @@ export const EVENTS: GameEvent[] = [
   },
   {
     id: 'tien_dan_gia',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minAge: 14,
     weight: 8,
     cooldown: 20,
@@ -1270,6 +1429,7 @@ export const EVENTS: GameEvent[] = [
   },
   {
     id: 'lang_dich',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minRealm: 1,
     weight: 7,
     cooldown: 40,
@@ -1391,13 +1551,14 @@ export const EVENTS: GameEvent[] = [
         label: tr('Trình bày, xin trưởng lão điều tra', "Explain, ask the elder to investigate"),
         lean: 'chinh',
         run: (c, ctx) => {
-          if (ctx.rnd() < luck(c, 0.6)) {
+          // 4.1.0 Q2b: tiếng chính trực và cảnh giới cao làm trưởng lão tin bạn hơn
+          if (ctx.rnd() < luck(c, 0.6 + (c.daoTam >= 30 ? 0.15 : 0) + (c.realm >= 2 ? 0.1 : 0))) {
             dao(c, 4);
             stat(c, 'tamCanh', 5);
             return tr('Trưởng lão minh xét. Sư huynh kia bị phạt diện bích.', "The elder sees the truth. That senior brother is sentenced to face the wall.");
           }
           stat(c, 'tamMa', 8);
-          addCult(c, -reward(c, 0.2));
+          if (c.realm < 2) addCult(c, -reward(c, 0.2)); // 4.1.0 Q2b: từ Trúc Cơ chỉ bị phạt quỳ, không mất tu vi
           return tr('Không ai tin bạn. Bạn bị phạt quỳ ba ngày.', "No one believes you. You're made to kneel for three days.");
         },
       },
@@ -1604,6 +1765,7 @@ export const EVENTS: GameEvent[] = [
   },
   {
     id: 'tuu_tien',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minAge: 18,
     weight: 6,
     cooldown: 30,
@@ -1982,6 +2144,7 @@ export const EVENTS: GameEvent[] = [
   // ---------------- Kiếm hiệp: những lựa chọn có thể mất mạng ----------------
   {
     id: 'canh_doc',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minAge: 14,
     weight: 7,
     cooldown: 30,
@@ -2031,6 +2194,7 @@ export const EVENTS: GameEvent[] = [
   },
   {
     id: 'trong_benh',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minAge: 20,
     weight: 6,
     cooldown: 25,
@@ -2205,6 +2369,7 @@ export const EVENTS: GameEvent[] = [
   },
   {
     id: 'vuc_tham',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minAge: 12,
     weight: 6,
     cooldown: 30,
@@ -2272,6 +2437,7 @@ export const EVENTS: GameEvent[] = [
   },
   {
     id: 'ran_doc',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minAge: 10,
     weight: 6,
     cooldown: 25,
@@ -2295,6 +2461,11 @@ export const EVENTS: GameEvent[] = [
         lean: 'trung',
         run: (c, ctx) => {
           if (usePill(c, 'hoi_xuan')) return tr('Dược lực giải độc trong chớp mắt.', "The medicine neutralizes the venom in an instant.");
+          // 4.1.0 Q2: từ Trúc Cơ, rắn phàm không giết nổi, chỉ hành cho một trận
+          if (c.realm >= 2) {
+            stat(c, 'tamMa', 5);
+            return tr('Lục túi không thấy đan dược. Độc rắn phàm không giết nổi thân Trúc Cơ, nhưng bạn sốt mê man mấy ngày, trong mơ toàn thấy rắn.', "No pills in your pouch. A mortal snake's venom can't kill a Foundation body, but you burn with fever for days and dream of nothing but snakes.") + hurt(c, 15, ctx);
+          }
           const f = fatal(c, ctx, 0.4, tr('Lục túi không thấy đan dược. Bạn chết trong rừng sâu.', "You search your pouch and find no pills. You die deep in the forest."));
           if (c.dead) return tr('Bạn lục túi...', "You rummage through your pouch...") + f;
           return tr('Không có đan, may mà con rắn này độc nhẹ.', "No pills, but luckily this snake's venom is mild.") + (f ?? '');
@@ -2439,6 +2610,7 @@ export const EVENTS: GameEvent[] = [
   // ---------------- Giàu nghèo ----------------
   {
     id: 'do_thach',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minAge: 16,
     weight: 6,
     cooldown: 15,
@@ -2553,22 +2725,39 @@ export const EVENTS: GameEvent[] = [
   },
   {
     id: 'pha_san',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minAge: 18,
     weight: 8,
     cooldown: 25,
     when: (c) => (c.income ?? 0) >= 30,
     title: tr('Thương hội chèn ép', "Merchant guild squeeze"),
     text: () => tr('Vạn Phúc thương hội muốn nuốt trọn việc làm ăn của bạn. Kho hàng bị đốt, khách bị dọa không cho tới.', "The Wanfu Merchant Guild wants to swallow your business whole. Your warehouse is torched, and customers are scared away."),
-    choices: () => [
+    choices: (c) => [
       {
         label: tr('Bỏ tiền ra gỡ', "Pay your way out"),
-        hint: tr('-40% linh thạch', "-40% spirit stones"),
+        hint: c.realm >= 2 ? tr(`-${bullyLoss(c, 0.4)} linh thạch`, `-${bullyLoss(c, 0.4)} spirit stones`) : tr('-40% linh thạch', "-40% spirit stones"),
         lean: 'trung',
         run: (c) => {
-          money(c, -c.linhThach * 0.4);
+          const lost = takeStones(c, 0.4);
+          if (c.realm >= 2) return tr(`Bạn bỏ ra ${lost} linh thạch. Thương hội nhận tiền mà mặt cắt không còn giọt máu, sợ bạn đổi ý.`, `You pay ${lost} spirit stones. The guild takes it with bloodless faces, terrified you'll change your mind.`);
           return tr('Bạn cầm cự được, nhưng sứt mẻ không ít.', "You hold on, but take quite a hit.");
         },
       },
+      ...(c.realm >= 2
+        ? [
+            {
+              label: tr('Ra tay: tới tận thương hội đòi công đạo', "Act: march into the guild and demand justice"),
+              hint: tr('chênh cảnh giới, chắc thắng', "realm gap, a sure win"),
+              lean: 'trung' as const,
+              run: (ch: Character, cx: EffectCtx) => {
+                money(ch, 50 * ch.realm);
+                stat(ch, 'tamCanh', 3);
+                cx.fx('buy', tr('Đòi công đạo', "Justice served"));
+                return tr(`Bạn đặt một ngón tay lên bàn của hội chủ, mặt bàn gỗ lim nứt làm đôi. Vạn Phúc thương hội bồi thường ${50 * ch.realm} linh thạch, còn dán cáo thị xin lỗi khắp phường thị.`, `You rest one finger on the guild master's desk and the ironwood splits in two. The Wanfu Guild pays ${50 * ch.realm} spirit stones in damages and posts apologies all over the Market.`);
+              },
+            },
+          ]
+        : []),
       {
         label: tr('Kiện lên quan phủ', "Sue at the magistrate's court"),
         lean: 'chinh',
@@ -2605,6 +2794,7 @@ export const EVENTS: GameEvent[] = [
   },
   {
     id: 'bo_thi',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minAge: 16,
     weight: 7,
     cooldown: 25,
@@ -2657,6 +2847,7 @@ export const EVENTS: GameEvent[] = [
   },
   {
     id: 'tung_quan',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minAge: 14,
     weight: 9,
     cooldown: 15,
@@ -2739,6 +2930,7 @@ export const EVENTS: GameEvent[] = [
   },
   {
     id: 'trom_nha',
+    pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
     minAge: 16,
     weight: 7,
     cooldown: 20,
@@ -2750,6 +2942,8 @@ export const EVENTS: GameEvent[] = [
         label: tr('Ra bắt trộm', "Go catch the thief"),
         lean: 'trung',
         run: (c, ctx) => {
+          // 4.1.0 Q2b: từ Trúc Cơ, trộm phàm không thoát nổi thần thức
+          if (c.realm >= 2) return tr('Thần thức của bạn đã khóa hắn từ lúc hắn trèo tường. Tên trộm chưa kịp chạm rương đã bị treo ngược lên xà nhà, sáng ra giao cho quan phủ.', "Your divine sense locked onto him the moment he climbed the wall. Before he touches the chest he's hanging upside down from a rafter; at dawn you hand him to the magistrate.");
           if (ctx.rnd() < luck(c, 0.65)) return tr('Bạn tóm gọn tên trộm, giao cho quan phủ.', "You nab the thief and hand him over to the magistrate.");
           const f = fatal(c, ctx, 0.08, tr('Tên trộm rút dao đâm trúng tim bạn.', "The thief pulls a knife and stabs you through the heart."));
           if (c.dead) return tr('Trong bóng tối...', "In the darkness...") + f;
@@ -2761,7 +2955,8 @@ export const EVENTS: GameEvent[] = [
         label: tr('Mặc kệ, coi như của đi thay người', "Let it go - better the money than your life"),
         lean: 'trung',
         run: (c) => {
-          money(c, -c.linhThach * 0.2);
+          const lost = takeStones(c, 0.2);
+          if (c.realm >= 2) return tr(`Bạn lười dậy. Sáng ra mất ${lost} linh thạch, số còn lại hắn không vác nổi.`, `You can't be bothered to get up. By morning ${lost} spirit stones are gone - he couldn't carry the rest.`);
           return tr('Sáng ra mất một phần năm gia tài.', "By morning, a fifth of your fortune is gone.");
         },
       },
@@ -2790,6 +2985,7 @@ export const EVENTS: GameEvent[] = [
   ...TA_EVENTS,
   ...SECT_EVENTS,
   ...SECT_EVENTS2,
+  ...HH_EVENTS,
   ...CHUYEN_DAO_EVENTS,
   ...COSMOS_EVENTS,
   ...HU_EVENTS,
@@ -2798,6 +2994,7 @@ export const EVENTS: GameEvent[] = [
   ...CHILD_EVENTS,
   PET_EVENT,
   ...PET_STORIES,
+  hutCongEvent,
 ];
 
 // ---------------- Sự kiện do engine kích hoạt ----------------

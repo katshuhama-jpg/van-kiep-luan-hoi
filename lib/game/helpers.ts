@@ -214,6 +214,70 @@ function youngMul(age: number): number {
   return age < 13 ? 0.35 : age < 18 ? 0.65 : 1;
 }
 
+/** 4.1.0 Q2: đang chạy sự kiện tai họa phàm tục thì từ cảnh giới này trở lên, cái chết chỉ thành thương (null = không áp dụng) */
+export const phamGuard: { at: number | null } = { at: null };
+
+/** Chạy fn với ngưỡng phàm tục tạm thời (dùng cho xui rủi nhỏ ngoài sự kiện) */
+export function withPham<T>(at: number, fn: () => T): T {
+  const old = phamGuard.at;
+  phamGuard.at = at;
+  try {
+    return fn();
+  } finally {
+    phamGuard.at = old;
+  }
+}
+/** Sau tai họa phàm tục ở cảnh giới đủ cao: giữ lại chút sức khỏe để nó không thành giọt nước tràn ly */
+export function phamFloor(c: Character, at: number) {
+  if (!c.dead && !c.cosmos && c.realm >= at && c.stats.sucKhoe < 5) c.stats.sucKhoe = 5;
+}
+
+/** 4.1.0 Q2b: trần thiệt hại khi bị phàm nhân, cướp vặt, đồng môn thấp hơn ăn hiếp. Từ Trúc Cơ mất tối đa 5% và không quá mức trần theo cảnh giới */
+export const BULLY_CAP_FRAC = 0.05;
+export function bullyCapOf(realm: number): number {
+  return 60 * realm;
+}
+/** Số linh thạch bị lấy (đã làm tròn, đã áp trần theo cảnh giới). Chưa trừ tiền: gọi money(c, -n) sau */
+export function bullyLoss(c: Character, frac: number): number {
+  const raw = Math.max(0, Math.round(c.linhThach * frac));
+  if (c.realm < 2 || c.cosmos) return raw;
+  return Math.min(raw, Math.round(c.linhThach * BULLY_CAP_FRAC), bullyCapOf(c.realm));
+}
+/** Lấy linh thạch của nạn nhân theo tỉ lệ (có trần), trả về số đã lấy */
+export function takeStones(c: Character, frac: number): number {
+  const n = bullyLoss(c, frac);
+  if (n > 0) money(c, -n);
+  return n;
+}
+/** Tu vi bị hút, chiếm: từ Trúc Cơ tối đa 5% tu vi hiện có */
+export function bullyCult(c: Character, amount: number): number {
+  const a = Math.max(0, Math.round(amount));
+  if (c.realm < 2 || c.cosmos) return a;
+  return Math.min(a, Math.round(c.cultivation * BULLY_CAP_FRAC));
+}
+
+/** 4.1.0 Q3: khoảng lặng giữa hai trận bắt buộc (chặn đường, gặp người, oan gia, cướp đường, sát thủ) */
+export const FORCED_GAP_YEARS = 3;
+export const FORCED_GAP_MS = 60_000;
+/** đồng hồ thật, mô phỏng thay bằng đồng hồ giả */
+export const forcedClock = { now: () => Date.now() };
+export function forcedReady(c: Character): boolean {
+  if (c.lastForced !== undefined && c.age - c.lastForced < FORCED_GAP_YEARS) return false;
+  if (c.forcedAt !== undefined && forcedClock.now() - c.forcedAt < FORCED_GAP_MS) return false;
+  return true;
+}
+/** Đánh dấu một trận bắt buộc. Trả về số năm game kể từ trận bắt buộc trước (null nếu là trận đầu của kiếp) */
+export function markForced(c: Character): number | null {
+  const gap = c.lastForced === undefined ? null : Math.round((c.age - c.lastForced) * 10) / 10;
+  c.lastForced = c.age;
+  c.forcedAt = forcedClock.now();
+  return gap;
+}
+/** Thua trận mà còn sống: 5 năm sau dễ gặp cơ duyên hơn */
+export function afterLoss(c: Character) {
+  if (!c.dead) c.coDuyenUntil = Math.floor(c.age) + 5;
+}
+
 export function fatal(c: Character, ctx: EffectCtx, chance: number, cause: string): string | null {
   riskMeter.n++;
   // trẻ con được trời thương hơn một chút
@@ -226,6 +290,13 @@ export function fatal(c: Character, ctx: EffectCtx, chance: number, cause: strin
   const newbie = (c.lifeNo <= NEWBIE_LIVES && !c.path ? NEWBIE_FATAL_MUL : 1) * sealFatal(c);
   const p = clamp(chance * hard * tough * (chance < 1 ? youngMul(c.age) * newbie : 1) * (chance < 1 ? luckMul : 1), 0.01, chance >= 1 ? 1 : 0.95);
   if (ctx.rnd() >= p) return null;
+  // 4.1.0 Q2: tai họa phàm tục không giết được người tu đạo đủ cao, chỉ gây thương
+  if (phamGuard.at !== null && chance < 1 && !c.cosmos && c.realm >= phamGuard.at) {
+    const dmg = Math.round(8 + Math.min(1, chance) * 30);
+    c.stats.sucKhoe = Math.max(5, c.stats.sucKhoe - dmg);
+    ctx.fx('hurt', tr('Thân tu đạo', 'Cultivator body'));
+    return tr(` Phàm thai đã thoát, tai họa ấy chỉ làm bạn bị thương (-${dmg} sức khỏe).`, ` You are past mortal flesh now - the mishap only wounds you (-${dmg} Health).`);
+  }
   if (c.oanHon) {
     c.oanHon = false;
     c.stats.sucKhoe = Math.max(20, c.stats.sucKhoe);

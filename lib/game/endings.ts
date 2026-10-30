@@ -344,6 +344,25 @@ export const ENDINGS: Ending[] = [
     rare: 1,
     test: (c) => c.endTag === 'be_quan',
   },
+  // ---- 4.1.0: Hợp Hoan Tông ----
+  {
+    id: 'tinh_cu_doi_mang',
+    name: tr('Tình Cũ Đòi Mạng', 'An Old Flame Collects'),
+    desc: tr('Người năm xưa bị bạn hút cạn chân khí đã tu luyện lại từ đầu, chỉ để quay về đòi một thứ duy nhất.', 'Someone whose qi you once drained dry rebuilt their cultivation from nothing, just to come back for one thing.'),
+    hint: tr('Người bị bỏ lại không phải ai cũng quên.', 'Not everyone you leave behind forgets.'),
+    how: tr('Vào Hợp Hoan Tông, hút cạn một lô đỉnh, rồi chết khi người ấy quay lại báo thù.', 'Join Hehuan Sect, drain a cauldron dry, then die when they come back for revenge.'),
+    rare: 3,
+    test: (c) => c.endTag === 'tinh_cu_doi_mang',
+  },
+  {
+    id: 'vi_tinh_bo_tong',
+    name: tr('Vì Tình Bỏ Tông', 'Left the Sect for Love'),
+    desc: tr('Trong tông dạy rằng tình là công cụ. Bạn bỏ cả tông để chứng minh điều ngược lại, và sống những năm cuối bên người ấy.', 'Your sect taught that love is a tool. You left it all behind to prove the opposite, and spent your last years beside that one person.'),
+    hint: tr('Có tông môn cấm động lòng.', 'Some sects forbid falling in love.'),
+    how: tr('Ở Hợp Hoan Tông, động lòng với một người, bỏ trốn cùng người ấy, sống sót qua cuộc truy sát và chết khi người ấy vẫn còn bên cạnh.', 'In Hehuan Sect, fall for someone, run away with them, survive the hunt, and die with them still at your side.'),
+    rare: 3,
+    test: (c) => !c.cosmos && !!c.hh?.bo && !!c.partner && c.partner === c.hh.tinh,
+  },
   // ---- chết vì quái, thay cho kết cục chung chung ----
   { id: 'tho_yeu', name: tr('Chết Dưới Răng Thỏ', "Death by Bunny Teeth"), desc: tr('Cả giang hồ cười suốt ba ngày. Một con thỏ yêu mới khai linh trí đã tiễn bạn đi.', "The whole jianghu laughed for three days. A rabbit yao that had only just gained sentience sent you off."), hint: tr('Đừng coi thường thứ gì ở bãi cỏ đầu làng.', "Never underestimate anything in the meadow at the edge of the village."), rare: 2, test: (c) => c.endTag === 'tho_yeu' },
   { id: 'thi_luyen', name: tr('Bỏ Mạng Thí Luyện', "Lost in the Trial"), desc: tr('Vào bí cảnh thí luyện của tông môn mà không trở ra. Sư môn chỉ nhận về một tấm lệnh bài vỡ.', "You entered your sect's trial realm and never came out. All the sect got back was a broken token."), hint: tr('Bí cảnh tông môn không phải chỗ để đùa.', "A sect's secret realm is no place for games."), how: tr('Đã bái nhập tông môn, chết khi đánh quái thí luyện của môn phái.', "Having joined a sect, die fighting monsters in the sect's trial."), rare: 1, test: (c) => c.endTag === 'thi_luyen' },

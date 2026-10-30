@@ -41,15 +41,16 @@ import {
   TEN_NU,
   realmLabel,
 } from './data';
-import { BREAK_EVENT_ID, EVENTS, PATH_EVENT_ID, pathChoices } from './events';
+import { BREAK_EVENT_ID, EVENTS, HUT_CONG_ID, PATH_EVENT_ID, pathChoices } from './events';
 import { maChainYear } from './sectEvents2';
 import { ASCEND_MIN_AGE, anOf, destOf, keyAn, needTrial } from './nguHanhDai';
 import { ASCEND_GEAR } from './items2';
 import { usesVanDao } from './vanDao';
-import { DO_KIEP_REALM, FAMILY_RE, isOrphan, addCult, markDeath, addLife, addPill, clamp, cosmosCause, fatal, reward, wealthTier, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
+import { phamGuard, forcedReady, markForced, takeStones, DO_KIEP_REALM, FAMILY_RE, isOrphan, addCult, markDeath, addLife, addPill, clamp, cosmosCause, fatal, reward, wealthTier, dao, giveItem, hurt, money, needFor, pick, stat, usePill, weighted } from './helpers';
 import type { Character, Choice, EffectCtx, Fx, FxKind, GameEvent, Meta, PendingEvent, Tone } from './types';
 import { applyGifts, giftOf, hasGift } from './gacha';
 import { afterChoice, beforeChoice, righteousPeril } from './fate';
+import { hhHiding, hhYear } from './hopHoan';
 import { childLine } from './childhood';
 import { petName } from './pets';
 import { ELEMENTS } from './nguhanh';
@@ -72,10 +73,10 @@ function lifeMult(c: Character, talents: string[] = []) {
   return m;
 }
 
-export function genName(gender: 'nam' | 'nu'): string {
-  return nameOf(genNameVi(gender));
+export function genName(gender: 'nam' | 'nu', rnd: () => number = Math.random): string {
+  return nameOf(genNameVi(gender, rnd));
 }
-export function genNameVi(gender: 'nam' | 'nu'): string {
+export function genNameVi(gender: 'nam' | 'nu', rnd: () => number = Math.random): string {
   const ho = rnd() < 0.15 ? pick(rnd, HO_KEP) : pick(rnd, HO);
   const r = rnd();
   let ten: string;
@@ -574,6 +575,12 @@ function mentionsFamily(c: Character, e: GameEvent): boolean {
   }
 }
 
+/** 4.1.0 Q3: sự kiện là trận bắt buộc, phải cách trận bắt buộc trước ít nhất 3 năm game và 60 giây thật */
+export const FORCED_EVENTS = new Set(['ke_thu', 'cuop_duong', 'sat_thu', 'hh_chinh_phai_truy', 'hh_bao_thu', 'hh_truy_phan_do']);
+/** 4.1.0 Q3: sự kiện cơ duyên, được tăng trọng số 5 năm sau một trận thua còn sống */
+export const CO_DUYEN_EVENTS = new Set(['lao_gia', 'bi_canh', 'tien_duyen_dau', 'than_binh_nhan_chu', 'su_phu_chi_diem', 'hop_bi_an', 'lao_tang', 'tre_lac', 'yeu_thu_con', 'trung_la', 'dau_gia', 'kc_kiem_trung', 'lao_cau_ca']);
+export const CO_DUYEN_MUL = 3;
+
 function eligible(c: Character, e: GameEvent): boolean {
   // sau phi thăng chỉ còn sự kiện tiên giới, ma giới; trước phi thăng không gặp sự kiện của các giới đó
   if (c.cosmos) {
@@ -586,13 +593,14 @@ function eligible(c: Character, e: GameEvent): boolean {
   if (e.maxRealm !== undefined && c.realm > e.maxRealm) return false;
   const seen = c.seenEvents[e.id];
   // một sự kiện gặp tối đa 2 lần mỗi kiếp (oan gia, tâm ma 3 lần) để đỡ lặp
-  const cap = e.id === 'tam_ma' || e.id === 'ke_thu' ? 3 : 2;
+  const cap = e.cap ?? (e.id === 'tam_ma' || e.id === 'ke_thu' ? 3 : 2);
   if ((c.evCount?.[e.id] ?? 0) >= cap) return false;
   if (seen !== undefined) {
     if (e.once) return false;
     if (a - seen < (e.cooldown ?? 10)) return false;
   }
   if (e.when && !e.when(c)) return false;
+  if (FORCED_EVENTS.has(e.id) && !forcedReady(c)) return false;
   // trẻ mồ côi (cô nhi, bị bỏ ở chùa, thiên sát cô tinh): bỏ qua sự kiện tuổi nhỏ có cảnh cha mẹ, ông bà
   if (c.age < 18 && isOrphan(c) && mentionsFamily(c, e)) return false;
   return true;
@@ -603,6 +611,7 @@ function buildPending(c: Character, e: GameEvent): PendingEvent {
   c.seenEvents[e.id] = Math.floor(c.age);
   c.evCount = c.evCount ?? {};
   c.evCount[e.id] = (c.evCount[e.id] ?? 0) + 1;
+  if (FORCED_EVENTS.has(e.id)) markForced(c);
   return {
     id: e.id,
     seed,
@@ -618,6 +627,7 @@ function pickEvent(c: Character): GameEvent | null {
     if (e.id === 'dao_lu' && c.focus === 'ket_duyen') w *= 4;
     if (e.id === 'dao_lu' && hasGift(c, 'g_dao_hoa')) w *= 3;
     if (e.id === 'he_thong' && hasGift(c, 'g_he_thong')) w *= 300;
+    if (CO_DUYEN_EVENTS.has(e.id) && c.coDuyenUntil !== undefined && c.age <= c.coDuyenUntil) w *= CO_DUYEN_MUL;
     return { e, w };
   });
   if (!list.length) return null;
@@ -680,13 +690,19 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
 
   // ---- Tông môn: thăng bậc theo cảnh giới hay độ tàn nhẫn (ma môn) ----
   if (c.sect) {
+    hhYear(c);
     const up = promoteByRealm(c, ctx);
     if (up) ctx.log(up, 'good');
     // 3.1.0: giấu thân phận ở lại tông ngược phe, mỗi năm 10% bị lộ
     if (c.sectHide) {
-      if (!sectConflict(c)) c.sectHide = false;
+      if (!sectConflict(c) && !hhHiding(c)) c.sectHide = false;
       else if (rnd() < 0.1) {
         const name = c.sect;
+        // 4.1.0 Hợp Hoan Tông: lộ chuyện giấu người thương thì thành kẻ bỏ tông, bị truy sát
+        if (hhHiding(c) && c.hh) {
+          c.hh.bo = true;
+          c.hh.boAt = Math.floor(c.age);
+        }
         leaveSect(c, true);
         c.enemy = c.enemy ?? tr(`${name} truy nã kẻ phản môn`, `${name} hunts the traitor`);
         ctx.fx('hurt', tr('Bị trục xuất', "Expelled"));
@@ -1227,13 +1243,27 @@ export function resolveChoice(c: Character, p: PendingEvent, idx: number, ctx: E
   const choice = e.choices(c, p.seed ?? 0)[idx];
   if (!choice) return null;
   const mark = beforeChoice();
-  const result = choice.run(c, ctx);
+  // 4.1.0 Q2: sự kiện tai họa phàm tục: từ cảnh giới e.pham trở lên lựa chọn chết chỉ gây thương
+  phamGuard.at = e.pham ?? null;
+  let result: string;
+  try {
+    result = choice.run(c, ctx);
+  } finally {
+    phamGuard.at = null;
+  }
+  // tai họa phàm tục không được là giọt nước tràn ly: giữ lại chút sức khỏe
+  if (e.pham !== undefined && c.realm >= e.pham && !c.cosmos && !c.dead && c.stats.sucKhoe < 5) c.stats.sucKhoe = 5;
   const tone: Tone = choice.lean === 'chinh' ? 'chinh' : choice.lean === 'ta' ? 'ta' : 'normal';
   ctx.log(`${p.title}: ${choice.label}. ${result}`, c.dead ? 'big' : tone);
   const mishap = afterChoice(c, choice, mark, ctx);
   if (mishap) ctx.log(mishap, c.dead ? 'big' : 'bad');
   checkDeath(c, ctx);
   if (c.dead) return null;
+  // 4.1.0 Q2b: vừa bị đồng môn hút trộm tu vi: cho chọn tố cáo hay thách đấu
+  if (c.qf?.dmHut && p.id !== HUT_CONG_ID) {
+    const ev = findEvent(c, HUT_CONG_ID);
+    if (ev) return buildPending(c, ev);
+  }
   const brk = progress(c, ctx, talents);
   if (brk) return brk;
   if (needPath(c)) return buildPending(c, pathEvent(c));
@@ -1273,9 +1303,10 @@ function closedDoorLosses(c: Character, ctx: EffectCtx, years: number, rushed: b
   const r = (p: number) => rnd() < Math.min(0.9, p * (rushed ? 1.5 : 1));
   const notes: string[] = [];
   if (r(years * 0.03)) {
-    const lost = Math.round(c.linhThach * (0.1 + rnd() * 0.3));
+    // 4.1.0 Q2b: từ Nguyên Anh, trộm phàm không phá nổi cấm chế; Trúc Cơ, Kim Đan mất có trần
+    const lost = c.realm >= 4 ? 0 : takeStones(c, 0.1 + rnd() * 0.3);
+    if (c.realm >= 4) notes.push(tr('Có kẻ trộm định đào vào kho, chạm phải cấm chế bị đánh văng ra ngoài cổng, nằm đó tới khi bạn xuất quan.', "A thief tried to tunnel into your storeroom, hit your restriction, and was flung out past the gate - still lying there when you emerged."));
     if (lost > 0) {
-      money(c, -lost);
       notes.push(tr(`Kẻ trộm đào được vào kho, lấy mất ${lost} linh thạch.`, `A thief tunnels into your storeroom and makes off with ${lost} spirit stones.`));
     }
   }
