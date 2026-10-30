@@ -28,8 +28,8 @@ def scene():
     G.mountains(img, len(G.SKY) - 1, 31, 96, 50, 0)
     G.SKY.append(('#10261e', '#16302a'))
     G.mountains(img, len(G.SKY) - 1, 37, 110, 30, 1)
-    # điện Diêm La: tường LPC tô đen, mái đỏ thẫm, cửa sổ đèn lồng vàng
-    hall = C.palace(['#06080a', '#10141a', '#1c222a', '#2a323c'], ['#2a0408', '#4a0a10', '#7a1218', '#a82020'], ['#1a0804', '#8a4a10', '#e0a030', '#ffe080'], scale=0.55)
+    # điện Diêm La: tường LPC tô đen, mái đỏ thẫm, cửa tối màu đỏ sẫm (30/10 Tyler: cửa vàng quá lộ)
+    hall = C.palace(['#06080a', '#10141a', '#1c222a', '#2a323c'], ['#2a0408', '#4a0a10', '#7a1218', '#a82020'], ['#080204', '#1c0508', '#38090e', '#561016'], scale=0.55)
     put(img, hall, 128 - hall.width // 2, GROUND + 2)
     # đất đá đen
     cob = C.gmap(C.COBBLE, ['#040606', '#0a100e', '#121c18', '#1c2a24'])
