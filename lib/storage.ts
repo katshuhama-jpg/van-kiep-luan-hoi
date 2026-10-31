@@ -73,16 +73,25 @@ export async function loadAll(user: Player | null): Promise<{ meta: Meta; save: 
     }
     const { data, error } = res;
     if (error) {
-      // vẫn lỗi: chơi bằng bản hồ sơ đã nhớ trên máy, khóa việc ghi hồ sơ lên máy chủ cho tới lần tải thành công sau
-      metaLocked = true;
-      const meta = { ...emptyMeta(), ...(readLocal<Meta>(metaKey(user)) ?? {}) };
+      // vẫn lỗi: chơi bằng bản hồ sơ đã nhớ trên máy của chính tài khoản này.
+      // Có bản nhớ thì vẫn ghi lên máy chủ (máy chủ tự chặn ghi số kiếp thấp hơn), để tiến trình chơi tiếp không bị mất.
+      // Không có bản nhớ (máy mới) thì khóa ghi, tránh ghi hồ sơ trống đè lên hồ sơ thật.
+      const cached = readLocal<Meta>(metaKey(user));
+      metaLocked = !cached;
+      const meta = { ...emptyMeta(), ...(cached ?? {}) };
       const rawLocal = readLocal<SaveState>(userKey(user));
       return { meta, save: live(rawLocal, meta) ? fixName(rawLocal) : null };
     }
     if (!error && data) {
       const d = data as { meta: Partial<Meta> | null; state: SaveState | null };
-      const meta = { ...emptyMeta(), ...(d.meta ?? {}) };
+      let meta = { ...emptyMeta(), ...(d.meta ?? {}) };
       metaLocked = false;
+      // bản nhớ trên máy của chính tài khoản này đã chơi xa hơn máy chủ (lần trước mạng lỗi, ghi chưa tới): lấy bản trên máy rồi ghi bù lên
+      const cached = readLocal<Meta>(metaKey(user));
+      if (cached && (cached.lives ?? 0) > (meta.lives ?? 0)) {
+        meta = { ...emptyMeta(), ...cached };
+        sb.rpc('vkl_save_meta2', { p_token: user.token, p_meta: meta }).then(() => {}, () => {});
+      }
       writeLocal(metaKey(user), meta);
       // bản lưu trên máy có thể mới hơn bản trên mây (mây lưu chậm hơn, hoặc bị ngắt khi chuyển trang).
       // Bản nào là kiếp đã xong (máy cũ còn giữ kiếp cũ, mây đã xóa khi sang kiếp mới) thì bỏ, không được hồi sinh kiếp cũ.
