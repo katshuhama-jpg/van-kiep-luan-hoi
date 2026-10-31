@@ -189,7 +189,7 @@ export default function PlayPage() {
       if (!s) return;
       saveLocal(userRef.current, s);
       const now = Date.now();
-      if (forceRemote || now - lastRemote.current > 15000) {
+      if (forceRemote || now - lastRemote.current > 60000) {
         lastRemote.current = now;
         saveRemote(userRef.current, s).catch(() => {});
       }
