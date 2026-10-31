@@ -58,7 +58,7 @@ Mỗi lần chạy: làm khối **đầu tiên còn ô trống**, đánh dấu [
 Cáo thị 4.0.1 (Tyler chốt 30/10 tối): gộp ngày 1 và ngày 2 thành bản 4.0.1 có cáo thị trong game (lib/releases.ts). Ngày 5 vẫn gom phần còn lại thành 4.1.0.
 
 ## Ngày 3 - Tuổi 16 thành dốc, tích cốc
-- [ ] TM (Tyler chốt 31/10 tối: lên bản sáng Chủ nhật 1/11, làm TRƯỚC Q4): gộp nhánh `tra-mau` (commit 3d10e64, đã build và chụp màn hình): `git fetch origin tra-mau && git merge --no-ff origin/tra-mau`. Sửa khung số tài khoản ở trang Mời trà: nền sáng, chữ tối, số tài khoản màu đỏ đậm (trước là chữ trắng và vàng trên nền vàng, không đọc được). Không cần cáo thị.
+- [ ] TM (Tyler chốt 31/10 tối: lên bản sáng Chủ nhật 1/11, làm TRƯỚC Q4): gộp nhánh `tra-mau` (tới commit 4a6bf48, đã thử gộp với main, build, smoke và smoke-login đều OK): `git fetch origin tra-mau && git merge --no-ff origin/tra-mau`. Gồm: (1) khung số tài khoản ở trang Mời trà nền sáng, chữ tối, số tài khoản đỏ đậm (trước là chữ trắng, vàng trên nền vàng); (2) gửi bản lưu lên máy chủ 60 giây một lần thay vì 15 giây (vẫn gửi ngay khi ẩn trang, hết kiếp), giảm tải ghi database. Không cần cáo thị.
 - [ ] Q4: tỉ lệ chết khi thua trừ yêu hoặc chặn đường nhân 0,3 ở 16 tuổi, tăng dần lên 1,0 ở 22 tuổi (combat.ts:827). Lần thua trừ yêu đầu tiên sau 16 tuổi của mỗi kiếp luôn chỉ trọng thương, kèm một câu "trưởng thành". Linh căn Tạp/Phế được chọn định hướng con đường từ Luyện Khí tầng 3 (engine.ts:878).
 - [ ] Q5: từ Trúc Cơ, "tích cốc": bỏ tiền ăn, chi phí đổi tên thành linh dược, động phủ. Thiếu tiền thì tu vi chậm và thêm tâm ma, không trừ sức khỏe, không in câu nhịn đói. `chet_doi` chỉ cho cảnh giới dưới 2 (engine.ts:710-726). Trả lời góp ý #28.
 - Xong:

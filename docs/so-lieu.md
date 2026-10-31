@@ -15,3 +15,10 @@ Các khoá trong stats:
 - signup_acc, graves, feedback, total_acc, total_graves
 
 Khi làm báo cáo: đọc `vkl_daily` cho lịch sử, chỉ truy vấn `vkl_events` cho ngày hôm nay.
+
+Thêm 31/10 tối:
+- `vkl_rollup_play(d)` (cron 00:10): play_min_total, play_min_med (phút chơi trung vị mỗi phiên sid), sid_5m, sid_15m, sid_30m. Phút chơi = tổng khoảng cách giữa các sự kiện liên tiếp của một sid, bỏ khoảng hơn 10 phút.
+- `vkl_nightly_check(d)` (cron 00:15): lives_behind, lives_behind_names (tài khoản có số kiếp thấp hơn bia, phải luôn là 0).
+- Cron `vkl_prune_hb` (00:30): xóa sự kiện hb cũ hơn 30 ngày. Các sự kiện khác giữ nguyên.
+- Chỉ mục `vkl_events (kind, created_at)` cho truy vấn báo cáo.
+- `vkl_meta_hist`: lịch sử hồ sơ (60 bản gần nhất mỗi người) để khôi phục khi mất dữ liệu.
