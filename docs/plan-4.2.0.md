@@ -28,3 +28,11 @@ Nguyên tắc: không đưa cái chết vô lý trở lại. Nguy hiểm dời v
   - Mốc: sàn (mô phỏng chọn bừa) khoảng 10-12%; người mới (kiếp 1-3) khoảng 18-20%; trung vị người chơi khoảng 30%; trần để mở, người giỏi lên được 50% trở lên.
   - Cách giữ chỗ cho người giỏi: độ khó C1-C4 phải né được bằng lựa chọn (tỉ lệ hiện rõ, có đường an toàn đổi bằng cái giá khác), không phải xui rủi. Thêm chính sách "chọn khôn" vào sim-do-kho.ts (tránh lựa chọn ghi nguy/liều khi yếu, nghỉ khi sức khỏe thấp, đột phá khi đủ đan) và theo dõi khoảng cách giữa chọn bừa và chọn khôn: khoảng cách này chỉ được rộng ra, không được hẹp lại.
   - Trước khi làm C1-C4: lấy số thật sau 4.0.1 (từ 31/10) để biết 4.0.1 đã đẩy trung vị lên bao nhiêu, rồi mới chọn mức cho từng cách.
+
+## Góp ý từ Threads (chưa chia ngày)
+
+- [ ] T1. Sau phi thăng bế tắc (Threads, wh0scareanyway, 31/10): "Phi thăng xong farm quái khó mà ít rớt đồ, shop cũng không bán cái gì để mua, không có cách nào mạnh lên, còn bị mấy thằng Đại La Kim Tiên nó trấn lột suốt". Ba ý cần làm:
+  - Rớt đồ ở Tiên giới, Ma giới: tăng tỉ lệ và phẩm đồ rớt khi săn quái từ cảnh giới 9 trở lên, rớt đúng tầm cảnh giới.
+  - Phường thị sau phi thăng: có hàng để mua ở Tiên giới, Ma giới (đồ, đan theo cảnh giới), nối với Q8 của 4.1.0 (giá theo phẩm, đồ cao cấp giới hạn số lượng làm mới theo năm game).
+  - Bị cao nhân trấn lột: kẻ chặn đường cảnh giới cao hơn mình quá nhiều thì phải có lối thoát (nộp ít hơn, chạy, nhờ tông môn), và tần suất giảm khi chênh lệch lớn. Đo trước bằng sự kiện `ambush`, `duel` của các kiếp ở cosmos tien/ma.
+  - Trả lời trên Threads khi làm xong; chưa hứa ngày.
