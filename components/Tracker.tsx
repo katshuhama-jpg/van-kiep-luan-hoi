@@ -41,7 +41,7 @@ export default function Tracker() {
   useEffect(() => {
     const hb = setInterval(() => {
       if (document.visibilityState === 'visible') track('hb');
-    }, 180000); // 3 phút một nhịp: nhịp 1 phút làm máy chủ quá tải khi đông người (31/10)
+    }, 150000); // 2,5 phút một nhịp (vừa khung 3 phút của vkl_online_now): nhịp 1 phút làm máy chủ quá tải khi đông người (31/10)
     const vis = () => {
       if (document.visibilityState === 'hidden') {
         track('hide', { ms: Date.now() - shownAt.current });
