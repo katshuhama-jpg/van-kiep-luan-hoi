@@ -65,10 +65,25 @@ export function displayName(user: Player | null): string {
 export async function loadAll(user: Player | null): Promise<{ meta: Meta; save: SaveState | null }> {
   const sb = supabase();
   if (user && sb) {
-    const { data, error } = await sb.rpc('vkl_me', { p_token: user.token });
+    // máy chủ chậm hoặc lỗi: thử lại, KHÔNG được rơi về dữ liệu khách trên máy rồi ghi đè hồ sơ thật (31/10: nhiều tài khoản mất số kiếp vì vậy)
+    let res = await sb.rpc('vkl_me', { p_token: user.token });
+    for (let i = 0; i < 2 && res.error; i++) {
+      await new Promise((r) => setTimeout(r, 1500 * (i + 1)));
+      res = await sb.rpc('vkl_me', { p_token: user.token });
+    }
+    const { data, error } = res;
+    if (error) {
+      // vẫn lỗi: chơi bằng bản hồ sơ đã nhớ trên máy, khóa việc ghi hồ sơ lên máy chủ cho tới lần tải thành công sau
+      metaLocked = true;
+      const meta = { ...emptyMeta(), ...(readLocal<Meta>(metaKey(user)) ?? {}) };
+      const rawLocal = readLocal<SaveState>(userKey(user));
+      return { meta, save: live(rawLocal, meta) ? fixName(rawLocal) : null };
+    }
     if (!error && data) {
       const d = data as { meta: Partial<Meta> | null; state: SaveState | null };
       const meta = { ...emptyMeta(), ...(d.meta ?? {}) };
+      metaLocked = false;
+      writeLocal(metaKey(user), meta);
       // bản lưu trên máy có thể mới hơn bản trên mây (mây lưu chậm hơn, hoặc bị ngắt khi chuyển trang).
       // Bản nào là kiếp đã xong (máy cũ còn giữ kiếp cũ, mây đã xóa khi sang kiếp mới) thì bỏ, không được hồi sinh kiếp cũ.
       const rawLocal = readLocal<SaveState>(userKey(user));
@@ -101,10 +116,16 @@ function live(s: SaveState | null | undefined, meta: Meta): s is SaveState {
   return !!s?.char && (s.char.lifeNo ?? 0) > (meta.lives ?? 0);
 }
 
+/** Hồ sơ trên máy chủ chưa tải được trong phiên này: không ghi hồ sơ lên, tránh ghi đè số kiếp, phúc duyên thật bằng bản trống */
+let metaLocked = false;
+const metaKey = (user: Player) => `vkl.meta.u.${user.username}`;
+
 export async function saveMeta(user: Player | null, meta: Meta) {
-  if (!user) writeLocal(K.meta, meta);
+  if (!user) return void writeLocal(K.meta, meta);
+  writeLocal(metaKey(user), meta);
   const sb = supabase();
-  if (user && sb) await sb.rpc('vkl_save_meta', { p_token: user.token, p_meta: meta });
+  if (metaLocked || !sb) return;
+  await sb.rpc('vkl_save_meta', { p_token: user.token, p_meta: meta });
 }
 
 const userKey = (user: Player) => `vkl.save.u.${user.username}`;
