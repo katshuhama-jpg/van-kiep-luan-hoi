@@ -15,6 +15,11 @@ let screen = '';
 export function setScreen(s: string) {
   screen = s;
 }
+/** Kiếp và tuổi đang chơi, gắn vào sự kiện rời trang (hide, leave) để biết khách mới bỏ ở tuổi nào */
+let lifeCtx: { life: number; age: number } | null = null;
+export function setLifeCtx(x: { life: number; age: number } | null) {
+  lifeCtx = x;
+}
 
 const queue: Ev[] = [];
 let timer: ReturnType<typeof setTimeout> | null = null;
@@ -34,7 +39,8 @@ export function sessionId(): string {
 
 export function track(kind: string, data?: Record<string, unknown>) {
   if (typeof window === 'undefined') return;
-  const d = screen ? { sc: screen, ...(data ?? {}) } : data;
+  const base = (kind === 'hide' || kind === 'leave') && lifeCtx ? { ...lifeCtx, ...(data ?? {}) } : data;
+  const d = screen ? { sc: screen, ...(base ?? {}) } : base;
   queue.push({ k: kind, p: location.pathname, t: Date.now(), ...(d ? { d } : {}) });
   if (queue.length >= 25) flush();
   else if (!timer) timer = setTimeout(() => flush(), 15000);

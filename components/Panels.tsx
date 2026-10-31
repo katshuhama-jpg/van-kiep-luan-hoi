@@ -1288,9 +1288,11 @@ export function DeathSheet({
           {tr("Đi trọn ", "Lived ")}{meta.lives + 1}{tr(" kiếp rồi. Thấy vui thì mời tác giả chén trà ›", " lives already. Having fun? Treat the author to a cup of tea ›")}
         </a>
       )}
+      {/* nút chính luôn nằm dưới đáy màn: người mới hay bỏ đi ở màn này vì phải kéo qua cả bảng mới thấy nút */}
+      <div className="death-go">
       <button
         className="btn btn-red btn-big"
-        style={{ width: '100%', marginTop: 10 }}
+        style={{ width: '100%' }}
         disabled={busy}
         onClick={() => {
           setBusy(true);
@@ -1300,6 +1302,7 @@ export function DeathSheet({
         
         {busy ? tr("Đang khắc bia...", "Carving the tombstone...") : tr("Lập bia và luân hồi", "Raise a tombstone and reincarnate")}
       </button>
+      </div>
     </Sheet>
   );
 }

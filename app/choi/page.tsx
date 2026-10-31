@@ -52,7 +52,7 @@ import { CURRENT_VERSION, markSeenLocal } from '@/lib/releases';
 import NguHanhDai, { NhdMirror, waiting, type NhdView } from '@/components/NguHanhDai';
 import { arenaBg, NHD_MAX_TURNS, PHU_PRICE, STANCES, loseRound, mirrorChar, mirrorStance, mirrorStats, needTrial, nhdOf, roundMods, tellOf, winRound, type RoundMods, type Stance } from '@/lib/game/nguHanhDai';
 import { sectSide } from '@/lib/game/sect';
-import { setScreen, track } from '@/lib/track';
+import { setLifeCtx, setScreen, track } from '@/lib/track';
 import { tr } from '@/lib/i18n';
 
 const SPEEDS = [1, 2, 4, 8, 16];
@@ -124,7 +124,7 @@ export default function PlayPage() {
   const [titles, setTitles] = useState<Record<string, string[]>>({});
   const [questNews, setQuestNews] = useState<string[]>([]); // nhiệm vụ vừa xong ở đời trước
   const [achNews, setAchNews] = useState<string[]>([]); // thành tựu vừa đạt
-  const [ghiDanh, setGhiDanh] = useState<{ name: string; realm: string; age: number; ascended: boolean } | null>(null); // chơi thử mà chết ở cảnh giới cao: mời ghi danh
+  const [ghiDanh, setGhiDanh] = useState<{ name: string; realm: string; age: number; ascended: boolean; worthy?: boolean } | null>(null); // chơi thử mà chết ở cảnh giới cao: mời ghi danh
   const [loreNews, setLoreNews] = useState<string[]>([]); // mảnh Thiên thư vừa mở
 
   const charRef = useRef<Character | null>(null);
@@ -1562,10 +1562,14 @@ export default function PlayPage() {
       if (user) addRetryGrave(grave);
     });
     // chơi thử: kiếp đáng ghi danh thì giữ bia lại, đăng ký xong sẽ khắc lên Nghĩa trang tu sĩ
-    if (!user && worthGhiDanh(c)) {
+    // khách: mời ngay từ kiếp đầu (3 kiếp đầu, rồi cứ 5 kiếp một lần), không đợi tới Kim Đan; mời ghi danh đang được bấm 42%
+    if (!user) {
       addPendingGrave(grave);
-      setGhiDanh({ name: c.name, realm: grave.realm, age: grave.age, ascended: !!c.ascended });
-      track('ghi_danh_show', { lifeNo: c.lifeNo, realm: c.realm });
+      const worthy = worthGhiDanh(c);
+      if (worthy || c.lifeNo <= 3 || c.lifeNo % 5 === 0) {
+        setGhiDanh({ name: c.name, realm: grave.realm, age: grave.age, ascended: !!c.ascended, worthy });
+        track('ghi_danh_show', { lifeNo: c.lifeNo, realm: c.realm, worthy });
+      }
     }
     // kết cục lần đầu mở: hỏi máy chủ xem có phải người đầu tiên trong giang hồ không
     const freshIds = Array.from(new Set([ending.id, ...alsoEndings(c)])).filter((id) => !meta.endings?.[id]);
@@ -1729,6 +1733,7 @@ export default function PlayPage() {
   const c = charRef.current!;
   const pending = pendingRef.current;
   setScreen(c.dead ? 'chet' : pending ? 'su_kien' : sheet ? `bang_${sheet}` : 'choi');
+  setLifeCtx({ life: c.lifeNo, age: Math.floor(c.age) });
   if (c.dead && deathSeen.current !== c.lifeNo) {
     deathSeen.current = c.lifeNo;
     track('death', { lifeNo: c.lifeNo, realm: c.realm, age: Math.floor(c.age), path: c.path, cosmos: c.cosmos ?? null, endTag: c.endTag ?? null, ending: endingOf(c).id, killer: c.killer ?? null, min: lifeT0.current ? Math.round((Date.now() - lifeT0.current) / 6000) / 10 : null });
@@ -1792,7 +1797,7 @@ export default function PlayPage() {
         <div className="year-bar" aria-hidden="true">
           <div style={{ width: `${yearPct}%` }} />
         </div>
-        {youthPace(c) > 1 && <small className="youth-tag">{tr(`Tuổi thơ trôi nhanh ×${youthPace(c)}`, `Childhood flies by ×${youthPace(c)}`)}</small>}
+        {youthPace(c) > 1 && <small className="youth-tag">{c.age < 16 ? tr(`Tuổi thơ trôi nhanh ×${youthPace(c)}`, `Childhood flies by ×${youthPace(c)}`) : tr(`Kiếp đầu trôi nhanh ×${youthPace(c)}`, `Early lives fly by ×${youthPace(c)}`)}</small>}
         <div className="speeds">
           <button className="play" onClick={() => setRunning(!running)} aria-label={running ? tr('Tạm dừng', "Pause") : tr('Tiếp tục', "Resume")} disabled={!!pending || c.dead}>
             {running ? '❚❚' : '▶'}
