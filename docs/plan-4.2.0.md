@@ -36,3 +36,9 @@ Nguyên tắc: không đưa cái chết vô lý trở lại. Nguy hiểm dời v
   - Phường thị sau phi thăng: có hàng để mua ở Tiên giới, Ma giới (đồ, đan theo cảnh giới), nối với Q8 của 4.1.0 (giá theo phẩm, đồ cao cấp giới hạn số lượng làm mới theo năm game).
   - Bị cao nhân trấn lột: kẻ chặn đường cảnh giới cao hơn mình quá nhiều thì phải có lối thoát (nộp ít hơn, chạy, nhờ tông môn), và tần suất giảm khi chênh lệch lớn. Đo trước bằng sự kiện `ambush`, `duel` của các kiếp ở cosmos tien/ma.
   - Trả lời trên Threads khi làm xong; chưa hứa ngày.
+
+## Góp ý trong game chưa có plan (chưa trả lời, trạng thái moi)
+- #26 (shizun), #30 (madaochiton): linh thú có lực chiến, tiến giai; Ngự Thú Tông / Vạn Thú Tông. #26 phần kẻ thù đã xong ở 4.0.1.
+- #30: Hệ Thống buff vàng xứng tầm hơn (đang chỉ cho Tụ Khí Đan).
+- #24 (phần Tình duyên), #35 (gái đẹp sau Chứng Đạo): chờ Tyler nghĩ về Tình duyên.
+- #27, #31, #36: nội dung, trang bị sau Chứng Đạo (gần T1).
