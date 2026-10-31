@@ -2,6 +2,8 @@
 
 Nguồn: docs/research/lam-sau-he-thong.md (báo cáo "Làm sâu hệ thống Vạn Kiếp", mục 4.1.0, bảng Q1-Q8). Tyler chốt 29/10/2026: mỗi ngày đẩy 1-2 việc, không hiện bảng cập nhật; ngày cuối gom thành bản 4.1.0 có thông báo.
 
+Luật trả lời góp ý (Tyler dặn 31/10): việc chưa có trong plan có ngày thì KHÔNG hứa, chỉ viết "Thiên Đạo đã ghi nhận", để trạng thái `moi`. Việc có lịch thì nêu rõ ngày và bản (vd "lên trong bản cập nhật sáng Chủ nhật 1/11, thuộc bản 4.1.0"). Không viết "bản sau", "đang làm", "vài ngày tới" chung chung. Áp dụng cho cả cáo thị và bài Threads.
+
 Mỗi lần chạy: làm khối **đầu tiên còn ô trống**, đánh dấu [x], ghi ngày và commit vào dòng "Xong:". Nếu khối nào làm dở thì ghi rõ còn thiếu gì ở dòng "Ghi chú:" để lần sau làm tiếp.
 
 ## Ngày 1 - Kết cục đúng cách chết, đo đạc, dòng tin ngày
