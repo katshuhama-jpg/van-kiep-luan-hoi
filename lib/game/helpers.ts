@@ -90,8 +90,9 @@ export function money(c: Character, delta: number) {
 /** 3.1.0b: thọ dài ra 1,5 lần nên tu vi cần từ Kim Đan trở lên tăng 1,5 lần, để phi thăng không quá dễ */
 export const NEED_MUL_HIGH = 1.5;
 /** 4.0.2 (Tyler chốt 31/10): 4.0.1 làm game dễ quá (Hóa Thần 46-50% số kiếp), tăng tu vi cần theo bậc.
- * Luyện Khí, Trúc Cơ giữ nguyên cho người mới; Kim Đan ×1,25; Nguyên Anh, Hóa Thần ×1,5; Luyện Hư, Độ Kiếp ×1,75; tiên/ma/hư giới ×2 */
-export const NEED_RAMP = [1, 1, 1, 1.25, 1.5, 1.5, 1.75, 1.75, 2];
+ * Q4 (tuổi 16 bớt chết) và Q5 (tích cốc) cùng bản làm sống lâu hơn, nên hệ số cao hơn dự tính ban đầu:
+ * Luyện Khí, Trúc Cơ giữ nguyên; Kim Đan ×1,75; Nguyên Anh, Hóa Thần ×2,25; từ Luyện Hư và tiên/ma/hư giới ×2,5 */
+export const NEED_RAMP = [1, 1, 1, 1.75, 2.25, 2.25, 2.5, 2.5, 2.5];
 export function needFor(c: Character): number {
   const ramp = NEED_RAMP[Math.min(c.realm, NEED_RAMP.length - 1)] ?? 1;
   return Math.round((REALMS[c.realm]?.need || 40) * (c.realm >= 3 ? NEED_MUL_HIGH : 1) * ramp);

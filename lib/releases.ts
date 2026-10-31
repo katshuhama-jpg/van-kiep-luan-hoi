@@ -18,6 +18,52 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '4.0.2',
+    date: '31/10/2026',
+    title: tr('Tích Cốc, Thiên Đạo Siết Tu Vi', 'Inedia, and the Heavens Tighten Cultivation'),
+    lead: tr('Sau 4.0.1 đạo hữu lên Hóa Thần dễ quá, Thiên Đạo siết lại tu vi từ Kim Đan trở lên. Bù lại, từ Trúc Cơ đã tích cốc không còn chết đói, và tuổi 16 không còn là vách đá.', 'After 4.0.1 reaching Spirit Transformation became too easy, so the Heavens tighten cultivation from Golden Core up. In return, from Foundation you have transcended food and can no longer starve, and turning 16 is no longer a cliff.'),
+    asked: [
+      { who: '@thien', short: tr('Tu vi cần tăng theo cảnh giới', 'Cultivation needed now rises by realm'), text: tr('Luyện Khí, Trúc Cơ giữ nguyên. Kim Đan cần tu vi gấp 1,75 lần, Nguyên Anh và Hóa Thần gấp 2,25 lần, từ Luyện Hư và cả tiên giới, ma giới gấp 2,5 lần.', 'Qi Refining and Foundation are unchanged. Golden Core needs 1.75x the cultivation, Nascent Soul and Spirit Transformation 2.25x, and from Void Refinement through the Immortal and Demon Realms 2.5x.') },
+      { who: '@comiu', short: tr('Tích cốc: từ Trúc Cơ không còn chết đói', 'Inedia: no more starving from Foundation on'), text: tr('Từ Trúc Cơ, linh thạch dùng cho linh dược, động phủ thay cho tiền ăn. Túi rỗng thì tu luyện chậm và sinh tâm ma, nhưng không mất sức khỏe, không chết đói. Kết cục Chết Đói Đầu Đường chỉ còn ở Phàm nhân và Luyện Khí.', 'From Foundation on, your stones pay for spirit herbs and your cave abode instead of food. An empty pouch slows cultivation and breeds heart demons, but costs no health and cannot starve you. The Starved in the Street ending now only happens to mortals and Qi Refiners.') },
+    ],
+    more: [
+      tr('Tuổi 16 không còn là vách đá', 'Turning 16 is no longer a cliff'),
+      tr('Tạp, Phế linh căn chọn đường sớm hơn', 'Mixed and Crippled roots choose a path sooner'),
+      tr('Khung số tài khoản Mời trà dễ đọc', 'Easier-to-read account number on the Tea page'),
+    ],
+    stats: [
+      { n: '2,5x', label: tr('tu vi cần từ Luyện Hư', 'cultivation needed from Void Refinement') },
+      { n: '0', label: tr('cái chết đói từ Trúc Cơ', 'starvation deaths from Foundation on') },
+    ],
+    groups: [
+      {
+        h: tr('Thiên Đạo siết tu vi', 'The Heavens tighten cultivation'),
+        hot: true,
+        items: [
+          tr('Sau bản 4.0.1, gần một nửa số kiếp lên tới Hóa Thần, quá dễ so với ý Thiên Đạo. Nay tu vi cần để lên tầng tăng theo cảnh giới: Luyện Khí, Trúc Cơ giữ nguyên cho người mới; Kim Đan ×1,75; Nguyên Anh, Hóa Thần ×2,25; Luyện Hư, Độ Kiếp và tiên giới, ma giới ×2,5.', 'After 4.0.1 almost half of all lives reached Spirit Transformation, far too easy. Cultivation needed per layer now rises by realm: Qi Refining and Foundation unchanged for newcomers; Golden Core x1.75; Nascent Soul and Spirit Transformation x2.25; Void Refinement, Tribulation and the Immortal and Demon Realms x2.5.'),
+          tr('Kiếp đang chơi dở cũng theo luật mới từ tầng tiếp theo.', 'Lives in progress follow the new rule from their next layer.'),
+        ],
+      },
+      {
+        h: tr('Tích cốc', 'Inedia'),
+        items: [
+          tr('Từ Trúc Cơ, người tu đạo đã tích cốc, không cần ăn. Linh thạch hằng năm dùng cho linh dược và động phủ. Thiếu tiền thì tu vi chậm lại và tâm ma tăng, không còn trừ sức khỏe, không còn câu nhịn đói.', 'From Foundation on, cultivators have transcended food. Your yearly stones go to spirit herbs and your cave abode. Running short slows your cultivation and feeds your heart demon, but no longer drains health or leaves you going hungry.'),
+        ],
+      },
+      {
+        h: tr('Tuổi 16 không còn là vách đá', 'Turning 16 is no longer a cliff'),
+        items: [
+          tr('Lần đầu thua quái sau 16 tuổi của mỗi kiếp chỉ bị trọng thương, kèm lời nhắc đã trưởng thành. Sau đó hiểm nguy khi thua tăng dần, tới 22 tuổi mới bằng người lớn.', 'The first time you lose to a monster after 16 in each life you are only badly wounded, with a reminder that you have grown up. After that the danger of losing rises gradually and only reaches full adult level at 22.'),
+          tr('Tạp linh căn, Phế linh căn được chọn con đường tu luyện từ Luyện Khí tầng 3 thay vì tầng 5.', 'Mixed and Crippled Spiritual Roots can choose a cultivation path from Qi Refining layer 3 instead of layer 5.'),
+        ],
+      },
+      {
+        h: tr('Sửa nhỏ', 'Small fixes'),
+        items: [tr('Khung số tài khoản ở trang Mời trà: nền sáng, chữ tối, dễ đọc hơn.', 'The account number box on the Tea page now has a light background and dark text, easier to read.')],
+      },
+    ],
+  },
+  {
     v: '4.0.1',
     date: '30/10/2026',
     title: tr('Hết Chết Oan', 'No More Senseless Deaths'),

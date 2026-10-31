@@ -829,8 +829,19 @@ export function loseFight(c: Character, m: Monster, ctx: EffectCtx): string {
     stat(c, 'sucKhoe', -25);
     return tr(`Bạn thua ${m.name}, may có người qua đường kịp xua nó đi. Bạn được cõng về, trọng thương nhưng còn sống.`, `You lose to ${m.name}, but a passerby drives it off just in time. You're carried home, badly hurt but alive.`);
   }
+  // 4.0.2 Q4: tuổi 16 không còn là vách đá. Lần thua đầu tiên sau 16 tuổi mỗi kiếp chỉ trọng thương, rồi hiểm nguy tăng dần tới 22 tuổi
+  if (!c.qf?.truongThanh) {
+    c.qf = { ...(c.qf ?? {}), truongThanh: 1 };
+    stat(c, 'sucKhoe', -Math.min(40, Math.max(0, c.stats.sucKhoe - 5))); // trọng thương nhưng không mất mạng
+    addWound(c, 40, tr(`thua ${m.name} cấp ${effLv(c, m)} khi trừ yêu`, `lost to ${m.name} Lv${effLv(c, m)} while hunting`), monsterEndTag(m, true), `${m.name} Lv${effLv(c, m)}`);
+    return tr(
+      `Bạn thua ${m.name}, lết được về nhà với thân đầy thương tích. Không còn ai chạy ra cứu như hồi nhỏ nữa. Bạn đã trưởng thành, từ nay thế giới hết nương tay.`,
+      `You lose to ${m.name} and drag yourself home covered in wounds. No one comes running to save you like when you were small. You have grown up, and from now on the world shows no mercy.`,
+    );
+  }
   const d = dangerOf(c, m);
-  const f = fatal(c, ctx, d === 'de' || d === 'vua' ? 0.5 : 0.85, huntDeath(m.name, m.place, ctx.rnd) + atAge(c));
+  const grow = clamp(0.3 + ((c.age - 16) / 6) * 0.7, 0.3, 1);
+  const f = fatal(c, ctx, (d === 'de' || d === 'vua' ? 0.5 : 0.85) * grow, huntDeath(m.name, m.place, ctx.rnd) + atAge(c));
   // kết cục riêng khi chết vì quái (ở ba cõi đã có kết cục của cõi)
   const tag = monsterEndTag(m, d === 'de' || d === 'vua');
   markDeath(c, tag, `${m.name} Lv${effLv(c, m)}`);

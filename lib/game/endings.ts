@@ -393,9 +393,9 @@ export const ENDINGS: Ending[] = [
     name: tr('Chết Đói Đầu Đường', "Starved in the Street"),
     desc: tr('Tu tiên cũng phải ăn. Túi rỗng, bụng rỗng.', "Even cultivators have to eat. Empty pockets, empty belly."),
     hint: tr('Đừng để túi rỗng tuếch.', "Don't let your pockets run bone-dry."),
-    how: tr('Từ 16 tuổi trở đi, chết khi túi chỉ còn 5 linh thạch trở xuống và sức khỏe cạn kiệt.', "From age 16 on, die with 5 spirit stones or fewer in your pocket and your health drained."),
+    how: tr('Phàm nhân hoặc Luyện Khí, từ 16 tuổi trở đi, chết khi túi chỉ còn 5 linh thạch trở xuống và sức khỏe cạn kiệt. Từ Trúc Cơ đã tích cốc, không chết đói nữa.', "As a mortal or in Qi Refining, from age 16 on, die with 5 spirit stones or fewer in your pocket and your health drained. From Foundation Establishment you have transcended food and can no longer starve."),
     rare: 1,
-    test: (c) => c.linhThach <= 5 && c.age >= 16 && c.stats.sucKhoe <= 5,
+    test: (c) => c.realm < 2 && c.linhThach <= 5 && c.age >= 16 && c.stats.sucKhoe <= 5,
   },
   { id: 'chet_yeu', name: tr('Yểu Mệnh', "Died Young"), desc: tr('Ra đi khi còn chưa kịp lớn.', "Gone before you even had the chance to grow up."), hint: tr('Trẻ con cũng có thể chết.', "Children can die too."), how: tr('Chết trước 13 tuổi.', "Die before age 13."), rare: 0, test: (c) => c.age < 13 },
   // ---- chết vì hiểm cảnh: chia nhóm theo nguyên nhân thay cho kết cục chung chung ----

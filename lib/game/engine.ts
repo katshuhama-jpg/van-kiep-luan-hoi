@@ -745,11 +745,17 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
     // gia đình nuôi
     money(c, FAMILY_TIERS[c.familyTier ?? 1]?.allowance ?? 3);
   } else {
-    // sinh hoạt phí, càng lên cảnh giới càng tốn
+    // sinh hoạt phí, càng lên cảnh giới càng tốn (từ Trúc Cơ: tích cốc, tiền dùng cho linh dược, động phủ)
     // tiên nhân, ma nhân không cần ăn uống
     const cost = c.cosmos ? 0 : 4 + c.realm * 7 + (c.partner ? 4 : 0) + (hasGift(c, 'g_an') ? 3 : 0);
     if (c.linhThach >= cost) money(c, -cost);
-    else {
+    else if (c.realm >= 2) {
+      // 4.0.2 Q5: từ Trúc Cơ đã tích cốc, không cần ăn. Tiền là linh dược, động phủ: thiếu thì tu chậm và sinh tâm ma, không đói
+      money(c, -c.linhThach);
+      c.cultivation = Math.max(0, Math.round(c.cultivation - needFor(c) * 0.03));
+      stat(c, 'tamMa', 2);
+      if (rnd() < 0.3) ctx.log(tr('Túi rỗng, không mua nổi linh dược, động phủ thì dột nát. Tu luyện chậm hẳn, tâm sinh phiền muộn.', "Your pouch is empty. You can't afford spirit herbs and your cave abode is falling apart. Your cultivation slows and your heart grows troubled."), 'bad');
+    } else {
       money(c, -c.linhThach);
       stat(c, 'sucKhoe', -4);
       stat(c, 'tamCanh', -3);
@@ -908,7 +914,9 @@ function findLoot(c: Character, focus: string | null, tier: number) {
 
 /** Chọn đạo từ Luyện Khí tầng 5 (trước là Trúc Cơ), để người chơi sớm có mục tiêu */
 export function needPath(c: Character): boolean {
-  return !c.path && (c.realm >= 2 || (c.realm === 1 && c.layer >= 5));
+  // 4.0.2 Q4: Tạp/Phế linh căn tu chậm, được chọn đường sớm hơn (từ Luyện Khí tầng 3)
+  const at = (c.linhCanMul ?? 1) <= 0.85 ? 3 : 5;
+  return !c.path && (c.realm >= 2 || (c.realm === 1 && c.layer >= at));
 }
 
 function pathEvent(c: Character): GameEvent {
