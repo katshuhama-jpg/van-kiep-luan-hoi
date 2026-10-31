@@ -57,10 +57,15 @@ Mỗi lần chạy: làm khối **đầu tiên còn ô trống**, đánh dấu [
 
 Cáo thị 4.0.1 (Tyler chốt 30/10 tối): gộp ngày 1 và ngày 2 thành bản 4.0.1 có cáo thị trong game (lib/releases.ts). Ngày 5 vẫn gom phần còn lại thành 4.1.0.
 
-## Ngày 3 - Tuổi 16 thành dốc, tích cốc
-- [ ] TM (Tyler chốt 31/10 tối: lên bản sáng Chủ nhật 1/11, làm TRƯỚC Q4): gộp nhánh `tra-mau` (tới commit 4a6bf48, đã thử gộp với main, build, smoke và smoke-login đều OK): `git fetch origin tra-mau && git merge --no-ff origin/tra-mau`. Gồm: (1) khung số tài khoản ở trang Mời trà nền sáng, chữ tối, số tài khoản đỏ đậm (trước là chữ trắng, vàng trên nền vàng); (2) gửi bản lưu lên máy chủ 60 giây một lần thay vì 15 giây (vẫn gửi ngay khi ẩn trang, hết kiếp), giảm tải ghi database. Không cần cáo thị.
+## Ngày 3 - Tuổi 16 thành dốc, tích cốc, tăng độ khó - lên thành bản 4.0.2 CÓ cáo thị (Tyler chốt 31/10 tối)
+- [ ] TM (làm TRƯỚC Q4): gộp nhánh `tra-mau` (tới commit 9e90474, build, smoke, smoke-login đều OK): `git fetch origin tra-mau && git merge --no-ff origin/tra-mau`. Gồm: (1) khung số tài khoản ở trang Mời trà nền sáng, chữ tối; (2) gửi bản lưu lên máy chủ 60 giây một lần thay vì 15 giây (vẫn gửi ngay khi ẩn trang, hết kiếp); (3) ĐỘ KHÓ: tu vi cần tăng theo bậc (`NEED_RAMP` trong lib/game/helpers.ts): Luyện Khí, Trúc Cơ giữ nguyên; Kim Đan ×1,25; Nguyên Anh, Hóa Thần ×1,5; Luyện Hư, Độ Kiếp ×1,75; tiên/ma/hư giới ×2. Lý do: sau 4.0.1 tỉ lệ kiếp lên Hóa Thần 46-50% ở mọi nhóm (mốc Tyler đặt: người mới 18-20%, trung vị 30%); mô phỏng chọn bừa: Kim Đan 58% giữ nguyên, Hóa Thần 16,7% → 13,9%, Độ Kiếp 2,7% → 1,1%. Góp ý #43 (thien).
 - [ ] Q4: tỉ lệ chết khi thua trừ yêu hoặc chặn đường nhân 0,3 ở 16 tuổi, tăng dần lên 1,0 ở 22 tuổi (combat.ts:827). Lần thua trừ yêu đầu tiên sau 16 tuổi của mỗi kiếp luôn chỉ trọng thương, kèm một câu "trưởng thành". Linh căn Tạp/Phế được chọn định hướng con đường từ Luyện Khí tầng 3 (engine.ts:878).
-- [ ] Q5: từ Trúc Cơ, "tích cốc": bỏ tiền ăn, chi phí đổi tên thành linh dược, động phủ. Thiếu tiền thì tu vi chậm và thêm tâm ma, không trừ sức khỏe, không in câu nhịn đói. `chet_doi` chỉ cho cảnh giới dưới 2 (engine.ts:710-726). Trả lời góp ý #28.
+- [ ] Q5: từ Trúc Cơ, "tích cốc": bỏ tiền ăn, chi phí đổi tên thành linh dược, động phủ. Thiếu tiền thì tu vi chậm và thêm tâm ma, không trừ sức khỏe, không in câu nhịn đói. `chet_doi` chỉ cho cảnh giới dưới 2 (engine.ts:710-726).
+- [ ] Cáo thị 4.0.2: thêm mục `4.0.2` (date 01/11/2026) lên ĐẦU `RELEASES` trong lib/releases.ts (CURRENT_VERSION tự lấy bản đầu nên người chơi cũ sẽ thấy bảng cập nhật). Tiêu đề kiểu "Tích Cốc, Thiên Đạo Siết Tu Vi". `asked`: @comiu tích cốc (#28), @thien tu vi cần tăng (#43). Nhóm: Tích cốc; Tu vi cần tăng theo cảnh giới (ghi bảng hệ số, nói rõ Luyện Khí, Trúc Cơ không đổi); Tuổi 16 bớt chết oan (Q4); "Sửa nhỏ": khung số tài khoản ở Mời trà dễ đọc. KHÔNG nhắc chuyện nhịp lưu 60 giây. Song ngữ `tr(vi, en)`, dùng "-" không dùng "—".
+- [ ] Trả lời góp ý (sau khi bản đã lên, kiểm /api/version ra commit mới), `reply_ver` = '4.0.2', `reply_at` = now(), status 'da_xong':
+  - #28 (comiu, tích cốc): báo đã có trong bản 4.0.2, nói ngắn tích cốc làm gì.
+  - #43 (thien): CHỈ nói phần tu vi đã xong ở 4.0.2 (hệ số theo cảnh giới, từ tiên giới ×2). KHÔNG nhắc phần "thêm cảnh giới sau chứng đạo" (chưa có plan).
+  - Góp ý nào khác mà thay đổi hôm nay giải quyết đúng thì trả lời tương tự; góp ý chưa có plan thì để trống.
 - Xong:
 - Ghi chú:
 
