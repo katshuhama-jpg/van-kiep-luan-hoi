@@ -41,7 +41,7 @@ export default function Tracker() {
   useEffect(() => {
     const hb = setInterval(() => {
       if (document.visibilityState === 'visible') track('hb');
-    }, 60000);
+    }, 180000); // 3 phút một nhịp: nhịp 1 phút làm máy chủ quá tải khi đông người (31/10)
     const vis = () => {
       if (document.visibilityState === 'hidden') {
         track('hide', { ms: Date.now() - shownAt.current });

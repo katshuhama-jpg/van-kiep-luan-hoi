@@ -17,6 +17,8 @@ export function setScreen(s: string) {
 }
 
 const queue: Ev[] = [];
+let pausedUntil = 0;
+let inFlight = false;
 let timer: ReturnType<typeof setTimeout> | null = null;
 
 export function sessionId(): string {
@@ -46,20 +48,42 @@ export function flush(beacon = false) {
     timer = null;
   }
   if (!queue.length) return;
+  // máy chủ đang chậm: tạm ngừng gửi, chỉ giữ 50 sự kiện mới nhất, để các lệnh lưu game không bị nghẽn theo
+  if (Date.now() < pausedUntil || inFlight) {
+    if (queue.length > 50) queue.splice(0, queue.length - 50);
+    if (!timer) timer = setTimeout(() => flush(), Math.max(15000, pausedUntil - Date.now()));
+    return;
+  }
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !key) return void (queue.length = 0);
   const events = queue.splice(0, 30);
   const body = JSON.stringify({ p_token: currentPlayer()?.token ?? null, p_sid: sessionId(), p_events: events });
+  const ctl = new AbortController();
+  const t0 = Date.now();
+  const kill = setTimeout(() => ctl.abort(), 8000);
+  const backoff = () => {
+    pausedUntil = Date.now() + 5 * 60_000;
+  };
+  inFlight = !beacon;
   try {
     fetch(`${url}/rest/v1/rpc/vkl_track`, {
       method: 'POST',
       headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
       body,
       keepalive: beacon,
-    }).catch(() => {});
+      signal: beacon ? undefined : ctl.signal,
+    })
+      .then((r) => {
+        if (!r.ok || Date.now() - t0 > 4000) backoff();
+      })
+      .catch(backoff)
+      .finally(() => {
+        clearTimeout(kill);
+        inFlight = false;
+      });
   } catch {
-    /* bỏ qua */
+    inFlight = false;
   }
   if (queue.length) timer = setTimeout(() => flush(), 1000);
 }
