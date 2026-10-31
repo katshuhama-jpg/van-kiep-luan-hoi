@@ -60,6 +60,7 @@ Cáo thị 4.0.1 (Tyler chốt 30/10 tối): gộp ngày 1 và ngày 2 thành b�
 - Ghi chú:
 
 ## Ngày 4 - Lời viếng có tên tuổi, lore, tông môn
+- [ ] KM (Tyler chốt 31/10: lên trong bản sáng thứ Hai 2/11): gộp nhánh `khach-moi` (commit 91846fc, đã làm sẵn và đã chạy smoke) vào main: `git fetch origin khach-moi && git merge --no-ff origin/khach-moi`, gỡ xung đột nếu có (giữ thay đổi của cả hai bên). Gồm: hai kiếp đầu tuổi trưởng thành trôi ×2 (kiếp 3 ×1,5) tới Trúc Cơ (`youthPace`, lib/game/data.ts); nút Lập bia bám đáy màn cáo biệt (`.death-go`); khách được mời ghi danh từ kiếp đầu (3 kiếp đầu, rồi 5 kiếp một lần) kèm 3 quyền lợi (components/GhiDanh.tsx); `hide`/`leave` ghi thêm `life`, `age`. Thử: smoke, và Playwright khách kiếp 1 chết thấy bảng "Giữ lại kiếp này". Ghi vào cáo thị bản này (mục người mới). Số đo trước (29-31/10, khách kiếp 1): 84% bấm lựa chọn đầu, 37% đi hết kiếp đầu, bỏ ngang ở tuổi trung vị 53, 8 người bỏ ở màn cáo biệt; mời ghi danh được bấm 42%. Ghi số này vào "Ghi chú:" để so sau 3 ngày.
 - [ ] Q6: lời viếng mẫu (components/CondoPresets.tsx) sinh từ dữ liệu mộ: tên, cảnh giới, con đường, kết cục, kẻ giết, đạo lữ. Màn lập bia gợi ý 3 câu văn bia từ khoảnh khắc lớn nhất kiếp.
 - [ ] Q7: thiên sát cô tinh không còn cha mẹ trong sự kiện; "đệ tử đầu tiên" theo thứ tự thật (#4). Tông môn chính phái phản ứng khi đệ tử đổi sang ma đạo, dùng cơ chế phản môn và lộ thân phận có sẵn (engine.ts:669-679) (#13).
 - Xong:
