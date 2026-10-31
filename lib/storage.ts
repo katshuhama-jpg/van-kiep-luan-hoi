@@ -125,8 +125,20 @@ export async function saveMeta(user: Player | null, meta: Meta) {
   writeLocal(metaKey(user), meta);
   const sb = supabase();
   if (metaLocked || !sb) return;
+  // vkl_save_meta2 chặn ghi hồ sơ có số kiếp thấp hơn trên máy chủ; chưa có hàm đó thì dùng hàm cũ
+  if (meta2 !== false) {
+    const { error } = await sb.rpc('vkl_save_meta2', { p_token: user.token, p_meta: meta });
+    if (!error) return void (meta2 = true);
+    if (error.message?.includes('META_REGRESS')) {
+      metaLocked = true; // hồ sơ trên máy chủ mới hơn máy này: thôi ghi, lần tải sau sẽ lấy bản đúng
+      return;
+    }
+    if (!(error.code === 'PGRST202' || /could not find the function/i.test(error.message ?? ''))) throw error;
+    meta2 = false;
+  }
   await sb.rpc('vkl_save_meta', { p_token: user.token, p_meta: meta });
 }
+let meta2: boolean | null = null;
 
 const userKey = (user: Player) => `vkl.save.u.${user.username}`;
 
