@@ -31,7 +31,7 @@ Nguyên tắc: không đưa cái chết vô lý trở lại. Nguy hiểm dời v
 
 ## Góp ý từ Threads (chưa chia ngày)
 
-- [ ] T1. Sau phi thăng bế tắc (Threads, wh0scareanyway, 31/10): "Phi thăng xong farm quái khó mà ít rớt đồ, shop cũng không bán cái gì để mua, không có cách nào mạnh lên, còn bị mấy thằng Đại La Kim Tiên nó trấn lột suốt". Ba ý cần làm:
+- [ ] T1. Sau phi thăng bế tắc (Threads, wh0scareanyway, 31/10, trả lời dưới bài "tu cao rồi thì dân làng phải tránh đường" - phần dân làng đã sửa ở 4.0.1, giờ là cùng chuyện đó ở tầng tiên giới): "Phi thăng xong farm quái khó mà ít rớt đồ, shop cũng không bán cái gì để mua, không có cách nào mạnh lên, còn bị mấy thằng Đại La Kim Tiên nó trấn lột suốt". Ba ý cần làm:
   - Rớt đồ ở Tiên giới, Ma giới: tăng tỉ lệ và phẩm đồ rớt khi săn quái từ cảnh giới 9 trở lên, rớt đúng tầm cảnh giới.
   - Phường thị sau phi thăng: có hàng để mua ở Tiên giới, Ma giới (đồ, đan theo cảnh giới), nối với Q8 của 4.1.0 (giá theo phẩm, đồ cao cấp giới hạn số lượng làm mới theo năm game).
   - Bị cao nhân trấn lột: kẻ chặn đường cảnh giới cao hơn mình quá nhiều thì phải có lối thoát (nộp ít hơn, chạy, nhờ tông môn), và tần suất giảm khi chênh lệch lớn. Đo trước bằng sự kiện `ambush`, `duel` của các kiếp ở cosmos tien/ma.
