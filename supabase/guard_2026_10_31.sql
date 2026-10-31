@@ -59,3 +59,6 @@ end $$;
 revoke all on function public.vkl_nightly_check(date) from public, anon, authenticated;
 revoke all on function public.vkl_lives_bump() from public, anon, authenticated;
 revoke all on function public.vkl_meta_keep() from public, anon, authenticated;
+
+-- Lịch: 00:15 giờ VN mỗi đêm (sau bản tổng kết 00:05)
+select cron.schedule('vkl_nightly_check', '15 17 * * *', $$select public.vkl_nightly_check(((now() at time zone 'Asia/Ho_Chi_Minh')::date - 1))$$);

@@ -4,6 +4,8 @@ with aff as (
   select p.id, max(l.life_no) new_lives
   from public.vkl_players p join public.vkl_lives l on l.player_id = p.id
   group by p.id having coalesce((p.meta->>'lives')::int,0) < max(l.life_no) - 1
+     or (coalesce((p.meta->>'lives')::int,0) < max(l.life_no)
+         and coalesce((select (s.state->'char'->>'lifeNo')::int from public.vkl_saves s where s.player_id = p.id), 0) > max(l.life_no))
 ),
 up as (
   update public.vkl_players p set meta = coalesce(p.meta,'{}'::jsonb) || jsonb_build_object('lives', a.new_lives)
