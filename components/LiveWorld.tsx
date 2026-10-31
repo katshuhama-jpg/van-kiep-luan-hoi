@@ -51,7 +51,7 @@ export function useLive(): LiveData {
     if (!sb) return;
     let live = true;
     const load = () => {
-      sb.rpc('vkl_online_now').then(({ data }) => live && typeof data === 'number' && setOnline(data));
+      sb.rpc('vkl_online_now7').then(({ data }) => live && typeof data === 'number' && setOnline(data));
       sb.rpc('vkl_live_feed').then(({ data }) => live && Array.isArray(data) && setFeed(data as FeedItem[]));
       // số luôn tăng (tổng kiếp) làm số lớn, thay cho số người đang chơi có lúc bằng 0
       sb.from('vkl_lives')
