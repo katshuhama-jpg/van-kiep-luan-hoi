@@ -4653,3 +4653,11 @@ button.shadow-card { cursor: pointer; }
 .wk-line.ci-home:not(.done) { animation: ci-pulse 1.2s steps(2) infinite; }
 .wk-line.ci-home.done { background: #2a2a1e; color: #d8d0b8; }
 
+
+/* Lôi đài: đổi kiếp ra đài trong bottom sheet (1/11) */
+.ar-side .ar-swap { font-size: 13px; padding: 2px 8px; margin-top: 4px; color: #ffd36b; background: rgba(0, 0, 0, 0.7); border: 2px solid #ffd36b; }
+.sc-tags i.cur { background: #b0302a; color: #fff3dc; }
+.ar-pick-note { margin: 0 0 8px; font-size: 13px; }
+.sheet .shadow-pick { margin-bottom: 8px; }
+.ar-pick-dock { position: sticky; bottom: calc(-16px - env(safe-area-inset-bottom)); margin: 0 -14px calc(-16px - env(safe-area-inset-bottom)); padding: 10px 14px calc(12px + env(safe-area-inset-bottom)); background: var(--paper); border-top: 2px solid var(--ink); z-index: 3; }
+.ar-pick-dock .btn { width: 100%; }

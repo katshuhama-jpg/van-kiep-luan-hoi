@@ -319,6 +319,23 @@ export async function arenaPick(user: Player | null, lifeId: number): Promise<{ 
   return error ? null : (data as { champ?: unknown; error?: string });
 }
 
+/** Lôi đài 1/11: tối đa 12 kiếp mạnh nhất để đổi bóng qua lại */
+export async function arenaCandidates2(user: Player | null): Promise<RivalChar[]> {
+  const sb = supabase();
+  if (!sb || !user) return [];
+  const { data, error } = await sb.rpc('vkl_arena_candidates2', { p_token: user.token });
+  if (error || !Array.isArray(data)) return arenaCandidates(user);
+  return data.map((d) => toRival(user.username, d)).filter((x): x is RivalChar => !!x);
+}
+
+/** Đổi bóng xuất chiến bất cứ lúc nào, trừ khi đang có trận đã rút đối thủ (lỗi PENDING) */
+export async function arenaPick2(user: Player | null, lifeId: number): Promise<{ champ?: unknown; error?: string } | null> {
+  const sb = supabase();
+  if (!sb || !user) return null;
+  const { data, error } = await sb.rpc('vkl_arena_pick2', { p_token: user.token, p_life_id: lifeId });
+  return error ? null : (data as { champ?: unknown; error?: string });
+}
+
 export async function arenaShadow(username: string): Promise<RivalChar | null> {
   const sb = supabase();
   if (!sb) return null;
