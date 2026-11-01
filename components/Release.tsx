@@ -129,6 +129,68 @@ export default function ReleaseNotice({ onClose }: { onClose: (v: string) => voi
   );
 }
 
+/** Thông báo một lần về lúc cổng đóng sáng 1/11/2026 (Vercel tạm dừng vì vượt hạn mức). Hết hạn sau 4/11. */
+const DOWN_KEY = 'vkl.notice.down1101';
+const DOWN_UNTIL = Date.UTC(2026, 10, 4, 17); // hết ngày 4/11 giờ Việt Nam
+export function needDownNotice(): boolean {
+  try {
+    return Date.now() < DOWN_UNTIL && !localStorage.getItem(DOWN_KEY);
+  } catch {
+    return false;
+  }
+}
+export function DownNotice({ onClose }: { onClose: () => void }) {
+  const close = () => {
+    try {
+      localStorage.setItem(DOWN_KEY, '1');
+    } catch {}
+    onClose();
+  };
+  return (
+    <div className="rel-wrap" role="dialog" aria-modal="true" aria-labelledby="down-title">
+      <div className="rel-scroll">
+        <i className="rod" aria-hidden="true" />
+        <div className="rel-body">
+          <p className="rel-kick">{tr('Thiên Đạo cáo lỗi · 01/11', 'The Heavens apologize · 01/11')}</p>
+          <h2 id="down-title">{tr('Cổng Vạn Kiếp đóng gần 5 tiếng', 'The Gate Was Closed for Nearly 5 Hours')}</h2>
+          <p className="rel-intro">
+            {tr(
+              'Sáng 1/11, từ 2h20 tới 7h13, cổng Vạn Kiếp đóng. Thiên Đạo xin lỗi chư vị đạo hữu.',
+              'On the morning of 1/11, from 2:20 to 7:13 (Vietnam time), the gate was closed. The Heavens apologize to every fellow cultivator.',
+            )}
+          </p>
+          <ul className="rel-items">
+            <li>
+              {tr(
+                'Nguyên do: đạo hữu tới đông hơn sức một động phủ miễn phí gánh nổi, máy chủ quá hạn mức nên bị tạm khóa.',
+                'The cause: more of you came than a free cave abode could bear, the server went over its limit and was paused.',
+              )}
+            </li>
+            <li>
+              {tr(
+                'Thiên Đạo đã dời sang động phủ lớn hơn, lại dặn trình duyệt giữ sẵn hình ảnh để vào game nhẹ và nhanh hơn.',
+                'The Heavens have moved to a larger abode, and your browser now keeps the images so the game loads lighter and faster.',
+              )}
+            </li>
+            <li>
+              {tr(
+                'Tiến trình tu luyện cất ở nơi khác nên không mất gì. Ai đang chơi dở lúc cổng đóng thì vào lại là chơi tiếp được.',
+                'Your progress is stored elsewhere, so nothing was lost. If you were mid-life when the gate closed, just come back and carry on.',
+              )}
+            </li>
+          </ul>
+          <div className="rel-acts">
+            <button className="btn btn-red btn-big" onClick={close}>
+              {tr('Chơi tiếp', 'Keep playing')}
+            </button>
+          </div>
+        </div>
+        <i className="rod" aria-hidden="true" />
+      </div>
+    </div>
+  );
+}
+
 /** Quà Thiên Đạo (phúc duyên) vừa lĩnh: hiện một lần ngay khi nhận */
 export function GiftNotice({ gifts, onClose }: { gifts: { amount: number; note: string }[]; onClose: () => void }) {
   const total = gifts.reduce((a, g) => a + g.amount, 0);

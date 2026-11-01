@@ -46,7 +46,7 @@ import { CHECKIN, checkinClaimed, checkinDay, checkinItem, checkinLabel, checkin
 import { CheckinPop, HookSheet, TitleBadge } from '@/components/Hook';
 import { omenToday } from '@/lib/game/hook';
 import { useAuth } from '@/lib/useAuth';
-import ReleaseNotice, { GiftNotice, needNotice } from '@/components/Release';
+import ReleaseNotice, { DownNotice, GiftNotice, needDownNotice, needNotice } from '@/components/Release';
 import AscendScene from '@/components/AscendScene';
 import { CURRENT_VERSION, markSeenLocal } from '@/lib/releases';
 import NguHanhDai, { NhdMirror, waiting, type NhdView } from '@/components/NguHanhDai';
@@ -114,6 +114,7 @@ export default function PlayPage() {
       return n;
     });
   const [relOpen, setRelOpen] = useState(false); // cáo thị bản cập nhật mới
+  const [downOpen, setDownOpen] = useState(false); // thông báo một lần: cổng đóng sáng 1/11
   const [ascend, setAscend] = useState<'tien' | 'ma' | 'hu' | null>(null); // cảnh phi thăng vừa xảy ra
   const cosSeen = useRef<string | null | undefined>(undefined);
   const [gifts, setGifts] = useState<{ amount: number; note: string }[] | null>(null); // quà Thiên Đạo vừa lĩnh
@@ -298,7 +299,7 @@ export default function PlayPage() {
   const activeRef = useRef(false);
   const [ciGot, setCiGot] = useState<{ day: number; text: string } | null>(null);
   const [ciOpen, setCiOpen] = useState(false);
-  activeRef.current = running && sheet === null && !ciOpen && phase === 'play' && kiep === null && hoTro === null && vanDao === null && !tut && duelWarn === null && !nhdPeek && !relOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
+  activeRef.current = running && sheet === null && !ciOpen && phase === 'play' && kiep === null && hoTro === null && vanDao === null && !tut && duelWarn === null && !nhdPeek && !relOpen && !downOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
 
   /** Ngũ hành giữa bạn và loài quái */
   function monElem(c: Character, m: { el?: Element }) {
@@ -1474,6 +1475,11 @@ export default function PlayPage() {
       closeRel(CURRENT_VERSION);
     } else setRelOpen(true);
   }, [metaReady, phase, tut]);
+  // thông báo cổng đóng sáng 1/11: một lần, chỉ cho người chơi cũ, sau khi đã xem cáo thị
+  useEffect(() => {
+    if (!metaReady || phase === 'loading' || tut || relOpen || ciOpen || !needDownNotice()) return;
+    if ((metaRef.current?.lives ?? 0) > 0) setDownOpen(true);
+  }, [metaReady, phase, tut, relOpen, ciOpen]);
   const closeRel = (v: string) => {
     setRelOpen(false);
     const m0 = metaRef.current;
@@ -1721,6 +1727,7 @@ export default function PlayPage() {
         {(setScreen('dau_thai'), null)}
         <BirthPanel meta={meta} onCheckin={meta.lives > 0 ? () => setCiOpen(true) : undefined} onHoanHon={hoanHon} onBorn={born} onKho={() => setSheet('kho')} onSoSinhTu={() => seeBook('e')} />
         {relOpen && !ghiDanh && <ReleaseNotice onClose={closeRel} />}
+        {downOpen && !relOpen && !ghiDanh && <DownNotice onClose={() => setDownOpen(false)} />}
         {ghiDanh && <GhiDanh {...ghiDanh} lives={meta.lives} onClose={() => setGhiDanh(null)} />}
       </main>
     );
@@ -2034,8 +2041,9 @@ export default function PlayPage() {
         />
       )}
       {relOpen && !c.dead && <ReleaseNotice onClose={closeRel} />}
+      {downOpen && !relOpen && !c.dead && <DownNotice onClose={() => setDownOpen(false)} />}
       {ascend && !c.dead && <AscendScene c={c} cos={ascend} onDone={() => setAscend(null)} />}
-      {gifts && !relOpen && <GiftNotice gifts={gifts} onClose={() => setGifts(null)} />}
+      {gifts && !relOpen && !downOpen && <GiftNotice gifts={gifts} onClose={() => setGifts(null)} />}
       {nhdPeek && !nhd && (
         <NguHanhDai c={c} view="rules" tell="cong" preview onFight={() => {}} onBuyPhu={() => {}} onLeave={() => setNhdPeek(false)} onNext={() => {}} onRules={() => setNhdPeek(false)} />
       )}
