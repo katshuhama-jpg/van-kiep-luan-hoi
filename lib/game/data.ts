@@ -96,10 +96,15 @@ export const BINH_CANH_YEARS = 10;
 /** Ba kiếp đầu: tuổi thơ trôi nhanh (dưới 12 tuổi gấp 4, 12-16 tuổi gấp 2,5) để người mới sớm tới phần tu luyện và cái chết đầu tiên */
 export const YOUTH_PACE = 2.5;
 export const CHILD_PACE = 4;
-export function youthPace(c: { lifeNo: number; age: number }): number {
-  if (c.lifeNo > 3 || c.age >= 16) return 1;
-  return c.age < 12 ? CHILD_PACE : YOUTH_PACE;
+export function youthPace(c: { lifeNo: number; age: number; realm?: number; cosmos?: unknown }): number {
+  if (c.lifeNo > 3) return 1;
+  if (c.age < 16) return c.age < 12 ? CHILD_PACE : YOUTH_PACE;
+  // khách mới hay bỏ ngang kiếp đầu quanh 50 tuổi (đo 29-31/10): hai kiếp đầu tuổi trưởng thành ở phàm nhân, Luyện Khí trôi nhanh hơn
+  if ((c.realm ?? 0) >= 2 || c.cosmos) return 1;
+  return c.lifeNo <= 2 ? ADULT_PACE_NEW : 1.5;
 }
+/** Nhịp tuổi trưởng thành ở hai kiếp đầu (trước Trúc Cơ) */
+export const ADULT_PACE_NEW = 2;
 /** Năm trôi nhanh hơn ở cảnh giới cao để mỗi kiếp vẫn gọn */
 export function yearSpeed(realm: number, cosmos?: unknown): number {
   if (cosmos || realm >= 8) return 2.5;
