@@ -411,3 +411,12 @@ export async function thachFight(user: Player | null, opp: string, lifeId: numbe
   const { data, error } = await sb.rpc('vkl_thach_fight', { p_token: user.token, p_opp: opp, p_life_id: lifeId, p_win: win, p_hp: hp, p_swords: swords, p_detail: detail });
   return error ? null : (data as { left?: number; phuc?: number; error?: string });
 }
+
+/** Trang Facebook chính thức của game */
+export const FB_PAGE = 'https://www.facebook.com/profile.php?id=61596225535531';
+
+/** Tách đường link khỏi câu trả lời góp ý để hiện thành nút */
+export function splitLinks(text: string): { text: string; links: string[] } {
+  const links = text.match(/https?:\/\/[^\s)]+/g) ?? [];
+  return { text: links.reduce((t, l) => t.replace(l, '').replace(/\s+([.,])/g, '$1'), text).replace(/\s{2,}/g, ' ').trim(), links };
+}

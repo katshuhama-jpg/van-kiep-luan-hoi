@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { addFeedback, listFeedback, voteFeedback, type Feedback, type FeedbackKind } from '@/lib/storage';
 import { useAuth } from '@/lib/useAuth';
 import { tr } from '@/lib/i18n';
+import { splitLinks } from '@/lib/social';
 
 const KINDS: { id: FeedbackKind; name: string }[] = [
   { id: 'tinh_nang', name: tr('Tính năng mới', "New feature") },
@@ -172,7 +173,19 @@ export default function GopY() {
                   </span>
                   <div>
                     <b>{tr("Thiên Đạo hồi đáp", "The Heavenly Dao replies")}{f.reply_ver ? tr(` · bản ${f.reply_ver}`, ` · version ${f.reply_ver}`) : ''}</b>
-                    <p>{f.reply}</p>
+                    {(() => {
+                      const r = splitLinks(f.reply);
+                      return (
+                        <>
+                          <p>{r.text}</p>
+                          {r.links.map((l) => (
+                            <a key={l} className="btn fb-reply-btn" href={l} target="_blank" rel="noopener noreferrer">
+                              {/facebook\.com/.test(l) ? tr('Theo dõi trang Facebook', 'Follow us on Facebook') : tr('Mở liên kết', 'Open link')} ›
+                            </a>
+                          ))}
+                        </>
+                      );
+                    })()}
                     {f.reply_ver && (
                       <Link href="/cap-nhat" className="fb-reply-link">
                         

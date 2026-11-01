@@ -3267,6 +3267,7 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .fb-reply b { color: #8a1a1a; font-size: 14px; }
 .fb-reply p { margin: 2px 0 4px; font-size: 15px; line-height: 1.4; }
 .fb-reply-link { font-size: 14px; color: #8a1a1a; }
+.fb-reply-btn { display: inline-block; margin: 2px 0 8px; padding: 6px 12px; font-size: 15px; text-decoration: none; }
 .mail.k-thien_dao { background: #fff6dc; border-left: 4px solid #c9962e; }
 .mail.k-thien_dao .mail-ic { color: #c9962e; }
 
