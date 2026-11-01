@@ -59,7 +59,10 @@ export const RELEASES: Release[] = [
       },
       {
         h: tr('Sửa nhỏ', 'Small fixes'),
-        items: [tr('Khung số tài khoản ở trang Mời trà: nền sáng, chữ tối, dễ đọc hơn.', 'The account number box on the Tea page now has a light background and dark text, easier to read.')],
+        items: [
+          tr('Khung số tài khoản ở trang Mời trà: nền sáng, chữ tối, dễ đọc hơn.', 'The account number box on the Tea page now has a light background and dark text, easier to read.'),
+          tr('Bớt giật khi chơi ở cảnh giới cao, tốc độ cao và lúc treo máy trừ yêu.', 'Less stutter at high realms, at high speed and while idle-hunting.'),
+        ],
       },
     ],
   },

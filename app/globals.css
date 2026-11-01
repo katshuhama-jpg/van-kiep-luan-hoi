@@ -2607,7 +2607,8 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 /* nửa đầu chạy sang phải (hàng quay phải), nửa sau chạy về trái */
 @keyframes petRoam { 0% { transform: translateX(calc(var(--roam) * -1)); } 50% { transform: translateX(var(--roam)); } 100% { transform: translateX(calc(var(--roam) * -1)); } }
 @keyframes petDir { 0%, 49.9% { background-position-y: var(--pet-h); } 50%, 100% { background-position-y: 0; } }
-@keyframes petBob { 0%, 100% { margin-bottom: 0; } 25% { margin-bottom: 8px; } 75% { margin-bottom: -6px; } }
+/* bay nhấp nhô bằng translate (không đụng layout như margin, đỡ giật trên điện thoại) */
+@keyframes petBob { 0%, 100% { translate: 0 0; } 25% { translate: 0 -8px; } 75% { translate: 0 6px; } }
 @media (prefers-reduced-motion: reduce) { .pet-roam, .pet-img { animation: none !important; } }
 .lpc.is-dead .lpc-strip { filter: grayscale(0.6) brightness(0.9); }
 @media (prefers-reduced-motion: reduce) { .lpc-strip { animation: none !important; } }

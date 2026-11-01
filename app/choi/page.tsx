@@ -135,6 +135,7 @@ export default function PlayPage() {
   const yearSecRef = useRef(30);
   const talentsRef = useRef<string[]>([]);
   const lastRemote = useRef(0);
+  const lastLocal = useRef(0);
   const userRef = useRef(user);
   userRef.current = user;
   const battleRef = useRef<Battle | null>(null);
@@ -188,8 +189,13 @@ export default function PlayPage() {
       }
       const s = snapshot();
       if (!s) return;
-      saveLocal(userRef.current, s);
       const now = Date.now();
+      // bản lưu cảnh giới cao nặng 100-200KB: ghi máy mỗi lần giết quái, mỗi năm làm giật ở tốc độ cao.
+      // Ghi tối đa 3 giây một lần; việc quan trọng (forceRemote: chọn lựa, đột phá, ẩn trang, hết kiếp) vẫn ghi ngay
+      if (forceRemote || now - lastLocal.current > 3000) {
+        lastLocal.current = now;
+        saveLocal(userRef.current, s);
+      }
       if (forceRemote || now - lastRemote.current > 60000) {
         lastRemote.current = now;
         saveRemote(userRef.current, s).catch(() => {});
@@ -880,7 +886,7 @@ export default function PlayPage() {
           pushFx(out);
           persist(stopped);
           rerender();
-        } else if (t - lastDraw > 120) {
+        } else if (t - lastDraw > 250) {
           lastDraw = t;
           rerender();
         }
@@ -891,12 +897,18 @@ export default function PlayPage() {
     const onHide = () => {
       if (document.visibilityState === 'hidden') persist(true);
     };
+    const onLeave = () => persist(true);
     document.addEventListener('visibilitychange', onHide);
+    window.addEventListener('pagehide', onLeave);
     return () => {
       cancelAnimationFrame(raf);
       document.removeEventListener('visibilitychange', onHide);
+      window.removeEventListener('pagehide', onLeave);
+      // rời màn chơi trong app (bấm sang trang khác): ghi máy ngay phần chưa kịp ghi
+      const s = snapshot();
+      if (s) saveLocal(userRef.current, s);
     };
-  }, [phase, persist, pushFx, rerender]);
+  }, [phase, persist, pushFx, rerender, snapshot]);
 
   // --------- Hành động ---------
   const act = useCallback(
