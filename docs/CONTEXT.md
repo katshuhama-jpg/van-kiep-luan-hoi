@@ -608,6 +608,7 @@ Mục tiêu: chết nhiều không còn là lợi thế; người chơi lâu có
 - Bóng xuất chiến: `vkl_arena_candidates` (6 kiếp mạnh nhất, gồm nhân vật đang sống), `vkl_arena_pick` khóa tới hết ngày (`champ`, `champ_day`). Bóng người khác: `vkl_arena_shadow` (bóng đã chọn hôm nay, chưa chọn thì kiếp mạnh nhất qua `vkl_priv.best_shadow`).
 - Xin xăm: `vkl_arena_draw` rút ngẫu nhiên phía máy chủ, giữ `pending` tới khi đánh xong (không rút lại). Hiệu ứng ống xăm, que màu theo phẩm (Phàm/Linh/Huyền/Thiên theo cảnh giới thật), thẻ lật, quẻ Thượng cát/Trung bình/Hạ hung theo xác suất nền.
 - Trận đấu (`lib/game/arena.ts`, `components/Arena.tsx Match`): bóng đối thủ `equalize` về cùng cảnh giới; mỗi hiệp Công/Thủ/Hóa; ý đồ đúng 55%, đối thủ 35% khắc thế hiệp trước của bạn; 31 luật theo ngày trong tháng (`ARENA_RULES`, `ruleOf`). Mô phỏng thế cân: đoán theo ý đồ thắng 63%, chọn bừa 50%. Có nút Tự đánh.
+- **Đổi kiếp ra đài** (1/11, lên bản 2/11): nút "⇄ Đổi kiếp" dưới bóng của mình mở bottom sheet (`Sheet` trong Panels) liệt kê tối đa 12 kiếp mạnh nhất (`vkl_arena_candidates2`), kiếp đang ra đài có nhãn "Đang ra đài". Đổi qua lại bao nhiêu lần cũng được (`vkl_arena_pick2`, không còn khóa cả ngày), trừ khi đang có trận đã rút đối thủ hôm nay mà chưa đánh (lỗi `PENDING`). Hàm cũ `vkl_arena_pick`/`vkl_arena_candidates` giữ nguyên. SQL: `supabase/arena_doi_kiep_2026_11_01.sql`.
 - `vkl_arena_fight2`: kiểm tra lượt, `pending`, báo thù (`vkl_arena_revenge`, tối đa 3 chờ, hạn 48 giờ), liên thắng `win_run`, thư cho đối thủ.
 
 ## Màn đầu thai (bố cục 27/10)

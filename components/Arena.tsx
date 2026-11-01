@@ -13,13 +13,14 @@ import type { RivalChar } from '@/lib/game/types';
 import { fitsRule, ruleOf, vnDate, type ArenaRule } from '@/lib/game/arena';
 import { ARENA_TIERS, tierOfPts } from '@/lib/game/phiKiem';
 import { track } from '@/lib/track';
-import { arena2State, arenaCandidates, arenaDraw, arenaPick, arenaShadow, toRival, type Arena2State } from '@/lib/social';
+import { arena2State, arenaCandidates2, arenaDraw, arenaPick2, arenaShadow, toRival, type Arena2State } from '@/lib/social';
+import { Sheet } from '@/components/Panels';
 import { tr } from '@/lib/i18n';
 
 export const ARENA_TURNS = 3;
 
 /** Thẻ một bóng: hình, cảnh giới, con đường, bản mệnh, chỉ số */
-function ShadowCard({ r, on, onPick, small, rank, rule, vert }: { r: RivalChar; on?: boolean; onPick?: () => void; small?: boolean; rank?: number; rule?: ArenaRule; vert?: boolean }) {
+function ShadowCard({ r, on, onPick, small, rank, rule, vert, cur }: { r: RivalChar; on?: boolean; onPick?: () => void; small?: boolean; rank?: number; rule?: ArenaRule; vert?: boolean; cur?: boolean }) {
   const s = foeStats(r);
   const el = elementOf(r);
   const body = (
@@ -31,6 +32,7 @@ function ShadowCard({ r, on, onPick, small, rank, rule, vert }: { r: RivalChar; 
       <span className="sc-info">
         <span className="sc-tags">
           <i className={r.alive ? 'live' : 'past'}>{r.alive ? tr('Nhân vật đang chơi', "Current character") : tr(`Kiếp thứ ${r.lifeNo ?? 1} của bạn`, `Your life #${r.lifeNo ?? 1}`)}</i>
+          {cur && <i className="cur">{tr('Đang ra đài', 'In the arena')}</i>}
           {rule && fitsRule(r, rule) && <i className="fit">{tr("Hợp luật hôm nay", "Fits today's rule")}</i>}
         </span>
         <b>{r.name}</b>
@@ -112,15 +114,15 @@ export default function Arena({ user }: { user: Player | null }) {
   if (champ) champRef.current.c = champ;
   if (st?.me) usedRef.current.n = Math.max(usedRef.current.n, st.me.used);
   useEffect(() => {
-    if (user && st?.me && !champ && cands === null) arenaCandidates(user).then(setCands);
-  }, [user, st, champ, cands]);
+    if (user && st?.me && cands === null) arenaCandidates2(user).then(setCands);
+  }, [user, st, cands]);
 
   /** Khóa một bóng cho cả ngày; không chỉ định thì lấy kiếp mạnh nhất */
   async function lockChamp(c?: RivalChar): Promise<RivalChar | null> {
     if (!user) return null;
     let target = c;
     if (!target) {
-      const list = cands ?? (await arenaCandidates(user));
+      const list = cands ?? (await arenaCandidates2(user));
       if (!cands) setCands(list);
       target = list[0];
     }
@@ -128,8 +130,12 @@ export default function Arena({ user }: { user: Player | null }) {
       setErr(tr('Bạn chưa có kiếp nào. Sống trọn một kiếp rồi quay lại lôi đài.', "You have no lives yet. Live a full life, then come back to the arena."));
       return null;
     }
-    const r = await arenaPick(user, target.lifeId ?? 0);
-    if (!r || (r.error && r.error !== 'LOCKED')) {
+    const r = await arenaPick2(user, target.lifeId ?? 0);
+    if (r?.error === 'PENDING') {
+      setErr(tr('Đang có trận đã rút đối thủ, đánh xong trận đó rồi hẵng đổi kiếp.', 'You have a drawn match waiting. Finish it before changing lives.'));
+      return null;
+    }
+    if (!r || r.error) {
       setErr(tr('Chưa chọn được bóng, thử lại sau.', "Couldn't pick a shadow, try again later."));
       return null;
     }
@@ -161,10 +167,14 @@ export default function Arena({ user }: { user: Player | null }) {
   async function lockPicked() {
     if (pick === null || !cands) return;
     setBusy('pick');
-    track('arena_pick');
-    await lockChamp(cands[pick]);
+    setErr(null);
+    track('arena_pick', { life: cands[pick].lifeNo ?? 0, realm: cands[pick].realm });
+    const ok = await lockChamp(cands[pick]);
     setBusy(null);
-    setPicking(false);
+    if (ok) {
+      setPicking(false);
+      setPick(null);
+    }
     load();
   }
 
@@ -217,9 +227,9 @@ export default function Arena({ user }: { user: Player | null }) {
         <div className="ar-side me">
           {hero ? <Sprite c={foeChar(hero)} size={120} anim="idle" dir={3} /> : <span className="ar-unknown">?</span>}
           <b>{hero ? hero.name : tr('Bóng của bạn', "Your shadow")}</b>
-          {st.me && !champ && hero && (
-            <button className="linklike ar-swap" onClick={() => setPicking((v) => !v)}>
-              {picking ? tr('Đóng', "Close") : tr('Đổi bóng', "Change shadow")}
+          {st.me && hero && cands && cands.length > 1 && (
+            <button className="btn ar-swap" onClick={() => (setErr(null), setPicking(true))}>
+              {tr('⇄ Đổi kiếp', '⇄ Change life')}
             </button>
           )}
         </div>
@@ -239,21 +249,26 @@ export default function Arena({ user }: { user: Player | null }) {
           {tr("Luật hôm nay: ", "Today's rule: ")}<b>{rule.name}</b>
         </span>
       </div>
-      {err && <p className="note ar-err">{err}</p>}
+      {err && !picking && <p className="note ar-err">{err}</p>}
 
-      {picking && cands && cands.length > 0 ? (
-        <>
+      {picking && cands && cands.length > 0 && (
+        <Sheet title={tr('Chọn kiếp ra đài', 'Choose a life for the arena')} onClose={() => { setPicking(false); setPick(null); }}>
+          <p className="note ar-pick-note">{tr('Đổi qua lại bao nhiêu lần cũng được, giữa các trận. Kiếp đang ra đài cũng là bóng người khác gặp khi rút trúng bạn.', 'Switch as often as you like between matches. The life you field is also the shadow others meet when they draw you.')}</p>
           <div className="shadow-pick" id="ar-pick">
-            {cands.map((c, i) => (
-              <ShadowCard key={`${c.lifeId}-${i}`} r={c} rank={i + 1} rule={rule} vert on={pick === i} onPick={() => setPick(i)} />
-            ))}
+            {cands.map((c, i) => {
+              const cur = !!hero && (c.lifeId ?? 0) === (hero.lifeId ?? 0);
+              return <ShadowCard key={`${c.lifeId}-${i}`} r={c} rank={i + 1} rule={rule} vert cur={cur} on={pick === i} onPick={() => setPick(i)} />;
+            })}
           </div>
-          <button className="btn btn-red ar-keep" disabled={!!busy || pick === null} onClick={lockPicked}>
-            {busy === 'pick' ? '...' : pick !== null ? tr(`Giữ ${cands[pick].name} cả ngày`, `Keep ${cands[pick].name} all day`) : tr('Chọn một bóng', "Pick a shadow")}
-          </button>
-        </>
-      ) : (
-        <>
+          {err && <p className="note ar-err">{err}</p>}
+          <div className="ar-pick-dock">
+            <button className="btn btn-red btn-big" disabled={!!busy || pick === null} onClick={lockPicked}>
+              {busy === 'pick' ? '...' : pick !== null ? tr(`Cho ${cands[pick].name} ra đài`, `Field ${cands[pick].name}`) : tr('Chọn một kiếp', 'Pick a life')}
+            </button>
+          </div>
+        </Sheet>
+      )}
+      <>
           <nav className="ar-tabs" role="tablist">
             <button role="tab" aria-selected={tab === 'top'} className={tab === 'top' ? 'on' : ''} onClick={() => setTab('top')}>
               
@@ -327,8 +342,7 @@ export default function Arena({ user }: { user: Player | null }) {
               </>
             )}
           </div>
-        </>
-      )}
+      </>
 
       {st.me && (
         <div className="ar-dock">
