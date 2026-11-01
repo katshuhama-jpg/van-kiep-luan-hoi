@@ -8,6 +8,8 @@ import { REALMS, realmLabel, realmName } from '@/lib/game/data';
 import { pickStory } from '@/lib/game/miles';
 import { condolences, type Condolence } from '@/lib/social';
 import CondoPresets from './CondoPresets';
+import { graveInfo, partnerFromMiles } from '@/lib/game/vanBia';
+import { ENDINGS } from '@/lib/game/endings';
 import type { Character, Focus, Fx, FxKind, Mile, PathId } from '@/lib/game/types';
 import { tr } from '@/lib/i18n';
 
@@ -114,6 +116,9 @@ export default function LifeStory({
     equipped?: Record<string, string>;
     element?: string;
     cosmos?: 'tien' | 'ma' | 'hu' | null;
+    killer?: string | null;
+    partner?: string | null;
+    ending?: string;
   };
   const finalRealm = r.realm_no ?? 0;
   const maTon = look.endTag === 'ma_ton_do_kiep' || /Ma Tôn|Demon Sovereign/.test(r.cause ?? '');
@@ -254,6 +259,7 @@ export default function LifeStory({
               {onCondole && (
                 <CondoPresets
                   seed={lifeId ?? 7}
+                  grave={graveInfo({ ...r, killer: look.killer, partner: look.partner ?? partnerFromMiles(look.miles), ending: ENDINGS.find((e) => e.id === look.ending)?.name ?? null })}
                   onPick={(b) => {
                     onCondole(b);
                     setCondo((x) => [{ from_player: tr('bạn', "you"), body: b, created_at: new Date().toISOString() }, ...x]);

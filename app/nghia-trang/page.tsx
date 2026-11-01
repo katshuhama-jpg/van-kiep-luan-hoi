@@ -10,6 +10,7 @@ import { RelChips } from '@/components/GiangHo';
 import { SOCIAL, type SocialState } from '@/lib/game/social';
 import { condolenceAdd, condolenceCounts, loadSocial } from '@/lib/social';
 import CondoPresets from '@/components/CondoPresets';
+import { graveInfo } from '@/lib/game/vanBia';
 import type { Player } from '@/lib/auth';
 import { cosOfGrave, endingOfGrave } from '@/lib/game/collect';
 import { RARE_COLOR } from '@/lib/game/endings';
@@ -95,6 +96,7 @@ function Tomb({
       {writing && (
         <CondoPresets
           seed={m.id}
+          grave={graveInfo({ ...m, ending: end.name })}
           onPick={(b) => {
             onCondole(b);
             setWriting(false);

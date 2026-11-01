@@ -2,7 +2,7 @@ import { sealLv } from './forge';
 import { applyProphecy, checkNewbieGoal, newbieGoal, omenIs } from './hook';
 import { loreDone, lore2Count, quyNhatDone } from './lore';
 import { ksBreak, ksOf, ksPhuc } from './luanHoi';
-import { CHAN_TRUYEN_BREAK, leaveSect, promoteByRealm, rankOf, sectConflict, sectCultMul } from './sect';
+import { CHAN_TRUYEN_BREAK, leaveSect, promoteByRealm, rankOf, sectConflict, sectCultMul, sectSide } from './sect';
 import {
   ITEMS,
   fxText,
@@ -875,6 +875,11 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
   if (needPath(c)) return buildPending(c, pathEvent(c));
 
   if (opts.noEvents || opts.closed) return null;
+  // 4.1.0 Q7 (#13): đệ tử chính phái vừa theo ma đạo (hay đạo tâm sa đọa) thì tông môn phản ứng ngay, không đợi sự kiện ngẫu nhiên
+  if (!c.cosmos && c.sect && !c.sectHide && sectSide(c) === 'chinh' && sectConflict(c)) {
+    const pm = EVENTS.find((x) => x.id === 'phan_mon');
+    if (pm && eligible(c, pm)) return buildPending(c, pm);
+  }
   const chance = age < 6 ? 0.3 : focus === 'du_ngoan' ? 0.6 : 0.3;
   if (rnd() < chance) {
     const e = pickEvent(c);

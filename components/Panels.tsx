@@ -1,5 +1,6 @@
 'use client';
 
+import { epitaphIdeas } from '@/lib/game/vanBia';
 import { VanKiepRow } from './VanKiep';
 import SauChungDao from './SauChungDao';
 import Link from 'next/link';
@@ -1119,6 +1120,7 @@ export function DeathSheet({
   const near = nearEndings(c, meta.endings);
   const q = evalQuests(meta, c, isNew);
   const [text, setText] = useState('');
+  const [epiIdeas] = useState(() => epitaphIdeas(c));
   const [note, setNote] = useState('');
   const [bury, setBury] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -1247,6 +1249,14 @@ export function DeathSheet({
         <span>{tr("Khắc lên bia mộ (không bắt buộc)", "Carve on your tombstone (optional)")}</span>
         <input value={text} maxLength={120} onChange={(e) => setText(e.target.value)} placeholder={tr("vd: Kiếp này không phụ kiếm trong tay", "e.g. In this life I never failed the sword in my hand")} />
       </label>
+      {/* 4.1.0 Q6: gợi ý 3 câu văn bia từ khoảnh khắc lớn nhất kiếp, bấm là điền */}
+      <span className="condo-presets epi-ideas" role="group" aria-label={tr('Gợi ý văn bia', 'Epitaph ideas')}>
+        {epiIdeas.map((t) => (
+          <button key={t} type="button" className={`condo-chip ${text === t ? 'on' : ''}`} onClick={() => setText(t)}>
+            {t}
+          </button>
+        ))}
+      </span>
       {!c.ascended && c.endTag !== 'xuyen_khong' && (
         <>
           <label className="toggle" style={{ marginTop: 8 }}>

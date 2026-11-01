@@ -347,5 +347,19 @@ export function cosmosCause(c: Character, cause: string): string {
 
 /** Không cha không mẹ: cô nhi, trẻ bị bỏ ở chùa, mệnh thiên sát cô tinh. Tuổi thơ không có cảnh cha mẹ, ông bà. */
 export const isOrphan = (c: Character) => c.originId === 'co_nhi' || c.originId === 'chua' || !!c.gifts?.includes('g_co_tinh');
+/** 4.1.0 Q7 (#4): thứ tự đồ đệ thật trong kiếp (đầu tiên, thứ hai, ...) */
+export function thuTuDeTu(n: number): string {
+  const SO = ['', tr('đầu tiên', 'first'), tr('thứ hai', 'second'), tr('thứ ba', 'third'), tr('thứ tư', 'fourth'), tr('thứ năm', 'fifth'), tr('thứ sáu', 'sixth'), tr('thứ bảy', 'seventh'), tr('thứ tám', 'eighth'), tr('thứ chín', 'ninth'), tr('thứ mười', 'tenth')];
+  return SO[n] ?? tr(`thứ ${n}`, `${n}th`);
+}
+/** Nhận thêm một đồ đệ, trả về thứ tự của đồ đệ đó */
+export function nhanDeTu(c: Character): number {
+  const n = (c.qf?.deTu ?? 0) + 1;
+  c.qf = { ...(c.qf ?? {}), deTu: n };
+  return n;
+}
+/** 4.1.0 Q7: người đã nuôi trẻ mồ côi lớn lên, thay cho cha mẹ trong sự kiện lúc trưởng thành */
+export const nguoiNuoi = (c: Character) =>
+  c.originId === 'chua' ? tr('sư thầy chùa Vân Tịch', 'the monk of Yun Xi Temple') : c.originId === 'co_nhi' ? tr('lão ăn mày', 'the old beggar') : tr('bà hàng xóm', 'the old neighbor woman');
 /** Câu chữ nhắc tới cha mẹ, ông bà ruột */
 export const FAMILY_RE = /(^|[^\p{L}])(mẹ|cha|ông nội|bà nội|ông ngoại|bà ngoại|ông bà|cha mẹ|bà ru|nhà mình|anh họ|mother|father|mom|dad|grandma|grandpa|grandmother|grandfather|parents|cousin)(?![\p{L}])/iu;

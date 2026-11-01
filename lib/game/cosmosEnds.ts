@@ -1,4 +1,4 @@
-import { addCult, dao, fatal, reward, stat } from './helpers';
+import { addCult, dao, fatal, isOrphan, nguoiNuoi, reward, stat } from './helpers';
 import type { Character, EffectCtx, GameEvent } from './types';
 import { tr } from '../i18n';
 
@@ -326,8 +326,10 @@ export const COSMOS_END_EVENTS: GameEvent[] = [
     weight: 1,
     when: (c) => fated(c, 'end_tuoi_tho', FATE),
     title: tr('Khe nứt về thuở nhỏ', "A rift back to childhood"),
-    text: () =>
-      tr('Qua một khe nứt thời gian, bạn thấy chính mình lúc bảy tuổi đang chơi trước sân nhà, mẹ gọi vào ăn cơm. Khe nứt đủ rộng để bước qua. Bước qua rồi thì không quay lại được.', "Through a rift in time you see yourself at seven, playing in the front yard while your mother calls you in for dinner. The rift is wide enough to step through. Once through, there is no coming back."),
+    text: (c) =>
+      isOrphan(c)
+        ? tr(`Qua một khe nứt thời gian, bạn thấy chính mình lúc bảy tuổi ngồi co ro trước hiên, ${nguoiNuoi(c)} gọi vào ăn cơm. Khe nứt đủ rộng để bước qua. Bước qua rồi thì không quay lại được.`, `Through a rift in time you see yourself at seven, huddled on the porch while ${nguoiNuoi(c)} calls you in for dinner. The rift is wide enough to step through. Once through, there is no coming back.`)
+        : tr('Qua một khe nứt thời gian, bạn thấy chính mình lúc bảy tuổi đang chơi trước sân nhà, mẹ gọi vào ăn cơm. Khe nứt đủ rộng để bước qua. Bước qua rồi thì không quay lại được.', "Through a rift in time you see yourself at seven, playing in the front yard while your mother calls you in for dinner. The rift is wide enough to step through. Once through, there is no coming back."),
     choices: () => [
       {
         label: tr('Bước qua, làm lại đứa trẻ ấy', "Step through and be that child again"),
@@ -335,6 +337,7 @@ export const COSMOS_END_EVENTS: GameEvent[] = [
         lean: 'trung',
         run: (c, ctx) => {
           endWith(c, ctx, 've_tuoi_tho', tr('Bước qua khe nứt thời gian, trở về làm đứa trẻ bảy tuổi trước sân nhà', "Stepped through a rift in time and returned to being a seven-year-old in the front yard"), tr('VỀ TUỔI THƠ', "BACK TO CHILDHOOD"));
+          if (isOrphan(c)) return tr(`Bạn bước qua. Tu vi, thần thông, vạn năm ký ức rơi rụng từng thứ một. Khi ${nguoiNuoi(c)} gọi lần nữa, bạn chạy vào nhà, không còn nhớ mình từng là ai. Lần này, bạn không đi tu tiên.`, `You step through. Cultivation, divine powers, ten thousand years of memory fall away one by one. When ${nguoiNuoi(c)} calls again, you run inside, no longer remembering who you once were. This time, you don't take up cultivation.`);
           return tr('Bạn bước qua. Tu vi, thần thông, vạn năm ký ức rơi rụng từng thứ một. Khi mẹ gọi lần nữa, bạn chạy vào nhà, không còn nhớ mình từng là ai. Lần này, bạn không đi tu tiên.', "You step through. Cultivation, divine powers, ten thousand years of memory fall away one by one. When your mother calls again, you run inside, no longer remembering who you once were. This time, you don't take up cultivation.");
         },
       },

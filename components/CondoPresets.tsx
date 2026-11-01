@@ -1,5 +1,6 @@
 'use client';
 import { tr } from '@/lib/i18n';
+import { condoLines, type GraveInfo } from '@/lib/game/vanBia';
 
 /** Lời viếng có sẵn: bấm một lần là gửi, khỏi phải gõ */
 const PRESETS = [
@@ -13,15 +14,17 @@ const PRESETS = [
   tr('Giang hồ còn đó, chỉ thiếu một người.', "The jianghu is still here, just one person short."),
 ];
 
-export function condoPick(seed: number | string, n = 3): string[] {
+export function condoPick(seed: number | string, n = 3, grave?: GraveInfo | null): string[] {
+  // 4.1.0 Q6: có dữ liệu mộ thì lời viếng nhắc tên, cảnh giới, kết cục, kẻ giết, đạo lữ
+  if (grave?.name) return condoLines(grave, seed, n);
   const k = Math.abs(Number(String(seed).replace(/\D/g, '').slice(-6)) || 7);
   return Array.from({ length: n }, (_, i) => PRESETS[(k + i * 3) % PRESETS.length]);
 }
 
-export default function CondoPresets({ seed, onPick }: { seed: number | string; onPick: (body: string) => void }) {
+export default function CondoPresets({ seed, onPick, grave }: { seed: number | string; onPick: (body: string) => void; grave?: GraveInfo | null }) {
   return (
     <span className="condo-presets" role="group" aria-label={tr("Lời viếng có sẵn", "Preset condolences")}>
-      {condoPick(seed).map((t) => (
+      {condoPick(seed, 3, grave).map((t) => (
         <button key={t} type="button" className="condo-chip" onClick={() => onPick(t)}>
           {t}
         </button>

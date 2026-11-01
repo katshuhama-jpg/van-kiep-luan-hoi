@@ -1,5 +1,5 @@
 import { DAO_LU, ITEMS, PATHS } from './data';
-import { addCult, addLife, addPill, addWound, atAge, bullyLoss, dao, fatal, giveItem, hasItem, hurt, isOrphan, luck, markDeath, money, pick, reward, sample, stat, takeStones, usePill } from './helpers';
+import { addCult, addLife, addPill, addWound, atAge, bullyLoss, dao, fatal, giveItem, hasItem, hurt, isOrphan, nguoiNuoi, nhanDeTu, thuTuDeTu, luck, markDeath, money, pick, reward, sample, stat, takeStones, usePill } from './helpers';
 import type { Character, Choice, EffectCtx, GameEvent } from './types';
 import { eventDuel } from './duel';
 import { HH_EVENTS } from './hopHoan';
@@ -99,6 +99,9 @@ const hutCongEvent: GameEvent = {
     ];
   },
 };
+
+/** viết hoa chữ đầu (dùng cho tên người nuôi trẻ mồ côi đứng đầu câu) */
+const cap = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 
 export const EVENTS: GameEvent[] = [
   // ---------------- Tuổi thơ: mỗi người một bộ lựa chọn khác nhau ----------------
@@ -1683,10 +1686,8 @@ export const EVENTS: GameEvent[] = [
           dao(c, 5);
           if (c.realm >= 3) {
             stat(c, 'tamCanh', 10);
-            const n = (c.qf?.deTu ?? 0) + 1;
-            c.qf = { ...(c.qf ?? {}), deTu: n };
-            const SO = ['', tr('đầu tiên', "first"), tr('thứ hai', "second"), tr('thứ ba', "third"), tr('thứ tư', "fourth"), tr('thứ năm', "fifth"), tr('thứ sáu', "sixth"), tr('thứ bảy', "seventh"), tr('thứ tám', "eighth"), tr('thứ chín', "ninth"), tr('thứ mười', "tenth")];
-            return n === 1 ? tr('Đứa bé có linh căn không tệ. Bạn có đồ đệ đầu tiên.', "The child has a decent spiritual root. You have your first disciple.") : tr(`Đứa bé có linh căn không tệ. Bạn nhận nó làm đồ đệ ${SO[n] ?? tr(`thứ ${n}`, `${n}th`)}, môn hạ ngày một đông.`, `The child has a decent spiritual root. You take them as your ${SO[n] ?? tr(`thứ ${n}`, `${n}th`)} disciple - your following grows by the day.`);
+            const n = nhanDeTu(c);
+            return n === 1 ? tr('Đứa bé có linh căn không tệ. Bạn có đồ đệ đầu tiên.', "The child has a decent spiritual root. You have your first disciple.") : tr(`Đứa bé có linh căn không tệ. Bạn nhận nó làm đồ đệ ${thuTuDeTu(n)}, môn hạ ngày một đông.`, `The child has a decent spiritual root. You take them as your ${thuTuDeTu(n)} disciple - your following grows by the day.`);
           }
           return tr('Đứa bé cầm bánh, đi theo hướng bạn chỉ.', "The child takes the cake and heads the way you pointed.");
         },
@@ -2041,7 +2042,8 @@ export const EVENTS: GameEvent[] = [
     once: true,
     weight: 15,
     title: tr('Tin nhà', "News from home"),
-    text: () => tr('Thư nhà gửi đến: cha mẹ già yếu, mong được gặp bạn lần cuối.', "A letter from home: your parents are old and frail, and hope to see you one last time."),
+    // 4.1.0 Q7: trẻ mồ côi, thiên sát cô tinh không còn cha mẹ, thư là của người đã nuôi mình
+    text: (c) => (isOrphan(c) ? tr(`Thư từ quê cũ gửi đến: ${nguoiNuoi(c)} nuôi bạn ngày trước nay đã già yếu, mong được gặp bạn lần cuối.`, `A letter from your old home: ${nguoiNuoi(c)} who raised you is now old and frail, and hopes to see you one last time.`) : tr('Thư nhà gửi đến: cha mẹ già yếu, mong được gặp bạn lần cuối.', "A letter from home: your parents are old and frail, and hope to see you one last time.")),
     choices: () => [
       {
         label: tr('Về ngay, ở bên tới phút cuối', "Go home now, stay to the end"),
@@ -2050,6 +2052,7 @@ export const EVENTS: GameEvent[] = [
           dao(c, 8);
           stat(c, 'tamCanh', 10);
           stat(c, 'tamMa', -10);
+          if (isOrphan(c)) return tr(`Bạn về kịp. ${cap(nguoiNuoi(c))} nắm tay bạn, mỉm cười rồi nhắm mắt.`, `You make it in time. ${cap(nguoiNuoi(c))} holds your hand, smiles, and closes their eyes.`);
           return tr('Bạn về kịp. Mẹ nắm tay bạn, mỉm cười rồi nhắm mắt.', "You make it in time. Mother holds your hand, smiles, and closes her eyes.");
         },
       },
@@ -2060,6 +2063,7 @@ export const EVENTS: GameEvent[] = [
         run: (c) => {
           money(c, -300);
           dao(c, 5);
+          if (isOrphan(c)) return tr(`${cap(nguoiNuoi(c))} sống thêm mười năm nữa, nhưng không gặp lại bạn.`, `${cap(nguoiNuoi(c))} lives ten more years, but never sees you again.`);
           return tr('Cha mẹ sống thêm mười năm nữa, nhưng không gặp lại bạn.', "Your parents live ten more years, but never see you again.");
         },
       },
@@ -2069,6 +2073,7 @@ export const EVENTS: GameEvent[] = [
         run: (c) => {
           addCult(c, reward(c, 0.3));
           stat(c, 'tamMa', 12);
+          if (isOrphan(c)) return tr(`Khi bạn xuất quan, mộ ${nguoiNuoi(c)} đã xanh cỏ.`, `When you emerge from seclusion, grass has grown over the grave of ${nguoiNuoi(c)}.`);
           return tr('Khi bạn xuất quan, mộ cha mẹ đã xanh cỏ.', "When you emerge from seclusion, grass has grown over your parents' graves.");
         },
       },

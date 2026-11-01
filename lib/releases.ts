@@ -18,6 +18,53 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '4.0.3',
+    date: '02/11/2026',
+    title: tr('Thọ Nguyên Giữ Vững, Lời Viếng Có Tên', 'Lifespan Holds, Condolences Know Your Name'),
+    lead: tr('Đan dược thêm thọ không còn bị đột phá nuốt mất. Lời viếng ở Nghĩa trang nay nói đúng về người đã khuất, và Lôi đài cho đổi kiếp ra đài giữa các trận.', 'Lifespan from pills is no longer swallowed by a breakthrough. Condolences in the Cemetery now speak of the departed by name, and the Arena lets you swap which life you send in between matches.'),
+    asked: [
+      { who: '@ckthaovu', short: tr('Thọ thêm từ đan không bị cắt khi đột phá', 'Pill lifespan no longer cut by breakthroughs'), text: tr('Thọ nguyên thêm từ đan, đào, kỳ ngộ nay được giữ khi đột phá đại cảnh giới. Thử 300 lần đột phá Luyện Hư với thọ 308: trước đây lần nào cũng tụt về 300, nay lần nào cũng giữ được.', 'Lifespan added by pills, peaches and encounters is now kept through a major breakthrough. In 300 test breakthroughs into Void Refinement at lifespan 308, it used to drop back to 300 every time; now it holds every time.') },
+    ],
+    more: [
+      tr('Lời viếng nhắc tên, cảnh giới, kẻ giết, đạo lữ', 'Condolences name the realm, the killer, the companion'),
+      tr('Màn lập bia gợi ý 3 câu văn bia', 'The tombstone screen suggests 3 epitaphs'),
+      tr('Lôi đài: đổi kiếp ra đài giữa các trận', 'Arena: swap your fighter between matches'),
+      tr('Cân bằng lại nhịp chơi và chỉ số game', 'Rebalanced game pacing and stats'),
+    ],
+    groups: [
+      {
+        h: tr('Thọ nguyên', 'Lifespan'),
+        hot: true,
+        items: [
+          tr('Năm thọ thêm từ đan, đào tiên, kỳ ngộ không còn bị trần thọ cắt khi đột phá đại cảnh giới. Nguyên Anh thọ 308 nhờ đan thì lên Luyện Hư vẫn còn ít nhất 308.', 'Years added by pills, immortal peaches and encounters are no longer cut by the lifespan cap on a major breakthrough. A Nascent Soul at 308 thanks to pills keeps at least 308 on reaching Void Refinement.'),
+        ],
+      },
+      {
+        h: tr('Lời viếng, văn bia', 'Condolences and epitaphs'),
+        items: [
+          tr('Câu viếng mẫu ở Nghĩa trang và trong hồi ký nay viết riêng cho từng ngôi mộ: con đường, tên, cảnh giới, tuổi, kẻ đã giết, đạo lữ, kết cục. Ví dụ: "Kiếm tu Cố Thanh Vân ngã dưới tay Huyết Ma ở Trúc Cơ, năm 34 tuổi. Mong kiếp sau gặp lại trên lôi đài."', 'Preset condolences in the Cemetery and in memoirs are now written for each grave: path, name, realm, age, killer, companion, ending. For example: "Sword Cultivator Gu Qingyun fell to Blood Demon at Foundation, aged 34. May we meet again in the arena next life."'),
+          tr('Màn lập bia gợi ý 3 câu văn bia lấy từ khoảnh khắc lớn nhất kiếp và cái chết, bấm là điền, sửa thêm tùy ý.', 'The tombstone screen suggests 3 epitaphs drawn from the biggest moment of your life and your death. Tap to fill in, then edit as you like.'),
+        ],
+      },
+      {
+        h: tr('Thế giới', 'The world'),
+        items: [
+          tr('Đệ tử chính phái vừa theo ma đạo, hay đạo tâm sa đọa, thì tông môn phản ứng ngay năm đó: tự xin rời, giấu thân phận hoặc phản sư, không còn ở lại như không có chuyện gì.', 'A righteous sect disciple who turns to the demonic path, or whose Dao heart falls, now faces the sect that very year: leave, hide it, or betray the master. No more staying on as if nothing happened.'),
+          tr('Cô nhi, trẻ bị bỏ ở chùa và người mang mệnh thiên sát cô tinh lớn lên rồi cũng không còn thư cha mẹ gửi: thư là của người đã nuôi mình (lão ăn mày, sư thầy, bà hàng xóm).', 'Orphans, temple foundlings and those born under the Lone Star no longer receive letters from parents as adults: the letter comes from whoever raised them (the old beggar, the monk, the neighbor woman).'),
+          tr('Nhận đồ đệ từ đứa trẻ quỳ trước cửa cũng được đếm thứ tự thật: đầu tiên, thứ hai, thứ ba.', 'Disciples taken in from the child kneeling at your door are counted in real order: first, second, third.'),
+        ],
+      },
+      {
+        h: tr('Lôi đài', 'Arena'),
+        items: [tr('Nút "⇄ Đổi kiếp" ở sảnh Lôi đài: chọn kiếp ra đài trong 12 kiếp mạnh nhất, đổi qua lại bất cứ lúc nào giữa các trận.', 'The "⇄ Change life" button in the Arena lobby: pick your fighter from your 12 strongest lives, and swap any time between matches.')],
+      },
+      {
+        h: tr('Cân bằng', 'Balance'),
+        items: [tr('Cân bằng lại nhịp chơi và chỉ số game.', 'Rebalanced game pacing and stats.')],
+      },
+    ],
+  },
+  {
     v: '4.0.2',
     date: '31/10/2026',
     title: tr('Tích Cốc, Thiên Đạo Siết Tu Vi', 'Inedia, and the Heavens Tighten Cultivation'),

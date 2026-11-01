@@ -1571,6 +1571,7 @@ export default function PlayPage() {
         ending: endingOf(c).id,
         realm: c.realm,
         killer: c.killer ?? null,
+        partner: c.partner ?? null,
         cosmos: c.cosmos ?? null,
         kiepSo: c.kiepSo ?? 0,
       },

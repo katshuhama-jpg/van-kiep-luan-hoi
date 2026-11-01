@@ -1,7 +1,7 @@
 import { ITEMS, REALMS } from './data';
 import { joinSect } from './sect';
 import { hasGift } from './gacha';
-import { addCult, addLife, addPill, dao, fatal, giveItem, hurt, luck, money, reward, stat } from './helpers';
+import { addCult, addLife, addPill, dao, fatal, giveItem, hurt, luck, money, nhanDeTu, reward, stat, thuTuDeTu } from './helpers';
 import type { Character, Choice, EffectCtx, GameEvent, Grave } from './types';
 import { tr } from '../i18n';
 
@@ -659,8 +659,8 @@ export const EVENTS2: GameEvent[] = [
         run: (c) => {
           setArc(c, 'de_tu', 1);
           stat(c, 'tamCanh', 5);
-          c.qf = { ...(c.qf ?? {}), deTu: (c.qf?.deTu ?? 0) + 1 };
-          return tr('Bạn khoác áo cho nó. Nó lạy chín lạy, trán chảy máu.', "You wrap your coat around the child. They kowtow nine times until their forehead bleeds.");
+          const n = nhanDeTu(c);
+          return tr(`Bạn khoác áo cho nó. Nó lạy chín lạy, trán chảy máu. Từ nay bạn có đồ đệ ${thuTuDeTu(n)}.`, `You wrap your coat around the child. They kowtow nine times until their forehead bleeds. You now have your ${thuTuDeTu(n)} disciple.`);
         },
       },
       {

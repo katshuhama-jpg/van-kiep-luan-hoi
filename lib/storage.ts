@@ -35,6 +35,8 @@ export interface Memorial {
   wealth?: number | null;
   ending?: string | null; // mã kết cục (mộ mới)
   end_tag?: string | null;
+  killer?: string | null; // 4.1.0 Q6: kẻ giết, đạo lữ (lấy từ look) cho lời viếng
+  partner?: string | null;
 }
 
 const K = { save: 'vkl.save', meta: 'vkl.meta', lives: 'vkl.lives', pending: 'vkl.pendingGraves' };
@@ -210,7 +212,7 @@ export function pendingGraves(): GraveIn[] {
   return readLocal<GraveIn[]>(K.pending) ?? [];
 }
 
-const COLS = 'id, player_name, char_name, life_no, age, realm, path, dao_tam, cause, epitaph, ascended, incense, created_at, realm_no, wealth, ending:look->>ending, end_tag:look->>endTag';
+const COLS = 'id, player_name, char_name, life_no, age, realm, path, dao_tam, cause, epitaph, ascended, incense, created_at, realm_no, wealth, ending:look->>ending, end_tag:look->>endTag, killer:look->>killer, partner:look->>partner';
 
 export async function listMemorials(user: Player | null): Promise<{ all: Memorial[]; mine: Memorial[] }> {
   const local = readLocal<Memorial[]>(K.lives) ?? [];
