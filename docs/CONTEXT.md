@@ -617,6 +617,7 @@ Mục tiêu: chết nhiều không còn là lợi thế; người chơi lâu có
 ## Quy tắc hình ảnh (Tyler, 27/10)
 - Nhân vật, quái, thú: chỉ dùng LPC (public/lpc, lib/game/monsterLook.ts) hoặc nguồn pixel art có sẵn. Không tự vẽ SVG pixel bằng code nữa.
 - Quái chưa có ngoại hình LPC thì đang rơi về hình SVG cũ trong components/Battle.tsx.
+- **Sửa ảnh có sẵn thì phải đổi tên file** (Tyler chốt 1/11): ảnh trong `public/lpc`, `public/px`, `public/icons`, `public/bg` được trình duyệt giữ 7 ngày (`next.config.mjs`), nên vẽ lại mà giữ tên cũ thì người chơi cũ thấy ảnh cũ tới 7 ngày. Đổi tên (vd `dia-phu-2.png`) rồi sửa mọi chỗ trỏ tới, có thể xóa file cũ. Ảnh mới tên mới thì không sao. Lý do: 1/11/2026 trang bị Vercel tạm dừng gần 5 tiếng (2h20-7h13) vì vượt 1M CDN Requests của gói Hobby, gần như toàn là ảnh tĩnh trả `max-age=0`; Tyler đã lên Pro.
 
 ## Trận lôi đài kiểu máu (27/10)
 - lib/game/arenaFight.ts: 100 máu (Nhất chiêu 50, Ngũ chiến 150), mỗi lượt chọn thế + 1 trong 3 ấn ngũ hành; nội lực 5 ô thì tung tuyệt kỹ theo con đường (ULT_NAME); đối thủ đầy nội lực thì báo trước, người chơi đỡ bằng nhịp (perfect/good/miss). Tối đa 14 lượt, hết lượt thì bên còn nhiều % máu hơn thắng.
