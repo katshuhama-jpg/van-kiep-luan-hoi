@@ -12,6 +12,7 @@ import { CURRENT_VERSION } from '@/lib/releases';
 import LoiDaiButton from '@/components/LoiDaiButton';
 import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
+import { FB_PAGE } from '@/lib/links';
 import { ContinueBar, LiveStrip, NewGraves, NewsToast, useLive } from '@/components/LiveWorld';
 import { HomeVanKiep } from '@/components/TangKiep';
 
@@ -67,6 +68,10 @@ export default function Home() {
           {tr('Mời tác giả chén trà', 'Buy the author a tea')}
           <small>{tr('game miễn phí, không quảng cáo', 'free, no ads')}</small>
         </Link>
+        <a href={FB_PAGE} target="_blank" rel="noopener noreferrer" className="btn home-fb" style={link} onClick={() => track('fb_open', { from: 'home' })}>
+          {tr('Theo dõi trang Facebook', 'Follow us on Facebook')}
+          <small>{tr('báo bản mới, sự kiện', 'updates and events')}</small>
+        </a>
         {ready && enabled && !user && (
           <Link href="/dang-nhap" className="btn btn-dark" style={link}>
             {tr('Đăng nhập / Đăng ký', 'Log in / Sign up')}

@@ -3,6 +3,7 @@
 import { VanKiepRow } from './VanKiep';
 import SauChungDao from './SauChungDao';
 import Link from 'next/link';
+import { FB_PAGE } from '@/lib/links';
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { ENDINGS, RARE_COLOR, endingOf } from '@/lib/game/endings';
 import { GachaPanel, ShareCard } from './Extras';
@@ -1282,6 +1283,9 @@ export function DeathSheet({
         <ShareCard c={c} ending={ending} epitaph={text.trim()} isNew={isNew} />
       </div>
       <ArenaNudge />
+      <a className="tra-nudge fb-nudge" href={FB_PAGE} target="_blank" rel="noopener noreferrer" onClick={() => track('fb_open', { from: 'death' })}>
+        {tr("Theo dõi trang Facebook để biết bản mới, sự kiện ›", "Follow our Facebook page for updates and events ›")}
+      </a>
       {((meta.lives + 1) % 10 === 0 || c.ascended) && (
         <a className="tra-nudge" href="/moi-tra" onClick={() => track('tra_open', { from: 'death' })}>
           

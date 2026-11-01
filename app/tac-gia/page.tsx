@@ -3,6 +3,8 @@
 import BackButton from '@/components/BackButton';
 import credits from '@/lib/lpc-credits.json';
 import { tr } from '@/lib/i18n';
+import { FB_PAGE } from '@/lib/links';
+import { track } from '@/lib/track';
 
 export default function TacGia() {
   return (
@@ -17,6 +19,13 @@ export default function TacGia() {
           <BackButton fallback="/" />
         </div>
       </header>
+      <section className="panel">
+        <h2>{tr("Theo dõi game", "Follow the game")}</h2>
+        <p style={{ marginTop: 0 }}>{tr("Bản cập nhật, sự kiện và kiếp hay của đạo hữu được báo trên trang Facebook của game.", "Updates, events and the best lives of fellow Daoists are posted on the game's Facebook page.")}</p>
+        <a href={FB_PAGE} target="_blank" rel="noopener noreferrer" className="btn home-fb" onClick={() => track('fb_open', { from: 'tac_gia' })}>
+          {tr("Theo dõi trang Facebook", "Follow us on Facebook")}
+        </a>
+      </section>
       <section className="panel">
         <h2>{tr("Nhân vật", "Characters")}</h2>
         <p style={{ marginTop: 0 }}>
