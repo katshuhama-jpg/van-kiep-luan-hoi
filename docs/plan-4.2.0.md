@@ -41,4 +41,6 @@ Nguyên tắc: không đưa cái chết vô lý trở lại. Nguy hiểm dời v
 - #26 (shizun), #30 (madaochiton): linh thú có lực chiến, tiến giai; Ngự Thú Tông / Vạn Thú Tông. #26 phần kẻ thù đã xong ở 4.0.1.
 - #30: Hệ Thống buff vàng xứng tầm hơn (đang chỉ cho Tụ Khí Đan).
 - #24 (phần Tình duyên), #35 (gái đẹp sau Chứng Đạo): chờ Tyler nghĩ về Tình duyên.
-- #27, #31, #36: nội dung, trang bị sau Chứng Đạo (gần T1).
+- #27, #31, #36, #48: nội dung, trang bị sau Chứng Đạo (gần T1).
+- #50 (bachct): bùa rèn đồ không mất đồ, tăng tỉ lệ rèn thành công (phần lag đã xong 1/11).
+- #49 (vickary): Luyện Khí bị kẻ thù Huyền Tiên đến báo thù (oan gia cảnh giới quá cao so với mình).
