@@ -890,7 +890,7 @@ export const EVENTS: GameEvent[] = [
     when: (c) => c.originId !== 'yeu',
     title: tr('Tông môn tuyển đệ tử', "Sect recruitment"),
     text: () => tr('Tiên nhân cưỡi hạc hạ xuống trấn, nói rằng ba năm mới mở cửa thu nhận đệ tử một lần. Ma môn cũng lén cho người tới.', "An immortal descends on the town riding a crane, announcing the sect opens its gates to disciples only once every three years. A demonic sect has quietly sent people too."),
-    choices: () => [
+    choices: (c0) => [
       {
         label: tr('Thử vào Thanh Vân Tông', "Try for Qingyun Sect"),
         hint: tr('chính phái, cần linh căn tốt', "righteous, needs a good spiritual root"),
@@ -950,12 +950,14 @@ export const EVENTS: GameEvent[] = [
         },
       },
       {
-        label: tr('Ở nhà phụng dưỡng cha mẹ', "Stay home and care for your parents"),
+        // 4.0.3: trẻ mồ côi không có cha mẹ để phụng dưỡng, ở lại trấn làm thuê (trước đây câu này làm cả sự kiện bị lọc mất với trẻ mồ côi)
+        label: isOrphan(c0) ? tr('Ở lại trấn làm thuê', "Stay in town and work for hire") : tr('Ở nhà phụng dưỡng cha mẹ', "Stay home and care for your parents"),
         lean: 'chinh',
         run: (c) => {
           dao(c, 6);
           money(c, 40);
           stat(c, 'tamCanh', 8);
+          if (isOrphan(c)) return tr(`Bạn chọn ở lại trấn, gánh nước thuê, chẻ củi mướn. ${cap(nguoiNuoi(c))} xoa đầu bạn, bảo thế cũng là một con đường.`, `You choose to stay in town, hauling water and chopping wood for hire. ${cap(nguoiNuoi(c))} pats your head and says that is a road too.`);
           return tr('Bạn chọn ở lại. Mẹ bạn khóc vì mừng.', "You choose to stay. Your mother cries with joy.");
         },
       },

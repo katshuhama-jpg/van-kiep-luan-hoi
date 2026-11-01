@@ -51,6 +51,7 @@ export const RELEASES: Release[] = [
         items: [
           tr('Đệ tử chính phái vừa theo ma đạo, hay đạo tâm sa đọa, thì tông môn phản ứng ngay năm đó: tự xin rời, giấu thân phận hoặc phản sư, không còn ở lại như không có chuyện gì.', 'A righteous sect disciple who turns to the demonic path, or whose Dao heart falls, now faces the sect that very year: leave, hide it, or betray the master. No more staying on as if nothing happened.'),
           tr('Cô nhi, trẻ bị bỏ ở chùa và người mang mệnh thiên sát cô tinh lớn lên rồi cũng không còn thư cha mẹ gửi: thư là của người đã nuôi mình (lão ăn mày, sư thầy, bà hàng xóm).', 'Orphans, temple foundlings and those born under the Lone Star no longer receive letters from parents as adults: the letter comes from whoever raised them (the old beggar, the monk, the neighbor woman).'),
+          tr('Trẻ mồ côi (cô nhi, trẻ chùa, thiên sát cô tinh) trước nay không bao giờ gặp ngày tông môn tuyển đệ tử. Nay các em cũng được thử vào Thanh Vân Tông, Huyết Sát Môn, Thiên Cơ Các như mọi người, hoặc ở lại trấn làm thuê.', 'Orphans (street orphans, temple foundlings, Lone Star children) never used to see the sect recruitment day. Now they can try for Qingyun Sect, Xuesha Sect or Tianji Pavilion like everyone else, or stay in town and work for hire.'),
           tr('Nhận đồ đệ từ đứa trẻ quỳ trước cửa cũng được đếm thứ tự thật: đầu tiên, thứ hai, thứ ba.', 'Disciples taken in from the child kneeling at your door are counted in real order: first, second, third.'),
         ],
       },
