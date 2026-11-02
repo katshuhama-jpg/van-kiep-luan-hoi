@@ -1,4 +1,5 @@
 import { DAO_LU, ITEMS, PATHS } from './data';
+import { DI_THU_EVENT, THAN_THU_EVENT } from './linhThu';
 import { addCult, addLife, addPill, addWound, atAge, bullyLoss, dao, fatal, giveItem, hasItem, hurt, isOrphan, nguoiNuoi, nhanDeTu, thuTuDeTu, luck, markDeath, money, pick, reward, sample, stat, takeStones, usePill } from './helpers';
 import type { Character, Choice, EffectCtx, GameEvent } from './types';
 import { eventDuel } from './duel';
@@ -3002,6 +3003,8 @@ export const EVENTS: GameEvent[] = [
   ...CHILD_EVENTS,
   PET_EVENT,
   ...PET_STORIES,
+  DI_THU_EVENT,
+  THAN_THU_EVENT,
   hutCongEvent,
 ];
 

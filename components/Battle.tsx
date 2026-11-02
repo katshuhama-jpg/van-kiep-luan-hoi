@@ -7,8 +7,11 @@ import { ELEMENTS, type ElemRel } from '@/lib/game/nguhanh';
 import type { Element } from '@/lib/game/types';
 import Sprite from './Sprite';
 import MonsterLpc from './MonsterLpc';
+import { PixelFx, fxVuot } from './PixelFx';
 import { MONSTER_LOOK } from '@/lib/game/monsterLook';
 import { tr } from '@/lib/i18n';
+
+const FX_VUOT = fxVuot();
 
 type R = [number, number, number, number, string];
 
@@ -230,7 +233,7 @@ export interface BattleView {
   mHp: number;
   mMax: number;
   phase: 'fight' | 'rest';
-  last: { id: number; side: 'p' | 'm'; dmg: number; crit: boolean; text?: string; skill?: string; palm?: boolean; qi?: string; tag?: string }[];
+  last: { id: number; side: 'p' | 'm'; dmg: number; crit: boolean; text?: string; skill?: string; palm?: boolean; qi?: string; tag?: string; pet?: boolean }[];
   outcome?: 'win' | 'lose' | 'flee';
   kills: number;
   /** quái chặn đường: đếm hiệp */
@@ -265,6 +268,8 @@ export function BattleOverlay({ b }: { b: BattleView }) {
   const lastHit = b.last[b.last.length - 1];
   // đòn gần nhất của mình (quái thường đánh trả ngay sau trong cùng lượt)
   const lastP = [...b.last].reverse().find((h) => h.side === 'p');
+  // 4.2.0: linh thú vừa ra đòn (quái thường đánh trả ngay trong cùng lượt nên xét 2 đòn cuối)
+  const petHit = b.last.slice(-2).find((h) => h.pet);
   return (
     <div className="battle" aria-live="off">
       <div className="hpbox p">
@@ -333,6 +338,11 @@ export function BattleOverlay({ b }: { b: BattleView }) {
       {lastHit?.side === 'm' && lastHit.palm && (
         <span key={`fs${lastHit.id}`} className="chuong foe" style={{ ['--qi' as string]: lastHit.qi ?? '#ff6a5a' } as CSSProperties} aria-hidden="true">
           <i />
+        </span>
+      )}
+      {petHit && (
+        <span key={`pv${petHit.id}`} className="pet-claw" aria-hidden="true">
+          <PixelFx spec={FX_VUOT} scale={3} dur={0.3} />
         </span>
       )}
       {lastP?.skill && (

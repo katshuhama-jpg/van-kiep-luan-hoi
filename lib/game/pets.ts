@@ -1,6 +1,7 @@
 import { addCult, dao, hurt, money, reward, stat } from './helpers';
 import type { Character, Choice, EffectCtx, GameEvent } from './types';
 import { tr } from '../i18n';
+import { LEGEND_PETS } from './petLegend';
 
 /** Thú cưng: ảnh trong /public/lpc/pets/<id>.png, hàng 0 quay trái, hàng 1 quay phải */
 export interface PetDef {
@@ -162,14 +163,15 @@ const SPECIAL = [
 
 /** Loại thú cưng của nhân vật; nhân vật cũ chưa có thì suy từ hạt giống */
 export function petOf(c: Pick<Character, 'petKind' | 'lookSeed' | 'name'>): string {
-  if (c.petKind && PETS[c.petKind]) return c.petKind;
+  if (c.petKind && (PETS[c.petKind] || LEGEND_PETS[c.petKind])) return c.petKind;
   let h = c.lookSeed ?? 0;
   if (!h) for (let i = 0; i < c.name.length; i++) h = (h * 31 + c.name.charCodeAt(i)) >>> 0;
   return PET_IDS[h % PET_IDS.length];
 }
 
 export function petName(c: Pick<Character, 'petKind' | 'lookSeed' | 'name'>): string {
-  return PETS[petOf(c)].name;
+  const id = petOf(c);
+  return LEGEND_PETS[id]?.name ?? PETS[id].name;
 }
 
 /** Thú cưng gặp năm nay (cố định theo tuổi để lời kể và kết quả khớp nhau) */
@@ -225,11 +227,11 @@ export const PET_EVENT: GameEvent = {
 
 // ---------- Kịch bản nhận thú cưng ----------
 export function adopt(ch: Character, id: string, ctx: EffectCtx): string {
-  const old = ch.pet ? PETS[petOf(ch)]?.name : null;
+  const old = ch.pet ? petName(ch) : null;
   ch.pet = true;
   ch.petKind = id;
   ctx.fx('love', tr('Có thú cưng', "Got a pet"));
-  return old && old !== PETS[id].name ? tr(` Con ${old} ghen tị, bỏ vào rừng không về.`, ` The jealous ${old} runs off into the forest and never returns.`) : '';
+  return old && old !== (LEGEND_PETS[id]?.name ?? PETS[id]?.name) ? tr(` Con ${old} ghen tị, bỏ vào rừng không về.`, ` The jealous ${old} runs off into the forest and never returns.`) : '';
 }
 
 interface PetStory {

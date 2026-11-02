@@ -23,6 +23,8 @@ import { nameOf } from '@/lib/hanviet';
 import { charLang, convertChar, convertMeta, loadDict, looksVi } from '@/lib/retrans';
 import { AUCTION_EVENT_ID, MERCHANT_EVENT_ID, buyShelf, buyWare, haggleWare, mergeItems, merchantWares, robWare, type Ware } from '@/lib/game/market';
 import { MerchantScene } from '@/components/MarketScenes';
+import { LinhThuSheet, PetBadge } from '@/components/LinhThu';
+import { bloodOnDeath, evolve, petStrike, petTitle } from '@/lib/game/linhThu';
 import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, itemPrice, pillPrice, RARE_STOCK_REALM, realmLabel, realmName, soldOut, yearSpeed, youthPace } from '@/lib/game/data';
 import { genNameVi, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick, chungDao, openingEvent } from '@/lib/game/engine';
 import { addCult, addPill, dao, fatal, fmt, giveItem, money, reward, stat, wealthTier, DO_KIEP_REALM } from '@/lib/game/helpers';
@@ -60,7 +62,7 @@ import { tr } from '@/lib/i18n';
 const SPEEDS = [1, 2, 4, 8, 16];
 /** màu chưởng lực theo con đường tu luyện */
 const qiColor = (c: Character) => (c.path ? PATHS[c.path].aura : c.daoTam <= -40 ? '#ff3448' : '#9ff0c8');
-type SheetName = null | 'shop' | 'bag' | 'bequan' | 'menu' | 'hunt' | 'info' | 'today' | 'mail' | 'kho';
+type SheetName = null | 'shop' | 'bag' | 'bequan' | 'menu' | 'hunt' | 'info' | 'today' | 'mail' | 'kho' | 'thu';
 
 type Battle = BattleView & { t: number; rest: number; ps: Fighter; ms: Fighter };
 
@@ -375,6 +377,15 @@ export default function PlayPage() {
       const h1 = hit(b.ps.atk * (b.melem ? elemMul(b.melem.me, b.melem.foe) : 1), b.ms.def, rnd, 0.15 + gearFx(c.equipped).crit / 100);
       b.mHp = Math.max(0, b.mHp - h1.dmg);
       push('p', h1.dmg, h1.crit, b.m.boss ? tr('Vô hiệu', "Immune") : undefined, artOf(c, rnd));
+      // 4.2.0: linh thú hộ chủ
+      if (b.mHp > 0 && !b.m.boss) {
+        const pk = petStrike(c, rnd);
+        if (pk) {
+          const d = Math.max(1, Math.round(b.ps.atk * pk * (0.8 + rnd() * 0.4) - b.ms.def * 0.3));
+          b.mHp = Math.max(0, b.mHp - d);
+          b.last = [...b.last.slice(-4), { id: Math.random(), side: 'p', dmg: d, crit: false, tag: `${petTitle(c)}!`, pet: true }];
+        }
+      }
       if (b.mHp <= 0) {
         const out: Fx[] = [];
         const ctx = makeCtx(c, out);
@@ -790,6 +801,15 @@ export default function PlayPage() {
         const h = hit(b.ps.atk * (b.melem ? elemMul(b.melem.me, b.melem.foe) : 1), b.ms.def, rnd, 0.15 + gearFx(c.equipped).crit / 100);
         b.mHp = Math.max(0, b.mHp - h.dmg);
         push('p', h.dmg, h.crit, undefined, artOf(c, rnd));
+        // 4.2.0: linh thú hộ chủ khi bị chặn đường (thú hộ chủ từ bậc 2, thú truyền thuyết)
+        if (b.mHp > 0) {
+          const pk = petStrike(c, rnd, true);
+          if (pk) {
+            const d = Math.max(1, Math.round(b.ps.atk * pk * (0.8 + rnd() * 0.4) - b.ms.def * 0.3));
+            b.mHp = Math.max(0, b.mHp - d);
+            b.last = [...b.last.slice(-4), { id: Math.random(), side: 'p', dmg: d, crit: false, tag: `${petTitle(c)}!`, pet: true }];
+          }
+        }
         b.sub = 1;
         if (b.mHp <= 0) {
           end('win');
@@ -1624,6 +1644,7 @@ export default function PlayPage() {
       legend,
       vendettas: (c.vendettas ?? []).slice(-3),
       petBook,
+      huyetMach: bloodOnDeath(c, meta.huyetMach),
       phucDuyen: meta.phucDuyen + k.phuc + q.reward + (c.goalDone ? (newbieGoal(c)?.reward ?? 0) : 0),
       nghiep: k.nghiep > 0 ? meta.nghiep + k.nghiep : Math.max(0, meta.nghiep - 5),
       lives: meta.lives + 1,
@@ -1864,6 +1885,7 @@ export default function PlayPage() {
           battle={battleNow}
         />
         {!battleNow && <NhdMirror c={c} onOpen={() => setNhdPeek(true)} />}
+        {!battleNow && c.pet && !c.dead && c.age >= 6 && <PetBadge c={c} onOpen={() => setSheet('thu')} />}
         <button
           className="strip-btn"
           onClick={(e) => ((e.target as HTMLElement).closest('.cult.wait') ? setNhdPeek(true) : setSheet('info'))}
@@ -1948,6 +1970,22 @@ export default function PlayPage() {
       {sheet === 'today' && <HookSheet meta={meta} onClose={() => setSheet(null)} />}
       {sheet === 'mail' && mail && giangHo() && <GiangHoSheet mail={mail} api={giangHo()!} onClose={() => setSheet(null)} />}
         {ciOpen && meta && <CheckinPop meta={meta} realm={charRef.current && !charRef.current.dead ? charRef.current.realm : 0} got={ciGot} onClaim={checkin} onClose={() => setCiOpen(false)} />}
+      {sheet === 'thu' && (
+        <LinhThuSheet
+          c={c}
+          book={meta.petBook ?? []}
+          onEvolve={() =>
+            act((ch, out) => {
+              const t = evolve(ch, makeCtx(ch, out));
+              if (t) {
+                ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: t });
+                track('pet_evo', { id: ch.petKind, evo: ch.petEvo, realm: ch.realm });
+              }
+            })
+          }
+          onClose={() => setSheet(null)}
+        />
+      )}
       {sheet === 'hunt' && <HuntSheet c={c} onPick={pickMonster} onToggleFlee={toggleFlee} onClose={() => setSheet(null)} />}
       {sheet === 'menu' && (
         <Sheet title="Menu" onClose={() => setSheet(null)}>
@@ -1978,6 +2016,9 @@ export default function PlayPage() {
               {tr("Sổ Sinh Tử ", "Book of Life and Death ")}{stats.endings}/{stats.endingsTotal}
               {nb.endings && <span className="new-tag">{tr("mới", "new")}</span>}
             </Link>
+            <button className="btn" onClick={() => setSheet('thu')}>
+              {tr('Linh thú', 'Spirit beasts')}
+            </button>
             <button
               className="btn"
               onClick={() => {

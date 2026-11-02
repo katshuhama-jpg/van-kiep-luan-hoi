@@ -5,6 +5,8 @@ import { HAIR_COLORS, ITEMS, PATHS, type RobeDeco, type WeaponKind } from '@/lib
 import { ANIM, composeStrip, readyStrip, type Anim, type Layer } from '@/lib/lpc';
 import { equippedLook } from '@/lib/game/helpers';
 import { PETS, petOf } from '@/lib/game/pets';
+import { LEGEND_PETS } from '@/lib/game/petLegend';
+import MonsterLpc from './MonsterLpc';
 import { PixelFx, fxEmbers, fxHuStars, fxHuVortex, fxMaHoa, fxMaXich, fxNguSacVan, fxTienHalo, fxTienPetals, fxChuongVang, fxOrbit, fxPillar, fxRays, fxRing, fxMotes, fxBatQuai, fxCuuVi, fxDanHoan, fxHuyetNguyet, fxKiem, fxLua, fxLuaTien, fxMaKhi, fxPhatQuang, fxSen, fxTuongVan } from './PixelFx';
 import type { Character } from '@/lib/game/types';
 import { tr } from '@/lib/i18n';
@@ -647,9 +649,23 @@ export function animFor(c: Character, focus?: string): { anim: Anim; dir: number
 }
 
 /** Thú cưng chạy qua chạy lại phía sau nhân vật (ở xa hơn nên nhỏ hơn một chút) */
-function PetRoam({ id, box }: { id: string; box: number }) {
+function PetRoam({ id, box, evo = 0 }: { id: string; box: number; evo?: number }) {
+  const L = LEGEND_PETS[id];
+  // 4.2.0: tiến hóa thì linh thú to hơn và có hào quang
+  const glow = evo >= 2 ? ' drop-shadow(0 0 3px #ffd36b)' : evo >= 1 ? ' drop-shadow(0 0 2px #9ff0c8)' : '';
+  if (L) {
+    const size = box * (L.fly ? 0.62 : 0.72);
+    const wrap = { bottom: box * (L.fly ? 0.55 : 0.1), marginLeft: -size / 2, ['--roam' as string]: `${box * 0.6}px`, animationDuration: '11s' } as CSSProperties;
+    return (
+      <span className={`pet-roam legend ${L.fly ? 'fly' : ''}`} style={wrap} aria-hidden="true">
+        <span className="pet-legend" style={{ filter: glow.trim() || undefined }}>
+          <MonsterLpc look={L.look} size={size} />
+        </span>
+      </span>
+    );
+  }
   const p = PETS[id];
-  const px = (box / 64) * p.s;
+  const px = (box / 64) * p.s * (1 + 0.12 * evo);
   const w = p.w * px;
   const h = p.h * px;
   const wrap = { bottom: box * (p.fly ? 0.62 : 0.16), marginLeft: -w / 2, ['--roam' as string]: `${box * 0.62}px`, animationDuration: `${p.dur}s` } as CSSProperties;
@@ -661,7 +677,7 @@ function PetRoam({ id, box }: { id: string; box: number }) {
     ['--lpc-end' as string]: `-${p.n * w}px`,
     ['--pet-h' as string]: `-${h}px`,
     animation: `lpc-play ${p.n / p.fps}s steps(${p.n}) infinite, petDir ${p.dur}s linear infinite`,
-    filter: p.filter,
+    filter: (p.filter ?? '') + glow || undefined,
   } as CSSProperties;
   return (
     <span className={`pet-roam ${p.fly ? 'fly' : ''}`} style={wrap} aria-hidden="true">
@@ -871,7 +887,7 @@ export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Charact
       {url && aura && !l.dead && !cos && l.realm >= 5 && !ma0(l) && Math.abs(l.dao) < 15 && <TuongVan box={box} />}
       {url && aura && !l.dead && l.realm >= 2 && <PathAura path={l.path} ma={ma0(l)} yeu={!!l.yeu} realm={l.realm} color={aura} box={box} />}
       {url && l.path === 'phat' && !l.dead && <span className="lpc-halo" style={{ width: box * 0.26, height: box * 0.26, top: box * 0.06 }} />}
-      {url && l.pet && l.stage !== 'baby' && !l.dead && <PetRoam id={petOf(c)} box={box} />}
+      {url && l.pet && l.stage !== 'baby' && !l.dead && <PetRoam id={petOf(c)} box={box} evo={c.petEvo ?? 0} />}
       {url &&
         (aura && !l.dead && l.realm >= 1 ? (
           // viền hào quang ôm sát dáng người, càng lên cảnh giới càng dày và sáng

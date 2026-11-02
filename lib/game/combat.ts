@@ -1,4 +1,5 @@
 import { sellNow } from './marketDay';
+import { petDropMul } from './linhThu';
 /** 4.1.0: đồ rơi trùng bán ngay tại chỗ cho thương lái, chỉ được 1/4 giá bán tay */
 export const DUP_SELL = 0.25;
 import { forgeDefMul, forgeHpMul, forgeMul, sealAtk, sealDef, sealExp, sealHp } from './forge';
@@ -692,7 +693,7 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance 
   const df = dropFactor(c, m);
   if (drops.length && df > 0) {
     const g = gearFx(c.equipped);
-    const p = (0.05 + (c.stats.khiVan - 50) / 2500) * (1 + tierOf(c, m) * 0.5) * (1 + g.drop / 100) * df * DROP_MUL * ksDrop(c);
+    const p = (0.05 + (c.stats.khiVan - 50) / 2500) * (1 + tierOf(c, m) * 0.5) * (1 + g.drop / 100) * df * DROP_MUL * ksDrop(c) * petDropMul(c);
     if (ctx.rnd() < p) {
       const it = drops[Math.floor(ctx.rnd() * drops.length)];
       if (c.inventory.includes(it.id)) {
