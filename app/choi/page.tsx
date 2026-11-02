@@ -31,7 +31,7 @@ import { genNameVi, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, p
 import { addCult, addPill, dao, fatal, fmt, giveItem, money, reward, stat, wealthTier, DO_KIEP_REALM } from '@/lib/game/helpers';
 import type { Character, Element, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
 import DuelWarning from '@/components/Duel';
-import { GAUGE_NAME, act as cpAct, equip as cpEquip, fuse as cpFuse, unequip as cpUnequip, upgrade as cpUpgrade, heirChoices, loadoutOf, newSide, npcLoadout, skipTurn, takeHit, type FightSide, type Loadout } from '@/lib/game/congPhap';
+import { GAUGE_NAME, act as cpAct, equip as cpEquip, fuse as cpFuse, unequip as cpUnequip, upgrade as cpUpgrade, swapTq as cpSwapTq, heirChoices, loadoutOf, newSide, npcLoadout, skipTurn, takeHit, type FightSide, type Loadout } from '@/lib/game/congPhap';
 import { trackMiles } from '@/lib/game/miles';
 import { ELEMENTS, elemHitTag, elemMul, elemRel, elementOf } from '@/lib/game/nguhanh';
 import { DUEL_INFO, DUEL_PER_YEAR, DUEL_TURNS, finishDuel, foeChar, foeStats, pickDuel, teaTrap, toRival, type DuelFoe } from '@/lib/game/duel';
@@ -2067,9 +2067,15 @@ export default function PlayPage() {
           onClose={() => setSheet(null)}
           onEquip={(id) => act((ch) => void cpEquip(ch, id))}
           onUnequip={(id) => act((ch) => cpUnequip(ch, id))}
-          onUpgrade={(id) =>
+          onSwap={(a, b) =>
             act((ch) => {
-              const t = cpUpgrade(ch, id);
+              const t = cpSwapTq(ch, a, b);
+              if (t) ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: t });
+            })
+          }
+          onUpgrade={(id, useVan, bien) =>
+            act((ch) => {
+              const t = cpUpgrade(ch, id, useVan, bien);
               if (t) {
                 ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: t });
                 track('cp_tang', { id, tang: ch.cp?.own.find((o) => o.id === id)?.tang ?? 0 });

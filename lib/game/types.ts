@@ -122,7 +122,9 @@ export interface Character {
   // 4.2.0 công pháp (lib/game/congPhap.ts)
   cp?: { own: { id: string; tang: number; exp: number }[]; eq: string[]; tuyet?: string | null };
   cpHint?: boolean; // đã báo có bộ đầy thục luyện
-  tanQuyen?: number; // tàn quyển: dùng để lên tầng từ tầng 4, dung hợp tuyệt kỹ
+  tq?: Record<string, number>; // tàn quyển riêng từng bộ công pháp: lên tầng từ tầng 4, tuyệt kỹ để dung hợp
+  tqVan?: number; // tàn quyển vạn năng (hiếm): bù vào bộ nào cũng được
+  cpPast?: string[]; // các bộ kiếp trước từng luyện (bóng kiếp trước rơi tàn quyển các bộ này)
   cpHeirPick?: string | null; // chiêu chọn truyền cho kiếp sau
   lookSeed?: number; // nét riêng của ngoại hình: da, khuôn mặt, râu, trang sức
   legend?: Legend | null; // thần binh truyền kiếp đang mang

@@ -4934,3 +4934,12 @@ button.shadow-card { cursor: pointer; }
 .tk-fuse .tk-smoke { bottom: 50px; }
 .dock-actions button.has-dot { position: relative; }
 .dock-actions button.has-dot::after { content: ''; position: absolute; top: 3px; right: 3px; width: 8px; height: 8px; background: #e0302e; box-shadow: 0 0 0 2px #1f160d; }
+.tk-pow { font-size: 12px; color: #2f6b5a; }
+.tk-cost.ok { color: #2f6b5a; }
+.tk-swap { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-top: 2px; }
+.tk-swap small { font-size: 12px; color: #6a5a44; width: 100%; }
+.tk-swap .chip-btn { font-size: 12px; padding: 1px 6px; }
+.tk-cp-name i.tk-bien { color: #fff; border-color: #1f160d; }
+.tk-bien.cuong { background: #b8432f; } .tk-bien.nhu { background: #2f6b5a; }
+.tk-up.tk-bien-btn.cuong { background: #f2a58e; } .tk-up.tk-bien-btn.nhu { background: #9fd8b8; }
+.tk-cp-side small.bad { color: #b0201a; font-weight: 700; }

@@ -49,8 +49,8 @@ const save = async (p) => JSON.parse(await p.evaluate(() => localStorage.getItem
 
   // 2. Tàng Kinh Các
   p = await open(b, {
-    path: 'kiem', realm: 3, tanQuyen: 4, focus: 'tu_luyen', huntTarget: undefined,
-    cp: { own: [{ id: 'dan_khi', tang: 3, exp: 40 }, { id: 'truong_quyen', tang: 3, exp: 100 }, { id: 'thiet_sa', tang: 2, exp: 30 }, { id: 'thanh_lien', tang: 5, exp: 100 }, { id: 'liet_hoa', tang: 9, exp: 0 }, { id: 'kim_xa', tang: 9, exp: 0 }], eq: ['thanh_lien', 'liet_hoa', 'kim_xa'] },
+    path: 'kiem', realm: 3, tq: { thanh_lien: 2, thiet_sa: 3, van_kiem: 3, thai_cuc_kiem: 1 }, tqVan: 1, cultivation: 300, focus: 'tu_luyen', huntTarget: undefined,
+    cp: { own: [{ id: 'dan_khi', tang: 3, exp: 40 }, { id: 'truong_quyen', tang: 3, exp: 100 }, { id: 'thiet_sa', tang: 2, exp: 30 }, { id: 'thanh_lien', tang: 5, exp: 100 }, { id: 'liet_hoa', tang: 9, exp: 0 }, { id: 'kim_xa', tang: 9, exp: 0 }, { id: 'thai_cuc_kiem', tang: 5, exp: 100 }], eq: ['thanh_lien', 'liet_hoa', 'kim_xa'] },
   });
   await p.locator('.dock-actions button', { hasText: 'Công pháp' }).click({ timeout: 5000 }).catch(() => {});
   await p.waitForTimeout(1200);
@@ -60,7 +60,21 @@ const save = async (p) => JSON.parse(await p.evaluate(() => localStorage.getItem
   await p.locator('.tk-cp', { hasText: 'Thanh Liên' }).locator('.tk-up').click({ timeout: 5000 }).catch(() => {});
   await p.waitForTimeout(300);
   ch = await save(p);
-  ok(ch.cp.own.find((o) => o.id === 'thanh_lien').tang === 6 && ch.tanQuyen === 3, 'nâng tầng 5 lên 6, tốn 1 tàn quyển');
+  ok(ch.cp.own.find((o) => o.id === 'thanh_lien').tang === 6 && ch.tq.thanh_lien === 0 && ch.cultivation < 300, 'nâng tâm pháp tầng 5 lên 6: tốn 2 tàn quyển riêng và một ít tu vi');
+  // biến chiêu: Thái Cực tầng 5 thiếu quyển, bù vạn năng thì phải chọn Cương/Nhu
+  ok(await p.locator('.tk-cp', { hasText: 'Thái Cực' }).locator('.tk-bien-btn').count() === 2, 'Thái Cực tầng 5: hiện 2 nút biến chiêu Cương/Nhu');
+  await p.locator('.tk-cp', { hasText: 'Thái Cực' }).locator('.tk-bien-btn.nhu').click({ timeout: 5000 }).catch(() => {});
+  await p.waitForTimeout(300);
+  ch = await save(p);
+  const tc = ch.cp.own.find((o) => o.id === 'thai_cuc_kiem');
+  ok(tc.tang === 6 && tc.bien === 'nhu' && ch.tqVan === 0 && ch.tq.thai_cuc_kiem === 0, 'ngộ biến chiêu Nhu, dùng 1 tàn quyển vạn năng');
+  // chép 3 quyển Thiết Sa thành 1 quyển bộ khác cùng đạo (đạo chung: Trường Quyền)
+  await p.locator('.tk-cp', { hasText: 'Thiết Sa' }).click();
+  await p.waitForTimeout(200);
+  await p.locator('.tk-cp', { hasText: 'Thiết Sa' }).locator('.tk-swap .chip-btn').first().click({ timeout: 5000 }).catch(() => {});
+  await p.waitForTimeout(300);
+  ch = await save(p);
+  ok((ch.tq.thiet_sa ?? 0) === 0 && Object.entries(ch.tq).some(([k, v]) => k !== 'thiet_sa' && k !== 'van_kiem' && v === 1), 'chép 3 tàn quyển Thiết Sa thành 1 quyển bộ khác cùng đạo');
   await p.locator('.tk-cp', { hasText: 'Thiết Sa' }).locator('.tk-eq').click({ timeout: 5000 }).catch(() => {});
   await p.waitForTimeout(300);
   ch = await save(p);
@@ -71,7 +85,7 @@ const save = async (p) => JSON.parse(await p.evaluate(() => localStorage.getItem
   await p.locator('.tk-wrap .btn-red').click({ timeout: 5000 }).catch(() => {});
   await p.waitForTimeout(2000);
   ch = await save(p);
-  ok(ch.cp.tuyet === 'van_kiem' && ch.tanQuyen === 0, 'dung hợp 2 chiêu tầng 9 ra Vạn Kiếm Quy Tông, tốn 3 tàn quyển');
+  ok(ch.cp.tuyet === 'van_kiem' && ch.tq.van_kiem === 0, 'dung hợp 2 chiêu tầng 9 ra Vạn Kiếm Quy Tông, tốn 3 tàn quyển Vạn Kiếm');
   await p.locator('.chip-btn', { hasText: 'Sổ' }).click();
   await p.waitForTimeout(300);
   await p.locator('.tk-wrap .chip-btn', { hasText: 'Kim Xà' }).click({ timeout: 5000 }).catch(() => {});

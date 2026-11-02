@@ -195,7 +195,7 @@ export function newCharacter(meta: Meta, gifts: string[] = [], base?: Character)
   c.lifeNo = meta.lives + 1;
   c.huyetMach = meta.huyetMach ?? [];
   // 4.2.0: chiêu truyền thừa từ kiếp trước
-  applyHeir(c, meta.cpHeir);
+  applyHeir(c, meta.cpHeir, meta.cpBook);
   c.enemy = meta.enemy;
   c.log = c.log.map((l) => ({ ...l, text: l.text.replace('__KIEP__', tr(`Kiếp thứ ${c.lifeNo}.`, `Life #${c.lifeNo}.`)) }));
   const t = meta.talents;
