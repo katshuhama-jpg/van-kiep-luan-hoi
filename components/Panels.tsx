@@ -455,7 +455,7 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onBuyShelf, onBuyCharm, onC
                     {it.fx && <small className="fx-line">{fxText(it.fx)}</small>}
                     <small>{lock ?? it.desc}</small>
                   </div>
-                  <button className="btn btn-red" disabled={owned || sold || !!lock || c.linhThach < price || !onBuyShelf} onClick={() => onBuyShelf?.(it.id)}>
+                  <button className="btn btn-red" disabled={owned || sold || !!lock || c.linhThach < price || !onBuyShelf || (it.id === 'charm_ho_khi' && (c.hoKhi ?? 0) >= 3)} onClick={() => onBuyShelf?.(it.id)}>
                     {owned ? tr('Đã có', 'Owned') : sold ? tr('Đã bán', 'Sold') : fmt(price)}
                   </button>
                 </div>
@@ -520,7 +520,7 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onBuyShelf, onBuyCharm, onC
         )}
         {tab === 'dan' &&
           onBuyCharm &&
-          CHARMS.map((ch) => (
+          CHARMS.filter((ch) => ch.shop).map((ch) => (
             <div key={ch.id} className="item">
               <div className="item-icon">
                 <img src={ch.icon} width={34} height={34} alt="" className="px-icon" />

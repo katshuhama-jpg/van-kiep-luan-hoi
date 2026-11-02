@@ -130,7 +130,7 @@ export default function ForgeScene({ c, slot = 'vu_khi', onForge, onBuy, onClose
                     <img src={CHARMS[0].icon} width={24} height={24} alt="" className="px-icon" />
                     {tr(`Mang Hộ Khí Phù (không vỡ đồ) · còn ${c.hoKhi ?? 0}`, `Carry Item Ward (no shattering) · ${c.hoKhi ?? 0} left`)}
                   </label>
-                  {!hasHoa && !hasPhu && <small className="note">{tr('Linh Hỏa, Hộ Khí Phù bán ở Phường thị, tab Đan dược.', 'Spirit Flame and Item Ward are sold at the Market, Pills tab.')}</small>}
+                  {(!hasHoa || !hasPhu) && <small className="note">{tr('Linh Hỏa bán ở Phường thị, tab Đan dược. Hộ Khí Phù hiếm, chỉ thỉnh thoảng có ở Hàng mới về và thương nhân lưu động.', 'Spirit Flame is sold at the Market, Pills tab. Item Ward is rare: only sometimes under New arrivals or from wandering merchants.')}</small>}
                 </div>
               )}
               <button className="btn btn-red btn-big fs-go" disabled={phase === 'hit' || !enough} onClick={strike}>

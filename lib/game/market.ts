@@ -2,6 +2,7 @@ import { ITEMS, REALMS, fxText, type Item } from './data';
 import { giveItem, money, stat } from './helpers';
 import type { Character, EffectCtx, GameEvent } from './types';
 import { tr } from '../i18n';
+import { HO_KHI_MAX, charmItem, charmOf, giveCharm } from './forge';
 
 /**
  * Kinh tế 4.1.0 (Tyler chốt 2/11/2026):
@@ -71,18 +72,25 @@ export function shelfItems(c: Character): Item[] {
   if (out.length < 3) take(2, 3 - out.length);
   take(2, 2);
   if (r() < 0.2) take(3, 1);
+  // thỉnh thoảng có Hộ Khí Phù (25%) hoặc Linh Hỏa (20%)
+  const q = r();
+  if (q < 0.25) out.push(charmItem(c, 'ho_khi'));
+  else if (q < 0.45) out.push(charmItem(c, 'linh_hoa'));
   return out;
 }
 export const shelfBought = (c: Character, id: string) => !!c.shelf && c.shelf.w === shelfWindow(c) && c.shelf.bought.includes(id);
 export function buyShelf(c: Character, id: string, ctx: EffectCtx): string | null {
   const it = shelfItems(c).find((i) => i.id === id);
   if (!it || shelfBought(c, id) || c.inventory.includes(id) || it.minRealm > c.realm) return null;
+  const ch = charmOf(id);
+  if (ch === 'ho_khi' && (c.hoKhi ?? 0) >= HO_KHI_MAX) return null;
   const price = buyPrice(it, marketOf(c));
   if (c.linhThach < price) return null;
   money(c, -price);
   const w = shelfWindow(c);
   c.shelf = { w, bought: [...(c.shelf?.w === w ? c.shelf.bought : []), id] };
-  giveItem(c, id, false);
+  if (ch) giveCharm(c, ch);
+  else giveItem(c, id, false);
   ctx.fx('buy', it.name);
   return tr(`Mua ${it.name} ở ${shelfName(c)} (-${price} linh thạch). Mở Túi đồ để mặc.`, `Bought ${it.name} at the ${shelfName(c)} (-${price} spirit stones). Open your Inventory to equip it.`);
 }
@@ -224,6 +232,11 @@ export function merchantWares(c: Character, rnd: () => number): Ware[] {
     // giá thương nhân: 70%-130% giá trị, cộng thêm 5% mỗi cảnh giới (hàng hiếm ở cảnh giới cao lão hét giá hơn)
     out.push({ item, price: Math.round(itemValue(item) * (0.7 + rnd() * 0.6) * (1 + 0.05 * c.realm)), state: 'open' });
   }
+  // 20% lão có một lá Hộ Khí Phù
+  if (rnd() < 0.2 && (c.hoKhi ?? 0) < HO_KHI_MAX) {
+    const it = charmItem(c, 'ho_khi');
+    out.push({ item: it, price: Math.round(it.price * (0.9 + rnd() * 0.4)), state: 'open' });
+  }
   return out;
 }
 export function merchantEvent(c: Character): GameEvent {
@@ -244,7 +257,9 @@ export function merchantEvent(c: Character): GameEvent {
 export function buyWare(c: Character, w: Ware, ctx: EffectCtx): string | null {
   if (w.state !== 'open' || c.linhThach < w.price) return null;
   money(c, -w.price);
-  giveItem(c, w.item.id, false);
+  const chB = charmOf(w.item.id);
+  if (chB) giveCharm(c, chB);
+  else giveItem(c, w.item.id, false);
   w.state = 'bought';
   ctx.fx('buy', w.item.name);
   const t = tr(`Mua ${w.item.name} của thương nhân lưu động (-${w.price} linh thạch).`, `Bought ${w.item.name} from the wandering merchant (-${w.price} spirit stones).`);
@@ -272,7 +287,9 @@ export function robWare(c: Character, w: Ware, ctx: EffectCtx): string | null {
   stat(c, 'tamMa', 4);
   c.daoTam = Math.max(-100, c.daoTam - 8);
   if (ctx.rnd() < 0.55) {
-    giveItem(c, w.item.id, false);
+    const chR = charmOf(w.item.id);
+    if (chR) giveCharm(c, chR);
+    else giveItem(c, w.item.id, false);
     w.state = 'bought';
     ctx.fx('buy', w.item.name);
     const t = tr(`Bạn ra tay giật lấy ${w.item.name}, lão thương nhân ngã lăn ra đất. Đạo tâm bạn tối đi một chút.`, `You snatch ${w.item.name}, and the old merchant tumbles to the ground. Your Dao Heart darkens a little.`);
