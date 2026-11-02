@@ -93,7 +93,7 @@ Cáo thị 4.0.1 (Tyler chốt 30/10 tối): gộp ngày 1 và ngày 2 thành b�
 
 ## Ngày 6 - thứ Tư 4/11: bản 4.2.0 Linh thú (có cáo thị)
 Chỉ làm từ ngày 2026-11-04 (giờ VN). Trước ngày này thì dừng, không đổi code.
-- [ ] Gộp nhánh `linh-thu` (tới commit 8ce02b7, đã build, smoke, smoke-login, smoke-linhthu, chụp màn hình): `git fetch origin linh-thu && git merge --no-ff origin/linh-thu`. Nhánh dựng trên `kinh-te` nên gộp sau 4.1.0 không đụng nhau. Gồm:
+- [ ] Gộp nhánh `linh-thu` (tới commit 186d9b3, đã build, smoke, smoke-login, smoke-linhthu, chụp màn hình): `git fetch origin linh-thu && git merge --no-ff origin/linh-thu`. Nhánh dựng trên `kinh-te` nên gộp sau 4.1.0 không đụng nhau. Gồm:
   - Rank linh thú 5 bậc N, R, SR, SSR, SSS (lib/game/linhThu.ts). SSS là tứ linh Thanh Long, Kỳ Lân, Huyền Vũ, Hỏa Phượng; SSR có yêu vương và dị thú (Kim Sí Đại Bằng, Tất Phương, Cửu Vĩ Thiên Hồ, Côn Bằng, Bạch Hổ, Thanh Giao, Cùng Kỳ), vẽ bằng thú LPC lớn có sẵn (lib/game/petLegend.ts).
   - Thân thiết theo năm và theo trận, tiến hóa 3 bậc (bậc 2 cần Trúc Cơ, bậc 3 cần Nguyên Anh), mỗi bậc nâng rank và sức mạnh, linh thú to hơn và có hào quang.
   - Tác dụng theo họ: hộ chủ (lao vào đánh trong trận trừ yêu, từ bậc 2 đánh cả khi bị chặn đường, có vết vuốt pixel), chiêu phúc (khí vận, linh thạch, đồ rơi +10% từ bậc 2), dưỡng thân (sức khỏe, tu vi, giảm tâm ma).
