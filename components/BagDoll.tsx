@@ -7,6 +7,8 @@ import { ITEMS, PILLS, fxText as fxTextData, gearFx, type Item } from '@/lib/gam
 import { playerStats } from '@/lib/game/combat';
 import { FORGE_COST, FORGE_MAX, FORGE_STAT, canSmelt, elFx, forgeLevel, forgeLv, itemEl, sellValue, smeltValue, type ForgeResult } from '@/lib/game/forge';
 import ForgeScene from './ForgeScene';
+import { MergeScene } from './MarketScenes';
+import type { MergeResult } from '@/lib/game/market';
 import type { Character, Slot } from '@/lib/game/types';
 import { tr } from '@/lib/i18n';
 
@@ -49,8 +51,9 @@ function writePref(k: string, v: string) {
  * Túi đồ kiểu búp bê: nhân vật ở giữa, ô trang bị quanh người, chỉ số bên cạnh, lưới đồ ở dưới.
  * Chạm một ô để xem chi tiết và thao tác: dùng, bán, phân giải, mở lò rèn.
  */
-export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForge, onBuy }: { c: Character; onEquip: (id: string) => void; onUsePill: (id: string) => void; onSmelt?: (id: string) => void; onSell?: (id: string) => void; onForge?: (slot: Slot) => ForgeResult | null; onBuy?: (n: number) => void }) {
+export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForge, onBuy, onMerge }: { c: Character; onEquip: (id: string) => void; onUsePill: (id: string) => void; onSmelt?: (id: string) => void; onSell?: (id: string) => void; onForge?: (slot: Slot) => ForgeResult | null; onBuy?: (n: number) => void; onMerge?: (ids: string[]) => MergeResult | null }) {
   const [forging, setForging] = useState<Slot | null>(null);
+  const [merging, setMerging] = useState(false);
   const [kind, setKind] = useState<Kind>(() => (readPref('vkl.bagKind') as Kind) || 'all');
   useEffect(() => writePref('vkl.bagKind', kind), [kind]);
   const [sel, setSel] = useState<Sel>(null);
@@ -143,6 +146,12 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
           {c.equipped.vu_khi ? ` +${lv}` : ''}
           <small>{tr(`tinh thiết ${c.tinhHoa ?? 0}`, `iron ${c.tinhHoa ?? 0}`)}</small>
         </button>
+        {onMerge && (
+          <button type="button" className="doll-merge" onClick={() => setMerging(true)}>
+            {tr('⚗ Hợp đồ', '⚗ Fuse')}
+            <small>{tr('3 món → 1', '3 items → 1')}</small>
+          </button>
+        )}
       </div>
 
       {forgeMsg && !c.equipped.vu_khi && !c.equipped.ao && !c.equipped.phu_kien && (
@@ -282,6 +291,7 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
           </div>
         </section>
       )}
+      {merging && onMerge && <MergeScene c={c} onMerge={onMerge} onClose={() => setMerging(false)} />}
       {forging && onForge && <ForgeScene c={c} slot={forging} onForge={onForge} onBuy={onBuy} onClose={() => setForging(null)} />}
       {!selItem && !selPill && <p className="note inv-hint">{tr("Chạm vào một món để xem và dùng. Mỗi món mang một hệ ngũ hành. Đồ thừa đem bán lấy linh thạch hoặc phân giải ra tinh thiết để rèn vũ khí.", "Tap an item to inspect and use it. Every item carries one of the Five Elements. Sell spares for spirit stones or dismantle them into refined iron for forging weapons.")}</p>}
     </div>

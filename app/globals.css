@@ -4672,3 +4672,53 @@ button.shadow-card { cursor: pointer; }
 .sheet .shadow-pick { margin-bottom: 8px; }
 .ar-pick-dock { position: sticky; bottom: calc(-16px - env(safe-area-inset-bottom)); margin: 0 -14px calc(-16px - env(safe-area-inset-bottom)); padding: 10px 14px calc(12px + env(safe-area-inset-bottom)); background: var(--paper); border-top: 2px solid var(--ink); z-index: 3; }
 .ar-pick-dock .btn { width: 100%; }
+
+/* ---------------- 4.1.0 Kinh tế: thị tượng, lò hợp bảo, hội đấu giá, thương nhân ---------------- */
+.mk-omen { display: flex; gap: 10px; align-items: center; margin: 0 0 8px; padding: 6px 10px; background: #2a1f18; color: #f3e6c4; border: 3px solid #1f160d; box-shadow: 3px 3px 0 #1f160d; }
+.mk-omen img { flex: none; image-rendering: pixelated; }
+.mk-omen div { display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
+.mk-omen small { font-size: 12px; color: #c8b89a; }
+.mk-omen b { font-size: 17px; color: #ffd36b; }
+.mk-omen span { font-size: 14px; }
+.mk-omen .mk-next { margin-top: 2px; color: #a89878; }
+.mk-thuong_doan, .mk-thiet_re { border-color: #1f3a22; background: #1f3324; }
+.mk-khan_hiem, .mk-dan_hoang, .mk-dau_co { border-color: #3a1410; background: #3a1c14; }
+.mk-thu_mua { border-color: #3a2a08; background: #3a2c10; }
+.doll-merge { flex: none; display: flex; flex-direction: column; align-items: center; line-height: 1.1; padding: 3px 10px; font: inherit; font-weight: 700; font-size: 14px; color: #ffd36b; background: #5a1420; border: 2px solid #1f160d; box-shadow: 2px 2px 0 #1f160d; cursor: pointer; }
+.doll-merge small { font-size: 11px; font-weight: 500; color: #f3c8b0; }
+.doll-merge { background: #24425a; }
+.doll-merge small { color: #c8dcf0; }
+
+.mg-stage { position: relative; height: 230px; overflow: hidden; background-color: #2a1f18; background-size: cover; background-position: center bottom; image-rendering: pixelated; border-bottom: 3px solid #1f160d; }
+.mg-slots { position: absolute; top: 12px; left: 0; right: 0; display: flex; justify-content: center; gap: 14px; }
+.mg-slot { width: 64px; height: 64px; display: grid; place-items: center; padding: 0; background: #f3e6c4; border: 3px solid #1f160d; box-shadow: 3px 3px 0 #1f160d; cursor: pointer; }
+.mg-slot.empty { background: rgba(243, 230, 196, 0.55); border-style: dashed; }
+.mg-slot.empty small { font-size: 20px; font-weight: 700; color: #6a5a44; }
+.mg-slot.r1 { border-color: #3d6fb0; } .mg-slot.r2 { border-color: #8a3ad0; }
+.mg-slot img, .mg-slot svg { image-rendering: pixelated; }
+.mg-lo { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); image-rendering: pixelated; filter: drop-shadow(3px 3px 0 #1f160d); }
+.mg-stage.fuse .mg-slot { animation: mgSuck 1.4s steps(7) forwards; }
+.mg-stage.fuse .mg-lo { animation: mgShake 0.3s steps(2) infinite; }
+@keyframes mgSuck { to { transform: translateY(120px) scale(0.2); opacity: 0; } }
+@keyframes mgShake { 50% { transform: translateX(calc(-50% + 3px)); } }
+.mg-smoke { position: absolute; left: 50%; bottom: 96px; width: 0; height: 0; }
+.mg-smoke i { position: absolute; width: 12px; height: 12px; background: #e8e0d0; box-shadow: 4px 4px 0 #b8b0a0; left: calc((var(--i) - 3) * 14px); animation: mgPuff 1.2s steps(6) infinite; animation-delay: calc(var(--i) * 0.15s); }
+@keyframes mgPuff { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-80px); opacity: 0; } }
+.mg-out { position: absolute; left: 50%; top: 40px; transform: translateX(-50%); padding: 6px; background: #f3e6c4; border: 3px solid #1f160d; box-shadow: 3px 3px 0 #1f160d; animation: mgPop 0.35s steps(4) both; }
+@keyframes mgPop { from { transform: translateX(-50%) scale(2.5); opacity: 0; } to { transform: translateX(-50%); opacity: 1; } }
+.mg-out.ok { border-color: #d9822b; box-shadow: 0 0 0 3px #ffd36b, 3px 3px 0 3px #1f160d; }
+.mg-out img, .mg-out svg { image-rendering: pixelated; }
+.mg-list { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.mg-item { display: flex; align-items: center; gap: 6px; padding: 4px 6px; font: inherit; font-size: 14px; text-align: left; background: #fffaf0; border: 2px solid #1f160d; cursor: pointer; }
+.mg-item span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mg-item.r1 { border-left: 6px solid #3d6fb0; } .mg-item.r2 { border-left: 6px solid #8a3ad0; }
+.mg-item.on { background: #ffe9a8; box-shadow: inset 0 0 0 2px #b0201a; }
+
+
+.mc-stage { position: relative; height: 270px; overflow: hidden; background-color: #2a1f18; background-size: cover; background-position: center bottom; image-rendering: pixelated; border-bottom: 3px solid #1f160d; }
+.mc-man { position: absolute; left: 12%; bottom: 0; }
+.mc-say { position: absolute; right: 8px; top: 14px; width: 56%; margin: 0; padding: 6px 8px; font-size: 14px; background: #fffaf0; border: 3px solid #1f160d; box-shadow: 3px 3px 0 #1f160d; }
+.mc-ware { align-items: center; }
+.mc-ware.bought, .mc-ware.gone { opacity: 0.6; }
+.mc-acts { display: flex; flex-direction: column; gap: 4px; flex: none; }
+.mc-acts .btn { padding: 3px 10px; font-size: 14px; }

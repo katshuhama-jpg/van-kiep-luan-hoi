@@ -1,4 +1,5 @@
 import { ITEMS } from './data';
+import { marketToday, sellPrice } from './marketDay';
 import type { Character, EffectCtx, Element, Slot } from './types';
 import { tr } from '../i18n';
 
@@ -30,11 +31,11 @@ export function smeltValue(id: string): number {
 export function sellValue(id: string): number {
   const it = item(id);
   if (!it) return 0;
-  return Math.round(40 + (it.price || 80) * 0.5 + (it.rare ?? 0) * 120);
+  return sellPrice(it); // 4.1.0: 12% giá trị theo bảng giá chung và thị tượng
 }
 
 /** Giá một tinh thiết ở lò rèn, tăng theo cảnh giới để vẫn là chỗ tiêu tiền khi giàu */
-export const tinhPrice = (c: Character) => Math.round(40 * (1 + 0.4 * Math.min(c.realm, 8)));
+export const tinhPrice = (c: Character) => Math.round(40 * (1 + 0.4 * Math.min(c.realm, 8)) * marketToday().tinh);
 
 export function sell(c: Character, id: string, ctx: EffectCtx): string | null {
   if (!canSmelt(c, id)) return null;

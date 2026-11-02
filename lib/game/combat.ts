@@ -1,3 +1,4 @@
+import { sellPrice } from './marketDay';
 import { forgeDefMul, forgeHpMul, forgeMul, sealAtk, sealDef, sealExp, sealHp } from './forge';
 import { ksDrop, ksLegendPer, ksMonster } from './luanHoi';
 import { huntDeath, huntLose } from './fightLines';
@@ -763,7 +764,6 @@ export function dropFactor(c: Character, m: Monster): number {
 const RARE_NAME = [tr('Phàm', "Common"), tr('Tốt', "Fine"), tr('Hiếm', "Rare"), tr('Cực phẩm', "Supreme")];
 /** đồ chỉ rơi từ quái thí luyện trong tông môn, không rơi ngẫu nhiên ngoài giang hồ */
 const SECT_ONLY = new Set(ITEMS.filter((i) => i.from?.length && i.from.every((id) => MONSTERS.find((m) => m.id === id)?.sect)).map((i) => i.id));
-const RARE_SELL = [15, 60, 220, 800];
 
 /**
  * Chiến lợi phẩm ngẫu nhiên khi hạ quái: phần lớn là đồ lởm, thỉnh thoảng ra đồ xịn.
@@ -791,7 +791,7 @@ export function lootDrop(c: Character, m: Monster, ctx: EffectCtx): string | nul
   const it = src[Math.floor(ctx.rnd() * src.length)];
   const tag = `[${RARE_NAME[rare]}]`;
   if (c.inventory.includes(it.id)) {
-    const sell = Math.round(RARE_SELL[rare] * (1 + c.realm * 0.5));
+    const sell = sellPrice(it); // 4.1.0: cùng bảng giá với bán tay
     money(c, sell);
     return tr(`${m.name} rơi ra ${tag} ${it.name}, bạn đã có rồi nên đem bán được ${sell} linh thạch.`, `${m.name} dropped ${tag} ${it.name}. You already have it, so you sold it for ${sell} spirit stones.`);
   }

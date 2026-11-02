@@ -2826,7 +2826,8 @@ export const EVENTS: GameEvent[] = [
         lean: 'ta',
         run: (c, ctx) => {
           dao(c, -12);
-          money(c, c.linhThach * 0.5);
+          // 4.1.0: có trần theo cảnh giới, không còn nhân đôi tài sản khổng lồ
+          money(c, Math.min(c.linhThach * 0.5, 300 * (c.realm + 1) ** 2));
           ctx.fx('coin', tr('Phất to', "Struck it rich"));
           return tr('Bạn giàu thêm một nửa. Dân trong trấn nguyền rủa tên bạn.', "Your wealth grows by half. The townsfolk curse your name.");
         },

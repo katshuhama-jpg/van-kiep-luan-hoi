@@ -55,6 +55,10 @@ export interface Character {
   equipped: Partial<Record<Slot, string>>;
   pills: Record<string, number>;
   bought?: string[]; // đồ Luyện Hư, Độ Kiếp đã mua ở phường thị kiếp này (mỗi món một lần)
+  shelf?: { w: number; bought: string[] }; // 4.1.0: kệ hàng hiếm, đợt (5 năm) và các món đã mua trong đợt
+  auctionAt?: number; // tuổi đã nhận thiệp hội đấu giá gần nhất
+  auctionLot?: string; // món đem đấu của kỳ đấu giá đang mời
+  merchantAt?: number; // tuổi gặp thương nhân lưu động gần nhất
   pillBuy?: Record<string, number>; // số viên đã mua ở phường thị trong kiếp này (Diên Thọ đắt dần)
   dtUsed?: number; // số Diên Thọ Đan đã uống trong kiếp này (kháng dược)
   lifeExtra?: number; // thọ nguyên cộng thêm từ đan dược, được giữ ngoài mức trần thọ của cảnh giới

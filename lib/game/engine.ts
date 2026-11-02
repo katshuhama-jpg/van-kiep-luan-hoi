@@ -1,3 +1,4 @@
+import { AUCTION_EVENT_ID, MERCHANT_EVENT_ID, auctionDue, auctionEvent, merchantDue, merchantEvent, pickAuctionLot } from './market';
 import { sealLv } from './forge';
 import { applyProphecy, checkNewbieGoal, newbieGoal, omenIs } from './hook';
 import { loreDone, lore2Count, quyNhatDone } from './lore';
@@ -880,6 +881,13 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
     const pm = EVENTS.find((x) => x.id === 'phan_mon');
     if (pm && eligible(c, pm)) return buildPending(c, pm);
   }
+  // 4.1.0 kinh tế: hội đấu giá 10 năm một lần, thương nhân lưu động thỉnh thoảng (đều hỏi người chơi có tham gia không)
+  if (auctionDue(c)) {
+    c.auctionAt = c.age;
+    c.auctionLot = pickAuctionLot(c, rnd) ?? undefined;
+    if (c.auctionLot) return buildPending(c, auctionEvent(c));
+  }
+  if (merchantDue(c, rnd)) return buildPending(c, merchantEvent(c));
   const chance = age < 6 ? 0.3 : focus === 'du_ngoan' ? 0.6 : 0.3;
   if (rnd() < chance) {
     const e = pickEvent(c);
@@ -1250,6 +1258,8 @@ function findEvent(c: Character, id: string): GameEvent | null {
   if (id === DAI_HAN_EVENT_ID) return daiHanEvent(c);
   if (id === PATH_EVENT_ID) return pathEvent(c);
   if (id === BREAK_EVENT_ID) return breakEvent(c);
+  if (id === AUCTION_EVENT_ID) return auctionEvent(c);
+  if (id === MERCHANT_EVENT_ID) return merchantEvent(c);
   return EVENTS.find((e) => e.id === id) ?? null;
 }
 

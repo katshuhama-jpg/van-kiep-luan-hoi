@@ -4,6 +4,8 @@ import { epitaphIdeas } from '@/lib/game/vanBia';
 import { VanKiepRow } from './VanKiep';
 import SauChungDao from './SauChungDao';
 import Link from 'next/link';
+import { MarketOmenBox } from './MarketScenes';
+import { buyPrice, shelfBought, shelfItems, shelfName, shelfNext } from '@/lib/game/market';
 import { FB_PAGE } from '@/lib/links';
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { ENDINGS, RARE_COLOR, endingOf } from '@/lib/game/endings';
@@ -376,8 +378,8 @@ function lockReason(c: Character, it: Item): string | null {
   return null;
 }
 
-export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; onBuyItem: (id: string) => void; onBuyPill: (id: string) => void; onClose: () => void }) {
-  const [tab, setTab] = useState<'do' | 'dan' | 'kho'>('do');
+export function ShopSheet({ c, onBuyItem, onBuyPill, onBuyShelf, onClose }: { c: Character; onBuyItem: (id: string) => void; onBuyPill: (id: string) => void; onBuyShelf?: (id: string) => void; onClose: () => void }) {
+  const [tab, setTab] = useState<'do' | 'dan' | 'ke' | 'kho'>(c.cosmos ? 'ke' : 'do');
   const [slot, setSlot] = useState<'all' | Slot>('all');
   const [fit, setFit] = useState(true);
   // lọc theo loại đồ và "hợp với mình": đúng phái (hoặc đồ chung), cảnh giới hiện tại hoặc cao hơn một bậc
@@ -409,6 +411,7 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; 
         
         {tr("Linh thạch: ", "Spirit stones: ")}<b style={{ color: 'var(--red-d)', fontWeight: 700 }}>{fmt(c.linhThach)}</b>{tr(" · Đồ mua xong tự mặc lên người.", " · Gear is equipped as soon as you buy it.")}
       </p>
+      <MarketOmenBox />
       <div className="tabs">
         <button className={tab === 'do' ? 'on' : ''} onClick={() => setTab('do')}>
           
@@ -418,13 +421,47 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onClose }: { c: Character; 
           
           {tr("Đan dược", "Pills")}
         </button>
+        <button className={tab === 'ke' ? 'on' : ''} onClick={() => setTab('ke')}>
+          {shelfName(c)}
+        </button>
         <button className={tab === 'kho' ? 'on' : ''} onClick={() => setTab('kho')}>
           
           {tr("Đồ hiếm", "Rare goods")}
         </button>
       </div>
       <div className="items">
-        {tab !== 'dan' && filters}
+        {tab !== 'dan' && tab !== 'ke' && filters}
+        {tab === 'ke' && (
+          <>
+            <p className="note" style={{ margin: 0 }}>
+              {tr(`Mỗi món chỉ một chiếc. Kệ bày lại năm ${shelfNext(c)} tuổi (${shelfNext(c) - Math.floor(c.age)} năm nữa).`, `One of each. The shelf restocks at age ${shelfNext(c)} (${shelfNext(c) - Math.floor(c.age)} years).`)}
+            </p>
+            {shelfItems(c).length === 0 && <p className="note">{tr('Kệ trống, đợt sau quay lại.', 'The shelf is empty. Come back next restock.')}</p>}
+            {shelfItems(c).map((it) => {
+              const owned = c.inventory.includes(it.id);
+              const sold = shelfBought(c, it.id);
+              const lock = lockReason(c, it);
+              const price = buyPrice(it);
+              return (
+                <div key={it.id} className={`item rare-${it.rare ?? 0}`}>
+                  <div className="item-icon">
+                    <ItemIcon item={it} />
+                  </div>
+                  <div className="item-body">
+                    <span>
+                      {it.name} {it.rare ? <em className={`rare-tag r${it.rare}`}>{RARE_TXT[it.rare]}</em> : null}
+                    </span>
+                    {it.fx && <small className="fx-line">{fxText(it.fx)}</small>}
+                    <small>{lock ?? it.desc}</small>
+                  </div>
+                  <button className="btn btn-red" disabled={owned || sold || !!lock || c.linhThach < price || !onBuyShelf} onClick={() => onBuyShelf?.(it.id)}>
+                    {owned ? tr('Đã có', 'Owned') : sold ? tr('Đã bán', 'Sold') : fmt(price)}
+                  </button>
+                </div>
+              );
+            })}
+          </>
+        )}
         {tab === 'do' &&
           ITEMS.filter((i) => i.price > 0 && i.src !== 'drop' && i.src !== 'event' && pass(i))
             .sort((x, y) => x.minRealm - y.minRealm || x.price - y.price)
@@ -537,8 +574,10 @@ export function BagSheet({
   onSell,
   onBuy,
   onForge,
+  onMerge,
 }: {
   c: Character;
+  onMerge?: (ids: string[]) => import('@/lib/game/market').MergeResult | null;
   onEquip: (id: string) => void;
   onUsePill: (id: string) => void;
   onSmelt?: (id: string) => void;
@@ -585,7 +624,7 @@ export function BagSheet({
           {tr("Bảo khố ", "Treasury ")}{got}/{HIDDEN_ITEMS.length}
         </button>
       </div>
-      {tab === 'kho' ? <BaoKho book={book} /> : <BagDoll c={c} onEquip={onEquip} onUsePill={onUsePill} onSmelt={onSmelt} onSell={onSell} onBuy={onBuy} onForge={onForge} />}
+      {tab === 'kho' ? <BaoKho book={book} /> : <BagDoll c={c} onEquip={onEquip} onUsePill={onUsePill} onSmelt={onSmelt} onSell={onSell} onBuy={onBuy} onForge={onForge} onMerge={onMerge} />}
     </Sheet>
   );
 }

@@ -1,3 +1,4 @@
+import { sellPrice } from './marketDay';
 import { addMile } from './miles';
 import { chieuOf, dichThuDeath, dichThuDraw, dichThuLose, dichThuRevenge, dichThuWin, dongDaoDraw, dongDaoLose, dongDaoWin, dongMonDraw, dongMonLose, dongMonWin, marginOf, swornLine, tamMaLine } from './fightLines';
 import { qmark } from './hook';
@@ -362,7 +363,7 @@ function rivalLoot(c: Character, r: RivalChar, ctx: EffectCtx, chance: number, s
   const it = (fresh.length ? fresh : items)[Math.floor(ctx.rnd() * (fresh.length ? fresh : items).length)];
   const tag = `[${RARE_NAME[it.rare ?? 0]}]`;
   if (c.inventory.includes(it.id)) {
-    const sell = Math.round(40 + (it.price || 80) * 0.5 + (it.rare ?? 0) * 120);
+    const sell = sellPrice(it);
     money(c, sell);
     return tr(`${say(`${tag} ${it.name}`)} Bạn đã có món này nên đem bán được ${sell} linh thạch.`, `${say(`${tag} ${it.name}`)} You already own this, so you sell it for ${sell} spirit stones.`);
   }

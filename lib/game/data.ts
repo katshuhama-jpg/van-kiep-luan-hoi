@@ -1,3 +1,4 @@
+import { buyPrice, marketToday } from './marketDay';
 import { GEAR } from './gear';
 import { EXTRA_ITEMS } from './items2';
 import type { Focus, PathId, Slot, Talent } from './types';
@@ -894,7 +895,8 @@ export const PILLS = [
 ];
 
 /** Giá đồ phường thị (3.1.0): đắt theo cảnh giới người mua; đồ Luyện Hư, Độ Kiếp mỗi kiếp chỉ bán một lần mỗi món */
-export const itemPrice = (c: { realm: number }, it: { price: number }) => Math.round(it.price * (1 + 0.25 * c.realm));
+/** 4.1.0: giá theo cảnh giới CỦA MÓN (không theo người mua) và thị tượng hôm nay, xem lib/game/marketDay.ts */
+export const itemPrice = (_c: { realm: number }, it: { price: number; minRealm: number; rare?: 0 | 1 | 2 | 3 }) => buyPrice(it);
 export const RARE_STOCK_REALM = 6;
 export const soldOut = (c: { bought?: string[] }, it: { id: string; minRealm: number }) => it.minRealm >= RARE_STOCK_REALM && (c.bought ?? []).includes(it.id);
 /** Quá độ (3.1.0): số năm làm liền một việc mới bắt đầu nguy hiểm, tăng theo cảnh giới. Tu luyện không tính quá độ. */
@@ -914,9 +916,10 @@ export const dienThoYears = (used: number) => DIEN_THO_YEARS[used] ?? 1;
 /** Giá đan ở phường thị: Tụ Khí, Trúc Cơ đắt theo cảnh giới; Diên Thọ đắt thêm 50% mỗi viên đã mua trong kiếp */
 export function pillPrice(c: { realm: number; pillBuy?: Record<string, number> }, id: string): number {
   const base = PILLS.find((p) => p.id === id)?.price ?? 0;
-  if (id === 'tu_khi' || id === 'truc_co') return base * (c.realm + 1);
-  if (id === 'dien_tho') return Math.round(base * (1 + 0.5 * (c.pillBuy?.dien_tho ?? 0)));
-  return base;
+  const m = marketToday().pill;
+  if (id === 'tu_khi' || id === 'truc_co') return Math.round(base * (c.realm + 1) * m);
+  if (id === 'dien_tho') return Math.round(base * (1 + 0.5 * (c.pillBuy?.dien_tho ?? 0)) * m);
+  return Math.round(base * m);
 }
 
 export const TALENTS: Talent[] = [
