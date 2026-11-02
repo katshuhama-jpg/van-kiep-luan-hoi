@@ -11,7 +11,7 @@ import type { PastSelf } from '@/lib/vanKiep';
 import { LOI_ALLOW, LOI_TOTAL, daoKhon, failVanDao, usesVanDao } from '@/lib/game/vanDao';
 import { BREAK_EVENT_ID } from '@/lib/game/events';
 import { ENDINGS, alsoEndings, endingOf } from '@/lib/game/endings';
-import { buyTinh, forge, sell, smelt } from '@/lib/game/forge';
+import { buyCharm, buyTinh, forge, sell, smelt } from '@/lib/game/forge';
 import { BagSheet, BaoKhoSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, HuntSheet, LogPanel, OverworkBar, SEASONS, ShopSheet, Sheet, StageStrip, StatsPanel } from '@/components/Panels';
 import Radar, { charAxes, wealthScore } from '@/components/Radar';
 import { giftOf } from '@/lib/game/gacha';
@@ -21,6 +21,8 @@ import { sessionDropped, signOut } from '@/lib/auth';
 import { lang, setLang } from '@/lib/i18n';
 import { nameOf } from '@/lib/hanviet';
 import { charLang, convertChar, convertMeta, loadDict, looksVi } from '@/lib/retrans';
+import { AUCTION_EVENT_ID, MERCHANT_EVENT_ID, buyShelf, buyWare, haggleWare, mergeItems, merchantWares, robWare, type Ware } from '@/lib/game/market';
+import { MerchantScene } from '@/components/MarketScenes';
 import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, itemPrice, pillPrice, RARE_STOCK_REALM, realmLabel, realmName, soldOut, yearSpeed, youthPace } from '@/lib/game/data';
 import { genNameVi, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick, chungDao, openingEvent } from '@/lib/game/engine';
 import { addCult, addPill, dao, fatal, fmt, giveItem, money, reward, stat, wealthTier, DO_KIEP_REALM } from '@/lib/game/helpers';
@@ -305,7 +307,8 @@ export default function PlayPage() {
   const activeRef = useRef(false);
   const [ciGot, setCiGot] = useState<{ day: number; text: string } | null>(null);
   const [ciOpen, setCiOpen] = useState(false);
-  activeRef.current = running && sheet === null && !ciOpen && phase === 'play' && kiep === null && hoTro === null && vanDao === null && !tut && duelWarn === null && !nhdPeek && !relOpen && !downOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
+  const [wares, setWares] = useState<Ware[] | null>(null);
+  activeRef.current = running && sheet === null && !ciOpen && wares === null && phase === 'play' && kiep === null && hoTro === null && vanDao === null && !tut && duelWarn === null && !nhdPeek && !relOpen && !downOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
 
   /** Ngũ hành giữa bạn và loài quái */
   function monElem(c: Character, m: { el?: Element }) {
@@ -960,6 +963,16 @@ export default function PlayPage() {
       setKiep(i);
       return;
     }
+    // 4.1.0 kinh tế: nhận lời vào hội đấu giá, ghé thương nhân thì mở cảnh riêng
+    if (p && c && p.id === AUCTION_EVENT_ID) track('dau_gia', { bid: i, realm: c.realm });
+    if (p && c && p.id === MERCHANT_EVENT_ID && i === 0) {
+      resolveNow(i);
+      const w = merchantWares(c, rnd);
+      if (w.length) setWares(w);
+      track('thuong_nhan', { go: 1, realm: c.realm });
+      return;
+    }
+    if (p && p.id === MERCHANT_EVENT_ID) track('thuong_nhan', { go: 0 });
     resolveNow(i);
   };
 
@@ -1866,7 +1879,7 @@ export default function PlayPage() {
 
       <footer className="game-bottom">
         {pending && !c.dead ? (
-          <EventCard p={pending} onChoose={choose} />
+          <EventCard p={pending} c={c} onChoose={choose} />
         ) : (
           <div className="dock-inner">
             <OverworkBar c={c} />
@@ -1896,11 +1909,11 @@ export default function PlayPage() {
         )}
       </footer>
 
-      {sheet === 'shop' && <ShopSheet c={c} onBuyItem={buyItem} onBuyPill={buyPill} onClose={() => setSheet(null)} />}
-      {sheet === 'bag' && <BagSheet c={c} book={meta.itemBook ?? []} startTab={bagTab} onSeen={() => seeBook('i')} onEquip={equip} onUsePill={takePill} onSmelt={(id) => act((ch, out) => { const t = smelt(ch, id, makeCtx(ch, out)); if (t) ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: t }); })} onSell={(id) => act((ch, out) => { const t = sell(ch, id, makeCtx(ch, out)); if (t) ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: t }); })} onBuy={(n) => act((ch, out) => { const t = buyTinh(ch, n, makeCtx(ch, out)); if (t) { ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: t }); track('buy_tinh', { n }); } })} onForge={(slot) => {
+      {sheet === 'shop' && <ShopSheet c={c} onBuyItem={buyItem} onBuyPill={buyPill} onBuyCharm={(id) => act((ch, out) => { const t = buyCharm(ch, id, makeCtx(ch, out)); if (t) { ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: t }); track('mua_bua', { id }); } })} onBuyShelf={(id) => act((ch, out) => { const t = buyShelf(ch, id, makeCtx(ch, out)); if (t) { ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: t }); track('ke_hang', { id }); } })} onClose={() => setSheet(null)} />}
+      {sheet === 'bag' && <BagSheet c={c} onMerge={(ids) => { let r: ReturnType<typeof mergeItems> = null; act((ch, out) => { r = mergeItems(ch, ids, makeCtx(ch, out)); if (r) track('hop_do', { kind: r.kind, rare: r.item.rare ?? 0 }); }); return r; }} book={meta.itemBook ?? []} startTab={bagTab} onSeen={() => seeBook('i')} onEquip={equip} onUsePill={takePill} onSmelt={(id) => act((ch, out) => { const t = smelt(ch, id, makeCtx(ch, out)); if (t) ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: t }); })} onSell={(id) => act((ch, out) => { const t = sell(ch, id, makeCtx(ch, out)); if (t) ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: t }); })} onBuy={(n) => act((ch, out) => { const t = buyTinh(ch, n, makeCtx(ch, out)); if (t) { ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: t }); track('buy_tinh', { n }); } })} onForge={(slot, fo) => {
             let r: ReturnType<typeof forge> = null;
             act((ch, out) => {
-              r = forge(ch, makeCtx(ch, out), slot);
+              r = forge(ch, makeCtx(ch, out), slot, fo);
               if (r) {
                 ch.log.push({ age: Math.floor(ch.age), tone: r.kind === 'ok' ? 'good' : 'bad', text: r.text });
                 track('forge', { kind: r.kind, lv: r.lv, slot });
@@ -1908,6 +1921,16 @@ export default function PlayPage() {
             });
             return r;
           }} onClose={() => setSheet(null)} />}
+      {wares && (
+        <MerchantScene
+          c={c}
+          wares={wares}
+          onBuy={(k) => act((ch, out) => { if (buyWare(ch, wares[k], makeCtx(ch, out))) { setWares([...wares]); track('thuong_nhan', { buy: 1 }); } })}
+          onHaggle={(k) => { const ch = charRef.current; if (!ch) return null; const t = haggleWare(ch, wares[k], makeCtx(ch, [])); setWares([...wares]); return t; }}
+          onRob={(k) => act((ch, out) => { robWare(ch, wares[k], makeCtx(ch, out)); setWares([...wares]); track('thuong_nhan', { rob: 1 }); })}
+          onLeave={() => { setWares(null); persist(true); }}
+        />
+      )}
       {sheet === 'bequan' && <BeQuanSheet c={c} onGo={beQuan} onClose={() => setSheet(null)} />}
       {sheet === 'info' && (
         <Sheet title={c.name} onClose={() => setSheet(null)}>

@@ -55,11 +55,21 @@ export interface Character {
   equipped: Partial<Record<Slot, string>>;
   pills: Record<string, number>;
   bought?: string[]; // đồ Luyện Hư, Độ Kiếp đã mua ở phường thị kiếp này (mỗi món một lần)
+  shelf?: { w: number; bought: string[] }; // 4.1.0: kệ hàng hiếm, đợt (5 năm) và các món đã mua trong đợt
+  auctionAt?: number; // tuổi đã nhận thiệp hội đấu giá gần nhất
+  auctionLot?: string; // món đem đấu của kỳ đấu giá đang mời
+  merchantAt?: number; // tuổi gặp thương nhân lưu động gần nhất
+  giangTranAt?: number; // tuổi gặp tiên nhân, ma vương giáng trần (mỗi kiếp một lần)
+  sold?: { y: number; n: number }; // số món đã bán trong năm game này (bán nhiều bị ép giá)
+  hoKhi?: number; // Hộ Khí Phù: rèn hỏng sắp vỡ đồ thì phù vỡ thay
+  linhHoa?: number; // Linh Hỏa: +15% tỉ lệ rèn thành một lần gõ
+  charmBuy?: Record<string, number>; // số phù, hỏa đã mua trong kiếp (đắt dần)
   pillBuy?: Record<string, number>; // số viên đã mua ở phường thị trong kiếp này (Diên Thọ đắt dần)
   dtUsed?: number; // số Diên Thọ Đan đã uống trong kiếp này (kháng dược)
   lifeExtra?: number; // thọ nguyên cộng thêm từ đan dược, được giữ ngoài mức trần thọ của cảnh giới
   focus: Focus;
   partner: string | null;
+  ht?: { lv: number; next: number; q?: { k: 'dot_pha' | 'tram_yeu' | 'tich_tien' | 'dao_lu' | 'tam_ma'; target: number; until: number } | null; done?: number }; // 4.1.0: Hệ Thống (lib/game/heThong.ts)
   pet: boolean;
   log: LogEntry[];
   lang?: 'vi' | 'en'; // ngôn ngữ lúc chơi kiếp này, đổi ngôn ngữ thì dịch lại chữ đã lưu
@@ -249,6 +259,7 @@ export interface GameEvent {
   title: string;
   text: (c: Character) => string;
   choices: (c: Character, seed: number) => Choice[];
+  item?: (c: Character) => string | undefined; // 4.1.0: món đồ hiện kèm thẻ sự kiện (đấu giá)
 }
 
 export interface PendingEvent {
@@ -257,6 +268,7 @@ export interface PendingEvent {
   title: string;
   text: string;
   choices: { label: string; hint?: string; lean: Lean }[];
+  item?: string; // 4.1.0: id món đồ để thẻ sự kiện vẽ ảnh và chỉ số
 }
 
 export interface EffectCtx {

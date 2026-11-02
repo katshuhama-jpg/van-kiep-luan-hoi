@@ -1,5 +1,7 @@
+import { buyPrice, marketOf } from './marketDay';
 import { GEAR } from './gear';
 import { EXTRA_ITEMS } from './items2';
+import { TIEN_GEAR } from './gearTien';
 import type { Focus, PathId, Slot, Talent } from './types';
 import { tr } from '../i18n';
 
@@ -167,7 +169,7 @@ export const FOCUS: Record<Focus, { name: string; desc: string; minAge: number }
   luyen_dan: { name: tr('Luyện đan', "Alchemy"), desc: tr('Ra đan dược, linh thạch', "Pills, spirit stones"), minAge: 12 },
   du_ngoan: { name: tr('Du ngoạn', "Wander"), desc: tr('Nhiều kỳ ngộ', "Many encounters"), minAge: 10 },
   kiem_tien: { name: tr('Kiếm tiền', "Earn money"), desc: tr('Linh thạch', "Spirit stones"), minAge: 8 },
-  ket_duyen: { name: tr('Kết duyên', "Romance"), desc: tr('Tâm cảnh, đạo lữ', "Mind, Dao companion"), minAge: 16 },
+  ket_duyen: { name: tr('Kết duyên', "Romance"), desc: tr('Tâm cảnh, giảm tâm ma, gặp đạo lữ; có đạo lữ thì song tu (tu vi 70%), chưa có thì đạo hữu tặng đan, chia linh thạch, chỉ điểm', "Mind, less heart demon, meet a companion; with one you dual-cultivate (70% cultivation), without one friends give pills, stones, and insight"), minAge: 16 },
   tru_yeu: { name: tr('Trừ yêu', "Hunt demons"), desc: tr('Đánh quái lên cấp', "Slay monsters, level up"), minAge: 10 },
 };
 
@@ -844,6 +846,7 @@ export const ITEMS: Item[] = [
   { id: 'kiem_bay', name: tr('Bản mệnh phi kiếm', "Natal flying sword"), icon: true, slot: 'phu_kien', price: 1400, minRealm: 3, path: 'kiem', desc: tr('Kiếm bay vòng quanh chủ.', "A sword that circles its master."), look: 'kiembay', fx: { cult: 20, atk: 25 } },
   ...GEAR,
   ...EXTRA_ITEMS,
+  ...TIEN_GEAR,
 ];
 
 /** Tổng chỉ số từ đồ đang mặc */
@@ -872,6 +875,18 @@ const FX_LABEL: Record<keyof ItemFx, string> = {
 };
 
 /** Mô tả chỉ số ngắn gọn: "Công +12% · Bạo kích +8%" */
+/** Từng dòng chỉ số của món đồ, để vẽ thành nhãn */
+export function fxParts(fx?: ItemFx): { label: string; val: string; bad: boolean }[] {
+  if (!fx) return [];
+  return (Object.keys(fx) as (keyof ItemFx)[])
+    .filter((k) => fx[k])
+    .map((k) => {
+      const v = fx[k]!;
+      const unit = k === 'tamCanh' || k === 'tamMa' ? '' : '%';
+      return { label: FX_LABEL[k], val: `${v > 0 ? '+' : ''}${v}${unit}`, bad: k === 'tamMa' ? v > 0 : v < 0 };
+    });
+}
+
 export function fxText(fx?: ItemFx): string {
   if (!fx) return '';
   return (Object.keys(fx) as (keyof ItemFx)[])
@@ -894,7 +909,8 @@ export const PILLS = [
 ];
 
 /** Giá đồ phường thị (3.1.0): đắt theo cảnh giới người mua; đồ Luyện Hư, Độ Kiếp mỗi kiếp chỉ bán một lần mỗi món */
-export const itemPrice = (c: { realm: number }, it: { price: number }) => Math.round(it.price * (1 + 0.25 * c.realm));
+/** 4.1.0: giá theo cảnh giới CỦA MÓN (không theo người mua) và thị tượng hôm nay, xem lib/game/marketDay.ts */
+export const itemPrice = (c: { realm: number; age: number; name?: string; lifeNo?: number }, it: { price: number; minRealm: number; rare?: 0 | 1 | 2 | 3 }) => buyPrice(it, marketOf(c));
 export const RARE_STOCK_REALM = 6;
 export const soldOut = (c: { bought?: string[] }, it: { id: string; minRealm: number }) => it.minRealm >= RARE_STOCK_REALM && (c.bought ?? []).includes(it.id);
 /** Quá độ (3.1.0): số năm làm liền một việc mới bắt đầu nguy hiểm, tăng theo cảnh giới. Tu luyện không tính quá độ. */
@@ -912,11 +928,12 @@ export const DIEN_THO_YEARS = [8, 6, 4, 2];
 export const dienThoYears = (used: number) => DIEN_THO_YEARS[used] ?? 1;
 
 /** Giá đan ở phường thị: Tụ Khí, Trúc Cơ đắt theo cảnh giới; Diên Thọ đắt thêm 50% mỗi viên đã mua trong kiếp */
-export function pillPrice(c: { realm: number; pillBuy?: Record<string, number> }, id: string): number {
+export function pillPrice(c: { realm: number; age: number; name?: string; lifeNo?: number; pillBuy?: Record<string, number> }, id: string): number {
   const base = PILLS.find((p) => p.id === id)?.price ?? 0;
-  if (id === 'tu_khi' || id === 'truc_co') return base * (c.realm + 1);
-  if (id === 'dien_tho') return Math.round(base * (1 + 0.5 * (c.pillBuy?.dien_tho ?? 0)));
-  return base;
+  const m = marketOf(c).pill;
+  if (id === 'tu_khi' || id === 'truc_co') return Math.round(base * (c.realm + 1) * m);
+  if (id === 'dien_tho') return Math.round(base * (1 + 0.5 * (c.pillBuy?.dien_tho ?? 0)) * m);
+  return Math.round(base * m);
 }
 
 export const TALENTS: Talent[] = [

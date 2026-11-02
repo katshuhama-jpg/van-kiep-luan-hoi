@@ -1,3 +1,5 @@
+import { sellNow } from './marketDay';
+import { DUP_SELL } from './combat';
 import { addMile } from './miles';
 import { chieuOf, dichThuDeath, dichThuDraw, dichThuLose, dichThuRevenge, dichThuWin, dongDaoDraw, dongDaoLose, dongDaoWin, dongMonDraw, dongMonLose, dongMonWin, marginOf, swornLine, tamMaLine } from './fightLines';
 import { qmark } from './hook';
@@ -132,6 +134,19 @@ function npcRival(c: Character, realm: number, sign: number, rnd: () => number):
 }
 
 /** Đổi cấp chiến đấu ra cảnh giới và tầng: Luyện Khí 1-9, từ Trúc Cơ mỗi cảnh giới 3 tầng */
+/** 4.1.0 (#49, Tyler chốt 2/11): trần chênh cảnh giới cho mọi trận bắt buộc. Kẻ đến tìm mình (oan gia, truy sát)
+ * mạnh hơn tối đa 6 cấp chiến đấu (khoảng 2 đại cảnh giới); người chưa phi thăng không gặp người ở tiên giới, ma giới. */
+export const FORCED_GAP_MAX = 6;
+export function capFoe(c: Character, r: RivalChar): RivalChar {
+  const meCl = combatLevel(c);
+  const cosmosOk = !r.cosmos || r.cosmos === c.cosmos;
+  const over = combatLevel(foeChar(r)) - meCl > FORCED_GAP_MAX;
+  if (cosmosOk && !over) return r;
+  const lim = c.cosmos ? 39 : 27; // chưa phi thăng thì tối đa Độ Kiếp
+  const t = clToRealm(Math.max(1, Math.min(lim, meCl + FORCED_GAP_MAX, over ? meCl + FORCED_GAP_MAX : combatLevel(foeChar(r)))));
+  return { ...r, realm: t.realm, layer: t.layer, cosmos: cosmosOk ? r.cosmos : c.cosmos ?? null };
+}
+
 function clToRealm(cl: number): { realm: number; layer: number } {
   if (cl <= 9) return { realm: 1, layer: Math.max(1, cl) };
   const realm = Math.min(11, 2 + Math.floor((cl - 10) / 3));
@@ -223,7 +238,7 @@ function pickDuel0(c: Character, rnd: () => number): DuelFoe | null {
   const S = SOCIAL.cur;
   // truy sát: người dò tin đã tìm ra kẻ thù, chạm mặt chắc chắn
   if (c.hunt && c.age >= c.hunt.at) {
-    const rival = c.hunt.rival;
+    const rival = capFoe(c, c.hunt.rival);
     c.hunt = null;
     return {
       kind: 'dich_thu',
@@ -253,7 +268,7 @@ function pickDuel0(c: Character, rnd: () => number): DuelFoe | null {
     const r0 = cands.find((x) => x.name === v.name) ?? cands[0];
     const gap = combatLevel(foeChar(r0)) - meCl;
     const t = gap > 1 ? clToRealm(Math.max(1, Math.min(39, meCl + Math.round(gap * OAN_GIA_GAP_KEEP)))) : null;
-    const rival = t && (t.realm < r0.realm || (t.realm === r0.realm && t.layer < r0.layer)) ? { ...r0, realm: t.realm, layer: t.layer } : r0;
+    const rival = capFoe(c, t && (t.realm < r0.realm || (t.realm === r0.realm && t.layer < r0.layer)) ? { ...r0, realm: t.realm, layer: t.layer } : r0);
     return {
       kind: 'dich_thu',
       rival,
@@ -362,7 +377,7 @@ function rivalLoot(c: Character, r: RivalChar, ctx: EffectCtx, chance: number, s
   const it = (fresh.length ? fresh : items)[Math.floor(ctx.rnd() * (fresh.length ? fresh : items).length)];
   const tag = `[${RARE_NAME[it.rare ?? 0]}]`;
   if (c.inventory.includes(it.id)) {
-    const sell = Math.round(40 + (it.price || 80) * 0.5 + (it.rare ?? 0) * 120);
+    const sell = Math.round(sellNow(c, it) * DUP_SELL);
     money(c, sell);
     return tr(`${say(`${tag} ${it.name}`)} Bạn đã có món này nên đem bán được ${sell} linh thạch.`, `${say(`${tag} ${it.name}`)} You already own this, so you sell it for ${sell} spirit stones.`);
   }
