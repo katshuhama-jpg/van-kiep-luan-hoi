@@ -5,6 +5,7 @@ import { VanKiepRow } from './VanKiep';
 import SauChungDao from './SauChungDao';
 import Link from 'next/link';
 import { MarketOmenBox } from './MarketScenes';
+import { CHARMS, charmCount, charmPrice } from '@/lib/game/forge';
 import { buyPrice, marketOf, shelfBought, shelfItems, shelfName, shelfNext } from '@/lib/game/market';
 import { FB_PAGE } from '@/lib/links';
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
@@ -378,7 +379,7 @@ function lockReason(c: Character, it: Item): string | null {
   return null;
 }
 
-export function ShopSheet({ c, onBuyItem, onBuyPill, onBuyShelf, onClose }: { c: Character; onBuyItem: (id: string) => void; onBuyPill: (id: string) => void; onBuyShelf?: (id: string) => void; onClose: () => void }) {
+export function ShopSheet({ c, onBuyItem, onBuyPill, onBuyShelf, onBuyCharm, onClose }: { c: Character; onBuyItem: (id: string) => void; onBuyPill: (id: string) => void; onBuyShelf?: (id: string) => void; onBuyCharm?: (id: 'ho_khi' | 'linh_hoa') => void; onClose: () => void }) {
   const [tab, setTab] = useState<'do' | 'dan' | 'ke' | 'kho'>(c.cosmos ? 'ke' : 'do');
   const [slot, setSlot] = useState<'all' | Slot>('all');
   const [fit, setFit] = useState(true);
@@ -518,6 +519,24 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onBuyShelf, onClose }: { c:
           </>
         )}
         {tab === 'dan' &&
+          onBuyCharm &&
+          CHARMS.map((ch) => (
+            <div key={ch.id} className="item">
+              <div className="item-icon">
+                <img src={ch.icon} width={34} height={34} alt="" className="px-icon" />
+              </div>
+              <div className="item-body">
+                <span>
+                  {ch.name} {charmCount(c, ch.id) ? <small>{tr('(có ', '(have ')}{charmCount(c, ch.id)})</small> : null}
+                </span>
+                <small>{ch.desc}{tr(' Dùng ở lò rèn.', ' Used at the forge.')}</small>
+              </div>
+              <button className="btn btn-red" disabled={c.linhThach < charmPrice(c, ch.id)} onClick={() => onBuyCharm(ch.id)}>
+                {fmt(charmPrice(c, ch.id))}
+              </button>
+            </div>
+          ))}
+        {tab === 'dan' &&
           PILLS.map((p) => (
             <div key={p.id} className="item">
               <div className="item-icon">
@@ -583,7 +602,7 @@ export function BagSheet({
   onSmelt?: (id: string) => void;
   onSell?: (id: string) => void;
   onBuy?: (n: number) => void;
-  onForge?: (slot: import('@/lib/game/types').Slot) => import('@/lib/game/forge').ForgeResult | null;
+  onForge?: (slot: import('@/lib/game/types').Slot, opts?: import('@/lib/game/forge').ForgeOpts) => import('@/lib/game/forge').ForgeResult | null;
   onClose: () => void;
   book: string[];
   startTab?: 'tui' | 'kho';

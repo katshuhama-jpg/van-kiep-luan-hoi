@@ -5,7 +5,7 @@ import ItemIcon from './ItemIcon';
 import Sprite from './Sprite';
 import { ITEMS, PILLS, fxText as fxTextData, gearFx, type Item } from '@/lib/game/data';
 import { playerStats } from '@/lib/game/combat';
-import { FORGE_COST, FORGE_MAX, FORGE_STAT, canSmelt, elFx, forgeLevel, forgeLv, itemEl, sellValue, smeltValue, type ForgeResult } from '@/lib/game/forge';
+import { FORGE_COST, FORGE_MAX, FORGE_STAT, canSmelt, elFx, forgeLevel, forgeLv, itemEl, sellValue, smeltValue, type ForgeOpts, type ForgeResult } from '@/lib/game/forge';
 import ForgeScene from './ForgeScene';
 import { MergeScene } from './MarketScenes';
 import type { MergeResult } from '@/lib/game/market';
@@ -51,7 +51,7 @@ function writePref(k: string, v: string) {
  * Túi đồ kiểu búp bê: nhân vật ở giữa, ô trang bị quanh người, chỉ số bên cạnh, lưới đồ ở dưới.
  * Chạm một ô để xem chi tiết và thao tác: dùng, bán, phân giải, mở lò rèn.
  */
-export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForge, onBuy, onMerge }: { c: Character; onEquip: (id: string) => void; onUsePill: (id: string) => void; onSmelt?: (id: string) => void; onSell?: (id: string) => void; onForge?: (slot: Slot) => ForgeResult | null; onBuy?: (n: number) => void; onMerge?: (ids: string[]) => MergeResult | null }) {
+export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForge, onBuy, onMerge }: { c: Character; onEquip: (id: string) => void; onUsePill: (id: string) => void; onSmelt?: (id: string) => void; onSell?: (id: string) => void; onForge?: (slot: Slot, opts?: ForgeOpts) => ForgeResult | null; onBuy?: (n: number) => void; onMerge?: (ids: string[]) => MergeResult | null }) {
   const [forging, setForging] = useState<Slot | null>(null);
   const [merging, setMerging] = useState(false);
   const [kind, setKind] = useState<Kind>(() => (readPref('vkl.bagKind') as Kind) || 'all');

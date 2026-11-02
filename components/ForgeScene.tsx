@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import ItemIcon from './ItemIcon';
 import { ITEMS } from '@/lib/game/data';
-import { FORGE_CHANCE, FORGE_COST, FORGE_MAX, FORGE_PER, FORGE_STAT, breakChance, elFx, forgeLv, itemEl, tinhPrice, type ForgeResult } from '@/lib/game/forge';
+import { FORGE_CHANCE, FORGE_COST, FORGE_MAX, FORGE_PER, FORGE_STAT, breakChance, elFx, forgeLv, itemEl, tinhPrice, HOA_BONUS, CHARMS, type ForgeOpts, type ForgeResult } from '@/lib/game/forge';
 import type { Character, Slot } from '@/lib/game/types';
 import { tr } from '@/lib/i18n';
 
@@ -13,10 +13,12 @@ const EL_COL: Record<string, string> = { kim: '#d8d8e8', moc: '#5ac86a', thuy: '
  * Lò rèn: vũ khí đang cầm đứng giữa, bấm Gõ búa thì búa mới đập ba nhịp rồi ra kết quả.
  * Búa lấy từ bộ icon CC0 của Henrique Lazarini.
  */
-export default function ForgeScene({ c, slot = 'vu_khi', onForge, onBuy, onClose }: { c: Character; slot?: Slot; onForge: (slot: Slot) => ForgeResult | null; onBuy?: (n: number) => void; onClose: () => void }) {
+export default function ForgeScene({ c, slot = 'vu_khi', onForge, onBuy, onClose }: { c: Character; slot?: Slot; onForge: (slot: Slot, opts?: ForgeOpts) => ForgeResult | null; onBuy?: (n: number) => void; onClose: () => void }) {
   const [phase, setPhase] = useState<'idle' | 'hit' | 'res'>('idle');
   const [res, setRes] = useState<ForgeResult | null>(null);
   const [hits, setHits] = useState(0);
+  const [useHoa, setUseHoa] = useState(false);
+  const [usePhu, setUsePhu] = useState(true);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
   const w = c.equipped[slot] ? ITEMS.find((i) => i.id === c.equipped[slot]) : null;
@@ -28,8 +30,13 @@ export default function ForgeScene({ c, slot = 'vu_khi', onForge, onBuy, onClose
   const el = elFx(itemEl(c, it.id));
   const max = lv >= FORGE_MAX;
   const cost = FORGE_COST[lv] ?? 0;
-  const ok = FORGE_CHANCE[lv] ?? 0;
-  const brk = (1 - ok) * breakChance(c, slot);
+  const hasHoa = (c.linhHoa ?? 0) > 0;
+  const hasPhu = (c.hoKhi ?? 0) > 0;
+  const hoaOn = useHoa && hasHoa;
+  const phuOn = usePhu && hasPhu;
+  const ok = Math.min(0.99, (FORGE_CHANCE[lv] ?? 0) + (hoaOn ? HOA_BONUS : 0));
+  const brk = phuOn ? 0 : (1 - ok) * breakChance(c, slot);
+  const rawBrk = (1 - ok) * breakChance(c, slot);
   const enough = (c.tinhHoa ?? 0) >= cost;
 
   function strike() {
@@ -41,7 +48,8 @@ export default function ForgeScene({ c, slot = 'vu_khi', onForge, onBuy, onClose
     [0, 1, 2].forEach((i) => timers.current.push(setTimeout(() => setHits(i + 1), 280 + i * 360)));
     timers.current.push(
       setTimeout(() => {
-        const r = onForge(slot);
+        const r = onForge(slot, { hoa: hoaOn, phu: phuOn });
+        setUseHoa(false);
         setRes(r);
         setPhase('res');
         try {
@@ -110,6 +118,21 @@ export default function ForgeScene({ c, slot = 'vu_khi', onForge, onBuy, onClose
                 <dt>{tr("Vỡ mất đồ", "Item shatters")}</dt>
                 <dd className={brk > 0 ? 'bad' : ''}>{brk > 0 ? `${Math.round(brk * 100)}%` : tr('không', "none")}</dd>
               </dl>
+              {(hasHoa || hasPhu || rawBrk > 0) && (
+                <div className="fs-charms">
+                  <label className={hasHoa ? '' : 'off'}>
+                    <input type="checkbox" checked={hoaOn} disabled={!hasHoa || phase === 'hit'} onChange={(e) => setUseHoa(e.target.checked)} />
+                    <img src={CHARMS[1].icon} width={24} height={24} alt="" className="px-icon" />
+                    {tr(`Đốt Linh Hỏa (+${HOA_BONUS * 100}%) · còn ${c.linhHoa ?? 0}`, `Burn Spirit Flame (+${HOA_BONUS * 100}%) · ${c.linhHoa ?? 0} left`)}
+                  </label>
+                  <label className={hasPhu ? '' : 'off'}>
+                    <input type="checkbox" checked={phuOn} disabled={!hasPhu || phase === 'hit'} onChange={(e) => setUsePhu(e.target.checked)} />
+                    <img src={CHARMS[0].icon} width={24} height={24} alt="" className="px-icon" />
+                    {tr(`Mang Hộ Khí Phù (không vỡ đồ) · còn ${c.hoKhi ?? 0}`, `Carry Item Ward (no shattering) · ${c.hoKhi ?? 0} left`)}
+                  </label>
+                  {!hasHoa && !hasPhu && <small className="note">{tr('Linh Hỏa, Hộ Khí Phù bán ở Phường thị, tab Đan dược.', 'Spirit Flame and Item Ward are sold at the Market, Pills tab.')}</small>}
+                </div>
+              )}
               <button className="btn btn-red btn-big fs-go" disabled={phase === 'hit' || !enough} onClick={strike}>
                 {phase === 'hit' ? tr('Đang rèn...', "Forging...") : enough ? tr('⚒ Gõ búa', "⚒ Strike") : tr('Thiếu tinh thiết', "Not enough refined iron")}
                 <small>

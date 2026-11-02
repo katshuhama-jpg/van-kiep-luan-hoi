@@ -11,7 +11,7 @@ import type { PastSelf } from '@/lib/vanKiep';
 import { LOI_ALLOW, LOI_TOTAL, daoKhon, failVanDao, usesVanDao } from '@/lib/game/vanDao';
 import { BREAK_EVENT_ID } from '@/lib/game/events';
 import { ENDINGS, alsoEndings, endingOf } from '@/lib/game/endings';
-import { buyTinh, forge, sell, smelt } from '@/lib/game/forge';
+import { buyCharm, buyTinh, forge, sell, smelt } from '@/lib/game/forge';
 import { BagSheet, BaoKhoSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, HuntSheet, LogPanel, OverworkBar, SEASONS, ShopSheet, Sheet, StageStrip, StatsPanel } from '@/components/Panels';
 import Radar, { charAxes, wealthScore } from '@/components/Radar';
 import { giftOf } from '@/lib/game/gacha';
@@ -1909,11 +1909,11 @@ export default function PlayPage() {
         )}
       </footer>
 
-      {sheet === 'shop' && <ShopSheet c={c} onBuyItem={buyItem} onBuyPill={buyPill} onBuyShelf={(id) => act((ch, out) => { const t = buyShelf(ch, id, makeCtx(ch, out)); if (t) { ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: t }); track('ke_hang', { id }); } })} onClose={() => setSheet(null)} />}
-      {sheet === 'bag' && <BagSheet c={c} onMerge={(ids) => { let r: ReturnType<typeof mergeItems> = null; act((ch, out) => { r = mergeItems(ch, ids, makeCtx(ch, out)); if (r) track('hop_do', { kind: r.kind, rare: r.item.rare ?? 0 }); }); return r; }} book={meta.itemBook ?? []} startTab={bagTab} onSeen={() => seeBook('i')} onEquip={equip} onUsePill={takePill} onSmelt={(id) => act((ch, out) => { const t = smelt(ch, id, makeCtx(ch, out)); if (t) ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: t }); })} onSell={(id) => act((ch, out) => { const t = sell(ch, id, makeCtx(ch, out)); if (t) ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: t }); })} onBuy={(n) => act((ch, out) => { const t = buyTinh(ch, n, makeCtx(ch, out)); if (t) { ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: t }); track('buy_tinh', { n }); } })} onForge={(slot) => {
+      {sheet === 'shop' && <ShopSheet c={c} onBuyItem={buyItem} onBuyPill={buyPill} onBuyCharm={(id) => act((ch, out) => { const t = buyCharm(ch, id, makeCtx(ch, out)); if (t) { ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: t }); track('mua_bua', { id }); } })} onBuyShelf={(id) => act((ch, out) => { const t = buyShelf(ch, id, makeCtx(ch, out)); if (t) { ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: t }); track('ke_hang', { id }); } })} onClose={() => setSheet(null)} />}
+      {sheet === 'bag' && <BagSheet c={c} onMerge={(ids) => { let r: ReturnType<typeof mergeItems> = null; act((ch, out) => { r = mergeItems(ch, ids, makeCtx(ch, out)); if (r) track('hop_do', { kind: r.kind, rare: r.item.rare ?? 0 }); }); return r; }} book={meta.itemBook ?? []} startTab={bagTab} onSeen={() => seeBook('i')} onEquip={equip} onUsePill={takePill} onSmelt={(id) => act((ch, out) => { const t = smelt(ch, id, makeCtx(ch, out)); if (t) ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: t }); })} onSell={(id) => act((ch, out) => { const t = sell(ch, id, makeCtx(ch, out)); if (t) ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: t }); })} onBuy={(n) => act((ch, out) => { const t = buyTinh(ch, n, makeCtx(ch, out)); if (t) { ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: t }); track('buy_tinh', { n }); } })} onForge={(slot, fo) => {
             let r: ReturnType<typeof forge> = null;
             act((ch, out) => {
-              r = forge(ch, makeCtx(ch, out), slot);
+              r = forge(ch, makeCtx(ch, out), slot, fo);
               if (r) {
                 ch.log.push({ age: Math.floor(ch.age), tone: r.kind === 'ok' ? 'good' : 'bad', text: r.text });
                 track('forge', { kind: r.kind, lv: r.lv, slot });

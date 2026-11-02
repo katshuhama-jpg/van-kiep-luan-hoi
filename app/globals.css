@@ -4721,3 +4721,7 @@ button.shadow-card { cursor: pointer; }
 .mc-ware.bought, .mc-ware.gone { opacity: 0.6; }
 .mc-acts { display: flex; flex-direction: column; gap: 4px; flex: none; }
 .mc-acts .btn { padding: 3px 10px; font-size: 14px; }
+.fs-charms { display: flex; flex-direction: column; gap: 4px; padding: 6px 8px; background: #fffaf0; border: 2px solid #1f160d; }
+.fs-charms label { display: flex; align-items: center; gap: 6px; font-size: 14px; }
+.fs-charms label.off { opacity: 0.5; }
+.fs-charms img { image-rendering: pixelated; }

@@ -128,7 +128,44 @@ export const breakChance = (c: Character, slot: Slot = 'vu_khi') => (c.legend?.i
 
 export type ForgeResult = { kind: 'ok' | 'fail' | 'break'; text: string; lv: number };
 
-export function forge(c: Character, ctx: EffectCtx, slot: Slot = 'vu_khi'): ForgeResult | null {
+// ---------------- Hộ Khí Phù, Linh Hỏa (4.1.0, góp ý #50) ----------------
+export const HOA_BONUS = 0.15;
+export interface Charm {
+  id: 'ho_khi' | 'linh_hoa';
+  name: string;
+  icon: string;
+  desc: string;
+  base: number;
+  step: number; // mỗi lần mua trong kiếp đắt thêm
+}
+export const CHARMS: Charm[] = [
+  { id: 'ho_khi', name: tr('Hộ Khí Phù', 'Item Ward Talisman'), icon: '/icons/g_bua_binh_an.png', desc: tr('Rèn hỏng mà đồ sắp vỡ thì phù cháy thay, giữ lại món đồ. Chỉ mất phù khi nó cứu được đồ.', 'If a failed forge would shatter your gear, the talisman burns instead. Only used up when it saves the item.'), base: 300, step: 0.5 },
+  { id: 'linh_hoa', name: tr('Linh Hỏa', 'Spirit Flame'), icon: '/icons/g_hoa_linh_chau.png', desc: tr(`Thêm ${HOA_BONUS * 100}% tỉ lệ rèn thành cho một lần gõ búa.`, `+${HOA_BONUS * 100}% forging success for one strike.`), base: 120, step: 0.3 },
+];
+export const charmCount = (c: Character, id: Charm['id']) => (id === 'ho_khi' ? c.hoKhi : c.linhHoa) ?? 0;
+/** Giá phù, hỏa: theo cảnh giới, đắt dần theo số đã mua trong kiếp, theo thị tượng (như đan) */
+export function charmPrice(c: Character, id: Charm['id']): number {
+  const ch = CHARMS.find((x) => x.id === id)!;
+  return Math.round(ch.base * (c.realm + 1) * (1 + ch.step * (c.charmBuy?.[id] ?? 0)) * marketOf(c).pill);
+}
+export function buyCharm(c: Character, id: Charm['id'], ctx: EffectCtx): string | null {
+  const ch = CHARMS.find((x) => x.id === id);
+  if (!ch) return null;
+  const price = charmPrice(c, id);
+  if (c.linhThach < price) return null;
+  c.linhThach -= price;
+  c.charmBuy = { ...(c.charmBuy ?? {}), [id]: (c.charmBuy?.[id] ?? 0) + 1 };
+  if (id === 'ho_khi') c.hoKhi = (c.hoKhi ?? 0) + 1;
+  else c.linhHoa = (c.linhHoa ?? 0) + 1;
+  ctx.fx('buy', ch.name);
+  return tr(`Mua ${ch.name} ở phường thị (-${price} linh thạch).`, `Bought ${ch.name} at the market (-${price} spirit stones).`);
+}
+export interface ForgeOpts {
+  hoa?: boolean; // đốt Linh Hỏa cho lần gõ này
+  phu?: boolean; // mang Hộ Khí Phù theo
+}
+
+export function forge(c: Character, ctx: EffectCtx, slot: Slot = 'vu_khi', opts: ForgeOpts = {}): ForgeResult | null {
   const w = c.equipped[slot];
   if (!w) return null;
   const lv = forgeLv(c, slot);
@@ -144,12 +181,19 @@ export function forge(c: Character, ctx: EffectCtx, slot: Slot = 'vu_khi'): Forg
       c.forge = n;
     } else c.forges = { ...(c.forges ?? {}), [slot]: { id: w, lv: n } };
   };
-  if (ctx.rnd() < FORGE_CHANCE[lv]) {
+  const hoa = !!opts.hoa && (c.linhHoa ?? 0) > 0;
+  if (hoa) c.linhHoa = (c.linhHoa ?? 0) - 1;
+  if (ctx.rnd() < Math.min(0.99, FORGE_CHANCE[lv] + (hoa ? HOA_BONUS : 0))) {
     set(lv + 1);
     ctx.fx('layer', `${name} +${lv + 1}`);
     return { kind: 'ok', lv: lv + 1, text: tr(`Lửa lò đỏ rực, ${name} lên +${lv + 1}: ${FORGE_STAT[slot]} +${Math.round((lv + 1) * FORGE_PER * 100)}%, hệ ${el.name} cấp ${lv + 1} (-${costN} tinh thiết).`, `The forge fire blazes red, ${name} rises to +${lv + 1}: ${FORGE_STAT[slot]} +${Math.round((lv + 1) * FORGE_PER * 100)}%, ${el.name} element level ${lv + 1} (-${costN} refined iron).`) };
   }
   if (ctx.rnd() < breakChance(c, slot)) {
+    if (opts.phu && (c.hoKhi ?? 0) > 0) {
+      c.hoKhi = (c.hoKhi ?? 0) - 1;
+      ctx.fx('hurt', tr('Phù cháy', 'Talisman burns'));
+      return { kind: 'fail', lv, text: tr(`Thân ${name} nứt toác, Hộ Khí Phù bùng cháy thành tro, vết nứt liền lại. ${name} vẫn giữ +${lv} (-${costN} tinh thiết, -1 Hộ Khí Phù).`, `${name} cracks open, the Item Ward Talisman bursts into ash and the crack seals. ${name} stays at +${lv} (-${costN} refined iron, -1 talisman).`) };
+    }
     // vỡ: mất luôn món đồ
     c.inventory = c.inventory.filter((x) => x !== w);
     delete c.equipped[slot];

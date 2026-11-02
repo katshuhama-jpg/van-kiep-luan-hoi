@@ -60,6 +60,9 @@ export interface Character {
   auctionLot?: string; // món đem đấu của kỳ đấu giá đang mời
   merchantAt?: number; // tuổi gặp thương nhân lưu động gần nhất
   sold?: { y: number; n: number }; // số món đã bán trong năm game này (bán nhiều bị ép giá)
+  hoKhi?: number; // Hộ Khí Phù: rèn hỏng sắp vỡ đồ thì phù vỡ thay
+  linhHoa?: number; // Linh Hỏa: +15% tỉ lệ rèn thành một lần gõ
+  charmBuy?: Record<string, number>; // số phù, hỏa đã mua trong kiếp (đắt dần)
   pillBuy?: Record<string, number>; // số viên đã mua ở phường thị trong kiếp này (Diên Thọ đắt dần)
   dtUsed?: number; // số Diên Thọ Đan đã uống trong kiếp này (kháng dược)
   lifeExtra?: number; // thọ nguyên cộng thêm từ đan dược, được giữ ngoài mức trần thọ của cảnh giới
