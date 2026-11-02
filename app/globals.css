@@ -4776,3 +4776,82 @@ button.shadow-card { cursor: pointer; }
 .cp-cut-fx { position: absolute; inset: 0; z-index: 1; }
 .cp-cut-fx .cpf { --a: 30%; --t: 70%; }
 .cp-cut-fx .cpf > span { bottom: 50%; }
+
+/* 4.2.0 Tàng Kinh Các */
+.dock-actions.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.game-bottom .dock-actions.four button { font-size: 16px; padding: 2px 2px; }
+.tk-tq { display: flex; align-items: center; gap: 3px; font-weight: 700; }
+.tk-stage { position: relative; height: 312px; flex: none; overflow: hidden; background-size: cover; background-position: center bottom; image-rendering: pixelated; border-bottom: 3px solid #1f160d; }
+.tk-stage::before { content: ''; position: absolute; inset: 0; background: rgba(14, 22, 40, 0.38); }
+.tk-title { position: absolute; left: 50%; top: 0; z-index: 3; transform: translateX(-50%); padding: 1px 12px; font-size: 13px; font-weight: 700; color: #fff3dc; background: #2a3a5a; border: 2px solid #1f160d; border-top: 0; white-space: nowrap; }
+.tk-floor { position: absolute; left: 50%; bottom: 6px; transform: translateX(-50%); opacity: 0.85; }
+.tk-sen { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 1; }
+.tk-me { position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 2; }
+.tk-qi { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.tk-qi i { position: absolute; bottom: 30px; width: 6px; height: 6px; background: #9ff0c8; animation: tkQi 2.4s steps(8) infinite; }
+@keyframes tkQi { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(-110px); opacity: 0; } }
+.tk-seat { position: absolute; z-index: 3; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 0; font: inherit; background: none; border: 0; cursor: pointer; }
+.tk-seat small { max-width: 84px; font-size: 11px; font-weight: 700; line-height: 1.1; text-align: center; color: #fff3dc; text-shadow: 1px 1px 0 #1f160d, -1px -1px 0 #1f160d, 1px -1px 0 #1f160d, -1px 1px 0 #1f160d; }
+.tk-seat.sel .tk-orb { animation: tkOrbSel 0.8s steps(2) infinite; }
+@keyframes tkOrbSel { 50% { transform: translateY(-3px); } }
+.tk-seat .tk-orb { filter: drop-shadow(0 3px 0 rgba(0, 0, 0, 0.45)); }
+.tk-orb { --oc: #8a7a5a; position: relative; display: grid; place-items: center; flex: none; background: #1f160d; clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%); }
+.tk-orb::before { content: ''; position: absolute; inset: 3px; background: var(--oc); clip-path: inherit; }
+.tk-orb-in { position: absolute; inset: 7px; display: grid; place-items: center; background: #18223a; clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%); overflow: hidden; }
+.tk-orb.p0 { --oc: #b8a070; } .tk-orb.p1 { --oc: #5a9ae0; } .tk-orb.p2 { --oc: #b06af0; } .tk-orb.p3 { --oc: #ffb02a; }
+.tk-orb.p2 .tk-orb-in { background: #24183a; } .tk-orb.p3 .tk-orb-in { background: #2a1a10; }
+.tk-orb.dark .tk-orb-in .pfx { filter: brightness(0) opacity(0.45); }
+.tk-orb.lock { --oc: #4a4a5a; }
+.tk-orb.lock .tk-orb-in { flex-direction: column; background: #262630; color: #a8a0b8; text-align: center; display: flex; justify-content: center; }
+.tk-orb.lock small { font-size: 9px; line-height: 1; }
+.tk-orb.lock b { font-size: 10px; line-height: 1.1; }
+.tk-idea { display: flex; flex-direction: column; gap: 2px; padding: 6px 8px; background: #2a3a5a; color: #e8f0ff; border: 2px solid #1f160d; }
+.tk-idea b { font-size: 15px; }
+.tk-idea b i { font-style: normal; color: #ffd36b; }
+.tk-idea span { font-size: 13px; line-height: 1.3; }
+.tk-idea small { font-size: 12px; color: #ffcf6e; }
+.tk-list { display: flex; flex-direction: column; gap: 8px; }
+.tk-list .note { margin: 0; }
+.tk-cp { position: relative; display: flex; gap: 8px; align-items: center; padding: 8px 8px 6px; background: #eef2f6; border: 2px solid #1f160d; border-left: 6px solid #8a7a5a; cursor: pointer; }
+.tk-cp.p1 { border-left-color: #5a9ae0; } .tk-cp.p2 { border-left-color: #b06af0; } .tk-cp.p3 { border-left-color: #ffb02a; }
+.tk-cp.sel { background: #fff4d0; box-shadow: inset 0 0 0 2px #c9962e; }
+.tk-cp.lock { opacity: 0.75; background: #e4e0d8; }
+.tk-ribbon { position: absolute; left: -6px; top: -7px; z-index: 1; padding: 0 6px; font-size: 10px; font-weight: 700; color: #fff; background: #b8432f; border: 2px solid #1f160d; }
+.tk-cp-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.tk-cp-name { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; font-size: 15px; line-height: 1.15; }
+.tk-cp-name i { font-style: normal; font-size: 10px; padding: 0 3px; border: 1px solid #a88a5a; }
+.tk-cp-name em { font-style: normal; font-size: 12px; color: #2f6b5a; }
+.tk-pham.p0 { background: #e9e0c8; } .tk-pham.p1 { background: #cfe0f4; } .tk-pham.p2 { background: #e4d0f4; } .tk-pham.p3 { background: #f8dcb8; }
+.tk-cp-desc { font-size: 13px; line-height: 1.25; color: #3b2a1a; }
+.tk-how { color: #6a5a44; font-style: italic; }
+.tk-tang { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+.tk-tang-n { flex: none; }
+.tk-prog { flex: 1; height: 8px; background: #e8d7ad; border: 2px solid #1f160d; display: block; }
+.tk-prog span { display: block; height: 100%; background: #c9962e; }
+.tk-cp-side { flex: none; width: 80px; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.tk-cost { display: flex; align-items: center; gap: 2px; font-size: 12px; font-weight: 700; }
+.tk-up { width: 100%; padding: 3px 0; font: inherit; font-size: 13px; font-weight: 700; color: #3b2a1a; background: #ffcf6e; border: 2px solid #1f160d; box-shadow: 2px 2px 0 #1f160d; cursor: pointer; }
+.tk-up:disabled { color: #6a5a44; background: #e0d4b8; box-shadow: none; cursor: default; }
+.tk-up.max:disabled { color: #b8432f; background: #fff0c8; }
+.tk-cp-side small { font-size: 11px; color: #6a5a44; text-align: center; }
+.tk-eq { width: 100%; padding: 1px 0; font: inherit; font-size: 12px; background: #fffaf0; border: 2px solid #1f160d; cursor: pointer; }
+.tk-fuse { position: relative; display: flex; align-items: center; justify-content: center; gap: 12px; height: 150px; padding: 8px; background-size: cover; background-position: center; image-rendering: pixelated; border: 3px solid #1f160d; overflow: hidden; }
+.tk-fuse::before { content: ''; position: absolute; inset: 0; background: rgba(20, 10, 4, 0.45); }
+.tk-fuse-in { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.tk-fuse-in small { font-size: 12px; font-weight: 700; color: #fff3dc; text-shadow: 1px 1px 0 #1f160d; }
+.tk-fuse-x { position: absolute; left: -14px; top: 14px; font-style: normal; font-size: 22px; font-weight: 700; color: #ffd36b; text-shadow: 2px 2px 0 #1f160d; }
+.tk-fuse.fuse .tk-fuse-in { animation: tkShake 0.2s steps(2) infinite; }
+@keyframes tkShake { 50% { transform: translateX(2px); } }
+.tk-smoke { z-index: 2; }
+.tk-heir { display: flex; gap: 10px; align-items: center; padding: 8px; background: #2a1f18; color: #fff3dc; border: 2px solid #1f160d; }
+.tk-heir div { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.tk-heir small { font-size: 12px; color: #ffcf6e; }
+.tk-heir b { font-size: 16px; }
+.tk-heir span { font-size: 13px; color: #e8d7ad; }
+.tk-book { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.tk-book-i { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 2px; text-align: center; background: #fffaf0; border: 2px solid #1f160d; }
+.tk-book-i small { font-size: 11px; line-height: 1.1; }
+.tk-book-i.unseen small { color: #a88a5a; }
+.tk-fuse .tk-smoke { bottom: 50px; }
+.dock-actions button.has-dot { position: relative; }
+.dock-actions button.has-dot::after { content: ''; position: absolute; top: 3px; right: 3px; width: 8px; height: 8px; background: #e0302e; box-shadow: 0 0 0 2px #1f160d; }

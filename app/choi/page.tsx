@@ -16,6 +16,7 @@ import { BagSheet, BaoKhoSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, 
 import Radar, { charAxes, wealthScore } from '@/components/Radar';
 import { giftOf } from '@/lib/game/gacha';
 import type { BattleView } from '@/components/Battle';
+import { TangKinhCac } from '@/components/TangKinhCac';
 import { MONSTERS, combatLevel, effLv, fleeChance, hit, killExp, killReward, loseFight, monsterName, monsterStats, playerStats, tierOf, type Fighter } from '@/lib/game/combat';
 import { sessionDropped, signOut } from '@/lib/auth';
 import { lang, setLang } from '@/lib/i18n';
@@ -28,7 +29,7 @@ import { genNameVi, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, r
 import { addCult, addPill, dao, fatal, fmt, giveItem, money, reward, stat, wealthTier, DO_KIEP_REALM } from '@/lib/game/helpers';
 import type { Character, Element, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
 import DuelWarning from '@/components/Duel';
-import { GAUGE_NAME, act as cpAct, heirChoices, loadoutOf, newSide, npcLoadout, skipTurn, takeHit, type FightSide, type Loadout } from '@/lib/game/congPhap';
+import { GAUGE_NAME, act as cpAct, equip as cpEquip, fuse as cpFuse, unequip as cpUnequip, upgrade as cpUpgrade, heirChoices, loadoutOf, newSide, npcLoadout, skipTurn, takeHit, type FightSide, type Loadout } from '@/lib/game/congPhap';
 import { trackMiles } from '@/lib/game/miles';
 import { ELEMENTS, elemHitTag, elemMul, elemRel, elementOf } from '@/lib/game/nguhanh';
 import { DUEL_INFO, DUEL_PER_YEAR, DUEL_TURNS, finishDuel, foeChar, foeStats, pickDuel, teaTrap, toRival, type DuelFoe } from '@/lib/game/duel';
@@ -59,7 +60,7 @@ import { tr } from '@/lib/i18n';
 
 const SPEEDS = [1, 2, 4, 8, 16];
 /** màu chưởng lực theo con đường tu luyện */
-type SheetName = null | 'shop' | 'bag' | 'bequan' | 'menu' | 'hunt' | 'info' | 'today' | 'mail' | 'kho';
+type SheetName = null | 'shop' | 'bag' | 'bequan' | 'menu' | 'hunt' | 'info' | 'today' | 'mail' | 'kho' | 'congphap';
 
 type Battle = BattleView & { t: number; rest: number; ps: Fighter; ms: Fighter; fsP?: FightSide; fsM?: FightSide; loP?: Loadout; loM?: Loadout };
 
@@ -1938,7 +1939,7 @@ export default function PlayPage() {
           <div className="dock-inner">
             <OverworkBar c={c} />
             <FocusGrid c={c} onPick={pickFocus} />
-            <div className="dock-actions">
+            <div className="dock-actions four">
               <button className="btn btn-dark" onClick={() => setSheet('shop')} disabled={c.dead}>
                 
                 {tr("Phường thị", "Market")}
@@ -1954,6 +1955,9 @@ export default function PlayPage() {
                 
                 {tr("Túi đồ", "Inventory")}
               </button>
+              <button className={`btn btn-dark ${c.cpHint ? 'has-dot' : ''}`} onClick={() => setSheet('congphap')} disabled={c.dead}>
+                {tr('Công pháp', 'Techniques')}
+              </button>
               <button className="btn btn-jade" onClick={() => setSheet('bequan')} disabled={c.dead}>
                 
                 {tr("Bế quan", "Seclusion")}
@@ -1963,6 +1967,36 @@ export default function PlayPage() {
         )}
       </footer>
 
+      {sheet === 'congphap' && (
+        <TangKinhCac
+          c={c}
+          book={meta.cpBook ?? []}
+          onClose={() => setSheet(null)}
+          onEquip={(id) => act((ch) => void cpEquip(ch, id))}
+          onUnequip={(id) => act((ch) => cpUnequip(ch, id))}
+          onUpgrade={(id) =>
+            act((ch) => {
+              const t = cpUpgrade(ch, id);
+              if (t) {
+                ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: t });
+                track('cp_tang', { id, tang: ch.cp?.own.find((o) => o.id === id)?.tang ?? 0 });
+              }
+            })
+          }
+          onFuse={() => {
+            let r: ReturnType<typeof cpFuse> = null;
+            act((ch) => {
+              r = cpFuse(ch, rnd);
+              if (r) {
+                ch.log.push({ age: Math.floor(ch.age), tone: r.ok ? 'good' : 'normal', text: r.text });
+                track('cp_dung_hop', { ok: r.ok });
+              }
+            });
+            return r;
+          }}
+          onHeir={(id) => act((ch) => void (ch.cpHeirPick = id))}
+        />
+      )}
       {sheet === 'shop' && <ShopSheet c={c} onBuyItem={buyItem} onBuyPill={buyPill} onBuyCharm={(id) => act((ch, out) => { const t = buyCharm(ch, id, makeCtx(ch, out)); if (t) { ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: t }); track('mua_bua', { id }); } })} onBuyShelf={(id) => act((ch, out) => { const t = buyShelf(ch, id, makeCtx(ch, out)); if (t) { ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: t }); track('ke_hang', { id }); } })} onClose={() => setSheet(null)} />}
       {sheet === 'bag' && <BagSheet c={c} onMerge={(ids) => { let r: ReturnType<typeof mergeItems> = null; act((ch, out) => { r = mergeItems(ch, ids, makeCtx(ch, out)); if (r) track('hop_do', { kind: r.kind, rare: r.item.rare ?? 0 }); }); return r; }} book={meta.itemBook ?? []} startTab={bagTab} onSeen={() => seeBook('i')} onEquip={equip} onUsePill={takePill} onSmelt={(id) => act((ch, out) => { const t = smelt(ch, id, makeCtx(ch, out)); if (t) ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: t }); })} onSell={(id) => act((ch, out) => { const t = sell(ch, id, makeCtx(ch, out)); if (t) ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: t }); })} onBuy={(n) => act((ch, out) => { const t = buyTinh(ch, n, makeCtx(ch, out)); if (t) { ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: t }); track('buy_tinh', { n }); } })} onForge={(slot, fo) => {
             let r: ReturnType<typeof forge> = null;
