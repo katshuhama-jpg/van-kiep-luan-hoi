@@ -47,7 +47,7 @@ const FUSED: CP = { id: 'hoa_xa', name: 'Hỏa Xà Phần Thiên Kiếm', icon: 
 const BOOK_ICONS = ['g_thanh_phong_kiem_pho', 'g_kiem_pho_tan_thien', 'g_doc_co_kiem_pho', 'g_ho_tam_kinh', 'g_kinh_thu_tan_quyen', 'g_bach_thao_kinh', 'g_bat_quai_kinh', 'g_huyet_than_kinh', 'g_kinh_kim_cang', 'g_thai_thuong_dan_kinh', 'g_con_lon_kinh', 'g_tam_kinh_ngoc_gian', 'g_ky_mon_don_giap_thu', 'g_lac_thu', 'g_dai_bi_chu', 'g_thien_cuong_kiem'];
 const PET_EVO = ['soi_con', 'xich_lang', 'bach_lang'];
 const PET_EVO_NAME = ['Sói con', 'Xích Lang', 'Thiên Lang'];
-const PET_EVO_RANK: RankId[] = ['N', 'SR', 'A'];
+const PET_EVO_RANK: RankId[] = ['N', 'SR', 'SSR'];
 const PET_SEEN = ['soi_con', 'xich_lang', 'tuyet_ho', 'ho_ly', 'cho_vang', 'nam_linh', 'dai_bang', 'slime', 'ong_vang'];
 
 function makeChar(): Character {
@@ -520,7 +520,7 @@ function ThuScene({ onClose }: { onClose: () => void }) {
                 </b>
                 <small>{PET_SEEN.includes(view) ? 'Đã gặp' : 'Chưa thuần phục · xem trước'}</small>
               </span>
-              <div className={`dm-thu-big ${['S', 'SS', 'SSS'].includes(rankOfPet(view)) ? 'b2' : ''}`} key={view}>
+              <div className={`dm-thu-big ${['SSR', 'SSS'].includes(rankOfPet(view)) ? 'b2' : ''}`} key={view}>
                 <AnyPet id={view} box={LEGEND[view] ? 170 : 150} />
               </div>
               {rankOfPet(view) === 'SSS' && (
@@ -594,7 +594,7 @@ function ThuScene({ onClose }: { onClose: () => void }) {
           </div>
 
           <div className="dm-box">
-            <b className="dm-h">Tiến hóa lên Thiên Lang · rank SR → A</b>
+            <b className="dm-h">Tiến hóa lên Thiên Lang · rank SR → SSR</b>
             <span className="dm-need ok">✓ Đã qua bậc 2</span>
             <span className="dm-need">✗ Thân thiết Lv 20 (đang 14)</span>
             <span className="dm-need">✗ Chủ đạt Nguyên Anh (đang Kim Đan 2)</span>
@@ -630,7 +630,7 @@ function ThuScene({ onClose }: { onClose: () => void }) {
           <p className="note">Rank càng cao càng hiếm gặp. Tỉ lệ là khi có kỳ ngộ gặp linh thú. Chạm một con để xem.</p>
           {RANKS.map((r) => {
             const ids = ALL_PETS.filter((id) => rankOfPet(id) === r.id);
-            const big = r.id === 'S' || r.id === 'SS' || r.id === 'SSS';
+            const big = r.id === 'SSS';
             return (
               <div key={r.id} className={`dm-rk-row rk-${r.id}`}>
                 <div className="dm-rk-head">
@@ -644,9 +644,9 @@ function ThuScene({ onClose }: { onClose: () => void }) {
                 </div>
                 <div className={`dm-petbook ${big ? 'big' : ''}`}>
                   {ids.map((id) => (
-                    <button key={id} className={`dm-petbook-i ${big ? 'big' : ''} ${view === id ? 'on' : ''}`} onClick={() => setView(id)} aria-label={petNameOf(id)}>
-                      <AnyPet id={id} box={big ? 50 : 40} still dark={!PET_SEEN.includes(id) && !big} />
-                      {big && <small>{petNameOf(id)}</small>}
+                    <button key={id} className={`dm-petbook-i ${LEGEND[id] ? 'big' : ''} ${view === id ? 'on' : ''}`} onClick={() => setView(id)} aria-label={petNameOf(id)}>
+                      <AnyPet id={id} box={LEGEND[id] ? 50 : 40} still dark={!PET_SEEN.includes(id) && !LEGEND[id]} />
+                      {LEGEND[id] && <small>{petNameOf(id)}</small>}
                     </button>
                   ))}
                 </div>
@@ -955,14 +955,11 @@ function FightLayer({ f, c }: { f: ReturnType<typeof useBattle>; c: Character })
 
 /* ---------- Rank linh thú ---------- */
 const RANKS = [
-  { id: 'N', name: 'Phổ thông', rate: '40%', note: 'Thú nhà, gặp ở làng' },
-  { id: 'R', name: 'Hiếm', rate: '28%', note: 'Thú rừng có linh tính' },
-  { id: 'SR', name: 'Siêu hiếm', rate: '16%', note: 'Đã khai linh trí' },
-  { id: 'SSR', name: 'Đặc biệt siêu hiếm', rate: '9%', note: 'Mang huyết mạch dị chủng' },
-  { id: 'A', name: 'Cao cấp', rate: '4%', note: 'Linh thú một phương' },
-  { id: 'S', name: 'Tối cao', rate: '2%', note: 'Yêu vương thuần phục' },
-  { id: 'SS', name: 'Vượt trội', rate: '0,8%', note: 'Dị thú thượng cổ' },
-  { id: 'SSS', name: 'Huyền thoại', rate: '0,2%', note: 'Thần thú, cả server thấy tên chủ' },
+  { id: 'N', name: 'Phổ thông', rate: '45%', note: 'Thú thường, gặp ở làng, ở rừng' },
+  { id: 'R', name: 'Hiếm', rate: '30%', note: 'Có linh tính, sống quanh linh mạch' },
+  { id: 'SR', name: 'Siêu hiếm', rate: '17%', note: 'Khai linh trí, mang ngũ hành' },
+  { id: 'SSR', name: 'Yêu vương, dị thú', rate: '7,5%', note: 'Bá chủ một phương, dị thú Sơn Hải Kinh' },
+  { id: 'SSS', name: 'Thần thú', rate: '0,5%', note: 'Tứ linh. Cả server thấy tên chủ' },
 ] as const;
 type RankId = (typeof RANKS)[number]['id'];
 const PET_RANK: Record<string, RankId> = {
@@ -973,13 +970,13 @@ const PET_RANK: Record<string, RankId> = {
   // SR: đã khai linh trí
   hac_lang: 'SR', xich_lang: 'SR', tuyet_ho: 'SR', linh_loc: 'SR', thuc_nhan_hoa: 'SR', bang_phong: 'SR', hoa_linh_dich: 'SR', kim_thu: 'SR',
   // SSR: dị chủng mang ngũ hành
-  bang_lang: 'SSR', hoa_ho: 'SSR', huyet_buc: 'SSR', tuyet_hung: 'SSR', bach_xa: 'SSR', xich_chi: 'SSR',
+  bang_lang: 'SR', hoa_ho: 'SR', huyet_buc: 'SR', tuyet_hung: 'SR', bach_xa: 'SR', xich_chi: 'SR',
   // A: yêu vương một phương
-  bach_lang: 'A', thu_vuong: 'A', tho_long: 'A', kim_si: 'A',
+  bach_lang: 'SSR', thu_vuong: 'SSR', tho_long: 'SSR', kim_si: 'SSR',
   // S: dị thú Sơn Hải Kinh
-  tat_phuong: 'S', cuu_vi: 'S', con_bang: 'S',
+  tat_phuong: 'SSR', cuu_vi: 'SSR', con_bang: 'SSR',
   // SS: tứ tượng, thượng cổ
-  bach_ho: 'SS', thanh_giao: 'SS', cung_ky: 'SS',
+  bach_ho: 'SSR', thanh_giao: 'SSR', cung_ky: 'SSR',
   // SSS: tứ linh
   thanh_long: 'SSS', ky_lan: 'SSS', huyen_vu: 'SSS', hoa_phuong: 'SSS',
 };

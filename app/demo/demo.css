@@ -280,3 +280,7 @@ button.dm-petbook-i { padding: 0; font: inherit; cursor: pointer; }
 .dm-thu-big .lpc-mon { position: relative; }
 .dm-petbook-i.big small { position: relative; z-index: 1; padding: 0 3px; background: rgba(255, 250, 240, 0.85); }
 .dm-rk-row.rk-SSS .dm-petbook-i.big small { background: rgba(31, 22, 13, 0.85); }
+/* 5 rank: lưới dạng flex để ô thú lớn và nhỏ đứng chung hàng */
+.dm-rk-row .dm-petbook { display: flex; flex-wrap: wrap; gap: 4px; }
+.dm-rk-row .dm-petbook-i { flex: 0 0 calc((100% - 20px) / 6); }
+.dm-rk-row .dm-petbook-i.big { flex: 0 0 calc((100% - 8px) / 3); }
