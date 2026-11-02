@@ -69,6 +69,7 @@ export interface Character {
   lifeExtra?: number; // thọ nguyên cộng thêm từ đan dược, được giữ ngoài mức trần thọ của cảnh giới
   focus: Focus;
   partner: string | null;
+  ht?: { lv: number; next: number; q?: { k: 'dot_pha' | 'tram_yeu' | 'tich_tien' | 'dao_lu' | 'tam_ma'; target: number; until: number } | null; done?: number }; // 4.1.0: Hệ Thống (lib/game/heThong.ts)
   pet: boolean;
   log: LogEntry[];
   lang?: 'vi' | 'en'; // ngôn ngữ lúc chơi kiếp này, đổi ngôn ngữ thì dịch lại chữ đã lưu

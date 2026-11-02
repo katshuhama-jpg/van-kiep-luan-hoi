@@ -4,6 +4,7 @@ import { hasGift } from './gacha';
 import { addCult, addLife, addPill, dao, fatal, giveItem, hurt, luck, money, nhanDeTu, reward, stat, thuTuDeTu } from './helpers';
 import type { Character, Choice, EffectCtx, GameEvent, Grave } from './types';
 import { tr } from '../i18n';
+import { htBind } from './heThong';
 
 const itemName = (id: string | null) => (id ? (ITEMS.find((i) => i.id === id)?.name ?? id) : null);
 const arc = (c: Character, k: string) => c.arcs?.[k];
@@ -926,7 +927,7 @@ export const EVENTS2: GameEvent[] = [
           money(c, 100);
           addPill(c, 'tu_khi', 3);
           ctx.fx('coin', tr('Quà tân thủ', "Newbie gift"));
-          return tr('"Đinh! Trói định thành công. Tặng ký chủ gói quà tân thủ: 100 linh thạch, 3 Tụ Khí Đan."', "\"Ding! Binding successful. Gifting host a newbie pack: 100 spirit stones, 3 Qi Gathering Pills.\"");
+          return tr('"Đinh! Trói định thành công. Tặng ký chủ gói quà tân thủ: 100 linh thạch, 3 Tụ Khí Đan."', "\"Ding! Binding successful. Gifting host a newbie pack: 100 spirit stones, 3 Qi Gathering Pills.\"") + ' ' + htBind(c);
         },
       },
       {
@@ -940,7 +941,7 @@ export const EVENTS2: GameEvent[] = [
           addCult(c, reward(c, 1.5));
           stat(c, 'khiVan', 10);
           ctx.fx('breakthrough', 'VIP');
-          return tr(`"Đinh! Ký chủ nạp ${pay} linh thạch. Tặng danh hiệu: Đại Gia Tu Tiên." Không hiểu sao bạn thấy mình bị lừa.`, `"Ding! Host has topped up ${pay} spirit stones. Title granted: Cultivation Big Spender." For some reason you feel scammed.`);
+          return tr(`"Đinh! Ký chủ nạp ${pay} linh thạch. Tặng danh hiệu: Đại Gia Tu Tiên." Không hiểu sao bạn thấy mình bị lừa.`, `"Ding! Host has topped up ${pay} spirit stones. Title granted: Cultivation Big Spender." For some reason you feel scammed.`) + ' ' + htBind(c);
         },
       },
       {

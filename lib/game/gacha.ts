@@ -119,7 +119,7 @@ export const GIFTS: Gift[] = [
   { id: 'g_co_tinh', name: tr('Thiên sát cô tinh', "Lone heavenly star"), desc: tr('Khí vận +20, nhưng khắc cha mẹ từ nhỏ, người thân cận khó bền', "Luck +20, but you bring doom to your parents and those close to you rarely last"), rare: 2, bad: true, apply: (c) => stat(c, 'khiVan', 20) },
   // ---- Địa ----
   { id: 'g_hop', name: tr('Chiếc hộp bí ẩn', "Mysterious box"), desc: tr('Một chiếc hộp không mở được. Bà mụ dặn: đến năm 80 tuổi hãy mở.', "A box that won't open. The midwife says: open it when you turn 80."), rare: 3 },
-  { id: 'g_he_thong', name: tr('Hệ Thống', "The System"), desc: tr('Đinh! Một giọng nói lạ vang lên trong đầu bạn...', "Ding! A strange voice rings out in your head..."), rare: 3 },
+  { id: 'g_he_thong', name: tr('Hệ Thống', "The System"), desc: tr('Đinh! Gói tân thủ VIP, rồi cả kiếp Hệ Thống phát nhiệm vụ: thưởng tu vi, trang bị, thọ nguyên. Mỗi cấp tu luyện +3%, đột phá +1% (tối đa cấp 10).', "Ding! A VIP newbie pack, then a lifetime of System quests rewarding cultivation, gear and lifespan. Each level: cultivation +3%, breakthrough +1% (up to level 10)."), rare: 3 },
   {
     id: 'g_trung_sinh',
     name: tr('Trùng sinh giả', "Reincarnator"),
