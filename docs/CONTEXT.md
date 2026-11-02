@@ -171,7 +171,7 @@ Vòng chơi một kiếp:
 ## 6. Chiến đấu
 
 ### Trừ yêu
-- 45 loại quái: phàm giới 27 (gồm 2 boss không thể thắng), 8 quái thí luyện tông môn, 4 tiên giới, 4 ma giới. **Mọi loài quái có ngũ hành**, khắc chế tính vào sát thương như đấu người (khắc +50%, bị khắc -30%, được sinh +10%), có dải hiển thị trong trận. Danh sách: Thỏ Yêu (lv 1), Sói Xám Thành Tinh (lv 2), Hoa Văn Mãng (lv 3), Ác Hầu (lv 5), Thiết Nha Trư (lv 7), Sơn Tặc Đầu Lĩnh (lv 4), Hắc Y Thích Khách (lv 8), Huyết Phong Vương (lv 9), Cửu Vĩ Hồ Yêu (lv 11), Thiết Chưởng Bang Chủ (lv 12), Thiết Giáp Cương Thi (lv 13), Hắc Hùng Tinh (lv 15), Độc Thủ Dược Vương (lv 16), Ngân Giác Mãng (lv 17), Kim Sí Đại Bằng (lv 19), Cuồng Đao Khách (lv 20), Huyết Ma (lv 21), Băng Giao (lv 23), Kiếm Si Vô Danh (lv 24), Hỏa Kỳ Lân (lv 25), Thượng Cổ Hắc Long (lv 27), Huyết Ma Lão Tổ (lv 40, boss), Thái Thượng Kiếm Tôn (lv 40, boss)
+- 73 loại quái (đếm theo `MONSTERS` trong combat.ts, 3/11): phàm giới 29 (gồm 2 boss không thể thắng), 12 quái thí luyện tông môn, 20 quái Độ Kiếp, 4 tiên giới, 4 ma giới, 4 Thái Hư. **Mọi loài quái có ngũ hành**, khắc chế tính vào sát thương như đấu người (khắc +50%, bị khắc -30%, được sinh +10%), có dải hiển thị trong trận. Danh sách: Thỏ Yêu (lv 1), Sói Xám Thành Tinh (lv 2), Hoa Văn Mãng (lv 3), Ác Hầu (lv 5), Thiết Nha Trư (lv 7), Sơn Tặc Đầu Lĩnh (lv 4), Hắc Y Thích Khách (lv 8), Huyết Phong Vương (lv 9), Cửu Vĩ Hồ Yêu (lv 11), Thiết Chưởng Bang Chủ (lv 12), Thiết Giáp Cương Thi (lv 13), Hắc Hùng Tinh (lv 15), Độc Thủ Dược Vương (lv 16), Ngân Giác Mãng (lv 17), Kim Sí Đại Bằng (lv 19), Cuồng Đao Khách (lv 20), Huyết Ma (lv 21), Băng Giao (lv 23), Kiếm Si Vô Danh (lv 24), Hỏa Kỳ Lân (lv 25), Thượng Cổ Hắc Long (lv 27), Huyết Ma Lão Tổ (lv 40, boss), Thái Thượng Kiếm Tôn (lv 40, boss)
 - Mỗi lần bị giết, loài quái đó mạnh lên 0.4 cấp (tối đa +12), lâu không bị săn thì hồi lại.
 - Có tùy chọn tự rút lui khi máu dưới 30%.
 - **Rơi đồ:** mỗi lần hạ quái có thể rơi 1 món, phẩm theo xác suất: Cực phẩm 2%, Hiếm 10%, Tốt 40% (nhân hệ số may mắn: khí vận, đồ tăng rơi đồ, đánh quái mạnh hơn mình, ngày Cát tinh x1.5). 80% ưu tiên món chưa có. Món đã có thì tự bán.
@@ -272,7 +272,7 @@ Mở từ nút thư (✉). Ba tab: Thư, Ân oán, Truy nã.
 - Kiếp sau, ngươi sẽ trả nợ cho những gì đã làm. Hãy cẩn thận.
 - **Rương kiếp trước:** chôn một phần tài sản cho kiếp sau tìm lại. **Thần binh truyền kiếp:** đặt tên vũ khí, mạnh dần qua các kiếp.
 - **Hồi ký:** mỗi ngôi mộ có hồi ký 7-10 cảnh pixel (chào đời, đột phá, chọn đạo, bái sư, đạo lữ, linh thú, rồng, bảo vật, phát tài, trừ yêu, giao đấu, báo thù, tạ thế).
-- **Bảo khố:** 205 đồ ẩn (chỉ rơi từ quái hoặc có từ kỳ ngộ, không bán). Món nào từng có ở bất kỳ kiếp nào được ghi vĩnh viễn. Lần đầu có thì hiện dấu mộc báo.
+- **Bảo khố:** 285 đồ ẩn (chỉ rơi từ quái hoặc có từ kỳ ngộ, không bán). Món nào từng có ở bất kỳ kiếp nào được ghi vĩnh viễn. Lần đầu có thì hiện dấu mộc báo.
 - **Thiên thư (mạch truyện chính):** 10 mảnh ký ức trả lời câu hỏi "vì sao cứ phải luân hồi?". Bạn là một mảnh của **Vạn Kiếp Chân Nhân**, người tu đến tận cùng mà không hiểu vì sao phải sống nên tự đập vỡ mình thành vạn mảnh đi tìm câu trả lời. Các mảnh mở khi một kiếp kết thúc: sống trọn 1 kiếp, 5 kiếp, Kim Đan, 5 kết cục, thắng người chơi 3 lần, Hóa Thần, phi thăng, đi 4 con đường, 13 kết cục, Đại La Kim Tiên/Ma Đế. Đủ 10 mảnh thì kiếp sau (từ 30 tuổi) gặp sự kiện **Vạn Kiếp Quy Nhất**: chọn buông bỏ là kết cục cuối cùng. **Mỗi tài khoản chỉ gặp Quy Nhất 1 lần** (`quyNhatDone` = `meta.endings.thoat_van_kiep`), lần đầu thưởng 100 phúc (`meta.quyThuong`), chuông vàng bên vai nhân vật (`c.quyNhat`, `fxChuongVang`) và danh hiệu trên bảng xếp hạng (RPC `vkl_lore_masters`). Đọc ở đầu trang Sổ Sinh Tử (tab Quyển I / Quyển II).
 - **Thiên thư Quyển II "Vạn Mảnh" (`book: 2` trong `lore.ts`, mở sau Quy Nhất):** người chơi khác cũng là mảnh của Chân Nhân; có Kẻ Gõ Chuông đang đếm. 10 mảnh XI-XX: Quy Nhất; kết nghĩa người có ≥5 mảnh; truyền công/nhận truyền công; viếng 5 mộ người khác; đánh xong 1 chiến thư (4 mảnh xã hội lấy từ RPC `vkl_lore_social`, gọi ở `finishLife`); từng lên đủ 3 cõi (`career.cosmoses`); qua Ngũ Hành Đài không ngã (`career.nhdClean`); 30 kết cục; thắng **Kẻ Gõ Chuông** (sự kiện `ke_go_chuong` ở cảnh giới 11 của cõi, cần ≥7 mảnh Quyển II, đỡ đủ 3 tiếng chuông, thua 25% chết; thắng thì `meta.chuongWin`); **Chuông vỡ** (sự kiện kiếp sau, chọn gõ chuông `go_chuong` hoặc đập chuông `dap_chuong`, 2 kết cục mới). Dự kiến: khi đủ N người đập chuông thì mở sự kiện máy chủ (chưa làm).
 - **Sổ linh thú:** 32 loài. **Thành tựu dài hạn:**
@@ -293,7 +293,7 @@ Mở từ nút thư (✉). Ba tab: Thư, Ân oán, Truy nã.
 - Có thù tất báo: Báo thù được một người chơi khác (+30 phúc)
 - Giang hồ sát thần: Thắng người chơi khác 10 lần (+50 phúc)
 
-### Sổ Sinh Tử - 34 kết cục
+### Sổ Sinh Tử - 82 kết cục (bảng dưới chỉ ghi các kết cục gốc)
 Kết cục được xét theo thứ tự từ hiếm tới thường, lấy cái đầu tiên khớp. 6 kết cục cố ý để **bí ẩn** (không ghi cách mở trong game) để người chơi tự khám phá.
 
 |Kết cục|Phẩm|Cách mở|
@@ -333,7 +333,7 @@ Kết cục được xét theo thứ tự từ hiếm tới thường, lấy cá
 | Thọ Chung Chính Tẩm (`tho_tan`) | Phàm | Sống đến khi hết thọ nguyên. |
 | Chết Không Toàn Thây (`bat_dac`) | Phàm | Chết vì bất kỳ lý do nào khác: quái, kẻ thù, tai nạn giang hồ. |
 
-Danh hiệu sưu tầm: **Kỳ Văn Khách** khi mở từ 8 kết cục, **Bách Hiểu Sinh** khi mở một nửa (17/34, tự tính theo tổng số kết cục).
+Danh hiệu sưu tầm: **Kỳ Văn Khách** khi mở từ 8 kết cục, **Bách Hiểu Sinh** khi mở một nửa (41/82, tự tính theo tổng số kết cục).
 
 ## 9. Giữ chân người chơi (hook)
 
@@ -378,7 +378,7 @@ Màn chơi: thanh trên (tuổi, mùa, kiếp, nơi sinh, linh thạch; cụm 4 
 | File | Nội dung |
 |---|---|
 | `lib/game/types.ts` | Kiểu dữ liệu: Character, Meta, RivalChar... |
-| `lib/game/data.ts`, `gear.ts`, `items2.ts` | Cảnh giới (cả tiên, ma), con đường, linh căn, xuất thân, trọng tâm, 392 món đồ, đan dược, thiên phú |
+| `lib/game/data.ts`, `gear.ts`, `items2.ts` | Cảnh giới (cả tiên, ma), con đường, linh căn, xuất thân, trọng tâm, 472 món đồ (176 áo, 156 vũ khí, 140 phụ kiện), đan dược, thiên phú |
 | `lib/game/sect.ts`, `sectEvents.ts` | Tông môn: bậc đệ tử, thăng bậc, Đại bỉ, sự kiện tông môn |
 | `lib/game/cosmosEvents.ts` | Sự kiện tiên giới, ma giới |
 | `lib/game/lore.ts` | Thiên thư: Quyển I (10 mảnh) và Quyển II (10 mảnh, mở sau Quy Nhất) |
@@ -692,3 +692,15 @@ Làm theo plan "Plan 3.1.0 - Xử lý góp ý người chơi" (trừ góp ý #7 
 - Bỏ một ngày là về ngày 1 (bumpStreak). Kiếp đang sống nhận ngay; giữa hai kiếp để vào meta.checkinNext (money, item, tinh) cho kiếp sau.
 - components/Hook.tsx CheckinPop tự mở khi vào /choi ngày mới (meta.lives > 0), dừng thời gian; nhận xong nhắc quà mai. CheckinRow ở màn đầu thai mở cùng bảng này.
 - components/HomeCheckin.tsx: một dòng ở trang đầu (quà hôm nay hoặc quà mai).
+
+## Bản 4.1.0 Phường thị, Kết duyên, Hệ Thống (3/11)
+- Gộp nhánh `kinh-te` (734953e). Giá chung theo cảnh giới món x phẩm, bán lại 12% (`lib/game/marketDay.ts`). Tab Hàng mới về làm mới 5 năm một lần; sau phi thăng là Tiên thị, Ma thị, Hư thị. Tab Đồ hiếm đổi tên Sổ đồ rơi, Pháp y pháp bảo thành Pháp bảo.
+- Thị tượng theo vòng đời kiếp (18 loại, 3-8 năm đổi một lần, lời dẫn theo tầm: phàm trấn, tu chân giới, tiên giới), hiện đầu Phường thị, ghi vào gia phả khi đổi.
+- Chống cày quái bán đồ: linh thạch mỗi con giảm nửa, đồ trùng bán 1/4 giá, bán nhiều trong năm bị ép giá (`scripts/sim-farm.ts`).
+- Hội đấu giá Vạn Bảo Lâu 60 năm một lần (sau phi thăng 120), đấu giá kín một chạm trong thẻ sự kiện. Đấu giá hội cũ: theo cướp người thắng giá đánh thật với hộ vệ theo cảnh giới người cướp (kém 1-2 cảnh giới). Thương nhân lưu động 2%/năm, cách 25 năm (`lib/game/market.ts`, `components/MarketScenes.tsx`).
+- Lò rèn: Hộ Khí Phù (rèn hỏng không vỡ đồ, giữ tối đa 3), Linh Hỏa (+10% tỉ lệ). Lò hợp bảo cạnh lò rèn trong Túi đồ.
+- Trần chênh cảnh giới cho oan gia, truy sát (tối đa 6 cấp chiến đấu, chưa phi thăng không gặp người tiên giới). Sự kiện hiếm Tiên nhân/Ma vương giáng trần (0,25%/năm, mỗi kiếp một lần).
+- Kết duyên: có đạo lữ thì song tu (tu vi 70% năm tu luyện, tâm ma lùi); chưa có thì đạo hữu tặng đan, chia linh thạch, chỉ điểm, mách cơ duyên.
+- Hệ Thống (`lib/game/heThong.ts`): nhiệm vụ có hạn, lên cấp tối đa 10, mỗi cấp tu luyện +2%, đột phá +1% (`scripts/sim-he-thong.ts`).
+- 36 trang bị sau phi thăng (`lib/game/gearTien.ts`, icon `public/icons/tg_*.png`).
+- Số đếm theo code sau bản này: 472 món đồ, 285 đồ ẩn, 73 loại quái, 82 kết cục.
