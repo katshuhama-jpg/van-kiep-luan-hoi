@@ -71,10 +71,10 @@ export const CP: CpDef[] = [
   C({ id: 'luyen_thien_lo', path: 'dan', kind: 'tuyet', pham: 3, name: tr('Cửu Chuyển Luyện Thiên Lô', 'Nine-Turn Heaven Furnace'), main: tr('Lò đan nuốt đối thủ: lửa và độc', 'The furnace swallows the foe: fire and poison'), fx: 'lo', eff: { mul: 2.4, burn: [3, 0.35], poison: 3 } }),
   // ---- Trận tu: dựng trận, khiên, sét, khốn ----
   C({ id: 'chu_thien', path: 'tran', kind: 'tam', pham: 2, name: tr('Chu Thiên Tinh Đấu Quyết', 'Celestial Star Art'), main: tr('Thủ +12%, tu luyện +8%', 'Defense +12%, cultivation +8%'), fx: 'thuong', tam: { def: 12, cult: 8 } }),
-  C({ id: 'kim_quang', path: 'tran', kind: 'chieu', pham: 1, name: tr('Kim Quang Hộ Trận', 'Golden Light Ward'), main: tr('Khiên vàng chặn trọn 2 đòn', 'A golden shield blocks 2 hits'), fx: 'kimquang', cd: 5, eff: { mul: 0.8, shield: 2 } }),
-  C({ id: 'ngu_loi', path: 'tran', kind: 'chieu', pham: 1, name: tr('Ngũ Lôi Phù', 'Five Thunder Talisman'), main: tr('Ba đạo sét, xuyên giáp', 'Three thunderbolts, armor-piercing'), fx: 'loi', cd: 3, eff: { hits: 3, mul: 0.55, pierce: true } }),
-  C({ id: 'me_tung', path: 'tran', kind: 'chieu', pham: 2, name: tr('Mê Tung Khốn Trận', 'Bewildering Trap Array'), main: tr('60% đối thủ lạc trận, mất lượt', '60% chance the foe is trapped and loses a turn'), fx: 'khon', cd: 4, eff: { mul: 0.8, stun: 0.6 } }),
-  C({ id: 'tinh_dau_dai_tran', path: 'tran', kind: 'tuyet', pham: 3, name: tr('Chu Thiên Tinh Đấu Đại Trận', 'Grand Celestial Star Array'), main: tr('Bảy sao giáng xuống, choáng', 'Seven stars fall, stunning'), fx: 'tinhdau', eff: { hits: 7, mul: 0.45, stun: 0.6 } }),
+  C({ id: 'kim_quang', path: 'tran', kind: 'chieu', pham: 1, name: tr('Kim Quang Hộ Trận', 'Golden Light Ward'), main: tr('Khiên vàng chặn trọn 1 đòn', 'A golden shield blocks 1 hit'), fx: 'kimquang', cd: 5, eff: { mul: 0.8, shield: 1 } }),
+  C({ id: 'ngu_loi', path: 'tran', kind: 'chieu', pham: 1, name: tr('Ngũ Lôi Phù', 'Five Thunder Talisman'), main: tr('Ba đạo sét, xuyên giáp', 'Three thunderbolts, armor-piercing'), fx: 'loi', cd: 3, eff: { hits: 3, mul: 0.5, pierce: true } }),
+  C({ id: 'me_tung', path: 'tran', kind: 'chieu', pham: 2, name: tr('Mê Tung Khốn Trận', 'Bewildering Trap Array'), main: tr('35% đối thủ lạc trận, mất lượt', '35% chance the foe is trapped and loses a turn'), fx: 'khon', cd: 5, eff: { mul: 0.8, stun: 0.35 } }),
+  C({ id: 'tinh_dau_dai_tran', path: 'tran', kind: 'tuyet', pham: 3, name: tr('Chu Thiên Tinh Đấu Đại Trận', 'Grand Celestial Star Array'), main: tr('Bảy sao giáng xuống, 35% choáng', 'Seven stars fall, 35% stun'), fx: 'tinhdau', eff: { hits: 7, mul: 0.45, stun: 0.35 } }),
   // ---- Phật tu: chịu đòn rồi trả đòn ----
   C({ id: 'kim_cang_the', path: 'phat', kind: 'tam', pham: 2, name: tr('Kim Cang Bất Hoại Thể', 'Indestructible Vajra Body'), main: tr('Thủ +15%, máu +10%', 'Defense +15%, HP +10%'), fx: 'thuong', tam: { def: 15, hp: 10 } }),
   C({ id: 'kim_cang_chuong', path: 'phat', kind: 'chieu', pham: 1, name: tr('Đại Lực Kim Cang Chưởng', 'Great Vajra Palm'), main: tr('Chưởng vàng xuyên giáp', 'Armor-piercing golden palm'), fx: 'chuong', cd: 3, eff: { mul: 1.5, pierce: true } }),
@@ -465,16 +465,46 @@ export function loadoutOf(c: Character): Loadout {
   const tu = s.tuyet ? cpOf(s.tuyet) : undefined;
   return { path: c.path ?? 'chung', chieu, tuyet: tu ? { d: tu, tang: owned(c, tu.id)?.tang ?? 1 } : undefined, regen: tamOf(c).regen ?? 0 };
 }
-/** Người gặp trên giang hồ (và bóng kiếp trước) cũng đánh theo công pháp đạo của họ, tầng theo cảnh giới */
-export function npcLoadout(f: Pick<Character, 'path' | 'realm' | 'cosmos'>): Loadout {
-  const p = f.path ?? 'chung';
-  const tang = Math.max(1, Math.min(9, 1 + (f.realm ?? 0) + (f.cosmos ? 3 : 0)));
-  const list = p === 'chung' ? cpOfPath('chung') : cpOfPath(p);
-  const n = (f.realm ?? 0) >= 4 ? 3 : (f.realm ?? 0) >= 2 ? 2 : 1;
-  const chieu = list.filter((x) => x.kind === 'chieu').slice(0, n).map((d) => ({ d, tang }));
-  const tuyet = (f.realm ?? 0) >= 6 || f.cosmos ? list.find((x) => x.kind === 'tuyet') : undefined;
-  const tam = list.find((x) => x.kind === 'tam')?.tam;
-  return { path: p, chieu: chieu.length ? chieu : cpOfPath('chung').filter((x) => x.kind === 'chieu').map((d) => ({ d, tang })), tuyet: tuyet ? { d: tuyet, tang } : undefined, regen: tam?.regen ?? 0 };
+/**
+ * Tầng công pháp ước của người giang hồ theo cảnh giới (khớp với nhịp người chơi tự luyện: tầng 1-3 tự lên theo năm,
+ * sau đó mỗi cảnh giới thêm khoảng 1 tầng nhờ tàn quyển). Trước đây là 1 + cảnh giới, Nguyên Anh đã tầng 5, mạnh hơn người chơi.
+ */
+export const NPC_TANG = [1, 2, 3, 3, 4, 5, 6, 7, 8, 8, 9];
+export interface RivalCp {
+  eq: string[];
+  own: { id: string; tang: number; bien?: Bien | null }[];
+  tuyet?: string | null;
+}
+/** Công pháp ước cho người giang hồ do máy tạo (không có bản lưu) */
+export function estimateCp(f: { path?: PathId | null; realm?: number; cosmos?: unknown; lookSeed?: number }): CpState {
+  const realm = f.realm ?? 0;
+  const tang = f.cosmos ? 9 : NPC_TANG[Math.min(realm, NPC_TANG.length - 1)];
+  const list = f.path ? cpOfPath(f.path) : cpOfPath('chung');
+  const tam = list.find((x) => x.kind === 'tam') ?? cpOf('dan_khi')!;
+  const n = realm >= 4 || f.cosmos ? 3 : realm >= 2 ? 2 : 1;
+  const chieu = list.filter((x) => x.kind === 'chieu').slice(0, n);
+  const tu = realm >= 6 || f.cosmos ? list.find((x) => x.kind === 'tuyet') : undefined;
+  const seed = f.lookSeed ?? 0;
+  const own: CpOwn[] = [{ id: tam.id, tang, exp: 0 }, ...chieu.map((d, i): CpOwn => ({ id: d.id, tang, exp: 0, bien: tang >= BIEN_TANG ? (((seed >> i) & 1) === 1 ? ('cuong' as Bien) : ('nhu' as Bien)) : null }))];
+  if (tu) own.push({ id: tu.id, tang: Math.max(1, tang - 4), exp: 0 });
+  return { own, eq: [tam.id, ...chieu.map((d) => d.id)], tuyet: tu?.id ?? null };
+}
+/** Công pháp của đối thủ: người chơi khác thì lấy đúng bộ họ đang mang (tầng, biến chiêu), máy tạo thì ước theo cảnh giới */
+export function rivalCp(r: { path?: PathId | null; realm?: number; cosmos?: unknown; lookSeed?: number; cp?: RivalCp }): CpState {
+  if (r.cp?.own?.length) return { own: r.cp.own.map((o) => ({ ...o, exp: 0 })), eq: [...r.cp.eq], tuyet: r.cp.tuyet ?? null };
+  return estimateCp(r);
+}
+/** Gói gọn công pháp đang mang để người khác gặp mình trên giang hồ */
+export function packCp(c: Character): RivalCp | undefined {
+  const s = c.cp;
+  if (!s?.own.length) return undefined;
+  const keep = new Set([...s.eq.filter(Boolean), s.tuyet ?? '']);
+  return { eq: s.eq, own: s.own.filter((o) => keep.has(o.id)).map((o) => ({ id: o.id, tang: o.tang, bien: o.bien ?? null })), tuyet: s.tuyet ?? null };
+}
+/** Đối thủ là người (giang hồ, bóng kiếp trước, gương Ngũ Hành Đài) đánh theo công pháp của họ */
+export function npcLoadout(f: Character & { cp?: CpState }): Loadout {
+  const t = { ...f, cp: f.cp?.own?.length ? (JSON.parse(JSON.stringify(f.cp)) as CpState) : estimateCp(f) } as Character;
+  return loadoutOf(t);
 }
 
 export interface FightSide {
@@ -488,6 +518,7 @@ export interface FightSide {
   rage: { n: number; mul: number } | null;
   evade: { n: number; pct: number } | null;
   stunned: boolean; // mất lượt kế
+  stunLock?: boolean; // vừa bị choáng xong: chưa ra đòn lại thì không bị choáng tiếp (chống khóa liên hoàn)
 }
 export const newSide = (): FightSide => ({ cd: {}, gauge: 0, burn: null, poison: 0, poisonDmg: 0, shield: 0, reflect: null, rage: null, evade: null, stunned: false });
 
@@ -507,7 +538,7 @@ export interface ActResult {
 const GAIN: Record<string, (r: { dmg: number; hits: number; skill: boolean }) => number> = {
   kiem: (r) => (r.dmg > 0 ? 18 * Math.min(3, r.hits) : 0),
   dan: (r) => (r.skill ? 30 : 10),
-  tran: (r) => (r.skill ? 34 : 6),
+  tran: (r) => (r.skill ? 28 : 6),
   phat: () => 8,
   ma: () => 10,
   yeu: (r) => (r.dmg > 0 ? 16 : 0),
@@ -580,7 +611,7 @@ export function act(
       opp.poisonDmg = Math.max(opp.poisonDmg, Math.round(atk * 0.04 * k));
       tags.push(tr(`Độc x${opp.poison}`, `Poison x${opp.poison}`));
     }
-    if (e.stun && rnd() < Math.min(1, e.stun * (0.85 + 0.03 * t))) {
+    if (e.stun && !opp.stunLock && !opp.stunned && rnd() < Math.min(1, e.stun * (0.85 + 0.03 * t))) {
       opp.stunned = true;
       tags.push(tr('Choáng!', 'Stunned!'));
     }
@@ -630,7 +661,11 @@ export function takeHit(lo: Loadout, me: FightSide, dmg: number, rnd: () => numb
 
 /** Bị choáng thì mất lượt (trả về true và gỡ choáng) */
 export function skipTurn(me: FightSide): boolean {
-  if (!me.stunned) return false;
+  if (!me.stunned) {
+    me.stunLock = false;
+    return false;
+  }
   me.stunned = false;
+  me.stunLock = true;
   return true;
 }
