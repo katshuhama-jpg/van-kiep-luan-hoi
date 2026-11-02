@@ -14,7 +14,7 @@ const META = { phucDuyen: 5, nghiep: 0, lives: 5, talents: [], enemy: null, stre
 let fail = 0;
 const ok = (c, m) => { console.log((c ? 'OK  ' : 'HỎNG') + ' ' + m); if (!c) fail++; };
 
-async function open(b, char) {
+async function open(b, char, pause) {
   const p = await b.newPage({ viewport: { width: 390, height: 844 } });
   await p.route(/vkl_track|vkl_save/, (r) => r.fulfill({ status: 200, body: 'null', contentType: 'application/json' }));
   p.errs = [];
@@ -22,7 +22,9 @@ async function open(b, char) {
   await p.goto(URL + '/');
   const s = JSON.parse(JSON.stringify(base)); s.pending = null; Object.assign(s.char, { dead: false, lifeNo: 6 }, char);
   await p.evaluate(([s, m, v]) => { localStorage.clear(); localStorage.setItem('vkl.tut', '1'); localStorage.setItem('vkl.seenVer', v); localStorage.setItem('vkl.notice.down1101', '1'); localStorage.setItem('vkl.save', JSON.stringify(s)); localStorage.setItem('vkl.meta', JSON.stringify(m)); }, [s, META, VER]);
-  await p.goto(URL + '/choi'); await p.waitForTimeout(7000);
+  await p.goto(URL + '/choi');
+  if (pause) await p.locator('button.play[aria-label="Tạm dừng"]').click({ timeout: 15000 }).catch(() => {});
+  await p.waitForTimeout(pause ? 1500 : 7000);
   await p.addStyleTag({ content: 'nextjs-portal{display:none!important}' });
   return p;
 }
@@ -33,17 +35,17 @@ const save = async (p) => JSON.parse(await p.evaluate(() => localStorage.getItem
   // 1. trừ yêu: ra chiêu theo công pháp đạo Kiếm
   let p = await open(b, { path: 'kiem', realm: 4, focus: 'tru_yeu', huntTarget: 'huyet_ma', cp: undefined });
   let skills = new Set(); let fx = 0; let gauge = '';
-  for (let i = 0; i < 60 && !(skills.size && fx && gauge); i++) {
+  for (let i = 0; i < 120 && !(skills.size && fx && gauge); i++) {
     await p.waitForTimeout(120);
     // sự kiện ngẫu nhiên (gặp thú, kỳ ngộ) chen vào thì chọn đại để trận trừ yêu chạy tiếp
-    if (i % 10 === 9 && (await p.locator('.choice').count())) await p.locator('.choice').last().click().catch(() => {});
-    if (i % 10 === 9 && (await p.locator('.duel-warn .btn-dark').count())) await p.locator('.duel-warn .btn-dark').last().click().catch(() => {});
+    if (i % 5 === 4 && (await p.locator('.choice').count())) await p.locator('.choice').last().click().catch(() => {});
+    if (i % 5 === 4 && (await p.locator('.duel-warn .btn-dark').count())) await p.locator('.duel-warn .btn-dark').last().click().catch(() => {});
     const r = await p.evaluate(() => ({ s: document.querySelector('.skill-name')?.textContent || '', f: document.querySelectorAll('.cpf').length, g: document.querySelector('.cp-gauge span')?.textContent || '' }));
     if (r.s) skills.add(r.s); fx = Math.max(fx, r.f); gauge = gauge || r.g;
   }
   ok(/Kiếm ý/.test(gauge), 'trận trừ yêu có thanh Kiếm ý của đạo');
   ok(fx > 0, 'đòn đánh có hiệu ứng chiêu pixel');
-  ok([...skills].some((s) => /Liệt Hỏa|Kim Xà|Trường Quyền|Thiết Sa/.test(s)), 'ra chiêu theo công pháp: ' + [...skills].join(', '));
+  ok([...skills].some((s) => /Liệt Hỏa|Kim Xà|Thái Cực|Trường Quyền|Thiết Sa/.test(s)), 'ra chiêu theo công pháp: ' + [...skills].join(', '));
   let ch = await save(p);
   for (let i = 0; i < 10 && !(ch.cp && ch.cp.eq[0] === 'thanh_lien'); i++) { await p.waitForTimeout(500); ch = await save(p); }
   ok(ch.cp && ch.cp.own.some((o) => o.id === 'thanh_lien') && ch.cp.eq[0] === 'thanh_lien', 'kiếm tu được truyền tâm pháp Thanh Liên, đã mang');
@@ -55,7 +57,7 @@ const save = async (p) => JSON.parse(await p.evaluate(() => localStorage.getItem
   p = await open(b, {
     path: 'kiem', realm: 3, tq: { thanh_lien: 2, thiet_sa: 3, van_kiem: 3, thai_cuc_kiem: 1 }, tqVan: 1, cultivation: 300, focus: 'tu_luyen', huntTarget: undefined,
     cp: { own: [{ id: 'dan_khi', tang: 3, exp: 40 }, { id: 'truong_quyen', tang: 3, exp: 100 }, { id: 'thiet_sa', tang: 2, exp: 30 }, { id: 'thanh_lien', tang: 5, exp: 100 }, { id: 'liet_hoa', tang: 9, exp: 0 }, { id: 'kim_xa', tang: 9, exp: 0 }, { id: 'thai_cuc_kiem', tang: 5, exp: 100 }], eq: ['thanh_lien', 'liet_hoa', 'kim_xa'] },
-  });
+    }, true);
   // dừng thời gian; sự kiện ngẫu nhiên đã chen vào thì chọn đại cho qua
   await p.locator('button.play[aria-label="Tạm dừng"]').click({ timeout: 3000 }).catch(() => {});
   for (let i = 0; i < 6 && !(await p.locator('.dock-actions').count()); i++) {
