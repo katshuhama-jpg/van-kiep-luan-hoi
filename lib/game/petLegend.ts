@@ -15,7 +15,7 @@ export interface LegendPet {
 export const LEGEND_PETS: Record<string, LegendPet> = {
   kim_si: {
     name: tr('Kim Sí Đại Bằng', 'Golden-Winged Roc'),
-    look: { kind: 'beast', sheet: 'eagle', frames: 3, cell: 64, scale: 1.4, strip: true, fps: 6, filter: 'sepia(0.4) saturate(1.6) drop-shadow(0 0 3px #ffd36b)' },
+    look: { kind: 'beast', sheet: 'eagle', frames: 3, cell: 64, scale: 1.9, strip: true, fps: 6, filter: 'sepia(0.4) saturate(1.6) drop-shadow(0 0 3px #ffd36b)' },
     meet: tr('Một con đại bằng cánh vàng sà xuống đỉnh núi nơi bạn ngồi thiền, nghiêng đầu nhìn bạn rất lâu.', 'A golden-winged roc swoops down onto the peak where you meditate and studies you for a long time.'),
     fly: true,
   },
@@ -31,7 +31,7 @@ export const LEGEND_PETS: Record<string, LegendPet> = {
   },
   con_bang: {
     name: tr('Côn Bằng', 'Kunpeng'),
-    look: { kind: 'beast', sheet: 'eagle', frames: 3, cell: 64, scale: 1.7, strip: true, fps: 5, filter: 'hue-rotate(170deg) saturate(1.5) drop-shadow(0 0 4px #9fd8ff)' },
+    look: { kind: 'beast', sheet: 'eagle', frames: 3, cell: 64, scale: 2.2, strip: true, fps: 5, filter: 'hue-rotate(170deg) saturate(1.5) drop-shadow(0 0 4px #9fd8ff)' },
     meet: tr('Biển bắc nổi sóng, một con cá lớn hóa chim bay lên, bóng cánh che cả trời.', 'The northern sea heaves; a great fish turns into a bird and rises, its wings shading the sky.'),
     fly: true,
   },
