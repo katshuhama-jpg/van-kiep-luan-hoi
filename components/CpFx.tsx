@@ -249,6 +249,8 @@ export function fxDef(fx: string, path = 'chung'): FxDef {
       return { spec: fxHuyetNguyet, mode: 'foe', scale: 4, boom: '#e0202e' };
     case 'cuuvi':
       return { spec: () => fxCuuVi(9), mode: 'self', scale: 3 };
+    case 'mvuot':
+      return { spec: () => vuot('#e8e0d0', '#ffffff'), mode: 'foe', scale: 2 };
     case 'vuot':
       return { spec: () => vuot('#b0201a', '#ffffff'), mode: 'foe', boom: '#ffffff' };
     case 'hoahinh':
@@ -272,11 +274,11 @@ const specOf = (k: string, f: () => FxSpec) => {
 };
 
 /** Một đòn chiêu thức: side p = bạn đánh (từ trái sang phải), m = đối thủ đánh lại */
-export function CpHit({ fx, path, side, big }: { fx: string; path: string; side: 'p' | 'm'; big?: boolean }) {
+export function CpHit({ fx, path, side, big, late }: { fx: string; path: string; side: 'p' | 'm'; big?: boolean; late?: boolean }) {
   const d = fxDef(fx, path);
   const spec = specOf(`${fx}|${path}`, d.spec);
   const sc = (d.scale ?? 3) * (big ? 1.4 : 1);
-  const cls = `cpf cpf-${d.mode} cpf-${side}`;
+  const cls = `cpf cpf-${d.mode} cpf-${side} ${late ? 'cpf-late' : ''}`;
   return (
     <span className={cls} aria-hidden="true">
       <span className="cpf-main" style={{ ['--cpf-flip' as string]: side === 'm' ? -1 : 1 } as CSSProperties}>

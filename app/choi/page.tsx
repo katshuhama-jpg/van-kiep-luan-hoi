@@ -59,7 +59,6 @@ import { tr } from '@/lib/i18n';
 
 const SPEEDS = [1, 2, 4, 8, 16];
 /** màu chưởng lực theo con đường tu luyện */
-const qiColor = (c: Character) => (c.path ? PATHS[c.path].aura : c.daoTam <= -40 ? '#ff3448' : '#9ff0c8');
 type SheetName = null | 'shop' | 'bag' | 'bequan' | 'menu' | 'hunt' | 'info' | 'today' | 'mail' | 'kho';
 
 type Battle = BattleView & { t: number; rest: number; ps: Fighter; ms: Fighter; fsP?: FightSide; fsM?: FightSide; loP?: Loadout; loM?: Loadout };
@@ -333,7 +332,7 @@ export default function PlayPage() {
     b.mHp = Math.max(0, b.mHp - r.dot - tk.dmg);
     b.pHp = Math.max(1, Math.min(b.pMax, b.pHp + r.heal - r.self - tk.reflect));
     const tag = [...r.tags, r.heal > 0 ? `+${r.heal}` : ''].filter(Boolean).join(' ') || (tk.dmg ? elemTag : undefined);
-    b.last = [...b.last.slice(-4), { id: Math.random(), side: 'p', dmg: tk.dmg + r.dot, crit: r.crit, skill: r.skill, fx: r.fx, ult: r.ult, text: tk.note, tag }];
+    b.last = [...b.last.slice(-4), { id: Math.random(), side: 'p', dmg: tk.dmg + r.dot, crit: r.crit, skill: r.skill, fx: r.fx, ult: r.ult, path: b.loP.path, text: tk.note, tag }];
     cpView(b);
   }
   /** Quái đánh trả: khiên, né, phản đòn của bạn vẫn có tác dụng; quái bị choáng thì mất lượt */
@@ -349,7 +348,7 @@ export default function PlayPage() {
     const tk = b.loP ? takeHit(b.loP, b.fsP, h.dmg, rnd) : { dmg: h.dmg, reflect: 0, note: undefined as string | undefined };
     b.pHp = Math.max(0, b.pHp - tk.dmg);
     if (tk.reflect) b.mHp = Math.max(0, b.mHp - tk.reflect);
-    b.last = [...b.last.slice(-4), { id: Math.random(), side: 'm', dmg: tk.dmg, crit: h.crit, text: tk.note, tag: tk.reflect ? tr(`Phản ${tk.reflect}`, `Reflect ${tk.reflect}`) : tk.dmg ? elemTag : undefined }];
+    b.last = [...b.last.slice(-4), { id: Math.random(), side: 'm', dmg: tk.dmg, crit: h.crit, fx: tk.dmg ? 'mvuot' : undefined, text: tk.note, tag: tk.reflect ? tr(`Phản ${tk.reflect}`, `Reflect ${tk.reflect}`) : tk.dmg ? elemTag : undefined }];
     cpView(b);
   }
   /** Người (giang hồ, bóng kiếp trước, Ngũ Hành Đài) cũng ra chiêu theo công pháp đạo của họ */
@@ -367,7 +366,7 @@ export default function PlayPage() {
     b.pHp = Math.max(0, b.pHp - r.dot - tk.dmg);
     b.mHp = Math.max(1, Math.min(b.mMax, b.mHp + r.heal - r.self - tk.reflect));
     const tag = [...r.tags, tk.reflect ? tr(`Phản ${tk.reflect}`, `Reflect ${tk.reflect}`) : ''].filter(Boolean).join(' ') || (tk.dmg ? elemTag : undefined);
-    b.last = [...b.last.slice(-4), { id: Math.random(), side: 'm', dmg: tk.dmg + r.dot, crit: r.crit, skill: r.skill, fx: r.fx, ult: r.ult, text: tk.note, tag }];
+    b.last = [...b.last.slice(-4), { id: Math.random(), side: 'm', dmg: tk.dmg + r.dot, crit: r.crit, skill: r.skill, fx: r.fx, ult: r.ult, path: b.loM.path, text: tk.note, tag }];
     cpView(b);
   }
   function cpView(b: Battle) {
@@ -419,10 +418,10 @@ export default function PlayPage() {
     const turn = yearSecRef.current * 0.015;
     b.t += dtGame;
     let changed = false;
-    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string, art?: { name: string; palm: boolean } | null) => {
+    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string) => {
       const me = b!.melem;
       const tag = text || !me || !dmg ? undefined : side === 'p' ? elemHitTag(me.me, me.foe) : elemHitTag(me.foe, me.me);
-      b!.last = [...b!.last.slice(-4), { id: Math.random(), side, dmg, crit, text, skill: art?.name, palm: art?.palm, qi: art?.palm ? qiColor(c) : undefined, tag }];
+      b!.last = [...b!.last.slice(-4), { id: Math.random(), side, dmg, crit, text, tag }];
     };
     while (b.t >= turn) {
       b.t -= turn;
@@ -432,6 +431,8 @@ export default function PlayPage() {
         if (b.rest <= 0) {
           const nb = newFight(c, b.m.id, b.kills);
           if (!nb) return changed;
+          // trừ yêu liên tục: thanh khí của đạo giữ sang con quái kế tiếp
+          if (b.fsP) nb.fsP = { ...newSide(), gauge: b.fsP.gauge };
           battleRef.current = b = nb;
         }
         continue;
@@ -548,11 +549,9 @@ export default function PlayPage() {
     const fc = b.duel.foe;
     const eMe = b.nhd ? b.nhd.myEl : elementOf(c);
     const eFoe = b.nhd ? b.nhd.foeEl : elementOf(fc);
-    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string, art?: { name: string; palm: boolean } | null) => {
-      // chưởng mang màu bản mệnh, đòn khắc chế có chữ riêng
-      const qi = ELEMENTS[side === 'p' ? eMe : eFoe].color;
+    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string) => {
       const tag = text || b.nhd?.rel === 'dong' ? undefined : side === 'p' ? elemHitTag(eMe, eFoe) : elemHitTag(eFoe, eMe);
-      b.last = [...b.last.slice(-4), { id: Math.random(), side, dmg, crit, text, skill: art?.name, palm: art?.palm, qi: art?.palm ? qi : undefined, tag }];
+      b.last = [...b.last.slice(-4), { id: Math.random(), side, dmg, crit, text, tag }];
     };
     const end = (result: 'win' | 'lose' | 'draw') => {
       const out: Fx[] = [];
@@ -805,10 +804,10 @@ export default function PlayPage() {
     const half = 0.6; // mỗi đòn 0,6 giây thật, không phụ thuộc tốc độ
     b.t += dtReal;
     let changed = false;
-    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string, art?: { name: string; palm: boolean } | null) => {
+    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string) => {
       const me = b.melem;
       const tag = text || !me || !dmg ? undefined : side === 'p' ? elemHitTag(me.me, me.foe) : elemHitTag(me.foe, me.me);
-      b.last = [...b.last.slice(-4), { id: Math.random(), side, dmg, crit, text, skill: art?.name, palm: art?.palm, qi: art?.palm ? qiColor(c) : undefined, tag }];
+      b.last = [...b.last.slice(-4), { id: Math.random(), side, dmg, crit, text, tag }];
     };
     const end = (result: 'win' | 'lose' | 'draw') => {
       const out: Fx[] = [];
