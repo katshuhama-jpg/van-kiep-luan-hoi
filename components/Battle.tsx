@@ -230,7 +230,9 @@ export interface BattleView {
   mHp: number;
   mMax: number;
   phase: 'fight' | 'rest';
-  last: { id: number; side: 'p' | 'm'; dmg: number; crit: boolean; text?: string; skill?: string; palm?: boolean; qi?: string; tag?: string }[];
+  last: { id: number; side: 'p' | 'm'; dmg: number; crit: boolean; text?: string; skill?: string; palm?: boolean; qi?: string; tag?: string; fx?: string; ult?: boolean }[];
+  /** 4.2.0: trạng thái công pháp trong trận (thanh riêng của đạo, thiêu, độc, khiên) */
+  cpv?: { gauge: number; gName: string; ult: boolean; mBurn: number; mPoison: number; pShield: number; pBurn: number; pPoison: number };
   outcome?: 'win' | 'lose' | 'flee';
   kills: number;
   /** quái chặn đường: đếm hiệp */
