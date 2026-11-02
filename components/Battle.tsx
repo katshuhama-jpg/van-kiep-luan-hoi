@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import type { Monster } from "@/lib/game/combat";
-import type { Character } from "@/lib/game/types";
-import { ELEMENTS, type ElemRel } from "@/lib/game/nguhanh";
-import type { Element } from "@/lib/game/types";
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
-import Sprite from "./Sprite";
-import { CpHit } from "./CpFx";
-import MonsterLpc from "./MonsterLpc";
-import { MONSTER_LOOK } from "@/lib/game/monsterLook";
-import { tr } from "@/lib/i18n";
+import type { Monster } from '@/lib/game/combat';
+import type { Character } from '@/lib/game/types';
+import { ELEMENTS, type ElemRel } from '@/lib/game/nguhanh';
+import type { Element } from '@/lib/game/types';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+import Sprite from './Sprite';
+import { CpHit } from './CpFx';
+import MonsterLpc from './MonsterLpc';
+import { MONSTER_LOOK } from '@/lib/game/monsterLook';
+import { tr } from '@/lib/i18n';
 
 type R = [number, number, number, number, string];
 
@@ -19,115 +19,56 @@ function mix(x: string, y: string, t: number) {
   const px = [1, 3, 5].map((i) => parseInt(x.slice(i, i + 2), 16));
   const py = [1, 3, 5].map((i) => parseInt(y.slice(i, i + 2), 16));
   return (
-    "#" +
+    '#' +
     px
       .map((v, i) =>
         Math.round(v + (py[i] - v) * t)
           .toString(16)
-          .padStart(2, "0"),
+          .padStart(2, '0'),
       )
-      .join("")
+      .join('')
   );
 }
 
 /** Vị trí đầu của từng dáng quái, để gắn sừng/vương miện khi tiến hóa */
-const HEAD: Record<string, [number, number]> = {
-  thu: [1, 1],
-  ran: [2, 3],
-  nguoi: [5, 0],
-  chim: [2, 5],
-  rong: [1, 1],
-  bo: [0, 6],
-  vo_lam: [4, 0],
-};
+const HEAD: Record<string, [number, number]> = { thu: [1, 1], ran: [2, 3], nguoi: [5, 0], chim: [2, 5], rong: [1, 1], bo: [0, 6], vo_lam: [4, 0] };
 
 function monsterRects(m: Monster, tier = 0): R[] {
   // càng tiến hóa màu càng sẫm, mắt càng sáng
-  const b =
-    tier >= 3
-      ? mix(m.body, "#ffd36b", 0.25)
-      : tier >= 2
-        ? mix(m.body, "#2a0010", 0.3)
-        : m.body;
-  const a = tier >= 2 ? mix(m.accent, "#ffd36b", 0.3) : m.accent;
-  const e = tier >= 1 ? "#ff2a3a" : m.eye;
+  const b = tier >= 3 ? mix(m.body, '#ffd36b', 0.25) : tier >= 2 ? mix(m.body, '#2a0010', 0.3) : m.body;
+  const a = tier >= 2 ? mix(m.accent, '#ffd36b', 0.3) : m.accent;
+  const e = tier >= 1 ? '#ff2a3a' : m.eye;
   const base = shapeRects(m, b, a, e);
   if (tier >= 1) {
     const [hx, hy] = HEAD[m.shape] ?? [2, 1];
     // gai lưng
     base.push([hx + 5, hy + 4, 1, 1, a], [hx + 7, hy + 4, 1, 1, a]);
-    if (tier >= 2)
-      base.push(
-        [hx, hy - 2, 1, 2, "#ffd36b"],
-        [hx + 2, hy - 3, 1, 3, "#ffd36b"],
-        [hx + 4, hy - 2, 1, 2, "#ffd36b"],
-      );
-    if (tier >= 3)
-      base.push(
-        [hx - 1, hy - 3, 7, 1, "#fff6a8"],
-        [hx + 2, hy - 4, 1, 1, "#ff2a3a"],
-      );
+    if (tier >= 2) base.push([hx, hy - 2, 1, 2, '#ffd36b'], [hx + 2, hy - 3, 1, 3, '#ffd36b'], [hx + 4, hy - 2, 1, 2, '#ffd36b']);
+    if (tier >= 3) base.push([hx - 1, hy - 3, 7, 1, '#fff6a8'], [hx + 2, hy - 4, 1, 1, '#ff2a3a']);
   }
   return base;
 }
 
 function shapeRects(m: Monster, b: string, a: string, e: string): R[] {
   switch (m.shape) {
-    case "vo_lam": {
-      const skin = "#f2c9a0";
+    case 'vo_lam': {
+      const skin = '#f2c9a0';
       const r: R[] = [];
-      if (m.human?.hat)
-        r.push(
-          [1, 1, 13, 1, "#c9a26a"],
-          [4, 0, 7, 1, "#c9a26a"],
-          [6, -1, 3, 1, "#b08a50"],
-        );
-      else
-        r.push(
-          [5, 1, 6, 1, "#1a1a1a"],
-          [4, 2, 1, 2, "#1a1a1a"],
-          [11, 2, 1, 3, a],
-        );
+      if (m.human?.hat) r.push([1, 1, 13, 1, '#c9a26a'], [4, 0, 7, 1, '#c9a26a'], [6, -1, 3, 1, '#b08a50']);
+      else r.push([5, 1, 6, 1, '#1a1a1a'], [4, 2, 1, 2, '#1a1a1a'], [11, 2, 1, 3, a]);
       r.push([5, 2, 6, 4, skin], [6, 3, 1, 1, e], [9, 3, 1, 1, e]);
       if (m.human?.mask) r.push([5, 4, 6, 2, a]);
-      else r.push([7, 5, 2, 1, "#8a4a3a"]);
-      r.push(
-        [4, 6, 8, 6, b],
-        [7, 6, 2, 3, a],
-        [4, 9, 8, 1, a],
-        [12, 6, 2, 5, b],
-        [3, 6, 1, 4, b],
-        [12, 11, 2, 1, skin],
-      );
-      r.push(
-        [5, 12, 2, 3, a],
-        [9, 12, 2, 3, a],
-        [4, 15, 3, 1, "#1a1a1a"],
-        [9, 15, 3, 1, "#1a1a1a"],
-      );
+      else r.push([7, 5, 2, 1, '#8a4a3a']);
+      r.push([4, 6, 8, 6, b], [7, 6, 2, 3, a], [4, 9, 8, 1, a], [12, 6, 2, 5, b], [3, 6, 1, 4, b], [12, 11, 2, 1, skin]);
+      r.push([5, 12, 2, 3, a], [9, 12, 2, 3, a], [4, 15, 3, 1, '#1a1a1a'], [9, 15, 3, 1, '#1a1a1a']);
       const w = m.human?.weapon;
-      if (w === "kiem")
-        r.push(
-          [2, 9, 2, 1, skin],
-          [0, 3, 1, 7, "#d9e6ff"],
-          [0, 9, 2, 1, "#ffd36b"],
-        );
-      if (w === "dao")
-        r.push(
-          [2, 9, 2, 1, skin],
-          [-1, 4, 2, 6, "#c9ccd6"],
-          [0, 9, 3, 1, "#5a2a1a"],
-        );
-      if (w === "quyen") r.push([1, 8, 3, 3, skin], [1, 8, 3, 1, "#c9962e"]);
-      if (w === "quat")
-        r.push(
-          [2, 9, 2, 1, skin],
-          [-1, 5, 4, 4, "#9ff0c8"],
-          [0, 6, 2, 2, "#3a6a3a"],
-        );
+      if (w === 'kiem') r.push([2, 9, 2, 1, skin], [0, 3, 1, 7, '#d9e6ff'], [0, 9, 2, 1, '#ffd36b']);
+      if (w === 'dao') r.push([2, 9, 2, 1, skin], [-1, 4, 2, 6, '#c9ccd6'], [0, 9, 3, 1, '#5a2a1a']);
+      if (w === 'quyen') r.push([1, 8, 3, 3, skin], [1, 8, 3, 1, '#c9962e']);
+      if (w === 'quat') r.push([2, 9, 2, 1, skin], [-1, 5, 4, 4, '#9ff0c8'], [0, 6, 2, 2, '#3a6a3a']);
       return r;
     }
-    case "thu":
+    case 'thu':
       return [
         [13, 5, 2, 2, b], // đuôi
         [14, 4, 1, 1, a],
@@ -135,12 +76,12 @@ function shapeRects(m: Monster, b: string, a: string, e: string): R[] {
         [5, 10, 8, 1, a],
         [1, 3, 5, 5, b], // đầu
         [0, 5, 2, 2, b], // mõm
-        [0, 6, 1, 1, "#1a1a1a"],
+        [0, 6, 1, 1, '#1a1a1a'],
         [1, 1, 1, 2, b], // tai
         [4, 1, 1, 2, b],
         [1, 2, 1, 1, a],
         [2, 4, 1, 1, e], // mắt
-        [1, 7, 2, 1, "#ffffff"], // nanh
+        [1, 7, 2, 1, '#ffffff'], // nanh
         [4, 11, 2, 3, b], // chân
         [7, 11, 2, 3, b],
         [10, 11, 2, 3, b],
@@ -148,7 +89,7 @@ function shapeRects(m: Monster, b: string, a: string, e: string): R[] {
         [4, 13, 2, 1, a],
         [10, 13, 2, 1, a],
       ];
-    case "ran":
+    case 'ran':
       return [
         [10, 11, 5, 2, b],
         [12, 9, 3, 2, b],
@@ -163,17 +104,17 @@ function shapeRects(m: Monster, b: string, a: string, e: string): R[] {
         [3, 8, 3, 3, b],
         [3, 5, 1, 1, e],
         [5, 5, 1, 1, e],
-        [0, 7, 2, 1, "#e0202e"], // lưỡi
+        [0, 7, 2, 1, '#e0202e'], // lưỡi
         [3, 3, 1, 1, a],
         [5, 3, 1, 1, a],
       ];
-    case "nguoi":
+    case 'nguoi':
       return [
         [5, 1, 6, 5, b], // đầu
         [5, 0, 6, 1, a],
         [6, 3, 1, 1, e],
         [9, 3, 1, 1, e],
-        [6, 5, 4, 1, "#1a1a1a"],
+        [6, 5, 4, 1, '#1a1a1a'],
         [4, 6, 8, 6, a], // thân
         [6, 6, 4, 2, b],
         [2, 6, 2, 5, a], // tay
@@ -185,7 +126,7 @@ function shapeRects(m: Monster, b: string, a: string, e: string): R[] {
         [5, 15, 2, 1, b],
         [9, 15, 2, 1, b],
       ];
-    case "chim":
+    case 'chim':
       return [
         [5, 7, 7, 4, b], // thân
         [6, 2, 4, 5, a], // cánh trên
@@ -194,15 +135,15 @@ function shapeRects(m: Monster, b: string, a: string, e: string): R[] {
         [11, 8, 4, 2, a], // đuôi
         [13, 10, 2, 2, a],
         [2, 5, 4, 4, b], // đầu
-        [0, 7, 2, 1, "#ffd36b"], // mỏ
-        [0, 8, 1, 1, "#ffd36b"],
+        [0, 7, 2, 1, '#ffd36b'], // mỏ
+        [0, 8, 1, 1, '#ffd36b'],
         [3, 6, 1, 1, e],
-        [6, 11, 1, 3, "#7a5a3a"], // chân
-        [9, 11, 1, 3, "#7a5a3a"],
-        [5, 13, 2, 1, "#7a5a3a"],
-        [8, 13, 2, 1, "#7a5a3a"],
+        [6, 11, 1, 3, '#7a5a3a'], // chân
+        [9, 11, 1, 3, '#7a5a3a'],
+        [5, 13, 2, 1, '#7a5a3a'],
+        [8, 13, 2, 1, '#7a5a3a'],
       ];
-    case "rong":
+    case 'rong':
       return [
         [11, 10, 5, 2, b], // đuôi
         [14, 8, 2, 2, b],
@@ -215,7 +156,7 @@ function shapeRects(m: Monster, b: string, a: string, e: string): R[] {
         [1, 1, 1, 2, a], // sừng
         [4, 1, 1, 2, a],
         [2, 4, 1, 1, e],
-        [0, 7, 3, 1, "#ffffff"],
+        [0, 7, 3, 1, '#ffffff'],
         [5, 11, 2, 3, b], // chân
         [10, 11, 2, 3, b],
         [5, 13, 2, 1, a],
@@ -223,7 +164,7 @@ function shapeRects(m: Monster, b: string, a: string, e: string): R[] {
         [8, 6, 1, 1, a],
         [11, 7, 1, 1, a],
       ];
-    case "bo":
+    case 'bo':
     default:
       return [
         [5, 9, 8, 3, b], // thân
@@ -232,7 +173,7 @@ function shapeRects(m: Monster, b: string, a: string, e: string): R[] {
         [13, 3, 2, 3, b],
         [11, 1, 3, 2, b],
         [10, 2, 2, 2, a], // ngòi độc
-        [9, 3, 1, 1, "#ffd36b"],
+        [9, 3, 1, 1, '#ffd36b'],
         [2, 8, 3, 2, b], // càng
         [0, 6, 3, 2, b],
         [0, 9, 2, 1, b],
@@ -263,17 +204,7 @@ export function MonsterSprite({
   pixel?: boolean;
 }) {
   const look = pixel ? undefined : MONSTER_LOOK[m.id];
-  if (look)
-    return (
-      <MonsterLpc
-        look={look}
-        size={size}
-        tier={tier}
-        dead={dead}
-        attacking={attacking}
-        still={still}
-      />
-    );
+  if (look) return <MonsterLpc look={look} size={size} tier={tier} dead={dead} attacking={attacking} still={still} />;
   return (
     <svg
       viewBox="-2 -5 20 21"
@@ -282,7 +213,7 @@ export function MonsterSprite({
       shapeRendering="crispEdges"
       role="img"
       aria-label={m.name}
-      className={`mon tier-${tier} ${m.boss ? "boss-" + m.boss : ""} ${dead ? "mon-dead" : ""}`}
+      className={`mon tier-${tier} ${m.boss ? 'boss-' + m.boss : ''} ${dead ? 'mon-dead' : ''}`}
     >
       {monsterRects(m, tier).map(([x, y, w, h, f], i) => (
         <rect key={i} x={x} y={y} width={w} height={h} fill={f} />
@@ -300,77 +231,31 @@ export interface BattleView {
   pMax: number;
   mHp: number;
   mMax: number;
-  phase: "fight" | "rest";
-  last: {
-    id: number;
-    side: "p" | "m";
-    dmg: number;
-    crit: boolean;
-    text?: string;
-    skill?: string;
-    tag?: string;
-    fx?: string;
-    ult?: boolean;
-    path?: string;
-  }[];
+  phase: 'fight' | 'rest';
+  last: { id: number; side: 'p' | 'm'; dmg: number; crit: boolean; text?: string; skill?: string; tag?: string; fx?: string; ult?: boolean; path?: string }[];
   /** 4.2.0: trạng thái công pháp trong trận (thanh riêng của đạo, thiêu, độc, khiên) */
-  cpv?: {
-    gauge: number;
-    gName: string;
-    ult: boolean;
-    mBurn: number;
-    mPoison: number;
-    pShield: number;
-    pBurn: number;
-    pPoison: number;
-  };
-  outcome?: "win" | "lose" | "flee";
+  cpv?: { gauge: number; gName: string; ult: boolean; mBurn: number; mPoison: number; pShield: number; pBurn: number; pPoison: number };
+  outcome?: 'win' | 'lose' | 'flee';
   kills: number;
   /** quái chặn đường: đếm hiệp */
-  ambush?: { turn: number; max: number; kind: "kem" | "bang" | "hon" };
+  ambush?: { turn: number; max: number; kind: 'kem' | 'bang' | 'hon' };
   /** ngũ hành giữa bạn và quái */
   melem?: { me: Element; foe: Element; rel: ElemRel };
   /** kỳ ngộ giang hồ: đối thủ là người */
-  duel?: {
-    kind:
-      | "dong_dao"
-      | "dich_thu"
-      | "kiep_truoc"
-      | "dong_mon"
-      | "ngu_hanh"
-      | "ma_dau";
-    foe: Character;
-    tag: string;
-    player: string;
-    turn: number;
-    max: number;
-    elem?: { me: Element; foe: Element; rel: ElemRel };
-    bg?: string;
-  };
+  duel?: { kind: 'dong_dao' | 'dich_thu' | 'kiep_truoc' | 'dong_mon' | 'ngu_hanh' | 'ma_dau'; foe: Character; tag: string; player: string; turn: number; max: number; elem?: { me: Element; foe: Element; rel: ElemRel }; bg?: string };
 }
 
 /** Dải ngũ hành giữa sân đấu: bản mệnh hai bên và ai khắc ai */
 function ElemBanner({ e }: { e: { me: Element; foe: Element; rel: ElemRel } }) {
   const A = ELEMENTS[e.me];
   const B = ELEMENTS[e.foe];
-  const txt =
-    e.rel === "khac"
-      ? tr("Khắc chế · +50%", "Overcomes · +50%")
-      : e.rel === "bi_khac"
-        ? tr("Bị khắc · -30%", "Overcome · -30%")
-        : e.rel === "duoc_sinh"
-          ? tr(`Được sinh · +10%`, "Nourished · +10%")
-          : e.rel === "sinh"
-            ? `${A.name} sinh ${B.name}`
-            : tr("Cùng mệnh", "Same element");
+  const txt = e.rel === 'khac' ? tr('Khắc chế · +50%', "Overcomes · +50%") : e.rel === 'bi_khac' ? tr('Bị khắc · -30%', "Overcome · -30%") : e.rel === 'duoc_sinh' ? tr(`Được sinh · +10%`, "Nourished · +10%") : e.rel === 'sinh' ? `${A.name} sinh ${B.name}` : tr('Cùng mệnh', "Same element");
   return (
     <div className={`elem-banner ${e.rel}`}>
       <span className="el" style={{ background: A.color }}>
         {A.sym}
       </span>
-      <span className="arrow">
-        {e.rel === "khac" ? "▶" : e.rel === "bi_khac" ? "◀" : "·"}
-      </span>
+      <span className="arrow">{e.rel === 'khac' ? '▶' : e.rel === 'bi_khac' ? '◀' : '·'}</span>
       <span className="el" style={{ background: B.color }}>
         {B.sym}
       </span>
@@ -380,36 +265,22 @@ function ElemBanner({ e }: { e: { me: Element; foe: Element; rel: ElemRel } }) {
 }
 
 /** Thanh khí riêng của đạo (Kiếm Ý, Đan Hỏa...): đầy 100 thì tung tuyệt kỹ */
-function CpGauge({ v }: { v: NonNullable<BattleView["cpv"]> }) {
+function CpGauge({ v }: { v: NonNullable<BattleView['cpv']> }) {
   const full = v.gauge >= 100;
   return (
-    <div className={`cp-gauge ${full ? "full" : ""}`}>
+    <div className={`cp-gauge ${full ? 'full' : ''}`}>
       <span>
         {v.gName}
-        {!v.ult && (
-          <small> · {tr("chưa có tuyệt kỹ", "no ultimate yet")}</small>
-        )}
+        {!v.ult && <small> · {tr('chưa có tuyệt kỹ', 'no ultimate yet')}</small>}
       </span>
       <div className="cp-gbar">
         <div style={{ width: `${Math.min(100, v.gauge)}%` }} />
       </div>
       {(v.pShield > 0 || v.pBurn > 0 || v.pPoison > 0) && (
         <span className="cp-st p">
-          {v.pShield > 0 && (
-            <i className="shield">
-              {tr("Khiên", "Shield")} {v.pShield}
-            </i>
-          )}
-          {v.pBurn > 0 && (
-            <i className="burn">
-              {tr("Thiêu", "Burn")} {v.pBurn}
-            </i>
-          )}
-          {v.pPoison > 0 && (
-            <i className="poison">
-              {tr("Độc", "Poison")} {v.pPoison}
-            </i>
-          )}
+          {v.pShield > 0 && <i className="shield">{tr('Khiên', 'Shield')} {v.pShield}</i>}
+          {v.pBurn > 0 && <i className="burn">{tr('Thiêu', 'Burn')} {v.pBurn}</i>}
+          {v.pPoison > 0 && <i className="poison">{tr('Độc', 'Poison')} {v.pPoison}</i>}
         </span>
       )}
     </div>
@@ -417,16 +288,8 @@ function CpGauge({ v }: { v: NonNullable<BattleView["cpv"]> }) {
 }
 
 /** Cắt cảnh tuyệt kỹ (dùng lại khung .af-cut của Lôi đài) */
-function UltCut({
-  me,
-  foe,
-  h,
-}: {
-  me: Character;
-  foe?: Character;
-  h: BattleView["last"][number];
-}) {
-  const mine = h.side === "p";
+function UltCut({ me, foe, h }: { me: Character; foe?: Character; h: BattleView['last'][number] }) {
+  const mine = h.side === 'p';
   const [on, setOn] = useState(true);
   useEffect(() => {
     const t = setTimeout(() => setOn(false), 1500);
@@ -434,25 +297,15 @@ function UltCut({
   }, []);
   if (!on) return null;
   return (
-    <div
-      className={`af-cut cp-cut ${mine ? "me" : "foe"}`}
-      aria-live="assertive"
-    >
+    <div className={`af-cut cp-cut ${mine ? 'me' : 'foe'}`} aria-live="assertive">
       <span className="cp-cut-fx">
-        <CpHit fx={h.fx ?? "thuong"} path={h.path ?? "chung"} side="p" big />
+        <CpHit fx={h.fx ?? 'thuong'} path={h.path ?? 'chung'} side="p" big />
       </span>
       <span className="af-cut-fig">
         <Sprite c={me} size={176} anim="spellcast" dir={mine ? 3 : 1} />
       </span>
       <span className="af-cut-band">
-        <small>
-          {mine
-            ? tr("Tuyệt kỹ", "Ultimate")
-            : tr(
-                `${foe?.name ?? ""} tung tuyệt kỹ`,
-                `${foe?.name ?? ""} unleashes an ultimate`,
-              )}
-        </small>
+        <small>{mine ? tr('Tuyệt kỹ', 'Ultimate') : tr(`${foe?.name ?? ''} tung tuyệt kỹ`, `${foe?.name ?? ''} unleashes an ultimate`)}</small>
         <b>{h.skill}</b>
       </span>
     </div>
@@ -460,29 +313,16 @@ function UltCut({
 }
 
 /** Lớp phủ trận đánh trên sân khấu: quái, thanh máu, số sát thương */
-export function BattleOverlay({
-  b,
-  me,
-  ultCut,
-}: {
-  b: BattleView;
-  me?: Character;
-  ultCut?: boolean;
-}) {
+export function BattleOverlay({ b, me, ultCut }: { b: BattleView; me?: Character; ultCut?: boolean }) {
   const lastHit = b.last[b.last.length - 1];
   // tuyệt kỹ: màn cắt cảnh toàn màn hình (chặn đường và kỳ ngộ đấu người, không bật khi trừ yêu liên tục)
-  const ult = ultCut
-    ? b.last
-        .slice(-3)
-        .reverse()
-        .find((h) => h.ult)
-    : undefined;
-  const cutMe = ult ? (ult.side === "p" ? me : b.duel?.foe) : undefined;
+  const ult = ultCut ? b.last.slice(-3).reverse().find((h) => h.ult) : undefined;
+  const cutMe = ult ? (ult.side === 'p' ? me : b.duel?.foe) : undefined;
   // đòn gần nhất của mình (quái thường đánh trả ngay sau trong cùng lượt)
-  const lastM = [...b.last].reverse().find((h) => h.side === "m");
+  const lastM = [...b.last].reverse().find((h) => h.side === 'm');
   // đòn có chiêu gần nhất mỗi bên (đòn kết liễu thường bị dòng '+tu vi' đẩy xuống sau)
-  const fxP = [...b.last].reverse().find((h) => h.side === "p" && h.fx);
-  const fxM = [...b.last].reverse().find((h) => h.side === "m" && h.fx);
+  const fxP = [...b.last].reverse().find((h) => h.side === 'p' && h.fx);
+  const fxM = [...b.last].reverse().find((h) => h.side === 'm' && h.fx);
   return (
     <div className="battle" aria-live="off">
       <div className="hpbox p">
@@ -501,173 +341,88 @@ export function BattleOverlay({
       </div>
       {b.duel ? (
         <>
-          <div
-            className={`duel-bg duel-${b.duel.kind}`}
-            style={
-              b.duel.bg ? { backgroundImage: `url(${b.duel.bg})` } : undefined
-            }
-            aria-hidden="true"
-          >
+          <div className={`duel-bg duel-${b.duel.kind}`} style={b.duel.bg ? { backgroundImage: `url(${b.duel.bg})` } : undefined} aria-hidden="true">
             <i className="duel-moon" />
             <i className="duel-hills" />
             <i className="duel-floor" />
-            {b.duel.kind === "dong_dao" && (
+            {b.duel.kind === 'dong_dao' && (
               <>
                 <i className="duel-flag l" />
                 <i className="duel-flag r" />
               </>
             )}
-            {(b.duel.kind === "dich_thu" || b.duel.kind === "ma_dau") && (
-              <i className="duel-bolt" />
-            )}
-            {b.duel.kind === "kiep_truoc" && (
+            {(b.duel.kind === 'dich_thu' || b.duel.kind === 'ma_dau') && <i className="duel-bolt" />}
+            {b.duel.kind === 'kiep_truoc' && (
               <span className="duel-mist">
                 {Array.from({ length: 8 }, (_, i) => (
-                  <i
-                    key={i}
-                    style={{
-                      left: `${(i * 37) % 100}%`,
-                      animationDelay: `${-i * 0.7}s`,
-                    }}
-                  />
+                  <i key={i} style={{ left: `${(i * 37) % 100}%`, animationDelay: `${-i * 0.7}s` }} />
                 ))}
               </span>
             )}
           </div>
           <div
-            className={`foe-wrap ${lastHit?.side === "p" && b.phase === "fight" ? "got-hit" : ""} ${lastHit?.side === "m" ? "attacking" : ""} ${b.duel.kind === "kiep_truoc" ? "ghost" : b.duel.kind === "ngu_hanh" ? "mirror" : ""}`}
+            className={`foe-wrap ${lastHit?.side === 'p' && b.phase === 'fight' ? 'got-hit' : ''} ${lastHit?.side === 'm' ? 'attacking' : ''} ${b.duel.kind === 'kiep_truoc' ? 'ghost' : b.duel.kind === 'ngu_hanh' ? 'mirror' : ''}`}
             key={lastHit?.id ?? 0}
           >
             <Sprite
-              c={
-                b.phase === "rest" && b.outcome === "win"
-                  ? { ...b.duel.foe, dead: true }
-                  : b.duel.foe
-              }
+              c={b.phase === 'rest' && b.outcome === 'win' ? { ...b.duel.foe, dead: true } : b.duel.foe}
               size={150}
-              anim={
-                b.phase === "rest" && b.outcome === "win"
-                  ? "hurt"
-                  : lastHit?.side === "m" && b.phase === "fight"
-                    ? lastHit.skill
-                      ? "spellcast"
-                      : "slash"
-                    : "idle"
-              }
+              anim={b.phase === 'rest' && b.outcome === 'win' ? 'hurt' : lastHit?.side === 'm' && b.phase === 'fight' ? (lastHit.skill ? 'spellcast' : 'slash') : 'idle'}
               dir={1}
             />
           </div>
           <span className="duel-tag">
             {b.duel.tag}
-            {b.duel.player ? ` · @${b.duel.player}` : ""}
+            {b.duel.player ? ` · @${b.duel.player}` : ''}
           </span>
           {b.duel.elem && <ElemBanner e={b.duel.elem} />}
         </>
       ) : (
-        <div
-          className={`mon-wrap ${lastHit?.side === "p" && b.phase === "fight" ? "got-hit" : ""} ${lastHit?.side === "m" ? "attacking" : ""}`}
-          key={lastHit?.id ?? 0}
-        >
-          <MonsterSprite
-            m={b.m}
-            size={136}
-            tier={b.tier}
-            dead={b.phase === "rest" && b.outcome === "win"}
-            attacking={b.phase === "fight" && lastHit?.side === "m"}
-          />
+        <div className={`mon-wrap ${lastHit?.side === 'p' && b.phase === 'fight' ? 'got-hit' : ''} ${lastHit?.side === 'm' ? 'attacking' : ''}`} key={lastHit?.id ?? 0}>
+          <MonsterSprite m={b.m} size={136} tier={b.tier} dead={b.phase === 'rest' && b.outcome === 'win'} attacking={b.phase === 'fight' && lastHit?.side === 'm'} />
         </div>
       )}
       {!b.duel && b.melem && <ElemBanner e={b.melem} />}
       {/* 4.2.0: mọi đòn theo công pháp - hiệu ứng pixel riêng từng chiêu */}
-      {fxP?.fx && (
-        <CpHit
-          key={`cp${fxP.id}`}
-          fx={fxP.fx}
-          path={fxP.path ?? "chung"}
-          side="p"
-          big={fxP.ult || fxP.crit}
-        />
-      )}
-      {fxM?.fx && (
-        <CpHit
-          key={`cm${fxM.id}`}
-          fx={fxM.fx}
-          path={fxM.path ?? "chung"}
-          side="m"
-          big={fxM.ult || fxM.crit}
-          late={lastHit === fxM && b.last[b.last.length - 2] === fxP}
-        />
-      )}
-      {fxP && (fxP.ult || fxP.crit) && (
-        <span
-          key={`fl${fxP.id}`}
-          className={`cp-flash ${fxP.ult ? "ult" : ""}`}
-          aria-hidden="true"
-        />
-      )}
+      {fxP?.fx && <CpHit key={`cp${fxP.id}`} fx={fxP.fx} path={fxP.path ?? 'chung'} side="p" big={fxP.ult || fxP.crit} />}
+      {fxM?.fx && <CpHit key={`cm${fxM.id}`} fx={fxM.fx} path={fxM.path ?? 'chung'} side="m" big={fxM.ult || fxM.crit} late={lastHit === fxM && b.last[b.last.length - 2] === fxP} />}
+      {fxP && (fxP.ult || fxP.crit) && <span key={`fl${fxP.id}`} className={`cp-flash ${fxP.ult ? 'ult' : ''}`} aria-hidden="true" />}
       {fxP?.skill && (
-        <span
-          key={`s${fxP.id}`}
-          className={`skill-name ${fxP.ult ? "ult" : ""}`}
-        >
+        <span key={`s${fxP.id}`} className={`skill-name ${fxP.ult ? 'ult' : ''}`}>
           {fxP.skill}!
         </span>
       )}
-      {lastHit?.side === "m" && lastHit.skill && (
-        <span
-          key={`fsn${lastHit.id}`}
-          className={`skill-name foe ${lastHit.ult ? "ult" : ""}`}
-        >
+      {lastHit?.side === 'm' && lastHit.skill && (
+        <span key={`fsn${lastHit.id}`} className={`skill-name foe ${lastHit.ult ? 'ult' : ''}`}>
           {lastHit.skill}!
         </span>
       )}
       {b.cpv && <CpGauge v={b.cpv} />}
-      {b.cpv &&
-        b.phase === "fight" &&
-        (b.cpv.mBurn > 0 || b.cpv.mPoison > 0) && (
-          <span className="cp-st m">
-            {b.cpv.mBurn > 0 && (
-              <i className="burn">
-                {tr("Thiêu", "Burn")} {b.cpv.mBurn}
-              </i>
-            )}
-            {b.cpv.mPoison > 0 && (
-              <i className="poison">
-                {tr("Độc", "Poison")} {b.cpv.mPoison}
-              </i>
-            )}
-          </span>
-        )}
-      {ult &&
-        cutMe &&
-        createPortal(
-          <UltCut key={`u${ult.id}`} me={cutMe} foe={b.duel?.foe} h={ult} />,
-          document.body,
-        )}
+      {b.cpv && b.phase === 'fight' && (b.cpv.mBurn > 0 || b.cpv.mPoison > 0) && (
+        <span className="cp-st m">
+          {b.cpv.mBurn > 0 && <i className="burn">{tr('Thiêu', 'Burn')} {b.cpv.mBurn}</i>}
+          {b.cpv.mPoison > 0 && <i className="poison">{tr('Độc', 'Poison')} {b.cpv.mPoison}</i>}
+        </span>
+      )}
+      {ult && cutMe && createPortal(<UltCut key={`u${ult.id}`} me={cutMe} foe={b.duel?.foe} h={ult} />, document.body)}
       {b.last.map((h) => (
-        <span
-          key={h.id}
-          className={`dmg ${h.side} ${h.crit ? "crit" : ""} ${h.tag ? (h.tag.endsWith("!") ? "el-khac" : "el-bi") : ""}`}
-        >
+        <span key={h.id} className={`dmg ${h.side} ${h.crit ? 'crit' : ''} ${h.tag ? (h.tag.endsWith('!') ? 'el-khac' : 'el-bi') : ''}`}>
           {h.text ?? `-${h.dmg}`}
           {h.tag && <small className="el-tag">{h.tag}</small>}
         </span>
       ))}
       {b.duel ? (
         <span className={`kill-count ambush-tag duel-turn ${b.duel.kind}`}>
-          {tr("Hiệp ", "Round ")}
-          {Math.max(1, b.duel.turn)}/{b.duel.max}
+          
+          {tr("Hiệp ", "Round ")}{Math.max(1, b.duel.turn)}/{b.duel.max}
         </span>
       ) : b.ambush ? (
         <span className={`kill-count ambush-tag ${b.ambush.kind}`}>
-          {tr("Chặn đường · Hiệp ", "Ambush · Round ")}
-          {Math.max(1, b.ambush.turn)}/{b.ambush.max}
+          
+          {tr("Chặn đường · Hiệp ", "Ambush · Round ")}{Math.max(1, b.ambush.turn)}/{b.ambush.max}
         </span>
       ) : (
-        <span className="kill-count">
-          {tr("Đã trảm: ", "Slain: ")}
-          {b.kills}
-        </span>
+        <span className="kill-count">{tr("Đã trảm: ", "Slain: ")}{b.kills}</span>
       )}
     </div>
   );
