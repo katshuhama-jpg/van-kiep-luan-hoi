@@ -1,5 +1,5 @@
 import { sellNow } from './marketDay';
-import { cpStats } from './congPhap';
+import { cpStats, dropTq } from './congPhap';
 /** 4.1.0: đồ rơi trùng bán ngay tại chỗ cho thương lái, chỉ được 1/4 giá bán tay */
 export const DUP_SELL = 0.25;
 import { forgeDefMul, forgeHpMul, forgeMul, sealAtk, sealDef, sealExp, sealHp } from './forge';
@@ -675,10 +675,10 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance 
   addCult(c, killExp(c, m));
   // 4.1.0: linh thạch mỗi con giảm một nửa (trước 2 + 3 × cấp), chống treo máy cày tiền
   money(c, Math.round((1 + m.lv * 1.5) * (0.7 + ctx.rnd() * 0.6)));
-  // 4.2.0: tàn quyển công pháp (quái chặn đường gọi với lootChance cao nên dễ rơi hơn)
-  if (ctx.rnd() < (lootChance >= 0.5 ? 0.2 : 0.012)) {
-    c.tanQuyen = (c.tanQuyen ?? 0) + 1;
-    notes.push(tr(`${m.name} để lại một tàn quyển công pháp (đang có ${c.tanQuyen}).`, `The ${m.name} leaves behind a manual fragment (you have ${c.tanQuyen}).`));
+  // 4.2.0: tàn quyển công pháp theo hệ của quái (quái chặn đường gọi với lootChance cao nên dễ rơi hơn)
+  if (ctx.rnd() < (lootChance >= 0.5 ? 0.25 : 0.015)) {
+    const t = dropTq(c, { kind: 'quai', el: m.el, strong: lootChance >= 0.5 }, ctx.rnd);
+    if (t) notes.push(t);
   }
   c.kills = c.kills ?? {};
   const n = (c.kills[m.id] = (c.kills[m.id] ?? 0) + 1);

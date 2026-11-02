@@ -5,7 +5,7 @@
  */
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { Character } from '@/lib/game/types';
-import { CP, FUSE_CHANCE, FUSE_COST, GAUGE_NAME, PATH_IDEA, PHAM_NAME, SLOT_REALM, canFuse, canUpgrade, cpOf, cpOfPath, heirChoices, owned, slotOpen, tuyetOf, type CpDef } from '@/lib/game/congPhap';
+import { CP, FUSE_CHANCE, FUSE_COST, GAUGE_NAME, PATH_IDEA, PHAM_NAME, SLOT_REALM, SWAP_RATE, TAM_GAP, BIEN_DESC, BIEN_NAME, BIEN_TANG, tuviCost, canFuse, canSwap, capOf, cpOf, cpOfPath, heirChoices, owned, slotOpen, tamTang, tangMul, tqCost, tqOf, tuyetOf, upgradeBlock, vanNeed, type Bien, type CpDef } from '@/lib/game/congPhap';
 import { PATHS, REALMS } from '@/lib/game/data';
 import { tr } from '@/lib/i18n';
 import Sprite from './Sprite';
@@ -43,13 +43,14 @@ export interface TangKinhProps {
   onClose: () => void;
   onEquip: (id: string) => void;
   onUnequip: (id: string) => void;
-  onUpgrade: (id: string) => void;
+  onUpgrade: (id: string, useVan?: boolean, bien?: Bien) => void;
+  onSwap: (from: string, to: string) => void;
   onFuse: () => { ok: boolean; text: string } | null;
   onHeir: (id: string) => void;
   book: string[];
 }
 
-export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onFuse, onHeir, book }: TangKinhProps) {
+export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onSwap, onFuse, onHeir, book }: TangKinhProps) {
   const [tab, setTab] = useState<'luyen' | 'dung' | 'so'>('luyen');
   const [fuseSt, setFuseSt] = useState<'idle' | 'fuse' | { ok: boolean; text: string }>('idle');
   const t = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -120,9 +121,9 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onFuse,
       <div className="forge-scene">
         <div className="fs-head">
           <b>{tr('Tàng Kinh Các', 'Scripture Pavilion')}</b>
-          <span className="fs-tinh tk-tq" title={tr('Tàn quyển', 'Manual fragments')}>
+          <span className="fs-tinh tk-tq" title={tr('Tàn quyển vạn năng: bù vào bộ nào cũng được', 'Universal fragments: fit any technique')}>
             <img src="/icons/g_kinh_thu_tan_quyen.png" width={20} height={20} alt="" className="px-icon" />
-            {c.tanQuyen ?? 0}
+            {tr('Vạn năng', 'Universal')} {c.tqVan ?? 0}
           </span>
           <button className="ss-x" onClick={onClose} aria-label={tr('Đóng', 'Close')}>
             ✕
@@ -199,8 +200,12 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onFuse,
               {list.map((d) => {
                 const o = owned(c, d.id);
                 const on = eq.includes(d.id) || s.tuyet === d.id;
-                const up = canUpgrade(c, d.id);
-                const needTq = !!o && o.tang >= 3 && o.tang < 9;
+                const van = vanNeed(c, d.id);
+                const blk = upgradeBlock(c, d.id, van > 0);
+                const tv = o && o.tang >= 3 && o.tang < 9 ? tuviCost(c, d.id) : 0;
+                const cost = o ? tqCost(o.tang) : 0;
+                const held = tqOf(c, d.id);
+                const swapTo = sel === d.id && held >= SWAP_RATE ? list.filter((x) => canSwap(c, d.id, x.id)) : [];
                 return (
                   <div key={d.id} className={`tk-cp ${PHAM_CLS[d.pham]} ${sel === d.id ? 'sel' : ''} ${o ? '' : 'lock'}`} onClick={() => setSel(d.id)}>
                     {on && <span className="tk-ribbon">{tr('Đang mang', 'Equipped')}</span>}
@@ -209,8 +214,15 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onFuse,
                       <b className="tk-cp-name">
                         {d.name} <i className={`tk-pham ${PHAM_CLS[d.pham]}`}>{PHAM_NAME[d.pham]}</i>
                         {o && <em>{tr(`T${o.tang}`, `S${o.tang}`)}</em>}
+                        {o?.bien && <i className={`tk-bien ${o.bien}`}>{BIEN_NAME[o.bien]}</i>}
                       </b>
                       <span className="tk-cp-desc">{d.main}</span>
+                      {o && d.kind !== 'tam' && (
+                        <span className="tk-cp-desc tk-pow">
+                          {tr('Lực chiêu', 'Power')} {Math.round(tangMul(o.tang) * 100)}%{o.tang < 9 ? ` → ${Math.round(tangMul(o.tang + 1) * 100)}%` : ''}
+                          {d.kind === 'chieu' && o.tang < 9 && ` · ${tr(`trần T${capOf(c, d.id)} (tâm pháp T${tamTang(c)} + ${TAM_GAP})`, `cap S${capOf(c, d.id)} (heart art S${tamTang(c)} + ${TAM_GAP})`)}`}
+                        </span>
+                      )}
                       {o && o.tang < 9 && (
                         <span className="tk-tang">
                           <span className="tk-tang-n">{tr('Thục luyện', 'Mastery')}</span>
@@ -220,25 +232,72 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onFuse,
                         </span>
                       )}
                       {!o && <span className="tk-cp-desc tk-how">{unlockText(d)}</span>}
+                      {o && d.kind === 'chieu' && o.tang === BIEN_TANG - 1 && !o.bien && <span className="tk-cp-desc tk-how">{tr(`Lên T${BIEN_TANG} chọn biến chiêu, giữ cả kiếp: Cương đánh x1,3 nhưng chậm 1 lượt; Nhu nhanh 1 lượt, hiệu ứng đậm 30%.`, `Stage ${BIEN_TANG} locks a variant for this life: Hard hits x1.3 but 1 turn slower; Soft is 1 turn faster with 30% stronger effects.`)}</span>}
+                      {swapTo.length > 0 && (
+                        <span className="tk-swap">
+                          <small>{tr(`Chép ${SWAP_RATE} quyển này thành 1 quyển:`, `Rework ${SWAP_RATE} of these into 1 of:`)}</small>
+                          {swapTo.map((x) => (
+                            <button
+                              key={x.id}
+                              className="chip-btn"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onSwap(d.id, x.id);
+                              }}
+                            >
+                              {short(x.name)}
+                            </button>
+                          ))}
+                        </span>
+                      )}
                     </span>
                     {o && (
                       <span className="tk-cp-side">
-                        {needTq && (
-                          <span className="tk-cost">
+                        {(o.tang >= 2 || held > 0) && o.tang < 9 && (
+                          <span className={`tk-cost ${cost && held >= cost ? 'ok' : ''}`} title={tr('Tàn quyển riêng của bộ này / cần cho tầng kế', 'Own fragments / needed for next stage')}>
                             <img src="/icons/g_kinh_thu_tan_quyen.png" width={18} height={18} alt={tr('Tàn quyển', 'Fragment')} className="px-icon" />
-                            {Math.min(c.tanQuyen ?? 0, 1)}/1
+                            {cost ? `${held}/${cost}` : held}
                           </span>
                         )}
-                        <button
-                          className={`tk-up ${o.tang >= 9 ? 'max' : ''}`}
-                          disabled={!up}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onUpgrade(d.id);
-                          }}
-                        >
-                          {o.tang >= 9 ? tr('Viên mãn', 'Perfected') : o.exp < 100 ? tr('Đang luyện', 'Training') : up ? tr('Nâng tầng', 'Raise') : tr('Thiếu quyển', 'Need fragment')}
-                        </button>
+                        {blk === 'bien' ? (
+                          (['cuong', 'nhu'] as Bien[]).map((b) => (
+                            <button
+                              key={b}
+                              className={`tk-up tk-bien-btn ${b}`}
+                              title={BIEN_DESC[b]}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onUpgrade(d.id, van > 0, b);
+                              }}
+                            >
+                              {tr(`Ngộ ${BIEN_NAME[b]}`, `${BIEN_NAME[b]}`)}
+                            </button>
+                          ))
+                        ) : (
+                          <button
+                            className={`tk-up ${o.tang >= 9 ? 'max' : ''}`}
+                            disabled={blk !== null}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onUpgrade(d.id, van > 0);
+                            }}
+                          >
+                            {blk === 'max'
+                              ? tr('Viên mãn', 'Perfected')
+                              : blk === 'exp'
+                                ? tr('Đang luyện', 'Training')
+                                : blk === 'cap'
+                                  ? tr('Luyện tâm pháp', 'Train heart art')
+                                  : blk === 'tq'
+                                    ? tr('Thiếu quyển', 'Need fragment')
+                                    : blk === 'tuvi'
+                                      ? tr('Thiếu tu vi', 'Need cultivation')
+                                      : van
+                                        ? tr(`+${van} vạn năng`, `+${van} universal`)
+                                        : tr('Nâng tầng', 'Raise')}
+                          </button>
+                        )}
+                        {tv > 0 && <small className={blk === 'tuvi' ? 'bad' : ''}>{tr(`-${tv} tu vi`, `-${tv} cultivation`)}</small>}
                         <small>{cdText(d)}</small>
                         {d.kind !== 'tuyet' && !(d.kind === 'tam' && on) && (
                           <button
@@ -259,8 +318,8 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onFuse,
               })}
               <p className="note">
                 {tr(
-                  'Đang mang thì thục luyện tự tăng mỗi năm và mỗi lần ra chiêu. Tầng 1-3 tự lên, từ tầng 4 cần 1 tàn quyển. Tàn quyển rơi khi trảm yêu, thắng chặn đường và đấu người.',
-                  'Equipped techniques gain mastery every year and every time they are used. Stages 1-3 rise on their own; from stage 4 you need 1 manual fragment. Fragments drop from slaying demons, winning ambushes and duels.',
+                  'Đang mang thì thục luyện tự tăng mỗi năm và mỗi lần ra chiêu. Tầng 1-3 tự lên; từ tầng 4 cần tàn quyển riêng của bộ đó (1, 1, 2, 2, 3, 3 quyển) và hao một ít tu vi, chiêu không được cao hơn tâm pháp quá 2 tầng, lên tầng 6 phải chọn biến chiêu Cương hay Nhu. Quái hệ nào rơi tàn quyển bộ hệ đó, người cùng đạo rơi chiêu của đạo, bóng kiếp trước rơi bộ kiếp ấy từng luyện; bộ đang mang rơi nhiều hơn. Rơi lệch thì chép 3 quyển thành 1 quyển bộ khác cùng đạo.',
+                  'Equipped techniques gain mastery every year and every time they are used. Stages 1-3 rise on their own; from stage 4 each technique needs its own fragments (1, 1, 2, 2, 3, 3) and some cultivation, stage 6 asks you to pick a Hard or Soft variant, and a move cannot be more than 2 stages above your heart art. Demons drop fragments of their element, same-path cultivators drop their path, past-life shadows drop what that life trained; equipped techniques drop more often. Unlucky drops can be reworked 3-for-1 into another technique of the same path.',
                 )}
               </p>
             </div>
@@ -287,6 +346,7 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onFuse,
                   <div className={`tk-fuse ${typeof fuseSt === 'object' ? (fuseSt.ok ? 'ok' : 'fail') : fuseSt}`} style={{ backgroundImage: 'url(/bg/luyen_dan-2.png)' }}>
                     {cpOfPath(c.path)
                       .filter((x) => x.kind === 'chieu')
+                      .sort((a, b) => (owned(c, b.id)?.tang ?? 0) - (owned(c, a.id)?.tang ?? 0))
                       .slice(0, 2)
                       .map((x, i) => (
                         <span key={x.id} className="tk-fuse-in">
@@ -311,7 +371,9 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onFuse,
                     <dt>{tr('Cần', 'Needs')}</dt>
                     <dd className={nine.length >= 2 ? '' : 'bad'}>{tr(`2 chiêu của đạo đạt tầng 9 (có ${nine.length})`, `2 path moves at stage 9 (you have ${nine.length})`)}</dd>
                     <dt>{tr('Tốn', 'Cost')}</dt>
-                    <dd className={(c.tanQuyen ?? 0) >= FUSE_COST ? '' : 'bad'}>{tr(`${FUSE_COST} tàn quyển (có ${c.tanQuyen ?? 0})`, `${FUSE_COST} fragments (you have ${c.tanQuyen ?? 0})`)}</dd>
+                    <dd className={tu && tqOf(c, tu.id) >= FUSE_COST ? '' : 'bad'}>
+                      {tr(`${FUSE_COST} tàn quyển ${tu?.name ?? ''} (có ${tu ? tqOf(c, tu.id) : 0}), chỉ rơi ở trận chặn đường và đấu người khi đã có 2 chiêu tầng 9`, `${FUSE_COST} ${tu?.name ?? ''} fragments (you have ${tu ? tqOf(c, tu.id) : 0}); they only drop in ambushes and duels once you have 2 moves at stage 9`)}
+                    </dd>
                     <dt>{tr('Thành', 'Success')}</dt>
                     <dd>{Math.round(FUSE_CHANCE * 100)}%</dd>
                     <dt>{tr('Hỏng', 'Failure')}</dt>

@@ -1,6 +1,7 @@
-import type { Character, EffectCtx, PathId } from './types';
+import type { Character, EffectCtx, Element, PathId } from './types';
 import type { Fighter } from './combat';
 import { tr } from '../i18n';
+import { REALMS } from './data';
 
 /**
  * 4.2.0 Công pháp: mỗi đạo một bộ tâm pháp (bị động), chiêu thức (có hồi chiêu) và tuyệt kỹ (ra khi thanh đầy).
@@ -122,6 +123,31 @@ export interface CpOwn {
   id: string;
   tang: number; // 1-9
   exp: number; // 0-100 thục luyện
+  bien?: Bien | null; // biến chiêu chọn ở tầng 6 (chỉ chiêu thức)
+}
+/** Ngộ chiêu ở tầng 6: Cương (mạnh, chậm) hoặc Nhu (nhanh, hiệu ứng đậm). Chọn rồi không đổi trong kiếp này. */
+export type Bien = 'cuong' | 'nhu';
+export const BIEN_TANG = 6;
+export const BIEN_NAME: Record<Bien, string> = { cuong: tr('Cương', 'Hard'), nhu: tr('Nhu', 'Soft') };
+export const BIEN_DESC: Record<Bien, string> = {
+  cuong: tr('Sát thương x1,3, hồi chiêu chậm thêm 1 lượt', 'Damage x1.3, cooldown +1 turn'),
+  nhu: tr('Hồi chiêu nhanh hơn 1 lượt, thiêu/độc/hút máu/choáng/khiên/phản đòn đậm hơn 30%', 'Cooldown -1 turn; burn, poison, lifesteal, stun, shield and reflect 30% stronger'),
+};
+export function bienDef(d: CpDef, b?: Bien | null): CpDef {
+  if (!b || d.kind !== 'chieu') return d;
+  const e = { ...(d.eff ?? {}) };
+  if (b === 'cuong') return { ...d, cd: (d.cd ?? 3) + 1, eff: { ...e, mul: (e.mul ?? 1) * 1.3 } };
+  const up = (x: number) => x * 1.3;
+  if (e.burn) e.burn = [e.burn[0], up(e.burn[1])];
+  if (e.poison) e.poison += 1;
+  if (e.leech) e.leech = up(e.leech);
+  if (e.stun) e.stun = up(e.stun);
+  if (e.shield) e.shield += 1;
+  if (e.reflect) e.reflect = [e.reflect[0], up(e.reflect[1])];
+  if (e.evade) e.evade = [e.evade[0], up(e.evade[1])];
+  if (e.heal) e.heal = up(e.heal);
+  if (e.rage) e.rage = [e.rage[0], e.rage[1], e.rage[2] * 0.7];
+  return { ...d, cd: Math.max(1, (d.cd ?? 3) - 1), eff: e };
 }
 export interface CpState {
   own: CpOwn[];
@@ -234,19 +260,131 @@ export function cpYear(c: Character, ctx: EffectCtx): void {
     ctx.log(tr('Có công pháp đã đầy thục luyện. Mở Công pháp, dùng tàn quyển để lên tầng.', 'A technique has full mastery. Open Techniques and use a manual fragment to raise its stage.'), 'good');
   }
 }
-export function canUpgrade(c: Character, id: string): boolean {
-  const o = owned(c, id);
-  return !!o && o.tang < 9 && o.exp >= 100 && (o.tang < 3 || (c.tanQuyen ?? 0) >= 1);
+// ---------- Tàn quyển theo từng bộ ----------
+/**
+ * Mỗi bộ công pháp có tàn quyển riêng (c.tq[id]), không còn một loại dùng cho mọi thứ.
+ * Rơi theo nguồn: quái hệ nào ra tàn quyển bộ hệ đó; người cùng đạo ra chiêu của đạo; bóng kiếp trước ra bộ kiếp trước từng luyện.
+ * Ép người chơi chọn đường: giá tăng dần theo tầng, chiêu không được vượt tâm pháp quá 2 tầng, chiêu đang mang rơi nhiều hơn.
+ * Tránh kẹt vì xui: bộ đang ôm nhiều tàn quyển thì ít rơi thêm; đổi 3 tàn quyển bộ này lấy 1 bộ khác cùng đạo; hiếm hoi có tàn quyển vạn năng.
+ */
+/** Ngũ hành của từng bộ (quái hệ nào thì rơi tàn quyển bộ hệ đó) */
+export const CP_HE: Record<string, Element> = {
+  dan_khi: 'tho', truong_quyen: 'tho', thiet_sa: 'kim',
+  thanh_lien: 'thuy', liet_hoa: 'hoa', kim_xa: 'kim', thai_cuc_kiem: 'thuy', van_kiem: 'kim',
+  thanh_moc: 'moc', dan_bao: 'hoa', van_doc: 'moc', hoi_xuan: 'moc', luyen_thien_lo: 'hoa',
+  chu_thien: 'kim', kim_quang: 'kim', ngu_loi: 'moc', me_tung: 'thuy', tinh_dau_dai_tran: 'kim',
+  kim_cang_the: 'kim', kim_cang_chuong: 'kim', kim_chung: 'tho', su_tu_hong: 'tho', nhu_lai: 'kim',
+  huyet_hai: 'thuy', huyet_anh_trao: 'kim', thon_phe: 'thuy', cuong_ma: 'hoa', huyet_te: 'hoa',
+  yeu_than: 'tho', thien_ho: 'hoa', yeu_trao: 'kim', hoa_hinh: 'moc', chan_than: 'hoa',
+};
+/** Tàn quyển cần để lên tầng kế (theo tầng hiện tại): tầng 1-3 tự lên, sau đó 1,1,2,2,3,3 - một bộ lên tầng 9 tốn 12 */
+export const TQ_COST = [0, 0, 0, 1, 1, 2, 2, 3, 3];
+export const tqCost = (tang: number) => TQ_COST[tang] ?? 0;
+/** Chiêu không được cao hơn tâm pháp quá TAM_GAP tầng: muốn chiêu mạnh phải luyện cả gốc */
+export const TAM_GAP = 2;
+export const tqOf = (c: Character, id: string) => c.tq?.[id] ?? 0;
+export const tamTang = (c: Character) => owned(c, c.cp?.eq[0] ?? '')?.tang ?? 1;
+export function capOf(c: Character, id: string): number {
+  const d = cpOf(id);
+  return !d || d.kind === 'tam' ? 9 : Math.min(9, tamTang(c) + TAM_GAP);
 }
-export function upgrade(c: Character, id: string): string | null {
-  if (!canUpgrade(c, id)) return null;
-  const o = owned(c, id)!;
-  if (o.tang >= 3) c.tanQuyen = (c.tanQuyen ?? 0) - 1;
+/** Lý do chưa nâng được (null là nâng được) */
+/** Ngộ đạo hao tu vi: mỗi tàn quyển dùng tốn 2% tu vi cần cho cảnh giới hiện tại (tham công pháp thì chậm đột phá) */
+export const TUVI_PER_TQ = 0.02;
+export function tuviCost(c: Character, id: string): number {
+  const o = owned(c, id);
+  return o ? Math.round(tqCost(o.tang) * TUVI_PER_TQ * (REALMS[c.realm]?.need || 60)) : 0;
+}
+export function upgradeBlock(c: Character, id: string, useVan = false): 'max' | 'exp' | 'cap' | 'tq' | 'tuvi' | 'bien' | null {
+  const o = owned(c, id);
+  if (!o || o.tang >= 9) return 'max';
+  if (o.exp < 100) return 'exp';
+  if (o.tang >= capOf(c, id)) return 'cap';
+  if (tqOf(c, id) + (useVan ? (c.tqVan ?? 0) : 0) < tqCost(o.tang)) return 'tq';
+  if (c.cultivation < tuviCost(c, id)) return 'tuvi';
+  if (o.tang === BIEN_TANG - 1 && !o.bien && cpOf(id)?.kind === 'chieu') return 'bien';
+  return null;
+}
+export function canUpgrade(c: Character, id: string): boolean {
+  return upgradeBlock(c, id) === null;
+}
+/** Thiếu tàn quyển riêng thì có thể bù bằng tàn quyển vạn năng (người chơi tự bấm) */
+export function vanNeed(c: Character, id: string): number {
+  const o = owned(c, id);
+  if (!o || upgradeBlock(c, id) !== 'tq' || upgradeBlock(c, id, true) === 'tq') return 0;
+  return tqCost(o.tang) - tqOf(c, id);
+}
+export function upgrade(c: Character, id: string, useVan = false, bien?: Bien): string | null {
+  const o = owned(c, id);
+  if (!o) return null;
+  const blk = upgradeBlock(c, id, useVan);
+  if (blk === 'bien' && bien) o.bien = bien;
+  else if (blk !== null) return null;
+  c.cultivation = Math.max(0, c.cultivation - tuviCost(c, id));
+  const cost = tqCost(o.tang);
+  const own = Math.min(tqOf(c, id), cost);
+  c.tq = { ...(c.tq ?? {}), [id]: tqOf(c, id) - own };
+  if (cost - own > 0) c.tqVan = (c.tqVan ?? 0) - (cost - own);
   o.tang += 1;
   o.exp = 0;
   c.cpHint = false;
-  return tr(`${cpOf(id)?.name} lên tầng ${o.tang}.`, `${cpOf(id)?.name} reaches stage ${o.tang}.`);
+  const bn = o.tang === BIEN_TANG && o.bien ? tr(` Ngộ ra biến chiêu ${BIEN_NAME[o.bien]}.`, ` You grasp the ${BIEN_NAME[o.bien]} variant.`) : '';
+  return tr(`${cpOf(id)?.name} lên tầng ${o.tang}.`, `${cpOf(id)?.name} reaches stage ${o.tang}.`) + bn;
 }
+/** Đổi 3 tàn quyển bộ này lấy 1 tàn quyển bộ khác cùng đạo (mất nhiều, chỉ để gỡ khi rơi lệch) */
+export const SWAP_RATE = 3;
+export function canSwap(c: Character, from: string, to: string): boolean {
+  const a = cpOf(from);
+  const b = cpOf(to);
+  return !!a && !!b && from !== to && a.path === b.path && !!owned(c, to) && (owned(c, to)?.tang ?? 9) < 9 && tqOf(c, from) >= SWAP_RATE;
+}
+export function swapTq(c: Character, from: string, to: string): string | null {
+  if (!canSwap(c, from, to)) return null;
+  c.tq = { ...(c.tq ?? {}), [from]: tqOf(c, from) - SWAP_RATE, [to]: tqOf(c, to) + 1 };
+  return tr(`Chép lại ${SWAP_RATE} tàn quyển ${cpOf(from)?.name} thành 1 tàn quyển ${cpOf(to)?.name}.`, `You rework ${SWAP_RATE} ${cpOf(from)?.name} fragments into 1 ${cpOf(to)?.name} fragment.`);
+}
+
+/** Nguồn rơi tàn quyển */
+export type TqSrc = { kind: 'quai'; el?: Element; strong?: boolean } | { kind: 'nguoi'; path?: string | null; el?: Element } | { kind: 'bong'; ids: string[] };
+const VAN_CHANCE = { quai: 0.04, nguoi: 0.1, bong: 0.08 };
+/** Rơi 1 tàn quyển: chọn bộ theo trọng số, trả về dòng nhật ký (null nếu chẳng có bộ nào cần) */
+export function dropTq(c: Character, src: TqSrc, rnd: () => number): string | null {
+  const strong = src.kind !== 'quai' || !!src.strong;
+  if (rnd() < VAN_CHANCE[src.kind]) {
+    c.tqVan = (c.tqVan ?? 0) + 1;
+    return tr(`Nhặt được một tàn quyển vạn năng, ghép được vào bất kỳ bộ nào (đang có ${c.tqVan}).`, `You find a universal manual fragment that fits any technique (you have ${c.tqVan}).`);
+  }
+  const s = cpState(c);
+  const tu = tuyetOf(c);
+  const nine = c.path ? cpOfPath(c.path).filter((x) => x.kind === 'chieu' && (owned(c, x.id)?.tang ?? 0) >= 9).length : 0;
+  const pool: { id: string; w: number }[] = [];
+  for (const o of s.own) {
+    const d = cpOf(o.id);
+    if (!d || d.kind === 'tuyet' || o.tang >= 9 || o.tang < 2) continue;
+    // đủ tàn quyển cho tới tầng 9 rồi thì thôi rơi bộ này
+    if (tqOf(c, o.id) >= TQ_COST.slice(o.tang).reduce((x, y) => x + y, 0)) continue;
+    let w = d.kind === 'tam' ? 0.6 : 1;
+    if (s.eq.includes(o.id)) w *= 1.5;
+    if (d.path !== 'chung' && d.path !== c.path) w *= 0.3;
+    if (src.kind === 'quai' && src.el && CP_HE[o.id] === src.el) w *= 3;
+    if (src.kind === 'nguoi') {
+      if (src.path && d.path === src.path) w *= 3;
+      if (src.el && CP_HE[o.id] === src.el) w *= 2;
+    }
+    if (src.kind === 'bong' && src.ids.includes(o.id)) w *= 4;
+    w /= 1 + 0.5 * tqOf(c, o.id); // đang ôm nhiều thì ít rơi thêm
+    pool.push({ id: o.id, w });
+  }
+  // tàn quyển tuyệt kỹ chỉ rơi từ trận khó, khi đã có 2 chiêu viên mãn
+  if (tu && strong && nine >= 2 && s.tuyet !== tu.id) pool.push({ id: tu.id, w: 2 / (1 + 0.5 * tqOf(c, tu.id)) });
+  const sum = pool.reduce((x, p) => x + p.w, 0);
+  if (!sum) return null;
+  let r = rnd() * sum;
+  const pick = pool.find((p) => (r -= p.w) <= 0) ?? pool[pool.length - 1];
+  c.tq = { ...(c.tq ?? {}), [pick.id]: tqOf(c, pick.id) + 1 };
+  return tr(`Nhặt được tàn quyển ${cpOf(pick.id)?.name} (đang có ${tqOf(c, pick.id)}).`, `You find a ${cpOf(pick.id)?.name} fragment (you have ${tqOf(c, pick.id)}).`);
+}
+
 /** Dùng trong trận thì thục luyện thêm chút */
 function practice(c: Character | null, id: string) {
   if (!c) return;
@@ -254,7 +392,7 @@ function practice(c: Character | null, id: string) {
   if (o && o.tang < 9) o.exp = Math.min(100, o.exp + 0.5);
 }
 
-/** Dung hợp: 2 chiêu cùng đạo đều tầng 9 thì lĩnh ngộ tuyệt kỹ của đạo, tốn 3 tàn quyển, thành 60% */
+/** Dung hợp: 2 chiêu cùng đạo đều tầng 9 thì lĩnh ngộ tuyệt kỹ của đạo, tốn 3 tàn quyển của chính tuyệt kỹ đó, thành 60% */
 export const FUSE_COST = 3;
 export const FUSE_CHANCE = 0.6;
 export function tuyetOf(c: Character): CpDef | undefined {
@@ -264,12 +402,12 @@ export function canFuse(c: Character): boolean {
   const t = tuyetOf(c);
   if (!t || c.cp?.tuyet === t.id) return false;
   const nine = cpOfPath(c.path!).filter((x) => x.kind === 'chieu' && (owned(c, x.id)?.tang ?? 0) >= 9);
-  return nine.length >= 2 && (c.tanQuyen ?? 0) >= FUSE_COST;
+  return nine.length >= 2 && tqOf(c, t.id) >= FUSE_COST;
 }
 export function fuse(c: Character, rnd: () => number): { ok: boolean; text: string } | null {
   if (!canFuse(c)) return null;
   const t = tuyetOf(c)!;
-  c.tanQuyen = (c.tanQuyen ?? 0) - FUSE_COST;
+  c.tq = { ...(c.tq ?? {}), [t.id]: tqOf(c, t.id) - FUSE_COST };
   if (rnd() < FUSE_CHANCE) {
     cpState(c).tuyet = t.id;
     grant(c, t.id, 1);
@@ -283,7 +421,8 @@ export function fuse(c: Character, rnd: () => number): { ok: boolean; text: stri
 export function heirChoices(c: Character): CpDef[] {
   return (c.cp?.own ?? []).filter((o) => o.tang >= 9).map((o) => cpOf(o.id)!).filter((d) => d && d.kind === 'chieu');
 }
-export function applyHeir(c: Character, id?: string | null) {
+export function applyHeir(c: Character, id?: string | null, past?: string[]) {
+  if (past?.length) c.cpPast = past.slice(-40);
   if (!id || !cpOf(id)) return;
   cpSync(c, null);
   grant(c, id, 1);
@@ -307,6 +446,8 @@ export function cpStats(c: Character, f: Fighter): Fighter {
 }
 
 // ======================= Trong trận =======================
+/** Lực chiêu theo tầng: tầng 1 = 85%, tầng 3 = 100%, tầng 9 = 145% (đối thủ mất máu nhiều hơn rõ khi luyện lên) */
+export const tangMul = (t: number) => 0.85 + 0.075 * (Math.max(1, t) - 1);
 export interface Loadout {
   path: string;
   chieu: { d: CpDef; tang: number }[];
@@ -320,7 +461,7 @@ export function loadoutOf(c: Character): Loadout {
     .slice(1)
     .map((id, i) => ({ d: cpOf(id), o: owned(c, id), i: i + 1 }))
     .filter((x) => x.d && x.o && slotOpen(c, x.i))
-    .map((x) => ({ d: x.d!, tang: x.o!.tang }));
+    .map((x) => ({ d: bienDef(x.d!, x.o!.bien), tang: x.o!.tang }));
   const tu = s.tuyet ? cpOf(s.tuyet) : undefined;
   return { path: c.path ?? 'chung', chieu, tuyet: tu ? { d: tu, tang: owned(c, tu.id)?.tang ?? 1 } : undefined, regen: tamOf(c).regen ?? 0 };
 }
@@ -415,7 +556,7 @@ export function act(
   }
   const e = use?.d.eff ?? {};
   const t = use?.tang ?? 1;
-  const k = 1 + 0.05 * (t - 1); // tầng càng cao chiêu càng mạnh
+  const k = tangMul(t); // tầng càng cao chiêu càng mạnh
   const bursting = ult && !lo.tuyet;
   const mul = (use ? (e.mul ?? 1) * k : 0.92) * rageMul * (bursting ? 1.5 : 1);
   const hits = use ? (e.hits ?? 1) : 1;
