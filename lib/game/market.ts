@@ -8,7 +8,7 @@ import { tr } from '../i18n';
  * - Một bảng giá chung: giá trị món theo cảnh giới CỦA MÓN và phẩm. Mua đúng giá trị, bán (tự bán hay đồ rơi trùng) được 12%.
  * - Kệ hàng: cứ 5 năm game bày lại 6 món hiếm theo cảnh giới, mỗi món một chiếc. Sau phi thăng là Tiên thị, Ma thị, Hư thị.
  * - Thị tượng: mỗi ngày (giờ VN) một thị tượng làm giá lên xuống.
- * - Hội đấu giá 50 năm một lần, thương nhân lưu động, hợp đồ.
+ * - Hội đấu giá 60 năm một lần (sau phi thăng 120 năm), thương nhân lưu động, hợp đồ.
  */
 
 function hash(s: string): number {
@@ -128,9 +128,11 @@ export function mergeItems(c: Character, ids: string[], ctx: EffectCtx): MergeRe
 
 // ---------------- Hội đấu giá (đấu giá kín, một chạm) ----------------
 export const AUCTION_EVENT_ID = 'hoi_dau_gia';
-export const AUCTION_YEARS = 50;
-/** Đến kỳ hội đấu giá: từ Luyện Khí, 50 năm một lần (khoảng 2-6 lần mỗi kiếp), mỗi kỳ một lần */
-export const auctionDue = (c: Character) => !c.dead && c.realm >= 1 && c.age >= AUCTION_YEARS && c.age % AUCTION_YEARS === 0 && c.auctionAt !== c.age;
+export const AUCTION_YEARS = 60;
+/** Sau phi thăng đời dài hơn nên hội đấu giá thưa hơn */
+export const auctionYears = (c: Pick<Character, 'cosmos'>) => (c.cosmos ? 120 : AUCTION_YEARS);
+/** Đến kỳ hội đấu giá: từ Luyện Khí, 60 năm một lần (sau phi thăng 120 năm), khoảng 2-5 lần mỗi kiếp */
+export const auctionDue = (c: Character) => !c.dead && c.realm >= 1 && c.age >= auctionYears(c) && c.age % auctionYears(c) === 0 && c.auctionAt !== c.age;
 const RIVALS = [
   tr('Hắc Phong lão quái', 'Old Monster Black Wind'),
   tr('Tô gia đại tiểu thư', 'Eldest Miss of the Su clan'),
@@ -147,11 +149,12 @@ export const BID_TIERS = [
 ];
 /** Chọn món đem đấu khi thiệp tới: Hiếm (Luyện Khí, Trúc Cơ) hoặc Cực phẩm (từ Kim Đan), gần cảnh giới của mình */
 export function pickAuctionLot(c: Character, rnd: () => number): string | null {
+  // cảnh giới càng cao, món đem đấu càng xịn: từ Kim Đan là Cực phẩm, từ Nguyên Anh chỉ lấy đồ đúng cảnh giới trở lên
   const rare = c.realm >= 3 ? 3 : 2;
-  const lo = c.cosmos ? 8 : Math.max(0, c.realm - 1);
+  const lo = c.cosmos ? Math.max(8, c.realm) : c.realm >= 4 ? c.realm : Math.max(0, c.realm - 1);
   const hi = c.cosmos ? 11 : Math.min(7, c.realm + 1);
   let pool = ITEMS.filter((i) => i.src === 'drop' && (i.rare ?? 0) === rare && i.minRealm >= lo && i.minRealm <= hi && fits(c, i) && !c.inventory.includes(i.id));
-  if (!pool.length) pool = ITEMS.filter((i) => i.src === 'drop' && (i.rare ?? 0) >= 2 && i.minRealm <= Math.max(c.realm + 1, 1) && fits(c, i) && !c.inventory.includes(i.id));
+  if (!pool.length) pool = ITEMS.filter((i) => i.src === 'drop' && (i.rare ?? 0) >= 2 && i.minRealm <= Math.max(c.realm + 1, 1) && i.minRealm >= Math.max(0, c.realm - 2) && fits(c, i) && !c.inventory.includes(i.id));
   return pool.length ? pool[Math.floor(rnd() * pool.length)].id : null;
 }
 export function auctionEvent(c: Character): GameEvent {
@@ -164,8 +167,8 @@ export function auctionEvent(c: Character): GameEvent {
     text: () =>
       it
         ? tr(
-            `Năm mươi năm một lần, Vạn Bảo Lâu mở hội đấu giá kín. Món đem đấu: ${it.name} [${['Phàm', 'Tốt', 'Hiếm', 'Cực phẩm'][it.rare ?? 0]}] (${fxText(it.fx)}). Mỗi người bỏ giá vào phong bì, ai trả cao nhất thì được, chỉ người thắng mới phải trả. Trong túi bạn có ${Math.floor(c.linhThach)} linh thạch.`,
-            `Once every fifty years the Ten Thousand Treasures Pavilion holds a sealed auction. The lot: ${it.name} [${['Common', 'Fine', 'Rare', 'Supreme'][it.rare ?? 0]}] (${fxText(it.fx)}). Everyone seals a bid in an envelope; the highest wins, and only the winner pays. You have ${Math.floor(c.linhThach)} spirit stones.`,
+            `Mấy chục năm mới có một lần, Vạn Bảo Lâu mở hội đấu giá kín. Món đem đấu: ${it.name} [${['Phàm', 'Tốt', 'Hiếm', 'Cực phẩm'][it.rare ?? 0]}] (${fxText(it.fx)}). Mỗi người bỏ giá vào phong bì, ai trả cao nhất thì được, chỉ người thắng mới phải trả. Trong túi bạn có ${Math.floor(c.linhThach)} linh thạch.`,
+            `Only once in many decades the Ten Thousand Treasures Pavilion holds a sealed auction. The lot: ${it.name} [${['Common', 'Fine', 'Rare', 'Supreme'][it.rare ?? 0]}] (${fxText(it.fx)}). Everyone seals a bid in an envelope; the highest wins, and only the winner pays. You have ${Math.floor(c.linhThach)} spirit stones.`,
           )
         : tr('Vạn Bảo Lâu mở hội, nhưng lần này không có món nào hợp với bạn.', 'The pavilion holds its auction, but nothing this time suits you.'),
     choices: () => {
@@ -197,8 +200,8 @@ export function auctionEvent(c: Character): GameEvent {
 
 // ---------------- Thương nhân lưu động ----------------
 export const MERCHANT_EVENT_ID = 'thuong_nhan_luu_dong';
-export const MERCHANT_PER_YEAR = 0.03;
-export const merchantDue = (c: Character, rnd: () => number) => !c.dead && c.age >= 16 && c.realm >= 1 && (c.merchantAt ?? -99) <= c.age - 15 && rnd() < MERCHANT_PER_YEAR;
+export const MERCHANT_PER_YEAR = 0.02;
+export const merchantDue = (c: Character, rnd: () => number) => !c.dead && c.age >= 16 && c.realm >= 1 && (c.merchantAt ?? -99) <= c.age - (c.cosmos ? 40 : 25) && rnd() < MERCHANT_PER_YEAR;
 export interface Ware {
   item: Item;
   price: number;
@@ -207,16 +210,19 @@ export interface Ware {
 /** Ba món của thương nhân: phần lớn là Tốt, Hiếm, thỉnh thoảng một món Cực phẩm, giá dao động */
 export function merchantWares(c: Character, rnd: () => number): Ware[] {
   const out: Ware[] = [];
-  const lo = c.cosmos ? 8 : Math.max(0, c.realm - 1);
+  // cảnh giới càng cao hàng càng xịn: tỉ lệ Cực phẩm 5% ở Luyện Khí lên tới 40%, từ Nguyên Anh chỉ bán đồ đúng cảnh giới trở lên
+  const lo = c.cosmos ? Math.max(8, c.realm) : c.realm >= 4 ? c.realm : Math.max(0, c.realm - 1);
   const hi = c.cosmos ? 11 : Math.min(7, c.realm + 1);
+  const p3 = Math.min(0.4, 0.05 + 0.035 * c.realm);
+  const p2 = Math.min(0.9, 0.4 + 0.04 * c.realm);
   for (let k = 0; k < 3; k++) {
-    const rare = rnd() < 0.1 ? 3 : rnd() < 0.45 ? 2 : 1;
+    const rare = rnd() < p3 ? 3 : rnd() < p2 ? 2 : 1;
     let pool = ITEMS.filter((i) => i.src === 'drop' && (i.rare ?? 0) === rare && i.minRealm >= lo && i.minRealm <= hi && fits(c, i) && !c.inventory.includes(i.id) && !out.some((w) => w.item.id === i.id));
     if (!pool.length) pool = ITEMS.filter((i) => i.src === 'drop' && (i.rare ?? 0) >= 1 && i.minRealm <= hi && fits(c, i) && !c.inventory.includes(i.id) && !out.some((w) => w.item.id === i.id));
     if (!pool.length) break;
     const item = pool[Math.floor(rnd() * pool.length)];
-    // giá thương nhân: từ 70% tới 130% giá trị, không theo thị tượng
-    out.push({ item, price: Math.round(itemValue(item) * (0.7 + rnd() * 0.6)), state: 'open' });
+    // giá thương nhân: 70%-130% giá trị, cộng thêm 5% mỗi cảnh giới (hàng hiếm ở cảnh giới cao lão hét giá hơn)
+    out.push({ item, price: Math.round(itemValue(item) * (0.7 + rnd() * 0.6) * (1 + 0.05 * c.realm)), state: 'open' });
   }
   return out;
 }

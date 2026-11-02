@@ -886,7 +886,7 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
     const ms = marketSpan(c);
     if (ms.start === Math.floor(c.age) && c.age >= 10) ctx.log(tr(`Thị trường đổi: ${ms.omen.name}. ${ms.omen.desc}`, `The market turns: ${ms.omen.name}. ${ms.omen.desc}`), 'normal');
   }
-  // 4.1.0 kinh tế: hội đấu giá 50 năm một lần, thương nhân lưu động thỉnh thoảng (đều hỏi người chơi có tham gia không)
+  // 4.1.0 kinh tế: hội đấu giá 60 năm một lần (sau phi thăng 120), thương nhân lưu động thỉnh thoảng (đều hỏi người chơi có tham gia không)
   if (auctionDue(c)) {
     c.auctionAt = c.age;
     c.auctionLot = pickAuctionLot(c, rnd) ?? undefined;
