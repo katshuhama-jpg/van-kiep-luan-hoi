@@ -56,6 +56,13 @@ const save = async (p) => JSON.parse(await p.evaluate(() => localStorage.getItem
     path: 'kiem', realm: 3, tq: { thanh_lien: 2, thiet_sa: 3, van_kiem: 3, thai_cuc_kiem: 1 }, tqVan: 1, cultivation: 300, focus: 'tu_luyen', huntTarget: undefined,
     cp: { own: [{ id: 'dan_khi', tang: 3, exp: 40 }, { id: 'truong_quyen', tang: 3, exp: 100 }, { id: 'thiet_sa', tang: 2, exp: 30 }, { id: 'thanh_lien', tang: 5, exp: 100 }, { id: 'liet_hoa', tang: 9, exp: 0 }, { id: 'kim_xa', tang: 9, exp: 0 }, { id: 'thai_cuc_kiem', tang: 5, exp: 100 }], eq: ['thanh_lien', 'liet_hoa', 'kim_xa'] },
   });
+  // dừng thời gian; sự kiện ngẫu nhiên đã chen vào thì chọn đại cho qua
+  await p.locator('button.play[aria-label="Tạm dừng"]').click({ timeout: 3000 }).catch(() => {});
+  for (let i = 0; i < 6 && !(await p.locator('.dock-actions').count()); i++) {
+    await p.locator('.choice').last().click({ timeout: 1000 }).catch(() => {});
+    await p.locator('.duel-warn .btn-dark').last().click({ timeout: 1000 }).catch(() => {});
+    await p.waitForTimeout(600);
+  }
   await p.locator('.dock-actions button', { hasText: 'Công pháp' }).click({ timeout: 5000 }).catch(() => {});
   await p.waitForTimeout(1200);
   ok(await p.locator('.tk-wrap').count() > 0, 'mở được Tàng Kinh Các từ dock');
