@@ -4725,3 +4725,21 @@ button.shadow-card { cursor: pointer; }
 .fs-charms label { display: flex; align-items: center; gap: 6px; font-size: 14px; }
 .fs-charms label.off { opacity: 0.5; }
 .fs-charms img { image-rendering: pixelated; }
+
+/* 4.1.0: món đồ trong thẻ sự kiện (đấu giá) */
+.ev-item { display: flex; gap: 10px; align-items: center; margin: 0 0 8px; padding: 6px 8px; color: #3b2a1a; background: #f3e6c4; border: 3px solid #1f160d; box-shadow: 3px 3px 0 #1f160d; }
+.ev-item.r1 { border-color: #3d6fb0; } .ev-item.r2 { border-color: #8a3ad0; } .ev-item.r3 { border-color: #d9822b; box-shadow: 0 0 0 2px #ffd36b, 3px 3px 0 2px #1f160d; }
+.ev-item-pic { flex: none; width: 72px; height: 72px; display: grid; place-items: center; background: #2a1f18; border: 2px solid #1f160d; }
+.ev-item-pic img, .ev-item-pic svg { width: 60px !important; height: 60px !important; image-rendering: pixelated; }
+.ev-item.r3 .ev-item-pic { background: #3a2410; animation: evGlow 1.2s steps(2) infinite; }
+@keyframes evGlow { 50% { background: #5a3414; } }
+.ev-item-body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.ev-item-body > b { font-size: 17px; line-height: 1.15; }
+.ev-item-tags { display: flex; gap: 4px; }
+.ev-item-tags i { font-style: normal; font-size: 11px; font-weight: 700; padding: 0 5px; background: #e8d7ad; border: 1px solid #a88a5a; }
+.ev-rare.r1 { color: #fff !important; background: #3d6fb0 !important; } .ev-rare.r2 { color: #fff !important; background: #8a3ad0 !important; } .ev-rare.r3 { color: #1f160d !important; background: #ffcf6e !important; border-color: #d9822b !important; }
+.ev-item-fx { display: flex; flex-wrap: wrap; gap: 3px; }
+.ev-item-fx i { font-style: normal; font-size: 12px; padding: 1px 5px; color: #fff3dc; background: #2f6b5a; }
+.ev-item-fx i b { color: #ffe27a; }
+.ev-item-fx i.bad { background: #8f2f20; }
+.ev-item-cur { font-size: 11px; color: #6a5a44; line-height: 1.2; }

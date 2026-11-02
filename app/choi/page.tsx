@@ -1879,7 +1879,7 @@ export default function PlayPage() {
 
       <footer className="game-bottom">
         {pending && !c.dead ? (
-          <EventCard p={pending} onChoose={choose} />
+          <EventCard p={pending} c={c} onChoose={choose} />
         ) : (
           <div className="dock-inner">
             <OverworkBar c={c} />

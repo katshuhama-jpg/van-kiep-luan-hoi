@@ -172,11 +172,12 @@ export function auctionEvent(c: Character): GameEvent {
   return {
     id: AUCTION_EVENT_ID,
     title: tr('Hội đấu giá Vạn Bảo Lâu', 'The Ten Thousand Treasures Auction'),
+    item: () => it?.id,
     text: () =>
       it
         ? tr(
-            `Mấy chục năm mới có một lần, Vạn Bảo Lâu mở hội đấu giá kín. Món đem đấu: ${it.name} [${['Phàm', 'Tốt', 'Hiếm', 'Cực phẩm'][it.rare ?? 0]}] (${fxText(it.fx)}). Mỗi người bỏ giá vào phong bì, ai trả cao nhất thì được, chỉ người thắng mới phải trả. Trong túi bạn có ${Math.floor(c.linhThach)} linh thạch.`,
-            `Only once in many decades the Ten Thousand Treasures Pavilion holds a sealed auction. The lot: ${it.name} [${['Common', 'Fine', 'Rare', 'Supreme'][it.rare ?? 0]}] (${fxText(it.fx)}). Everyone seals a bid in an envelope; the highest wins, and only the winner pays. You have ${Math.floor(c.linhThach)} spirit stones.`,
+            `Mấy chục năm mới có một lần, Vạn Bảo Lâu mở hội đấu giá kín. Mỗi người bỏ giá vào phong bì, ai trả cao nhất thì được, chỉ người thắng mới phải trả. Trong túi bạn có ${Math.floor(c.linhThach)} linh thạch.`,
+            `Only once in many decades the Ten Thousand Treasures Pavilion holds a sealed auction. Everyone seals a bid in an envelope; the highest wins, and only the winner pays. You have ${Math.floor(c.linhThach)} spirit stones.`,
           )
         : tr('Vạn Bảo Lâu mở hội, nhưng lần này không có món nào hợp với bạn.', 'The pavilion holds its auction, but nothing this time suits you.'),
     choices: () => {

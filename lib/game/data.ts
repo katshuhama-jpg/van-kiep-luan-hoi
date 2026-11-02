@@ -873,6 +873,18 @@ const FX_LABEL: Record<keyof ItemFx, string> = {
 };
 
 /** Mô tả chỉ số ngắn gọn: "Công +12% · Bạo kích +8%" */
+/** Từng dòng chỉ số của món đồ, để vẽ thành nhãn */
+export function fxParts(fx?: ItemFx): { label: string; val: string; bad: boolean }[] {
+  if (!fx) return [];
+  return (Object.keys(fx) as (keyof ItemFx)[])
+    .filter((k) => fx[k])
+    .map((k) => {
+      const v = fx[k]!;
+      const unit = k === 'tamCanh' || k === 'tamMa' ? '' : '%';
+      return { label: FX_LABEL[k], val: `${v > 0 ? '+' : ''}${v}${unit}`, bad: k === 'tamMa' ? v > 0 : v < 0 };
+    });
+}
+
 export function fxText(fx?: ItemFx): string {
   if (!fx) return '';
   return (Object.keys(fx) as (keyof ItemFx)[])

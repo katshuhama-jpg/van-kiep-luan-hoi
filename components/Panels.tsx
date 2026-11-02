@@ -12,7 +12,7 @@ import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 
 import { ENDINGS, RARE_COLOR, endingOf } from '@/lib/game/endings';
 import { GachaPanel, ShareCard } from './Extras';
 import ItemIconImg from './ItemIcon';
-import { FOCUS, ITEMS, PATHS, PILLS, REALMS, SEASONS, TALENTS, fxText, gearFx, itemPrice, overworkFree, pillPrice, safeYears, RARE_STOCK_REALM, realmLabel, soldOut, type Item } from '@/lib/game/data';
+import { FOCUS, ITEMS, PATHS, PILLS, REALMS, SEASONS, TALENTS, fxParts, fxText, gearFx, itemPrice, overworkFree, pillPrice, safeYears, RARE_STOCK_REALM, realmLabel, soldOut, type Item } from '@/lib/game/data';
 import { describeLean } from '@/lib/game/engine';
 import { DANGER_TEXT, MONSTERS, combatLevel, dangerOf, dropFactor, monstersFor, effLv, killExp, monsterName, playerStats, tierOf } from '@/lib/game/combat';
 import { MonsterSprite } from './Battle';
@@ -110,7 +110,46 @@ export function StatsPanel({ c }: { c: Character }) {
 /* ---------------- Sự kiện 4 lựa chọn ---------------- */
 const LEAN_TEXT = { chinh: tr('Chính', "Righteous"), ta: tr('Tà', "Evil"), trung: '' };
 
-export function EventCard({ p, onChoose }: { p: PendingEvent; onChoose: (i: number) => void }) {
+const RARE_TAG = [tr('Phàm', 'Common'), tr('Tốt', 'Fine'), tr('Hiếm', 'Rare'), tr('Cực phẩm', 'Supreme')];
+const SLOT_TAG: Record<string, string> = { ao: tr('Áo', 'Robe'), vu_khi: tr('Vũ khí', 'Weapon'), phu_kien: tr('Phụ kiện', 'Accessory') };
+
+/** 4.1.0: thẻ món đồ trong sự kiện (đấu giá): ảnh, phẩm, chỉ số, so với món đang mặc */
+function EventItem({ id, c }: { id: string; c?: Character }) {
+  const it = ITEMS.find((x) => x.id === id);
+  if (!it) return null;
+  const r = it.rare ?? 0;
+  const curId = c?.equipped?.[it.slot];
+  const cur = curId ? ITEMS.find((x) => x.id === curId) : null;
+  return (
+    <div className={`ev-item r${r}`}>
+      <span className="ev-item-pic">
+        <ItemIcon item={it} />
+      </span>
+      <div className="ev-item-body">
+        <b>{it.name}</b>
+        <span className="ev-item-tags">
+          <i className={`ev-rare r${r}`}>{RARE_TAG[r]}</i>
+          <i>{SLOT_TAG[it.slot]}</i>
+        </span>
+        <span className="ev-item-fx">
+          {fxParts(it.fx).map((f) => (
+            <i key={f.label} className={f.bad ? 'bad' : ''}>
+              {f.label} <b>{f.val}</b>
+            </i>
+          ))}
+        </span>
+        {cur && (
+          <small className="ev-item-cur">
+            {tr('Đang mặc', 'Equipped')}: {cur.name}
+            {cur.fx ? ` · ${fxText(cur.fx)}` : ''}
+          </small>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export function EventCard({ p, c, onChoose }: { p: PendingEvent; c?: Character; onChoose: (i: number) => void }) {
   return (
     <section className="dialog event" aria-live="assertive" key={p.id + p.text}>
       <div className="event-head">
@@ -118,6 +157,7 @@ export function EventCard({ p, onChoose }: { p: PendingEvent; onChoose: (i: numb
         <span>{tr("❚❚ dừng", "❚❚ pause")}</span>
       </div>
       <p>{p.text}</p>
+      {p.item && <EventItem id={p.item} c={c} />}
       <div className="choices">
         {p.choices.map((ch, i) => (
           <button key={i} className={`choice ${ch.lean}`} onClick={() => onChoose(i)}>

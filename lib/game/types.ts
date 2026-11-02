@@ -258,6 +258,7 @@ export interface GameEvent {
   title: string;
   text: (c: Character) => string;
   choices: (c: Character, seed: number) => Choice[];
+  item?: (c: Character) => string | undefined; // 4.1.0: món đồ hiện kèm thẻ sự kiện (đấu giá)
 }
 
 export interface PendingEvent {
@@ -266,6 +267,7 @@ export interface PendingEvent {
   title: string;
   text: string;
   choices: { label: string; hint?: string; lean: Lean }[];
+  item?: string; // 4.1.0: id món đồ để thẻ sự kiện vẽ ảnh và chỉ số
 }
 
 export interface EffectCtx {
