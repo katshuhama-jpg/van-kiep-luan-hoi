@@ -33,8 +33,11 @@ const save = async (p) => JSON.parse(await p.evaluate(() => localStorage.getItem
   // 1. trừ yêu: ra chiêu theo công pháp đạo Kiếm
   let p = await open(b, { path: 'kiem', realm: 4, focus: 'tru_yeu', huntTarget: 'huyet_ma', cp: undefined });
   let skills = new Set(); let fx = 0; let gauge = '';
-  for (let i = 0; i < 40; i++) {
+  for (let i = 0; i < 60 && !(skills.size && fx && gauge); i++) {
     await p.waitForTimeout(120);
+    // sự kiện ngẫu nhiên (gặp thú, kỳ ngộ) chen vào thì chọn đại để trận trừ yêu chạy tiếp
+    if (i % 10 === 9 && (await p.locator('.choice').count())) await p.locator('.choice').last().click().catch(() => {});
+    if (i % 10 === 9 && (await p.locator('.duel-warn .btn-dark').count())) await p.locator('.duel-warn .btn-dark').last().click().catch(() => {});
     const r = await p.evaluate(() => ({ s: document.querySelector('.skill-name')?.textContent || '', f: document.querySelectorAll('.cpf').length, g: document.querySelector('.cp-gauge span')?.textContent || '' }));
     if (r.s) skills.add(r.s); fx = Math.max(fx, r.f); gauge = gauge || r.g;
   }
@@ -42,6 +45,7 @@ const save = async (p) => JSON.parse(await p.evaluate(() => localStorage.getItem
   ok(fx > 0, 'đòn đánh có hiệu ứng chiêu pixel');
   ok([...skills].some((s) => /Liệt Hỏa|Kim Xà|Trường Quyền|Thiết Sa/.test(s)), 'ra chiêu theo công pháp: ' + [...skills].join(', '));
   let ch = await save(p);
+  for (let i = 0; i < 10 && !(ch.cp && ch.cp.eq[0] === 'thanh_lien'); i++) { await p.waitForTimeout(500); ch = await save(p); }
   ok(ch.cp && ch.cp.own.some((o) => o.id === 'thanh_lien') && ch.cp.eq[0] === 'thanh_lien', 'kiếm tu được truyền tâm pháp Thanh Liên, đã mang');
   ok(!(await p.locator('.chuong').count()), 'không còn quả cầu chưởng gradient cũ');
   ok(!p.errs.length, 'trận không lỗi JS ' + p.errs.join(' | '));
