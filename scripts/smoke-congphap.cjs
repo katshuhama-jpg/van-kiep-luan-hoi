@@ -33,7 +33,7 @@ const save = async (p) => JSON.parse(await p.evaluate(() => localStorage.getItem
 (async () => {
   const b = await chromium.launch();
   // 1. trừ yêu: ra chiêu theo công pháp đạo Kiếm
-  let p = await open(b, { path: 'kiem', realm: 4, focus: 'tru_yeu', huntTarget: 'huyet_ma', cp: undefined });
+  let p = await open(b, { path: 'kiem', realm: 4, focus: 'tru_yeu', huntTarget: 'ngan_giac', cp: undefined });
   let skills = new Set(); let fx = 0; let gauge = '';
   for (let i = 0; i < 120 && !(skills.size && fx && gauge); i++) {
     await p.waitForTimeout(120);
@@ -43,6 +43,7 @@ const save = async (p) => JSON.parse(await p.evaluate(() => localStorage.getItem
     const r = await p.evaluate(() => ({ s: document.querySelector('.skill-name')?.textContent || '', f: document.querySelectorAll('.cpf').length, g: document.querySelector('.cp-gauge span')?.textContent || '' }));
     if (r.s) skills.add(r.s); fx = Math.max(fx, r.f); gauge = gauge || r.g;
   }
+  if (!gauge && process.env.SMOKE_SHOT) await p.screenshot({ path: process.env.SMOKE_SHOT });
   ok(/Kiếm ý/.test(gauge), 'trận trừ yêu có thanh Kiếm ý của đạo');
   ok(fx > 0, 'đòn đánh có hiệu ứng chiêu pixel');
   ok([...skills].some((s) => /Liệt Hỏa|Kim Xà|Thái Cực|Trường Quyền|Thiết Sa/.test(s)), 'ra chiêu theo công pháp: ' + [...skills].join(', '));
