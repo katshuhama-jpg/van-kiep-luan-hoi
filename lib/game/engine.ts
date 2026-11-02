@@ -1,3 +1,4 @@
+import { htBreak, htCultMul, htYear } from './heThong';
 import { AUCTION_EVENT_ID, MERCHANT_EVENT_ID, auctionDue, auctionEvent, merchantDue, merchantEvent, pickAuctionLot, marketSpan, GIANG_TRAN_ID, giangTranDue, giangTranEvent } from './market';
 import { applyHeir, cpCultMul, cpYear } from './congPhap';
 import { sealLv } from './forge';
@@ -392,6 +393,7 @@ export function yearlyGain(c: Character) {
     (c.stats.tamMa > 70 ? 0.8 : 1) *
     (hasGift(c, 'g_doan_menh') ? 1.3 : 1) *
     cpCultMul(c) *
+    htCultMul(c) *
     lean
   );
 }
@@ -695,9 +697,39 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
     if (rnd() < 0.3) stat(c, 'khiVan', 1);
     stat(c, 'tamCanh', 1);
   } else if (focus === 'ket_duyen') {
+    // 4.1.0 (#24): kết duyên có tác dụng rõ như các trọng tâm khác
     stat(c, 'tamCanh', 2);
-    stat(c, 'tamMa', -2);
+    stat(c, 'tamMa', -3);
+    if (c.partner && c.realm >= 1 && age >= 16) {
+      // song tu: tu vi bằng 70% một năm tu luyện (các trọng tâm khác chỉ 25%), tâm ma lùi thêm
+      const g = yearlyGain(c) * jitter * 0.45 * grind;
+      addCult(c, g);
+      stat(c, 'tamMa', -1);
+      if (rnd() < 0.3) ctx.log(tr(`Song tu cùng ${c.partner}, âm dương điều hòa, tu vi tăng đều, tâm ma lặng hẳn.`, `Dual cultivating with ${c.partner}, yin and yang in harmony: steady cultivation and a quiet mind.`), 'good');
+    } else if (rnd() < 0.45 * grind) {
+      // kết giao đạo hữu: mỗi năm có thể được quà, chỉ điểm hay tin cơ duyên
+      const friend = pick(rnd, [...TEN_NAM, ...TEN_NU]);
+      const roll = rnd();
+      if (roll < 0.3) {
+        const p = c.realm >= 2 && rnd() < 0.25 ? 'truc_co' : pick(rnd, ['tu_khi', 'hoi_xuan', 'thanh_tam']);
+        addPill(c, p);
+        ctx.log(tr(`Đạo hữu ${friend} tặng bạn một viên ${PILLS.find((x) => x.id === p)?.name}.`, `Your fellow Daoist ${friend} gives you a ${PILLS.find((x) => x.id === p)?.name}.`), 'good');
+      } else if (roll < 0.55) {
+        const n = Math.round((8 + 18 * c.realm) * (0.7 + rnd() * 0.6));
+        money(c, n);
+        ctx.log(tr(`Giới thiệu mối làm ăn cho đạo hữu ${friend}, được chia ${n} linh thạch.`, `You introduce a deal to your friend ${friend} and get a ${n} spirit stone cut.`), 'good');
+      } else if (roll < 0.85 && age >= 6) {
+        addCult(c, yearlyGain(c) * 0.4);
+        ctx.log(tr(`Luận đạo với ${friend} suốt đêm, chỗ bế tắc trong công pháp bỗng thông.`, `Debating the Dao with ${friend} all night, a stuck point in your practice suddenly clears.`), 'good');
+      } else {
+        stat(c, 'khiVan', 2);
+        ctx.log(tr(`${friend} mách cho bạn một tin cơ duyên trên giang hồ. Khí vận +2.`, `${friend} tips you off about an opportunity in the jianghu. Luck +2.`), 'good');
+      }
+    }
   }
+
+  // ---- 4.1.0: Hệ Thống phát nhiệm vụ ----
+  if (age >= 6) htYear(c, ctx);
 
   // ---- Tông môn: thăng bậc theo cảnh giới hay độ tàn nhẫn (ma môn) ----
   if (c.sect) {
@@ -974,6 +1006,7 @@ function breakChance(c: Character) {
       (rankOf(c) === 3 ? CHAN_TRUYEN_BREAK : 0) +
       (omenIs('loi_van') ? 0.06 : 0) +
       (hasGift(c, 'g_thien_menh') ? 0.1 : 0) +
+      htBreak(c) +
       // độ khó 1.0.3: hạ nền từ 0.39, mỗi cảnh giới khó thêm 0.08 thay vì 0.07
       0.34 -
       // tiên giới, ma giới tính lại từ đầu: Chân Tiên khó như Trúc Cơ, càng lên càng khó
