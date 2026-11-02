@@ -256,3 +256,27 @@
 .dm-up.max:disabled { color: #b8432f; background: #fff0c8; }
 .dm-cp-side small { font-size: 11px; color: #6a5a44; }
 .dm-eq { width: 100%; padding: 1px 0; font: inherit; font-size: 12px; background: #fffaf0; border: 2px solid #1f160d; cursor: pointer; }
+
+/* ---- công pháp theo con đường ---- */
+.dm-paths { display: grid; grid-template-columns: repeat(6, 1fr); gap: 3px; padding: 4px; background: #2a1f18; }
+.dm-paths button { padding: 4px 0; font: inherit; font-size: 14px; font-weight: 700; color: #f3e6c4; background: #3b2a1a; border: 2px solid #6a5a44; cursor: pointer; }
+.dm-paths button.on { color: #1f160d; background: #ffd36b; border-color: #ffd36b; }
+.dm-idea { display: flex; flex-direction: column; gap: 2px; padding: 6px 8px; background: #2a3a5a; color: #e8f0ff; border: 2px solid #1f160d; }
+.dm-idea b { font-size: 15px; }
+.dm-idea b i { font-style: normal; color: #ffd36b; }
+.dm-idea span { font-size: 13px; line-height: 1.3; }
+.dm-idea small { font-size: 12px; color: #ffcf6e; }
+
+/* ---- sổ linh thú có thú truyền thuyết ---- */
+button.dm-petbook-i { padding: 0; font: inherit; cursor: pointer; }
+.dm-petbook-i.on { box-shadow: inset 0 0 0 2px #b0201a; background: #ffe9a8; }
+.dm-petbook.big { grid-template-columns: repeat(3, 1fr); }
+.dm-petbook-i.big { height: 92px; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 2px; padding-bottom: 3px; }
+.dm-petbook-i.big small { font-size: 11px; font-weight: 700; line-height: 1; }
+.dm-rk-row.rk-SSS .dm-petbook-i { background: #3b2a1a; border-color: #ffd36b; }
+.dm-rk-row.rk-SSS .dm-petbook-i small { color: #ffd36b !important; }
+.dm-petbook-i .lpc-mon, .dm-petbook-i > span { max-width: 100%; }
+.dm-back { position: absolute; right: 8px; top: 8px; z-index: 3; padding: 2px 8px; font: inherit; font-size: 13px; background: #f3e6c4; border: 3px solid #1f160d; box-shadow: 2px 2px 0 #1f160d; cursor: pointer; }
+.dm-thu-big .lpc-mon { position: relative; }
+.dm-petbook-i.big small { position: relative; z-index: 1; padding: 0 3px; background: rgba(255, 250, 240, 0.85); }
+.dm-rk-row.rk-SSS .dm-petbook-i.big small { background: rgba(31, 22, 13, 0.85); }

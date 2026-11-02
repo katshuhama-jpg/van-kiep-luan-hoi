@@ -7,9 +7,11 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
 import Scene from './Scene';
 import Sprite from './Sprite';
-import { PixelFx, fxBatQuai, fxKiem, fxLua, fxMotes, fxRays, fxSen, type FxSpec } from './PixelFx';
+import { PixelFx, fxBatQuai, fxChuongVang, fxCuuVi, fxDanHoan, fxHuyetNguyet, fxKiem, fxLua, fxMaHoa, fxMaKhi, fxMotes, fxNguSacVan, fxPhatQuang, fxRays, fxRing, fxSen, type FxSpec } from './PixelFx';
 import { EventCard, FocusGrid, LogPanel, OverworkBar, StageStrip } from './Panels';
 import type { BattleView } from './Battle';
+import MonsterLpc from './MonsterLpc';
+import type { MonsterLook } from '@/lib/game/monsterLook';
 import { MONSTERS } from '@/lib/game/combat';
 import { emptyMeta, newCharacter } from '@/lib/game/engine';
 import { PETS, PET_IDS } from '@/lib/game/pets';
@@ -32,6 +34,7 @@ interface CP {
   sub: string[];
   he: string;
   cd?: number;
+  em?: () => FxSpec;
 }
 const CPS: CP[] = [
   { id: 'thanh_lien', name: 'Thanh Liên Kiếm Tâm Quyết', icon: 'g_thanh_phong_kiem_pho', kind: 'tam', pham: 1, tang: 6, exp: 40, main: 'Tu vi +15% mỗi năm', sub: ['Thọ nguyên +8'], he: 'Kiếm' },
@@ -44,7 +47,7 @@ const FUSED: CP = { id: 'hoa_xa', name: 'Hỏa Xà Phần Thiên Kiếm', icon: 
 const BOOK_ICONS = ['g_thanh_phong_kiem_pho', 'g_kiem_pho_tan_thien', 'g_doc_co_kiem_pho', 'g_ho_tam_kinh', 'g_kinh_thu_tan_quyen', 'g_bach_thao_kinh', 'g_bat_quai_kinh', 'g_huyet_than_kinh', 'g_kinh_kim_cang', 'g_thai_thuong_dan_kinh', 'g_con_lon_kinh', 'g_tam_kinh_ngoc_gian', 'g_ky_mon_don_giap_thu', 'g_lac_thu', 'g_dai_bi_chu', 'g_thien_cuong_kiem'];
 const PET_EVO = ['soi_con', 'xich_lang', 'bach_lang'];
 const PET_EVO_NAME = ['Sói con', 'Xích Lang', 'Thiên Lang'];
-const PET_EVO_RANK: RankId[] = ['R', 'SR', 'A'];
+const PET_EVO_RANK: RankId[] = ['N', 'SR', 'A'];
 const PET_SEEN = ['soi_con', 'xich_lang', 'tuyet_ho', 'ho_ly', 'cho_vang', 'nam_linh', 'dai_bang', 'slime', 'ong_vang'];
 
 function makeChar(): Character {
@@ -100,6 +103,75 @@ function Icon({ src, size = 40, dark }: { src: string; size?: number; dark?: boo
 }
 
 
+
+/* ---------- Công pháp theo con đường tu ---------- */
+type PathKey = 'kiem' | 'dan' | 'tran' | 'phat' | 'ma' | 'yeu';
+const PATH_CP: Record<PathKey, { name: string; gauge: string; idea: string; tuyet: string; list: CP[] }> = {
+  kiem: { name: 'Kiếm tu', gauge: 'Kiếm ý', idea: 'Đánh nhanh, chém liên hoàn. Mỗi đòn trúng tích kiếm ý, đầy thì ra tuyệt kỹ.', tuyet: 'Vạn Kiếm Quy Tông', list: CPS },
+  dan: {
+    name: 'Đan tu', gauge: 'Đan hỏa', idea: 'Ném đan, rải độc, tự hồi máu. Độc cộng dồn tầng, đánh lâu mới mạnh.', tuyet: 'Cửu Chuyển Luyện Thiên Lô',
+    list: [
+      { id: 'dan_tam', name: 'Thanh Mộc Trường Sinh Quyết', icon: '', kind: 'tam', pham: 1, tang: 7, exp: 60, main: 'Thọ nguyên +10%, mỗi hiệp hồi 3% máu', sub: ['Luyện đan thành công +8%'], he: 'Mộc', em: () => emGlyph('la') },
+      { id: 'dan_no', name: 'Liệt Diễm Đan Bạo', icon: '', kind: 'chieu', pham: 1, tang: 9, exp: 100, main: 'Ném hỏa đan nổ, 30% choáng 1 hiệp', sub: ['Đan dược trong túi cộng thêm sát thương'], he: 'Hỏa', cd: 3, em: () => fxDanHoan() },
+      { id: 'dan_doc', name: 'Vạn Độc Vụ', icon: '', kind: 'chieu', pham: 2, tang: 5, exp: 70, main: 'Mỗi đòn cộng 1 tầng độc, tối đa 5 tầng', sub: ['Quái trúng độc đánh yếu đi 10%'], he: 'Độc', cd: 2, em: () => emGlyph('doc') },
+      { id: 'dan_hoi', name: 'Hồi Xuân Đan Thuật', icon: '', kind: 'chieu', pham: 0, tang: 4, exp: 30, main: 'Máu dưới 30% thì hồi 20%, mỗi trận 1 lần', sub: [], he: 'Mộc', cd: 6, em: () => emGlyph('tim') },
+    ],
+  },
+  tran: {
+    name: 'Trận tu', gauge: 'Trận nhãn', idea: 'Bày trận trước, đánh sau. Chiêu nào cũng dựng một cột trận, đủ 3 cột thì đại trận tự mở.', tuyet: 'Chu Thiên Tinh Đấu Đại Trận',
+    list: [
+      { id: 'tran_tam', name: 'Chu Thiên Tinh Đấu Quyết', icon: '', kind: 'tam', pham: 2, tang: 6, exp: 50, main: 'Bế quan tu vi +30%, ít bị tập kích', sub: ['Ngộ tính +5'], he: 'Tinh', em: () => emGlyph('sao') },
+      { id: 'tran_kim', name: 'Kim Quang Hộ Trận', icon: '', kind: 'chieu', pham: 1, tang: 9, exp: 100, main: 'Khiên vàng chặn trọn 2 đòn', sub: ['Mở trận ngay hiệp đầu'], he: 'Kim', cd: 5, em: () => fxRing('#ffd36b', 30, true) },
+      { id: 'tran_loi', name: 'Ngũ Lôi Phù', icon: '', kind: 'chieu', pham: 1, tang: 8, exp: 90, main: 'Ba đạo sét đánh liên tiếp', sub: ['Khắc yêu ma, sát thương +20%'], he: 'Lôi', cd: 3, em: () => emGlyph('loi') },
+      { id: 'tran_khon', name: 'Mê Tung Khốn Trận', icon: '', kind: 'chieu', pham: 2, tang: 3, exp: 20, main: 'Quái lạc trong trận, mất 1 lượt', sub: [], he: 'Huyễn', cd: 4, em: () => fxBatQuai('#3d6fb0') },
+    ],
+  },
+  phat: {
+    name: 'Phật tu', gauge: 'Định lực', idea: 'Chịu đòn rồi trả đòn. Mỗi lần bị đánh tích định lực, đầy thì phản một chưởng lớn.', tuyet: 'Như Lai Thần Chưởng',
+    list: [
+      { id: 'phat_tam', name: 'Kim Cang Bất Hoại Thể', icon: '', kind: 'tam', pham: 2, tang: 7, exp: 55, main: 'Thủ +20%, tâm ma khó xâm nhập', sub: ['Máu tối đa +10%'], he: 'Kim', em: () => fxPhatQuang() },
+      { id: 'phat_chuong', name: 'Đại Lực Kim Cang Chưởng', icon: '', kind: 'chieu', pham: 1, tang: 9, exp: 100, main: 'Chưởng vàng, 25% phá giáp', sub: ['Đánh ma tu sát thương +30%'], he: 'Kim', cd: 3, em: () => fxRays('#ffd36b') },
+      { id: 'phat_chuong_vang', name: 'Kim Chung Tráo', icon: '', kind: 'chieu', pham: 1, tang: 6, exp: 80, main: 'Chuông vàng chặn 1 đòn chí mạng mỗi trận', sub: [], he: 'Kim', cd: 8, em: () => fxChuongVang() },
+      { id: 'phat_hong', name: 'Sư Tử Hống', icon: '', kind: 'chieu', pham: 0, tang: 5, exp: 40, main: 'Tiếng gầm làm quái choáng 1 hiệp', sub: ['Quái yếu hơn 2 cảnh giới thì bỏ chạy'], he: 'Âm', cd: 4, em: () => fxRing('#ffcf3e', 30, false) },
+    ],
+  },
+  ma: {
+    name: 'Ma tu', gauge: 'Sát khí', idea: 'Đốt máu mình lấy sức mạnh, hút máu quái bù lại. Máu càng thấp sát khí càng lên nhanh.', tuyet: 'Huyết Tế Thiên Ma',
+    list: [
+      { id: 'ma_tam', name: 'Huyết Hải Ma Công', icon: '', kind: 'tam', pham: 2, tang: 6, exp: 45, main: 'Tu vi +25%, tâm ma +2 mỗi năm', sub: ['Thắng trận hồi 10% máu'], he: 'Huyết', em: () => fxHuyetNguyet() },
+      { id: 'ma_trao', name: 'Huyết Ảnh Trảo', icon: '', kind: 'chieu', pham: 1, tang: 9, exp: 100, main: 'Hút 25% sát thương thành máu', sub: [], he: 'Huyết', cd: 2, em: () => emGlyph('trao') },
+      { id: 'ma_thon', name: 'Thôn Phệ Ma Công', icon: '', kind: 'chieu', pham: 3, tang: 2, exp: 15, main: 'Thắng trận hút một phần tu vi đối thủ', sub: ['Mỗi lần dùng +3 tâm ma'], he: 'Ma', cd: 6, em: () => fxMaKhi(6) },
+      { id: 'ma_cuong', name: 'Cuồng Ma Hóa', icon: '', kind: 'chieu', pham: 1, tang: 7, exp: 60, main: 'Đốt 20% máu, công x1,6 trong 3 hiệp', sub: [], he: 'Ma', cd: 5, em: () => fxMaHoa() },
+    ],
+  },
+  yeu: {
+    name: 'Yêu tu', gauge: 'Yêu lực', idea: 'Dựa vào huyết mạch và linh thú. Linh thú cộng hưởng mạnh hơn, đầy yêu lực thì hóa bản thể.', tuyet: 'Hiện Chân Thân',
+    list: [
+      { id: 'yeu_tam', name: 'Yêu Thần Luyện Thể', icon: '', kind: 'tam', pham: 1, tang: 8, exp: 70, main: 'Máu +25%, ngủ một đêm hồi sạch thương', sub: ['Linh thú thân thiết nhanh gấp đôi'], he: 'Thể', em: () => emGlyph('nanh') },
+      { id: 'yeu_mi', name: 'Thiên Hồ Mị Thuật', icon: '', kind: 'chieu', pham: 2, tang: 9, exp: 100, main: 'Quái đánh trượt 30% trong 2 hiệp', sub: ['Đối thủ là người có thể bỏ đi'], he: 'Huyễn', cd: 4, em: () => fxCuuVi(9) },
+      { id: 'yeu_trao', name: 'Yêu Trảo Liệt Không', icon: '', kind: 'chieu', pham: 1, tang: 7, exp: 50, main: 'Ba vết vuốt, linh thú đánh theo', sub: [], he: 'Thú', cd: 2, em: () => FX_VUOT },
+      { id: 'yeu_hoa', name: 'Hóa Hình Thuật', icon: '', kind: 'chieu', pham: 2, tang: 4, exp: 35, main: 'Hóa thành bản thể 3 hiệp, công x2', sub: ['Bản thể theo huyết mạch'], he: 'Thể', cd: 7, em: () => fxNguSacVan() },
+    ],
+  },
+};
+const PATH_KEYS = Object.keys(PATH_CP) as PathKey[];
+
+
+/** Ấn ký đơn giản cho các chiêu chưa có hiệu ứng riêng */
+function emGlyph(kind: 'la' | 'doc' | 'sao' | 'loi' | 'trao' | 'nanh' | 'tim'): FxSpec {
+  const D: Record<string, { o: string; f: (p: number, i: number) => string }> = {
+    la: { o: '#14300c', f: (_p, i) => `<path d="M4 20 Q4 4 20 4 Q20 20 4 20Z" fill="#5fbf4a"/><path d="M6 18 Q10 12 17 7" stroke="#d8f8a0" stroke-width="1.5" fill="none"/><rect x="${3 + i}" y="3" width="2" height="2" fill="#d8f8a0"/>` },
+    doc: { o: '#0c2a10', f: (_p, i) => `<circle cx="8" cy="${14 - (i % 2)}" r="5" fill="#5aa03a"/><circle cx="15" cy="${12 + (i % 2)}" r="6" fill="#7ad04a"/><circle cx="12" cy="17" r="4" fill="#4a8a2a"/><rect x="10" y="10" width="2" height="2" fill="#1a1a1a"/><rect x="15" y="10" width="2" height="2" fill="#1a1a1a"/><rect x="11" y="15" width="5" height="1" fill="#1a1a1a"/>` },
+    sao: { o: '#0a1430', f: (_p, i) => { const P = [[3, 6], [7, 4], [11, 6], [14, 9], [18, 8], [20, 13], [17, 17]]; let o = `<polyline points="${P.map((x) => x.join(',')).join(' ')}" stroke="#5a7ab0" stroke-width="1" fill="none"/>`; P.forEach(([x, y], k) => (o += `<rect x="${x - 1}" y="${y - 1}" width="${k === i % 7 ? 3 : 2}" height="${k === i % 7 ? 3 : 2}" fill="${k === i % 7 ? '#ffffff' : '#ffd36b'}"/>`)); return o; } },
+    loi: { o: '#1a0a30', f: (_p, i) => `<polygon points="13,1 5,13 11,13 8,23 19,9 13,9 16,1" fill="${i % 2 ? '#ffffff' : '#c9b8ff'}"/><rect x="${2 + i * 3}" y="${18 - i}" width="2" height="2" fill="#c9b8ff"/>` },
+    trao: { o: '#2a0408', f: (_p, i) => [0, 1, 2].map((k) => `<line x1="${5 + k * 5}" y1="3" x2="${9 + k * 5}" y2="${8 + Math.min(i + 1, 3) * 4}" stroke="#e0202e" stroke-width="3"/><line x1="${5 + k * 5}" y1="3" x2="${9 + k * 5}" y2="${8 + Math.min(i + 1, 3) * 4}" stroke="#ffb0a0" stroke-width="1"/>`).join('') },
+    nanh: { o: '#2a1004', f: (_p, i) => `<path d="M3 6 Q12 ${2 + (i % 2)} 21 6 L19 10 Q12 8 5 10Z" fill="#c8602a"/><polygon points="7,9 10,9 8.5,${18 + (i % 2)}" fill="#fff6e0"/><polygon points="14,9 17,9 15.5,${18 + (i % 2)}" fill="#fff6e0"/><path d="M3 18 Q12 ${22 - (i % 2)} 21 18 L19 15 Q12 17 5 15Z" fill="#c8602a"/>` },
+    tim: { o: '#0c2a10', f: (_p, i) => `<path d="M12 21 L3 11 Q1 4 7 4 Q11 4 12 8 Q13 4 17 4 Q23 4 21 11Z" fill="${i % 2 ? '#7ad04a' : '#5fbf4a'}"/><rect x="11" y="9" width="2" height="7" fill="#ffffff"/><rect x="8" y="11" width="8" height="2" fill="#ffffff"/>` },
+  };
+  const d = D[kind];
+  return { key: `dmg${kind}`, w: 24, h: 24, frames: 4, outline: d.o, draw: d.f };
+}
+
 /* ---------- Ô chiêu tròn (bát giác pixel) với ấn ký động ---------- */
 function emLotus(): FxSpec {
   return {
@@ -132,7 +204,8 @@ function emTaiji(): FxSpec {
     },
   };
 }
-function emOf(id: string): FxSpec {
+function emOf(id: string, cp?: CP): FxSpec {
+  if (cp?.em) return cp.em();
   if (id === 'thanh_lien') return emLotus();
   if (id === 'liet_hoa') return FX_LIET;
   if (id === 'kim_xa') return FX_KIMXA;
@@ -151,7 +224,7 @@ function Orb({ cp, size, dark, lock }: { cp: CP | null; size: number; dark?: boo
         </span>
       </span>
     );
-  const sp = emOf(cp.id);
+  const sp = emOf(cp.id, cp);
   const k = (size * 0.78) / Math.max(sp.w, sp.h);
   return (
     <span className={`dm-orb ${PHAM_CLS[cp.pham]} ${dark ? 'dark' : ''}`} style={{ width: size, height: size }}>
@@ -170,7 +243,16 @@ function KinhScene({ c, onClose }: { c: Character; onClose: () => void }) {
   const [heir, setHeir] = useState('liet_hoa');
   const t = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useEffect(() => () => clearTimeout(t.current), []);
-  const all = fuse === 'ok' ? [...CPS, FUSED] : CPS;
+  const [path, setPath] = useState<PathKey>('kiem');
+  const P = PATH_CP[path];
+  const all = path === 'kiem' && fuse === 'ok' ? [...CPS, FUSED] : P.list;
+  function pickPath(k: PathKey) {
+    const l = PATH_CP[k].list;
+    setPath(k);
+    setEq([l[0].id, l[1].id, l[2].id]);
+    setSel(l[1].id);
+    setTab('luyen');
+  }
   const get = (id: string) => all.find((x) => x.id === id)!;
   const [sel, setSel] = useState('liet_hoa');
   // 5 ghế quanh người: tâm pháp trên đỉnh, 2 chiêu, 2 ô khóa theo cảnh giới, ô tuyệt kỹ từ dung hợp
@@ -179,7 +261,7 @@ function KinhScene({ c, onClose }: { c: Character; onClose: () => void }) {
     { label: 'Chiêu 1', id: eq[1], x: 15, y: 62 },
     { label: 'Chiêu 2', id: eq[2], x: 85, y: 62 },
     { label: 'Chiêu 3', lock: 'Nguyên Anh', x: 13, y: 160 },
-    { label: 'Tuyệt kỹ', id: fuse === 'ok' ? 'hoa_xa' : undefined, lock: fuse === 'ok' ? undefined : 'Dung hợp', x: 87, y: 160 },
+    { label: 'Tuyệt kỹ', id: path === 'kiem' && fuse === 'ok' ? 'hoa_xa' : undefined, lock: path === 'kiem' && fuse === 'ok' ? undefined : 'Dung hợp', x: 87, y: 160 },
   ];
   function toggle(cp: CP) {
     if (cp.tang === 0) return;
@@ -195,10 +277,17 @@ function KinhScene({ c, onClose }: { c: Character; onClose: () => void }) {
       <div className="forge-scene">
         <div className="fs-head">
           <b>Tàng Kinh Các</b>
-          <span className="fs-tinh">Kiếm tu · Kim Đan</span>
+          <span className="fs-tinh">{P.name} · Kim Đan</span>
           <button className="ss-x" onClick={onClose} aria-label="Đóng">
             ✕
           </button>
+        </div>
+        <div className="dm-paths">
+          {PATH_KEYS.map((k) => (
+            <button key={k} className={k === path ? 'on' : ''} onClick={() => pickPath(k)}>
+              {PATH_CP[k].name.replace(' tu', '')}
+            </button>
+          ))}
         </div>
         <div className="dm-kinh-stage dm-ring" style={{ backgroundImage: 'url(/bg/tu_luyen-3.png)' }}>
           <span className="dm-ring-title">Cài chiêu thức</span>
@@ -206,7 +295,7 @@ function KinhScene({ c, onClose }: { c: Character; onClose: () => void }) {
             <PixelFx spec={fxBatQuai('#9ff0c8')} scale={3} dur={2.4} />
           </div>
           <div className="dm-kinh-me">
-            <Sprite c={c} size={132} anim="spellcast" dir={2} />
+            <Sprite c={{ ...c, path }} size={132} anim="spellcast" dir={2} />
           </div>
           <div className="dm-ring-sen">
             <PixelFx spec={fxSen()} scale={3} dur={1} />
@@ -227,6 +316,13 @@ function KinhScene({ c, onClose }: { c: Character; onClose: () => void }) {
           })}
         </div>
         <div className="fs-info">
+          <div className="dm-idea">
+            <b>
+              {P.name} · thanh <i>{P.gauge}</i>
+            </b>
+            <span>{P.idea}</span>
+            <small>Tuyệt kỹ: {P.tuyet}</small>
+          </div>
           <div className="chips">
             <button className={`chip-btn ${tab === 'luyen' ? 'on' : ''}`} onClick={() => setTab('luyen')}>
               Đang luyện
@@ -404,6 +500,7 @@ function KinhScene({ c, onClose }: { c: Character; onClose: () => void }) {
 /* ---------- Linh thú ---------- */
 function ThuScene({ onClose }: { onClose: () => void }) {
   const [evo, setEvo] = useState(1);
+  const [view, setView] = useState<string | null>(null);
   return (
     <div className="forge-wrap dm-wrap" role="dialog" aria-modal="true" aria-label="Linh thú">
       <div className="forge-scene">
@@ -415,21 +512,47 @@ function ThuScene({ onClose }: { onClose: () => void }) {
           </button>
         </div>
         <div className="dm-thu-stage" style={{ backgroundImage: 'url(/bg/du_ngoan-1.png)' }}>
+          {view ? (
+            <>
+              <span className="dm-thu-name">
+                <b>
+                  <RankBadge r={rankOfPet(view)} /> {petNameOf(view)}
+                </b>
+                <small>{PET_SEEN.includes(view) ? 'Đã gặp' : 'Chưa thuần phục · xem trước'}</small>
+              </span>
+              <div className={`dm-thu-big ${['S', 'SS', 'SSS'].includes(rankOfPet(view)) ? 'b2' : ''}`} key={view}>
+                <AnyPet id={view} box={LEGEND[view] ? 170 : 150} />
+              </div>
+              {rankOfPet(view) === 'SSS' && (
+                <span className="dm-evo-rays" aria-hidden="true">
+                  {Array.from({ length: 12 }, (_, i) => (
+                    <i key={i} style={{ left: `${14 + ((i * 29) % 72)}%`, top: `${14 + ((i * 17) % 60)}%`, animationDelay: `${i * 0.2}s` }} />
+                  ))}
+                </span>
+              )}
+              <button className="dm-back" onClick={() => setView(null)}>
+                ← Xích Lang của bạn
+              </button>
+            </>
+          ) : (
+            <>
           <span className="dm-thu-name">
-            <b>
-              <RankBadge r={PET_EVO_RANK[evo]} /> {PET_EVO_NAME[evo]}
-            </b>
-            <small>Bậc {evo + 1}/3 · Lv {evo === 2 ? 20 : 14}</small>
-          </span>
-          <div className={`dm-thu-big b${evo}`} key={evo}>
-            <PetAnim id={PET_EVO[evo]} scale={evo === 2 ? 3.6 : 3.2} dir={1} />
-          </div>
-          {evo === 2 && (
-            <span className="dm-evo-rays" aria-hidden="true">
-              {Array.from({ length: 10 }, (_, i) => (
-                <i key={i} style={{ left: `${24 + ((i * 29) % 52)}%`, top: `${22 + ((i * 17) % 50)}%`, animationDelay: `${i * 0.25}s` }} />
-              ))}
+              <b>
+                <RankBadge r={PET_EVO_RANK[evo]} /> {PET_EVO_NAME[evo]}
+              </b>
+              <small>Bậc {evo + 1}/3 · Lv {evo === 2 ? 20 : 14}</small>
             </span>
+            <div className={`dm-thu-big b${evo}`} key={evo}>
+              <PetAnim id={PET_EVO[evo]} scale={evo === 2 ? 3.6 : 3.2} dir={1} />
+            </div>
+            {evo === 2 && (
+              <span className="dm-evo-rays" aria-hidden="true">
+                {Array.from({ length: 10 }, (_, i) => (
+                  <i key={i} style={{ left: `${24 + ((i * 29) % 52)}%`, top: `${22 + ((i * 17) % 50)}%`, animationDelay: `${i * 0.25}s` }} />
+                ))}
+              </span>
+            )}
+            </>
           )}
         </div>
         <div className="fs-info">
@@ -504,9 +627,10 @@ function ThuScene({ onClose }: { onClose: () => void }) {
           </div>
 
           <b className="dm-h">Sổ linh thú theo rank</b>
-          <p className="note">Rank càng cao càng hiếm gặp. Tỉ lệ là khi có kỳ ngộ gặp linh thú.</p>
+          <p className="note">Rank càng cao càng hiếm gặp. Tỉ lệ là khi có kỳ ngộ gặp linh thú. Chạm một con để xem.</p>
           {RANKS.map((r) => {
-            const ids = PET_IDS.filter((id) => rankOfPet(id) === r.id);
+            const ids = ALL_PETS.filter((id) => rankOfPet(id) === r.id);
+            const big = r.id === 'S' || r.id === 'SS' || r.id === 'SSS';
             return (
               <div key={r.id} className={`dm-rk-row rk-${r.id}`}>
                 <div className="dm-rk-head">
@@ -518,17 +642,13 @@ function ThuScene({ onClose }: { onClose: () => void }) {
                     <small>{r.note}</small>
                   </span>
                 </div>
-                <div className="dm-petbook">
+                <div className={`dm-petbook ${big ? 'big' : ''}`}>
                   {ids.map((id) => (
-                    <span key={id} className="dm-petbook-i">
-                      <PetAnim id={id} scale={id === 'thu_vuong' ? 0.5 : PETS[id].w <= 32 ? 1 : 0.62} dir={1} still dark={!PET_SEEN.includes(id)} />
-                    </span>
+                    <button key={id} className={`dm-petbook-i ${big ? 'big' : ''} ${view === id ? 'on' : ''}`} onClick={() => setView(id)} aria-label={petNameOf(id)}>
+                      <AnyPet id={id} box={big ? 50 : 40} still dark={!PET_SEEN.includes(id) && !big} />
+                      {big && <small>{petNameOf(id)}</small>}
+                    </button>
                   ))}
-                  {ids.length === 0 && (
-                    <span className="dm-petbook-i unseen" style={{ gridColumn: 'span 6' }}>
-                      Chưa ai trong thiên hạ gặp
-                    </span>
-                  )}
                 </div>
               </div>
             );
@@ -846,14 +966,51 @@ const RANKS = [
 ] as const;
 type RankId = (typeof RANKS)[number]['id'];
 const PET_RANK: Record<string, RankId> = {
-  cho_vang: 'N', chuot_bach: 'N', chuot_xam: 'N', nam_linh: 'N',
-  soi_con: 'R', ho_ly: 'R', dai_bang: 'R', doi: 'R', ong_vang: 'R', slime: 'R', ran_con: 'R',
-  hac_lang: 'SR', xich_lang: 'SR', mai_loc: 'SR', thuc_nhan_hoa: 'SR', tam_linh: 'SR', hung_con: 'SR', su_tu_con: 'SR',
-  tuyet_ho: 'SSR', bang_lang: 'SSR', kim_thu: 'SSR', linh_loc: 'SSR', hoa_linh_dich: 'SSR', bang_phong: 'SSR',
-  bach_lang: 'A', bach_xa: 'A', tuyet_hung: 'A', hoa_ho: 'A',
-  huyet_buc: 'S', thu_vuong: 'S',
-  tho_long: 'SS', xich_chi: 'SS',
+  // N: thú thường, gặp ở làng, ở rừng
+  cho_vang: 'N', chuot_xam: 'N', chuot_bach: 'N', dai_bang: 'N', doi: 'N', soi_con: 'N', ho_ly: 'N', hung_con: 'N',
+  // R: có linh tính, sống quanh linh mạch
+  ong_vang: 'R', nam_linh: 'R', slime: 'R', ran_con: 'R', su_tu_con: 'R', mai_loc: 'R', tam_linh: 'R',
+  // SR: đã khai linh trí
+  hac_lang: 'SR', xich_lang: 'SR', tuyet_ho: 'SR', linh_loc: 'SR', thuc_nhan_hoa: 'SR', bang_phong: 'SR', hoa_linh_dich: 'SR', kim_thu: 'SR',
+  // SSR: dị chủng mang ngũ hành
+  bang_lang: 'SSR', hoa_ho: 'SSR', huyet_buc: 'SSR', tuyet_hung: 'SSR', bach_xa: 'SSR', xich_chi: 'SSR',
+  // A: yêu vương một phương
+  bach_lang: 'A', thu_vuong: 'A', tho_long: 'A', kim_si: 'A',
+  // S: dị thú Sơn Hải Kinh
+  tat_phuong: 'S', cuu_vi: 'S', con_bang: 'S',
+  // SS: tứ tượng, thượng cổ
+  bach_ho: 'SS', thanh_giao: 'SS', cung_ky: 'SS',
+  // SSS: tứ linh
+  thanh_long: 'SSS', ky_lan: 'SSS', huyen_vu: 'SSS', hoa_phuong: 'SSS',
 };
+/** Linh thú truyền thuyết: dùng thú LPC lớn có sẵn trong bộ quái */
+const LEGEND: Record<string, { name: string; look: MonsterLook }> = {
+  kim_si: { name: 'Kim Sí Đại Bằng', look: { kind: 'beast', sheet: 'eagle', frames: 3, cell: 64, scale: 1.4, strip: true, fps: 6, filter: 'sepia(0.4) saturate(1.6) drop-shadow(0 0 3px #ffd36b)' } },
+  tat_phuong: { name: 'Tất Phương', look: { kind: 'beast', sheet: 'dk_crane', frames: 3, cell: 48, scale: 1.3, strip: true, fps: 3, filter: 'sepia(1) saturate(5) hue-rotate(-30deg)' } },
+  cuu_vi: { name: 'Cửu Vĩ Thiên Hồ', look: { kind: 'beast', sheet: 'fox_r', frames: 4, cell: 64, scale: 1.2, strip: true, fps: 7, filter: 'grayscale(1) brightness(1.8) drop-shadow(0 0 4px #b8a0ff)' } },
+  con_bang: { name: 'Côn Bằng', look: { kind: 'beast', sheet: 'eagle', frames: 3, cell: 64, scale: 1.7, strip: true, fps: 5, filter: 'hue-rotate(170deg) saturate(1.5) drop-shadow(0 0 4px #9fd8ff)' } },
+  bach_ho: { name: 'Bạch Hổ', look: { kind: 'beast', sheet: 'dk_tiger', frames: 3, cell: 64, scale: 1.4, strip: true, fps: 5, filter: 'grayscale(1) brightness(1.6) drop-shadow(0 0 4px #e8f0ff)' } },
+  thanh_giao: { name: 'Thanh Giao', look: { kind: 'beast', sheet: 'dk_serpent', frames: 8, cell: 64, scale: 1.5, strip: true, fps: 8, filter: 'sepia(1) hue-rotate(70deg) saturate(3) brightness(1.2)' } },
+  cung_ky: { name: 'Cùng Kỳ', look: { kind: 'beast', sheet: 'dk_tiger', frames: 3, cell: 64, scale: 1.4, strip: true, fps: 5, filter: 'grayscale(0.5) hue-rotate(220deg) saturate(1.5) drop-shadow(0 0 4px #9a6aff)' } },
+  thanh_long: { name: 'Thanh Long', look: { kind: 'beast', sheet: 'dk_flydragon', frames: 3, cell: 144, scale: 0.75, strip: true, fps: 5, filter: 'hue-rotate(80deg) saturate(1.4) drop-shadow(0 0 5px #9ff0c8)' } },
+  ky_lan: { name: 'Kỳ Lân', look: { kind: 'beast', sheet: 'dk_qilin', frames: 3, cell: 85, scale: 1, strip: true, fps: 5, filter: 'saturate(1.3) drop-shadow(0 0 5px #ffd36b)' } },
+  huyen_vu: { name: 'Huyền Vũ', look: { kind: 'beast', sheet: 'dk_turtle', frames: 8, cell: 64, scale: 1.3, strip: true, fps: 6, filter: 'hue-rotate(140deg) saturate(1.2) brightness(0.9) drop-shadow(0 0 4px #5ad0c0)' } },
+  hoa_phuong: { name: 'Hỏa Phượng', look: { kind: 'beast', sheet: 'dk_crane', frames: 3, cell: 48, scale: 1.8, strip: true, fps: 3, filter: 'sepia(1) saturate(6) hue-rotate(-15deg) brightness(1.2) drop-shadow(0 0 6px #ffb02a)' } },
+};
+const ALL_PETS = [...PET_IDS, ...Object.keys(LEGEND)];
+const petNameOf = (id: string) => LEGEND[id]?.name ?? (PETS[id] ? PETS[id].name.replace(/^./, (x) => x.toUpperCase()) : id);
+/** Vẽ một linh thú bất kỳ: sprite pet nhỏ hoặc thú truyền thuyết */
+function AnyPet({ id, box, dark, still }: { id: string; box: number; dark?: boolean; still?: boolean }) {
+  const L = LEGEND[id];
+  if (L)
+    return (
+      <span className={dark ? 'dm-dark' : ''} style={{ display: 'grid', placeItems: 'end center' }}>
+        <MonsterLpc look={L.look} size={box} still={still} />
+      </span>
+    );
+  const p = PETS[id];
+  return <PetAnim id={id} scale={(box / 64) * (p.w <= 32 ? 1.6 : p.w >= 80 ? 0.8 : 1)} dir={1} still={still} dark={dark} />;
+}
 const rankOfPet = (id: string): RankId => PET_RANK[id] ?? 'R';
 function RankBadge({ r, big }: { r: RankId; big?: boolean }) {
   return <span className={`dm-rank rk-${r} ${big ? 'big' : ''}`}>{r}</span>;
