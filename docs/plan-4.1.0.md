@@ -91,8 +91,16 @@ Cáo thị 4.0.1 (Tyler chốt 30/10 tối): gộp ngày 1 và ngày 2 thành b�
 ## Chờ Tyler quyết (chưa làm)
 - Tình duyên (đạo lữ có tính cách, độ gắn bó, song tu, đỡ đòn thay): Tyler để nghĩ thêm (30/10). Không đổi cơ chế đạo lữ cho tới khi Tyler chốt.
 
-## Ngày 6 - thứ Tư 4/11: bản 4.2.0 Linh thú (có cáo thị)
+## Ngày 6 - thứ Tư 4/11: bản 4.2.0 Công pháp (có cáo thị)
 Chỉ làm từ ngày 2026-11-04 (giờ VN). Trước ngày này thì dừng, không đổi code.
+Tyler chốt 2/11 tối: thứ Tư lên công pháp; từ bản này mọi đòn đánh và hiệu ứng ở màn chơi chính (trừ yêu, quái chặn đường, người gặp trên giang hồ, bóng kiếp trước) theo công pháp. Lôi đài không đổi.
+- [ ] Gộp nhánh `cong-phap` khi dòng này có chữ "SẴN SÀNG: <sha>" (Claude ghi khi làm xong). Chưa có thì KHÔNG làm gì, báo Tyler một câu rồi dừng. Nội dung (bản thiết kế: docs/research/cong-phap-theo-dao-va-rank-linh-thu.md): công pháp lưu vào nhân vật theo 6 đạo (tâm pháp, chiêu thức, tuyệt kỹ, thanh riêng mỗi đạo); Tàng Kinh Các kiểu vòng cài chiêu; chiêu có tầng, thục luyện, hồi chiêu; đòn đánh theo chiêu (thiêu đốt, độc, hút máu, choáng, khiên, phản đòn...), chưởng pháp và kiếm khí vẽ pixel thay quả cầu gradient cũ, khựng đòn, rung màn, tuyệt kỹ có màn cut-in.
+- [ ] Cáo thị 4.2.0 nhóm "Công pháp" (nội dung theo nhánh khi gộp).
+- [ ] Không có góp ý trong game cần trả lời (góp ý công pháp đến từ Messenger, Tyler tự trả lời).
+
+## Ngày 7 - thứ Sáu 6/11: bản 4.3.0 Linh thú (có cáo thị)
+Chỉ làm từ ngày 2026-11-06 (giờ VN). Trước ngày này thì dừng, không đổi code.
+Tyler chốt 2/11 tối: đổi lịch, linh thú lên thứ Sáu, trận đánh thú theo công pháp. Nhánh `linh-thu` sẽ được Claude dựng lại trên `cong-phap`; chỉ gộp khi dòng gộp nhánh dưới đây có chữ "SẴN SÀNG: <sha>" (Claude ghi khi xong). Chưa có thì không làm gì, báo Tyler một câu rồi dừng.
 - [ ] Gộp nhánh `linh-thu` (tới commit 3e0a6d1, đã build, smoke, smoke-login, smoke-linhthu, chụp màn hình): `git fetch origin linh-thu && git merge --no-ff origin/linh-thu`. Nhánh dựng trên `kinh-te` nên gộp sau 4.1.0 không đụng nhau. Gồm:
   - Rank linh thú 5 bậc N, R, SR, SSR, SSS (lib/game/linhThu.ts). SSS là tứ linh Thanh Long, Kỳ Lân, Huyền Vũ, Hỏa Phượng; SSR có yêu vương và dị thú (Kim Sí Đại Bằng, Tất Phương, Cửu Vĩ Thiên Hồ, Côn Bằng, Bạch Hổ, Thanh Giao, Cùng Kỳ), vẽ bằng thú LPC lớn có sẵn (lib/game/petLegend.ts).
   - Thân thiết theo năm và theo trận, tiến hóa 3 bậc (bậc 2 cần Trúc Cơ, bậc 3 cần Nguyên Anh), mỗi bậc nâng rank và sức mạnh, linh thú to hơn và có hào quang.
@@ -103,11 +111,5 @@ Chỉ làm từ ngày 2026-11-04 (giờ VN). Trước ngày này thì dừng, kh
   - Gặp thú kiểu Pokémon (Tyler chốt 2/11): mỗi kịch bản gặp thú là một dòng họ (chuột, sói, hồ, rắn, gấu, lộc, đất, hoa, lửa, hang, trời, nhà), rank tung theo cảnh giới lúc gặp (Phàm/Luyện Khí N60 R30 SR10; Trúc Cơ N40 R35 SR22 SSR3; Kim Đan trở lên N25 R35 SR30 SSR10). Đủ sức (có tu vi, từ 10 tuổi) thì giao chiến 6 hiệp với thú (cấp thú theo rank, không theo chủ); thắng hoặc làm thú còn dưới 35% máu thì mở thẻ thu phục có tỉ lệ (chênh cấp, máu thú còn lại, khí vận); hỏng thì thú chạy, không thử lại. Trẻ con thì dụ về nuôi theo tỉ lệ. Dị thú SSR, thần thú SSS cũng phải giao chiến. Mô phỏng (scripts/sim-thu-phuc.ts): thu phục SSS ở Độ Kiếp khoảng 11%, SSR ở Kim Đan khoảng 4%, Hóa Thần khoảng 42%.
   - Chống nuôi thú quá mạnh từ sớm: thú vượt tầm chủ (Phàm/Luyện Khí giữ tối đa R, Trúc Cơ SR, Kim Đan/Nguyên Anh SSR) mà thân thiết dưới 10 thì mỗi năm 5% (nhân số bậc vượt) bỏ đi, kể cả thú đang nuôi từ trước. Thiên phú lúc sinh chỉ cho R/SR, Tiên duyên chỉ cho N/R. Màn sổ hiện bảng tỉ lệ thật theo cảnh giới.
 - [ ] Thử thêm `node scripts/smoke-linhthu.cjs` (phải "Tất cả OK"), chụp ảnh với SHOT_DIR. Chạy `npx tsx scripts/sim-thu-phuc.ts 2000` và ghi bảng vào Ghi chú.
-- [ ] Cáo thị 4.2.0 trong lib/releases.ts, nhóm "Linh thú" (giọng như các cáo thị trước, ngắn): linh thú nay có rank N tới SSS; gặp thú phải giao chiến, thắng mới có cơ hội thu phục, tu càng cao gặp thú càng xịn, thú quá mạnh so với chủ có thể bỏ đi; có thân thiết và tiến hóa 3 bậc; hộ chủ lao vào đánh cùng bạn, chiêu phúc mang vận, dưỡng thân giữ sức; linh thú bậc 3 để lại huyết mạch cho kiếp sau; tứ linh và dị thú Sơn Hải Kinh đã xuất thế, ai có duyên thì gặp; mở màn Linh thú bằng huy hiệu trên sân khấu.
-- [ ] Sau khi lên: trả lời #26 (shizun) và #30 (madaochiton) PHẦN linh thú (có lực chiến, tiến hóa, mục xem linh thú), reply_ver 4.2.0. #30 phần Hệ Thống buff chưa làm: không nhắc. Ngự Thú Tông chưa làm: không nhắc.
-
-## Ngày 7 - thứ Sáu 6/11: bản 4.3.0 Công pháp và chưởng pháp (có cáo thị)
-Chỉ làm từ ngày 2026-11-06 (giờ VN). Trước ngày này thì dừng, không đổi code.
-- [ ] Gộp nhánh `cong-phap` khi dòng này có chữ "SẴN SÀNG: <sha>" (Claude ghi khi làm xong). Chưa có thì KHÔNG làm gì, báo Tyler một câu rồi dừng. Nội dung (bản thiết kế: docs/research/cong-phap-theo-dao-va-rank-linh-thu.md trên nhánh demo-cong-phap): công pháp lưu vào nhân vật theo 6 đạo (mỗi đạo 1 tâm pháp, 3-4 chiêu, 1 tuyệt kỹ, thanh riêng: Kiếm ý, Đan hỏa, Trận nhãn, Định lực, Sát khí, Yêu lực); Tàng Kinh Các kiểu vòng cài chiêu quanh nhân vật, danh sách chiêu có tầng, nâng tầng bằng tàn quyển, hồi chiêu; chưởng pháp và kiếm khí vẽ pixel thay quả cầu gradient cũ, khựng đòn, rung màn, tuyệt kỹ có màn cut-in.
-- [ ] Cáo thị 4.3.0 nhóm "Công pháp" (nội dung theo nhánh khi gộp).
-- [ ] Không có góp ý trong game cần trả lời (góp ý công pháp đến từ Messenger, Tyler tự trả lời).
+- [ ] Cáo thị 4.3.0 trong lib/releases.ts, nhóm "Linh thú" (giọng như các cáo thị trước, ngắn): linh thú nay có rank N tới SSS; gặp thú phải giao chiến, thắng mới có cơ hội thu phục, tu càng cao gặp thú càng xịn, thú quá mạnh so với chủ có thể bỏ đi; có thân thiết và tiến hóa 3 bậc; hộ chủ lao vào đánh cùng bạn, chiêu phúc mang vận, dưỡng thân giữ sức; linh thú bậc 3 để lại huyết mạch cho kiếp sau; tứ linh và dị thú Sơn Hải Kinh đã xuất thế, ai có duyên thì gặp; mở màn Linh thú bằng huy hiệu trên sân khấu.
+- [ ] Sau khi lên: trả lời #26 (shizun) và #30 (madaochiton) PHẦN linh thú (có lực chiến, tiến hóa, mục xem linh thú), reply_ver 4.3.0. #30 phần Hệ Thống buff chưa làm: không nhắc. Ngự Thú Tông chưa làm: không nhắc.
