@@ -43,7 +43,7 @@ Nguyên tắc: không đưa cái chết vô lý trở lại. Nguy hiểm dời v
 - #24 (phần Tình duyên), #35 (gái đẹp sau Chứng Đạo): chờ Tyler nghĩ về Tình duyên.
 - #27, #31, #36, #48: nội dung, trang bị sau Chứng Đạo (gần T1).
 - #50 (bachct): bùa rèn đã làm (Hộ Khí Phù, Linh Hỏa), lên 4.1.0 sáng 3/11.
-- #49 (vickary): Luyện Khí bị kẻ thù Huyền Tiên đến báo thù (oan gia cảnh giới quá cao so với mình).
+- #49 (vickary): trần chênh cảnh giới đã làm, lên 4.1.0 sáng 3/11.
 - Messenger page (1/11): sự kiện nói "học công pháp" nhưng không có mục xem đã học công pháp gì (công pháp hiện chỉ là chữ trong sự kiện, không lưu vào nhân vật). Ý: sổ công pháp, mỗi bộ có tên và tác dụng.
 - Messenger page (1/11): mở nhóm Discord cho cộng đồng, sự kiện.
 - Messenger page (1/11): đang trừ yêu mà sự kiện năm vẫn hiện. Tyler chốt 1/11: GIỮ NGUYÊN, vì diệt yêu cũng tốn thời gian trong đời. Không đổi.
