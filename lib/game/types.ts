@@ -59,6 +59,7 @@ export interface Character {
   auctionAt?: number; // tuổi đã nhận thiệp hội đấu giá gần nhất
   auctionLot?: string; // món đem đấu của kỳ đấu giá đang mời
   merchantAt?: number; // tuổi gặp thương nhân lưu động gần nhất
+  giangTranAt?: number; // tuổi gặp tiên nhân, ma vương giáng trần (mỗi kiếp một lần)
   sold?: { y: number; n: number }; // số món đã bán trong năm game này (bán nhiều bị ép giá)
   hoKhi?: number; // Hộ Khí Phù: rèn hỏng sắp vỡ đồ thì phù vỡ thay
   linhHoa?: number; // Linh Hỏa: +15% tỉ lệ rèn thành một lần gõ

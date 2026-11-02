@@ -1,4 +1,4 @@
-import { AUCTION_EVENT_ID, MERCHANT_EVENT_ID, auctionDue, auctionEvent, merchantDue, merchantEvent, pickAuctionLot, marketSpan } from './market';
+import { AUCTION_EVENT_ID, MERCHANT_EVENT_ID, auctionDue, auctionEvent, merchantDue, merchantEvent, pickAuctionLot, marketSpan, GIANG_TRAN_ID, giangTranDue, giangTranEvent } from './market';
 import { sealLv } from './forge';
 import { applyProphecy, checkNewbieGoal, newbieGoal, omenIs } from './hook';
 import { loreDone, lore2Count, quyNhatDone } from './lore';
@@ -893,6 +893,7 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
     if (c.auctionLot) return buildPending(c, auctionEvent(c));
   }
   if (merchantDue(c, rnd)) return buildPending(c, merchantEvent(c));
+  if (giangTranDue(c, rnd)) return buildPending(c, giangTranEvent(c));
   const chance = age < 6 ? 0.3 : focus === 'du_ngoan' ? 0.6 : 0.3;
   if (rnd() < chance) {
     const e = pickEvent(c);
@@ -1265,6 +1266,7 @@ function findEvent(c: Character, id: string): GameEvent | null {
   if (id === BREAK_EVENT_ID) return breakEvent(c);
   if (id === AUCTION_EVENT_ID) return auctionEvent(c);
   if (id === MERCHANT_EVENT_ID) return merchantEvent(c);
+  if (id === GIANG_TRAN_ID) return giangTranEvent(c);
   return EVENTS.find((e) => e.id === id) ?? null;
 }
 

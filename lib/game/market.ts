@@ -1,5 +1,5 @@
 import { ITEMS, REALMS, fxText, type Item } from './data';
-import { giveItem, money, stat } from './helpers';
+import { addCult, fatal, giveItem, money, reward, stat } from './helpers';
 import type { Character, EffectCtx, GameEvent } from './types';
 import { tr } from '../i18n';
 import { HO_KHI_MAX, charmItem, charmOf, giveCharm } from './forge';
@@ -301,4 +301,76 @@ export function robWare(c: Character, w: Ware, ctx: EffectCtx): string | null {
   const t = tr('Từ trong xe nhảy ra hai hộ vệ, đánh bạn một trận nhừ tử rồi đẩy xe đi mất.', 'Two bodyguards leap out of the cart, beat you black and blue, then push the cart away.');
   ctx.log(t, 'bad');
   return t;
+}
+
+// ---------------- Tiên nhân, ma vương giáng trần (Tyler chốt 2/11) ----------------
+/**
+ * Trần chênh cảnh giới chặn oan gia, truy sát mạnh quá tay. Nhưng thế gian vẫn có kẻ mạnh hơn hẳn:
+ * hiếm hoi (0,25%/năm, mỗi kiếp tối đa một lần, khoảng 1/3 số kiếp 200 năm gặp), một tiên nhân hoặc ma vương giáng trần chắn đường.
+ * Không phải trận bắt buộc: người chơi chọn quỳ bái, dâng lễ, hay liều ra tay. Liều mới có thể chết.
+ */
+export const GIANG_TRAN_ID = 'giang_tran';
+export const GIANG_TRAN_PER_YEAR = 0.0025;
+export const giangTranDue = (c: Character, rnd: () => number) => !c.dead && !c.cosmos && c.realm >= 1 && c.age >= 16 && c.giangTranAt === undefined && rnd() < GIANG_TRAN_PER_YEAR;
+export function giangTranEvent(c: Character): GameEvent {
+  const ma = c.daoTam < -15;
+  const who = ma ? tr('Huyết Sát Ma Vương', 'the Blood Fiend Demon King') : tr('Bạch Y Tiên Nhân', 'the White-Robed Immortal');
+  const gift = Math.round(c.linhThach * 0.3);
+  return {
+    id: GIANG_TRAN_ID,
+    title: ma ? tr('Ma vương giáng trần', 'A demon king descends') : tr('Tiên nhân giáng trần', 'An immortal descends'),
+    text: () =>
+      ma
+        ? tr(`Trời đang sáng bỗng tối sầm, máu đỏ nhỏ xuống như mưa. ${who} từ Ma giới xé không gian bước ra, đứng chắn ngay trước mặt bạn. Uy áp đè xuống, xương cốt kêu răng rắc. Kẻ này mạnh hơn bạn không biết bao nhiêu cảnh giới.`, `The bright sky turns black and red blood falls like rain. ${who} tears through space from the Demon Realm and blocks your path. The pressure crushes down until your bones creak. This one is countless realms above you.`)
+        : tr(`Một đạo tiên quang rơi xuống giữa đường, mây lành vây quanh. ${who} ngự kiếm hạ phàm, liếc nhìn bạn như nhìn một con kiến. Uy áp tiên giới làm bạn không thở nổi. Người này mạnh hơn bạn không biết bao nhiêu cảnh giới.`, `A ray of immortal light lands in the road, wrapped in auspicious clouds. ${who} descends on a flying sword and glances at you like an ant. The pressure of the Immortal Realm steals your breath. This one is countless realms above you.`),
+    choices: () => [
+      {
+        label: tr('Quỳ xuống bái lạy', 'Kneel and bow'),
+        hint: tr('an toàn, có khi được chỉ điểm', 'safe, may earn a pointer'),
+        lean: 'trung',
+        run: (ch, ctx) => {
+          ch.giangTranAt = ch.age;
+          if (ctx.rnd() < 0.4) {
+            const t = reward(ch, 1);
+            addCult(ch, t);
+            ctx.fx('layer', tr('Được chỉ điểm', 'A pointer'));
+            return tr(`${who} gật đầu, búng một tia linh quang vào giữa trán bạn rồi biến mất. Bạn ngộ ra điều gì đó (+${Math.round(t)} tu vi).`, `${who} nods, flicks a spark of light into your brow, and vanishes. Something clicks (+${Math.round(t)} cultivation).`);
+          }
+          return tr(`${who} không nói một lời, lướt qua như chưa từng thấy bạn.`, `${who} says nothing and passes by as if you were never there.`);
+        },
+      },
+      {
+        label: tr(`Dâng lễ vật (${gift} linh thạch)`, `Offer tribute (${gift} spirit stones)`),
+        hint: tr('chắc chắn được ban thưởng', 'a sure reward'),
+        lean: 'trung',
+        run: (ch, ctx) => {
+          ch.giangTranAt = ch.age;
+          money(ch, -gift);
+          const t = reward(ch, 1.5);
+          addCult(ch, t);
+          stat(ch, 'khiVan', 5);
+          ctx.fx('layer', tr('Được ban thưởng', 'Rewarded'));
+          return tr(`${who} nhận lễ, phẩy tay ban cho bạn một luồng ${ma ? 'ma khí' : 'tiên khí'} (+${Math.round(t)} tu vi, khí vận +5).`, `${who} accepts and grants you a wisp of ${ma ? 'demonic' : 'immortal'} qi (+${Math.round(t)} cultivation, luck +5).`);
+        },
+      },
+      {
+        label: tr('Liều mạng ra tay', 'Strike with everything you have'),
+        hint: tr('rất nguy, có thể mất mạng', 'deadly, you may die'),
+        lean: ma ? 'ta' : 'trung',
+        run: (ch, ctx) => {
+          ch.giangTranAt = ch.age;
+          if (ctx.rnd() < 0.1) {
+            const t = reward(ch, 3);
+            addCult(ch, t);
+            ctx.fx('layer', tr('Được nể', 'Respected'));
+            return tr(`Đòn của bạn chẳng làm ${who} sứt một sợi tóc, nhưng ánh mắt kia lóe lên vẻ tán thưởng: "Gan lắm." Một luồng sức mạnh tràn vào kinh mạch (+${Math.round(t)} tu vi).`, `Your strike doesn't so much as ruffle ${who}'s hair, but a glint of approval flashes: "Bold." Power floods your meridians (+${Math.round(t)} cultivation).`);
+          }
+          const f = fatal(ch, ctx, 0.3, tr(`${who} chỉ khẽ phất tay áo. Bạn tan thành bụi giữa đường.`, `${who} merely flicks a sleeve. You turn to dust in the road.`));
+          if (ch.dead) return f ?? '';
+          stat(ch, 'sucKhoe', -Math.min(50, Math.max(0, ch.stats.sucKhoe - 5)));
+          return tr(`${who} phất tay áo, bạn bay văng mười trượng, trọng thương nằm liệt.${f ?? ''}`, `${who} flicks a sleeve and you fly thirty paces, gravely wounded.${f ?? ''}`);
+        },
+      },
+    ],
+  };
 }
