@@ -12,6 +12,9 @@ import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 
 import { ENDINGS, RARE_COLOR, endingOf } from '@/lib/game/endings';
 import { GachaPanel, ShareCard } from './Extras';
 import ItemIconImg from './ItemIcon';
+import { PetPic, RankBadge } from './LinhThu';
+import { FAMILY_NAME, baseName, baseRank, familyOf, petLv, petTitle, rankNow } from '@/lib/game/linhThu';
+import { petOf } from '@/lib/game/pets';
 import { FOCUS, ITEMS, PATHS, PILLS, REALMS, SEASONS, TALENTS, fxParts, fxText, gearFx, itemPrice, overworkFree, pillPrice, safeYears, RARE_STOCK_REALM, realmLabel, soldOut, type Item } from '@/lib/game/data';
 import { describeLean } from '@/lib/game/engine';
 import { DANGER_TEXT, MONSTERS, combatLevel, dangerOf, dropFactor, monstersFor, effLv, killExp, monsterName, playerStats, tierOf } from '@/lib/game/combat';
@@ -149,6 +152,33 @@ function EventItem({ id, c }: { id: string; c?: Character }) {
   );
 }
 
+/** 4.2.0: thẻ linh thú trong sự kiện gặp thú, thu phục: hình, rank, cấp, họ, so với thú đang nuôi */
+function EventPet({ id, lv, c }: { id: string; lv?: number; c?: Character }) {
+  const r = baseRank(id);
+  return (
+    <div className={`ev-item ev-pet rk-${r}`}>
+      <span className="ev-item-pic">
+        <PetPic id={id} box={56} dir={0} />
+      </span>
+      <div className="ev-item-body">
+        <b>
+          <RankBadge r={r} /> {baseName(id)}
+        </b>
+        <span className="ev-item-tags">
+          {lv ? <i>Lv {lv}</i> : null}
+          <i>{FAMILY_NAME[familyOf(id)]}</i>
+          {c ? <i>{tr(`Bạn Lv ${combatLevel(c)}`, `You Lv ${combatLevel(c)}`)}</i> : null}
+        </span>
+        {c?.pet && !c.dead && (
+          <small className="ev-item-cur">
+            {tr('Đang nuôi', 'Current')}: {petTitle(c)} ({rankNow(petOf(c), c.petEvo ?? 0)}, {tr('thân thiết', 'bond')} {petLv(c)})
+          </small>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function EventCard({ p, c, onChoose }: { p: PendingEvent; c?: Character; onChoose: (i: number) => void }) {
   return (
     <section className="dialog event" aria-live="assertive" key={p.id + p.text}>
@@ -158,6 +188,7 @@ export function EventCard({ p, c, onChoose }: { p: PendingEvent; c?: Character; 
       </div>
       <p>{p.text}</p>
       {p.item && <EventItem id={p.item} c={c} />}
+      {p.pet && <EventPet id={p.pet} lv={p.petLv} c={c} />}
       <div className="choices">
         {p.choices.map((ch, i) => (
           <button key={i} className={`choice ${ch.lean}`} onClick={() => onChoose(i)}>

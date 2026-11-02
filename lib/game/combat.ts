@@ -31,6 +31,7 @@ export interface Monster {
   sect?: 'chinh' | 'ta' | 'trung'; // quái trong tông môn: chỉ đệ tử môn đó mới gặp
   cosmos?: 'tien' | 'ma' | 'hu'; // quái tiên giới, ma giới: chỉ gặp sau phi thăng
   doKiep?: boolean; // quái Độ Kiếp: chỉ gặp khi đã Độ Kiếp ở phàm giới
+  petId?: string; // 4.2.0: trận thu phục linh thú, vẽ bằng sprite thú
 }
 
 /** 15 loại quái, xếp theo cấp. Cấp người chơi: Luyện Khí 1-9, Trúc Cơ 10-12, Kim Đan 13-15... */

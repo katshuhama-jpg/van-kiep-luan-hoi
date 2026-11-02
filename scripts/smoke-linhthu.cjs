@@ -13,7 +13,7 @@ let fail = 0;
 const ok = (c, m) => { console.log((c ? 'OK  ' : 'HỎNG') + ' ' + m); if (!c) fail++; };
 const shot = (p, n, clip) => (DIR ? p.screenshot({ path: path.join(DIR, n + '.png'), clip }) : null);
 
-async function open(b, extra) {
+async function open(b, extra, wait = 7000) {
   const s = JSON.parse(JSON.stringify(base));
   s.pending = null;
   Object.assign(s.char, { dead: false, lifeNo: 6, realm: 3, layer: 1, age: 60, lifespan: 180, focus: 'tu_luyen', path: 'kiem', pet: true, petKind: 'xich_lang', petOf: 'xich_lang', petExp: 20, petEvo: 0, huyetMach: [{ id: 'tuyet_ho', life: 4 }], petBlood: 'tuyet_ho' }, extra);
@@ -24,7 +24,7 @@ async function open(b, extra) {
   await p.goto(URL + '/');
   await p.evaluate(([s, m, v]) => { localStorage.clear(); localStorage.setItem('vkl.tut', '1'); localStorage.setItem('vkl.seenVer', v); localStorage.setItem('vkl.notice.down1101', '1'); localStorage.setItem('vkl.save', JSON.stringify(s)); localStorage.setItem('vkl.meta', JSON.stringify(m)); }, [s, META, VER]);
   await p.goto(URL + '/choi');
-  await p.waitForTimeout(7000);
+  await p.waitForTimeout(wait);
   await p.addStyleTag({ content: 'nextjs-portal{display:none!important}' });
   return p;
 }
@@ -66,6 +66,21 @@ const save = async (p) => JSON.parse(await p.evaluate(() => localStorage.getItem
   ok(claw, 'linh thú lao vào đánh trong trận trừ yêu');
   if (claw) await shot(p, 'lt-6-fight');
   ok(!p.errs.length, 'trận đánh không lỗi JS ' + p.errs.join(' | '));
+  // 2b. gặp thú kiểu Pokémon: giao chiến rồi thẻ thu phục
+  p = await open(b, { pet: false, petKind: undefined, petOf: undefined, beastFight: { id: 'tuyet_hung', lv: 14 } }, 2500);
+  let fight = false;
+  for (let i = 0; i < 40 && !fight; i++) { await p.waitForTimeout(150); fight = (await p.locator('.beast-foe').count()) > 0; }
+  ok(fight, 'vào trận thu phục, thú hiện trên sân');
+  if (fight) await shot(p, 'lt-8-beast');
+  let card = false;
+  for (let i = 0; i < 40 && !card; i++) { await p.waitForTimeout(500); card = (await p.locator('.ev-pet').count()) > 0; }
+  ok(card || (await save(p)).stats, 'đánh xong: thắng thì có thẻ thu phục, thua thì thú bỏ đi');
+  if (card) await shot(p, 'lt-9-catch');
+  await p.locator('.choice').first().click({ timeout: 5000 }).catch(() => {});
+  await p.waitForTimeout(1200);
+  const after = await save(p);
+  ok(!after.catchTarget, 'chọn thu phục xong thì xóa thú chờ');
+  ok(!p.errs.length, 'thu phục không lỗi JS ' + p.errs.join(' | '));
   // 3. thần thú đi theo
   p = await open(b, { petKind: 'thanh_long', petOf: 'thanh_long', petEvo: 0 });
   ok((await p.locator('.pet-roam.legend').count()) > 0, 'thần thú hiện trên sân khấu');

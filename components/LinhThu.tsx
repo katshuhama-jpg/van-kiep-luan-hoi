@@ -20,6 +20,8 @@ import {
   petTitle,
   rankNow,
   LV_CAP,
+  RANK_ODDS,
+  oddsRow,
   type PetRank,
 } from '@/lib/game/linhThu';
 import { REALMS } from '@/lib/game/data';
@@ -218,7 +220,38 @@ export function LinhThuSheet({ c, book, onEvolve, onClose }: { c: Character; boo
           </div>
 
           <b className="lt-h">{tr('Sổ linh thú', 'Bestiary')}</b>
-          <p className="note">{tr('Rank càng cao càng hiếm gặp. Chạm một con để xem.', 'Higher ranks are rarer. Tap one to view.')}</p>
+          <div className="lt-box">
+            <b className="lt-h">{tr('Tỉ lệ rank khi gặp linh thú', 'Rank odds when you meet a beast')}</b>
+            <table className="lt-odds">
+              <thead>
+                <tr>
+                  <th />
+                  {(['N', 'R', 'SR', 'SSR'] as PetRank[]).map((r) => (
+                    <th key={r}>
+                      <RankBadge r={r} />
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {RANK_ODDS.map((row) => (
+                  <tr key={row.label} className={row === oddsRow(c) ? 'on' : ''}>
+                    <td>{row.label}</td>
+                    {(['N', 'R', 'SR', 'SSR'] as PetRank[]).map((r) => (
+                      <td key={r}>{row.odds[r] ? `${Math.round(row.odds[r]! * 1000) / 10}%` : '-'}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <small>
+              {tr(
+                'Gặp thú thì phải giao chiến, thắng mới có cơ hội thu phục. Cấp bạn càng cao hơn thú càng dễ. Dị thú SSR còn đến từ sự kiện riêng từ Kim Đan, thần thú SSS chỉ đến từ sự kiện riêng từ Hóa Thần và rất khó thu phục. Thú vượt tầm chủ, chưa đủ thân thiết thì có thể bỏ đi.',
+                'Meeting a beast means a fight; only a win gives a chance to tame it. The higher your level over the beast, the easier. Strange SSR beasts also come from a special event from Golden Core; divine SSS beasts only from their own event from Spirit Transformation, and are very hard to tame. A beast above its master, not yet bonded, may leave.',
+              )}
+            </small>
+          </div>
+          <p className="note">{tr('Chạm một con để xem.', 'Tap one to view.')}</p>
           {RANK_ORDER.map((r) => {
             const ids = all.filter((x) => baseRank(x) === r);
             return (

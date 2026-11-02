@@ -2,6 +2,7 @@ import { addCult, dao, hurt, money, reward, stat } from './helpers';
 import type { Character, Choice, EffectCtx, GameEvent } from './types';
 import { tr } from '../i18n';
 import { LEGEND_PETS } from './petLegend';
+import { familyPet, meetChoice } from './linhThu';
 
 /** Thú cưng: ảnh trong /public/lpc/pets/<id>.png, hàng 0 quay trái, hàng 1 quay phải */
 export interface PetDef {
@@ -135,31 +136,6 @@ export const PETS: Record<string, PetDef> = {
   },
 };
 export const PET_IDS = Object.keys(PETS);
-// loài chỉ nhận qua kịch bản riêng
-const SPECIAL = [
-  'soi_con',
-  'tuyet_ho',
-  'hac_lang',
-  'xich_lang',
-  'bang_lang',
-  'bach_lang',
-  'mai_loc',
-  'kim_thu',
-  'thuc_nhan_hoa',
-  'bach_xa',
-  'tho_long',
-  'tam_linh',
-  'thu_vuong',
-  'xich_chi',
-  'hung_con',
-  'tuyet_hung',
-  'su_tu_con',
-  'linh_loc',
-  'hoa_ho',
-  'hoa_linh_dich',
-  'huyet_buc',
-  'bang_phong',
-];
 
 /** Loại thú cưng của nhân vật; nhân vật cũ chưa có thì suy từ hạt giống */
 export function petOf(c: Pick<Character, 'petKind' | 'lookSeed' | 'name'>): string {
@@ -174,10 +150,11 @@ export function petName(c: Pick<Character, 'petKind' | 'lookSeed' | 'name'>): st
   return LEGEND_PETS[id]?.name ?? PETS[id].name;
 }
 
-/** Thú cưng gặp năm nay (cố định theo tuổi để lời kể và kết quả khớp nhau) */
+/** Thú gặp năm nay: chọn dòng họ theo hạt giống, rank tung theo cảnh giới (cố định theo tuổi để lời kể và kết quả khớp nhau) */
+const BASIC_FAMS = ['nha', 'chuot', 'ho', 'hang', 'troi', 'lua', 'ran', 'hoa'];
 function petThisYear(c: Character): string {
-  const pool = PET_IDS.filter((p) => !SPECIAL.includes(p));
-  return pool[((c.lookSeed ?? 7) + Math.floor(c.age) * 13) % pool.length];
+  const fam = BASIC_FAMS[((c.lookSeed ?? 7) + Math.floor(c.age) * 13) % BASIC_FAMS.length];
+  return familyPet(c, fam, 'thu_cung');
 }
 
 export const PET_EVENT: GameEvent = {
@@ -188,22 +165,12 @@ export const PET_EVENT: GameEvent = {
   when: (c) => !c.pet,
   title: tr('Có đứa đi theo', "Someone's following you"),
   text: (c) => PETS[petThisYear(c)].meet,
+  pet: (c) => petThisYear(c),
   choices: (c) => {
     const id = petThisYear(c);
     const p = PETS[id];
     return [
-      {
-        label: tr(`Nhận nuôi ${p.name}`, `Adopt the ${p.name}`),
-        lean: 'chinh',
-        run: (ch, ctx) => {
-          ch.pet = true;
-          ch.petKind = id;
-          dao(ch, 3);
-          stat(ch, 'tamCanh', 5);
-          ctx.fx('love', tr('Có thú cưng', "Got a pet"));
-          return tr(`Từ nay ${p.name} chạy theo bạn khắp nơi.`, `From now on, the ${p.name} follows you everywhere.`);
-        },
-      },
+      meetChoice(c, id),
       {
         label: tr('Cho ăn rồi đuổi đi', "Feed it and shoo it away"),
         lean: 'trung',
@@ -240,7 +207,7 @@ interface PetStory {
   minAge?: number;
   weight?: number;
   when?: (c: Character) => boolean;
-  pick: (c: Character) => string; // chọn loài theo hoàn cảnh
+  fam: string; // 4.2.0: dòng họ thú; loài trong họ tung theo rank và cảnh giới (lib/game/linhThu.ts)
   text: (c: Character, pet: PetDef) => string;
   adoptLabel: string;
   adoptText: (pet: PetDef) => string;
@@ -256,7 +223,7 @@ const STORIES: PetStory[] = [
     title: tr('Đêm trăng sói tru', "Wolves howl at the moon"),
     minAge: 10,
     weight: 5,
-    pick: (c) => (snow(c) ? ((c.lookSeed ?? 0) % 2 ? 'bang_lang' : 'bach_lang') : c.daoTam <= -30 ? 'xich_lang' : 'hac_lang'),
+    fam: 'soi',
     text: (_c, p) => tr(`Đêm trăng tròn, tiếng sói tru vọng từ núi. ${p.meet}`, `Under the full moon, wolf howls echo from the mountains. ${p.meet}`),
     adoptLabel: tr('Băng bó, đưa về nuôi', "Bandage it and take it home"),
     adoptText: (p) => tr(`Từ đêm ấy, ${p.name} chạy theo bạn như cái bóng.`, `From that night on, the ${p.name} follows you like a shadow.`),
@@ -283,7 +250,7 @@ const STORIES: PetStory[] = [
     title: tr('Bạch xà trong miếu', "White snake in the shrine"),
     minAge: 10,
     weight: 4,
-    pick: () => 'bach_xa',
+    fam: 'ran',
     text: (_c, p) => tr(`Trú mưa trong miếu cổ ven hồ. ${p.meet}`, `You shelter from the rain in an old shrine by the lake. ${p.meet}`),
     adoptLabel: tr('Đưa tay cho nó quấn', "Hold out your hand"),
     adoptText: () => tr('Bạch xà quấn lên cổ tay bạn như chiếc vòng ngọc. Từ đó không rời.', "The white snake coils around your wrist like a jade bangle. It never leaves again."),
@@ -312,7 +279,7 @@ const STORIES: PetStory[] = [
     title: tr('Đồng tiền dưới giếng', "Coins in the well"),
     minAge: 8,
     weight: 3,
-    pick: () => 'kim_thu',
+    fam: 'chuot',
     text: (_c, p) => tr(`Thả gàu xuống giếng cổ, kéo lên toàn tiền xu. ${p.meet}`, `You lower a bucket into an old well and pull up nothing but coins. ${p.meet}`),
     adoptLabel: tr('Nuôi nó', "Keep it"),
     adoptText: () => tr('Kim thử chui vào túi bạn, thỉnh thoảng nhả ra một đồng tiền.', "The golden rat crawls into your pouch and spits out a coin now and then."),
@@ -339,7 +306,7 @@ const STORIES: PetStory[] = [
     title: tr('Vườn hoang', "Abandoned garden"),
     minAge: 12,
     weight: 3,
-    pick: () => 'thuc_nhan_hoa',
+    fam: 'hoa',
     text: (_c, p) => tr(`Trong vườn hoang có tiếng răng nghiến ken két. ${p.meet}`, `Teeth gnash and grind in an abandoned garden. ${p.meet}`),
     adoptLabel: tr('Cho ăn, mang về', "Feed it and take it home"),
     adoptText: () => tr('Thực nhân hoa ngoan như mèo, chỉ hơi tốn thịt.', "The man-eating flower is as tame as a cat, if a bit costly in meat."),
@@ -366,7 +333,7 @@ const STORIES: PetStory[] = [
     title: tr('Đêm trăng bên suối', "Moonlit stream"),
     minAge: 8,
     weight: 4,
-    pick: () => 'mai_loc',
+    fam: 'loc',
     text: (_c, p) => tr(`Đêm Trung Thu, bạn ra suối ngắm trăng. ${p.meet}`, `On Mid-Autumn night you go to the stream to admire the moon. ${p.meet}`),
     adoptLabel: tr('Chìa tay mời nó lại gần', "Reach out and invite it closer"),
     adoptText: () => tr('Mai hoa lộc dụi đầu vào tay bạn rồi lững thững đi theo.', "The plum-blossom deer nuzzles your hand, then ambles after you."),
@@ -393,7 +360,7 @@ const STORIES: PetStory[] = [
     title: tr('Đào giếng, nuôi tằm', "Well-digging and silkworms"),
     minAge: 8,
     weight: 4,
-    pick: (c) => ((c.lookSeed ?? 0) % 2 ? 'tho_long' : 'tam_linh'),
+    fam: 'dat',
     text: (_c, p) => p.meet,
     adoptLabel: tr('Giữ lại nuôi', "Keep and raise it"),
     adoptText: (p) => tr(`${p.name[0].toUpperCase() + p.name.slice(1)} bò quanh chân bạn, chẳng chịu rời.`, `${p.name[0].toUpperCase() + p.name.slice(1)} crawls around your feet and won't leave.`),
@@ -420,7 +387,7 @@ const STORIES: PetStory[] = [
     title: tr('Kho thóc', "The granary"),
     minAge: 8,
     weight: 4,
-    pick: (c) => ((c.familyTier ?? 1) <= 1 ? 'thu_vuong' : 'xich_chi'),
+    fam: 'chuot',
     text: (_c, p) => tr(`Dọn kho thóc sau nhà. ${p.meet}`, `You clear out the granary behind the house. ${p.meet}`),
     adoptLabel: tr('Nhận làm bạn', "Befriend it"),
     adoptText: (p) => tr(`Từ đó ${p.name} theo bạn khắp nơi, kho thóc cũng chẳng mất hạt nào.`, `From then on the ${p.name} goes everywhere with you, and the granary never loses a grain.`),
@@ -440,7 +407,7 @@ const STORIES: PetStory[] = [
     title: tr('Gấu con lạc mẹ', "Lost bear cub"),
     minAge: 10,
     weight: 4,
-    pick: (c) => (snow(c) ? 'tuyet_hung' : 'hung_con'),
+    fam: 'gau',
     text: (_c, p) => tr(`Trong rừng sâu có tiếng rên ư ử. ${p.meet}`, `A whimpering sound comes from deep in the forest. ${p.meet}`),
     adoptLabel: tr('Nhận nuôi', "Adopt it"),
     adoptText: (p) => tr(`${p.name[0].toUpperCase() + p.name.slice(1)} lớn nhanh như thổi, ăn bằng ba người.`, `${p.name[0].toUpperCase() + p.name.slice(1)} grows like a weed and eats as much as three people.`),
@@ -470,7 +437,7 @@ const STORIES: PetStory[] = [
     title: tr('Thương đoàn Tây Vực', "Xiyu caravan"),
     minAge: 10,
     weight: 3,
-    pick: (c) => (c.region === 'tay_vuc' || c.region === 'bac_mac' ? 'su_tu_con' : (c.lookSeed ?? 0) % 2 ? 'su_tu_con' : 'linh_loc'),
+    fam: 'thuong',
     text: (_c, p) => tr(`Thương đoàn từ phương xa dừng chân trong trấn, đem theo thú lạ. ${p.meet}`, `A caravan from distant lands stops in town with strange beasts. ${p.meet}`),
     adoptLabel: tr('Mua về nuôi (-80 linh thạch)', "Buy it (-80 spirit stones)"),
     adoptText: (p) => tr(`Bạn trả tiền, dắt ${p.name} về. Cả trấn kéo đến xem.`, `You pay up and lead the ${p.name} home. The whole town comes to look.`),
@@ -498,7 +465,7 @@ const STORIES: PetStory[] = [
     title: tr('Núi lửa', "Volcano"),
     minAge: 14,
     weight: 3,
-    pick: (c) => ((c.lookSeed ?? 0) % 2 ? 'hoa_ho' : 'hoa_linh_dich'),
+    fam: 'lua',
     text: (_c, p) => tr(`Đi qua chân núi lửa, đá còn nóng bỏng. ${p.meet}`, `You pass the foot of a volcano; the rocks are still scorching. ${p.meet}`),
     adoptLabel: tr('Thu phục', "Tame it"),
     adoptText: (p) => tr(`${p.name[0].toUpperCase() + p.name.slice(1)} nằm gọn bên chân bạn, sưởi ấm cả mùa đông.`, `${p.name[0].toUpperCase() + p.name.slice(1)} curls up by your feet, keeping you warm all winter.`),
@@ -518,7 +485,7 @@ const STORIES: PetStory[] = [
     title: tr('Hang tối, tổ băng', "Dark cave, icy nest"),
     minAge: 12,
     weight: 3,
-    pick: (c) => (c.daoTam <= -20 ? 'huyet_buc' : snow(c) ? 'bang_phong' : (c.lookSeed ?? 0) % 2 ? 'huyet_buc' : 'bang_phong'),
+    fam: 'hang',
     text: (_c, p) => p.meet,
     adoptLabel: tr('Nhận làm linh sủng', "Take it as a spirit pet"),
     adoptText: (p) => tr(`${p.name[0].toUpperCase() + p.name.slice(1)} bay vòng quanh đầu bạn, không cho ai đến gần.`, `${p.name[0].toUpperCase() + p.name.slice(1)} circles your head and lets no one near.`),
@@ -542,23 +509,10 @@ export const PET_STORIES: GameEvent[] = STORIES.map((st) => ({
   once: true,
   when: st.when,
   title: st.title,
-  text: (c) => st.text(c, PETS[st.pick(c)]),
+  pet: (c) => familyPet(c, st.fam, st.id),
+  text: (c) => st.text(c, PETS[familyPet(c, st.fam, st.id)]),
   choices: (c) => {
-    const id = st.pick(c);
-    const p = PETS[id];
-    return [
-      {
-        label: st.adoptLabel,
-        lean: 'chinh',
-        run: (ch, ctx) => {
-          if (st.id === 'pet_thuong_doan') money(ch, -80);
-          const note = adopt(ch, id, ctx);
-          dao(ch, 2);
-          return st.adoptText(p) + note;
-        },
-      },
-      st.other,
-      st.evil,
-    ];
+    const id = familyPet(c, st.fam, st.id);
+    return [meetChoice(c, id), st.other, st.evil];
   },
 }));

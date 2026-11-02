@@ -24,9 +24,9 @@ import { charLang, convertChar, convertMeta, loadDict, looksVi } from '@/lib/ret
 import { AUCTION_EVENT_ID, MERCHANT_EVENT_ID, buyShelf, buyWare, haggleWare, mergeItems, merchantWares, robWare, type Ware } from '@/lib/game/market';
 import { MerchantScene } from '@/components/MarketScenes';
 import { LinhThuSheet, PetBadge } from '@/components/LinhThu';
-import { bloodOnDeath, evolve, petStrike, petTitle } from '@/lib/game/linhThu';
+import { CATCH_EVENT_ID, beastMonster, bloodOnDeath, evolve, petStrike, petTitle } from '@/lib/game/linhThu';
 import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, itemPrice, pillPrice, RARE_STOCK_REALM, realmLabel, realmName, soldOut, yearSpeed, youthPace } from '@/lib/game/data';
-import { genNameVi, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick, chungDao, openingEvent } from '@/lib/game/engine';
+import { genNameVi, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, pendingOf, resolveChoice, rnd, seasonOf, usePillNow, yearTick, chungDao, openingEvent } from '@/lib/game/engine';
 import { addCult, addPill, dao, fatal, fmt, giveItem, money, reward, stat, wealthTier, DO_KIEP_REALM } from '@/lib/game/helpers';
 import type { Character, Element, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
 import DuelWarning from '@/components/Duel';
@@ -60,6 +60,7 @@ import { setLifeCtx, setScreen, track } from '@/lib/track';
 import { tr } from '@/lib/i18n';
 
 const SPEEDS = [1, 2, 4, 8, 16];
+const BEAST_TURNS = 6; // 4.2.0: trận thu phục linh thú tối đa 6 hiệp
 /** màu chưởng lực theo con đường tu luyện */
 const qiColor = (c: Character) => (c.path ? PATHS[c.path].aura : c.daoTam <= -40 ? '#ff3448' : '#9ff0c8');
 type SheetName = null | 'shop' | 'bag' | 'bequan' | 'menu' | 'hunt' | 'info' | 'today' | 'mail' | 'kho' | 'thu';
@@ -721,6 +722,37 @@ export default function PlayPage() {
       });
   };
 
+  /** 4.2.0: trận thu phục linh thú, dùng chung khung trận chặn đường */
+  function startBeast(c: Character) {
+    const f = c.beastFight;
+    c.beastFight = null;
+    if (!f) return;
+    const m = beastMonster(f.id, f.lv);
+    const ps = playerStats(c);
+    const ms = monsterStats(m, f.lv, c);
+    ambushRef.current = {
+      m,
+      name: m.name,
+      lv: f.lv,
+      tier: 0,
+      pHp: ps.hp,
+      pMax: ps.hp,
+      mHp: ms.hp,
+      mMax: ms.hp,
+      phase: 'fight',
+      last: [{ id: Math.random(), side: 'm', dmg: 0, crit: false, text: tr('Giao chiến!', 'Fight!') }],
+      kills: 0,
+      t: -0.9,
+      rest: 0,
+      ps,
+      ms,
+      sub: 0,
+      ambush: { turn: 0, max: BEAST_TURNS, kind: 'bang', beast: true },
+      melem: monElem(c, m),
+    };
+    c.log.push({ age: Math.floor(c.age), tone: 'normal', text: tr(`Giao chiến với ${m.name} (Lv${f.lv}). Thắng mới mong thu phục.`, `You fight the ${m.name} (Lv${f.lv}). Only a win gives a chance to tame it.`) });
+  }
+
   /** Quái chặn đường: bắt buộc đánh, tối đa 3 hiệp, thời gian dừng trong lúc đánh */
   function startAmbush(c: Character) {
     const { m, tier } = pickAmbush(c, rnd);
@@ -767,6 +799,29 @@ export default function PlayPage() {
     const end = (result: 'win' | 'lose' | 'draw') => {
       const out: Fx[] = [];
       const ctx = makeCtx(c, out);
+      // 4.2.0: trận thu phục linh thú - thắng (hoặc thú kiệt sức) thì mở thẻ thu phục, thua thì thú bỏ đi, không chết
+      if (b.ambush!.beast) {
+        const id = b.m.petId!;
+        const left = b.mHp / b.mMax;
+        track('thu_phuc', { id, lv: b.lv, res: result, left: Math.round(left * 100), realm: c.realm });
+        if (result === 'win' || (result === 'draw' && left <= 0.35)) {
+          c.catchTarget = { id, lv: b.lv, hp: Math.max(0, left) };
+          ctx.log(result === 'win' ? tr(`Bạn hạ được ${b.m.name}.`, `You bring down the ${b.m.name}.`) : tr(`${b.m.name} kiệt sức, không chạy nổi nữa.`, `The ${b.m.name} is too exhausted to run.`), 'good');
+          pendingRef.current = pendingOf(c, CATCH_EVENT_ID);
+        } else if (result === 'lose') {
+          const hurtAmt = 12;
+          stat(c, 'sucKhoe', -hurtAmt);
+          ctx.log(tr(`${b.m.name} quật ngã bạn rồi bỏ đi (-${hurtAmt} sức khỏe).`, `The ${b.m.name} knocks you down and leaves (-${hurtAmt} Health).`), 'bad');
+        } else {
+          ctx.log(tr(`${b.m.name} còn sức, quay đầu chạy mất.`, `The ${b.m.name} still has strength left and runs off.`), 'bad');
+        }
+        b.phase = 'rest';
+        b.rest = 2;
+        b.outcome = result === 'win' ? 'win' : result === 'lose' ? 'lose' : 'flee';
+        pushFx(out);
+        persist(true);
+        return;
+      }
       const notes = finishAmbush(c, b.m, result, 1 - b.pHp / b.pMax, 1 - b.mHp / b.mMax, ctx, b.ambush!.kind);
       if (result === 'win') qmark(c, 'ambushWin');
       // 4.1.0: đo trận chặn đường và khoảng cách giữa hai trận bắt buộc
@@ -846,6 +901,16 @@ export default function PlayPage() {
         if (stepDuel(c, dt)) rerender();
         raf = requestAnimationFrame(step);
         return;
+      }
+      // 4.2.0: đang dở trận hay thẻ thu phục linh thú (vd tải lại trang) thì mở lại
+      if (c && activeRef.current && !pendingRef.current && !ambushRef.current && !duelRef.current && !c.dead) {
+        if (c.catchTarget) {
+          pendingRef.current = pendingOf(c, CATCH_EVENT_ID);
+          rerender();
+        } else if (c.beastFight) {
+          startBeast(c);
+          rerender();
+        }
       }
       if (c && activeRef.current && ambushRef.current) {
         // đang bị quái chặn đường: thời gian đứng yên cho tới khi đánh xong
@@ -994,6 +1059,12 @@ export default function PlayPage() {
     }
     if (p && p.id === MERCHANT_EVENT_ID) track('thuong_nhan', { go: 0 });
     resolveNow(i);
+    // 4.2.0: chọn giao chiến thu phục linh thú thì vào trận ngay
+    const ch = charRef.current;
+    if (ch?.beastFight && !ch.dead && !pendingRef.current) {
+      startBeast(ch);
+      rerender();
+    }
   };
 
   /** Lên đài đánh một bóng: dùng lại sân đấu giang hồ, hệ số theo ngũ hành, ấn, phù, thế trận */

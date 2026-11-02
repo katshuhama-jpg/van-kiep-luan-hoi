@@ -8,6 +8,7 @@ import type { Element } from '@/lib/game/types';
 import Sprite from './Sprite';
 import MonsterLpc from './MonsterLpc';
 import { PixelFx, fxVuot } from './PixelFx';
+import { PetPic } from './LinhThu';
 import { MONSTER_LOOK } from '@/lib/game/monsterLook';
 import { tr } from '@/lib/i18n';
 
@@ -205,6 +206,8 @@ export function MonsterSprite({
   pixel?: boolean;
 }) {
   const look = pixel ? undefined : MONSTER_LOOK[m.id];
+  // 4.2.0: trận thu phục linh thú, vẽ bằng chính sprite thú (quay mặt sang trái, về phía người chơi)
+  if (m.petId) return <span className={`beast-foe ${dead ? 'dead' : ''}`}><PetPic id={m.petId} box={size} dir={0} still={dead} /></span>;
   if (look) return <MonsterLpc look={look} size={size} tier={tier} dead={dead} attacking={attacking} still={still} />;
   return (
     <svg
@@ -237,7 +240,7 @@ export interface BattleView {
   outcome?: 'win' | 'lose' | 'flee';
   kills: number;
   /** quái chặn đường: đếm hiệp */
-  ambush?: { turn: number; max: number; kind: 'kem' | 'bang' | 'hon' };
+  ambush?: { turn: number; max: number; kind: 'kem' | 'bang' | 'hon'; beast?: boolean };
   /** ngũ hành giữa bạn và quái */
   melem?: { me: Element; foe: Element; rel: ElemRel };
   /** kỳ ngộ giang hồ: đối thủ là người */
@@ -369,7 +372,7 @@ export function BattleOverlay({ b }: { b: BattleView }) {
       ) : b.ambush ? (
         <span className={`kill-count ambush-tag ${b.ambush.kind}`}>
           
-          {tr("Chặn đường · Hiệp ", "Ambush · Round ")}{Math.max(1, b.ambush.turn)}/{b.ambush.max}
+          {b.ambush.beast ? tr('Thu phục · Hiệp ', 'Taming · Round ') : tr("Chặn đường · Hiệp ", "Ambush · Round ")}{Math.max(1, b.ambush.turn)}/{b.ambush.max}
         </span>
       ) : (
         <span className="kill-count">{tr("Đã trảm: ", "Slain: ")}{b.kills}</span>

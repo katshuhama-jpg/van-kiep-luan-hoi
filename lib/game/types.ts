@@ -117,6 +117,8 @@ export interface Character {
   petBlood?: string | null; // huyết mạch kế thừa từ kiếp trước
   petEvoHint?: boolean; // đã báo đủ sức tiến hóa
   huyetMach?: { id: string; life: number }[]; // huyết mạch linh thú để lại từ các kiếp trước
+  beastFight?: { id: string; lv: number } | null; // đang chờ vào trận thu phục
+  catchTarget?: { id: string; lv: number; hp: number } | null; // thú vừa đánh xong, chờ thu phục (hp: phần máu còn lại 0-1)
   lookSeed?: number; // nét riêng của ngoại hình: da, khuôn mặt, râu, trang sức
   legend?: Legend | null; // thần binh truyền kiếp đang mang
   vendettas?: Vendetta[];
@@ -266,6 +268,7 @@ export interface GameEvent {
   text: (c: Character) => string;
   choices: (c: Character, seed: number) => Choice[];
   item?: (c: Character) => string | undefined; // 4.1.0: món đồ hiện kèm thẻ sự kiện (đấu giá)
+  pet?: (c: Character) => string | undefined; // 4.2.0: linh thú hiện kèm thẻ sự kiện
 }
 
 export interface PendingEvent {
@@ -275,6 +278,8 @@ export interface PendingEvent {
   text: string;
   choices: { label: string; hint?: string; lean: Lean }[];
   item?: string; // 4.1.0: id món đồ để thẻ sự kiện vẽ ảnh và chỉ số
+  pet?: string; // 4.2.0: id linh thú để thẻ sự kiện vẽ hình, rank, cấp
+  petLv?: number;
 }
 
 export interface EffectCtx {
