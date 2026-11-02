@@ -415,7 +415,7 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onBuyShelf, onClose }: { c:
       <div className="tabs">
         <button className={tab === 'do' ? 'on' : ''} onClick={() => setTab('do')}>
           
-          {tr("Pháp y, pháp bảo", "Robes, treasures")}
+          {tr("Pháp bảo", "Gear")}
         </button>
         <button className={tab === 'dan' ? 'on' : ''} onClick={() => setTab('dan')}>
           
@@ -426,7 +426,7 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onBuyShelf, onClose }: { c:
         </button>
         <button className={tab === 'kho' ? 'on' : ''} onClick={() => setTab('kho')}>
           
-          {tr("Đồ hiếm", "Rare goods")}
+          {tr("Sổ đồ rơi", "Drop log")}
         </button>
       </div>
       <div className="items">
@@ -434,7 +434,7 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onBuyShelf, onClose }: { c:
         {tab === 'ke' && (
           <>
             <p className="note" style={{ margin: 0 }}>
-              {tr(`Mỗi món chỉ một chiếc. Kệ bày lại năm ${shelfNext(c)} tuổi (${shelfNext(c) - Math.floor(c.age)} năm nữa).`, `One of each. The shelf restocks at age ${shelfNext(c)} (${shelfNext(c) - Math.floor(c.age)} years).`)}
+              {tr(`Đồ hiếm về theo đợt, mỗi món chỉ một chiếc. Đợt sau lúc ${shelfNext(c)} tuổi (${shelfNext(c) - Math.floor(c.age)} năm nữa).`, `Rare goods arrive in batches, one of each. Next batch at age ${shelfNext(c)} (${shelfNext(c) - Math.floor(c.age)} years).`)}
             </p>
             {shelfItems(c).length === 0 && <p className="note">{tr('Kệ trống, đợt sau quay lại.', 'The shelf is empty. Come back next restock.')}</p>}
             {shelfItems(c).map((it) => {
@@ -491,7 +491,7 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onBuyShelf, onClose }: { c:
           <>
             <p className="note" style={{ margin: 0 }}>
               
-              {tr("Không bán ở đâu cả. Phải trừ yêu hoặc gặp cơ duyên trong đời mới có. Đã có", "Not sold anywhere. Only obtained by hunting demons or through a stroke of fate. Owned")}{' '}
+              {tr("Sổ ghi các món chỉ có khi trừ yêu hoặc gặp cơ duyên, phường thị không bán (thỉnh thoảng một vài món lên kệ Hàng mới về). Đã có", "A log of items found only by hunting or by fate; the market does not stock them (a few sometimes appear under New arrivals). Owned")}{' '}
               {ITEMS.filter((i) => (i.src === 'drop' || i.src === 'event') && i.id !== 'ao_vai' && c.inventory.includes(i.id)).length}/
               {ITEMS.filter((i) => (i.src === 'drop' || i.src === 'event') && i.id !== 'ao_vai').length}.
             </p>

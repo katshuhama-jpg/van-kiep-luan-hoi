@@ -41,12 +41,12 @@ export const SHELF_YEARS = 5;
 export const shelfWindow = (c: Pick<Character, 'age'>) => Math.floor(c.age / SHELF_YEARS);
 /** Năm kệ hàng bày lại lần tới */
 export const shelfNext = (c: Pick<Character, 'age'>) => (shelfWindow(c) + 1) * SHELF_YEARS;
-/** Tên chợ: phàm giới là Kệ hàng hiếm, sau phi thăng là Tiên thị, Ma thị, Hư thị */
+/** Tên kệ: phàm giới là Hàng mới về, sau phi thăng là Tiên thị, Ma thị, Hư thị */
 export function shelfName(c: Pick<Character, 'cosmos'>): string {
   if (c.cosmos === 'tien') return tr('Tiên thị', 'Immortal Market');
   if (c.cosmos === 'ma') return tr('Ma thị', 'Demon Market');
   if (c.cosmos === 'hu') return tr('Hư thị', 'Void Market');
-  return tr('Kệ hàng hiếm', 'Rare shelf');
+  return tr('Hàng mới về', 'New arrivals');
 }
 const fits = (c: Character, it: Item) => (!it.path || it.path === c.path) && (!it.lean || (it.lean === 'chinh' ? c.daoTam >= 20 : c.daoTam <= -20));
 /** Đồ có thể lên kệ: đồ rơi (không phải đồ sự kiện), Tốt trở lên, gần cảnh giới của mình */
