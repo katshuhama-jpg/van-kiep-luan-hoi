@@ -38,7 +38,7 @@ Nguyên tắc: không đưa cái chết vô lý trở lại. Nguy hiểm dời v
   - Trả lời trên Threads khi làm xong; chưa hứa ngày.
 
 ## Góp ý trong game chưa có plan (chưa trả lời, trạng thái moi)
-- #26 (shizun), #30 (madaochiton), Messenger Nguyễn Huy 1/11: linh thú có lực chiến, tiến giai, mục xem linh thú (đặc tính, kỹ năng); Ngự Thú Tông / Vạn Thú Tông. Tyler đã nói với người chơi (Messenger 1/11): "đã plan cho update tuần tới", phải cân bằng với nhịp chơi nhanh của game. ĐƯA VÀO 4.2.0. #26 phần kẻ thù đã xong ở 4.0.1.
+- #26 (shizun), #30 (madaochiton), Messenger Nguyễn Huy 1/11: linh thú có lực chiến, tiến giai, mục xem linh thú (đặc tính, kỹ năng); Ngự Thú Tông / Vạn Thú Tông. Tyler đã nói với người chơi (Messenger 1/11): "đã plan cho update tuần tới", phải cân bằng với nhịp chơi nhanh của game. ĐƯA VÀO 4.2.0. #26 phần kẻ thù đã xong ở 4.0.1. Tyler chốt 2/11: linh thú lên thứ Tư 4/11 (bản 4.2.0, nhánh linh-thu, khối Ngày 6 trong plan-4.1.0.md); công pháp và chưởng pháp lên thứ Sáu 6/11 (bản 4.3.0, khối Ngày 7).
 - #30: Hệ Thống buff vàng xứng tầm hơn (đang chỉ cho Tụ Khí Đan).
 - #24 (phần Tình duyên), #35 (gái đẹp sau Chứng Đạo): chờ Tyler nghĩ về Tình duyên.
 - #27, #31, #36, #48: nội dung, trang bị sau Chứng Đạo (gần T1).
