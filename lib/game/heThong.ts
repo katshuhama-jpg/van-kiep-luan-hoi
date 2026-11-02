@@ -7,7 +7,7 @@ import { tr } from '../i18n';
 /**
  * 4.1.0 (#30): Hệ Thống thành buff vàng thật sự. Trói định xong, cứ vài năm Hệ Thống phát một nhiệm vụ có hạn
  * (đột phá, trảm yêu, tích linh thạch, tìm đạo lữ, áp tâm ma), làm xong thì thưởng lớn theo cảnh giới
- * (tu vi, trang bị, thọ nguyên) và Hệ Thống lên cấp. Mỗi cấp: tu luyện +3%, đột phá +1% (tối đa cấp 10).
+ * (tu vi, trang bị, thọ nguyên) và Hệ Thống lên cấp. Mỗi cấp: tu luyện +2%, đột phá +1% (tối đa cấp 10).
  * Quá hạn thì bị "điện giật" nhẹ. Người có thiên phú Hệ Thống được gói tân thủ lớn và nhiệm vụ đầu sớm hơn.
  */
 export type HtKind = 'dot_pha' | 'tram_yeu' | 'tich_tien' | 'dao_lu' | 'tam_ma';
@@ -23,7 +23,7 @@ const bound = (c: Character) => {
   return s >= 1 && s < 9;
 };
 export const htLv = (c: Character) => (bound(c) ? (c.ht?.lv ?? 0) : 0);
-export const htCultMul = (c: Character) => 1 + 0.03 * Math.min(HT_MAX, htLv(c));
+export const htCultMul = (c: Character) => 1 + 0.02 * Math.min(HT_MAX, htLv(c));
 export const htBreak = (c: Character) => 0.01 * Math.min(HT_MAX, htLv(c));
 const kills = (c: Character) => Object.values(c.kills ?? {}).reduce((a, b) => a + b, 0);
 
@@ -35,9 +35,9 @@ export function htBind(c: Character): string {
     addPill(c, 'tu_khi', 3);
     addPill(c, 'truc_co', 1);
     stat(c, 'khiVan', 5);
-    return tr('Gói tân thủ VIP: 300 linh thạch, 3 Tụ Khí Đan, 1 Trúc Cơ Đan, khí vận +5. Hệ Thống cấp 1: tu luyện +3%, đột phá +1%.', 'VIP newbie pack: 300 spirit stones, 3 Qi Gathering Pills, 1 Foundation Pill, Luck +5. System level 1: cultivation +3%, breakthrough +1%.');
+    return tr('Gói tân thủ VIP: 300 linh thạch, 3 Tụ Khí Đan, 1 Trúc Cơ Đan, khí vận +5. Hệ Thống cấp 1: tu luyện +2%, đột phá +1%.', 'VIP newbie pack: 300 spirit stones, 3 Qi Gathering Pills, 1 Foundation Pill, Luck +5. System level 1: cultivation +2%, breakthrough +1%.');
   }
-  return tr('Hệ Thống cấp 1: tu luyện +3%, đột phá +1%. Làm nhiệm vụ để lên cấp.', 'System level 1: cultivation +3%, breakthrough +1%. Complete quests to level it up.');
+  return tr('Hệ Thống cấp 1: tu luyện +2%, đột phá +1%. Làm nhiệm vụ để lên cấp.', 'System level 1: cultivation +2%, breakthrough +1%. Complete quests to level it up.');
 }
 
 function newQuest(c: Character, rnd: () => number): NonNullable<HtState['q']> {
@@ -123,7 +123,7 @@ export function htYear(c: Character, ctx: EffectCtx) {
       }
       ctx.fx('layer', tr('Đinh!', 'Ding!'));
       ctx.log(
-        tr(`"Đinh! Nhiệm vụ hoàn thành. Thưởng: ${parts.join(', ')}. Hệ Thống lên cấp ${h.lv}: tu luyện +${3 * h.lv}%, đột phá +${h.lv}%."`, `"Ding! Quest complete. Reward: ${parts.join(', ')}. System level ${h.lv}: cultivation +${3 * h.lv}%, breakthrough +${h.lv}%."`),
+        tr(`"Đinh! Nhiệm vụ hoàn thành. Thưởng: ${parts.join(', ')}. Hệ Thống lên cấp ${h.lv}: tu luyện +${2 * h.lv}%, đột phá +${h.lv}%."`, `"Ding! Quest complete. Reward: ${parts.join(', ')}. System level ${h.lv}: cultivation +${2 * h.lv}%, breakthrough +${h.lv}%."`),
         'good',
       );
       return;
