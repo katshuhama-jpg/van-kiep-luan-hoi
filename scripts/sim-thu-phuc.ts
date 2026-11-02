@@ -2,7 +2,10 @@
 // Chạy: npx tsx scripts/sim-thu-phuc.ts [số trận mỗi ô]
 import { emptyMeta, newCharacter } from '../lib/game/engine';
 import { hit, monsterStats, playerStats } from '../lib/game/combat';
-import { beastMonster, catchChance, type PetRank } from '../lib/game/linhThu';
+import { beastMonster, beastStats, catchChance, type PetRank } from '../lib/game/linhThu';
+import { act, loadoutOf, newSide, skipTurn, takeHit } from '../lib/game/congPhap';
+import type { PathId } from '../lib/game/types';
+const PATHS6: PathId[] = ['kiem', 'dan', 'tran', 'phat', 'ma', 'yeu'];
 export {};
 const N = Number(process.argv[2] ?? 1500);
 const REP: Record<PetRank, string> = { N: 'cho_vang', R: 'mai_loc', SR: 'tuyet_ho', SSR: 'bach_ho', SSS: 'thanh_long' };
@@ -24,16 +27,34 @@ for (let realm = 1; realm <= 7; realm++) {
       const [a, b] = LV[r];
       const lv = a + Math.floor(rnd() * (b - a + 1));
       const m = beastMonster(REP[r], lv);
+      // 4.3.0: trận thu phục đánh theo công pháp như /choi, đạo xoay vòng 6 đạo, chiêu tầng theo cảnh giới
+      c.path = PATHS6[i % 6];
+      c.cp = undefined;
+      const lo = loadoutOf(c);
+      for (const o of c.cp!.own) o.tang = Math.min(9, +(process.env.TANG || 1 + realm));
+      const lo2 = loadoutOf(c);
+      void lo;
       const ps = playerStats(c);
-      const ms = monsterStats(m, lv, c);
+      const ms = beastStats(monsterStats(m, lv, c), REP[r], process.env.HPM ? +process.env.HPM : 1);
+      const P = newSide();
+      const M = newSide();
       let pHp = ps.hp;
       let mHp = ms.hp;
       let res: 'win' | 'lose' | 'draw' = 'draw';
       for (let t = 0; t < 6; t++) {
-        mHp -= hit(ps.atk, ms.def, rnd).dmg;
+        if (!skipTurn(P)) {
+          const a = act(lo2, P, M, ps.atk, ms.def, pHp, ps.hp, rnd, 0.15, hit, null);
+          mHp -= a.dmg + a.dot;
+          pHp = Math.max(1, Math.min(ps.hp, pHp + a.heal - a.self));
+        }
         if (mHp <= 0) { res = 'win'; break; }
-        pHp -= hit(ms.atk, ps.def, rnd).dmg;
+        if (!skipTurn(M)) {
+          const k = takeHit(lo2, P, hit(ms.atk, ps.def, rnd).dmg, rnd);
+          pHp -= k.dmg;
+          mHp -= k.reflect;
+        }
         if (pHp <= 0) { res = 'lose'; break; }
+        if (mHp <= 0) { res = 'win'; break; }
       }
       const left = Math.max(0, mHp / ms.hp);
       if (res === 'win' || (res === 'draw' && left <= 0.35)) {

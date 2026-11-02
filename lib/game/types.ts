@@ -119,6 +119,11 @@ export interface Character {
   huyetMach?: { id: string; life: number }[]; // huyết mạch linh thú để lại từ các kiếp trước
   beastFight?: { id: string; lv: number } | null; // đang chờ vào trận thu phục
   catchTarget?: { id: string; lv: number; hp: number } | null; // thú vừa đánh xong, chờ thu phục (hp: phần máu còn lại 0-1)
+  // 4.2.0 công pháp (lib/game/congPhap.ts)
+  cp?: { own: { id: string; tang: number; exp: number }[]; eq: string[]; tuyet?: string | null };
+  cpHint?: boolean; // đã báo có bộ đầy thục luyện
+  tanQuyen?: number; // tàn quyển: dùng để lên tầng từ tầng 4, dung hợp tuyệt kỹ
+  cpHeirPick?: string | null; // chiêu chọn truyền cho kiếp sau
   lookSeed?: number; // nét riêng của ngoại hình: da, khuôn mặt, râu, trang sức
   legend?: Legend | null; // thần binh truyền kiếp đang mang
   vendettas?: Vendetta[];
@@ -318,6 +323,8 @@ export interface Meta {
   seenBook?: { e: number; i: number }; // số kết cục, đồ ẩn đã xem (để báo mục mới) // huyết hải thâm thù: các kiếp đã giao đấu với từng người chơi
   petBook?: string[]; // các loài linh thú đã từng nuôi
   huyetMach?: { id: string; life: number }[]; // 4.2.0: huyết mạch linh thú bậc 3 để lại
+  cpHeir?: string | null; // 4.2.0: chiêu truyền thừa, kiếp sau sinh ra đã biết
+  cpBook?: string[]; // 4.2.0: các bộ công pháp từng học
   achievements?: string[]; // thành tựu dài hạn đã đạt
   career?: Career; // số liệu cộng dồn qua các kiếp
   quyThuong?: boolean; // đã nhận thưởng Vạn Kiếp Quy Nhất

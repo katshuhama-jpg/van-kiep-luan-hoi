@@ -422,6 +422,11 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
   if (result === 'win') {
     const t = hhDuelWin(c, c.cultivation - cu0, who, ctx.rnd);
     if (t) out.push(t);
+    // 4.2.0: thắng người giang hồ có thể nhặt được tàn quyển công pháp
+    if (ctx.rnd() < 0.25) {
+      c.tanQuyen = (c.tanQuyen ?? 0) + 1;
+      out.push(tr(`Nhặt được một tàn quyển công pháp ${f.rival.name} đánh rơi (đang có ${c.tanQuyen}).`, `You pick up a manual fragment ${f.rival.name} dropped (you have ${c.tanQuyen}).`));
+    }
   }
   markDeath(c, 'dao_giang_ho', who);
   if (!c.dead && result !== 'win' && hp0 - c.stats.sucKhoe >= 10)

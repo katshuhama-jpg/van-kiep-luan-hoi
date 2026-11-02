@@ -403,6 +403,13 @@ export function meetChoice(c: Character, id: string): Choice {
 }
 
 /** Quái để đánh: dựng từ linh thú (Battle vẽ bằng sprite thú qua petId) */
+/** 4.3.0: trận thu phục đánh theo công pháp (chiêu, thiêu, độc, hút máu) nên thú hoang dày máu hơn, rank càng cao càng dày,
+ * giữ tỉ lệ thu phục như thiết kế (scripts/sim-thu-phuc.ts): [nhân máu, nhân công] */
+export const BEAST_MUL: Record<PetRank, [number, number]> = { N: [1, 1], R: [1.2, 1], SR: [1.7, 1.05], SSR: [2, 1.1], SSS: [2.6, 1.2] };
+export function beastStats<T extends { hp: number; atk: number }>(ms: T, id: string, k = 1): T {
+  const [h, a] = BEAST_MUL[baseRank(id)];
+  return { ...ms, hp: Math.round(ms.hp * h * k), atk: Math.round(ms.atk * a) };
+}
 export function beastMonster(id: string, lv: number): Monster {
   return {
     id: 'linh_thu_' + id,

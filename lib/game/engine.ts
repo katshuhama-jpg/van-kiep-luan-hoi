@@ -1,5 +1,6 @@
 import { AUCTION_EVENT_ID, MERCHANT_EVENT_ID, auctionDue, auctionEvent, merchantDue, merchantEvent, pickAuctionLot, marketSpan, GIANG_TRAN_ID, giangTranDue, giangTranEvent } from './market';
 import { CATCH_EVENT_ID, beastLv, catchEvent, petCultMul, petYear } from './linhThu';
+import { applyHeir, cpCultMul, cpYear } from './congPhap';
 import { sealLv } from './forge';
 import { applyProphecy, checkNewbieGoal, newbieGoal, omenIs } from './hook';
 import { loreDone, lore2Count, quyNhatDone } from './lore';
@@ -193,6 +194,8 @@ export function newCharacter(meta: Meta, gifts: string[] = [], base?: Character)
   const c: Character = base ? structuredClone(base) : rollBase();
   c.lifeNo = meta.lives + 1;
   c.huyetMach = meta.huyetMach ?? [];
+  // 4.2.0: chiêu truyền thừa từ kiếp trước
+  applyHeir(c, meta.cpHeir);
   c.enemy = meta.enemy;
   c.log = c.log.map((l) => ({ ...l, text: l.text.replace('__KIEP__', tr(`Kiếp thứ ${c.lifeNo}.`, `Life #${c.lifeNo}.`)) }));
   const t = meta.talents;
@@ -392,6 +395,7 @@ export function yearlyGain(c: Character) {
     (c.stats.tamMa > 70 ? 0.8 : 1) *
     (hasGift(c, 'g_doan_menh') ? 1.3 : 1) *
     petCultMul(c) *
+    cpCultMul(c) *
     lean
   );
 }
@@ -677,6 +681,8 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
   if (moc) stat(c, 'sucKhoe', moc);
   // 4.2.0: linh thú - thân thiết, tác dụng theo họ
   petYear(c, ctx, rnd);
+  // 4.2.0: công pháp - sư môn truyền, thục luyện theo năm
+  if (age >= 6) cpYear(c, ctx);
 
   // Trọng tâm năm nay
   const focus = opts.closed ? 'tu_luyen' : age >= FOCUS[c.focus].minAge ? c.focus : null;

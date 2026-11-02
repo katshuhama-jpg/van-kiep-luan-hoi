@@ -1,5 +1,6 @@
 import { sellNow } from './marketDay';
 import { petDropMul } from './linhThu';
+import { cpStats } from './congPhap';
 /** 4.1.0: đồ rơi trùng bán ngay tại chỗ cho thương lái, chỉ được 1/4 giá bán tay */
 export const DUP_SELL = 0.25;
 import { forgeDefMul, forgeHpMul, forgeMul, sealAtk, sealDef, sealExp, sealHp } from './forge';
@@ -622,7 +623,9 @@ export function playerStats(c: Character): Fighter {
   hp *= sealHp(c) * forgeHpMul(c);
   // tuổi già sức yếu
   if (c.age / c.lifespan > 0.85) ((atk *= 0.85), (hp *= 0.85));
-  return { hp: Math.round(hp), atk: Math.round(atk), def: Math.round(def) };
+  // 4.2.0: tâm pháp đang mang
+  const f = cpStats(c, { hp, atk, def });
+  return { hp: Math.round(f.hp), atk: Math.round(f.atk), def: Math.round(f.def) };
 }
 
 export function monsterStats(m: Monster, lv: number = m.lv, c?: Character | null): Fighter {
@@ -674,6 +677,11 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance 
   addCult(c, killExp(c, m));
   // 4.1.0: linh thạch mỗi con giảm một nửa (trước 2 + 3 × cấp), chống treo máy cày tiền
   money(c, Math.round((1 + m.lv * 1.5) * (0.7 + ctx.rnd() * 0.6)));
+  // 4.2.0: tàn quyển công pháp (quái chặn đường gọi với lootChance cao nên dễ rơi hơn)
+  if (ctx.rnd() < (lootChance >= 0.5 ? 0.2 : 0.012)) {
+    c.tanQuyen = (c.tanQuyen ?? 0) + 1;
+    notes.push(tr(`${m.name} để lại một tàn quyển công pháp (đang có ${c.tanQuyen}).`, `The ${m.name} leaves behind a manual fragment (you have ${c.tanQuyen}).`));
+  }
   c.kills = c.kills ?? {};
   const n = (c.kills[m.id] = (c.kills[m.id] ?? 0) + 1);
   if (n === 1) {

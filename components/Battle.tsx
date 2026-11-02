@@ -1,11 +1,13 @@
 'use client';
-import type { CSSProperties } from 'react';
 
 import type { Monster } from '@/lib/game/combat';
 import type { Character } from '@/lib/game/types';
 import { ELEMENTS, type ElemRel } from '@/lib/game/nguhanh';
 import type { Element } from '@/lib/game/types';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import Sprite from './Sprite';
+import { CpHit } from './CpFx';
 import MonsterLpc from './MonsterLpc';
 import { PixelFx, fxVuot } from './PixelFx';
 import { PetPic } from './LinhThu';
@@ -236,7 +238,9 @@ export interface BattleView {
   mHp: number;
   mMax: number;
   phase: 'fight' | 'rest';
-  last: { id: number; side: 'p' | 'm'; dmg: number; crit: boolean; text?: string; skill?: string; palm?: boolean; qi?: string; tag?: string; pet?: boolean }[];
+  last: { id: number; side: 'p' | 'm'; dmg: number; crit: boolean; text?: string; skill?: string; tag?: string; fx?: string; ult?: boolean; path?: string; pet?: boolean }[];
+  /** 4.2.0: trạng thái công pháp trong trận (thanh riêng của đạo, thiêu, độc, khiên) */
+  cpv?: { gauge: number; gName: string; ult: boolean; mBurn: number; mPoison: number; pShield: number; pBurn: number; pPoison: number };
   outcome?: 'win' | 'lose' | 'flee';
   kills: number;
   /** quái chặn đường: đếm hiệp */
@@ -266,11 +270,65 @@ function ElemBanner({ e }: { e: { me: Element; foe: Element; rel: ElemRel } }) {
   );
 }
 
+/** Thanh khí riêng của đạo (Kiếm Ý, Đan Hỏa...): đầy 100 thì tung tuyệt kỹ */
+function CpGauge({ v }: { v: NonNullable<BattleView['cpv']> }) {
+  const full = v.gauge >= 100;
+  return (
+    <div className={`cp-gauge ${full ? 'full' : ''}`}>
+      <span>
+        {v.gName}
+        {!v.ult && <small> · {tr('chưa có tuyệt kỹ', 'no ultimate yet')}</small>}
+      </span>
+      <div className="cp-gbar">
+        <div style={{ width: `${Math.min(100, v.gauge)}%` }} />
+      </div>
+      {(v.pShield > 0 || v.pBurn > 0 || v.pPoison > 0) && (
+        <span className="cp-st p">
+          {v.pShield > 0 && <i className="shield">{tr('Khiên', 'Shield')} {v.pShield}</i>}
+          {v.pBurn > 0 && <i className="burn">{tr('Thiêu', 'Burn')} {v.pBurn}</i>}
+          {v.pPoison > 0 && <i className="poison">{tr('Độc', 'Poison')} {v.pPoison}</i>}
+        </span>
+      )}
+    </div>
+  );
+}
+
+/** Cắt cảnh tuyệt kỹ (dùng lại khung .af-cut của Lôi đài) */
+function UltCut({ me, foe, h }: { me: Character; foe?: Character; h: BattleView['last'][number] }) {
+  const mine = h.side === 'p';
+  const [on, setOn] = useState(true);
+  useEffect(() => {
+    const t = setTimeout(() => setOn(false), 1500);
+    return () => clearTimeout(t);
+  }, []);
+  if (!on) return null;
+  return (
+    <div className={`af-cut cp-cut ${mine ? 'me' : 'foe'}`} aria-live="assertive">
+      <span className="cp-cut-fx">
+        <CpHit fx={h.fx ?? 'thuong'} path={h.path ?? 'chung'} side="p" big />
+      </span>
+      <span className="af-cut-fig">
+        <Sprite c={me} size={176} anim="spellcast" dir={mine ? 3 : 1} />
+      </span>
+      <span className="af-cut-band">
+        <small>{mine ? tr('Tuyệt kỹ', 'Ultimate') : tr(`${foe?.name ?? ''} tung tuyệt kỹ`, `${foe?.name ?? ''} unleashes an ultimate`)}</small>
+        <b>{h.skill}</b>
+      </span>
+    </div>
+  );
+}
+
 /** Lớp phủ trận đánh trên sân khấu: quái, thanh máu, số sát thương */
-export function BattleOverlay({ b }: { b: BattleView }) {
+export function BattleOverlay({ b, me, ultCut }: { b: BattleView; me?: Character; ultCut?: boolean }) {
   const lastHit = b.last[b.last.length - 1];
+  // tuyệt kỹ: màn cắt cảnh toàn màn hình (chặn đường và kỳ ngộ đấu người, không bật khi trừ yêu liên tục)
+  const ult = ultCut ? b.last.slice(-3).reverse().find((h) => h.ult) : undefined;
+  const cutMe = ult ? (ult.side === 'p' ? me : b.duel?.foe) : undefined;
   // đòn gần nhất của mình (quái thường đánh trả ngay sau trong cùng lượt)
-  const lastP = [...b.last].reverse().find((h) => h.side === 'p');
+  const lastM = [...b.last].reverse().find((h) => h.side === 'm');
+  // đòn có chiêu gần nhất mỗi bên (đòn kết liễu thường bị dòng '+tu vi' đẩy xuống sau)
+  const fxP = [...b.last].reverse().find((h) => h.side === 'p' && h.fx);
+  const fxM = [...b.last].reverse().find((h) => h.side === 'm' && h.fx);
   // 4.2.0: linh thú vừa ra đòn (quái thường đánh trả ngay trong cùng lượt nên xét 2 đòn cuối)
   const petHit = b.last.slice(-2).find((h) => h.pet);
   return (
@@ -317,7 +375,7 @@ export function BattleOverlay({ b }: { b: BattleView }) {
             <Sprite
               c={b.phase === 'rest' && b.outcome === 'win' ? { ...b.duel.foe, dead: true } : b.duel.foe}
               size={150}
-              anim={b.phase === 'rest' && b.outcome === 'win' ? 'hurt' : lastHit?.side === 'm' && b.phase === 'fight' ? (lastHit.palm ? 'spellcast' : 'slash') : 'idle'}
+              anim={b.phase === 'rest' && b.outcome === 'win' ? 'hurt' : lastHit?.side === 'm' && b.phase === 'fight' ? (lastHit.skill ? 'spellcast' : 'slash') : 'idle'}
               dir={1}
             />
           </div>
@@ -333,31 +391,33 @@ export function BattleOverlay({ b }: { b: BattleView }) {
         </div>
       )}
       {!b.duel && b.melem && <ElemBanner e={b.melem} />}
-      {lastP?.palm && (
-        <span key={`q${lastP.id}`} className="chuong" style={{ ['--qi' as string]: lastP.qi ?? '#9ff0c8' } as CSSProperties} aria-hidden="true">
-          <i />
-        </span>
-      )}
-      {lastHit?.side === 'm' && lastHit.palm && (
-        <span key={`fs${lastHit.id}`} className="chuong foe" style={{ ['--qi' as string]: lastHit.qi ?? '#ff6a5a' } as CSSProperties} aria-hidden="true">
-          <i />
-        </span>
-      )}
+      {/* 4.2.0: mọi đòn theo công pháp - hiệu ứng pixel riêng từng chiêu */}
+      {fxP?.fx && <CpHit key={`cp${fxP.id}`} fx={fxP.fx} path={fxP.path ?? 'chung'} side="p" big={fxP.ult || fxP.crit} />}
+      {fxM?.fx && <CpHit key={`cm${fxM.id}`} fx={fxM.fx} path={fxM.path ?? 'chung'} side="m" big={fxM.ult || fxM.crit} late={lastHit === fxM && b.last[b.last.length - 2] === fxP} />}
+      {fxP && (fxP.ult || fxP.crit) && <span key={`fl${fxP.id}`} className={`cp-flash ${fxP.ult ? 'ult' : ''}`} aria-hidden="true" />}
       {petHit && (
         <span key={`pv${petHit.id}`} className="pet-claw" aria-hidden="true">
           <PixelFx spec={FX_VUOT} scale={3} dur={0.3} />
         </span>
       )}
-      {lastP?.skill && (
-        <span key={`s${lastP.id}`} className="skill-name">
-          {lastP.skill}!
+      {fxP?.skill && (
+        <span key={`s${fxP.id}`} className={`skill-name ${fxP.ult ? 'ult' : ''}`}>
+          {fxP.skill}!
         </span>
       )}
       {lastHit?.side === 'm' && lastHit.skill && (
-        <span key={`fsn${lastHit.id}`} className="skill-name foe">
+        <span key={`fsn${lastHit.id}`} className={`skill-name foe ${lastHit.ult ? 'ult' : ''}`}>
           {lastHit.skill}!
         </span>
       )}
+      {b.cpv && <CpGauge v={b.cpv} />}
+      {b.cpv && b.phase === 'fight' && (b.cpv.mBurn > 0 || b.cpv.mPoison > 0) && (
+        <span className="cp-st m">
+          {b.cpv.mBurn > 0 && <i className="burn">{tr('Thiêu', 'Burn')} {b.cpv.mBurn}</i>}
+          {b.cpv.mPoison > 0 && <i className="poison">{tr('Độc', 'Poison')} {b.cpv.mPoison}</i>}
+        </span>
+      )}
+      {ult && cutMe && createPortal(<UltCut key={`u${ult.id}`} me={cutMe} foe={b.duel?.foe} h={ult} />, document.body)}
       {b.last.map((h) => (
         <span key={h.id} className={`dmg ${h.side} ${h.crit ? 'crit' : ''} ${h.tag ? (h.tag.endsWith('!') ? 'el-khac' : 'el-bi') : ''}`}>
           {h.text ?? `-${h.dmg}`}
