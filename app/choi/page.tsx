@@ -31,7 +31,7 @@ import { genNameVi, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, p
 import { addCult, addPill, dao, fatal, fmt, giveItem, money, reward, stat, wealthTier, DO_KIEP_REALM } from '@/lib/game/helpers';
 import type { Character, Element, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
 import DuelWarning from '@/components/Duel';
-import { GAUGE_NAME, act as cpAct, equip as cpEquip, fuse as cpFuse, unequip as cpUnequip, upgrade as cpUpgrade, swapTq as cpSwapTq, heirChoices, loadoutOf, newSide, npcLoadout, skipTurn, takeHit, type FightSide, type Loadout } from '@/lib/game/congPhap';
+import { GAUGE_NAME, act as cpAct, equip as cpEquip, fuse as cpFuse, unequip as cpUnequip, upgrade as cpUpgrade, swapTq as cpSwapTq, heirChoices, loadoutOf, newSide, npcLoadout, rivalCp, skipTurn, takeHit, type FightSide, type Loadout } from '@/lib/game/congPhap';
 import { trackMiles } from '@/lib/game/miles';
 import { ELEMENTS, elemHitTag, elemMul, elemRel, elementOf } from '@/lib/game/nguhanh';
 import { DUEL_INFO, DUEL_PER_YEAR, DUEL_TURNS, finishDuel, foeChar, foeStats, pickDuel, teaTrap, toRival, type DuelFoe } from '@/lib/game/duel';
@@ -520,7 +520,8 @@ export default function PlayPage() {
       if (userRef.current) sendMail(userRef.current, bro, 'nghia', tr(`Bóng của bạn đã ra tay trợ quyền cho huynh đệ @${userRef.current.username} (${c.name}) trước ${f.rival.name}.`, `Your shadow stepped in to help your sworn brother @${userRef.current.username} (${c.name}) against ${f.rival.name}.`)).catch(() => {});
     }
     const fs = foeStats(f.rival, c);
-    const fc = foeChar(f.rival);
+    // 4.2.0: đối thủ mang công pháp thật (người chơi khác) hoặc ước theo cảnh giới (người máy tạo)
+    const fc = { ...foeChar(f.rival), cp: rivalCp(f.rival) };
     duelRef.current = {
       m: { ...MONSTERS[0], id: 'duel', name: f.rival.name },
       name: f.rival.name,

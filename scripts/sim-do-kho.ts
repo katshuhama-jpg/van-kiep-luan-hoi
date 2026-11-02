@@ -50,6 +50,8 @@ function fightCp(c: any, ps: any, ms: any, turns: number, foe?: any) {
   const pl = 1 - p / ps.hp, md = 1 - m / ms.hp; return { r: md > pl + 0.05 ? 'win' : 'draw', pl, md };
 }
 let wins = 0, fights = 0;
+const byPath: Record<string, [number, number]> = {};
+const tally = (c: any, r: any) => { const k = c.path ?? 'chua'; const v = (byPath[k] ??= [0, 0]); v[1]++; if (r.r === 'win') v[0]++; };
 const ages: number[] = []; const realms: number[] = []; let asc = 0; let stones = 0;
 const deathAt: Record<number, number> = {}; const reach: Record<number, number> = {};
 for (let i = 0; i < N; i++) {
@@ -61,9 +63,9 @@ for (let i = 0; i < N; i++) {
     while (p && !c.dead && k++ < 10) p = E.resolveChoice(c, p, Math.floor(rnd() * p.choices.length), ctx);
     if (c.dead) break;
     const ready = H.forcedReady ? H.forcedReady(c) : true;
-    if (ready && c.realm >= 1 && c.age >= 15 && rnd() < D.DUEL_PER_YEAR) { const f = D.pickDuel(c, rnd); if (f && f.kind !== 'kiep_truoc') { const r = fightCp(c, C.playerStats(c), D.foeStats(f.rival, c), D.DUEL_TURNS, f.rival); fights++; if (r.r === 'win') wins++; D.finishDuel(c, f, r.r, r.pl, ctx); H.markForced?.(c); } }
+    if (ready && c.realm >= 1 && c.age >= 15 && rnd() < D.DUEL_PER_YEAR) { const f = D.pickDuel(c, rnd); if (f && f.kind !== 'kiep_truoc') { const r = fightCp(c, C.playerStats(c), D.foeStats(f.rival, c), D.DUEL_TURNS, f.rival); fights++; if (r.r === 'win') wins++; tally(c, r); D.finishDuel(c, f, r.r, r.pl, ctx); H.markForced?.(c); } }
     const ready2 = H.forcedReady ? H.forcedReady(c) && c.stats.sucKhoe >= 35 : true;
-    if (!c.dead && ready2 && c.age >= 10 && rnd() < A.AMBUSH_PER_YEAR) { const { m, tier } = A.pickAmbush(c, rnd); const r = fightCp(c, C.playerStats(c), A.ambushMonsterStats(c, m), A.AMBUSH_TURNS); fights++; if (r.r === 'win') wins++; A.finishAmbush(c, m, r.r, r.pl, r.md, ctx, tier); H.markForced?.(c); }
+    if (!c.dead && ready2 && c.age >= 10 && rnd() < A.AMBUSH_PER_YEAR) { const { m, tier } = A.pickAmbush(c, rnd); const r = fightCp(c, C.playerStats(c), A.ambushMonsterStats(c, m), A.AMBUSH_TURNS); fights++; if (r.r === 'win') wins++; tally(c, r); A.finishAmbush(c, m, r.r, r.pl, r.md, ctx, tier); H.markForced?.(c); }
     if (!c.dead) { let q = E.checkProgress(c, ctx); let j = 0; while (q && !c.dead && j++ < 10) q = E.resolveChoice(c, q, Math.floor(rnd() * q.choices.length), ctx); }
     maxR = Math.max(maxR, c.realm);
   }
@@ -76,4 +78,5 @@ const avg = (a: number[]) => a.reduce((x, y) => x + y, 0) / a.length;
 const pct = (x: number) => ((x / N) * 100).toFixed(1) + '%';
 console.log(`tuổi chết TB ${avg(ages).toFixed(0)}, phi thăng ${pct(asc)}, linh thạch lúc cuối TB ${(stones / N).toFixed(0)}`);
 console.log(`thắng ${((wins / Math.max(1, fights)) * 100).toFixed(1)}% trong ${fights} trận chặn đường/gặp người${CP ? ' (theo công pháp)' : ''}`);
+console.log('thắng theo đạo: ' + Object.entries(byPath).map(([k, [w, n]]) => `${k} ${((w / n) * 100).toFixed(0)}%`).join(', '));
 console.log('tới được: ' + [2, 3, 4, 5, 6, 7].map((r) => `r${r} ${pct(reach[r] ?? 0)}`).join(', '));

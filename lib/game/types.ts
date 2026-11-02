@@ -120,7 +120,7 @@ export interface Character {
   beastFight?: { id: string; lv: number } | null; // đang chờ vào trận thu phục
   catchTarget?: { id: string; lv: number; hp: number } | null; // thú vừa đánh xong, chờ thu phục (hp: phần máu còn lại 0-1)
   // 4.2.0 công pháp (lib/game/congPhap.ts)
-  cp?: { own: { id: string; tang: number; exp: number }[]; eq: string[]; tuyet?: string | null };
+  cp?: { own: { id: string; tang: number; exp: number; bien?: 'cuong' | 'nhu' | null }[]; eq: string[]; tuyet?: string | null };
   cpHint?: boolean; // đã báo có bộ đầy thục luyện
   tq?: Record<string, number>; // tàn quyển riêng từng bộ công pháp: lên tầng từ tầng 4, tuyệt kỹ để dung hợp
   tqVan?: number; // tàn quyển vạn năng (hiếm): bù vào bộ nào cũng được
@@ -240,6 +240,7 @@ export interface RivalChar {
   sectRank?: number;
   cosmos?: 'tien' | 'ma' | 'hu' | null;
   alive: boolean;
+  cp?: { eq: string[]; own: { id: string; tang: number; bien?: 'cuong' | 'nhu' | null }[]; tuyet?: string | null }; // 4.2.0: công pháp đang mang (trận giang hồ, không dùng ở lôi đài)
   lifeId?: number; // lôi đài: kiếp nào làm bóng (0 là nhân vật đang sống)
 }
 

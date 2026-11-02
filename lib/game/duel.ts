@@ -12,7 +12,7 @@ import { addCult, addWound, afterLoss, atAge, fatal, giveItem, markDeath, money,
 import { PROVOKE_MUL, SOCIAL } from './social';
 import { daiBiDue, promote, sectSide } from './sect';
 import { hhDuelWin } from './hopHoan';
-import { dropTq } from './congPhap';
+import { dropTq, rivalCp } from './congPhap';
 import type { Character, EffectCtx, RivalChar, Slot, Vendetta } from './types';
 import { tr } from '../i18n';
 import { nameOf } from '../hanviet';
@@ -86,7 +86,8 @@ export function foeChar(r: RivalChar): Character {
 }
 
 export function foeStats(r: RivalChar, me?: Character): Fighter {
-  const s = playerStats(foeChar(r));
+  // 4.2.0: trận giang hồ (có me) tính cả tâm pháp của đối thủ; lôi đài (không có me) giữ nguyên như cũ
+  const s = playerStats(me ? { ...foeChar(r), cp: rivalCp(r) } : foeChar(r));
   if (!me) return s;
   // Luân Hồi Đạo: bên luân hồi nhiều hơn thì hồn mòn hơn (quy hết về chỉ số của đối thủ cho gọn)
   const m = lifeMul(r.lifeNo ?? 1, me.lifeNo) / lifeMul(me.lifeNo, r.lifeNo ?? 1);
