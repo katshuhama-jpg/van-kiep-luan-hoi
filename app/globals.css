@@ -4681,9 +4681,8 @@ button.shadow-card { cursor: pointer; }
 .mk-omen b { font-size: 17px; color: #ffd36b; }
 .mk-omen span { font-size: 14px; }
 .mk-omen .mk-next { margin-top: 2px; color: #a89878; }
-.mk-thuong_doan, .mk-thiet_re { border-color: #1f3a22; background: #1f3324; }
-.mk-khan_hiem, .mk-dan_hoang, .mk-dau_co { border-color: #3a1410; background: #3a1c14; }
-.mk-thu_mua { border-color: #3a2a08; background: #3a2c10; }
+.mk-re { background: #1f3324; }
+.mk-dat { background: #3a1c14; }
 .doll-merge { flex: none; display: flex; flex-direction: column; align-items: center; line-height: 1.1; padding: 3px 10px; font: inherit; font-weight: 700; font-size: 14px; color: #ffd36b; background: #5a1420; border: 2px solid #1f160d; box-shadow: 2px 2px 0 #1f160d; cursor: pointer; }
 .doll-merge small { font-size: 11px; font-weight: 500; color: #f3c8b0; }
 .doll-merge { background: #24425a; }

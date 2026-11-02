@@ -1,4 +1,6 @@
-import { sellPrice } from './marketDay';
+import { sellNow } from './marketDay';
+/** 4.1.0: đồ rơi trùng bán ngay tại chỗ cho thương lái, chỉ được 1/4 giá bán tay */
+export const DUP_SELL = 0.25;
 import { forgeDefMul, forgeHpMul, forgeMul, sealAtk, sealDef, sealExp, sealHp } from './forge';
 import { ksDrop, ksLegendPer, ksMonster } from './luanHoi';
 import { huntDeath, huntLose } from './fightLines';
@@ -668,7 +670,8 @@ export const DROP_MUL = 0.75;
 export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance = 0.12): string[] {
   const notes: string[] = [];
   addCult(c, killExp(c, m));
-  money(c, Math.round((2 + m.lv * 3) * (0.7 + ctx.rnd() * 0.6)));
+  // 4.1.0: linh thạch mỗi con giảm một nửa (trước 2 + 3 × cấp), chống treo máy cày tiền
+  money(c, Math.round((1 + m.lv * 1.5) * (0.7 + ctx.rnd() * 0.6)));
   c.kills = c.kills ?? {};
   const n = (c.kills[m.id] = (c.kills[m.id] ?? 0) + 1);
   if (n === 1) {
@@ -693,7 +696,7 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance 
     if (ctx.rnd() < p) {
       const it = drops[Math.floor(ctx.rnd() * drops.length)];
       if (c.inventory.includes(it.id)) {
-        const sell = 60 + m.lv * 25;
+        const sell = Math.round(sellNow(c, it) * DUP_SELL);
         money(c, sell);
         notes.push(tr(`${m.name} rơi ra thêm một ${it.name}. Bạn đã có rồi nên bán được ${sell} linh thạch.`, `${m.name} dropped another ${it.name}. You already have one, so you sold it for ${sell} spirit stones.`));
       } else {
@@ -791,7 +794,7 @@ export function lootDrop(c: Character, m: Monster, ctx: EffectCtx): string | nul
   const it = src[Math.floor(ctx.rnd() * src.length)];
   const tag = `[${RARE_NAME[rare]}]`;
   if (c.inventory.includes(it.id)) {
-    const sell = sellPrice(it); // 4.1.0: cùng bảng giá với bán tay
+    const sell = Math.round(sellNow(c, it) * DUP_SELL); // 4.1.0: đồ trùng bán vội tại chỗ, 1/4 giá bán tay; bán nhiều trong năm bị ép giá
     money(c, sell);
     return tr(`${m.name} rơi ra ${tag} ${it.name}, bạn đã có rồi nên đem bán được ${sell} linh thạch.`, `${m.name} dropped ${tag} ${it.name}. You already have it, so you sold it for ${sell} spirit stones.`);
   }

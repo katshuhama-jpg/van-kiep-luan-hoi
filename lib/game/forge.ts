@@ -1,5 +1,5 @@
 import { ITEMS } from './data';
-import { marketToday, sellPrice } from './marketDay';
+import { marketOf, sellNow, sellPrice } from './marketDay';
 import type { Character, EffectCtx, Element, Slot } from './types';
 import { tr } from '../i18n';
 
@@ -28,18 +28,23 @@ export function smeltValue(id: string): number {
 }
 
 /** Giá bán đồ thừa (cùng công thức bán đồ rơi khi đã có) */
-export function sellValue(id: string): number {
+export function sellValue(id: string, c?: Character, nth = 0): number {
   const it = item(id);
   if (!it) return 0;
-  return sellPrice(it); // 4.1.0: 12% giá trị theo bảng giá chung và thị tượng
+  // 4.1.0: 12% giá trị theo bảng giá chung và thị tượng; bán nhiều trong một năm thì bị ép giá (nth: món thứ mấy kể từ món này)
+  if (!c) return sellPrice(it);
+  const base = sellPrice(it, marketOf(c));
+  const y = Math.floor(c.age);
+  const n = (c.sold && c.sold.y === y ? c.sold.n : 0) + nth;
+  return Math.max(5, Math.round(base * Math.max(0.25, Math.pow(0.85, n))));
 }
 
 /** Giá một tinh thiết ở lò rèn, tăng theo cảnh giới để vẫn là chỗ tiêu tiền khi giàu */
-export const tinhPrice = (c: Character) => Math.round(40 * (1 + 0.4 * Math.min(c.realm, 8)) * marketToday().tinh);
+export const tinhPrice = (c: Character) => Math.round(40 * (1 + 0.4 * Math.min(c.realm, 8)) * marketOf(c).tinh);
 
 export function sell(c: Character, id: string, ctx: EffectCtx): string | null {
   if (!canSmelt(c, id)) return null;
-  const v = sellValue(id);
+  const v = sellNow(c, item(id)!);
   c.inventory = c.inventory.filter((x) => x !== id);
   c.linhThach += v;
   ctx.fx('buy', tr(`+${v} linh thạch`, `+${v} spirit stones`));

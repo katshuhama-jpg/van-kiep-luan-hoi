@@ -1,3 +1,4 @@
+export {};
 /**
  * Đo độ khó: tuổi chết trung bình, tỉ lệ kiếp lên được từng cảnh giới (r2 Trúc Cơ, r3 Kim Đan, r4 Nguyên Anh, r5 Hóa Thần, r6 Luyện Hư, r7 Độ Kiếp).
  * Mỗi kiếp chọn bừa lựa chọn sự kiện, có chặn đường và gặp người như /choi.

@@ -10,9 +10,7 @@ import {
   MERGE_CHANCE,
   MERGE_COST,
   canMerge,
-  marketToday,
-  marketTomorrow,
-  type MarketOmen,
+  marketSpan,
   type MergeResult,
   type Ware,
 } from '@/lib/game/market';
@@ -36,24 +34,22 @@ function useNpc(seed: number, age: number, realm: number): Character {
 }
 
 /* ---------------- Thị tượng trong phường thị ---------------- */
-export function MarketOmenBox() {
-  const m = marketToday();
-  const next = marketTomorrow();
-  const line = (o: MarketOmen) =>
-    [o.buy !== 1 && tr(`mua đồ ${pct(o.buy)}`, `gear ${pct(o.buy)}`), o.sell !== 1 && tr(`bán đồ ${pct(o.sell)}`, `selling ${pct(o.sell)}`), o.pill !== 1 && tr(`đan ${pct(o.pill)}`, `pills ${pct(o.pill)}`), o.tinh !== 1 && tr(`tinh thiết ${pct(o.tinh)}`, `iron ${pct(o.tinh)}`)]
+export function MarketOmenBox({ c }: { c: Character }) {
+  const { omen: m, start } = marketSpan(c);
+  const line =
+    [m.buy !== 1 && tr(`mua đồ ${pct(m.buy)}`, `gear ${pct(m.buy)}`), m.sell !== 1 && tr(`bán đồ ${pct(m.sell)}`, `selling ${pct(m.sell)}`), m.pill !== 1 && tr(`đan ${pct(m.pill)}`, `pills ${pct(m.pill)}`), m.tinh !== 1 && tr(`tinh thiết ${pct(m.tinh)}`, `iron ${pct(m.tinh)}`)]
       .filter(Boolean)
       .join(' · ') || tr('giá như thường', 'normal prices');
+  const yrs = Math.floor(c.age) - start;
   return (
-    <div className={`mk-omen mk-${m.id}`}>
+    <div className={`mk-omen mk-${m.buy > 1.05 || m.sell < 0.95 || m.pill > 1.05 ? 'dat' : m.buy < 0.95 || m.sell > 1.05 ? 're' : 'binh'}`}>
       <img src="/icons/g_kim_bat.png" width={48} height={48} alt="" className="px-icon" />
       <div>
-        <small>{tr('Thị tượng hôm nay', "Today's market")}</small>
+        <small>{tr('Thị tượng', 'Market')}</small>
         <b>{m.name}</b>
-        <span>{line(m)}</span>
-        <small className="mk-next">
-          {tr('Ngày mai: ', 'Tomorrow: ')}
-          {next.name}
-        </small>
+        <span>{m.desc}</span>
+        <span>{line}</span>
+        <small className="mk-next">{tr(`Đã ${yrs} năm nay. Thị trường đổi lúc nào không ai biết trước.`, `For ${yrs} years now. No one knows when the market will turn.`)}</small>
       </div>
     </div>
   );

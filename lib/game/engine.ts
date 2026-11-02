@@ -1,4 +1,4 @@
-import { AUCTION_EVENT_ID, MERCHANT_EVENT_ID, auctionDue, auctionEvent, merchantDue, merchantEvent, pickAuctionLot } from './market';
+import { AUCTION_EVENT_ID, MERCHANT_EVENT_ID, auctionDue, auctionEvent, merchantDue, merchantEvent, pickAuctionLot, marketSpan } from './market';
 import { sealLv } from './forge';
 import { applyProphecy, checkNewbieGoal, newbieGoal, omenIs } from './hook';
 import { loreDone, lore2Count, quyNhatDone } from './lore';
@@ -881,7 +881,12 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
     const pm = EVENTS.find((x) => x.id === 'phan_mon');
     if (pm && eligible(c, pm)) return buildPending(c, pm);
   }
-  // 4.1.0 kinh tế: hội đấu giá 10 năm một lần, thương nhân lưu động thỉnh thoảng (đều hỏi người chơi có tham gia không)
+  // 4.1.0 kinh tế: thị trường đổi theo năm tháng của kiếp (3-8 năm một lần), báo vào gia phả
+  {
+    const ms = marketSpan(c);
+    if (ms.start === Math.floor(c.age) && c.age >= 10) ctx.log(tr(`Thị trường đổi: ${ms.omen.name}. ${ms.omen.desc}`, `The market turns: ${ms.omen.name}. ${ms.omen.desc}`), 'normal');
+  }
+  // 4.1.0 kinh tế: hội đấu giá 50 năm một lần, thương nhân lưu động thỉnh thoảng (đều hỏi người chơi có tham gia không)
   if (auctionDue(c)) {
     c.auctionAt = c.age;
     c.auctionLot = pickAuctionLot(c, rnd) ?? undefined;

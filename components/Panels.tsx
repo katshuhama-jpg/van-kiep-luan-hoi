@@ -5,7 +5,7 @@ import { VanKiepRow } from './VanKiep';
 import SauChungDao from './SauChungDao';
 import Link from 'next/link';
 import { MarketOmenBox } from './MarketScenes';
-import { buyPrice, shelfBought, shelfItems, shelfName, shelfNext } from '@/lib/game/market';
+import { buyPrice, marketOf, shelfBought, shelfItems, shelfName, shelfNext } from '@/lib/game/market';
 import { FB_PAGE } from '@/lib/links';
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { ENDINGS, RARE_COLOR, endingOf } from '@/lib/game/endings';
@@ -411,7 +411,7 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onBuyShelf, onClose }: { c:
         
         {tr("Linh thạch: ", "Spirit stones: ")}<b style={{ color: 'var(--red-d)', fontWeight: 700 }}>{fmt(c.linhThach)}</b>{tr(" · Đồ mua xong tự mặc lên người.", " · Gear is equipped as soon as you buy it.")}
       </p>
-      <MarketOmenBox />
+      <MarketOmenBox c={c} />
       <div className="tabs">
         <button className={tab === 'do' ? 'on' : ''} onClick={() => setTab('do')}>
           
@@ -441,7 +441,7 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onBuyShelf, onClose }: { c:
               const owned = c.inventory.includes(it.id);
               const sold = shelfBought(c, it.id);
               const lock = lockReason(c, it);
-              const price = buyPrice(it);
+              const price = buyPrice(it, marketOf(c));
               return (
                 <div key={it.id} className={`item rare-${it.rare ?? 0}`}>
                   <div className="item-icon">

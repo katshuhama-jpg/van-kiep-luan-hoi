@@ -170,7 +170,7 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
         <button className={`btn inv-clean ${sure ? 'btn-red' : ''}`} onClick={sellSpares}>
           {sure
             ? tr(`Chắc chưa? Bấm lần nữa để bán ${spares.length} món`, `Sure? Tap again to sell ${spares.length} items`)
-            : tr(`Bán ${spares.length} món thừa · +${spares.reduce((x, it) => x + sellValue(it.id), 0)} linh thạch`, `Sell ${spares.length} spare items · +${spares.reduce((x, it) => x + sellValue(it.id), 0)} spirit stones`)}
+            : tr(`Bán ${spares.length} món thừa · +${spares.reduce((x, it, k) => x + sellValue(it.id, c, k), 0)} linh thạch`, `Sell ${spares.length} spare items · +${spares.reduce((x, it, k) => x + sellValue(it.id, c, k), 0)} spirit stones`)}
         </button>
       )}
       {(kind === 'all' ? GROUPS : [[kind, '']] as [Kind, string][]).map(([g, label]) => {
@@ -235,7 +235,7 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
             {onSell && canSmelt(c, selItem.id) && (
               <button className="btn" onClick={() => onSell(selItem.id)}>
                 
-                {tr("Bán · +", "Sell · +")}{sellValue(selItem.id)}{tr(" linh thạch", " spirit stones")}
+                {tr("Bán · +", "Sell · +")}{sellValue(selItem.id, c)}{tr(" linh thạch", " spirit stones")}
               </button>
             )}
             {onSmelt && canSmelt(c, selItem.id) && (

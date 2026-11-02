@@ -28,11 +28,11 @@ function seeded(seed: string): () => number {
   };
 }
 
-export { VAL_REALM, RARE_MUL, SELL_RATE, itemValue, MARKET_OMENS, marketToday, marketTomorrow, buyPrice, sellPrice, type MarketId, type MarketOmen } from './marketDay';
-import { buyPrice, itemValue, sellPrice } from './marketDay';
+export { VAL_REALM, RARE_MUL, SELL_RATE, itemValue, MARKET_OMENS, marketOf, marketSpan, buyPrice, sellPrice, type MarketId, type MarketOmen } from './marketDay';
+import { buyPrice, itemValue, marketOf, sellPrice } from './marketDay';
 export const sellPriceId = (id: string) => {
   const it = ITEMS.find((i) => i.id === id);
-  return it ? sellPrice(it) : 0;
+  return it ? sellPrice(it) : 0; // giá bình ổn, không theo kiếp
 };
 
 
@@ -77,7 +77,7 @@ export const shelfBought = (c: Character, id: string) => !!c.shelf && c.shelf.w 
 export function buyShelf(c: Character, id: string, ctx: EffectCtx): string | null {
   const it = shelfItems(c).find((i) => i.id === id);
   if (!it || shelfBought(c, id) || c.inventory.includes(id) || it.minRealm > c.realm) return null;
-  const price = buyPrice(it);
+  const price = buyPrice(it, marketOf(c));
   if (c.linhThach < price) return null;
   money(c, -price);
   const w = shelfWindow(c);
