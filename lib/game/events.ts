@@ -1,4 +1,4 @@
-import { DAO_LU, ITEMS, PATHS } from './data';
+import { DAO_LU, ITEMS, PATHS, realmName } from './data';
 import { addCult, addLife, addPill, addWound, atAge, bullyLoss, dao, fatal, giveItem, hasItem, hurt, isOrphan, nguoiNuoi, nhanDeTu, thuTuDeTu, luck, markDeath, money, pick, reward, sample, stat, takeStones, usePill } from './helpers';
 import type { Character, Choice, EffectCtx, GameEvent } from './types';
 import { eventDuel } from './duel';
@@ -1532,13 +1532,18 @@ export const EVENTS: GameEvent[] = [
         lean: 'ta',
         run: (c, ctx) => {
           dao(c, -14);
-          if (ctx.rnd() < luck(c, 0.45)) {
+          // 4.1.0 (#74, #78): hộ vệ theo tầm người cướp (60% kém hai cảnh giới, 30% kém một, 10% ngang hàng), đánh thật theo sức chiến
+          const q = ctx.rnd();
+          const guard = Math.max(1, c.realm - (q < 0.6 ? 2 : q < 0.9 ? 1 : 0));
+          const gName = realmName(guard, c.cosmos);
+          const d = eventDuel(c, guard, ctx.rnd);
+          if (d.result === 'win' || (d.result === 'draw' && ctx.rnd() < luck(c, 0.5))) {
             addLife(c, Math.round(c.lifespan * 0.12));
             ctx.fx('evil', tr('Cướp đan', "Pill stolen"));
-            return tr('Bạn chặn hắn ở ngoài thành. Diên Thọ Đan giờ là của bạn.', "You intercept them outside the city. The Longevity Pill is yours now.");
+            return tr(`Bạn chặn hắn ở ngoài thành. Hộ vệ ${gName} không đỡ nổi ba chiêu. Diên Thọ Đan giờ là của bạn.`, `You intercept them outside the city. The ${gName} bodyguard can't last three moves. The Longevity Pill is yours now.`);
           }
           c.enemy = c.enemy ?? tr('Vạn Bảo Lâu', "Wanbao Tower");
-          return tr('Hắn có hộ vệ Kim Đan. Bạn suýt chết.', "They have a Golden Core bodyguard. You nearly die.") + hurt(c, 50, ctx);
+          return tr(`Người thắng giá thuê hộ vệ ${gName}${guard >= c.realm ? ', ngang tầm bạn' : ''}. Bạn thua, bị đánh trọng thương.`, `The winner hired a ${gName} bodyguard${guard >= c.realm ? ' as strong as you' : ''}. You lose and are badly beaten.`) + hurt(c, guard >= c.realm ? 40 : 30, ctx);
         },
       },
     ],
