@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import Sprite, { auraColor, lookOf } from './Sprite';
 import { BattleOverlay, type BattleView } from './Battle';
 import MonsterLpc from './MonsterLpc';
+import { dragonFollows } from '@/lib/game/pets';
 import { DRAGON_BABY, DRAGON_BIG } from '@/lib/game/monsterLook';
 import type { Character, Fx } from '@/lib/game/types';
 import { REALMS } from '@/lib/game/data';
@@ -309,7 +310,7 @@ export default function Scene({ c, fx, paused, season, battle, quiet }: { c: Cha
 
       {battle && !c.dead && <BattleOverlay b={battle} />}
 
-      {!c.dead && !battle && (c.mount === 'rong' || (c.arcs?.rong && c.arcs.rong.s >= 2 && c.arcs.rong.s < 9)) && (
+      {!c.dead && !battle && dragonFollows(c) && (
         <div className={`dragon ${c.mount === 'rong' ? 'big' : 'baby'}`} aria-hidden="true">
           <MonsterLpc look={c.mount === 'rong' ? DRAGON_BIG : DRAGON_BABY} size={c.mount === 'rong' ? 96 : 52} tier={c.arcs?.rong?.v === 'ma' ? 1 : 0} />
         </div>
