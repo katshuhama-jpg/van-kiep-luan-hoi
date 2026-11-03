@@ -21,7 +21,7 @@ async function open(b, char, meta = META, cn = true) {
   p.on('pageerror', (e) => { if (!/Hydration|#418/.test(e.message)) p.errs.push(e.message.slice(0, 160)); });
   await p.goto(URL + '/');
   const s = JSON.parse(JSON.stringify(base)); s.pending = null; Object.assign(s.char, { dead: false, lifeNo: 6 }, char);
-  await p.evaluate(([s, m, v, cn]) => { localStorage.clear(); localStorage.setItem('vkl.tut', '1'); localStorage.setItem('vkl.seenVer', v); localStorage.setItem('vkl.notice.down1101', '1'); if (cn) localStorage.setItem('vkl.camnang', JSON.stringify(['mot_kiep', 'canh_gioi', 'nga_re', 'danh_nhau', 'phi_thang', 'luan_hoi'])); localStorage.setItem('vkl.save', JSON.stringify(s)); localStorage.setItem('vkl.meta', JSON.stringify(m)); }, [s, meta, VER, cn]);
+  await p.evaluate(([s, m, v, cn]) => { localStorage.clear(); localStorage.setItem('vkl.tut', '1'); localStorage.setItem('vkl.seenVer', v); localStorage.setItem('vkl.notice.down1101', '1'); if (cn) localStorage.setItem('vkl.camnang', JSON.stringify(['mot_kiep', 'canh_gioi', 'nga_re', 'tong_mon', 'danh_nhau', 'phi_thang', 'luan_hoi'])); localStorage.setItem('vkl.save', JSON.stringify(s)); localStorage.setItem('vkl.meta', JSON.stringify(m)); }, [s, meta, VER, cn]);
   await p.goto(URL + '/choi');
   await p.waitForTimeout(6000);
   await p.addStyleTag({ content: 'nextjs-portal{display:none!important}' });
@@ -44,12 +44,25 @@ const save = async (p) => JSON.parse(await p.evaluate(() => localStorage.getItem
   await p.waitForTimeout(400);
   await p.locator('button', { hasText: 'Cẩm nang tu tiên' }).click({ timeout: 5000 }).catch(() => {});
   await p.waitForTimeout(500);
-  ok(await p.locator('.cn-row').count() === 6, 'menu mở mục lục Cẩm nang 6 hồi');
+  ok(await p.locator('.cn-row').count() === 7, 'menu mở mục lục Cẩm nang 7 hồi');
   await p.locator('.cn-row', { hasText: 'Ngã rẽ' }).click({ timeout: 5000 }).catch(() => {});
   await p.waitForTimeout(400);
   await p.locator('.cn-panel').click(); await p.waitForTimeout(400); // trang 2: ba cửa phi thăng
   ok(await p.locator('.cn-doors span').count() === 3, 'hồi Ngã rẽ: đạo tâm dẫn tới 3 cửa Tiên, Thái Hư, Ma');
   if (SHOT) await p.screenshot({ path: SHOT + '/cn-3.png' });
+  // hồi Tông môn: 7 trang, giới thiệu ba nhà, bậc đệ tử, tông theo đạo, hướng đi
+  await p.locator('.cn-skip').click(); await p.waitForTimeout(300);
+  await p.locator('.menu-btn').click({ timeout: 5000 }).catch(() => {}); await p.waitForTimeout(300);
+  await p.locator('button', { hasText: 'Cẩm nang tu tiên' }).click({ timeout: 5000 }).catch(() => {}); await p.waitForTimeout(400);
+  await p.locator('.cn-row', { hasText: 'Tông môn' }).click({ timeout: 5000 }).catch(() => {}); await p.waitForTimeout(400);
+  ok(await p.locator('.cn-dots i').count() === 7, 'hồi Tông môn có 7 trang');
+  const seenX = [];
+  for (let i = 0; i < 7; i++) {
+    seenX.push(await p.locator('.cn-cards > span, .cn-ranks > span, .cn-paths > span, .cn-routes > span').count());
+    if (SHOT) await p.screenshot({ path: SHOT + `/tm-${i + 1}.png` });
+    await p.locator('.cn-panel').click(); await p.waitForTimeout(400);
+  }
+  ok(seenX[1] === 3 && seenX[2] === 4 && seenX[4] === 5 && seenX[6] === 3, 'Tông môn: ba nhà, bốn bậc, năm tông theo đạo (có Hợp Hoan Tông), ba hướng đi ' + seenX.join(','));
   ok(!p.errs.length, 'Cẩm nang không lỗi JS ' + p.errs.join(' | '));
   await p.close();
 

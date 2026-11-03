@@ -7,7 +7,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Scene from '@/components/Scene';
 import MusicToggle from '@/components/MusicToggle';
 import { CoachHint, TribulationOverlay, Tutorial, clearLaSo } from '@/components/Extras';
-import CamNang, { cnSeen, type CnChapter } from '@/components/CamNang';
+import CamNang, { CN_ORDER, cnSeen, type CnChapter } from '@/components/CamNang';
 import { HoDaoScene, HoTroScene, TuKiepOverlay } from '@/components/VanKiep';
 import type { PastSelf } from '@/lib/vanKiep';
 import { LOI_ALLOW, LOI_TOTAL, daoKhon, failVanDao, usesVanDao } from '@/lib/game/vanDao';
@@ -1953,7 +1953,9 @@ export default function PlayPage() {
     const want: CnChapter | null =
       pending?.id === '__chon_duong'
         ? 'nga_re'
-        : pending
+        : pending?.id === 'tuyen_de_tu'
+          ? 'tong_mon'
+          : pending
           ? null
           : meta.lives === 0 && c.lifeNo <= 1 && !seen.includes('mot_kiep')
             ? 'mot_kiep'
@@ -2278,7 +2280,7 @@ export default function PlayPage() {
               }}
             >
               {tr("Cẩm nang tu tiên (truyện tranh)", "Cultivation handbook (comic)")}
-              {cnSeen().length < 6 && <span className="new-tag">{tr("mới", "new")}</span>}
+              {cnSeen().length < CN_ORDER.length && <span className="new-tag">{tr("mới", "new")}</span>}
             </button>
             <Link className="btn" href="/cap-nhat" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
               
