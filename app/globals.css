@@ -4743,3 +4743,10 @@ button.shadow-card { cursor: pointer; }
 .ev-item-fx i b { color: #ffe27a; }
 .ev-item-fx i.bad { background: #8f2f20; }
 .ev-item-cur { font-size: 11px; color: #6a5a44; line-height: 1.2; }
+/* 4.1.0: thẻ kết quả đấu giá */
+.auc-res { max-width: 360px; }
+.auc-res-stage { position: relative; height: 150px; display: grid; place-items: center; background: #2a1f18 url(/bg/luyen_dan-1.png) center / cover; image-rendering: pixelated; border-bottom: 3px solid #1f160d; }
+.auc-res-stage .px-icon { position: relative; z-index: 1; padding: 6px; background: #f3e6c4; border: 3px solid #1f160d; box-shadow: 3px 3px 0 #1f160d; }
+.auc-res-stage.fail .px-icon { filter: grayscale(1) brightness(0.8); }
+.auc-res-stage .fs-stamp { z-index: 2; top: auto; bottom: 4px; left: 50%; font-size: 26px; transform: translateX(-50%) rotate(-6deg); }
+.auc-res-stage { align-content: start; padding-top: 14px; }

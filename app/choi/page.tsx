@@ -24,6 +24,7 @@ import { charLang, convertChar, convertMeta, loadDict, looksVi } from '@/lib/ret
 import { AUCTION_EVENT_ID, MERCHANT_EVENT_ID, buyShelf, buyWare, haggleWare, mergeItems, merchantWares, robWare, type Ware } from '@/lib/game/market';
 import { MerchantScene } from '@/components/MarketScenes';
 import { ITEMS, PATHS, PILLS, REALMS, TALENTS, gearFx, itemPrice, pillPrice, RARE_STOCK_REALM, realmLabel, realmName, soldOut, yearSpeed, youthPace } from '@/lib/game/data';
+import ItemIconImg from '@/components/ItemIcon';
 import { genNameVi, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, resolveChoice, rnd, seasonOf, usePillNow, yearTick, chungDao, openingEvent } from '@/lib/game/engine';
 import { addCult, addPill, dao, fatal, fmt, giveItem, money, reward, stat, wealthTier, DO_KIEP_REALM } from '@/lib/game/helpers';
 import type { Character, Element, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
@@ -308,7 +309,9 @@ export default function PlayPage() {
   const [ciGot, setCiGot] = useState<{ day: number; text: string } | null>(null);
   const [ciOpen, setCiOpen] = useState(false);
   const [wares, setWares] = useState<Ware[] | null>(null);
-  activeRef.current = running && sheet === null && !ciOpen && wares === null && phase === 'play' && kiep === null && hoTro === null && vanDao === null && !tut && duelWarn === null && !nhdPeek && !relOpen && !downOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
+  // 4.1.0: kết quả hội đấu giá hiện thành thẻ riêng (trước chỉ ghi vào gia phả, người chơi không biết thắng hay thua)
+  const [auctionRes, setAuctionRes] = useState<{ item: string; won: boolean; text: string } | null>(null);
+  activeRef.current = running && sheet === null && !ciOpen && wares === null && auctionRes === null && phase === 'play' && kiep === null && hoTro === null && vanDao === null && !tut && duelWarn === null && !nhdPeek && !relOpen && !downOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
 
   /** Ngũ hành giữa bạn và loài quái */
   function monElem(c: Character, m: { el?: Element }) {
@@ -964,7 +967,20 @@ export default function PlayPage() {
       return;
     }
     // 4.1.0 kinh tế: nhận lời vào hội đấu giá, ghé thương nhân thì mở cảnh riêng
-    if (p && c && p.id === AUCTION_EVENT_ID) track('dau_gia', { bid: i, realm: c.realm });
+    if (p && c && p.id === AUCTION_EVENT_ID) {
+      track('dau_gia', { bid: i, realm: c.realm });
+      const lot = c.auctionLot;
+      const had = lot ? c.inventory.includes(lot) : false;
+      const n0 = c.log.length;
+      resolveNow(i);
+      const c2 = charRef.current;
+      if (lot && c2 && i < 3) {
+        const lines = c2.log.slice(n0).map((l) => l.text).filter(Boolean);
+        const text = lines.find((t) => /phong bì|envelopes|linh thạch|spirit stones/.test(t)) ?? lines[0] ?? '';
+        setAuctionRes({ item: lot, won: !had && c2.inventory.includes(lot), text });
+      }
+      return;
+    }
     if (p && c && p.id === MERCHANT_EVENT_ID && i === 0) {
       resolveNow(i);
       const w = merchantWares(c, rnd);
@@ -1921,6 +1937,25 @@ export default function PlayPage() {
             });
             return r;
           }} onClose={() => setSheet(null)} />}
+      {auctionRes && (
+        <div className="forge-wrap" role="dialog" aria-modal="true" aria-label={tr('Kết quả đấu giá', 'Auction result')} onClick={() => setAuctionRes(null)}>
+          <div className="forge-scene auc-res" onClick={(e) => e.stopPropagation()}>
+            <div className="fs-head">
+              <b>{tr('Mở phong bì', 'Envelopes opened')}</b>
+            </div>
+            <div className={`auc-res-stage ${auctionRes.won ? 'ok' : 'fail'}`}>
+              <ItemIconImg item={ITEMS.find((x) => x.id === auctionRes.item)} size={72} />
+              <span className={`fs-stamp ${auctionRes.won ? 'ok' : 'fail'}`}>{auctionRes.won ? tr('Trúng giá!', 'You win!') : tr('Hụt giá', 'Outbid')}</span>
+            </div>
+            <div className="fs-info">
+              <p className={`fs-res ${auctionRes.won ? 'ok' : 'fail'}`}>{auctionRes.text}</p>
+              <button className="btn btn-big" onClick={() => setAuctionRes(null)}>
+                {auctionRes.won ? tr('Cất vào túi', 'Put it in the bag') : tr('Về thôi', 'Head home')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {wares && (
         <MerchantScene
           c={c}
