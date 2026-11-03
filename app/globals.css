@@ -2747,10 +2747,11 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 
 /* viền hào quang ôm dáng người theo cảnh giới, kiểu pixel: viền đặc dày 1-2 điểm ảnh, nhấp nháy theo nhịp */
 .lpc-glow { position: absolute; inset: 0; pointer-events: none; --c: color-mix(in srgb, var(--aura) 60%, transparent); --c2: transparent; filter: var(--o1) var(--o2); animation: glowBlink 1.6s steps(1) infinite; }
-.lpc-glow { --o1: drop-shadow(var(--px) 0 0 var(--c)) drop-shadow(calc(-1 * var(--px)) 0 0 var(--c)) drop-shadow(0 var(--px) 0 var(--c)) drop-shadow(0 calc(-1 * var(--px)) 0 var(--c)); --o2: ; }
+.lpc-glow { --w: var(--px); --o1: drop-shadow(var(--w) 0 0 var(--c)) drop-shadow(calc(-1 * var(--w)) 0 0 var(--c)) drop-shadow(0 var(--w) 0 var(--c)) drop-shadow(0 calc(-1 * var(--w)) 0 var(--c)); --o2: ; }
 .lpc-glow.g1, .lpc-glow.g2 { --c: color-mix(in srgb, var(--aura) 55%, transparent); }
 .lpc-glow.g3, .lpc-glow.g4, .lpc-glow.g5 { --c: var(--aura); }
-.lpc-glow.g6, .lpc-glow.g7 { --c: color-mix(in srgb, var(--aura) 55%, white); --o2: drop-shadow(var(--px) 0 0 var(--aura)) drop-shadow(calc(-1 * var(--px)) 0 0 var(--aura)) drop-shadow(0 var(--px) 0 var(--aura)) drop-shadow(0 calc(-1 * var(--px)) 0 var(--aura)); }
+/* sửa nóng 3/11 (#86, #93): 8 lớp drop-shadow ở Luyện Hư, Độ Kiếp làm khung hình rớt từ 45 xuống 15 trên máy yếu; nay viền dày gấp đôi bằng 4 lớp */
+.lpc-glow.g6, .lpc-glow.g7 { --c: color-mix(in srgb, var(--aura) 70%, white); --w: calc(2 * var(--px)); }
 @keyframes glowBlink { 50% { opacity: 0.999; filter: var(--o1) var(--o2) brightness(1.15); } }
 .aura-px-ring { top: 93%; }
 .aura-px-ring.two { top: 94%; opacity: 0.7; }
@@ -3285,11 +3286,11 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .cos-fall { top: 48%; }
 .cos-xich { top: 62%; }
 .cos-stars { top: 44%; }
-.lpc-glow.cos-tien.cl3, .lpc-glow.cos-tien.cl4 { --c: #fffbe6; --o2: drop-shadow(var(--px) 0 0 #ffe27a) drop-shadow(calc(-1 * var(--px)) 0 0 #ffe27a) drop-shadow(0 calc(-1 * var(--px)) 0 #ffe27a) drop-shadow(0 0 6px #fff4c0); }
-.lpc-glow.cos-ma { --c: #7a0a18; --o2: drop-shadow(var(--px) 0 0 #ff3048) drop-shadow(calc(-1 * var(--px)) 0 0 #ff3048) drop-shadow(0 calc(-1 * var(--px)) 0 #ff3048); }
-.lpc-glow.cos-ma.cl4 { --o2: drop-shadow(var(--px) 0 0 #ff3048) drop-shadow(calc(-1 * var(--px)) 0 0 #ff3048) drop-shadow(0 calc(-1 * var(--px)) 0 #ff3048) drop-shadow(0 0 8px #c0102a); }
+.lpc-glow.cos-tien.cl3, .lpc-glow.cos-tien.cl4 { --c: #ffe9a0; --w: calc(2 * var(--px)); --o2: ; }
+.lpc-glow.cos-ma { --c: #d0182e; --w: calc(2 * var(--px)); --o2: ; }
+.lpc-glow.cos-ma.cl4 { --c: #ff3048; }
 .lpc-glow.cos-hu { --c: #a08cff; }
-.lpc-glow.cos-hu.cl3, .lpc-glow.cos-hu.cl4 { --o2: drop-shadow(calc(2 * var(--px)) 0 0 rgba(127, 224, 255, 0.55)) drop-shadow(calc(-2 * var(--px)) 0 0 rgba(255, 106, 216, 0.45)); }
+.lpc-glow.cos-hu.cl3, .lpc-glow.cos-hu.cl4 { --o1: drop-shadow(calc(2 * var(--px)) 0 0 rgba(127, 224, 255, 0.8)) drop-shadow(calc(-2 * var(--px)) 0 0 rgba(255, 106, 216, 0.7)) drop-shadow(0 var(--px) 0 var(--c)) drop-shadow(0 calc(-1 * var(--px)) 0 var(--c)); --o2: ; }
 .lpc-glow.cos-hu.cl4 { animation: huFlicker 2.2s steps(1) infinite; }
 @keyframes huFlicker { 0%, 100% { opacity: 1; } 45% { opacity: 0.55; } 50% { opacity: 1; } 78% { opacity: 0.75; } 82% { opacity: 1; } }
 
