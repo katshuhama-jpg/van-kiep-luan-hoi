@@ -4943,3 +4943,11 @@ button.shadow-card { cursor: pointer; }
 .tk-bien.cuong { background: #b8432f; } .tk-bien.nhu { background: #2f6b5a; }
 .tk-up.tk-bien-btn.cuong { background: #f2a58e; } .tk-up.tk-bien-btn.nhu { background: #9fd8b8; }
 .tk-cp-side small.bad { color: #b0201a; font-weight: 700; }
+/* 4.1.0: thẻ kết quả đấu giá */
+.auc-res { max-width: 360px; }
+.auc-res-stage { position: relative; height: 150px; display: grid; place-items: center; background: #2a1f18 url(/bg/luyen_dan-1.png) center / cover; image-rendering: pixelated; border-bottom: 3px solid #1f160d; }
+.auc-res-stage .px-icon { position: relative; z-index: 1; padding: 6px; background: #f3e6c4; border: 3px solid #1f160d; box-shadow: 3px 3px 0 #1f160d; }
+.auc-res-stage.fail .px-icon { filter: grayscale(1) brightness(0.8); }
+.auc-res-stage .fs-stamp { z-index: 2; top: auto; bottom: 4px; left: 50%; font-size: 26px; transform: translateX(-50%) rotate(-6deg); }
+.auc-res-stage { align-content: start; padding-top: 14px; }
+.choice.off, .choice:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(0.6); }

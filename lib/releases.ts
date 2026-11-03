@@ -18,6 +18,74 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '4.1.0',
+    date: '03/11/2026',
+    title: tr('Phường Thị Đổi Đời', 'The Market Reborn'),
+    lead: tr('Phường thị nay có giá theo phẩm, hàng mới về, hội đấu giá và thương nhân lưu động. Kết duyên và Hệ Thống có ích thật, còn người đã phi thăng thì có đồ tiên giới để săn.', 'The market now prices by grade, restocks new goods, and hosts auctions and wandering merchants. Romance and the System finally pay off, and those who have ascended now have immortal-realm gear to hunt.'),
+    asked: [
+      { who: '@thien', short: tr('Giá theo phẩm, hàng hiếm có hạn', 'Prices by grade, limited rare goods'), text: tr('Đồ trong phường thị nay có giá theo cảnh giới và phẩm, hàng tốt không còn lúc nào cũng có và rẻ như cho. Bán lại chỉ được một phần nhỏ giá mua.', 'Market goods are now priced by realm and grade, and good gear is no longer always in stock and dirt cheap. Selling back only returns a small part of the price.') },
+      { who: '@bachct', short: tr('Bùa rèn: rèn hỏng không vỡ đồ, tăng tỉ lệ', 'Forge charms: failures no longer break gear, better odds'), text: tr('Hộ Khí Phù giữ đồ không vỡ khi rèn hỏng, Linh Hỏa giúp rèn dễ thành hơn. Chọn dùng ngay trong lò rèn.', 'The Item Ward Talisman keeps gear from shattering on a failed forge, and Spirit Flame makes forging more likely to succeed. Pick them right in the forge.') },
+      { who: '@vickary', short: tr('Kẻ thù không còn mạnh hơn bạn quá xa', 'Enemies are no longer worlds above you'), text: tr('Oan gia và kẻ truy sát nay không vượt quá tầm bạn quá xa. Chưa phi thăng thì không còn bị người tiên giới tìm tới.', 'Nemeses and hunters can no longer be far beyond your level. Until you ascend, no one from the Immortal Realm comes for you.') },
+      { who: '@shizun', short: tr('Kết duyên có tác dụng thật', 'Romance actually does something'), text: tr('Có đạo lữ thì song tu cùng tiến, chưa có thì đạo hữu thỉnh thoảng giúp một tay.', 'With a Dao companion you cultivate together; without one, friends lend a hand now and then.') },
+      { who: '@madaochiton', short: tr('Hệ Thống thành buff vàng thật', 'The System is a true golden buff'), text: tr('Hệ Thống nay phát nhiệm vụ có hạn, làm xong thì thưởng lớn và Hệ Thống lên cấp, càng cấp cao tu càng nhanh.', 'The System now hands out timed quests; finish them for big rewards and to level the System up, and the higher it goes the faster you cultivate.') },
+      { who: '@tungmx1234', short: tr('Trang bị sau phi thăng', 'Gear after ascension'), text: tr('Tiên giới, Ma giới, Thái Hư nay có trang bị riêng, rơi từ quái từng cõi và bày bán ở chợ tiên giới.', 'The Immortal, Demon and Great Void realms now have their own gear, dropped by each realm\'s monsters and sold at the immortal markets.') },
+    ],
+    more: [
+      tr('Hội đấu giá Vạn Bảo Lâu', 'The Myriad Treasures auction'),
+      tr('Thương nhân lưu động ghé qua', 'Wandering merchants drop by'),
+      tr('Lò hợp bảo cạnh lò rèn', 'A treasure cauldron beside the forge'),
+      tr('Tiên nhân, Ma vương giáng trần', 'Immortals and Demon Lords descend'),
+    ],
+    groups: [
+      {
+        h: tr('Phường thị mới', 'The new market'),
+        hot: true,
+        items: [
+          tr('Giá theo cảnh giới và phẩm của món đồ, bán lại chỉ được một phần nhỏ. Cày quái đem bán không còn giàu nhanh như trước.', 'Prices follow the realm and grade of each item, and selling back only returns a small part. Farming monsters to sell loot no longer makes you rich overnight.'),
+          tr('Tab Hàng mới về thay hàng theo năm tháng, có lúc lẫn hàng hiếm. Phi thăng rồi thì ghé Tiên thị, Ma thị, Hư thị. Đồ hiếm nay là Sổ đồ rơi.', 'The New arrivals tab restocks over the years, sometimes with rare goods. Once ascended, visit the Immortal, Demon and Void markets. Rare Items is now the Drop Log.'),
+          tr('Thị tượng đổi theo vòng đời kiếp, hiện ở đầu Phường thị: lúc được mùa, lúc loạn giá. Để ý mà mua bán.', 'Market moods shift over your life and show at the top of the Market: boom years, chaotic prices. Watch them when you trade.'),
+        ],
+      },
+      {
+        h: tr('Đấu giá, thương nhân', 'Auctions and merchants'),
+        items: [
+          tr('Vạn Bảo Lâu nhiều năm mới mở hội đấu giá một lần: đấu giá kín ngay trong thẻ sự kiện, có so với món đang mặc.', 'The Myriad Treasures Pavilion holds its auction only once every many years: bid in secret right on the event card, compared with what you wear.'),
+          tr('Thương nhân lưu động thỉnh thoảng ghé qua: mua, mặc cả, hoặc liều cướp.', 'A wandering merchant drops by now and then: buy, haggle, or risk a robbery.'),
+          tr('Theo cướp người thắng giá ở hội đấu giá cũ nay đánh với hộ vệ đúng tầm, Độ Kiếp không còn thua hộ vệ Kim Đan.', 'Robbing the winning bidder after the old auction now pits you against guards of a fitting level. A Tribulation cultivator no longer loses to Golden Core guards.'),
+        ],
+      },
+      {
+        h: tr('Lò rèn', 'The forge'),
+        items: [
+          tr('Hộ Khí Phù giữ đồ không vỡ khi rèn hỏng, hàng hiếm, phải tìm ở Hàng mới về hoặc thương nhân.', 'The Item Ward Talisman keeps gear whole on a failed forge. It is rare: look for it in New arrivals or from merchants.'),
+          tr('Linh Hỏa giúp rèn dễ thành hơn, bán ở tab Đan dược. Cả hai chọn dùng ngay trong lò rèn.', 'Spirit Flame makes forging more likely to succeed and is sold in the Pills tab. Both are picked right in the forge.'),
+          tr('Lò hợp bảo đặt cạnh lò rèn trong Túi đồ.', 'A treasure cauldron now stands beside the forge in your Bag.'),
+        ],
+      },
+      {
+        h: tr('Kết duyên và Hệ Thống', 'Romance and the System'),
+        items: [
+          tr('Kết duyên nay có ích thật: có đạo lữ thì song tu, chưa có thì đạo hữu thỉnh thoảng giúp một tay.', 'Romance now really helps: with a Dao companion you dual-cultivate, without one your friends lend a hand now and then.'),
+          tr('Hệ Thống trói định xong sẽ phát nhiệm vụ có hạn, làm xong thì có thưởng và Hệ Thống lên cấp.', 'Once bound, the System hands out timed quests. Finish them for rewards and to level the System up.'),
+          tr('Ai mang thiên phú Hệ Thống thì được thêm gói quà tân thủ.', 'Those born with the System talent get a starter gift pack too.'),
+        ],
+      },
+      {
+        h: tr('Trang bị tiên giới', 'Immortal-realm gear'),
+        items: [
+          tr('Tiên giới, Ma giới, Thái Hư nay có trang bị riêng của từng cõi, rơi từ quái nơi đó và lên kệ chợ tiên giới.', 'The Immortal, Demon and Great Void realms now have gear of their own, dropped by local monsters and stocked in the immortal markets.'),
+        ],
+      },
+      {
+        h: tr('Giang hồ', 'The jianghu'),
+        items: [
+          tr('Oan gia, kẻ truy sát không còn vượt tầm bạn quá xa, chưa phi thăng thì không gặp người tiên giới.', 'Nemeses and hunters are no longer far beyond you, and until you ascend you will not meet anyone from the Immortal Realm.'),
+          tr('Hiếm lắm mới có Tiên nhân hoặc Ma vương giáng trần. Quỳ bái, dâng lễ hay liều ra tay là tùy bạn.', 'Very rarely an Immortal or Demon Lord descends. Kneel, make an offering, or dare to strike: your call.'),
+        ],
+      },
+    ],
+  },
+  {
     v: '4.0.3',
     date: '02/11/2026',
     title: tr('Thọ Nguyên Giữ Vững, Lời Viếng Có Tên', 'Lifespan Holds, Condolences Know Your Name'),

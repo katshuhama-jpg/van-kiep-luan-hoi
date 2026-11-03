@@ -257,6 +257,7 @@ export interface Choice {
   label: string;
   hint?: string;
   lean: Lean;
+  off?: boolean; // 4.1.0: lựa chọn mờ, không bấm được (vd không đủ linh thạch)
   run: (c: Character, ctx: EffectCtx) => string;
 }
 
@@ -285,7 +286,7 @@ export interface PendingEvent {
   seed?: number; // để bộ lựa chọn ngẫu nhiên giữ nguyên khi chọn
   title: string;
   text: string;
-  choices: { label: string; hint?: string; lean: Lean }[];
+  choices: { label: string; hint?: string; lean: Lean; off?: boolean }[];
   item?: string; // 4.1.0: id món đồ để thẻ sự kiện vẽ ảnh và chỉ số
   pet?: string; // 4.2.0: id linh thú để thẻ sự kiện vẽ hình, rank, cấp
   petLv?: number;
