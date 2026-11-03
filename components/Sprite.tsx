@@ -4,7 +4,7 @@ import { useEffect, useState, type CSSProperties } from 'react';
 import { HAIR_COLORS, ITEMS, PATHS, type RobeDeco, type WeaponKind } from '@/lib/game/data';
 import { ANIM, composeStrip, readyStrip, type Anim, type Layer } from '@/lib/lpc';
 import { equippedLook } from '@/lib/game/helpers';
-import { PETS, petOf } from '@/lib/game/pets';
+import { PETS, dragonFollows, petOf } from '@/lib/game/pets';
 import { PixelFx, fxEmbers, fxHuStars, fxHuVortex, fxMaHoa, fxMaXich, fxNguSacVan, fxTienHalo, fxTienPetals, fxChuongVang, fxOrbit, fxPillar, fxRays, fxRing, fxMotes, fxBatQuai, fxCuuVi, fxDanHoan, fxHuyetNguyet, fxKiem, fxLua, fxLuaTien, fxMaKhi, fxPhatQuang, fxSen, fxTuongVan } from './PixelFx';
 import type { Character } from '@/lib/game/types';
 import { tr } from '@/lib/i18n';
@@ -871,7 +871,7 @@ export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Charact
       {url && aura && !l.dead && !cos && l.realm >= 5 && !ma0(l) && Math.abs(l.dao) < 15 && <TuongVan box={box} />}
       {url && aura && !l.dead && l.realm >= 2 && <PathAura path={l.path} ma={ma0(l)} yeu={!!l.yeu} realm={l.realm} color={aura} box={box} />}
       {url && l.path === 'phat' && !l.dead && <span className="lpc-halo" style={{ width: box * 0.26, height: box * 0.26, top: box * 0.06 }} />}
-      {url && l.pet && l.stage !== 'baby' && !l.dead && <PetRoam id={petOf(c)} box={box} />}
+      {url && l.pet && l.stage !== 'baby' && !l.dead && !dragonFollows(c) && <PetRoam id={petOf(c)} box={box} />}
       {url &&
         (aura && !l.dead && l.realm >= 1 ? (
           // viền hào quang ôm sát dáng người, càng lên cảnh giới càng dày và sáng
