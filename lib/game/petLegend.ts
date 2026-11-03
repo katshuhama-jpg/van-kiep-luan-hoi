@@ -4,6 +4,7 @@ import { tr } from '../i18n';
 /**
  * 4.2.0: linh thú truyền thuyết (rank SSR, SSS). Dùng thú LPC lớn có sẵn trong bộ quái,
  * vẽ bằng MonsterLpc thay cho sprite thú cưng nhỏ ở /lpc/pets.
+ * Thanh Long, Huyền Vũ, Hỏa Phượng vẽ riêng kiểu phương Đông (scripts/gen_tu_linh.py), Tyler góp ý 3/11.
  */
 export interface LegendPet {
   name: string;
@@ -21,7 +22,7 @@ export const LEGEND_PETS: Record<string, LegendPet> = {
   },
   tat_phuong: {
     name: tr('Tất Phương', 'Bifang'),
-    look: { kind: 'beast', sheet: 'dk_crane', frames: 3, cell: 48, scale: 1.3, strip: true, fps: 3, filter: 'sepia(1) saturate(5) hue-rotate(-30deg)' },
+    look: { kind: 'beast', sheet: 'tl_tatphuong', frames: 4, cell: 64, scale: 1.3, strip: true, fps: 3, filter: 'drop-shadow(0 0 4px #ff7a2a)' },
     meet: tr('Chim một chân lông đỏ như lửa đậu trên cành khô. Cành cây bốc khói mà không cháy.', 'A one-legged bird with fire-red feathers perches on a dead branch. The branch smokes but does not burn.'),
   },
   cuu_vi: {
@@ -52,7 +53,7 @@ export const LEGEND_PETS: Record<string, LegendPet> = {
   },
   thanh_long: {
     name: tr('Thanh Long', 'Azure Dragon'),
-    look: { kind: 'beast', sheet: 'dk_flydragon', frames: 3, cell: 144, scale: 0.75, strip: true, fps: 5, filter: 'hue-rotate(80deg) saturate(1.4) drop-shadow(0 0 5px #9ff0c8)' },
+    look: { kind: 'beast', sheet: 'tl_long', frames: 4, cell: 96, scale: 1.15, strip: true, fps: 5, filter: 'drop-shadow(0 0 4px #9ff0c8)' },
     meet: tr('Mây đen cuộn lại phía đông, một con rồng xanh lượn xuống, vảy rơi thành mưa linh khí.', 'Dark clouds roll in from the east and an azure dragon descends, its shed scales falling as rain of spirit qi.'),
     fly: true,
   },
@@ -63,12 +64,12 @@ export const LEGEND_PETS: Record<string, LegendPet> = {
   },
   huyen_vu: {
     name: tr('Huyền Vũ', 'Black Tortoise'),
-    look: { kind: 'beast', sheet: 'dk_turtle', frames: 8, cell: 64, scale: 1.3, strip: true, fps: 6, filter: 'hue-rotate(140deg) saturate(1.2) brightness(0.9) drop-shadow(0 0 4px #5ad0c0)' },
+    look: { kind: 'beast', sheet: 'tl_quy', frames: 4, cell: 80, scale: 1.1, strip: true, fps: 3, filter: 'drop-shadow(0 0 4px #5ad0c0)' },
     meet: tr('Biển bắc rút nước, để lộ một con rùa đen lớn như hòn đảo, rắn quấn trên mai.', 'The northern sea draws back to reveal a black tortoise the size of an island, a serpent coiled on its shell.'),
   },
   hoa_phuong: {
     name: tr('Hỏa Phượng', 'Fire Phoenix'),
-    look: { kind: 'beast', sheet: 'dk_crane', frames: 3, cell: 48, scale: 1.8, strip: true, fps: 3, filter: 'sepia(1) saturate(6) hue-rotate(-15deg) brightness(1.2) drop-shadow(0 0 6px #ffb02a)' },
+    look: { kind: 'beast', sheet: 'tl_phuong', frames: 4, cell: 96, scale: 0.95, strip: true, fps: 5, filter: 'drop-shadow(0 0 5px #ffb02a)' },
     meet: tr('Ngọn núi lửa tắt trăm năm bỗng sáng rực. Từ tro tàn, một con phượng lửa vươn cánh hót vang.', 'A volcano dead for a century suddenly blazes. From the ashes a fire phoenix spreads its wings and sings.'),
     fly: true,
   },
