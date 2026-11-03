@@ -18,6 +18,36 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '4.2.0',
+    date: '04/11/2026',
+    title: tr('Công Pháp Nhập Thế', 'Techniques Enter the World'),
+    lead: tr('Mỗi đạo nay có công pháp riêng, và mọi trận ở màn chơi chính đều ra chiêu theo công pháp bạn mang.', 'Every path now has techniques of its own, and every fight on the main screen is fought with the techniques you carry.'),
+    more: [
+      tr('Tàng Kinh Các: cài chiêu, nâng tầng', 'Scripture Pavilion: equip moves, raise stages'),
+      tr('Chiêu thức vẽ pixel mới', 'New pixel-art moves'),
+      tr('Mỗi đạo một tuyệt kỹ riêng', 'An ultimate for every path'),
+    ],
+    groups: [
+      {
+        h: tr('Công pháp', 'Techniques'),
+        hot: true,
+        items: [
+          tr('Nút Công pháp dưới màn chơi mở Tàng Kinh Các: cài tâm pháp, chiêu thức, xem tuyệt kỹ của đạo mình.', 'The Techniques button below the stage opens the Scripture Pavilion: equip your heart method and moves, and see your path\'s ultimate.'),
+          tr('Chiêu luyện lâu thì lên tầng. Tàn quyển rơi trên giang hồ, mỗi bộ một loại, đi đâu nhặt được gì thì tự tìm.', 'Moves you practise long enough rise in stage. Scripture fragments drop across the jianghu, each set its own kind; where to find which is for you to discover.'),
+          tr('Có chỗ phải chọn hướng luyện, và có thể truyền một bộ cho kiếp sau.', 'Some points ask you to choose a direction, and you can pass one set on to your next life.'),
+        ],
+      },
+      {
+        h: tr('Trận đánh', 'Battles'),
+        items: [
+          tr('Trừ yêu, chặn đường, người giang hồ, bóng kiếp trước đều đánh bằng chiêu thức, có hiệu ứng riêng từng chiêu.', 'Demon hunts, ambushes, wanderers of the jianghu and shadows of past lives are all fought with moves, each with its own effect.'),
+          tr('Mỗi đạo có một thanh khí riêng, đầy thì ra tuyệt kỹ.', 'Each path has its own energy bar; fill it to unleash the ultimate.'),
+          tr('Người chơi khác gặp trên giang hồ mang đúng công pháp họ đang luyện. Lôi đài giữ nguyên.', 'Other players you meet in the jianghu carry the very techniques they are practising. The Arena stays as it was.'),
+        ],
+      },
+    ],
+  },
+  {
     v: '4.1.0',
     date: '03/11/2026',
     title: tr('Phường Thị Đổi Đời', 'The Market Reborn'),
