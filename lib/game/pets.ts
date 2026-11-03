@@ -560,3 +560,6 @@ export const PET_STORIES: GameEvent[] = STORIES.map((st) => ({
     ];
   },
 }));
+
+/** Rồng con (cốt truyện nuôi trứng rồng) hay rồng lớn đang theo người: lúc đó rồng là bạn đồng hành, không vẽ thêm thú cưng (sửa nóng 3/11: sân khấu hiện 2 con cùng lúc) */
+export const dragonFollows = (c: Pick<Character, 'mount' | 'arcs'>): boolean => c.mount === 'rong' || (!!c.arcs?.rong && c.arcs.rong.s >= 2 && c.arcs.rong.s < 9);
