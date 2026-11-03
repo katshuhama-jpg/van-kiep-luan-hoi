@@ -169,9 +169,32 @@ export function pickAuctionLot(c: Character, rnd: () => number): string | null {
   if (!pool.length) pool = ITEMS.filter((i) => i.src === 'drop' && (i.rare ?? 0) >= 2 && i.minRealm <= Math.max(c.realm + 1, 1) && i.minRealm >= Math.max(0, c.realm - 2) && fits(c, i) && !c.inventory.includes(i.id));
   return pool.length ? pool[Math.floor(rnd() * pool.length)].id : null;
 }
+/**
+ * Bản 5/11 (Tyler chốt 4/11, góp ý #90, #92): giá đấu giá theo túi tiền thật của người chơi, không theo giá trị món.
+ * "Giá vừa" bằng số linh thạch của khoảng 10% người giàu nhất ở cảnh giới đó (đo 3/11): đa số vẫn phải bỏ qua,
+ * ai tích cóp giỏi mới mua được. Món tốt hơn mặt bằng thì đắt hơn (0,7 tới 1,4 lần). Sau phi thăng vẫn đắt để hút bớt tiền.
+ */
+export const AUCTION_TARGET = [0, 550, 600, 1500, 6000, 7000, 11000, 18000, 80000, 100000, 120000, 150000];
+const lotPool = (realm: number) => {
+  const rare = realm >= 3 ? 3 : 2;
+  const cos = realm >= 8;
+  const lo = cos ? Math.max(8, realm) : realm >= 4 ? realm : Math.max(0, realm - 1);
+  const hi = cos ? 11 : Math.min(7, realm + 1);
+  return ITEMS.filter((i) => i.src === 'drop' && (i.rare ?? 0) === rare && i.minRealm >= lo && i.minRealm <= hi);
+};
+const LOT_MEDIAN: number[] = [];
+export function auctionValue(c: Pick<Character, 'realm'>, it: Item): number {
+  const r = Math.max(1, Math.min(11, c.realm));
+  if (LOT_MEDIAN[r] === undefined) {
+    const v = lotPool(r).map((i) => itemValue(i)).sort((a, b) => a - b);
+    LOT_MEDIAN[r] = v.length ? v[Math.floor(v.length / 2)] : itemValue(it);
+  }
+  const k = Math.max(0.7, Math.min(1.4, itemValue(it) / Math.max(1, LOT_MEDIAN[r])));
+  return Math.round((AUCTION_TARGET[r] * k) / 10) * 10;
+}
 export function auctionEvent(c: Character): GameEvent {
   const it = ITEMS.find((i) => i.id === c.auctionLot);
-  const v = it ? itemValue(it) : 0;
+  const v = it ? auctionValue(c, it) : 0;
   const bid = (k: number) => Math.round(v * BID_TIERS[k].mul);
   return {
     id: AUCTION_EVENT_ID,
