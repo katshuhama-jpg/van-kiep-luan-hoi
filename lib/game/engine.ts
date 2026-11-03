@@ -329,7 +329,17 @@ function enterRealm(c: Character, realm: number, ctx: EffectCtx, talents: string
   // 4.0.3 (#51): thọ thêm từ đan, đào, kỳ ngộ (lifeExtra) không bị trần thọ cắt mất khi đột phá; cùng luật với trần hằng năm
   const extra = Math.min(c.lifeExtra ?? 0, Math.round(lifeCap(realm) / 2));
   const natural = Math.min(lifeCap(realm), Math.round(base * lifeMult(c, talents) * (0.9 + rnd() * 0.2)));
+  const before = c.lifespan;
   c.lifespan = Math.min(lifeCap(realm) + extra, Math.max(c.lifespan, natural + extra));
+  // sửa nóng 3/11 (#84, #85): thọ đã chạm trần tự nhiên thì đột phá không thêm năm nào, người chơi tưởng lỗi.
+  // Nay mỗi lần lên cảnh giới lớn luôn thêm ít nhất một phần thọ; phần bù ghi vào lifeExtra để trần hằng năm không cắt lại.
+  const minGain = realm >= ASCEND_REALM ? 40 : 10 + 5 * realm;
+  const gain = c.lifespan - before;
+  if (realm >= 2 && gain < minGain) {
+    const add = minGain - Math.max(0, gain);
+    c.lifeExtra = (c.lifeExtra ?? 0) + add;
+    c.lifespan = Math.min(lifeCap(realm) + Math.min(c.lifeExtra, Math.round(lifeCap(realm) / 2)), c.lifespan + add);
+  }
   const up = promoteByRealm(c, ctx);
   if (up) ctx.log(up, 'good');
   // quà phi thăng theo cõi: áo khi vào cõi (mặc luôn), vũ khí ở cảnh giới 9, phụ kiện ở cảnh giới 10
