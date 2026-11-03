@@ -1,11 +1,13 @@
 'use client';
 
+import { buryPlan } from '@/lib/game/ruong';
 import Link from 'next/link';
 import GhiDanh from '@/components/GhiDanh';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Scene from '@/components/Scene';
 import MusicToggle from '@/components/MusicToggle';
 import { CoachHint, TribulationOverlay, Tutorial, clearLaSo } from '@/components/Extras';
+import CamNang, { cnSeen, type CnChapter } from '@/components/CamNang';
 import { HoDaoScene, HoTroScene, TuKiepOverlay } from '@/components/VanKiep';
 import type { PastSelf } from '@/lib/vanKiep';
 import { LOI_ALLOW, LOI_TOTAL, daoKhon, failVanDao, usesVanDao } from '@/lib/game/vanDao';
@@ -100,6 +102,9 @@ export default function PlayPage() {
   const [nhdPeek, setNhdPeek] = useState(false); // xem luật Ngũ Hành Đài từ dải nhắc
   const [nhd, setNhd] = useState<{ i: number; p: PendingEvent; view: NhdView | 'fight' | 'hodao'; foe: Stance; tell: Stance; msg?: string; end?: 'next' | 'done' | 'lose' | 'dead' } | null>(null);
   const [tut, setTut] = useState(false); // hướng dẫn đầy đủ (mở từ menu)
+  // 5/11 Cẩm Nang Tu Tiên (truyện tranh): mở từ menu, hoặc tự mở đúng lúc cho người mới
+  const [cn, setCn] = useState<{ ch: CnChapter | null; only: boolean; from: string } | null>(null);
+  const cnAsked = useRef<Set<string>>(new Set());
   // gợi ý đúng lúc cho người mới: mỗi lúc một bong bóng, đã xem thì thôi
   const [hints, setHints] = useState<Record<string, 1>>(() => {
     try {
@@ -314,7 +319,7 @@ export default function PlayPage() {
   const [wares, setWares] = useState<Ware[] | null>(null);
   // 4.1.0: kết quả hội đấu giá hiện thành thẻ riêng (trước chỉ ghi vào gia phả, người chơi không biết thắng hay thua)
   const [auctionRes, setAuctionRes] = useState<{ item: string; won: boolean; text: string } | null>(null);
-  activeRef.current = running && sheet === null && !ciOpen && wares === null && auctionRes === null && phase === 'play' && kiep === null && hoTro === null && vanDao === null && !tut && duelWarn === null && !nhdPeek && !relOpen && !downOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
+  activeRef.current = running && sheet === null && !ciOpen && wares === null && auctionRes === null && phase === 'play' && kiep === null && hoTro === null && vanDao === null && !tut && cn === null && duelWarn === null && !nhdPeek && !relOpen && !downOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
 
   /** Ngũ hành giữa bạn và loài quái */
   function monElem(c: Character, m: { el?: Element }) {
@@ -1807,12 +1812,11 @@ export default function PlayPage() {
         partner: c.partner,
       },
       stash:
-        bury && !c.ascended && c.endTag !== 'xuyen_khong'
+        bury && buryPlan(c, !!legend)
           ? {
               from: c.name,
               lifeNo: c.lifeNo,
-              money: Math.round(c.linhThach * 0.3),
-              item: c.equipped.phu_kien ?? (legend ? null : c.equipped.vu_khi) ?? null,
+              ...buryPlan(c, !!legend)!,
               note,
               place: rnd() < 0.5 ? tr('gốc đa đầu làng', "under the banyan at the village gate") : rnd() < 0.5 ? tr('dưới nền ngôi miếu cũ', "beneath the floor of the old temple") : tr('bên bờ suối sau núi', "by the stream behind the mountain"),
             }
@@ -1943,6 +1947,30 @@ export default function PlayPage() {
   const nb = unseen(meta);
   const newBook = nb.endings || nb.items;
   const yearPct = (c.age % 1) * 100;
+  // Cẩm nang đúng lúc: chỉ cho người mới (ít kiếp), mỗi hồi một lần, không chen ngang trận đấu hay bảng đang mở
+  if (!cn && !c.dead && meta.lives < 3 && sheet === null && !tut && !relOpen && !downOpen && !ciOpen && kiep === null && !nhd && !duelWarn && !ascend && !gifts) {
+    const seen = cnSeen();
+    const want: CnChapter | null =
+      pending?.id === '__chon_duong'
+        ? 'nga_re'
+        : pending
+          ? null
+          : meta.lives === 0 && c.lifeNo <= 1 && !seen.includes('mot_kiep')
+            ? 'mot_kiep'
+            : c.lifeNo >= 2 && c.age < 6 && !seen.includes('luan_hoi')
+              ? 'luan_hoi'
+              : c.realm >= 6 && !c.cosmos && !seen.includes('phi_thang')
+                ? 'phi_thang'
+                : c.realm >= 2 && !seen.includes('danh_nhau') && seen.includes('canh_gioi')
+                  ? 'danh_nhau'
+                  : c.realm >= 1 && !seen.includes('canh_gioi')
+                    ? 'canh_gioi'
+                    : null;
+    if (want && !seen.includes(want) && !cnAsked.current.has(want)) {
+      cnAsked.current.add(want);
+      setTimeout(() => setCn({ ch: want, only: true, from: 'auto' }), 0);
+    }
+  }
 
   return (
     <main className={`game ${pending && !c.dead ? 'has-event' : ''}`}>
@@ -2242,6 +2270,16 @@ export default function PlayPage() {
               
               {tr("Hướng dẫn chơi", "How to play")}
             </button>
+            <button
+              className="btn"
+              onClick={() => {
+                setSheet(null);
+                setCn({ ch: null, only: false, from: 'menu' });
+              }}
+            >
+              {tr("Cẩm nang tu tiên (truyện tranh)", "Cultivation handbook (comic)")}
+              {cnSeen().length < 6 && <span className="new-tag">{tr("mới", "new")}</span>}
+            </button>
             <Link className="btn" href="/cap-nhat" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
               
               {tr("Lịch sử cập nhật · bản ", "Update history · version ")}{CURRENT_VERSION}
@@ -2282,10 +2320,11 @@ export default function PlayPage() {
       )}
       {c.dead && <DeathSheet c={c} meta={meta} karma={karmaOf(c)} isNew={!meta.endings?.[endingOf(c).id]} onDone={finishLife} />}
       {(() => {
-        if (tut || c.dead || sheet !== null || kiep !== null || hoTro || vanDao || nhd || duelWarn || duelRef.current || ambushRef.current) return null;
+        if (tut || cn || c.dead || sheet !== null || kiep !== null || hoTro || vanDao || nhd || duelWarn || duelRef.current || ambushRef.current) return null;
         const h = nextHint(hints, !!pending, c.age);
         return h ? <CoachHint key={h.k} sel={h.sel} text={h.text} top={h.top} onOk={() => seeHint(h.k)} /> : null;
       })()}
+      {cn && <CamNang start={cn.ch} only={cn.only} from={cn.from} onClose={() => setCn(null)} />}
       {tut && !pending && !c.dead && (
         <Tutorial
           onDone={() => {

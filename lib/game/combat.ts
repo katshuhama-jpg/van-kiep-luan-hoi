@@ -658,7 +658,7 @@ export function hit(atk: number, def: number, rnd: () => number, critRate = 0.15
 
 /** Ước tính tu vi nhận được khi thắng (để hiện ở bảng chọn quái) */
 export function killExp(c: Character, m: Monster): number {
-  if (m.boss) return 0;
+  if (m.boss || isHaPham(c, m)) return 0;
   const d = effLv(c, m) - combatLevel(c);
   // mỗi con quái vừa sức cho khoảng 1/3 năm tu luyện, một năm trảm 4-6 con nên nhanh gấp 2-3 lần ngồi thiền
   const yearly = ([6, 30, 30, 34, 38, 42, 46, 50][c.realm] ?? 50) * (0.6 + c.stats.ngoTinh / 100);
@@ -760,6 +760,16 @@ export function monsterRealm(lv: number): number {
 }
 
 /** Loài quái người chơi gặp được ở giới hiện tại: phàm giới, tiên giới hay ma giới, cộng quái thí luyện tông môn */
+/**
+ * Bản 5/11 Hạ phàm: người đã phi thăng xuống hạ giới săn quái phàm để kiếm đồ.
+ * Linh khí hạ giới quá loãng nên không lên tu vi, nhưng đồ rơi đầy đủ (không bị phạt vì quái yếu)
+ * và dễ ra đồ hiếm hơn. Đồ phàm dùng để sưu tầm Bảo khố, bán, hoặc chôn vào rương cho kiếp sau.
+ */
+export const isHaPham = (c: Character, m: Monster) => !!c.cosmos && !m.cosmos;
+export function haPhamMonsters(): Monster[] {
+  return MONSTERS.filter((m) => !m.cosmos && !m.sect && !m.boss);
+}
+
 export function monstersFor(c: Character, sectSide: 'chinh' | 'ta' | 'trung' | null): Monster[] {
   if (c.cosmos) return MONSTERS.filter((m) => m.cosmos === c.cosmos);
   return MONSTERS.filter((m) => !m.cosmos && (!m.doKiep || c.realm >= DO_KIEP_REALM) && (!m.sect || m.sect === sectSide));
@@ -770,6 +780,7 @@ export function monstersFor(c: Character, sectSide: 'chinh' | 'ta' | 'trung' | n
  * Yếu hơn 6 cấp trở lên: 0; 4-5 cấp: 25%; 2-3 cấp: 60%; ngang: 100%; mạnh hơn từ 2 cấp: 130%.
  */
 export function dropFactor(c: Character, m: Monster): number {
+  if (isHaPham(c, m)) return 1;
   const d = effLv(c, m) - combatLevel(c);
   return d <= -6 ? 0 : d <= -4 ? 0.25 : d <= -2 ? 0.6 : d >= 2 ? 1.3 : 1;
 }
@@ -785,14 +796,15 @@ const SECT_ONLY = new Set(ITEMS.filter((i) => i.from?.length && i.from.every((id
  */
 export function lootDrop(c: Character, m: Monster, ctx: EffectCtx): string | null {
   const g = gearFx(c.equipped);
-  const luck = (1 + Math.max(0, c.stats.khiVan - 50) / 100) * (1 + g.drop / 100) * (1 + tierOf(c, m) * 0.3) * (omenIs('cat_tinh') ? 1.5 : 1);
+  const ha = isHaPham(c, m);
+  const luck = (1 + Math.max(0, c.stats.khiVan - 50) / 100) * (1 + g.drop / 100) * (1 + tierOf(c, m) * 0.3) * (omenIs('cat_tinh') ? 1.5 : 1) * (ha ? 1.5 : 1);
   const r = ctx.rnd();
   // quái yếu hơn mình từ 3 cấp chỉ rơi đồ phàm, tốt; cực phẩm chỉ ở quái ngang hoặc mạnh hơn
   const gap = effLv(c, m) - combatLevel(c);
-  const cap = gap <= -3 ? 1 : gap <= -1 ? 2 : 3;
+  const cap = ha ? 3 : gap <= -3 ? 1 : gap <= -1 ? 2 : 3;
   const rare = Math.min(cap, r < 0.02 * luck ? 3 : r < 0.1 * luck ? 2 : r < 0.4 * luck ? 1 : 0);
   // đồ theo cấp của quái chứ không theo cảnh giới người chơi
-  const mr = Math.min(c.realm, monsterRealm(effLv(c, m)));
+  const mr = ha ? Math.min(7, monsterRealm(effLv(c, m))) : Math.min(c.realm, monsterRealm(effLv(c, m)));
   const lo = Math.max(0, mr - 2);
   const ok = (i: (typeof ITEMS)[number]) => i.src !== 'event' && !SECT_ONLY.has(i.id) && (i.rare ?? 0) === rare && i.minRealm <= mr;
   let pool = ITEMS.filter((i) => ok(i) && i.minRealm >= lo);
