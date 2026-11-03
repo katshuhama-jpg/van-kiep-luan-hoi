@@ -115,17 +115,20 @@ export function mergeItems(c: Character, ids: string[], ctx: EffectCtx): MergeRe
   if (its.some((i) => (i.rare ?? 0) !== rare)) return null;
   const cost = MERGE_COST[rare];
   if ((c.tinhHoa ?? 0) < cost) return null;
-  c.tinhHoa = (c.tinhHoa ?? 0) - cost;
-  c.inventory = c.inventory.filter((x) => !ids.includes(x));
   const realm = Math.min(c.cosmos ? 11 : 7, Math.max(...its.map((i) => i.minRealm)));
   const ok = ctx.rnd() < MERGE_CHANCE[rare];
   const want = ok ? rare + 1 : rare;
-  const pick = (lo: number, hi: number) =>
-    ITEMS.filter((i) => i.src === 'drop' && (i.rare ?? 0) === want && i.minRealm >= lo && i.minRealm <= hi && (!i.path || i.path === c.path) && !c.inventory.includes(i.id));
+  // Đồ ra lò: đồ rơi hoặc đồ phường thị (đồ Phàm chỉ có ở phường thị), không lấy đồ sự kiện, không trùng 3 món vừa bỏ vào
+  const base = ITEMS.filter((i) => i.src !== 'event' && (i.rare ?? 0) === want && !ids.includes(i.id));
+  const pick = (lo: number, hi: number) => base.filter((i) => i.minRealm >= lo && i.minRealm <= hi && fits(c, i) && !c.inventory.includes(i.id));
   let pool = pick(Math.max(0, realm - 1), realm);
   if (!pool.length) pool = pick(0, Math.max(realm, c.realm));
-  if (!pool.length) pool = ITEMS.filter((i) => i.src === 'drop' && (i.rare ?? 0) === want);
-  const item = pool[Math.floor(ctx.rnd() * pool.length)];
+  if (!pool.length) pool = base.filter((i) => i.minRealm <= Math.max(realm, c.realm));
+  if (!pool.length) pool = base;
+  // hỏng mà vẫn không tìm được món nào thì trả lại một trong ba món đã bỏ vào, không bao giờ mất trắng
+  const item = pool.length ? pool[Math.floor(ctx.rnd() * pool.length)] : its[Math.floor(ctx.rnd() * its.length)];
+  c.tinhHoa = (c.tinhHoa ?? 0) - cost;
+  c.inventory = c.inventory.filter((x) => !ids.includes(x));
   giveItem(c, item.id, false);
   ctx.fx(ok ? 'layer' : 'buy', item.name);
   const text = ok

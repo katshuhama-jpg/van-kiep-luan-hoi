@@ -79,10 +79,16 @@ export function MergeScene({ c, onMerge, onClose }: { c: Character; onMerge: (id
     setPhase('fuse');
     timers.current.push(
       setTimeout(() => {
-        const r = onMerge(pick);
+        let r: MergeResult | null = null;
+        try {
+          r = onMerge(pick);
+        } catch (e) {
+          console.error(e);
+        }
         setRes(r);
         setPick([]);
-        setPhase('res');
+        // lò không ra gì (lỗi hoặc không đủ điều kiện) thì về trạng thái chờ, không kẹt ở "Đang hợp..."
+        setPhase(r ? 'res' : 'idle');
         try {
           navigator.vibrate?.(r?.kind === 'ok' ? [40, 40, 80] : 90);
         } catch {}
