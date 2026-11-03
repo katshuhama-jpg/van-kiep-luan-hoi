@@ -160,7 +160,7 @@ export function EventCard({ p, c, onChoose }: { p: PendingEvent; c?: Character; 
       {p.item && <EventItem id={p.item} c={c} />}
       <div className="choices">
         {p.choices.map((ch, i) => (
-          <button key={i} className={`choice ${ch.lean}`} onClick={() => onChoose(i)}>
+          <button key={i} className={`choice ${ch.lean} ${ch.off ? 'off' : ''}`} disabled={ch.off} onClick={() => !ch.off && onChoose(i)}>
             <span>
               {String.fromCharCode(65 + i)}. {ch.label}
             </span>
@@ -203,7 +203,7 @@ export function LogPanel({ log }: { log: LogEntry[] }) {
       <div className="log">
         {items.map((e, i) => (
           <div key={log.length - i} className={`log-item ${e.tone}`}>
-            <span className="a">{e.age}{tr("t", "y")}</span>
+            <span className="a">{Math.floor(e.age)}{tr("t", "y")}</span>
             <span className="t">{e.text}</span>
           </div>
         ))}

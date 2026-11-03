@@ -38,12 +38,12 @@ Nguyên tắc: không đưa cái chết vô lý trở lại. Nguy hiểm dời v
   - Trả lời trên Threads khi làm xong; chưa hứa ngày.
 
 ## Góp ý trong game chưa có plan (chưa trả lời, trạng thái moi)
-- #26 (shizun), #30 (madaochiton), Messenger Nguyễn Huy 1/11: linh thú có lực chiến, tiến giai, mục xem linh thú (đặc tính, kỹ năng); Ngự Thú Tông / Vạn Thú Tông. Tyler đã nói với người chơi (Messenger 1/11): "đã plan cho update tuần tới", phải cân bằng với nhịp chơi nhanh của game. ĐƯA VÀO 4.2.0. #26 phần kẻ thù đã xong ở 4.0.1.
+- #26 (shizun), #30 (madaochiton), Messenger Nguyễn Huy 1/11: linh thú có lực chiến, tiến giai, mục xem linh thú (đặc tính, kỹ năng); Ngự Thú Tông / Vạn Thú Tông. Tyler đã nói với người chơi (Messenger 1/11): "đã plan cho update tuần tới", phải cân bằng với nhịp chơi nhanh của game. ĐƯA VÀO 4.2.0. #26 phần kẻ thù đã xong ở 4.0.1. Tyler chốt 2/11 tối (đổi lịch): công pháp lên thứ Tư 4/11 (bản 4.2.0, nhánh cong-phap, khối Ngày 6), mọi trận ở màn chơi chính theo công pháp; linh thú lên thứ Sáu 6/11 (bản 4.3.0, nhánh linh-thu dựng lại trên cong-phap, khối Ngày 7).
 - #30: Hệ Thống buff vàng xứng tầm hơn (đang chỉ cho Tụ Khí Đan).
 - #24 (phần Tình duyên), #35 (gái đẹp sau Chứng Đạo): chờ Tyler nghĩ về Tình duyên.
 - #27, #31, #36, #48: nội dung, trang bị sau Chứng Đạo (gần T1).
-- #50 (bachct): bùa rèn đồ không mất đồ, tăng tỉ lệ rèn thành công (phần lag đã xong 1/11).
-- #49 (vickary): Luyện Khí bị kẻ thù Huyền Tiên đến báo thù (oan gia cảnh giới quá cao so với mình).
+- #50 (bachct): bùa rèn đã làm (Hộ Khí Phù, Linh Hỏa), lên 4.1.0 sáng 3/11.
+- #49 (vickary): trần chênh cảnh giới đã làm, lên 4.1.0 sáng 3/11.
 - Messenger page (1/11): sự kiện nói "học công pháp" nhưng không có mục xem đã học công pháp gì (công pháp hiện chỉ là chữ trong sự kiện, không lưu vào nhân vật). Ý: sổ công pháp, mỗi bộ có tên và tác dụng.
 - Messenger page (1/11): mở nhóm Discord cho cộng đồng, sự kiện.
 - Messenger page (1/11): đang trừ yêu mà sự kiện năm vẫn hiện. Tyler chốt 1/11: GIỮ NGUYÊN, vì diệt yêu cũng tốn thời gian trong đời. Không đổi.

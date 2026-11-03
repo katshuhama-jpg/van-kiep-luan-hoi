@@ -627,7 +627,7 @@ function buildPending(c: Character, e: GameEvent): PendingEvent {
     seed,
     title: e.title,
     text: e.text(c),
-    choices: e.choices(c, seed).map((ch) => ({ label: ch.label, hint: ch.hint, lean: ch.lean })),
+    choices: e.choices(c, seed).map((ch) => ({ label: ch.label, hint: ch.hint, lean: ch.lean, ...(ch.off ? { off: true } : {}) })),
     item: e.item?.(c),
   };
 }
