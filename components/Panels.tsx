@@ -203,7 +203,7 @@ export function LogPanel({ log }: { log: LogEntry[] }) {
       <div className="log">
         {items.map((e, i) => (
           <div key={log.length - i} className={`log-item ${e.tone}`}>
-            <span className="a">{e.age}{tr("t", "y")}</span>
+            <span className="a">{Math.floor(e.age)}{tr("t", "y")}</span>
             <span className="t">{e.text}</span>
           </div>
         ))}

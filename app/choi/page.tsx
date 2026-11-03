@@ -1242,7 +1242,7 @@ export default function PlayPage() {
         if (cash) money(ch, cash);
         if (g.tinh) ch.tinhHoa = (ch.tinhHoa ?? 0) + g.tinh;
         if (it) giveItem(ch, it.id, true);
-        ch.log.push({ age: ch.age, tone: 'good', text: tr(`Quà điểm danh ngày ${n}: ${checkinLabel(g, hon, ch.realm).replace(/1 món (Cực phẩm|Hiếm)/, it ? it.name : '$&')}.`, `Day ${n} check-in gift: ${checkinLabel(g, hon, ch.realm).replace(/1 (Supreme|Rare) item/, it ? it.name : '$&')}.`) });
+        ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: tr(`Quà điểm danh ngày ${n}: ${checkinLabel(g, hon, ch.realm).replace(/1 món (Cực phẩm|Hiếm)/, it ? it.name : '$&')}.`, `Day ${n} check-in gift: ${checkinLabel(g, hon, ch.realm).replace(/1 (Supreme|Rare) item/, it ? it.name : '$&')}.`) });
       });
     } else if (cash || it || g.tinh) {
       const cn = base.checkinNext ?? {};
