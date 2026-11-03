@@ -111,6 +111,13 @@ export interface Character {
   element?: Element; // ngũ hành bản mệnh
   danDoc?: { y: number; n: number }; // số viên đan đã uống trong năm (đan độc)
   petKind?: string; // loại thú cưng (xem lib/game/pets.ts)
+  // 4.2.0 công pháp (lib/game/congPhap.ts)
+  cp?: { own: { id: string; tang: number; exp: number; bien?: 'cuong' | 'nhu' | null }[]; eq: string[]; tuyet?: string | null };
+  cpHint?: boolean; // đã báo có bộ đầy thục luyện
+  tq?: Record<string, number>; // tàn quyển riêng từng bộ công pháp: lên tầng từ tầng 4, tuyệt kỹ để dung hợp
+  tqVan?: number; // tàn quyển vạn năng (hiếm): bù vào bộ nào cũng được
+  cpPast?: string[]; // các bộ kiếp trước từng luyện (bóng kiếp trước rơi tàn quyển các bộ này)
+  cpHeirPick?: string | null; // chiêu chọn truyền cho kiếp sau
   lookSeed?: number; // nét riêng của ngoại hình: da, khuôn mặt, râu, trang sức
   legend?: Legend | null; // thần binh truyền kiếp đang mang
   vendettas?: Vendetta[];
@@ -225,6 +232,7 @@ export interface RivalChar {
   sectRank?: number;
   cosmos?: 'tien' | 'ma' | 'hu' | null;
   alive: boolean;
+  cp?: { eq: string[]; own: { id: string; tang: number; bien?: 'cuong' | 'nhu' | null }[]; tuyet?: string | null }; // 4.2.0: công pháp đang mang (trận giang hồ, không dùng ở lôi đài)
   lifeId?: number; // lôi đài: kiếp nào làm bóng (0 là nhân vật đang sống)
 }
 
@@ -307,6 +315,8 @@ export interface Meta {
   seenVer?: string; // bản cập nhật đã xem cáo thị
   seenBook?: { e: number; i: number }; // số kết cục, đồ ẩn đã xem (để báo mục mới) // huyết hải thâm thù: các kiếp đã giao đấu với từng người chơi
   petBook?: string[]; // các loài linh thú đã từng nuôi
+  cpHeir?: string | null; // 4.2.0: chiêu truyền thừa, kiếp sau sinh ra đã biết
+  cpBook?: string[]; // 4.2.0: các bộ công pháp từng học
   achievements?: string[]; // thành tựu dài hạn đã đạt
   career?: Career; // số liệu cộng dồn qua các kiếp
   quyThuong?: boolean; // đã nhận thưởng Vạn Kiếp Quy Nhất

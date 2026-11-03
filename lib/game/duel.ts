@@ -12,6 +12,7 @@ import { addCult, addWound, afterLoss, atAge, fatal, giveItem, markDeath, money,
 import { PROVOKE_MUL, SOCIAL } from './social';
 import { daiBiDue, promote, sectSide } from './sect';
 import { hhDuelWin } from './hopHoan';
+import { dropTq, rivalCp } from './congPhap';
 import type { Character, EffectCtx, RivalChar, Slot, Vendetta } from './types';
 import { tr } from '../i18n';
 import { nameOf } from '../hanviet';
@@ -85,7 +86,8 @@ export function foeChar(r: RivalChar): Character {
 }
 
 export function foeStats(r: RivalChar, me?: Character): Fighter {
-  const s = playerStats(foeChar(r));
+  // 4.2.0: trận giang hồ (có me) tính cả tâm pháp của đối thủ; lôi đài (không có me) giữ nguyên như cũ
+  const s = playerStats(me ? { ...foeChar(r), cp: rivalCp(r) } : foeChar(r));
   if (!me) return s;
   // Luân Hồi Đạo: bên luân hồi nhiều hơn thì hồn mòn hơn (quy hết về chỉ số của đối thủ cho gọn)
   const m = lifeMul(r.lifeNo ?? 1, me.lifeNo) / lifeMul(me.lifeNo, r.lifeNo ?? 1);
@@ -416,12 +418,24 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
   const hp0 = c.stats.sucKhoe;
   const cu0 = c.cultivation;
   const out = finishDuel0(c, f, result, pLoss, ctx);
-  if (f.kind === 'kiep_truoc') return out;
+  if (f.kind === 'kiep_truoc') {
+    // 4.2.0: thắng bóng kiếp trước thì nhớ lại một trang công pháp kiếp ấy từng luyện
+    if (result === 'win' && ctx.rnd() < 0.5) {
+      const t = dropTq(c, { kind: 'bong', ids: c.cpPast ?? [] }, ctx.rnd);
+      if (t) out.push(t);
+    }
+    return out;
+  }
   const who = f.rival.player ? `${f.rival.name} (@${f.rival.player})` : f.rival.name;
   // 4.1.0 Hợp Hoan Tông: thắng giao đấu thì "Thái âm bổ dương"
   if (result === 'win') {
     const t = hhDuelWin(c, c.cultivation - cu0, who, ctx.rnd);
     if (t) out.push(t);
+    // 4.2.0: thắng người giang hồ có thể nhặt tàn quyển: cùng đạo thì ra chiêu của đạo, khác đạo thì theo hệ bản mệnh của họ
+    if (ctx.rnd() < 0.3) {
+      const t = dropTq(c, { kind: 'nguoi', path: f.rival.path, el: elementOf(f.rival) }, ctx.rnd);
+      if (t) out.push(t);
+    }
   }
   markDeath(c, 'dao_giang_ho', who);
   if (!c.dead && result !== 'win' && hp0 - c.stats.sucKhoe >= 10)

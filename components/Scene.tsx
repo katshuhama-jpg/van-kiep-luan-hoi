@@ -308,7 +308,7 @@ export default function Scene({ c, fx, paused, season, battle, quiet }: { c: Cha
         </div>
       )}
 
-      {battle && !c.dead && <BattleOverlay b={battle} />}
+      {battle && !c.dead && <BattleOverlay b={battle} me={c} ultCut={!!(battle.ambush || battle.duel)} />}
 
       {!c.dead && !battle && dragonFollows(c) && (
         <div className={`dragon ${c.mount === 'rong' ? 'big' : 'baby'}`} aria-hidden="true">
@@ -321,7 +321,7 @@ export default function Scene({ c, fx, paused, season, battle, quiet }: { c: Cha
           c={c}
           size={150}
           focus={focus}
-          anim={battle && !c.dead ? (battle.phase === 'fight' ? ([...battle.last].reverse().find((h) => h.side === 'p')?.palm ? 'spellcast' : 'slash') : 'idle') : undefined}
+          anim={battle && !c.dead ? (battle.phase === 'fight' ? ([...battle.last].reverse().find((h) => h.side === 'p')?.skill ? 'spellcast' : 'slash') : 'idle') : undefined}
           dir={battle && !c.dead ? 3 : undefined}
         />
       </div>

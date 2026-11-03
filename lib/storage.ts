@@ -1,5 +1,6 @@
 'use client';
 
+import { packCp } from './game/congPhap';
 import { dropSession, type Player } from './auth';
 import { emptyMeta } from './game/engine';
 import type { Character, Grave, Meta, PendingEvent, WorldEcho, RivalChar } from './game/types';
@@ -352,6 +353,7 @@ export async function fetchWorld(user: Player | null): Promise<WorldEcho | null>
     sect: c.sect ?? null,
     sectRank: c.sectRank,
     cosmos: c.cosmos ?? null,
+    cp: packCp(c),
     alive,
   });
   const rivals = (all ?? [])

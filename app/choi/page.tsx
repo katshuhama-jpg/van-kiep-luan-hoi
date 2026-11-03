@@ -16,6 +16,7 @@ import { BagSheet, BaoKhoSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, 
 import Radar, { charAxes, wealthScore } from '@/components/Radar';
 import { giftOf } from '@/lib/game/gacha';
 import type { BattleView } from '@/components/Battle';
+import { TangKinhCac } from '@/components/TangKinhCac';
 import { MONSTERS, combatLevel, effLv, fleeChance, hit, killExp, killReward, loseFight, monsterName, monsterStats, playerStats, tierOf, type Fighter } from '@/lib/game/combat';
 import { sessionDropped, signOut } from '@/lib/auth';
 import { lang, setLang } from '@/lib/i18n';
@@ -29,7 +30,7 @@ import { genNameVi, checkProgress, closedDoor, karmaOf, makeCtx, newCharacter, r
 import { addCult, addPill, dao, fatal, fmt, giveItem, money, reward, stat, wealthTier, DO_KIEP_REALM } from '@/lib/game/helpers';
 import type { Character, Element, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
 import DuelWarning from '@/components/Duel';
-import { artOf } from '@/lib/game/vocong';
+import { GAUGE_NAME, act as cpAct, equip as cpEquip, fuse as cpFuse, unequip as cpUnequip, upgrade as cpUpgrade, swapTq as cpSwapTq, heirChoices, loadoutOf, newSide, npcLoadout, rivalCp, skipTurn, takeHit, type FightSide, type Loadout } from '@/lib/game/congPhap';
 import { trackMiles } from '@/lib/game/miles';
 import { ELEMENTS, elemHitTag, elemMul, elemRel, elementOf } from '@/lib/game/nguhanh';
 import { DUEL_INFO, DUEL_PER_YEAR, DUEL_TURNS, finishDuel, foeChar, foeStats, pickDuel, teaTrap, toRival, type DuelFoe } from '@/lib/game/duel';
@@ -60,10 +61,9 @@ import { tr } from '@/lib/i18n';
 
 const SPEEDS = [1, 2, 4, 8, 16];
 /** màu chưởng lực theo con đường tu luyện */
-const qiColor = (c: Character) => (c.path ? PATHS[c.path].aura : c.daoTam <= -40 ? '#ff3448' : '#9ff0c8');
-type SheetName = null | 'shop' | 'bag' | 'bequan' | 'menu' | 'hunt' | 'info' | 'today' | 'mail' | 'kho';
+type SheetName = null | 'shop' | 'bag' | 'bequan' | 'menu' | 'hunt' | 'info' | 'today' | 'mail' | 'kho' | 'congphap';
 
-type Battle = BattleView & { t: number; rest: number; ps: Fighter; ms: Fighter };
+type Battle = BattleView & { t: number; rest: number; ps: Fighter; ms: Fighter; fsP?: FightSide; fsM?: FightSide; loP?: Loadout; loM?: Loadout };
 
 const HINT_ORDER = ['choice', 'speed', 'focus', 'stats', 'dock'];
 /** Bong bóng gợi ý kế tiếp cho người mới, theo đúng lúc cần dùng */
@@ -321,6 +321,71 @@ export default function PlayPage() {
   }
 
   /** Trận đánh tự động kiểu idle: mỗi lượt bạn đánh một đòn, quái đánh trả một đòn */
+  /** 4.2.0: một lượt của bạn theo công pháp (mọi trận ở màn chơi chính) */
+  function cpPlayer(c: Character, b: Battle, foe: Fighter, atkMul: number, elemTag?: string) {
+    b.fsP ??= newSide();
+    b.fsM ??= newSide();
+    b.loP ??= loadoutOf(c);
+    if (skipTurn(b.fsP)) {
+      b.last = [...b.last.slice(-4), { id: Math.random(), side: 'p', dmg: 0, crit: false, text: tr('Choáng!', 'Stunned!') }];
+      cpView(b);
+      return;
+    }
+    const r = cpAct(b.loP, b.fsP, b.fsM, b.ps.atk * atkMul, foe.def, b.pHp, b.pMax, rnd, 0.15 + gearFx(c.equipped).crit / 100, hit, c);
+    const tk = b.loM ? takeHit(b.loM, b.fsM, r.dmg, rnd) : { dmg: r.dmg, reflect: 0, note: undefined as string | undefined };
+    b.mHp = Math.max(0, b.mHp - r.dot - tk.dmg);
+    b.pHp = Math.max(1, Math.min(b.pMax, b.pHp + r.heal - r.self - tk.reflect));
+    const tag = [...r.tags, r.heal > 0 ? `+${r.heal}` : ''].filter(Boolean).join(' ') || (tk.dmg ? elemTag : undefined);
+    b.last = [...b.last.slice(-4), { id: Math.random(), side: 'p', dmg: tk.dmg + r.dot, crit: r.crit, skill: r.skill, fx: r.fx, ult: r.ult, path: b.loP.path, text: tk.note, tag }];
+    cpView(b);
+  }
+  /** Quái đánh trả: khiên, né, phản đòn của bạn vẫn có tác dụng; quái bị choáng thì mất lượt */
+  function cpMonster(b: Battle, atkMul: number, elemTag?: string) {
+    b.fsP ??= newSide();
+    b.fsM ??= newSide();
+    if (skipTurn(b.fsM)) {
+      b.last = [...b.last.slice(-4), { id: Math.random(), side: 'm', dmg: 0, crit: false, text: tr('Choáng, mất lượt', 'Stunned, loses a turn') }];
+      cpView(b);
+      return;
+    }
+    const h = hit(b.ms.atk * atkMul, b.ps.def, rnd);
+    const tk = b.loP ? takeHit(b.loP, b.fsP, h.dmg, rnd) : { dmg: h.dmg, reflect: 0, note: undefined as string | undefined };
+    b.pHp = Math.max(0, b.pHp - tk.dmg);
+    if (tk.reflect) b.mHp = Math.max(0, b.mHp - tk.reflect);
+    b.last = [...b.last.slice(-4), { id: Math.random(), side: 'm', dmg: tk.dmg, crit: h.crit, fx: tk.dmg ? 'mvuot' : undefined, text: tk.note, tag: tk.reflect ? tr(`Phản ${tk.reflect}`, `Reflect ${tk.reflect}`) : tk.dmg ? elemTag : undefined }];
+    cpView(b);
+  }
+  /** Người (giang hồ, bóng kiếp trước, Ngũ Hành Đài) cũng ra chiêu theo công pháp đạo của họ */
+  function cpNpc(b: Battle, fc: Character, foe: Fighter, atkMul: number, elemTag?: string) {
+    b.fsP ??= newSide();
+    b.fsM ??= newSide();
+    b.loM ??= npcLoadout(fc);
+    if (skipTurn(b.fsM)) {
+      b.last = [...b.last.slice(-4), { id: Math.random(), side: 'm', dmg: 0, crit: false, text: tr('Choáng, mất lượt', 'Stunned, loses a turn') }];
+      cpView(b);
+      return;
+    }
+    const r = cpAct(b.loM, b.fsM, b.fsP, foe.atk * atkMul, b.ps.def, b.mHp, b.mMax, rnd, 0.15 + gearFx(fc.equipped).crit / 100, hit, null);
+    const tk = b.loP ? takeHit(b.loP, b.fsP, r.dmg, rnd) : { dmg: r.dmg, reflect: 0, note: undefined as string | undefined };
+    b.pHp = Math.max(0, b.pHp - r.dot - tk.dmg);
+    b.mHp = Math.max(1, Math.min(b.mMax, b.mHp + r.heal - r.self - tk.reflect));
+    const tag = [...r.tags, tk.reflect ? tr(`Phản ${tk.reflect}`, `Reflect ${tk.reflect}`) : ''].filter(Boolean).join(' ') || (tk.dmg ? elemTag : undefined);
+    b.last = [...b.last.slice(-4), { id: Math.random(), side: 'm', dmg: tk.dmg + r.dot, crit: r.crit, skill: r.skill, fx: r.fx, ult: r.ult, path: b.loM.path, text: tk.note, tag }];
+    cpView(b);
+  }
+  function cpView(b: Battle) {
+    b.cpv = {
+      gauge: b.fsP?.gauge ?? 0,
+      gName: GAUGE_NAME[b.loP?.path ?? 'chung'],
+      ult: !!b.loP?.tuyet,
+      mBurn: b.fsM?.burn?.n ?? 0,
+      mPoison: b.fsM?.poison ?? 0,
+      pShield: b.fsP?.shield ?? 0,
+      pBurn: b.fsP?.burn?.n ?? 0,
+      pPoison: b.fsP?.poison ?? 0,
+    };
+  }
+
   function newFight(c: Character, mId: string, kills: number): Battle | null {
     const m = MONSTERS.find((x) => x.id === mId);
     if (!m) return null;
@@ -357,10 +422,10 @@ export default function PlayPage() {
     const turn = yearSecRef.current * 0.015;
     b.t += dtGame;
     let changed = false;
-    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string, art?: { name: string; palm: boolean } | null) => {
+    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string) => {
       const me = b!.melem;
       const tag = text || !me || !dmg ? undefined : side === 'p' ? elemHitTag(me.me, me.foe) : elemHitTag(me.foe, me.me);
-      b!.last = [...b!.last.slice(-4), { id: Math.random(), side, dmg, crit, text, skill: art?.name, palm: art?.palm, qi: art?.palm ? qiColor(c) : undefined, tag }];
+      b!.last = [...b!.last.slice(-4), { id: Math.random(), side, dmg, crit, text, tag }];
     };
     while (b.t >= turn) {
       b.t -= turn;
@@ -370,14 +435,15 @@ export default function PlayPage() {
         if (b.rest <= 0) {
           const nb = newFight(c, b.m.id, b.kills);
           if (!nb) return changed;
+          // trừ yêu liên tục: thanh khí của đạo giữ sang con quái kế tiếp
+          if (b.fsP) nb.fsP = { ...newSide(), gauge: b.fsP.gauge };
           battleRef.current = b = nb;
         }
         continue;
       }
       // bạn ra đòn
-      const h1 = hit(b.ps.atk * (b.melem ? elemMul(b.melem.me, b.melem.foe) : 1), b.ms.def, rnd, 0.15 + gearFx(c.equipped).crit / 100);
-      b.mHp = Math.max(0, b.mHp - h1.dmg);
-      push('p', h1.dmg, h1.crit, b.m.boss ? tr('Vô hiệu', "Immune") : undefined, artOf(c, rnd));
+      cpPlayer(c, b, b.ms, b.melem ? elemMul(b.melem.me, b.melem.foe) : 1, b.melem ? elemHitTag(b.melem.me, b.melem.foe) : undefined);
+      if (b.m.boss) b.last[b.last.length - 1].text = tr('Vô hiệu', 'Immune');
       if (b.mHp <= 0) {
         const out: Fx[] = [];
         const ctx = makeCtx(c, out);
@@ -399,9 +465,7 @@ export default function PlayPage() {
         continue;
       }
       // quái đánh trả
-      const h2 = hit(b.ms.atk * (b.melem ? elemMul(b.melem.foe, b.melem.me) : 1), b.ps.def, rnd);
-      b.pHp = Math.max(0, b.pHp - h2.dmg);
-      push('m', h2.dmg, h2.crit);
+      cpMonster(b, b.melem ? elemMul(b.melem.foe, b.melem.me) : 1, b.melem ? elemHitTag(b.melem.foe, b.melem.me) : undefined);
       if (b.pHp <= 0) {
         const out: Fx[] = [];
         const ctx = makeCtx(c, out);
@@ -447,7 +511,8 @@ export default function PlayPage() {
       if (userRef.current) sendMail(userRef.current, bro, 'nghia', tr(`Bóng của bạn đã ra tay trợ quyền cho huynh đệ @${userRef.current.username} (${c.name}) trước ${f.rival.name}.`, `Your shadow stepped in to help your sworn brother @${userRef.current.username} (${c.name}) against ${f.rival.name}.`)).catch(() => {});
     }
     const fs = foeStats(f.rival, c);
-    const fc = foeChar(f.rival);
+    // 4.2.0: đối thủ mang công pháp thật (người chơi khác) hoặc ước theo cảnh giới (người máy tạo)
+    const fc = { ...foeChar(f.rival), cp: rivalCp(f.rival) };
     duelRef.current = {
       m: { ...MONSTERS[0], id: 'duel', name: f.rival.name },
       name: f.rival.name,
@@ -489,11 +554,9 @@ export default function PlayPage() {
     const fc = b.duel.foe;
     const eMe = b.nhd ? b.nhd.myEl : elementOf(c);
     const eFoe = b.nhd ? b.nhd.foeEl : elementOf(fc);
-    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string, art?: { name: string; palm: boolean } | null) => {
-      // chưởng mang màu bản mệnh, đòn khắc chế có chữ riêng
-      const qi = ELEMENTS[side === 'p' ? eMe : eFoe].color;
+    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string) => {
       const tag = text || b.nhd?.rel === 'dong' ? undefined : side === 'p' ? elemHitTag(eMe, eFoe) : elemHitTag(eFoe, eMe);
-      b.last = [...b.last.slice(-4), { id: Math.random(), side, dmg, crit, text, skill: art?.name, palm: art?.palm, qi: art?.palm ? qi : undefined, tag }];
+      b.last = [...b.last.slice(-4), { id: Math.random(), side, dmg, crit, text, tag }];
     };
     const end = (result: 'win' | 'lose' | 'draw') => {
       const out: Fx[] = [];
@@ -598,20 +661,15 @@ export default function PlayPage() {
       }
       if (b.sub === 0) {
         b.duel.turn += 1;
-        const h = hit(b.ps.atk, b.fs.def, rnd, 0.15 + gearFx(c.equipped).crit / 100);
-        h.dmg = Math.round(h.dmg * (b.nhd ? b.nhd.pMul : elemMul(elementOf(c), elementOf(fc))));
-        b.mHp = Math.max(0, b.mHp - h.dmg);
-        push('p', h.dmg, h.crit, undefined, artOf(c, rnd));
+        b.loM ??= npcLoadout(fc);
+        cpPlayer(c, b, b.fs, b.nhd ? b.nhd.pMul : elemMul(elementOf(c), elementOf(fc)), b.nhd?.rel === 'dong' ? undefined : elemHitTag(eMe, eFoe));
         b.sub = 1;
         if (b.mHp <= 0) {
           end('win');
           break;
         }
       } else {
-        const h = hit(b.fs.atk, b.ps.def, rnd, 0.15 + gearFx(fc.equipped).crit / 100);
-        h.dmg = Math.round(h.dmg * (b.nhd ? b.nhd.fMul : elemMul(elementOf(fc), elementOf(c))));
-        b.pHp = Math.max(0, b.pHp - h.dmg);
-        push('m', h.dmg, h.crit, undefined, artOf(fc, rnd));
+        cpNpc(b, fc, b.fs, b.nhd ? b.nhd.fMul : elemMul(elementOf(fc), elementOf(c)), b.nhd?.rel === 'dong' ? undefined : elemHitTag(eFoe, eMe));
         b.sub = 0;
         if (b.pHp <= 0) {
           end('lose');
@@ -751,10 +809,10 @@ export default function PlayPage() {
     const half = 0.6; // mỗi đòn 0,6 giây thật, không phụ thuộc tốc độ
     b.t += dtReal;
     let changed = false;
-    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string, art?: { name: string; palm: boolean } | null) => {
+    const push = (side: 'p' | 'm', dmg: number, crit: boolean, text?: string) => {
       const me = b.melem;
       const tag = text || !me || !dmg ? undefined : side === 'p' ? elemHitTag(me.me, me.foe) : elemHitTag(me.foe, me.me);
-      b.last = [...b.last.slice(-4), { id: Math.random(), side, dmg, crit, text, skill: art?.name, palm: art?.palm, qi: art?.palm ? qiColor(c) : undefined, tag }];
+      b.last = [...b.last.slice(-4), { id: Math.random(), side, dmg, crit, text, tag }];
     };
     const end = (result: 'win' | 'lose' | 'draw') => {
       const out: Fx[] = [];
@@ -790,18 +848,14 @@ export default function PlayPage() {
       }
       if (b.sub === 0) {
         b.ambush!.turn += 1;
-        const h = hit(b.ps.atk * (b.melem ? elemMul(b.melem.me, b.melem.foe) : 1), b.ms.def, rnd, 0.15 + gearFx(c.equipped).crit / 100);
-        b.mHp = Math.max(0, b.mHp - h.dmg);
-        push('p', h.dmg, h.crit, undefined, artOf(c, rnd));
+        cpPlayer(c, b, b.ms, b.melem ? elemMul(b.melem.me, b.melem.foe) : 1, b.melem ? elemHitTag(b.melem.me, b.melem.foe) : undefined);
         b.sub = 1;
         if (b.mHp <= 0) {
           end('win');
           break;
         }
       } else {
-        const h = hit(b.ms.atk * (b.melem ? elemMul(b.melem.foe, b.melem.me) : 1), b.ps.def, rnd);
-        b.pHp = Math.max(0, b.pHp - h.dmg);
-        push('m', h.dmg, h.crit);
+        cpMonster(b, b.melem ? elemMul(b.melem.foe, b.melem.me) : 1, b.melem ? elemHitTag(b.melem.foe, b.melem.me) : undefined);
         b.sub = 0;
         if (b.pHp <= 0) {
           end('lose');
@@ -1640,6 +1694,8 @@ export default function PlayPage() {
       legend,
       vendettas: (c.vendettas ?? []).slice(-3),
       petBook,
+      cpHeir: (heirChoices(c).find((d) => d.id === c.cpHeirPick) ?? heirChoices(c)[0])?.id ?? null,
+      cpBook: [...new Set([...(meta.cpBook ?? []), ...(c.cp?.own ?? []).map((o) => o.id)])],
       phucDuyen: meta.phucDuyen + k.phuc + q.reward + (c.goalDone ? (newbieGoal(c)?.reward ?? 0) : 0),
       nghiep: k.nghiep > 0 ? meta.nghiep + k.nghiep : Math.max(0, meta.nghiep - 5),
       lives: meta.lives + 1,
@@ -1900,7 +1956,7 @@ export default function PlayPage() {
           <div className="dock-inner">
             <OverworkBar c={c} />
             <FocusGrid c={c} onPick={pickFocus} />
-            <div className="dock-actions">
+            <div className="dock-actions four">
               <button className="btn btn-dark" onClick={() => setSheet('shop')} disabled={c.dead}>
                 
                 {tr("Phường thị", "Market")}
@@ -1916,6 +1972,9 @@ export default function PlayPage() {
                 
                 {tr("Túi đồ", "Inventory")}
               </button>
+              <button className={`btn btn-dark ${c.cpHint ? 'has-dot' : ''}`} onClick={() => setSheet('congphap')} disabled={c.dead}>
+                {tr('Công pháp', 'Techniques')}
+              </button>
               <button className="btn btn-jade" onClick={() => setSheet('bequan')} disabled={c.dead}>
                 
                 {tr("Bế quan", "Seclusion")}
@@ -1925,6 +1984,42 @@ export default function PlayPage() {
         )}
       </footer>
 
+      {sheet === 'congphap' && (
+        <TangKinhCac
+          c={c}
+          book={meta.cpBook ?? []}
+          onClose={() => setSheet(null)}
+          onEquip={(id) => act((ch) => void cpEquip(ch, id))}
+          onUnequip={(id) => act((ch) => cpUnequip(ch, id))}
+          onSwap={(a, b) =>
+            act((ch) => {
+              const t = cpSwapTq(ch, a, b);
+              if (t) ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: t });
+            })
+          }
+          onUpgrade={(id, useVan, bien) =>
+            act((ch) => {
+              const t = cpUpgrade(ch, id, useVan, bien);
+              if (t) {
+                ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: t });
+                track('cp_tang', { id, tang: ch.cp?.own.find((o) => o.id === id)?.tang ?? 0 });
+              }
+            })
+          }
+          onFuse={() => {
+            let r: ReturnType<typeof cpFuse> = null;
+            act((ch) => {
+              r = cpFuse(ch, rnd);
+              if (r) {
+                ch.log.push({ age: Math.floor(ch.age), tone: r.ok ? 'good' : 'normal', text: r.text });
+                track('cp_dung_hop', { ok: r.ok });
+              }
+            });
+            return r;
+          }}
+          onHeir={(id) => act((ch) => void (ch.cpHeirPick = id))}
+        />
+      )}
       {sheet === 'shop' && <ShopSheet c={c} onBuyItem={buyItem} onBuyPill={buyPill} onBuyCharm={(id) => act((ch, out) => { const t = buyCharm(ch, id, makeCtx(ch, out)); if (t) { ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: t }); track('mua_bua', { id }); } })} onBuyShelf={(id) => act((ch, out) => { const t = buyShelf(ch, id, makeCtx(ch, out)); if (t) { ch.log.push({ age: Math.floor(ch.age), tone: 'good', text: t }); track('ke_hang', { id }); } })} onClose={() => setSheet(null)} />}
       {sheet === 'bag' && <BagSheet c={c} onMerge={(ids) => { let r: ReturnType<typeof mergeItems> = null; act((ch, out) => { r = mergeItems(ch, ids, makeCtx(ch, out)); if (r) track('hop_do', { kind: r.kind, rare: r.item.rare ?? 0 }); }); return r; }} book={meta.itemBook ?? []} startTab={bagTab} onSeen={() => seeBook('i')} onEquip={equip} onUsePill={takePill} onSmelt={(id) => act((ch, out) => { const t = smelt(ch, id, makeCtx(ch, out)); if (t) ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: t }); })} onSell={(id) => act((ch, out) => { const t = sell(ch, id, makeCtx(ch, out)); if (t) ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: t }); })} onBuy={(n) => act((ch, out) => { const t = buyTinh(ch, n, makeCtx(ch, out)); if (t) { ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: t }); track('buy_tinh', { n }); } })} onForge={(slot, fo) => {
             let r: ReturnType<typeof forge> = null;
