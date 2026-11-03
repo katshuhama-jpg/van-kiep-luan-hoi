@@ -199,9 +199,9 @@ export function auctionEvent(c: Character): GameEvent {
       };
       if (!it) return [{ label: tr('Về động phủ', 'Head home'), lean: 'trung', run: (ch) => ((ch.auctionAt = ch.age), '') }];
       return [
-        { label: tr(`Bỏ giá thấp: ${bid(0)}`, `Low bid: ${bid(0)}`), hint: tr(`cơ may thắng khoảng ${BID_TIERS[0].win * 100}%`, `about ${BID_TIERS[0].win * 100}% to win`), lean: 'trung', run: run(0) },
-        { label: tr(`Bỏ giá vừa: ${bid(1)}`, `Fair bid: ${bid(1)}`), hint: tr(`cơ may thắng khoảng ${BID_TIERS[1].win * 100}%`, `about ${BID_TIERS[1].win * 100}% to win`), lean: 'trung', run: run(1) },
-        { label: tr(`Bỏ giá cao: ${bid(2)}`, `High bid: ${bid(2)}`), hint: tr(`cơ may thắng khoảng ${BID_TIERS[2].win * 100}%`, `about ${BID_TIERS[2].win * 100}% to win`), lean: 'trung', run: run(2) },
+        { label: tr(`Bỏ giá thấp: ${bid(0)}`, `Low bid: ${bid(0)}`), hint: c.linhThach < bid(0) ? tr(`thiếu ${bid(0) - Math.floor(c.linhThach)} linh thạch`, `${bid(0) - Math.floor(c.linhThach)} spirit stones short`) : tr(`cơ may thắng khoảng ${BID_TIERS[0].win * 100}%`, `about ${BID_TIERS[0].win * 100}% to win`), off: c.linhThach < bid(0), lean: 'trung', run: run(0) },
+        { label: tr(`Bỏ giá vừa: ${bid(1)}`, `Fair bid: ${bid(1)}`), hint: c.linhThach < bid(1) ? tr(`thiếu ${bid(1) - Math.floor(c.linhThach)} linh thạch`, `${bid(1) - Math.floor(c.linhThach)} spirit stones short`) : tr(`cơ may thắng khoảng ${BID_TIERS[1].win * 100}%`, `about ${BID_TIERS[1].win * 100}% to win`), off: c.linhThach < bid(1), lean: 'trung', run: run(1) },
+        { label: tr(`Bỏ giá cao: ${bid(2)}`, `High bid: ${bid(2)}`), hint: c.linhThach < bid(2) ? tr(`thiếu ${bid(2) - Math.floor(c.linhThach)} linh thạch`, `${bid(2) - Math.floor(c.linhThach)} spirit stones short`) : tr(`cơ may thắng khoảng ${BID_TIERS[2].win * 100}%`, `about ${BID_TIERS[2].win * 100}% to win`), off: c.linhThach < bid(2), lean: 'trung', run: run(2) },
         { label: tr('Không tham gia', 'Skip it'), hint: tr('giữ linh thạch', 'keep your stones'), lean: 'trung', run: (ch) => ((ch.auctionAt = ch.age), (ch.auctionLot = undefined), tr('Bạn cất thiệp, ở lại động phủ tu luyện.', 'You put the invitation away and stay in your cave abode.')) },
       ];
     },
@@ -251,7 +251,7 @@ export function merchantEvent(c: Character): GameEvent {
         'An old merchant pushing a wooden cart covered in oilcloth stops by the road and waves you over: "Fellow Daoist, fine goods from far away. Take a look, no need to buy."',
       ),
     choices: () => [
-      { label: tr('Ghé xem hàng', 'Look at the goods'), hint: tr('mua, mặc cả, hay cướp', 'buy, haggle or rob'), lean: 'trung', run: (ch) => ((ch.merchantAt = ch.age), tr('Bạn dừng chân, lão vén tấm vải dầu.', 'You stop, and the old man lifts the oilcloth.')) },
+      { label: tr('Ghé xem hàng', 'Look at the goods'), hint: tr('mua hay cướp', 'buy or rob'), lean: 'trung', run: (ch) => ((ch.merchantAt = ch.age), tr('Bạn dừng chân, lão vén tấm vải dầu.', 'You stop, and the old man lifts the oilcloth.')) },
       { label: tr('Đi tiếp', 'Keep walking'), lean: 'trung', run: (ch) => ((ch.merchantAt = ch.age), tr('Bạn lắc đầu đi tiếp, lão thương nhân lẩm bẩm tiếc rẻ.', 'You shake your head and walk on, and the merchant mutters in disappointment.')) },
     ],
   };

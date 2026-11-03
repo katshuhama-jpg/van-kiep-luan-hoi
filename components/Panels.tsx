@@ -160,7 +160,7 @@ export function EventCard({ p, c, onChoose }: { p: PendingEvent; c?: Character; 
       {p.item && <EventItem id={p.item} c={c} />}
       <div className="choices">
         {p.choices.map((ch, i) => (
-          <button key={i} className={`choice ${ch.lean}`} onClick={() => onChoose(i)}>
+          <button key={i} className={`choice ${ch.lean} ${ch.off ? 'off' : ''}`} disabled={ch.off} onClick={() => !ch.off && onChoose(i)}>
             <span>
               {String.fromCharCode(65 + i)}. {ch.label}
             </span>

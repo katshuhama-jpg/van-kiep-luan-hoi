@@ -4750,3 +4750,4 @@ button.shadow-card { cursor: pointer; }
 .auc-res-stage.fail .px-icon { filter: grayscale(1) brightness(0.8); }
 .auc-res-stage .fs-stamp { z-index: 2; top: auto; bottom: 4px; left: 50%; font-size: 26px; transform: translateX(-50%) rotate(-6deg); }
 .auc-res-stage { align-content: start; padding-top: 14px; }
+.choice.off, .choice:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(0.6); }
