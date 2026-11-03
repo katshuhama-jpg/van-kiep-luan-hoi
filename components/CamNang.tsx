@@ -16,8 +16,8 @@ import type { Character } from '@/lib/game/types';
 import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
 
-export type CnChapter = 'mot_kiep' | 'canh_gioi' | 'nga_re' | 'danh_nhau' | 'phi_thang' | 'luan_hoi';
-export const CN_ORDER: CnChapter[] = ['mot_kiep', 'canh_gioi', 'nga_re', 'danh_nhau', 'phi_thang', 'luan_hoi'];
+export type CnChapter = 'mot_kiep' | 'canh_gioi' | 'nga_re' | 'tong_mon' | 'danh_nhau' | 'phi_thang' | 'luan_hoi';
+export const CN_ORDER: CnChapter[] = ['mot_kiep', 'canh_gioi', 'nga_re', 'tong_mon', 'danh_nhau', 'phi_thang', 'luan_hoi'];
 const KEY = 'vkl.camnang';
 
 export function cnSeen(): CnChapter[] {
@@ -48,7 +48,7 @@ interface Panel {
   cap: string;
   actors?: Actor[];
   say?: { i: number; text: string };
-  extra?: 'ladder' | 'paths' | 'doors' | 'lean' | 'bolt' | 'monster' | 'carry' | 'shadows' | 'focus';
+  extra?: 'sects3' | 'ranks' | 'sectsPath' | 'routes' | 'ladder' | 'paths' | 'doors' | 'lean' | 'bolt' | 'monster' | 'carry' | 'shadows' | 'focus';
 }
 
 const T = (vi: string, en: string) => tr(vi, en);
@@ -86,8 +86,21 @@ function chapters(): Record<CnChapter, { title: string; sub: string; panels: Pan
         { bg: 'dia-phu', cap: T('Mỗi lối sống dẫn tới một kết cục riêng trong Sổ Sinh Tử. Thử đi một đường khác ở kiếp sau.', 'Every way of living leads to its own ending in the Book of Life and Death. Try another road next life.'), actors: [{ who: 'thay', x: 50 }], say: { i: 0, text: T('Không có đường sai, chỉ có đường khác.', 'There is no wrong road, only a different one.') } },
       ],
     },
+    tong_mon: {
+      title: T('Hồi 4: Tông môn và chính tà', 'Chapter 4: Sects, righteous and evil'),
+      sub: T('Bái sư, các phái, bậc đệ tử, môn quy, tán tu', 'Joining, factions, ranks, rules, rogue cultivators'),
+      panels: [
+        { bg: 'kiem_tien-0', cap: T('Tầm chín tới mười sáu tuổi, tiên nhân cưỡi hạc xuống trấn tuyển đệ tử. Vào tông hay ở lại làm tán tu là ngã rẽ lớn đầu tiên.', 'Somewhere between nine and sixteen, an immortal on a crane comes to town to recruit. Joining a sect or staying a rogue is your first big fork.'), actors: [{ who: 'me', x: 30, dir: 3 }, { who: 'thay', x: 70, dir: 1 }], say: { i: 1, text: T('Ai muốn cầu tiên đạo, bước lên.', 'Whoever seeks the immortal way, step forward.') } },
+        { bg: 'tu_luyen-0', cap: T('Ba nhà mở cửa cùng lúc, mỗi nhà chọn người theo một kiểu. Linh căn, gan dạ hay trí tuệ, bạn có gì thì chọn nhà đó.', 'Three houses open their doors at once, each choosing people its own way. Root, nerve or wits: pick the one that fits what you have.'), extra: 'sects3' },
+        { bg: 'tu_luyen-2', cap: T('Vào tông là đệ tử có bậc. Bậc càng cao tu càng nhanh, được phát áo bào, lệnh bài. Thắng Đại bỉ tông môn hoặc đột phá Trúc Cơ, Kim Đan là được thăng.', 'In a sect you hold a rank. Higher ranks cultivate faster and receive robes and tokens. Win the Sect Tournament or reach Foundation and Golden Core to be promoted.'), extra: 'ranks' },
+        { bg: 'ma-0', cap: T('Ma môn không hỏi linh căn, chỉ hỏi bạn dám làm gì. Càng tàn nhẫn càng được trọng dụng, tu nhanh nhưng tâm ma nặng, lúc nguy không ai tới cứu.', 'Demonic sects ask nothing about your root, only what you dare to do. The crueler you are, the higher you rise. Fast cultivation, heavy heart demons, and no one saves you in danger.'), actors: [{ who: 'ma', x: 50 }], say: { i: 0, text: T('Muốn lên cao thì giẫm lên đồng môn.', 'To rise, step on your fellow disciples.') } },
+        { bg: 'du_ngoan-3', cap: T('Lỡ dịp tuyển cũng đừng lo. Chọn con đường rồi, tông môn hợp đạo sẽ tự tìm tới bạn.', 'Missed the recruitment? No worry. Once you choose a path, a sect that suits it will come looking for you.'), extra: 'sectsPath' },
+        { bg: 'kiem_tien-3', cap: T('Mỗi tông có môn quy. Đệ tử chính phái sa vào ma đạo bị trục xuất, mất áo bào lệnh bài. Ma môn cũng đuổi kẻ quay về Phật. Thiên Cơ Các không đuổi ai.', 'Every sect has rules. A righteous disciple who turns demonic is expelled and loses robe and token. Demonic sects expel those who turn to the Buddha. Tianji Pavilion expels no one.'), actors: [{ who: 'me', x: 34, anim: 'hurt', dir: 3 }, { who: 'thay', x: 68, dir: 1 }], say: { i: 1, text: T('Từ nay ngươi không còn là đệ tử của ta.', 'From today you are no longer my disciple.') } },
+        { bg: 'du_ngoan-0', cap: T('Không vào tông vẫn tu được: tán tu tự do, không môn quy, nhưng không ai chống lưng. Mỗi hướng đi mở ra một kiểu đời khác.', 'You can cultivate without a sect: a rogue is free and has no rules, but no one has your back. Each road opens a different kind of life.'), extra: 'routes' },
+      ],
+    },
     danh_nhau: {
-      title: T('Hồi 4: Trừ yêu luyện công', 'Chapter 4: Hunt and train'),
+      title: T('Hồi 5: Trừ yêu luyện công', 'Chapter 5: Hunt and train'),
       sub: T('Quái, công pháp, trang bị', 'Monsters, techniques, gear'),
       panels: [
         { bg: 'du_ngoan-2', cap: T('Chọn Trừ yêu để đánh quái. Quái vừa sức cho nhiều tu vi và đồ rơi. Quái quá yếu gần như không rơi gì.', 'Pick Hunt demons to fight. Fair fights give cultivation and loot. Monsters far weaker than you drop almost nothing.'), actors: [{ who: 'kiem', x: 30, anim: 'slash', dir: 3 }], extra: 'monster' },
@@ -96,7 +109,7 @@ function chapters(): Record<CnChapter, { title: string; sub: string; panels: Pan
       ],
     },
     phi_thang: {
-      title: T('Hồi 5: Mẹo phi thăng', 'Chapter 5: Ascension tips'),
+      title: T('Hồi 6: Mẹo phi thăng', 'Chapter 6: Ascension tips'),
       sub: T('Độ Kiếp, Ngũ Hành Đài, thượng giới', 'Tribulation, Five Elements Platform, upper realms'),
       panels: [
         { bg: 'nhd-tien-hoa', cap: T('Tới Độ Kiếp và đủ tuổi, bạn lên Ngũ Hành Đài đánh năm cái bóng của chính mình.', 'At Tribulation and old enough, you climb the Five Elements Platform to fight five shadows of yourself.'), extra: 'shadows' },
@@ -106,7 +119,7 @@ function chapters(): Record<CnChapter, { title: string; sub: string; panels: Pan
       ],
     },
     luan_hoi: {
-      title: T('Hồi 6: Luân hồi', 'Chapter 6: Rebirth'),
+      title: T('Hồi 7: Luân hồi', 'Chapter 7: Rebirth'),
       sub: T('Kiếp sau mang theo gì', 'What carries over'),
       panels: [
         { bg: 'dia-phu', cap: T('Chết chưa phải hết. Sống tốt thì được phúc duyên, sống ác thì mang nghiệp lực. Cả hai đều mua được thiên phú lúc đầu thai.', 'Death is not the end. Good deeds earn Fortune, cruel ones Karma. Both buy talents at rebirth.'), actors: [{ who: 'me', x: 50 }], extra: 'carry' },
@@ -150,6 +163,73 @@ function Extra({ k, cast }: { k: NonNullable<Panel['extra']>; cast: Record<Who, 
         <span className="chinh">{T('Chính', 'Righteous')}</span>
         <span className="trung">{T('Trung', 'Neutral')}</span>
         <span className="ta">{T('Tà', 'Evil')}</span>
+      </div>
+    );
+  if (k === 'sects3')
+    return (
+      <div className="cn-cards">
+        <span className="chinh">
+          <b>{T('Thanh Vân Tông', 'Qingyun Sect')}</b>
+          <i>{T('Chính phái', 'Righteous')}</i>
+          <small>{T('Xem linh căn. Căn tốt vào thẳng bậc cao, có thầy che chở.', 'Judges your root. A good root starts high, with a master to protect you.')}</small>
+        </span>
+        <span className="ta">
+          <b>{T('Huyết Sát Môn', 'Xuesha Sect')}</b>
+          <i>{T('Ma môn', 'Demonic')}</i>
+          <small>{T('Ai cũng nhận. Đổi lại đạo tâm nghiêng về tà, tâm ma tăng.', 'Takes anyone. In return your Dao Heart tilts evil and heart demons grow.')}</small>
+        </span>
+        <span className="trung">
+          <b>{T('Thiên Cơ Các', 'Tianji Pavilion')}</b>
+          <i>{T('Trung lập', 'Neutral')}</i>
+          <small>{T('Ra đề đố, xem ngộ tính. Người thông minh được trọng.', 'Sets riddles and judges Insight. The clever are valued.')}</small>
+        </span>
+      </div>
+    );
+  if (k === 'ranks')
+    return (
+      <div className="cn-ranks">
+        {[T('Tạp dịch', 'Handyman'), T('Ngoại môn', 'Outer'), T('Nội môn', 'Inner'), T('Chân truyền', 'True')].map((r, i) => (
+          <span key={r} style={{ height: 40 + i * 26 }}>
+            <b>{r}</b>
+          </span>
+        ))}
+        <em>{T('Chân truyền được sư phụ cứu một lần', 'A true disciple is saved once by the master')}</em>
+      </div>
+    );
+  if (k === 'sectsPath') {
+    const rows: [Who, string, string][] = [
+      ['phat', T('Phổ Đà Sơn', 'Putuo Shan'), T('Phật tu, người hiền', 'Buddhists, the kind')],
+      ['kiem', T('Kiếm Cốc', 'Jian Valley'), T('Kiếm tu', 'Sword cultivators')],
+      ['dan', T('Vạn Độc Môn', 'Wandu Sect'), T('Đan, Ma tu lòng dạ độc', 'Ruthless Alchemists, Demonics')],
+      ['yeu', T('Yêu Thần Điện', 'Yaoshen Hall'), T('Yêu tu, yêu tộc', 'Yao cultivators')],
+    ];
+    return (
+      <div className="cn-paths four">
+        {rows.map(([w, n, d]) => (
+          <span key={n}>
+            <Sprite c={cast[w]} size={52} anim="idle" dir={2} />
+            <b>{n}</b>
+            <small>{d}</small>
+          </span>
+        ))}
+      </div>
+    );
+  }
+  if (k === 'routes')
+    return (
+      <div className="cn-routes">
+        <span className="chinh">
+          <b>{T('Chính phái', 'Righteous')}</b>
+          <small>{T('chậm mà chắc, có thầy che chở, thường lên Tiên giới', 'slow but steady, protected, usually reach the Immortal Realm')}</small>
+        </span>
+        <span className="trung">
+          <b>{T('Trung lập, tán tu', 'Neutral, rogue')}</b>
+          <small>{T('tự do, dựa vào trí và vận, hay vào Thái Hư', 'free, live by wits and luck, often enter the Great Void')}</small>
+        </span>
+        <span className="ta">
+          <b>{T('Tà phái', 'Evil')}</b>
+          <small>{T('mạnh nhanh, nhiều kẻ thù, rơi xuống Ma giới', 'strong fast, many enemies, fall to the Demon Realm')}</small>
+        </span>
       </div>
     );
   if (k === 'ladder')

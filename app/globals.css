@@ -4915,21 +4915,21 @@ button.shadow-card { cursor: pointer; }
 .cn-dots i.past { background: var(--shadow); }
 .cn-dots i.on { background: var(--red-d); }
 .cn-chips { position: absolute; z-index: 3; left: 6px; right: 6px; top: 34%; display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; }
-.cn-chips span { padding: 2px 8px; font-size: 15px; font-weight: 700; background: var(--paper-3); color: var(--ink); border: 2px solid #000; box-shadow: 2px 2px 0 #000; }
+.cn-chips > span { padding: 2px 8px; font-size: 15px; font-weight: 700; background: var(--paper-3); color: var(--ink); border: 2px solid #000; box-shadow: 2px 2px 0 #000; }
 .cn-lean { position: absolute; z-index: 3; left: 0; right: 0; top: 36%; display: flex; justify-content: center; gap: 8px; }
-.cn-lean span { padding: 4px 10px; font-size: 17px; font-weight: 700; color: #fff; border: 3px solid #000; box-shadow: 2px 2px 0 #000; }
+.cn-lean > span { padding: 4px 10px; font-size: 17px; font-weight: 700; color: #fff; border: 3px solid #000; box-shadow: 2px 2px 0 #000; }
 .cn-lean .chinh { background: var(--chinh); }
 .cn-lean .trung { background: #6b5a44; }
 .cn-lean .ta { background: var(--ta); }
 .cn-ladder { position: absolute; z-index: 2; left: 6px; right: 6px; bottom: 6px; display: flex; align-items: flex-end; gap: 3px; }
-.cn-ladder span { flex: 1; display: flex; align-items: flex-end; justify-content: center; background: #c9962e; border: 2px solid #000; box-shadow: inset 0 -4px 0 #8a6420; }
+.cn-ladder > span { flex: 1; display: flex; align-items: flex-end; justify-content: center; background: #c9962e; border: 2px solid #000; box-shadow: inset 0 -4px 0 #8a6420; }
 .cn-ladder b { font-size: 11px; font-weight: 700; color: #2a1d10; writing-mode: vertical-rl; transform: rotate(180deg); padding: 3px 0; }
-.cn-paths { position: absolute; z-index: 3; left: 6px; right: 6px; bottom: 6px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
-.cn-paths span { display: flex; flex-direction: column; align-items: center; padding: 2px; background: rgba(243, 230, 196, 0.94); border: 2px solid #000; }
+.cn-paths { position: absolute; z-index: 3; left: 6px; right: 6px; bottom: 30px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+.cn-paths > span { display: flex; flex-direction: column; align-items: center; padding: 2px; background: rgba(243, 230, 196, 0.94); border: 2px solid #000; }
 .cn-paths b { font-size: 15px; font-weight: 700; color: var(--red-d); line-height: 1; }
 .cn-paths small { font-size: 12px; text-align: center; line-height: 1.1; color: #2a1d10; }
 .cn-doors { position: absolute; z-index: 3; left: 6px; right: 6px; bottom: 8%; display: flex; justify-content: space-around; }
-.cn-doors span { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.cn-doors > span { display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .cn-doors i { display: block; width: 58px; height: 84px; border: 3px solid #000; box-shadow: inset 0 0 0 4px rgba(0, 0, 0, 0.25), 3px 3px 0 #000; }
 .cn-doors .tien i { background: #ffe27a; }
 .cn-doors .hu i { background: #6a52aa; }
@@ -4939,9 +4939,9 @@ button.shadow-card { cursor: pointer; }
 .cn-bolt { position: absolute; z-index: 1; left: 50%; top: 18%; width: 46px; height: 120px; transform: translateX(-50%); animation: cnBlink 0.5s steps(2) infinite; }
 .cn-mon { position: absolute; z-index: 2; right: 8%; bottom: 6%; image-rendering: pixelated; }
 .cn-shadows { position: absolute; z-index: 2; left: 0; right: 0; bottom: 6%; display: flex; justify-content: center; gap: 0; }
-.cn-shadows span { filter: brightness(0.35) drop-shadow(0 0 0 var(--sc)); outline: 3px solid var(--sc); outline-offset: -6px; animation: cnPop 0.3s steps(3) both; }
+.cn-shadows > span { filter: brightness(0.35) drop-shadow(0 0 0 var(--sc)); outline: 3px solid var(--sc); outline-offset: -6px; animation: cnPop 0.3s steps(3) both; }
 .cn-carry { position: absolute; z-index: 3; left: 6px; right: 6px; top: 40%; display: flex; justify-content: center; gap: 6px; }
-.cn-carry span { display: flex; flex-direction: column; align-items: center; padding: 4px; background: rgba(243, 230, 196, 0.94); border: 2px solid #000; }
+.cn-carry > span { display: flex; flex-direction: column; align-items: center; padding: 4px; background: rgba(243, 230, 196, 0.94); border: 2px solid #000; }
 .cn-carry img { image-rendering: pixelated; }
 .cn-carry b { font-size: 13px; font-weight: 700; color: var(--ink); }
 .cn-cover { font-weight: 700; font-size: 28px; color: var(--red-d); text-align: center; line-height: 1; }
@@ -4951,3 +4951,18 @@ button.shadow-card { cursor: pointer; }
 .cn-row small { font-size: 14px; color: var(--muted); }
 .cn-row.seen { background: var(--paper-2); }
 .cn-row i { position: absolute; right: 8px; top: 6px; font-style: normal; font-size: 13px; color: var(--jade); }
+.cn-cards { position: absolute; z-index: 3; left: 6px; right: 6px; bottom: 30px; display: flex; flex-direction: column; gap: 5px; }
+.cn-cards > span, .cn-routes > span { display: flex; flex-direction: column; padding: 4px 8px; background: rgba(243, 230, 196, 0.95); border: 3px solid #000; border-left-width: 10px; box-shadow: 2px 2px 0 #000; }
+.cn-cards .chinh, .cn-routes .chinh { border-left-color: var(--chinh); }
+.cn-cards .ta, .cn-routes .ta { border-left-color: var(--ta); }
+.cn-cards .trung, .cn-routes .trung { border-left-color: #6b5a44; }
+.cn-cards b, .cn-routes b { font-size: 17px; font-weight: 700; color: #2a1d10; line-height: 1.05; }
+.cn-cards i { font-style: normal; font-size: 13px; color: var(--muted); }
+.cn-cards small, .cn-routes small { font-size: 14px; line-height: 1.15; color: #2a1d10; }
+.cn-ranks { position: absolute; z-index: 2; left: 10px; right: 10px; bottom: 30px; display: flex; align-items: flex-end; gap: 5px; flex-wrap: wrap; }
+.cn-ranks > span { flex: 1; display: flex; align-items: flex-start; justify-content: center; background: #c9962e; border: 3px solid #000; box-shadow: inset 0 -5px 0 #8a6420; }
+.cn-ranks > span:last-of-type { background: #ffe27a; }
+.cn-ranks b { font-size: 14px; font-weight: 700; color: #2a1d10; padding: 3px 0; }
+.cn-ranks em { flex-basis: 100%; order: -1; font-style: normal; font-size: 14px; font-weight: 700; text-align: center; color: #fff3dc; background: #000; padding: 1px 6px; margin-bottom: 4px; }
+.cn-paths.four { grid-template-columns: repeat(2, 1fr); }
+.cn-routes { position: absolute; z-index: 3; left: 6px; right: 6px; top: 34%; display: flex; flex-direction: column; gap: 5px; }
