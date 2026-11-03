@@ -2180,7 +2180,7 @@ export default function PlayPage() {
           wares={wares}
           onBuy={(k) => act((ch, out) => { if (buyWare(ch, wares[k], makeCtx(ch, out))) { setWares([...wares]); track('thuong_nhan', { buy: 1 }); } })}
           onHaggle={(k) => { const ch = charRef.current; if (!ch) return null; const t = haggleWare(ch, wares[k], makeCtx(ch, [])); setWares([...wares]); return t; }}
-          onRob={(k) => act((ch, out) => { robWare(ch, wares[k], makeCtx(ch, out)); setWares([...wares]); track('thuong_nhan', { rob: 1 }); })}
+          onRob={(k) => act((ch, out) => { robWare(ch, wares[k], makeCtx(ch, out)); setWares([...wares]); const r = wares[k].rob; track('thuong_nhan', { rob: 1, win: r ? (r.win ? 1 : 0) : null, strong: r ? (r.strong ? 1 : 0) : null, realm: ch.realm, rare: wares[k].item.rare ?? 0 }); })}
           onLeave={() => { setWares(null); persist(true); }}
         />
       )}

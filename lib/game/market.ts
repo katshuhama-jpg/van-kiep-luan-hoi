@@ -219,6 +219,8 @@ export interface Ware {
   item: Item;
   price: number;
   state: 'open' | 'bought' | 'gone';
+  /** 5/11: kết quả cướp để đo (mạnh: gặp cao thủ giả dạng; thắng hay thua) */
+  rob?: { strong: boolean; win: boolean };
 }
 /** Ba món của thương nhân: phần lớn là Tốt, Hiếm, thỉnh thoảng một món Cực phẩm, giá dao động */
 export function merchantWares(c: Character, rnd: () => number): Ware[] {
@@ -302,6 +304,7 @@ export function robWare(c: Character, w: Ware, ctx: EffectCtx): string | null {
     ? tr(`lão thương nhân hóa ra là cao thủ ${realmName(foeRealm, c.cosmos)} giả dạng`, `the old merchant turns out to be a disguised ${realmName(foeRealm, c.cosmos)} expert`)
     : tr(`một tiêu sư ${realmName(foeRealm, c.cosmos)} nhảy ra chắn xe`, `a ${realmName(foeRealm, c.cosmos)} escort leaps out to guard the cart`);
   const d = eventDuel(c, foeRealm, ctx.rnd);
+  w.rob = { strong, win: d.result === 'win' };
   if (d.result === 'win') {
     const chR = charmOf(w.item.id);
     if (chR) giveCharm(c, chR);
