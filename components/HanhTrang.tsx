@@ -8,6 +8,7 @@ import type { Character, Meta } from '@/lib/game/types';
 import { ITEMS, TALENTS } from '@/lib/game/data';
 import { heirChoices } from '@/lib/game/congPhap';
 import { isHidden } from '@/lib/game/collect';
+import { baseName, petEvo, petId } from '@/lib/game/linhThu';
 import { tr } from '@/lib/i18n';
 import ItemIconImg from './ItemIcon';
 
@@ -49,6 +50,12 @@ export function HanhTrang({ c, meta, phuc, nghiep, isNew, endingName, legend, st
     rows.push({ k: 'cp', icon: <Icon src="g_kinh_thu_tan_quyen" />, b: tr(`Truyền thừa: ${heir.name}`, `Inheritance: ${heir.name}`), s: tr('Kiếp sau sinh ra đã biết chiêu này', 'Your next life is born knowing this move'), hot: true });
   else if ((c.cp?.own ?? []).some((o) => o.tang >= 6))
     rows.push({ k: 'cp0', icon: <Icon src="g_kinh_thu_tan_quyen" />, b: tr('Chưa có chiêu viên mãn', 'No perfected move yet'), s: tr('Luyện một chiêu tới tầng 9 là truyền được cho kiếp sau', 'Raise a move to stage 9 to pass it on') });
+  if (c.pet && c.endTag !== 'xuyen_khong')
+    rows.push(
+      petEvo(c) >= 2
+        ? { k: 'blood', icon: <Icon src="g_huyet_anh_dao" />, b: tr(`Huyết mạch: ${baseName(petId(c))}`, `Bloodline: ${baseName(petId(c))}`), s: tr('Linh thú kiếp sau thừa hưởng một phần sức mạnh', 'Your next pet inherits part of its power'), hot: true }
+        : { k: 'blood0', icon: <Icon src="g_huyet_anh_dao" />, b: tr('Chưa có huyết mạch', 'No bloodline yet'), s: tr('Nuôi linh thú tới bậc 3 là để lại huyết mạch', 'Raise a pet to stage 3 to leave a bloodline') },
+    );
   if (legend) rows.push({ k: 'legend', icon: <ItemIconImg item={ITEMS.find((i) => i.id === c.equipped.vu_khi)} size={34} />, b: tr(`Thần binh: ${legend}`, `Divine weapon: ${legend}`), s: tr('Đi theo bạn sang kiếp sau, mạnh dần mỗi đời', 'Follows you into the next life, stronger every generation'), hot: true });
   if (stash)
     rows.push({
