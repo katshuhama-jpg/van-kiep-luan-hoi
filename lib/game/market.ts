@@ -1,4 +1,5 @@
-import { ITEMS, REALMS, fxText, type Item } from './data';
+import { ITEMS, REALMS, fxText, realmName, type Item } from './data';
+import { eventDuel } from './duel';
 import { addCult, fatal, giveItem, money, reward, stat } from './helpers';
 import type { Character, EffectCtx, GameEvent } from './types';
 import { tr } from '../i18n';
@@ -283,23 +284,36 @@ export function haggleWare(c: Character, w: Ware, ctx: EffectCtx): string | null
   return tr(`Lão cười khẩy: "Đạo hữu chê thì giá ${w.price}."`, `The old man snorts: "If you think it's cheap, then ${w.price}."`);
 }
 /** Cướp: thành thì lấy trắng món đồ, đạo tâm sa xuống; hỏng thì lão có hộ vệ, bị đánh trọng thương */
+/**
+ * Cướp hàng thương nhân (Tyler 3/11): không còn 55% ăn ngay. Ra tay là phải đánh với người của đoàn hàng.
+ * 80% đoàn hàng có cao thủ hơn mình một cảnh giới (đồ tốt hơn, chiêu cao hơn), gần như không thắng nổi;
+ * 20% chỉ là tiêu sư kém mình một cảnh giới. Đánh thật theo sức chiến (eventDuel).
+ */
 export function robWare(c: Character, w: Ware, ctx: EffectCtx): string | null {
   if (w.state !== 'open') return null;
   stat(c, 'tamMa', 4);
   c.daoTam = Math.max(-100, c.daoTam - 8);
-  if (ctx.rnd() < 0.55) {
+  const strong = ctx.rnd() < 0.8;
+  const foeRealm = Math.max(1, Math.min(c.cosmos ? 11 : 7, c.realm + (strong ? 1 : -1)));
+  const who = strong
+    ? tr(`lão thương nhân hóa ra là cao thủ ${realmName(foeRealm, c.cosmos)} giả dạng`, `the old merchant turns out to be a disguised ${realmName(foeRealm, c.cosmos)} expert`)
+    : tr(`một tiêu sư ${realmName(foeRealm, c.cosmos)} nhảy ra chắn xe`, `a ${realmName(foeRealm, c.cosmos)} escort leaps out to guard the cart`);
+  const d = eventDuel(c, foeRealm, ctx.rnd);
+  if (d.result === 'win') {
     const chR = charmOf(w.item.id);
     if (chR) giveCharm(c, chR);
     else giveItem(c, w.item.id, false);
     w.state = 'bought';
     ctx.fx('buy', w.item.name);
-    const t = tr(`Bạn ra tay giật lấy ${w.item.name}, lão thương nhân ngã lăn ra đất. Đạo tâm bạn tối đi một chút.`, `You snatch ${w.item.name}, and the old merchant tumbles to the ground. Your Dao Heart darkens a little.`);
+    const t = tr(`Bạn ra tay, ${who}. Một trận ác chiến, bạn thắng và giật lấy ${w.item.name}. Đạo tâm bạn tối đi một chút.`, `You strike, and ${who}. After a brutal fight you win and seize ${w.item.name}. Your Dao Heart darkens a little.`);
     ctx.log(t, 'ta');
     return t;
   }
   w.state = 'gone';
-  stat(c, 'sucKhoe', -Math.min(25, Math.max(0, c.stats.sucKhoe - 5)));
-  const t = tr('Từ trong xe nhảy ra hai hộ vệ, đánh bạn một trận nhừ tử rồi đẩy xe đi mất.', 'Two bodyguards leap out of the cart, beat you black and blue, then push the cart away.');
+  stat(c, 'sucKhoe', -Math.min(strong ? 35 : 20, Math.max(0, c.stats.sucKhoe - 5)));
+  const t = strong
+    ? tr(`Bạn vừa ra tay thì ${who}. Hắn chỉ dùng ba phần sức đã đánh bạn nằm rạp, rồi thong thả đẩy xe đi.`, `The moment you strike, ${who}. Using barely a third of their strength they flatten you, then calmly push the cart away.`)
+    : tr(`Bạn ra tay, ${who}. Đánh không lại, bạn bị đánh nhừ tử, xe hàng đi mất.`, `You strike, and ${who}. You can't win and get beaten black and blue; the cart is gone.`);
   ctx.log(t, 'bad');
   return t;
 }

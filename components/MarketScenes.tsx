@@ -212,7 +212,7 @@ export function MerchantScene({ c, wares, onBuy, onHaggle, onRob, onLeave }: { c
               )}
             </div>
           ))}
-          <small className="note">{tr('Mặc cả nhờ Ngộ tính và Khí vận, lỡ lời thì lão nâng giá hoặc cất hàng. Cướp làm đạo tâm sa xuống, lão có hộ vệ.', 'Haggling uses Insight and Luck; say the wrong thing and he raises the price or hides it. Robbing darkens your Dao Heart, and he has bodyguards.')}</small>
+          <small className="note">{tr('Mặc cả nhờ Ngộ tính và Khí vận, lỡ lời thì lão nâng giá hoặc cất hàng. Cướp là phải đánh, đoàn hàng thường có cao thủ hơn mình, đạo tâm còn sa xuống.', 'Haggling uses Insight and Luck; say the wrong thing and he raises the price or hides it. Robbing means a fight, the caravan usually has someone stronger than you, and it darkens your Dao Heart.')}</small>
           <button className="btn btn-big" onClick={onLeave}>
             {tr('Chào lão, đi tiếp', 'Bid farewell and move on')}
           </button>
