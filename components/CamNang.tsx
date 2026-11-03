@@ -35,7 +35,7 @@ function markSeen(id: CnChapter) {
   } catch {}
 }
 
-type Who = 'me' | 'thay' | 'nu' | 'kiem' | 'dan' | 'tran' | 'phat' | 'ma' | 'yeu' | 'tien';
+type Who = 'me' | 'thay' | 'nu' | 'hh' | 'kiem' | 'dan' | 'tran' | 'phat' | 'ma' | 'yeu' | 'tien';
 interface Actor {
   who: Who;
   x: number; // % từ trái
@@ -136,6 +136,7 @@ function useCast(): Record<Who, Character> {
       me: demoChar({ age: 18, equipped: { ao: 'ao_vai' } }),
       thay: demoChar({ age: 90, realm: 5, equipped: { ao: 'bach_y' } }),
       nu: demoChar({ gender: 'nu', age: 20, equipped: { ao: 'thanh_sam' } }),
+      hh: demoChar({ gender: 'nu', age: 22, daoTam: -30, equipped: { ao: 'huyet_bao' } }),
       kiem: demoChar({ path: 'kiem', age: 25, equipped: { ao: 'thanh_sam', vu_khi: 'thanh_phong' } }),
       dan: demoChar({ path: 'dan', age: 40, equipped: { ao: 'thanh_sam' } }),
       tran: demoChar({ path: 'tran', age: 40, equipped: { ao: 'ao_da_hanh' } }),
@@ -202,9 +203,10 @@ function Extra({ k, cast }: { k: NonNullable<Panel['extra']>; cast: Record<Who, 
       ['kiem', T('Kiếm Cốc', 'Jian Valley'), T('Kiếm tu', 'Sword cultivators')],
       ['dan', T('Vạn Độc Môn', 'Wandu Sect'), T('Đan, Ma tu lòng dạ độc', 'Ruthless Alchemists, Demonics')],
       ['yeu', T('Yêu Thần Điện', 'Yaoshen Hall'), T('Yêu tu, yêu tộc', 'Yao cultivators')],
+      ['hh', T('Hợp Hoan Tông', 'Hehuan Sect'), T('người lệch về tà', 'those leaning evil')],
     ];
     return (
-      <div className="cn-paths four">
+      <div className="cn-paths five">
         {rows.map(([w, n, d]) => (
           <span key={n}>
             <Sprite c={cast[w]} size={52} anim="idle" dir={2} />

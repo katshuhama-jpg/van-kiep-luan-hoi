@@ -62,7 +62,7 @@ const save = async (p) => JSON.parse(await p.evaluate(() => localStorage.getItem
     if (SHOT) await p.screenshot({ path: SHOT + `/tm-${i + 1}.png` });
     await p.locator('.cn-panel').click(); await p.waitForTimeout(400);
   }
-  ok(seenX[1] === 3 && seenX[2] === 4 && seenX[4] === 4 && seenX[6] === 3, 'Tông môn: ba nhà, bốn bậc, bốn tông theo đạo, ba hướng đi ' + seenX.join(','));
+  ok(seenX[1] === 3 && seenX[2] === 4 && seenX[4] === 5 && seenX[6] === 3, 'Tông môn: ba nhà, bốn bậc, năm tông theo đạo (có Hợp Hoan Tông), ba hướng đi ' + seenX.join(','));
   ok(!p.errs.length, 'Cẩm nang không lỗi JS ' + p.errs.join(' | '));
   await p.close();
 

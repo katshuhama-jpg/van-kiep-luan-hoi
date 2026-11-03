@@ -4964,5 +4964,7 @@ button.shadow-card { cursor: pointer; }
 .cn-ranks > span:last-of-type { background: #ffe27a; }
 .cn-ranks b { font-size: 14px; font-weight: 700; color: #2a1d10; padding: 3px 0; }
 .cn-ranks em { flex-basis: 100%; order: -1; font-style: normal; font-size: 14px; font-weight: 700; text-align: center; color: #fff3dc; background: #000; padding: 1px 6px; margin-bottom: 4px; }
-.cn-paths.four { grid-template-columns: repeat(2, 1fr); }
+.cn-paths.five { grid-template-columns: repeat(6, 1fr); }
+.cn-paths.five > span { grid-column: span 2; }
+.cn-paths.five > span:nth-child(4) { grid-column: 2 / span 2; }
 .cn-routes { position: absolute; z-index: 3; left: 6px; right: 6px; top: 34%; display: flex; flex-direction: column; gap: 5px; }
