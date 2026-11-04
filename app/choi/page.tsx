@@ -96,7 +96,7 @@ function clearSetup() {
   } catch {}
 }
 /** Thưởng phúc duyên một lần khi tài khoản được bảo vệ lúc luân hồi */
-const PROTECT_BONUS = 10;
+const PROTECT_BONUS = 30;
 export default function PlayPage() {
   const { user, ready } = useAuth();
   const [phase, setPhase] = useState<'loading' | 'birth' | 'play'>('loading');
