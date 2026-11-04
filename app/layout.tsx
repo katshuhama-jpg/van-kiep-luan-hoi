@@ -31,6 +31,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang={en ? 'en' : 'vi'}>
       <head>
+        {/* 4/11: máy iOS 14-15 (iPhone 7, 8...) thiếu vài hàm mới, bù trước khi mã game chạy */}
+        <script dangerouslySetInnerHTML={{ __html: "!function(){var d=Object.defineProperty;function at(n){n=Math.trunc(n)||0;if(n<0)n+=this.length;return n<0||n>=this.length?void 0:this[n]}[Array,String].forEach(function(C){C.prototype.at||d(C.prototype,'at',{value:at,writable:!0,configurable:!0})});Object.hasOwn||d(Object,'hasOwn',{value:function(o,k){return Object.prototype.hasOwnProperty.call(o,k)},writable:!0,configurable:!0});window.structuredClone||(window.structuredClone=function(v){return v===void 0?v:JSON.parse(JSON.stringify(v))})}();" }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}

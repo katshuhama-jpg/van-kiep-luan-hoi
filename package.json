@@ -19,5 +19,12 @@
     "@types/react-dom": "^19.3.0",
     "typescript": "^5.9.3"
   },
-  "private": true
+  "private": true,
+  "browserslist": [
+    "chrome >= 87",
+    "edge >= 88",
+    "firefox >= 78",
+    "safari >= 14",
+    "ios_saf >= 14"
+  ]
 }
