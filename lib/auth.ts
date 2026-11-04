@@ -157,3 +157,62 @@ export async function googleLinked(): Promise<boolean | null> {
     return null;
   }
 }
+
+// ---------- Bảo vệ tài khoản: mã khôi phục (4/11) ----------
+export interface Security {
+  google: boolean;
+  email?: string | null;
+  recovery: boolean;
+  must_change?: boolean; // đang dùng mật khẩu tạm Fanpage cấp
+}
+/** Tình trạng bảo vệ của tài khoản đang đăng nhập; null nếu không hỏi được (mạng lỗi thì không chặn người chơi) */
+export async function securityStatus(): Promise<Security | null> {
+  const p = currentPlayer();
+  const sb = supabase();
+  if (!p || !sb) return null;
+  try {
+    const { data, error } = await sb.rpc('vkl_security_status', { p_token: p.token });
+    if (error || !data) return null;
+    return data as Security;
+  } catch {
+    return null;
+  }
+}
+/** Tạo mã khôi phục mới (mã cũ mất hiệu lực). Máy chủ chỉ trả mã gốc đúng lần này */
+export async function createRecovery(): Promise<{ code: string } | { error: string }> {
+  const p = currentPlayer();
+  const sb = supabase();
+  if (!p || !sb) return { error: 'SESSION' };
+  const { data, error } = await sb.rpc('vkl_recovery_create', { p_token: p.token });
+  if (error || !data) return { error: error?.message ?? 'NET' };
+  return { code: (data as { code: string }).code };
+}
+/** Quên mật khẩu: tên + mã khôi phục + mật khẩu mới. Thành công thì đăng nhập luôn */
+export async function recoverAccount(username: string, code: string, password: string): Promise<string | null> {
+  const u = username.trim().toLowerCase();
+  if (!USERNAME_RE.test(u)) return tr('Tên đăng nhập không hợp lệ.', 'Invalid username.');
+  if (password.length < 3 || password.length > 6) return tr('Mật khẩu mới dài từ 3 đến 6 ký tự.', 'New password must be 3 to 6 characters.');
+  const sb = supabase();
+  if (!sb) return tr('Chưa cấu hình máy chủ.', 'Server not configured.');
+  const { data, error } = await sb.rpc('vkl_recover', { p_username: u, p_code: code, p_new_password: password });
+  if (error) {
+    if (error.message.includes('RECOVER_FAILED')) return tr('Sai tên đăng nhập hoặc mã khôi phục.', 'Wrong username or recovery code.');
+    return translate(error.message);
+  }
+  const d = data as { token: string; username: string };
+  setPlayer({ token: d.token, username: d.username });
+  return null;
+}
+
+/** Đổi mật khẩu (mật khẩu tạm thì không cần mật khẩu cũ) */
+export async function changePassword(oldPw: string, newPw: string): Promise<string | null> {
+  if (newPw.length < 3 || newPw.length > 6) return tr('Mật khẩu mới dài từ 3 đến 6 ký tự.', 'New password must be 3 to 6 characters.');
+  const p = currentPlayer();
+  const sb = supabase();
+  if (!p || !sb) return tr('Phiên đăng nhập đã hết, đăng nhập lại nhé.', 'Your session expired, please log in again.');
+  const { error } = await sb.rpc('vkl_change_password', { p_token: p.token, p_old: oldPw, p_new: newPw });
+  if (!error) return null;
+  if (error.message.includes('OLD_WRONG')) return tr('Mật khẩu cũ không đúng.', 'Old password is wrong.');
+  if (error.message.includes('SESSION')) return tr('Phiên đăng nhập đã hết, đăng nhập lại nhé.', 'Your session expired, please log in again.');
+  return translate(error.message);
+}

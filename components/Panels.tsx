@@ -14,7 +14,7 @@ import { GachaPanel, ShareCard } from './Extras';
 import ItemIconImg from './ItemIcon';
 import { FOCUS, ITEMS, PATHS, PILLS, REALMS, SEASONS, TALENTS, fxParts, fxText, gearFx, itemPrice, overworkFree, pillPrice, safeYears, RARE_STOCK_REALM, realmLabel, soldOut, type Item } from '@/lib/game/data';
 import { describeLean } from '@/lib/game/engine';
-import { DANGER_TEXT, MONSTERS, combatLevel, dangerOf, dropFactor, monstersFor, effLv, killExp, monsterName, playerStats, tierOf } from '@/lib/game/combat';
+import { DANGER_TEXT, MONSTERS, combatLevel, dangerOf, dropFactor, monstersFor, haPhamMonsters, effLv, killExp, monsterName, playerStats, tierOf } from '@/lib/game/combat';
 import { MonsterSprite } from './Battle';
 import { cultPct, fmt, needFor } from '@/lib/game/helpers';
 import type { Character, Focus, LogEntry, Meta, PendingEvent, Slot } from '@/lib/game/types';
@@ -28,6 +28,8 @@ import { LORE, LORE2_TOTAL, LORE_TOTAL, lore1Count, lore2Count, quyNhatDone } fr
 import { ELEMENTS } from '@/lib/game/nguhanh';
 import { CheckinRow, RumorLine, TodayScroll } from './Hook';
 import BagDoll from './BagDoll';
+import { HanhTrang } from './HanhTrang';
+import { buryPlan } from '@/lib/game/ruong';
 import { track } from '@/lib/track';
 import { FORGE_CHANCE, FORGE_COST, FORGE_MAX, FORGE_PER, canSmelt, forgeLevel, smeltValue } from '@/lib/game/forge';
 import { ArenaNudge } from './LoiDaiButton';
@@ -1223,7 +1225,10 @@ export function DeathSheet({
   const [bury, setBury] = useState(true);
   const [busy, setBusy] = useState(false);
   const ending = endingOf(c);
-  const buryMoney = Math.round(c.linhThach * 0.3);
+  const plan = buryPlan(c, passOn && !!weapon && !c.ascended);
+  const canBury = !!plan;
+  const buryMoney = plan?.money ?? 0;
+  const buryItem = plan?.item ?? null;
   return (
     <Sheet
       title={
@@ -1279,6 +1284,16 @@ export function DeathSheet({
         {c.path ? ` · ${PATHS[c.path].name}` : ''} · {describeLean(c.daoTam)}
       </p>
       <p className="note">{c.cause}</p>
+      <HanhTrang
+        c={c}
+        meta={meta}
+        phuc={karma.phuc + q.reward}
+        nghiep={karma.nghiep}
+        isNew={isNew}
+        endingName={ending.name}
+        legend={passOn && weapon ? legendName || weapon.name : null}
+        stash={bury && canBury ? { money: buryMoney, item: buryItem } : null}
+      />
       <div className={`ending-box r${ending.rare} ${isNew ? 'is-new' : ''}`} style={{ ['--rc' as string]: RARE_COLOR[ending.rare] } as CSSProperties}>
         {isNew && (
           <span className="new-stamp" aria-hidden="true">
@@ -1304,18 +1319,6 @@ export function DeathSheet({
       </div>
       {c.endTag === 'chung_dao' && <SauChungDao c={c} meta={meta} />}
       <VanKiepRow c={c} />
-      <p>
-        
-        {tr("Mang sang kiếp sau: ", "Carried to the next life: ")}<b style={{ fontWeight: 700, color: 'var(--jade)' }}>+{karma.phuc}{tr(" phúc duyên", " Fortune")}</b>
-        {karma.nghiep > 0 && (
-          <>
-            {' '}
-            
-            {tr("và ", "and ")}<b style={{ fontWeight: 700, color: 'var(--ta)' }}>+{karma.nghiep}{tr(" nghiệp lực", " Karma")}</b>{tr(" (tiêu được cho thiên phú tà đạo)", " (spendable on evil talents)")}
-          </>
-        )}
-        .
-      </p>
       {q.newly.length > 0 && (
         <p className="death-quests">
           
@@ -1355,13 +1358,14 @@ export function DeathSheet({
           </button>
         ))}
       </span>
-      {!c.ascended && c.endTag !== 'xuyen_khong' && (
+      {canBury && (
         <>
           <label className="toggle" style={{ marginTop: 8 }}>
             <input type="checkbox" checked={bury} onChange={(e) => setBury(e.target.checked)} />
             
-            {tr("Chôn rương cho kiếp sau (", "Bury a chest for your next life (")}{buryMoney}{tr(" linh thạch", " spirit stones")}{c.equipped.vu_khi || c.equipped.phu_kien ? tr(' và một món đồ', " and one item") : ''})
+            {tr("Chôn rương cho kiếp sau (", "Bury a chest for your next life (")}{buryMoney}{tr(" linh thạch", " spirit stones")}{buryItem ? tr(' và một món đồ', " and one item") : ''})
           </label>
+          {c.ascended && <small className="note">{tr('Đồ tiên không mang xuống phàm được. Rương chỉ giữ món đồ phàm tốt nhất trong túi, săn ở Hạ phàm.', 'Immortal gear cannot go to the mortal world. The chest keeps only your best mortal item, hunted via Descend.')}</small>}
           {bury && (
             <label className="field">
               <span>{tr("Lời nhắn bỏ vào rương", "Note to leave in the chest")}</span>
@@ -1546,8 +1550,26 @@ export function FocusIcon({ f }: { f: Focus }) {
 export function HuntSheet({ c, onPick, onToggleFlee, onClose }: { c: Character; onPick: (id: string) => void; onToggleFlee: (v: boolean) => void; onClose: () => void }) {
   const L = combatLevel(c);
   const me = playerStats(c);
+  const cur = MONSTERS.find((m) => m.id === c.huntTarget);
+  const [ha, setHa] = useState(!!c.cosmos && !!cur && !cur.cosmos);
+  const list = c.cosmos && ha ? haPhamMonsters() : monstersFor(c, sectSide(c));
   return (
     <Sheet title={tr("Trừ yêu luyện công", "Hunt demons, train")} onClose={onClose}>
+      {c.cosmos && (
+        <div className="ha-pham-tabs" role="tablist">
+          <button role="tab" aria-selected={!ha} className={`chip-btn ${!ha ? 'on' : ''}`} onClick={() => setHa(false)}>
+            {c.cosmos === 'ma' ? tr('Ma giới', 'Demon Realm') : c.cosmos === 'hu' ? tr('Hư giới', 'Void Realm') : tr('Tiên giới', 'Immortal Realm')}
+          </button>
+          <button role="tab" aria-selected={ha} className={`chip-btn ${ha ? 'on' : ''}`} onClick={() => setHa(true)}>
+            {tr('Hạ phàm', 'Descend')}
+          </button>
+        </div>
+      )}
+      {c.cosmos && ha && (
+        <p className="ha-pham-note">
+          {tr('Xuống hạ giới săn đồ. Linh khí loãng nên không lên tu vi, bù lại quái nào cũng rơi đồ và dễ ra đồ hiếm. Đồ phàm sưu tầm vào Bảo khố hoặc chôn rương cho kiếp sau.', 'Go down to the mortal world to hunt gear. The thin qi gives no cultivation, but every monster drops loot and rare items come more often. Collect them in the Treasury or bury them for your next life.')}
+        </p>
+      )}
       <p style={{ marginTop: 0 }}>
         
         {tr("Cấp chiến đấu của bạn: ", "Your combat level: ")}<b style={{ fontWeight: 700, color: 'var(--red-d)' }}>Lv{L}</b>{tr(" · Công ", " · Atk ")}{fmt(me.atk)}{tr(" · Thủ ", " · Def ")}{fmt(me.def)}{tr(" · Máu ", " · HP ")}{fmt(me.hp)}
@@ -1562,9 +1584,9 @@ export function HuntSheet({ c, onPick, onToggleFlee, onClose }: { c: Character; 
         {tr("Tự rút lui khi máu dưới 30%", "Auto-retreat when HP is below 30%")}
       </label>
       <div className="items">
-        {monstersFor(c, sectSide(c)).map((m) => {
+        {list.map((m) => {
           const elv = effLv(c, m);
-          const hidden = !m.boss && elv > L + 6;
+          const hidden = !m.boss && !ha && elv > L + 6;
           const d = dangerOf(c, m);
           const on = c.huntTarget === m.id;
           return (
@@ -1595,7 +1617,7 @@ export function HuntSheet({ c, onPick, onToggleFlee, onClose }: { c: Character; 
                     {tr("Cao thủ", "Master")}
                   </span>
                 )}
-                <small>{hidden ? m.place : m.boss ? tr(`${m.place} · ${m.desc} Chưa từng ai thắng.`, `${m.place} · ${m.desc} No one has ever won.`) : tr(`${m.place} · ~${fmt(killExp(c, m))} tu vi/con · ${c.kills?.[m.id] ?? 0} đã trảm`, `${m.place} · ~${fmt(killExp(c, m))} cultivation each · ${c.kills?.[m.id] ?? 0} slain`)}</small>
+                <small>{hidden ? m.place : m.boss ? tr(`${m.place} · ${m.desc} Chưa từng ai thắng.`, `${m.place} · ${m.desc} No one has ever won.`) : ha ? tr(`${m.place} · ${c.kills?.[m.id] ?? 0} đã trảm`, `${m.place} · ${c.kills?.[m.id] ?? 0} slain`) : tr(`${m.place} · ~${fmt(killExp(c, m))} tu vi/con · ${c.kills?.[m.id] ?? 0} đã trảm`, `${m.place} · ~${fmt(killExp(c, m))} cultivation each · ${c.kills?.[m.id] ?? 0} slain`)}</small>
                 {!hidden && !m.boss && ITEMS.some((i) => i.from?.includes(m.id)) && (
                   <small className="drop-line">
                     

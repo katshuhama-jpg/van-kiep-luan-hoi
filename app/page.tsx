@@ -1,5 +1,6 @@
 'use client';
 
+import { ProtectPrompt } from '@/components/GoogleAuth';
 import Link from 'next/link';
 import MusicToggle from '@/components/MusicToggle';
 import LangToggle from '@/components/LangToggle';
@@ -104,6 +105,7 @@ export default function Home() {
       <NewsToast d={live} />
       <ContinueBar user={user} ready={ready} guest={ready && !user} />
       {rel && <ReleaseNotice onClose={() => setRel(false)} />}
-    </main>
+    <ProtectPrompt at="home" />
+      </main>
   );
 }
