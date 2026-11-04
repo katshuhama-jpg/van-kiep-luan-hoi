@@ -361,7 +361,7 @@ export function BattleOverlay({ b, me, ultCut }: { b: BattleView; me?: Character
             )}
           </div>
           <div
-            className={`foe-wrap ${lastHit?.side === 'p' && b.phase === 'fight' ? 'got-hit' : ''} ${lastHit?.side === 'm' ? 'attacking' : ''} ${b.duel.kind === 'kiep_truoc' ? 'ghost' : b.duel.kind === 'ngu_hanh' ? 'mirror' : ''}`}
+            className={`foe-wrap ${lastHit?.side === 'p' && b.phase === 'fight' ? 'got-hit' : ''} ${lastHit?.side === 'm' ? 'attacking' : ''} ${b.duel.kind === 'kiep_truoc' ? 'past-ghost' : b.duel.kind === 'ngu_hanh' ? 'mirror' : ''}`}
             key={lastHit?.id ?? 0}
           >
             <Sprite
