@@ -109,7 +109,8 @@ function one(text: string, d: Dir, depth: number): string | null {
 
 /** Câu ghép: tách theo dấu câu, ghép các đoạn liền nhau sao cho khớp được nhiều chữ nhất (quy hoạch động) */
 function split(text: string, d: Dir, depth: number): string | null {
-  const segs = text.split(/(?<=[.!?:…])\s+/);
+  // không dùng lookbehind (?<=): Safari dưới 16.4 (iPhone 7, 8 đời cũ) báo lỗi cú pháp, cả màn chơi không chạy
+  const segs = text.replace(/([.!?:…])\s+/g, '$1\u0000').split('\u0000');
   if (segs.length < 2) return null;
   const n = segs.length;
   // best[i]: [số ký tự khớp, các đoạn đã dịch] cho segs[0..i)
