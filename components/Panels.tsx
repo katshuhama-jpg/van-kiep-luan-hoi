@@ -181,12 +181,30 @@ function EventPet({ id, lv, c }: { id: string; lv?: number; c?: Character }) {
   );
 }
 
-export function EventCard({ p, c, onChoose }: { p: PendingEvent; c?: Character; onChoose: (i: number) => void }) {
+export function EventCard(props: { p: PendingEvent; c?: Character; onChoose: (i: number) => void }) {
+  // khóa theo sự kiện: sự kiện mới luôn mở ra đầy đủ
+  return <EventCardIn key={props.p.id + props.p.text} {...props} />;
+}
+function EventCardIn({ p, c, onChoose }: { p: PendingEvent; c?: Character; onChoose: (i: number) => void }) {
+  // 4/11 Tyler: thu gọn tạm để đọc gia phả phía trên, đọc xong mở lại để chọn
+  const [min, setMin] = useState(false);
+  if (min)
+    return (
+      <section className="dialog event mini" aria-live="polite">
+        <button className="event-open" onClick={() => setMin(false)}>
+          <b>{p.title}</b>
+          <span>{tr('▴ Mở lại để chọn', '▴ Open to choose')}</span>
+        </button>
+      </section>
+    );
   return (
-    <section className="dialog event" aria-live="assertive" key={p.id + p.text}>
+    <section className="dialog event" aria-live="assertive">
       <div className="event-head">
         <h2>{p.title}</h2>
         <span>{tr("❚❚ dừng", "❚❚ pause")}</span>
+        <button className="event-min" onClick={() => setMin(true)} aria-label={tr('Thu gọn để đọc gia phả', 'Collapse to read the chronicle')}>
+          {tr('▾ Thu gọn', '▾ Hide')}
+        </button>
       </div>
       <p>{p.text}</p>
       {p.item && <EventItem id={p.item} c={c} />}
