@@ -96,6 +96,8 @@ const save = async (p) => JSON.parse(await p.evaluate(() => localStorage.getItem
   ok(!ch.cp.eq.includes('thiet_sa') && ch.cp.eq[1] === 'liet_hoa' && ch.cp.eq[2] === 'kim_xa', 'ô chiêu đầy: bấm Mang chưa tự tháo chiêu nào');
   if (process.env.SHOT) { await p.locator('.tk-pick').scrollIntoViewIfNeeded().catch(() => {}); await p.screenshot({ path: process.env.SHOT + '/tk-pick.png' }); }
   ok(await p.locator('.tk-pick .chip-btn').count() === 2 && await p.locator('.tk-seat.pick').count() === 2, 'ô chiêu đầy: hỏi thay ô nào (trong danh sách và trên vòng)');
+  ok(await p.evaluate(() => { const b = document.querySelector('.tk-pick .chip-btn'); b.textContent = 'Chiêu 1: Thái Tổ Trường Quyền Đại Lực'; const card = b.closest('.tk-cp').getBoundingClientRect(); return [...document.querySelectorAll('.tk-pick, .tk-pick .chip-btn')].every((e) => e.getBoundingClientRect().right <= card.right + 0.5); }), 'chọn ô thay: nút tên dài không tràn khỏi thẻ');
+  if (process.env.SHOT) { await p.locator('.tk-pick').scrollIntoViewIfNeeded().catch(() => {}); await p.screenshot({ path: process.env.SHOT + '/tk-pick2.png' }); }
   await p.locator('.tk-pick .chip-btn', { hasText: 'Chiêu 1' }).click({ timeout: 5000 }).catch(() => {});
   await p.waitForTimeout(300);
   ch = await save(p);
