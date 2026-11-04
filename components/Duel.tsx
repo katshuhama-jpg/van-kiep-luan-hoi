@@ -51,7 +51,7 @@ export default function DuelWarning({
           {foe.kind === 'ma_dau' ? tr('☠ Ma đầu', "☠ Demon lord") : foe.kind === 'dich_thu' ? tr('⚠ Sát khí', "⚠ Killing intent") : foe.kind === 'kiep_truoc' ? tr('◈ Tâm cảnh', "◈ Inner world") : foe.kind === 'dong_mon' ? (foe.daiBi ? tr('⚑ Đại bỉ tông môn', "⚑ Grand Sect Tournament") : tr('⚑ Đồng môn', "⚑ Fellow disciple")) : tr('✦ Kỳ ngộ', "✦ Fortuitous encounter")}
         </p>
         <h2 id="duel-title">{info.title}</h2>
-        <div className={`duel-foe ${foe.kind === 'kiep_truoc' ? 'ghost' : ''}`}>
+        <div className={`duel-foe ${foe.kind === 'kiep_truoc' ? 'past-ghost' : ''}`}>
           <Sprite c={fc} size={120} />
         </div>
         <p className="duel-name">{r.name}</p>
