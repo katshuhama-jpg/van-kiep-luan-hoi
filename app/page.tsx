@@ -99,7 +99,7 @@ export default function Home() {
             ·{' '}
           </span>
         )}
-        <Link href="/tac-gia">{tr('Tác giả hình ảnh', 'Art credits')}</Link>
+        <Link href="/tac-gia">{tr('Tác giả hình ảnh', 'Art credits')}</Link> · <Link href="/chinh-sach">{tr('Quyền riêng tư', 'Privacy')}</Link> · <Link href="/dieu-khoan">{tr('Điều khoản', 'Terms')}</Link>
       </div>
       <NewsToast d={live} />
       <ContinueBar user={user} ready={ready} guest={ready && !user} />
