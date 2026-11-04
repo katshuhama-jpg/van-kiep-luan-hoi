@@ -6,6 +6,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Scene from '@/components/Scene';
 import MusicToggle from '@/components/MusicToggle';
 import { CoachHint, TribulationOverlay, Tutorial, clearLaSo } from '@/components/Extras';
+import { AccountSetup, ProtectGate } from '@/components/GoogleAuth';
+import { securityStatus, type Security } from '@/lib/auth';
+import { googleOn } from '@/lib/google';
 import { HoDaoScene, HoTroScene, TuKiepOverlay } from '@/components/VanKiep';
 import type { PastSelf } from '@/lib/vanKiep';
 import { LOI_ALLOW, LOI_TOTAL, daoKhon, failVanDao, usesVanDao } from '@/lib/game/vanDao';
@@ -77,6 +80,21 @@ function nextHint(h: Record<string, 1>, pending: boolean, age: number): { k: str
   return null;
 }
 
+/** Trang đăng nhập đặt cờ khi vừa khôi phục mật khẩu bằng mã: phát mã mới ngay khi vào game */
+function setupStart(): 'code' | undefined {
+  try {
+    return sessionStorage.getItem('vkl.setup') === 'code' ? 'code' : undefined;
+  } catch {
+    return undefined;
+  }
+}
+function clearSetup() {
+  try {
+    sessionStorage.removeItem('vkl.setup');
+  } catch {}
+}
+/** Thưởng phúc duyên một lần khi tài khoản được bảo vệ */
+const PROTECT_BONUS = 30;
 export default function PlayPage() {
   const { user, ready } = useAuth();
   const [phase, setPhase] = useState<'loading' | 'birth' | 'play'>('loading');
@@ -97,6 +115,38 @@ export default function PlayPage() {
   const [nhdPeek, setNhdPeek] = useState(false); // xem luật Ngũ Hành Đài từ dải nhắc
   const [nhd, setNhd] = useState<{ i: number; p: PendingEvent; view: NhdView | 'fight' | 'hodao'; foe: Stance; tell: Stance; msg?: string; end?: 'next' | 'done' | 'lose' | 'dead' } | null>(null);
   const [tut, setTut] = useState(false); // hướng dẫn đầy đủ (mở từ menu)
+  const [protectOpen, setProtectOpen] = useState(false); // mở Bảo vệ tài khoản từ menu
+  // Tyler chốt 4/11: đang chơi không làm phiền; tới lúc lập bia luân hồi mà tài khoản chưa có Google lẫn mã khôi phục thì phải chọn một cách
+  const [sec, setSec] = useState<Security | null>(null);
+  const unprotected = !!sec && !sec.google && !sec.recovery;
+  const setUnprotected = (_v: boolean) => {
+    securityStatus().then(setSec);
+  };
+  const [bonusToast, setBonusToast] = useState<string | null>(null);
+  /** Thưởng một lần cho mã khôi phục, một lần cho Google */
+  const protectPatch = (kind: 'google' | 'code' | undefined, m: Meta): { add: number; patch: Partial<Meta> } => {
+    if (kind === 'google' && !m.ggBonus) return { add: PROTECT_BONUS, patch: { ggBonus: true, protectBonus: true } };
+    if (kind === 'code' && !m.protectBonus) return { add: PROTECT_BONUS, patch: { protectBonus: true } };
+    return { add: 0, patch: {} };
+  };
+  const grantProtect = (kind?: 'google' | 'code') => {
+    securityStatus().then(setSec);
+    if (!meta) return;
+    const { add, patch } = protectPatch(kind, meta);
+    if (!add) return;
+    const m2: Meta = { ...meta, ...patch, phucDuyen: meta.phucDuyen + add };
+    setMeta(m2);
+    saveMeta(user, m2).catch(() => {});
+    setBonusToast(kind === 'google' ? tr(`Đã liên kết Google: +${add} phúc duyên`, `Google linked: +${add} Fortune`) : tr(`Đã giữ tài khoản: +${add} phúc duyên`, `Account protected: +${add} Fortune`));
+    track('protect_bonus', { kind, add });
+  };
+  const [protectFinish, setProtectFinish] = useState<[string, string, boolean, { prophecy: { id: string; text: string }; legendName: string | null }] | null>(null);
+  const [setupOpen, setSetupOpen] = useState(false); // vừa khôi phục: đặt lại tài khoản trước khi chơi
+  const protectBonusRef = useRef<'google' | 'code' | undefined>(undefined);
+  useEffect(() => {
+    if (!user) return setSec(null);
+    securityStatus().then(setSec);
+  }, [user]);
   // gợi ý đúng lúc cho người mới: mỗi lúc một bong bóng, đã xem thì thôi
   const [hints, setHints] = useState<Record<string, 1>>(() => {
     try {
@@ -311,7 +361,7 @@ export default function PlayPage() {
   const [wares, setWares] = useState<Ware[] | null>(null);
   // 4.1.0: kết quả hội đấu giá hiện thành thẻ riêng (trước chỉ ghi vào gia phả, người chơi không biết thắng hay thua)
   const [auctionRes, setAuctionRes] = useState<{ item: string; won: boolean; text: string } | null>(null);
-  activeRef.current = running && sheet === null && !ciOpen && wares === null && auctionRes === null && phase === 'play' && kiep === null && hoTro === null && vanDao === null && !tut && duelWarn === null && !nhdPeek && !relOpen && !downOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
+  activeRef.current = running && sheet === null && !ciOpen && wares === null && auctionRes === null && phase === 'play' && kiep === null && hoTro === null && vanDao === null && !tut && !protectOpen && !setupOpen && duelWarn === null && !nhdPeek && !relOpen && !downOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
 
   /** Ngũ hành giữa bạn và loài quái */
   function monElem(c: Character, m: { el?: Element }) {
@@ -1696,7 +1746,8 @@ export default function PlayPage() {
       petBook,
       cpHeir: (heirChoices(c).find((d) => d.id === c.cpHeirPick) ?? heirChoices(c)[0])?.id ?? null,
       cpBook: [...new Set([...(meta.cpBook ?? []), ...(c.cp?.own ?? []).map((o) => o.id)])],
-      phucDuyen: meta.phucDuyen + k.phuc + q.reward + (c.goalDone ? (newbieGoal(c)?.reward ?? 0) : 0),
+      phucDuyen: meta.phucDuyen + k.phuc + q.reward + (c.goalDone ? (newbieGoal(c)?.reward ?? 0) : 0) + protectPatch(protectBonusRef.current, meta).add,
+      ...protectPatch(protectBonusRef.current, meta).patch,
       nghiep: k.nghiep > 0 ? meta.nghiep + k.nghiep : Math.max(0, meta.nghiep - 5),
       lives: meta.lives + 1,
       talents: [],
@@ -1831,6 +1882,9 @@ export default function PlayPage() {
         {relOpen && !ghiDanh && <ReleaseNotice onClose={closeRel} />}
         {downOpen && !relOpen && !ghiDanh && <DownNotice onClose={() => setDownOpen(false)} />}
         {ghiDanh && <GhiDanh {...ghiDanh} lives={meta.lives} onClose={() => setGhiDanh(null)} />}
+        {user && !setupOpen && <ProtectGate bonus={meta.protectBonus ? 0 : PROTECT_BONUS} ggBonus={meta.ggBonus ? 0 : PROTECT_BONUS} onOpen={() => track('protect_show', { at: 'luan_hoi' })} onDone={(kind) => grantProtect(kind)} />}
+        {user && <AccountSetup start={setupStart()} onOpen={() => setSetupOpen(true)} onDone={() => (clearSetup(), setSetupOpen(false), setUnprotected(false))} />}
+        {user && protectOpen && <ProtectGate mode="manage" bonus={meta.protectBonus || !unprotected ? 0 : PROTECT_BONUS} ggBonus={meta.ggBonus ? 0 : PROTECT_BONUS} onDone={(kind) => (setProtectOpen(false), grantProtect(kind))} />}
       </main>
     );
   }
@@ -1954,6 +2008,12 @@ export default function PlayPage() {
           <EventCard p={pending} c={c} onChoose={choose} />
         ) : (
           <div className="dock-inner">
+            {user && googleOn() && sec && !sec.google && !c.dead && (
+              <button className="gg-nudge" onClick={() => (track('gg_nudge'), setProtectOpen(true))}>
+                <b>G</b>
+                {meta.ggBonus ? tr('Liên kết Google để không bao giờ mất tài khoản ›', 'Link Google so you never lose your account ›') : tr(`Liên kết Google, nhận +${PROTECT_BONUS} phúc duyên ›`, `Link Google, get +${PROTECT_BONUS} Fortune ›`)}
+              </button>
+            )}
             <OverworkBar c={c} />
             <FocusGrid c={c} onPick={pickFocus} />
             <div className="dock-actions four">
@@ -2130,6 +2190,17 @@ export default function PlayPage() {
               
               {tr("Hướng dẫn chơi", "How to play")}
             </button>
+            {user && (
+              <button
+                className="btn"
+                onClick={() => {
+                  setSheet(null);
+                  setProtectOpen(true);
+                }}
+              >
+                {sec?.google ? tr('✓ Đã liên kết tài khoản Google', '✓ Google account linked') : googleOn() ? tr('Liên kết Google / Bảo vệ tài khoản', 'Link Google / Protect account') : tr('Bảo vệ tài khoản', 'Protect account')}
+              </button>
+            )}
             <Link className="btn" href="/cap-nhat" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
               
               {tr("Lịch sử cập nhật · bản ", "Update history · version ")}{CURRENT_VERSION}
@@ -2168,12 +2239,33 @@ export default function PlayPage() {
           </div>
         </Sheet>
       )}
-      {c.dead && <DeathSheet c={c} meta={meta} karma={karmaOf(c)} isNew={!meta.endings?.[endingOf(c).id]} onDone={finishLife} />}
+      {c.dead && !protectFinish && <DeathSheet c={c} meta={meta} karma={karmaOf(c)} isNew={!meta.endings?.[endingOf(c).id]} onDone={(...a) => (unprotected ? (track('protect_show', { at: 'death' }), setProtectFinish(a)) : finishLife(...a))} />}
+      {protectFinish && (
+        <ProtectGate
+          mode="death"
+          bonus={meta.protectBonus ? 0 : PROTECT_BONUS}
+          ggBonus={meta.ggBonus ? 0 : PROTECT_BONUS}
+          onDone={(kind) => {
+            const a = protectFinish;
+            setUnprotected(false);
+            setProtectFinish(null);
+            protectBonusRef.current = kind;
+            finishLife(...a);
+          }}
+        />
+      )}
       {(() => {
         if (tut || c.dead || sheet !== null || kiep !== null || hoTro || vanDao || nhd || duelWarn || duelRef.current || ambushRef.current) return null;
         const h = nextHint(hints, !!pending, c.age);
         return h ? <CoachHint key={h.k} sel={h.sel} text={h.text} top={h.top} onOk={() => seeHint(h.k)} /> : null;
       })()}
+      {bonusToast && (
+        <button className="protect-toast" onAnimationEnd={() => setBonusToast(null)} onClick={() => setBonusToast(null)}>
+          {bonusToast}
+        </button>
+      )}
+      {user && <AccountSetup start={setupStart()} onOpen={() => setSetupOpen(true)} onDone={() => (clearSetup(), setSetupOpen(false), setUnprotected(false))} />}
+      {user && protectOpen && <ProtectGate mode="manage" bonus={meta.protectBonus || !unprotected ? 0 : PROTECT_BONUS} ggBonus={meta.ggBonus ? 0 : PROTECT_BONUS} onDone={(kind) => (setProtectOpen(false), grantProtect(kind))} />}
       {tut && !pending && !c.dead && (
         <Tutorial
           onDone={() => {
