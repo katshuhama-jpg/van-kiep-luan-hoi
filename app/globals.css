@@ -4873,3 +4873,23 @@ button.shadow-card { cursor: pointer; }
 .auc-res-stage .fs-stamp { z-index: 2; top: auto; bottom: 4px; left: 50%; font-size: 26px; transform: translateX(-50%) rotate(-6deg); }
 .auc-res-stage { align-content: start; padding-top: 14px; }
 .choice.off, .choice:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(0.6); }
+
+/* ===== 4/11: cáo thị bản lớn ===== */
+.rel-hero { position: relative; height: 150px; margin: 4px -4px 10px; overflow: hidden; border: 3px solid #1f160d; box-shadow: 3px 3px 0 #1f160d; background: #1f160d; }
+.rel-hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
+.rel-hero-hero { position: absolute; left: 8%; bottom: -6px; image-rendering: pixelated; }
+.rel-hero-fx { position: absolute; left: 42%; top: 18px; image-rendering: pixelated; }
+.rel-hero-cap { position: absolute; right: 8px; bottom: 8px; padding: 2px 8px; font-size: 18px; font-weight: 700; letter-spacing: 1px; color: #ffe27a; background: #1f160d; border: 2px solid #ffe27a; animation: relCap 1.6s steps(2) infinite; }
+@keyframes relCap { 50% { color: #fff6c8; } }
+.rel-feats { list-style: none; margin: 8px 0 4px; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.rel-feats li { display: flex; gap: 10px; align-items: center; padding: 6px 8px; background: #fff6dc; border: 2px solid #c9962e; }
+.rel-feats img { flex: 0 0 40px; image-rendering: pixelated; }
+.rel-feats span { display: flex; flex-direction: column; line-height: 1.2; }
+.rel-feats b { font-size: 17px; color: #8a1a1a; }
+.rel-feats small { font-size: 14px; color: #3a2414; }
+.rel-sum .rel-feats li { background: #fff6dc; border: 2px solid #c9962e; box-shadow: none; padding: 6px 8px; gap: 10px; }
+.rel-sum .rel-feats b { display: block; padding: 0; margin: 0; font-size: 17px; line-height: 1.15; color: #8a1a1a; background: none; border: none; white-space: normal; }
+.rel-sum .rel-feats small { font-size: 14px; color: #3a2414; }
+.rel-sum .rel-intro { margin: 0 0 4px; }
+.rel-sum .rel-feats b { max-width: none; flex: none; }
+.rel-sum .rel-feats li > span { flex: 1; min-width: 0; }
