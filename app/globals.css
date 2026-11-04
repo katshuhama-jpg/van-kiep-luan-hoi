@@ -4946,3 +4946,10 @@ button.shadow-card { cursor: pointer; }
 .tk-pick { min-width: 0; max-width: 100%; box-sizing: border-box; }
 .tk-pick .chip-btn { max-width: 100%; min-width: 0; box-sizing: border-box; white-space: normal; text-align: left; font-size: 14px; line-height: 1.2; padding: 4px 8px; overflow-wrap: anywhere; }
 .tk-cp-body { min-width: 0; }
+
+/* ===== 4/11: thu gọn thẻ sự kiện để đọc gia phả ===== */
+.event-min { flex: none; margin-left: 6px; padding: 2px 8px; font: inherit; font-size: 14px; font-weight: 700; color: var(--ink); background: #fff3dc; border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--ink-dark); cursor: pointer; }
+.dialog.event.mini { padding: 0; }
+.event-open { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 10px 12px; font: inherit; text-align: left; color: var(--ink); background: none; border: 0; cursor: pointer; }
+.event-open b { min-width: 0; font-size: 18px; color: #ffcf6e; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.event-open span { flex: none; padding: 3px 10px; font-size: 15px; font-weight: 700; color: #fff3dc; background: var(--red-d); border: 2px solid var(--ink-dark); box-shadow: 2px 2px 0 #000; animation: tkOrbSel 0.8s steps(2) infinite; }
