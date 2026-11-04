@@ -2173,7 +2173,7 @@ export default function PlayPage() {
           c={c}
           book={meta.cpBook ?? []}
           onClose={() => setSheet(null)}
-          onEquip={(id) => act((ch) => void cpEquip(ch, id))}
+          onEquip={(id, slot) => act((ch) => void cpEquip(ch, id, slot))}
           onUnequip={(id) => act((ch) => cpUnequip(ch, id))}
           onSwap={(a, b) =>
             act((ch) => {
