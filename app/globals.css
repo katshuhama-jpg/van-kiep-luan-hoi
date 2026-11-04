@@ -4953,6 +4953,19 @@ button.shadow-card { cursor: pointer; }
 .auc-res-stage { align-content: start; padding-top: 14px; }
 .choice.off, .choice:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(0.6); }
 
+/* ===== 4/11: Đăng nhập bằng Google ===== */
+.gg-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.gg-btn { min-height: 44px; width: 100%; display: flex; justify-content: center; }
+.gg-or { margin: 2px 0; text-align: center; font-size: 14px; color: var(--muted); }
+.gg-forgot { align-self: flex-start; background: none; border: none; padding: 0; font: inherit; font-size: 15px; color: var(--red-d); text-decoration: underline; cursor: pointer; }
+.gg-inapp { display: flex; flex-direction: column; gap: 6px; padding: 8px 10px; background: #fff3d6; border: 3px solid var(--gold); color: var(--ink); font-size: 15px; line-height: 1.25; }
+.gg-inapp b { font-size: 17px; color: var(--red-d); }
+.gg-gate { position: fixed; inset: 0; z-index: 97; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(12, 8, 4, 0.88); }
+.gg-card { width: min(380px, 100%); display: flex; flex-direction: column; gap: 10px; padding: 14px; background: var(--paper); border: 3px solid var(--ink-dark); box-shadow: 5px 5px 0 #000; }
+.gg-card p { margin: 0; font-size: 16px; line-height: 1.3; }
+.gg-title { font-weight: 700; font-size: 22px; color: var(--red-d); line-height: 1.05; }
+.gg-card .chip-btn { align-self: center; }
+.gg-card > a { align-self: center; font-size: 14px; }
 /* ===== 5/11: Hành trang kiếp sau (đầu màn chết) ===== */
 .hanh-trang { border: 3px solid var(--ink); background: #20301f; color: #f3e6c4; padding: 6px 8px 8px; margin: 4px 0 10px; box-shadow: 3px 3px 0 var(--ink-dark); }
 .hanh-trang .ht-title { display: block; font-size: 17px; font-weight: 700; color: var(--gold-l); letter-spacing: 1px; margin-bottom: 4px; }
@@ -5048,3 +5061,23 @@ button.shadow-card { cursor: pointer; }
 .cn-paths.five > span { grid-column: span 2; }
 .cn-paths.five > span:nth-child(4) { grid-column: 2 / span 2; }
 .cn-routes { position: absolute; z-index: 3; left: 6px; right: 6px; top: 34%; display: flex; flex-direction: column; gap: 5px; }
+/* bảo vệ tài khoản: Google hoặc mã khôi phục */
+.gg-card { max-height: calc(100vh - 32px); overflow-y: auto; }
+.gg-label { font-size: 15px; font-weight: 700; color: var(--ink); }
+.gg-btn { padding: 4px; background: #fff; border: 3px solid var(--ink); box-shadow: 3px 3px 0 var(--ink-dark); box-sizing: border-box; }
+.protect-opt { display: flex; flex-direction: column; gap: 6px; padding: 8px 10px; background: var(--paper-3); border: 3px solid var(--ink); box-shadow: 3px 3px 0 var(--ink-dark); }
+.protect-opt > b { font-size: 17px; color: var(--red-d); }
+.rec-show { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+.rec-show > span { font-size: 15px; color: var(--muted); }
+.rec-code { display: block; text-align: center; padding: 10px 6px; font-family: ui-monospace, Menlo, monospace; font-size: 28px; letter-spacing: 2px; color: #fff3dc; background: #1f160d; border: 3px solid var(--gold); user-select: all; }
+.rec-show small { font-size: 14px; line-height: 1.25; color: var(--ink); }
+.rec-acts { display: flex; gap: 8px; }
+.rec-acts .btn { flex: 1; }
+.protect-bonus { color: var(--jade); }
+.protect-opt.no-code { background: #fff3d6; border-color: var(--gold); }
+.protect-opt a.btn { text-align: center; text-decoration: none; }
+.gg-nudge { display: flex; align-items: center; gap: 8px; width: 100%; margin: 0 0 6px; padding: 5px 10px; font: inherit; font-size: 15px; font-weight: 700; text-align: left; color: var(--ink); background: #fff; border: 3px solid var(--ink); box-shadow: 3px 3px 0 var(--ink-dark); cursor: pointer; }
+.gg-nudge b { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; font-size: 15px; color: #fff; background: #4285f4; border: 2px solid var(--ink); }
+.gg-linked { font-weight: 700; color: var(--jade); }
+.protect-toast { position: fixed; left: 50%; top: 18%; z-index: 98; transform: translateX(-50%); padding: 8px 14px; font: inherit; font-size: 18px; font-weight: 700; color: #fff3dc; background: var(--jade); border: 3px solid var(--ink-dark); box-shadow: 4px 4px 0 #000; animation: protectToast 3.2s steps(8) forwards; }
+@keyframes protectToast { 0% { opacity: 0; } 10%, 85% { opacity: 1; } 100% { opacity: 0; } }

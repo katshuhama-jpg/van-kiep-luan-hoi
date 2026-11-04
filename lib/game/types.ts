@@ -330,6 +330,8 @@ export interface Meta {
   huyetMach?: { id: string; life: number }[]; // 4.2.0: huyết mạch linh thú bậc 3 để lại
   cpHeir?: string | null; // 4.2.0: chiêu truyền thừa, kiếp sau sinh ra đã biết
   cpBook?: string[]; // 4.2.0: các bộ công pháp từng học
+  protectBonus?: boolean; // 4/11: đã nhận thưởng khắc tên Sổ Luân Hồi (bảo vệ tài khoản)
+  ggBonus?: boolean; // 4/11: đã nhận thưởng liên kết Google
   achievements?: string[]; // thành tựu dài hạn đã đạt
   career?: Career; // số liệu cộng dồn qua các kiếp
   quyThuong?: boolean; // đã nhận thưởng Vạn Kiếp Quy Nhất

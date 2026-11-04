@@ -1,5 +1,6 @@
 'use client';
 
+import { ProtectPrompt } from '@/components/GoogleAuth';
 import BackButton from '@/components/BackButton';
 import Arena from '@/components/Arena';
 import { useAuth } from '@/lib/useAuth';
@@ -21,6 +22,7 @@ export default function LoiDai() {
         </div>
       </header>
       {ready ? <Arena user={user} /> : <p>{tr("Đang dựng lôi đài...", "Setting up the arena...")}</p>}
-    </main>
+    <ProtectPrompt at="loidai" />
+      </main>
   );
 }

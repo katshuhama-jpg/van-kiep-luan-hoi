@@ -1,0 +1,10 @@
+-- Bảo vệ tài khoản bằng mã khôi phục (Tyler chốt 4/11). Đã áp lên Supabase qua 2 migration:
+-- recovery_code_2026_11_04 và change_password_2026_11_04. Chỉ thêm cột và hàm mới, không sửa hàm cũ.
+-- Cột: vkl_players.recovery_hash, recovery_at (mã khôi phục dạng bcrypt), must_change (mật khẩu tạm, còn để dự phòng).
+-- Hàm:
+--   vkl_recovery_create(p_token)            tạo mã mới cho tài khoản đang đăng nhập, trả mã gốc đúng một lần
+--   vkl_security_status(p_token)            {google, email, recovery, recovery_at, must_change}
+--   vkl_recover(p_username, p_code, p_new)  quên mật khẩu: đúng mã thì đặt mật khẩu mới, mã hết hiệu lực, cấp phiên
+--   vkl_change_password(p_token, p_old, p_new)  đổi mật khẩu (must_change thì không cần mật khẩu cũ)
+-- Khóa 5 phút sau 8 lần nhập sai mã (dùng chung cột failed, locked_until với đăng nhập).
+-- Fanpage cấp mã cho người chưa có: supabase/admin_cap_ma_khoi_phuc.sql
