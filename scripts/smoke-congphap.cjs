@@ -89,10 +89,26 @@ const save = async (p) => JSON.parse(await p.evaluate(() => localStorage.getItem
   await p.waitForTimeout(300);
   ch = await save(p);
   ok((ch.tq.thiet_sa ?? 0) === 0 && Object.entries(ch.tq).some(([k, v]) => k !== 'thiet_sa' && k !== 'van_kiem' && v === 1), 'chép 3 tàn quyển Thiết Sa thành 1 quyển bộ khác cùng đạo');
+  ok((await p.locator('.tk-gh').allInnerTexts()).join('|').includes('Đang mang') && (await p.locator('.tk-gh').allInnerTexts()).join('|').includes('Đã có, chưa mang'), 'danh sách chia nhóm Đang mang / Đã có, chưa mang');
   await p.locator('.tk-cp', { hasText: 'Thiết Sa' }).locator('.tk-eq').click({ timeout: 5000 }).catch(() => {});
   await p.waitForTimeout(300);
   ch = await save(p);
-  ok(ch.cp.eq.includes('thiet_sa'), 'mang Thiết Sa Chưởng vào ô chiêu');
+  ok(!ch.cp.eq.includes('thiet_sa') && ch.cp.eq[1] === 'liet_hoa' && ch.cp.eq[2] === 'kim_xa', 'ô chiêu đầy: bấm Mang chưa tự tháo chiêu nào');
+  if (process.env.SHOT) { await p.locator('.tk-pick').scrollIntoViewIfNeeded().catch(() => {}); await p.screenshot({ path: process.env.SHOT + '/tk-pick.png' }); }
+  ok(await p.locator('.tk-pick .chip-btn').count() === 2 && await p.locator('.tk-seat.pick').count() === 2, 'ô chiêu đầy: hỏi thay ô nào (trong danh sách và trên vòng)');
+  await p.locator('.tk-pick .chip-btn', { hasText: 'Chiêu 1' }).click({ timeout: 5000 }).catch(() => {});
+  await p.waitForTimeout(300);
+  ch = await save(p);
+  ok(ch.cp.eq[1] === 'thiet_sa' && ch.cp.eq[2] === 'kim_xa', 'chọn Chiêu 1: Thiết Sa thay đúng ô đó');
+  if (process.env.SHOT) { await p.locator('.tk-wrap .forge-scene').evaluate((e) => e.scrollTo(0, 0)).catch(() => {}); await p.locator('.tk-hint').scrollIntoViewIfNeeded().catch(() => {}); await p.screenshot({ path: process.env.SHOT + '/tk-top.png' }); }
+  ok((await p.locator('.tk-said').innerText().catch(() => '')).includes('Đã thay'), 'báo rõ đã thay chiêu nào bằng chiêu nào');
+  // trả lại để thử dung hợp
+  await p.locator('.tk-cp', { hasText: 'Liệt Hỏa' }).locator('.tk-eq').click({ timeout: 5000 }).catch(() => {});
+  await p.waitForTimeout(200);
+  await p.locator('.tk-seat.pick').first().click({ timeout: 5000 }).catch(() => {});
+  await p.waitForTimeout(300);
+  ch = await save(p);
+  ok(ch.cp.eq[1] === 'liet_hoa', 'bấm ô trên vòng cũng thay được');
   await p.locator('.chip-btn', { hasText: 'Dung hợp' }).click();
   await p.waitForTimeout(300);
   await p.evaluate(() => { Math.random = () => 0.1; });

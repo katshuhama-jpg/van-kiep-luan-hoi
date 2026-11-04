@@ -41,7 +41,7 @@ const short = (n: string) => n.replace(/ (Kiếm )?(Quyết|Pháp|Tâm Quyết|M
 export interface TangKinhProps {
   c: Character;
   onClose: () => void;
-  onEquip: (id: string) => void;
+  onEquip: (id: string, slot?: number) => void;
   onUnequip: (id: string) => void;
   onUpgrade: (id: string, useVan?: boolean, bien?: Bien) => void;
   onSwap: (from: string, to: string) => void;
@@ -65,6 +65,57 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onSwap,
       Number(!!owned(c, b.id)) - Number(!!owned(c, a.id)) || Number(b.path === path) - Number(a.path === path) || ['tuyet', 'tam', 'chieu'].indexOf(a.kind) - ['tuyet', 'tam', 'chieu'].indexOf(b.kind),
   );
   const [sel, setSel] = useState<string>(eq[1] || eq[0] || list[0]?.id || '');
+  // 4/11 (Tyler: bấm Mang tự tháo chiêu khác, khó hiểu): ô đầy thì hỏi thay ô nào, mang xong báo rõ vào ô nào
+  const [pick, setPick] = useState<string | null>(null);
+  const [said, setSaid] = useState<string | null>(null);
+  const [want, setWant] = useState<number | null>(null); // bấm ô chiêu trống trên vòng: chiêu mang tiếp sẽ vào đúng ô đó
+  const goRow = (id: string) => {
+    setTab('luyen');
+    setTimeout(() => document.getElementById(`tk-${id}`)?.scrollIntoView({ block: 'center', behavior: 'smooth' }), 50);
+  };
+  const moveSlots = [1, 2, 3].filter((k) => slotOpen(c, k));
+  const slotName = (k: number) => (k === 0 ? tr('Tâm pháp', 'Heart art') : tr(`Chiêu ${k}`, `Move ${k}`));
+  const wear = (d: CpDef) => {
+    setSel(d.id);
+    if (d.kind === 'tam') {
+      const old = eq[0] ? cpOf(eq[0]) : undefined;
+      onEquip(d.id);
+      setSaid(old ? tr(`Đã đổi tâm pháp: ${short(old.name)} → ${short(d.name)}`, `Heart art changed: ${short(old.name)} → ${short(d.name)}`) : tr(`Đã mang ${short(d.name)}`, `Equipped ${short(d.name)}`));
+      return;
+    }
+    if (want !== null && slotOpen(c, want)) {
+      const k = want;
+      setWant(null);
+      setPick(d.id);
+      return replaceAtFor(d, k);
+    }
+    const free = moveSlots.find((k) => !eq[k]);
+    if (free === undefined) {
+      setPick(d.id);
+      setSaid(null);
+      return;
+    }
+    onEquip(d.id, free);
+    setPick(null);
+    setSaid(tr(`Đã mang ${short(d.name)} vào ô ${slotName(free)}`, `Equipped ${short(d.name)} in ${slotName(free)}`));
+  };
+  const replaceAt = (k: number) => {
+    const d = pick ? cpOf(pick) : undefined;
+    if (d) replaceAtFor(d, k);
+  };
+  function replaceAtFor(d: CpDef, k: number) {
+    const old = eq[k] ? cpOf(eq[k]) : undefined;
+    onEquip(d.id, k);
+    setPick(null);
+    setSaid(old ? tr(`Đã thay ${short(old.name)} bằng ${short(d.name)} ở ô ${slotName(k)}`, `Replaced ${short(old.name)} with ${short(d.name)} in ${slotName(k)}`) : tr(`Đã mang ${short(d.name)} vào ô ${slotName(k)}`, `Equipped ${short(d.name)} in ${slotName(k)}`));
+  }
+  // nhóm danh sách: đang mang (theo thứ tự ô) / đã có / chưa có
+  const isOn = (id: string) => eq.includes(id) || s.tuyet === id;
+  const groups: { k: string; title: string; items: CpDef[] }[] = [
+    { k: 'on', title: tr('Đang mang', 'Equipped'), items: [...[s.tuyet, ...eq].filter((x): x is string => !!x).map((x) => cpOf(x)).filter((x): x is CpDef => !!x)] },
+    { k: 'own', title: tr('Đã có, chưa mang', 'Owned, not equipped'), items: list.filter((d) => owned(c, d.id) && !isOn(d.id)) },
+    { k: 'lock', title: tr('Chưa có', 'Not yet learned'), items: list.filter((d) => !owned(c, d.id)) },
+  ];
   const tu = tuyetOf(c);
   const tuOwned = s.tuyet ? cpOf(s.tuyet) : undefined;
   const seats: {
@@ -164,9 +215,21 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onSwap,
             return (
               <button
                 key={i}
-                className={`tk-seat ${d && sel === d.id ? 'sel' : ''}`}
+                className={`tk-seat ${d && sel === d.id ? 'sel' : ''} ${(pick || want === i) && i >= 1 && i <= 3 && !st.lock ? 'pick' : ''}`}
                 style={{ left: `${st.x}%`, top: st.y }}
-                onClick={() => d && (setSel(d.id), setTab('luyen'))}
+                onClick={() => {
+                  if (pick && i >= 1 && i <= 3 && !st.lock) return replaceAt(i);
+                  if (d) {
+                    setWant(null);
+                    setSel(d.id);
+                    return goRow(d.id);
+                  }
+                  if (i >= 1 && i <= 3 && !st.lock) {
+                    setWant(i);
+                    setTab('luyen');
+                    setSaid(tr(`Ô ${slotName(i)} đang trống: bấm Mang ở một chiêu bên dưới để đưa vào ô này`, `${slotName(i)} is empty: tap Equip on a move below to put it here`));
+                  }
+                }}
                 aria-label={d ? d.name : `${st.label}: ${st.lock ?? tr('trống', 'empty')}`}
               >
                 <Orb d={d} size={54} lock={st.lock ?? tr('Trống', 'Empty')} />
@@ -176,6 +239,7 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onSwap,
           })}
         </div>
         <div className="fs-info">
+          <p className="tk-hint">{tr('Vòng trên là 5 ô công pháp đang mang, dùng khi giao đấu. Danh sách dưới là mọi bộ bạn có: bấm Mang để đưa vào ô, bấm một ô trên vòng để xem bộ đó.', 'The ring shows your 5 equipped slots, used in fights. The list below has every technique: tap Equip to put one in a slot, tap a slot to see its technique.')}</p>
           <div className="tk-idea">
             <b>
               {c.path ? PATHS[c.path].name : tr('Quyền cước', 'Fists')} · {tr('thanh', 'gauge')} <i>{GAUGE_NAME[path]}</i>
@@ -185,7 +249,7 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onSwap,
           </div>
           <div className="chips">
             <button className={`chip-btn ${tab === 'luyen' ? 'on' : ''}`} onClick={() => setTab('luyen')}>
-              {tr('Đang luyện', 'Training')}
+              {tr('Công pháp', 'Techniques')}
             </button>
             <button className={`chip-btn ${tab === 'dung' ? 'on' : ''}`} onClick={() => setTab('dung')}>
               {tr('Dung hợp', 'Fusion')}
@@ -197,7 +261,18 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onSwap,
 
           {tab === 'luyen' && (
             <div className="tk-list">
-              {list.map((d) => {
+              {said && (
+                <button className="tk-said" onClick={() => setSaid(null)}>
+                  {said}
+                </button>
+              )}
+              {groups.map((g) =>
+                g.items.length === 0 ? null : (
+                  <div key={g.k} className="tk-group">
+                    <span className={`tk-gh ${g.k}`}>
+                      {g.title} <i>{g.items.length}</i>
+                    </span>
+              {g.items.map((d) => {
                 const o = owned(c, d.id);
                 const on = eq.includes(d.id) || s.tuyet === d.id;
                 const van = vanNeed(c, d.id);
@@ -207,7 +282,7 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onSwap,
                 const held = tqOf(c, d.id);
                 const swapTo = sel === d.id && held >= SWAP_RATE ? list.filter((x) => canSwap(c, d.id, x.id)) : [];
                 return (
-                  <div key={d.id} className={`tk-cp ${PHAM_CLS[d.pham]} ${sel === d.id ? 'sel' : ''} ${o ? '' : 'lock'}`} onClick={() => setSel(d.id)}>
+                  <div key={d.id} id={`tk-${d.id}`} className={`tk-cp ${PHAM_CLS[d.pham]} ${sel === d.id ? 'sel' : ''} ${o ? '' : 'lock'}`} onClick={() => setSel(d.id)}>
                     {on && <span className="tk-ribbon">{tr('Đang mang', 'Equipped')}</span>}
                     <Orb d={d} size={46} dark={!o} />
                     <span className="tk-cp-body">
@@ -248,6 +323,19 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onSwap,
                               {short(x.name)}
                             </button>
                           ))}
+                        </span>
+                      )}
+                      {pick === d.id && (
+                        <span className="tk-pick" onClick={(e) => e.stopPropagation()}>
+                          <small>{tr('Các ô chiêu đã đầy. Chọn chiêu muốn thay:', 'All move slots are full. Pick one to replace:')}</small>
+                          {moveSlots.map((k) => {
+                            const x = eq[k] ? cpOf(eq[k]) : undefined;
+                            return (
+                              <button key={k} className="chip-btn" onClick={() => replaceAt(k)}>
+                                {slotName(k)}: {x ? short(x.name) : tr('trống', 'empty')}
+                              </button>
+                            );
+                          })}
                         </span>
                       )}
                     </span>
@@ -301,14 +389,17 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onSwap,
                         <small>{cdText(d)}</small>
                         {d.kind !== 'tuyet' && !(d.kind === 'tam' && on) && (
                           <button
-                            className="tk-eq"
+                            className={`tk-eq ${pick === d.id ? 'on' : ''}`}
                             onClick={(e) => {
                               e.stopPropagation();
-                              if (on) onUnequip(d.id);
-                              else onEquip(d.id);
+                              if (pick === d.id) return setPick(null);
+                              if (on) {
+                                onUnequip(d.id);
+                                setSaid(tr(`Đã tháo ${short(d.name)}`, `Removed ${short(d.name)}`));
+                              } else wear(d);
                             }}
                           >
-                            {on ? tr('Tháo', 'Remove') : tr('Mang', 'Equip')}
+                            {pick === d.id ? tr('Hủy', 'Cancel') : on ? tr('Tháo', 'Remove') : d.kind === 'tam' ? tr('Đổi tâm pháp', 'Switch') : tr('Mang', 'Equip')}
                           </button>
                         )}
                       </span>
@@ -316,6 +407,9 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onSwap,
                   </div>
                 );
               })}
+                  </div>
+                ),
+              )}
               <p className="note">
                 {tr(
                   'Đang mang thì thục luyện tự tăng mỗi năm và mỗi lần ra chiêu. Tầng 1-3 tự lên; từ tầng 4 cần tàn quyển riêng của bộ đó (1, 1, 2, 2, 3, 3 quyển) và hao một ít tu vi, chiêu không được cao hơn tâm pháp quá 2 tầng, lên tầng 6 phải chọn biến chiêu Cương hay Nhu. Quái hệ nào rơi tàn quyển bộ hệ đó, người cùng đạo rơi chiêu của đạo, bóng kiếp trước rơi bộ kiếp ấy từng luyện; bộ đang mang rơi nhiều hơn. Rơi lệch thì chép 3 quyển thành 1 quyển bộ khác cùng đạo.',

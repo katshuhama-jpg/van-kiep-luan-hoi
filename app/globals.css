@@ -4930,3 +4930,16 @@ button.shadow-card { cursor: pointer; }
 .gg-linked { font-weight: 700; color: var(--jade); }
 .protect-toast { position: fixed; left: 50%; top: 18%; z-index: 98; transform: translateX(-50%); padding: 8px 14px; font: inherit; font-size: 18px; font-weight: 700; color: #fff3dc; background: var(--jade); border: 3px solid var(--ink-dark); box-shadow: 4px 4px 0 #000; animation: protectToast 3.2s steps(8) forwards; }
 @keyframes protectToast { 0% { opacity: 0; } 10%, 85% { opacity: 1; } 100% { opacity: 0; } }
+
+/* ===== 4/11: Tàng Kinh Các, mang công pháp rõ ràng hơn ===== */
+.tk-group { display: flex; flex-direction: column; gap: 8px; }
+.tk-gh { display: flex; align-items: center; gap: 6px; margin-top: 4px; font-size: 15px; font-weight: 700; color: var(--ink); }
+.tk-gh i { font-style: normal; font-size: 12px; padding: 0 5px; color: #fff3dc; background: #1f160d; }
+.tk-gh.on { color: #b8432f; }
+.tk-gh.lock { color: var(--muted); }
+.tk-said { position: sticky; top: 0; z-index: 4; width: 100%; padding: 6px 10px; font: inherit; font-size: 15px; font-weight: 700; text-align: left; color: #fff3dc; background: var(--jade); border: 3px solid #1f160d; box-shadow: 3px 3px 0 #000; cursor: pointer; }
+.tk-pick { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; padding: 6px; background: #fff3d6; border: 2px solid var(--gold); }
+.tk-pick small { flex-basis: 100%; font-size: 13px; font-weight: 700; color: var(--red-d); }
+.tk-eq.on { background: #fff3d6; }
+.tk-seat.pick .tk-orb { outline: 3px solid #ffd447; outline-offset: 2px; animation: tkOrbSel 0.6s steps(2) infinite; }
+.tk-hint { margin: 0 0 6px; font-size: 14px; line-height: 1.25; color: var(--ink); }
