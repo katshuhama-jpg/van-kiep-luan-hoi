@@ -5021,3 +5021,6 @@ button.shadow-card { cursor: pointer; }
 .rel-sum .rel-intro { margin: 0 0 4px; }
 .rel-sum .rel-feats b { max-width: none; flex: none; }
 .rel-sum .rel-feats li > span { flex: 1; min-width: 0; }
+.legal ul { margin: 0 0 8px; padding-left: 18px; line-height: 1.4; }
+.legal li { margin-bottom: 4px; }
+.legal h2 { margin-top: 12px; }
