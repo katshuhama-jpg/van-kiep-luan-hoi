@@ -4,6 +4,51 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { CURRENT_VERSION, RELEASES, markSeenLocal, seenLocal, type Release } from '@/lib/releases';
 import { tr } from '@/lib/i18n';
+import Sprite from './Sprite';
+import { PixelFx, fxKiem } from './PixelFx';
+import { demoChar } from '@/lib/game/demo';
+
+const HERO_KIEM = demoChar({ path: 'kiem', age: 28, realm: 5, equipped: { ao: 'thanh_sam', vu_khi: 'thanh_phong' } });
+let heroSpec: ReturnType<typeof fxKiem> | null = null;
+
+/** Tranh mở đầu cho bản lớn: cảnh pixel động, không gradient */
+const HERO_BG: Record<NonNullable<Release['hero']>['scene'], string> = { congphap: 'tu_luyen-2', kiepsau: 'dia-phu', linhthu: 'du_ngoan-1' };
+function ReleaseHero({ hero }: { hero: NonNullable<Release['hero']> }) {
+  if (!heroSpec) heroSpec = fxKiem(7, '#d8ecff');
+  return (
+    <div className={`rel-hero ${hero.scene}`} aria-hidden="true">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img className="rel-hero-bg" src={`/bg/${HERO_BG[hero.scene]}.png`} alt="" />
+      {hero.scene === 'congphap' && (
+        <span className="rel-hero-fx">
+          <PixelFx spec={heroSpec} scale={3} dur={1.2} />
+        </span>
+      )}
+      <span className="rel-hero-hero">
+        <Sprite c={HERO_KIEM} size={120} anim={hero.scene === 'congphap' ? 'spellcast' : 'idle'} dir={3} />
+      </span>
+      <b className="rel-hero-cap">{hero.caption}</b>
+    </div>
+  );
+}
+
+function ReleaseFeatures({ r }: { r: Release }) {
+  if (!r.features) return null;
+  return (
+    <ul className="rel-feats">
+      {r.features.map((f) => (
+        <li key={f.h}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={`/icons/${f.icon}.png`} width={40} height={40} alt="" />
+          <span>
+            <b>{f.h}</b>
+            <small>{f.t}</small>
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 /** Nội dung một bản cập nhật, dùng cho cáo thị và trang lịch sử */
 export function ReleaseBody({ r }: { r: Release }) {
@@ -62,7 +107,7 @@ export function needNotice(seen?: string | null): boolean {
 }
 
 /** Cáo thị giang hồ: hiện một lần cho mỗi bản mới, đóng thì ghi nhận đã xem */
-export default function ReleaseNotice({ onClose }: { onClose: (v: string) => void }) {
+export default function ReleaseNotice({ onClose, onGo }: { onClose: (v: string) => void; onGo?: (go: NonNullable<Release['cta']>['go']) => void }) {
   const r = RELEASES[0];
   // bảng tóm tắt trước: ý người chơi yêu cầu lên đầu, bấm mới mở chi tiết
   const [full, setFull] = useState(!r.asked && !r.more);
@@ -80,10 +125,17 @@ export default function ReleaseNotice({ onClose }: { onClose: (v: string) => voi
           </span>
           <p className="rel-kick">{tr("Cáo thị giang hồ · ", "Jianghu Proclamation · ")}{r.date}</p>
           <h2 id="rel-title">{r.title}</h2>
+          {r.hero && <ReleaseHero hero={r.hero} />}
           {full ? (
             <ReleaseBody r={r} />
           ) : (
             <div className="rel-sum">
+              {r.features && (
+                <>
+                  <p className="rel-intro">{r.lead}</p>
+                  <ReleaseFeatures r={r} />
+                </>
+              )}
               {r.asked && (
                 <>
                   <h3>{tr('Đạo hữu yêu cầu, Thiên Đạo đã làm', 'You asked, the Heavenly Dao delivered')}</h3>
@@ -97,7 +149,7 @@ export default function ReleaseNotice({ onClose }: { onClose: (v: string) => voi
                   </ul>
                 </>
               )}
-              {r.more && (
+              {r.more && !r.features && (
                 <>
                   <h3>{tr('Còn có', 'Also new')}</h3>
                   <div className="rel-chips">
@@ -110,7 +162,18 @@ export default function ReleaseNotice({ onClose }: { onClose: (v: string) => voi
             </div>
           )}
           <div className="rel-acts">
-            <button className="btn btn-red btn-big" onClick={close}>
+            {r.cta && onGo && (
+              <button
+                className="btn btn-red btn-big"
+                onClick={() => {
+                  close();
+                  onGo(r.cta!.go);
+                }}
+              >
+                {r.cta.label}
+              </button>
+            )}
+            <button className={`btn btn-big ${r.cta && onGo ? '' : 'btn-red'}`} onClick={close}>
               {tr('Chơi tiếp', 'Keep playing')}
             </button>
             {!full && (
