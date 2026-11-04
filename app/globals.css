@@ -5081,3 +5081,11 @@ button.shadow-card { cursor: pointer; }
 .event-open { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 10px 12px; font: inherit; text-align: left; color: var(--ink); background: none; border: 0; cursor: pointer; }
 .event-open b { min-width: 0; font-size: 18px; color: #ffcf6e; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .event-open span { flex: none; padding: 3px 10px; font-size: 15px; font-weight: 700; color: #fff3dc; background: var(--red-d); border: 2px solid var(--ink-dark); box-shadow: 2px 2px 0 #000; animation: tkOrbSel 0.8s steps(2) infinite; }
+
+/* ===== 5/11: màn thấp (iPhone 7/8 trong Chrome, thanh trên có mục tiêu kiếp): sân khấu co lại, không đẩy hàng nút khỏi màn ===== */
+.game .stage { flex: 0 1 auto; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.game .stage > .scene { flex: 0 1 auto; min-height: 104px; }
+.game-scroll { min-height: 64px; }
+.game > * { flex-shrink: 0; }
+.game > .stage { flex-shrink: 1; }
+.game > .game-scroll { flex-shrink: 1; }

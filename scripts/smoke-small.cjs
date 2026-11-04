@@ -9,17 +9,17 @@ const URL = process.env.SMOKE_URL || 'http://localhost:3314';
 const base = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures/save.json'), 'utf8'));
 const VER = (fs.readFileSync(path.join(__dirname, '../lib/releases.ts'), 'utf8').match(/v: '([0-9.]+)'/) || [])[1] || '';
 const today = new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10);
-const META = { phucDuyen: 5, nghiep: 0, lives: 5, talents: [], enemy: null, streak: { day: today, n: 1 }, checkin: today };
+const META = { phucDuyen: 5, nghiep: 0, lives: 1, talents: [], enemy: null, streak: { day: today, n: 1 }, checkin: today };
 let fail = 0;
 const ok = (c, m) => { console.log((c ? 'OK  ' : 'HỎNG') + ' ' + m); if (!c) fail++; };
 
 async function open(b, char, pause) {
-  const p = await b.newPage({ viewport: { width: 414, height: 620 } });
+  const p = await b.newPage({ viewport: { width: 414, height: Number(process.env.VH || 620) } });
   await p.route(/vkl_track|vkl_save/, (r) => r.fulfill({ status: 200, body: 'null', contentType: 'application/json' }));
   p.errs = [];
   p.on('pageerror', (e) => { if (!/Hydration|#418/.test(e.message)) p.errs.push(e.message.slice(0, 160)); });
   await p.goto(URL + '/');
-  const s = JSON.parse(JSON.stringify(base)); s.pending = char.__pending || null; delete char.__pending; Object.assign(s.char, { dead: false, lifeNo: 6 }, char);
+  const s = JSON.parse(JSON.stringify(base)); s.pending = char.__pending || null; delete char.__pending; Object.assign(s.char, { dead: false, lifeNo: 2 }, char);
   await p.evaluate(([s, m, v]) => { localStorage.clear(); localStorage.setItem('vkl.tut', '1'); localStorage.setItem('vkl.seenVer', v); localStorage.setItem('vkl.notice.down1101', '1'); localStorage.setItem('vkl.save', JSON.stringify(s)); localStorage.setItem('vkl.meta', JSON.stringify(m)); }, [s, META, VER]);
   await p.goto(URL + '/choi');
   if (pause) await p.locator('button.play[aria-label="Tạm dừng"]').click({ timeout: 15000 }).catch(() => {});
@@ -43,7 +43,8 @@ const save = async (p) => JSON.parse(await p.evaluate(() => localStorage.getItem
       await p.locator('.choice').last().click({ timeout: 1000 }).catch(() => {});
       await p.waitForTimeout(500);
     }
-    const vh = 620;
+    const vh = Number(process.env.VH || 620);
+    ok(await p.locator('text=Mục tiêu kiếp 2').count() > 0, 'thanh trên có dòng mục tiêu kiếp (cao hơn bình thường)');
     const boxes = await p.locator('.dock-actions button').evaluateAll((bs) => bs.map((x) => { const r = x.getBoundingClientRect(); return [x.textContent.trim(), Math.round(r.bottom)]; }));
     ok(boxes.length >= 4 && boxes.every(([, bt]) => bt <= vh), (noDvh ? '[không dvh] ' : '') + 'hàng nút dưới nằm trong màn hình ' + JSON.stringify(boxes));
     if (process.env.SHOT) await p.screenshot({ path: process.env.SHOT + `/small-${noDvh}.png` });
