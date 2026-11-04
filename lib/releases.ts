@@ -14,6 +14,12 @@ export interface Release {
   asked?: { who: string; short: string; text: string }[];
   /** Điểm mới khác, mỗi ý vài chữ, cho bảng tóm tắt */
   more?: string[];
+  /** Bản lớn: tranh mở đầu (cảnh pixel) cho cáo thị */
+  hero?: { scene: 'congphap' | 'kiepsau' | 'linhthu'; caption: string };
+  /** Bản lớn: các thẻ điểm nhấn (biểu tượng, tên, một câu), hiện ngay ở cáo thị thay cho dòng chữ nhỏ */
+  features?: { icon: string; h: string; t: string }[];
+  /** Nút làm ngay, ví dụ mở Tàng Kinh Các */
+  cta?: { label: string; go: 'congphap' | 'linhthu' | 'camnang' | 'baove' };
 }
 
 export const RELEASES: Release[] = [
@@ -21,7 +27,15 @@ export const RELEASES: Release[] = [
     v: '4.2.0',
     date: '04/11/2026',
     title: tr('Công Pháp Nhập Thế', 'Techniques Enter the World'),
-    lead: tr('Mỗi đạo nay có công pháp riêng, và mọi trận ở màn chơi chính đều ra chiêu theo công pháp bạn mang.', 'Every path now has techniques of its own, and every fight on the main screen is fought with the techniques you carry.'),
+    lead: tr('Thời của đánh thường đã hết. Từ nay mỗi đạo có bí kíp riêng: kiếm tu tung kiếm khí, đan tu ném đan hỏa, ma tu hút máu, phật tu dựng kim thân. Chiêu bạn luyện là chiêu bạn ra, trận nào cũng khác.', 'The age of plain attacks is over. Every path now has its own secret arts: sword cultivators loose sword qi, alchemists hurl pill fire, demonic cultivators drain blood, Buddhists raise golden bodies. The moves you train are the moves you fight with.'),
+    hero: { scene: 'congphap', caption: tr('Vạn Kiếm Quy Tông!', 'Ten Thousand Swords Return!') },
+    features: [
+      { icon: 'g_kinh_thu_tan_quyen', h: tr('Tàng Kinh Các', 'Scripture Pavilion'), t: tr('Cài tâm pháp và chiêu thức vào vòng ấn, xem tuyệt kỹ của đạo mình. Mở bằng nút Công pháp dưới màn chơi.', 'Set your heart method and moves in the seal ring, see your path\'s ultimate. Open it with the Techniques button.') },
+      { icon: 'doc_hat_kiem', h: tr('Chiêu nào ra chiêu nấy', 'Every move hits its own way'), t: tr('Thiêu đốt, trúng độc, hút máu, choáng, khiên, phản đòn. Toàn bộ chiêu thức vẽ lại bằng pixel.', 'Burn, poison, lifesteal, stun, shields, counters. Every move redrawn in pixel art.') },
+      { icon: 'g_hien_vien_kiem', h: tr('Tuyệt kỹ có màn riêng', 'Ultimates get their own scene'), t: tr('Đánh đầy thanh khí của đạo là tung tuyệt kỹ, màn hình tối lại chỉ để bạn tỏa sáng.', 'Fill your path\'s energy bar to unleash an ultimate, and the screen dims just for you.') },
+      { icon: 'g_dan_phuong_tan_quyen', h: tr('Luyện kiếp này, truyền kiếp sau', 'Train now, inherit later'), t: tr('Tàn quyển rơi khắp giang hồ, mỗi bộ một loại phải tự đi tìm. Chiêu luyện tới đỉnh truyền được cho kiếp sau.', 'Fragments drop across the jianghu, each set found its own way. Moves trained to the peak can pass to your next life.') },
+    ],
+    cta: { label: tr('Mở Tàng Kinh Các', 'Open the Scripture Pavilion'), go: 'congphap' },
     more: [
       tr('Tàng Kinh Các: cài chiêu, nâng tầng', 'Scripture Pavilion: equip moves, raise stages'),
       tr('Chiêu thức vẽ pixel mới', 'New pixel-art moves'),

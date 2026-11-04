@@ -2457,7 +2457,7 @@ export default function PlayPage() {
           onPick={pickDuelAction}
         />
       )}
-      {relOpen && !c.dead && <ReleaseNotice onClose={closeRel} />}
+      {relOpen && !c.dead && <ReleaseNotice onClose={closeRel} onGo={(go) => (go === 'congphap' ? setSheet('congphap') : null)} />}
       {downOpen && !relOpen && !c.dead && <DownNotice onClose={() => setDownOpen(false)} />}
       {ascend && !c.dead && <AscendScene c={c} cos={ascend} onDone={() => setAscend(null)} />}
       {gifts && !relOpen && !downOpen && <GiftNotice gifts={gifts} onClose={() => setGifts(null)} />}
