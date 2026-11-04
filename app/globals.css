@@ -5150,3 +5150,6 @@ button.shadow-card { cursor: pointer; }
 .tk-eq.on { background: #fff3d6; }
 .tk-seat.pick .tk-orb { outline: 3px solid #ffd447; outline-offset: 2px; animation: tkOrbSel 0.6s steps(2) infinite; }
 .tk-hint { margin: 0 0 6px; font-size: 14px; line-height: 1.25; color: var(--ink); }
+.tk-pick { min-width: 0; max-width: 100%; box-sizing: border-box; }
+.tk-pick .chip-btn { max-width: 100%; min-width: 0; box-sizing: border-box; white-space: normal; text-align: left; font-size: 14px; line-height: 1.2; padding: 4px 8px; overflow-wrap: anywhere; }
+.tk-cp-body { min-width: 0; }
