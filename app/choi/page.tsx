@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Scene from '@/components/Scene';
 import MusicToggle from '@/components/MusicToggle';
 import { CoachHint, TribulationOverlay, Tutorial, clearLaSo } from '@/components/Extras';
+import { GoogleGate } from '@/components/GoogleAuth';
 import { HoDaoScene, HoTroScene, TuKiepOverlay } from '@/components/VanKiep';
 import type { PastSelf } from '@/lib/vanKiep';
 import { LOI_ALLOW, LOI_TOTAL, daoKhon, failVanDao, usesVanDao } from '@/lib/game/vanDao';
@@ -97,6 +98,7 @@ export default function PlayPage() {
   const [nhdPeek, setNhdPeek] = useState(false); // xem luật Ngũ Hành Đài từ dải nhắc
   const [nhd, setNhd] = useState<{ i: number; p: PendingEvent; view: NhdView | 'fight' | 'hodao'; foe: Stance; tell: Stance; msg?: string; end?: 'next' | 'done' | 'lose' | 'dead' } | null>(null);
   const [tut, setTut] = useState(false); // hướng dẫn đầy đủ (mở từ menu)
+  const [ggGate, setGgGate] = useState(false); // 4/11: tài khoản cũ phải liên kết Google mới chơi tiếp
   // gợi ý đúng lúc cho người mới: mỗi lúc một bong bóng, đã xem thì thôi
   const [hints, setHints] = useState<Record<string, 1>>(() => {
     try {
@@ -311,7 +313,7 @@ export default function PlayPage() {
   const [wares, setWares] = useState<Ware[] | null>(null);
   // 4.1.0: kết quả hội đấu giá hiện thành thẻ riêng (trước chỉ ghi vào gia phả, người chơi không biết thắng hay thua)
   const [auctionRes, setAuctionRes] = useState<{ item: string; won: boolean; text: string } | null>(null);
-  activeRef.current = running && sheet === null && !ciOpen && wares === null && auctionRes === null && phase === 'play' && kiep === null && hoTro === null && vanDao === null && !tut && duelWarn === null && !nhdPeek && !relOpen && !downOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
+  activeRef.current = running && sheet === null && !ciOpen && wares === null && auctionRes === null && phase === 'play' && kiep === null && hoTro === null && vanDao === null && !tut && !ggGate && duelWarn === null && !nhdPeek && !relOpen && !downOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
 
   /** Ngũ hành giữa bạn và loài quái */
   function monElem(c: Character, m: { el?: Element }) {
@@ -1831,6 +1833,7 @@ export default function PlayPage() {
         {relOpen && !ghiDanh && <ReleaseNotice onClose={closeRel} />}
         {downOpen && !relOpen && !ghiDanh && <DownNotice onClose={() => setDownOpen(false)} />}
         {ghiDanh && <GhiDanh {...ghiDanh} lives={meta.lives} onClose={() => setGhiDanh(null)} />}
+        {user && <GoogleGate onOpen={() => setGgGate(true)} onDone={() => setGgGate(false)} />}
       </main>
     );
   }
@@ -2174,6 +2177,7 @@ export default function PlayPage() {
         const h = nextHint(hints, !!pending, c.age);
         return h ? <CoachHint key={h.k} sel={h.sel} text={h.text} top={h.top} onOk={() => seeHint(h.k)} /> : null;
       })()}
+      {user && <GoogleGate onOpen={() => setGgGate(true)} onDone={() => setGgGate(false)} />}
       {tut && !pending && !c.dead && (
         <Tutorial
           onDone={() => {

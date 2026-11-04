@@ -110,3 +110,50 @@ export function sessionDropped(): boolean {
     return false;
   }
 }
+
+// ---------- Đăng nhập bằng Google (4/11) ----------
+type Rpc = { rpc: (fn: string, args?: Record<string, unknown>) => PromiseLike<{ data: unknown; error: { message: string } | null }> };
+
+/** Đã xác thực Google: tài khoản đã liên kết thì vào luôn, chưa thì trả về need=new để chọn tên */
+export async function googleSignIn(sb: Rpc): Promise<{ ok: true } | { need: 'new'; email?: string } | { error: string }> {
+  const { data, error } = await sb.rpc('vkl_google_login');
+  if (error) return { error: error.message };
+  const d = data as { token?: string; username?: string; need?: 'new'; email?: string };
+  if (d.token && d.username) {
+    setPlayer({ token: d.token, username: d.username });
+    return { ok: true };
+  }
+  return { need: 'new', email: d.email };
+}
+
+export async function googleSignUp(sb: Rpc, username: string): Promise<string | null> {
+  const bad = usernameIssue(username) ?? (USERNAME_RE.test(username) ? null : tr('Tên đăng nhập dài 3-16 ký tự: chữ thường không dấu, số, dấu _.', 'Username: 3-16 characters, lowercase letters without diacritics, numbers, _.'));
+  if (bad) return bad;
+  const { data, error } = await sb.rpc('vkl_google_register', { p_username: username });
+  if (error) return error.message;
+  const d = data as { token: string; username: string };
+  setPlayer({ token: d.token, username: d.username });
+  return null;
+}
+
+/** Gắn tài khoản đang đăng nhập với Google vừa xác thực */
+export async function googleLink(sb: Rpc): Promise<string | null> {
+  const p = currentPlayer();
+  if (!p) return 'SESSION';
+  const { error } = await sb.rpc('vkl_google_link', { p_token: p.token });
+  return error ? error.message : null;
+}
+
+/** Tài khoản đang đăng nhập đã liên kết Google chưa; null nếu không hỏi được (mạng lỗi thì không chặn người chơi) */
+export async function googleLinked(): Promise<boolean | null> {
+  const p = currentPlayer();
+  const sb = supabase();
+  if (!p || !sb) return null;
+  try {
+    const { data, error } = await sb.rpc('vkl_google_status', { p_token: p.token });
+    if (error || !data) return null;
+    return !!(data as { linked: boolean }).linked;
+  } catch {
+    return null;
+  }
+}
