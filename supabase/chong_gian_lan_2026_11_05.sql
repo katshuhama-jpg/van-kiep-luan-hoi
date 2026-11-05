@@ -114,3 +114,18 @@ alter table vkl_priv.lives_archive add column if not exists archived_at timestam
 alter table vkl_priv.lives_archive add column if not exists reason text;
 -- Đã chuyển: datphamyt kiếp 1-2; quocdung kiếp 2-9; thiende009 kiếp 1000000-1000003. Thêm snack vào lb_hidden.
 -- Khôi phục: insert into public.vkl_lives select (a).* ... from vkl_priv.lives_archive (bỏ 2 cột archived_at, reason).
+
+-- 5) 5/11 tối, Tyler: chỉ cất kiếp hack, kiếp chơi thật vẫn hiện.
+--    - Đã trả lại thiende009 kiếp 2-9, quocdung kiếp 1. Trong kho còn: datphamyt 1-2, quocdung 2-9, thiende009 1000000-1000003.
+--    - vkl_priv.lives_guard (bản cuối): kiếp ghi lên có số vô lý thì cất thẳng vào lives_archive (return null), không gắn unranked nữa.
+--    - vkl_leaderboard2 (bản cuối): bỏ lọc theo lb_hidden, chỉ lọc từng nhân vật bằng sane_char (save đang chơi có số vô lý vẫn bị ẩn).
+--    - vkl_priv.lb_hidden còn 4 tên nhưng không còn được dùng.
+create or replace function vkl_priv.lives_guard() returns trigger
+language plpgsql security definer set search_path to '' as $$
+begin
+  if not vkl_priv.sane_char(jsonb_build_object('linhThach', new.wealth, 'realm', new.realm_no, 'lifeNo', new.life_no)) then
+    insert into vkl_priv.lives_archive select (new).*, now(), 'số vô lý khi ghi kiếp (sửa save)';
+    return null;
+  end if;
+  return new;
+end $$;
