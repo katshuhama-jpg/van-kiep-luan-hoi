@@ -107,3 +107,10 @@ end $$;
 -- BẬT SAU khi VKL_SRV_SECRET đã có trên Vercel và bản mới đã lên (chặn hẳn đường ghi cũ vkl_arena_fight3, vkl_thach_fight gọi thẳng):
 -- create trigger vkl_arena_log_srv before insert on public.vkl_arena_log for each row execute function vkl_priv.srv_only();
 -- create trigger vkl_thach_srv before insert on public.vkl_thach for each row execute function vkl_priv.srv_only();
+
+-- 4) 5/11 Tyler: lưu trữ (không xóa) các kiếp sửa save để bảng tổng kết đúng. Chuyển sang vkl_priv.lives_archive, khôi phục được.
+create table if not exists vkl_priv.lives_archive (like public.vkl_lives including defaults);
+alter table vkl_priv.lives_archive add column if not exists archived_at timestamptz default now();
+alter table vkl_priv.lives_archive add column if not exists reason text;
+-- Đã chuyển: datphamyt kiếp 1-2; quocdung kiếp 2-9; thiende009 kiếp 1000000-1000003. Thêm snack vào lb_hidden.
+-- Khôi phục: insert into public.vkl_lives select (a).* ... from vkl_priv.lives_archive (bỏ 2 cột archived_at, reason).
