@@ -429,6 +429,19 @@ export async function thachFight(user: Player | null, opp: string, lifeId: numbe
   return error ? null : (data as { left?: number; phuc?: number; error?: string });
 }
 
+/** 5/11: Lôi đài, chiến thư tính trận trên máy chủ. Trả hạt giống và hai bóng để phát lại; NO_SRV thì dùng cách ghi cũ */
+export type SrvFight = { seed: number; swords: number; win: boolean; hp: number; me: RivalChar; foe0: RivalChar; clash?: import('./game/phiKiem').Clash; res: { pts?: number; used?: number; winRun?: number; phuc?: number; hon?: number; tier?: number; left?: number; error?: string } | null; error?: string };
+export async function loiDaiSrv(user: Player | null, q: { mode: 'arena' | 'thach'; opp: string; revenge?: number | null; lifeId?: number; myLifeId?: number; swords: number }): Promise<SrvFight | { error: string } | null> {
+  if (!user) return null;
+  try {
+    const r = await fetch('/api/loi-dai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: user.token, ...q }) });
+    const d = (await r.json()) as SrvFight | { error: string };
+    return d;
+  } catch {
+    return null;
+  }
+}
+
 export { FB_PAGE } from './links';
 
 /** Tách đường link khỏi câu trả lời góp ý để hiện thành nút */

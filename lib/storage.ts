@@ -266,7 +266,9 @@ export type RankScope = 'all' | 'alive' | 'dead' | 'week';
 export async function leaderboard(kind: RankKind, lean: RankLean, path: string, scope: RankScope = 'all'): Promise<{ username: string; c: Character; alive: boolean }[] | null> {
   const sb = supabase();
   if (!sb) return null;
-  const { data, error } = await sb.rpc('vkl_leaderboard', { p_kind: kind, p_lean: lean, p_path: path, p_scope: scope });
+  // 5/11: bảng mới bỏ người sửa save (số vô lý, danh sách ẩn); máy chủ chưa có thì dùng bảng cũ
+  let { data, error } = await sb.rpc('vkl_leaderboard2', { p_kind: kind, p_lean: lean, p_path: path, p_scope: scope });
+  if (error) ({ data, error } = await sb.rpc('vkl_leaderboard', { p_kind: kind, p_lean: lean, p_path: path, p_scope: scope }));
   if (error) return null;
   const list = ((data as { username: string; c: Character; alive: boolean }[] | null) ?? []).slice();
   // máy chủ trả các người bằng điểm theo thứ tự ngẫu nhiên nên hạng nhảy mỗi lần tải: xếp lại các nhóm bằng điểm cho cố định

@@ -14,7 +14,8 @@ import { baseChance, equalize, type ArenaRule } from '@/lib/game/arena';
 import { ultName, type FightState } from '@/lib/game/arenaFight';
 import { chatOf, koLine, type ChatMsg } from '@/lib/game/wuxiaChat';
 import { ARENA_DAY_HON, ARENA_LOSE_PHUC, ARENA_WIN_PHUC, autoClash, powerOf, tierOfPts, type Clash } from '@/lib/game/phiKiem';
-import { arenaFight3, thachFight } from '@/lib/social';
+import { arenaFight3, loiDaiSrv, thachFight } from '@/lib/social';
+import { seeded } from '@/lib/game/helpers';
 import { shareMatch, type ShareOut } from '@/lib/shareCard';
 import ShareSheet from '@/components/ShareSheet';
 import { track } from '@/lib/track';
@@ -84,9 +85,27 @@ export default function LoiDaiMatch({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase]);
 
-  function afterPk(n: number) {
+  // 5/11 chống gian lận: máy chủ tự đánh và ghi kết quả; trình duyệt phát lại đúng trận đó bằng hạt giống máy chủ gửi về.
+  // undefined: máy chủ chưa bật (dùng cách ghi cũ ở cuối trận)
+  const srvRes = useRef<Res | undefined>(undefined);
+  const [waiting, setWaiting] = useState(false);
+  async function afterPk(n: number) {
     setSwords(n);
-    const c = autoClash(me, foe0, base, rule, powerOf(n));
+    setWaiting(true);
+    const r = await loiDaiSrv(user, { mode, opp, revenge, lifeId, myLifeId: me.lifeId, swords: n });
+    setWaiting(false);
+    let c: Clash;
+    if (r && 'seed' in r) {
+      // máy chủ gửi luôn diễn biến trận; bản cũ chưa gửi thì tự đánh lại bằng đúng hạt giống
+      const f = mode === 'thach' ? r.foe0 : equalize(r.foe0, r.me);
+      c = r.clash?.steps?.length ? r.clash : autoClash(r.me, r.foe0, baseChance(r.me, f, rule), rule, powerOf(r.swords), seeded(r.seed));
+      if (c.win !== r.win) track('arena_mismatch', { srv: r.win, me: c.win });
+      srvRes.current = r.res ? { ...r.res, err: r.res.error } : { err: tr('Lôi đài đang đông, kết quả chưa ghi được.', "The arena is crowded; the result wasn't recorded.") };
+    } else {
+      c = autoClash(me, foe0, base, rule, powerOf(n));
+      const e = r && 'error' in r ? r.error : null;
+      srvRes.current = e && e !== 'NO_SRV' ? { err: e === 'NO_TURNS' ? tr('Hôm nay đã hết lượt.', 'No turns left today.') : tr('Máy chủ chưa ghi được trận này, thử lại sau.', "The server couldn't record this match, try again later.") } : undefined;
+    }
     setClash(c);
     setStep(-1);
     setPhase('clash');
@@ -142,7 +161,8 @@ export default function LoiDaiMatch({
         const hp = clash.hpPct;
         const detail = tr(`${me.name} ${clash.win ? tr('hạ', "defeated") : tr('bại dưới tay', "fell to")} ${foe.name}, cắm ${swords} phi kiếm, ${clash.win ? tr('còn', "keeping") : tr('đối thủ còn', "opponent keeping")} ${hp}% máu. Luật hôm nay: ${rule.name}.`, `${me.name} ${clash.win ? tr('hạ', "defeated") : tr('bại dưới tay', "fell to")} ${foe.name}, landing ${swords} flying swords, ${clash.win ? tr('còn', "keeping") : tr('đối thủ còn', "opponent keeping")} ${hp}% HP. Today's rule: ${rule.name}.`);
         track('arena_fight', { win: clash.win, swords, revenge: !!revenge, rule: rule.name, mode: 'phi_kiem' });
-        if (mode === 'thach')
+        if (srvRes.current !== undefined) setRes(srvRes.current);
+        else if (mode === 'thach')
           thachFight(user, opp, lifeId, clash.win, hp, swords, detail).then((r) => setRes(r ? { phuc: r.phuc, left: r.left, err: r.error } : { err: tr('Chưa ghi được chiến thư, thử lại sau.', "Couldn't record the challenge, try again later.") }));
         else arenaFight3(user, opp, clash.win, detail, revenge, hp, swords).then((r) => setRes(r ? { ...r, err: r.error } : { err: tr('Lôi đài đang đông, kết quả chưa ghi được.', "The arena is crowded; the result wasn't recorded.") }));
       });
@@ -233,7 +253,8 @@ export default function LoiDaiMatch({
         </div>
       )}
 
-      {phase === 'pk' && <PhiKiem foe={foe} base={base} onDone={afterPk} />}
+      {phase === 'pk' && <PhiKiem foe={foe} base={base} onDone={(n) => void afterPk(n)} />}
+      {waiting && <p className="ldm-wait">{tr('Thiên Đạo đang phân xử trận đấu...', 'Heaven is judging the duel...')}</p>}
 
       {(phase === 'clash' || phase === 'final' || phase === 'res') && clash && cur && (
         <>

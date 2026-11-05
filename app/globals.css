@@ -5090,3 +5090,4 @@ button.shadow-card { cursor: pointer; }
 .game > .stage { flex-shrink: 1; }
 .game > .game-scroll { flex-shrink: 1; }
 .choice.arming { opacity: 0.6; cursor: wait; }
+.ldm-wait { position: fixed; left: 50%; top: 45%; z-index: 120; transform: translateX(-50%); padding: 8px 14px; font-size: 16px; font-weight: 700; color: #fff3dc; background: rgba(31, 22, 13, 0.92); border: 3px solid #c9962e; }
