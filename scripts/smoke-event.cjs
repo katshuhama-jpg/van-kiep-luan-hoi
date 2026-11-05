@@ -35,6 +35,7 @@ const save = async (p) => JSON.parse(await p.evaluate(() => localStorage.getItem
   const p = await open(b, { __pending: ev }, false);
   await p.waitForTimeout(1500);
   ok(await p.locator('.dialog.event .choice').count() === 2, 'sự kiện hiện đủ lựa chọn');
+  ok(await p.locator('.choice.arming').count() === 0, 'sau 0,7 giây lựa chọn bấm được (chống bấm nhầm khi sự kiện vừa nhảy ra)');
   await p.locator('.event-min').click({ timeout: 5000 }).catch(() => {});
   await p.waitForTimeout(300);
   ok(await p.locator('.choice').count() === 0 && await p.locator('.event-open').count() === 1, 'bấm Thu gọn: ẩn lựa chọn, còn thanh mở lại');

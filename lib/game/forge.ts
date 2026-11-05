@@ -75,10 +75,16 @@ export function smelt(c: Character, id: string, ctx: EffectCtx): string | null {
 /** Cấp rèn của món đang mặc ở một ô (vũ khí lưu ở c.forge/c.forgeItem như cũ; áo, phụ kiện ở c.forges) */
 export function forgeLv(c: Character, slot: Slot = 'vu_khi'): number {
   const id = c.equipped[slot];
-  if (!id) return 0;
-  if (slot === 'vu_khi') return c.forgeItem === id ? (c.forge ?? 0) : 0;
-  const f = c.forges?.[slot];
-  return f && f.id === id ? f.lv : 0;
+  return id ? itemForgeLv(c, id) : 0;
+}
+/** 5/11 (góp ý: rèn +3 rồi thay món khác, thay lại thì về +0): cấp rèn gắn với từng món trong c.forgeMap.
+ *  Món rèn từ trước bản này vẫn đọc từ chỗ lưu cũ (c.forge/c.forgeItem, c.forges) cho tới khi rèn lại. */
+export function itemForgeLv(c: Character, id: string): number {
+  const m = c.forgeMap?.[id];
+  if (m !== undefined) return m;
+  if (c.forgeItem === id) return c.forge ?? 0;
+  for (const f of Object.values(c.forges ?? {})) if (f && f.id === id) return f.lv;
+  return 0;
 }
 /** Cấp rèn của vũ khí đang cầm */
 export const forgeLevel = (c: Character) => forgeLv(c, 'vu_khi');
@@ -189,10 +195,10 @@ export function forge(c: Character, ctx: EffectCtx, slot: Slot = 'vu_khi', opts:
   const name = item(w)?.name ?? tr('trang bị', 'gear');
   const el = elFx(itemEl(c, w));
   const set = (n: number) => {
-    if (slot === 'vu_khi') {
-      c.forgeItem = n ? w : undefined;
-      c.forge = n;
-    } else c.forges = { ...(c.forges ?? {}), [slot]: { id: w, lv: n } };
+    const m = { ...(c.forgeMap ?? {}) };
+    if (n) m[w] = n;
+    else m[w] = 0; // ghi 0 để không đọc lại cấp cũ ở chỗ lưu kiểu cũ
+    c.forgeMap = m;
   };
   const hoa = !!opts.hoa && (c.linhHoa ?? 0) > 0;
   if (hoa) c.linhHoa = (c.linhHoa ?? 0) - 1;
