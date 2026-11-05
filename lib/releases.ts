@@ -24,6 +24,64 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '4.2.1',
+    date: '05/11/2026',
+    title: tr('Kiếp Sau Có Gì', 'What the Next Life Holds'),
+    lead: tr('Mỗi kiếp khép lại, bạn thấy ngay mình mang được gì sang kiếp sau. Tiên nhân chán trời cao thì hạ phàm săn đồ, còn người mới bước chân vào giang hồ đã có cẩm nang truyện tranh dẫn đường.', 'When a life closes, you see at once what you carry into the next. Immortals weary of the heavens can descend to hunt treasure, and newcomers to the jianghu now have an illustrated handbook to guide them.'),
+    hero: { scene: 'kiepsau', caption: tr('Hành trang kiếp sau', 'Baggage for the next life') },
+    features: [
+      { icon: 'tien_tich_ngoc_phu', h: tr('Hành trang kiếp sau', 'Baggage for the next life'), t: tr('Màn chết hiện lần lượt những gì kiếp sau mang theo, ngay dưới tên bạn.', 'The death screen lists, one by one, what your next life carries, right under your name.') },
+      { icon: 'van_co_bao', h: tr('Hạ phàm săn đồ', 'Descend to hunt'), t: tr('Đã phi thăng thì mở Trừ yêu, chọn Hạ phàm mà xuống săn quái phàm giới.', 'Once ascended, open Demon Hunt and pick Descend to hunt mortal-realm monsters.') },
+      { icon: 'g_kinh_thu_tan_quyen', h: tr('Cẩm nang truyện tranh', 'Illustrated handbook'), t: tr('Truyện tranh kể từng chặng đường tu tiên, mở trong menu.', 'A comic telling each stage of the cultivation road, opened from the menu.') },
+      { icon: 'g_thien_co_lenh', h: tr('Giữ tài khoản', 'Keep your account'), t: tr('Mã khôi phục hoặc tài khoản Google, quên mật khẩu vẫn tự lấy lại được.', 'A recovery code or a Google account, so a forgotten password is no longer the end.') },
+    ],
+    cta: { label: tr('Đọc Cẩm nang', 'Read the Handbook'), go: 'camnang' },
+    more: [
+      tr('Hành trang kiếp sau', 'Baggage for the next life'),
+      tr('Hạ phàm săn đồ', 'Descend to hunt'),
+      tr('Cẩm nang truyện tranh', 'Illustrated handbook'),
+    ],
+    groups: [
+      {
+        h: tr('Luân hồi', 'Rebirth'),
+        hot: true,
+        items: [
+          tr('Màn chết có thẻ Hành trang kiếp sau: phúc duyên, chiêu truyền thừa, thần binh, rương chôn.', 'The death screen has a Baggage for the next life card: fortune, inherited moves, divine weapons, buried chests.'),
+          tr('Tiên nhân cũng chôn được rương, nhưng chỉ giữ đồ phàm giới.', 'Immortals can bury chests too, but they only keep mortal-realm gear.'),
+        ],
+      },
+      {
+        h: tr('Hạ phàm', 'Descending'),
+        items: [
+          tr('Đã phi thăng thì mở Trừ yêu, chọn Hạ phàm để xuống săn quái phàm giới.', 'Once ascended, open Demon Hunt and choose Descend to hunt mortal-realm monsters.'),
+          tr('Linh khí hạ giới loãng nên không lên tu vi, bù lại dễ ra đồ hơn.', 'The mortal realm\'s qi is thin so you gain no cultivation, but loot comes more easily.'),
+        ],
+      },
+      {
+        h: tr('Tài khoản', 'Account'),
+        hot: true,
+        items: [
+          tr('Mỗi tài khoản nay có mã khôi phục, quên mật khẩu tự lấy lại được, xem ở menu Bảo vệ tài khoản.', 'Every account now has a recovery code, so you can recover a forgotten password yourself. See Protect account in the menu.'),
+          tr('Giữ tài khoản lần đầu được thưởng phúc duyên.', 'Protecting your account for the first time earns you fortune.'),
+          tr('Đăng nhập, liên kết bằng tài khoản Google.', 'Sign in and link with your Google account.'),
+        ],
+      },
+      {
+        h: tr('Đấu giá', 'Auctions'),
+        items: [
+          tr('Vạn Bảo Lâu ra giá sát túi tiền người tu hơn, ai chịu khó tích cóp sẽ có cơ hội. Món càng quý giá càng cao.', 'The Myriad Treasures Pavilion now prices closer to what cultivators can afford, so those who save up get their chance. The rarer the piece, the higher the price.'),
+        ],
+      },
+      {
+        h: tr('Cẩm nang', 'Handbook'),
+        items: [
+          tr('Cẩm nang tu tiên dạng truyện tranh, mở trong menu.', 'The Cultivation Handbook comes as a comic, opened from the menu.'),
+          tr('Kể ngắn từng chặng: cảnh giới, ngã rẽ cuộc đời, tông môn chính tà, mẹo phi thăng, luân hồi.', 'It briefly tells each stage: realms, life\'s crossroads, righteous and demonic sects, ascension tips, rebirth.'),
+        ],
+      },
+    ],
+  },
+  {
     v: '4.2.0',
     date: '04/11/2026',
     title: tr('Công Pháp Nhập Thế', 'Techniques Enter the World'),

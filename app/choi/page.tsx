@@ -1,5 +1,6 @@
 'use client';
 
+import { buryPlan } from '@/lib/game/ruong';
 import Link from 'next/link';
 import GhiDanh from '@/components/GhiDanh';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -9,6 +10,7 @@ import { CoachHint, TribulationOverlay, Tutorial, clearLaSo } from '@/components
 import { AccountSetup, ProtectGate } from '@/components/GoogleAuth';
 import { securityStatus, type Security } from '@/lib/auth';
 import { googleOn } from '@/lib/google';
+import CamNang, { CN_ORDER, cnSeen, type CnChapter } from '@/components/CamNang';
 import { HoDaoScene, HoTroScene, TuKiepOverlay } from '@/components/VanKiep';
 import type { PastSelf } from '@/lib/vanKiep';
 import { LOI_ALLOW, LOI_TOTAL, daoKhon, failVanDao, usesVanDao } from '@/lib/game/vanDao';
@@ -93,7 +95,7 @@ function clearSetup() {
     sessionStorage.removeItem('vkl.setup');
   } catch {}
 }
-/** Thưởng phúc duyên một lần khi tài khoản được bảo vệ */
+/** Thưởng phúc duyên một lần khi tài khoản được bảo vệ lúc luân hồi */
 const PROTECT_BONUS = 30;
 export default function PlayPage() {
   const { user, ready } = useAuth();
@@ -115,15 +117,16 @@ export default function PlayPage() {
   const [nhdPeek, setNhdPeek] = useState(false); // xem luật Ngũ Hành Đài từ dải nhắc
   const [nhd, setNhd] = useState<{ i: number; p: PendingEvent; view: NhdView | 'fight' | 'hodao'; foe: Stance; tell: Stance; msg?: string; end?: 'next' | 'done' | 'lose' | 'dead' } | null>(null);
   const [tut, setTut] = useState(false); // hướng dẫn đầy đủ (mở từ menu)
-  const [protectOpen, setProtectOpen] = useState(false); // mở Bảo vệ tài khoản từ menu
-  // Tyler chốt 4/11: đang chơi không làm phiền; tới lúc lập bia luân hồi mà tài khoản chưa có Google lẫn mã khôi phục thì phải chọn một cách
+    const [protectOpen, setProtectOpen] = useState(false); // mở Bảo vệ tài khoản từ menu
+  // Tyler chốt 4/11: đang chơi không làm phiền; tới lúc lập bia luân hồi mà tài khoản chưa có Google lẫn mã khôi phục
+  // thì phải chọn một cách rồi mới sang kiếp sau (đặt sau màn chết, khi người chơi đã bấm luân hồi, để không chặn ngay lúc họ dễ bỏ đi nhất)
   const [sec, setSec] = useState<Security | null>(null);
   const unprotected = !!sec && !sec.google && !sec.recovery;
   const setUnprotected = (_v: boolean) => {
     securityStatus().then(setSec);
   };
   const [bonusToast, setBonusToast] = useState<string | null>(null);
-  /** Thưởng một lần cho mã khôi phục, một lần cho Google */
+  /** Thưởng một lần: liên kết Google +10, hoặc lần đầu bảo vệ bằng mã +10 (liên kết Google rồi thì tính luôn là đã bảo vệ) */
   const protectPatch = (kind: 'google' | 'code' | undefined, m: Meta): { add: number; patch: Partial<Meta> } => {
     if (kind === 'google' && !m.ggBonus) return { add: PROTECT_BONUS, patch: { ggBonus: true, protectBonus: true } };
     if (kind === 'code' && !m.protectBonus) return { add: PROTECT_BONUS, patch: { protectBonus: true } };
@@ -141,12 +144,15 @@ export default function PlayPage() {
     track('protect_bonus', { kind, add });
   };
   const [protectFinish, setProtectFinish] = useState<[string, string, boolean, { prophecy: { id: string; text: string }; legendName: string | null }] | null>(null);
-  const [setupOpen, setSetupOpen] = useState(false); // vừa khôi phục: đặt lại tài khoản trước khi chơi
-  const protectBonusRef = useRef<'google' | 'code' | undefined>(undefined);
+  const [setupOpen, setSetupOpen] = useState(false); // mật khẩu tạm hoặc vừa khôi phục: đặt lại tài khoản trước khi chơi
+  const protectBonusRef = useRef<'google' | 'code' | undefined>(undefined); // vừa bảo vệ tài khoản lúc luân hồi: kiếp sau thêm phúc duyên
   useEffect(() => {
     if (!user) return setSec(null);
     securityStatus().then(setSec);
   }, [user]);
+  // 5/11 Cẩm Nang Tu Tiên (truyện tranh): mở từ menu, hoặc tự mở đúng lúc cho người mới
+  const [cn, setCn] = useState<{ ch: CnChapter | null; only: boolean; from: string } | null>(null);
+  const cnAsked = useRef<Set<string>>(new Set());
   // gợi ý đúng lúc cho người mới: mỗi lúc một bong bóng, đã xem thì thôi
   const [hints, setHints] = useState<Record<string, 1>>(() => {
     try {
@@ -361,7 +367,7 @@ export default function PlayPage() {
   const [wares, setWares] = useState<Ware[] | null>(null);
   // 4.1.0: kết quả hội đấu giá hiện thành thẻ riêng (trước chỉ ghi vào gia phả, người chơi không biết thắng hay thua)
   const [auctionRes, setAuctionRes] = useState<{ item: string; won: boolean; text: string } | null>(null);
-  activeRef.current = running && sheet === null && !ciOpen && wares === null && auctionRes === null && phase === 'play' && kiep === null && hoTro === null && vanDao === null && !tut && !protectOpen && !setupOpen && duelWarn === null && !nhdPeek && !relOpen && !downOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
+  activeRef.current = running && sheet === null && !ciOpen && wares === null && auctionRes === null && phase === 'play' && kiep === null && hoTro === null && vanDao === null && !tut && !protectOpen && !setupOpen && cn === null && duelWarn === null && !nhdPeek && !relOpen && !downOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
 
   /** Ngũ hành giữa bạn và loài quái */
   function monElem(c: Character, m: { el?: Element }) {
@@ -1766,12 +1772,11 @@ export default function PlayPage() {
         partner: c.partner,
       },
       stash:
-        bury && !c.ascended && c.endTag !== 'xuyen_khong'
+        bury && buryPlan(c, !!legend)
           ? {
               from: c.name,
               lifeNo: c.lifeNo,
-              money: Math.round(c.linhThach * 0.3),
-              item: c.equipped.phu_kien ?? (legend ? null : c.equipped.vu_khi) ?? null,
+              ...buryPlan(c, !!legend)!,
               note,
               place: rnd() < 0.5 ? tr('gốc đa đầu làng', "under the banyan at the village gate") : rnd() < 0.5 ? tr('dưới nền ngôi miếu cũ', "beneath the floor of the old temple") : tr('bên bờ suối sau núi', "by the stream behind the mountain"),
             }
@@ -1905,6 +1910,32 @@ export default function PlayPage() {
   const nb = unseen(meta);
   const newBook = nb.endings || nb.items;
   const yearPct = (c.age % 1) * 100;
+  // Cẩm nang đúng lúc: chỉ cho người mới (ít kiếp), mỗi hồi một lần, không chen ngang trận đấu hay bảng đang mở
+  if (!cn && !protectOpen && !setupOpen && !c.dead && meta.lives < 3 && sheet === null && !tut && !relOpen && !downOpen && !ciOpen && kiep === null && !nhd && !duelWarn && !ascend && !gifts) {
+    const seen = cnSeen();
+    const want: CnChapter | null =
+      pending?.id === '__chon_duong'
+        ? 'nga_re'
+        : pending?.id === 'tuyen_de_tu'
+          ? 'tong_mon'
+          : pending
+          ? null
+          : meta.lives === 0 && c.lifeNo <= 1 && !seen.includes('mot_kiep')
+            ? 'mot_kiep'
+            : c.lifeNo >= 2 && c.age < 6 && !seen.includes('luan_hoi')
+              ? 'luan_hoi'
+              : c.realm >= 6 && !c.cosmos && !seen.includes('phi_thang')
+                ? 'phi_thang'
+                : c.realm >= 2 && !seen.includes('danh_nhau') && seen.includes('canh_gioi')
+                  ? 'danh_nhau'
+                  : c.realm >= 1 && !seen.includes('canh_gioi')
+                    ? 'canh_gioi'
+                    : null;
+    if (want && !seen.includes(want) && !cnAsked.current.has(want)) {
+      cnAsked.current.add(want);
+      setTimeout(() => setCn({ ch: want, only: true, from: 'auto' }), 0);
+    }
+  }
 
   return (
     <main className={`game ${pending && !c.dead ? 'has-event' : ''}`}>
@@ -2117,7 +2148,7 @@ export default function PlayPage() {
           wares={wares}
           onBuy={(k) => act((ch, out) => { if (buyWare(ch, wares[k], makeCtx(ch, out))) { setWares([...wares]); track('thuong_nhan', { buy: 1 }); } })}
           onHaggle={(k) => { const ch = charRef.current; if (!ch) return null; const t = haggleWare(ch, wares[k], makeCtx(ch, [])); setWares([...wares]); return t; }}
-          onRob={(k) => act((ch, out) => { robWare(ch, wares[k], makeCtx(ch, out)); setWares([...wares]); track('thuong_nhan', { rob: 1 }); })}
+          onRob={(k) => act((ch, out) => { robWare(ch, wares[k], makeCtx(ch, out)); setWares([...wares]); const r = wares[k].rob; track('thuong_nhan', { rob: 1, win: r ? (r.win ? 1 : 0) : null, strong: r ? (r.strong ? 1 : 0) : null, realm: ch.realm, rare: wares[k].item.rare ?? 0 }); })}
           onLeave={() => { setWares(null); persist(true); }}
         />
       )}
@@ -2201,6 +2232,16 @@ export default function PlayPage() {
                 {sec?.google ? tr('✓ Đã liên kết tài khoản Google', '✓ Google account linked') : googleOn() ? tr('Liên kết Google / Bảo vệ tài khoản', 'Link Google / Protect account') : tr('Bảo vệ tài khoản', 'Protect account')}
               </button>
             )}
+            <button
+              className="btn"
+              onClick={() => {
+                setSheet(null);
+                setCn({ ch: null, only: false, from: 'menu' });
+              }}
+            >
+              {tr("Cẩm nang tu tiên (truyện tranh)", "Cultivation handbook (comic)")}
+              {cnSeen().length < CN_ORDER.length && <span className="new-tag">{tr("mới", "new")}</span>}
+            </button>
             <Link className="btn" href="/cap-nhat" onClick={() => persist(true)} style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
               
               {tr("Lịch sử cập nhật · bản ", "Update history · version ")}{CURRENT_VERSION}
@@ -2255,7 +2296,7 @@ export default function PlayPage() {
         />
       )}
       {(() => {
-        if (tut || c.dead || sheet !== null || kiep !== null || hoTro || vanDao || nhd || duelWarn || duelRef.current || ambushRef.current) return null;
+        if (tut || cn || c.dead || sheet !== null || kiep !== null || hoTro || vanDao || nhd || duelWarn || duelRef.current || ambushRef.current) return null;
         const h = nextHint(hints, !!pending, c.age);
         return h ? <CoachHint key={h.k} sel={h.sel} text={h.text} top={h.top} onOk={() => seeHint(h.k)} /> : null;
       })()}
@@ -2265,7 +2306,8 @@ export default function PlayPage() {
         </button>
       )}
       {user && <AccountSetup start={setupStart()} onOpen={() => setSetupOpen(true)} onDone={() => (clearSetup(), setSetupOpen(false), setUnprotected(false))} />}
-      {user && protectOpen && <ProtectGate mode="manage" bonus={meta.protectBonus || !unprotected ? 0 : PROTECT_BONUS} ggBonus={meta.ggBonus ? 0 : PROTECT_BONUS} onDone={(kind) => (setProtectOpen(false), grantProtect(kind))} />}
+        {user && protectOpen && <ProtectGate mode="manage" bonus={meta.protectBonus || !unprotected ? 0 : PROTECT_BONUS} ggBonus={meta.ggBonus ? 0 : PROTECT_BONUS} onDone={(kind) => (setProtectOpen(false), grantProtect(kind))} />}
+      {cn && <CamNang start={cn.ch} only={cn.only} from={cn.from} onClose={() => setCn(null)} />}
       {tut && !pending && !c.dead && (
         <Tutorial
           onDone={() => {
@@ -2303,7 +2345,7 @@ export default function PlayPage() {
           onPick={pickDuelAction}
         />
       )}
-      {relOpen && !c.dead && <ReleaseNotice onClose={closeRel} onGo={(go) => (go === 'congphap' ? setSheet('congphap') : null)} />}
+      {relOpen && !c.dead && <ReleaseNotice onClose={closeRel} onGo={(go) => (go === 'congphap' ? setSheet('congphap') : go === 'camnang' ? setCn({ ch: null, only: false, from: 'caothi' }) : null)} />}
       {downOpen && !relOpen && !c.dead && <DownNotice onClose={() => setDownOpen(false)} />}
       {ascend && !c.dead && <AscendScene c={c} cos={ascend} onDone={() => setAscend(null)} />}
       {gifts && !relOpen && !downOpen && <GiftNotice gifts={gifts} onClose={() => setGifts(null)} />}
