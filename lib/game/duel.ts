@@ -1,5 +1,3 @@
-import { sellNow } from './marketDay';
-import { DUP_SELL } from './combat';
 import { addMile } from './miles';
 import { chieuOf, dichThuDeath, dichThuDraw, dichThuLose, dichThuRevenge, dichThuWin, dongDaoDraw, dongDaoLose, dongDaoWin, dongMonDraw, dongMonLose, dongMonWin, marginOf, swornLine, tamMaLine } from './fightLines';
 import { qmark } from './hook';
@@ -8,7 +6,7 @@ import { ITEMS, REALMS, fxText, realmLabel } from './data';
 import { demoChar } from './demo';
 import { ELEMENT_IDS, elemMul, elemRel, elementOf, type ElemRel } from './nguhanh';
 import { genName } from './engine';
-import { addCult, addWound, afterLoss, atAge, fatal, giveItem, markDeath, money, reward, stat } from './helpers';
+import { addCult, addDup, addWound, afterLoss, atAge, fatal, giveItem, markDeath, money, reward, stat, takeOne } from './helpers';
 import { PROVOKE_MUL, SOCIAL } from './social';
 import { daiBiDue, promote, sectSide } from './sect';
 import { hhDuelWin } from './hopHoan';
@@ -379,9 +377,8 @@ function rivalLoot(c: Character, r: RivalChar, ctx: EffectCtx, chance: number, s
   const it = (fresh.length ? fresh : items)[Math.floor(ctx.rnd() * (fresh.length ? fresh : items).length)];
   const tag = `[${RARE_NAME[it.rare ?? 0]}]`;
   if (c.inventory.includes(it.id)) {
-    const sell = Math.round(sellNow(c, it) * DUP_SELL);
-    money(c, sell);
-    return tr(`${say(`${tag} ${it.name}`)} Bạn đã có món này nên đem bán được ${sell} linh thạch.`, `${say(`${tag} ${it.name}`)} You already own this, so you sell it for ${sell} spirit stones.`);
+    const n = addDup(c, it.id);
+    return tr(`${say(`${tag} ${it.name}`)} Bạn đã có món này, cất thêm vào túi (đang có ${n + 1} chiếc).`, `${say(`${tag} ${it.name}`)} You already own this, so you store the extra (${n + 1} now).`);
   }
   giveItem(c, it.id, false);
   ctx.fx((it.rare ?? 0) >= 3 ? 'layer' : 'buy', it.name);
@@ -397,7 +394,7 @@ export function robGear(c: Character, ctx: EffectCtx, n: number, ids?: string[])
     const j = Math.floor(ctx.rnd() * worn.length);
     const [slot, id] = worn.splice(j, 1)[0];
     c.equipped[slot] = slot === 'ao' ? 'ao_vai' : undefined;
-    c.inventory = c.inventory.filter((x) => x !== id);
+    takeOne(c, id); // còn bản trùng thì bản trùng ở lại trong túi
     ids?.push(id);
     names.push(ITEMS.find((it) => it.id === id)?.name ?? tr('một món đồ', "an item"));
   }
@@ -432,7 +429,7 @@ export function finishDuel(c: Character, f: DuelFoe, result: 'win' | 'lose' | 'd
     const t = hhDuelWin(c, c.cultivation - cu0, who, ctx.rnd);
     if (t) out.push(t);
     // 4.2.0: thắng người giang hồ có thể nhặt tàn quyển: cùng đạo thì ra chiêu của đạo, khác đạo thì theo hệ bản mệnh của họ
-    if (ctx.rnd() < 0.3) {
+    if (ctx.rnd() < 0.4) {
       const t = dropTq(c, { kind: 'nguoi', path: f.rival.path, el: elementOf(f.rival) }, ctx.rnd);
       if (t) out.push(t);
     }

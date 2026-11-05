@@ -53,6 +53,9 @@ export interface Character {
   linhThach: number;
   inventory: string[];
   equipped: Partial<Record<Slot, string>>;
+  dup?: Record<string, number>; // 5/11: số món trùng cất thêm trong túi (rơi trùng không tự bán nữa)
+  locked?: string[]; // 5/11: món đã khóa: không bán, không phân giải, không đem hợp
+  gearSets?: ({ name: string; eq: Partial<Record<Slot, string>> } | null)[]; // 5/11: tối đa 3 bộ trang bị, đổi một chạm
   pills: Record<string, number>;
   bought?: string[]; // đồ Luyện Hư, Độ Kiếp đã mua ở phường thị kiếp này (mỗi món một lần)
   shelf?: { w: number; bought: string[] }; // 4.1.0: kệ hàng hiếm, đợt (5 năm) và các món đã mua trong đợt
@@ -125,6 +128,7 @@ export interface Character {
   cpHint?: boolean; // đã báo có bộ đầy thục luyện
   tq?: Record<string, number>; // tàn quyển riêng từng bộ công pháp: lên tầng từ tầng 4, tuyệt kỹ để dung hợp
   tqVan?: number; // tàn quyển vạn năng (hiếm): bù vào bộ nào cũng được
+  tqBuy?: { y: number; n: number }; // 5/11: số tàn quyển đã mua ở Phường thị trong năm (giới hạn mỗi năm)
   cpPast?: string[]; // các bộ kiếp trước từng luyện (bóng kiếp trước rơi tàn quyển các bộ này)
   cpHeirPick?: string | null; // chiêu chọn truyền cho kiếp sau
   lookSeed?: number; // nét riêng của ngoại hình: da, khuôn mặt, râu, trang sức

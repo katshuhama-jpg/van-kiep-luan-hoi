@@ -385,6 +385,42 @@ export function dropTq(c: Character, src: TqSrc, rnd: () => number): string | nu
   return tr(`Nhặt được tàn quyển ${cpOf(pick.id)?.name} (đang có ${tqOf(c, pick.id)}).`, `You find a ${cpOf(pick.id)?.name} fragment (you have ${tqOf(c, pick.id)}).`);
 }
 
+/* ---------------- 5/11: Phường thị bán tàn quyển ----------------
+ * Góp ý: hoãn phi thăng farm 200 năm vẫn mới tầng 6. Tyler chốt: vừa bán ở Phường thị, vừa tăng tỉ lệ rơi.
+ * Chỉ bán tàn quyển các bộ ĐANG MANG, từ tầng 3 tới 8 (tầng 1-3 tự lên), giá cao theo cảnh giới (khoảng nửa túi tiền
+ * trung bình người chơi ở cảnh giới đó) và theo tầng, mỗi năm chỉ mua được TQ_SHOP_YEAR quyển.
+ */
+export const TQ_SHOP_YEAR = 2;
+const TQ_SHOP_BASE = [60, 120, 180, 300, 600, 1000, 1600, 2400, 8000, 15000, 20000, 38000];
+export function tqShopPrice(c: Character, id: string): number {
+  const o = owned(c, id);
+  const base = TQ_SHOP_BASE[Math.max(0, Math.min(TQ_SHOP_BASE.length - 1, c.realm))];
+  return Math.round(base * (1 + 0.25 * Math.max(0, (o?.tang ?? 3) - 3)));
+}
+export const tqShopLeft = (c: Character) => TQ_SHOP_YEAR - (c.tqBuy && c.tqBuy.y === Math.floor(c.age) ? c.tqBuy.n : 0);
+/** Các bộ đang mang còn cần tàn quyển (tầng 3-8, chưa đủ quyển cho tới tầng 9) */
+export function tqShopList(c: Character): CpDef[] {
+  const s = cpState(c);
+  return s.eq
+    .filter((id) => !!id)
+    .map((id) => cpOf(id))
+    .filter((d): d is CpDef => !!d && d.kind !== 'tuyet')
+    .filter((d) => {
+      const o = owned(c, d.id);
+      return !!o && o.tang >= 3 && o.tang < 9 && tqOf(c, d.id) < TQ_COST.slice(o.tang).reduce((x, y) => x + y, 0);
+    });
+}
+export function buyTq(c: Character, id: string): string | null {
+  if (!tqShopList(c).some((d) => d.id === id) || tqShopLeft(c) <= 0) return null;
+  const price = tqShopPrice(c, id);
+  if (c.linhThach < price) return null;
+  c.linhThach -= price;
+  const y = Math.floor(c.age);
+  c.tqBuy = { y, n: (c.tqBuy && c.tqBuy.y === y ? c.tqBuy.n : 0) + 1 };
+  c.tq = { ...(c.tq ?? {}), [id]: tqOf(c, id) + 1 };
+  return tr(`Mua một tàn quyển ${cpOf(id)?.name} ở Phường thị, tốn ${price} linh thạch (đang có ${tqOf(c, id)}).`, `Bought a ${cpOf(id)?.name} fragment at the market for ${price} spirit stones (you have ${tqOf(c, id)}).`);
+}
+
 /** Dùng trong trận thì thục luyện thêm chút */
 function practice(c: Character | null, id: string) {
   if (!c) return;
