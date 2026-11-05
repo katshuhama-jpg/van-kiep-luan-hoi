@@ -5,7 +5,7 @@ import ItemIcon from './ItemIcon';
 import Sprite from './Sprite';
 import { ITEMS, PILLS, fxText as fxTextData, gearFx, type Item } from '@/lib/game/data';
 import { playerStats } from '@/lib/game/combat';
-import { FORGE_COST, FORGE_MAX, FORGE_STAT, canSmelt, elFx, forgeLevel, forgeLv, itemEl, sellValue, smeltValue, type ForgeOpts, type ForgeResult } from '@/lib/game/forge';
+import { FORGE_COST, FORGE_MAX, FORGE_STAT, canSmelt, elFx, forgeLevel, forgeLv, itemEl, itemForgeLv, sellValue, smeltValue, type ForgeOpts, type ForgeResult } from '@/lib/game/forge';
 import ForgeScene from './ForgeScene';
 import { MergeScene } from './MarketScenes';
 import type { MergeResult } from '@/lib/game/market';
@@ -71,7 +71,7 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
   const isSpare = (it: Item) => {
     const onId = c.equipped[it.slot];
     const on = onId ? ITEMS.find((i) => i.id === onId) : null;
-    if (!on || !canSmelt(c, it.id)) return false;
+    if (!on || !canSmelt(c, it.id) || itemForgeLv(c, it.id) > 0) return false; // đồ đã rèn không tính là thừa
     const r = it.rare ?? 0;
     const ro = on.rare ?? 0;
     return r < ro || (r === ro && it.price <= on.price);
@@ -190,7 +190,7 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
                 <button key={it.id} type="button" className={`inv-cell r${it.rare ?? 0} ${selItem?.id === it.id ? 'sel' : ''} ${isSpare(it) ? 'spare' : ''}`} onClick={() => setSel({ item: it.id })} aria-label={it.name}>
                   <ItemIcon item={it} />
                   {isOn(it.id) ? <i className="inv-on">{tr('Mặc', 'Wear')}</i> : isSpare(it) ? <i className="inv-spare">{tr('Thừa', 'Spare')}</i> : null}
-                  <i className={`inv-rare r${it.rare ?? 0}`}>{RARE_SHORT[it.rare ?? 0]}{isOn(it.id) && forgeLv(c, it.slot) > 0 ? ` +${forgeLv(c, it.slot)}` : ''}</i>
+                  <i className={`inv-rare r${it.rare ?? 0}`}>{RARE_SHORT[it.rare ?? 0]}{itemForgeLv(c, it.id) > 0 ? ` +${itemForgeLv(c, it.id)}` : ''}</i>
                 </button>
               ))}
               {ps.map((p) => (
@@ -219,7 +219,7 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
             <span>
               <b>
                 {c.legend?.item === selItem.id ? `★ ${c.legend.name}` : selItem.name}
-                {isOn(selItem.id) && forgeLv(c, selItem.slot) > 0 ? <em className="forge-lv"> +{forgeLv(c, selItem.slot)}</em> : null}
+                {itemForgeLv(c, selItem.id) > 0 ? <em className="forge-lv"> +{itemForgeLv(c, selItem.id)}</em> : null}
               </b>
               <small>
                 {SLOT_NAME[selItem.slot]} · {RARE_TXT[selItem.rare ?? 0]} · <span className={`el-tag e-${itemEl(c, selItem.id)}`}>{tr("Hệ ", "Element: ")}{elFx(itemEl(c, selItem.id)).name}</span>

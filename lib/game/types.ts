@@ -139,6 +139,7 @@ export interface Character {
   forge?: number; // cấp rèn của vũ khí đang cầm (+1..+5)
   forgeItem?: string; // vũ khí đã rèn (đổi vũ khí thì cấp rèn không theo)
   forges?: Partial<Record<'ao' | 'phu_kien', { id: string; lv: number }>>; // cấp rèn áo, phụ kiện (gắn với đúng món)
+  forgeMap?: Record<string, number>; // 5/11: cấp rèn theo từng món (thay đồ qua lại không mất cấp)
   tinhHoa?: number; // tinh hoa luyện hóa từ đồ thừa
   seals?: Partial<Record<Element, number>>; // ấn ngũ hành khắc trên vũ khí đã rèn
   maDauMet?: number; // 3.2.0 số lần gặp bóng ma đầu trong kiếp này (tối đa 2)

@@ -156,6 +156,12 @@ export function EventCard(props: { p: PendingEvent; c?: Character; onChoose: (i:
 function EventCardIn({ p, c, onChoose }: { p: PendingEvent; c?: Character; onChoose: (i: number) => void }) {
   // 4/11 Tyler: thu gọn tạm để đọc gia phả phía trên, đọc xong mở lại để chọn
   const [min, setMin] = useState(false);
+  // 5/11 (góp ý: đang bấm Túi đồ hay đổi trọng tâm thì sự kiện nhảy ra, bấm nhầm lựa chọn): bỏ qua cú chạm trong 0,7 giây đầu
+  const [armed, setArmed] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setArmed(true), 700);
+    return () => clearTimeout(t);
+  }, []);
   if (min)
     return (
       <section className="dialog event mini" aria-live="polite">
@@ -178,7 +184,7 @@ function EventCardIn({ p, c, onChoose }: { p: PendingEvent; c?: Character; onCho
       {p.item && <EventItem id={p.item} c={c} />}
       <div className="choices">
         {p.choices.map((ch, i) => (
-          <button key={i} className={`choice ${ch.lean} ${ch.off ? 'off' : ''}`} disabled={ch.off} onClick={() => !ch.off && onChoose(i)}>
+          <button key={i} className={`choice ${ch.lean} ${ch.off ? 'off' : ''} ${armed ? '' : 'arming'}`} disabled={ch.off} aria-disabled={!armed} onClick={() => armed && !ch.off && onChoose(i)}>
             <span>
               {String.fromCharCode(65 + i)}. {ch.label}
             </span>

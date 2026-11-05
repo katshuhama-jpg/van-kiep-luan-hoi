@@ -4961,3 +4961,4 @@ button.shadow-card { cursor: pointer; }
 .game > * { flex-shrink: 0; }
 .game > .stage { flex-shrink: 1; }
 .game > .game-scroll { flex-shrink: 1; }
+.choice.arming { opacity: 0.6; cursor: wait; }
