@@ -129,3 +129,19 @@ begin
   end if;
   return new;
 end $$;
+
+-- 6) 5/11 tối: trả hồ sơ thiende009 về bản thật cuối cùng trong vkl_meta_hist (9 kiếp, 89 phúc duyên).
+--    Chặn gửi lại số hack: hồ sơ gửi lên có số kiếp > 2000, tăng > 50 kiếp một lần, hoặc phúc duyên > 50.000 thì giữ bản cũ.
+create or replace function vkl_priv.meta_guard() returns trigger
+language plpgsql security definer set search_path to '' as $$
+declare o_l numeric := coalesce((old.meta->>'lives')::numeric, 0); n_l numeric := coalesce((new.meta->>'lives')::numeric, 0);
+        o_p numeric := coalesce((old.meta->>'phucDuyen')::numeric, 0); n_p numeric := coalesce((new.meta->>'phucDuyen')::numeric, 0);
+begin
+  if (n_l > 2000 and n_l > o_l) or n_l - o_l > 50 or (n_p > 50000 and n_p > o_p) then
+    new.meta := old.meta;
+  end if;
+  return new;
+exception when others then
+  return new;
+end $$;
+create trigger vkl_players_meta_guard before update of meta on public.vkl_players for each row execute function vkl_priv.meta_guard();
