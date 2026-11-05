@@ -24,6 +24,44 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '4.3.0',
+    date: '06/11/2026',
+    title: tr('Linh Thú Xuất Thế', 'Spirit Beasts Awaken'),
+    lead: tr('Núi sâu rừng thẳm đã có chủ. Linh thú nay phân hạng, phải đánh mới thu phục được, nuôi lâu thì thân thiết và tiến hóa, ra trận thì cùng bạn xông pha. Tứ linh và dị thú Sơn Hải Kinh đã xuất thế, chỉ chờ người có duyên.', 'The deep mountains and forests have masters now. Spirit beasts are ranked, must be fought before they can be tamed, grow close and evolve the longer you raise them, and charge into battle at your side. The Four Symbols and the strange beasts of the Classic of Mountains and Seas have awakened, waiting only for the fated.'),
+    hero: { scene: 'linhthu', caption: tr('Thanh Long xuất thế!', 'The Azure Dragon awakens!') },
+    features: [
+      { icon: 'g_ky_lan_giac', h: tr('Linh thú có hạng', 'Ranked spirit beasts'), t: tr('Từ thú thường tới tứ linh. Tu càng cao, gặp thú càng xịn, xem sổ linh thú để biết mình còn thiếu con nào.', 'From common beasts to the Four Symbols. The higher you cultivate, the finer the beasts you meet. Check the beast book to see what you are still missing.') },
+      { icon: 'g_ho_trao', h: tr('Đánh rồi mới thu phục', 'Fight first, then tame'), t: tr('Gặp thú phải giao chiến, thắng mới có cơ hội thu về. Thú quá mạnh so với chủ có thể bỏ đi.', 'Meet a beast and you must fight it; only a win gives you a chance to tame it. A beast far stronger than its master may leave.') },
+      { icon: 'g_long_lan', h: tr('Tiến hóa và huyết mạch', 'Evolution and bloodlines'), t: tr('Nuôi lâu thì thân thiết, tiến hóa ba bậc. Thú bậc cuối để lại huyết mạch cho kiếp sau.', 'Raise it long enough and it grows close and evolves through three stages. A fully evolved beast leaves its bloodline to your next life.') },
+      { icon: 'g_can_khon_dai', h: tr('Túi đồ gọn gàng', 'A tidier bag'), t: tr('Đồ trùng cất vào túi, khóa đồ và đổi bộ trang bị một chạm. Mở Túi đồ là thấy.', 'Duplicates go into your bag, plus item locks and one-tap gear sets. Open your bag to see.') },
+    ],
+    cta: { label: tr('Mở màn Linh thú', 'Open Spirit Beasts'), go: 'linhthu' },
+    more: [
+      tr('Linh thú có hạng, đánh rồi mới thu phục', 'Ranked beasts, fight before you tame'),
+      tr('Tiến hóa ba bậc, huyết mạch kiếp sau', 'Three-stage evolution, bloodlines'),
+      tr('Túi đồ: đồ trùng, khóa đồ, bộ trang bị', 'Bag: duplicates, locks, gear sets'),
+    ],
+    groups: [
+      {
+        h: tr('Linh thú', 'Spirit beasts'),
+        hot: true,
+        items: [
+          tr('Linh thú nay có hạng, gặp thú phải giao chiến, thắng mới có cơ hội thu phục. Tu càng cao gặp thú càng xịn, còn thú quá mạnh so với chủ có thể bỏ đi.', 'Spirit beasts are now ranked. Meet one and you must fight it; only a win gives a chance to tame it. The higher you cultivate the finer the beasts, and a beast far stronger than its master may leave.'),
+          tr('Nuôi lâu thì thân thiết và tiến hóa ba bậc. Thú hộ chủ lao vào đánh cùng bạn, thú chiêu phúc mang vận, thú dưỡng thân giữ sức; thú bậc cuối để lại huyết mạch cho kiếp sau.', 'Raise a beast and it grows close and evolves through three stages. Guardians fight at your side, fortune beasts bring luck, nurturing beasts keep you healthy; a fully evolved beast leaves its bloodline to your next life.'),
+          tr('Tứ linh và dị thú Sơn Hải Kinh đã xuất thế, ai có duyên thì gặp. Chạm huy hiệu linh thú trên sân khấu để xem sổ.', 'The Four Symbols and the strange beasts of the Classic of Mountains and Seas have awakened, for those with the fate to meet them. Tap the beast badge on the stage to open the book.'),
+        ],
+      },
+      {
+        h: tr('Túi đồ', 'Bag'),
+        items: [
+          tr('Đồ rơi trùng nay cất vào túi để bạn tự bán đúng giá.', 'Duplicate drops now go into your bag so you can sell them at full price yourself.'),
+          tr('Khóa đồ và ba bộ trang bị đổi một chạm, không còn bán nhầm.', 'Item locks and three gear sets you swap with one tap, so nothing gets sold by mistake.'),
+          tr('Phường thị bán tàn quyển công pháp đang mang, tàn quyển cũng rơi nhiều hơn.', 'The market sells fragments for the techniques you carry, and fragments drop more often too.'),
+        ],
+      },
+    ],
+  },
+  {
     v: '4.2.1',
     date: '05/11/2026',
     title: tr('Kiếp Sau Có Gì', 'What the Next Life Holds'),

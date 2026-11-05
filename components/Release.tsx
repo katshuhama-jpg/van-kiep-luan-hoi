@@ -24,6 +24,7 @@ function ReleaseHero({ hero }: { hero: NonNullable<Release['hero']> }) {
           <PixelFx spec={heroSpec} scale={3} dur={1.2} />
         </span>
       )}
+      {hero.scene === 'linhthu' && <span className="rel-hero-beast" />}
       <span className="rel-hero-hero">
         <Sprite c={HERO_KIEM} size={120} anim={hero.scene === 'congphap' ? 'spellcast' : 'idle'} dir={3} />
       </span>
