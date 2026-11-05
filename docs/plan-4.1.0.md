@@ -4,6 +4,8 @@ Nguồn: docs/research/lam-sau-he-thong.md (báo cáo "Làm sâu hệ thống V�
 
 Luật trả lời góp ý (Tyler dặn 31/10): việc chưa làm, chưa có trong plan có ngày thì KHÔNG trả lời, để trống và để trạng thái `moi` cho người chơi và Tyler dễ theo dõi. Chỉ trả lời khi đã làm xong, hoặc đã có lịch thì nêu rõ ngày và bản (vd "lên trong bản cập nhật sáng Chủ nhật 1/11, thuộc bản 4.1.0"). Góp ý có nhiều ý mà mới xong một phần thì chỉ nói phần đã xong. Không viết "bản sau", "đang làm", "vài ngày tới", "đã ghi nhận". Áp dụng cho cả cáo thị và bài Threads.
 
+Luật tặng phúc (Tyler chốt 6/11): mỗi lần trả lời một góp ý (kể cả trả lời thêm cho góp ý đã được trả lời trước) đều tặng 10 phúc.
+
 Thử trước khi đẩy: `node scripts/smoke.cjs` và `node scripts/smoke-login.cjs` (thêm một lần với `FAIL_ME=1`), cả hai phải OK.
 
 Mỗi lần chạy: làm khối **đầu tiên còn ô trống**, đánh dấu [x], ghi ngày và commit vào dòng "Xong:". Nếu khối nào làm dở thì ghi rõ còn thiếu gì ở dòng "Ghi chú:" để lần sau làm tiếp.
@@ -163,7 +165,7 @@ Tyler chốt 2/11 tối: đổi lịch, linh thú lên thứ Sáu, trận đánh
   - Hóa Thần: SR 100%→85%, SSR 69%→45%
   - Luyện Hư: SSR 93%→61%, SSS 4%→1%
   - Độ Kiếp: SSR 99%→70%, SSS 29%→12%
-  - Trả lời góp ý sau khi trang chạy 10a9481 (smoke trên trang thật OK): da_xong #26 (giữ phần kẻ thù 4.0.1, thêm linh thú 4.3.0), #79, #112, #123, #117 (reply_ver 4.2.1); giữ moi #30 (Hệ Thống 4.1.0 + linh thú 4.3.0, Vạn Thú Tông chưa làm nên giữ moi), #60, #94, #99, #90 (đấu giá 4.2.1 + đồ trùng cất túi 4.3.0), #111, #134. Tặng 10 phúc mỗi góp ý (12 quà; #30 và #90 đã được tặng một lần ở lần trả lời trước, lần này tặng thêm theo plan).
+  - Trả lời góp ý sau khi trang chạy 10a9481 (smoke trên trang thật OK): da_xong #26 (giữ phần kẻ thù 4.0.1, thêm linh thú 4.3.0), #79, #112, #123, #117 (reply_ver 4.2.1); giữ moi #30 (Hệ Thống 4.1.0 + linh thú 4.3.0, Vạn Thú Tông chưa làm nên giữ moi), #60, #94, #99, #90 (đấu giá 4.2.1 + đồ trùng cất túi 4.3.0), #111, #134. Tặng 10 phúc mỗi góp ý (12 quà; #30 và #90 được tặng thêm lần nữa, Tyler xác nhận 6/11 là đúng). Lịch "VKL bản mới mỗi sáng" đã tắt 6/11 theo lời Tyler.
 
 ## Việc sau (Claude làm tay trong phiên, lịch sáng KHÔNG làm khối này)
 Thiên Đạo kiểm chứng (Tyler đồng ý hướng 5/11 tối, làm sau bản 4.3.0 Linh thú, không thêm gì vào giao diện người chơi):
