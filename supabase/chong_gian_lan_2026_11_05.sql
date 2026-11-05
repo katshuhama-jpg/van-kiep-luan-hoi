@@ -145,3 +145,6 @@ exception when others then
   return new;
 end $$;
 create trigger vkl_players_meta_guard before update of meta on public.vkl_players for each row execute function vkl_priv.meta_guard();
+
+-- 7) 5/11 tối, Tyler: quocdung, anony3 phúc duyên về 0. meta_guard chặn thêm phúc duyên tăng quá 3.000 trong một lần lưu
+--    (người chơi thật tăng nhiều nhất khoảng 600 một lần), để trình duyệt còn số cũ không đẩy lại lên được.
