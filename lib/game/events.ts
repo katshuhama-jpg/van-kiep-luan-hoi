@@ -1,5 +1,6 @@
 import { DAO_LU, ITEMS, PATHS, realmName } from './data';
-import { addCult, addLife, addPill, addWound, atAge, bullyLoss, dao, fatal, giveItem, hasItem, hurt, isOrphan, nguoiNuoi, nhanDeTu, thuTuDeTu, luck, markDeath, money, pick, reward, sample, stat, takeStones, usePill } from './helpers';
+import { DI_THU_EVENT, THAN_THU_EVENT } from './linhThu';
+import { addCult, addLife, addPill, addWound, atAge, bullyLoss, dao, fatal, giveItem, hasItem, hurt, isOrphan, nguoiNuoi, nhanDeTu, thuTuDeTu, luck, markDeath, money, pick, reward, sample, stat, takeOne, takeStones, usePill } from './helpers';
 import type { Character, Choice, EffectCtx, GameEvent } from './types';
 import { eventDuel } from './duel';
 import { HH_EVENTS } from './hopHoan';
@@ -2906,7 +2907,7 @@ export const EVENTS: GameEvent[] = [
             run: (c) => {
               if (c.equipped.vu_khi) {
                 const it = ITEMS.find((i) => i.id === c.equipped.vu_khi);
-                c.inventory = c.inventory.filter((i) => i !== c.equipped.vu_khi);
+                takeOne(c, c.equipped.vu_khi);
                 c.equipped.vu_khi = undefined;
                 money(c, Math.round((it?.price ?? 20) * 0.5));
                 return tr(`Bạn bán ${it?.name ?? tr('vũ khí', "your weapon")} lấy nửa giá.`, `You sell ${it?.name ?? tr('vũ khí', "your weapon")} for half price.`);
@@ -3007,6 +3008,8 @@ export const EVENTS: GameEvent[] = [
   ...CHILD_EVENTS,
   PET_EVENT,
   ...PET_STORIES,
+  DI_THU_EVENT,
+  THAN_THU_EVENT,
   hutCongEvent,
 ];
 

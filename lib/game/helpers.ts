@@ -143,6 +143,29 @@ export function equippedLook(c: Character, slot: 'ao' | 'vu_khi' | 'phu_kien'): 
   return ITEMS.find((i) => i.id === id)?.look ?? null;
 }
 
+/** 5/11: món trùng cất thêm trong túi */
+export const dupOf = (c: Character, id: string) => c.dup?.[id] ?? 0;
+export function addDup(c: Character, id: string) {
+  c.dup = { ...(c.dup ?? {}), [id]: dupOf(c, id) + 1 };
+  return c.dup[id];
+}
+/** Bỏ đi một chiếc: còn bản trùng thì trừ bản trùng, không thì bỏ món khỏi túi */
+export function takeOne(c: Character, id: string) {
+  const n = dupOf(c, id);
+  if (n > 0) {
+    const d = { ...(c.dup ?? {}) };
+    if (n > 1) d[id] = n - 1;
+    else delete d[id];
+    c.dup = d;
+    return;
+  }
+  c.inventory = c.inventory.filter((x) => x !== id);
+  if (c.locked?.includes(id)) c.locked = c.locked.filter((x) => x !== id);
+}
+export const isLocked = (c: Character, id: string) => !!c.locked?.includes(id);
+/** Có chiếc nào đem bán, phân giải, hợp được không (bản trùng luôn được; món gốc thì phải không mặc, không khóa) */
+export const hasFreeCopy = (c: Character, id: string) => c.inventory.includes(id) && (dupOf(c, id) > 0 || (!Object.values(c.equipped).includes(id) && !isLocked(c, id)));
+
 export function giveItem(c: Character, id: string, equip = true) {
   if (!c.inventory.includes(id)) c.inventory.push(id);
   const item = ITEMS.find((i) => i.id === id);

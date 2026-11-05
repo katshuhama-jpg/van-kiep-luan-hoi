@@ -11,6 +11,8 @@ import { MergeScene } from './MarketScenes';
 import type { MergeResult } from '@/lib/game/market';
 import type { Character, Slot } from '@/lib/game/types';
 import { tr } from '@/lib/i18n';
+import { dupOf, isLocked } from '@/lib/game/helpers';
+import { SET_MAX, inSet, saveSet, setOf, toggleLock, wearSet, wornSet } from '@/lib/game/gearSets';
 
 const RARE_SHORT = [tr('Thường', 'Com'), tr('Tốt', 'Fine'), tr('Hiếm', 'Rare'), tr('Cực', 'Supr')];
 const RARE_TXT = [tr('Thường', "Common"), tr('Tốt', "Fine"), tr('Hiếm', "Rare"), tr('Cực phẩm', "Supreme")];
@@ -51,7 +53,7 @@ function writePref(k: string, v: string) {
  * Túi đồ kiểu búp bê: nhân vật ở giữa, ô trang bị quanh người, chỉ số bên cạnh, lưới đồ ở dưới.
  * Chạm một ô để xem chi tiết và thao tác: dùng, bán, phân giải, mở lò rèn.
  */
-export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForge, onBuy, onMerge }: { c: Character; onEquip: (id: string) => void; onUsePill: (id: string) => void; onSmelt?: (id: string) => void; onSell?: (id: string) => void; onForge?: (slot: Slot, opts?: ForgeOpts) => ForgeResult | null; onBuy?: (n: number) => void; onMerge?: (ids: string[]) => MergeResult | null }) {
+export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForge, onBuy, onMerge, onAct }: { c: Character; onAct?: (fn: (c: Character) => string | void) => void; onEquip: (id: string) => void; onUsePill: (id: string) => void; onSmelt?: (id: string) => void; onSell?: (id: string) => void; onForge?: (slot: Slot, opts?: ForgeOpts) => ForgeResult | null; onBuy?: (n: number) => void; onMerge?: (ids: string[]) => MergeResult | null }) {
   const [forging, setForging] = useState<Slot | null>(null);
   const [merging, setMerging] = useState(false);
   const [kind, setKind] = useState<Kind>(() => (readPref('vkl.bagKind') as Kind) || 'all');
@@ -68,23 +70,29 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
   const isOn = (id: string) => Object.values(c.equipped).includes(id);
   // đồ thừa: không mặc, không phải thần binh, phẩm không hơn món đang mặc cùng ô
   // món kém hơn món đang mặc: phẩm thấp hơn, hoặc cùng phẩm mà giá thấp hơn hay bằng
-  const isSpare = (it: Item) => {
+  // món gốc thừa: không mặc, không khóa, chưa rèn, không nằm trong bộ đã lưu, kém hơn món đang mặc
+  const origSpare = (it: Item) => {
     const onId = c.equipped[it.slot];
     const on = onId ? ITEMS.find((i) => i.id === onId) : null;
-    if (!on || !canSmelt(c, it.id) || itemForgeLv(c, it.id) > 0) return false; // đồ đã rèn không tính là thừa
+    if (!on || isOn(it.id) || isLocked(c, it.id) || inSet(c, it.id) || c.legend?.item === it.id || itemForgeLv(c, it.id) > 0 || !canSmelt(c, it.id)) return false;
     const r = it.rare ?? 0;
     const ro = on.rare ?? 0;
     return r < ro || (r === ro && it.price <= on.price);
   };
-  const spares = owned.filter(isSpare);
+  // 5/11: bản trùng cất thêm luôn tính là thừa
+  const spareN = (it: Item) => dupOf(c, it.id) + (origSpare(it) ? 1 : 0);
+  const isSpare = (it: Item) => spareN(it) > 0;
+  const spareUnits = owned.flatMap((it) => Array.from({ length: spareN(it) }, () => it));
   const [sure, setSure] = useState(false);
-  useEffect(() => setSure(false), [spares.length]);
+  useEffect(() => setSure(false), [spareUnits.length]);
   const sellSpares = () => {
     if (!onSell) return;
     if (!sure) return setSure(true);
-    spares.forEach((it) => onSell(it.id));
+    spareUnits.forEach((it) => onSell(it.id));
     setSure(false);
   };
+  const [setMsg, setSetMsg] = useState<string | null>(null);
+  const worn = wornSet(c);
   // sắp xếp: đang mặc trước, rồi phẩm cao trước, đồ thừa xuống cuối
   const order = (a: Item, b: Item) => Number(isOn(b.id)) - Number(isOn(a.id)) || Number(isSpare(a)) - Number(isSpare(b)) || (b.rare ?? 0) - (a.rare ?? 0);
   const selItem = sel && 'item' in sel ? ITEMS.find((i) => i.id === sel.item) : null;
@@ -166,11 +174,41 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
           </button>
         ))}
       </div>
-      {onSell && spares.length > 0 && kind !== 'dan' && (
+      {onAct && (
+        <div className="gear-sets">
+          <span className="gs-label">{tr('Bộ đồ', 'Sets')}</span>
+          {Array.from({ length: SET_MAX }, (_, i) => {
+            const st = setOf(c, i);
+            return (
+              <span key={i} className={`gs-item ${st ? 'saved' : ''} ${worn === i ? 'on' : ''}`}>
+                <button
+                  type="button"
+                  className="gs-wear"
+                  onClick={() => onAct((ch) => { const t = st ? wearSet(ch, i).text : saveSet(ch, i); setSetMsg(t); return t; })}
+                >
+                  {st ? tr(`Bộ ${i + 1}`, `Set ${i + 1}`) : tr(`+ Lưu bộ ${i + 1}`, `+ Save set ${i + 1}`)}
+                </button>
+                {st && (
+                  <button type="button" className="gs-save" aria-label={tr(`Lưu đồ đang mặc vào Bộ ${i + 1}`, `Save current gear to Set ${i + 1}`)} onClick={() => onAct((ch) => { const t = saveSet(ch, i); setSetMsg(t); return t; })}>
+                    {tr('Lưu', 'Save')}
+                  </button>
+                )}
+              </span>
+            );
+          })}
+        </div>
+      )}
+      {setMsg && (
+        <p className="note gs-msg" onClick={() => setSetMsg(null)}>
+          {setMsg}
+        </p>
+      )}
+      {onSell && spareUnits.length > 0 && kind !== 'dan' && (
         <button className={`btn inv-clean ${sure ? 'btn-red' : ''}`} onClick={sellSpares}>
           {sure
-            ? tr(`Chắc chưa? Bấm lần nữa để bán ${spares.length} món`, `Sure? Tap again to sell ${spares.length} items`)
-            : tr(`Bán ${spares.length} món thừa · +${spares.reduce((x, it, k) => x + sellValue(it.id, c, k), 0)} linh thạch`, `Sell ${spares.length} spare items · +${spares.reduce((x, it, k) => x + sellValue(it.id, c, k), 0)} spirit stones`)}
+            ? tr(`Chắc chưa? Bấm lần nữa để bán ${spareUnits.length} món`, `Sure? Tap again to sell ${spareUnits.length} items`)
+            : tr(`Bán ${spareUnits.length} món thừa · +${spareUnits.reduce((x, it, k) => x + sellValue(it.id, c, k), 0)} linh thạch`, `Sell ${spareUnits.length} spare items · +${spareUnits.reduce((x, it, k) => x + sellValue(it.id, c, k), 0)} spirit stones`)}
+          <small className="inv-clean-note">{tr('không bán đồ đã khóa, đã rèn, nằm trong bộ đồ', 'never sells locked, forged or set items')}</small>
         </button>
       )}
       {(kind === 'all' ? GROUPS : [[kind, '']] as [Kind, string][]).map(([g, label]) => {
@@ -189,7 +227,9 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
               {items.map((it) => (
                 <button key={it.id} type="button" className={`inv-cell r${it.rare ?? 0} ${selItem?.id === it.id ? 'sel' : ''} ${isSpare(it) ? 'spare' : ''}`} onClick={() => setSel({ item: it.id })} aria-label={it.name}>
                   <ItemIcon item={it} />
-                  {isOn(it.id) ? <i className="inv-on">{tr('Mặc', 'Wear')}</i> : isSpare(it) ? <i className="inv-spare">{tr('Thừa', 'Spare')}</i> : null}
+                  {isOn(it.id) ? <i className="inv-on">{tr('Mặc', 'Wear')}</i> : isSpare(it) && !dupOf(c, it.id) ? <i className="inv-spare">{tr('Thừa', 'Spare')}</i> : null}
+                  {isLocked(c, it.id) && <i className="inv-lock" aria-label={tr('Đã khóa', 'Locked')}>🔒</i>}
+                  {dupOf(c, it.id) > 0 && <i className="inv-dup">×{dupOf(c, it.id) + 1}</i>}
                   <i className={`inv-rare r${it.rare ?? 0}`}>{RARE_SHORT[it.rare ?? 0]}{itemForgeLv(c, it.id) > 0 ? ` +${itemForgeLv(c, it.id)}` : ''}</i>
                 </button>
               ))}
@@ -218,7 +258,7 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
             </span>
             <span>
               <b>
-                {c.legend?.item === selItem.id ? `★ ${c.legend.name}` : selItem.name}
+                {isLocked(c, selItem.id) ? '🔒 ' : ''}{c.legend?.item === selItem.id ? `★ ${c.legend.name}` : selItem.name}{dupOf(c, selItem.id) > 0 ? ` ×${dupOf(c, selItem.id) + 1}` : ''}
                 {itemForgeLv(c, selItem.id) > 0 ? <em className="forge-lv"> +{itemForgeLv(c, selItem.id)}</em> : null}
               </b>
               <small>
@@ -234,8 +274,12 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
             </button>
             {onSell && canSmelt(c, selItem.id) && (
               <button className="btn" onClick={() => onSell(selItem.id)}>
-                
-                {tr("Bán · +", "Sell · +")}{sellValue(selItem.id, c)}{tr(" linh thạch", " spirit stones")}
+                {dupOf(c, selItem.id) > 0 ? tr('Bán 1 chiếc · +', 'Sell one · +') : tr("Bán · +", "Sell · +")}{sellValue(selItem.id, c)}{tr(" linh thạch", " spirit stones")}
+              </button>
+            )}
+            {onAct && (
+              <button className={`btn ${isLocked(c, selItem.id) ? 'btn-jade' : ''}`} onClick={() => onAct((ch) => void toggleLock(ch, selItem.id))}>
+                {isLocked(c, selItem.id) ? tr('🔒 Đã khóa · mở khóa', '🔒 Locked · unlock') : tr('🔓 Khóa món này', '🔓 Lock this item')}
               </button>
             )}
             {onSmelt && canSmelt(c, selItem.id) && (

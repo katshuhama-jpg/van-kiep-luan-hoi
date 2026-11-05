@@ -1,4 +1,5 @@
 import { ITEMS, PATHS, REALMS, realmName } from './data';
+import { LEGEND_PETS } from './petLegend';
 import { PETS } from './pets';
 import { ELEMENTS } from './nguhanh';
 import type { Character, Mile, MileKind } from './types';
@@ -33,7 +34,7 @@ export function trackMiles(c: Character | null) {
   if (c.sect && c.sect !== s.sect && s.sect !== undefined) addMile(c, 'sect', tr(`Bái nhập ${c.sect}`, `Joined ${nameOf(c.sect)}`));
   if (c.partner && c.partner !== s.partner) addMile(c, 'love', tr(`Kết thành đạo lữ với ${c.partner}`, `Became Dao companions with ${c.partner}`));
   const pet = c.pet ? (c.petKind ?? null) : null;
-  if (pet && pet !== s.pet) addMile(c, 'pet', tr(`Thu nhận ${PETS[pet]?.name ?? tr('một linh thú', "a spirit beast")}`, `Took in ${PETS[pet]?.name ?? tr('một linh thú', "a spirit beast")}`));
+  if (pet && pet !== s.pet) addMile(c, 'pet', tr(`Thu nhận ${(PETS[pet] ?? LEGEND_PETS[pet])?.name ?? tr('một linh thú', "a spirit beast")}`, `Took in ${(PETS[pet] ?? LEGEND_PETS[pet])?.name ?? tr('một linh thú', "a spirit beast")}`));
   if (c.mount && c.mount !== s.mount) addMile(c, 'mount', tr('Thuần phục được rồng, thành Long Kỵ Sĩ', "Tamed a dragon and became a Dragon Rider"));
   // phát tài: lần đầu lên Phú hộ, Đại phú hào
   const w = wealthId(c);
@@ -90,7 +91,7 @@ export function pickStory(miles: Mile[] | undefined, fb: StoryFallback, max = 8)
   if (fb.path && !has('path') && PATHS[fb.path as keyof typeof PATHS])
     extra.push({ age: ageAt(Math.min(2, fb.realm)), kind: 'path', text: tr(`Chọn con đường ${PATHS[fb.path as keyof typeof PATHS].name}`, `Chose the path of ${PATHS[fb.path as keyof typeof PATHS].name}`), realm: Math.min(2, fb.realm) });
   if (fb.sect && !has('sect')) extra.push({ age: Math.min(end, 12), kind: 'sect', text: tr(`Bái nhập ${fb.sect}`, `Joined ${nameOf(fb.sect)}`), realm: 0 });
-  if (fb.pet && !has('pet')) extra.push({ age: Math.min(end, 10), kind: 'pet', text: tr(`Thu nhận ${PETS[fb.petKind ?? '']?.name ?? tr('một linh thú', "a spirit beast")}`, `Took in ${PETS[fb.petKind ?? '']?.name ?? tr('một linh thú', "a spirit beast")}`), realm: 0 });
+  if (fb.pet && !has('pet')) extra.push({ age: Math.min(end, 10), kind: 'pet', text: tr(`Thu nhận ${(PETS[fb.petKind ?? ''] ?? LEGEND_PETS[fb.petKind ?? ''])?.name ?? tr('một linh thú', "a spirit beast")}`, `Took in ${(PETS[fb.petKind ?? ''] ?? LEGEND_PETS[fb.petKind ?? ''])?.name ?? tr('một linh thú', "a spirit beast")}`), realm: 0 });
   if (fb.mount && !has('mount')) extra.push({ age: Math.max(1, Math.round(fb.age * 0.85)), kind: 'mount', text: tr('Thuần phục được rồng, thành Long Kỵ Sĩ', "Tamed a dragon and became a Dragon Rider"), realm: fb.realm });
 
   // đời ít biến cố: kể thêm vài chuyện đời thường từ những gì đã biết

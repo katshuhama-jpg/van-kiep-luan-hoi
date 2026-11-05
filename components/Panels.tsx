@@ -12,6 +12,9 @@ import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 
 import { ENDINGS, RARE_COLOR, endingOf } from '@/lib/game/endings';
 import { GachaPanel, ShareCard } from './Extras';
 import ItemIconImg from './ItemIcon';
+import { PetPic, RankBadge } from './LinhThu';
+import { FAMILY_NAME, baseName, baseRank, familyOf, petLv, petTitle, rankNow } from '@/lib/game/linhThu';
+import { petOf } from '@/lib/game/pets';
 import { FOCUS, ITEMS, PATHS, PILLS, REALMS, SEASONS, TALENTS, fxParts, fxText, gearFx, itemPrice, overworkFree, pillPrice, safeYears, RARE_STOCK_REALM, realmLabel, soldOut, type Item } from '@/lib/game/data';
 import { describeLean } from '@/lib/game/engine';
 import { DANGER_TEXT, MONSTERS, combatLevel, dangerOf, dropFactor, monstersFor, haPhamMonsters, effLv, killExp, monsterName, playerStats, tierOf } from '@/lib/game/combat';
@@ -27,6 +30,7 @@ import { BIG_TALENTS, honActive, ksBase, ksOf, ksOneBig } from '@/lib/game/luanH
 import { LORE, LORE2_TOTAL, LORE_TOTAL, lore1Count, lore2Count, quyNhatDone } from '@/lib/game/lore';
 import { ELEMENTS } from '@/lib/game/nguhanh';
 import { CheckinRow, RumorLine, TodayScroll } from './Hook';
+import { TQ_SHOP_YEAR, tqShopLeft, tqShopList, tqShopPrice } from '@/lib/game/congPhap';
 import BagDoll from './BagDoll';
 import { HanhTrang } from './HanhTrang';
 import { buryPlan } from '@/lib/game/ruong';
@@ -151,6 +155,33 @@ function EventItem({ id, c }: { id: string; c?: Character }) {
   );
 }
 
+/** 4.2.0: thẻ linh thú trong sự kiện gặp thú, thu phục: hình, rank, cấp, họ, so với thú đang nuôi */
+function EventPet({ id, lv, c }: { id: string; lv?: number; c?: Character }) {
+  const r = baseRank(id);
+  return (
+    <div className={`ev-item ev-pet rk-${r}`}>
+      <span className="ev-item-pic">
+        <PetPic id={id} box={56} dir={0} />
+      </span>
+      <div className="ev-item-body">
+        <b>
+          <RankBadge r={r} /> {baseName(id)}
+        </b>
+        <span className="ev-item-tags">
+          {lv ? <i>Lv {lv}</i> : null}
+          <i>{FAMILY_NAME[familyOf(id)]}</i>
+          {c ? <i>{tr(`Bạn Lv ${combatLevel(c)}`, `You Lv ${combatLevel(c)}`)}</i> : null}
+        </span>
+        {c?.pet && !c.dead && (
+          <small className="ev-item-cur">
+            {tr('Đang nuôi', 'Current')}: {petTitle(c)} ({rankNow(petOf(c), c.petEvo ?? 0)}, {tr('thân thiết', 'bond')} {petLv(c)})
+          </small>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function EventCard(props: { p: PendingEvent; c?: Character; onChoose: (i: number) => void }) {
   // khóa theo sự kiện: sự kiện mới luôn mở ra đầy đủ
   return <EventCardIn key={props.p.id + props.p.text} {...props} />;
@@ -184,6 +215,7 @@ function EventCardIn({ p, c, onChoose }: { p: PendingEvent; c?: Character; onCho
       </div>
       <p>{p.text}</p>
       {p.item && <EventItem id={p.item} c={c} />}
+      {p.pet && <EventPet id={p.pet} lv={p.petLv} c={c} />}
       <div className="choices">
         {p.choices.map((ch, i) => (
           <button key={i} className={`choice ${ch.lean} ${ch.off ? 'off' : ''} ${armed ? '' : 'arming'}`} disabled={ch.off} aria-disabled={!armed} onClick={() => armed && !ch.off && onChoose(i)}>
@@ -445,8 +477,8 @@ function lockReason(c: Character, it: Item): string | null {
   return null;
 }
 
-export function ShopSheet({ c, onBuyItem, onBuyPill, onBuyShelf, onBuyCharm, onClose }: { c: Character; onBuyItem: (id: string) => void; onBuyPill: (id: string) => void; onBuyShelf?: (id: string) => void; onBuyCharm?: (id: 'ho_khi' | 'linh_hoa') => void; onClose: () => void }) {
-  const [tab, setTab] = useState<'do' | 'dan' | 'ke' | 'kho'>(c.cosmos ? 'ke' : 'do');
+export function ShopSheet({ c, onBuyItem, onBuyPill, onBuyShelf, onBuyCharm, onBuyTq, onClose }: { c: Character; onBuyItem: (id: string) => void; onBuyPill: (id: string) => void; onBuyShelf?: (id: string) => void; onBuyCharm?: (id: 'ho_khi' | 'linh_hoa') => void; onBuyTq?: (id: string) => void; onClose: () => void }) {
+  const [tab, setTab] = useState<'do' | 'dan' | 'ke' | 'kho' | 'tq'>(c.cosmos ? 'ke' : 'do');
   const [slot, setSlot] = useState<'all' | Slot>('all');
   const [fit, setFit] = useState(true);
   // lọc theo loại đồ và "hợp với mình": đúng phái (hoặc đồ chung), cảnh giới hiện tại hoặc cao hơn một bậc
@@ -491,13 +523,44 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onBuyShelf, onBuyCharm, onC
         <button className={tab === 'ke' ? 'on' : ''} onClick={() => setTab('ke')}>
           {shelfName(c)}
         </button>
+        {onBuyTq && (
+          <button className={tab === 'tq' ? 'on' : ''} onClick={() => setTab('tq')}>
+            {tr('Tàn quyển', 'Fragments')}
+          </button>
+        )}
         <button className={tab === 'kho' ? 'on' : ''} onClick={() => setTab('kho')}>
           
           {tr("Sổ đồ rơi", "Drop log")}
         </button>
       </div>
       <div className="items">
-        {tab !== 'dan' && tab !== 'ke' && filters}
+        {tab !== 'dan' && tab !== 'ke' && tab !== 'tq' && filters}
+        {tab === 'tq' && onBuyTq && (
+          <>
+            <p className="note" style={{ margin: 0 }}>
+              {tr(`Tàn quyển các bộ đang mang, từ tầng 3 trở lên. Hàng hiếm, mỗi năm chỉ mua được ${TQ_SHOP_YEAR} quyển (năm nay còn ${Math.max(0, tqShopLeft(c))}).`, `Fragments for the techniques you have equipped, stage 3 and up. Scarce: only ${TQ_SHOP_YEAR} per year (${Math.max(0, tqShopLeft(c))} left this year).`)}
+            </p>
+            {tqShopList(c).length === 0 && <p className="note">{tr('Chưa có bộ nào đang mang cần tàn quyển (bộ phải từ tầng 3 trở lên). Mở Công pháp để mang chiêu.', 'No equipped technique needs fragments yet (stage 3 and up). Open Techniques to equip one.')}</p>}
+            {tqShopList(c).map((d) => {
+              const price = tqShopPrice(c, d.id);
+              const o = c.cp?.own.find((x) => x.id === d.id);
+              return (
+                <div key={d.id} className="item">
+                  <div className="item-icon tq-icon">
+                    <img src="/icons/g_kinh_thu_tan_quyen.png" width={32} height={32} alt="" className="px-icon" />
+                  </div>
+                  <div className="item-body">
+                    <span>{tr(`Tàn quyển ${d.name}`, `${d.name} fragment`)}</span>
+                    <small>{tr(`Đang tầng ${o?.tang ?? 0} · đang có ${c.tq?.[d.id] ?? 0} quyển`, `Stage ${o?.tang ?? 0} · you have ${c.tq?.[d.id] ?? 0}`)}</small>
+                  </div>
+                  <button className="btn btn-red" disabled={tqShopLeft(c) <= 0 || c.linhThach < price} onClick={() => onBuyTq(d.id)}>
+                    {fmt(price)}
+                  </button>
+                </div>
+              );
+            })}
+          </>
+        )}
         {tab === 'ke' && (
           <>
             <p className="note" style={{ margin: 0 }}>
@@ -660,8 +723,10 @@ export function BagSheet({
   onBuy,
   onForge,
   onMerge,
+  onAct,
 }: {
   c: Character;
+  onAct?: (fn: (c: Character) => string | void) => void;
   onMerge?: (ids: string[]) => import('@/lib/game/market').MergeResult | null;
   onEquip: (id: string) => void;
   onUsePill: (id: string) => void;
@@ -709,7 +774,7 @@ export function BagSheet({
           {tr("Bảo khố ", "Treasury ")}{got}/{HIDDEN_ITEMS.length}
         </button>
       </div>
-      {tab === 'kho' ? <BaoKho book={book} /> : <BagDoll c={c} onEquip={onEquip} onUsePill={onUsePill} onSmelt={onSmelt} onSell={onSell} onBuy={onBuy} onForge={onForge} onMerge={onMerge} />}
+      {tab === 'kho' ? <BaoKho book={book} /> : <BagDoll c={c} onEquip={onEquip} onUsePill={onUsePill} onSmelt={onSmelt} onSell={onSell} onBuy={onBuy} onForge={onForge} onMerge={onMerge} onAct={onAct} />}
     </Sheet>
   );
 }

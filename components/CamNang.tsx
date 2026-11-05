@@ -123,7 +123,7 @@ function chapters(): Record<CnChapter, { title: string; sub: string; panels: Pan
       sub: T('Kiếp sau mang theo gì', 'What carries over'),
       panels: [
         { bg: 'dia-phu', cap: T('Chết chưa phải hết. Sống tốt thì được phúc duyên, sống ác thì mang nghiệp lực. Cả hai đều mua được thiên phú lúc đầu thai.', 'Death is not the end. Good deeds earn Fortune, cruel ones Karma. Both buy talents at rebirth.'), actors: [{ who: 'me', x: 50 }], extra: 'carry' },
-        { bg: 'dia-phu', cap: T('Chiêu luyện tới tầng 9 truyền được cho kiếp sau. Vũ khí thành thần binh, rương chôn chờ bạn đào lên.', 'A move raised to stage 9 can be inherited. Your weapon can become a divine weapon, and a buried chest waits for you.'), actors: [{ who: 'kiem', x: 50 }] },
+        { bg: 'dia-phu', cap: T('Chiêu luyện tới tầng 9 truyền được cho kiếp sau. Vũ khí thành thần binh, linh thú bậc 3 để lại huyết mạch, rương chôn chờ bạn đào lên.', 'A move raised to stage 9 can be inherited. Your weapon can become a divine weapon, a stage-3 pet leaves a bloodline, and a buried chest waits for you.'), actors: [{ who: 'kiem', x: 50 }] },
         { bg: 'tu_luyen-0', cap: T('Kết cục và đồ hiếm gom vào Sổ Sinh Tử, Bảo khố, giữ qua mọi kiếp. Mỗi kiếp đi một đường để mở hết.', 'Endings and rare items go into the Book of Life and Death and the Treasury, kept forever. Walk a new road each life to unlock them all.'), actors: [{ who: 'me', x: 36, dir: 3 }, { who: 'thay', x: 66, dir: 1 }], say: { i: 1, text: T('Đi đi. Lần này đi đường khác xem.', 'Go. Try another road this time.') } },
       ],
     },
@@ -319,6 +319,7 @@ function Extra({ k, cast }: { k: NonNullable<Panel['extra']>; cast: Record<Who, 
           ['tien_tich_ngoc_phu', T('Phúc duyên', 'Fortune')],
           ['huyet_sat', T('Nghiệp lực', 'Karma')],
           ['g_kinh_thu_tan_quyen', T('Truyền thừa', 'Inheritance')],
+          ['g_huyet_anh_dao', T('Huyết mạch', 'Bloodline')],
           ['van_co_bao', T('Rương chôn', 'Chest')],
         ].map(([ic, n]) => (
           <span key={ic}>

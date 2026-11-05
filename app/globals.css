@@ -4738,6 +4738,85 @@ button.shadow-card { cursor: pointer; }
 .ev-item-fx i b { color: #ffe27a; }
 .ev-item-fx i.bad { background: #8f2f20; }
 .ev-item-cur { font-size: 11px; color: #6a5a44; line-height: 1.2; }
+/* 4.2.0: linh thú truyền thuyết đi theo chủ, quay mặt theo hướng chạy */
+.pet-roam.legend .pet-legend { display: block; animation: petFlip 11s steps(1) infinite; }
+@keyframes petFlip { 0%, 49.9% { scale: -1 1; } 50%, 100% { scale: 1 1; } }
+.battle .pet-claw { position: absolute; right: 10%; bottom: 40px; z-index: 3; pointer-events: none; animation: petClaw 0.5s steps(1) forwards; }
+.battle .pet-claw .pfx { animation-iteration-count: 1 !important; animation-fill-mode: forwards; }
+@keyframes petClaw { 0%, 99% { opacity: 1; } 100% { opacity: 0; } }
+
+/* ---------- 4.2.0 Linh thú ---------- */
+.lt-pet { display: block; background-repeat: no-repeat; image-rendering: pixelated; }
+.lt-pic { display: grid; place-items: end center; }
+.lt-dark { filter: brightness(0) opacity(0.35); }
+.lt-h { display: block; font-size: 16px; }
+.lt-rank { display: inline-grid; place-items: center; min-width: 26px; height: 18px; padding: 0 4px; font-size: 12px; font-weight: 800; line-height: 1; color: #fff; border: 2px solid #1f160d; text-shadow: 1px 1px 0 #1f160d; vertical-align: 2px; }
+.lt-rank.big { min-width: 48px; height: 34px; font-size: 20px; border-width: 3px; box-shadow: 3px 3px 0 #1f160d; }
+.lt-rank.rk-N { background: #8a8478; } .lt-rank.rk-R { background: #3a8a4a; } .lt-rank.rk-SR { background: #3d6fb0; }
+.lt-rank.rk-SSR { background: #8a3ad0; } .lt-rank.rk-SSS { background: #1f160d; color: #ffd36b; border-color: #ffd36b; animation: ltSSS 1.2s steps(4) infinite; }
+@keyframes ltSSS { 0% { color: #ffd36b; } 25% { color: #ff6a5a; } 50% { color: #9ff0c8; } 75% { color: #b8a0ff; } }
+.lt-badge { position: absolute; top: 8px; right: 8px; z-index: 6; display: flex; align-items: center; gap: 4px; padding: 2px 6px 2px 2px; font: inherit; color: #fff3dc; text-align: left; cursor: pointer; background: rgba(26, 18, 12, 0.75); border: 2px solid #c9962e; box-shadow: 0 2px 0 rgba(0, 0, 0, 0.4); }
+.lt-badge.ready { border-color: #9ff0c8; animation: ltReady 1s steps(2) infinite; }
+@keyframes ltReady { 50% { border-color: #ffd36b; } }
+.lt-badge b { display: block; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; line-height: 1.1; }
+.lt-badge small { display: block; font-size: 11px; color: #ffd36b; line-height: 1.1; }
+.lt-badge-pic { width: 40px; height: 24px; display: grid; place-items: end center; overflow: hidden; }
+.lt-stage { position: relative; height: 210px; flex: none; overflow: hidden; background-size: cover; background-position: center bottom; image-rendering: pixelated; border-bottom: 3px solid #1f160d; }
+.lt-name { position: absolute; top: 8px; left: 8px; z-index: 2; display: flex; flex-direction: column; padding: 3px 8px; background: #f3e6c4; border: 3px solid #1f160d; box-shadow: 3px 3px 0 #1f160d; }
+.lt-name b { font-size: 17px; line-height: 1.15; }
+.lt-name small { font-size: 12px; color: #6a5a44; }
+.lt-big { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); animation: ltPop 0.4s steps(4) both; }
+.lt-big.b2 { filter: drop-shadow(0 0 6px #ffd36b); }
+@keyframes ltPop { from { transform: translateX(-50%) scale(0.6); } to { transform: translateX(-50%) scale(1); } }
+.lt-back { position: absolute; right: 8px; top: 8px; z-index: 3; padding: 2px 8px; font: inherit; font-size: 13px; background: #f3e6c4; border: 3px solid #1f160d; box-shadow: 2px 2px 0 #1f160d; cursor: pointer; }
+.lt-empty { position: absolute; left: 12px; right: 12px; top: 40%; margin: 0; padding: 6px 8px; text-align: center; font-size: 15px; background: rgba(243, 230, 196, 0.92); border: 3px solid #1f160d; }
+.lt-evo { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.lt-evo-n { position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px; background: #fffaf0; border: 2px solid #1f160d; }
+.lt-evo-n:not(:last-child)::after { content: '▶'; position: absolute; right: -10px; top: 40%; z-index: 1; font-size: 12px; color: #6a5a44; }
+.lt-evo-n.on { background: #ffe9a8; box-shadow: inset 0 0 0 2px #b0201a; }
+.lt-evo-n small { font-size: 13px; font-weight: 700; }
+.lt-evo-n .lt-rank { position: absolute; top: 2px; right: 2px; min-width: 22px; height: 16px; font-size: 11px; }
+.lt-evo-pic { width: 64px; height: 34px; display: grid; place-items: end center; overflow: hidden; }
+.lt-box { display: flex; flex-direction: column; gap: 3px; padding: 6px 8px; background: #fffaf0; border: 2px solid #1f160d; }
+.lt-box > small { font-size: 12px; color: #6a5a44; }
+.lt-row { display: flex; justify-content: space-between; font-size: 15px; }
+.lt-prog { display: block; height: 12px; background: #e8d7ad; border: 2px solid #1f160d; }
+.lt-prog span { display: block; height: 100%; background: #c9962e; }
+.lt-eff { font-size: 14px; }
+.lt-eff i { font-style: normal; font-size: 12px; padding: 0 4px; margin-right: 4px; color: #fff; background: #2f6b5a; }
+.lt-eff i.blood { background: #8f2f20; }
+.lt-eff.lock { color: #a88a5a; }
+.lt-eff.lock i { background: #a88a5a; }
+.lt-need { font-size: 14px; color: #b0201a; }
+.lt-need.ok { color: #2f6b5a; }
+.lt-blood { display: flex; align-items: center; gap: 6px; padding: 3px 6px; background: #f6e3e0; border: 2px solid #8f2f20; }
+.lt-blood b { display: block; font-size: 14px; }
+.lt-blood small { display: block; font-size: 12px; color: #6a5a44; }
+.lt-rk { display: flex; flex-direction: column; gap: 4px; padding: 6px 8px; background: #fffaf0; border: 2px solid #1f160d; border-left: 8px solid #8a8478; }
+.lt-rk.rk-R { border-left-color: #3a8a4a; } .lt-rk.rk-SR { border-left-color: #3d6fb0; } .lt-rk.rk-SSR { border-left-color: #8a3ad0; }
+.lt-rk.rk-SSS { border-left-color: #ffd36b; background: #2a1f18; color: #fff3dc; }
+.lt-rk-head { display: flex; align-items: center; gap: 8px; }
+.lt-rk-head b { display: block; font-size: 16px; }
+.lt-rk-head small { display: block; font-size: 12px; color: #6a5a44; }
+.lt-rk.rk-SSS .lt-rk-head small { color: #e8d7ad; }
+.lt-book { display: flex; flex-wrap: wrap; gap: 4px; }
+.lt-book-i { flex: 0 0 calc((100% - 20px) / 6); height: 44px; display: grid; place-items: center; overflow: hidden; padding: 0; font: inherit; background: #fffaf0; border: 2px solid #1f160d; cursor: pointer; }
+.lt-book-i.big { flex: 0 0 calc((100% - 8px) / 3); height: 88px; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 2px; padding-bottom: 3px; }
+.lt-book-i.big small { position: relative; z-index: 1; padding: 0 3px; font-size: 11px; font-weight: 700; line-height: 1.1; background: rgba(255, 250, 240, 0.85); }
+.lt-book-i.on { box-shadow: inset 0 0 0 2px #b0201a; background: #ffe9a8; }
+.lt-rk.rk-SSS .lt-book-i { background: #3b2a1a; border-color: #ffd36b; }
+.lt-rk.rk-SSS .lt-book-i small { color: #ffd36b; background: rgba(31, 22, 13, 0.85); }
+/* 4.2.0: thẻ linh thú trong sự kiện, trận thu phục */
+.ev-pet.rk-R { border-color: #3a8a4a; } .ev-pet.rk-SR { border-color: #3d6fb0; } .ev-pet.rk-SSR { border-color: #8a3ad0; }
+.ev-pet.rk-SSS { border-color: #ffd36b; box-shadow: 0 0 0 2px #ffd36b, 3px 3px 0 2px #1f160d; }
+.ev-pet .ev-item-pic { background: #3a4a2a; overflow: hidden; }
+.ev-pet .ev-item-pic .lt-pet, .ev-pet .ev-item-pic .lt-pic { width: auto; }
+.beast-foe { display: grid; place-items: end center; filter: drop-shadow(0 3px 0 rgba(0, 0, 0, 0.35)); }
+.beast-foe.dead { opacity: 0.5; transform: rotate(80deg) translateY(20%); }
+.lt-odds { width: 100%; border-collapse: collapse; font-size: 13px; }
+.lt-odds th, .lt-odds td { padding: 2px 3px; text-align: center; border-bottom: 1px dashed #c8b48a; }
+.lt-odds td:first-child { text-align: left; font-size: 12px; }
+.lt-odds tr.on td { background: #ffe9a8; font-weight: 700; }
 
 /* 4.2.0 công pháp: hiệu ứng chiêu pixel, thanh khí của đạo, trạng thái, cắt cảnh tuyệt kỹ */
 .cpf { position: absolute; inset: 0; pointer-events: none; z-index: 2; --a: 27%; --t: calc(94% - 62px); }
@@ -5090,4 +5169,20 @@ button.shadow-card { cursor: pointer; }
 .game > .stage { flex-shrink: 1; }
 .game > .game-scroll { flex-shrink: 1; }
 .choice.arming { opacity: 0.6; cursor: wait; }
+
+/* ===== 5/11: đồ trùng cộng dồn, khóa đồ, bộ trang bị ===== */
+.inv-dup { position: absolute; right: 1px; top: 1px; padding: 0 3px; font-style: normal; font-size: 11px; font-weight: 700; color: #fff3dc; background: #1f160d; border: 2px solid #c9962e; }
+.inv-lock { position: absolute; left: 1px; bottom: 1px; font-style: normal; font-size: 12px; line-height: 1; }
+.inv-clean { display: flex; flex-direction: column; align-items: center; }
+.inv-clean-note { font-size: 12px; opacity: 0.8; }
+.gear-sets { display: flex; align-items: center; gap: 6px; margin: 6px 0 2px; }
+.gs-label { flex: none; font-size: 14px; font-weight: 700; color: var(--ink); }
+.gs-item { flex: 1; min-width: 0; display: flex; border: 2px solid var(--ink); background: var(--paper-3); box-shadow: 2px 2px 0 var(--ink-dark); }
+.gs-item.saved { background: #fff3dc; }
+.gs-item.on { background: var(--jade); }
+.gs-item.on .gs-wear, .gs-item.on .gs-save { color: #fff3dc; }
+.gs-wear { flex: 1; min-width: 0; padding: 5px 4px; font: inherit; font-size: 14px; font-weight: 700; color: var(--ink); background: none; border: 0; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gs-item:not(.saved) .gs-wear { font-weight: 500; font-size: 13px; color: var(--muted); }
+.gs-save { flex: none; padding: 0 6px; font: inherit; font-size: 12px; color: var(--ink); background: none; border: 0; border-left: 2px solid var(--ink); cursor: pointer; }
+.gs-msg { margin: 2px 0; font-size: 14px; }
 .ldm-wait { position: fixed; left: 50%; top: 45%; z-index: 120; transform: translateX(-50%); padding: 8px 14px; font-size: 16px; font-weight: 700; color: #fff3dc; background: rgba(31, 22, 13, 0.92); border: 3px solid #c9962e; }

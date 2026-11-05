@@ -1,5 +1,6 @@
 import { htBreak, htCultMul, htYear } from './heThong';
 import { AUCTION_EVENT_ID, MERCHANT_EVENT_ID, auctionDue, auctionEvent, merchantDue, merchantEvent, pickAuctionLot, marketSpan, GIANG_TRAN_ID, giangTranDue, giangTranEvent } from './market';
+import { CATCH_EVENT_ID, beastLv, catchEvent, petCultMul, petYear } from './linhThu';
 import { applyHeir, cpCultMul, cpYear } from './congPhap';
 import { sealLv } from './forge';
 import { applyProphecy, checkNewbieGoal, newbieGoal, omenIs } from './hook';
@@ -193,6 +194,7 @@ export function rollBase(): Character {
 export function newCharacter(meta: Meta, gifts: string[] = [], base?: Character): Character {
   const c: Character = base ? structuredClone(base) : rollBase();
   c.lifeNo = meta.lives + 1;
+  c.huyetMach = meta.huyetMach ?? [];
   // 4.2.0: chiêu truyền thừa từ kiếp trước
   applyHeir(c, meta.cpHeir, meta.cpBook);
   c.enemy = meta.enemy;
@@ -276,7 +278,8 @@ export function newCharacter(meta: Meta, gifts: string[] = [], base?: Character)
     c.log.push({ age: 0, tone: 'ta', text: tr('Ma tôn chuyển thế: ngày bạn ra đời, trời đỏ như máu, chó trong làng tru suốt đêm.', "A Demon Sovereign reincarnated: the day you are born, the sky turns blood red and the village dogs howl all night.") });
   }
   if (t.includes('linh_thu')) {
-    const rare = ['tuyet_ho', 'bach_xa', 'hoa_ho', 'bang_phong', 'kim_thu', 'mai_loc', 'linh_loc', 'thu_vuong'];
+    // 4.2.0: thiên phú lúc sinh chỉ cho R hoặc SR
+    const rare = ['ong_vang', 'mai_loc', 'tam_linh', 'ran_con', 'tuyet_ho', 'bach_xa', 'hoa_ho', 'bang_phong', 'kim_thu', 'linh_loc'];
     c.pet = true;
     c.petKind = rare[Math.floor(rnd() * rare.length)];
     c.log.push({ age: 0, tone: 'good', text: tr('Ngày bạn chào đời, một linh thú lạ nằm canh bên nôi, từ đó không rời.', "The day you are born, a strange spirit beast lies guarding your cradle, and never leaves your side.") });
@@ -402,6 +405,7 @@ export function yearlyGain(c: Character) {
     gearMul(c) *
     (c.stats.tamMa > 70 ? 0.8 : 1) *
     (hasGift(c, 'g_doan_menh') ? 1.3 : 1) *
+    petCultMul(c) *
     cpCultMul(c) *
     htCultMul(c) *
     lean
@@ -639,7 +643,15 @@ function buildPending(c: Character, e: GameEvent): PendingEvent {
     text: e.text(c),
     choices: e.choices(c, seed).map((ch) => ({ label: ch.label, hint: ch.hint, lean: ch.lean, ...(ch.off ? { off: true } : {}) })),
     item: e.item?.(c),
+    pet: e.pet?.(c),
+    petLv: c.catchTarget?.lv ?? (e.pet ? beastLv(e.pet(c) ?? '', c) : undefined),
   };
+}
+
+/** 4.2.0: mở thẻ sự kiện đặc biệt theo id (thẻ thu phục linh thú sau trận) */
+export function pendingOf(c: Character, id: string): PendingEvent | null {
+  const e = findEvent(c, id);
+  return e ? buildPending(c, e) : null;
 }
 
 function pickEvent(c: Character): GameEvent | null {
@@ -679,6 +691,8 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
   // ấn Mộc trên vũ khí: mỗi năm hồi thêm sức khỏe
   const moc = sealLv(c, 'moc');
   if (moc) stat(c, 'sucKhoe', moc);
+  // 4.2.0: linh thú - thân thiết, tác dụng theo họ
+  petYear(c, ctx, rnd);
   // 4.2.0: công pháp - sư môn truyền, thục luyện theo năm
   if (age >= 6) cpYear(c, ctx);
 
@@ -1315,6 +1329,7 @@ function findEvent(c: Character, id: string): GameEvent | null {
   if (id === PATH_EVENT_ID) return pathEvent(c);
   if (id === BREAK_EVENT_ID) return breakEvent(c);
   if (id === AUCTION_EVENT_ID) return auctionEvent(c);
+  if (id === CATCH_EVENT_ID) return catchEvent(c);
   if (id === MERCHANT_EVENT_ID) return merchantEvent(c);
   if (id === GIANG_TRAN_ID) return giangTranEvent(c);
   return EVENTS.find((e) => e.id === id) ?? null;

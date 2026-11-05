@@ -1,6 +1,6 @@
 import { ITEMS, REALMS, fxText, realmName, type Item } from './data';
 import { eventDuel } from './duel';
-import { addCult, fatal, giveItem, money, reward, stat } from './helpers';
+import { addCult, addDup, dupOf, fatal, giveItem, hasFreeCopy, money, reward, stat, takeOne } from './helpers';
 import type { Character, EffectCtx, GameEvent } from './types';
 import { tr } from '../i18n';
 import { HO_KHI_MAX, charmItem, charmOf, giveCharm } from './forge';
@@ -106,7 +106,7 @@ export interface MergeResult {
 }
 /** Món đem hợp được: không đang mặc, không phải thần binh truyền đời, không phải đồ sự kiện, chưa phải Cực phẩm */
 export const canMerge = (c: Character, it: Item) =>
-  c.inventory.includes(it.id) && !Object.values(c.equipped).includes(it.id) && c.legend?.item !== it.id && it.src !== 'event' && (it.rare ?? 0) < 3;
+  hasFreeCopy(c, it.id) && (dupOf(c, it.id) > 0 || c.legend?.item !== it.id) && it.src !== 'event' && (it.rare ?? 0) < 3;
 /** Hợp 3 món cùng phẩm thành 1 món phẩm cao hơn (có xác suất). Hỏng thì còn lại 1 món cùng phẩm. */
 export function mergeItems(c: Character, ids: string[], ctx: EffectCtx): MergeResult | null {
   const its = ids.map((id) => ITEMS.find((i) => i.id === id)).filter((x): x is Item => !!x);
@@ -128,8 +128,9 @@ export function mergeItems(c: Character, ids: string[], ctx: EffectCtx): MergeRe
   // hỏng mà vẫn không tìm được món nào thì trả lại một trong ba món đã bỏ vào, không bao giờ mất trắng
   const item = pool.length ? pool[Math.floor(ctx.rnd() * pool.length)] : its[Math.floor(ctx.rnd() * its.length)];
   c.tinhHoa = (c.tinhHoa ?? 0) - cost;
-  c.inventory = c.inventory.filter((x) => !ids.includes(x));
-  giveItem(c, item.id, false);
+  ids.forEach((id) => takeOne(c, id)); // 5/11: có bản trùng thì dùng bản trùng trước
+  if (c.inventory.includes(item.id)) addDup(c, item.id);
+  else giveItem(c, item.id, false);
   ctx.fx(ok ? 'layer' : 'buy', item.name);
   const text = ok
     ? tr(`Lò hợp bảo rực sáng, ba món tan vào nhau thành ${item.name}! (${fxText(item.fx)})`, `The treasure cauldron blazes and the three items fuse into ${item.name}! (${fxText(item.fx)})`)

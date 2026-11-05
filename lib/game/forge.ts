@@ -1,6 +1,7 @@
 import { ITEMS, type Item } from './data';
 import { marketOf, sellNow, sellPrice } from './marketDay';
 import type { Character, EffectCtx, Element, Slot } from './types';
+import { dupOf, hasFreeCopy, takeOne } from './helpers';
 import { tr } from '../i18n';
 
 /**
@@ -45,7 +46,7 @@ export const tinhPrice = (c: Character) => Math.round(40 * (1 + 0.4 * Math.min(c
 export function sell(c: Character, id: string, ctx: EffectCtx): string | null {
   if (!canSmelt(c, id)) return null;
   const v = sellNow(c, item(id)!);
-  c.inventory = c.inventory.filter((x) => x !== id);
+  takeOne(c, id);
   c.linhThach += v;
   ctx.fx('buy', tr(`+${v} linh thạch`, `+${v} spirit stones`));
   return tr(`Bán ${item(id)?.name} được ${v} linh thạch.`, `Sold ${item(id)?.name} for ${v} spirit stones.`);
@@ -61,12 +62,13 @@ export function buyTinh(c: Character, n: number, ctx: EffectCtx): string | null 
 }
 
 /** Món này có bán hay phân giải được không: không đang mặc, không phải thần binh truyền đời */
-export const canSmelt = (c: Character, id: string) => c.inventory.includes(id) && !Object.values(c.equipped).includes(id) && c.legend?.item !== id && smeltValue(id) > 0;
+// 5/11: món trùng luôn bán/phân giải được; món gốc thì phải không mặc, không khóa
+export const canSmelt = (c: Character, id: string) => hasFreeCopy(c, id) && (dupOf(c, id) > 0 || c.legend?.item !== id) && smeltValue(id) > 0;
 
 export function smelt(c: Character, id: string, ctx: EffectCtx): string | null {
   if (!canSmelt(c, id)) return null;
   const v = smeltValue(id);
-  c.inventory = c.inventory.filter((x) => x !== id);
+  takeOne(c, id);
   c.tinhHoa = (c.tinhHoa ?? 0) + v;
   ctx.fx('buy', tr(`+${v} tinh thiết`, `+${v} refined iron`));
   return tr(`Phân giải ${item(id)?.name}, thu ${v} tinh thiết (đang có ${c.tinhHoa}).`, `Dismantled ${item(id)?.name}, got ${v} refined iron (now ${c.tinhHoa}).`);
@@ -214,7 +216,7 @@ export function forge(c: Character, ctx: EffectCtx, slot: Slot = 'vu_khi', opts:
       return { kind: 'fail', lv, text: tr(`Thân ${name} nứt toác, Hộ Khí Phù bùng cháy thành tro, vết nứt liền lại. ${name} vẫn giữ +${lv} (-${costN} tinh thiết, -1 Hộ Khí Phù).`, `${name} cracks open, the Item Ward Talisman bursts into ash and the crack seals. ${name} stays at +${lv} (-${costN} refined iron, -1 talisman).`) };
     }
     // vỡ: mất luôn món đồ
-    c.inventory = c.inventory.filter((x) => x !== w);
+    takeOne(c, w);
     delete c.equipped[slot];
     set(0);
     ctx.fx('hurt', tr('Vỡ đồ', 'Gear shattered'));

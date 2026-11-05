@@ -9,8 +9,12 @@ import { createPortal } from 'react-dom';
 import Sprite from './Sprite';
 import { CpHit } from './CpFx';
 import MonsterLpc from './MonsterLpc';
+import { PixelFx, fxVuot } from './PixelFx';
+import { PetPic } from './LinhThu';
 import { MONSTER_LOOK } from '@/lib/game/monsterLook';
 import { tr } from '@/lib/i18n';
+
+const FX_VUOT = fxVuot();
 
 type R = [number, number, number, number, string];
 
@@ -204,6 +208,8 @@ export function MonsterSprite({
   pixel?: boolean;
 }) {
   const look = pixel ? undefined : MONSTER_LOOK[m.id];
+  // 4.2.0: trận thu phục linh thú, vẽ bằng chính sprite thú (quay mặt sang trái, về phía người chơi)
+  if (m.petId) return <span className={`beast-foe ${dead ? 'dead' : ''}`}><PetPic id={m.petId} box={size} dir={0} still={dead} /></span>;
   if (look) return <MonsterLpc look={look} size={size} tier={tier} dead={dead} attacking={attacking} still={still} />;
   return (
     <svg
@@ -232,13 +238,13 @@ export interface BattleView {
   mHp: number;
   mMax: number;
   phase: 'fight' | 'rest';
-  last: { id: number; side: 'p' | 'm'; dmg: number; crit: boolean; text?: string; skill?: string; tag?: string; fx?: string; ult?: boolean; path?: string }[];
+  last: { id: number; side: 'p' | 'm'; dmg: number; crit: boolean; text?: string; skill?: string; tag?: string; fx?: string; ult?: boolean; path?: string; pet?: boolean }[];
   /** 4.2.0: trạng thái công pháp trong trận (thanh riêng của đạo, thiêu, độc, khiên) */
   cpv?: { gauge: number; gName: string; ult: boolean; mBurn: number; mPoison: number; pShield: number; pBurn: number; pPoison: number };
   outcome?: 'win' | 'lose' | 'flee';
   kills: number;
   /** quái chặn đường: đếm hiệp */
-  ambush?: { turn: number; max: number; kind: 'kem' | 'bang' | 'hon' };
+  ambush?: { turn: number; max: number; kind: 'kem' | 'bang' | 'hon'; beast?: boolean };
   /** ngũ hành giữa bạn và quái */
   melem?: { me: Element; foe: Element; rel: ElemRel };
   /** kỳ ngộ giang hồ: đối thủ là người */
@@ -323,6 +329,8 @@ export function BattleOverlay({ b, me, ultCut }: { b: BattleView; me?: Character
   // đòn có chiêu gần nhất mỗi bên (đòn kết liễu thường bị dòng '+tu vi' đẩy xuống sau)
   const fxP = [...b.last].reverse().find((h) => h.side === 'p' && h.fx);
   const fxM = [...b.last].reverse().find((h) => h.side === 'm' && h.fx);
+  // 4.2.0: linh thú vừa ra đòn (quái thường đánh trả ngay trong cùng lượt nên xét 2 đòn cuối)
+  const petHit = b.last.slice(-2).find((h) => h.pet);
   return (
     <div className="battle" aria-live="off">
       <div className="hpbox p">
@@ -387,6 +395,11 @@ export function BattleOverlay({ b, me, ultCut }: { b: BattleView; me?: Character
       {fxP?.fx && <CpHit key={`cp${fxP.id}`} fx={fxP.fx} path={fxP.path ?? 'chung'} side="p" big={fxP.ult || fxP.crit} />}
       {fxM?.fx && <CpHit key={`cm${fxM.id}`} fx={fxM.fx} path={fxM.path ?? 'chung'} side="m" big={fxM.ult || fxM.crit} late={lastHit === fxM && b.last[b.last.length - 2] === fxP} />}
       {fxP && (fxP.ult || fxP.crit) && <span key={`fl${fxP.id}`} className={`cp-flash ${fxP.ult ? 'ult' : ''}`} aria-hidden="true" />}
+      {petHit && (
+        <span key={`pv${petHit.id}`} className="pet-claw" aria-hidden="true">
+          <PixelFx spec={FX_VUOT} scale={3} dur={0.3} />
+        </span>
+      )}
       {fxP?.skill && (
         <span key={`s${fxP.id}`} className={`skill-name ${fxP.ult ? 'ult' : ''}`}>
           {fxP.skill}!
@@ -419,7 +432,7 @@ export function BattleOverlay({ b, me, ultCut }: { b: BattleView; me?: Character
       ) : b.ambush ? (
         <span className={`kill-count ambush-tag ${b.ambush.kind}`}>
           
-          {tr("Chặn đường · Hiệp ", "Ambush · Round ")}{Math.max(1, b.ambush.turn)}/{b.ambush.max}
+          {b.ambush.beast ? tr('Thu phục · Hiệp ', 'Taming · Round ') : tr("Chặn đường · Hiệp ", "Ambush · Round ")}{Math.max(1, b.ambush.turn)}/{b.ambush.max}
         </span>
       ) : (
         <span className="kill-count">{tr("Đã trảm: ", "Slain: ")}{b.kills}</span>

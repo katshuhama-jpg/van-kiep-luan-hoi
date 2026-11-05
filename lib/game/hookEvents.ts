@@ -1,6 +1,6 @@
 import { ITEMS } from './data';
 import { addCult, fatal, giveItem, money, reward, stat } from './helpers';
-import { PET_IDS, PETS, adopt } from './pets';
+import { PETS, adopt } from './pets';
 import type { Character, GameEvent } from './types';
 import { tr } from '../i18n';
 
@@ -192,7 +192,8 @@ export const HOOK_EVENTS: GameEvent[] = [
         hint: tr('có thú cưng ngay', "get a pet right away"),
         lean: 'chinh',
         run: (c, ctx) => {
-          const pool = PET_IDS.slice(0, 12);
+          // 4.2.0: Tiên duyên chỉ cho thú N, R
+          const pool = ['cho_vang', 'chuot_bach', 'chuot_xam', 'ho_ly', 'dai_bang', 'doi', 'soi_con', 'ong_vang', 'nam_linh', 'slime', 'ran_con'];
           const id = pool[Math.floor(ctx.rnd() * pool.length)];
           adopt(c, id, ctx);
           return tr(`Lão nhân thả xuống một con ${PETS[id].name}. Nó dụi đầu vào chân bạn như đã quen từ kiếp trước.`, `The old man sets down a ${PETS[id].name}. It nuzzles your leg as if it has known you since a past life.`);

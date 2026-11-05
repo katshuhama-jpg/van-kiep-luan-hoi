@@ -683,3 +683,25 @@ export function fxChuongVang(): FxSpec {
     },
   };
 }
+
+/** 4.2.0: ba vết vuốt của linh thú hộ chủ, rạch dần rồi mờ */
+export function fxVuot(): FxSpec {
+  return {
+    key: 'vuot',
+    w: 30,
+    h: 30,
+    frames: 5,
+    draw: (_p, f) => {
+      const k = Math.min(1, (f + 1) / 3);
+      let o = '';
+      for (let i = 0; i < 3; i++) {
+        const x0 = 6 + i * 7;
+        const x1 = x0 + 10 * k;
+        const y1 = 4 + 22 * k;
+        o += `<line x1="${x0}" y1="4" x2="${x1.toFixed(1)}" y2="${y1.toFixed(1)}" stroke="#b0201a" stroke-width="${f > 3 ? 2 : 4}"/>`;
+        o += `<line x1="${x0}" y1="4" x2="${x1.toFixed(1)}" y2="${y1.toFixed(1)}" stroke="#ffffff" stroke-width="${f > 3 ? 1 : 2}"/>`;
+      }
+      return o;
+    },
+  };
+}

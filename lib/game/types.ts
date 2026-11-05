@@ -53,6 +53,9 @@ export interface Character {
   linhThach: number;
   inventory: string[];
   equipped: Partial<Record<Slot, string>>;
+  dup?: Record<string, number>; // 5/11: số món trùng cất thêm trong túi (rơi trùng không tự bán nữa)
+  locked?: string[]; // 5/11: món đã khóa: không bán, không phân giải, không đem hợp
+  gearSets?: ({ name: string; eq: Partial<Record<Slot, string>> } | null)[]; // 5/11: tối đa 3 bộ trang bị, đổi một chạm
   pills: Record<string, number>;
   bought?: string[]; // đồ Luyện Hư, Độ Kiếp đã mua ở phường thị kiếp này (mỗi món một lần)
   shelf?: { w: number; bought: string[] }; // 4.1.0: kệ hàng hiếm, đợt (5 năm) và các món đã mua trong đợt
@@ -111,11 +114,21 @@ export interface Character {
   element?: Element; // ngũ hành bản mệnh
   danDoc?: { y: number; n: number }; // số viên đan đã uống trong năm (đan độc)
   petKind?: string; // loại thú cưng (xem lib/game/pets.ts)
+  // 4.2.0 linh thú
+  petOf?: string; // loài đang tính thân thiết (đổi loài thì tính lại)
+  petExp?: number; // điểm thân thiết
+  petEvo?: number; // bậc tiến hóa 0-2
+  petBlood?: string | null; // huyết mạch kế thừa từ kiếp trước
+  petEvoHint?: boolean; // đã báo đủ sức tiến hóa
+  huyetMach?: { id: string; life: number }[]; // huyết mạch linh thú để lại từ các kiếp trước
+  beastFight?: { id: string; lv: number } | null; // đang chờ vào trận thu phục
+  catchTarget?: { id: string; lv: number; hp: number } | null; // thú vừa đánh xong, chờ thu phục (hp: phần máu còn lại 0-1)
   // 4.2.0 công pháp (lib/game/congPhap.ts)
   cp?: { own: { id: string; tang: number; exp: number; bien?: 'cuong' | 'nhu' | null }[]; eq: string[]; tuyet?: string | null };
   cpHint?: boolean; // đã báo có bộ đầy thục luyện
   tq?: Record<string, number>; // tàn quyển riêng từng bộ công pháp: lên tầng từ tầng 4, tuyệt kỹ để dung hợp
   tqVan?: number; // tàn quyển vạn năng (hiếm): bù vào bộ nào cũng được
+  tqBuy?: { y: number; n: number }; // 5/11: số tàn quyển đã mua ở Phường thị trong năm (giới hạn mỗi năm)
   cpPast?: string[]; // các bộ kiếp trước từng luyện (bóng kiếp trước rơi tàn quyển các bộ này)
   cpHeirPick?: string | null; // chiêu chọn truyền cho kiếp sau
   lookSeed?: number; // nét riêng của ngoại hình: da, khuôn mặt, râu, trang sức
@@ -270,6 +283,7 @@ export interface GameEvent {
   text: (c: Character) => string;
   choices: (c: Character, seed: number) => Choice[];
   item?: (c: Character) => string | undefined; // 4.1.0: món đồ hiện kèm thẻ sự kiện (đấu giá)
+  pet?: (c: Character) => string | undefined; // 4.2.0: linh thú hiện kèm thẻ sự kiện
 }
 
 export interface PendingEvent {
@@ -279,6 +293,8 @@ export interface PendingEvent {
   text: string;
   choices: { label: string; hint?: string; lean: Lean; off?: boolean }[];
   item?: string; // 4.1.0: id món đồ để thẻ sự kiện vẽ ảnh và chỉ số
+  pet?: string; // 4.2.0: id linh thú để thẻ sự kiện vẽ hình, rank, cấp
+  petLv?: number;
 }
 
 export interface EffectCtx {
@@ -316,6 +332,7 @@ export interface Meta {
   seenVer?: string; // bản cập nhật đã xem cáo thị
   seenBook?: { e: number; i: number }; // số kết cục, đồ ẩn đã xem (để báo mục mới) // huyết hải thâm thù: các kiếp đã giao đấu với từng người chơi
   petBook?: string[]; // các loài linh thú đã từng nuôi
+  huyetMach?: { id: string; life: number }[]; // 4.2.0: huyết mạch linh thú bậc 3 để lại
   cpHeir?: string | null; // 4.2.0: chiêu truyền thừa, kiếp sau sinh ra đã biết
   cpBook?: string[]; // 4.2.0: các bộ công pháp từng học
   protectBonus?: boolean; // 4/11: đã nhận thưởng khắc tên Sổ Luân Hồi (bảo vệ tài khoản)

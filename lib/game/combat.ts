@@ -1,4 +1,4 @@
-import { sellNow } from './marketDay';
+import { petDropMul } from './linhThu';
 import { cpStats, dropTq } from './congPhap';
 /** 4.1.0: đồ rơi trùng bán ngay tại chỗ cho thương lái, chỉ được 1/4 giá bán tay */
 export const DUP_SELL = 0.25;
@@ -7,7 +7,7 @@ import { ksDrop, ksLegendPer, ksMonster } from './luanHoi';
 import { huntDeath, huntLose } from './fightLines';
 import { omenIs } from './hook';
 import { ITEMS, REALMS, fxText, gearFx } from './data';
-import { DO_KIEP_REALM, addCult, addWound, atAge, markDeath, addPill, clamp, fatal, giveItem, money, needFor, stat } from './helpers';
+import { DO_KIEP_REALM, addCult, addWound, atAge, markDeath, addPill, addDup, clamp, fatal, giveItem, money, needFor, stat } from './helpers';
 import type { Character, EffectCtx, Element } from './types';
 import { gainAn } from './nguHanhDai';
 import { tr } from '../i18n';
@@ -31,6 +31,7 @@ export interface Monster {
   sect?: 'chinh' | 'ta' | 'trung'; // quái trong tông môn: chỉ đệ tử môn đó mới gặp
   cosmos?: 'tien' | 'ma' | 'hu'; // quái tiên giới, ma giới: chỉ gặp sau phi thăng
   doKiep?: boolean; // quái Độ Kiếp: chỉ gặp khi đã Độ Kiếp ở phàm giới
+  petId?: string; // 4.2.0: trận thu phục linh thú, vẽ bằng sprite thú
 }
 
 /** 15 loại quái, xếp theo cấp. Cấp người chơi: Luyện Khí 1-9, Trúc Cơ 10-12, Kim Đan 13-15... */
@@ -676,7 +677,8 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance 
   // 4.1.0: linh thạch mỗi con giảm một nửa (trước 2 + 3 × cấp), chống treo máy cày tiền
   money(c, Math.round((1 + m.lv * 1.5) * (0.7 + ctx.rnd() * 0.6)));
   // 4.2.0: tàn quyển công pháp theo hệ của quái (quái chặn đường gọi với lootChance cao nên dễ rơi hơn)
-  if (ctx.rnd() < (lootChance >= 0.5 ? 0.25 : 0.015)) {
+  // 5/11 Tyler: tăng rơi (thường 1,5% → 3%, quái chặn đường 25% → 35%)
+  if (ctx.rnd() < (lootChance >= 0.5 ? 0.35 : 0.03)) {
     const t = dropTq(c, { kind: 'quai', el: m.el, strong: lootChance >= 0.5 }, ctx.rnd);
     if (t) notes.push(t);
   }
@@ -700,13 +702,12 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance 
   const df = dropFactor(c, m);
   if (drops.length && df > 0) {
     const g = gearFx(c.equipped);
-    const p = (0.05 + (c.stats.khiVan - 50) / 2500) * (1 + tierOf(c, m) * 0.5) * (1 + g.drop / 100) * df * DROP_MUL * ksDrop(c);
+    const p = (0.05 + (c.stats.khiVan - 50) / 2500) * (1 + tierOf(c, m) * 0.5) * (1 + g.drop / 100) * df * DROP_MUL * ksDrop(c) * petDropMul(c);
     if (ctx.rnd() < p) {
       const it = drops[Math.floor(ctx.rnd() * drops.length)];
       if (c.inventory.includes(it.id)) {
-        const sell = Math.round(sellNow(c, it) * DUP_SELL);
-        money(c, sell);
-        notes.push(tr(`${m.name} rơi ra thêm một ${it.name}. Bạn đã có rồi nên bán được ${sell} linh thạch.`, `${m.name} dropped another ${it.name}. You already have one, so you sold it for ${sell} spirit stones.`));
+        const n = addDup(c, it.id); // 5/11 Tyler: đồ trùng không tự bán nữa, cất vào túi để tự bán đúng giá
+        notes.push(tr(`${m.name} rơi ra thêm một ${it.name}. Cất vào túi (đang có ${n + 1} chiếc), bán tay được đúng giá.`, `${m.name} dropped another ${it.name}. Stored in your bag (${n + 1} now), sell it yourself for full price.`));
       } else {
         giveItem(c, it.id, false);
         ctx.fx('buy', it.name);
@@ -814,9 +815,8 @@ export function lootDrop(c: Character, m: Monster, ctx: EffectCtx): string | nul
   const it = src[Math.floor(ctx.rnd() * src.length)];
   const tag = `[${RARE_NAME[rare]}]`;
   if (c.inventory.includes(it.id)) {
-    const sell = Math.round(sellNow(c, it) * DUP_SELL); // 4.1.0: đồ trùng bán vội tại chỗ, 1/4 giá bán tay; bán nhiều trong năm bị ép giá
-    money(c, sell);
-    return tr(`${m.name} rơi ra ${tag} ${it.name}, bạn đã có rồi nên đem bán được ${sell} linh thạch.`, `${m.name} dropped ${tag} ${it.name}. You already have it, so you sold it for ${sell} spirit stones.`);
+    const n = addDup(c, it.id); // 5/11 Tyler: đồ trùng cất vào túi, không bán vội 1/4 giá nữa
+    return tr(`${m.name} rơi ra ${tag} ${it.name}, cất thêm vào túi (đang có ${n + 1} chiếc).`, `${m.name} dropped ${tag} ${it.name}. Stored in your bag (${n + 1} now).`);
   }
   giveItem(c, it.id, false);
   if (rare >= 3) ctx.fx('layer', tr(`Cực phẩm: ${it.name}`, `Supreme: ${it.name}`));
