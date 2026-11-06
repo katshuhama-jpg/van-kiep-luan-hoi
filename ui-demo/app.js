@@ -29,7 +29,7 @@
       '<div style="position:absolute;left:10px;top:12px;display:flex;flex-direction:column;gap:8px"><button class="side">Thư</button><button class="side">Quà</button><a class="side" href="#mongdiep" style="text-decoration:none">Mộng điệp</a></div>' +
       '<div style="position:absolute;right:10px;top:12px;display:flex;flex-direction:column;gap:8px"><button class="side">Bảng</button><button class="side">Nhiệm vụ</button></div>' +
       '<div class="q" style="left:38%;bottom:12%"></div><div class="q" style="left:48%;bottom:9%;animation-delay:1.2s;background:#fff8e6"></div><div class="q" style="left:58%;bottom:12%;animation-delay:2.1s"></div>' +
-      '<div class="bob" style="position:absolute;left:0;right:0;bottom:6%;display:flex;flex-direction:column;align-items:center"><img src="img/chanthan.png" alt="Chân thân đang tọa thiền" style="width:160px;height:220px;position:relative;z-index:2"><img src="img/cloud.png" alt="" style="width:248px;height:80px;margin-top:-42px"></div>' +
+      '<div class="bob" style="position:absolute;left:0;right:0;bottom:6%;display:flex;flex-direction:column;align-items:center"><img src="img/chanthan.png" alt="Chân thân đang tọa thiền" style="width:74px;height:102px;position:relative;z-index:2"><img src="img/cloud.png" alt="" style="width:124px;height:40px;margin-top:-20px"></div>' +
       '<div id="fl" style="position:absolute;left:0;right:0;top:30%;text-align:center;font-size:22px;font-weight:700;color:var(--goldl);text-shadow:2px 2px 0 var(--dark);opacity:0"></div>' +
       (S.kiep ? '<div class="flash" style="position:absolute;inset:0;background:#e8e0ff"></div><div class="kiep" style="position:absolute;left:0;right:0;top:16%;text-align:center;font-family:\'Protest Revolution\';font-size:40px;color:var(--goldl);text-shadow:3px 3px 0 var(--vio)">Tam cửu thiên kiếp</div>' : '') +
       '</div><div class="body"><div class="card"><div class="row"><span class="h">Ngộ Đạo tầng ' + S.layer + '</span><span style="font-size:15px;font-weight:700;color:var(--jade)">+13 tu vi / giây</span></div>' +
@@ -45,7 +45,7 @@
       inner = '<div class="scene" style="height:380px"><img class="bg" src="img/bg_tien.png" alt="" style="filter:brightness(.85)">' +
         '<div style="position:absolute;left:14px;top:16px;display:flex;flex-direction:column;gap:10px"><div class="slot"><img src="img/g_can_tuong_kiem.png" alt="Càn Tượng Kiếm"></div><div class="slot"><img src="img/g_bich_ngoc_boi.png" alt="Bích Ngọc Bội"></div><div class="slot">Áo</div><div class="slot">Giày</div><div class="slot">Mũ</div></div>' +
         '<div style="position:absolute;right:14px;top:16px;display:flex;flex-direction:column;gap:10px"><div class="slot"><img src="img/g_ha_lac_ngoc_phu.png" alt="Hà Lạc Ngọc Phù"></div><div class="slot"><img src="img/g_can_khon_dai.png" alt="Càn Khôn Đại"></div><div class="slot">Pháp bảo</div><div class="slot">Linh thú</div><div class="slot">Mộng điệp</div></div>' +
-        '<div class="bob" style="position:absolute;left:0;right:0;top:70px;display:flex;justify-content:center"><img src="img/st_front.png" alt="Chân thân" style="width:150px;height:270px"></div>' +
+        '<div class="bob" style="position:absolute;left:0;right:0;top:70px;display:flex;justify-content:center"><img src="img/st_front.png" alt="Chân thân" style="width:60px;height:108px"></div>' +
         '<div style="position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:center"><button class="btn gold" style="min-height:44px;padding:0 20px;font-size:17px">Trang bị nhanh</button></div></div>' +
         '<div class="body">' + [['Công', '3.240'], ['Thủ', '1.980'], ['Khí huyết', '41.500'], ['Tốc', '212']].map(function (r) { return '<div class="row" style="font-size:16px"><b>' + r[0] + '</b><span>' + r[1] + '</span></div>'; }).join('') + '</div>';
     } else if (t === 'end') {
@@ -78,9 +78,9 @@
     var c = S.tick === 0 ? '' : ' ';
     return '<div class="scene" style="height:330px"><img class="bg" src="img/bg_dongphu.png" alt="">' +
       '<div style="position:absolute;left:10px;top:8px;padding:3px 8px;background:rgba(31,22,13,.7);color:var(--goldl);font-size:14px;font-weight:700">Hắc Phong Lĩnh · Ải 3-' + S.stage + ' · Hiệp ' + Math.min(10, Math.max(1, Math.ceil(S.tick / 2))) + '/10</div>' +
-      '<div id="u-me" class="unit" style="left:92px;top:96px"><span class="tag">Chân thân</span><div class="hp" style="width:60px"><i style="width:92%;background:var(--jade)"></i></div><img src="img/st_right.png" alt="Chân thân" style="width:92px;height:116px"></div>' +
-      '<div class="unit" style="left:14px;top:44px"><span class="tag">Hộ pháp kiếp 31</span><div class="hp" style="width:50px"><i style="width:80%;background:var(--jade)"></i></div><img src="img/kt_red.png" alt="Hộ pháp kiếp 31" style="width:66px;height:144px"></div>' +
-      '<div class="unit" style="left:14px;top:200px"><span class="tag">Hộ pháp kiếp 40</span><div class="hp" style="width:50px"><i style="width:100%;background:var(--jade)"></i></div><img src="img/kt_blue.png" alt="Hộ pháp kiếp 40" style="width:63px;height:98px;object-fit:cover;object-position:top"></div>' +
+      '<div id="u-me" class="unit" style="left:92px;top:96px"><span class="tag">Chân thân</span><div class="hp" style="width:60px"><i style="width:92%;background:var(--jade)"></i></div><img src="img/st_right.png" alt="Chân thân" style="width:82px;height:104px"></div>' +
+      '<div class="unit" style="left:14px;top:44px"><span class="tag">Hộ pháp kiếp 31</span><div class="hp" style="width:50px"><i style="width:80%;background:var(--jade)"></i></div><img src="img/kt_red.png" alt="Hộ pháp kiếp 31" style="width:44px;height:96px"></div>' +
+      '<div class="unit" style="left:14px;top:200px"><span class="tag">Hộ pháp kiếp 40</span><div class="hp" style="width:50px"><i style="width:100%;background:var(--jade)"></i></div><img src="img/kt_blue.png" alt="Hộ pháp kiếp 40" style="width:42px;height:98px"></div>' +
       '<div class="unit" style="left:92px;top:240px"><img src="img/pet.png" alt="Linh thú Xích Lang" style="width:126px;height:62px"></div>' +
       '<div class="unit en" style="right:14px;top:40px"><span class="tag">Hổ yêu</span><div class="hp" style="width:60px"><i style="width:' + hp[0] + ';background:var(--red)"></i></div><img src="img/m_dk_tiger.png" alt="Hổ yêu" style="width:116px;transform:scaleX(-1)"></div>' +
       '<div class="unit en" style="right:30px;top:150px"><span class="tag">Sói hoang</span><div class="hp" style="width:60px"><i style="width:' + hp[1] + ';background:var(--red)"></i></div><img src="img/m_wolf.png" alt="Sói hoang" style="width:126px;transform:scaleX(-1)"></div>' +
@@ -95,7 +95,7 @@
   function thap() {
     var pool = [['Thường', '#6b5233', 'Hồi khí', 'Hồi 10% máu sau mỗi trận'], ['Hiếm', '#3d6fb0', 'Huyết chiến', '+25% công khi máu dưới nửa'], ['Quý', '#a8303a', 'Long uy', 'Boss rơi đồ đôi'], ['Thường', '#6b5233', 'Thân pháp', '+10% né đòn'], ['Hiếm', '#3d6fb0', 'Mộng điệp hộ', 'Bướm theo bên mạnh gấp đôi']];
     var st = S.floor % 3, cards = [pool[st], pool[st + 1], pool[st + 2]];
-    var foes = [['Hổ yêu', 'm_dk_tiger', 174], ['Kỳ lân non', 'm_dk_qilin', 160], ['U hồn', 'm_ghost', 102]];
+    var foes = [['Hổ yêu', 'm_dk_tiger', 174], ['Kỳ lân non', 'm_dk_qilin', 128], ['U hồn', 'm_ghost', 102]];
     var f = S.floor % 10 === 0 ? ['Boss: Phi Long', 'm_dk_flydragon', 224] : foes[S.floor % 3];
     var act = S.tPhase === 'fight'
       ? '<button class="btn big" data-act="tfight">Khiêu chiến tầng ' + S.floor + '</button>'
@@ -105,7 +105,7 @@
     return '<div class="scene" style="height:290px"><img class="bg" src="img/bg_dai.png" alt="" style="filter:brightness(.7)">' +
       '<div style="position:absolute;left:12px;right:12px;top:10px;display:flex;justify-content:space-between;gap:16px;color:var(--paper3);font-size:15px;font-weight:700"><span>Tầng ' + S.floor + ' · Chân thân lực 24.180</span><span>' + f[0] + '</span></div>' +
       '<div style="position:absolute;right:12px;top:34px;width:45%" class="hp"><i style="width:' + (S.tPhase === 'pick' ? 0 : 100) + '%;background:var(--red)"></i></div>' +
-      '<img class="bob" src="img/chanthan.png" alt="Chân thân" style="position:absolute;left:24px;top:110px;width:111px;height:153px">' +
+      '<img class="bob" src="img/chanthan.png" alt="Chân thân" style="position:absolute;left:40px;bottom:30px;width:74px;height:102px">' +
       '<img class="bob" src="img/' + f[1] + '.png" alt="' + f[0] + '" style="position:absolute;right:20px;bottom:24px;width:' + f[2] + 'px"></div>' +
       '<div class="body">' + act + '<div class="card"><b>Mộng phù lượt này (' + S.deck.length + ')</b><span class="sub" style="font-size:15px">' + S.deck.join(' · ') + '</span></div>' +
       '<div class="card dark"><b style="color:var(--goldl)">Khi vắng mặt</b><span style="font-size:15px">Chân thân tự leo từ tầng 34 lên 36 trong 8 giờ qua, mở 2 rương.</span></div>' +
