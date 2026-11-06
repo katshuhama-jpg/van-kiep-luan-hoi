@@ -516,12 +516,15 @@ export default function PlayPage() {
         const out: Fx[] = [];
         const ctx = makeCtx(c, out);
         const exp = killExp(c, b.m);
+        const cult0 = c.cultivation;
         killReward(c, b.m, ctx).forEach((n) => ctx.log(n, 'good'));
+        // 6/11 (#116): sau phi thăng tu vi mỗi năm có hạn, hiện đúng số thật sự hấp thu được
+        const got = Math.round(c.cultivation - cult0);
         b.kills += 1;
         b.phase = 'rest';
         b.rest = 3;
         b.outcome = 'win';
-        push('p', 0, false, tr(`+${exp} tu vi`, `+${exp} cultivation`));
+        push('p', 0, false, exp > 0 && got <= 0 ? tr('Tu vi năm nay đã đầy', 'Cultivation full this year') : tr(`+${got} tu vi`, `+${got} cultivation`));
         const p = checkProgress(c, ctx, talentsRef.current);
         pushFx(out);
         if (p || c.dead) {
@@ -2104,7 +2107,7 @@ export default function PlayPage() {
         </div>
       </header>
 
-      <section className="stage">
+      <section className={`stage${kiep !== null || vanDao?.phase === 'loi' ? ' st-off' : ''}`}>
         <Scene
           c={c}
           fx={fx}

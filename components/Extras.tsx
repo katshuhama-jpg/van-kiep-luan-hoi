@@ -217,6 +217,8 @@ const K_TOTAL = 9;
 const LANE_X = [17, 50, 83];
 /** Đạo thứ idx: thời gian vòng co lại (ms) và cỡ ban đầu. Vòng lọt vào khung (cỡ <= 1.25) mới đỡ được. */
 const kWin = (idx: number) => Math.round(1050 - idx * 45);
+/** 6/11 (#93): thời gian chờ thêm sau khi ô ngắm co hết, để lần chạm đúng lúc trên máy chậm vẫn kịp được tính */
+const K_GRACE = 160;
 const kStart = (idx: number) => 2.2 + idx * 0.1;
 const kZoneFrom = (idx: number) => (kStart(idx) - 1.25) / (kStart(idx) - 0.8);
 
@@ -285,6 +287,7 @@ export function TribulationOverlay({ realmName, onDone, c, total = K_TOTAL, titl
   const [res, setRes] = useState<('ok' | 'hit')[]>([]);
   const [lost, setLost] = useState(0); // đạo đã đỡ bị mất vì chạm lôi giả
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const tok = useRef(0);
   const t0 = useRef(0);
   const st = useRef({ phase: 'intro' as KPhase, i: 0, lane: 1 });
   st.current = { phase, i, lane };
@@ -298,6 +301,7 @@ export function TribulationOverlay({ realmName, onDone, c, total = K_TOTAL, titl
 
   const after = (ms: number, fn: () => void) => {
     clear();
+    tok.current += 1;
     timer.current = setTimeout(fn, ms);
   };
 
@@ -306,16 +310,25 @@ export function TribulationOverlay({ realmName, onDone, c, total = K_TOTAL, titl
     setLane(ln);
     // từ đạo 3: có lúc mây tụ ra lôi giả trước lôi thật
     const isFake = idx >= 2 && Math.random() < 0.35;
+    clear();
+    const my = ++tok.current;
     t0.current = performance.now();
     setPhase(isFake ? 'fake' : 'warn');
-    after(kWin(idx), () => {
-      if (isFake) {
-        setPhase('fakeGone');
-        after(380, () => warn(idx));
-      } else {
-        strike(idx, 'hit');
-      }
-    });
+    // 6/11 (#93): máy chậm vẽ khung ngắm trễ, nên chỉ bắt đầu tính giờ khi khung đã hiện thật (sau 2 khung hình)
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        if (tok.current !== my) return;
+        t0.current = performance.now();
+        timer.current = setTimeout(() => {
+          if (isFake) {
+            setPhase('fakeGone');
+            after(380, () => warn(idx));
+          } else {
+            strike(idx, 'hit');
+          }
+        }, kWin(idx) + K_GRACE);
+      }),
+    );
   };
 
   const nextBolt = (idx: number) => {
@@ -357,7 +370,10 @@ export function TribulationOverlay({ realmName, onDone, c, total = K_TOTAL, titl
       return;
     }
     if (s.phase === 'warn') {
-      const f = (performance.now() - t0.current) / kWin(s.i);
+      // tính theo lúc ngón tay chạm (timeStamp), không theo lúc máy kịp xử lý
+      const at = e.timeStamp > 0 && e.timeStamp < 1e11 ? Math.min(e.timeStamp, performance.now()) : performance.now();
+      const f = (at - t0.current) / kWin(s.i);
+      if (f > 1) return strike(s.i, 'hit');
       strike(s.i, f >= kZoneFrom(s.i) && tapLane === s.lane ? 'block' : 'hit');
     } else if (s.phase === 'calm') {
       // hấp tấp: lôi đánh ngay

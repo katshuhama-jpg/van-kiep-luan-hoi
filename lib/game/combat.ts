@@ -668,6 +668,9 @@ export function killExp(c: Character, m: Monster): number {
   return Math.max(1, Math.round(base * factor * tierBonus * c.linhCanMul * (1 + gearFx(c.equipped).exp / 100) * sealExp(c)));
 }
 
+/** 6/11 (#116): sau phi thăng tu vi mỗi năm có hạn, ghi đúng số thật sự hấp thu */
+const cultNote = (n: number) => (n > 0 ? tr(`+${n} tu vi`, `+${n} cultivation`) : tr('tu vi năm nay đã đầy', 'cultivation full this year'));
+
 /** Hệ số rơi đồ chung (26/10: giảm 25% vì người chơi nhặt đồ quá dễ) */
 export const DROP_MUL = 0.75;
 
@@ -686,16 +689,14 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance 
   const n = (c.kills[m.id] = (c.kills[m.id] ?? 0) + 1);
   if (n === 1) {
     // lần đầu trảm: thưởng lớn
-    const bonus = killExp(c, m) * 2;
-    addCult(c, bonus);
-    notes.push(tr(`Lần đầu hạ được ${m.name} ở ${m.place}. Lĩnh ngộ được cách đánh của nó (+${bonus} tu vi).`, `First time defeating ${m.name} at ${m.place}. You grasp how it fights (+${bonus} cultivation).`));
+    const bonus = Math.round(addCult(c, killExp(c, m) * 2));
+    notes.push(tr(`Lần đầu hạ được ${m.name} ở ${m.place}. Lĩnh ngộ được cách đánh của nó (${cultNote(bonus)}).`, `First time defeating ${m.name} at ${m.place}. You grasp how it fights (${cultNote(bonus)}).`));
   }
   if (n === 10 || n === 50) {
-    const bonus = killExp(c, m) * (n === 10 ? 5 : 12);
-    addCult(c, bonus);
+    const bonus = Math.round(addCult(c, killExp(c, m) * (n === 10 ? 5 : 12)));
     money(c, m.lv * (n === 10 ? 20 : 60));
     ctx.fx('layer', tr(`Trảm ${n}`, `${n} slain`));
-    notes.push(tr(`Đã trảm ${n} ${m.name}. Chiến kỹ tinh thông hơn (+${bonus} tu vi).`, `${n} ${m.name} slain. Your combat skills sharpen (+${bonus} cultivation).`));
+    notes.push(tr(`Đã trảm ${n} ${m.name}. Chiến kỹ tinh thông hơn (${cultNote(bonus)}).`, `${n} ${m.name} slain. Your combat skills sharpen (${cultNote(bonus)}).`));
   }
   // rơi đồ độc quyền của loài quái (đánh quái quá yếu thì gần như không rơi, chống farm)
   const drops = ITEMS.filter((i) => i.from?.includes(m.id));
@@ -731,9 +732,9 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance 
   if (n === 100) notes.push(tr(`Đã trảm 100 con ${m.name}. Giang hồ gọi bạn là khắc tinh của chúng.`, `You have slain 100 ${m.name}. The jianghu calls you their bane.`));
   const r = ctx.rnd() / Math.max(0.05, df * DROP_MUL * ksDrop(c));
   if (r < 0.02) {
-    addCult(c, killExp(c, m) * 6);
+    const got = addCult(c, killExp(c, m) * 6);
     ctx.fx('layer', tr('Yêu đan!', "Demon core!"));
-    notes.push(tr(`${m.name} rơi ra một viên yêu đan, nuốt vào tu vi tăng vọt.`, `${m.name} dropped a demon core. You swallow it and your cultivation soars.`));
+    notes.push(got > 0 ? tr(`${m.name} rơi ra một viên yêu đan, nuốt vào tu vi tăng vọt.`, `${m.name} dropped a demon core. You swallow it and your cultivation soars.`) : tr(`${m.name} rơi ra một viên yêu đan, nhưng tu vi năm nay đã đầy, nuốt vào cũng không hấp thu thêm.`, `${m.name} dropped a demon core, but your cultivation is full for this year and it adds nothing.`));
   } else if (r < 0.1) {
     const pill = m.lv >= 13 && ctx.rnd() < 0.3 ? 'truc_co' : ctx.rnd() < 0.5 ? 'tu_khi' : 'hoi_xuan';
     addPill(c, pill);

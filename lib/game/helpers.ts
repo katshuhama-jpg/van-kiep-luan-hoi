@@ -103,7 +103,8 @@ export const COSMOS_YEARS_PER_LAYER = 24;
 /** cảnh giới cuối (Đại La, Ma Đế, Hỗn Nguyên) nhanh hơn để kẻ phi thăng sớm còn kịp thử Chứng Đạo */
 export const COSMOS_YEARS_TOP = 16;
 
-export function addCult(c: Character, amount: number) {
+/** Cộng tu vi, trả về số thật sự hấp thu được (sau phi thăng mỗi năm có hạn) */
+export function addCult(c: Character, amount: number): number {
   // thiên tượng hôm nay làm tu vi nhanh hay chậm
   if (amount > 0) amount *= omenCultMul(c) * swornCultMul();
   // sau phi thăng: thiên đạo áp chế, mỗi năm hấp thu tối đa 1/17 tu vi một tầng (ít nhất 51 năm một cảnh giới, cảnh giới cuối 36 năm)
@@ -117,7 +118,9 @@ export function addCult(c: Character, amount: number) {
     amount = Math.min(amount, room);
     c.cgN = (c.cgN ?? 0) + amount;
   }
+  const before = c.cultivation;
   c.cultivation = Math.max(0, c.cultivation + amount);
+  return c.cultivation - before;
 }
 
 const BASE_YEAR = [6, 30, 30, 34, 38, 42, 46, 50];
