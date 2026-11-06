@@ -30,7 +30,7 @@ import { BIG_TALENTS, honActive, ksBase, ksOf, ksOneBig } from '@/lib/game/luanH
 import { LORE, LORE2_TOTAL, LORE_TOTAL, lore1Count, lore2Count, quyNhatDone } from '@/lib/game/lore';
 import { ELEMENTS } from '@/lib/game/nguhanh';
 import { CheckinRow, RumorLine, TodayScroll } from './Hook';
-import { TQ_SHOP_YEAR, tqShopLeft, tqShopList, tqShopPrice } from '@/lib/game/congPhap';
+import { FUSE_COST, TQ_SHOP_YEAR, tqShopLeft, tqShopList, tqShopPrice } from '@/lib/game/congPhap';
 import BagDoll from './BagDoll';
 import { HanhTrang } from './HanhTrang';
 import { buryPlan } from '@/lib/game/ruong';
@@ -538,7 +538,7 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onBuyShelf, onBuyCharm, onB
         {tab === 'tq' && onBuyTq && (
           <>
             <p className="note" style={{ margin: 0 }}>
-              {tr(`Tàn quyển các bộ đang mang, từ tầng 3 trở lên. Hàng hiếm, mỗi năm chỉ mua được ${TQ_SHOP_YEAR} quyển (năm nay còn ${Math.max(0, tqShopLeft(c))}).`, `Fragments for the techniques you have equipped, stage 3 and up. Scarce: only ${TQ_SHOP_YEAR} per year (${Math.max(0, tqShopLeft(c))} left this year).`)}
+              {tr(`Tàn quyển các bộ đang mang, từ tầng 3 trở lên, và tàn quyển tuyệt kỹ khi đã có 2 chiêu tầng 9. Hàng hiếm, mỗi năm chỉ mua được ${TQ_SHOP_YEAR} quyển (năm nay còn ${Math.max(0, tqShopLeft(c))}).`, `Fragments for the techniques you have equipped, stage 3 and up, plus ultimate fragments once you have 2 moves at stage 9. Scarce: only ${TQ_SHOP_YEAR} per year (${Math.max(0, tqShopLeft(c))} left this year).`)}
             </p>
             {tqShopList(c).length === 0 && <p className="note">{tr('Chưa có bộ nào đang mang cần tàn quyển (bộ phải từ tầng 3 trở lên). Mở Công pháp để mang chiêu.', 'No equipped technique needs fragments yet (stage 3 and up). Open Techniques to equip one.')}</p>}
             {tqShopList(c).map((d) => {
@@ -551,7 +551,7 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onBuyShelf, onBuyCharm, onB
                   </div>
                   <div className="item-body">
                     <span>{tr(`Tàn quyển ${d.name}`, `${d.name} fragment`)}</span>
-                    <small>{tr(`Đang tầng ${o?.tang ?? 0} · đang có ${c.tq?.[d.id] ?? 0} quyển`, `Stage ${o?.tang ?? 0} · you have ${c.tq?.[d.id] ?? 0}`)}</small>
+                    <small>{d.kind === 'tuyet' ? tr(`Tuyệt kỹ · cần ${FUSE_COST} quyển để dung hợp · đang có ${c.tq?.[d.id] ?? 0}`, `Ultimate · ${FUSE_COST} needed to fuse · you have ${c.tq?.[d.id] ?? 0}`) : tr(`Đang tầng ${o?.tang ?? 0} · đang có ${c.tq?.[d.id] ?? 0} quyển`, `Stage ${o?.tang ?? 0} · you have ${c.tq?.[d.id] ?? 0}`)}</small>
                   </div>
                   <button className="btn btn-red" disabled={tqShopLeft(c) <= 0 || c.linhThach < price} onClick={() => onBuyTq(d.id)}>
                     {fmt(price)}

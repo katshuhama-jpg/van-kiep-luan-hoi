@@ -4279,6 +4279,7 @@ button.shadow-card { cursor: pointer; }
 .fs-odds { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; margin: 0; font-size: 14px; }
 .fs-odds dt { color: #6a5a44; }
 .fs-odds dd { margin: 0; font-weight: 700; }
+.fs-odds dd .fs-where { display: block; margin-top: 2px; font-size: 12px; font-weight: 400; color: #6a5a44; line-height: 1.35; }
 .fs-odds dd.bad { color: #b0201a; }
 .fs-go { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 1px; }
 .fs-go small { font-size: 13px; font-weight: 500; opacity: 0.95; }

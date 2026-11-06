@@ -392,14 +392,28 @@ export function dropTq(c: Character, src: TqSrc, rnd: () => number): string | nu
  */
 export const TQ_SHOP_YEAR = 2;
 const TQ_SHOP_BASE = [60, 120, 180, 300, 600, 1000, 1600, 2400, 8000, 15000, 20000, 38000];
+/** 6/11 Tyler: tàn quyển tuyệt kỹ cũng bán, giá gấp TQ_TUYET_MUL tàn quyển thường cùng cảnh giới, chung giới hạn mỗi năm */
+export const TQ_TUYET_MUL = 3;
 export function tqShopPrice(c: Character, id: string): number {
   const o = owned(c, id);
   const base = TQ_SHOP_BASE[Math.max(0, Math.min(TQ_SHOP_BASE.length - 1, c.realm))];
+  if (cpOf(id)?.kind === 'tuyet') return Math.round(base * TQ_TUYET_MUL);
   return Math.round(base * (1 + 0.25 * Math.max(0, (o?.tang ?? 3) - 3)));
 }
 export const tqShopLeft = (c: Character) => TQ_SHOP_YEAR - (c.tqBuy && c.tqBuy.y === Math.floor(c.age) ? c.tqBuy.n : 0);
-/** Các bộ đang mang còn cần tàn quyển (tầng 3-8, chưa đủ quyển cho tới tầng 9) */
+/** Tuyệt kỹ của đạo bán ở Phường thị khi: đã có 2 chiêu tầng 9, chưa lĩnh ngộ, chưa đủ tàn quyển để dung hợp */
+function tuyetForSale(c: Character): CpDef | null {
+  const tu = tuyetOf(c);
+  if (!tu || c.cp?.tuyet === tu.id) return null;
+  const nine = cpOfPath(c.path!).filter((x) => x.kind === 'chieu' && (owned(c, x.id)?.tang ?? 0) >= 9).length;
+  return nine >= 2 && tqOf(c, tu.id) < FUSE_COST ? tu : null;
+}
+/** Các bộ đang mang còn cần tàn quyển (tầng 3-8, chưa đủ quyển cho tới tầng 9), cộng tuyệt kỹ nếu đủ điều kiện */
 export function tqShopList(c: Character): CpDef[] {
+  const tu = tuyetForSale(c);
+  return [...(tu ? [tu] : []), ...tqShopEq(c)];
+}
+function tqShopEq(c: Character): CpDef[] {
   const s = cpState(c);
   return s.eq
     .filter((id) => !!id)

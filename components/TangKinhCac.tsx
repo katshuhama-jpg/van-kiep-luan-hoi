@@ -466,7 +466,10 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onSwap,
                     <dd className={nine.length >= 2 ? '' : 'bad'}>{tr(`2 chiêu của đạo đạt tầng 9 (có ${nine.length})`, `2 path moves at stage 9 (you have ${nine.length})`)}</dd>
                     <dt>{tr('Tốn', 'Cost')}</dt>
                     <dd className={tu && tqOf(c, tu.id) >= FUSE_COST ? '' : 'bad'}>
-                      {tr(`${FUSE_COST} tàn quyển ${tu?.name ?? ''} (có ${tu ? tqOf(c, tu.id) : 0}), chỉ rơi ở trận chặn đường và đấu người khi đã có 2 chiêu tầng 9`, `${FUSE_COST} ${tu?.name ?? ''} fragments (you have ${tu ? tqOf(c, tu.id) : 0}); they only drop in ambushes and duels once you have 2 moves at stage 9`)}
+                      {tr(`${FUSE_COST} tàn quyển ${tu?.name ?? ''} (có ${tu ? tqOf(c, tu.id) : 0})`, `${FUSE_COST} ${tu?.name ?? ''} fragments (you have ${tu ? tqOf(c, tu.id) : 0})`)}
+                      <small className="fs-where">
+                        {tr('Có 2 chiêu tầng 9 thì tàn quyển tuyệt kỹ mới xuất hiện: rơi khi thắng quái tự lao ra chặn đường, người giang hồ hoặc bóng kiếp trước, và bán ở Phường thị (thẻ Tàn quyển). Trừ yêu thường không rơi.', 'Ultimate fragments only appear once you have 2 moves at stage 9: they drop when you beat a monster that ambushes you on the road, a jianghu wanderer or a past-life shadow, and are sold at the market (Fragments tab). Regular demon hunting never drops them.')}
+                      </small>
                     </dd>
                     <dt>{tr('Thành', 'Success')}</dt>
                     <dd>{Math.round(FUSE_CHANCE * 100)}%</dd>
