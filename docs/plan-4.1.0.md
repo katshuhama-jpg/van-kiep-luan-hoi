@@ -5,6 +5,7 @@ Nguồn: docs/research/lam-sau-he-thong.md (báo cáo "Làm sâu hệ thống V�
 Luật trả lời góp ý (Tyler dặn 31/10): việc chưa làm, chưa có trong plan có ngày thì KHÔNG trả lời, để trống và để trạng thái `moi` cho người chơi và Tyler dễ theo dõi. Chỉ trả lời khi đã làm xong, hoặc đã có lịch thì nêu rõ ngày và bản (vd "lên trong bản cập nhật sáng Chủ nhật 1/11, thuộc bản 4.1.0"). Góp ý có nhiều ý mà mới xong một phần thì chỉ nói phần đã xong. Không viết "bản sau", "đang làm", "vài ngày tới", "đã ghi nhận". Áp dụng cho cả cáo thị và bài Threads.
 
 Luật tặng phúc (Tyler chốt 6/11): mỗi lần trả lời một góp ý (kể cả trả lời thêm cho góp ý đã được trả lời trước) đều tặng 10 phúc.
+Lưu ý kỹ thuật (6/11): `vkl_gift.to_player` phải là USERNAME (vkl_players.username), không phải player_id. Hàm vkl_payout_claim3 so theo username; ghi player_id thì quà không bao giờ tới tay và không hiện bảng "Phúc duyên tìm đến".
 
 Thử trước khi đẩy: `node scripts/smoke.cjs` và `node scripts/smoke-login.cjs` (thêm một lần với `FAIL_ME=1`), cả hai phải OK.
 
