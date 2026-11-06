@@ -4,14 +4,14 @@ html,body{margin:0;height:100%;background:#120c07}
 body{font-family:'Barlow Semi Condensed',system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
 #app{position:relative;width:100%;max-width:430px;height:100vh;height:100dvh;margin:0 auto;background:var(--dark);display:flex;flex-direction:column;overflow:hidden}
 @media (min-width:600px){#app{height:min(900px,100vh);margin-top:max(0px,calc((100vh - 900px)/2));border:4px solid var(--dark);box-shadow:0 0 0 4px var(--gold)}}
-img{image-rendering:pixelated}
+img{image-rendering:pixelated;image-rendering:crisp-edges;image-rendering:pixelated}
 button{font-family:inherit;cursor:pointer}
 a{color:inherit}
 .hdr{display:flex;gap:10px;align-items:center;padding:8px 12px;background:var(--ink);border-bottom:3px solid var(--dark);flex-shrink:0}
 .ttl{font-family:'Protest Revolution',sans-serif;font-size:26px;color:var(--paper)}
 .lc{font-size:22px;font-weight:700;color:var(--goldl);line-height:1}
 .scene{position:relative;overflow:hidden;border-bottom:3px solid var(--dark);flex-shrink:0}
-.scene>.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.scene>.bg{position:absolute;left:50%;bottom:0;width:768px;height:480px;max-width:none;transform:translateX(-50%)}
 .body{display:flex;flex-direction:column;gap:10px;padding:10px 12px;background:var(--paper2);flex:1;overflow-y:auto}
 .card{display:flex;flex-direction:column;gap:6px;padding:10px 12px;background:var(--paper3);border:3px solid var(--dark)}
 .card.dark{background:var(--ink);color:var(--paper)}
@@ -40,7 +40,7 @@ nav.bot a.mid{margin-top:-22px;min-height:76px;background:var(--red);border:3px 
 .tabs button{min-height:44px;border:0;border-right:2px solid var(--dark);background:var(--paper);font-size:16px;font-weight:700;color:var(--dark)}
 .tabs button.on{background:var(--goldl)}
 .slot{width:56px;height:56px;background:var(--paper2);border:3px solid var(--dark);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#a88a5a;text-align:center}
-.slot img{width:40px;height:40px}
+.slot img{width:32px;height:32px}
 .tag{font-size:11px;font-weight:700;color:var(--paper3);text-shadow:1px 1px 0 var(--dark)}
 .hp{height:6px;background:var(--ink);border:2px solid var(--dark)}.hp>i{display:block;height:100%}
 .unit{position:absolute;display:flex;flex-direction:column;align-items:center;gap:2px}

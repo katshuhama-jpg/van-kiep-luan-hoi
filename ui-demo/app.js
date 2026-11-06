@@ -22,7 +22,7 @@
   /* ---------- Màn chính ---------- */
   function home() {
     var need = 2200 + (S.layer - 2) * 600, p = Math.floor(S.tv / need * 100);
-    return '<div class="hdr"><div style="width:52px;height:52px;border:3px solid var(--gold);background:var(--paper2);overflow:hidden;flex-shrink:0"><img src="img/ct_head.png" alt="" style="width:70px;margin:2px 0 0 -11px"></div>' +
+    return '<div class="hdr"><div style="width:52px;height:52px;border:3px solid var(--gold);background:var(--paper2);overflow:hidden;flex-shrink:0"><img src="img/ct_head.png" alt="" style="width:74px;height:56px;margin:2px 0 0 -11px"></div>' +
       '<div style="flex:1;display:flex;flex-direction:column"><span style="font-size:17px;font-weight:700;color:var(--paper)">Lâm Thanh Vân</span><span class="lc">Lực chiến ' + fmt(24180 + (S.layer - 2) * 1350) + '</span></div>' +
       '<div style="display:flex;flex-direction:column;align-items:flex-end;font-size:14px;font-weight:700;color:var(--paper)"><span>2.003 linh thạch</span><span style="color:#c8b0ff">Mộng lực 2/3</span></div></div>' +
       '<div class="scene" style="height:46%;min-height:300px"><img class="bg" src="img/bg_tien.png" alt="">' +
@@ -95,7 +95,7 @@
   function thap() {
     var pool = [['Thường', '#6b5233', 'Hồi khí', 'Hồi 10% máu sau mỗi trận'], ['Hiếm', '#3d6fb0', 'Huyết chiến', '+25% công khi máu dưới nửa'], ['Quý', '#a8303a', 'Long uy', 'Boss rơi đồ đôi'], ['Thường', '#6b5233', 'Thân pháp', '+10% né đòn'], ['Hiếm', '#3d6fb0', 'Mộng điệp hộ', 'Bướm theo bên mạnh gấp đôi']];
     var st = S.floor % 3, cards = [pool[st], pool[st + 1], pool[st + 2]];
-    var foes = [['Hổ yêu', 'm_dk_tiger', 174], ['Kỳ lân non', 'm_dk_qilin', 128], ['U hồn', 'm_ghost', 102]];
+    var foes = [['Hổ yêu', 'm_dk_tiger', 116], ['Kỳ lân non', 'm_dk_qilin', 128], ['U hồn', 'm_ghost', 68]];
     var f = S.floor % 10 === 0 ? ['Boss: Phi Long', 'm_dk_flydragon', 224] : foes[S.floor % 3];
     var act = S.tPhase === 'fight'
       ? '<button class="btn big" data-act="tfight">Khiêu chiến tầng ' + S.floor + '</button>'
@@ -154,7 +154,7 @@
       '<div class="body"><div class="card"><span class="sub" style="font-weight:600">Giấc mộng thứ 44 · bản thử: nút Nhập mộng sẽ mở cách chơi kiếp hiện tại</span><b style="font-size:22px">Lâm Thanh Vân · Nguyên Anh tầng 3</b><span style="font-size:16px;color:var(--brown)">Sống 86 năm, chính đạo. Tử trận ở Hắc Phong Lĩnh khi che cho sư muội.</span></div>' +
       '<div class="g2"><div class="card"><span class="sub" style="font-weight:600">Mộng ngộ</span><b style="font-size:24px;color:var(--gold)">+640</b><span class="sub">Kim quang, đạo hạnh +640</span></div>' +
       '<div class="card" style="flex-direction:row;align-items:center;gap:8px"><div class="bf bf-red" role="img" aria-label="Mộng điệp Huyết Hận"></div><div style="display:flex;flex-direction:column"><span class="sub" style="font-weight:600">Kết cục mới</span><b style="font-size:17px;color:var(--redd)">Chết vì che cho người khác</b></div></div></div>' +
-      '<div class="card" style="flex-direction:row;gap:12px;align-items:center"><img src="img/bia.png" alt="Bia luân hồi" style="width:42px;height:60px"><div style="display:flex;flex-direction:column;gap:6px;flex:1"><label for="dn" class="sub" style="font-weight:600">Di ngôn khắc lên bia</label><select id="dn" style="font-family:inherit;font-size:16px;font-weight:600;padding:8px;border:2px solid var(--dark);background:var(--paper);color:var(--dark)"><option>Kiếp này nợ một người, kiếp sau trả.</option><option>Kiếm còn, người đã đi.</option><option>Đừng tin sư huynh họ Mạc.</option></select></div></div>' +
+      '<div class="card" style="flex-direction:row;gap:12px;align-items:center"><img src="img/bia.png" alt="Bia luân hồi" style="width:28px;height:40px"><div style="display:flex;flex-direction:column;gap:6px;flex:1"><label for="dn" class="sub" style="font-weight:600">Di ngôn khắc lên bia</label><select id="dn" style="font-family:inherit;font-size:16px;font-weight:600;padding:8px;border:2px solid var(--dark);background:var(--paper);color:var(--dark)"><option>Kiếp này nợ một người, kiếp sau trả.</option><option>Kiếm còn, người đã đi.</option><option>Đừng tin sư huynh họ Mạc.</option></select></div></div>' +
       '<a class="btn big" href="#home" style="text-decoration:none">Về tu luyện</a></div>';
   }
 
@@ -162,7 +162,7 @@
   function dongphu() {
     function b(name, sub, btn, extra) { return '<div class="card" style="flex-direction:row;align-items:center;gap:12px">' + (extra || '') + '<div style="display:flex;flex-direction:column;gap:4px;flex:1"><b style="font-size:18px">' + name + '</b><span class="sub" style="font-size:15px">' + sub + '</span></div><button class="btn" style="min-height:44px;padding:0 12px;font-size:16px">' + btn + '</button></div>'; }
     return '<div class="scene" style="height:190px"><img class="bg" src="img/bg_dongphu.png" alt=""><div style="position:absolute;left:14px;bottom:12px;padding:6px 12px;background:var(--paper);border:3px solid var(--dark)"><div style="font-family:\'Protest Revolution\';font-size:28px;color:#8a1a1a">Thái Sơ Động Phủ</div><div class="sub" style="font-weight:600">Cấp 2 · nâng cấp cần 1.200 linh thạch</div></div></div>' +
-      '<div class="body">' + b('Dược viên', 'Kê vàng chín sau 1 giờ 52 phút · 2 luống linh thảo đã chín', 'Thu', '<img src="img/noike.png" alt="" style="width:52px;height:47px">') +
+      '<div class="body">' + b('Dược viên', 'Kê vàng chín sau 1 giờ 52 phút · 2 luống linh thảo đã chín', 'Thu', '<img src="img/noike.png" alt="" style="width:40px;height:36px">') +
       b('Đan phòng', 'Phá Chướng Đan · còn thiếu 1 linh thảo', 'Luyện') + b('Luyện khí thất', '7 món trùng mang từ mộng về · gộp 3 món ra một ngoại trang', 'Gộp') +
       '<a class="card" href="#mongdiep" style="text-decoration:none;flex-direction:row;align-items:center;gap:10px"><div class="bf bf-gold"></div><div style="flex:1"><b style="font-size:18px">Mộng điệp</b><div class="sub">Đã gom 14 / 40 con · 3 con theo bên</div></div><b>›</b></a>' +
       '<div class="card dark" style="font-size:15px"><span><b style="color:var(--goldl)">Nồi kê vàng:</b> nấu trước khi nhập mộng, giấc mộng sau dài thêm 10 năm thọ nguyên.</span></div></div>' + nav('dongphu');
