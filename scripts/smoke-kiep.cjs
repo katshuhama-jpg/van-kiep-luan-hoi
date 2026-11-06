@@ -72,17 +72,18 @@ const kWin = (i) => Math.round(1050 - i * 45);
   await q.locator('.focus-btn, button', { hasText: /^Trừ yêu$/ }).first().click({ timeout: 5000 }).catch(() => {});
   await q.waitForTimeout(500);
   await q.locator('.hunt-item').first().click({ timeout: 5000 }).catch(() => {});
-  await q.locator('button.play').first().click({ timeout: 3000 }).catch(() => {});
+  await q.locator('button.play[aria-label="Tiếp tục"]').click({ timeout: 3000 }).catch(() => {});
   let seen = '', ch;
-  for (let k = 0; k < 40; k++) {
+  for (let k = 0; k < 90; k++) {
     await q.waitForTimeout(500);
     await q.locator('.choice').last().click({ timeout: 200 }).catch(() => {});
-    const t = (await q.locator('.dmg.p').allInnerTexts().catch(() => [])).join(' | ');
+    await q.locator('button.play[aria-label="Tiếp tục"]:not([disabled])').click({ timeout: 200 }).catch(() => {});
+    const t = (await q.locator('.dmg.p').allInnerTexts().catch(() => [])).join(' | ') + ' | ' + (await q.locator('.log, .gia-pha, main').first().innerText().catch(() => '')).match(/\(tu vi năm nay đã đầy\)/)?.[0]?.replace(/[()]/g, '').replace('tu vi', 'Tu vi');
     const m = t.match(/Tu vi năm nay đã đầy|\+\d+ tu vi/);
     ch = JSON.parse(await q.evaluate(() => localStorage.getItem('vkl.save'))).char;
     if (m && Object.values(ch.kills || {}).some((n) => n > 0)) { seen = m[0]; break; }
   }
-  console.log('  trận đầu sau khi đầy:', seen, 'cgY', ch.cgY, 'tuổi', Math.floor(ch.age));
+  console.log('  trận đầu sau khi đầy:', seen, 'cgY', ch.cgY, 'tuổi', Math.floor(ch.age), 'focus', ch.focus, ch.huntTarget, JSON.stringify(ch.kills)); if (!seen && DIR) await q.screenshot({ path: path.join(DIR, 'kiep-fail.png') });
   ok(Math.floor(ch.age) !== 200 || seen === 'Tu vi năm nay đã đầy', 'tiên nhân tu vi đã đầy năm: báo "Tu vi năm nay đã đầy" thay vì +X');
   if (DIR) await q.screenshot({ path: path.join(DIR, 'tu-vi-day.png') });
   ok(!q.errs.length, 'trảm yêu không lỗi JS ' + q.errs.join(' | '));
