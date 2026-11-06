@@ -14,22 +14,35 @@
   function route() { return (location.hash || '#home').slice(1); }
 
   function nav(on) {
-    function a(h, t) { return '<a href="#' + h + '"' + (on === h ? ' class="on"' : '') + '>' + t + '</a>'; }
-    return '<nav class="bot" aria-label="Điều hướng chính">' + a('home', 'Tu luyện') + a('nhanvat', 'Nhân vật') +
-      '<a class="mid" href="#tinhmong">Nhập mộng</a>' + a('dicanh', 'Đi cảnh') + a('dongphu', 'Động phủ') + '</nav>';
+    function a(h, t, ic) { return '<a href="#' + h + '"' + (on === h ? ' class="on"' : '') + '><img src="img/' + ic + '.png" alt="">' + t + '</a>'; }
+    return '<nav class="bot" aria-label="Điều hướng chính">' + a('home', 'Tu luyện', 'g_lien_hoa_dai') + a('nhanvat', 'Nhân vật', 'g_ngoc_boi_xanh') +
+      '<a class="mid" href="#tinhmong"><img src="img/g_thuy_linh_chau.png" alt="">Nhập mộng</a>' + a('dicanh', 'Đi cảnh', 'g_thai_a_kiem') + a('dongphu', 'Động phủ', 'lo_dan') + '</nav>';
+  }
+
+  var FX = {"ring":[36,13,8],"ring2":[46,16,8],"motes":[36,44,12],"pillar":[22,60,8],"orbit":[50,40,16],"rays":[70,70,6],"luatien":[60,30,8],"tuongvan":[58,16,1],"sen":[40,12,1],"phatquang":[40,40,6],"kiem":[60,60,8],"halo":[40,40,8],"petals":[50,56,12]};
+  function fx(n, top, dur, extra) {
+    var d = FX[n];
+    return '<span class="pfx" aria-hidden="true" style="top:' + top + '%;width:calc(var(--k)*' + d[0] + 'px);height:calc(var(--k)*' + d[1] + 'px);background-image:url(img/fx_' + n + '.png);' +
+      (d[2] > 1 ? 'animation:pfx ' + dur + 's steps(' + (d[2] - 1) + ',jump-none) infinite;background-size:' + (d[2] * 100) + '% 100%;' : 'background-size:100% 100%;') + (extra || '') + '"></span>';
+  }
+  /* khung 64x64 điểm ảnh như game, hiệu ứng đặt theo % giống components/Sprite.tsx */
+  function charbox(img, w, h, alt, back, front) {
+    return '<div class="cbox">' + (back || '') + '<img src="img/' + img + '.png" alt="' + alt + '" class="cimg" style="width:calc(var(--k)*' + w + 'px);height:calc(var(--k)*' + h + 'px)">' + (front || '') + '</div>';
   }
 
   /* ---------- Màn chính ---------- */
   function home() {
     var need = 2200 + (S.layer - 2) * 600, p = Math.floor(S.tv / need * 100);
-    return '<div class="hdr"><div style="width:52px;height:52px;border:3px solid var(--gold);background:var(--paper2);overflow:hidden;flex-shrink:0"><img src="img/ct_head.png" alt="" style="width:calc(var(--k)*37px);height:calc(var(--k)*28px);margin:2px 0 0 -11px"></div>' +
+    return '<div class="hdr"><div style="width:52px;height:52px;border:3px solid var(--gold);background:var(--paper2);overflow:hidden;flex-shrink:0"><img src="img/ct_head.png" alt="" style="width:60px;height:48px;margin:4px 0 0 -7px"></div>' +
       '<div style="flex:1;display:flex;flex-direction:column"><span style="font-size:17px;font-weight:700;color:var(--paper)">Lâm Thanh Vân</span><span class="lc">Lực chiến ' + fmt(24180 + (S.layer - 2) * 1350) + '</span></div>' +
       '<div style="display:flex;flex-direction:column;align-items:flex-end;font-size:14px;font-weight:700;color:var(--paper)"><span>2.003 linh thạch</span><span style="color:#c8b0ff">Mộng lực 2/3</span></div></div>' +
       '<div class="scene" style="height:46%;min-height:300px"><img class="bg" src="img/bg_tien_w.png" alt="">' +
-      '<div style="position:absolute;left:10px;top:12px;display:flex;flex-direction:column;gap:8px"><button class="side">Thư</button><button class="side">Quà</button><a class="side" href="#mongdiep" style="text-decoration:none">Mộng điệp</a></div>' +
-      '<div style="position:absolute;right:10px;top:12px;display:flex;flex-direction:column;gap:8px"><button class="side">Bảng</button><button class="side">Nhiệm vụ</button></div>' +
+      '<div style="position:absolute;left:10px;top:12px;display:flex;flex-direction:column;gap:8px"><button class="side"><img src="img/g_lac_thu.png" alt="">Thư</button><button class="side"><img src="img/van_co_bao.png" alt="">Quà</button><a class="side" href="#mongdiep" style="text-decoration:none"><span class="bf bf-gold" style="--k:2"></span>Mộng điệp</a></div>' +
+      '<div style="position:absolute;right:10px;top:12px;display:flex;flex-direction:column;gap:8px"><button class="side"><img src="img/g_thien_co_lenh.png" alt="">Bảng</button><button class="side"><img src="img/g_la_ban_dong.png" alt="">Nhiệm vụ</button></div>' +
       '<div class="q" style="left:38%;bottom:12%"></div><div class="q" style="left:48%;bottom:9%;animation-delay:1.2s;background:#fff8e6"></div><div class="q" style="left:58%;bottom:12%;animation-delay:2.1s"></div>' +
-      '<div class="bob" style="position:absolute;left:0;right:0;bottom:6%;display:flex;flex-direction:column;align-items:center"><img src="img/chanthan.png" alt="Chân thân đang tọa thiền" style="width:calc(var(--k)*37px);height:calc(var(--k)*51px);position:relative;z-index:2"><img src="img/cloud.png" alt="" style="width:calc(var(--k)*62px);height:calc(var(--k)*20px);margin-top:calc(var(--k)*-10px)"></div>' +
+      '<div style="position:absolute;left:0;right:0;bottom:4%;display:flex;justify-content:center">' + charbox('chanthan', 28, 47, 'Chân thân đang tọa thiền',
+        fx('rays', 45, 2.4, 'opacity:.55') + fx('pillar', 48, 1.2, 'opacity:.7') + fx('halo', 34, 2.4, 'opacity:.9') + fx('ring2', 94, 2.4, 'opacity:.7') + fx('ring', 93, 1.6) + fx('tuongvan', 95, 1),
+        fx('motes', 50, 2.4) + fx('orbit', 55, 2)) + '</div>' +
       '<div id="fl" style="position:absolute;left:0;right:0;top:30%;text-align:center;font-size:22px;font-weight:700;color:var(--goldl);text-shadow:2px 2px 0 var(--dark);opacity:0"></div>' +
       (S.kiep ? '<div class="flash" style="position:absolute;inset:0;background:#e8e0ff"></div><div class="kiep" style="position:absolute;left:0;right:0;top:16%;text-align:center;font-family:\'Protest Revolution\';font-size:40px;color:var(--goldl);text-shadow:3px 3px 0 var(--vio)">Tam cửu thiên kiếp</div>' : '') +
       '</div><div class="body"><div class="card"><div class="row"><span class="h">Ngộ Đạo tầng ' + S.layer + '</span><span style="font-size:15px;font-weight:700;color:var(--jade)">+13 tu vi / giây</span></div>' +
@@ -105,7 +118,7 @@
     return '<div class="scene" style="height:290px"><img class="bg" src="img/bg_dai_w.png" alt="" style="filter:brightness(.7)">' +
       '<div style="position:absolute;left:12px;right:12px;top:10px;display:flex;justify-content:space-between;gap:16px;color:var(--paper3);font-size:15px;font-weight:700"><span>Tầng ' + S.floor + ' · Chân thân lực 24.180</span><span>' + f[0] + '</span></div>' +
       '<div style="position:absolute;right:12px;top:34px;width:45%" class="hp"><i style="width:' + (S.tPhase === 'pick' ? 0 : 100) + '%;background:var(--red)"></i></div>' +
-      '<img class="bob" src="img/chanthan.png" alt="Chân thân" style="width:calc(var(--k)*37px);height:calc(var(--k)*51px);position:absolute;left:40px;bottom:30px;">' +
+      '<img class="bob" src="img/chanthan.png" alt="Chân thân" style="width:calc(var(--k)*28px);height:calc(var(--k)*47px);position:absolute;left:40px;bottom:30px;">' +
       '<img class="bob" src="img/' + f[1] + '.png" alt="' + f[0] + '" style="position:absolute;right:20px;bottom:24px;width:calc(var(--k)*' + f[2] + 'px)"></div>' +
       '<div class="body">' + act + '<div class="card"><b>Mộng phù lượt này (' + S.deck.length + ')</b><span class="sub" style="font-size:15px">' + S.deck.join(' · ') + '</span></div>' +
       '<div class="card dark"><b style="color:var(--goldl)">Khi vắng mặt</b><span style="font-size:15px">Chân thân tự leo từ tầng 34 lên 36 trong 8 giờ qua, mở 2 rương.</span></div>' +
@@ -224,6 +237,18 @@
         }
         render();
         var me = document.getElementById('u-me'); if (me) me.classList.add('atk');
+        var sc = document.querySelector('.scene'); var en = document.querySelectorAll('.en');
+        if (sc && me && en.length && !S.won) {
+          var tg = en[S.tick % en.length], a = me.getBoundingClientRect(), b = tg.getBoundingClientRect(), o = sc.getBoundingClientRect();
+          var shot = document.createElement('span'); shot.className = 'shot';
+          shot.style.left = (a.right - o.left - 6) + 'px'; shot.style.top = (a.top - o.top + a.height / 2) + 'px';
+          shot.style.setProperty('--dx', (b.left - a.right + b.width / 3) + 'px'); shot.style.setProperty('--dy', (b.top - a.top + b.height / 2 - a.height / 2) + 'px');
+          sc.appendChild(shot);
+          setTimeout(function () {
+            var sl = document.createElement('span'); sl.className = 'slash'; sl.style.left = (b.left - o.left + b.width / 3) + 'px'; sl.style.top = (b.top - o.top + b.height / 2) + 'px'; sc.appendChild(sl);
+            var fw = document.createElement('span'); fw.className = 'flashw'; sc.appendChild(fw); sc.classList.add('shake');
+          }, 330);
+        }
         document.querySelectorAll('.en').forEach(function (e) { e.classList.add('hit'); });
         var d = document.getElementById('dmg'); if (d && !S.won) { d.textContent = '-' + fmt(3240 + (S.tick * 517) % 1900); d.style.opacity = 1; d.classList.add('float'); }
       }

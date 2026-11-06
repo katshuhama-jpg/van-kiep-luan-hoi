@@ -63,3 +63,32 @@ nav.bot a.mid{margin-top:-22px;min-height:76px;background:var(--red);border:3px 
 .node{position:absolute;border:3px solid var(--dark);color:var(--paper3);font-size:20px;font-weight:700}
 .mline{position:absolute;height:0;border-top:3px dashed var(--paper2);opacity:.55;transform-origin:0 0}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+/* ---- hào quang pixel (ảnh nướng từ components/PixelFx.tsx) ---- */
+.cbox{position:relative;width:calc(var(--k)*64px);height:calc(var(--k)*64px)}
+.cimg{position:absolute;left:50%;bottom:calc(var(--k)*6px);transform:translateX(-50%);z-index:2;animation:breath 2.4s steps(2) infinite}
+@keyframes breath{0%,100%{margin-bottom:0}50%{margin-bottom:var(--k)}}
+.pfx{position:absolute;left:50%;transform:translate(-50%,-50%);display:block;image-rendering:pixelated;background-repeat:no-repeat;pointer-events:none;z-index:1}
+.cbox>.pfx:nth-last-child(-n+2){z-index:3}
+@keyframes pfx{from{background-position:0 0}to{background-position:100% 0}}
+/* ---- khung pixel: góc khuyết 1 ô, viền tối, sáng trên tối dưới ---- */
+.card,.btn,.side,.slot,.stat{border:0!important;margin:3px;box-shadow:0 -3px 0 0 var(--dark),0 3px 0 0 var(--dark),-3px 0 0 0 var(--dark),3px 0 0 0 var(--dark),inset 0 3px 0 0 rgba(255,255,255,.55),inset 0 -3px 0 0 rgba(90,65,40,.25)}
+.btn{box-shadow:0 -3px 0 0 var(--dark),0 3px 0 0 var(--dark),-3px 0 0 0 var(--dark),3px 0 0 0 var(--dark),0 7px 0 0 rgba(31,22,13,.55),inset 0 3px 0 0 rgba(255,255,255,.35),inset 0 -4px 0 0 rgba(0,0,0,.22)}
+.btn:active{transform:translateY(3px);box-shadow:0 -3px 0 0 var(--dark),0 3px 0 0 var(--dark),-3px 0 0 0 var(--dark),3px 0 0 0 var(--dark),inset 0 -2px 0 0 rgba(0,0,0,.22)}
+.card.dark{box-shadow:0 -3px 0 0 var(--dark),0 3px 0 0 var(--dark),-3px 0 0 0 var(--dark),3px 0 0 0 var(--dark),inset 0 3px 0 0 rgba(255,207,110,.25)}
+.side{flex-direction:column;gap:1px;width:56px;min-height:58px;font-size:12px}
+.side img{width:32px;height:32px}
+.side .bf{margin:4px 0}
+nav.bot a{flex-direction:column;gap:2px;font-size:13px}
+nav.bot a img{width:32px;height:32px}
+nav.bot a.mid{font-size:17px;gap:0}
+nav.bot a.mid img{width:32px;height:32px}
+.body{gap:12px}
+/* ---- hiệu ứng trận ---- */
+.shot{position:absolute;width:calc(var(--k)*12px);height:calc(var(--k)*12px);background:url(img/orb.png) 0 0/100% 100%;image-rendering:pixelated;z-index:5;animation:shot .35s steps(5) forwards}
+@keyframes shot{from{transform:translate(0,0)}to{transform:translate(var(--dx),var(--dy))}}
+.slash{position:absolute;width:calc(var(--k)*24px);height:calc(var(--k)*4px);background:#fff8e6;box-shadow:0 0 0 var(--k) #ffcf6e;z-index:6;transform:rotate(-35deg);animation:slash .3s steps(3) forwards}
+@keyframes slash{0%{opacity:1;width:0}60%{opacity:1}100%{opacity:0;width:calc(var(--k)*28px)}}
+.shake{animation:shake .25s steps(2) 1}
+@keyframes shake{0%,100%{transform:translate(0,0)}50%{transform:translate(2px,-2px)}}
+.flashw{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:7;animation:flashw .2s steps(2) 1}
+@keyframes flashw{0%{opacity:.35}100%{opacity:0}}
