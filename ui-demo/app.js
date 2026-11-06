@@ -22,14 +22,14 @@
   /* ---------- Màn chính ---------- */
   function home() {
     var need = 2200 + (S.layer - 2) * 600, p = Math.floor(S.tv / need * 100);
-    return '<div class="hdr"><div style="width:52px;height:52px;border:3px solid var(--gold);background:var(--paper2);overflow:hidden;flex-shrink:0"><img src="img/ct_head.png" alt="" style="width:74px;height:56px;margin:2px 0 0 -11px"></div>' +
+    return '<div class="hdr"><div style="width:52px;height:52px;border:3px solid var(--gold);background:var(--paper2);overflow:hidden;flex-shrink:0"><img src="img/ct_head.png" alt="" style="width:calc(var(--k)*37px);height:calc(var(--k)*28px);margin:2px 0 0 -11px"></div>' +
       '<div style="flex:1;display:flex;flex-direction:column"><span style="font-size:17px;font-weight:700;color:var(--paper)">Lâm Thanh Vân</span><span class="lc">Lực chiến ' + fmt(24180 + (S.layer - 2) * 1350) + '</span></div>' +
       '<div style="display:flex;flex-direction:column;align-items:flex-end;font-size:14px;font-weight:700;color:var(--paper)"><span>2.003 linh thạch</span><span style="color:#c8b0ff">Mộng lực 2/3</span></div></div>' +
-      '<div class="scene" style="height:46%;min-height:300px"><img class="bg" src="img/bg_tien.png" alt="">' +
+      '<div class="scene" style="height:46%;min-height:300px"><img class="bg" src="img/bg_tien_w.png" alt="">' +
       '<div style="position:absolute;left:10px;top:12px;display:flex;flex-direction:column;gap:8px"><button class="side">Thư</button><button class="side">Quà</button><a class="side" href="#mongdiep" style="text-decoration:none">Mộng điệp</a></div>' +
       '<div style="position:absolute;right:10px;top:12px;display:flex;flex-direction:column;gap:8px"><button class="side">Bảng</button><button class="side">Nhiệm vụ</button></div>' +
       '<div class="q" style="left:38%;bottom:12%"></div><div class="q" style="left:48%;bottom:9%;animation-delay:1.2s;background:#fff8e6"></div><div class="q" style="left:58%;bottom:12%;animation-delay:2.1s"></div>' +
-      '<div class="bob" style="position:absolute;left:0;right:0;bottom:6%;display:flex;flex-direction:column;align-items:center"><img src="img/chanthan.png" alt="Chân thân đang tọa thiền" style="width:74px;height:102px;position:relative;z-index:2"><img src="img/cloud.png" alt="" style="width:124px;height:40px;margin-top:-20px"></div>' +
+      '<div class="bob" style="position:absolute;left:0;right:0;bottom:6%;display:flex;flex-direction:column;align-items:center"><img src="img/chanthan.png" alt="Chân thân đang tọa thiền" style="width:calc(var(--k)*37px);height:calc(var(--k)*51px);position:relative;z-index:2"><img src="img/cloud.png" alt="" style="width:calc(var(--k)*62px);height:calc(var(--k)*20px);margin-top:calc(var(--k)*-10px)"></div>' +
       '<div id="fl" style="position:absolute;left:0;right:0;top:30%;text-align:center;font-size:22px;font-weight:700;color:var(--goldl);text-shadow:2px 2px 0 var(--dark);opacity:0"></div>' +
       (S.kiep ? '<div class="flash" style="position:absolute;inset:0;background:#e8e0ff"></div><div class="kiep" style="position:absolute;left:0;right:0;top:16%;text-align:center;font-family:\'Protest Revolution\';font-size:40px;color:var(--goldl);text-shadow:3px 3px 0 var(--vio)">Tam cửu thiên kiếp</div>' : '') +
       '</div><div class="body"><div class="card"><div class="row"><span class="h">Ngộ Đạo tầng ' + S.layer + '</span><span style="font-size:15px;font-weight:700;color:var(--jade)">+13 tu vi / giây</span></div>' +
@@ -42,10 +42,10 @@
   function nhanvat() {
     var t = S.nvTab, inner = '';
     if (t === 'gear') {
-      inner = '<div class="scene" style="height:380px"><img class="bg" src="img/bg_tien.png" alt="" style="filter:brightness(.85)">' +
+      inner = '<div class="scene" style="height:380px"><img class="bg" src="img/bg_tien_w.png" alt="" style="filter:brightness(.85)">' +
         '<div style="position:absolute;left:14px;top:16px;display:flex;flex-direction:column;gap:10px"><div class="slot"><img src="img/g_can_tuong_kiem.png" alt="Càn Tượng Kiếm"></div><div class="slot"><img src="img/g_bich_ngoc_boi.png" alt="Bích Ngọc Bội"></div><div class="slot">Áo</div><div class="slot">Giày</div><div class="slot">Mũ</div></div>' +
         '<div style="position:absolute;right:14px;top:16px;display:flex;flex-direction:column;gap:10px"><div class="slot"><img src="img/g_ha_lac_ngoc_phu.png" alt="Hà Lạc Ngọc Phù"></div><div class="slot"><img src="img/g_can_khon_dai.png" alt="Càn Khôn Đại"></div><div class="slot">Pháp bảo</div><div class="slot">Linh thú</div><div class="slot">Mộng điệp</div></div>' +
-        '<div class="bob" style="position:absolute;left:0;right:0;top:70px;display:flex;justify-content:center"><img src="img/st_front.png" alt="Chân thân" style="width:60px;height:108px"></div>' +
+        '<div class="bob" style="position:absolute;left:0;right:0;top:70px;display:flex;justify-content:center"><img src="img/st_front.png" alt="Chân thân" style="width:calc(var(--k)*30px);height:calc(var(--k)*54px);"></div>' +
         '<div style="position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:center"><button class="btn gold" style="min-height:44px;padding:0 20px;font-size:17px">Trang bị nhanh</button></div></div>' +
         '<div class="body">' + [['Công', '3.240'], ['Thủ', '1.980'], ['Khí huyết', '41.500'], ['Tốc', '212']].map(function (r) { return '<div class="row" style="font-size:16px"><b>' + r[0] + '</b><span>' + r[1] + '</span></div>'; }).join('') + '</div>';
     } else if (t === 'end') {
@@ -76,15 +76,15 @@
   function afk() {
     var hp = S.hp.map(function (h) { return Math.round(h) + '%'; });
     var c = S.tick === 0 ? '' : ' ';
-    return '<div class="scene" style="height:330px"><img class="bg" src="img/bg_dongphu.png" alt="">' +
+    return '<div class="scene" style="height:330px"><img class="bg" src="img/bg_dongphu_w.png" alt="">' +
       '<div style="position:absolute;left:10px;top:8px;padding:3px 8px;background:rgba(31,22,13,.7);color:var(--goldl);font-size:14px;font-weight:700">Hắc Phong Lĩnh · Ải 3-' + S.stage + ' · Hiệp ' + Math.min(10, Math.max(1, Math.ceil(S.tick / 2))) + '/10</div>' +
-      '<div id="u-me" class="unit" style="left:92px;top:96px"><span class="tag">Chân thân</span><div class="hp" style="width:60px"><i style="width:92%;background:var(--jade)"></i></div><img src="img/st_right.png" alt="Chân thân" style="width:82px;height:104px"></div>' +
-      '<div class="unit" style="left:14px;top:44px"><span class="tag">Hộ pháp kiếp 31</span><div class="hp" style="width:50px"><i style="width:80%;background:var(--jade)"></i></div><img src="img/kt_red.png" alt="Hộ pháp kiếp 31" style="width:44px;height:96px"></div>' +
-      '<div class="unit" style="left:14px;top:200px"><span class="tag">Hộ pháp kiếp 40</span><div class="hp" style="width:50px"><i style="width:100%;background:var(--jade)"></i></div><img src="img/kt_blue.png" alt="Hộ pháp kiếp 40" style="width:42px;height:98px"></div>' +
-      '<div class="unit" style="left:92px;top:240px"><img src="img/pet.png" alt="Linh thú Xích Lang" style="width:126px;height:62px"></div>' +
-      '<div class="unit en" style="right:14px;top:40px"><span class="tag">Hổ yêu</span><div class="hp" style="width:60px"><i style="width:' + hp[0] + ';background:var(--red)"></i></div><img src="img/m_dk_tiger.png" alt="Hổ yêu" style="width:116px;transform:scaleX(-1)"></div>' +
-      '<div class="unit en" style="right:30px;top:150px"><span class="tag">Sói hoang</span><div class="hp" style="width:60px"><i style="width:' + hp[1] + ';background:var(--red)"></i></div><img src="img/m_wolf.png" alt="Sói hoang" style="width:126px;transform:scaleX(-1)"></div>' +
-      '<div class="unit en" style="right:42%;top:196px"><span class="tag">U hồn</span><div class="hp" style="width:50px"><i style="width:' + hp[2] + ';background:var(--red)"></i></div><img src="img/m_ghost.png" alt="U hồn" style="width:68px"></div>' +
+      '<div id="u-me" class="unit" style="left:92px;top:96px"><span class="tag">Chân thân</span><div class="hp" style="width:60px"><i style="width:92%;background:var(--jade)"></i></div><img src="img/st_right.png" alt="Chân thân" style="width:calc(var(--k)*41px);height:calc(var(--k)*52px);"></div>' +
+      '<div class="unit" style="left:14px;top:44px"><span class="tag">Hộ pháp kiếp 31</span><div class="hp" style="width:50px"><i style="width:80%;background:var(--jade)"></i></div><img src="img/kt_red.png" alt="Hộ pháp kiếp 31" style="width:calc(var(--k)*22px);height:calc(var(--k)*48px);"></div>' +
+      '<div class="unit" style="left:14px;top:200px"><span class="tag">Hộ pháp kiếp 40</span><div class="hp" style="width:50px"><i style="width:100%;background:var(--jade)"></i></div><img src="img/kt_blue.png" alt="Hộ pháp kiếp 40" style="width:calc(var(--k)*21px);height:calc(var(--k)*49px);"></div>' +
+      '<div class="unit" style="left:92px;top:240px"><img src="img/pet.png" alt="Linh thú Xích Lang" style="width:calc(var(--k)*63px);height:calc(var(--k)*31px);"></div>' +
+      '<div class="unit en" style="right:14px;top:40px"><span class="tag">Hổ yêu</span><div class="hp" style="width:60px"><i style="width:' + hp[0] + ';background:var(--red)"></i></div><img src="img/m_dk_tiger.png" alt="Hổ yêu" style="width:calc(var(--k)*58px);height:calc(var(--k)*38px);transform:scaleX(-1)"></div>' +
+      '<div class="unit en" style="right:30px;top:150px"><span class="tag">Sói hoang</span><div class="hp" style="width:60px"><i style="width:' + hp[1] + ';background:var(--red)"></i></div><img src="img/m_wolf.png" alt="Sói hoang" style="width:calc(var(--k)*63px);height:calc(var(--k)*31px);transform:scaleX(-1)"></div>' +
+      '<div class="unit en" style="right:42%;top:196px"><span class="tag">U hồn</span><div class="hp" style="width:50px"><i style="width:' + hp[2] + ';background:var(--red)"></i></div><img src="img/m_ghost.png" alt="U hồn" style="width:calc(var(--k)*34px);height:calc(var(--k)*46px);"></div>' +
       '<div id="dmg" style="position:absolute;right:60px;top:100px;font-size:26px;font-weight:700;color:var(--goldl);text-shadow:2px 2px 0 var(--dark);opacity:0"></div>' +
       (S.won ? '<div style="position:absolute;inset:0;background:rgba(31,22,13,.55);display:flex;align-items:center;justify-content:center"><span style="font-family:\'Protest Revolution\';font-size:40px;color:var(--goldl);text-shadow:3px 3px 0 var(--dark)">Qua ải!</span></div>' : '') +
       '<div style="position:absolute;right:10px;bottom:10px;display:flex;gap:8px"><button class="btn ' + (S.auto ? 'gold' : 'off') + '" data-act="auto" style="min-height:44px;font-size:15px;padding:0 10px">Tự động</button><button class="btn" data-act="fast" style="min-height:44px;font-size:15px;padding:0 10px">' + (S.fast ? 'Tốc x2' : 'Tốc x1') + '</button></div></div>' +
@@ -95,18 +95,18 @@
   function thap() {
     var pool = [['Thường', '#6b5233', 'Hồi khí', 'Hồi 10% máu sau mỗi trận'], ['Hiếm', '#3d6fb0', 'Huyết chiến', '+25% công khi máu dưới nửa'], ['Quý', '#a8303a', 'Long uy', 'Boss rơi đồ đôi'], ['Thường', '#6b5233', 'Thân pháp', '+10% né đòn'], ['Hiếm', '#3d6fb0', 'Mộng điệp hộ', 'Bướm theo bên mạnh gấp đôi']];
     var st = S.floor % 3, cards = [pool[st], pool[st + 1], pool[st + 2]];
-    var foes = [['Hổ yêu', 'm_dk_tiger', 116], ['Kỳ lân non', 'm_dk_qilin', 128], ['U hồn', 'm_ghost', 68]];
-    var f = S.floor % 10 === 0 ? ['Boss: Phi Long', 'm_dk_flydragon', 224] : foes[S.floor % 3];
+    var foes = [['Hổ yêu', 'm_dk_tiger', 58], ['Kỳ lân non', 'm_dk_qilin', 64], ['U hồn', 'm_ghost', 34]];
+    var f = S.floor % 10 === 0 ? ['Boss: Phi Long', 'm_dk_flydragon', 112] : foes[S.floor % 3];
     var act = S.tPhase === 'fight'
       ? '<button class="btn big" data-act="tfight">Khiêu chiến tầng ' + S.floor + '</button>'
       : '<b style="font-size:18px;color:var(--jade)">Thắng! Chọn 1 lá Mộng phù cho lượt leo này</b><div class="g3" style="gap:8px">' + cards.map(function (c) {
         return '<button data-act="tpick" data-v="' + c[2] + '" style="min-height:120px;padding:8px;border:3px solid var(--dark);background:var(--paper3);color:var(--dark);display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center"><span style="font-size:13px;font-weight:700;color:var(--paper3);background:' + c[1] + ';padding:2px 6px">' + c[0] + '</span><b style="font-size:17px">' + c[2] + '</b><span style="font-size:14px;color:var(--brown)">' + c[3] + '</span></button>';
       }).join('') + '</div>';
-    return '<div class="scene" style="height:290px"><img class="bg" src="img/bg_dai.png" alt="" style="filter:brightness(.7)">' +
+    return '<div class="scene" style="height:290px"><img class="bg" src="img/bg_dai_w.png" alt="" style="filter:brightness(.7)">' +
       '<div style="position:absolute;left:12px;right:12px;top:10px;display:flex;justify-content:space-between;gap:16px;color:var(--paper3);font-size:15px;font-weight:700"><span>Tầng ' + S.floor + ' · Chân thân lực 24.180</span><span>' + f[0] + '</span></div>' +
       '<div style="position:absolute;right:12px;top:34px;width:45%" class="hp"><i style="width:' + (S.tPhase === 'pick' ? 0 : 100) + '%;background:var(--red)"></i></div>' +
-      '<img class="bob" src="img/chanthan.png" alt="Chân thân" style="position:absolute;left:40px;bottom:30px;width:74px;height:102px">' +
-      '<img class="bob" src="img/' + f[1] + '.png" alt="' + f[0] + '" style="position:absolute;right:20px;bottom:24px;width:' + f[2] + 'px"></div>' +
+      '<img class="bob" src="img/chanthan.png" alt="Chân thân" style="width:calc(var(--k)*37px);height:calc(var(--k)*51px);position:absolute;left:40px;bottom:30px;">' +
+      '<img class="bob" src="img/' + f[1] + '.png" alt="' + f[0] + '" style="position:absolute;right:20px;bottom:24px;width:calc(var(--k)*' + f[2] + 'px)"></div>' +
       '<div class="body">' + act + '<div class="card"><b>Mộng phù lượt này (' + S.deck.length + ')</b><span class="sub" style="font-size:15px">' + S.deck.join(' · ') + '</span></div>' +
       '<div class="card dark"><b style="color:var(--goldl)">Khi vắng mặt</b><span style="font-size:15px">Chân thân tự leo từ tầng 34 lên 36 trong 8 giờ qua, mở 2 rương.</span></div>' +
       '<div class="card"><b>Bảng tháp tuần này</b><div class="row"><span>1. lacyy</span><span>tầng 58</span></div><div class="row"><span>2. thiende009</span><span>tầng 51</span></div><div class="row" style="font-weight:700;color:var(--redd)"><span>12. bạn</span><span>tầng ' + S.floor + '</span></div></div></div>';
@@ -129,7 +129,7 @@
       });
     });
     var ev = info[S.last];
-    return '<div class="scene" id="bcmap" style="height:440px"><img class="bg" src="img/bg_dongphu.png" alt="" style="filter:brightness(.45) saturate(.7)">' + lines + html +
+    return '<div class="scene" id="bcmap" style="height:440px"><img class="bg" src="img/bg_dongphu_w.png" alt="" style="filter:brightness(.45) saturate(.7)">' + lines + html +
       '<div style="position:absolute;left:10px;bottom:8px;display:flex;gap:8px;flex-wrap:wrap;font-size:12px;font-weight:700;color:var(--paper)"><span>Q quái</span><span>? cơ duyên</span><span>R rương</span><span>Đ lò đan</span><span>C cao nhân</span></div></div>' +
       '<div class="body"><div class="card"><b style="font-size:18px">' + ev[0] + '</b><span style="font-size:16px;line-height:1.35">' + ev[1] + '</span></div>' +
       '<span class="sub">Mỗi lượt vào bí cảnh tốn 1 mộng lực, hồi 1 điểm mỗi 8 giờ. Boss cuối cho rương và một Mộng điệp hiếm.</span></div>';
@@ -146,23 +146,23 @@
 
   /* ---------- Tỉnh mộng ---------- */
   function tinhmong() {
-    return '<div class="scene" style="height:300px"><img class="bg" src="img/bg_lo.png" alt="" style="filter:brightness(.55)">' +
-      '<img src="img/noike.png" alt="Nồi kê Hoàng Lương vừa chín" style="position:absolute;left:calc(50% - 40px);top:190px;width:80px;height:72px">' +
+    return '<div class="scene" style="height:300px"><img class="bg" src="img/bg_lo_w.png" alt="" style="filter:brightness(.55)">' +
+      '<img src="img/noike.png" alt="Nồi kê Hoàng Lương vừa chín" style="width:calc(var(--k)*20px);height:calc(var(--k)*18px);position:absolute;left:calc(50% - 40px);top:190px;">' +
       '<div class="steam" style="left:calc(50% - 16px);top:185px"></div><div class="steam" style="left:50%;top:180px;animation-delay:.8s"></div><div class="steam" style="left:calc(50% + 16px);top:186px;animation-delay:1.6s"></div>' +
       '<div style="position:absolute;left:20px;right:20px;top:30px;text-align:center"><div style="font-family:\'Protest Revolution\';font-size:40px;color:var(--goldl);text-shadow:3px 3px 0 var(--dark)">Tỉnh mộng</div>' +
       '<div style="margin-top:10px;font-size:19px;font-weight:600;font-style:italic;color:var(--paper3);text-shadow:2px 2px 0 var(--dark)">Kê vừa chín. Tám mươi sáu năm chém giết, một nồi còn chưa nguội.</div></div></div>' +
       '<div class="body"><div class="card"><span class="sub" style="font-weight:600">Giấc mộng thứ 44 · bản thử: nút Nhập mộng sẽ mở cách chơi kiếp hiện tại</span><b style="font-size:22px">Lâm Thanh Vân · Nguyên Anh tầng 3</b><span style="font-size:16px;color:var(--brown)">Sống 86 năm, chính đạo. Tử trận ở Hắc Phong Lĩnh khi che cho sư muội.</span></div>' +
       '<div class="g2"><div class="card"><span class="sub" style="font-weight:600">Mộng ngộ</span><b style="font-size:24px;color:var(--gold)">+640</b><span class="sub">Kim quang, đạo hạnh +640</span></div>' +
       '<div class="card" style="flex-direction:row;align-items:center;gap:8px"><div class="bf bf-red" role="img" aria-label="Mộng điệp Huyết Hận"></div><div style="display:flex;flex-direction:column"><span class="sub" style="font-weight:600">Kết cục mới</span><b style="font-size:17px;color:var(--redd)">Chết vì che cho người khác</b></div></div></div>' +
-      '<div class="card" style="flex-direction:row;gap:12px;align-items:center"><img src="img/bia.png" alt="Bia luân hồi" style="width:28px;height:40px"><div style="display:flex;flex-direction:column;gap:6px;flex:1"><label for="dn" class="sub" style="font-weight:600">Di ngôn khắc lên bia</label><select id="dn" style="font-family:inherit;font-size:16px;font-weight:600;padding:8px;border:2px solid var(--dark);background:var(--paper);color:var(--dark)"><option>Kiếp này nợ một người, kiếp sau trả.</option><option>Kiếm còn, người đã đi.</option><option>Đừng tin sư huynh họ Mạc.</option></select></div></div>' +
+      '<div class="card" style="flex-direction:row;gap:12px;align-items:center"><img src="img/bia.png" alt="Bia luân hồi" style="width:calc(var(--k)*14px);height:calc(var(--k)*20px);"><div style="display:flex;flex-direction:column;gap:6px;flex:1"><label for="dn" class="sub" style="font-weight:600">Di ngôn khắc lên bia</label><select id="dn" style="font-family:inherit;font-size:16px;font-weight:600;padding:8px;border:2px solid var(--dark);background:var(--paper);color:var(--dark)"><option>Kiếp này nợ một người, kiếp sau trả.</option><option>Kiếm còn, người đã đi.</option><option>Đừng tin sư huynh họ Mạc.</option></select></div></div>' +
       '<a class="btn big" href="#home" style="text-decoration:none">Về tu luyện</a></div>';
   }
 
   /* ---------- Động phủ + Mộng điệp ---------- */
   function dongphu() {
     function b(name, sub, btn, extra) { return '<div class="card" style="flex-direction:row;align-items:center;gap:12px">' + (extra || '') + '<div style="display:flex;flex-direction:column;gap:4px;flex:1"><b style="font-size:18px">' + name + '</b><span class="sub" style="font-size:15px">' + sub + '</span></div><button class="btn" style="min-height:44px;padding:0 12px;font-size:16px">' + btn + '</button></div>'; }
-    return '<div class="scene" style="height:190px"><img class="bg" src="img/bg_dongphu.png" alt=""><div style="position:absolute;left:14px;bottom:12px;padding:6px 12px;background:var(--paper);border:3px solid var(--dark)"><div style="font-family:\'Protest Revolution\';font-size:28px;color:#8a1a1a">Thái Sơ Động Phủ</div><div class="sub" style="font-weight:600">Cấp 2 · nâng cấp cần 1.200 linh thạch</div></div></div>' +
-      '<div class="body">' + b('Dược viên', 'Kê vàng chín sau 1 giờ 52 phút · 2 luống linh thảo đã chín', 'Thu', '<img src="img/noike.png" alt="" style="width:40px;height:36px">') +
+    return '<div class="scene" style="height:190px"><img class="bg" src="img/bg_dongphu_w.png" alt=""><div style="position:absolute;left:14px;bottom:12px;padding:6px 12px;background:var(--paper);border:3px solid var(--dark)"><div style="font-family:\'Protest Revolution\';font-size:28px;color:#8a1a1a">Thái Sơ Động Phủ</div><div class="sub" style="font-weight:600">Cấp 2 · nâng cấp cần 1.200 linh thạch</div></div></div>' +
+      '<div class="body">' + b('Dược viên', 'Kê vàng chín sau 1 giờ 52 phút · 2 luống linh thảo đã chín', 'Thu', '<img src="img/noike.png" alt="" style="width:calc(var(--k)*20px);height:calc(var(--k)*18px);">') +
       b('Đan phòng', 'Phá Chướng Đan · còn thiếu 1 linh thảo', 'Luyện') + b('Luyện khí thất', '7 món trùng mang từ mộng về · gộp 3 món ra một ngoại trang', 'Gộp') +
       '<a class="card" href="#mongdiep" style="text-decoration:none;flex-direction:row;align-items:center;gap:10px"><div class="bf bf-gold"></div><div style="flex:1"><b style="font-size:18px">Mộng điệp</b><div class="sub">Đã gom 14 / 40 con · 3 con theo bên</div></div><b>›</b></a>' +
       '<div class="card dark" style="font-size:15px"><span><b style="color:var(--goldl)">Nồi kê vàng:</b> nấu trước khi nhập mộng, giấc mộng sau dài thêm 10 năm thọ nguyên.</span></div></div>' + nav('dongphu');
@@ -179,9 +179,20 @@
 
   var screens = { home: home, nhanvat: nhanvat, dicanh: dicanh, tinhmong: tinhmong, dongphu: dongphu, mongdiep: mongdiep };
 
+  var TOP = { 'bg_tien': '#f6c27a', 'bg_dai': '#06061a', 'bg_dongphu': '#cfe8e0', 'bg_lo': '#726b7e' };
+  var K = 1;
+  try { K = +localStorage.getItem('vkl-k') || 1; } catch (e) {}
+  function scaleBar() {
+    return '<div style="display:flex;align-items:center;justify-content:center;gap:6px;padding:3px 8px;background:#120c07;color:#a88a5a;font-size:13px;font-weight:700;flex-shrink:0" role="group" aria-label="Cỡ điểm ảnh"><span>Bản thử · cỡ điểm ảnh</span>' +
+      [1, 2, 3].map(function (k) { return '<button data-act="k" data-v="' + k + '" style="min-width:36px;min-height:26px;border:2px solid var(--dark);font-size:13px;font-weight:700;background:' + (K === k ? 'var(--goldl)' : 'var(--paper)') + '">x' + k + '</button>'; }).join('') + '</div>';
+  }
   function render() {
     var r = route(); if (!screens[r]) r = 'home';
-    app.innerHTML = screens[r]();
+    app.style.setProperty('--k', K);
+    app.innerHTML = scaleBar() + screens[r]();
+    app.querySelectorAll('.scene>.bg').forEach(function (b) {
+      var m = b.getAttribute('src').match(/(bg_[a-z]+)_w/); if (m) b.parentNode.style.background = TOP[m[1]];
+    });
     placeLines();
   }
   function start() {
@@ -231,7 +242,8 @@
     } else if (a === 'dotpha') {
       var need = 2200 + (S.layer - 2) * 600; if (S.tv < need) return;
       S.tv -= need; S.layer++; S.kiep = true; render(); setTimeout(function () { S.kiep = false; }, 1700);
-    } else if (a === 'nv') { S.nvTab = el.dataset.v; render(); }
+    } else if (a === 'k') { K = +el.dataset.v; try { localStorage.setItem('vkl-k', K); } catch (e2) {} render(); }
+    else if (a === 'nv') { S.nvTab = el.dataset.v; render(); }
     else if (a === 'dc') { S.dc = el.dataset.v; render(); }
     else if (a === 'auto') { S.auto = !S.auto; render(); }
     else if (a === 'fast') { S.fast = !S.fast; render(); }
