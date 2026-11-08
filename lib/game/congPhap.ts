@@ -89,10 +89,10 @@ export const CP: CpDef[] = [
   C({ id: 'huyet_te', path: 'ma', kind: 'tuyet', pham: 3, name: tr('Huyết Tế Thiên Ma', 'Blood Sacrifice Heaven Demon'), main: tr('Đòn máu, hút nửa sát thương', 'A blood strike, drains half the damage'), fx: 'huyette', eff: { mul: 2.8, leech: 0.5 } }),
   // ---- Yêu tu: huyết mạch, hóa hình ----
   C({ id: 'yeu_than', path: 'yeu', kind: 'tam', pham: 1, name: tr('Yêu Thần Luyện Thể', 'Yao God Body Tempering'), main: tr('Máu +20%, mỗi hiệp hồi 2% máu', 'HP +20%, restores 2% HP per round'), fx: 'thuong', tam: { hp: 20, regen: 2 } }),
-  C({ id: 'thien_ho', path: 'yeu', kind: 'chieu', pham: 2, name: tr('Thiên Hồ Mị Thuật', 'Sky Fox Charm'), main: tr('Đối thủ đánh trượt 40% trong 2 hiệp', 'Foe misses 40% for 2 rounds'), fx: 'cuuvi', cd: 4, eff: { mul: 0.9, evade: [2, 0.4] } }),
+  C({ id: 'thien_ho', path: 'yeu', kind: 'chieu', pham: 2, name: tr('Thiên Hồ Mị Thuật', 'Sky Fox Charm'), main: tr('Đối thủ đánh trượt 30% trong 2 hiệp (tối đa 35%), tuyệt kỹ và đòn xuyên giáp không né được', 'Foe misses 30% for 2 rounds (max 35%); ultimates and armor-piercing strikes cannot be dodged'), fx: 'cuuvi', cd: 4, eff: { mul: 0.9, evade: [2, 0.3] } }),
   C({ id: 'yeu_trao', path: 'yeu', kind: 'chieu', pham: 1, name: tr('Yêu Trảo Liệt Không', 'Yao Claw Rends the Void'), main: tr('Ba vết vuốt liên tiếp', 'Three slashing claws'), fx: 'vuot', cd: 2, eff: { hits: 3, mul: 0.5 } }),
   C({ id: 'hoa_hinh', path: 'yeu', kind: 'chieu', pham: 2, name: tr('Hóa Hình Thuật', 'Shapeshift'), main: tr('Hóa bản thể 3 hiệp, công x1,8', 'True form for 3 rounds, attack x1.8'), fx: 'hoahinh', cd: 7, eff: { mul: 1, rage: [3, 1.8, 0] } }),
-  C({ id: 'chan_than', path: 'yeu', kind: 'tuyet', pham: 3, name: tr('Hiện Chân Thân', 'Reveal True Body'), main: tr('Chân thân khổng lồ giáng đòn', 'A colossal true body strikes'), fx: 'chanthan', eff: { mul: 3 } }),
+  C({ id: 'chan_than', path: 'yeu', kind: 'tuyet', pham: 3, name: tr('Hiện Chân Thân', 'Reveal True Body'), main: tr('Chân thân khổng lồ giáng đòn, 30% choáng, hồi 10% máu', 'A colossal true body strikes, 30% stun, restores 10% HP'), fx: 'chanthan', eff: { mul: 3, stun: 0.3, heal: 0.1 } }),
 ];
 export const cpOf = (id: string) => CP.find((x) => x.id === id);
 export const cpOfPath = (p: PathId | 'chung') => CP.filter((x) => x.path === p);
@@ -211,6 +211,12 @@ export function unequip(c: Character, id: string) {
 /** Đồng bộ mỗi năm: ai cũng có quyền cước cơ bản; có đạo thì sư môn truyền tâm pháp và chiêu đầu; lên cảnh giới mở thêm chiêu */
 export function cpSync(c: Character, ctx?: EffectCtx | null): void {
   const s = cpState(c);
+  // 4.3.1: ai đã dung hợp trước bản này (tuyệt kỹ tầng 1-4) được nâng lên tầng khởi điểm mới
+  const tu = s.tuyet ? owned(c, s.tuyet) : undefined;
+  if (tu && tu.tang < FUSE_TANG) {
+    tu.tang = FUSE_TANG;
+    tu.exp = 0;
+  }
   if (!s.own.length) {
     grant(c, 'dan_khi');
     grant(c, 'truong_quyen');
@@ -245,7 +251,8 @@ export function cpSync(c: Character, ctx?: EffectCtx | null): void {
 export function cpYear(c: Character, ctx: EffectCtx): void {
   cpSync(c, ctx);
   const s = cpState(c);
-  for (const id of s.eq) {
+  // 4.3.1: tuyệt kỹ đã lĩnh ngộ cũng tự tăng thục luyện mỗi năm như chiêu đang mang
+  for (const id of s.tuyet ? [...s.eq, s.tuyet] : s.eq) {
     const o = owned(c, id);
     if (!o || o.tang >= 9) continue;
     o.exp = Math.min(100, o.exp + 9);
@@ -444,6 +451,13 @@ function practice(c: Character | null, id: string) {
 
 /** Dung hợp: 2 chiêu cùng đạo đều tầng 9 thì lĩnh ngộ tuyệt kỹ của đạo, tốn 3 tàn quyển của chính tuyệt kỹ đó, thành 60% */
 export const FUSE_COST = 3;
+/** 4.3.1: tuyệt kỹ sinh ra từ hai chiêu tầng 9 nên khởi điểm tầng 5, không phải tầng 1 */
+export const FUSE_TANG = 5;
+/** tuyệt kỹ luôn mạnh hơn Bộc phát (chiêu mạnh nhất x1,5) ít nhất 20% */
+export const TUYET_OVER_BURST = 1.2;
+export const BURST_MUL = 1.5;
+/** né đòn tối đa (Thiên Hồ Mị Thuật kể cả biến dị, tầng 9) */
+export const EVADE_CAP = 0.35;
 export const FUSE_CHANCE = 0.6;
 export function tuyetOf(c: Character): CpDef | undefined {
   return c.path ? cpOfPath(c.path).find((x) => x.kind === 'tuyet') : undefined;
@@ -460,7 +474,7 @@ export function fuse(c: Character, rnd: () => number): { ok: boolean; text: stri
   c.tq = { ...(c.tq ?? {}), [t.id]: tqOf(c, t.id) - FUSE_COST };
   if (rnd() < FUSE_CHANCE) {
     cpState(c).tuyet = t.id;
-    grant(c, t.id, 1);
+    grant(c, t.id, FUSE_TANG);
     return { ok: true, text: tr(`Hai luồng chiêu ý hòa làm một. Bạn lĩnh ngộ tuyệt kỹ ${t.name}!`, `Two techniques merge into one. You comprehend the ultimate ${t.name}!`) };
   }
   return { ok: false, text: tr('Chiêu ý va nhau rồi tan. Tàn quyển hóa tro, lần sau thử lại.', 'The techniques clash and scatter. The fragments turn to ash; try again later.') };
@@ -583,6 +597,7 @@ export interface ActResult {
   self: number; // máu tự đốt
   dot: number; // sát thương thiêu/độc đầu lượt lên đối thủ
   tags: string[];
+  sure?: boolean; // tuyệt kỹ, bộc phát hoặc đòn xuyên giáp: không né được
 }
 
 const GAIN: Record<string, (r: { dmg: number; hits: number; skill: boolean }) => number> = {
@@ -639,14 +654,25 @@ export function act(
   const t = use?.tang ?? 1;
   const k = tangMul(t); // tầng càng cao chiêu càng mạnh
   const bursting = ult && !lo.tuyet;
-  const mul = (use ? (e.mul ?? 1) * k : 0.92) * rageMul * (bursting ? 1.5 : 1);
   const hits = use ? (e.hits ?? 1) : 1;
+  const mul = (use ? (e.mul ?? 1) * k : 0.92) * rageMul * (bursting ? BURST_MUL : 1);
   let dmg = 0;
   let anyCrit = false;
   for (let i = 0; i < hits; i++) {
     const h = hitFn(atk * mul, e.pierce ? 0 : def, rnd, crit);
     dmg += h.dmg;
     anyCrit ||= h.crit;
+  }
+  // 4.3.1: tuyệt kỹ không bao giờ yếu hơn bộc phát chiêu mạnh nhất (trước đây dung hợp xong lại yếu đi), tính cả giáp đối thủ
+  if (ult && lo.tuyet && lo.chieu.length) {
+    let burst = 0;
+    for (const x of lo.chieu) {
+      const xe = x.d.eff ?? {};
+      let b = 0;
+      for (let i = 0; i < (xe.hits ?? 1); i++) b += hitFn(atk * (xe.mul ?? 1) * tangMul(x.tang) * rageMul * BURST_MUL, xe.pierce ? 0 : def, rnd, 0).dmg;
+      burst = Math.max(burst, b);
+    }
+    dmg = Math.max(dmg, Math.round(burst * TUYET_OVER_BURST));
   }
   let heal = 0;
   let self = 0;
@@ -673,7 +699,7 @@ export function act(
       tags.push(tr('Khiên!', 'Shield!'));
     }
     if (e.reflect) me.reflect = { n: e.reflect[0], pct: e.reflect[1] * k };
-    if (e.evade) me.evade = { n: e.evade[0], pct: e.evade[1] * k };
+    if (e.evade) me.evade = { n: e.evade[0], pct: Math.min(EVADE_CAP, e.evade[1] * k) };
     if (e.rage) {
       me.rage = { n: e.rage[0], mul: e.rage[1] * k };
       self += Math.round(hpMax * e.rage[2]);
@@ -687,14 +713,15 @@ export function act(
     me.gauge = Math.min(100, me.gauge + (GAIN[lo.path] ?? GAIN.chung)({ dmg, hits, skill: !!use }));
     if (lo.path === 'ma') me.gauge = Math.min(100, me.gauge + Math.round((1 - hpNow / hpMax) * 20));
   }
-  return { dmg, crit: anyCrit, hits, skill: use ? (bursting ? tr(`Bộc phát: ${use.d.name}`, `Burst: ${use.d.name}`) : use.d.name) : undefined, fx: use ? use.d.fx : lo.path === 'chung' ? 'quyen' : 'thuong', ult, heal, self, dot, tags };
+  return { dmg, crit: anyCrit, hits, skill: use ? (bursting ? tr(`Bộc phát: ${use.d.name}`, `Burst: ${use.d.name}`) : use.d.name) : undefined, fx: use ? use.d.fx : lo.path === 'chung' ? 'quyen' : 'thuong', ult, heal, self, dot, tags, sure: ult || !!e.pierce };
 }
 
 /** Bên bị đánh: khiên, né, phản đòn; Phật tu tích định lực khi chịu đòn */
-export function takeHit(lo: Loadout, me: FightSide, dmg: number, rnd: () => number): { dmg: number; reflect: number; note?: string } {
+export function takeHit(lo: Loadout, me: FightSide, dmg: number, rnd: () => number, opt: { sure?: boolean; evMul?: number } = {}): { dmg: number; reflect: number; note?: string } {
   if (dmg <= 0) return { dmg: 0, reflect: 0 };
   if (me.evade) {
-    const miss = rnd() < me.evade.pct;
+    // tuyệt kỹ và đòn xuyên giáp không né được; bóng ở Vấn Tâm Đài chỉ né được một nửa
+    const miss = !opt.sure && rnd() < Math.min(EVADE_CAP, me.evade.pct) * (opt.evMul ?? 1);
     if (--me.evade.n <= 0) me.evade = null;
     if (miss) return { dmg: 0, reflect: 0, note: tr('Trượt!', 'Miss!') };
   }

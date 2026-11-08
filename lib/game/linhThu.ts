@@ -1,4 +1,4 @@
-import { PETS, adopt, petOf } from './pets';
+import { PETS, adopt, petOf, seePet } from './pets';
 import { LEGEND_PETS } from './petLegend';
 import { addCult, dao, hurt, money, stat } from './helpers';
 import type { Character, Choice, EffectCtx, Element, GameEvent } from './types';
@@ -141,6 +141,7 @@ export function petStrike(c: Character, rnd: () => number, ambush = false): numb
 /** Mỗi năm: thân thiết, tác dụng theo họ, huyết mạch; đổi linh thú thì tính lại từ đầu */
 export function petYear(c: Character, ctx: EffectCtx, rnd: () => number): void {
   if (!c.pet) return;
+  seePet(c);
   const id = petId(c);
   if (c.petOf !== id) {
     c.petOf = id;

@@ -40,6 +40,8 @@ import { ArenaNudge } from './LoiDaiButton';
 import { useAuth } from '@/lib/useAuth';
 import { addFeedback } from '@/lib/storage';
 import { tr } from '@/lib/i18n';
+import { BREAK_EVENT_ID } from '@/lib/game/events';
+import { setOf, wornSet, SET_MAX } from '@/lib/game/gearSets';
 
 /* ---------------- Khung hộp thoại ---------------- */
 export function Sheet({ title, onClose, children }: { title: string; onClose?: () => void; children: ReactNode }) {
@@ -182,11 +184,11 @@ function EventPet({ id, lv, c }: { id: string; lv?: number; c?: Character }) {
   );
 }
 
-export function EventCard(props: { p: PendingEvent; c?: Character; onChoose: (i: number) => void }) {
+export function EventCard(props: { p: PendingEvent; c?: Character; onChoose: (i: number) => void; onWearSet?: (i: number) => void }) {
   // khóa theo sự kiện: sự kiện mới luôn mở ra đầy đủ
   return <EventCardIn key={props.p.id + props.p.text} {...props} />;
 }
-function EventCardIn({ p, c, onChoose }: { p: PendingEvent; c?: Character; onChoose: (i: number) => void }) {
+function EventCardIn({ p, c, onChoose, onWearSet }: { p: PendingEvent; c?: Character; onChoose: (i: number) => void; onWearSet?: (i: number) => void }) {
   // 4/11 Tyler: thu gọn tạm để đọc gia phả phía trên, đọc xong mở lại để chọn
   const [min, setMin] = useState(false);
   // 5/11 (góp ý: đang bấm Túi đồ hay đổi trọng tâm thì sự kiện nhảy ra, bấm nhầm lựa chọn): bỏ qua cú chạm trong 0,7 giây đầu
@@ -216,6 +218,19 @@ function EventCardIn({ p, c, onChoose }: { p: PendingEvent; c?: Character; onCho
       <p>{p.text}</p>
       {p.item && <EventItem id={p.item} c={c} />}
       {p.pet && <EventPet id={p.pet} lv={p.petLv} c={c} />}
+      {/* #190: trước đột phá, phi thăng, chứng đạo được đổi bộ trang bị đã lưu */}
+      {p.id === BREAK_EVENT_ID && c && onWearSet && (c.gearSets ?? []).some(Boolean) && (
+        <div className="event-sets" role="group" aria-label={tr('Đổi bộ trang bị trước khi đột phá', 'Switch gear set before the breakthrough')}>
+          <small>{tr('Bộ trang bị:', 'Gear set:')}</small>
+          {Array.from({ length: SET_MAX }, (_, i) =>
+            setOf(c, i) ? (
+              <button key={i} type="button" className={`btn btn-dark ${wornSet(c) === i ? 'on' : ''}`} aria-pressed={wornSet(c) === i} onClick={() => onWearSet(i)}>
+                {tr(`Bộ ${i + 1}`, `Set ${i + 1}`)}
+              </button>
+            ) : null,
+          )}
+        </div>
+      )}
       <div className="choices">
         {p.choices.map((ch, i) => (
           <button key={i} className={`choice ${ch.lean} ${ch.off ? 'off' : ''} ${armed ? '' : 'arming'}`} disabled={ch.off} aria-disabled={!armed} onClick={() => armed && !ch.off && onChoose(i)}>
@@ -1314,7 +1329,7 @@ export function DeathSheet({
   const [bury, setBury] = useState(true);
   const [busy, setBusy] = useState(false);
   const ending = endingOf(c);
-  const plan = buryPlan(c, passOn && !!weapon && !c.ascended);
+  const plan = buryPlan(c, passOn && !!weapon);
   const canBury = !!plan;
   const buryMoney = plan?.money ?? 0;
   const buryItem = plan?.item ?? null;
@@ -1463,7 +1478,7 @@ export function DeathSheet({
           )}
         </>
       )}
-      {weapon && !c.ascended && c.endTag !== 'xuyen_khong' && (
+      {weapon && c.endTag !== 'xuyen_khong' && (
         <>
           <label className="toggle" style={{ marginTop: 8 }}>
             <input type="checkbox" checked={passOn} onChange={(e) => setPassOn(e.target.checked)} />

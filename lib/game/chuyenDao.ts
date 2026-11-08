@@ -2,6 +2,7 @@ import { ITEMS, PATHS } from './data';
 import { addCult, addPill, dao, giveItem, luck, reward, stat } from './helpers';
 import type { Character, Choice, EffectCtx, GameEvent, PathId, Slot } from './types';
 import { tr } from '../i18n';
+import { once } from './once';
 
 /**
  * Tán công chuyển đạo (bản sau 3.2.0): đổi con đường giữa kiếp.
@@ -94,7 +95,7 @@ export const CHUYEN_DAO_EVENTS: GameEvent[] = [
         label: tr('Nắm lấy chuôi kiếm', "Grasp the hilt"),
         hint: cost('kiem'),
         lean: 'trung',
-        run: (c, ctx) => tr(`${switchPath(c, ev('cd_kiem_trung'), ctx)} Kiếm ý tràn vào kinh mạch, công pháp cũ vỡ vụn. Từ nay bạn là Kiếm tu.`, `${switchPath(c, ev('cd_kiem_trung'), ctx)} Sword intent floods your meridians, shattering your old technique. From now on you are a Sword Cultivator.`),
+        run: (c, ctx) => tr(`${(once.v = switchPath(c, ev('cd_kiem_trung'), ctx))} Kiếm ý tràn vào kinh mạch, công pháp cũ vỡ vụn. Từ nay bạn là Kiếm tu.`, `${once.v} Sword intent floods your meridians, shattering your old technique. From now on you are a Sword Cultivator.`),
       },
       stay(tr('Bạn cúi đầu cảm tạ, đặt thanh kiếm trở lại đất. Kiếm rung lên một tiếng như thở dài.', "You bow your thanks and set the sword back in the earth. It hums once, like a sigh.")),
     ],
@@ -117,7 +118,7 @@ export const CHUYEN_DAO_EVENTS: GameEvent[] = [
             stat(c, 'sucKhoe', -15);
             return tr('Gậy thứ hai đã quất trúng cổ tay bạn. Lão già lắc đầu bỏ đi, tiếng gậy gõ xa dần (-15 sức khỏe).', "The second strike catches your wrist. The old man shakes his head and leaves, the tap of his staff fading away (-15 Health).");
           }
-          return tr(`Ba gậy, bạn đỡ trọn. Lão già cười: "Đường kiếm không ở mắt." ${switchPath(c, ev('cd_kiem_mu'), ctx)}`, `You block all three. The old man laughs: "The way of the sword is not in the eyes." ${switchPath(c, ev('cd_kiem_mu'), ctx)}`);
+          return tr(`Ba gậy, bạn đỡ trọn. Lão già cười: "Đường kiếm không ở mắt." ${(once.v = switchPath(c, ev('cd_kiem_mu'), ctx))}`, `You block all three. The old man laughs: "The way of the sword is not in the eyes." ${once.v}`);
         },
       },
       stay(tr('Bạn vòng qua cầu khác. Sau lưng lão già hát một câu không rõ lời.', "You take another bridge. Behind you, the old man sings a line you can't make out.")),
@@ -136,7 +137,7 @@ export const CHUYEN_DAO_EVENTS: GameEvent[] = [
         label: tr('Nhóm lại lửa lò, học theo đan kinh', "Rekindle the furnace and follow the manual"),
         hint: cost('dan'),
         lean: 'trung',
-        run: (c, ctx) => tr(`Lửa lò bùng lên xanh biếc như nhận ra chủ mới. ${switchPath(c, ev('cd_dan_lo'), ctx)} Mẻ đan đầu tiên ra lò thơm cả núi.`, `The furnace flares emerald green, as if recognising its new master. ${switchPath(c, ev('cd_dan_lo'), ctx)} Your first batch of pills perfumes the whole mountain.`),
+        run: (c, ctx) => tr(`Lửa lò bùng lên xanh biếc như nhận ra chủ mới. ${(once.v = switchPath(c, ev('cd_dan_lo'), ctx))} Mẻ đan đầu tiên ra lò thơm cả núi.`, `The furnace flares emerald green, as if recognising its new master. ${once.v} Your first batch of pills perfumes the whole mountain.`),
       },
       stay(tr('Bạn lấy cuốn đan kinh làm gối đầu, đọc vài trang rồi ngủ thiếp đi.', "You use the alchemy manual as a pillow, read a few pages, and doze off."), 0.12),
     ],
@@ -156,7 +157,7 @@ export const CHUYEN_DAO_EVENTS: GameEvent[] = [
         lean: 'chinh',
         run: (c, ctx) => {
           dao(c, 8);
-          return tr(`Ông lão đặt giỏ thuốc vào tay bạn rồi nhắm mắt. ${switchPath(c, ev('cd_dan_duoc_vuong'), ctx, { tamMa: 8 })} Bạn chôn ông dưới gốc cây thuốc ông trồng.`, `The old man places the basket in your hands and closes his eyes. ${switchPath(c, ev('cd_dan_duoc_vuong'), ctx, { tamMa: 8 })} You bury him beneath the medicinal tree he planted.`);
+          return tr(`Ông lão đặt giỏ thuốc vào tay bạn rồi nhắm mắt. ${(once.v = switchPath(c, ev('cd_dan_duoc_vuong'), ctx, { tamMa: 8 }))} Bạn chôn ông dưới gốc cây thuốc ông trồng.`, `The old man places the basket in your hands and closes his eyes. ${once.v} You bury him beneath the medicinal tree he planted.`);
         },
       },
       {
@@ -188,7 +189,7 @@ export const CHUYEN_DAO_EVENTS: GameEvent[] = [
             c.age += 5;
             return tr('Bạn đi sai một nước. Khi tỉnh lại, ông lão đã biến mất, râu bạn dài ra một gang. Năm năm đã trôi qua.', "You make a wrong move. When you come to, the old man is gone and your beard has grown a hand's length. Five years have passed.");
           }
-          return tr(`Nước cờ của bạn mở ra một con đường giữa thế cờ chết. Ông lão gật đầu: "Trận cũng như cờ." ${switchPath(c, ev('cd_tran_co'), ctx)}`, `Your move opens a path through a dead position. The old man nods: "Formations are like Go." ${switchPath(c, ev('cd_tran_co'), ctx)}`);
+          return tr(`Nước cờ của bạn mở ra một con đường giữa thế cờ chết. Ông lão gật đầu: "Trận cũng như cờ." ${(once.v = switchPath(c, ev('cd_tran_co'), ctx))}`, `Your move opens a path through a dead position. The old man nods: "Formations are like Go." ${once.v}`);
         },
       },
       stay(tr('Bạn chắp tay xin kiếu. Ông lão không ngẩng lên, chỉ đặt thêm một quân cờ.', "You bow and take your leave. The old man doesn't look up, only places another stone.")),
@@ -207,7 +208,7 @@ export const CHUYEN_DAO_EVENTS: GameEvent[] = [
         label: tr('Thức trắng chép lại tinh đồ', "Stay up all night copying the star chart"),
         hint: cost('tran'),
         lean: 'trung',
-        run: (c, ctx) => tr(`Gà gáy thì bạn chép xong. Công pháp cũ trong người tự tán đi như sương sớm. ${switchPath(c, ev('cd_tran_tinh_do'), ctx)}`, `By cockcrow you've finished. Your old technique dissolves like morning mist. ${switchPath(c, ev('cd_tran_tinh_do'), ctx)}`),
+        run: (c, ctx) => tr(`Gà gáy thì bạn chép xong. Công pháp cũ trong người tự tán đi như sương sớm. ${(once.v = switchPath(c, ev('cd_tran_tinh_do'), ctx))}`, `By cockcrow you've finished. Your old technique dissolves like morning mist. ${once.v}`),
       },
       stay(tr('Bạn ngắm đến khi mây kéo tới. Trong lòng sáng ra được vài điều.', "You gaze until the clouds roll in. A few things become clear in your heart.")),
     ],
@@ -249,7 +250,7 @@ export const CHUYEN_DAO_EVENTS: GameEvent[] = [
         lean: 'ta',
         run: (c, ctx) => {
           dao(c, -10);
-          return tr(`Chữ máu bò lên tay bạn, chui vào kinh mạch. ${switchPath(c, ev('cd_ma_huyet_thu'), ctx, { tamMa: 20 })} Từ đó giếng không còn tiếng nước.`, `The blood characters crawl up your arm and into your meridians. ${switchPath(c, ev('cd_ma_huyet_thu'), ctx, { tamMa: 20 })} From then on, the well falls silent.`);
+          return tr(`Chữ máu bò lên tay bạn, chui vào kinh mạch. ${(once.v = switchPath(c, ev('cd_ma_huyet_thu'), ctx, { tamMa: 20 }))} Từ đó giếng không còn tiếng nước.`, `The blood characters crawl up your arm and into your meridians. ${once.v} From then on, the well falls silent.`);
         },
       },
       {
@@ -306,7 +307,7 @@ export const CHUYEN_DAO_EVENTS: GameEvent[] = [
         label: c.race === 'yeu' ? tr('Thả cho huyết mạch thức tỉnh', "Let the bloodline awaken") : tr('Nuốt luôn ngụm máu', "Swallow the blood"),
         hint: cost('yeu'),
         lean: 'trung',
-        run: (ch, ctx) => tr(`Xương cốt kêu răng rắc, mắt bạn đổi màu. ${switchPath(ch, ev('cd_yeu_huyet_mach'), ctx)}`, `Your bones crack and your eyes change colour. ${switchPath(ch, ev('cd_yeu_huyet_mach'), ctx)}`),
+        run: (ch, ctx) => tr(`Xương cốt kêu răng rắc, mắt bạn đổi màu. ${(once.v = switchPath(ch, ev('cd_yeu_huyet_mach'), ctx))}`, `Your bones crack and your eyes change colour. ${once.v}`),
       },
       stay(c.race === 'yeu' ? tr('Bạn ngâm mình dưới suối lạnh tới sáng, giữ lại hình người.', "You soak in a cold spring until dawn, holding on to your human form.") : tr('Bạn nhổ ra, súc miệng bằng rượu mạnh. Đêm đó sốt cao rồi khỏi.', "You spit it out and rinse your mouth with strong liquor. That night you run a high fever, then recover."), 0.1),
     ],

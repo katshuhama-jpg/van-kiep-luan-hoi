@@ -24,6 +24,42 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '4.3.1',
+    date: '09/11/2026',
+    title: tr('Tuyệt Kỹ Xứng Danh', 'Ultimates Worth the Name'),
+    lead: tr('Đạo hữu góp ý, Thiên Đạo sửa: tuyệt kỹ dung hợp nay mạnh hơn bộc phát, người tu cao không còn bị giang hồ phàm tục làm khó.', 'Fellow cultivators spoke, the Heavenly Dao listened: fused ultimates now beat a burst, and high cultivators are no longer troubled by mortal thugs.'),
+    groups: [
+      {
+        h: tr('Công pháp', 'Techniques'),
+        hot: true,
+        items: [
+          tr('Tuyệt kỹ dung hợp khởi điểm cao hơn, tự luyện theo năm, luôn mạnh hơn bộc phát. Ai đã dung hợp được nâng luôn.', 'Fused ultimates start at a higher stage, train each year and always beat a burst. Existing ones are raised too.'),
+          tr('Hiện Chân Thân có thêm choáng và hồi máu.', 'Reveal True Body now stuns and heals.'),
+          tr('Né đòn có giới hạn. Tuyệt kỹ và đòn xuyên giáp không né được, bóng ở Vấn Tâm Đài né kém hơn.', 'Dodge is capped. Ultimates and armor-piercing strikes cannot be dodged, and Trial shadows dodge less.'),
+        ],
+      },
+      {
+        h: tr('Giang hồ', 'Jianghu'),
+        items: [
+          tr('Sửa lỗi sự kiện trừ máu hai lần.', 'Fixed events that took health twice.'),
+          tr('Người tu cao gặp ác bá, sát thủ thì dễ thắng, có thưởng.', 'High cultivators now beat thugs and assassins easily, with rewards.'),
+          tr('Ma tu không còn bị đồn hiền lành.', 'Demonic cultivators are no longer gossiped about as meek.'),
+          tr('Phổ Đà Sơn bớt bị Giới luật viện gọi, có thêm việc siêu độ kiếm linh thạch.', 'Putuo is summoned by the Precepts Hall less often and can earn stones performing last rites.'),
+        ],
+      },
+      {
+        h: tr('Tiện ích', 'Quality of life'),
+        items: [
+          tr('Sổ linh thú ghi cả thú đã bỏ đi.', 'The beast book records beasts that left you.'),
+          tr('Chết sau phi thăng vẫn truyền được thần binh.', 'You can pass down your divine weapon after ascending.'),
+          tr('Đổi bộ trang bị ngay ở thẻ đột phá.', 'Switch gear sets right on the breakthrough card.'),
+          tr('Nút phân giải tất cả đồ thừa.', 'A button to dismantle all spare gear.'),
+        ],
+      },
+    ],
+    more: [tr('Tuyệt kỹ mạnh hơn', 'Stronger ultimates'), tr('Sửa trừ máu hai lần', 'Double damage fixed'), tr('Phân giải tất cả', 'Dismantle all')],
+  },
+  {
     v: '4.3.0',
     date: '06/11/2026',
     title: tr('Linh Thú Xuất Thế', 'Spirit Beasts Awaken'),

@@ -192,11 +192,17 @@ export const PET_EVENT: GameEvent = {
   },
 };
 
+/** #168: ghi loài đang nuôi vào danh sách đã gặp trong kiếp */
+export function seePet(ch: Character) {
+  if (ch.pet && ch.petKind && !(ch.petSeen ?? []).includes(ch.petKind)) ch.petSeen = [...(ch.petSeen ?? []), ch.petKind];
+}
+
 // ---------- Kịch bản nhận thú cưng ----------
 export function adopt(ch: Character, id: string, ctx: EffectCtx): string {
   const old = ch.pet ? petName(ch) : null;
   ch.pet = true;
   ch.petKind = id;
+  seePet(ch);
   ctx.fx('love', tr('Có thú cưng', "Got a pet"));
   return old && old !== (LEGEND_PETS[id]?.name ?? PETS[id]?.name) ? tr(` Con ${old} ghen tị, bỏ vào rừng không về.`, ` The jealous ${old} runs off into the forest and never returns.`) : '';
 }

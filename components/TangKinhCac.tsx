@@ -5,7 +5,7 @@
  */
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { Character } from '@/lib/game/types';
-import { CP, FUSE_CHANCE, FUSE_COST, GAUGE_NAME, PATH_IDEA, PHAM_NAME, SLOT_REALM, SWAP_RATE, TAM_GAP, BIEN_DESC, BIEN_NAME, BIEN_TANG, tuviCost, canFuse, canSwap, capOf, cpOf, cpOfPath, heirChoices, owned, slotOpen, tamTang, tangMul, tqCost, tqOf, tuyetOf, upgradeBlock, vanNeed, type Bien, type CpDef } from '@/lib/game/congPhap';
+import { CP, FUSE_CHANCE, FUSE_COST, FUSE_TANG, GAUGE_NAME, PATH_IDEA, PHAM_NAME, SLOT_REALM, SWAP_RATE, TAM_GAP, BIEN_DESC, BIEN_NAME, BIEN_TANG, tuviCost, canFuse, canSwap, capOf, cpOf, cpOfPath, heirChoices, owned, slotOpen, tamTang, tangMul, tqCost, tqOf, tuyetOf, upgradeBlock, vanNeed, type Bien, type CpDef } from '@/lib/game/congPhap';
 import { PATHS, REALMS } from '@/lib/game/data';
 import { tr } from '@/lib/i18n';
 import Sprite from './Sprite';
@@ -476,7 +476,7 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onSwap,
                     <dt>{tr('Hỏng', 'Failure')}</dt>
                     <dd>{tr('mất tàn quyển, hai chiêu giữ nguyên', 'fragments lost, both moves kept')}</dd>
                     <dt>{tr('Ra', 'Result')}</dt>
-                    <dd>{tu ? tu.name : '???'}</dd>
+                    <dd>{tu ? tr(`${tu.name} tầng ${FUSE_TANG}, luôn mạnh hơn bộc phát`, `${tu.name} at stage ${FUSE_TANG}, always stronger than a burst`) : '???'}</dd>
                   </dl>
                   <button
                     className="btn btn-red btn-big"

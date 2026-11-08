@@ -91,6 +91,15 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
     spareUnits.forEach((it) => onSell(it.id));
     setSure(false);
   };
+  // #161: phân giải tất cả đồ thừa (cùng danh sách với Bán đồ thừa)
+  const [sureS, setSureS] = useState(false);
+  useEffect(() => setSureS(false), [spareUnits.length]);
+  const smeltSpares = () => {
+    if (!onSmelt) return;
+    if (!sureS) return setSureS(true);
+    spareUnits.forEach((it) => onSmelt(it.id));
+    setSureS(false);
+  };
   const [setMsg, setSetMsg] = useState<string | null>(null);
   const worn = wornSet(c);
   // sắp xếp: đang mặc trước, rồi phẩm cao trước, đồ thừa xuống cuối
@@ -209,6 +218,14 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
             ? tr(`Chắc chưa? Bấm lần nữa để bán ${spareUnits.length} món`, `Sure? Tap again to sell ${spareUnits.length} items`)
             : tr(`Bán ${spareUnits.length} món thừa · +${spareUnits.reduce((x, it, k) => x + sellValue(it.id, c, k), 0)} linh thạch`, `Sell ${spareUnits.length} spare items · +${spareUnits.reduce((x, it, k) => x + sellValue(it.id, c, k), 0)} spirit stones`)}
           <small className="inv-clean-note">{tr('không bán đồ đã khóa, đã rèn, nằm trong bộ đồ', 'never sells locked, forged or set items')}</small>
+        </button>
+      )}
+      {onSmelt && spareUnits.length > 0 && kind !== 'dan' && (
+        <button className={`btn inv-clean ${sureS ? 'btn-red' : ''}`} onClick={smeltSpares}>
+          {sureS
+            ? tr(`Chắc chưa? Bấm lần nữa để phân giải ${spareUnits.length} món`, `Sure? Tap again to dismantle ${spareUnits.length} items`)
+            : tr(`Phân giải ${spareUnits.length} món thừa · +${spareUnits.reduce((x, it) => x + smeltValue(it.id), 0)} tinh thiết`, `Dismantle ${spareUnits.length} spare items · +${spareUnits.reduce((x, it) => x + smeltValue(it.id), 0)} refined iron`)}
+          <small className="inv-clean-note">{tr('không đụng đồ đã khóa, đã rèn, nằm trong bộ đồ', 'never touches locked, forged or set items')}</small>
         </button>
       )}
       {(kind === 'all' ? GROUPS : [[kind, '']] as [Kind, string][]).map(([g, label]) => {

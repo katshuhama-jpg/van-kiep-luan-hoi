@@ -3,6 +3,7 @@ import { addCult, addPill, dao, fatal, giveItem, hurt, luck, money, reward, stat
 import { joinSect, promote, rankByRoot, rankName, rankOf } from './sect';
 import type { Character, Choice, GameEvent } from './types';
 import { tr } from '../i18n';
+import { once } from './once';
 
 /**
  * 3.1.0: bốn tông môn mới (Phổ Đà Sơn, Kiếm Cốc, Vạn Độc Môn, Yêu Thần Điện) và chuỗi nhập Ma giới.
@@ -142,9 +143,10 @@ export const SECT_EVENTS2: GameEvent[] = [
   {
     id: 'pd_gioi_luat',
     minAge: 12,
-    weight: 120,
-    cooldown: 5,
-    when: (c) => c.sect === 'Phổ Đà Sơn' && !c.cosmos && c.focus === 'tru_yeu' && totalKills(c) >= 10,
+    weight: 40,
+    cooldown: 10,
+    // 4.3.1: chỉ tính quái giết thêm từ lần bị gọi trước (trước đây tính cả đời nên 5 năm lại bị gọi một lần)
+    when: (c) => c.sect === 'Phổ Đà Sơn' && !c.cosmos && c.focus === 'tru_yeu' && totalKills(c) - (c.pdKillMark ?? 0) >= 40,
     title: tr('Giới luật viện', "Precepts Hall"),
     text: () => tr('Giới luật viện gọi bạn lên. Thủ tọa gõ mõ ba tiếng: "Sát nghiệp trên người ngươi nặng rồi. Phổ Đà Sơn không phải đất của đồ tể."', "The Precepts Hall summons you. The Head Monk strikes the wooden fish three times: \"Your killing karma grows heavy. Putuo Shan is no place for a butcher.\""),
     choices: () => [
@@ -153,6 +155,7 @@ export const SECT_EVENTS2: GameEvent[] = [
         hint: tr('mất tiền, tâm ma giảm', "lose money, less heart demon"),
         lean: 'chinh',
         run: (c) => {
+          c.pdKillMark = totalKills(c);
           money(c, -Math.min(c.linhThach, 50 + c.realm * 30));
           stat(c, 'tamMa', -8);
           dao(c, 5);
@@ -164,13 +167,50 @@ export const SECT_EVENTS2: GameEvent[] = [
         hint: tr('cãi lại, có thể bị giáng bậc', "argue back, may be demoted"),
         lean: 'trung',
         run: (c, ctx) => {
-          if (ctx.rnd() < 0.5 && (c.sectRank ?? 1) > 0) {
+          c.pdKillMark = totalKills(c);
+          // người có đạo tâm chính trực thì Thủ tọa hiểu: trừ yêu hại người là cứu người
+          if (c.daoTam < 40 && ctx.rnd() < 0.5 && (c.sectRank ?? 1) > 0) {
             c.sectRank = (c.sectRank ?? 1) - 1;
             stat(c, 'tamMa', 4);
             return tr(`Thủ tọa lắc đầu: "Còn chấp." Bạn bị giáng làm ${rankName(c)}.`, `The Head Monk shakes his head: "Still attached." You are demoted to ${rankName(c)}.`);
           }
           stat(c, 'ngoTinh', 5);
           return tr('Thủ tọa im lặng rất lâu, rồi cười: "Cũng là một cách hiểu." Ông cho bạn lui, không phạt.', "The Head Monk is silent a long while, then smiles: \"That too is a way of understanding.\" He dismisses you without punishment.");
+        },
+      },
+    ],
+  },
+  {
+    // 4.3.1: Phật tu có đường kiếm linh thạch không cần sát sinh
+    id: 'pd_sieu_do',
+    minAge: 14,
+    weight: 14,
+    cooldown: 3,
+    when: (c) => c.sect === 'Phổ Đà Sơn' && !c.cosmos,
+    title: tr('Hóa duyên, siêu độ', "Alms and last rites"),
+    text: () => tr('Làng dưới chân núi vừa qua một trận dịch. Trưởng làng lên chùa xin một vị sư xuống làm lễ siêu độ cho người đã khuất.', "The village below the mountain has just come through a plague. The headman climbs to the temple, asking for a monk to perform last rites for the dead."),
+    choices: () => [
+      {
+        label: tr('Xuống núi làm lễ siêu độ', "Go down and perform the rites"),
+        hint: tr('linh thạch, đạo tâm +', "spirit stones, Dao Heart +"),
+        lean: 'chinh',
+        run: (c, ctx) => {
+          const m = 60 + c.realm * 50;
+          money(c, m);
+          dao(c, 2);
+          ctx.fx('coin', `+${m}`);
+          return tr(`Bảy ngày tụng kinh, khói hương không dứt. Dân làng cúng dường ${m} linh thạch, bạn mang về nộp chùa một nửa, nửa kia sư phụ cho giữ.`, `Seven days of chanting, incense never ceasing. The villagers offer ${m} spirit stones; you hand half to the temple, and your master lets you keep the rest.`);
+        },
+      },
+      {
+        label: tr('Ôm bát đi khất thực', "Take your bowl and beg for alms"),
+        hint: tr('ít linh thạch, tâm ma giảm', "a few spirit stones, less heart demon"),
+        lean: 'trung',
+        run: (c) => {
+          const m = 20 + c.realm * 15;
+          money(c, m);
+          stat(c, 'tamMa', -4);
+          return tr(`Đi hết ba thôn, bát đầy cơm, túi thêm ${m} linh thạch người ta gửi lên chùa. Đi chậm mà lòng tĩnh.`, `Three villages later your bowl is full of rice, and your pouch holds ${m} spirit stones people sent to the temple. A slow road, but a quiet heart.`);
         },
       },
     ],
@@ -192,7 +232,7 @@ export const SECT_EVENTS2: GameEvent[] = [
           stat(c, 'ngoTinh', 5);
           stat(c, 'tamCanh', 6);
           stat(c, 'tamMa', -6);
-          if (ctx.rnd() < 0.3) return tr(`Tới câu cuối, bạn bỗng hiểu ra. ${promote(c, ctx, tr('Phương trượng thấy ánh mắt bạn, gật đầu.', "The Abbot sees the look in your eyes and nods.")) ?? tr('Phương trượng gật đầu với bạn.', "The Abbot nods at you.")}`, `At the final verse, it suddenly clicks. ${promote(c, ctx, tr('Phương trượng thấy ánh mắt bạn, gật đầu.', "The Abbot sees the look in your eyes and nods.")) ?? tr('Phương trượng gật đầu với bạn.', "The Abbot nods at you.")}`);
+          if (ctx.rnd() < 0.3) return tr(`Tới câu cuối, bạn bỗng hiểu ra. ${(once.v = promote(c, ctx, tr('Phương trượng thấy ánh mắt bạn, gật đầu.', "The Abbot sees the look in your eyes and nods."))) ?? tr('Phương trượng gật đầu với bạn.', "The Abbot nods at you.")}`, `At the final verse, it suddenly clicks. ${once.v ?? tr('Phương trượng gật đầu với bạn.', "The Abbot nods at you.")}`);
           return tr('Tiếng kinh hòa vào tiếng sóng. Ba ngày như một hơi thở.', "The chanting blends with the waves. Three days pass like a single breath.");
         },
       },
@@ -259,7 +299,7 @@ export const SECT_EVENTS2: GameEvent[] = [
         run: (c, ctx) => {
           if (ctx.rnd() < luck(c, 0.5 + c.realm * 0.03)) {
             stat(c, 'khiVan', 4);
-            return tr(`Kiếm khách lùi ba bước, tra kiếm vào vỏ: "Kiếm Cốc còn người." ${promote(c, ctx, tr('Cả cốc reo hò.', "The whole valley cheers.")) ?? tr('Trưởng lão thưởng cho bạn một bình đan.', "The Elder rewards you with a bottle of pills.")}`, `The swordsman steps back three paces and sheathes his sword: "Jian Valley still has worthy men." ${promote(c, ctx, tr('Cả cốc reo hò.', "The whole valley cheers.")) ?? tr('Trưởng lão thưởng cho bạn một bình đan.', "The Elder rewards you with a bottle of pills.")}`);
+            return tr(`Kiếm khách lùi ba bước, tra kiếm vào vỏ: "Kiếm Cốc còn người." ${(once.v = promote(c, ctx, tr('Cả cốc reo hò.', "The whole valley cheers."))) ?? tr('Trưởng lão thưởng cho bạn một bình đan.', "The Elder rewards you with a bottle of pills.")}`, `The swordsman steps back three paces and sheathes his sword: "Jian Valley still has worthy men." ${once.v ?? tr('Trưởng lão thưởng cho bạn một bình đan.', "The Elder rewards you with a bottle of pills.")}`);
           }
           return tr('Một kiếm. Chỉ một kiếm, bạn đã thua. Kiếm khách bỏ đi không nói một lời.', "One strike. Just one strike, and you've lost. The swordsman leaves without a word.") + hurt(c, 15, ctx);
         },
@@ -364,7 +404,7 @@ export const SECT_EVENTS2: GameEvent[] = [
           addCult(c, reward(c, 0.8));
           stat(c, 'sucKhoe', 8);
           stat(c, 'tamMa', 5);
-          if (ctx.rnd() < 0.3) return tr(`Mắt tượng sáng lên một thoáng. ${promote(c, ctx, tr('Điện chủ quỳ xuống trước bạn.', "The Hall Master kneels before you.")) ?? tr('Điện chủ nhìn bạn đầy kính nể.', "The Hall Master looks at you in awe.")}`, `The statue's eyes flash for an instant. ${promote(c, ctx, tr('Điện chủ quỳ xuống trước bạn.', "The Hall Master kneels before you.")) ?? tr('Điện chủ nhìn bạn đầy kính nể.', "The Hall Master looks at you in awe.")}`);
+          if (ctx.rnd() < 0.3) return tr(`Mắt tượng sáng lên một thoáng. ${(once.v = promote(c, ctx, tr('Điện chủ quỳ xuống trước bạn.', "The Hall Master kneels before you."))) ?? tr('Điện chủ nhìn bạn đầy kính nể.', "The Hall Master looks at you in awe.")}`, `The statue's eyes flash for an instant. ${once.v ?? tr('Điện chủ nhìn bạn đầy kính nể.', "The Hall Master looks at you in awe.")}`);
           return tr('Máu thấm vào đá. Bạn nghe tiếng gầm của tổ tiên vọng lên trong xương.', "Your blood seeps into the stone. You hear your ancestors' roar echo in your bones.");
         },
       },
@@ -394,7 +434,7 @@ export const SECT_EVENTS2: GameEvent[] = [
         run: (c, ctx) => {
           dao(c, -10);
           money(c, 100 + c.realm * 50);
-          if (ctx.rnd() < luck(c, 0.45)) return tr(`Cả đoàn không ai thoát. ${promote(c, ctx, tr('Yêu tướng vỗ vai bạn.', "The yao general claps you on the shoulder.")) ?? ''}`, `Not one of them escapes. ${promote(c, ctx, tr('Yêu tướng vỗ vai bạn.', "The yao general claps you on the shoulder.")) ?? ''}`);
+          if (ctx.rnd() < luck(c, 0.45)) return tr(`Cả đoàn không ai thoát. ${(once.v = promote(c, ctx, tr('Yêu tướng vỗ vai bạn.', "The yao general claps you on the shoulder."))) ?? ''}`, `Not one of them escapes. ${once.v ?? ''}`);
           return tr('Đoàn người bỏ chạy để lại hành lý. Bạn bị một nhát kiếm ở vai.', "The travelers flee, abandoning their baggage. You take a sword cut to the shoulder.") + hurt(c, 15, ctx);
         },
       },

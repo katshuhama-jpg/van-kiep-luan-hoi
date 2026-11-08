@@ -1,4 +1,4 @@
-import { DO_KIEP_REALM, addWound, afterLoss, atAge, bullyCult, fatal, forcedReady, hurt, markDeath, markForced, money, phamFloor, riskMeter, stat, takeStones, withPham } from './helpers';
+import { DO_KIEP_REALM, addWound, dao, afterLoss, atAge, bullyCult, fatal, forcedReady, hurt, markDeath, markForced, money, phamFloor, riskMeter, stat, takeStones, withPham } from './helpers';
 import type { Character, Choice, EffectCtx } from './types';
 import { tr } from '../i18n';
 
@@ -192,6 +192,12 @@ export function afterChoice(c: Character, choice: Choice, mark: number, ctx: Eff
   }
   // 4.1.0 Q2b: chọn đường chính nghĩa không phải là hiền nhát, không làm người ta coi thường (trước đây chính đạo bị ăn hiếp gấp nhiều lần tà đạo)
   const righteous = choice.lean === 'chinh';
+  // 4.3.1: ma tu (đạo tâm tà) và lão quái từ Nguyên Anh thì không ai dám coi là hiền, càng không dám bắt nạt
+  const feared = c.path === 'ma' || c.daoTam <= -40 || c.realm >= 4;
+  if (feared) {
+    c.timid = 0;
+    return null;
+  }
   const t = righteous ? (c.timid ?? 0) : (c.timid = (c.timid ?? 0) + 1);
   if (t === 3 && !righteous) ctx.log(tr('Người trong trấn bắt đầu xì xào: kẻ này hiền như cục đất, bắt nạt cũng chẳng dám kêu.', "The townsfolk start whispering: this one's as meek as a lump of dirt - bully them and they won't even squeak."), 'bad');
   // kẻ mạnh, đồ xịn thì ít ai dám động vào
@@ -212,33 +218,63 @@ export function afterChoice(c: Character, choice: Choice, mark: number, ctx: Eff
  * Cây cao đón gió: người nổi danh chính đạo bị ma đạo để mắt, hay ra tay trượng nghĩa nên dễ vạ lây.
  * Cân với tâm ma của tà đạo, để chính đạo không phải con đường sống lâu chắc chắn.
  */
+/** 4.3.1: cảnh giới càng cao, chuyện giang hồ càng khó làm bạn bị thương (Luyện Khí 1, Nguyên Anh 0.6, Độ Kiếp 0.3) */
+const perilMul = (c: Character) => Math.max(0.3, 1 - c.realm * 0.1);
+/** xác suất đánh thắng gọn, không mất máu: Luyện Khí 10%, Kim Đan 40%, Nguyên Anh 50%, Độ Kiếp 80% */
+const perilWin = (c: Character, ctx: EffectCtx) => ctx.rnd() < Math.min(0.85, 0.1 + c.realm * 0.1 + (c.realm >= DO_KIEP_REALM ? 0.1 : 0));
+
 const PERILS: ((c: Character, ctx: EffectCtx) => string)[] = [
   (c, ctx) => {
     const by = tr('Thất Sát của Ma đạo', 'the Seven Killers of the Demonic Path');
-    const f = fatal(c, ctx, 0.3, tr('Ma đạo nghe danh bạn đã lâu. Đêm ấy bảy tên sát thủ Thất Sát cùng ra tay ám sát, bạn chết khi đang ngồi thiền.', "The Demonic Path has long heard of you. That night the Seven Killers strike together as assassins, and you die while meditating.") + atAge(c));
+    if (perilWin(c, ctx)) {
+      const loot = 30 + c.realm * 40;
+      money(c, loot);
+      dao(c, 2);
+      stat(c, 'khiVan', 1);
+      return tr(`Ma đạo coi bạn là cái gai trong mắt, phái bảy tên sát thủ Thất Sát đến trừ khử. Bạn chưa rời bồ đoàn đã hạ cả bảy, lục được ${loot} linh thạch. Giang hồ từ đó thêm một lời đồn về bạn.`, `The Demonic Path sees you as a thorn in its side and sends the Seven Killers. You fell all seven without leaving your cushion and loot ${loot} spirit stones. The jianghu gains one more tale about you.`);
+    }
+    const f = fatal(c, ctx, 0.3 * perilMul(c), tr('Ma đạo nghe danh bạn đã lâu. Đêm ấy bảy tên sát thủ Thất Sát cùng ra tay ám sát, bạn chết khi đang ngồi thiền.', "The Demonic Path has long heard of you. That night the Seven Killers strike together as assassins, and you die while meditating.") + atAge(c));
     markDeath(c, 'dao_giang_ho', by);
     if (c.dead) return f ?? '';
-    const dmg = r(ctx, 25, 40);
-    // câu bên dưới gọi hurt trong cả hai thứ tiếng (giữ như cũ), nên thương thế thật là gấp đôi
-    addWound(c, dmg * 2, tr('bị sát thủ Ma đạo ám sát', 'attacked by Demonic Path assassins'), 'dao_giang_ho', by);
-    return tr(`Ma đạo coi bạn là cái gai trong mắt, phái sát thủ đến trừ khử. Bạn đánh lui được nhưng thân mang trọng thương.${hurt(c, dmg, ctx)}${f ?? ''}`, `The Demonic Path sees you as a thorn in its side and sends assassins to remove you. You drive them off, but are gravely wounded.${hurt(c, dmg, ctx)}${f ?? ''}`);
+    const dmg = Math.round(r(ctx, 25, 40) * perilMul(c));
+    addWound(c, dmg, tr('bị sát thủ Ma đạo ám sát', 'attacked by Demonic Path assassins'), 'dao_giang_ho', by);
+    const t = hurt(c, dmg, ctx);
+    return tr(`Ma đạo coi bạn là cái gai trong mắt, phái sát thủ đến trừ khử. Bạn đánh lui được nhưng bị thương.${t}${f ?? ''}`, `The Demonic Path sees you as a thorn in its side and sends assassins to remove you. You drive them off, but are wounded.${t}${f ?? ''}`);
   },
   (c, ctx) => {
+    // 4.3.1: từ Trúc Cơ, ác bá phàm tục không làm gì được người tu đạo
+    if (c.realm >= 2 && !c.cosmos) {
+      dao(c, 3);
+      stat(c, 'khiVan', 1);
+      const gift = 10 + c.realm * 15;
+      money(c, gift);
+      return tr(`Thấy chuyện bất bình, bạn ra tay trượng nghĩa. Cả bang ác bá kéo đến, bạn phất tay áo một cái là ngã rạp cả đám. Dân phố góp ${gift} linh thạch tạ ơn, kể chuyện bạn khắp các quán trà.`, `Seeing an injustice, you step in. The bully's whole gang shows up, and one flick of your sleeve flattens them. The townsfolk chip in ${gift} spirit stones in thanks and tell your tale in every teahouse.`);
+    }
     const f = fatal(c, ctx, 0.2, tr('Bạn ra tay cứu một cô gái giữa phố, không ngờ sau lưng ác bá là cả một bang phái. Bạn bị vây đánh đến chết.', "You step in to save a girl in the street, never guessing the bully has a whole gang behind him. They surround you and beat you to death."));
     if (c.dead) return f ?? '';
-    return tr(`Thấy chuyện bất bình, bạn ra tay trượng nghĩa. Đồng bọn của ác bá kéo đến vây đánh, bạn trọng thương mới thoát được.${hurt(c, r(ctx, 20, 35), ctx)}${f ?? ''}`, `Seeing an injustice, you step in to right it. The bully's cronies swarm you, and you barely escape, gravely wounded.${hurt(c, r(ctx, 20, 35), ctx)}${f ?? ''}`);
+    const t = hurt(c, r(ctx, 20, 35), ctx);
+    return tr(`Thấy chuyện bất bình, bạn ra tay trượng nghĩa. Đồng bọn của ác bá kéo đến vây đánh, bạn trọng thương mới thoát được.${t}${f ?? ''}`, `Seeing an injustice, you step in to right it. The bully's cronies swarm you, and you barely escape, gravely wounded.${t}${f ?? ''}`);
   },
   (c, ctx) => {
     // 4.1.0 Q2b: từ Nguyên Anh, kẻ tiểu nhân phàm tục không lừa nổi; Trúc Cơ, Kim Đan mất có trần và không bị đâm
     if (c.realm >= 4 && !c.cosmos) return tr('Kẻ tiểu nhân giả làm người gặp nạn để gài bẫy bạn. Bạn chỉ nhìn hắn một cái, hắn đã quỳ xuống khai ra cả ổ đồng bọn. Quan phủ được một mẻ lưới lớn.', "A scoundrel poses as someone in trouble to trap you. One look from you and he's on his knees naming his whole gang. The magistrate makes a big haul.");
     const lost = takeStones(c, 0.35);
     if (c.realm >= 2 && !c.cosmos) return tr(`Kẻ tiểu nhân lợi dụng lòng tốt của bạn, giả làm người gặp nạn rồi gài bẫy, cuỗm được ${lost} linh thạch rồi chạy mất dép. Bạn lười đuổi.`, `A scoundrel exploits your kindness, posing as someone in trouble, and makes off with ${lost} spirit stones. You can't be bothered to chase him.`);
-    return tr(`Kẻ tiểu nhân lợi dụng lòng tốt của bạn, giả làm người gặp nạn rồi gài bẫy. Bạn mất ${lost} linh thạch, còn bị đâm một nhát.${hurt(c, r(ctx, 15, 25), ctx)}`, `A scoundrel exploits your kindness, posing as someone in trouble to set a trap. You lose ${lost} spirit stones and get stabbed too.${hurt(c, r(ctx, 15, 25), ctx)}`);
+    const t = hurt(c, r(ctx, 15, 25), ctx);
+    return tr(`Kẻ tiểu nhân lợi dụng lòng tốt của bạn, giả làm người gặp nạn rồi gài bẫy. Bạn mất ${lost} linh thạch, còn bị đâm một nhát.${t}`, `A scoundrel exploits your kindness, posing as someone in trouble to set a trap. You lose ${lost} spirit stones and get stabbed too.${t}`);
   },
   (c, ctx) => {
-    const f = fatal(c, ctx, 0.25, tr('Chính tà giao tranh, bạn xung phong đi đầu. Trận ấy chính phái thắng, nhưng bạn không trở về.', "In the clash of righteous and evil, you volunteer for the front line. The righteous win that battle, but you never return."));
+    const merit = 20 + c.realm * 30;
+    if (perilWin(c, ctx)) {
+      money(c, merit);
+      dao(c, 3);
+      return tr(`Chính phái triệu tập đi diệt ma, bạn là người xung phong đầu tiên. Bạn một mình phá trận địch, trở về không một vết xước, được chia ${merit} linh thạch chiến công.`, `The righteous sects muster to wipe out the demons, and you're the first to volunteer. You break the enemy line alone, return without a scratch, and receive ${merit} spirit stones in spoils.`);
+    }
+    const f = fatal(c, ctx, 0.25 * perilMul(c), tr('Chính tà giao tranh, bạn xung phong đi đầu. Trận ấy chính phái thắng, nhưng bạn không trở về.', "In the clash of righteous and evil, you volunteer for the front line. The righteous win that battle, but you never return."));
     if (c.dead) return f ?? '';
-    return tr(`Chính phái triệu tập đi diệt ma, bạn là người xung phong đầu tiên. Thắng trận, nhưng bạn mang về đầy mình thương tích.${hurt(c, r(ctx, 25, 40), ctx)}${f ?? ''}`, `The righteous sects muster to wipe out the demons, and you're the first to volunteer. They win, but you come back riddled with wounds.${hurt(c, r(ctx, 25, 40), ctx)}${f ?? ''}`);
+    money(c, Math.round(merit / 2));
+    const t = hurt(c, Math.round(r(ctx, 25, 40) * perilMul(c)), ctx);
+    return tr(`Chính phái triệu tập đi diệt ma, bạn là người xung phong đầu tiên. Thắng trận, được chia ${Math.round(merit / 2)} linh thạch, nhưng bạn mang về không ít thương tích.${t}${f ?? ''}`, `The righteous sects muster to wipe out the demons, and you're the first to volunteer. They win and you get ${Math.round(merit / 2)} spirit stones in spoils, but you come back with plenty of wounds.${t}${f ?? ''}`);
   },
 ];
 

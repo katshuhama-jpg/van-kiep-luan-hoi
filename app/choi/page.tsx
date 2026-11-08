@@ -65,6 +65,7 @@ import { arenaBg, NHD_MAX_TURNS, PHU_PRICE, STANCES, loseRound, mirrorChar, mirr
 import { sectSide } from '@/lib/game/sect';
 import { setLifeCtx, setScreen, track } from '@/lib/track';
 import { tr } from '@/lib/i18n';
+import { wearSet } from '@/lib/game/gearSets';
 
 const SPEEDS = [1, 2, 4, 8, 16];
 const BEAST_TURNS = 6; // 4.2.0: trận thu phục linh thú tối đa 6 hiệp
@@ -381,7 +382,7 @@ export default function PlayPage() {
 
   /** Trận đánh tự động kiểu idle: mỗi lượt bạn đánh một đòn, quái đánh trả một đòn */
   /** 4.2.0: một lượt của bạn theo công pháp (mọi trận ở màn chơi chính) */
-  function cpPlayer(c: Character, b: Battle, foe: Fighter, atkMul: number, elemTag?: string) {
+  function cpPlayer(c: Character, b: Battle, foe: Fighter, atkMul: number, elemTag?: string, evMul = 1) {
     b.fsP ??= newSide();
     b.fsM ??= newSide();
     b.loP ??= loadoutOf(c);
@@ -391,7 +392,7 @@ export default function PlayPage() {
       return;
     }
     const r = cpAct(b.loP, b.fsP, b.fsM, b.ps.atk * atkMul, foe.def, b.pHp, b.pMax, rnd, 0.15 + gearFx(c.equipped).crit / 100, hit, c);
-    const tk = b.loM ? takeHit(b.loM, b.fsM, r.dmg, rnd) : { dmg: r.dmg, reflect: 0, note: undefined as string | undefined };
+    const tk = b.loM ? takeHit(b.loM, b.fsM, r.dmg, rnd, { sure: r.sure, evMul }) : { dmg: r.dmg, reflect: 0, note: undefined as string | undefined };
     b.mHp = Math.max(0, b.mHp - r.dot - tk.dmg);
     b.pHp = Math.max(1, Math.min(b.pMax, b.pHp + r.heal - r.self - tk.reflect));
     const tag = [...r.tags, r.heal > 0 ? `+${r.heal}` : ''].filter(Boolean).join(' ') || (tk.dmg ? elemTag : undefined);
@@ -425,7 +426,7 @@ export default function PlayPage() {
       return;
     }
     const r = cpAct(b.loM, b.fsM, b.fsP, foe.atk * atkMul, b.ps.def, b.mHp, b.mMax, rnd, 0.15 + gearFx(fc.equipped).crit / 100, hit, null);
-    const tk = b.loP ? takeHit(b.loP, b.fsP, r.dmg, rnd) : { dmg: r.dmg, reflect: 0, note: undefined as string | undefined };
+    const tk = b.loP ? takeHit(b.loP, b.fsP, r.dmg, rnd, { sure: r.sure }) : { dmg: r.dmg, reflect: 0, note: undefined as string | undefined };
     b.pHp = Math.max(0, b.pHp - r.dot - tk.dmg);
     b.mHp = Math.max(1, Math.min(b.mMax, b.mHp + r.heal - r.self - tk.reflect));
     const tag = [...r.tags, tk.reflect ? tr(`Phản ${tk.reflect}`, `Reflect ${tk.reflect}`) : ''].filter(Boolean).join(' ') || (tk.dmg ? elemTag : undefined);
@@ -733,7 +734,7 @@ export default function PlayPage() {
       if (b.sub === 0) {
         b.duel.turn += 1;
         b.loM ??= npcLoadout(fc);
-        cpPlayer(c, b, b.fs, b.nhd ? b.nhd.pMul : elemMul(elementOf(c), elementOf(fc)), b.nhd?.rel === 'dong' ? undefined : elemHitTag(eMe, eFoe));
+        cpPlayer(c, b, b.fs, b.nhd ? b.nhd.pMul : elemMul(elementOf(c), elementOf(fc)), b.nhd?.rel === 'dong' ? undefined : elemHitTag(eMe, eFoe), b.nhd ? 0.5 : 1);
         b.sub = 1;
         if (b.mHp <= 0) {
           end('win');
@@ -1757,8 +1758,12 @@ export default function PlayPage() {
     setQuestNews(q.newly);
     // thần binh truyền kiếp: đời nào cũng truyền thì mạnh dần
     const w = c.equipped.vu_khi;
-    const legend = extra.legendName && w && !c.ascended ? { item: w, name: extra.legendName.slice(0, 40), lv: c.legend?.item === w ? c.legend.lv + 1 : 1 } : null;
-    const petBook = c.pet && c.petKind && !(meta.petBook ?? []).includes(c.petKind) ? [...(meta.petBook ?? []), c.petKind] : meta.petBook;
+    // #118: sau phi thăng chết vẫn truyền được thần binh
+    const legend = extra.legendName && w ? { item: w, name: extra.legendName.slice(0, 40), lv: c.legend?.item === w ? c.legend.lv + 1 : 1 } : null;
+    // #168: gộp mọi loài đã nuôi trong kiếp (thú bỏ đi, thả về rừng vẫn được ghi sổ)
+    const seenKinds = [...(c.petSeen ?? []), ...(c.pet && c.petKind ? [c.petKind] : [])];
+    const newKinds = seenKinds.filter((k, i) => seenKinds.indexOf(k) === i && !(meta.petBook ?? []).includes(k));
+    const petBook = newKinds.length ? [...(meta.petBook ?? []), ...newKinds] : meta.petBook;
     // truyền công: gửi phúc duyên cho một người chơi khác (ưu tiên huynh đệ kết nghĩa)
     if (c.truyenCong && user) {
       const bro = SOCIAL.cur.sworn[0] ?? null;
@@ -2132,7 +2137,17 @@ export default function PlayPage() {
 
       <footer className="game-bottom">
         {pending && !c.dead ? (
-          <EventCard p={pending} c={c} onChoose={choose} />
+          <EventCard
+            p={pending}
+            c={c}
+            onChoose={choose}
+            onWearSet={(i) =>
+              act((ch) => {
+                const r = wearSet(ch, i);
+                if (r.text) ch.log.push({ age: Math.floor(ch.age), tone: 'normal', text: r.text });
+              })
+            }
+          />
         ) : (
           <div className="dock-inner">
             {user && googleOn() && sec && !sec.google && !c.dead && (

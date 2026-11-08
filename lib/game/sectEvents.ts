@@ -4,6 +4,7 @@ import { promote, rankName, rankOf, sectSide } from './sect';
 import type { Choice, GameEvent } from './types';
 import { tr } from '../i18n';
 import { nameOf } from '../hanviet';
+import { once } from './once';
 
 /**
  * Sự kiện trong tông môn, theo bậc đệ tử: tạp dịch có cơ hội nghịch thiên, ngoại môn bị sai việc vặt,
@@ -142,7 +143,7 @@ export const SECT_EVENTS: GameEvent[] = [
           if (ctx.rnd() < 0.5) {
             stat(c, 'ngoTinh', 10);
             addCult(c, reward(c, 1.2));
-            return tr(`Trong hộp là công pháp thất truyền của một vị tổ sư. Đêm nào bạn cũng lén luyện. ${promote(c, ctx, tr('Trưởng lão thấy tu vi bạn tăng vọt, nghi ngờ rồi kinh ngạc.', "The elders notice your cultivation soaring, first suspicious, then amazed.")) ?? ''}`, `Inside is a lost technique of a sect patriarch. You secretly practice it every night. ${promote(c, ctx, tr('Trưởng lão thấy tu vi bạn tăng vọt, nghi ngờ rồi kinh ngạc.', "The elders notice your cultivation soaring, first suspicious, then amazed.")) ?? ''}`);
+            return tr(`Trong hộp là công pháp thất truyền của một vị tổ sư. Đêm nào bạn cũng lén luyện. ${(once.v = promote(c, ctx, tr('Trưởng lão thấy tu vi bạn tăng vọt, nghi ngờ rồi kinh ngạc.', "The elders notice your cultivation soaring, first suspicious, then amazed."))) ?? ''}`, `Inside is a lost technique of a sect patriarch. You secretly practice it every night. ${once.v ?? ''}`);
           }
           stat(c, 'sucKhoe', -15);
           return tr('Hộp đá có cấm chế. Một luồng kình lực hất bạn văng ra, nằm liệt ba ngày.', "The stone box is sealed with a restriction. A burst of force flings you away, and you're bedridden for three days.");
@@ -155,7 +156,7 @@ export const SECT_EVENTS: GameEvent[] = [
         run: (c, ctx) => {
           dao(c, 5);
           money(c, 40);
-          if (ctx.rnd() < 0.35) return tr(`Trưởng lão vuốt râu: "Thật thà hiếm có." ${promote(c, ctx, tr('Ông đề cử bạn với tông môn.', "He recommends you to the sect.")) ?? ''}`, `The elder strokes his beard: "Such honesty is rare." ${promote(c, ctx, tr('Ông đề cử bạn với tông môn.', "He recommends you to the sect.")) ?? ''}`);
+          if (ctx.rnd() < 0.35) return tr(`Trưởng lão vuốt râu: "Thật thà hiếm có." ${(once.v = promote(c, ctx, tr('Ông đề cử bạn với tông môn.', "He recommends you to the sect."))) ?? ''}`, `The elder strokes his beard: "Such honesty is rare." ${once.v ?? ''}`);
           return tr('Trưởng lão thưởng cho bốn mươi linh thạch rồi phẩy tay cho lui.', "The elder rewards you forty spirit stones and waves you off.");
         },
       },
@@ -222,7 +223,7 @@ export const SECT_EVENTS: GameEvent[] = [
               run: (ch, ctx) => {
                 if (ctx.rnd() < 0.45) {
                   stat(ch, 'khiVan', 4);
-                  return tr(`Bạn hạ hắn trước mặt cả ngoại môn. ${promote(ch, ctx, tr('Chuyện đến tai chấp sự.', "Word reaches the deacon.")) ?? ''}`, `You beat him in front of the whole outer sect. ${promote(ch, ctx, tr('Chuyện đến tai chấp sự.', "Word reaches the deacon.")) ?? ''}`);
+                  return tr(`Bạn hạ hắn trước mặt cả ngoại môn. ${(once.v = promote(ch, ctx, tr('Chuyện đến tai chấp sự.', "Word reaches the deacon."))) ?? ''}`, `You beat him in front of the whole outer sect. ${once.v ?? ''}`);
                 }
                 stat(ch, 'sucKhoe', -12);
                 stat(ch, 'tamMa', 5);

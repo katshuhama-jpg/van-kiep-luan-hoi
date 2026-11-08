@@ -114,6 +114,8 @@ export interface Character {
   element?: Element; // ngũ hành bản mệnh
   danDoc?: { y: number; n: number }; // số viên đan đã uống trong năm (đan độc)
   petKind?: string; // loại thú cưng (xem lib/game/pets.ts)
+  petSeen?: string[]; // #168: mọi loài đã nuôi trong kiếp này (kể cả đã bỏ đi, đã thả), cuối kiếp gộp vào sổ
+  pdKillMark?: number; // Phổ Đà Sơn: tổng quái đã giết lúc Giới luật viện gọi lần trước
   // 4.2.0 linh thú
   petOf?: string; // loài đang tính thân thiết (đổi loài thì tính lại)
   petExp?: number; // điểm thân thiết

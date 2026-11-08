@@ -1,6 +1,7 @@
 import { addCult, dao, fatal, giveItem, hurt, money, reward, stat } from './helpers';
 import type { GameEvent } from './types';
 import { tr } from '../i18n';
+import { once } from './once';
 
 /**
  * Sự kiện cho tà đạo: lựa chọn tà có thưởng lớn hơn, rủi ro không cao hơn lựa chọn chính.
@@ -115,7 +116,7 @@ export const TA_EVENTS: GameEvent[] = [
           money(c, m);
           dao(c, -12);
           ctx.fx('coin', `+${m}`);
-          if (ctx.rnd() < 0.2) return tr(`Bạn cướp được ${m} linh thạch, nhưng lão tiêu sư liều mạng chém một đao.${hurt(c, 15, ctx)}`, `You grab ${m} spirit stones, but the old escort lands a desperate saber blow.${hurt(c, 15, ctx)}`);
+          if (ctx.rnd() < 0.2) return tr(`Bạn cướp được ${m} linh thạch, nhưng lão tiêu sư liều mạng chém một đao.${(once.v = hurt(c, 15, ctx))}`, `You grab ${m} spirit stones, but the old escort lands a desperate saber blow.${once.v}`);
           return tr(`Đám tiêu cục bỏ chạy tán loạn. Bạn mở hòm: ${m} linh thạch.`, `The escorts scatter in panic. You open a chest: ${m} spirit stones.`);
         },
       },
@@ -128,7 +129,7 @@ export const TA_EVENTS: GameEvent[] = [
           money(c, m);
           dao(c, 6);
           ctx.fx('coin', `+${m}`);
-          if (ctx.rnd() < 0.2) return tr(`Dọc đường gặp sơn tặc, bạn đánh lui nhưng trúng một mũi tên. Tiêu cục trả công ${m} linh thạch.${hurt(c, 15, ctx)}`, `Bandits ambush you on the road; you drive them off but take an arrow. The escort agency pays you ${m} spirit stones.${hurt(c, 15, ctx)}`);
+          if (ctx.rnd() < 0.2) return tr(`Dọc đường gặp sơn tặc, bạn đánh lui nhưng trúng một mũi tên. Tiêu cục trả công ${m} linh thạch.${(once.v = hurt(c, 15, ctx))}`, `Bandits ambush you on the road; you drive them off but take an arrow. The escort agency pays you ${m} spirit stones.${once.v}`);
           return tr(`Chuyến tiêu bình an. Tiêu cục trả công ${m} linh thạch.`, `A safe journey. The escort agency pays you ${m} spirit stones.`);
         },
       },
@@ -238,7 +239,7 @@ export const TA_EVENTS: GameEvent[] = [
         run: (c, ctx) => {
           dao(c, 10);
           money(c, 150);
-          if (ctx.rnd() < 0.2) return tr(`Chính phái phá được một phân đà ma môn nhờ bạn. Ma môn cho người ám sát, bạn thoát được nhưng bị thương.${hurt(c, 20, ctx)}`, `Thanks to you, the righteous sects destroy a demonic sect branch. The demonic sect sends assassins; you escape, but wounded.${hurt(c, 20, ctx)}`);
+          if (ctx.rnd() < 0.2) return tr(`Chính phái phá được một phân đà ma môn nhờ bạn. Ma môn cho người ám sát, bạn thoát được nhưng bị thương.${(once.v = hurt(c, 20, ctx))}`, `Thanks to you, the righteous sects destroy a demonic sect branch. The demonic sect sends assassins; you escape, but wounded.${once.v}`);
           return tr('Chính phái phá được một phân đà ma môn nhờ bạn, thưởng một trăm năm mươi linh thạch.', "Thanks to you, the righteous sects destroy a demonic sect branch and reward you a hundred and fifty spirit stones.");
         },
       },
