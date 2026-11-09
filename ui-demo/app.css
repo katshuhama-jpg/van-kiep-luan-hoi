@@ -111,3 +111,53 @@ nav.bot a.mid img{width:32px;height:32px}
 @keyframes pop{50%{color:#fff;transform:scale(1.15)}}
 .nope{animation:nope .3s steps(3) 1}
 @keyframes nope{33%{transform:translateX(-4px)}66%{transform:translateX(4px)}}
+/* ---- trận chia đôi bản gọn ---- */
+.sp-hud{position:absolute;left:0;right:0;top:0;z-index:6;display:flex;align-items:center;gap:8px;height:30px;padding:0 10px;background:rgba(31,22,13,.78);color:var(--goldl);font-size:15px;font-weight:700}
+.sp-seg{display:flex;gap:2px;flex:1;align-items:center}
+.sp-seg i{flex:1;height:8px;background:#5a4128;box-shadow:0 0 0 1px var(--dark)}
+.sp-seg i.d{background:var(--goldl)}
+.sp-seg i.c{background:#fff8e6;animation:segc 1s steps(2) infinite}
+@keyframes segc{50%{background:var(--goldl)}}
+.sp-seg i.bs{flex:0 0 18px;height:12px;background:var(--red)}
+.sp-boss-n{color:#ff8a6e;white-space:nowrap}
+.sp-bhp{flex:1;height:12px;background:#3b2a1a;box-shadow:0 0 0 2px var(--dark)}
+.sp-bhp i{display:block;height:100%;background:var(--red);transition:width .25s linear}
+.sp-turn{font-size:13px;color:var(--paper3);white-space:nowrap}
+.sp-u{position:absolute;display:flex;flex-direction:column;align-items:center;z-index:2}
+.sp-u img{position:relative;z-index:1}
+.sp-u .shd{position:absolute;bottom:calc(var(--k)*-2px);left:15%;right:15%;height:calc(var(--k)*4px);background:rgba(31,22,13,.28);border-radius:50%}
+#sp-foe{right:2%;bottom:14px;z-index:3}
+#sp-foe.boss{right:-8%;bottom:30px}
+.sp-hpb{width:64px;height:6px;margin-bottom:4px;background:#3b2a1a;box-shadow:0 0 0 2px var(--dark)}
+.sp-hpb i{display:block;height:100%;background:var(--red);transition:width .2s linear}
+.idle img{animation:idl 1.2s steps(2) infinite}
+@keyframes idl{50%{transform:translateY(calc(var(--k)*-1px))}}
+.lunge{animation:lunge .32s cubic-bezier(.3,0,.3,1) 1}
+@keyframes lunge{40%{transform:translateX(34px)}100%{transform:translateX(0)}}
+.lunge2{animation:lunge2 .32s cubic-bezier(.3,0,.3,1) 1}
+@keyframes lunge2{40%{transform:translateX(22px) translateY(-6px)}100%{transform:none}}
+.cast img{animation:cast .3s steps(2) 1}
+@keyframes cast{50%{filter:brightness(1.8)}}
+.hurt img{animation:hurt .28s steps(2) 1}
+@keyframes hurt{0%{filter:brightness(3);translate:6px 0}100%{filter:none;translate:0 0}}
+#sp-foe.boss.hurt img{animation:hurtb .28s steps(2) 1}
+@keyframes hurtb{0%{filter:brightness(2.4)}100%{filter:none}}
+.die{animation:die .45s steps(5) forwards}
+@keyframes die{0%{opacity:1;filter:brightness(3)}40%{opacity:0}60%{opacity:1}100%{opacity:0;transform:translateY(8px)}}
+.enter{animation:enter .35s cubic-bezier(.2,.7,.3,1) 1}
+@keyframes enter{0%{transform:translateX(70px);opacity:0}100%{transform:none;opacity:1}}
+.sp-num{position:absolute;z-index:8;pointer-events:none;white-space:nowrap;font-weight:700;text-shadow:2px 2px 0 var(--dark),-1px -1px 0 var(--dark);animation:num .85s cubic-bezier(.2,.8,.3,1) forwards}
+.sp-num.hit{font-size:20px;color:#fff8e6}
+.sp-num.crit{font-size:24px;color:var(--goldl)}
+.sp-num.gold{font-size:17px;color:#7fe0b0;animation-delay:.1s;opacity:0}
+@keyframes num{0%{opacity:1;transform:translateY(6px) scale(.6)}18%{transform:translateY(-6px) scale(1.15)}30%{transform:translateY(-8px) scale(1)}100%{opacity:0;transform:translateY(-38px) scale(1)}}
+.sp-coin{position:fixed;width:14px;height:14px;z-index:50;pointer-events:none;image-rendering:pixelated;transition:transform .6s cubic-bezier(.5,-0.4,.7,1)}
+.sp-banner{position:absolute;left:0;right:0;top:38%;z-index:7;text-align:center;font-family:'Protest Revolution',sans-serif;font-size:34px;color:#ff8a6e;text-shadow:3px 3px 0 var(--dark);animation:kiep 1.4s steps(8) forwards}
+.sp-fail{position:absolute;inset:0;z-index:9;background:rgba(31,22,13,.65);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:0 16px}
+.sp-fail[hidden]{display:none}
+.sp-fail .t{font-family:'Protest Revolution',sans-serif;font-size:32px;color:#ff8a6e;text-shadow:3px 3px 0 var(--dark)}
+.sp-fail .s{color:var(--paper3);font-size:15px;font-weight:700}
+.sp-strip{align-items:center}
+.sp-spd{min-width:44px;min-height:30px;border:0;background:var(--paper);color:var(--dark);font-size:14px;font-weight:700;box-shadow:0 0 0 2px var(--dark)}
+.sp-spd[aria-pressed=true]{background:var(--goldl)}
+#sp-gold{display:inline-block}
