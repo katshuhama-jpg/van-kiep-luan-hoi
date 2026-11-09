@@ -24,6 +24,32 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '4.3.2',
+    date: '09/11/2026',
+    title: tr('Bớt Chết Lãng Xẹt', 'Fewer Pointless Deaths'),
+    lead: tr('Đạo hữu than chết nhảm, Thiên Đạo nghe rồi: những cái chết vô lý giờ hiếm hơn, chuyện nhỏ cũng gọn hơn.', 'Fellow cultivators complained of pointless deaths, and the Heavenly Dao heard: senseless deaths are rarer, and small things are tidier.'),
+    groups: [
+      {
+        h: tr('Bớt chết nhảm', 'Fewer pointless deaths'),
+        hot: true,
+        items: [
+          tr('Trẻ con chết yểu hiếm hơn nữa.', 'Childhood deaths are even rarer.'),
+          tr('Bế quan khi tâm ma còn thấp chỉ bị thương, không chết.', 'Seclusion with a low heart demon only wounds, never kills.'),
+          tr('Người tu đạo và tiên nhân lạc chướng khí chỉ bị thương.', 'Cultivators and immortals lost in miasma are only wounded.'),
+          tr('Từ Trúc Cơ, đá của dân làng không còn ném trúng bạn.', 'From Foundation, villagers\' stones no longer hit you.'),
+        ],
+      },
+      {
+        h: tr('Tiện ích', 'Quality of life'),
+        items: [
+          tr('Số năm trên ô trọng tâm dễ đọc hơn.', 'The year count on focus tiles is easier to read.'),
+          tr('Bấm gửi góp ý nhiều lần chỉ gửi một.', 'Tapping send repeatedly only sends feedback once.'),
+        ],
+      },
+    ],
+    more: [tr('Bớt chết nhảm', 'Fewer pointless deaths'), tr('Số năm dễ đọc', 'Readable year count')],
+  },
+  {
     v: '4.3.1',
     date: '09/11/2026',
     title: tr('Tuyệt Kỹ Xứng Danh', 'Ultimates Worth the Name'),

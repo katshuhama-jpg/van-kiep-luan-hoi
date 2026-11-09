@@ -55,12 +55,15 @@ export default function SauChungDao({ c, meta }: { c: Character; meta: Meta }) {
   }, [c, meta]);
   const first = road.find((s) => !s.done && s.next) ?? road.find((s) => !s.done) ?? null;
 
+  const [busy, setBusy] = useState(false);
   const send = async () => {
     const t = wish.trim();
-    if (!t || !user) return;
+    if (!t || !user || busy) return;
+    setBusy(true);
     const err = await addFeedback(user, 'tinh_nang', tr(`[Sau chứng đạo] ${t}`, `[After Dao] ${t}`));
     setSent(err ?? tr('Thiên Đạo đã nghe. Tác giả sẽ đọc từng lời.', 'The Heavenly Dao has heard. The author will read every word.'));
     if (!err) setWish('');
+    setBusy(false);
   };
 
   return (
@@ -95,7 +98,7 @@ export default function SauChungDao({ c, meta }: { c: Character; meta: Meta }) {
         {user ? (
           <>
             <textarea id="scd-wish" rows={2} maxLength={500} value={wish} onChange={(e) => setWish(e.target.value)} placeholder={tr('vd: cho chứng đạo rồi được làm sư phụ người mới...', 'e.g. let those who attained the Dao mentor newcomers...')} />
-            <button className="btn btn-red" onClick={send} disabled={!wish.trim()}>
+            <button className="btn btn-red" onClick={send} disabled={!wish.trim() || busy}>
               {tr('Gửi lên Thiên Đạo', 'Send to the Heavenly Dao')}
             </button>
             {sent && <p className="note">{sent}</p>}

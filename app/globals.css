@@ -2391,10 +2391,11 @@ button:disabled {
 
 /* Quá độ: làm một việc quá lâu */
 .focus-grid button { position: relative; }
-.focus-grid .streak { position: absolute; top: 1px; right: 2px; font-style: normal; font-size: 13px; line-height: 1; color: var(--ink-soft, #7a5a3a); }
-.focus-grid button.warm .streak { color: #c9962e; }
+.focus-grid .streak { position: absolute; top: 1px; right: 2px; font-style: normal; font-size: 12px; font-weight: 700; line-height: 1; padding: 2px 4px; background: #fff8e6; color: #3b2a1a; border: 2px solid #1f160d; }
+/* #104: chip nền sáng chữ tối, đọc rõ cả khi ô đang chọn */
+.focus-grid button.warm .streak { background: #ffcf6e; color: #1f160d; }
 .focus-grid button.tired { animation: tiredPulse 1.2s steps(2) infinite; }
-.focus-grid button.tired .streak { color: #e0202e; }
+.focus-grid button.tired .streak { background: #b8432f; color: #fff8e6; }
 @keyframes tiredPulse { 50% { box-shadow: 0 0 0 2px #e0202e inset; } }
 
 /* ===== Gieo quẻ thiên phú ===== */

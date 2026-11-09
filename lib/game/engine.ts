@@ -849,7 +849,8 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
   // ---- Trẻ con chết yểu ----
   if (age >= 1 && age <= 12 && !opts.closed) {
     // chết yểu ngẫu nhiên: giảm còn khoảng một nửa (người chơi chưa kịp tu đã chết thì rất nản)
-    const risk = 0.0015 + (tier.id === 0 ? 0.002 : tier.id === 1 ? 0.0008 : 0) + (c.originId === 'the_gia' ? 0.001 : 0);
+    // 4.3.1: giảm thêm một nửa nữa (góp ý: chết lúc 1 tuổi, 11 tuổi chưa kịp chơi)
+    const risk = (0.0015 + (tier.id === 0 ? 0.002 : tier.id === 1 ? 0.0008 : 0) + (c.originId === 'the_gia' ? 0.001 : 0)) / 2;
     if (rnd() < risk) {
       const causes = [
         tr(`Một trận sốt cao cướp đi bạn khi mới ${age} tuổi.`, `A high fever takes you at just ${age} years old.`),
@@ -1380,6 +1381,16 @@ export function closedDoor(c: Character, years: number, ctx: EffectCtx, talents:
     pending = yearTick(c, ctx, { closed: true, talents });
     if (c.dead) break;
     // tẩu hỏa nhập ma khi bế quan, càng lâu càng dễ, bế quan dồn dập càng nguy
+    // 4.3.1 (góp ý: bế quan mà chết): tâm ma dưới 40 thì chỉ bị thương, không chết
+    if (c.stats.tamMa < 40) {
+      if (ctx.rnd() < (rushed ? 0.012 : 0.005)) {
+        stat(c, 'sucKhoe', -15);
+        stat(c, 'tamMa', 3);
+        ctx.log(tr('Bế quan lâu ngày, tâm ma thoáng hiện. Bạn kịp định thần, chỉ bị chấn thương kinh mạch.', "Long in seclusion, a heart demon flickers. You steady yourself in time, with only jolted meridians."), 'bad');
+      }
+      if (pending) break;
+      continue;
+    }
     const f = fatal(c, ctx, (rushed ? 0.012 : 0.005) + c.stats.tamMa / 4000, tr('Bế quan quá lâu, một mình đối diện tâm ma. Người ta phá cửa động phủ thì bạn đã hóa thành bộ xương khô.', "Too long in seclusion, alone with your heart demon. When they break down the door of your cave abode, you are a dry skeleton."));
     if (c.dead) {
       c.endTag = 'be_quan';
@@ -1528,6 +1539,12 @@ const OVERWORK: Record<string, { warn: string; hits: { p: number; run: (c: Chara
       {
         p: 1,
         run: (c, ctx) => {
+          // 4.3.1: người tu đạo từ Trúc Cơ và tiên nhân không chết vì chướng khí, chỉ bị thương
+          if (c.realm >= 2 || c.cosmos) {
+            stat(c, 'sucKhoe', -15);
+            ctx.fx('hurt', tr('Chướng khí', 'Miasma'));
+            return tr('Bạn lạc vào vùng chướng khí, vận công bức độc ra ngoài, mất mấy tháng mới hồi lại sức.', 'You stray into a miasma zone and force the poison out with your qi, taking months to recover.');
+          }
           const f = fatal(c, ctx, 0.3, tr('Bạn lạc vào chướng khí rừng thiêng, ngã xuống không bao giờ tỉnh dậy.', "You stray into the miasma of a sacred forest, collapse, and never wake."));
           return f ? tr(`Mải đi, bạn lạc vào vùng chướng khí...${f}`, `Lost in your travels, you wander into a miasma zone...${f}`) : tr('Bạn lạc vào chướng khí, bò được ra ngoài khi chỉ còn thoi thóp.', "You wander into a miasma and crawl out barely breathing.");
         },

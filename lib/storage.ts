@@ -401,9 +401,20 @@ const FB_ERR: Record<string, string> = {
   TOO_MANY: tr('Hôm nay bạn đã gửi đủ 20 góp ý rồi.', "You've already sent 20 requests today."),
 };
 
+// #170: bấm gửi nhiều lần liền thì chỉ gửi một (cùng nội dung trong 2 phút coi là trùng)
+let lastFb: { key: string; at: number; p: Promise<string | null> } | null = null;
 export async function addFeedback(user: Player | null, kind: FeedbackKind, content: string): Promise<string | null> {
   const sb = supabase();
   if (!sb || !user) return FB_ERR.NOT_LOGGED_IN;
+  const key = `${user.username}|${kind}|${content.trim()}`;
+  if (lastFb && lastFb.key === key && Date.now() - lastFb.at < 120000) return lastFb.p;
+  const p = sendFeedback(sb, user, kind, content);
+  lastFb = { key, at: Date.now(), p };
+  const r = await p;
+  if (r) lastFb = null; // gửi lỗi thì cho gửi lại
+  return r;
+}
+async function sendFeedback(sb: NonNullable<ReturnType<typeof supabase>>, user: Player, kind: FeedbackKind, content: string): Promise<string | null> {
   const { error } = await sb.rpc('vkl_feedback_add', { p_token: user.token, p_kind: kind, p_content: content });
   if (!error) return null;
   const code = Object.keys(FB_ERR).find((k) => error.message.includes(k));

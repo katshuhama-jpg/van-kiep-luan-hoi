@@ -570,6 +570,8 @@ export const EVENTS2: GameEvent[] = [
         lean: 'trung',
         run: (c, ctx) => {
           setArc(c, 'rong', 3);
+          // #139: từ Trúc Cơ, đá phàm nhân không chạm được người tu đạo
+          if (c.realm >= 2 || c.cosmos) return tr('Dân làng ném đá, viên nào bay tới gần bạn cũng rơi xuống đất. Họ nhìn nhau rồi lặng lẽ bỏ về.', "The villagers throw stones; every one drops to the ground before it reaches you. They exchange looks and quietly go home.");
           if (ctx.rnd() < 0.5) return tr('Dân làng ném đá trúng đầu bạn.', "A villager's stone hits you in the head.") + hurt(c, 20, ctx);
           return tr('Dân làng thấy bạn liều mạng, đành bỏ về.', "Seeing you risk your life, the villagers give up and go home.");
         },
