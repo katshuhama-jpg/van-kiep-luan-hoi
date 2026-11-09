@@ -61,12 +61,12 @@
     ['pet', 'Xích Lang', 'Linh thú', 'pet', 700],
     ['hp', 'Bóng kiếp trước', 'Hộ pháp', 'kt_red', 800]
   ];
-  var MOBS = [['Sói hoang', 'm_wolf', 63, 31], ['U hồn', 'm_ghost', 34, 46], ['Hổ yêu', 'm_dk_tiger', 58, 38], ['Kỳ lân non', 'm_dk_qilin', 64, 61], ['Diều hâu yêu', 'm_dieu', 60, 46]];
+  var MOBS = [['Sói hoang', 'm_wolf', 63, 31], ['U hồn', 'm_ghost', 34, 46], ['Hùng yêu', 'm_bear', 59, 54], ['Kỳ lân non', 'm_dk_qilin', 64, 61], ['Diều hâu yêu', 'm_dieu', 60, 46], ['Heo rừng', 'm_boar', 58, 32], ['Thiết chu', 'm_spider', 33, 36]];
   /* kẻ đã giết người chơi ở các kiếp trước, lấy từ lịch sử kiếp (số liệu mẫu) */
   var FOES = [
     { kiep: 5, n: 'Kim Sí Đại Bằng', img: 'm_bang', w: 84, h: 46, fl: 'hue-rotate(35deg) saturate(1.3)', how: 'Bạn bị Kim Sí Đại Bằng giết ở Đỉnh Vân Tiêu, năm 122 tuổi.' },
-    { kiep: 12, n: 'Băng Giao', img: 'm_dk_flydragon', w: 112, h: 57, fl: 'hue-rotate(170deg) saturate(.8) brightness(1.1)', how: 'Băng Giao kéo bạn xuống đáy Bắc Hải Băng Nguyên, năm 97 tuổi.' },
-    { kiep: 18, n: 'Hắc Phong Hổ Vương', img: 'm_dk_tiger', w: 58, h: 38, fl: 'brightness(.6) saturate(.6)', how: 'Hắc Phong Hổ Vương vồ bạn giữa rừng, năm 211 tuổi.' },
+    { kiep: 12, n: 'Băng Giao', img: 'm_long', w: 92, h: 48, fl: 'hue-rotate(160deg) saturate(.9) brightness(1.1)', how: 'Băng Giao kéo bạn xuống đáy Bắc Hải Băng Nguyên, năm 97 tuổi.' },
+    { kiep: 18, n: 'Hắc Phong Sư Vương', img: 'm_lion', w: 64, h: 50, fl: 'brightness(.6) saturate(.7)', how: 'Hắc Phong Sư Vương vồ bạn giữa rừng, năm 211 tuổi.' },
     { kiep: 27, n: 'Kiếm Si Vô Danh', img: 'kt_blue', w: 21, h: 49, fl: 'brightness(.8)', how: 'Kiếm Si Vô Danh chém bạn ở Kiếm Trủng, năm 174 tuổi.' }
   ];
   var SHADES = [
@@ -108,7 +108,7 @@
     return '<b>Ải 3-' + SP.st + '</b><span class="sp-seg">' + seg + '<i class="bs"></i></span>';
   }
   function foeHTML(cls) {
-    var f = SP.foe, flip = (f.img === 'm_ghost' || f.img === 'kt_blue' ? '' : ';transform:scaleX(-1)') + (f.fl ? ';filter:' + f.fl : '');
+    var f = SP.foe, flip = '' + (f.fl ? ';filter:' + f.fl : '');
     return '<div id="sp-foe" class="sp-u ' + (SP.boss ? 'boss ' : '') + (cls || '') + '">' + (SP.boss ? '' : '<span class="sp-hpb"><i id="sp-fhp" style="width:' + Math.max(0, f.hp / f.max * 100) + '%"></i></span>') +
       '<img src="img/' + f.img + '.png" alt="' + f.n + '" style="width:calc(var(--k)*' + f.w + 'px);height:calc(var(--k)*' + f.h + 'px)' + flip + '"><span class="shd"></span></div>';
   }
@@ -360,7 +360,7 @@
       '<div class="unit" style="left:14px;top:44px"><span class="tag">Hộ pháp kiếp 31</span><div class="hp" style="width:50px"><i style="width:80%;background:var(--jade)"></i></div><img src="img/kt_red.png" alt="Hộ pháp kiếp 31" style="width:calc(var(--k)*22px);height:calc(var(--k)*48px);"></div>' +
       '<div class="unit" style="left:14px;top:200px"><span class="tag">Hộ pháp kiếp 40</span><div class="hp" style="width:50px"><i style="width:100%;background:var(--jade)"></i></div><img src="img/kt_blue.png" alt="Hộ pháp kiếp 40" style="width:calc(var(--k)*21px);height:calc(var(--k)*49px);"></div>' +
       '<div class="unit" style="left:92px;top:240px"><img src="img/pet.png" alt="Linh thú Xích Lang" style="width:calc(var(--k)*63px);height:calc(var(--k)*31px);"></div>' +
-      '<div class="unit en" style="right:14px;top:40px"><span class="tag">Hổ yêu</span><div class="hp" style="width:60px"><i style="width:' + hp[0] + ';background:var(--red)"></i></div><img src="img/m_dk_tiger.png" alt="Hổ yêu" style="width:calc(var(--k)*58px);height:calc(var(--k)*38px);transform:scaleX(-1)"></div>' +
+      '<div class="unit en" style="right:14px;top:40px"><span class="tag">Hổ yêu</span><div class="hp" style="width:60px"><i style="width:' + hp[0] + ';background:var(--red)"></i></div><img src="img/m_lion.png" alt="Hổ yêu" style="width:calc(var(--k)*64px);height:calc(var(--k)*50px)"></div>' +
       '<div class="unit en" style="right:30px;top:150px"><span class="tag">Sói hoang</span><div class="hp" style="width:60px"><i style="width:' + hp[1] + ';background:var(--red)"></i></div><img src="img/m_wolf.png" alt="Sói hoang" style="width:calc(var(--k)*63px);height:calc(var(--k)*31px);transform:scaleX(-1)"></div>' +
       '<div class="unit en" style="right:42%;top:196px"><span class="tag">U hồn</span><div class="hp" style="width:50px"><i style="width:' + hp[2] + ';background:var(--red)"></i></div><img src="img/m_ghost.png" alt="U hồn" style="width:calc(var(--k)*34px);height:calc(var(--k)*46px);"></div>' +
       '<div id="dmg" style="position:absolute;right:60px;top:100px;font-size:26px;font-weight:700;color:var(--goldl);text-shadow:2px 2px 0 var(--dark);opacity:0"></div>' +
@@ -373,8 +373,8 @@
   function thap() {
     var pool = [['Thường', '#6b5233', 'Hồi khí', 'Hồi 10% máu sau mỗi trận'], ['Hiếm', '#3d6fb0', 'Huyết chiến', '+25% công khi máu dưới nửa'], ['Quý', '#a8303a', 'Long uy', 'Boss rơi đồ đôi'], ['Thường', '#6b5233', 'Thân pháp', '+10% né đòn'], ['Hiếm', '#3d6fb0', 'Mộng điệp hộ', 'Bướm theo bên mạnh gấp đôi']];
     var st = S.floor % 3, cards = [pool[st], pool[st + 1], pool[st + 2]];
-    var foes = [['Hổ yêu', 'm_dk_tiger', 58], ['Kỳ lân non', 'm_dk_qilin', 64], ['U hồn', 'm_ghost', 34]];
-    var f = S.floor % 10 === 0 ? ['Boss: Phi Long', 'm_dk_flydragon', 112] : foes[S.floor % 3];
+    var foes = [['Sư yêu', 'm_lion', 64], ['Kỳ lân non', 'm_dk_qilin', 64], ['U hồn', 'm_ghost', 34]];
+    var f = S.floor % 10 === 0 ? ['Boss: Thanh Long', 'm_long', 92] : foes[S.floor % 3];
     var act = S.tPhase === 'fight'
       ? '<button class="btn big" data-act="tfight">Khiêu chiến tầng ' + S.floor + '</button>'
       : '<b style="font-size:18px;color:var(--jade)">Thắng! Chọn 1 lá Mộng phù cho lượt leo này</b><div class="g3" style="gap:8px">' + cards.map(function (c) {
