@@ -5199,3 +5199,7 @@ button.shadow-card { cursor: pointer; }
 .event-sets small{font-weight:700;opacity:.8}
 .event-sets .btn{min-height:36px;padding:4px 12px;font-size:14px}
 .event-sets .btn.on{outline:3px solid var(--gold,#c9962e);outline-offset:-3px}
+/* 4.4.0 Hồng Hoang giới */
+.cosmos-fx.hg i { background: #ffd6ff; box-shadow: 0 0 4px #c88aff; }
+.cos-tomb.hg .sky { background-image: url(/bg/hg-0.png); }
+.cos-tomb.hg b { color: #ffe27a; }

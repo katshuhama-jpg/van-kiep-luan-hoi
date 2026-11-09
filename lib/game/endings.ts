@@ -15,6 +15,123 @@ export interface Ending {
 const cause = (c: Character) => (c.cause ?? '').toLowerCase();
 
 export const ENDINGS: Ending[] = [
+  // 4.4.0 Hồng Hoang giới
+  {
+    id: 'hg_khai_thien',
+    name: tr('Khai Thiên Lập Địa', "Opening Heaven, Founding Earth"),
+    desc: tr('Thắng cả Thiên Đạo, một nhát tách hỗn độn, mở ra thế giới mới mang tên mình.', "You beat the Heavenly Dao itself, split chaos with one stroke and opened a new world bearing your name."),
+    hint: tr('Phía sau Thiên Đạo còn một bầu trời khác.', "Behind the Heavenly Dao there is another sky."),
+    how: tr('Vào Hồng Hoang, lên Khai Thiên, thắng Vấn Thiên rồi chọn Khai Thiên Lập Địa.', "Enter Honghuang, reach World Opener, win Questioning Heaven, then choose to open a new heaven."),
+    rare: 4,
+    test: (c) => c.endTag === 'hg_khai_thien',
+  },
+  {
+    id: 'hg_thien_dao',
+    name: tr('Hóa Thành Thiên Đạo', "Becoming the Heavenly Dao"),
+    desc: tr('Ngồi vào chỗ trời cũ. Từ nay mỗi đạo lôi kiếp nơi phàm giới đều do bạn giáng xuống.', "You took the old heaven's seat. Every tribulation bolt in the mortal world now falls by your hand."),
+    hint: tr('Ghế ấy không thể để trống.', "That seat cannot stay empty."),
+    how: tr('Thắng Vấn Thiên rồi chọn ngồi vào chỗ Thiên Đạo.', "Win Questioning Heaven, then take the Heavenly Dao's seat."),
+    rare: 4,
+    test: (c) => c.endTag === 'hg_thien_dao',
+  },
+  {
+    id: 'hg_pham_nhan',
+    name: tr('Về Làm Người', "Human Again"),
+    desc: tr('Thắng cả trời rồi buông hết, về làng nhỏ dưới chân núi cày ruộng.', "You beat heaven itself, then let it all go to plow a field in a small village below the mountain."),
+    hint: tr('Có người vẫn chờ bạn ở chân núi.', "Someone is still waiting for you at the foot of the mountain."),
+    rare: 4,
+    test: (c) => c.endTag === 'hg_pham_nhan',
+  },
+  {
+    id: 'hg_hanh_gia',
+    name: tr('Thiên Đạo Hành Giả', "Agent of the Heavenly Dao"),
+    desc: tr('Nhận lời sứ giả, mọc cánh đen, sống mãi mà không còn là mình.', "You accepted the envoy, grew black wings, and live forever as someone who is no longer you."),
+    hint: tr('Trời cũng cần người làm việc.', "Even heaven needs workers."),
+    how: tr('Ở Hỗn Nguyên Đại La, nhận lời mời của sứ giả Thiên Đạo.', "At Hunyuan Daluo, accept the Heavenly Dao's envoy."),
+    rare: 3,
+    test: (c) => c.endTag === 'hg_hanh_gia',
+  },
+  {
+    id: 'hg_vo_danh',
+    name: tr('Không Ai Còn Nhớ', "No One Remembers"),
+    desc: tr('Thiên Đạo xóa xong cái tên. Không ai nhớ từng có bạn, kể cả chính bạn.', "The Heavenly Dao finished erasing your name. No one remembers you ever existed, not even you."),
+    hint: tr('Cái tên cũng là một sợi xích.', "A name is a chain too."),
+    how: tr('Thất bại hai lần ở Xích Danh.', "Fail the Chain of Name twice."),
+    rare: 3,
+    test: (c) => c.endTag === 'hg_vo_danh',
+  },
+  {
+    id: 'hg_thien_thi',
+    name: tr('Thiện Thi Đoạt Xá', "The Good Corpse Takes Over"),
+    desc: tr('Phần tử tế nhất trong bạn thắng, mặc thân xác bạn sống tiếp, hiền hơn bạn từng sống.', "The kindest part of you won and lives on in your body, gentler than you ever were."),
+    hint: tr('Người quá tốt cũng có cái thi của mình.', "Even the very good have their corpse."),
+    how: tr('Thua thiện thi khi đạo tâm rất cao.', "Lose to the Good Corpse with a very high Dao Heart."),
+    rare: 3,
+    test: (c) => c.endTag === 'hg_thien_thi',
+  },
+  {
+    id: 'hg_ac_thi',
+    name: tr('Ác Thi Xuất Thế', "The Evil Corpse Walks"),
+    desc: tr('Phần tàn nhẫn nhất trong bạn thắng, thành ma đầu mới của Hồng Hoang.', "The cruelest part of you won and became Honghuang's newest demon lord."),
+    hint: tr('Đừng để nó thắng.', "Do not let it win."),
+    how: tr('Thua ác thi trong Trảm Tam Thi.', "Lose to the Evil Corpse while Slaying the Three Corpses."),
+    rare: 3,
+    test: (c) => c.endTag === 'hg_ac_thi',
+  },
+  {
+    id: 'hg_tram_minh',
+    name: tr('Bị Chính Mình Chém', "Cut Down by Yourself"),
+    desc: tr('Ngã xuống giữa đường thành thánh, dưới lưỡi kiếm của chính một phần mình.', "You fell halfway to sainthood, under the blade of a part of yourself."),
+    hint: tr('Kẻ địch cuối cùng là chính mình.', "The last enemy is yourself."),
+    how: tr('Thua một trận Trảm Tam Thi.', "Lose a Three Corpses fight."),
+    rare: 2,
+    test: (c) => c.endTag === 'hg_tram_minh',
+  },
+  {
+    id: 'hg_nghe_giang',
+    name: tr('Nghe Giảng Ngàn Năm', "A Thousand Years of Listening"),
+    desc: tr('Ngồi nghe Hồng Quân giảng, ngàn năm trôi như một buổi chiều.', "You sat listening to Hongjun, and a thousand years passed like an afternoon."),
+    hint: tr('Có bài giảng không muốn rời.', "Some lectures you never want to leave."),
+    how: tr('Nghe giảng ở Tử Tiêu Cung nhiều lần rồi chọn ở lại nghe mãi.', "Listen at the Purple Firmament Palace many times, then choose to stay forever."),
+    rare: 3,
+    test: (c) => c.endTag === 'hg_nghe_giang',
+  },
+  {
+    id: 'hg_va_troi',
+    name: tr('Vá Trời Mà Chết', "Died Mending the Sky"),
+    desc: tr('Đem chút sức cuối cùng đội đá vá trời cùng Nữ Oa.', "You spent your last strength carrying stones to mend the sky with Nüwa."),
+    hint: tr('Trời thủng thì phải có người vá.', "When the sky tears, someone must mend it."),
+    how: tr('Giúp Nữ Oa vá trời khi sức khỏe đã yếu.', "Help Nüwa mend the sky while your health is low."),
+    rare: 3,
+    test: (c) => c.endTag === 'hg_va_troi',
+  },
+  {
+    id: 'hg_phong_than',
+    name: tr('Thánh Nhân Vẫn Lạc', "A Saint Falls"),
+    desc: tr('Ngã xuống trong đại kiếp Phong Thần.', "You fell in the Investiture tribulation."),
+    hint: tr('Thánh nhân cũng có kiếp.', "Even saints have their tribulation."),
+    how: tr('Chết trong đại kiếp Phong Thần.', "Die in the Investiture tribulation."),
+    rare: 3,
+    test: (c) => c.endTag === 'hg_phong_than',
+  },
+  {
+    id: 'hg_phan_sat',
+    name: tr('Bị Đồ Đệ Phản Sát', "Slain by Your Disciple"),
+    desc: tr('Bị chính đồ đệ mình dạy dỗ dùng chiêu bạn dạy mà giết.', "The disciple you raised killed you with the moves you taught."),
+    hint: tr('Dạy người thì phải dạy cả lòng.', "Teach the heart, not just the sword."),
+    how: tr('Thua đồ đệ phản sư khi thanh lý môn hộ.', "Lose to a traitor disciple while purging them."),
+    rare: 3,
+    test: (c) => c.endTag === 'hg_phan_sat',
+  },
+  {
+    id: 'hg_giao_diet',
+    name: tr('Giáo Diệt', "The Teaching Dies Out"),
+    desc: tr('Đồ đệ cuối cùng đã đi. Bạn khép cổng giáo, một mình bước vào hư không.', "The last disciple was gone. You closed the gate and walked alone into the void."),
+    hint: tr('Một giáo không có người thì còn gì.', "A teaching without people is nothing."),
+    how: tr('Mất hết đồ đệ rồi chọn đi vào hư không.', "Lose every disciple, then choose to walk into the void."),
+    rare: 3,
+    test: (c) => c.endTag === 'hg_giao_diet',
+  },
   {
     id: 'thoat_van_kiep',
     name: tr('Vạn Kiếp Quy Nhất', "Ten Thousand Lives Become One"),
@@ -435,12 +552,15 @@ export const ENDINGS: Ending[] = [
 /** Kết cục vào cõi (phi thăng, Ma Tôn, Thái Hư) vẫn được ghi vào Sổ Sinh Tử khi chết ở cõi đó vì một kết cục riêng hơn */
 export function alsoEndings(c: Character): string[] {
   if (!c.cosmos) return [];
-  const id = c.cosmos === 'ma' ? 'ma_ton_do_kiep' : c.cosmos === 'hu' ? 'tieu_dao' : 'phi_thang';
+  // 4.4.0: ở Hồng Hoang thì ghi theo cõi cũ, và đã chứng đạo trước khi bước qua khe tím
+  const cos = c.cosmos === 'hg' ? (c.hong?.from ?? 'tien') : c.cosmos;
+  const id = cos === 'ma' ? 'ma_ton_do_kiep' : cos === 'hu' ? 'tieu_dao' : 'phi_thang';
   const main = endingOf(c).id;
   const out = main === id ? [] : [id];
   // tới cảnh giới cuối mà chết theo kết cục khác: vẫn ghi nhận đỉnh của cõi
-  const top = c.realm >= 11 ? (c.cosmos === 'ma' ? 'ma_de' : c.cosmos === 'hu' ? 'hon_nguyen' : 'dai_la') : null;
+  const top = c.realm >= 11 ? (cos === 'ma' ? 'ma_de' : cos === 'hu' ? 'hon_nguyen' : 'dai_la') : null;
   if (top && main !== top && main !== 'chung_dao') out.push(top);
+  if (c.cosmos === 'hg' && main !== 'chung_dao') out.push('chung_dao');
   if ((c.kiepSo ?? 0) >= 5) out.push('nghich_thien');
   if ((c.kiepSo ?? 0) >= 10 && c.endTag === 'chung_dao') out.push('van_kiep_bat_diet');
   if (c.qf?.hoDao && c.endTag === 'chung_dao') out.push('van_kiep_ho_dao');

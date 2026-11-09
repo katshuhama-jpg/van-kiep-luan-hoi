@@ -17,6 +17,7 @@ import {
   MAX_LIFE,
   ASCEND_REALM,
   TOP_REALM,
+  HH_REALM,
   lifeCap,
   linhCanBreak,
   BINH_CANH_FAILS,
@@ -46,6 +47,7 @@ import {
   realmLabel,
 } from './data';
 import { BREAK_EVENT_ID, EVENTS, HUT_CONG_ID, PATH_EVENT_ID, pathChoices } from './events';
+import { HG_GATE_ID, hgApi, hgCultMul, hgFindEvent, hgGateFor } from './hongHoang';
 import { maChainYear } from './sectEvents2';
 import { ASCEND_MIN_AGE, anOf, destOf, keyAn, needTrial } from './nguHanhDai';
 import { ASCEND_GEAR } from './items2';
@@ -63,7 +65,7 @@ import { nameOf } from '../hanviet';
 
 export const rnd = () => Math.random();
 
-const GAIN = [6, 30, 30, 34, 38, 42, 46, 50, 70, 85, 100, 120];
+const GAIN = [6, 30, 30, 34, 38, 42, 46, 50, 70, 85, 100, 120, 150, 180, 210, 250];
 
 export function emptyMeta(): Meta {
   return { phucDuyen: 0, nghiep: 0, lives: 0, talents: [], enemy: null };
@@ -343,7 +345,7 @@ function enterRealm(c: Character, realm: number, ctx: EffectCtx, talents: string
   const up = promoteByRealm(c, ctx);
   if (up) ctx.log(up, 'good');
   // quà phi thăng theo cõi: áo khi vào cõi (mặc luôn), vũ khí ở cảnh giới 9, phụ kiện ở cảnh giới 10
-  if (c.cosmos && realm >= ASCEND_REALM && realm <= ASCEND_REALM + 2) {
+  if (c.cosmos && c.cosmos !== 'hg' && realm >= ASCEND_REALM && realm <= ASCEND_REALM + 2) {
     const id = ASCEND_GEAR[c.cosmos][realm - ASCEND_REALM];
     const it = ITEMS.find((i) => i.id === id);
     if (it && !c.inventory.includes(id)) {
@@ -408,6 +410,7 @@ export function yearlyGain(c: Character) {
     petCultMul(c) *
     cpCultMul(c) *
     htCultMul(c) *
+    hgCultMul(c) *
     lean
   );
 }
@@ -494,6 +497,13 @@ function progress(c: Character, ctx: EffectCtx, talents: string[]): PendingEvent
   const R = REALMS[c.realm];
   let guard = 0;
   while (c.cultivation >= needFor(c) && guard++ < 20) {
+    // 4.4.0 Hồng Hoang: Chuẩn Thánh, Hỗn Nguyên lên tầng phải qua cửa ải (chém thi, chặt xích)
+    if (c.cosmos === 'hg' && c.layer < R.layers && (c.realm === HH_REALM || c.realm === HH_REALM + 2)) {
+      c.cultivation = needFor(c);
+      if (c.breakDelay > 0) return null;
+      const e = hgFindEvent(c, hgGateFor(c) as string);
+      return e ? buildPending(c, e) : null;
+    }
     if (c.layer < R.layers) {
       c.cultivation -= needFor(c);
       c.layer += 1;
@@ -502,6 +512,15 @@ function progress(c: Character, ctx: EffectCtx, talents: string[]): PendingEvent
     } else {
       c.cultivation = needFor(c);
       if (c.breakDelay > 0) return null;
+      // 4.4.0 Hồng Hoang: cửa ải riêng từng bậc
+      if (c.cosmos === 'hg') {
+        const g = hgGateFor(c);
+        if (g && g !== 'break') {
+          const e = hgFindEvent(c, g);
+          return e ? buildPending(c, e) : null;
+        }
+        if (!g) return null;
+      }
       // phi thăng còn cần đủ tuổi đạo hạnh: chưa đủ thì chặn, nhắc còn bao năm (mỗi 10 năm một lần)
       if (c.realm + 1 === ASCEND_REALM && !c.cosmos && c.age < ASCEND_MIN_AGE) {
         const left = Math.ceil(ASCEND_MIN_AGE - c.age);
@@ -562,10 +581,12 @@ function checkDeath(c: Character, ctx: EffectCtx) {
       if (c.stats.sucKhoe <= 0) die(c, tr('Tâm ma phản phệ cộng thêm trọng thương, bạn không qua khỏi.', "Heart demon backlash on top of grave wounds - you do not pull through."), ctx);
     }
   } else if (c.age >= c.lifespan) {
-    if (c.cosmos) c.endTag = c.cosmos === 'ma' ? 'ma_the_muc_ruong' : c.cosmos === 'hu' ? 'hoa_tinh' : 'thien_nhan_ngu_suy';
+    if (c.cosmos && c.cosmos !== 'hg') c.endTag = c.cosmos === 'ma' ? 'ma_the_muc_ruong' : c.cosmos === 'hu' ? 'hoa_tinh' : 'thien_nhan_ngu_suy';
     die(
       c,
-      c.cosmos === 'ma'
+      c.cosmos === 'hg'
+        ? tr(`Thọ nguyên cạn, kể cả ở Hồng Hoang. Một vị ${realmName(c.realm, 'hg')} tọa hóa ở tuổi ${Math.floor(c.age)}, núi sông thượng cổ lặng đi một khắc.`, `Your lifespan runs out, even in Honghuang. A ${realmName(c.realm, 'hg')} passes away at age ${Math.floor(c.age)}, and the ancient mountains and rivers fall silent for a moment.`)
+        : c.cosmos === 'ma'
         ? tr(`Ma thể mục ruỗng, ma hồn tan vào huyết hải. Ma giới mất một vị ${realmName(c.realm, 'ma')} ở tuổi ${Math.floor(c.age)}.`, `Your demon body rots away and your demon soul dissolves into the sea of blood. The Demon Realm loses a ${realmName(c.realm, 'ma')} at age ${Math.floor(c.age)}.`)
         : c.cosmos === 'hu'
           ? tr(`Thân thể dần trong suốt rồi tan vào hư không, như chưa từng tồn tại. Thái Hư giới tiễn một vị ${realmName(c.realm, 'hu')} ở tuổi ${Math.floor(c.age)}.`, `Your body slowly turns transparent and fades into the void, as if you never existed. The Great Void Realm bids farewell to a ${realmName(c.realm, 'hu')} at age ${Math.floor(c.age)}.`)
@@ -578,13 +599,15 @@ function checkDeath(c: Character, ctx: EffectCtx) {
 }
 
 /** Chết vì kiếp nạn hay tâm ma ở ba cõi: mỗi cõi một kiểu chết riêng */
-const COSMOS_DEATH_TAG: Record<'tien' | 'ma' | 'hu', string> = { tien: 'loi_phat', ma: 'tam_ma_doat_xa', hu: 'lac_khe_nut' };
-const COSMOS_TAMMA_TEXT: Record<'tien' | 'ma' | 'hu', string> = {
+const COSMOS_DEATH_TAG: Record<'tien' | 'ma' | 'hu' | 'hg', string> = { tien: 'loi_phat', ma: 'tam_ma_doat_xa', hu: 'lac_khe_nut', hg: 'hg_tram_minh' };
+const COSMOS_TAMMA_TEXT: Record<'tien' | 'ma' | 'hu' | 'hg', string> = {
+  hg: tr('Tâm ma đứng dậy thành một cái thi thứ tư, chém ngược lại bạn.', 'Your heart demon rises as a fourth corpse and cuts you down.'),
   tien: tr('Tâm ma vừa ló dạng, thiên lôi đã giáng xuống. Tiên giới không dung tiên thân nhiễm ma, ba hồn bảy vía tan theo tiếng sấm.', "Your heart demon barely shows itself before heavenly lightning strikes. The Immortal Realm tolerates no demon-tainted immortal, and your souls scatter with the thunder."),
   ma: tr('Bóng tối trong lòng bạn đứng dậy, bước ra khỏi thân xác rồi quay lại chiếm lấy nó. Kẻ đang sống tiếp kia không còn là bạn.', "The darkness in your heart stands up, steps out of your body, then turns back and takes it. Whoever goes on living in it is no longer you."),
   hu: tr('Tâm ma làm linh đài chao đảo, bạn hụt một bước giữa hư không và rơi vào khe nứt thời gian, trôi mãi không đáy.', "Your heart demon shakes your spirit platform; you miss a step in the void and fall into a crack in time, drifting forever with no bottom."),
 };
-const COSMOS_KIEP_TEXT: Record<'tien' | 'ma' | 'hu', string> = {
+const COSMOS_KIEP_TEXT: Record<'tien' | 'ma' | 'hu' | 'hg', string> = {
+  hg: tr('Lôi kiếp Hồng Hoang đánh tan thánh thể. Trời cũ vẫn mạnh hơn bạn.', 'The Honghuang tribulation shatters your saintly body. The old heaven is still stronger than you.'),
   tien: tr('Lôi kiếp nơi tiên giới không nương tay. Tiên thể vỡ tan dưới đạo lôi cuối cùng.', "The tribulations of the Immortal Realm show no mercy. Your immortal body shatters under the final bolt."),
   ma: tr('Huyết lôi đánh nát ma thể, tâm ma thừa cơ chiếm lấy chỗ trống.', "Blood lightning smashes your demon body, and your heart demon seizes the empty space."),
   hu: tr('Kiếp nạn xé toạc hư không quanh bạn. Bạn bị cuốn vào khe nứt thời gian.', "The tribulation tears open the void around you. You are swept into a crack in time."),
@@ -678,6 +701,8 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
   if (c.dead) return null;
   const age = Math.floor(c.age);
   const talents = opts.talents ?? [];
+  // 4.4.0: vừa chứng đạo mà chưa chọn (tải lại trang) thì mở lại khe tím
+  if (c.hgGate) return pendingOf(c, HG_GATE_ID);
   if (c.breakDelay > 0) c.breakDelay -= 1;
   // đạo tâm ngược con đường: chỉ ghi một dòng gợi ý vào gia phả (kết cục Phá Giới Tăng, Ma Phật, Xá Lợi Đen / Ma Hiệp, Huyết Liên, Song Tâm)
   if (!c.cosmos && c.path === 'phat' && c.daoTam <= -40 && !c.qf?.phaGioiHint) {
@@ -1025,7 +1050,7 @@ function breakChance(c: Character) {
       (c.daoTam <= -40 && c.realm >= 5 ? 0.06 : 0) +
       (c.path === 'phat' ? 0.05 : 0) +
       // kiếp chứng đạo cuối cùng: khó hơn hẳn
-      (c.realm >= TOP_REALM ? -0.25 : 0) +
+      (c.realm >= TOP_REALM && c.cosmos !== 'hg' ? -0.25 : 0) +
       // 3.1.0b: thiên kiếp phi thăng khó thêm
       (c.realm === ASCEND_REALM - 1 && !c.cosmos ? -0.05 : 0) +
       (rankOf(c) === 3 ? CHAN_TRUYEN_BREAK : 0) +
@@ -1035,7 +1060,7 @@ function breakChance(c: Character) {
       // độ khó 1.0.3: hạ nền từ 0.39, mỗi cảnh giới khó thêm 0.08 thay vì 0.07
       0.34 -
       // tiên giới, ma giới tính lại từ đầu: Chân Tiên khó như Trúc Cơ, càng lên càng khó
-      Math.max(0, (c.realm >= ASCEND_REALM ? c.realm - ASCEND_REALM + 2 : c.realm) - 2) * 0.08 +
+      Math.max(0, (c.cosmos === 'hg' ? 4 : c.realm >= ASCEND_REALM ? c.realm - ASCEND_REALM + 2 : c.realm) - 2) * 0.08 +
       c.stats.ngoTinh / 450 +
       c.stats.tamCanh / 500 -
       c.stats.tamMa / 200 +
@@ -1052,7 +1077,7 @@ function breakChance(c: Character) {
 
 function breakEvent(c: Character): GameEvent {
   const target = c.realm + 1;
-  const name = target > TOP_REALM ? tr('Chứng Đạo', "Attain the Dao") : target === ASCEND_REALM ? tr('Phi Thăng', "Ascension") : realmName(target, c.cosmos);
+  const name = target > TOP_REALM && c.cosmos !== 'hg' ? tr('Chứng Đạo', "Attain the Dao") : target === ASCEND_REALM ? tr('Phi Thăng', "Ascension") : realmName(target, c.cosmos);
   const kiep = target >= 3;
   return {
     id: BREAK_EVENT_ID,
@@ -1069,6 +1094,20 @@ function breakEvent(c: Character): GameEvent {
 
 /** Vượt kiếp cuối của Đại La Kim Tiên, Ma Đế: chứng đạo, thoát khỏi mọi giới. hoDao: được vạn kiếp đỡ lôi thay */
 export function chungDao(c: Character, ctx: EffectCtx, hoDao = false): string {
+  // 4.4.0: chứng đạo xong chưa chết ngay, khe tím mở ra: tọa hóa như cũ hay bước vào Hồng Hoang
+  if (!c.hong && c.cosmos !== 'hg' && c.hgGate === undefined) {
+    c.hgGate = hoDao ? 2 : 1;
+    if (hoDao) c.qf = { ...(c.qf ?? {}), hoDao: 1 };
+    ctx.fx('breakthrough', tr('CHỨNG ĐẠO', "DAO ATTAINED"));
+    return hoDao
+      ? tr('Vạn kiếp đỡ lôi thay, bạn đã chứng đạo. Trời vừa lặng thì nứt ra một khe tím.', 'Ten thousand lives took the lightning for you, and you attained the Dao. As the sky goes quiet, a purple rift opens.')
+      : tr('Bạn đã chứng đạo. Trời vừa lặng thì nứt ra một khe tím.', 'You have attained the Dao. As the sky goes quiet, a purple rift opens.');
+  }
+  return chungDaoDie(c, ctx, hoDao);
+}
+
+/** Chứng đạo rồi tọa hóa (kết cục cũ) */
+function chungDaoDie(c: Character, ctx: EffectCtx, hoDao = false): string {
   c.dead = true;
   c.endTag = 'chung_dao';
   if (hoDao) c.qf = { ...(c.qf ?? {}), hoDao: 1 };
@@ -1099,7 +1138,7 @@ function attempt(c: Character, ctx: EffectCtx, bonus: number): string {
   const ok = rnd() < clamp(breakChance(c) + bonus + kb, 0.05, 0.97);
   if (ok) {
     // vượt kiếp cuối của Đại La Kim Tiên, Ma Đế: chứng đạo, thoát khỏi mọi giới
-    if (target > TOP_REALM) return chungDao(c, ctx);
+    if (target > TOP_REALM && c.cosmos !== 'hg') return chungDao(c, ctx);
     // phi thăng: không còn là hồi kết, mà mở ra tiên giới (hoặc ma giới cho tà tu)
     if (target === ASCEND_REALM) {
       c.ascended = true;
@@ -1135,7 +1174,7 @@ function attempt(c: Character, ctx: EffectCtx, bonus: number): string {
   }
   c.cultivation = Math.round(c.cultivation * 0.6);
   // kiếp chứng đạo thất bại thì phải chờ rất lâu mới thử lại
-  c.breakDelay = c.realm >= TOP_REALM ? 30 : 3;
+  c.breakDelay = c.realm >= TOP_REALM && c.cosmos !== 'hg' ? 30 : c.cosmos === 'hg' ? 10 : 3;
   // 3.1.0 bình cảnh: hỏng liên tiếp nhiều lần ở cùng cảnh giới thì phải bế quan
   const bf = c.breakFail && c.breakFail.r === c.realm ? c.breakFail.n + 1 : 1;
   c.breakFail = { r: c.realm, n: bf };
@@ -1228,7 +1267,14 @@ function breakChoices(c: Character): Choice[] {
   ];
 }
 
-const SUY: Record<'tien' | 'ma' | 'hu', string[]> = {
+const SUY: Record<'tien' | 'ma' | 'hu' | 'hg', string[]> = {
+  hg: [
+    tr('Đạo vận quanh người bạn bắt đầu thưa đi.', 'The Dao rhythm around you starts to thin.'),
+    tr('Núi sông Hồng Hoang không còn đáp lời bạn gọi.', 'The mountains and rivers of Honghuang no longer answer your call.'),
+    tr('Tóc bạn bạc trắng, chuyện chưa từng có từ khi chứng đạo.', 'Your hair turns white, something unheard of since you attained the Dao.'),
+    tr('Đồ đệ nhìn bạn như nhìn một ngọn đèn sắp tắt.', 'Your disciples look at you like a lamp about to go out.'),
+    tr('Bạn nghe thấy tiếng Hồng Quân gọi từ rất xa.', 'You hear Hongjun calling from very far away.'),
+  ],
   tien: [
     tr('Thiên nhân ngũ suy, dấu hiệu thứ nhất: áo tiên bắt đầu bám bụi, phủi mãi không sạch.', "The Five Decays of the Celestial, first sign: your immortal robe begins to gather dust that won't brush off."),
     tr('Dấu hiệu thứ hai: hoa trên mũ tiên héo dần, cánh rụng từng cánh.', "Second sign: the flowers on your immortal crown wilt, shedding petal by petal."),
@@ -1254,7 +1300,7 @@ const SUY: Record<'tien' | 'ma' | 'hu', string[]> = {
 
 /** Mỗi năm ở ba cõi: tiên giới có thiên quy trảm kẻ tâm tà; 20 năm cuối hiện dần 5 dấu hiệu suy tàn */
 function cosmosYear(c: Character, ctx: EffectCtx) {
-  const cos = c.cosmos as 'tien' | 'ma' | 'hu';
+  const cos = c.cosmos as 'tien' | 'ma' | 'hu' | 'hg';
   const age = Math.floor(c.age);
   if (cos === 'tien' && c.daoTam < 0) {
     if (c.daoTam <= -20) {
@@ -1326,6 +1372,7 @@ function daiHanEvent(c: Character): GameEvent {
 }
 
 function findEvent(c: Character, id: string): GameEvent | null {
+  if (id.startsWith('__hg_')) return hgFindEvent(c, id);
   if (id === DAI_HAN_EVENT_ID) return daiHanEvent(c);
   if (id === PATH_EVENT_ID) return pathEvent(c);
   if (id === BREAK_EVENT_ID) return breakEvent(c);
@@ -1358,6 +1405,8 @@ export function resolveChoice(c: Character, p: PendingEvent, idx: number, ctx: E
   if (mishap) ctx.log(mishap, c.dead ? 'big' : 'bad');
   checkDeath(c, ctx);
   if (c.dead) return null;
+  // 4.4.0: Thái Hư chứng đạo xong thì đứng trước khe tím
+  if (c.hgGate) return pendingOf(c, HG_GATE_ID);
   // 4.1.0 Q2b: vừa bị đồng môn hút trộm tu vi: cho chọn tố cáo hay thách đấu
   if (c.qf?.dmHut && p.id !== HUT_CONG_ID) {
     const ev = findEvent(c, HUT_CONG_ID);
@@ -1761,3 +1810,7 @@ export function openingEvent(c: Character): PendingEvent | null {
   }
   return null;
 }
+
+// 4.4.0: Hồng Hoang dùng chung cách vào cảnh giới và kết cục chứng đạo cũ
+hgApi.enter = (c, realm, ctx) => enterRealm(c, realm, ctx, []);
+hgApi.chungDao = (c, ctx, hoDao) => chungDaoDie(c, ctx, hoDao);

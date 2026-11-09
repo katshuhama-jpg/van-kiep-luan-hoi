@@ -849,9 +849,11 @@ export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Charact
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
-  const cos = c.cosmos && l.realm >= 8 ? c.cosmos : null;
-  const cosLv = cos ? Math.min(4, l.realm - 7) : 0;
-  const aura = cos ? COS_AURA[cos] : auraColor(l);
+  // 4.4.0: ở Hồng Hoang giữ dáng cõi cũ, hào quang mức cao nhất, viền vàng tím
+  const hg = c.cosmos === 'hg';
+  const cos: 'tien' | 'ma' | 'hu' | null = hg ? (c.hong?.from ?? 'tien') : c.cosmos && c.cosmos !== 'hg' && l.realm >= 8 ? c.cosmos : null;
+  const cosLv = hg ? 4 : cos ? Math.min(4, l.realm - 7) : 0;
+  const aura = hg ? '#ffc8ff' : cos ? COS_AURA[cos] : auraColor(l);
   const scale = l.stage === 'baby' ? 0.75 : 1;
   const box = size;
   const cell = box * 2 * scale; // khung 128 = gấp đôi khung người 64

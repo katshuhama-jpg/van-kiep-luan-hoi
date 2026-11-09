@@ -29,7 +29,9 @@ export interface Monster {
   human?: { weapon: 'kiem' | 'dao' | 'quyen' | 'quat'; hat?: boolean; mask?: boolean };
   el?: Element; // ngũ hành của loài quái
   sect?: 'chinh' | 'ta' | 'trung'; // quái trong tông môn: chỉ đệ tử môn đó mới gặp
-  cosmos?: 'tien' | 'ma' | 'hu'; // quái tiên giới, ma giới: chỉ gặp sau phi thăng
+  cosmos?: 'tien' | 'ma' | 'hu' | 'hg'; // quái tiên giới, ma giới: chỉ gặp sau phi thăng; 4.4.0 'hg' Hồng Hoang
+  hgR?: number; // 4.4.0: quái Hồng Hoang chỉ gặp từ cảnh giới này
+  hgBoss?: boolean; // 4.4.0: boss Hồng Hoang, chỉ gặp qua sự kiện
   doKiep?: boolean; // quái Độ Kiếp: chỉ gặp khi đã Độ Kiếp ở phàm giới
   petId?: string; // 4.2.0: trận thu phục linh thú, vẽ bằng sprite thú
 }
@@ -385,6 +387,32 @@ export const MONSTERS: Monster[] = [
   { id: 'tinh_ha_kinh', name: tr('Tinh Hà Cự Kình', "Star River Leviathan"), lv: 31, place: tr('Dải Ngân Hà', "The Milky Way"), shape: 'ran', body: '#2a4a7a', accent: '#ffe27a', eye: '#7fe0e0', desc: tr('Cá voi bơi giữa các vì sao, hát một tiếng sao rơi như mưa.', "A whale swimming among the stars; when it sings, stars fall like rain."), el: 'thuy', cosmos: 'hu' },
   { id: 'hon_don_linh', name: tr('Hỗn Độn Linh', "Chaos Spirit"), lv: 34, place: tr('Hỗn Độn Hải', "Chaos Sea"), shape: 'nguoi', body: '#4a3a5a', accent: '#c8b0ff', eye: '#ff6aff', desc: tr('Sinh linh từ thuở chưa có trời đất, không hình không dạng.', "A being from before heaven and earth existed, without form or shape."), el: 'tho', cosmos: 'hu' },
   { id: 'thon_thien_thu', name: tr('Thái Hư Thôn Thiên Thú', "Great Void Sky-Devourer"), lv: 37, place: tr('Tâm Thái Hư', "Heart of the Great Void"), shape: 'rong', body: '#1e2a3a', accent: '#7fe0e0', eye: '#ffd36b', desc: tr('Con thú nuốt cả ngày lẫn đêm, Thái Hư sinh ra là để giam nó.', "A beast that swallows day and night. The Great Void was born to imprison it."), el: 'hoa', cosmos: 'hu' },
+  // 4.4.0 Hồng Hoang giới (cấp 42-54, mạnh hơn quái cùng cấp, xem HG_ATK, HG_HP)
+  { id: 'hg_quy_nguu', name: tr('Quỳ Ngưu', "Kui Ox"), lv: 42, place: tr('Đỉnh Bất Chu Sơn', "Peak of Mount Buzhou"), shape: 'thu', body: '#4a5a6a', accent: '#9fd8ff', eye: '#ffe27a', desc: tr('Trâu một chân, rống lên là sấm nổ. Da nó từng bị lột làm mặt trống trận.', "A one-legged ox whose bellow is thunder. Its hide was once flayed for a war drum."), el: 'tho', cosmos: 'hg', hgR: 12 },
+  { id: 'hg_tien_hac', name: tr('Tiên Hạc Đá', "Stone Crane"), lv: 43, place: tr('Đỉnh Bất Chu Sơn', "Peak of Mount Buzhou"), shape: 'chim', body: '#d8d8d0', accent: '#c8302a', eye: '#1a1a1a', desc: tr('Hạc giữ núi Bất Chu, lông cứng như đá, mổ một cái thủng giáp.', "A crane guarding Mount Buzhou, feathers hard as stone; one peck pierces armor."), el: 'kim', cosmos: 'hg', hgR: 12 },
+  { id: 'hg_son_tieu', name: tr('Sơn Tiêu', "Mountain Imp"), lv: 44, place: tr('Đỉnh Bất Chu Sơn', "Peak of Mount Buzhou"), shape: 'thu', body: '#5a7a3a', accent: '#c0a060', eye: '#ff6a2a', desc: tr('Yêu núi một chân, cười như trẻ con, dụ người đi lạc vào khe đá.', "A one-legged mountain spirit that laughs like a child and lures travelers into crevices."), el: 'moc', cosmos: 'hg', hgR: 12 },
+  { id: 'hg_luc_ngo', name: tr('Lục Ngô', "Luwu"), lv: 43, place: tr('Côn Lôn Hư', "Kunlun Ruins"), shape: 'thu', body: '#c9a040', accent: '#ffffff', eye: '#7a2a1a', desc: tr('Thần thú mình hổ chín đuôi, mặt người, canh vườn sau Côn Lôn.', "A divine beast with a tiger body, nine tails and a human face, guarding the gardens behind Kunlun."), el: 'tho', cosmos: 'hg', hgR: 12 },
+  { id: 'hg_khai_minh', name: tr('Khai Minh Thú', "Kaiming Beast"), lv: 44, place: tr('Côn Lôn Hư', "Kunlun Ruins"), shape: 'thu', body: '#e0c060', accent: '#fff4c0', eye: '#c8302a', desc: tr('Chín cái đầu nhìn chín hướng, không kẻ nào lọt vào cửa Côn Lôn mà nó không thấy.', "Nine heads facing nine directions; no one slips through the Kunlun gate unseen."), el: 'kim', cosmos: 'hg', hgR: 12 },
+  { id: 'hg_bach_trach', name: tr('Bạch Trạch', "Baize"), lv: 45, place: tr('Côn Lôn Hư', "Kunlun Ruins"), shape: 'thu', body: '#f2f2f6', accent: '#7fc8ff', eye: '#3a6a9a', desc: tr('Thú biết tiếng người, biết tên mọi loài yêu quái. Nó chỉ đánh kẻ nó không biết tên.', "A beast that speaks and knows the name of every monster. It only fights those whose names it does not know."), el: 'thuy', cosmos: 'hg', hgR: 12 },
+  { id: 'hg_con_ngu', name: tr('Côn Ngư', "Kun Fish"), lv: 45, place: tr('Bắc Minh Côn Uyên', "Beiming Kun Abyss"), shape: 'ran', body: '#2a4a6a', accent: '#9fd8ff', eye: '#ffffff', desc: tr('Cá Côn non, chưa hóa Bằng mà đã dài mấy nghìn dặm.', "A young Kun fish, not yet a Peng, yet thousands of miles long."), el: 'thuy', cosmos: 'hg', hgR: 13 },
+  { id: 'hg_huyen_quy', name: tr('Huyền Quy', "Black Tortoise"), lv: 46, place: tr('Bắc Minh Côn Uyên', "Beiming Kun Abyss"), shape: 'thu', body: '#2a3a3a', accent: '#5a8a7a', eye: '#ffd36b', desc: tr('Rùa đen cõng cả một hòn đảo, ngủ nghìn năm mới trở mình.', "A black tortoise carrying a whole island, turning over once a thousand years."), el: 'thuy', cosmos: 'hg', hgR: 13 },
+  { id: 'hg_bang_tam', name: tr('Băng Tằm', "Ice Silkworm"), lv: 47, place: tr('Bắc Minh Côn Uyên', "Beiming Kun Abyss"), shape: 'ran', body: '#c8e0ff', accent: '#ffffff', eye: '#3a6a9a', desc: tr('Tằm sống dưới đáy Bắc Minh, nhả tơ băng trói cả cá Côn.', "A silkworm at the bottom of Beiming whose ice silk can bind even the Kun."), el: 'thuy', cosmos: 'hg', hgR: 13 },
+  { id: 'hg_kim_o', name: tr('Kim Ô', "Golden Crow"), lv: 46, place: tr('Tử Tiêu Cung', "Purple Firmament Palace"), shape: 'chim', body: '#ffd36b', accent: '#ff6a2a', eye: '#c8302a', desc: tr('Quạ ba chân con của mặt trời, bay qua đâu cháy tới đó.', "A three-legged crow, child of the sun; wherever it flies, things burn."), el: 'hoa', cosmos: 'hg', hgR: 13 },
+  { id: 'hg_hoa_nha', name: tr('Hỏa Nha', "Fire Raven"), lv: 47, place: tr('Tử Tiêu Cung', "Purple Firmament Palace"), shape: 'chim', body: '#7a1a1a', accent: '#ff3a1a', eye: '#ffe27a', desc: tr('Bầy quạ lửa canh mái Tử Tiêu Cung, kêu một tiếng là mưa lửa.', "Fire ravens guarding the roofs of the Purple Firmament Palace; one cry and fire rains down."), el: 'hoa', cosmos: 'hg', hgR: 13 },
+  { id: 'hg_dao_dong', name: tr('Đạo Đồng Giữ Cửa', "Gatekeeper Acolyte"), lv: 48, place: tr('Tử Tiêu Cung', "Purple Firmament Palace"), shape: 'vo_lam', body: '#e8e0c8', accent: '#5a7a3a', eye: '#1a1a1a', desc: tr('Đạo đồng của Hồng Quân, tuổi trẻ con mà tu vi thánh nhân.', "An acolyte of Hongjun: a child in years, a saint in cultivation."), el: 'moc', cosmos: 'hg', hgR: 13, human: { weapon: 'quat', hat: true } },
+  { id: 'hg_dao_ngot', name: tr('Đào Ngột', "Taowu"), lv: 49, place: tr('Ngoài Hỗn Độn', "Beyond the Chaos"), shape: 'thu', body: '#5a4a3a', accent: '#c8a060', eye: '#ff2a3a', desc: tr('Một trong Tứ Hung, mình hổ mặt người, ngang ngược không chịu nghe ai.', "One of the Four Fiends: a tiger body with a human face, stubborn and deaf to all."), el: 'tho', cosmos: 'hg', hgR: 14 },
+  { id: 'hg_hu_khong_trung', name: tr('Hư Không Trùng', "Void Worm"), lv: 51, place: tr('Ngoài Hỗn Độn', "Beyond the Chaos"), shape: 'ran', body: '#3a2a4a', accent: '#c8b0ff', eye: '#ffffff', desc: tr('Sâu đục hư không, ăn mất một khoảng trời là bạn rơi vào chỗ trống.', "A worm boring through the void; when it eats a patch of sky, you fall into the hole."), el: 'kim', cosmos: 'hg', hgR: 14 },
+  { id: 'hg_hon_don', name: tr('Hỗn Độn', "Hundun"), lv: 53, place: tr('Ngoài Hỗn Độn', "Beyond the Chaos"), shape: 'bo', body: '#1a1a24', accent: '#7a6a8a', eye: '#1a1a24', desc: tr('Khối hỗn mang không mặt mũi, thứ còn sót lại từ trước khi Bàn Cổ bổ trời.', "A faceless mass of chaos, left over from before Pangu split the sky."), cosmos: 'hg', hgR: 15 },
+  { id: 'hg_cong_cong', name: tr('Cộng Công', "Gonggong"), lv: 45, place: tr('Đỉnh Bất Chu Sơn', "Peak of Mount Buzhou"), shape: 'nguoi', body: '#2a4a7a', accent: '#c8302a', eye: '#ffe27a', desc: tr('Thủy thần thua trận, húc đổ cột chống trời rồi vẫn chưa nguôi giận.', "The defeated water god who toppled the pillar of heaven and is still raging."), el: 'thuy', cosmos: 'hg', hgR: 12, hgBoss: true },
+  { id: 'hg_con_bang', name: tr('Côn Bằng', "Kunpeng"), lv: 48, place: tr('Bắc Minh Côn Uyên', "Beiming Kun Abyss"), shape: 'chim', body: '#2a4a6a', accent: '#c8e0ff', eye: '#ffd36b', desc: tr('Cá Côn hóa chim Bằng, một cánh che nửa trời Hồng Hoang.', "The Kun fish turned Peng bird; one wing shades half of Honghuang."), el: 'thuy', cosmos: 'hg', hgR: 12, hgBoss: true },
+  { id: 'hg_quang_thanh', name: tr('Quảng Thành Tử', "Guangchengzi"), lv: 48, place: tr('Tử Tiêu Cung', "Purple Firmament Palace"), shape: 'vo_lam', body: '#f2f2f6', accent: '#3d6fb0', eye: '#1a1a1a', desc: tr('Đại đệ tử Xiển giáo, giữ Phong Thần bảng thay sư phụ.', "The eldest disciple of the Chan teaching, guarding the Investiture List for his master."), el: 'kim', cosmos: 'hg', hgR: 12, hgBoss: true, human: { weapon: 'kiem' } },
+  { id: 'hg_phan_do', name: tr('Đồ Đệ Phản Sư', "Traitor Disciple"), lv: 46, place: tr('Tử Tiêu Cung', "Purple Firmament Palace"), shape: 'vo_lam', body: '#3a3a4a', accent: '#7a2a1a', eye: '#ff2a3a', desc: tr('Người bạn từng dạy từng chiêu, giờ dùng chính chiêu ấy đánh lại bạn.', "The one you taught every move, now using those very moves against you."), el: 'hoa', cosmos: 'hg', hgR: 12, hgBoss: true, human: { weapon: 'kiem' } },
+  { id: 'hg_su_gia', name: tr('Sứ Giả Thiên Đạo', "Envoy of the Heavenly Dao"), lv: 51, place: tr('Ngoài Hỗn Độn', "Beyond the Chaos"), shape: 'vo_lam', body: '#14141c', accent: '#c8c8d8', eye: '#ffffff', desc: tr('Cánh đen, mặt không mắt mũi. Nó không ghét bạn, nó chỉ làm việc của trời.', "Black wings, a face without eyes or nose. It does not hate you; it only does what heaven orders."), el: 'kim', cosmos: 'hg', hgR: 12, hgBoss: true, human: { weapon: 'kiem' } },
+  { id: 'hg_de_giang', name: tr('Đế Giang', "Dijiang"), lv: 51, place: tr('Ngoài Hỗn Độn', "Beyond the Chaos"), shape: 'bo', body: '#e0b030', accent: '#ff6a2a', eye: '#e0b030', desc: tr('Sáu chân bốn cánh, không mặt không mũi, múa mãi trước Hỗn Độn.', "Six legs, four wings, no face; it dances forever before the Chaos."), el: 'tho', cosmos: 'hg', hgR: 12, hgBoss: true },
+  { id: 'hg_thien_dao', name: tr('Thiên Đạo', "The Heavenly Dao"), lv: 54, place: tr('Ngoài Hỗn Độn', "Beyond the Chaos"), shape: 'bo', body: '#ffd36b', accent: '#fff4c0', eye: '#c8302a', desc: tr('Con mắt vàng trên mọi bầu trời. Hồng Quân đã hợp vào nó từ thuở khai thiên.', "The golden eye above every sky. Hongjun merged into it at the dawn of creation."), cosmos: 'hg', hgR: 12, hgBoss: true },
+  { id: 'hg_thi_thien', name: tr('Thiện Thi', "Good Corpse"), lv: 42, place: tr('Đỉnh Bất Chu Sơn', "Peak of Mount Buzhou"), shape: 'vo_lam', body: '#f2eee0', accent: '#ffd36b', eye: '#3a6a9a', desc: tr('Phần hiền lành nhất của bạn, bước ra để đòi ở lại.', "The gentlest part of you, stepping out to demand it stays."), el: 'moc', cosmos: 'hg', hgR: 12, hgBoss: true, human: { weapon: 'kiem' } },
+  { id: 'hg_thi_ac', name: tr('Ác Thi', "Evil Corpse"), lv: 42, place: tr('Đỉnh Bất Chu Sơn', "Peak of Mount Buzhou"), shape: 'vo_lam', body: '#3a0a14', accent: '#ff2a3a', eye: '#ff2a3a', desc: tr('Phần tàn nhẫn nhất của bạn, đánh không nương tay như bạn.', "The cruelest part of you; it fights without mercy, just like you."), el: 'hoa', cosmos: 'hg', hgR: 12, hgBoss: true, human: { weapon: 'kiem' } },
+  { id: 'hg_thi_chap', name: tr('Chấp Thi', "Obsession Corpse"), lv: 42, place: tr('Đỉnh Bất Chu Sơn', "Peak of Mount Buzhou"), shape: 'vo_lam', body: '#5a5a6a', accent: '#c8b0ff', eye: '#ffffff', desc: tr('Thứ bạn không buông được, hóa thành người.', "The thing you cannot let go, given a body."), el: 'thuy', cosmos: 'hg', hgR: 12, hgBoss: true, human: { weapon: 'kiem' } },
   // Tiên giới
   {
     id: 'thien_binh',
@@ -542,7 +570,7 @@ export const MONSTERS: Monster[] = [
   },
 ];
 
-const REALM_BASE = [0, 0, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36];
+const REALM_BASE = [0, 0, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48];
 
 /** Cấp chiến đấu của nhân vật: Phàm 0, Luyện Khí 1-9, Trúc Cơ 10-12, Kim Đan 13-15, ... Độ Kiếp 25-27 */
 export function combatLevel(c: Character): number {
@@ -561,6 +589,9 @@ export interface Fighter {
 // ---------- Quái trưởng thành ----------
 /** Mỗi lần bị giết, cả loài quái đó mạnh lên (nhanh hơn bạn lên cấp). Lâu không bị săn thì hồi lại. */
 export const GROW_PER_KILL = 0.4;
+/** 4.4.0: hệ số công, máu của quái Hồng Hoang so với quái cùng cấp */
+export const HG_ATK = 1.5;
+export const HG_HP = 1.3;
 export const MAX_GROWTH = 12;
 
 export function growth(c: Character, m: Monster): number {
@@ -631,7 +662,10 @@ export function monsterStats(m: Monster, lv: number = m.lv, c?: Character | null
   if (m.boss) return { hp: 9e15, atk: 9e12, def: 9e12 };
   // Kiếp Số từ 4: quái hung hơn
   const s = Math.pow(GROW, lv) * ksMonster(c);
-  return { hp: Math.round(115 * s), atk: Math.round(13.8 * s), def: Math.round(4 * s) };
+  // 4.4.0: quái Hồng Hoang mạnh hơn hẳn (người chơi giữ cả bộ đồ khi qua khe tím)
+  const hk = m.cosmos === 'hg' ? HG_ATK : 1;
+  const hh = m.cosmos === 'hg' ? HG_HP : 1;
+  return { hp: Math.round(115 * s * hh), atk: Math.round(13.8 * s * hk), def: Math.round(4 * s) };
 }
 
 export type Danger = 'de' | 'vua' | 'nguy' | 'tu';
@@ -771,6 +805,7 @@ export function haPhamMonsters(): Monster[] {
 }
 
 export function monstersFor(c: Character, sectSide: 'chinh' | 'ta' | 'trung' | null): Monster[] {
+  if (c.cosmos === 'hg') return MONSTERS.filter((m) => m.cosmos === 'hg' && !m.hgBoss && (m.hgR ?? 12) <= c.realm);
   if (c.cosmos) return MONSTERS.filter((m) => m.cosmos === c.cosmos);
   return MONSTERS.filter((m) => !m.cosmos && (!m.doKiep || c.realm >= DO_KIEP_REALM) && (!m.sect || m.sect === sectSide));
 }

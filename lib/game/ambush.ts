@@ -33,7 +33,9 @@ export function pickAmbush(c: Character, rnd: () => number): { m: Monster; tier:
   const inSect = !!side && rnd() < 0.3;
   // Độ Kiếp ở phàm giới: chỉ quái Độ Kiếp chặn đường, không còn rắn rết thấp cấp bị đẩy cấp lên cho khớp
   const doKiep = !c.cosmos && c.realm >= DO_KIEP_REALM;
-  const pool = c.cosmos
+  const pool = c.cosmos === 'hg'
+    ? MONSTERS.filter((m) => m.cosmos === 'hg' && !m.hgBoss && (m.hgR ?? 12) <= c.realm)
+    : c.cosmos
     ? MONSTERS.filter((m) => m.cosmos === c.cosmos)
     : MONSTERS.filter((m) => !m.boss && !m.cosmos && (inSect ? m.sect === side : !m.sect) && (doKiep ? !!m.doKiep || (inSect && !!m.sect) : !m.doKiep));
   const cl = combatLevel(c);

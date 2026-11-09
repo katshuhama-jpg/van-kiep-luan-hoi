@@ -197,7 +197,7 @@ export async function copyText(s: string): Promise<boolean> {
   }
 }
 
-const realmOf = (r: { realm: number; layer: number; cosmos?: 'tien' | 'ma' | 'hu' | null }) => (r.realm === 0 ? tr('Phàm nhân', "Mortal") : realmLabel(r.realm, r.layer, r.cosmos));
+const realmOf = (r: { realm: number; layer: number; cosmos?: 'tien' | 'ma' | 'hu' | 'hg' | null }) => (r.realm === 0 ? tr('Phàm nhân', "Mortal") : realmLabel(r.realm, r.layer, r.cosmos));
 
 /** Thẻ kết quả trận lôi đài: "@A hạ @B, còn 3% máu, cắm 17 phi kiếm" */
 export async function shareMatch(m: { me: RivalChar; foe: RivalChar; meUser: string; opp: string; win: boolean; hp: number; swords: number; rule: string }): Promise<ShareOut | null> {

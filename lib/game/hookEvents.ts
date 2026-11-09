@@ -50,7 +50,7 @@ export const HOOK_EVENTS: GameEvent[] = [
     once: true,
     weight: 160,
     // Quyển II: đã đi qua ít nhất 7 mảnh, đang ở cảnh giới cuối của một cõi
-    when: (c) => !!c.quyNhat && !!c.cosmos && (c.lore2 ?? 0) >= 7 && !c.bell,
+    when: (c) => !!c.quyNhat && !!c.cosmos && c.cosmos !== 'hg' && (c.lore2 ?? 0) >= 7 && !c.bell,
     title: tr('Kẻ Gõ Chuông', "The Bell Ringer"),
     text: () =>
       tr('Trên đỉnh cao nhất của cõi này, bạn nghe tiếng chuông rõ hơn bao giờ hết. Giữa mây có một bàn tay cầm dùi, không thân, không mặt. "Lại một mảnh tìm tới," giọng nói vang lên. "Ngươi muốn ta ngừng đếm? Vậy thử đỡ ba tiếng chuông của ta."', "On the highest peak of this realm, you hear the bell clearer than ever. Amid the clouds floats a hand gripping a mallet - no body, no face. \"Another shard has found its way here,\" a voice booms. \"You want me to stop counting? Then try to withstand three tolls of my bell.\""),

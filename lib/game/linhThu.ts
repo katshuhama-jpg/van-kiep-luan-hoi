@@ -369,7 +369,7 @@ export function catchChance(c: Character, id: string, lv: number, hpLeft = 1): n
   const p = CATCH_BASE[r] + g + (1 - hpLeft) * 0.12 + (c.stats.khiVan - 50) / 600;
   return Math.max(0.03, Math.min(CATCH_CAP[r], p));
 }
-const REALM_BASE = [0, 0, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36];
+const REALM_BASE = [0, 0, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48];
 function combatLv(c: Character): number {
   if (c.realm === 0) return 0;
   return (REALM_BASE[c.realm] ?? 24) + c.layer;

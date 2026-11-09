@@ -145,7 +145,13 @@ export interface Character {
   kiepTich?: number; // kiếp tích: mỗi điểm +5% đột phá
   tanHon?: boolean; // vừa uống canh Mạnh Bà: phúc duyên kiếp này +20%
   cauHon?: boolean; // không uống canh 5 lần liền: Câu hồn sứ giả truy theo
-  cosmos?: 'tien' | 'ma' | 'hu' | null; // đã phi thăng lên tiên giới hay ma giới
+  cosmos?: 'tien' | 'ma' | 'hu' | 'hg' | null; // đã phi thăng lên tiên giới hay ma giới; 4.4.0 'hg' = Hồng Hoang
+  /** 4.4.0: vừa chứng đạo, đang đứng trước khe tím (1 tự chứng, 2 được vạn kiếp hộ đạo) */
+  hgGate?: number;
+  /** 4.4.0: trạng thái Hồng Hoang giới, xem lib/game/hongHoang.ts */
+  hong?: HhState;
+  /** 4.4.0: trận Hồng Hoang đang chờ mở (Trảm Tam Thi, boss, sứ giả, Thiên Đạo) */
+  hgFight?: HhFight | null;
   ascendAge?: number; // tuổi lúc phi thăng
   sectRank?: number; // bậc trong tông môn: 0 tạp dịch, 1 ngoại môn, 2 nội môn, 3 chân truyền
   sectHide?: boolean; // ngược phe nhưng giấu thân phận ở lại tông
@@ -246,7 +252,7 @@ export interface RivalChar {
   lifeNo?: number; // kiếp thứ mấy của người chơi đó
   sect?: string | null;
   sectRank?: number;
-  cosmos?: 'tien' | 'ma' | 'hu' | null;
+  cosmos?: 'tien' | 'ma' | 'hu' | 'hg' | null;
   alive: boolean;
   cp?: { eq: string[]; own: { id: string; tang: number; bien?: 'cuong' | 'nhu' | null }[]; tuyet?: string | null }; // 4.2.0: công pháp đang mang (trận giang hồ, không dùng ở lôi đài)
   lifeId?: number; // lôi đài: kiếp nào làm bóng (0 là nhân vật đang sống)
@@ -270,7 +276,7 @@ export interface Choice {
 
 export interface GameEvent {
   id: string;
-  cosmos?: 'tien' | 'ma' | 'hu' | 'both'; // sự kiện chỉ có ở tiên giới, ma giới; sự kiện phàm giới không xảy ra sau phi thăng
+  cosmos?: 'tien' | 'ma' | 'hu' | 'hg' | 'both'; // sự kiện chỉ có ở tiên giới, ma giới; sự kiện phàm giới không xảy ra sau phi thăng
   minAge?: number;
   maxAge?: number;
   minRealm?: number;
@@ -384,4 +390,31 @@ export interface Vendetta {
   name: string; // tên nhân vật kẻ thù
   items: string[]; // đồ bị cướp
   why: string;
+}
+
+/** 4.4.0 Hồng Hoang giới */
+export type ThiKind = 'thien' | 'ac' | 'chap';
+export interface HhState {
+  from: 'tien' | 'ma' | 'hu'; // cõi cũ trước khi qua khe tím
+  ban?: string; // người thân kéo theo (đạo lữ hay đệ tử)
+  thi?: Partial<Record<ThiKind, 'tram' | 'thu'>>; // Trảm Tam Thi: đã chém hay đã thu
+  yeu?: ThiKind[]; // thi đã bị làm yếu đi nhờ trả lời bóng kiếp cũ
+  cd: number; // công đức
+  deTu: number; // số đồ đệ còn sống
+  deTuMax?: number; // nhiều nhất từng có
+  pt?: number; // Phong Thần: 0 chưa, 1 đã nghe, 2 ký tên, 3 đứng ngoài, 4 xé bảng thắng
+  ptUsed?: boolean; // Phong Thần bảng đã cứu một đồ đệ
+  xich?: number; // số xích Thiên Đạo đã chặt (0-3)
+  nghe?: number; // số lần nghe giảng ở Tử Tiêu Cung
+  nuOa?: boolean; // đã giúp Nữ Oa vá trời
+  boss?: string[]; // boss đã hạ
+  cuuKiep?: boolean; // đã cứu một kiếp cũ khỏi bị xóa
+  tdTry?: number; // số lần Vấn Thiên
+  quen?: number; // số lần thất bại ở Xích Danh
+  tdHelp?: boolean; // Tiếp Dẫn, Chuẩn Đề nhớ ơn nhường bồ đoàn
+}
+export interface HhFight {
+  kind: 'thi' | 'boss' | 'thien_dao';
+  id: string; // thien/ac/chap hoặc id boss
+  mode?: 'tram' | 'thu';
 }

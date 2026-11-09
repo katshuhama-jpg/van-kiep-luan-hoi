@@ -361,7 +361,8 @@ export function fatal(c: Character, ctx: EffectCtx, chance: number, cause: strin
 }
 
 /** Chết ở ba cõi vì nguyên nhân thường (quái, hiểm cảnh, thương thế...): thêm câu kết riêng của cõi, để không chết như người phàm */
-const COSMOS_EPI: Record<'tien' | 'ma' | 'hu', string> = {
+const COSMOS_EPI: Record<'tien' | 'ma' | 'hu' | 'hg', string> = {
+  hg: tr('Hồng Hoang rộng lớn, thêm một bộ xương nằm lại giữa núi sông thượng cổ.', 'Honghuang is vast; one more skeleton lies among its ancient mountains and rivers.'),
   tien: tr('Tiên thể vỡ vụn, chỉ còn chút tiên quang rơi xuống nhân gian như mưa sao.', "Your immortal body shattered, and only a little immortal light fell to the mortal world like a meteor shower."),
   ma: tr('Ma hồn tan vào huyết hải, Ma giới chẳng ai còn nhắc tên.', "Your demon soul dissolved into the blood sea, and no one in the Demon Realm speaks your name anymore."),
   hu: tr('Thân thể tan vào hư không, như chưa từng tồn tại.', "Your body dissolved into the void, as if you had never existed."),

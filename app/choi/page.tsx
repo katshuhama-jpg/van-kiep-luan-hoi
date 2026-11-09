@@ -15,6 +15,8 @@ import { HoDaoScene, HoTroScene, TuKiepOverlay } from '@/components/VanKiep';
 import type { PastSelf } from '@/lib/vanKiep';
 import { LOI_ALLOW, LOI_TOTAL, daoKhon, failVanDao, usesVanDao } from '@/lib/game/vanDao';
 import { BREAK_EVENT_ID } from '@/lib/game/events';
+import { HG_GATE_ID, HG_TURNS, HG_VAN_THIEN_ID, VT_TOTAL, finishHgFight, vanThienLoi } from '@/lib/game/hongHoang';
+import { hgFoe } from '@/lib/game/hongHoangFight';
 import { ENDINGS, alsoEndings, endingOf } from '@/lib/game/endings';
 import { buyCharm, buyTinh, forge, sell, smelt } from '@/lib/game/forge';
 import { BagSheet, BaoKhoSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, HuntSheet, LogPanel, OverworkBar, SEASONS, ShopSheet, Sheet, StageStrip, StatsPanel } from '@/components/Panels';
@@ -116,6 +118,7 @@ export default function PlayPage() {
   const [running, setRunning] = useState(true);
   const [hoTro, setHoTro] = useState<{ i: number; blocked: number } | null>(null); // kiếp trước đỡ thiên lôi phi thăng
   const [kiep, setKiep] = useState<number | null>(null); // lựa chọn đang chờ mini-game thiên kiếp
+  const [vanThien, setVanThien] = useState(false); // 4.4.0 Vấn Thiên: 9 đạo lôi trước khi đánh Thiên Đạo
   const [vanDao, setVanDao] = useState<{ phase: 'tu' | 'loi' | 'hodao'; need?: number } | null>(null); // Chứng Đạo mới: tứ kiếp, 13 đạo lôi, vạn kiếp hộ đạo
   // Ngũ Hành Đài trước phi thăng: giữ lựa chọn đột phá và sự kiện để độ kiếp sau khi thắng đủ 5 bóng
   const [nhdPeek, setNhdPeek] = useState(false); // xem luật Ngũ Hành Đài từ dải nhắc
@@ -371,7 +374,7 @@ export default function PlayPage() {
   const [wares, setWares] = useState<Ware[] | null>(null);
   // 4.1.0: kết quả hội đấu giá hiện thành thẻ riêng (trước chỉ ghi vào gia phả, người chơi không biết thắng hay thua)
   const [auctionRes, setAuctionRes] = useState<{ item: string; won: boolean; text: string } | null>(null);
-  activeRef.current = running && sheet === null && !ciOpen && wares === null && auctionRes === null && phase === 'play' && kiep === null && hoTro === null && vanDao === null && !tut && !protectOpen && !setupOpen && cn === null && duelWarn === null && !nhdPeek && !relOpen && !downOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
+  activeRef.current = running && sheet === null && !ciOpen && wares === null && auctionRes === null && phase === 'play' && kiep === null && hoTro === null && vanDao === null && !vanThien && !tut && !protectOpen && !setupOpen && cn === null && duelWarn === null && !nhdPeek && !relOpen && !downOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
 
   /** Ngũ hành giữa bạn và loài quái */
   function monElem(c: Character, m: { el?: Element }) {
@@ -874,6 +877,36 @@ export default function PlayPage() {
     c.log.push({ age: Math.floor(c.age), tone: 'normal', text: tr(`Giao chiến với ${m.name} (Lv${f.lv}). Thắng mới mong thu phục.`, `You fight the ${m.name} (Lv${f.lv}). Only a win gives a chance to tame it.`) });
   }
 
+  /** 4.4.0 Hồng Hoang: trận lớn (Trảm Tam Thi, boss, Thiên Đạo), dùng chung khung trận chặn đường */
+  function startHg(c: Character) {
+    const f = c.hgFight;
+    c.hgFight = null;
+    if (!f) return;
+    const { m, ms, ps, name } = hgFoe(c, f);
+    ambushRef.current = {
+      m,
+      name,
+      lv: m.lv,
+      tier: 0,
+      pHp: ps.hp,
+      pMax: ps.hp,
+      mHp: ms.hp,
+      mMax: ms.hp,
+      phase: 'fight',
+      last: [{ id: Math.random(), side: 'm', dmg: 0, crit: false, text: tr('Giao chiến!', 'Fight!') }],
+      kills: 0,
+      t: -0.9,
+      rest: 0,
+      ps,
+      ms,
+      sub: 0,
+      ambush: { turn: 0, max: HG_TURNS, kind: 'hon', hg: f },
+      melem: monElem(c, m),
+    };
+    track('hg_fight_start', { kind: f.kind, id: f.id, mode: f.mode, realm: c.realm });
+    c.log.push({ age: Math.floor(c.age), tone: 'bad', text: tr(`Giao chiến với ${name}.`, `You fight ${name}.`) });
+  }
+
   /** Quái chặn đường: bắt buộc đánh, tối đa 3 hiệp, thời gian dừng trong lúc đánh */
   function startAmbush(c: Character) {
     const { m, tier } = pickAmbush(c, rnd);
@@ -939,6 +972,23 @@ export default function PlayPage() {
         b.phase = 'rest';
         b.rest = 2;
         b.outcome = result === 'win' ? 'win' : result === 'lose' ? 'lose' : 'flee';
+        pushFx(out);
+        persist(true);
+        return;
+      }
+      // 4.4.0: trận Hồng Hoang
+      if (b.ambush!.hg) {
+        const f = b.ambush!.hg;
+        const r = finishHgFight(c, f, result, ctx);
+        track('hg_fight', { kind: f.kind, id: f.id, mode: f.mode, res: result, realm: c.realm, dead: !!c.dead, hp: Math.round((b.pHp / b.pMax) * 100), mhp: Math.round((b.mHp / b.mMax) * 100) });
+        if (r.text) ctx.log(r.text, c.dead ? 'big' : result === 'win' ? 'good' : 'bad');
+        b.phase = 'rest';
+        b.rest = 3;
+        b.outcome = result === 'win' ? 'win' : result === 'lose' ? 'lose' : 'flee';
+        if (!c.dead) {
+          const p = r.next ? pendingOf(c, r.next) : checkProgress(c, ctx, talentsRef.current);
+          if (p) pendingRef.current = p;
+        }
         pushFx(out);
         persist(true);
         return;
@@ -1026,6 +1076,9 @@ export default function PlayPage() {
           rerender();
         } else if (c.beastFight) {
           startBeast(c);
+          rerender();
+        } else if (c.hgFight) {
+          startHg(c);
           rerender();
         }
       }
@@ -1143,6 +1196,13 @@ export default function PlayPage() {
     if (c && !hints.choice) {
       seeHint('choice');
       track('first_choice', { lifeNo: c.lifeNo, ms: Date.now() - lifeT0.current });
+    }
+    // 4.4.0 Vấn Thiên: chơi chín đạo lôi trước
+    if (p && c && p.id === HG_VAN_THIEN_ID && i === 0) {
+      pendingRef.current = null;
+      c.log.push({ age: Math.floor(c.age), tone: 'big', text: tr('Bạn đứng trên đỉnh Bất Chu Sơn, chỉ tay lên trời.', 'You stand atop Mount Buzhou and point at the sky.') });
+      setVanThien(true);
+      return;
     }
     // phi thăng: phải qua Ngũ Hành Đài trước rồi mới độ kiếp
     if (p && c && p.id === BREAK_EVENT_ID && needTrial(c) && !/^(Củng cố|Consolidate)/.test(p.choices[i]?.label ?? '')) {
@@ -1343,6 +1403,23 @@ export default function PlayPage() {
       pendingRef.current = null;
       const text = fn(ch, makeCtx(ch, out));
       ch.log.push({ age: Math.floor(ch.age), tone, text });
+      // 4.4.0: chứng đạo xong thì khe tím mở ra
+      if (ch.hgGate && !ch.dead) pendingRef.current = pendingOf(ch, HG_GATE_ID);
+    });
+  };
+  /** 4.4.0 Vấn Thiên: chín đạo lôi xong, đủ thì đánh Thiên Đạo */
+  const vanThienDone = (_b: number, blocked: number) => {
+    setVanThien(false);
+    act((ch, out) => {
+      const ctx = makeCtx(ch, out);
+      const n = blocked < 0 ? (rnd() < 0.5 ? 6 + Math.floor(rnd() * 3) : 2 + Math.floor(rnd() * 4)) : blocked;
+      track('hg_van_thien', { blocked: n });
+      const text = vanThienLoi(ch, n, ctx);
+      ch.log.push({ age: Math.floor(ch.age), tone: ch.hgFight ? 'big' : 'bad', text });
+      if (!ch.dead && !ch.hgFight) {
+        const p = checkProgress(ch, ctx, talentsRef.current);
+        if (p) pendingRef.current = p;
+      }
     });
   };
   const vanDaoLoi = (_b: number, blocked: number) => {
@@ -1707,7 +1784,7 @@ export default function PlayPage() {
       cosSeen.current = curCos;
       return;
     }
-    if (!cosSeen.current && curCos) setAscend(curCos);
+    if (!cosSeen.current && curCos && curCos !== 'hg') setAscend(curCos);
     cosSeen.current = curCos;
   }, [curCos, curLife, phase]);
 
@@ -1812,6 +1889,7 @@ export default function PlayPage() {
         partner: c.partner ?? null,
         cosmos: c.cosmos ?? null,
         kiepSo: c.kiepSo ?? 0,
+        ...(c.cosmos === 'hg' ? { hgFrom: c.hong?.from ?? null, hoDao: !!c.qf?.hoDao } : {}),
       },
     };
     // mạng chập chờn thì không để người chơi kẹt ở màn lập bia: quá 10 giây thì giữ bia lại, lần sau khắc tiếp
@@ -2426,7 +2504,7 @@ export default function PlayPage() {
         />
       )}
       {(() => {
-        if (tut || cn || c.dead || sheet !== null || kiep !== null || hoTro || vanDao || nhd || duelWarn || duelRef.current || ambushRef.current) return null;
+        if (tut || cn || c.dead || sheet !== null || kiep !== null || hoTro || vanDao || vanThien || nhd || duelWarn || duelRef.current || ambushRef.current) return null;
         const h = nextHint(hints, !!pending, c.age);
         return h ? <CoachHint key={h.k} sel={h.sel} text={h.text} top={h.top} onOk={() => seeHint(h.k)} /> : null;
       })()}
@@ -2510,6 +2588,7 @@ export default function PlayPage() {
           }}
         />
       )}
+      {vanThien && !c.dead && <TribulationOverlay realmName={tr('Vấn Thiên', 'Questioning Heaven')} title={tr('CHÍN ĐẠO THIÊN LÔI', 'NINE BOLTS OF HEAVEN')} total={VT_TOTAL} bg="/bg/loi-dinh.png" onDone={vanThienDone} c={c} />}
       {vanDao?.phase === 'loi' && !c.dead && <TribulationOverlay realmName={tr('Chứng Đạo', 'Attaining the Dao')} title={tr('MƯỜI BA ĐẠO LÔI KIẾP', 'THIRTEEN BOLTS OF TRIBULATION')} total={LOI_TOTAL} bg="/bg/loi-dinh.png" onDone={vanDaoLoi} c={c} />}
       {vanDao?.phase === 'hodao' && !c.dead && (
         <HoDaoScene
@@ -2523,7 +2602,7 @@ export default function PlayPage() {
       )}
       {kiep !== null && !c.dead && (
         <TribulationOverlay
-          realmName={c.realm + 1 > 11 ? tr('Chứng Đạo', "Attaining the Dao") : c.realm + 1 === 8 ? (c.daoTam <= -40 || c.path === 'ma' ? tr('Ma Giới', "Demon Realm") : c.daoTam < 20 ? tr('Thái Hư', "Great Void") : tr('Phi Thăng', "Ascension")) : realmName(c.realm + 1, c.cosmos)}
+          realmName={c.realm + 1 > 11 && c.cosmos !== 'hg' ? tr('Chứng Đạo', "Attaining the Dao") : c.realm + 1 === 8 ? (c.daoTam <= -40 || c.path === 'ma' ? tr('Ma Giới', "Demon Realm") : c.daoTam < 20 ? tr('Thái Hư', "Great Void") : tr('Phi Thăng', "Ascension")) : realmName(c.realm + 1, c.cosmos)}
           onDone={afterKiep}
           c={c}
         />

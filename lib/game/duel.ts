@@ -142,14 +142,14 @@ export function capFoe(c: Character, r: RivalChar): RivalChar {
   const cosmosOk = !r.cosmos || r.cosmos === c.cosmos;
   const over = combatLevel(foeChar(r)) - meCl > FORCED_GAP_MAX;
   if (cosmosOk && !over) return r;
-  const lim = c.cosmos ? 39 : 27; // chưa phi thăng thì tối đa Độ Kiếp
+  const lim = c.cosmos === 'hg' ? 51 : c.cosmos ? 39 : 27; // chưa phi thăng thì tối đa Độ Kiếp; 4.4.0 Hồng Hoang tới Khai Thiên
   const t = clToRealm(Math.max(1, Math.min(lim, meCl + FORCED_GAP_MAX, over ? meCl + FORCED_GAP_MAX : combatLevel(foeChar(r)))));
   return { ...r, realm: t.realm, layer: t.layer, cosmos: cosmosOk ? r.cosmos : c.cosmos ?? null };
 }
 
 function clToRealm(cl: number): { realm: number; layer: number } {
   if (cl <= 9) return { realm: 1, layer: Math.max(1, cl) };
-  const realm = Math.min(11, 2 + Math.floor((cl - 10) / 3));
+  const realm = Math.min(15, 2 + Math.floor((cl - 10) / 3));
   return { realm, layer: Math.min(3, cl - (9 + (realm - 2) * 3)) };
 }
 
@@ -318,7 +318,7 @@ function pickDuel0(c: Character, rnd: () => number): DuelFoe | null {
   // còn ở Luyện Khí: đối thủ mạnh hơn bớt 20% độ chênh (3-6 cấp thành 2-5 cấp)
   const strong = c.realm <= 1 ? ri(2, 5) : ri(3, 6);
   const delta = r < pw ? -ri(3, 6) : r < pw + pn ? ri(-1, 1) : strong;
-  const targetCl = Math.max(1, Math.min(39, me0 + delta));
+  const targetCl = Math.max(1, Math.min(c.cosmos === 'hg' ? 51 : 39, me0 + delta));
   const tgt = clToRealm(targetCl);
 
   let rival: RivalChar | null = null;

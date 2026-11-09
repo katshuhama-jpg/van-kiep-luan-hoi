@@ -1340,6 +1340,10 @@ export function DeathSheet({
           ? tr('Chứng đạo!', "Dao attained!")
           : c.endTag === 'giang_tran'
             ? tr('Bị giáng trần', "Banished to the mortal world")
+            : c.endTag === 'hg_khai_thien'
+            ? tr('Khai Thiên Lập Địa!', 'Heaven opened, earth founded!')
+            : c.cosmos === 'hg'
+            ? tr('Một vị thánh rời Hồng Hoang', 'A saint leaves Honghuang')
             : c.cosmos === 'ma'
               ? tr('Ma hồn tan biến', "Demon soul dispersed")
               : c.cosmos === 'hu'
@@ -1350,9 +1354,9 @@ export function DeathSheet({
       }
     >
       {c.cosmos && (
-        <div className={`cos-tomb ${c.cosmos} ${c.endTag === 'chung_dao' ? 'cd' : ''}`} aria-hidden="true">
+        <div className={`cos-tomb ${c.cosmos} ${c.endTag === 'chung_dao' || c.endTag === 'hg_khai_thien' ? 'cd' : ''}`} aria-hidden="true">
           <i className="sky" />
-          {c.endTag === 'chung_dao' && (
+          {(c.endTag === 'chung_dao' || c.endTag === 'hg_khai_thien') && (
             <svg className="ct-beam" viewBox="0 0 32 40" preserveAspectRatio="none" shapeRendering="crispEdges">
               <rect x="10" y="0" width="12" height="40" fill="#ffd36b" opacity="0.35" />
               <rect x="13" y="0" width="6" height="40" fill="#ffe27a" opacity="0.7" />
@@ -1361,7 +1365,7 @@ export function DeathSheet({
           )}
           <svg className="stele" viewBox="0 0 18 26" shapeRendering="crispEdges">
             {(() => {
-              const pal = c.cosmos === 'ma' ? ['#120a10', '#2a1c22', '#3a2a32', '#7a1420'] : c.cosmos === 'hu' ? ['#1a1030', '#2a1a4a', '#6a52aa', '#a08cff'] : ['#1f160d', '#b8c4d8', '#e8eef8', '#ffffff'];
+              const pal = c.cosmos === 'hg' ? ['#1a0e22', '#5a3a1a', '#c9962e', '#ffe27a'] : c.cosmos === 'ma' ? ['#120a10', '#2a1c22', '#3a2a32', '#7a1420'] : c.cosmos === 'hu' ? ['#1a1030', '#2a1a4a', '#6a52aa', '#a08cff'] : ['#1f160d', '#b8c4d8', '#e8eef8', '#ffffff'];
               return (
                 <>
                   <rect x="5" y="0" width="8" height="1" fill={pal[0]} />
@@ -1378,7 +1382,7 @@ export function DeathSheet({
               );
             })()}
           </svg>
-          <b>{c.cosmos === 'ma' ? tr('Ma Trủng', "Demon Tomb") : c.cosmos === 'hu' ? tr('Hư Trủng', "Void Tomb") : tr('Tiên Trủng', "Immortal Tomb")}</b>
+          <b>{c.cosmos === 'hg' ? tr('Thánh Trủng', 'Saint Tomb') : c.cosmos === 'ma' ? tr('Ma Trủng', "Demon Tomb") : c.cosmos === 'hu' ? tr('Hư Trủng', "Void Tomb") : tr('Tiên Trủng', "Immortal Tomb")}</b>
         </div>
       )}
       <p style={{ marginTop: 0 }}>
@@ -1662,7 +1666,7 @@ export function HuntSheet({ c, onPick, onToggleFlee, onClose }: { c: Character; 
       {c.cosmos && (
         <div className="ha-pham-tabs" role="tablist">
           <button role="tab" aria-selected={!ha} className={`chip-btn ${!ha ? 'on' : ''}`} onClick={() => setHa(false)}>
-            {c.cosmos === 'ma' ? tr('Ma giới', 'Demon Realm') : c.cosmos === 'hu' ? tr('Hư giới', 'Void Realm') : tr('Tiên giới', 'Immortal Realm')}
+            {c.cosmos === 'hg' ? tr('Hồng Hoang', 'Honghuang') : c.cosmos === 'ma' ? tr('Ma giới', 'Demon Realm') : c.cosmos === 'hu' ? tr('Hư giới', 'Void Realm') : tr('Tiên giới', 'Immortal Realm')}
           </button>
           <button role="tab" aria-selected={ha} className={`chip-btn ${ha ? 'on' : ''}`} onClick={() => setHa(true)}>
             {tr('Hạ phàm', 'Descend')}

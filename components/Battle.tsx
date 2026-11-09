@@ -244,7 +244,7 @@ export interface BattleView {
   outcome?: 'win' | 'lose' | 'flee';
   kills: number;
   /** quái chặn đường: đếm hiệp */
-  ambush?: { turn: number; max: number; kind: 'kem' | 'bang' | 'hon'; beast?: boolean };
+  ambush?: { turn: number; max: number; kind: 'kem' | 'bang' | 'hon'; beast?: boolean; hg?: import('@/lib/game/types').HhFight };
   /** ngũ hành giữa bạn và quái */
   melem?: { me: Element; foe: Element; rel: ElemRel };
   /** kỳ ngộ giang hồ: đối thủ là người */
@@ -432,7 +432,7 @@ export function BattleOverlay({ b, me, ultCut }: { b: BattleView; me?: Character
       ) : b.ambush ? (
         <span className={`kill-count ambush-tag ${b.ambush.kind}`}>
           
-          {b.ambush.beast ? tr('Thu phục · Hiệp ', 'Taming · Round ') : tr("Chặn đường · Hiệp ", "Ambush · Round ")}{Math.max(1, b.ambush.turn)}/{b.ambush.max}
+          {b.ambush.hg ? tr('Hồng Hoang · Hiệp ', 'Honghuang · Round ') : b.ambush.beast ? tr('Thu phục · Hiệp ', 'Taming · Round ') : tr("Chặn đường · Hiệp ", "Ambush · Round ")}{Math.max(1, b.ambush.turn)}/{b.ambush.max}
         </span>
       ) : (
         <span className="kill-count">{tr("Đã trảm: ", "Slain: ")}{b.kills}</span>

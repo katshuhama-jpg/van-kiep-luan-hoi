@@ -196,6 +196,7 @@ export const COSMOS_EVENTS: GameEvent[] = [
     weight: 7,
     cooldown: 35,
     minAge: 0,
+    when: (c) => c.cosmos !== 'hg',
     title: tr('Tiên Ma đại chiến', "The Immortal-Demon War"),
     text: (c) =>
       c.cosmos === 'hu'

@@ -145,7 +145,7 @@ export const LORE: LoreFragment[] = [
     title: tr('XVI. Ba cõi một trời', "XVI. Three realms, one sky"),
     hint: tr('Qua các kiếp, từng lên đủ Tiên giới, Ma giới và Thái Hư giới.', "Across your lives, reach the Immortal Realm, the Demon Realm and the Great Void Realm."),
     text: tr('Tiên, ma, hư không. Ba cõi khác nhau mà cùng chung một bầu trời, và trên bầu trời ấy treo một quả chuông không ai nhìn thấy. Nó không thuộc cõi nào. Nó là thứ dựng nên cả ba.', "Immortal, demon, void. Three different realms under one shared sky, and in that sky hangs a bell no one can see. It belongs to no realm. It is what built all three."),
-    check: (_m, _c, k) => (k.cosmoses ?? []).length >= 3,
+    check: (_m, _c, k) => (k.cosmoses ?? []).filter((x) => x === 'tien' || x === 'ma' || x === 'hu').length >= 3,
   },
   {
     id: 'guong_lanh',

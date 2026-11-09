@@ -2,6 +2,7 @@ import { buyPrice, marketOf } from './marketDay';
 import { GEAR } from './gear';
 import { EXTRA_ITEMS } from './items2';
 import { TIEN_GEAR } from './gearTien';
+import { HH_GEAR } from './gearHH';
 import type { Focus, PathId, Slot, Talent } from './types';
 import { tr } from '../i18n';
 
@@ -19,21 +20,30 @@ export const REALMS = [
   { name: tr('Huyền Tiên', "Mystic Immortal"), layers: 3, life: 630, need: 3600 },
   { name: tr('Kim Tiên', "Golden Immortal"), layers: 3, life: 810, need: 5000 },
   { name: tr('Đại La Kim Tiên', "Daluo Golden Immortal"), layers: 3, life: 1050, need: 7000 },
+  // 4.4.0 Hồng Hoang giới: một thang chung cho kẻ từ tiên, ma, hư giới bước qua khe tím sau chứng đạo
+  { name: tr('Chuẩn Thánh', "Quasi-Saint"), layers: 3, life: 1800, need: 10000 },
+  { name: tr('Thánh Nhân', "Saint"), layers: 3, life: 3000, need: 14000 },
+  { name: tr('Hỗn Nguyên Đại La Kim Tiên', "Hunyuan Daluo Golden Immortal"), layers: 3, life: 5000, need: 19000 },
+  { name: tr('Khai Thiên', "World Opener"), layers: 3, life: 8000, need: 26000 },
 ] as const;
 
 /** Cảnh giới đầu tiên sau phi thăng */
 export const ASCEND_REALM = 8;
-/** Cảnh giới cao nhất */
+/** Cảnh giới cao nhất của tiên, ma, hư giới (chứng đạo từ đây) */
 export const TOP_REALM = 11;
+/** 4.4.0: cảnh giới đầu và cuối của Hồng Hoang giới */
+export const HH_REALM = 12;
+export const HH_TOP = 15;
 /** Tên cảnh giới Ma giới, cùng bậc với tiên giới 8..11 */
 export const MA_REALMS = [tr('Ma Tướng', "Demon General"), tr('Ma Vương', "Demon King"), tr('Ma Hoàng', "Demon Monarch"), tr('Ma Đế', "Demon Emperor")];
 /** Thái Hư giới: cõi của người trung lập, không theo tiên cũng không theo ma */
 export const HU_REALMS = [tr('Hư Tiên', "Void Immortal"), tr('Huyền Tôn', "Mystic Sovereign"), tr('Thái Hư Chân Quân', "Great Void True Lord"), tr('Hỗn Nguyên Đạo Tổ', "Primordial Dao Ancestor")];
-export type Cosmos = 'tien' | 'ma' | 'hu';
-export const COSMOS_NAME: Record<Cosmos, string> = { tien: tr('Tiên giới', "Immortal Realm"), ma: tr('Ma giới', "Demon Realm"), hu: tr('Thái Hư giới', "Great Void Realm") };
+export type Cosmos = 'tien' | 'ma' | 'hu' | 'hg';
+export const COSMOS_NAME: Record<Cosmos, string> = { tien: tr('Tiên giới', "Immortal Realm"), ma: tr('Ma giới', "Demon Realm"), hu: tr('Thái Hư giới', "Great Void Realm"), hg: tr('Hồng Hoang', "Honghuang") };
 
 /** Tên cảnh giới, theo tiên giới hay ma giới */
 export function realmName(realm: number, cosmos?: Cosmos | null): string {
+  if (realm >= HH_REALM) return REALMS[realm]?.name ?? tr('Khai Thiên', "World Opener");
   if (realm >= ASCEND_REALM && cosmos === 'ma') return MA_REALMS[realm - ASCEND_REALM] ?? tr('Ma Đế', "Demon Emperor");
   if (realm >= ASCEND_REALM && cosmos === 'hu') return HU_REALMS[realm - ASCEND_REALM] ?? tr('Hỗn Nguyên Đạo Tổ', "Primordial Dao Ancestor");
   return REALMS[realm]?.name ?? tr('Phi Thăng', "Ascension");
@@ -41,6 +51,7 @@ export function realmName(realm: number, cosmos?: Cosmos | null): string {
 
 /** Thọ nguyên tối đa: phàm giới 300, tiên giới, ma giới theo cảnh giới */
 export function lifeCap(realm: number): number {
+  if (realm >= HH_REALM) return MAX_LIFE_HH;
   return realm >= ASCEND_REALM ? MAX_LIFE_ASCENDED : MAX_LIFE;
 }
 
@@ -48,6 +59,8 @@ export function lifeCap(realm: number): number {
 export const MAX_LIFE = 300;
 /** Thọ nguyên tối đa sau khi lên Tiên giới, Ma giới, Thái Hư giới */
 export const MAX_LIFE_ASCENDED = 1050;
+/** 4.4.0: thọ nguyên tối đa ở Hồng Hoang */
+export const MAX_LIFE_HH = 8000;
 
 export const STAGE3 = [tr('Sơ kỳ', "Early"), tr('Trung kỳ', "Middle"), tr('Hậu kỳ', "Late")];
 
@@ -847,6 +860,7 @@ export const ITEMS: Item[] = [
   ...GEAR,
   ...EXTRA_ITEMS,
   ...TIEN_GEAR,
+  ...HH_GEAR,
 ];
 
 /** Tổng chỉ số từ đồ đang mặc */
