@@ -74,10 +74,10 @@
     for (var i = 1; i <= 5; i++) dots += '<i style="display:inline-block;width:' + (i === 5 ? 14 : 10) + 'px;height:10px;margin-left:3px;border:2px solid var(--dark);background:' + (i < SP.wave || (i === 5 && SP.boss && f.hp <= 0) ? 'var(--goldl)' : i === SP.wave || (i === 5 && SP.boss) ? '#fff8e6' : '#5a4128') + '"></i>';
     return '<div style="position:absolute;left:8px;top:6px;display:flex;align-items:center;gap:4px;padding:3px 8px;background:rgba(31,22,13,.75);color:var(--goldl);font-size:14px;font-weight:700">Hắc Phong Lĩnh · Ải 3-' + SP.st + dots + '</div>' +
       '<div style="position:absolute;right:8px;top:6px;padding:3px 8px;background:rgba(31,22,13,.75);color:var(--paper3);font-size:13px;font-weight:700">' + (SP.boss ? 'Boss · còn ' + Math.max(0, 12 - SP.bt) + ' hiệp' : 'Đợt ' + SP.wave + '/4 · quái ' + (SP.idx + 1) + '/3') + '</div>' +
-      '<div class="unit" style="left:5%;bottom:30%"><img src="img/kt_red.png" alt="Hộ pháp" style="width:calc(var(--k)*22px);height:calc(var(--k)*48px)"></div>' +
-      '<div id="sp-me" class="unit" style="left:20%;bottom:14%"><img src="img/st_right.png" alt="Chân thân" style="width:calc(var(--k)*41px);height:calc(var(--k)*52px)"></div>' +
-      '<div class="unit" style="left:2%;bottom:3%"><img src="img/pet.png" alt="Linh thú" style="width:calc(var(--k)*63px);height:calc(var(--k)*31px)"></div>' +
-      '<div id="sp-foe" class="unit en" style="right:' + (SP.boss ? 4 : 12) + '%;bottom:' + (SP.boss ? 22 : 12) + '%"><span class="tag">' + f.n + '</span><div class="hp" style="width:' + (SP.boss ? 90 : 56) + 'px"><i style="width:' + Math.max(0, f.hp / f.max * 100) + '%;background:var(--red)"></i></div>' +
+      '<div class="unit" style="left:1%;bottom:22%"><img src="img/kt_red.png" alt="Hộ pháp" style="width:calc(var(--k)*22px);height:calc(var(--k)*48px)"></div>' +
+      '<div id="sp-me" class="unit" style="left:17%;bottom:13%"><img src="img/st_right.png" alt="Chân thân" style="width:calc(var(--k)*41px);height:calc(var(--k)*52px)"></div>' +
+      '<div class="unit" style="left:1%;bottom:1%"><img src="img/pet.png" alt="Linh thú" style="width:calc(var(--k)*63px);height:calc(var(--k)*31px)"></div>' +
+      '<div id="sp-foe" class="unit en" style="right:' + (SP.boss ? -2 : 5) + '%;bottom:' + (SP.boss ? 20 : 10) + '%"><span class="tag">' + f.n + '</span><div class="hp" style="width:' + (SP.boss ? 120 : 70) + 'px"><i style="width:' + Math.max(0, f.hp / f.max * 100) + '%;background:var(--red)"></i></div>' +
       '<img src="img/' + f.img + '.png" alt="' + f.n + '" style="width:calc(var(--k)*' + f.w + 'px);height:calc(var(--k)*' + f.h + 'px)' + (f.img === 'm_ghost' ? '' : ';transform:scaleX(-1)') + '"></div>' +
       (SP.fail ? '<div style="position:absolute;inset:0;z-index:9;background:rgba(31,22,13,.6);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:0 16px"><span style="font-family:\'Protest Revolution\';font-size:32px;color:#ff8a6e;text-shadow:3px 3px 0 var(--dark)">Chưa hạ được boss</span><span style="color:var(--paper3);font-size:15px;font-weight:700">Lực chiến ' + fmt(power()) + ' / cần ' + fmt(need()) + '. Nâng pháp khí bên dưới rồi đánh lại.</span><button class="btn gold" data-act="sp-retry" style="min-height:44px;padding:0 16px;font-size:16px">Đánh lại boss</button></div>' : '') +
       '<button class="btn" data-act="sp-fast" style="position:absolute;right:8px;top:40px;min-height:36px;padding:0 10px;font-size:14px">' + (SP.fast ? 'Tốc x2' : 'Tốc x1') + '</button>';
@@ -85,7 +85,7 @@
   function upCards() {
     return UP.map(function (u) {
       var c = cost(u[0]), ok = SP.gold >= c, ic = u[3] === 'pet' ? '<img src="img/pet.png" alt="" style="width:40px;height:20px">' : u[3] === 'kt_red' ? '<img src="img/kt_red.png" alt="" style="width:14px;height:31px">' : '<img src="img/' + u[3] + '.png" alt="" style="width:32px;height:32px">';
-      return '<button class="sp-up" data-act="sp-up" data-v="' + u[0] + '"' + (ok ? '' : ' aria-disabled="true"') + '><span class="sp-ic">' + ic + '</span><span class="sp-tx"><small>' + u[2] + '</small><b>' + u[1] + '</b><span>Tầng ' + SP.lv[u[0]] + ' · +' + fmt(u[4]) + ' lực</span></span><span class="sp-cost' + (ok ? '' : ' no') + '"><img src="img/linhthach.png" alt="linh thạch">' + fmt(c) + '</span></button>';
+      return '<button class="sp-up" data-act="sp-up" data-v="' + u[0] + '" aria-label="Nâng ' + u[1] + ', tầng ' + SP.lv[u[0]] + ', giá ' + fmt(c) + ' linh thạch"' + (ok ? '' : ' aria-disabled="true"') + '><span class="sp-ic">' + ic + '<i>' + SP.lv[u[0]] + '</i></span><b>' + u[2] + '</b><span class="sp-cost' + (ok ? '' : ' no') + '"><img src="img/linhthach.png" alt="">' + fmt(c) + '</span></button>';
     }).join('');
   }
   function home() {
@@ -93,15 +93,13 @@
     return '<div class="hdr"><div style="width:48px;height:48px;border:3px solid var(--gold);background:var(--paper2);overflow:hidden;flex-shrink:0"><img src="img/st_front.png" alt="" style="width:60px;height:108px;margin:-4px 0 0 -9px"></div>' +
       '<div style="flex:1;display:flex;flex-direction:column"><span style="font-size:16px;font-weight:700;color:var(--paper)">Lâm Thanh Vân · Ngộ Đạo 2</span><span class="lc" id="sp-pow">Lực chiến ' + fmt(p) + '</span></div>' +
       '<div style="display:flex;align-items:center;gap:4px;font-size:16px;font-weight:700;color:var(--paper)"><img src="img/linhthach.png" alt="linh thạch" style="width:18px;height:18px"><span id="sp-gold">' + fmt(SP.gold) + '</span></div></div>' +
-      '<div class="scene" id="sp-arena" style="height:34%;min-height:220px"><img class="bg" src="img/bg_dai_w.png" alt="">' + arena() + '</div>' +
+      '<div class="scene" id="sp-arena" style="--k:' + Math.max(K, 2) + ';flex:1;min-height:250px;max-height:340px"><img class="bg" src="img/bg_dai_w.png" alt="">' + arena() + '</div>' +
       '<div class="sp-strip"><span>Ải 3-' + SP.st + ' cần lực <b id="sp-need" style="color:' + (short ? '#ff8a6e' : 'var(--goldl)') + '">' + fmt(need()) + '</b></span><span>Đã trảm <b id="sp-kills">' + SP.kills + '</b> yêu</span></div>' +
-      '<div class="scene" style="height:150px;flex-shrink:0"><img class="bg" src="img/bg_tien_w.png" alt="" style="filter:brightness(.7)">' +
+      '<div class="scene" style="--k:' + Math.max(K, 2) + ';height:200px;flex-shrink:0"><img class="bg" src="img/bg_tien_w.png" alt="" style="filter:brightness(.7)">' +
       '<div style="position:absolute;left:0;right:0;bottom:2px;display:flex;justify-content:center">' + charbox('chanthan', 28, 47, 'Chân thân đang tọa thiền', fx('halo', 34, 2.4, 'opacity:.8') + fx('ring', 93, 1.6) + fx('tuongvan', 95, 1), fx('motes', 50, 2.4) + fx('kiem', 52, 1.6)) + '</div>' +
       '<div id="fl" style="position:absolute;left:0;right:0;top:34%;text-align:center;font-size:22px;font-weight:700;color:var(--goldl);text-shadow:2px 2px 0 var(--dark);opacity:0"></div>' +
       '<div style="position:absolute;left:8px;right:8px;top:6px;display:flex;flex-direction:column;gap:3px"><div class="row" style="color:var(--paper3);font-size:13px;font-weight:700;text-shadow:1px 1px 0 var(--dark)"><span>Tọa thiền · +13 tu vi/giây</span><span id="sp-tvt">' + fmt(SP.tv) + ' / 2.200</span></div><div class="bar" style="height:10px"><i id="sp-tvb" style="width:' + Math.min(100, SP.tv / 22) + '%"></i></div></div></div>' +
-      '<div class="body" style="gap:8px;padding:8px 10px">' + '<div id="sp-ups" style="display:flex;flex-direction:column;gap:6px">' + upCards() + '</div>' +
-      '<a class="card dark" href="#tinhmong" style="text-decoration:none;flex-direction:row;align-items:center;gap:10px;padding:8px 12px"><img src="img/g_thuy_linh_chau.png" alt="" style="width:32px;height:32px"><span style="flex:1;font-size:14px"><b style="color:var(--goldl)">Nhập mộng</b> chơi một kiếp như cũ. Sống xong, đạo hạnh của kiếp cộng thẳng vào lực chiến.</span><b style="font-size:20px">›</b></a>' +
-      '<a href="#tutinh" class="sub" style="text-align:center;font-size:13px">Xem màn tọa thiền bản trước</a></div>' + nav('home');
+      '<div id="sp-ups" class="sp-ups">' + upCards() + '</div>' + nav('home');
   }
   function spRefresh() {
     var a = document.getElementById('sp-arena'); if (!a) return;
