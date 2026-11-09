@@ -167,7 +167,7 @@
   function vfx(box, name, x, y, k, fixed) {
     var d = VFX[name], e = document.createElement('span'), dur = d[2] / d[5];
     e.className = 'vfx'; e.setAttribute('aria-hidden', 'true');
-    e.style.cssText = (fixed ? 'position:fixed;z-index:60;' : 'position:absolute;z-index:7;') + 'left:' + (x - d[3] * k) + 'px;top:' + (y - d[4] * k) + 'px;width:' + d[0] * k + 'px;height:' + d[1] * k + 'px;background-image:url(img/vfx_' + name + '.png);background-size:' + d[2] * 100 + '% 100%;animation:pfx ' + dur + 's steps(' + (d[2] - 1) + ',jump-none) forwards';
+    e.style.cssText = (fixed ? 'position:fixed;z-index:60;' : 'position:absolute;z-index:7;') + 'left:' + (x - d[3] * k) + 'px;top:' + (y - d[4] * k) + 'px;width:' + d[0] * k + 'px;height:' + d[1] * k + 'px;background-image:url(img/fx2_' + name + '.png);background-size:' + d[2] * 100 + '% 100%;animation:pfx ' + dur + 's steps(' + (d[2] - 1) + ',jump-none) forwards';
     box.appendChild(e); setTimeout(function () { e.remove(); }, dur * 1000 + 50);
   }
   /* phi kiếm và chưởng bay từ chân thân lên quái ở màn trên */

@@ -169,7 +169,7 @@ nav.bot a.mid img{width:32px;height:32px}
 #sp-foe.boss{left:0;right:0;bottom:44px}
 .sp-proj{position:fixed;z-index:40;pointer-events:none;image-rendering:pixelated;background-repeat:no-repeat}
 .sp-proj.kiem{background:url(img/phikiem.png) 0 0/100% 100%;filter:drop-shadow(0 0 3px #b8e4ff)}
-.sp-proj.chuong{background-image:url(img/vfx_chuong.png);background-size:2400% 100%;animation:pfx .8s steps(23,jump-none) infinite}
+.sp-proj.chuong{background-image:url(img/fx2_chuong.png);background-size:2400% 100%;animation:pfx .8s steps(23,jump-none) infinite}
 /* hai phi kiếm lơ lửng hai bên chân thân */
 .sp-fk{width:26px;height:7px;align-self:center;margin-bottom:24px;image-rendering:pixelated;animation:fk 1.6s steps(4) infinite}
 .sp-fk.l{transform:rotate(-90deg);margin-right:6px}
