@@ -1,0 +1,16 @@
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:#120c07}
+body{font-family:'Barlow Semi Condensed',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+img{image-rendering:pixelated}
+.app{position:relative;width:100%;max-width:430px;height:100vh;height:100dvh;margin:0 auto;overflow:hidden;display:flex;flex-direction:column}
+.abs{position:absolute}
+.strip{background-repeat:no-repeat;image-rendering:pixelated}
+@keyframes play{from{background-position:0 0}to{background-position:100% 0}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes up{0%{transform:translate(0,0);opacity:1}90%{opacity:1}100%{transform:translate(var(--dx),var(--dy));opacity:0}}
+@keyframes num{0%{opacity:0;transform:translateY(6px) scale(.6)}10%{opacity:1;transform:translateY(-4px) scale(1.15)}20%{transform:translateY(-6px) scale(1)}70%{opacity:1}100%{opacity:0;transform:translateY(-36px)}}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(-60px)}}
+@keyframes desc{0%{transform:translateY(-40px);opacity:0}10%{opacity:1}100%{transform:translateY(120px);opacity:1}}
+.num{position:absolute;font-weight:700;color:#fff8e6;text-shadow:2px 2px 0 #1f160d,-1px -1px 0 #1f160d;animation:num 1.6s ease-out infinite;white-space:nowrap}
+.num.c{color:#ffcf6e;font-size:24px}
+.tag{font-size:11px;font-weight:700}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}

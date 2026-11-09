@@ -1,0 +1,57 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Hướng A - Một cảnh liền</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Protest+Revolution&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<style>
+.app{background:#f6c27a}
+.hud{position:absolute;left:8px;right:8px;top:8px;z-index:5;display:flex;align-items:center;gap:8px;padding:6px 10px 6px 6px;background:rgba(31,22,13,.82);box-shadow:0 0 0 2px #1f160d,inset 0 0 0 2px #c9962e}
+.av{width:44px;height:44px;background:#e8d7ad;overflow:hidden;box-shadow:0 0 0 2px #c9962e}
+.av img{width:52px;height:100px;margin:-2px 0 0 -4px}
+.nm{color:#f3e6c4;font-weight:700;font-size:14px;line-height:1.1}
+.lc{color:#ffcf6e;font-size:21px;font-weight:700;line-height:1}
+.gold{margin-left:auto;display:flex;align-items:center;gap:4px;color:#f3e6c4;font-weight:700}
+.scene{position:relative;flex:1;overflow:hidden}
+.scene .bg{position:absolute;left:50%;bottom:0;width:768px;height:480px;transform:translateX(-50%)}
+.rib{position:absolute;left:50%;top:70px;transform:translateX(-50%);z-index:4;padding:4px 18px;background:#8f2f20;color:#fff8e6;font-family:'Protest Revolution';font-size:20px;box-shadow:0 0 0 2px #1f160d,0 3px 0 #1f160d;white-space:nowrap}
+.prog{position:absolute;left:50%;top:106px;transform:translateX(-50%);z-index:4;display:flex;gap:3px}
+.prog i{width:16px;height:6px;background:#5a4128;box-shadow:0 0 0 1px #1f160d}.prog i.d{background:#ffcf6e}.prog i.b{width:22px;background:#b8432f}
+.me{position:absolute;left:12%;bottom:116px;z-index:3;animation:bob 1.4s steps(2) infinite}
+.me img{width:80px;height:100px}
+.orb{position:absolute;width:52px;height:14px;z-index:3}
+.foe{position:absolute;right:6%;bottom:108px;z-index:3;display:flex;flex-direction:column;align-items:center;gap:4px}
+.hp{width:70px;height:6px;background:#3b2a1a;box-shadow:0 0 0 2px #1f160d}.hp i{display:block;height:100%;width:62%;background:#b8432f}
+.foe2{position:absolute;right:-8%;bottom:132px;opacity:.85;transform:scaleX(-1)}
+.fly{position:absolute;left:30%;bottom:166px;width:52px;height:14px;--dx:150px;--dy:-6px;animation:up .9s linear infinite}
+.panel{position:relative;flex-shrink:0;background:#2a1d12;box-shadow:0 -3px 0 #1f160d,inset 0 3px 0 #c9962e;padding:10px 10px 8px}
+.tabs{display:flex;gap:6px;margin-bottom:8px}
+.tabs b{flex:1;text-align:center;padding:6px 0;font-size:14px;color:#c8b48a;background:#3b2a1a;box-shadow:0 0 0 2px #1f160d}
+.tabs b.on{background:#c9962e;color:#1f160d}
+.row{display:flex;align-items:center;gap:10px;padding:7px 8px;margin-bottom:6px;background:#3b2a1a;box-shadow:0 0 0 2px #1f160d,inset 0 2px 0 #5a4128}
+.row img.ic{width:32px;height:32px;background:#1f160d;padding:2px}
+.row .t{flex:1;color:#f3e6c4;display:flex;flex-direction:column;line-height:1.2}
+.row .t b{font-size:15px}.row .t span{font-size:12px;color:#8fd0b0}
+.btn{display:flex;align-items:center;gap:4px;padding:6px 10px;background:#ffcf6e;color:#1f160d;font-weight:700;box-shadow:0 0 0 2px #1f160d,0 3px 0 #8a6a2a}
+.nav{display:grid;grid-template-columns:repeat(5,1fr);background:#1f160d;color:#c8b48a;font-size:12px;font-weight:700;text-align:center;flex-shrink:0;padding:8px 0 10px}
+.nav b.on{color:#ffcf6e}
+.lbl{position:absolute;left:8px;bottom:8px;z-index:9;background:#1f160d;color:#ffcf6e;padding:3px 8px;font-weight:700;font-size:13px}
+</style></head><body><div class="app">
+<div class="scene">
+  <img class="bg" src="bg_tien-0.png" alt="">
+  <div class="hud"><div class="av"><img src="../img/st_front.png" alt=""></div><div><div class="nm">Lâm Thanh Vân · Ngộ Đạo 2</div><div class="lc">Lực chiến 24.900</div></div><div class="gold"><img src="linhthach.png" alt="" style="width:16px;height:16px">1.260</div></div>
+  <div class="rib">Ải 3-14 · Vân Tiêu Đảo</div>
+  <div class="prog"><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i></i><i></i><i></i><i class="b"></i></div>
+  <div class="me"><div class="strip" style="width:80px;height:100px;background-image:url(ct_right.png);background-size:200% 100%;animation:play .8s steps(1) infinite"></div></div>
+  <img class="fly" src="phikiem_ice.png" alt="">
+  <img class="fly" src="phikiem_ice.png" alt="" style="animation-delay:.45s;bottom:150px">
+  <div class="foe"><span class="hp"><i></i></span><img src="m_dk_tiger.png" alt="Hổ yêu" style="width:116px;height:76px;transform:scaleX(-1)"></div>
+  <img class="foe2" src="m_wolf.png" alt="" style="width:126px;height:62px">
+  <span class="num" style="right:22%;bottom:200px">3.113</span><span class="num c" style="right:12%;bottom:220px;animation-delay:.8s">5.402!</span>
+</div>
+<div class="panel">
+  <div class="tabs"><b class="on">Pháp khí</b><b>Công pháp</b><b>Linh thú</b><b>Hộ pháp</b></div>
+  <div class="row"><img class="ic" src="g_thai_a_kiem.png" alt=""><div class="t"><b>Băng Phách kiếm · tầng 3</b><span>+1.200 lực chiến mỗi tầng</span></div><span class="btn"><img src="linhthach.png" alt="" style="width:12px;height:12px">710</span></div>
+  <div class="row"><img class="ic" src="g_doc_co_kiem_pho.png" alt=""><div class="t"><b>Thôn Phệ Ma Công · tầng 2</b><span>+900 lực chiến mỗi tầng</span></div><span class="btn"><img src="linhthach.png" alt="" style="width:12px;height:12px">410</span></div>
+</div>
+<div class="nav"><b class="on">Tu luyện</b><b>Nhân vật</b><b>Nhập mộng</b><b>Đi cảnh</b><b>Động phủ</b></div>
+<span class="lbl">Hướng A · Một cảnh liền</span>
+</div></body></html>
