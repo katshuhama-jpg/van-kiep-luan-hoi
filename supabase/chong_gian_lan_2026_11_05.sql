@@ -148,3 +148,8 @@ create trigger vkl_players_meta_guard before update of meta on public.vkl_player
 
 -- 7) 5/11 tối, Tyler: quocdung, anony3 phúc duyên về 0. meta_guard chặn thêm phúc duyên tăng quá 3.000 trong một lần lưu
 --    (người chơi thật tăng nhiều nhất khoảng 600 một lần), để trình duyệt còn số cũ không đẩy lại lên được.
+
+-- 8) 9/11 tối, Tyler chốt: ĐÃ BẬT. VKL_SRV_SECRET có trên Vercel (Production + Preview), /api/loi-dai chạy sạch từ afe83ef.
+--    Trình duyệt không còn tự ghi thắng/thua; ghi thẳng vào vkl_arena_log hoặc vkl_thach báo USE_SERVER.
+create trigger vkl_arena_log_srv before insert on public.vkl_arena_log for each row execute function vkl_priv.srv_only();
+create trigger vkl_thach_srv before insert on public.vkl_thach for each row execute function vkl_priv.srv_only();
