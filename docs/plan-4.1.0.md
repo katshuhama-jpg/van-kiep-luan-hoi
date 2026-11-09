@@ -173,3 +173,7 @@ Thiên Đạo kiểm chứng (Tyler đồng ý hướng 5/11 tối, làm sau b�
 - Bước 1: máy chủ phát hạt giống ngẫu nhiên cho mỗi kiếp (ngầm, cùng lúc lưu); mọi chỗ ngẫu nhiên trong luật chơi đi qua bộ sinh số theo hạt giống; trình duyệt ghi nhật ký theo thứ tự mọi bước của kiếp (qua năm, chọn sự kiện, đổi trọng tâm, mua bán, rèn, mặc đồ, từng nhịp trận đánh, bóng người khác gặp, số phi kiếm). Lưu ý: trận trừ yêu, chặn đường, kỳ ngộ đang chạy trong app/choi/page.tsx, phải tách ra module thuần trước.
 - Bước 2: khi chết gửi nhật ký, máy chủ (Vercel) chạy lại kiếp không hình, so kết quả, gắn nhãn "đã kiểm chứng". Lúc đầu chỉ đo tỉ lệ khớp, chưa chặn.
 - Bước 3: tỉ lệ khớp gần 100% thì bảng xếp hạng, danh hiệu, Lôi đài chỉ lấy kiếp đã kiểm chứng; khi đó bỏ ngưỡng đoán (sane_char, meta_guard).
+
+## 4.3.1 Tuyệt Kỹ Xứng Danh (9/11)
+- Lên 9f16328: sửa trừ máu đôi (lib/game/once.ts, 22 chỗ hurt/promote/switchPath trong cả hai câu tr), tuyệt kỹ tầng 5 + tự luyện + luôn >= 1,2 lần bộc phát (scripts/sim-tuyet-ky.ts), trần né 35%, sát thủ/ác bá theo cảnh giới, ma tu và từ Nguyên Anh không bị coi là hiền, Giới luật viện tính quái giết thêm (pdKillMark), sự kiện pd_sieu_do, #168 petSeen, #118, #190 đổi bộ ở thẻ đột phá, #161 phân giải tất cả.
+- Trả lời góp ý (Tyler duyệt 9/11): da_xong #182, #168, #118, #101, #190, #161 (reply_ver 4.3.1), tặng 10 phúc mỗi góp ý (6 quà).
