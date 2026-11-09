@@ -51,7 +51,7 @@
     var h0 = Math.floor(S.afkSec / 3600), m0 = Math.floor((S.afkSec % 3600) / 60);
     return '<div class="top"><div class="ava"></div><div class="who"><b>Lâm Hạo</b><small>Kim Đan Trung kỳ · Kiếp ' + S.kiep + '</small></div>' +
       '<div class="res"><span><i style="background-image:url(../img/linhthach.png)"></i><b id="lt">' + fmt(S.lt) + '</b></span>' +
-      '<span style="color:#ffcf6e;font-size:13px">Treo ' + h0 + ' giờ ' + m0 + ' phút · Đạo quả ' + S.dq + '</span></div></div>' +
+      '<span style="font-size:15px">Treo ' + h0 + ' giờ ' + m0 + ' phút · Đạo quả ' + S.dq + '</span></div></div>' +
       '<div class="view" id="view"></div>' +
       '<div class="nav">' + nav('home', 'Động phủ', 'g_lien_hoa_dai') + nav('canh', 'Đi cảnh', 'g_thai_a_kiem') + nav('mong', 'Nhập mộng', 'g_ha_lac_ngoc_phu') + nav('tui', 'Túi đồ', 'g_can_khon_dai', 1) + nav('tong', 'Tông môn', 'g_thien_co_lenh', 1) + '</div>';
   }
@@ -70,7 +70,7 @@
   });
 
   // ---------- Động phủ: chân thân ở giữa, treo máy ----------
-  function slot(img, label) { return '<div class="slot' + (img ? '' : ' empty') + '">' + (img ? '<img src="../img/' + img + '.png" alt="">' : '') + '<small>' + label + '</small></div>'; }
+  function slot(img, label) { return '<div class="slotw"><div class="slot' + (img ? '' : ' empty') + '">' + (img ? '<img src="../img/' + img + '.png" alt="">' : '') + '</div><small>' + label + '</small></div>'; }
   function home(v) {
     v.innerHTML = '<div class="home"><div class="sky" style="background:#cfe8e0"></div><img class="bg" src="../img/bg_dongphu.png" alt=""><div class="ground" style="background:#b98650"></div>' +
       '<div class="cp"><small>Chiến lực</small>11.500</div>' +
@@ -78,10 +78,10 @@
       '<div class="slots r">' + slot('g_thuy_linh_chau', 'Pháp bảo') + slot('g_lac_thu', 'Bí tịch') + slot('pet', 'Linh thú') + slot('', 'Hộ pháp') + '</div>' +
       '<span class="halo"></span><div class="cloud"></div>' +
       '<div class="hero" id="hero"><div class="spr px"></div></div>' +
-      '<div class="afk"><div class="rl"><b>Kim Đan Trung kỳ</b><span>+' + S.rate + ' tu vi / 10 giây<br>treo động phủ +40%</span></div>' +
+      '<div class="afk panel"><div class="rl"><h2>Kim Đan Trung kỳ</h2><span>+' + S.rate + ' tu vi / 10 giây<br>treo động phủ +40%</span></div>' +
       '<div class="bar"><i id="tvbar"></i><em id="tvtxt"></em></div>' +
-      '<div class="stats"><span><i style="background:#b8432f"></i>Công 2.360</span><span><i style="background:#3d6fb0"></i>Thủ 1.327</span><span><i style="background:#2f6b5a"></i>Máu 40.200</span><span><i style="background:#c9962e"></i>Tốc 253</span></div>' +
-      '<div class="collect"><div><small>Đồ treo máy đã tích (' + Math.floor(S.afkSec / 3600) + ' giờ)</small><b id="afkloot">+' + fmt(S.afkSec * 0.55) + ' linh thạch · 3 tàn quyển</b></div><button class="btn gold" id="thu">Thu</button></div>' +
+      '<div class="stats"><span><i style="background:#b8432f"></i>Công <b>2.360</b></span><span><i style="background:#3d6fb0"></i>Thủ <b>1.327</b></span><span><i style="background:#2f6b5a"></i>Máu <b>40.200</b></span><span><i style="background:#c9962e"></i>Tốc <b>253</b></span></div>' +
+      '<div class="collect"><div><small>Đồ treo máy đã tích (' + Math.floor(S.afkSec / 3600) + ' giờ)</small><b id="afkloot">+' + fmt(S.afkSec * 0.55) + ' linh thạch · 3 tàn quyển</b></div><button class="btn red" id="thu">Thu</button></div>' +
       '</div></div>';
     sprite(v.querySelector('#hero'), 'hero_idle_f.png', 2, 1.6, true);
     haloRun(v.querySelector('.halo'));
@@ -120,7 +120,7 @@
       '<div class="ftr" id="me" style="left:30px"><div class="spr"></div></div>' +
       '<div class="ftr" id="foe" style="left:calc(100% - 222px)"><div class="spr" style="filter:' + f.filter + '"></div></div>' +
       box('me', 'Thái A kiếm', 'g_thai_a_kiem', me) + box('foe', f.w, f.wi, f) +
-      '</div><div class="ctl"><div class="log" id="log">Lâm Hạo bước vào Rừng Hắc Phong.</div><button class="btn" id="fast">x' + (S.fast ? 2 : 1) + '</button><button class="btn vio" id="ve">Về động phủ</button></div>';
+      '</div><div class="ctl"><div class="log" id="log">Lâm Hạo bước vào Rừng Hắc Phong.</div><button class="btn" id="fast" style="min-width:52px">x' + (S.fast ? 2 : 1) + '</button><button class="btn dark" id="ve">Về động phủ</button></div>';
     var st = v.querySelector('#st'), elMe = v.querySelector('#me'), elFoe = v.querySelector('#foe');
     sprite(elMe, 'hero_idle_r.png', 2, 2, true);
     sprite(elFoe, 'foe_idle_l.png', 2, 2, true);
@@ -192,7 +192,7 @@
       S.lt += g; document.getElementById('lt').textContent = fmt(S.lt);
       later(function () {
         var drop = Math.random() < 0.4 ? '<span>Tàn quyển Hắc Phong đao pháp</span><br>' : '';
-        var l = h('<div class="loot"><b>Hạ ' + f.name + '</b><span>+' + g + ' linh thạch</span><br>' + drop + '<span style="color:#2f6b5a">+12 tu vi cho chân thân</span></div>');
+        var l = h('<div class="loot panel"><b>Hạ ' + f.name + '</b><span>+' + g + ' linh thạch</span><br>' + drop + '<span style="color:#2f6b5a">+12 tu vi cho chân thân</span></div>');
         st.appendChild(l);
         log('Thắng đợt ' + S.wave + '. Đợt sau đang tới.');
         later(function () {
@@ -218,12 +218,12 @@
     v.innerHTML = '<div class="dream" id="dr"><img class="bg" src="../img/bg_menh.png" alt="">' + bfs +
       '<span class="halo" style="top:26px;filter:hue-rotate(200deg)"></span>' +
       '<div class="hero" id="hero" style="top:40px;filter:brightness(.85) saturate(.7)"><div class="spr px"></div></div>' +
-      '<div class="dcard" id="dc">' +
+      '<div class="dcard panel" id="dc">' +
       '<h3>Nhập mộng</h3>' +
       '<p>Chân thân ngồi yên trong động phủ, thần thức nhập vào một kiếp phàm. Kiếp ấy chơi y như bản hiện tại: sinh ra, tu luyện, kết duyên, độ kiếp, rồi chết.</p>' +
       '<p>Tỉnh mộng, kiếp đi được tới đâu thì chân thân nhận về tới đó.</p>' +
       '<div class="tiers"><span>Chết trước Trúc Cơ</span><b>+200 tu vi</b><span>Trúc Cơ, Kim Đan</span><b>+800 tu vi, 1 đạo quả</b><span>Nguyên Anh trở lên</span><b>+3.000 tu vi, 2 đạo quả, 1 ký ức chiêu</b><span>Phi thăng</span><b>Cánh mới cho chân thân</b></div>' +
-      '<div style="display:flex;gap:8px"><button class="btn vio" id="vao" style="flex:1">Nhập mộng · Kiếp ' + (S.kiep + 1) + '</button></div>' +
+      '<div style="display:flex;gap:8px"><button class="btn red big" id="vao" style="flex:1">Nhập mộng · Kiếp ' + (S.kiep + 1) + '</button></div>' +
       '</div></div>';
     sprite(v.querySelector('#hero'), 'hero_idle_f.png', 2, 1, true);
     haloRun(v.querySelector('.halo'));
@@ -237,7 +237,7 @@
           '<p><b>Kiếp ' + S.kiep + ' · Lý Thanh</b> · sống 132 tuổi, Trúc Cơ Hậu kỳ. Chết vì lôi kiếp lúc độ Kim Đan.</p>' +
           '<p style="color:#5a4128">(Bản thử: đoạn này là kiếp chơi trong game hiện tại. Bấm nút dưới để chơi thật.)</p>' +
           '<div class="tiers"><span>Tu vi chân thân</span><b>+800</b><span>Đạo quả</span><b>+1 (Kiếm)</b><span>Ký ức</span><b>Kim Xà Kiếm Pháp</b></div>' +
-          '<div style="display:flex;gap:8px"><a class="btn gold" style="flex:1;text-align:center;text-decoration:none" href="https://van-kiep-luan-hoi.vercel.app/choi" target="_blank" rel="noopener">Chơi kiếp thật</a><button class="btn" id="ve" style="flex:1">Về động phủ</button></div>';
+          '<div style="display:flex;gap:8px"><a class="btn red" style="flex:1;text-align:center;text-decoration:none" href="https://van-kiep-luan-hoi.vercel.app/choi" target="_blank" rel="noopener">Chơi kiếp thật</a><button class="btn" id="ve" style="flex:1">Về động phủ</button></div>';
         S.tuvi = Math.min(S.need, S.tuvi + 800); S.dq++;
         dc.querySelector('#ve').onclick = function () { S.tab = 'home'; render(); };
       }, 700);
