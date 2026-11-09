@@ -47,11 +47,13 @@ export function giveHg(c: Character, id: string, ctx: EffectCtx): string {
   return tr(` Bạn có được ${it.name}. Mở Túi đồ để mang.`, ` You obtain ${it.name}. Open your Inventory to equip it.`);
 }
 
-function hgDie(c: Character, ctx: EffectCtx, tag: string, cause: string) {
+function hgDie(c: Character, ctx: EffectCtx, tag: string, cause: string, banner?: string) {
   c.dead = true;
   c.endTag = tag;
   c.cause = cause;
-  ctx.fx('death');
+  // kết cục thắng: mừng như chứng đạo, không đánh tiếng chết
+  if (banner) ctx.fx('breakthrough', banner);
+  else ctx.fx('death');
 }
 
 export function addCd(c: Character, n: number) {
@@ -429,18 +431,18 @@ function endEvent(): GameEvent {
     choices: (c) => {
       const out: Choice[] = [
         { label: tr('Khai Thiên Lập Địa', 'Open Heaven, Found Earth'), hint: tr('mở ra một thế giới mới mang tên bạn', 'open a new world bearing your name'), lean: 'chinh', run: (ch, ctx) => {
-          hgDie(ch, ctx, 'hg_khai_thien', tr(`Một nhát tách hỗn độn, mở ra thế giới mới mang tên ${ch.name}.`, `Split chaos with one stroke and opened a new world bearing the name ${ch.name}.`));
-          return tr(`Bạn vung tay. Hỗn độn tách làm đôi, nhẹ bay lên thành trời, nặng chìm xuống thành đất. Thế giới mới mang tên ${ch.name}, tên ấy khắc lên bia đá đầu tiên.`, `You strike. Chaos splits in two: the light rises into sky, the heavy sinks into earth. The new world bears the name ${ch.name}, carved into its first stone.`);
+          hgDie(ch, ctx, 'hg_khai_thien', tr(`Một nhát tách hỗn độn, mở ra thế giới mới mang tên ${ch.name}.`, `Split chaos with one stroke and opened a new world bearing the name ${ch.name}.`), tr('KHAI THIÊN', 'HEAVEN OPENED'));
+          return tr(`Bạn vung tay. Hỗn độn tách làm đôi, nhẹ bay lên thành trời, nặng chìm xuống thành đất. Thế giới mới mang tên ${ch.name}, tên ấy khắc lên bia đá đầu tiên. Như Bàn Cổ năm xưa, khai thiên dùng hết cả thân: hơi thở thành gió mây, xương thành núi, máu thành sông. Kiếp này dừng ở đây, nhưng thế giới ấy còn mãi.`, `You strike. Chaos splits in two: the light rises into sky, the heavy sinks into earth. The new world bears the name ${ch.name}, carved into its first stone. As with Pangu of old, opening heaven takes your whole body: breath becomes wind and cloud, bones become mountains, blood becomes rivers. This life ends here, but that world remains forever.`);
         } },
         { label: tr('Ngồi vào chỗ Thiên Đạo', 'Take the Heavenly Dao\'s seat'), hint: tr('thành trời của trời cũ', 'become the old heaven\'s heaven'), lean: 'ta', run: (ch, ctx) => {
-          hgDie(ch, ctx, 'hg_thien_dao', tr('Ngồi vào ghế Thiên Đạo, mắt vàng mở ra trên mọi bầu trời.', 'Took the Heavenly Dao\'s seat; a golden eye opened over every sky.'));
-          return tr('Bạn ngồi xuống. Từ nay mỗi đạo lôi kiếp nơi phàm giới đều là bạn giáng xuống.', 'You sit. From now on, every tribulation bolt in the mortal world falls by your hand.');
+          hgDie(ch, ctx, 'hg_thien_dao', tr('Ngồi vào ghế Thiên Đạo, mắt vàng mở ra trên mọi bầu trời.', 'Took the Heavenly Dao\'s seat; a golden eye opened over every sky.'), tr('HÓA THIÊN ĐẠO', 'HEAVENLY DAO'));
+          return tr('Bạn ngồi xuống. Từ nay mỗi đạo lôi kiếp nơi phàm giới đều là bạn giáng xuống.', 'You sit. From now on, every tribulation bolt in the mortal world falls by your hand.') + tr(' Thân người tan vào trời, kiếp này khép lại.', ' Your human body dissolves into the sky, and this life closes.');
         } },
       ];
       if (c.partner || hg(c).cuuKiep)
         out.push({ label: tr('Buông hết, về làm người', 'Let it all go and be human'), hint: tr('?', '?'), lean: 'trung', run: (ch, ctx) => {
-          hgDie(ch, ctx, 'hg_pham_nhan', tr('Thắng cả trời rồi buông hết, về làm một người cày ruộng.', 'Beat heaven itself, then let it all go to become a farmer.'));
-          return tr(`Bạn buông tay. Sáng hôm sau, ở một làng nhỏ dưới chân núi, có người thấy ${ch.partner ? `${ch.partner} và ` : ''}một người lạ đang cày ruộng, cười rất hiền.`, `You let go. Next morning, in a small village below the mountain, someone sees ${ch.partner ? `${ch.partner} and ` : ''}a stranger plowing a field, smiling gently.`);
+          hgDie(ch, ctx, 'hg_pham_nhan', tr('Thắng cả trời rồi buông hết, về làm một người cày ruộng.', 'Beat heaven itself, then let it all go to become a farmer.'), tr('VỀ LÀM NGƯỜI', 'BACK TO BEING HUMAN'));
+          return tr(`Bạn buông tay. Sáng hôm sau, ở một làng nhỏ dưới chân núi, có người thấy ${ch.partner ? `${ch.partner} và ` : ''}một người lạ đang cày ruộng, cười rất hiền. Người ấy sống nốt một đời bình thường, rồi già đi như mọi người.`, `You let go. Next morning, in a small village below the mountain, someone sees ${ch.partner ? `${ch.partner} and ` : ''}a stranger plowing a field, smiling gently. That person lives out an ordinary life and grows old like everyone else.`);
         } });
       return out;
     },

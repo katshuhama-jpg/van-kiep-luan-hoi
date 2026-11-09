@@ -24,6 +24,23 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '4.4.1',
+    date: '10/11/2026',
+    title: tr('Khai Thiên Cho Ra Khai Thiên', 'A Proper World-Opening'),
+    lead: tr('Đạo hữu khai thiên xong thấy mình hẹo luôn. Thiên Đạo kể lại cho rõ: đó là kết cục, không phải cái chết lãng xẹt.', 'A fellow cultivator opened a new world and felt they just dropped dead. The Heavenly Dao now tells it properly: it is an ending, not a pointless death.'),
+    groups: [
+      {
+        h: tr('Hồng Hoang', 'Honghuang'),
+        hot: true,
+        items: [
+          tr('Khai Thiên Lập Địa kể rõ thân bạn hóa thành trời đất mới, như Bàn Cổ năm xưa.', 'Opening Heaven now tells how your body becomes the new world, as Pangu once did.'),
+          tr('Ba kết cục sau Vấn Thiên mừng như chứng đạo, không còn tiếng chết.', 'The three endings after Questioning Heaven celebrate like attaining the Dao, with no death toll.'),
+          tr('Thương nhân lưu động và hội đấu giá không còn lạc vào Hồng Hoang.', 'The wandering merchant and the auction no longer stray into Honghuang.'),
+        ],
+      },
+    ],
+  },
+  {
     v: '4.4.0',
     date: '10/11/2026',
     title: tr('Hồng Hoang Giới', 'The Honghuang Realm'),

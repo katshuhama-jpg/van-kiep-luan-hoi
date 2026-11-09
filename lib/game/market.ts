@@ -145,7 +145,7 @@ export const AUCTION_YEARS = 60;
 /** Sau phi thăng đời dài hơn nên hội đấu giá thưa hơn */
 export const auctionYears = (c: Pick<Character, 'cosmos'>) => (c.cosmos ? 120 : AUCTION_YEARS);
 /** Đến kỳ hội đấu giá: từ Luyện Khí, 60 năm một lần (sau phi thăng 120 năm), khoảng 2-5 lần mỗi kiếp */
-export const auctionDue = (c: Character) => !c.dead && c.realm >= 1 && c.age >= auctionYears(c) && c.age % auctionYears(c) === 0 && c.auctionAt !== c.age;
+export const auctionDue = (c: Character) => !c.dead && c.cosmos !== 'hg' && c.realm >= 1 && c.age >= auctionYears(c) && c.age % auctionYears(c) === 0 && c.auctionAt !== c.age;
 const RIVALS = [
   tr('Hắc Phong lão quái', 'Old Monster Black Wind'),
   tr('Tô gia đại tiểu thư', 'Eldest Miss of the Su clan'),
@@ -238,7 +238,7 @@ export function auctionEvent(c: Character): GameEvent {
 // ---------------- Thương nhân lưu động ----------------
 export const MERCHANT_EVENT_ID = 'thuong_nhan_luu_dong';
 export const MERCHANT_PER_YEAR = 0.02;
-export const merchantDue = (c: Character, rnd: () => number) => !c.dead && c.age >= 16 && c.realm >= 1 && (c.merchantAt ?? -99) <= c.age - (c.cosmos ? 40 : 25) && rnd() < MERCHANT_PER_YEAR;
+export const merchantDue = (c: Character, rnd: () => number) => !c.dead && c.cosmos !== 'hg' && c.age >= 16 && c.realm >= 1 && (c.merchantAt ?? -99) <= c.age - (c.cosmos ? 40 : 25) && rnd() < MERCHANT_PER_YEAR;
 export interface Ware {
   item: Item;
   price: number;
