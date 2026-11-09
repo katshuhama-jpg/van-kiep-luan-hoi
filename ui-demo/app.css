@@ -215,3 +215,24 @@ nav.bot a.mid img{width:32px;height:32px}
 .sp-shade span{padding:1px 6px;background:rgba(74,58,106,.85);color:#e8dcff;font-size:12px;font-weight:700;white-space:nowrap}
 .sp-shade img{image-rendering:pixelated;filter:brightness(1.7) saturate(.3) drop-shadow(0 0 4px #b8a8ff);opacity:.8}
 @keyframes shade{0%{opacity:0;transform:translateX(-30px)}20%{opacity:1;transform:none}45%{transform:translateX(70px)}60%{transform:translateX(60px)}85%{opacity:1}100%{opacity:0;transform:translateX(60px)}}
+/* ---- màn dưới theo game tham khảo: thân x2, quạt kiếm trên đầu, bệ ấn, nút tròn hai bên ---- */
+.sp-low .bg{left:50%;bottom:auto;top:0}
+.sp-be{position:absolute;left:50%;bottom:34px;width:144px;height:36px;margin-left:-72px;image-rendering:pixelated;z-index:1}
+.sp-fanbox{position:absolute;left:50%;bottom:118px;width:0;height:0;z-index:2}
+.sp-fan{position:absolute;left:0;top:-7px;width:52px;height:14px;transform-origin:0 50%;transform:rotate(calc(-90deg + var(--a))) translateX(26px);image-rendering:pixelated;filter:drop-shadow(0 0 3px rgba(184,228,255,.7));animation:fan 1.8s steps(3) infinite;animation-delay:var(--d)}
+@keyframes fan{0%,100%{translate:0 0}50%{translate:0 -3px}}
+.sp-side{position:absolute;top:14px;z-index:4;display:flex;flex-direction:column;gap:10px}
+.sp-side.l{left:10px}.sp-side.r{right:10px}
+.sp-rb{display:flex;flex-direction:column;align-items:center;gap:2px;width:64px;border:0;padding:0;background:none;color:#e8f4ee;font-family:inherit;cursor:pointer}
+.sp-rb .o{position:relative;width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#1f3a3e;box-shadow:0 0 0 2px #0e1c1e,inset 0 0 0 3px #c9962e}
+.sp-rb .o img{max-width:34px;max-height:34px}
+.sp-rb .o i{position:absolute;right:-4px;bottom:-2px;min-width:18px;padding:0 3px;font-style:normal;font-size:11px;font-weight:700;background:var(--jade);color:#fff8e6;box-shadow:0 0 0 2px #0e1c1e}
+.sp-rb b{font-size:12px;text-shadow:1px 1px 0 #0e1c1e}
+.sp-rb .c{font-size:12px;font-weight:700;padding:0 6px;background:#ffcf6e;color:#1f160d;box-shadow:0 0 0 2px #0e1c1e}
+.sp-rb .c.no{background:#5a6a66;color:#cfd8d4}
+.sp-rb:active .o{transform:translateY(2px)}
+.sp-tvbar{position:absolute;left:12px;right:12px;bottom:8px;z-index:4;display:flex;align-items:center;gap:8px;color:#e8f4ee;font-size:12px;font-weight:700;text-shadow:1px 1px 0 #0e1c1e}
+.sp-tvbar span{white-space:nowrap}
+.sp-tvbar .bar{position:relative;flex:1;height:14px;background:#0e1c1e;border:2px solid #0e1c1e}
+.sp-tvbar .bar i{background:#5fcf8a}
+.sp-tvbar em{position:absolute;left:0;right:0;top:-2px;text-align:center;font-style:normal;font-size:11px;color:#fff}

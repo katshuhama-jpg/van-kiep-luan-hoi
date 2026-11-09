@@ -120,10 +120,10 @@
       foeHTML('') + '<span class="sp-taphint" id="sp-taphint">Chạm để phóng kiếm</span>' +
       '<div id="sp-fail" class="sp-fail"' + (SP.fail ? '' : ' hidden') + '><span class="t">Chưa trả được thù</span><span id="sp-failtx" class="s"></span><button class="btn gold" data-act="sp-retry" style="min-height:44px;padding:0 16px;font-size:16px">Đánh lại</button></div>';
   }
-  function upCards() {
-    return UP.map(function (u) {
+  function upCards(side) {
+    return UP.filter(function (u, i) { return side === undefined || (side === 'l' ? i < 2 : i >= 2); }).map(function (u) {
       var c = cost(u[0]), ok = SP.gold >= c, ic = u[3] === 'pet' ? '<img src="img/pet.png" alt="" style="width:40px;height:20px">' : u[3] === 'kt_red' ? '<img src="img/kt_red.png" alt="" style="width:14px;height:31px">' : '<img src="img/' + u[3] + '.png" alt="" style="width:32px;height:32px">';
-      return '<button class="sp-up" data-act="sp-up" data-v="' + u[0] + '" aria-label="Nâng ' + u[1] + ', tầng ' + SP.lv[u[0]] + ', giá ' + fmt(c) + ' linh thạch"' + (ok ? '' : ' aria-disabled="true"') + '><span class="sp-ic">' + ic + '<i>' + SP.lv[u[0]] + '</i></span><b>' + u[2] + '</b><span class="sp-cost' + (ok ? '' : ' no') + '"><img src="img/linhthach.png" alt="">' + fmt(c) + '</span></button>';
+      return '<button class="sp-rb" data-act="sp-up" data-v="' + u[0] + '" aria-label="Nâng ' + u[1] + ', tầng ' + SP.lv[u[0]] + ', giá ' + fmt(c) + ' linh thạch"' + (ok ? '' : ' aria-disabled="true"') + '><span class="o">' + ic + '<i>' + SP.lv[u[0]] + '</i></span><b>' + u[2] + '</b><span class="c' + (ok ? '' : ' no') + '">' + fmt(c) + '</span></button>';
     }).join('');
   }
   function gaugeHTML() {
@@ -135,13 +135,16 @@
     return '<div class="hdr"><div style="width:48px;height:48px;border:3px solid var(--gold);background:var(--paper2);overflow:hidden;flex-shrink:0"><img src="img/st_front.png" alt="" style="width:60px;height:108px;margin:-4px 0 0 -9px"></div>' +
       '<div style="flex:1;display:flex;flex-direction:column"><span style="font-size:16px;font-weight:700;color:var(--paper)">Lâm Thanh Vân · Ngộ Đạo 2</span><span class="lc" id="sp-pow">Lực chiến ' + fmt(p) + '</span></div>' +
       '<div style="display:flex;align-items:center;gap:4px;font-size:16px;font-weight:700;color:var(--paper)"><img src="img/linhthach.png" alt="linh thạch" style="width:18px;height:18px"><span id="sp-gold">' + fmt(SP.gold) + '</span></div></div>' +
-      '<div class="scene" id="sp-arena" data-act="sp-tap" style="--k:2;flex:1;min-height:250px;max-height:340px;background:#e9d6b0"><img class="bg" src="img/bg_dat.png" alt="" style="width:calc(var(--k)*256px);height:calc(var(--k)*160px)">' + arena() + '</div>' +
+      '<div class="scene" id="sp-arena" data-act="sp-tap" style="--k:2;flex:1;min-height:250px;max-height:380px;background:#e9d6b0"><img class="bg" src="img/bg_dat.png" alt="" style="width:calc(var(--k)*256px);height:calc(var(--k)*160px)">' + arena() + '</div>' +
       '<div class="sp-strip"><span>Thù kiếp <b id="sp-need" style="color:' + (short ? '#ff8a6e' : 'var(--goldl)') + '">' + bossOf(SP.st).kiep + '</b> cần lực <b id="sp-need2">' + fmt(need()) + '</b></span><span id="sp-gauge">' + gaugeHTML() + '</span><button class="sp-spd" data-act="sp-fast" aria-pressed="' + SP.fast + '">' + (SP.fast ? 'x2' : 'x1') + '</button></div>' +
-      '<div class="scene" style="--k:1;height:150px;flex-shrink:0;background:#2e3a52"><img class="bg" src="img/bg_thien_w.png" alt="" style="width:480px;height:150px">' +
-      '<div id="sp-ct" style="position:absolute;left:0;right:0;bottom:12px;display:flex;justify-content:center">' + '<img class="sp-fk l" src="img/phikiem_' + SP.gear.skin + '.png" alt="">' + charbox('ct_stand1', 52, 51, 'Chân thân đứng giữa, sau lưng có cánh', fx('ring', 94, 1.6), fx('motes', 40, 2.4)) + '<img class="sp-fk r" src="img/phikiem_' + SP.gear.skin + '.png" alt="">' + '</div>' +
-      '<div id="fl" style="position:absolute;left:0;right:0;top:34%;text-align:center;font-size:20px;font-weight:700;color:var(--goldl);text-shadow:2px 2px 0 var(--dark);opacity:0"></div>' +
-      '<div style="position:absolute;left:8px;right:8px;top:6px;display:flex;flex-direction:column;gap:3px"><div class="row" style="color:var(--paper3);font-size:13px;font-weight:700;text-shadow:1px 1px 0 var(--dark)"><span id="sp-gearn">' + SP.gear.n + '</span><span id="sp-tvt">' + fmt(SP.tv) + ' / 2.200 tu vi</span></div><div class="bar" style="height:10px"><i id="sp-tvb" style="width:' + Math.min(100, SP.tv / 22) + '%"></i></div></div></div>' +
-      '<div id="sp-ups" class="sp-ups">' + upCards() + '</div>' + nav('home') + '<div id="sp-modal"></div>';
+      '<div class="scene sp-low" style="--k:2;height:250px;flex-shrink:0;background:#162c30"><img class="bg" src="img/bg_menh.png" alt="" style="width:512px;height:260px">' +
+      '<div class="sp-side l" id="sp-upl">' + upCards('l') + '</div><div class="sp-side r" id="sp-upr">' + upCards('r') + '</div>' +
+      '<div class="sp-fanbox" id="sp-fanbox">' + '<img class="sp-fan" src="img/phikiem_' + SP.gear.skin + '.png" alt="" style="--a:-55deg;--d:0.0s">' + '<img class="sp-fan" src="img/phikiem_' + SP.gear.skin + '.png" alt="" style="--a:-33deg;--d:0.2s">' + '<img class="sp-fan" src="img/phikiem_' + SP.gear.skin + '.png" alt="" style="--a:-11deg;--d:0.4s">' + '<img class="sp-fan" src="img/phikiem_' + SP.gear.skin + '.png" alt="" style="--a:11deg;--d:0.6s">' + '<img class="sp-fan" src="img/phikiem_' + SP.gear.skin + '.png" alt="" style="--a:33deg;--d:0.8s">' + '<img class="sp-fan" src="img/phikiem_' + SP.gear.skin + '.png" alt="" style="--a:55deg;--d:1.0s">' + '</div>' +
+      '<img class="sp-be" src="img/be_an.png" alt="">' +
+      '<div id="sp-ct" style="position:absolute;left:0;right:0;bottom:46px;display:flex;justify-content:center">' + charbox('ct_stand1', 52, 51, 'Chân thân đứng giữa, sau lưng có cánh', '', fx('motes', 40, 2.4)) + '</div>' +
+      '<div id="fl" style="position:absolute;left:0;right:0;top:20%;text-align:center;font-size:20px;font-weight:700;color:var(--goldl);text-shadow:2px 2px 0 var(--dark);opacity:0;z-index:6"></div>' +
+      '<div class="sp-tvbar"><span id="sp-gearn">' + SP.gear.n + '</span><div class="bar"><i id="sp-tvb" style="width:' + Math.min(100, SP.tv / 22) + '%"></i><em id="sp-tvt">' + Math.floor(SP.tv / 22) + '%</em></div></div></div>' +
+      nav('home') + '<div id="sp-modal"></div>';
   }
   function spRefresh() {
     if (!document.getElementById('sp-arena')) return;
@@ -153,9 +156,9 @@
     var nd = document.getElementById('sp-need'); nd.textContent = bossOf(SP.st).kiep;
     var n2 = document.getElementById('sp-need2'); n2.textContent = fmt(need()); n2.style.color = p < need() ? '#ff8a6e' : 'var(--goldl)';
     document.getElementById('sp-gauge').innerHTML = gaugeHTML();
-    document.getElementById('sp-ups').innerHTML = upCards();
+    document.getElementById('sp-upl').innerHTML = upCards('l'); document.getElementById('sp-upr').innerHTML = upCards('r');
     document.getElementById('sp-gearn').textContent = SP.gear.n;
-    document.querySelectorAll('.sp-fk').forEach(function (k) { k.src = 'img/phikiem_' + SP.gear.skin + '.png'; });
+    document.querySelectorAll('.sp-fan').forEach(function (k) { k.src = 'img/phikiem_' + SP.gear.skin + '.png'; });
     var fl = document.getElementById('sp-fail'); fl.hidden = !SP.fail;
     if (SP.fail) document.getElementById('sp-failtx').textContent = 'Lực chiến ' + fmt(p) + ' / cần ' + fmt(need()) + '. Thay pháp khí rơi ra hoặc nâng cấp rồi đánh lại.';
   }
@@ -292,7 +295,7 @@
   function spTick() {
     if (route() !== 'home' && route() !== '') return;
     SP.tv = (SP.tv + 13 * (SP.fast ? 0.5 : 1)) % 2200;
-    var tb = document.getElementById('sp-tvb'); if (tb) { tb.style.width = (SP.tv / 22) + '%'; document.getElementById('sp-tvt').textContent = fmt(SP.tv) + ' / 2.200 tu vi'; }
+    var tb = document.getElementById('sp-tvb'); if (tb) { tb.style.width = (SP.tv / 22) + '%'; document.getElementById('sp-tvt').textContent = Math.floor(SP.tv / 22) + '%'; }
     if (busy()) return;
     SP.turn = (SP.turn || 0) + 1;
     var box = document.getElementById('sp-arena'); if (!box) return;
