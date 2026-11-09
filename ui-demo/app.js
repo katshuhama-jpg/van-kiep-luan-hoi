@@ -163,7 +163,7 @@
     if (SP.fail) document.getElementById('sp-failtx').textContent = 'Lực chiến ' + fmt(p) + ' / cần ' + fmt(need()) + '. Thay pháp khí rơi ra hoặc nâng cấp rồi đánh lại.';
   }
   /* hiệu ứng pixel nướng từ pixelfx (sword-slash, hit-spark, crit-hit, poof, collect-burst): [rộng, cao, số khung, tâm x, tâm y, fps] */
-  var VFX = {"sword-slash": [113, 96, 18, 43, 86, 30], "hit-spark": [122, 71, 15, 34, 56, 30], "crit-hit": [174, 131, 22, 77, 102, 30], "poof": [91, 76, 36, 43, 65, 30], "collect-burst": [78, 88, 30, 36, 81, 30]};
+  var VFX = {"sword-slash": [113, 96, 18, 43, 86, 30], "hit-spark": [122, 71, 15, 34, 56, 30], "crit-hit": [174, 131, 22, 77, 102, 30], "poof": [91, 76, 36, 43, 65, 30], "collect-burst": [78, 88, 30, 36, 81, 30], "tan": [80, 79, 30, 33, 77, 30]};
   function vfx(box, name, x, y, k, fixed) {
     var d = VFX[name], e = document.createElement('span'), dur = d[2] / d[5];
     e.className = 'vfx'; e.setAttribute('aria-hidden', 'true');
@@ -244,7 +244,7 @@
     SP.gold += gain; SP.kills++;
     var o = box.getBoundingClientRect(), b = fo.getBoundingClientRect();
     anim(fo, 'die'); coins(fo, wasBoss ? 5 : 3);
-    vfx(box, 'poof', b.left - o.left + b.width / 2, b.bottom - o.top, 1);
+    vfx(box, 'tan', b.left - o.left + b.width / 2, b.top - o.top + b.height / 2 + 40, 1);
     pop(box, b.left - o.left + b.width / 2 - 20, b.top - o.top + 20, '+' + gain, 'gold');
     var drop = !wasBoss && SP.loot < LOOT.length && (SP.kills === 3 || SP.kills % 9 === 0);
     if (wasBoss) { SP.revenge.push(f.e.kiep); SP.st++; SP.wave = 1; SP.idx = 0; banner(box, 'Mối thù kiếp ' + f.e.kiep + ' đã trả', 'Kết cục mới sáng lên: Báo thù kiếp trước', 'gold'); }
