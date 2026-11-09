@@ -177,3 +177,8 @@ Thiên Đạo kiểm chứng (Tyler đồng ý hướng 5/11 tối, làm sau b�
 ## 4.3.1 Tuyệt Kỹ Xứng Danh (9/11)
 - Lên 9f16328: sửa trừ máu đôi (lib/game/once.ts, 22 chỗ hurt/promote/switchPath trong cả hai câu tr), tuyệt kỹ tầng 5 + tự luyện + luôn >= 1,2 lần bộc phát (scripts/sim-tuyet-ky.ts), trần né 35%, sát thủ/ác bá theo cảnh giới, ma tu và từ Nguyên Anh không bị coi là hiền, Giới luật viện tính quái giết thêm (pdKillMark), sự kiện pd_sieu_do, #168 petSeen, #118, #190 đổi bộ ở thẻ đột phá, #161 phân giải tất cả.
 - Trả lời góp ý (Tyler duyệt 9/11): da_xong #182, #168, #118, #101, #190, #161 (reply_ver 4.3.1), tặng 10 phúc mỗi góp ý (6 quà).
+
+## 4.3.2 Bớt Chết Lãng Xẹt (9/11)
+- Lên 5ca2b0b: #139 đá dân làng (rong_lon) không trúng từ Trúc Cơ; #104 chip số năm ô trọng tâm; addFeedback chặn gửi trùng 2 phút; chết yểu /2; bế quan tâm ma < 40 chỉ bị thương; chướng khí du ngoạn không giết từ Trúc Cơ và tiên nhân.
+- Đóng 28 góp ý spam/trùng không trả lời (Tyler duyệt 9/11): 27,36,46,47,48,61,87,97,98,103,105,107,121,129,132,141,148,149,154,158,159,163,171,172,173,178,181,189.
+- Trả lời + 10 phúc: #102 (4.3.0), #139, #104, #170, #126, #140, #162, #130, #131 (4.3.2), #167, #143 (4.3.1).
