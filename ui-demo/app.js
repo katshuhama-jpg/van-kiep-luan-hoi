@@ -97,11 +97,9 @@
     return '<div class="hdr"><div style="width:48px;height:48px;border:3px solid var(--gold);background:var(--paper2);overflow:hidden;flex-shrink:0"><img src="img/st_front.png" alt="" style="width:60px;height:108px;margin:-4px 0 0 -9px"></div>' +
       '<div style="flex:1;display:flex;flex-direction:column"><span style="font-size:16px;font-weight:700;color:var(--paper)">Lâm Thanh Vân · Ngộ Đạo 2</span><span class="lc" id="sp-pow">Lực chiến ' + fmt(p) + '</span></div>' +
       '<div style="display:flex;align-items:center;gap:4px;font-size:16px;font-weight:700;color:var(--paper)"><img src="img/linhthach.png" alt="linh thạch" style="width:18px;height:18px"><span id="sp-gold">' + fmt(SP.gold) + '</span></div></div>' +
-      '<div class="scene" id="sp-arena" style="--k:' + Math.max(K, 2) + ';flex:1;min-height:250px;max-height:340px;background:#e9d6b0"><img class="bg" src="img/bg_dat.png" alt="" style="width:calc(var(--k)*256px);height:calc(var(--k)*160px)">' + arena() + '</div>' +
+      '<div class="scene" id="sp-arena" style="--k:2;flex:1;min-height:250px;max-height:340px;background:#e9d6b0"><img class="bg" src="img/bg_dat.png" alt="" style="width:calc(var(--k)*256px);height:calc(var(--k)*160px)">' + arena() + '</div>' +
       '<div class="sp-strip"><span>Boss ải cần lực <b id="sp-need" style="color:' + (short ? '#ff8a6e' : 'var(--goldl)') + '">' + fmt(need()) + '</b></span><span>Trảm <b id="sp-kills">' + SP.kills + '</b> yêu</span><button class="sp-spd" data-act="sp-fast" aria-pressed="' + SP.fast + '">' + (SP.fast ? 'x2' : 'x1') + '</button></div>' +
-      '<div class="scene" style="--k:' + Math.max(K, 2) + ';height:200px;flex-shrink:0;background:#2e3a52"><img class="bg" src="img/bg_thien.png" alt="" style="width:calc(var(--k)*256px);height:calc(var(--k)*160px)">' +
-      '<div class="sp-u idle" style="left:6%;bottom:10px;animation-delay:.6s"><img src="img/pet.png" alt="Linh thú Xích Lang" style="width:calc(var(--k)*63px);height:calc(var(--k)*31px)"><span class="shd"></span></div>' +
-      '<div class="sp-u idle" style="right:8%;bottom:14px;animation-delay:.3s"><img src="img/kt_red.png" alt="Hộ pháp kiếp 31" style="width:calc(var(--k)*22px);height:calc(var(--k)*48px);transform:scaleX(-1)"><span class="shd"></span></div>' +
+      '<div class="scene" style="--k:2;height:200px;flex-shrink:0;background:#2e3a52"><img class="bg" src="img/bg_thien.png" alt="" style="width:calc(var(--k)*256px);height:calc(var(--k)*160px)">' +
       '<div id="sp-ct" style="position:absolute;left:0;right:0;bottom:2px;display:flex;justify-content:center">' + charbox('chanthan', 28, 47, 'Chân thân đang tọa thiền', fx('halo', 34, 2.4, 'opacity:.8') + fx('ring', 93, 1.6) + fx('tuongvan', 95, 1), fx('motes', 50, 2.4) + fx('kiem', 52, 1.6)) + '</div>' +
       '<div id="fl" style="position:absolute;left:0;right:0;top:34%;text-align:center;font-size:22px;font-weight:700;color:var(--goldl);text-shadow:2px 2px 0 var(--dark);opacity:0"></div>' +
       '<div style="position:absolute;left:8px;right:8px;top:6px;display:flex;flex-direction:column;gap:3px"><div class="row" style="color:var(--paper3);font-size:13px;font-weight:700;text-shadow:1px 1px 0 var(--dark)"><span>Tọa thiền · +13 tu vi/giây</span><span id="sp-tvt">' + fmt(SP.tv) + ' / 2.200</span></div><div class="bar" style="height:10px"><i id="sp-tvb" style="width:' + Math.min(100, SP.tv / 22) + '%"></i></div></div></div>' +
@@ -197,7 +195,7 @@
       if (!document.body.contains(fo)) return;
       var o = box.getBoundingClientRect(), b = fo.getBoundingClientRect();
       anim(fo, 'hurt'); if (wasBoss || crit) anim(box, 'shake');
-      var k = +getComputedStyle(box).getPropertyValue('--k') || 2, hx = b.left - o.left + Math.min(40, b.width * 0.3), fy = b.bottom - o.top - 6;
+      var k = 1, hx = b.left - o.left + Math.min(40, b.width * 0.3), fy = b.bottom - o.top - 6;
       var cy = b.top - o.top + b.height * 0.55, cx = b.left - o.left + b.width / 2;
       if (who === 'kiem') vfx(box, 'sword-slash', cx - 30, cy + 24, k);
       vfx(box, crit ? 'crit-hit' : 'hit-spark', cx - 10, cy + 10, k);
@@ -376,7 +374,7 @@
   function render() {
     var r = route(); if (!screens[r]) r = 'home';
     app.style.setProperty('--k', K);
-    app.innerHTML = scaleBar() + screens[r]();
+    app.innerHTML = (r === 'home' ? '' : scaleBar()) + screens[r]();
     app.querySelectorAll('.scene>.bg').forEach(function (b) {
       var m = b.getAttribute('src').match(/(bg_[a-z]+)_w/); if (m) b.parentNode.style.background = TOP[m[1]];
     });
