@@ -83,9 +83,6 @@
   }
   function arena() {
     return '<div class="sp-hud" id="sp-hud">' + hud() + '</div>' +
-      '<div id="sp-hp" class="sp-u idle" style="left:1%;bottom:62px;animation-delay:.3s"><img src="img/kt_red.png" alt="Hộ pháp kiếp 31" style="width:calc(var(--k)*22px);height:calc(var(--k)*48px)"><span class="shd"></span></div>' +
-      '<div id="sp-me" class="sp-u idle" style="left:14%;bottom:40px"><img src="img/st_right.png" alt="Chân thân" style="width:calc(var(--k)*41px);height:calc(var(--k)*52px)"><span class="shd"></span></div>' +
-      '<div id="sp-pet" class="sp-u idle" style="left:35%;bottom:10px;animation-delay:.6s"><img src="img/pet.png" alt="Linh thú Xích Lang" style="width:calc(var(--k)*63px);height:calc(var(--k)*31px)"><span class="shd"></span></div>' +
       foeHTML('') +
       '<div id="sp-fail" class="sp-fail"' + (SP.fail ? '' : ' hidden') + '><span class="t">Chưa hạ được boss</span><span id="sp-failtx" class="s">Lực chiến ' + fmt(power()) + ' / cần ' + fmt(need()) + '. Nâng pháp khí bên dưới rồi đánh lại.</span><button class="btn gold" data-act="sp-retry" style="min-height:44px;padding:0 16px;font-size:16px">Đánh lại boss</button></div>';
   }
@@ -103,7 +100,9 @@
       '<div class="scene" id="sp-arena" style="--k:' + Math.max(K, 2) + ';flex:1;min-height:250px;max-height:340px;background:#e9d6b0"><img class="bg" src="img/bg_dat.png" alt="" style="width:calc(var(--k)*256px);height:calc(var(--k)*160px)">' + arena() + '</div>' +
       '<div class="sp-strip"><span>Boss ải cần lực <b id="sp-need" style="color:' + (short ? '#ff8a6e' : 'var(--goldl)') + '">' + fmt(need()) + '</b></span><span>Trảm <b id="sp-kills">' + SP.kills + '</b> yêu</span><button class="sp-spd" data-act="sp-fast" aria-pressed="' + SP.fast + '">' + (SP.fast ? 'x2' : 'x1') + '</button></div>' +
       '<div class="scene" style="--k:' + Math.max(K, 2) + ';height:200px;flex-shrink:0;background:#2e3a52"><img class="bg" src="img/bg_thien.png" alt="" style="width:calc(var(--k)*256px);height:calc(var(--k)*160px)">' +
-      '<div style="position:absolute;left:0;right:0;bottom:2px;display:flex;justify-content:center">' + charbox('chanthan', 28, 47, 'Chân thân đang tọa thiền', fx('halo', 34, 2.4, 'opacity:.8') + fx('ring', 93, 1.6) + fx('tuongvan', 95, 1), fx('motes', 50, 2.4) + fx('kiem', 52, 1.6)) + '</div>' +
+      '<div class="sp-u idle" style="left:6%;bottom:10px;animation-delay:.6s"><img src="img/pet.png" alt="Linh thú Xích Lang" style="width:calc(var(--k)*63px);height:calc(var(--k)*31px)"><span class="shd"></span></div>' +
+      '<div class="sp-u idle" style="right:8%;bottom:14px;animation-delay:.3s"><img src="img/kt_red.png" alt="Hộ pháp kiếp 31" style="width:calc(var(--k)*22px);height:calc(var(--k)*48px);transform:scaleX(-1)"><span class="shd"></span></div>' +
+      '<div id="sp-ct" style="position:absolute;left:0;right:0;bottom:2px;display:flex;justify-content:center">' + charbox('chanthan', 28, 47, 'Chân thân đang tọa thiền', fx('halo', 34, 2.4, 'opacity:.8') + fx('ring', 93, 1.6) + fx('tuongvan', 95, 1), fx('motes', 50, 2.4) + fx('kiem', 52, 1.6)) + '</div>' +
       '<div id="fl" style="position:absolute;left:0;right:0;top:34%;text-align:center;font-size:22px;font-weight:700;color:var(--goldl);text-shadow:2px 2px 0 var(--dark);opacity:0"></div>' +
       '<div style="position:absolute;left:8px;right:8px;top:6px;display:flex;flex-direction:column;gap:3px"><div class="row" style="color:var(--paper3);font-size:13px;font-weight:700;text-shadow:1px 1px 0 var(--dark)"><span>Tọa thiền · +13 tu vi/giây</span><span id="sp-tvt">' + fmt(SP.tv) + ' / 2.200</span></div><div class="bar" style="height:10px"><i id="sp-tvb" style="width:' + Math.min(100, SP.tv / 22) + '%"></i></div></div></div>' +
       '<div id="sp-ups" class="sp-ups">' + upCards() + '</div>' + nav('home');
@@ -127,6 +126,28 @@
     e.className = 'vfx'; e.setAttribute('aria-hidden', 'true');
     e.style.cssText = (fixed ? 'position:fixed;z-index:60;' : 'position:absolute;z-index:7;') + 'left:' + (x - d[3] * k) + 'px;top:' + (y - d[4] * k) + 'px;width:' + d[0] * k + 'px;height:' + d[1] * k + 'px;background-image:url(img/vfx_' + name + '.png);background-size:' + d[2] * 100 + '% 100%;animation:pfx ' + dur + 's steps(' + (d[2] - 1) + ',jump-none) forwards';
     box.appendChild(e); setTimeout(function () { e.remove(); }, dur * 1000 + 50);
+  }
+  /* phi kiếm và chưởng bay từ chân thân đang tọa thiền lên quái ở màn trên */
+  function fire(from, to, kind, crit, ms) {
+    var a = from.getBoundingClientRect(), b = to.getBoundingClientRect();
+    var n = crit ? 3 : 1;
+    for (var i = 0; i < n; i++) (function (i) {
+      var x0 = a.left + a.width / 2 + (i - (n - 1) / 2) * 26, y0 = a.top + 10, x1 = b.left + b.width / 2 + (i - (n - 1) / 2) * 10, y1 = b.top + b.height * 0.55;
+      var ang = Math.atan2(y1 - y0, x1 - x0) * 180 / Math.PI, e = document.createElement('span');
+      if (kind === 'chuong') {
+        e.className = 'sp-proj chuong';
+        e.style.cssText = 'left:' + (x0 - 99) + 'px;top:' + (y0 - 28) + 'px;width:129px;height:56px;transform-origin:99px 28px;transform:rotate(' + ang + 'deg)';
+      } else {
+        e.className = 'sp-proj kiem';
+        e.style.cssText = 'left:' + (x0 - 46) + 'px;top:' + (y0 - 7) + 'px;width:52px;height:14px;transform-origin:46px 7px;transform:rotate(' + ang + 'deg)';
+      }
+      document.body.appendChild(e);
+      requestAnimationFrame(function () { requestAnimationFrame(function () {
+        e.style.transition = 'transform ' + ms + 'ms cubic-bezier(.5,0,.9,.6)';
+        e.style.transform = 'translate(' + (x1 - x0) + 'px,' + (y1 - y0) + 'px) rotate(' + ang + 'deg)';
+      }); });
+      setTimeout(function () { e.remove(); }, ms + 30);
+    })(i);
   }
   function anim(el, cls) { if (!el) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
   function pop(box, x, y, txt, kind) {
@@ -157,7 +178,7 @@
     var tb = document.getElementById('sp-tvb'); if (tb) { tb.style.width = (SP.tv / 22) + '%'; document.getElementById('sp-tvt').textContent = fmt(SP.tv) + ' / 2.200'; }
     if (SP.fail || SP.lock) return;
     SP.turn = (SP.turn || 0) + 1;
-    var who = SP.turn % 4 === 0 ? 'sp-hp' : SP.turn % 3 === 0 ? 'sp-pet' : 'sp-me';
+    var who = SP.turn % 3 === 0 ? 'chuong' : 'kiem';
     var f = SP.foe, p = power(), crit = SP.turn % 5 === 0;
     var dmg = Math.round(p / 8 * (0.85 + ((SP.turn * 7) % 5) * 0.075) * (crit ? 1.6 : 1));
     f.hp -= dmg; if (SP.boss) SP.bt++;
@@ -167,25 +188,19 @@
       if (SP.boss) { SP.st++; SP.wave = 1; SP.idx = 0; SP.boss = false; }
       else if (++SP.idx >= 3) { SP.idx = 0; SP.wave++; }
     } else if (SP.boss && SP.bt >= 12) { SP.fail = true; }
-    var box = document.getElementById('sp-arena'), at = document.getElementById(who), fo = document.getElementById('sp-foe');
+    var box = document.getElementById('sp-arena'), at = document.querySelector('#sp-ct .cimg'), fo = document.getElementById('sp-foe');
     if (!box || !at || !fo) return;
     SP.lock = true;
     var T = SP.fast ? 0.5 : 1;
-    if (who === 'sp-hp') {
-      anim(at, 'cast');
-      var o = box.getBoundingClientRect(), a = at.getBoundingClientRect(), b = fo.getBoundingClientRect();
-      var shot = document.createElement('span'); shot.className = 'shot';
-      shot.style.left = (a.right - o.left - 6) + 'px'; shot.style.top = (a.top - o.top + a.height / 3) + 'px';
-      shot.style.setProperty('--dx', (b.left - a.right + b.width / 3) + 'px'); shot.style.setProperty('--dy', (b.top - a.top + b.height / 2 - a.height / 3) + 'px');
-      box.appendChild(shot); setTimeout(function () { shot.remove(); }, 400);
-    } else anim(at, who === 'sp-pet' ? 'lunge2' : 'lunge');
+    fire(at, fo, who, crit, 320 * T);
     timers.push(setTimeout(function () {
       if (!document.body.contains(fo)) return;
       var o = box.getBoundingClientRect(), b = fo.getBoundingClientRect();
       anim(fo, 'hurt'); if (wasBoss || crit) anim(box, 'shake');
       var k = +getComputedStyle(box).getPropertyValue('--k') || 2, hx = b.left - o.left + Math.min(40, b.width * 0.3), fy = b.bottom - o.top - 6;
-      if (who === 'sp-me') vfx(box, 'sword-slash', hx - 36, fy, k);
-      vfx(box, crit ? 'crit-hit' : 'hit-spark', hx, fy - (wasBoss ? b.height * 0.35 : 0), k);
+      var cy = b.top - o.top + b.height * 0.55, cx = b.left - o.left + b.width / 2;
+      if (who === 'kiem') vfx(box, 'sword-slash', cx - 30, cy + 24, k);
+      vfx(box, crit ? 'crit-hit' : 'hit-spark', cx - 10, cy + 10, k);
       box.classList.add('stop'); setTimeout(function () { box.classList.remove('stop'); }, 90);
       pop(box, b.left - o.left + b.width / 2 - 24, b.top - o.top - 6, fmt(dmg) + (crit ? '!' : ''), crit ? 'crit' : 'hit');
       var bar = document.getElementById(wasBoss ? 'sp-fhp2' : 'sp-fhp'); if (bar) bar.style.width = Math.max(0, f.hp / f.max * 100) + '%';
@@ -205,7 +220,7 @@
         if (SP.fail) spRefresh(); else document.getElementById('sp-hud').innerHTML = hud();
         SP.lock = false;
       }
-    }, 260 * T));
+    }, 330 * T));
   }
   function spLoop() { SP.lock = false; timers.push(setInterval(spTick, SP.fast ? 420 : 820)); }
   spawn();
