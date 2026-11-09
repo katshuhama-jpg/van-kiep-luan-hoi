@@ -39,7 +39,7 @@ export const RELEASES: Release[] = [
         h: tr('Hồng Hoang giới', 'The Honghuang Realm'),
         hot: true,
         items: [
-          tr('Chứng đạo ở Tiên, Ma, Thái Hư giới xong thì khe tím mở ra. Tọa hóa vẫn ra kết cục chứng đạo như cũ.', 'After attaining the Dao in any realm, the purple rift opens. Passing away still gives the classic Dao ending.'),
+          tr('Chứng đạo ở Tiên, Ma, Thái Hư giới xong thì khe tím mở ra. Tọa hóa vẫn ra kết cục chứng đạo như cũ.', 'After attaining the Dao in the Immortal, Demon or Great Void realm, the purple rift opens. Passing away still gives the classic Dao ending.'),
           tr('Bước qua khe tím giữ nguyên trang bị. Có đạo lữ thì được nắm tay cùng bước qua.', 'Stepping through keeps all your gear. With a Dao partner, you may step through hand in hand.'),
           tr('Chuẩn Thánh: mỗi tầng là một trận Trảm Tam Thi. Chém thì dễ, thu vào người thì khó hơn mà giữ được sức của thi.', 'Quasi-Saint: every layer is a Three Corpses fight. Cutting is easier; taking it back is harder but keeps its strength.'),
           tr('Thánh Nhân: thu đồ đệ, tích công đức, qua đại kiếp Phong Thần rồi mới mở được cửa Hỗn Nguyên.', 'Saint: take disciples, gather merit and survive the Investiture before the Hunyuan gate opens.'),

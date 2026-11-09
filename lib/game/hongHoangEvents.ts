@@ -31,7 +31,7 @@ export const HG_EVENTS: GameEvent[] = [
     maxRealm: CT,
     weight: 30,
     cap: 2,
-    title: tr('Thiên ngoại khách', 'A guest from beyond heaven'),
+    title: tr('Kẻ mới đến bị thử', 'The newcomer is tested'),
     text: () => tr('Quảng Thành Tử của Xiển giáo chặn đường, phất trần chỉ thẳng vào bạn: "Kẻ mới từ dưới kia lên. Để bần đạo xem ngươi được mấy cân."', 'Guangchengzi of the Chan teaching blocks your path, pointing his whisk straight at you: "A newcomer from down below. Let this poor Daoist see how much you weigh."'),
     choices: () => [
       { label: tr('Giao đấu', 'Fight him'), hint: tr('thắng được tu vi, thua bị thương', 'win cultivation, lose and get hurt'), lean: 'trung', run: (c, ctx) => {
@@ -64,7 +64,9 @@ export const HG_EVENTS: GameEvent[] = [
     minRealm: CT,
     maxRealm: TN,
     weight: 25,
-    once: true,
+    cap: 2,
+    cooldown: 30,
+    when: (c) => !c.inventory.includes('hg_ngu_sac_kiem'),
     title: tr('Bất Chu Sơn rung chuyển', 'Mount Buzhou shakes'),
     text: () => tr('Cộng Công thua trận, húc đầu vào Bất Chu Sơn. Cột chống trời nứt một đường, nước trời đổ xuống. Nữ Oa đang luyện đá Ngũ Sắc để vá trời, mồ hôi ướt đẫm.', 'Gonggong, beaten in battle, rams his head into Mount Buzhou. The pillar holding up the sky cracks, and heaven\'s water pours down. Nüwa is smelting Five-Color Stone to mend the sky, drenched in sweat.'),
     choices: () => [
@@ -97,9 +99,9 @@ export const HG_EVENTS: GameEvent[] = [
     maxRealm: CT,
     weight: 25,
     cap: 2,
-    when: (c) => (c.hong?.yeu?.length ?? 0) < 3,
+    when: (c) => (['thien', 'ac', 'chap'] as const).some((k) => !c.hong?.thi?.[k] && !c.hong?.yeu?.includes(k)),
     title: tr('Bóng của chính mình', 'Your own shadow'),
-    text: (c) => tr(`Giữa sương núi hiện ra một người mặc áo cũ. Là ${c.past?.name ?? 'bạn'}, kiếp trước của bạn. Người ấy hỏi: "Nếu được sống lại, ngươi có cứu ta không?"`, `A figure in old clothes appears in the mountain mist. It is ${c.past?.name ?? 'you'}, your past life. They ask: "If you could live it again, would you save me?"`),
+    text: (c) => tr(`Giữa sương núi hiện ra một người mặc áo cũ. Là ${c.past?.name ? `${c.past.name}, kiếp trước của bạn` : 'một kiếp cũ của bạn'}. Người ấy hỏi: "Nếu được sống lại, ngươi có cứu ta không?"`, `A figure in old clothes appears in the mountain mist. It is ${c.past?.name ? `${c.past.name}, your past life` : 'one of your past lives'}. They ask: "If you could live it again, would you save me?"`),
     choices: () => [
       { label: tr('Có', 'Yes'), hint: tr('thiện thi yếu đi', 'the Good Corpse weakens'), lean: 'chinh', run: (c) => {
         s(c).yeu = [...new Set([...(s(c).yeu ?? []), 'thien' as const])];
@@ -159,9 +161,10 @@ export const HG_EVENTS: GameEvent[] = [
     id: 'hg_bai_su',
     cosmos: 'hg',
     minRealm: TN,
-    weight: 45,
-    cap: 8,
+    weight: 30,
+    cap: 40,
     cooldown: 8,
+    when: (c) => (c.hong?.deTu ?? 0) < 10,
     title: tr('Xin bái sư', 'A request to become your disciple'),
     text: (c) => {
       const who = [tr('một đứa trẻ mồ côi ở chân Côn Lôn', 'an orphan from the foot of Kunlun'), tr('một tiểu yêu vừa hóa hình', 'a little yao that just took human form'), tr('một ma tu muốn bỏ tà theo chính', 'a demonic cultivator who wants to turn righteous')][Math.floor(c.age) % 3];
@@ -215,7 +218,7 @@ export const HG_EVENTS: GameEvent[] = [
     minRealm: TN,
     weight: 80,
     once: true,
-    when: (c) => c.hong?.pt === 1,
+    when: (c) => c.hong?.pt === 1 && (c.hong?.deTu ?? 0) > 0,
     title: tr('Ký hay không ký', 'Sign or not'),
     text: (c) => tr(`Phong Thần bảng nằm trước mặt bạn. Giáo đang có ${c.hong?.deTu ?? 0} đồ đệ.`, `The Investiture List lies before you. Your teaching has ${c.hong?.deTu ?? 0} disciples.`),
     choices: () => [
@@ -246,7 +249,7 @@ export const HG_EVENTS: GameEvent[] = [
     title: tr('Đại kiếp Phong Thần', 'The Investiture tribulation'),
     text: () => tr('Xiển giáo và Triệt giáo kéo quân đến chân Côn Lôn: giáo nào không ký thì phải lên bảng bằng cách khác.', 'The Chan and Jie teachings march to the foot of Kunlun: any teaching that will not sign must get onto the list some other way.'),
     choices: () => [
-      { label: tr('Tử chiến', 'Fight to the death'), hint: tr('thắng thì thêm công đức, thua mất đồ đệ', 'win merit, lose disciples'), lean: 'chinh', run: (c, ctx) => {
+      { label: tr('Tử chiến', 'Fight to the death'), hint: tr('thắng thêm công đức, thua mất đồ đệ, có thể mất mạng', 'win merit, lose disciples, may die'), lean: 'chinh', run: (c, ctx) => {
         s(c).pt = 5;
         if (ctx.rnd() < 0.55) {
           addCd(c, 15);
@@ -313,7 +316,7 @@ export const HG_EVENTS: GameEvent[] = [
       } },
       { label: tr('Tha cho đi', 'Let him go'), lean: 'chinh', run: (c) => {
         stat(c, 'tamMa', 5);
-        return tr('Bạn mở cổng. Hắn đi không ngoảnh lại.', 'You open the gate. He leaves without looking back.') + loseDeTu(c, 1);
+        return tr('Bạn mở cổng. Hắn đi không ngoảnh lại.', 'You open the gate. He leaves without looking back.') + loseDeTu(c, 1, false);
       } },
       { label: tr('Tự kiểm điểm', 'Look at your own faults'), hint: tr('mất công đức, đồ đệ ở lại', 'lose merit, he stays'), lean: 'chinh', run: (c) => {
         addCd(c, -10);
@@ -327,11 +330,11 @@ export const HG_EVENTS: GameEvent[] = [
     minRealm: TN,
     maxRealm: HN,
     weight: 18,
-    cap: 2,
-    cooldown: 30,
+    cap: 4,
+    cooldown: 25,
     when: (c) => !c.hong?.boss?.includes('hg_con_bang'),
     title: tr('Côn Bằng hóa cánh', 'Kunpeng spreads its wings'),
-    text: () => tr('Ở Bắc Minh Côn Uyên, cá Côn hóa chim Bằng, một cánh che kín nửa trời. Bóng cánh phủ tới đâu, đồ đệ trong giáo không dám thở tới đó.', 'In the Beiming Kun Abyss, the Kun fish becomes the Peng bird; one wing covers half the sky. Wherever its shadow falls, your disciples dare not breathe.'),
+    text: () => tr('Ở Bắc Minh Côn Uyên, cá Côn hóa chim Bằng, một cánh che kín nửa trời. Bóng cánh phủ tới đâu, chim muông câm lặng tới đó.', 'In the Beiming Kun Abyss, the Kun fish becomes the Peng bird; one wing covers half the sky. Wherever its shadow falls, every bird and beast goes silent.'),
     choices: () => [
       { label: tr('Đánh Côn Bằng', 'Fight Kunpeng'), hint: tr('trận boss', 'a boss fight'), lean: 'trung', run: (c) => {
         c.hgFight = { kind: 'boss', id: 'hg_con_bang' };
@@ -365,6 +368,7 @@ export const HG_EVENTS: GameEvent[] = [
     id: 'hg_set_den',
     cosmos: 'hg',
     minRealm: HN,
+    maxRealm: HN,
     weight: 25,
     cap: 4,
     cooldown: 15,
@@ -383,6 +387,7 @@ export const HG_EVENTS: GameEvent[] = [
     id: 'hg_su_gia',
     cosmos: 'hg',
     minRealm: HN,
+    maxRealm: HN,
     weight: 30,
     cap: 3,
     cooldown: 20,
@@ -427,10 +432,10 @@ export const HG_EVENTS: GameEvent[] = [
   {
     id: 'hg_de_giang',
     cosmos: 'hg',
-    minRealm: HN,
-    weight: 18,
-    cap: 2,
-    cooldown: 30,
+    minRealm: KT,
+    weight: 30,
+    cap: 4,
+    cooldown: 20,
     when: (c) => !c.hong?.boss?.includes('hg_de_giang'),
     title: tr('Đế Giang múa trước Hỗn Độn', 'Dijiang dances before the Chaos'),
     text: () => tr('Ngoài Hỗn Độn, Đế Giang sáu chân bốn cánh, không mặt không mũi, đội một cái chuông vàng, múa mãi không ngừng.', 'Beyond the Chaos, Dijiang, six-legged and four-winged, faceless, wearing a golden bell on its head, dances without end.'),

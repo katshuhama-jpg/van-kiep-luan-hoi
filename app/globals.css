@@ -5203,3 +5203,4 @@ button.shadow-card { cursor: pointer; }
 .cosmos-fx.hg i { background: #ffd6ff; box-shadow: 0 0 4px #c88aff; }
 .cos-tomb.hg .sky { background-image: url(/bg/hg-0.png); }
 .cos-tomb.hg b { color: #ffe27a; }
+.hg-line { margin-top: 4px; font-size: 14px; color: #8a5a9a; text-align: center; }

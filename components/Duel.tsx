@@ -61,7 +61,7 @@ export default function DuelWarning({
           </p>
         )}
         <p className="duel-meta">
-          {foe.kind === 'kiep_truoc' ? tr('Chính bạn, kiếp trước', "Yourself, from a past life") : r.player ? `@${r.player}` : tr('Giang hồ vô danh', "Nameless wanderer")}
+          {foe.kind === 'kiep_truoc' ? tr('Chính bạn, kiếp trước', "Yourself, from a past life") : r.player ? `@${r.player}` : r.cosmos === 'hg' ? tr('Khách Hồng Hoang', 'A Honghuang wanderer') : tr('Giang hồ vô danh', "Nameless wanderer")}
           {!r.alive && r.player && foe.kind !== 'kiep_truoc' ? tr(' · đã khuất', " · deceased") : ''}
           <br />
           {realmLabel(r.realm, r.layer, r.cosmos)}

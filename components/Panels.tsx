@@ -1588,10 +1588,22 @@ export function StageStrip({ c, compact, wait = 0 }: { c: Character; compact: bo
             <span className="dr">{tr("Tà", "Evil")}</span>
             <span className="dao-name">{describeLean(c.daoTam)}</span>
           </div>
+          {c.cosmos === 'hg' && c.hong && <HgLine c={c} />}
         </>
       )}
     </div>
   );
+}
+
+/** 4.4.0: tiến độ Hồng Hoang (tam thi, đồ đệ, công đức, xích) để người chơi biết cửa ải cần gì */
+function HgLine({ c }: { c: Character }) {
+  const h = c.hong!;
+  const mark = (k: 'thien' | 'ac' | 'chap', vi: string, en: string) => `${tr(vi, en)} ${h.thi?.[k] ? '✓' : '·'}`;
+  const parts =
+    c.realm === 12
+      ? [tr('Tam thi:', 'Corpses:'), mark('thien', 'Thiện', 'Good'), mark('ac', 'Ác', 'Evil'), mark('chap', 'Chấp', 'Obsession')]
+      : [tr(`Đồ đệ ${h.deTu}`, `Disciples ${h.deTu}`), tr(`Công đức ${h.cd}`, `Merit ${h.cd}`), ...(c.realm >= 14 ? [tr(`Xích đã chặt ${h.xich ?? 0}/3`, `Chains cut ${h.xich ?? 0}/3`)] : [])];
+  return <div className="hg-line">{parts.join(' · ')}</div>;
 }
 
 /* ---------------- Biểu tượng trọng tâm ---------------- */

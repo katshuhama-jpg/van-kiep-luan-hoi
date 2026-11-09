@@ -60,17 +60,17 @@ export function addCd(c: Character, n: number) {
 }
 
 /** Mất một đồ đệ. Phong Thần bảng đang mang thì cứu được một lần mỗi kiếp. */
-export function loseDeTu(c: Character, n: number): string {
+export function loseDeTu(c: Character, n: number, die = true): string {
   const s = hg(c);
   if (s.deTu <= 0) return '';
-  if (c.equipped.phu_kien === 'hg_phong_than_bang' && !s.ptUsed) {
+  if (die && c.equipped.phu_kien === 'hg_phong_than_bang' && !s.ptUsed) {
     s.ptUsed = true;
     n -= 1;
     if (n <= 0) return tr(' Phong Thần bảng lóe sáng, giữ lại hồn đồ đệ vừa ngã xuống.', ' The Investiture List flares and holds back the soul of the disciple who just fell.');
   }
   const lost = Math.min(s.deTu, n);
   s.deTu -= lost;
-  return tr(` Mất ${lost} đồ đệ, còn ${s.deTu}.`, ` You lose ${lost} disciple(s), ${s.deTu} left.`);
+  return die ? tr(` Mất ${lost} đồ đệ, còn ${s.deTu}.`, ` You lose ${lost} disciple(s), ${s.deTu} left.`) : tr(` Giáo còn ${s.deTu} đồ đệ.`, ` Your teaching has ${s.deTu} disciple(s) left.`);
 }
 
 function addDeTu(c: Character, n = 1) {
@@ -106,8 +106,8 @@ function gateEvent(c: Character): GameEvent {
     title: tr('Khe tím sau Thiên Đạo', 'The purple rift behind the Heavenly Dao'),
     text: () =>
       tr(
-        `Đại kiếp đã qua. Trời vừa lặng thì nứt ra một khe tím, trong khe có tiếng gọi: "Phía sau Thiên Đạo còn một bầu trời khác." Ở lại thì bạn tọa hóa, đạo để cho đời sau. Bước qua thì mọi thứ phải làm lại từ đầu, quái ở đó mạnh hơn hẳn.${c.partner ? ` ${c.partner} vẫn đứng sau lưng bạn.` : ''}`,
-        `The great tribulation is over. The moment the sky goes quiet, a purple rift opens, and a voice calls from inside: "Behind the Heavenly Dao there is another sky." Stay, and you pass away, leaving your Dao to those who come after. Step through, and everything starts again, with monsters far stronger than any before.${c.partner ? ` ${c.partner} still stands behind you.` : ''}`,
+        `Đại kiếp đã qua. Trời vừa lặng thì nứt ra một khe tím, trong khe có tiếng gọi: "Phía sau Thiên Đạo còn một bầu trời khác." Ở lại thì bạn tọa hóa, đạo để cho đời sau. Bước qua thì giữ được đồ, nhưng tu vi phải tu lại từ bậc đầu, quái ở đó mạnh hơn hẳn.${c.partner ? ` ${c.partner} vẫn đứng sau lưng bạn.` : ''}`,
+        `The great tribulation is over. The moment the sky goes quiet, a purple rift opens, and a voice calls from inside: "Behind the Heavenly Dao there is another sky." Stay, and you pass away, leaving your Dao to those who come after. Step through, and you keep your gear but climb again from the first step, among monsters far stronger than any before.${c.partner ? ` ${c.partner} still stands behind you.` : ''}`,
       ),
     choices: () => {
       const out: Choice[] = [
@@ -282,16 +282,17 @@ function tnEvent(c: Character): GameEvent {
 function xichEvent(c: Character): GameEvent {
   const s = hg(c);
   const step = s.xich ?? 0;
-  const debtor = c.enemy ?? c.past?.name ?? tr('một người bạn từng phụ', 'someone you once wronged');
+  const debtor = c.enemy ?? tr('những người bạn từng phụ ở các kiếp trước', 'those you wronged in past lives');
   if (step === 0)
     return {
       id: HG_XICH_ID,
       title: tr('Xích Nhân Quả', 'The Chain of Karma'),
-      text: () => tr(`Sợi xích đầu tiên của Thiên Đạo quấn quanh cổ chân bạn, mỗi mắt xích là một món nợ của các kiếp. Mắt xích nặng nhất mang tên ${debtor}.`, `The Heavenly Dao's first chain wraps your ankle; every link is a debt from your lives. The heaviest link bears the name ${debtor}.`),
+      text: () => tr(`Sợi xích đầu tiên của Thiên Đạo quấn quanh cổ chân bạn, mỗi mắt xích là một món nợ của các kiếp. Mắt xích nặng nhất là ${debtor}.`, `The Heavenly Dao's first chain wraps your ankle; every link is a debt from your lives. The heaviest link bears the name of ${debtor}.`),
       choices: () => [
-        { label: tr('Trả bằng tu vi', 'Repay with cultivation'), hint: tr('mất nhiều tu vi, chắc chắn đứt', 'lose much cultivation, sure to break'), lean: 'chinh', run: (ch, ctx) => {
-          ch.cultivation = Math.round(ch.cultivation * 0.4);
-          return xichDone(ch, ctx, tr('Bạn trả từng món nợ bằng chính tu vi của mình. Mắt xích cuối cùng rơi xuống, kêu một tiếng trong veo.', 'You repay every debt with your own cultivation. The last link falls with a clear ring.'));
+        { label: tr('Trả bằng tu vi', 'Repay with cultivation'), hint: tr('chắc chắn đứt, phải tu lại nhiều năm', 'sure to break, then years of cultivating again'), lean: 'chinh', run: (ch, ctx) => {
+          const t = xichDone(ch, ctx, tr('Bạn trả từng món nợ bằng chính tu vi của mình. Mắt xích cuối cùng rơi xuống, kêu một tiếng trong veo.', 'You repay every debt with your own cultivation. The last link falls with a clear ring.'));
+          ch.breakDelay = Math.max(ch.breakDelay, 20);
+          return t;
         } },
         { label: tr('Trả bằng linh thạch', 'Repay with spirit stones'), hint: tr('mất nửa linh thạch, có thể không đủ', 'lose half your stones, may not be enough'), lean: 'trung', run: (ch, ctx) => {
           const pay = Math.round(ch.linhThach / 2);
@@ -300,7 +301,7 @@ function xichEvent(c: Character): GameEvent {
           ch.breakDelay = 6;
           return tr('Có những món nợ tiền không trả được. Sợi xích vẫn còn đó.', 'Some debts cannot be paid with money. The chain is still there.');
         } },
-        { label: tr('Chém đứt, không trả', 'Cut it, pay nothing'), hint: tr('không mất gì, dễ phản phệ', 'costs nothing, may backfire'), lean: 'ta', run: (ch, ctx) => {
+        { label: tr('Chém đứt, không trả', 'Cut it, pay nothing'), hint: tr('đạo tâm giảm, dễ phản phệ', 'Dao Heart drops, may backfire'), lean: 'ta', run: (ch, ctx) => {
           dao(ch, -10);
           if (ctx.rnd() < 0.6) return xichDone(ch, ctx, tr('Một kiếm, xích đứt. Nợ thì vẫn còn, chỉ là không ai đòi được nữa.', 'One stroke, and the chain snaps. The debts remain; there is just no one left who can collect.'));
           stat(ch, 'tamMa', 15);
@@ -316,9 +317,10 @@ function xichEvent(c: Character): GameEvent {
       title: tr('Xích Thọ Nguyên', 'The Chain of Lifespan'),
       text: () => tr('Sợi xích thứ hai là thọ nguyên. Thiên Đạo đòi cắt bớt đời bạn, trừ khi bạn đổi bằng thứ khác.', 'The second chain is lifespan. The Heavenly Dao demands to cut your life short, unless you trade something else.'),
       choices: () => [
-        { label: tr('Đổi bằng tu vi', 'Trade cultivation'), lean: 'trung', run: (ch, ctx) => {
-          ch.cultivation = 0;
-          return xichDone(ch, ctx, tr('Tu vi tầng này tan sạch. Thọ nguyên còn nguyên.', 'This layer\'s cultivation vanishes. Your lifespan stays whole.'));
+        { label: tr('Đổi bằng tu vi', 'Trade cultivation'), hint: tr('phải tu lại nhiều năm', 'years of cultivating again'), lean: 'trung', run: (ch, ctx) => {
+          const t = xichDone(ch, ctx, tr('Tu vi tan sạch. Thọ nguyên còn nguyên.', 'Your cultivation vanishes. Your lifespan stays whole.'));
+          ch.breakDelay = Math.max(ch.breakDelay, 20);
+          return t;
         } },
         ...(hg(c).deTu > 0
           ? [{ label: tr('Đổi bằng một đồ đệ', 'Trade a disciple'), hint: tr('đồ đệ chết thay', 'a disciple dies in your place'), lean: 'ta' as const, run: (ch: Character, ctx: EffectCtx) => {
@@ -329,6 +331,7 @@ function xichEvent(c: Character): GameEvent {
           : []),
         { label: tr('Không đổi gì, để trời cắt', 'Trade nothing, let heaven cut'), hint: tr('thọ nguyên giảm mạnh', 'a big lifespan loss'), lean: 'chinh', run: (ch, ctx) => {
           ch.lifespan = Math.max(ch.age + 60, ch.lifespan - 1200);
+          ch.lifeExtra = (ch.lifeExtra ?? 0) - 1200;
           return xichDone(ch, ctx, tr(`Thiên Đạo cắt đi một đoạn đời. Thọ nguyên còn ${ch.lifespan} năm, nhưng xích đã đứt.`, `The Heavenly Dao cuts away a stretch of your life. Lifespan now ${ch.lifespan} years, but the chain is broken.`));
         } },
       ],
@@ -404,9 +407,10 @@ function vanThienEvent(c: Character): GameEvent {
 export function vanThienLoi(c: Character, blocked: number, ctx: EffectCtx): string {
   const s = hg(c);
   s.tdTry = (s.tdTry ?? 0) + 1;
-  const help = s.tdHelp && blocked < VT_TOTAL ? 1 : 0;
-  blocked += help;
-  const helpT = help ? tr(' Tiếp Dẫn, Chuẩn Đề giữ lời, đỡ thay một đạo.', ' Jieyin and Zhunti keep their word and take one bolt for you.') : '';
+  const h1 = s.tdHelp && blocked < VT_TOTAL ? 1 : 0;
+  const h2 = s.nuOa && blocked + h1 < VT_TOTAL ? 1 : 0;
+  blocked += h1 + h2;
+  const helpT = (h1 ? tr(' Tiếp Dẫn, Chuẩn Đề giữ lời, đỡ thay một đạo.', ' Jieyin and Zhunti keep their word and take one bolt for you.') : '') + (h2 ? tr(' Nữ Oa nhớ ơn vá trời, chắn thêm một đạo.', ' Nüwa remembers the sky you mended and blocks one more.') : '');
   if (blocked >= VT_NEED) {
     c.hgFight = { kind: 'thien_dao', id: 'hg_thien_dao' };
     return tr(`Đỡ được ${blocked}/${VT_TOTAL} đạo lôi.${helpT} Bầu trời mở ra một con mắt vàng.`, `You block ${blocked}/${VT_TOTAL} bolts.${helpT} The sky opens a golden eye.`);
@@ -448,6 +452,16 @@ function endEvent(): GameEvent {
 /** Kết quả trận Hồng Hoang. Trả về lời kể; có thể mở thẻ kết thúc (HG_END_ID) qua c.hgEnd */
 export function finishHgFight(c: Character, f: HhFight, result: 'win' | 'lose' | 'draw', ctx: EffectCtx): { text: string; next?: string } {
   const s = hg(c);
+  // hết hiệp mà chưa phân thắng bại: không ai chết, chỉ lui về
+  if (result === 'draw') {
+    if (f.kind === 'thi' || f.kind === 'thien_dao') {
+      c.breakDelay = Math.max(c.breakDelay, 6);
+      c.cultivation = Math.round(c.cultivation * 0.85);
+    }
+    if (f.id === 'hg_quang_thanh') s.pt = 3;
+    const h = hurt(c, 15, ctx);
+    return { text: tr('Đánh mãi không ai hạ được ai, hai bên đành tách ra.', 'Neither side can bring the other down, so you break apart.') + h };
+  }
   if (f.kind === 'thi') {
     const k = f.id as ThiKind;
     if (result === 'win') return { text: winThi(c, k, f.mode ?? 'tram', ctx) };
@@ -483,12 +497,12 @@ export function finishHgFight(c: Character, f: HhFight, result: 'win' | 'lose' |
       s.pt = 3;
       return { text: tr('Bạn thua, bảng vẫn nguyên. Hai đồ đệ chắn đòn cho bạn.', 'You lose and the list stays whole. Two disciples take the blows for you.') + loseDeTu(c, 2) };
     case 'hg_phan_do':
-      if (win) return { text: tr('Bạn thanh lý môn hộ. Giáo yên trở lại, nhưng ít đi một người.', 'You purge the traitor. Your teaching is quiet again, one person fewer.') + loseDeTu(c, 1) };
+      if (win) return { text: tr('Bạn thanh lý môn hộ. Giáo yên trở lại, nhưng ít đi một người.', 'You purge the traitor. Your teaching is quiet again, one person fewer.') + loseDeTu(c, 1, false) };
       if (ctx.rnd() < 0.4) {
         hgDie(c, ctx, 'hg_phan_sat', tr('Bị chính đồ đệ mình dạy dỗ phản sát.', 'Slain by the very disciple you raised.'));
         return { text: '' };
       }
-      return { text: tr('Đồ đệ phản sư bỏ trốn, mang theo một nửa kinh điển của giáo.', 'The traitor flees with half your teaching\'s scriptures.') + loseDeTu(c, 1) + hurt(c, 25, ctx) };
+      return { text: tr('Đồ đệ phản sư bỏ trốn, mang theo một nửa kinh điển của giáo.', 'The traitor flees with half your teaching\'s scriptures.') + loseDeTu(c, 1, false) + hurt(c, 25, ctx) };
     case 'hg_su_gia':
       if (win) return { text: tr('Sứ giả vỡ tan như gương. Từ mảnh vỡ, bạn rèn được một thanh kiếm.', 'The envoy shatters like a mirror. From the shards you forge a sword.') + giveHg(c, 'hg_doan_xich_kiem', ctx) };
       break;
@@ -496,8 +510,8 @@ export function finishHgFight(c: Character, f: HhFight, result: 'win' | 'lose' |
       if (win) return { text: tr('Đế Giang ngừng múa. Cái chuông nó vẫn đội trên đầu rơi xuống trước mặt bạn.', 'Dijiang stops dancing. The bell it wore on its head drops in front of you.') + giveHg(c, 'hg_hon_don_chung', ctx) };
       break;
   }
-  const h = hurt(c, result === 'draw' ? 15 : 30, ctx);
-  return { text: (result === 'draw' ? tr('Hai bên không ai hạ được ai, đành tách ra.', 'Neither side can bring the other down, so you break apart.') : tr('Bạn thua, phải lui về dưỡng thương.', 'You lose and retreat to heal.')) + h };
+  const h = hurt(c, 30, ctx);
+  return { text: tr('Bạn thua, phải lui về dưỡng thương.', 'You lose and retreat to heal.') + h };
 }
 
 // ---------------- Tiến độ ----------------

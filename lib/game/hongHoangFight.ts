@@ -27,8 +27,10 @@ export function hgFoe(c: Character, f: HhFight): { m: Monster; ms: Fighter; ps: 
     const k = f.id as ThiKind;
     const mul = THI_MUL[f.mode ?? 'tram'] * (c.hong?.yeu?.includes(k) ? THI_MUL.yeu : 1);
     const ms = { hp: Math.round(base.hp * mul), atk: Math.round(base.atk * mul), def: Math.round(base.def * mul) };
-    const who = c.past?.name;
-    return { m, ms, ps, name: who && k !== 'chap' ? tr(`${THI_NAME[k]} (${who})`, `${THI_NAME[k]} (${who})`) : THI_NAME[k] };
+    // cùng điều kiện với thiFace: chỉ ghi tên kiếp trước khi kiếp ấy đúng là thiện hay ác
+    const p = c.past;
+    const who = p && ((k === 'thien' && p.daoTam >= 20) || (k === 'ac' && p.daoTam < 0)) ? p.name : null;
+    return { m, ms, ps, name: who ? `${THI_NAME[k]} (${who})` : THI_NAME[k] };
   }
   const [hm, am] = BOSS_MUL[id] ?? [1.8, 1.1];
   const b = monsterStats(m, m.lv, c);
