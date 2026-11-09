@@ -496,6 +496,8 @@ function progress(c: Character, ctx: EffectCtx, talents: string[]): PendingEvent
   }
   const R = REALMS[c.realm];
   let guard = 0;
+  // 4.4.0: đang chờ vào trận Hồng Hoang thì chưa mở cửa ải nào khác
+  if (c.hgFight) return null;
   while (c.cultivation >= needFor(c) && guard++ < 20) {
     // 4.4.0 Hồng Hoang: Chuẩn Thánh, Hỗn Nguyên lên tầng phải qua cửa ải (chém thi, chặt xích)
     if (c.cosmos === 'hg' && c.layer < R.layers && (c.realm === HH_REALM || c.realm === HH_REALM + 2)) {

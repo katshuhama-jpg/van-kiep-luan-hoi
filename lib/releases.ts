@@ -24,6 +24,35 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '4.4.0',
+    date: '10/11/2026',
+    title: tr('Hồng Hoang Giới', 'The Honghuang Realm'),
+    lead: tr('Chứng đạo chưa phải hết. Sau Thiên Đạo nứt ra một khe tím, bên kia là Hồng Hoang: thang cảnh giới mới cho người đã đi tới đỉnh.', 'Attaining the Dao is not the end. Behind the Heavenly Dao a purple rift opens, and beyond it lies Honghuang: a new ladder for those who reached the top.'),
+    features: [
+      { icon: 'hg_tram_thi_ho_lo', h: tr('Khe tím sau chứng đạo', 'The purple rift'), t: tr('Chứng đạo xong được chọn: tọa hóa như cũ, hay bước vào Hồng Hoang với cả bộ trang bị.', 'After attaining the Dao, choose: pass away as before, or enter Honghuang with all your gear.') },
+      { icon: 'hg_phong_than_bang', h: tr('Bốn cảnh giới mới', 'Four new realms'), t: tr('Chuẩn Thánh chém ba thi của chính mình, Thánh Nhân lập giáo qua Phong Thần, Hỗn Nguyên chặt xích trời, Khai Thiên Vấn Thiên.', 'Quasi-Saints slay their own three corpses, Saints found a teaching through the Investiture, Hunyuan cuts heaven\'s chains, World Openers question heaven.') },
+      { icon: 'hg_ban_co_phu', h: tr('Quái mạnh, đồ mới', 'Strong foes, new treasures'), t: tr('Quái Hồng Hoang mạnh hơn hẳn. Linh bảo mới chỉ có qua sự kiện và boss thần thoại.', 'Honghuang monsters hit far harder. New treasures come only from events and mythic bosses.') },
+      { icon: 'hg_tao_hoa_diep', h: tr('Kết cục mới', 'New endings'), t: tr('Mở ra thế giới mang tên mình, ngồi vào ghế trời, hay một kết cục ẩn.', 'Open a world bearing your name, take heaven\'s seat, or find a hidden ending.') },
+    ],
+    groups: [
+      {
+        h: tr('Hồng Hoang giới', 'The Honghuang Realm'),
+        hot: true,
+        items: [
+          tr('Chứng đạo ở Tiên, Ma, Thái Hư giới xong thì khe tím mở ra. Tọa hóa vẫn ra kết cục chứng đạo như cũ.', 'After attaining the Dao in any realm, the purple rift opens. Passing away still gives the classic Dao ending.'),
+          tr('Bước qua khe tím giữ nguyên trang bị. Có đạo lữ thì được nắm tay cùng bước qua.', 'Stepping through keeps all your gear. With a Dao partner, you may step through hand in hand.'),
+          tr('Chuẩn Thánh: mỗi tầng là một trận Trảm Tam Thi. Chém thì dễ, thu vào người thì khó hơn mà giữ được sức của thi.', 'Quasi-Saint: every layer is a Three Corpses fight. Cutting is easier; taking it back is harder but keeps its strength.'),
+          tr('Thánh Nhân: thu đồ đệ, tích công đức, qua đại kiếp Phong Thần rồi mới mở được cửa Hỗn Nguyên.', 'Saint: take disciples, gather merit and survive the Investiture before the Hunyuan gate opens.'),
+          tr('Hỗn Nguyên Đại La Kim Tiên: chặt ba sợi xích Nhân Quả, Thọ Nguyên, Danh.', 'Hunyuan Daluo: cut the three chains of Karma, Lifespan and Name.'),
+          tr('Khai Thiên: chín đạo thiên lôi rồi đánh Thiên Đạo.', 'World Opener: nine bolts, then a fight with the Heavenly Dao itself.'),
+          tr('Gặp Hồng Quân, Nữ Oa, Cộng Công, Côn Bằng, Đế Giang và các giáo trong Phong Thần.', 'Meet Hongjun, Nüwa, Gonggong, Kunpeng, Dijiang and the teachings of the Investiture.'),
+          tr('Kiếp vào Hồng Hoang vẫn được tính là đã chứng đạo trên bảng Chứng Đạo.', 'A life that enters Honghuang still counts as attaining the Dao on the Dao board.'),
+        ],
+      },
+    ],
+    more: [tr('Bốn cảnh giới mới', 'Four new realms'), tr('Boss thần thoại', 'Mythic bosses'), tr('Kết cục mới', 'New endings')],
+  },
+  {
     v: '4.3.2',
     date: '09/11/2026',
     title: tr('Bớt Chết Lãng Xẹt', 'Fewer Pointless Deaths'),
