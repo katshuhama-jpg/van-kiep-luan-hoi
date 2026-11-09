@@ -3,7 +3,8 @@
 import type { Player } from './auth';
 import { supabase } from './supabase';
 import { SOCIAL, emptySocial, type SocialState } from './game/social';
-import type { Character, RivalChar } from './game/types';
+import type { RivalChar } from './game/types';
+import { toRival } from './rival';
 
 /** Quan hệ giang hồ với người chơi khác: tải từ máy chủ, giữ trong SOCIAL để logic trận đấu dùng */
 
@@ -258,34 +259,7 @@ export async function arenaFight(user: Player | null, opp: string, win: boolean,
   return error ? null : (data as { delta?: number; elo?: number; used?: number; error?: string });
 }
 
-/** Đổi dữ liệu nhân vật trên máy chủ thành bóng để đem đi đấu */
-export function toRival(username: string, data: unknown): RivalChar | null {
-  const c = data as Partial<Character> & { alive?: boolean; lifeId?: number };
-  if (!c.name) return null;
-  return {
-    player: username,
-    name: c.name,
-    gender: c.gender === 'nu' ? 'nu' : 'nam',
-    race: c.race,
-    realm: c.realm ?? 0,
-    layer: c.layer ?? 1,
-    path: c.path ?? null,
-    daoTam: c.daoTam ?? 0,
-    age: Math.floor(c.age ?? 30),
-    lifespan: c.lifespan,
-    hairColor: c.hairColor,
-    hairStyle: c.hairStyle,
-    outfitTone: c.outfitTone,
-    outfitCut: c.outfitCut,
-    equipped: c.equipped ?? { ao: 'ao_vai' },
-    lookSeed: c.lookSeed,
-    element: c.element,
-    lifeNo: c.lifeNo ?? 1,
-    alive: c.alive !== false,
-    cosmos: c.cosmos ?? null,
-    lifeId: c.lifeId,
-  };
-}
+export { toRival };
 
 // ---------- Lôi đài 2: điểm tuần, bóng xuất chiến, báo thù ----------
 export interface Arena2State {

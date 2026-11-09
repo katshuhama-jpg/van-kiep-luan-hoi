@@ -9,7 +9,7 @@ import { createClient } from '@supabase/supabase-js';
 import { autoClash, powerOf } from '@/lib/game/phiKiem';
 import { baseChance, equalize, ruleOf } from '@/lib/game/arena';
 import { seeded } from '@/lib/game/helpers';
-import { toRival } from '@/lib/social';
+import { toRival } from '@/lib/rival';
 import type { RivalChar } from '@/lib/game/types';
 
 export const dynamic = 'force-dynamic';
