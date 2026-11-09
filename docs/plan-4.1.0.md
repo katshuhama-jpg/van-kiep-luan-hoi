@@ -182,3 +182,9 @@ Thiên Đạo kiểm chứng (Tyler đồng ý hướng 5/11 tối, làm sau b�
 - Lên 5ca2b0b: #139 đá dân làng (rong_lon) không trúng từ Trúc Cơ; #104 chip số năm ô trọng tâm; addFeedback chặn gửi trùng 2 phút; chết yểu /2; bế quan tâm ma < 40 chỉ bị thương; chướng khí du ngoạn không giết từ Trúc Cơ và tiên nhân.
 - Đóng 28 góp ý spam/trùng không trả lời (Tyler duyệt 9/11): 27,36,46,47,48,61,87,97,98,103,105,107,121,129,132,141,148,149,154,158,159,163,171,172,173,178,181,189.
 - Trả lời + 10 phúc: #102 (4.3.0), #139, #104, #170, #126, #140, #162, #130, #131 (4.3.2), #167, #143 (4.3.1).
+
+## 4.4.0 Hồng Hoang giới (lên 10/11/2026, 5h sáng)
+- Kế hoạch và số liệu: doc "Chân thân - nội dung và cách chơi", mục Hồng Hoang giới.
+- Mã: lib/game/hongHoang.ts (khe tím, cửa ải, kết quả trận), hongHoangEvents.ts (sự kiện), hongHoangFight.ts (chỉ số boss), gearHH.ts (12 linh bảo), quái cosmos 'hg' trong combat.ts.
+- Kiểm tra: scripts/smoke-hong-hoang.ts (đi trọn đường), scripts/sim-hong-hoang.ts <chars.json> (cân trận bằng save thật).
+- QC: 31 vấn đề tìm được khi test, đã sửa hết trước khi lên (báo cáo QC-Hong-Hoang-4.4.0.docx gửi Tyler).
