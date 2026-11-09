@@ -53,38 +53,72 @@
 
 
   /* ---------- Màn chính chia đôi: trên trảm yêu tự đánh, dưới tọa thiền nâng cấp ---------- */
-  var SP = { st: 14, wave: 1, idx: 0, gold: 1260, tv: 1650, lv: { kiem: 3, cp: 2, pet: 1, hp: 1 }, foe: null, boss: false, bt: 0, fail: false, fast: false, kills: 0 };
+  var SP = { st: 14, wave: 1, idx: 0, gold: 1260, tv: 1650, lv: { kiem: 3, cp: 2, pet: 1, hp: 1 }, foe: null, boss: false, bt: 0, fail: false, fast: false, kills: 0,
+    gear: { n: 'Thanh Phong kiếm', from: 'mua ở phường thị', skin: 'steel', cong: 11, hp: 215, pow: 0 }, loot: 0, ph: { swords: 0, crit: 0, shade: 0, chuong: 0 }, phList: [], gauge: 0, revenge: [], uid: 0 };
   var UP = [
     ['kiem', 'Thanh Phong kiếm', 'Pháp khí', 'g_thai_a_kiem', 1200],
     ['cp', 'Thôn Phệ Ma Công', 'Công pháp', 'g_doc_co_kiem_pho', 900],
     ['pet', 'Xích Lang', 'Linh thú', 'pet', 700],
-    ['hp', 'Hộ pháp kiếp 31', 'Hộ pháp', 'kt_red', 800]
+    ['hp', 'Bóng kiếp trước', 'Hộ pháp', 'kt_red', 800]
   ];
-  var MOBS = [['Sói hoang', 'm_wolf', 63, 31], ['U hồn', 'm_ghost', 34, 46], ['Hổ yêu', 'm_dk_tiger', 58, 38], ['Kỳ lân non', 'm_dk_qilin', 64, 61]];
-  function power() { var l = SP.lv; return 18000 + l.kiem * 1200 + l.cp * 900 + l.pet * 700 + l.hp * 800; }
+  var MOBS = [['Sói hoang', 'm_wolf', 63, 31], ['U hồn', 'm_ghost', 34, 46], ['Hổ yêu', 'm_dk_tiger', 58, 38], ['Kỳ lân non', 'm_dk_qilin', 64, 61], ['Diều hâu yêu', 'm_dieu', 60, 46]];
+  /* kẻ đã giết người chơi ở các kiếp trước, lấy từ lịch sử kiếp (số liệu mẫu) */
+  var FOES = [
+    { kiep: 5, n: 'Kim Sí Đại Bằng', img: 'm_bang', w: 84, h: 46, fl: 'hue-rotate(35deg) saturate(1.3)', how: 'Bạn bị Kim Sí Đại Bằng giết ở Đỉnh Vân Tiêu, năm 122 tuổi.' },
+    { kiep: 12, n: 'Băng Giao', img: 'm_dk_flydragon', w: 112, h: 57, fl: 'hue-rotate(170deg) saturate(.8) brightness(1.1)', how: 'Băng Giao kéo bạn xuống đáy Bắc Hải Băng Nguyên, năm 97 tuổi.' },
+    { kiep: 18, n: 'Hắc Phong Hổ Vương', img: 'm_dk_tiger', w: 58, h: 38, fl: 'brightness(.6) saturate(.6)', how: 'Hắc Phong Hổ Vương vồ bạn giữa rừng, năm 211 tuổi.' },
+    { kiep: 27, n: 'Kiếm Si Vô Danh', img: 'kt_blue', w: 21, h: 49, fl: 'brightness(.8)', how: 'Kiếm Si Vô Danh chém bạn ở Kiếm Trủng, năm 174 tuổi.' }
+  ];
+  var SHADES = [
+    { n: 'Lâm Thanh Vân', kiep: 31, c: 'Nguyên Anh', img: 'st_right', w: 41, h: 52 },
+    { n: 'Hoàng Phủ Băng Âm', kiep: 40, c: 'Hóa Thần', img: 'kt_blue', w: 21, h: 49 },
+    { n: 'Mạc Tiểu Hà', kiep: 12, c: 'Kim Đan', img: 'kt_red', w: 22, h: 48 }
+  ];
+  var LOOT = [
+    { n: 'Băng Phách kiếm', from: 'ký ức kiếp 12', skin: 'ice', cong: 20, hp: 370, pow: 1300 },
+    { n: 'Xích Hỏa kiếm', from: 'ký ức kiếp 27', skin: 'fire', cong: 34, hp: 520, pow: 2600 },
+    { n: 'Bích Ngọc kiếm', from: 'ký ức kiếp 40', skin: 'jade', cong: 52, hp: 760, pow: 4200 }
+  ];
+  var PHU = [
+    ['swords', 'Song kiếm', 'Mỗi đòn bay thêm 1 phi kiếm'],
+    ['crit', 'Kiếm tâm', 'Bạo kích thường hơn'],
+    ['shade', 'Hồi mộng', 'Bóng kiếp trước ra trận thường hơn'],
+    ['chuong', 'Hỏa chưởng', 'Chưởng ra nhiều hơn, mạnh hơn']
+  ];
+  function power() { var l = SP.lv; return 18000 + l.kiem * 1200 + l.cp * 900 + l.pet * 700 + l.hp * 800 + SP.gear.pow; }
   function need() { return 23000 + SP.st * 200; }
   function cost(k) { return Math.round(160 * Math.pow(SP.lv[k], 1.35) / 10) * 10; }
+  function bossOf(st) { return FOES[(st - 14) % FOES.length]; }
   function spawn() {
-    if (SP.wave > 4) { SP.boss = true; SP.bt = 0; var hp = need() * 1.7; SP.foe = { n: 'Boss Phi Long', img: 'm_dk_flydragon', w: 112, h: 57, hp: hp, max: hp }; return; }
+    SP.uid++;
+    if (SP.wave > 4) {
+      var e = bossOf(SP.st), hp = need() * 1.7;
+      SP.boss = true; SP.bt = 0;
+      SP.foe = { n: e.n, img: e.img, w: e.w, h: e.h, fl: e.fl, hp: hp, max: hp, e: e, uid: SP.uid }; return;
+    }
+    SP.boss = false;
     var m = MOBS[(SP.st + SP.wave + SP.idx) % MOBS.length], hp2 = 4500 + SP.st * 150;
-    SP.foe = { n: m[0], img: m[1], w: m[2], h: m[3], hp: hp2, max: hp2 };
+    SP.foe = { n: m[0], img: m[1], w: m[2], h: m[3], fl: m[1] === 'm_wolf' ? 'brightness(.5) saturate(.4)' : '', hp: hp2, max: hp2, uid: SP.uid };
   }
   function hud() {
     var f = SP.foe;
-    if (SP.boss) return '<b class="sp-boss-n">' + f.n + '</b><span class="sp-bhp"><i id="sp-fhp2" style="width:' + Math.max(0, f.hp / f.max * 100) + '%"></i></span><span class="sp-turn">' + Math.max(0, 12 - SP.bt) + ' hiệp</span>';
+    if (SP.boss) return '<b class="sp-boss-n">Kiếp ' + f.e.kiep + ' · ' + f.n + '</b><span class="sp-bhp"><i id="sp-fhp2" style="width:' + Math.max(0, f.hp / f.max * 100) + '%"></i></span><span class="sp-turn">' + Math.max(0, 12 - SP.bt) + ' hiệp</span>';
     var seg = '';
     for (var i = 0; i < 12; i++) { var n = (SP.wave - 1) * 3 + SP.idx; seg += '<i class="' + (i < n ? 'd' : i === n ? 'c' : '') + '"></i>'; }
     return '<b>Ải 3-' + SP.st + '</b><span class="sp-seg">' + seg + '<i class="bs"></i></span>';
   }
   function foeHTML(cls) {
-    var f = SP.foe, flip = (f.img === 'm_ghost' ? '' : ';transform:scaleX(-1)') + (f.img === 'm_wolf' ? ';filter:brightness(.5) saturate(.4)' : '');
+    var f = SP.foe, flip = (f.img === 'm_ghost' || f.img === 'kt_blue' ? '' : ';transform:scaleX(-1)') + (f.fl ? ';filter:' + f.fl : '');
     return '<div id="sp-foe" class="sp-u ' + (SP.boss ? 'boss ' : '') + (cls || '') + '">' + (SP.boss ? '' : '<span class="sp-hpb"><i id="sp-fhp" style="width:' + Math.max(0, f.hp / f.max * 100) + '%"></i></span>') +
       '<img src="img/' + f.img + '.png" alt="' + f.n + '" style="width:calc(var(--k)*' + f.w + 'px);height:calc(var(--k)*' + f.h + 'px)' + flip + '"><span class="shd"></span></div>';
   }
+  function phChips() {
+    return SP.phList.map(function (p) { return '<span class="sp-chip">' + p + '</span>'; }).join('');
+  }
   function arena() {
-    return '<div class="sp-hud" id="sp-hud">' + hud() + '</div>' +
-      foeHTML('') +
-      '<div id="sp-fail" class="sp-fail"' + (SP.fail ? '' : ' hidden') + '><span class="t">Chưa hạ được boss</span><span id="sp-failtx" class="s">Lực chiến ' + fmt(power()) + ' / cần ' + fmt(need()) + '. Nâng pháp khí bên dưới rồi đánh lại.</span><button class="btn gold" data-act="sp-retry" style="min-height:44px;padding:0 16px;font-size:16px">Đánh lại boss</button></div>';
+    return '<div class="sp-hud" id="sp-hud">' + hud() + '</div><div class="sp-chips" id="sp-chips">' + phChips() + '</div>' +
+      foeHTML('') + '<span class="sp-taphint" id="sp-taphint">Chạm để phóng kiếm</span>' +
+      '<div id="sp-fail" class="sp-fail"' + (SP.fail ? '' : ' hidden') + '><span class="t">Chưa trả được thù</span><span id="sp-failtx" class="s"></span><button class="btn gold" data-act="sp-retry" style="min-height:44px;padding:0 16px;font-size:16px">Đánh lại</button></div>';
   }
   function upCards() {
     return UP.map(function (u) {
@@ -92,30 +126,38 @@
       return '<button class="sp-up" data-act="sp-up" data-v="' + u[0] + '" aria-label="Nâng ' + u[1] + ', tầng ' + SP.lv[u[0]] + ', giá ' + fmt(c) + ' linh thạch"' + (ok ? '' : ' aria-disabled="true"') + '><span class="sp-ic">' + ic + '<i>' + SP.lv[u[0]] + '</i></span><b>' + u[2] + '</b><span class="sp-cost' + (ok ? '' : ' no') + '"><img src="img/linhthach.png" alt="">' + fmt(c) + '</span></button>';
     }).join('');
   }
+  function gaugeHTML() {
+    var full = SP.gauge >= 20;
+    return '<button class="sp-skill' + (full ? ' full' : '') + '" data-act="sp-skill" aria-label="Vạn Kiếm Quy Tông' + (full ? ', sẵn sàng' : ', đang tích ' + SP.gauge + ' trên 20') + '"><i style="width:' + Math.min(100, SP.gauge * 5) + '%"></i><span>' + (full ? 'Vạn Kiếm!' : 'Vạn Kiếm') + '</span></button>';
+  }
   function home() {
     var p = power(), short = p < need();
     return '<div class="hdr"><div style="width:48px;height:48px;border:3px solid var(--gold);background:var(--paper2);overflow:hidden;flex-shrink:0"><img src="img/st_front.png" alt="" style="width:60px;height:108px;margin:-4px 0 0 -9px"></div>' +
       '<div style="flex:1;display:flex;flex-direction:column"><span style="font-size:16px;font-weight:700;color:var(--paper)">Lâm Thanh Vân · Ngộ Đạo 2</span><span class="lc" id="sp-pow">Lực chiến ' + fmt(p) + '</span></div>' +
       '<div style="display:flex;align-items:center;gap:4px;font-size:16px;font-weight:700;color:var(--paper)"><img src="img/linhthach.png" alt="linh thạch" style="width:18px;height:18px"><span id="sp-gold">' + fmt(SP.gold) + '</span></div></div>' +
-      '<div class="scene" id="sp-arena" style="--k:2;flex:1;min-height:250px;max-height:340px;background:#e9d6b0"><img class="bg" src="img/bg_dat.png" alt="" style="width:calc(var(--k)*256px);height:calc(var(--k)*160px)">' + arena() + '</div>' +
-      '<div class="sp-strip"><span>Boss ải cần lực <b id="sp-need" style="color:' + (short ? '#ff8a6e' : 'var(--goldl)') + '">' + fmt(need()) + '</b></span><span>Trảm <b id="sp-kills">' + SP.kills + '</b> yêu</span><button class="sp-spd" data-act="sp-fast" aria-pressed="' + SP.fast + '">' + (SP.fast ? 'x2' : 'x1') + '</button></div>' +
-      '<div class="scene" style="--k:1;height:160px;flex-shrink:0;background:#2e3a52"><img class="bg" src="img/bg_thien_w.png" alt="" style="width:480px;height:150px">' +
-      '<div id="sp-ct" style="position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center">' + '<img class="sp-fk l" src="img/phikiem.png" alt="">' + charbox('ct_stand1', 52, 51, 'Chân thân đứng giữa, sau lưng có cánh', fx('ring', 94, 1.6), fx('motes', 40, 2.4)) + '<img class="sp-fk r" src="img/phikiem.png" alt="">' + '</div>' +
-      '<div id="fl" style="position:absolute;left:0;right:0;top:34%;text-align:center;font-size:22px;font-weight:700;color:var(--goldl);text-shadow:2px 2px 0 var(--dark);opacity:0"></div>' +
-      '<div style="position:absolute;left:8px;right:8px;top:6px;display:flex;flex-direction:column;gap:3px"><div class="row" style="color:var(--paper3);font-size:13px;font-weight:700;text-shadow:1px 1px 0 var(--dark)"><span>Chân thân · +13 tu vi/giây</span><span id="sp-tvt">' + fmt(SP.tv) + ' / 2.200</span></div><div class="bar" style="height:10px"><i id="sp-tvb" style="width:' + Math.min(100, SP.tv / 22) + '%"></i></div></div></div>' +
-      '<div id="sp-ups" class="sp-ups">' + upCards() + '</div>' + nav('home');
+      '<div class="scene" id="sp-arena" data-act="sp-tap" style="--k:2;flex:1;min-height:250px;max-height:340px;background:#e9d6b0"><img class="bg" src="img/bg_dat.png" alt="" style="width:calc(var(--k)*256px);height:calc(var(--k)*160px)">' + arena() + '</div>' +
+      '<div class="sp-strip"><span>Thù kiếp <b id="sp-need" style="color:' + (short ? '#ff8a6e' : 'var(--goldl)') + '">' + bossOf(SP.st).kiep + '</b> cần lực <b id="sp-need2">' + fmt(need()) + '</b></span><span id="sp-gauge">' + gaugeHTML() + '</span><button class="sp-spd" data-act="sp-fast" aria-pressed="' + SP.fast + '">' + (SP.fast ? 'x2' : 'x1') + '</button></div>' +
+      '<div class="scene" style="--k:1;height:150px;flex-shrink:0;background:#2e3a52"><img class="bg" src="img/bg_thien_w.png" alt="" style="width:480px;height:150px">' +
+      '<div id="sp-ct" style="position:absolute;left:0;right:0;bottom:12px;display:flex;justify-content:center">' + '<img class="sp-fk l" src="img/phikiem_' + SP.gear.skin + '.png" alt="">' + charbox('ct_stand1', 52, 51, 'Chân thân đứng giữa, sau lưng có cánh', fx('ring', 94, 1.6), fx('motes', 40, 2.4)) + '<img class="sp-fk r" src="img/phikiem_' + SP.gear.skin + '.png" alt="">' + '</div>' +
+      '<div id="fl" style="position:absolute;left:0;right:0;top:34%;text-align:center;font-size:20px;font-weight:700;color:var(--goldl);text-shadow:2px 2px 0 var(--dark);opacity:0"></div>' +
+      '<div style="position:absolute;left:8px;right:8px;top:6px;display:flex;flex-direction:column;gap:3px"><div class="row" style="color:var(--paper3);font-size:13px;font-weight:700;text-shadow:1px 1px 0 var(--dark)"><span id="sp-gearn">' + SP.gear.n + '</span><span id="sp-tvt">' + fmt(SP.tv) + ' / 2.200 tu vi</span></div><div class="bar" style="height:10px"><i id="sp-tvb" style="width:' + Math.min(100, SP.tv / 22) + '%"></i></div></div></div>' +
+      '<div id="sp-ups" class="sp-ups">' + upCards() + '</div>' + nav('home') + '<div id="sp-modal"></div>';
   }
   function spRefresh() {
     if (!document.getElementById('sp-arena')) return;
     var p = power();
     document.getElementById('sp-hud').innerHTML = hud();
+    document.getElementById('sp-chips').innerHTML = phChips();
     document.getElementById('sp-pow').textContent = 'Lực chiến ' + fmt(p);
     document.getElementById('sp-gold').textContent = fmt(SP.gold);
-    var nd = document.getElementById('sp-need'); nd.textContent = fmt(need()); nd.style.color = p < need() ? '#ff8a6e' : 'var(--goldl)';
-    document.getElementById('sp-kills').textContent = SP.kills;
+    var nd = document.getElementById('sp-need'); nd.textContent = bossOf(SP.st).kiep;
+    var n2 = document.getElementById('sp-need2'); n2.textContent = fmt(need()); n2.style.color = p < need() ? '#ff8a6e' : 'var(--goldl)';
+    document.getElementById('sp-gauge').innerHTML = gaugeHTML();
     document.getElementById('sp-ups').innerHTML = upCards();
+    document.getElementById('sp-gearn').textContent = SP.gear.n;
+    document.querySelectorAll('.sp-fk').forEach(function (k) { k.src = 'img/phikiem_' + SP.gear.skin + '.png'; });
     var fl = document.getElementById('sp-fail'); fl.hidden = !SP.fail;
-    document.getElementById('sp-failtx').textContent = 'Lực chiến ' + fmt(p) + ' / cần ' + fmt(need()) + '. Nâng pháp khí bên dưới rồi đánh lại.';
+    if (SP.fail) document.getElementById('sp-failtx').textContent = 'Lực chiến ' + fmt(p) + ' / cần ' + fmt(need()) + '. Thay pháp khí rơi ra hoặc nâng cấp rồi đánh lại.';
   }
   /* hiệu ứng pixel nướng từ pixelfx (sword-slash, hit-spark, crit-hit, poof, collect-burst): [rộng, cao, số khung, tâm x, tâm y, fps] */
   var VFX = {"sword-slash": [113, 96, 18, 43, 86, 30], "hit-spark": [122, 71, 15, 34, 56, 30], "crit-hit": [174, 131, 22, 77, 102, 30], "poof": [91, 76, 36, 43, 65, 30], "collect-burst": [78, 88, 30, 36, 81, 30]};
@@ -125,19 +167,19 @@
     e.style.cssText = (fixed ? 'position:fixed;z-index:60;' : 'position:absolute;z-index:7;') + 'left:' + (x - d[3] * k) + 'px;top:' + (y - d[4] * k) + 'px;width:' + d[0] * k + 'px;height:' + d[1] * k + 'px;background-image:url(img/vfx_' + name + '.png);background-size:' + d[2] * 100 + '% 100%;animation:pfx ' + dur + 's steps(' + (d[2] - 1) + ',jump-none) forwards';
     box.appendChild(e); setTimeout(function () { e.remove(); }, dur * 1000 + 50);
   }
-  /* phi kiếm và chưởng bay từ chân thân đang tọa thiền lên quái ở màn trên */
-  function fire(from, to, kind, crit, ms) {
+  /* phi kiếm và chưởng bay từ chân thân lên quái ở màn trên */
+  function fire(kind, n, ms, spread) {
+    var from = document.querySelector('#sp-ct .cimg'), to = document.getElementById('sp-foe'); if (!from || !to) return;
     var a = from.getBoundingClientRect(), b = to.getBoundingClientRect();
-    var n = crit ? 3 : 1;
     for (var i = 0; i < n; i++) (function (i) {
-      var x0 = a.left + a.width / 2 + (i - (n - 1) / 2) * 26, y0 = a.top + 10, x1 = b.left + b.width / 2 + (i - (n - 1) / 2) * 10, y1 = b.top + b.height * 0.55;
+      var off = (i - (n - 1) / 2), x0 = a.left + a.width / 2 + off * (spread || 22), y0 = a.top + 10, x1 = b.left + b.width / 2 + off * 8, y1 = b.top + b.height * 0.55;
       var ang = Math.atan2(y1 - y0, x1 - x0) * 180 / Math.PI, e = document.createElement('span');
       if (kind === 'chuong') {
-        e.className = 'sp-proj chuong';
+        e.className = 'sp-proj chuong' + (SP.ph.chuong ? ' hot' : '');
         e.style.cssText = 'left:' + (x0 - 99) + 'px;top:' + (y0 - 28) + 'px;width:129px;height:56px;transform-origin:99px 28px;transform:rotate(' + ang + 'deg)';
       } else {
         e.className = 'sp-proj kiem';
-        e.style.cssText = 'left:' + (x0 - 46) + 'px;top:' + (y0 - 7) + 'px;width:52px;height:14px;transform-origin:46px 7px;transform:rotate(' + ang + 'deg)';
+        e.style.cssText = 'left:' + (x0 - 46) + 'px;top:' + (y0 - 7) + 'px;width:52px;height:14px;transform-origin:46px 7px;transform:rotate(' + ang + 'deg);background-image:url(img/phikiem_' + SP.gear.skin + '.png)';
       }
       document.body.appendChild(e);
       requestAnimationFrame(function () { requestAnimationFrame(function () {
@@ -150,8 +192,12 @@
   function anim(el, cls) { if (!el) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
   function pop(box, x, y, txt, kind) {
     var d = document.createElement('span'); d.className = 'sp-num ' + kind; d.textContent = txt;
-    d.style.left = Math.max(4, Math.min(x, box.clientWidth - 90)) + 'px'; d.style.top = Math.max(34, y) + 'px'; box.appendChild(d);
+    d.style.left = Math.max(4, Math.min(x, box.clientWidth - 110)) + 'px'; d.style.top = Math.max(56, y) + 'px'; box.appendChild(d);
     setTimeout(function () { d.remove(); }, 900);
+  }
+  function banner(box, big, small, cls) {
+    var b = document.createElement('div'); b.className = 'sp-banner ' + (cls || ''); b.innerHTML = '<b>' + big + '</b>' + (small ? '<small>' + small + '</small>' : '');
+    box.appendChild(b); setTimeout(function () { b.remove(); }, 2600);
   }
   function coins(from, n) {
     var to = document.getElementById('sp-gold'); if (!to) return;
@@ -170,57 +216,101 @@
       }, 720 + i * 70);
     })(i);
   }
+  function T() { return SP.fast ? 0.5 : 1; }
+  function busy() { return SP.fail || SP.dying || SP.modal; }
+  /* đòn chạm quái: kind kiem | chuong | tap | shade | van */
+  function land(uid, dmg, crit, kind, auto) {
+    var f = SP.foe, box = document.getElementById('sp-arena'), fo = document.getElementById('sp-foe');
+    if (!box || !fo || SP.dying || f.uid !== uid) return;
+    f.hp -= dmg; SP.gauge = Math.min(20, SP.gauge + (kind === 'tap' ? 1 : kind === 'van' ? 0 : 2));
+    var o = box.getBoundingClientRect(), b = fo.getBoundingClientRect(), cx = b.left - o.left + b.width / 2, cy = b.top - o.top + b.height * 0.55;
+    anim(fo, 'hurt'); if (SP.boss && kind !== 'tap' || crit) anim(box, 'shake');
+    if (kind === 'kiem' || kind === 'shade') vfx(box, 'sword-slash', cx - 30, cy + 24, 1);
+    vfx(box, crit || kind === 'van' ? 'crit-hit' : 'hit-spark', cx - 10, cy + 10, 1);
+    if (kind !== 'tap') { box.classList.add('stop'); setTimeout(function () { box.classList.remove('stop'); }, 90); }
+    pop(box, cx - 24 + (kind === 'tap' ? 30 : 0), b.top - o.top - 6, fmt(dmg) + (crit ? '!' : ''), crit || kind === 'van' ? 'crit' : kind === 'tap' ? 'tap' : 'hit');
+    var bar = document.getElementById(SP.boss ? 'sp-fhp2' : 'sp-fhp'); if (bar) bar.style.width = Math.max(0, f.hp / f.max * 100) + '%';
+    if (SP.boss) { var tn = document.querySelector('.sp-turn'); if (tn) tn.textContent = Math.max(0, 12 - SP.bt) + ' hiệp'; }
+    document.getElementById('sp-gauge').innerHTML = gaugeHTML();
+    if (f.hp <= 0) kill(box, fo);
+    else if (auto && SP.boss && SP.bt >= 12) { SP.fail = true; spRefresh(); }
+  }
+  function kill(box, fo) {
+    SP.dying = true;
+    var wasBoss = SP.boss, f = SP.foe, gain = wasBoss ? 300 + SP.st * 10 : 20 + (SP.kills * 13) % 25;
+    SP.gold += gain; SP.kills++;
+    var o = box.getBoundingClientRect(), b = fo.getBoundingClientRect();
+    anim(fo, 'die'); coins(fo, wasBoss ? 5 : 3);
+    vfx(box, 'poof', b.left - o.left + b.width / 2, b.bottom - o.top, 1);
+    pop(box, b.left - o.left + b.width / 2 - 20, b.top - o.top + 20, '+' + gain, 'gold');
+    var drop = !wasBoss && SP.loot < LOOT.length && (SP.kills === 3 || SP.kills % 9 === 0);
+    if (wasBoss) { SP.revenge.push(f.e.kiep); SP.st++; SP.wave = 1; SP.idx = 0; banner(box, 'Mối thù kiếp ' + f.e.kiep + ' đã trả', 'Kết cục mới sáng lên: Báo thù kiếp trước', 'gold'); }
+    else if (++SP.idx >= 3) { SP.idx = 0; SP.wave++; }
+    if (drop) dropItem(box, b.left - o.left + b.width / 2, b.bottom - o.top - 10);
+    timers.push(setTimeout(function () {
+      if (wasBoss) return showPhu();
+      if (drop) return showLoot();
+      next();
+    }, (wasBoss ? 1500 : drop ? 900 : 520) * T()));
+  }
+  function next() {
+    spawn();
+    var old = document.getElementById('sp-foe'); if (old) old.outerHTML = foeHTML('enter');
+    spRefresh(); SP.dying = false;
+    if (SP.boss) { var box = document.getElementById('sp-arena'); banner(box, 'Kẻ thù kiếp ' + SP.foe.e.kiep + ': ' + SP.foe.n, SP.foe.e.how, 'red'); }
+  }
+  function dropItem(box, x, y) {
+    var it = LOOT[SP.loot], d = document.createElement('img'); d.src = 'img/phikiem_' + it.skin + '.png'; d.alt = ''; d.className = 'sp-drop';
+    d.style.left = (x - 26) + 'px'; d.style.top = (y - 40) + 'px'; box.appendChild(d); setTimeout(function () { d.remove(); }, 1200);
+  }
+  function stat(lbl, a, b) { var up = b > a; return '<div class="row"><span>' + lbl + '</span><b>' + fmt(b) + (b !== a ? ' <i class="' + (up ? 'up' : 'dn') + '">' + (up ? '▲' : '▼') + fmt(Math.abs(b - a)) + '</i>' : '') + '</b></div>'; }
+  function showLoot() {
+    var it = LOOT[SP.loot], g = SP.gear; SP.modal = true;
+    document.getElementById('sp-modal').innerHTML = '<div class="sp-mask"><div class="sp-card" role="dialog" aria-label="Pháp khí rơi ra">' +
+      '<span class="sub" style="font-weight:700">Pháp khí rơi ra từ ' + it.from + '</span>' +
+      '<div class="sp-cmp"><div class="sp-it"><img src="img/phikiem_' + g.skin + '.png" alt=""><b>' + g.n + '</b><small>Đang dùng</small>' + stat('Tấn công', g.cong, g.cong) + stat('Khí huyết', g.hp, g.hp) + '</div>' +
+      '<div class="sp-it new"><img src="img/phikiem_' + it.skin + '.png" alt=""><b>' + it.n + '</b><small>Mới · lực chiến +' + fmt(it.pow - g.pow) + '</small>' + stat('Tấn công', g.cong, it.cong) + stat('Khí huyết', g.hp, it.hp) + '</div></div>' +
+      '<div class="g2"><button class="btn" data-act="sp-tach">Tách<small>+80 linh thạch</small></button><button class="btn gold" data-act="sp-thay">Thay</button></div></div></div>';
+  }
+  function showPhu() {
+    SP.modal = true;
+    var pool = PHU.slice(SP.st % 2, SP.st % 2 + 3); if (pool.length < 3) pool = PHU.slice(0, 3);
+    document.getElementById('sp-modal').innerHTML = '<div class="sp-mask"><div class="sp-card" role="dialog" aria-label="Chọn phù">' +
+      '<b style="font-size:18px">Chọn 1 lá Mộng phù cho lượt leo này</b><span class="sub">Bản thật: mỗi 5 ải chọn một lần. Bản thử cho chọn sau mỗi boss.</span>' +
+      '<div class="g3" style="gap:8px">' + pool.map(function (p) { return '<button class="sp-phu" data-act="sp-phu" data-v="' + p[0] + '"><b>' + p[1] + '</b><span>' + p[2] + '</span></button>'; }).join('') + '</div></div></div>';
+  }
+  function closeModal() { SP.modal = false; document.getElementById('sp-modal').innerHTML = ''; }
+  function bigFlash(txt) {
+    var f = document.createElement('div'); f.className = 'sp-bigpow'; f.textContent = txt; document.getElementById('app').appendChild(f);
+    setTimeout(function () { f.remove(); }, 1500);
+  }
+  function shade(box) {
+    var s = SHADES[(SP.turn / 5 | 0) % SHADES.length], e = document.createElement('div');
+    e.className = 'sp-shade'; e.innerHTML = '<span>Bóng kiếp ' + s.kiep + ' · ' + s.n + '</span><img src="img/' + s.img + '.png" alt="" style="width:' + s.w * 2 + 'px;height:' + s.h * 2 + 'px">';
+    box.appendChild(e); setTimeout(function () { e.remove(); }, 1300);
+  }
   function spTick() {
     if (route() !== 'home' && route() !== '') return;
     SP.tv = (SP.tv + 13 * (SP.fast ? 0.5 : 1)) % 2200;
-    var tb = document.getElementById('sp-tvb'); if (tb) { tb.style.width = (SP.tv / 22) + '%'; document.getElementById('sp-tvt').textContent = fmt(SP.tv) + ' / 2.200'; }
-    if (SP.fail || SP.lock) return;
+    var tb = document.getElementById('sp-tvb'); if (tb) { tb.style.width = (SP.tv / 22) + '%'; document.getElementById('sp-tvt').textContent = fmt(SP.tv) + ' / 2.200 tu vi'; }
+    if (busy()) return;
     SP.turn = (SP.turn || 0) + 1;
-    var who = SP.turn % 3 === 0 ? 'chuong' : 'kiem';
-    var f = SP.foe, p = power(), crit = SP.turn % 5 === 0;
-    var dmg = Math.round(p / 8 * (0.85 + ((SP.turn * 7) % 5) * 0.075) * (crit ? 1.6 : 1));
-    f.hp -= dmg; if (SP.boss) SP.bt++;
-    var dead = f.hp <= 0, gain = 0, wasBoss = SP.boss;
-    if (dead) {
-      gain = SP.boss ? 300 + SP.st * 10 : 20 + (SP.kills * 13) % 25; SP.gold += gain; SP.kills++;
-      if (SP.boss) { SP.st++; SP.wave = 1; SP.idx = 0; SP.boss = false; }
-      else if (++SP.idx >= 3) { SP.idx = 0; SP.wave++; }
-    } else if (SP.boss && SP.bt >= 12) { SP.fail = true; }
-    var box = document.getElementById('sp-arena'), at = document.querySelector('#sp-ct .cimg'), fo = document.getElementById('sp-foe');
-    if (!box || !at || !fo) return;
-    SP.lock = true;
-    var T = SP.fast ? 0.5 : 1;
-    fire(at, fo, who, crit, 320 * T);
-    timers.push(setTimeout(function () {
-      if (!document.body.contains(fo)) return;
-      var o = box.getBoundingClientRect(), b = fo.getBoundingClientRect();
-      anim(fo, 'hurt'); if (wasBoss || crit) anim(box, 'shake');
-      var k = 1, hx = b.left - o.left + Math.min(40, b.width * 0.3), fy = b.bottom - o.top - 6;
-      var cy = b.top - o.top + b.height * 0.55, cx = b.left - o.left + b.width / 2;
-      if (who === 'kiem') vfx(box, 'sword-slash', cx - 30, cy + 24, k);
-      vfx(box, crit ? 'crit-hit' : 'hit-spark', cx - 10, cy + 10, k);
-      box.classList.add('stop'); setTimeout(function () { box.classList.remove('stop'); }, 90);
-      pop(box, b.left - o.left + b.width / 2 - 24, b.top - o.top - 6, fmt(dmg) + (crit ? '!' : ''), crit ? 'crit' : 'hit');
-      var bar = document.getElementById(wasBoss ? 'sp-fhp2' : 'sp-fhp'); if (bar) bar.style.width = Math.max(0, f.hp / f.max * 100) + '%';
-      if (wasBoss) { var tn = document.querySelector('.sp-turn'); if (tn) tn.textContent = Math.max(0, 12 - SP.bt) + ' hiệp'; }
-      if (dead) {
-        anim(fo, 'die'); coins(fo, wasBoss ? 5 : 3);
-        vfx(box, 'poof', b.left - o.left + b.width / 2, b.bottom - o.top, k);
-        pop(box, b.left - o.left + b.width / 2 - 20, b.top - o.top + 20, '+' + gain, 'gold');
-        timers.push(setTimeout(function () {
-          spawn();
-          var old = document.getElementById('sp-foe'); if (old) old.outerHTML = foeHTML('enter');
-          document.getElementById('sp-hud').innerHTML = hud();
-          if (SP.boss) { var bn = document.createElement('div'); bn.className = 'sp-banner'; bn.textContent = 'Boss xuất hiện'; box.appendChild(bn); setTimeout(function () { bn.remove(); }, 1400); }
-          spRefresh(); SP.lock = false;
-        }, 520 * T));
-      } else {
-        if (SP.fail) spRefresh(); else document.getElementById('sp-hud').innerHTML = hud();
-        SP.lock = false;
-      }
-    }, 330 * T));
+    var box = document.getElementById('sp-arena'); if (!box) return;
+    var critEvery = SP.ph.crit ? 3 : 5, crit = SP.turn % critEvery === 0;
+    var who = SP.turn % (SP.ph.chuong ? 2 : 3) === 0 ? 'chuong' : 'kiem';
+    var p = power(), base = p / 8 * (0.85 + ((SP.turn * 7) % 5) * 0.075) * (crit ? 1.6 : 1) * (who === 'chuong' && SP.ph.chuong ? 1.3 : 1);
+    var n = who === 'kiem' ? 1 + SP.ph.swords + (crit ? 2 : 0) : 1, dmg = Math.round(base * (who === 'kiem' ? 1 + SP.ph.swords * 0.25 : 1));
+    if (SP.boss) SP.bt++;
+    var uid = SP.foe.uid;
+    fire(who, n, 320 * T());
+    timers.push(setTimeout(function () { land(uid, dmg, crit, who, true); }, 330 * T()));
+    var shadeEvery = SP.ph.shade ? 4 : 7;
+    if (SP.turn % shadeEvery === 0) {
+      shade(box);
+      timers.push(setTimeout(function () { land(uid, Math.round(p / 10), false, 'shade', false); }, 520 * T()));
+    }
   }
-  function spLoop() { SP.lock = false; timers.push(setInterval(spTick, SP.fast ? 420 : 820)); }
+  function spLoop() { SP.dying = false; timers.push(setInterval(spTick, SP.fast ? 420 : 820)); }
   spawn();
 
   /* ---------- Nhân vật ---------- */
@@ -442,11 +532,28 @@
       var f = document.getElementById('fl'); if (f) { f.textContent = u[1] + ' tầng ' + SP.lv[k] + ' · +' + fmt(u[4]) + ' lực'; f.classList.remove('float'); void f.offsetWidth; f.style.opacity = 1; f.classList.add('float'); }
       var pw = document.getElementById('sp-pow'); if (pw) { pw.classList.remove('pop'); void pw.offsetWidth; pw.classList.add('pop'); }
       return;
-    } else if (a === 'sp-retry') { SP.fail = false; spawn(); var of = document.getElementById('sp-foe'); if (of) of.outerHTML = foeHTML('enter'); spRefresh(); return; }
+    } else if (a === 'sp-retry') { SP.fail = false; SP.bt = 0; SP.foe.hp = SP.foe.max; spRefresh(); return; }
     else if (a === 'sp-fast') {
       SP.fast = !SP.fast; clear(); el.textContent = SP.fast ? 'x2' : 'x1'; el.setAttribute('aria-pressed', SP.fast);
-      if (SP.foe.hp <= 0) { spawn(); var of2 = document.getElementById('sp-foe'); if (of2) of2.outerHTML = foeHTML('enter'); }
+      if (SP.dying && !SP.modal) next();
       spRefresh(); spLoop(); return;
+    } else if (a === 'sp-tap') {
+      if (busy() || e.target.closest('button')) return;
+      var now = Date.now(); if (now - (SP.lastTap || 0) < 140) return; SP.lastTap = now;
+      var th = document.getElementById('sp-taphint'); if (th) th.remove();
+      var uid = SP.foe.uid, d = Math.round(power() / 22);
+      fire('kiem', 1, 240); setTimeout(function () { land(uid, d, false, 'tap', false); }, 250); return;
+    } else if (a === 'sp-skill') {
+      if (SP.gauge < 20 || busy()) return;
+      SP.gauge = 0; var uid2 = SP.foe.uid, box = document.getElementById('sp-arena');
+      banner(box, 'Vạn Kiếm Quy Tông', '', 'gold');
+      fire('kiem', 9, 380, 14); setTimeout(function () { land(uid2, Math.round(power() / 8 * 3.5), true, 'van', false); }, 390); return;
+    } else if (a === 'sp-thay') {
+      var it = LOOT[SP.loot], diff = it.pow - SP.gear.pow; SP.gear = it; SP.loot++; closeModal();
+      bigFlash('Lực chiến +' + fmt(diff)); next(); return;
+    } else if (a === 'sp-tach') { SP.gold += 80; SP.loot++; closeModal(); next(); return; }
+    else if (a === 'sp-phu') {
+      var ph = PHU.filter(function (x) { return x[0] === el.dataset.v; })[0]; SP.ph[ph[0]]++; SP.phList.push(ph[1]); closeModal(); next(); return;
     }
     if (a === 'tap') {
       if (S.taps >= 10) return;
