@@ -27,6 +27,8 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
 
 ## Ngày 2 - Khai Mạch trên giao diện (có cáo thị 4.5.0 nếu Tyler cho lên riêng)
 - [ ] Màn cáo biệt: hình chân thân pixel (thân LPC của nhân vật, ngồi thiền) với các huyệt là chấm pixel. Huyệt vừa mở chớp sáng, một dòng "Huyệt Khí Hải khai: tu luyện +2% từ kiếp sau". Dòng tiếp nêu thử thách của huyệt kế tiếp, ví dụ "Huyệt Mệnh Môn: kết đạo lữ hoặc nuôi linh thú trong một kiếp". Kiếp không mở huyệt thì chỉ hiện thử thách đang chờ.
+- [ ] Trang chủ: thẻ "Chân thân" ngay dưới dải giang hồ, trên nút Lôi đài (thay chỗ dòng Thất Nhật Lục, dòng đó dời vào Tàng Kiếp Các). Thẻ có hình chân thân nhỏ với huyệt sáng, thanh 10 ô Thập Kiếp, thử thách của huyệt kế, lợi ích đang hưởng. Chạm mở trang `/chan-than` (bảng Chu Thiên). Đây là chỗ sau này lớn thành màn chân thân ngồi thiền idle.
+- [ ] Trong kiếp: một chip nhỏ góc trên trái sân khấu "Huyệt Thiên Đột: lên Kim Đan", chạm mở bảng. Khi kiếp này đạt thử thách thì hiện một thông báo "Kiếp này đã đủ khai huyệt X, huyệt khai khi kiếp khép lại", chip đổi sang vàng.
 - [ ] Màn đầu thai: một dòng nhỏ "Chu Thiên 7/36" chạm vào mở bảng huyệt (tên, đã mở, cách mở; 6 huyệt cuối giữ bí ẩn như kết cục bí ẩn).
 - [ ] Tài khoản đã có từ 10 kiếp: lần đầu vào sau bản này hiện cảnh "Chân thân thức tỉnh" một lần (10 huyệt sáng lần lượt, chạm để bỏ qua), đánh dấu đã xem trong meta.
 - [ ] Thẻ khoe Khai Mạch (dùng `lib/shareCard.ts`): chân thân với số huyệt đã mở.
