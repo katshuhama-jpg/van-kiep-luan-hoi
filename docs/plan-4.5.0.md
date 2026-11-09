@@ -18,14 +18,15 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
 ## Ngày 1 - Đo mốc và dữ liệu Khai Mạch
 - [ ] Ghi mốc vào `docs/so-lieu.md`: còn chơi sau 1 và 7 ngày theo tuần vào, phân bố số kiếp, % đủ 10 và 31 kiếp trong 7 và 14 ngày (câu SQL để lại cho lần sau chạy lại).
 - [ ] `lib/game/khaiMach.ts`: 36 huyệt Chu Thiên (tên huyệt thật, ví dụ Dũng Tuyền, Quan Nguyên, Khí Hải, Mệnh Môn, Đản Trung, Ấn Đường, Bách Hội...). Hàm `openHuyet(meta)` tính từ `meta.lives`, `meta.endings`, `meta.itemBook`, `meta.lore`, `meta.career`, không lưu thêm gì (tài khoản cũ tự có ngay).
-  - Huyệt 1-10 (Thập Kiếp Khai Mạch): mở khi đủ 1, 2, ... 10 kiếp. Mỗi huyệt một lợi ích nhỏ áp lúc đầu thai (`newChar`): linh thạch khởi đầu, sức khỏe, thọ, ngộ tính, tâm cảnh, khí vận, tu luyện %, đột phá %, ngọc bội hộ thân lúc 16 tuổi. Huyệt 10 Bách Hội: chân thân thức tỉnh, danh hiệu "Khai Mạch".
-  - Huyệt 11-36: mở theo mốc dài hạn có sẵn (số kiếp 15/20/30/45/60, số kết cục, đồ ẩn, mảnh Thiên thư, lần đầu Kim Đan/Hóa Thần/phi thăng/Chứng Đạo/cảnh giới Hồng Hoang). Chỉ mỹ quan: màu hào quang, khung bia, danh hiệu. Không thêm sức mạnh sau Chứng Đạo.
+  - Huyệt 1-10 (Thập Kiếp Khai Mạch): KHÔNG mở theo số lần chết (Tyler 9/11: chết là khai mạch thì dễ spam). Mỗi huyệt có một thử thách riêng, xét lúc kiếp kết thúc, mỗi kiếp mở tối đa 1 huyệt, theo thứ tự. Thử thách dạy dần từng hệ thống, ví dụ: sống qua 30 tuổi; lên Luyện Khí; vào một tông môn; lên Trúc Cơ và chọn con đường; kết đạo lữ hoặc nuôi linh thú; diệt 30 yêu thú trong một kiếp; thắng một trận giang hồ; lên Kim Đan; sống qua 100 tuổi; lên Nguyên Anh. Kiếp chết yểu hay chết vội không mở gì. Tài khoản cũ: xét từ `vkl_lives` và `meta.career`, ai từng đạt thì mở luôn.
+  - Mỗi huyệt một lợi ích nhỏ áp lúc đầu thai (`newChar`): linh thạch khởi đầu, sức khỏe, thọ, ngộ tính, tâm cảnh, khí vận, tu luyện %, đột phá %, ngọc bội hộ thân lúc 16 tuổi. Huyệt 10 Bách Hội: chân thân thức tỉnh, danh hiệu "Khai Mạch".
+  - Huyệt 11-36: mở theo mốc dài hạn có sẵn, không mốc nào chỉ đếm số kiếp (số kết cục, đồ ẩn, mảnh Thiên thư, lần đầu Kim Đan/Hóa Thần/phi thăng/Chứng Đạo/cảnh giới Hồng Hoang). Chỉ mỹ quan: màu hào quang, khung bia, danh hiệu. Không thêm sức mạnh sau Chứng Đạo.
 - [ ] Cân bằng: `npx tsx scripts/sim-do-kho.ts 3000` trước và sau với đủ 10 huyệt. Tỉ lệ lên Hóa Thần tăng không quá 3 điểm, nếu quá thì giảm số.
 - Xong:
 - Ghi chú:
 
 ## Ngày 2 - Khai Mạch trên giao diện (có cáo thị 4.5.0 nếu Tyler cho lên riêng)
-- [ ] Màn cáo biệt: hình chân thân pixel (thân LPC của nhân vật, ngồi thiền) với các huyệt là chấm pixel. Huyệt vừa mở chớp sáng, một dòng "Huyệt Khí Hải khai: tu luyện +2% từ kiếp sau". Dòng tiếp: "Còn 2 kiếp nữa mở Mệnh Môn: ..." hoặc mốc gần nhất cho huyệt 11-36.
+- [ ] Màn cáo biệt: hình chân thân pixel (thân LPC của nhân vật, ngồi thiền) với các huyệt là chấm pixel. Huyệt vừa mở chớp sáng, một dòng "Huyệt Khí Hải khai: tu luyện +2% từ kiếp sau". Dòng tiếp nêu thử thách của huyệt kế tiếp, ví dụ "Huyệt Mệnh Môn: kết đạo lữ hoặc nuôi linh thú trong một kiếp". Kiếp không mở huyệt thì chỉ hiện thử thách đang chờ.
 - [ ] Màn đầu thai: một dòng nhỏ "Chu Thiên 7/36" chạm vào mở bảng huyệt (tên, đã mở, cách mở; 6 huyệt cuối giữ bí ẩn như kết cục bí ẩn).
 - [ ] Tài khoản đã có từ 10 kiếp: lần đầu vào sau bản này hiện cảnh "Chân thân thức tỉnh" một lần (10 huyệt sáng lần lượt, chạm để bỏ qua), đánh dấu đã xem trong meta.
 - [ ] Thẻ khoe Khai Mạch (dùng `lib/shareCard.ts`): chân thân với số huyệt đã mở.
