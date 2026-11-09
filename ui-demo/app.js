@@ -30,8 +30,8 @@
     return '<div class="cbox">' + (back || '') + '<img src="img/' + img + '.png" alt="' + alt + '" class="cimg" style="width:calc(var(--k)*' + w + 'px);height:calc(var(--k)*' + h + 'px)">' + (front || '') + '</div>';
   }
 
-  /* ---------- Màn chính ---------- */
-  function home() {
+  /* ---------- Màn tu tĩnh (bản trước) ---------- */
+  function tutinh() {
     var need = 2200 + (S.layer - 2) * 600, p = Math.floor(S.tv / need * 100);
     return '<div class="hdr"><div style="width:52px;height:52px;border:3px solid var(--gold);background:var(--paper2);overflow:hidden;flex-shrink:0"><img src="img/ct_head.png" alt="" style="width:60px;height:48px;margin:4px 0 0 -7px"></div>' +
       '<div style="flex:1;display:flex;flex-direction:column"><span style="font-size:17px;font-weight:700;color:var(--paper)">Lâm Thanh Vân</span><span class="lc">Lực chiến ' + fmt(24180 + (S.layer - 2) * 1350) + '</span></div>' +
@@ -50,6 +50,112 @@
       '<div class="g3"><div class="stat"><b>44</b><span>kiếp đã sống</span></div><div class="stat"><b>17 / 60</b><span>kết cục</span></div><div class="stat"><b>+34%</b><span>tu vi từ kết cục</span></div></div></div>' +
       '<div class="g2"><button class="btn vio" data-act="tap">Thổ Nạp<small>' + S.taps + '/10 hôm nay</small></button><button id="dp" class="btn ' + (p >= 100 ? 'gold' : 'off') + '" data-act="dotpha">Đột phá<small>' + (p >= 100 ? 'tu vi đã đủ' : 'chưa đủ tu vi') + '</small></button></div></div>' + nav('home');
   }
+
+
+  /* ---------- Màn chính chia đôi: trên trảm yêu tự đánh, dưới tọa thiền nâng cấp ---------- */
+  var SP = { st: 14, wave: 1, idx: 0, gold: 1260, tv: 1650, lv: { kiem: 3, cp: 2, pet: 1, hp: 1 }, foe: null, boss: false, bt: 0, fail: false, fast: false, kills: 0 };
+  var UP = [
+    ['kiem', 'Thanh Phong kiếm', 'Pháp khí', 'g_thai_a_kiem', 1200],
+    ['cp', 'Thôn Phệ Ma Công', 'Công pháp', 'g_doc_co_kiem_pho', 900],
+    ['pet', 'Xích Lang', 'Linh thú', 'pet', 700],
+    ['hp', 'Hộ pháp kiếp 31', 'Hộ pháp', 'kt_red', 800]
+  ];
+  var MOBS = [['Sói hoang', 'm_wolf', 63, 31], ['U hồn', 'm_ghost', 34, 46], ['Hổ yêu', 'm_dk_tiger', 58, 38], ['Kỳ lân non', 'm_dk_qilin', 64, 61]];
+  function power() { var l = SP.lv; return 18000 + l.kiem * 1200 + l.cp * 900 + l.pet * 700 + l.hp * 800; }
+  function need() { return 23000 + SP.st * 200; }
+  function cost(k) { return Math.round(160 * Math.pow(SP.lv[k], 1.35) / 10) * 10; }
+  function spawn() {
+    if (SP.wave > 4) { SP.boss = true; SP.bt = 0; var hp = need() * 1.5; SP.foe = { n: 'Boss Phi Long', img: 'm_dk_flydragon', w: 112, h: 57, hp: hp, max: hp }; return; }
+    var m = MOBS[(SP.st + SP.wave + SP.idx) % MOBS.length], hp2 = 4500 + SP.st * 150;
+    SP.foe = { n: m[0], img: m[1], w: m[2], h: m[3], hp: hp2, max: hp2 };
+  }
+  function arena() {
+    var f = SP.foe, dots = '';
+    for (var i = 1; i <= 5; i++) dots += '<i style="display:inline-block;width:' + (i === 5 ? 14 : 10) + 'px;height:10px;margin-left:3px;border:2px solid var(--dark);background:' + (i < SP.wave || (i === 5 && SP.boss && f.hp <= 0) ? 'var(--goldl)' : i === SP.wave || (i === 5 && SP.boss) ? '#fff8e6' : '#5a4128') + '"></i>';
+    return '<div style="position:absolute;left:8px;top:6px;display:flex;align-items:center;gap:4px;padding:3px 8px;background:rgba(31,22,13,.75);color:var(--goldl);font-size:14px;font-weight:700">Hắc Phong Lĩnh · Ải 3-' + SP.st + dots + '</div>' +
+      '<div style="position:absolute;right:8px;top:6px;padding:3px 8px;background:rgba(31,22,13,.75);color:var(--paper3);font-size:13px;font-weight:700">' + (SP.boss ? 'Boss · còn ' + Math.max(0, 12 - SP.bt) + ' hiệp' : 'Đợt ' + SP.wave + '/4 · quái ' + (SP.idx + 1) + '/3') + '</div>' +
+      '<div class="unit" style="left:5%;bottom:30%"><img src="img/kt_red.png" alt="Hộ pháp" style="width:calc(var(--k)*22px);height:calc(var(--k)*48px)"></div>' +
+      '<div id="sp-me" class="unit" style="left:20%;bottom:14%"><img src="img/st_right.png" alt="Chân thân" style="width:calc(var(--k)*41px);height:calc(var(--k)*52px)"></div>' +
+      '<div class="unit" style="left:2%;bottom:3%"><img src="img/pet.png" alt="Linh thú" style="width:calc(var(--k)*63px);height:calc(var(--k)*31px)"></div>' +
+      '<div id="sp-foe" class="unit en" style="right:' + (SP.boss ? 4 : 12) + '%;bottom:' + (SP.boss ? 22 : 12) + '%"><span class="tag">' + f.n + '</span><div class="hp" style="width:' + (SP.boss ? 90 : 56) + 'px"><i style="width:' + Math.max(0, f.hp / f.max * 100) + '%;background:var(--red)"></i></div>' +
+      '<img src="img/' + f.img + '.png" alt="' + f.n + '" style="width:calc(var(--k)*' + f.w + 'px);height:calc(var(--k)*' + f.h + 'px)' + (f.img === 'm_ghost' ? '' : ';transform:scaleX(-1)') + '"></div>' +
+      (SP.fail ? '<div style="position:absolute;inset:0;z-index:9;background:rgba(31,22,13,.6);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:0 16px"><span style="font-family:\'Protest Revolution\';font-size:32px;color:#ff8a6e;text-shadow:3px 3px 0 var(--dark)">Chưa hạ được boss</span><span style="color:var(--paper3);font-size:15px;font-weight:700">Lực chiến ' + fmt(power()) + ' / cần ' + fmt(need()) + '. Nâng pháp khí bên dưới rồi đánh lại.</span><button class="btn gold" data-act="sp-retry" style="min-height:44px;padding:0 16px;font-size:16px">Đánh lại boss</button></div>' : '') +
+      '<button class="btn" data-act="sp-fast" style="position:absolute;right:8px;top:40px;min-height:36px;padding:0 10px;font-size:14px">' + (SP.fast ? 'Tốc x2' : 'Tốc x1') + '</button>';
+  }
+  function upCards() {
+    return UP.map(function (u) {
+      var c = cost(u[0]), ok = SP.gold >= c, ic = u[3] === 'pet' ? '<img src="img/pet.png" alt="" style="width:40px;height:20px">' : u[3] === 'kt_red' ? '<img src="img/kt_red.png" alt="" style="width:14px;height:31px">' : '<img src="img/' + u[3] + '.png" alt="" style="width:32px;height:32px">';
+      return '<button class="sp-up" data-act="sp-up" data-v="' + u[0] + '"' + (ok ? '' : ' aria-disabled="true"') + '><span class="sp-ic">' + ic + '</span><span class="sp-tx"><small>' + u[2] + '</small><b>' + u[1] + '</b><span>Tầng ' + SP.lv[u[0]] + ' · +' + fmt(u[4]) + ' lực</span></span><span class="sp-cost' + (ok ? '' : ' no') + '"><img src="img/linhthach.png" alt="linh thạch">' + fmt(c) + '</span></button>';
+    }).join('');
+  }
+  function home() {
+    var p = power(), short = p < need();
+    return '<div class="hdr"><div style="width:48px;height:48px;border:3px solid var(--gold);background:var(--paper2);overflow:hidden;flex-shrink:0"><img src="img/st_front.png" alt="" style="width:60px;height:108px;margin:-4px 0 0 -9px"></div>' +
+      '<div style="flex:1;display:flex;flex-direction:column"><span style="font-size:16px;font-weight:700;color:var(--paper)">Lâm Thanh Vân · Ngộ Đạo 2</span><span class="lc" id="sp-pow">Lực chiến ' + fmt(p) + '</span></div>' +
+      '<div style="display:flex;align-items:center;gap:4px;font-size:16px;font-weight:700;color:var(--paper)"><img src="img/linhthach.png" alt="linh thạch" style="width:18px;height:18px"><span id="sp-gold">' + fmt(SP.gold) + '</span></div></div>' +
+      '<div class="scene" id="sp-arena" style="height:34%;min-height:220px"><img class="bg" src="img/bg_dai_w.png" alt="">' + arena() + '</div>' +
+      '<div class="sp-strip"><span>Ải 3-' + SP.st + ' cần lực <b id="sp-need" style="color:' + (short ? '#ff8a6e' : 'var(--goldl)') + '">' + fmt(need()) + '</b></span><span>Đã trảm <b id="sp-kills">' + SP.kills + '</b> yêu</span></div>' +
+      '<div class="scene" style="height:150px;flex-shrink:0"><img class="bg" src="img/bg_tien_w.png" alt="" style="filter:brightness(.7)">' +
+      '<div style="position:absolute;left:0;right:0;bottom:2px;display:flex;justify-content:center">' + charbox('chanthan', 28, 47, 'Chân thân đang tọa thiền', fx('halo', 34, 2.4, 'opacity:.8') + fx('ring', 93, 1.6) + fx('tuongvan', 95, 1), fx('motes', 50, 2.4) + fx('kiem', 52, 1.6)) + '</div>' +
+      '<div id="fl" style="position:absolute;left:0;right:0;top:34%;text-align:center;font-size:22px;font-weight:700;color:var(--goldl);text-shadow:2px 2px 0 var(--dark);opacity:0"></div>' +
+      '<div style="position:absolute;left:8px;right:8px;top:6px;display:flex;flex-direction:column;gap:3px"><div class="row" style="color:var(--paper3);font-size:13px;font-weight:700;text-shadow:1px 1px 0 var(--dark)"><span>Tọa thiền · +13 tu vi/giây</span><span id="sp-tvt">' + fmt(SP.tv) + ' / 2.200</span></div><div class="bar" style="height:10px"><i id="sp-tvb" style="width:' + Math.min(100, SP.tv / 22) + '%"></i></div></div></div>' +
+      '<div class="body" style="gap:8px;padding:8px 10px">' + '<div id="sp-ups" style="display:flex;flex-direction:column;gap:6px">' + upCards() + '</div>' +
+      '<a class="card dark" href="#tinhmong" style="text-decoration:none;flex-direction:row;align-items:center;gap:10px;padding:8px 12px"><img src="img/g_thuy_linh_chau.png" alt="" style="width:32px;height:32px"><span style="flex:1;font-size:14px"><b style="color:var(--goldl)">Nhập mộng</b> chơi một kiếp như cũ. Sống xong, đạo hạnh của kiếp cộng thẳng vào lực chiến.</span><b style="font-size:20px">›</b></a>' +
+      '<a href="#tutinh" class="sub" style="text-align:center;font-size:13px">Xem màn tọa thiền bản trước</a></div>' + nav('home');
+  }
+  function spRefresh() {
+    var a = document.getElementById('sp-arena'); if (!a) return;
+    var bg = a.querySelector('.bg'); a.innerHTML = ''; a.appendChild(bg); a.insertAdjacentHTML('beforeend', arena());
+    var p = power();
+    document.getElementById('sp-pow').textContent = 'Lực chiến ' + fmt(p);
+    document.getElementById('sp-gold').textContent = fmt(SP.gold);
+    var nd = document.getElementById('sp-need'); nd.textContent = fmt(need()); nd.style.color = p < need() ? '#ff8a6e' : 'var(--goldl)';
+    document.getElementById('sp-kills').textContent = SP.kills;
+    document.getElementById('sp-ups').innerHTML = upCards();
+  }
+  function floatAt(box, x, y, txt, color, cls) {
+    var d = document.createElement('span'); d.textContent = txt; d.className = cls || 'float';
+    d.style.cssText = 'position:absolute;left:' + x + 'px;top:' + y + 'px;font-size:' + (cls ? 15 : 20) + 'px;font-weight:700;color:' + color + ';text-shadow:2px 2px 0 var(--dark);z-index:8;pointer-events:none;white-space:nowrap';
+    box.appendChild(d); setTimeout(function () { d.remove(); }, 1100);
+  }
+  function spTick() {
+    if (route() !== 'home' && route() !== '') return;
+    SP.tv = (SP.tv + 13 * (SP.fast ? 0.5 : 1)) % 2200;
+    var tb = document.getElementById('sp-tvb'); if (tb) { tb.style.width = (SP.tv / 22) + '%'; document.getElementById('sp-tvt').textContent = fmt(SP.tv) + ' / 2.200'; }
+    if (SP.fail || SP.lock) return;
+    var f = SP.foe, p = power();
+    var dmg = Math.round(p / 8 * (0.85 + ((SP.bt * 7 + SP.idx * 3 + SP.kills) % 5) * 0.075));
+    f.hp -= dmg; if (SP.boss) SP.bt++;
+    var dead = f.hp <= 0, gain = 0;
+    if (dead) {
+      gain = SP.boss ? 300 + SP.st * 10 : 20 + (SP.kills * 13) % 25; SP.gold += gain; SP.kills++;
+      if (SP.boss) { SP.st++; SP.wave = 1; SP.idx = 0; SP.boss = false; }
+      else if (++SP.idx >= 3) { SP.idx = 0; SP.wave++; }
+    } else if (SP.boss && SP.bt >= 12) { SP.fail = true; }
+    var box = document.getElementById('sp-arena'), me = document.getElementById('sp-me'), fo = document.getElementById('sp-foe');
+    if (box && me && fo) {
+      var o = box.getBoundingClientRect(), a = me.getBoundingClientRect(), b = fo.getBoundingClientRect();
+      var shot = document.createElement('span'); shot.className = 'shot';
+      shot.style.left = (a.right - o.left - 6) + 'px'; shot.style.top = (a.top - o.top + a.height / 2) + 'px';
+      shot.style.setProperty('--dx', (b.left - a.right + b.width / 3) + 'px'); shot.style.setProperty('--dy', (b.top - a.top + b.height / 2 - a.height / 2) + 'px');
+      box.appendChild(shot); me.classList.add('atk');
+      setTimeout(function () {
+        if (!document.body.contains(box)) return;
+        if (dead) { var bx = b.left - o.left + b.width / 2, by = b.top - o.top; floatAt(box, bx - 20, by + 20, '+' + gain, '#7fe0b0', 'coin'); }
+        else fo.classList.add('hit');
+        floatAt(box, b.left - o.left + 4, b.top - o.top + 8, '-' + fmt(dmg), SP.boss ? '#ffcf6e' : '#fff8e6');
+        if (SP.boss) { var fw = document.createElement('span'); fw.className = 'flashw'; box.appendChild(fw); box.classList.add('shake'); }
+      }, 330);
+    }
+    if (dead) { spawn(); SP.lock = true; }
+    var wait = setTimeout(function () {
+      SP.lock = false;
+      if (document.getElementById('sp-arena')) spRefresh();
+    }, dead ? (SP.fast ? 380 : 600) : (SP.fast ? 330 : 420));
+    timers.push(wait);
+  }
+  function spLoop() { SP.lock = false; timers.push(setInterval(spTick, SP.fast ? 450 : 900)); }
+  spawn();
 
   /* ---------- Nhân vật ---------- */
   function nhanvat() {
@@ -190,7 +296,7 @@
       '<div class="card dark"><b style="color:var(--goldl)">Theo bên mình (3 / 3)</b><div style="display:flex;gap:14px"><div class="bf bf-red"></div><div class="bf bf-gold"></div><div class="bf bf-violet"></div></div><span style="font-size:15px">Mỗi con theo bên cho một nội tại nhỏ.</span></div></div>' + nav('dongphu');
   }
 
-  var screens = { home: home, nhanvat: nhanvat, dicanh: dicanh, tinhmong: tinhmong, dongphu: dongphu, mongdiep: mongdiep };
+  var screens = { home: home, tutinh: tutinh, nhanvat: nhanvat, dicanh: dicanh, tinhmong: tinhmong, dongphu: dongphu, mongdiep: mongdiep };
 
   var TOP = { 'bg_tien': '#f6c27a', 'bg_dai': '#06061a', 'bg_dongphu': '#cfe8e0', 'bg_lo': '#726b7e' };
   var K = 1;
@@ -211,7 +317,8 @@
   function start() {
     clear(); render();
     var r = route();
-    if (r === 'home' || r === '') timers.push(setInterval(tick, 1000));
+    if (r === 'home' || r === '') { if (!SP.foe) spawn(); spRefresh(); spLoop(); }
+    if (r === 'tutinh') timers.push(setInterval(tick, 1000));
     if (r === 'dicanh') battleLoop();
   }
   function tick() {
@@ -260,6 +367,17 @@
   app.addEventListener('click', function (e) {
     var el = e.target.closest('[data-act]'); if (!el) return;
     var a = el.dataset.act;
+    if (a === 'sp-up') {
+      var k = el.dataset.v, c = cost(k);
+      if (SP.gold < c) { el.classList.remove('nope'); void el.offsetWidth; el.classList.add('nope'); return; }
+      SP.gold -= c; SP.lv[k]++;
+      var u = UP.filter(function (x) { return x[0] === k; })[0];
+      spRefresh();
+      var f = document.getElementById('fl'); if (f) { f.textContent = u[1] + ' tầng ' + SP.lv[k] + ' · +' + fmt(u[4]) + ' lực'; f.classList.remove('float'); void f.offsetWidth; f.style.opacity = 1; f.classList.add('float'); }
+      var pw = document.getElementById('sp-pow'); if (pw) { pw.classList.remove('pop'); void pw.offsetWidth; pw.classList.add('pop'); }
+      return;
+    } else if (a === 'sp-retry') { SP.fail = false; spawn(); spRefresh(); return; }
+    else if (a === 'sp-fast') { SP.fast = !SP.fast; clear(); spRefresh(); spLoop(); return; }
     if (a === 'tap') {
       if (S.taps >= 10) return;
       var b = 60 + ((S.taps * 37) % 5) * 40; S.taps++; S.tv += b; render();
