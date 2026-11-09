@@ -42,7 +42,7 @@ button{font-family:inherit;cursor:pointer}
 .hero{position:absolute;left:50%;top:150px;transform:translateX(-50%);width:192px;height:192px;z-index:3}
 .hero .spr{position:absolute;inset:0;image-rendering:pixelated}
 @keyframes spr2{0%{background-position:0 0}50%{background-position:33.333% 0}}
-.halo{position:absolute;left:50%;top:112px;width:160px;height:160px;transform:translateX(-50%);background-size:800% 100%;animation:pfx 1.2s steps(7,jump-none) infinite;opacity:.85}
+.halo{position:absolute;left:50%;top:136px;width:160px;height:160px;margin-left:-80px;background:url(halo.png) 0 0/1280px 160px no-repeat;image-rendering:pixelated;opacity:.9}
 @keyframes pfx{from{background-position:0 0}to{background-position:100% 0}}
 .cloud{position:absolute;left:50%;top:292px;width:116px;height:32px;transform:translateX(-50%);background:url(../img/cloud.png) 0 0/100% 100%;image-rendering:pixelated;z-index:2;animation:bob 3s steps(4) infinite}
 @keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,-4px)}}

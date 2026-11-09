@@ -29,6 +29,13 @@
     }, 1000 / fps / (S.fast ? 2 : 1));
     anims.push(spr._iv);
   }
+  // hào quang sau lưng: 8 khung 80px, phóng x2, dịch nền theo px để khung không lệch
+  function haloRun(el) {
+    if (!el) return;
+    var i = 0;
+    var iv = setInterval(function () { i = (i + 1) % 8; el.style.backgroundPosition = (-i * 160) + 'px 0'; }, 160);
+    anims.push(iv);
+  }
   // hiệu ứng pixelfx: [rộng, cao, số khung, neo x, neo y]
   var VFX = { 'sword-slash': [113, 96, 18, 43, 86], 'hit-spark': [122, 71, 15, 34, 56], 'crit-hit': [174, 131, 22, 77, 102], 'tan': [80, 79, 30, 33, 77], 'collect-burst': [78, 88, 30, 36, 81] };
   function vfx(box, name, x, y, k, flip) {
@@ -69,7 +76,7 @@
       '<div class="cp"><small>Chiến lực</small>11.500</div>' +
       '<div class="slots l">' + slot('g_thai_a_kiem', 'Vũ khí') + slot('', 'Áo') + slot('g_bich_ngoc_boi', 'Ngọc bội') + slot('', 'Cánh') + '</div>' +
       '<div class="slots r">' + slot('g_thuy_linh_chau', 'Pháp bảo') + slot('g_lac_thu', 'Bí tịch') + slot('pet', 'Linh thú') + slot('', 'Hộ pháp') + '</div>' +
-      '<span class="halo px" style="background-image:url(../img/fx_halo.png)"></span><div class="cloud"></div>' +
+      '<span class="halo"></span><div class="cloud"></div>' +
       '<div class="hero" id="hero"><div class="spr px"></div></div>' +
       '<div class="afk"><div class="rl"><b>Kim Đan Trung kỳ</b><span>+' + S.rate + ' tu vi / 10 giây<br>treo động phủ +40%</span></div>' +
       '<div class="bar"><i id="tvbar"></i><em id="tvtxt"></em></div>' +
@@ -77,9 +84,7 @@
       '<div class="collect"><div><small>Đồ treo máy đã tích (' + Math.floor(S.afkSec / 3600) + ' giờ)</small><b id="afkloot">+' + fmt(S.afkSec * 0.55) + ' linh thạch · 3 tàn quyển</b></div><button class="btn gold" id="thu">Thu</button></div>' +
       '</div></div>';
     sprite(v.querySelector('#hero'), 'hero_idle_f.png', 2, 1.6, true);
-    // hào quang sau lưng (chạy bằng css, đổi cỡ nền theo số khung)
-    var halo = v.querySelector('.halo');
-    halo.style.backgroundSize = '800% 100%';
+    haloRun(v.querySelector('.halo'));
     function upd() {
       var p = Math.min(1, S.tuvi / S.need);
       v.querySelector('#tvbar').style.width = (p * 100) + '%';
@@ -211,7 +216,7 @@
     var bfs = '';
     [['violet', 60, 70], ['gold', 330, 110], ['jade', 120, 200], ['violet', 300, 40]].forEach(function (b) { bfs += '<span class="bf" style="left:' + b[1] + 'px;top:' + b[2] + 'px;background-image:url(../img/bf_' + b[0] + '.png)"></span>'; });
     v.innerHTML = '<div class="dream" id="dr"><img class="bg" src="../img/bg_menh.png" alt="">' + bfs +
-      '<span class="halo px" style="background-image:url(../img/fx_halo.png);top:26px;filter:hue-rotate(200deg)"></span>' +
+      '<span class="halo" style="top:26px;filter:hue-rotate(200deg)"></span>' +
       '<div class="hero" id="hero" style="top:40px;filter:brightness(.85) saturate(.7)"><div class="spr px"></div></div>' +
       '<div class="dcard" id="dc">' +
       '<h3>Nhập mộng</h3>' +
@@ -221,6 +226,7 @@
       '<div style="display:flex;gap:8px"><button class="btn vio" id="vao" style="flex:1">Nhập mộng · Kiếp ' + (S.kiep + 1) + '</button></div>' +
       '</div></div>';
     sprite(v.querySelector('#hero'), 'hero_idle_f.png', 2, 1, true);
+    haloRun(v.querySelector('.halo'));
     v.querySelector('#vao').onclick = function () {
       app.appendChild(h('<div class="white"></div>'));
       setTimeout(function () { var w = app.querySelector('.white'); if (w) w.remove(); }, 1500);
