@@ -77,7 +77,7 @@
     return '<b>Ải 3-' + SP.st + '</b><span class="sp-seg">' + seg + '<i class="bs"></i></span>';
   }
   function foeHTML(cls) {
-    var f = SP.foe, flip = f.img === 'm_ghost' ? '' : ';transform:scaleX(-1)';
+    var f = SP.foe, flip = (f.img === 'm_ghost' ? '' : ';transform:scaleX(-1)') + (f.img === 'm_wolf' ? ';filter:brightness(.5) saturate(.4)' : '');
     return '<div id="sp-foe" class="sp-u ' + (SP.boss ? 'boss ' : '') + (cls || '') + '">' + (SP.boss ? '' : '<span class="sp-hpb"><i id="sp-fhp" style="width:' + Math.max(0, f.hp / f.max * 100) + '%"></i></span>') +
       '<img src="img/' + f.img + '.png" alt="' + f.n + '" style="width:calc(var(--k)*' + f.w + 'px);height:calc(var(--k)*' + f.h + 'px)' + flip + '"><span class="shd"></span></div>';
   }
@@ -120,6 +120,14 @@
     var fl = document.getElementById('sp-fail'); fl.hidden = !SP.fail;
     document.getElementById('sp-failtx').textContent = 'Lực chiến ' + fmt(p) + ' / cần ' + fmt(need()) + '. Nâng pháp khí bên dưới rồi đánh lại.';
   }
+  /* hiệu ứng pixel nướng từ pixelfx (sword-slash, hit-spark, crit-hit, poof, collect-burst): [rộng, cao, số khung, tâm x, tâm y, fps] */
+  var VFX = {"sword-slash": [113, 96, 18, 43, 86, 30], "hit-spark": [122, 71, 15, 34, 56, 30], "crit-hit": [174, 131, 22, 77, 102, 30], "poof": [91, 76, 36, 43, 65, 30], "collect-burst": [78, 88, 30, 36, 81, 30]};
+  function vfx(box, name, x, y, k, fixed) {
+    var d = VFX[name], e = document.createElement('span'), dur = d[2] / d[5];
+    e.className = 'vfx'; e.setAttribute('aria-hidden', 'true');
+    e.style.cssText = (fixed ? 'position:fixed;z-index:60;' : 'position:absolute;z-index:7;') + 'left:' + (x - d[3] * k) + 'px;top:' + (y - d[4] * k) + 'px;width:' + d[0] * k + 'px;height:' + d[1] * k + 'px;background-image:url(img/vfx_' + name + '.png);background-size:' + d[2] * 100 + '% 100%;animation:pfx ' + dur + 's steps(' + (d[2] - 1) + ',jump-none) forwards';
+    box.appendChild(e); setTimeout(function () { e.remove(); }, dur * 1000 + 50);
+  }
   function anim(el, cls) { if (!el) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
   function pop(box, x, y, txt, kind) {
     var d = document.createElement('span'); d.className = 'sp-num ' + kind; d.textContent = txt;
@@ -137,7 +145,10 @@
         c.style.transitionDelay = (i * 70) + 'ms';
         c.style.transform = 'translate(' + (b.left - x0) + 'px,' + (b.top - y0) + 'px) scale(.8)';
       }); });
-      setTimeout(function () { c.remove(); if (i === n - 1) anim(to, 'pop'); }, 720 + i * 70);
+      setTimeout(function () {
+        c.remove();
+        if (i === n - 1) { anim(to, 'pop'); var r = to.getBoundingClientRect(); vfx(document.body, 'collect-burst', r.left - 10, r.top + r.height / 2 + 40, 1, true); }
+      }, 720 + i * 70);
     })(i);
   }
   function spTick() {
@@ -172,12 +183,16 @@
       if (!document.body.contains(fo)) return;
       var o = box.getBoundingClientRect(), b = fo.getBoundingClientRect();
       anim(fo, 'hurt'); if (wasBoss || crit) anim(box, 'shake');
-      var sl = document.createElement('span'); sl.className = 'slash'; sl.style.left = (b.left - o.left + b.width / 3) + 'px'; sl.style.top = (b.top - o.top + b.height / 2) + 'px'; box.appendChild(sl); setTimeout(function () { sl.remove(); }, 320);
+      var k = +getComputedStyle(box).getPropertyValue('--k') || 2, hx = b.left - o.left + Math.min(40, b.width * 0.3), fy = b.bottom - o.top - 6;
+      if (who === 'sp-me') vfx(box, 'sword-slash', hx - 36, fy, k);
+      vfx(box, crit ? 'crit-hit' : 'hit-spark', hx, fy - (wasBoss ? b.height * 0.35 : 0), k);
+      box.classList.add('stop'); setTimeout(function () { box.classList.remove('stop'); }, 90);
       pop(box, b.left - o.left + b.width / 2 - 24, b.top - o.top - 6, fmt(dmg) + (crit ? '!' : ''), crit ? 'crit' : 'hit');
       var bar = document.getElementById(wasBoss ? 'sp-fhp2' : 'sp-fhp'); if (bar) bar.style.width = Math.max(0, f.hp / f.max * 100) + '%';
       if (wasBoss) { var tn = document.querySelector('.sp-turn'); if (tn) tn.textContent = Math.max(0, 12 - SP.bt) + ' hiệp'; }
       if (dead) {
         anim(fo, 'die'); coins(fo, wasBoss ? 5 : 3);
+        vfx(box, 'poof', b.left - o.left + b.width / 2, b.bottom - o.top, k);
         pop(box, b.left - o.left + b.width / 2 - 20, b.top - o.top + 20, '+' + gain, 'gold');
         timers.push(setTimeout(function () {
           spawn();

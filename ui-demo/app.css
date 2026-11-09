@@ -161,3 +161,7 @@ nav.bot a.mid img{width:32px;height:32px}
 .sp-spd{min-width:44px;min-height:30px;border:0;background:var(--paper);color:var(--dark);font-size:14px;font-weight:700;box-shadow:0 0 0 2px var(--dark)}
 .sp-spd[aria-pressed=true]{background:var(--goldl)}
 #sp-gold{display:inline-block}
+/* ---- pixelfx ---- */
+.vfx{display:block;pointer-events:none;image-rendering:pixelated;background-repeat:no-repeat}
+/* hit-stop: dừng hình 1 nhịp lúc chạm đòn */
+.stop .sp-u,.stop .sp-u img{animation-play-state:paused!important}
