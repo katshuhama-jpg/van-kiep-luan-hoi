@@ -117,21 +117,8 @@ Lên bản: 2026-11-13. Bật cờ, có cáo thị 4.5.0.
 - Xong:
 - Ghi chú:
 
-## Ngày 5 - Sư Đồ phần máy chủ
-Lên bản: 2026-11-17, chỉ khi 4.5.0 chạy ổn 14-16/11 (Vercel runtime errors không tăng bất thường, không có góp ý báo lỗi chân thân chưa sửa). Không ổn thì không làm, báo Tyler. Giấu sau cờ `SU_DO_ON`.
-- [ ] Supabase (hàm mới, không sửa hàm cũ): bảng `vkl_master` (disciple pk, master, via 'link'|'auto', created_at, milestones jsonb). RPC `vkl_master_bind(token, master)`: chỉ gắn khi đệ tử có tối đa 3 kiếp và chưa có sư phụ, không tự bái mình. RPC `vkl_master_auto(token)`: ghép người đã Chứng Đạo, chơi trong 3 ngày qua, ít đệ tử nhất.
-- [ ] Trigger trên `vkl_lives` (sau `lives_guard`): kiếp của đệ tử đạt Trúc Cơ, Kim Đan, phi thăng, Chứng Đạo lần đầu thì ghi mốc và gửi thư giang hồ cho sư phụ. Chống clone: chỉ tính đệ tử từ kiếp 3 trở đi, sư phụ tính tối đa 5 đệ tử mới mỗi ngày.
-- Xong:
-- Ghi chú:
-
-## Ngày 6 - Sư Đồ phần người chơi
-Lên bản: 2026-11-18. Bật cờ `SU_DO_ON`, có cáo thị 4.5.1 ngắn về Sư Đồ.
-- [ ] Link mời `/?su=<tên>`: lưu cookie, gắn khi đăng ký. Nút "Thu đệ tử" ở màn Chứng Đạo và `/chan-than` mở bảng chia sẻ có thẻ OG riêng: chân thân của sư phụ và dòng "<tên chân thân> mời ngươi nhập môn".
-- [ ] Trong kiếp đệ tử (kiếp 1-10): sự kiện "Sư phụ truyền đạo" một lần mỗi kiếp, hiện tên chân thân của sư phụ (chỉ chữ và chân dung nhỏ trong khung sự kiện, như các NPC khác), 4 lựa chọn như sự kiện thường (nhận đan, nhận chỉ điểm, xin theo đi trừ yêu, cáo từ). Kiếp 1-3: sư phụ đỡ một lần chết.
-- [ ] Danh hiệu sư phụ "Môn hạ 5/20/50 người", khung bia và một bộ ngoại trang chân thân, chỉ mỹ quan.
-- [ ] Đo: `master_bind` (via), `master_event`, `master_mail_open`.
-- Xong:
-- Ghi chú:
+## Ngày 5-6 - Sư Đồ: CHUYỂN sang 4.6.0
+Tyler chốt 10/11: Sư Đồ gộp vào Sơn Môn Tranh Bá, xem `docs/plan-4.6.0.md`. Khối này không còn việc.
 
 ## Ngoài game (Tyler tự làm)
 - Biên niên giang hồ hằng tuần trên Page. Claude soạn khi Tyler hỏi.
@@ -144,4 +131,4 @@ Lên bản: 2026-11-18. Bật cờ `SU_DO_ON`, có cáo thị 4.5.1 ngắn về 
 - Chân thân hiện ở sảnh tọa thiền chung và động phủ cùng nhau (đã chốt từ trước), dùng đúng tên và ngoại hình người chơi đặt.
 
 ## Điều kiện dừng
-Sau 2 tuần, nếu tỉ lệ còn chơi sau 7 ngày không tăng: giữ chân thân và huyệt (rẻ, không hại), xem lại thử thách và lợi ích. Nếu dưới 60% người mới tạo chân thân sau kiếp 1 (bỏ ngang ở màn tạo), rút gọn màn tạo còn một nút "Ngẫu nhiên" và cho chỉnh sau. Nếu Sư Đồ có dưới 5% người mới được gắn qua link thì bỏ phần link, giữ ghép tự động.
+Sau 2 tuần, nếu tỉ lệ còn chơi sau 7 ngày không tăng: giữ chân thân và huyệt (rẻ, không hại), xem lại thử thách và lợi ích. Nếu dưới 60% người mới tạo chân thân sau kiếp 1 (bỏ ngang ở màn tạo), rút gọn màn tạo còn một nút "Ngẫu nhiên" và cho chỉnh sau.
