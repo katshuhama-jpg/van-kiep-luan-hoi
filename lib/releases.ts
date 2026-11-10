@@ -24,6 +24,19 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '4.4.3',
+    date: '10/11/2026',
+    title: tr('Thiên Phú Lớn Nói Rõ Lý Do', 'Major Talents, Explained'),
+    lead: tr('Đạo hữu chọn Tiên cốt rồi không chọn được Thiên mệnh mà không biết vì sao. Giờ thẻ bị khóa ghi rõ lý do.', 'A fellow cultivator picked Immortal Bones and could not pick Child of Destiny without knowing why. Locked cards now say why.'),
+    groups: [
+      {
+        h: tr('Đầu thai', 'Rebirth'),
+        hot: true,
+        items: [tr('Từ Kiếp Số 5, mỗi kiếp chỉ chọn một trong Tiên cốt hoặc Thiên mệnh. Thẻ bị khóa nay ghi rõ điều này.', 'From Calamity Count 5, each life can take only one of Immortal Bones or Child of Destiny. The locked card now says so.')],
+      },
+    ],
+  },
+  {
     v: '4.4.2',
     date: '10/11/2026',
     title: tr('Hệ Ngũ Hành Nói Cho Rõ', 'Elements, Clearly Explained'),

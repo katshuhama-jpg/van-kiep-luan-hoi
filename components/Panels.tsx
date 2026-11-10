@@ -1079,6 +1079,12 @@ export function BirthPanel({
                         {t.name}
                         <br />
                         <small className="note">{t.desc}</small>
+                        {blocked && (
+                          <>
+                            <br />
+                            <small className="talent-why">{tr('Kiếp Số từ 5: mỗi kiếp chỉ chọn một trong Tiên cốt hoặc Thiên mệnh', 'Calamity Count 5+: pick only one of Immortal Bones or Child of Destiny per life')}</small>
+                          </>
+                        )}
                       </span>
                       <span className="cost">{t.cost}{tr(" phúc", " Fortune")}</span>
                     </button>

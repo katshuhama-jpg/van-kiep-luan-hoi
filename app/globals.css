@@ -5205,3 +5205,5 @@ button.shadow-card { cursor: pointer; }
 .cos-tomb.hg .sky { background-image: url(/bg/hg-0.png); }
 .cos-tomb.hg b { color: #ffe27a; }
 .hg-line { margin-top: 4px; font-size: 14px; color: #8a5a9a; text-align: center; }
+
+.talent-why { color: var(--red-d); font-weight: 700; font-size: 15px; }
