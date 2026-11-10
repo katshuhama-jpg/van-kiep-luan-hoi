@@ -24,6 +24,23 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '4.4.2',
+    date: '10/11/2026',
+    title: tr('Hệ Ngũ Hành Nói Cho Rõ', 'Elements, Clearly Explained'),
+    lead: tr('Đạo hữu đổi giáp hệ Kim mà công không lên. Hệ vẫn cộng, chỉ là có giới hạn mà trước giờ không ai ghi ra.', 'A fellow cultivator swapped to Metal armor and attack stayed put. Elements do count, there was just a cap nobody wrote down.'),
+    groups: [
+      {
+        h: tr('Trang bị', 'Gear'),
+        hot: true,
+        items: [
+          tr('Cấp hệ cộng dồn từ mọi món đang mặc cùng hệ, tối đa 5. Lò rèn nay ghi rõ điều này.', 'Element levels add up across every worn item of that element, up to 5. The forge now says so.'),
+          tr('Hành trang hiện các hệ đang có hiệu lực và cấp của từng hệ.', 'The bag shows your active elements and their levels.'),
+          tr('Xem một món đã rèn sẽ biết mặc vào có cộng thêm hệ hay không.', 'Viewing a forged item tells you whether wearing it would raise its element.'),
+        ],
+      },
+    ],
+  },
+  {
     v: '4.4.1',
     date: '10/11/2026',
     title: tr('Khai Thiên Cho Ra Khai Thiên', 'A Proper World-Opening'),

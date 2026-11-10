@@ -125,6 +125,10 @@ export const sealLv = (c: Character, el: Element) =>
       return a + (id && itemEl(c, id) === el ? forgeLv(c, s) : 0);
     }, 0),
   );
+/** Cấp hệ `el` nếu mặc món `id` vào ô của nó (để báo trước khi đổi đồ) */
+export const sealLvIf = (c: Character, el: Element, slot: Slot, id: string) => sealLv({ ...c, equipped: { ...c.equipped, [slot]: id } } as Character, el);
+/** Các hệ đang có hiệu lực từ đồ đang mặc */
+export const sealList = (c: Character) => EL_FX.map((x) => ({ ...x, lv: sealLv(c, x.el) })).filter((x) => x.lv > 0);
 export const sealAtk = (c: Character) => 1 + sealLv(c, 'kim') * 0.04;
 export const sealHp = (c: Character) => 1 + sealLv(c, 'moc') * 0.04;
 export const sealDef = (c: Character) => 1 + sealLv(c, 'thuy') * 0.05;

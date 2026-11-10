@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import ItemIcon from './ItemIcon';
 import { ITEMS } from '@/lib/game/data';
-import { FORGE_CHANCE, FORGE_COST, FORGE_MAX, FORGE_PER, FORGE_STAT, breakChance, elFx, forgeLv, itemEl, tinhPrice, HOA_BONUS, CHARMS, type ForgeOpts, type ForgeResult } from '@/lib/game/forge';
+import { FORGE_CHANCE, FORGE_COST, FORGE_MAX, FORGE_PER, FORGE_STAT, breakChance, elFx, forgeLv, itemEl, sealLv, tinhPrice, HOA_BONUS, CHARMS, type ForgeOpts, type ForgeResult } from '@/lib/game/forge';
 import type { Character, Slot } from '@/lib/game/types';
 import { tr } from '@/lib/i18n';
 
@@ -91,7 +91,7 @@ export default function ForgeScene({ c, slot = 'vu_khi', onForge, onBuy, onClose
           </b>
           <span className="fs-el" style={{ ['--ec' as string]: EL_COL[el.el] }}>
             
-            {tr("Hệ ", "Element ")}{el.name} · {el.short}: {el.per}{tr(" mỗi cấp ", " per level ")}{lv > 0 && res?.kind !== 'break' ? tr(`(đang cấp ${lv})`, `(currently level ${lv})`) : ''}
+            {tr("Hệ ", "Element ")}{el.name} · {el.short}: {el.per}{tr(" mỗi cấp ", " per level ")}{tr(`. Cộng dồn các món đang mặc cùng hệ, tối đa ${FORGE_MAX} (đang ${sealLv(c, el.el)}/${FORGE_MAX})`, `. Adds up across worn items of this element, up to ${FORGE_MAX} (now ${sealLv(c, el.el)}/${FORGE_MAX})`)}
           </span>
           {res && <p className={`fs-res ${res.kind}`}>{res.text}</p>}
           {res?.kind === 'break' ? (

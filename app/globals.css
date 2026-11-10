@@ -4202,6 +4202,7 @@ button.shadow-card { cursor: pointer; }
 .doll-stats dd { margin: 0; text-align: right; color: #ffd36b; font-weight: 700; font-variant-numeric: tabular-nums; }
 .doll-bar { display: flex; justify-content: space-between; gap: 8px; align-items: center; font-size: 13px; color: var(--muted, #6a5a44); }
 .doll-bar b { flex: none; padding: 2px 8px; color: #ffd36b; background: #2a1f18; border: 2px solid #1f160d; }
+.doll-seal { display: block; font-size: 12px; color: var(--jade, #2f6b5a); font-weight: 600; }
 .inv-kinds { display: flex; gap: 4px; overflow-x: auto; }
 .inv-kinds button { flex: none; padding: 4px 10px; font: inherit; font-size: 14px; background: #e4d2a6; border: 2px solid #1f160d; cursor: pointer; }
 .inv-kinds button.on { color: #fff3dc; background: #2a1f18; }

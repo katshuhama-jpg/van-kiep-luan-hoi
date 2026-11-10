@@ -5,7 +5,7 @@ import ItemIcon from './ItemIcon';
 import Sprite from './Sprite';
 import { ITEMS, PILLS, fxText as fxTextData, gearFx, type Item } from '@/lib/game/data';
 import { playerStats } from '@/lib/game/combat';
-import { FORGE_COST, FORGE_MAX, FORGE_STAT, canSmelt, elFx, forgeLevel, forgeLv, itemEl, itemForgeLv, sellValue, smeltValue, type ForgeOpts, type ForgeResult } from '@/lib/game/forge';
+import { FORGE_COST, FORGE_MAX, FORGE_STAT, canSmelt, elFx, forgeLevel, forgeLv, itemEl, itemForgeLv, sealLv, sealLvIf, sealList, sellValue, smeltValue, type ForgeOpts, type ForgeResult } from '@/lib/game/forge';
 import ForgeScene from './ForgeScene';
 import { MergeScene } from './MarketScenes';
 import type { MergeResult } from '@/lib/game/market';
@@ -147,7 +147,15 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
         </div>
       </div>
       <div className="doll-bar">
-        <span>{fxTextData(g) || tr('Trang bị chưa có chỉ số', "No equipment stats yet")}</span>
+        <span>
+          {fxTextData(g) || tr('Trang bị chưa có chỉ số', "No equipment stats yet")}
+          {sealList(c).length > 0 && (
+            <small className="doll-seal">
+              {tr('Hệ đang có: ', 'Active elements: ')}
+              {sealList(c).map((x) => `${x.name} ${x.lv}/${FORGE_MAX}`).join(' · ')}
+            </small>
+          )}
+        </span>
         <button
           type="button"
           className="doll-forge"
@@ -281,6 +289,15 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
               <small>
                 {SLOT_NAME[selItem.slot]} · {RARE_TXT[selItem.rare ?? 0]} · <span className={`el-tag e-${itemEl(c, selItem.id)}`}>{tr("Hệ ", "Element: ")}{elFx(itemEl(c, selItem.id)).name}</span>
                 {selItem.fx ? ` · ${fxText(selItem.fx)}` : ''}
+                {(() => {
+                  const el = itemEl(c, selItem.id);
+                  const now = sealLv(c, el);
+                  const then = sealLvIf(c, el, selItem.slot, selItem.id);
+                  if (isOn(selItem.id) || itemForgeLv(c, selItem.id) === 0) return null;
+                  return then === now
+                    ? tr(` · Hệ ${elFx(el).name} vẫn ${now}/${FORGE_MAX}, mặc vào không cộng thêm`, ` · ${elFx(el).name} stays ${now}/${FORGE_MAX}, wearing it adds nothing`)
+                    : tr(` · Mặc vào: hệ ${elFx(el).name} ${now} → ${then}/${FORGE_MAX}`, ` · If worn: ${elFx(el).name} ${now} → ${then}/${FORGE_MAX}`);
+                })()}
               </small>
             </span>
           </div>
