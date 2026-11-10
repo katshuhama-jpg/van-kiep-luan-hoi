@@ -18,7 +18,7 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
 ## Đã chốt (Tyler)
 
 - Làm cho mọi tài khoản, không chỉ người mới. Không khóa hệ thống nào đang có.
-- Huyệt KHÔNG mở theo số lần chết (dễ spam). Mở theo thử thách làm được trong một kiếp.
+- Huyệt KHÔNG mở theo số lần chết (dễ spam). Mở theo thử thách làm được trong một kiếp, từ dễ đến rất khó; ai cũng bắt đầu từ huyệt 1, kiếp cũ không tính (người cũ vẫn phải cày).
 - Chân thân là nhân vật cố định qua mọi kiếp, người chơi chọn ngoại hình và đặt tên. Nhân vật trong mỗi kiếp vẫn đầu thai ngẫu nhiên như cũ.
 - Màn tạo chân thân: chọn giới tính, màu da, 1 trong 10 kiểu tóc, màu tóc, và 1 trong 10 bộ trang phục đơn giản, mỗi giới tính 10 tóc và 10 trang phục. Báo rõ cho người chơi: ngoại trang khác sẽ tìm được ở các phần tiếp theo.
 - Có đoạn mở đầu dạng animation để người chơi hiểu chân thân là gì, và màn giới thiệu huyệt đạo để hiểu huyệt là gì, khai thế nào, được gì.
@@ -35,9 +35,19 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
   - 20 bộ trang phục khởi đầu (10 nam, 10 nữ), không gồm tóc: áo + màu áo từ các lớp LPC có sẵn (kimono, áo vải, đạo bào...), chỉ kiểu đơn giản, không giáp, không cánh, không hào quang. Đặt tên mộc mạc: "Áo vải thôn dã", "Đạo bào xanh", "Thư sinh"...
   - Hàm vẽ chân thân dùng lại bộ ghép lớp LPC đang có cho nhân vật, tư thế ngồi thiền (hoặc đứng nếu chưa có khung ngồi).
   - Lọc tên: 2-12 ký tự, chữ cái tiếng Việt và khoảng trắng, chặn danh sách từ tục (đưa vào `lib/game/tenCam.ts`, có cả dạng viết tắt, không dấu). Gợi ý tên ngẫu nhiên từ bộ họ tên tu tiên đang dùng.
-- [ ] `lib/game/khaiMach.ts`: 36 huyệt Chu Thiên (tên huyệt thật: Dũng Tuyền, Quan Nguyên, Khí Hải, Mệnh Môn, Trung Quản, Cự Khuyết, Đản Trung, Thiên Đột, Ấn Đường, Bách Hội...). Hàm `openHuyet(meta)` tính từ dữ liệu có sẵn (`meta.lives`, `meta.endings`, `meta.itemBook`, `meta.lore`, `meta.career`), không lưu thêm.
-  - Huyệt 1-10 (Thập Kiếp Khai Mạch): mỗi huyệt một thử thách, xét lúc kiếp kết thúc, mỗi kiếp mở tối đa 1 huyệt, theo thứ tự. Thử thách dạy dần từng hệ thống: sống qua 30 tuổi; lên Luyện Khí; vào một tông môn; lên Trúc Cơ và chọn con đường; kết đạo lữ hoặc nuôi linh thú; diệt 30 yêu thú trong một kiếp; thắng một trận giang hồ; lên Kim Đan; sống qua 100 tuổi; lên Nguyên Anh. Kiếp chết yểu hay chết vội không mở gì. Tài khoản cũ: xét từ `vkl_lives` và `meta.career`, ai từng đạt thì mở luôn.
-  - Mỗi huyệt 1-10 một lợi ích nhỏ áp lúc đầu thai (`newChar`): linh thạch khởi đầu, sức khỏe, thọ, ngộ tính, tâm cảnh, khí vận, tu luyện %, đột phá %, ngọc bội hộ thân lúc 16 tuổi. Huyệt 10 Bách Hội: chân thân thức tỉnh, danh hiệu "Khai Mạch".
+- [ ] `lib/game/khaiMach.ts`: 36 huyệt Chu Thiên (tên huyệt thật: Dũng Tuyền, Quan Nguyên, Khí Hải, Mệnh Môn, Trung Quản, Cự Khuyết, Đản Trung, Thiên Đột, Ấn Đường, Bách Hội...). Huyệt 1-10 lưu trong meta khi khai. Huyệt 11-36 tính từ dữ liệu có sẵn (`meta.endings`, `meta.itemBook`, `meta.lore`, `meta.career`).
+  - Huyệt 1-10 (Thập Đại Huyệt, Tyler 10/11: phải có dễ có khó để người cũ vẫn phải cày). Ai cũng bắt đầu từ huyệt 1 kể từ 4.5.0, KHÔNG tính kiếp cũ. Mỗi huyệt một thử thách trong một kiếp, xét lúc kiếp kết thúc, khai theo thứ tự, mỗi kiếp tối đa 1 huyệt. Tỉ lệ đạt lấy từ 21.073 kiếp 1-10/11:
+    1. Dũng Tuyền (dễ): lên Kim Đan (76%). Linh thạch khởi đầu +100.
+    2. Quan Nguyên (dễ): sống qua 60 tuổi (61%). Sức khỏe khởi đầu +5.
+    3. Khí Hải (dễ): lên Nguyên Anh khi đang ở tông môn (ước 45%). Tu luyện +2%.
+    4. Mệnh Môn (vừa): lên Hóa Thần, có đạo lữ hoặc linh thú (ước 30%). Thọ +5 năm.
+    5. Trung Quản (vừa): lên Luyện Hư và sống qua 200 tuổi (21%). Tâm cảnh +5.
+    6. Cự Khuyết (vừa): lên Độ Kiếp với đạo tâm từ 90 hoặc từ -90 (14%). Ngộ tính +5.
+    7. Đản Trung (khó): phi thăng (10%). Khí vận +5.
+    8. Thiên Đột (khó): Chứng Đạo (6,6%). Đột phá +3%.
+    9. Ấn Đường (rất khó): phi thăng trước 350 tuổi (3,9%). Ngọc bội hộ thân lúc 16 tuổi.
+    10. Bách Hội (rất khó): Chứng Đạo trước 600 tuổi (2,2%). Chân thân thức tỉnh, danh hiệu "Khai Mạch", hào quang riêng.
+  - Tổng kỳ vọng khoảng 120 kiếp; người chơi lâu (khoảng 4 kiếp/ngày) mất 3-5 tuần. Ghi vào meta danh sách huyệt đã khai và kiếp khai (không tính lại từ dữ liệu cũ). Kiểm tra thử thách lúc kiếp kết thúc từ chính Character (tông môn, đạo lữ, linh thú, đạo tâm, tuổi, cảnh giới, phi thăng, Chứng Đạo).
   - Huyệt 11-36: mở theo mốc dài hạn, không mốc nào chỉ đếm số kiếp (số kết cục, đồ ẩn, mảnh Thiên thư, lần đầu Hóa Thần, phi thăng, Chứng Đạo, cảnh giới Hồng Hoang). Thưởng chỉ mỹ quan: màu hào quang, khung bia, danh hiệu, và một số bộ ngoại trang mới cho chân thân. Không thêm sức mạnh sau Chứng Đạo.
 - [ ] Cân bằng: `npx tsx scripts/sim-do-kho.ts 3000` trước và sau với đủ 10 huyệt. Tỉ lệ lên Hóa Thần tăng không quá 3 điểm, nếu quá thì giảm số.
 - Xong:
@@ -67,7 +77,7 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
   - Đo: `huyet_intro` (xem hết hay bỏ ở khung nào, xem lại từ đâu).
 - [ ] Khi nào hiện:
   - Người mới: ngay sau khi kiếp 1 khép lại, trước màn cáo biệt. Không chen vào trước kiếp 1.
-  - Người cũ (đã có kiếp): lần đầu vào sau bản này, từ trang chủ: đoạn mở đầu, màn tạo chân thân, rồi cảnh "Chân thân thức tỉnh" nếu đã đủ 10 huyệt.
+  - Người cũ (đã có kiếp): lần đầu vào sau bản này, từ trang chủ: đoạn mở đầu, màn tạo chân thân, Chu Thiên Đồ. Bắt đầu từ huyệt 1 như người mới.
   - Bỏ qua đoạn mở đầu được, nhưng màn tạo chân thân thì phải xong mới đi tiếp (có nút Ngẫu nhiên nên chỉ mất một chạm).
 - [ ] Đổi về sau (trong trang `/chan-than`): đổi ngoại hình miễn phí bất cứ lúc nào. Đổi tên: lần đầu miễn phí, từ lần thứ hai tốn phúc duyên. Tên đi qua bộ lọc trên cả máy chủ (hàm Supabase mới), không chỉ trên trình duyệt.
 - [ ] Đo: `ct_intro` (xem hết hay bỏ qua, khung bỏ), `ct_create` (gender, hair, hairColor, outfit, random hay tự chọn, sửa tên hay giữ gợi ý), `ct_rename`.
@@ -77,17 +87,17 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
 ## Ngày 3 - Huyệt trên giao diện
 - [ ] Màn cáo biệt: chân thân của người chơi (không phải nhân vật kiếp vừa rồi) với các huyệt là chấm pixel dọc thân. Huyệt vừa khai to hơn và chớp sáng, kèm dòng "Huyệt Khí Hải khai: tu luyện +2% từ kiếp sau". Bên dưới: thanh 10 ô Thập Kiếp và thử thách của huyệt kế. Kiếp không khai huyệt thì chỉ hiện thử thách đang chờ.
 - [ ] Trang chủ: thẻ "Chân thân" dưới dải giang hồ, trên nút Lôi đài (dòng Thất Nhật Lục dời vào Tàng Kiếp Các). Thẻ có hình chân thân nhỏ với huyệt sáng, tên chân thân, thanh 10 ô, thử thách của huyệt kế, lợi ích đang hưởng. Chạm mở `/chan-than`.
-- [ ] Trang `/chan-than`: chân thân lớn, tên, nút đổi ngoại hình và tên, bảng Chu Thiên (10 huyệt Thập Kiếp với thử thách và lợi ích; 26 huyệt Chu Thiên dạng lưới, 6 ô cuối để "?"), tủ ngoại trang (bộ đã có và ô khóa ghi gợi ý cách mở).
+- [ ] Trang `/chan-than`: chân thân lớn, tên, nút đổi ngoại hình và tên, bảng Chu Thiên (10 huyệt Thập Đại Huyệt với thử thách và lợi ích; 26 huyệt Chu Thiên dạng lưới, 6 ô cuối để "?"), tủ ngoại trang (bộ đã có và ô khóa ghi gợi ý cách mở).
 - [ ] Trong kiếp: chip nhỏ góc trên trái sân khấu chỉ ghi thử thách, ví dụ "Huyệt Thiên Đột: lên Kim Đan" (không vẽ chân thân trong kiếp). Chạm mở bảng. Khi kiếp này đạt thử thách: thông báo "Kiếp này đã đủ khai huyệt X, huyệt khai khi kiếp khép lại", chip đổi sang vàng.
 - [ ] Màn đầu thai: một dòng nhỏ "Chu Thiên 7/36", chạm mở bảng.
-- [ ] Cảnh "Chân thân thức tỉnh" khi khai huyệt 10 (và một lần cho người cũ đã đủ 10): nền tinh không, 10 huyệt sáng lần lượt, nhận danh hiệu "Khai Mạch", chạm để bỏ qua.
+- [ ] Cảnh "Chân thân thức tỉnh" khi khai huyệt 10: nền tinh không, 10 huyệt sáng lần lượt, nhận danh hiệu "Khai Mạch", chạm để bỏ qua.
 - [ ] Thẻ khoe chân thân (dùng `lib/shareCard.ts`): chân thân, tên, số huyệt, danh hiệu.
 - [ ] Đo: `huyet_open` (id, lifeNo), `huyet_view`, `huyet_share`, `ct_card_tap`.
 - Xong:
 - Ghi chú:
 
 ## Ngày 4 - Thử, cáo thị, lên bản
-- [ ] Thử: Playwright 390x844 cho người mới (kiếp 1 xong, mở đầu, tạo chân thân, giới thiệu huyệt, cáo biệt có huyệt 1), người cũ 40 kiếp (mở đầu, tạo, thức tỉnh), tên tục bị chặn, đổi tên lần hai trừ phúc. Chụp ảnh gửi Tyler.
+- [ ] Thử: Playwright 390x844 cho người mới (kiếp 1 xong, mở đầu, tạo chân thân, giới thiệu huyệt, cáo biệt có huyệt 1), người cũ 40 kiếp (mở đầu, tạo, bắt đầu từ huyệt 1), kiếp đạt huyệt khó chỉ khai huyệt kế tiếp, tên tục bị chặn, đổi tên lần hai trừ phúc. Chụp ảnh gửi Tyler.
 - [ ] Quay lại đoạn mở đầu thành video ngắn dọc 9:16 (Playwright quay màn) để Tyler đăng Page và Threads làm teaser. Gửi file cho Tyler, không tự đăng.
 - [ ] Bật cờ `CHAN_THAN_ON`. Cáo thị 4.5.0 ngắn: chân thân, Chu Thiên, ngoại trang sẽ có thêm. Không ghi số cụ thể.
 - Xong:
