@@ -72,7 +72,7 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
   2. Khai thế nào: "Mỗi kiếp làm được việc huyệt đòi hỏi, mộng tan thì huyệt khai. Mỗi kiếp khai nhiều nhất một huyệt. Chết vội không khai gì." Ví dụ huyệt đầu: Dũng Tuyền - sống qua 30 tuổi.
   3. Được gì: "Mười huyệt đầu giúp kiếp sau mạnh hơn một chút. Khai đủ mười, chân thân thức tỉnh. Hai mươi sáu huyệt còn lại cho hào quang, ngoại trang, danh hiệu." Chỉ thanh 10 ô và lưới 26 ô.
   - Sau khung 3: nếu kiếp vừa rồi đã đạt thử thách huyệt 1 thì cho xem huyệt Dũng Tuyền khai ngay trên màn này (chớp sáng, dòng lợi ích), rồi sang màn cáo biệt. Chưa đạt thì hiện "Huyệt kế: Dũng Tuyền - sống qua 30 tuổi" và sang màn cáo biệt.
-  - Người cũ: xem sau màn tạo, rồi tới cảnh thức tỉnh (nếu đủ 10) hoặc màn số huyệt đã khai.
+  - Người cũ: xem sau màn tạo, kết thúc ở "Huyệt kế: Dũng Tuyền - lên Kim Đan".
   - Xem lại được: nút "?" ở trang `/chan-than`, trên chip thử thách trong kiếp và ở bảng Chu Thiên mở lại 3 khung này.
   - Đo: `huyet_intro` (xem hết hay bỏ ở khung nào, xem lại từ đâu).
 - [ ] Khi nào hiện:
