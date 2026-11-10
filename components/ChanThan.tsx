@@ -158,110 +158,167 @@ export async function checkCtName(raw: string): Promise<string | null> {
   return ok === false ? ctBlockedLine() : null;
 }
 
+type CtTab = 'than' | 'toc' | 'ao' | 'ten';
+
+/**
+ * Màn tạo chân thân, chia 4 thẻ để mỗi lúc chỉ chọn một thứ (sửa 11/11 theo góp ý Tyler: bản một cột dài quá rối).
+ * Chân thân lớn luôn ở trên, hai nút chính luôn ở dưới. Kiểu tóc và trang phục chọn bằng hình thu nhỏ thay cho chữ.
+ */
 export function CtCreate({ init, title, confirm, onDone, nameLocked }: { init?: ChanThanLook | null; title?: string; confirm?: string; onDone: (ct: ChanThanLook, info: { random: boolean; nameEdited: boolean }) => void; nameLocked?: boolean }) {
   const [ct, setCt] = useState<ChanThanLook>(() => init ?? { ...ctDefault(Math.random() < 0.5 ? 'nam' : 'nu'), name: '' });
   const [name, setName] = useState(() => init?.name || ctSuggestName(ct.gender));
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [tab, setTab] = useState<CtTab>('than');
   const random = useRef(false);
   const edited = useRef(false);
   const suggested = useRef(name);
   const set = (p: Partial<ChanThanLook>) => setCt((x) => ({ ...x, ...p }));
   const g = ct.gender;
+  const tabs: { id: CtTab; label: string }[] = [
+    { id: 'than', label: tr('Thân', 'Body') },
+    { id: 'toc', label: tr('Tóc', 'Hair') },
+    { id: 'ao', label: tr('Y phục', 'Outfit') },
+    ...(nameLocked ? [] : [{ id: 'ten' as CtTab, label: tr('Pháp danh', 'Name') }]),
+  ];
   const submit = async () => {
     if (busy) return;
     setBusy(true);
     const e = nameLocked ? null : await checkCtName(name);
     setBusy(false);
-    if (e) return setErr(e);
+    if (e) {
+      setTab('ten');
+      return setErr(e);
+    }
     onDone({ ...ct, name: nameLocked ? (init?.name ?? name) : ctCleanName(name) }, { random: random.current, nameEdited: edited.current && ctCleanName(name) !== suggested.current });
   };
   return (
     <div className="ct-create">
       <h2>{title ?? tr('Nhớ lại chân thân', 'Remember your true self')}</h2>
-      <div className="ct-big">
-        <CtSprite ct={ct} size={150} />
+      <div className="ct-hero">
+        <CtSprite ct={ct} size={170} />
+        {!nameLocked && (
+          <button className="ct-hero-name" onClick={() => setTab('ten')} aria-label={tr('Sửa pháp danh', 'Edit name')}>
+            {ctCleanName(name) || '...'}
+          </button>
+        )}
       </div>
-      <div className="ct-row" role="group" aria-label={tr('Giới tính', 'Gender')}>
-        {(['nam', 'nu'] as Gender[]).map((x) => (
-          <button key={x} className={`btn ct-opt ${g === x ? 'on' : ''}`} aria-pressed={g === x} onClick={() => g !== x && setCt((c) => ({ ...ctDefault(x, c), name: c.name }))}>
-            {x === 'nam' ? tr('Nam', 'Male') : tr('Nữ', 'Female')}
+      <div className="ct-tabs" role="tablist" aria-label={tr('Chọn ngoại hình', 'Choose appearance')}>
+        {tabs.map((t) => (
+          <button key={t.id} role="tab" aria-selected={tab === t.id} className={`ct-tab ${tab === t.id ? 'on' : ''}`} onClick={() => setTab(t.id)}>
+            {t.label}
           </button>
         ))}
       </div>
-      <div className="ct-row" role="group" aria-label={tr('Màu da', 'Skin')}>
-        {CT_SKINS.map((s, k) => (
-          <button key={k} className={`ct-sw ${ct.skin === k ? 'on' : ''}`} style={{ background: s.swatch }} aria-label={tr(`Màu da ${k + 1}`, `Skin ${k + 1}`)} aria-pressed={ct.skin === k} onClick={() => set({ skin: k })} />
-        ))}
+      <div className="ct-panel" role="tabpanel">
+        {tab === 'than' && (
+          <>
+            <p className="ct-label">{tr('Giới tính', 'Gender')}</p>
+            <div className="ct-two">
+              {(['nam', 'nu'] as Gender[]).map((x) => (
+                <button key={x} className={`btn ct-opt ${g === x ? 'on' : ''}`} aria-pressed={g === x} onClick={() => g !== x && setCt((c) => ({ ...ctDefault(x, c), name: c.name }))}>
+                  {x === 'nam' ? tr('Nam', 'Male') : tr('Nữ', 'Female')}
+                </button>
+              ))}
+            </div>
+            <p className="ct-label">{tr('Màu da', 'Skin')}</p>
+            <div className="ct-swatches" role="group" aria-label={tr('Màu da', 'Skin')}>
+              {CT_SKINS.map((s, k) => (
+                <button key={k} className={`ct-sw ${ct.skin === k ? 'on' : ''}`} style={{ background: s.swatch }} aria-label={tr(`Màu da ${k + 1}`, `Skin ${k + 1}`)} aria-pressed={ct.skin === k} onClick={() => set({ skin: k })} />
+              ))}
+            </div>
+          </>
+        )}
+        {tab === 'toc' && (
+          <>
+            <p className="ct-label">
+              {tr('Màu tóc', 'Hair color')} <b>{CT_HAIR_COLORS[ct.hairColor]?.name}</b>
+            </p>
+            <div className="ct-swatches" role="group" aria-label={tr('Màu tóc', 'Hair color')}>
+              {CT_HAIR_COLORS.map((h, k) => (
+                <button key={k} className={`ct-sw ${ct.hairColor === k ? 'on' : ''}`} style={{ background: h.hex }} aria-label={h.name} aria-pressed={ct.hairColor === k} onClick={() => set({ hairColor: k })} />
+              ))}
+            </div>
+            <p className="ct-label">
+              {tr('Kiểu tóc', 'Hair style')} <b>{CT_HAIR[g][ct.hair]?.name}</b>
+            </p>
+            <div className="ct-grid" role="group" aria-label={tr('Kiểu tóc', 'Hair style')}>
+              {CT_HAIR[g].map((h, k) => (
+                <button key={h.key} className={`ct-tile ${ct.hair === k ? 'on' : ''}`} aria-label={h.name} aria-pressed={ct.hair === k} onClick={() => set({ hair: k })}>
+                  <span className="ct-tile-head">
+                    <CtSprite ct={{ ...ct, hair: k }} size={110} />
+                  </span>
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+        {tab === 'ao' && (
+          <>
+            <p className="ct-label">
+              {tr('Trang phục', 'Outfit')} <b>{CT_OUTFITS[g][ct.outfit]?.name}</b>
+            </p>
+            <div className="ct-grid" role="group" aria-label={tr('Trang phục', 'Outfit')}>
+              {CT_OUTFITS[g].map((o, k) => (
+                <button key={k} className={`ct-tile ${ct.outfit === k ? 'on' : ''}`} aria-label={o.name} aria-pressed={ct.outfit === k} onClick={() => set({ outfit: k })}>
+                  <CtSprite ct={{ ...ct, outfit: k }} size={66} />
+                </button>
+              ))}
+            </div>
+            <small className="ct-note">{tr('Ngoại trang khác nằm rải trên đường tu: khai huyệt, viên mãn ngũ hành, ngộ đạo.', 'More outfits lie scattered along the path: opening points, perfecting elements, grasping Daos.')}</small>
+          </>
+        )}
+        {tab === 'ten' && !nameLocked && (
+          <label className="ct-name">
+            <span className="ct-label">{tr('Pháp danh', 'Dharma name')}</span>
+            <span className="ct-name-row">
+              <input
+                value={name}
+                maxLength={24}
+                onChange={(e) => {
+                  edited.current = true;
+                  setErr(null);
+                  setName(e.target.value);
+                }}
+                aria-invalid={!!err}
+              />
+              <button
+                className="btn ct-dice"
+                type="button"
+                onClick={() => {
+                  const n = ctSuggestName(g);
+                  suggested.current = n;
+                  edited.current = false;
+                  setErr(null);
+                  setName(n);
+                }}
+              >
+                {tr('Gợi tên khác', 'Another name')}
+              </button>
+            </span>
+            <small className="ct-note">{tr('Từ 2 đến 12 chữ cái.', '2 to 12 letters.')}</small>
+          </label>
+        )}
+        {err && (
+          <p className="ct-err" role="alert">
+            {err}
+          </p>
+        )}
       </div>
-      <div className="ct-scroll" role="group" aria-label={tr('Kiểu tóc', 'Hair style')}>
-        {CT_HAIR[g].map((h, k) => (
-          <button key={h.key} className={`btn ct-chip ${ct.hair === k ? 'on' : ''}`} aria-pressed={ct.hair === k} onClick={() => set({ hair: k })}>
-            {h.name}
-          </button>
-        ))}
+      <div className="ct-actions">
+        <button
+          className="btn ct-random"
+          onClick={() => {
+            random.current = true;
+            setCt((c) => ({ ...ctRandom(c.name), renamed: c.renamed, createdAt: c.createdAt }));
+          }}
+        >
+          {tr('Thuận theo duyên', 'Let fate decide')}
+        </button>
+        <button className="btn btn-dark ct-ok" disabled={busy} onClick={submit}>
+          {busy ? '...' : (confirm ?? tr('Định chân thân', 'Settle your true self'))}
+        </button>
       </div>
-      <div className="ct-row" role="group" aria-label={tr('Màu tóc', 'Hair color')}>
-        {CT_HAIR_COLORS.map((h, k) => (
-          <button key={k} className={`ct-sw ${ct.hairColor === k ? 'on' : ''}`} style={{ background: h.hex }} aria-label={h.name} title={h.name} aria-pressed={ct.hairColor === k} onClick={() => set({ hairColor: k })} />
-        ))}
-      </div>
-      <div className="ct-scroll" role="group" aria-label={tr('Trang phục', 'Outfit')}>
-        {CT_OUTFITS[g].map((o, k) => (
-          <button key={k} className={`btn ct-chip ${ct.outfit === k ? 'on' : ''}`} aria-pressed={ct.outfit === k} onClick={() => set({ outfit: k })}>
-            <span className="ct-dot" style={{ background: o.body, borderColor: o.trim }} />
-            {o.name}
-          </button>
-        ))}
-      </div>
-      <small className="ct-note">{tr('Ngoại trang khác nằm rải trên đường tu: khai huyệt, viên mãn ngũ hành, ngộ đạo.', 'More outfits lie scattered along the path: opening points, perfecting elements, grasping Daos.')}</small>
-      <button
-        className="btn ct-random"
-        onClick={() => {
-          random.current = true;
-          setCt((c) => ({ ...ctRandom(c.name), renamed: c.renamed, createdAt: c.createdAt }));
-        }}
-      >
-        {tr('Thuận theo duyên', 'Let fate decide')}
-      </button>
-      {!nameLocked && (
-        <label className="ct-name">
-          <span>{tr('Pháp danh', 'Dharma name')}</span>
-          <span className="ct-name-row">
-            <input
-              value={name}
-              maxLength={24}
-              onChange={(e) => {
-                edited.current = true;
-                setErr(null);
-                setName(e.target.value);
-              }}
-              aria-invalid={!!err}
-            />
-            <button
-              className="btn ct-dice"
-              type="button"
-              onClick={() => {
-                const n = ctSuggestName(g);
-                suggested.current = n;
-                edited.current = false;
-                setErr(null);
-                setName(n);
-              }}
-            >
-              {tr('Gợi tên khác', 'Another name')}
-            </button>
-          </span>
-        </label>
-      )}
-      {err && (
-        <p className="ct-err" role="alert">
-          {err}
-        </p>
-      )}
-      <button className="btn btn-dark ct-ok" disabled={busy} onClick={submit}>
-        {busy ? '...' : (confirm ?? tr('Định chân thân', 'Settle your true self'))}
-      </button>
     </div>
   );
 }

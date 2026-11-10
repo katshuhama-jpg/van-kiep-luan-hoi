@@ -5268,3 +5268,26 @@ body[data-ctflow='1'] { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) { .ct-line, .ct-me.flash, .ct-sole, .ct-huyet.lit, .ct-dead { animation: none !important; } }
 .ct-dark { background: #07060c; color: #efe6d0; }
 .ct-card-big .ct-big { margin: 0 auto; max-width: 260px; }
+/* 4.5.0 sửa 11/11: màn tạo chân thân chia thẻ */
+.ct-hero { display: flex; flex-direction: column; align-items: center; background: #13101c; border: 2px solid #2e2840; padding: 8px 0 6px; }
+.ct-hero-name { background: transparent; border: 0; border-bottom: 2px dashed #6e6580; color: var(--gold-l); font: inherit; font-size: 20px; padding: 2px 8px; min-height: 36px; }
+.ct-tabs { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 4px; }
+.ct-tab { background: #13101c; color: #b9ad94; border: 2px solid #2e2840; font: inherit; font-size: 15px; min-height: 44px; padding: 0 4px; }
+.ct-tab.on { background: var(--gold-l); color: var(--ink-dark); border-color: var(--gold); font-weight: 700; }
+.ct-panel { min-height: 236px; display: flex; flex-direction: column; gap: 8px; }
+.ct-label { margin: 4px 0 0; font-size: 14px; color: #b9ad94; text-align: left; }
+.ct-label b { color: #efe6d0; font-weight: 600; margin-left: 4px; }
+.ct-two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ct-two .ct-opt { min-height: 48px; font-size: 17px; }
+.ct-swatches { display: flex; flex-wrap: wrap; gap: 8px; }
+.ct-swatches .ct-sw { width: 38px; height: 38px; }
+.ct-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.ct-tile { background: #13101c; border: 2px solid #2e2840; padding: 0; height: 72px; display: grid; place-items: center; overflow: hidden; }
+.ct-tile.on { border-color: var(--gold-l); box-shadow: inset 0 0 0 2px var(--gold); background: #221c30; }
+.ct-actions { position: sticky; bottom: 0; display: grid; grid-template-columns: 1fr 1.4fr; gap: 8px; background: #07060c; padding: 8px 0 4px; border-top: 2px solid #2e2840; }
+.ct-actions .ct-random, .ct-actions .ct-ok { min-height: 48px; font-size: 16px; }
+.ct-dark .ct-actions { background: #07060c; }
+.ct-swatches { gap: 6px; }
+.ct-panel { min-height: 300px; }
+.ct-tile-head { display: block; height: 72px; width: 100%; overflow: hidden; position: relative; }
+.ct-tile-head .lpc { position: absolute; left: 50%; top: 2px; margin-left: -55px; }
