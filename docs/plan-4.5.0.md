@@ -21,7 +21,7 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
 - Huyệt KHÔNG mở theo số lần chết (dễ spam). Mở theo thử thách làm được trong một kiếp.
 - Chân thân là nhân vật cố định qua mọi kiếp, người chơi chọn ngoại hình và đặt tên. Nhân vật trong mỗi kiếp vẫn đầu thai ngẫu nhiên như cũ.
 - Màn tạo chân thân: chọn giới tính, màu da, 1 trong 10 kiểu tóc và 1 trong 10 bộ trang phục đơn giản, mỗi giới tính 10 tóc và 10 trang phục. Báo rõ cho người chơi: ngoại trang khác sẽ tìm được ở các phần tiếp theo.
-- Có đoạn mở đầu dạng animation để người chơi hiểu chân thân là gì.
+- Có đoạn mở đầu dạng animation để người chơi hiểu chân thân là gì, và màn giới thiệu huyệt đạo để hiểu huyệt là gì, khai thế nào, được gì.
 - KHÔNG hiện chân thân trong kiếp (kể cả bóng mờ). Chân thân chỉ ở ngoài: màn cáo biệt, trang chủ, bảng Chu Thiên.
 - Biên niên giang hồ: Tyler tự đăng lên Page, không làm task tự đăng.
 
@@ -42,7 +42,7 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
 - Xong:
 - Ghi chú:
 
-## Ngày 2 - Đoạn mở đầu và màn tạo chân thân
+## Ngày 2 - Đoạn mở đầu, màn tạo chân thân, giới thiệu huyệt đạo
 - [ ] Đoạn mở đầu "Mộng Tỉnh" (cảnh pixel trong game, không dùng video): 5 khung, chạm để qua, có nút Bỏ qua, nhạc nền hiện có.
   1. Màn tối, nhân vật kiếp vừa rồi tan thành bụi sáng. "Ngươi vừa chết. Nhưng đó chỉ là một giấc mộng."
   2. Giữa hư không, một bóng người ngồi thiền, chưa rõ mặt.
@@ -56,6 +56,14 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
   - Ô tên, điền sẵn tên gợi ý, nút xúc xắc đổi tên gợi ý.
   - Dòng nhỏ dưới trang phục: "Ngoại trang khác sẽ tìm được trên đường tu: khai huyệt, kết cục hiếm, cõi trên."
   - Nút "Định chân thân".
+- [ ] Màn giới thiệu huyệt đạo "Chu Thiên Đồ" (ngay sau khi định chân thân, trước màn cáo biệt): 3 khung, chạm để qua, có nút Bỏ qua. Chân thân người chơi vừa tạo đứng giữa, các huyệt hiện dần theo lời.
+  1. Huyệt là gì: "Trên chân thân có 36 huyệt Chu Thiên. Mỗi huyệt khai là một phần đạo của ngươi được giữ lại qua các giấc mộng." Các chấm huyệt hiện mờ dọc thân.
+  2. Khai thế nào: "Mỗi kiếp làm được việc huyệt đòi hỏi, mộng tan thì huyệt khai. Mỗi kiếp khai nhiều nhất một huyệt. Chết vội không khai gì." Ví dụ huyệt đầu: Dũng Tuyền - sống qua 30 tuổi.
+  3. Được gì: "Mười huyệt đầu giúp kiếp sau mạnh hơn một chút. Khai đủ mười, chân thân thức tỉnh. Hai mươi sáu huyệt còn lại cho hào quang, ngoại trang, danh hiệu." Chỉ thanh 10 ô và lưới 26 ô.
+  - Sau khung 3: nếu kiếp vừa rồi đã đạt thử thách huyệt 1 thì cho xem huyệt Dũng Tuyền khai ngay trên màn này (chớp sáng, dòng lợi ích), rồi sang màn cáo biệt. Chưa đạt thì hiện "Huyệt kế: Dũng Tuyền - sống qua 30 tuổi" và sang màn cáo biệt.
+  - Người cũ: xem sau màn tạo, rồi tới cảnh thức tỉnh (nếu đủ 10) hoặc màn số huyệt đã khai.
+  - Xem lại được: nút "?" ở trang `/chan-than`, trên chip thử thách trong kiếp và ở bảng Chu Thiên mở lại 3 khung này.
+  - Đo: `huyet_intro` (xem hết hay bỏ ở khung nào, xem lại từ đâu).
 - [ ] Khi nào hiện:
   - Người mới: ngay sau khi kiếp 1 khép lại, trước màn cáo biệt. Không chen vào trước kiếp 1.
   - Người cũ (đã có kiếp): lần đầu vào sau bản này, từ trang chủ: đoạn mở đầu, màn tạo chân thân, rồi cảnh "Chân thân thức tỉnh" nếu đã đủ 10 huyệt.
@@ -78,7 +86,7 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
 - Ghi chú:
 
 ## Ngày 4 - Thử, cáo thị, lên bản
-- [ ] Thử: Playwright 390x844 cho người mới (kiếp 1 xong, mở đầu, tạo chân thân, cáo biệt có huyệt 1), người cũ 40 kiếp (mở đầu, tạo, thức tỉnh), tên tục bị chặn, đổi tên lần hai trừ phúc. Chụp ảnh gửi Tyler.
+- [ ] Thử: Playwright 390x844 cho người mới (kiếp 1 xong, mở đầu, tạo chân thân, giới thiệu huyệt, cáo biệt có huyệt 1), người cũ 40 kiếp (mở đầu, tạo, thức tỉnh), tên tục bị chặn, đổi tên lần hai trừ phúc. Chụp ảnh gửi Tyler.
 - [ ] Quay lại đoạn mở đầu thành video ngắn dọc 9:16 (Playwright quay màn) để Tyler đăng Page và Threads làm teaser. Gửi file cho Tyler, không tự đăng.
 - [ ] Bật cờ `CHAN_THAN_ON`. Cáo thị 4.5.0 ngắn: chân thân, Chu Thiên, ngoại trang sẽ có thêm. Không ghi số cụ thể.
 - Xong:
