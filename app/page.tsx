@@ -16,6 +16,8 @@ import { track } from '@/lib/track';
 import { FB_PAGE } from '@/lib/links';
 import { ContinueBar, LiveStrip, NewGraves, NewsToast, useLive } from '@/components/LiveWorld';
 import { HomeVanKiep } from '@/components/TangKiep';
+import { HomeChanThan } from '@/components/ChanThan';
+import { CHAN_THAN_ON } from '@/lib/flags';
 
 const link = { textDecoration: 'none', display: 'block' } as const;
 
@@ -105,6 +107,7 @@ export default function Home() {
       <NewsToast d={live} />
       <ContinueBar user={user} ready={ready} guest={ready && !user} />
       {rel && <ReleaseNotice onClose={() => setRel(false)} />}
+      <HomeChanThan user={user} ready={ready} on={CHAN_THAN_ON} />
     <ProtectPrompt at="home" />
       </main>
   );

@@ -19,6 +19,9 @@ import { HG_GATE_ID, HG_TURNS, HG_VAN_THIEN_ID, VT_TOTAL, finishHgFight, vanThie
 import { hgFoe } from '@/lib/game/hongHoangFight';
 import { ENDINGS, alsoEndings, endingOf } from '@/lib/game/endings';
 import { buyCharm, buyTinh, forge, sell, smelt } from '@/lib/game/forge';
+import { CHAN_THAN_ON } from '@/lib/flags';
+import { CtFlow } from '@/components/ChanThan';
+import { khaiAfterLife, tamTaiNews } from '@/lib/game/khaiMach';
 import { BagSheet, BaoKhoSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, HuntSheet, LogPanel, OverworkBar, SEASONS, ShopSheet, Sheet, StageStrip, StatsPanel } from '@/components/Panels';
 import Radar, { charAxes, wealthScore } from '@/components/Radar';
 import { giftOf } from '@/lib/game/gacha';
@@ -193,6 +196,7 @@ export default function PlayPage() {
   const [achNews, setAchNews] = useState<string[]>([]); // thành tựu vừa đạt
   const [ghiDanh, setGhiDanh] = useState<{ name: string; realm: string; age: number; ascended: boolean; worthy?: boolean } | null>(null); // chơi thử mà chết ở cảnh giới cao: mời ghi danh
   const [loreNews, setLoreNews] = useState<string[]>([]); // mảnh Thiên thư vừa mở
+  const [ctNews, setCtNews] = useState<{ text: string; sub?: string }[]>([]); // 4.5.0: huyệt, hành, đạo vừa khai
 
   const charRef = useRef<Character | null>(null);
   const lifeT0 = useRef(0); // lúc bắt đầu kiếp trong phiên này, để đo thời gian một kiếp
@@ -1971,6 +1975,15 @@ export default function PlayPage() {
     if (c.qf?.cauHonWin) m.noDrink = 0;
     const car = updateCareer(m, c);
     m.career = car.career;
+    // 4.5.0 Tam Tài: khai huyệt (khi đã có chân thân), tin khai huyệt, hành, đạo
+    if (CHAN_THAN_ON && m.chanThan) {
+      const khai = khaiAfterLife(m, c);
+      m.huyet = khai.huyet;
+      const news = tamTaiNews(meta, m);
+      setCtNews(news.slice(0, 3));
+      const h = (m.huyet ?? []).find((x) => x.life === c.lifeNo);
+      if (h) track('huyet_open', { id: h.id, lifeNo: c.lifeNo });
+    } else setCtNews([]);
     if (car.newly.length) {
       m.achievements = [...(m.achievements ?? []), ...car.newly.map((a) => a.id)];
       m.phucDuyen += car.newly.reduce((x, a) => x + a.reward, 0);
@@ -2031,6 +2044,29 @@ export default function PlayPage() {
             </Link>
           </div>
         </header>
+        {CHAN_THAN_ON && !meta.chanThan && meta.lives >= 1 && (
+          <CtFlow
+            meta={meta}
+            dead={null}
+            from="birth"
+            onDone={(ct) => {
+              const m2 = { ...meta, chanThan: ct };
+              metaRef.current = m2;
+              setMeta(m2);
+              saveMeta(user, m2).catch(() => {});
+            }}
+          />
+        )}
+        {CHAN_THAN_ON && ctNews.length > 0 && (
+          <Link href="/chan-than" className="quest-news lore" style={{ display: 'block', textDecoration: 'none' }}>
+            {ctNews.map((n, k) => (
+              <span key={k} style={{ display: 'block' }}>
+                {n.text}
+                {n.sub && <small style={{ display: 'block' }}>{n.sub}</small>}
+              </span>
+            ))}
+          </Link>
+        )}
         {loreNews.length > 0 && (
           <Link href="/so-sinh-tu#thien-thu" className="quest-news lore" style={{ display: 'block', textDecoration: 'none' }}>
             
@@ -2488,7 +2524,20 @@ export default function PlayPage() {
           </div>
         </Sheet>
       )}
-      {c.dead && !protectFinish && <DeathSheet c={c} meta={meta} karma={karmaOf(c)} isNew={!meta.endings?.[endingOf(c).id]} onDone={(...a) => (unprotected ? (track('protect_show', { at: 'death' }), setProtectFinish(a)) : finishLife(...a))} />}
+      {c.dead && CHAN_THAN_ON && !meta.chanThan && (
+        <CtFlow
+          meta={meta}
+          dead={c}
+          from="death"
+          onDone={(ct) => {
+            const m2 = { ...meta, chanThan: ct };
+            metaRef.current = m2;
+            setMeta(m2);
+            saveMeta(user, m2).catch(() => {});
+          }}
+        />
+      )}
+      {c.dead && !protectFinish && (!CHAN_THAN_ON || !!meta.chanThan) && <DeathSheet c={c} meta={meta} karma={karmaOf(c)} isNew={!meta.endings?.[endingOf(c).id]} onDone={(...a) => (unprotected ? (track('protect_show', { at: 'death' }), setProtectFinish(a)) : finishLife(...a))} />}
       {protectFinish && (
         <ProtectGate
           mode="death"
