@@ -30,16 +30,16 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
 
 ## Ngày 1 - Dữ liệu chân thân và huyệt
 Lên bản: 2026-11-11 (cùng Ngày 2, giấu sau cờ).
-- [ ] Ghi mốc vào `docs/so-lieu.md`: còn chơi sau 1 và 7 ngày theo tuần vào, phân bố số kiếp, % đủ 10 và 31 kiếp trong 7 và 14 ngày (để lại câu SQL để chạy lại).
-- [ ] `meta.chanThan`: `{ name, gender, skin, hair, hairColor, outfit, createdAt, renamed }`, lưu cùng meta (đồng bộ lên `vkl_saves` như các trường meta khác). Chưa có thì là `null`.
-- [ ] `lib/game/chanThan.ts`:
+- [x] Ghi mốc vào `docs/so-lieu.md`: còn chơi sau 1 và 7 ngày theo tuần vào, phân bố số kiếp, % đủ 10 và 31 kiếp trong 7 và 14 ngày (để lại câu SQL để chạy lại).
+- [x] `meta.chanThan`: `{ name, gender, skin, hair, hairColor, outfit, createdAt, renamed }`, lưu cùng meta (đồng bộ lên `vkl_saves` như các trường meta khác). Chưa có thì là `null`.
+- [x] `lib/game/chanThan.ts`:
   - Bảng màu da: 6 màu, dùng đúng các tông da LPC đang có.
   - 20 kiểu tóc (10 nam, 10 nữ) từ các lớp `hair_*` có trong `public/lpc`.
   - 8 màu tóc dùng chung cho mọi kiểu, nhuộm bằng đúng cách tô màu lớp LPC đang dùng: đen tuyền, nâu đen, nâu hạt dẻ, đỏ sẫm, vàng rơm, bạc, trắng tuyết, xanh lam đậm. Mặc định đen tuyền. Đặt tên ngắn: "Búi cao", "Xõa dài", "Đuôi ngựa"...
   - 20 bộ trang phục khởi đầu (10 nam, 10 nữ), không gồm tóc: áo + màu áo từ các lớp LPC có sẵn (kimono, áo vải, đạo bào...), chỉ kiểu đơn giản, không giáp, không cánh, không hào quang. Đặt tên mộc mạc: "Áo vải thôn dã", "Đạo bào xanh", "Thư sinh"...
   - Hàm vẽ chân thân dùng lại bộ ghép lớp LPC đang có cho nhân vật, tư thế ngồi thiền (hoặc đứng nếu chưa có khung ngồi).
   - Lọc tên: 2-12 ký tự, chữ cái tiếng Việt và khoảng trắng, chặn danh sách từ tục (đưa vào `lib/game/tenCam.ts`, có cả dạng viết tắt, không dấu). Gợi ý tên ngẫu nhiên từ bộ họ tên tu tiên đang dùng.
-- [ ] `lib/game/khaiMach.ts`: Tam Tài = 10 huyệt (lưu trong meta khi khai) + 5 hành + 27 đạo. Tổng 42 dấu.
+- [x] `lib/game/khaiMach.ts`: Tam Tài = 10 huyệt (lưu trong meta khi khai) + 5 hành + 27 đạo. Tổng 42 dấu.
   - Huyệt 1-10 (Thập Đại Huyệt, Tyler 10/11: phải có dễ có khó để người cũ vẫn phải cày). Ai cũng bắt đầu từ huyệt 1 kể từ 4.5.0, KHÔNG tính kiếp cũ. Mỗi huyệt một thử thách trong một kiếp, xét lúc kiếp kết thúc, khai theo thứ tự, mỗi kiếp tối đa 1 huyệt. Tỉ lệ đạt lấy từ 21.073 kiếp 1-10/11:
     1. Dũng Tuyền (dễ): lên Kim Đan (76%). Linh thạch khởi đầu +100.
     2. Quan Nguyên (dễ): sống qua 60 tuổi (61%). Sức khỏe khởi đầu +5.
@@ -59,26 +59,26 @@ Lên bản: 2026-11-11 (cùng Ngày 2, giấu sau cờ).
     - U Minh: Sinh Tử (40 kết cục, `endings`), Lôi Kiếp (chết dưới thiên kiếp 3 lần, THÊM bộ đếm), Nại Hà (5 kiếp liền không uống canh, `noDrink`), Mạnh Bà (uống canh 30 lần, THÊM bộ đếm), Diêm La (chết không phi thăng khi đạo tâm ≤-90, THÊM cờ), Oan Hồn (báo thù 10 người chơi, `career.revenges`), Hương Hỏa (mộ mình được 500 hương, đọc từ Nghĩa trang), ẩn Từ Bi (thắp 100 mộ khác nhau, đọc từ Nghĩa trang), ẩn Minh Chung (đánh bại Kẻ Gõ Chuông, `chuongWin`).
     - Bộ đếm mới gom vào `career` (sects, partnerLives, maxMoney, thienKiepDeaths, soupDrinks, flags: hoDao, ascRight, ascLeft, diemLa). Cập nhật trong `updateCareer` lúc kiếp kết thúc.
     - Thưởng: mỗi đạo một sao / ấn / hồn đăng. Ngoại trang ở Phi Thăng, Chứng Đạo, Chính Tà, Bảo Khí, Diêm La, Minh Chung. Đủ 9 mỗi cõi: "Thiên Tôn", "Hồng Trần Tôn", "U Minh Tôn". Đủ 42 dấu: "Tam Tài Viên Mãn". Chỉ mỹ quan.
-- [ ] Cân bằng: `npx tsx scripts/sim-do-kho.ts 3000` trước và sau với đủ 10 huyệt. Tỉ lệ lên Hóa Thần tăng không quá 3 điểm, nếu quá thì giảm số.
-- Xong:
-- Ghi chú:
+- [x] Cân bằng: `npx tsx scripts/sim-do-kho.ts 3000` trước và sau với đủ 10 huyệt. Tỉ lệ lên Hóa Thần tăng không quá 3 điểm, nếu quá thì giảm số.
+- Xong: 10/11/2026 68867f5
+- Ghi chú: Mốc số liệu ở `docs/so-lieu.md` (tính theo bia `vkl_lives` vì truy vấn `vkl_events` theo người bị quá thời gian; chỉ tài khoản đăng ký). Màu da: 5 tông nhân vật đang dùng + 1 tông sẫm nhuộm cùng cách (bộ LPC chỉ có 5). Bộ LPC chưa có khung ngồi nên chân thân đứng (idle). Cân bằng (`npx tsx scripts/sim-do-kho.ts 3000`, lên Hóa Thần r5): không huyệt 13,8% / 13,2% / 15,4% (3 lần chạy, nhiễu khoảng 1 điểm, trung bình 14,1%); đủ 10 huyệt với số trong plan 23,1% (+9), riêng ngọc bội Ấn Đường đã +4. Đã giảm số (`HUYET_SO` trong khaiMach.ts): linh thạch +50, sức khỏe +2, tu luyện +1%, thọ +2, tâm cảnh +1, ngộ tính +1, khí vận +2, đột phá +1%, Ấn Đường đổi ngọc bội thành đột phá thêm +1%; đủ 10 huyệt còn 16,1% (+2 so trung bình). Chạy lại: `HUYET=10 npx tsx scripts/sim-do-kho.ts 3000`. Tầng ngũ hành tính từ 4.5.0 (hồ sơ không lưu bản mệnh các kiếp cũ). Hương Hỏa, Từ Bi đọc từ Nghĩa trang qua `DaoExt`, chưa nối (Ngày 3); Truyền Đạo chờ Sư Đồ 4.6.0. Bộ đếm mới đã ghi cho mọi người từ bản này (không hiện gì khi cờ tắt).
 
 ## Ngày 2 - Đoạn mở đầu, màn tạo chân thân, giới thiệu huyệt đạo
 Lên bản: 2026-11-11 (cùng Ngày 1, giấu sau cờ).
-- [ ] Đoạn mở đầu "Mộng Tỉnh" (cảnh pixel trong game, không dùng video): 5 khung, chạm để qua, có nút Bỏ qua, tiếng chuông xa. Giọng dẫn là Thiên Đạo, xưng "ngươi".
+- [x] Đoạn mở đầu "Mộng Tỉnh" (cảnh pixel trong game, không dùng video): 5 khung, chạm để qua, có nút Bỏ qua, tiếng chuông xa. Giọng dẫn là Thiên Đạo, xưng "ngươi".
   1. Màn tối, nhân vật kiếp vừa rồi tan thành bụi sáng. "Chuông vang. Một giấc mộng vừa tan."
   2. Hư không, bụi sáng trôi lên. "Kẻ vừa chết kia là ngươi. Nhưng cũng không phải ngươi."
   3. Bóng người ngồi thiền, chưa rõ mặt, trời trên đất dưới. "Ngươi vẫn ngồi đây, giữa trời và đất, từ trước kiếp đầu tiên."
   4. Bụi sáng bay vào bóng người, đốm sáng ở lòng bàn chân. "Mỗi kiếp là một giấc mộng. Mộng tan, chân thân còn. Điều ngươi làm được trong mộng sẽ khắc vào thân."
   5. Bóng người ngẩng đầu, mặt còn trống. "Nhưng ngươi đã quên mặt mình. Hãy nhớ lại." Chuyển sang màn tạo.
-- [ ] Màn tạo chân thân (một màn, đọc và bấm):
+- [x] Màn tạo chân thân (một màn, đọc và bấm):
   - Chân thân lớn ở giữa, đổi ngay khi chọn.
   - Hàng 1: giới tính (2 nút). Hàng 2: màu da (6 ô). Hàng 3: kiểu tóc, lướt ngang 10 kiểu của giới tính đã chọn. Hàng 4: màu tóc (8 ô). Hàng 5: trang phục, lướt ngang 10 bộ, mỗi bộ có tên. Đổi giới tính thì kiểu tóc và trang phục về lựa chọn đầu của giới đó, giữ màu da và màu tóc.
   - Tiêu đề "Nhớ lại chân thân". Nút ngẫu nhiên "Thuận theo duyên".
   - Ô "Pháp danh", điền sẵn tên gợi ý, nút xúc xắc "Gợi tên khác". Tên bị chặn: "Tên này Thiên Đạo không nhận. Chọn tên khác."
   - Dòng nhỏ dưới trang phục: "Ngoại trang khác nằm rải trên đường tu: khai huyệt, viên mãn ngũ hành, ngộ đạo."
   - Nút "Định chân thân". Sau khi định: "{Pháp danh}. Ngươi nhớ ra rồi."
-- [ ] Màn giới thiệu "Tam Tài Đồ" (ngay sau khi định chân thân, trước màn cáo biệt): 4 khung, chạm để qua, có nút Bỏ qua. Chân thân vừa tạo đứng giữa. Mỗi khung một câu dẫn + một dòng nhỏ luật.
+- [x] Màn giới thiệu "Tam Tài Đồ" (ngay sau khi định chân thân, trước màn cáo biệt): 4 khung, chạm để qua, có nút Bỏ qua. Chân thân vừa tạo đứng giữa. Mỗi khung một câu dẫn + một dòng nhỏ luật.
   1. Tam Tài: "Ngươi có thân để mang, có khí để thở, có đạo để đi. Ba thứ ấy là Tam Tài của ngươi." (10 huyệt · 5 hành · 27 đạo)
   2. Thân: "Thân có mười đại huyệt. Trong mộng làm được việc huyệt đòi, mộng tan thì huyệt khai." (Mỗi kiếp tối đa 1 huyệt, dễ trước khó sau. Huyệt khai thì kiếp sau mạnh hơn một chút.)
   3. Khí: "Mỗi giấc mộng mang một bản mệnh: Kim, Mộc, Thủy, Hỏa, Thổ. Mộng đi xa, hành ấy sáng." (Mỗi hành 3 tầng: Hóa Thần, phi thăng, Chứng Đạo.)
@@ -87,15 +87,15 @@ Lên bản: 2026-11-11 (cùng Ngày 1, giấu sau cờ).
   - Người cũ: xem sau màn tạo, kết thúc như trên. Các đạo và tầng hành đã đạt từ trước hiện sáng sẵn (tính thành tích cũ), huyệt thì vẫn từ 1.
   - Xem lại được: nút "?" ở trang `/chan-than`, trên chip thử thách trong kiếp và ở bảng Tam Tài mở lại 4 khung này.
   - Đo: `huyet_intro` (xem hết hay bỏ ở khung nào, xem lại từ đâu).
-- [ ] Lời dẫn khi khai (dữ liệu chữ trong `lib/game/khaiMach.ts`, đủ bộ ở doc Docs "Kịch bản và lời dẫn"): 10 câu khai huyệt, câu kiếp không khai ("Mộng này chưa đủ. Huyệt {tên} vẫn đợi: {thử thách}."), câu khai hành theo mẫu + 5 câu viên mãn + "Năm khí quy về một thân. Ngũ Hành Hợp Nhất.", 27 câu ngộ đạo, câu Thiên Tôn, Hồng Trần Tôn, U Minh Tôn, Tam Tài Viên Mãn.
-- [ ] Khi nào hiện:
+- [x] Lời dẫn khi khai (dữ liệu chữ trong `lib/game/khaiMach.ts`, đủ bộ ở doc Docs "Kịch bản và lời dẫn"): 10 câu khai huyệt, câu kiếp không khai ("Mộng này chưa đủ. Huyệt {tên} vẫn đợi: {thử thách}."), câu khai hành theo mẫu + 5 câu viên mãn + "Năm khí quy về một thân. Ngũ Hành Hợp Nhất.", 27 câu ngộ đạo, câu Thiên Tôn, Hồng Trần Tôn, U Minh Tôn, Tam Tài Viên Mãn.
+- [x] Khi nào hiện:
   - Người mới: ngay sau khi kiếp 1 khép lại, trước màn cáo biệt. Không chen vào trước kiếp 1.
   - Người cũ (đã có kiếp): lần đầu vào sau bản này, từ trang chủ: đoạn mở đầu, màn tạo chân thân, Tam Tài Đồ. Bắt đầu từ huyệt 1 như người mới.
   - Bỏ qua đoạn mở đầu được, nhưng màn tạo chân thân thì phải xong mới đi tiếp (có nút Ngẫu nhiên nên chỉ mất một chạm).
-- [ ] Đổi về sau (trong trang `/chan-than`): đổi ngoại hình miễn phí bất cứ lúc nào. Đổi tên: lần đầu miễn phí, từ lần thứ hai tốn phúc duyên. Tên đi qua bộ lọc trên cả máy chủ (hàm Supabase mới), không chỉ trên trình duyệt.
-- [ ] Đo: `ct_intro` (xem hết hay bỏ qua, khung bỏ), `ct_create` (gender, hair, hairColor, outfit, random hay tự chọn, sửa tên hay giữ gợi ý), `ct_rename`.
-- Xong:
-- Ghi chú:
+- [x] Đổi về sau (trong trang `/chan-than`): đổi ngoại hình miễn phí bất cứ lúc nào. Đổi tên: lần đầu miễn phí, từ lần thứ hai tốn phúc duyên. Tên đi qua bộ lọc trên cả máy chủ (hàm Supabase mới), không chỉ trên trình duyệt.
+- [x] Đo: `ct_intro` (xem hết hay bỏ qua, khung bỏ), `ct_create` (gender, hair, hairColor, outfit, random hay tự chọn, sửa tên hay giữ gợi ý), `ct_rename`.
+- Xong: 10/11/2026 70d2bef
+- Ghi chú: Lọc tên máy chủ: đã tạo hàm `vkl_ct_name_ok` (màn tạo và đổi tên gọi trước khi lưu). Trigger chặn tên ngay khi lưu hồ sơ lên `vkl_players` bị chặn lúc áp nên chưa có (SQL để sẵn, chú thích trong `supabase/chan_than_2026_11_11.sql`): hồ sơ gửi thẳng lên mà không qua màn tạo thì chưa bị lọc. Đổi tên lần hai tốn 50 phúc (plan không ghi số). Tiếng chuông dựng bằng WebAudio, tắt theo nút nhạc. Màn luân hồi tạm hiện câu khai huyệt, hành, đạo (Ngày 3 chuyển vào màn cáo biệt). Nút "?" mới có ở `/chan-than`; chip trong kiếp và bảng Tam Tài làm ở Ngày 3. Thử trên máy: `NEXT_PUBLIC_CHAN_THAN=1 npx next dev`.
 
 ## Ngày 3 - Huyệt trên giao diện
 Lên bản: 2026-11-12 (giấu sau cờ).
