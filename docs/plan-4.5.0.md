@@ -23,7 +23,7 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
 - Màn tạo chân thân: chọn giới tính, màu da, 1 trong 10 kiểu tóc, màu tóc, và 1 trong 10 bộ trang phục đơn giản, mỗi giới tính 10 tóc và 10 trang phục. Báo rõ cho người chơi: ngoại trang khác sẽ tìm được ở các phần tiếp theo.
 - Có đoạn mở đầu dạng animation để người chơi hiểu chân thân là gì, và màn giới thiệu huyệt đạo để hiểu huyệt là gì, khai thế nào, được gì.
 - KHÔNG hiện chân thân trong kiếp (kể cả bóng mờ). Chân thân chỉ ở ngoài: màn cáo biệt, trang chủ, bảng Tam Tài.
-- Tam Tài (Tyler 10/11): Thân 10 huyệt + Khí 5 hành + Đạo 26 đạo (13 Thiên đạo, 13 Địa đạo). Bỏ tên "Chu Thiên 36 huyệt". Lời dẫn đầy đủ ở doc Docs mục "Kịch bản và lời dẫn".
+- Tam Tài (Tyler 10/11): Thân 10 huyệt + Khí 5 hành + Đạo 27 đạo chia ba cõi: 9 Thiên (sao trên đầu), 9 Hồng Trần (ấn dưới chân), 9 U Minh (hồn đăng trong bóng). Tổng 42 dấu. Bỏ tên "Chu Thiên 36 huyệt". Không dùng "Nhân đạo" (trùng nghĩa nhân từ), không để chữ "Âm" đứng ngay trước "đạo": nhãn ngắn của U Minh là "Âm Ti". Lời dẫn đầy đủ ở doc Docs mục "Kịch bản và lời dẫn".
 - Biên niên giang hồ: Tyler tự đăng lên Page, không làm task tự đăng.
 
 ## Ngày 1 - Dữ liệu chân thân và huyệt
@@ -36,7 +36,7 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
   - 20 bộ trang phục khởi đầu (10 nam, 10 nữ), không gồm tóc: áo + màu áo từ các lớp LPC có sẵn (kimono, áo vải, đạo bào...), chỉ kiểu đơn giản, không giáp, không cánh, không hào quang. Đặt tên mộc mạc: "Áo vải thôn dã", "Đạo bào xanh", "Thư sinh"...
   - Hàm vẽ chân thân dùng lại bộ ghép lớp LPC đang có cho nhân vật, tư thế ngồi thiền (hoặc đứng nếu chưa có khung ngồi).
   - Lọc tên: 2-12 ký tự, chữ cái tiếng Việt và khoảng trắng, chặn danh sách từ tục (đưa vào `lib/game/tenCam.ts`, có cả dạng viết tắt, không dấu). Gợi ý tên ngẫu nhiên từ bộ họ tên tu tiên đang dùng.
-- [ ] `lib/game/khaiMach.ts`: Tam Tài = 10 huyệt (lưu trong meta khi khai) + 5 hành + 26 đạo (tính từ dữ liệu có sẵn `meta.endings`, `meta.itemBook`, `meta.lore`, `meta.career` và các bộ đếm mới cần thêm). Tổng 51 dấu.
+- [ ] `lib/game/khaiMach.ts`: Tam Tài = 10 huyệt (lưu trong meta khi khai) + 5 hành + 27 đạo. Tổng 42 dấu.
   - Huyệt 1-10 (Thập Đại Huyệt, Tyler 10/11: phải có dễ có khó để người cũ vẫn phải cày). Ai cũng bắt đầu từ huyệt 1 kể từ 4.5.0, KHÔNG tính kiếp cũ. Mỗi huyệt một thử thách trong một kiếp, xét lúc kiếp kết thúc, khai theo thứ tự, mỗi kiếp tối đa 1 huyệt. Tỉ lệ đạt lấy từ 21.073 kiếp 1-10/11:
     1. Dũng Tuyền (dễ): lên Kim Đan (76%). Linh thạch khởi đầu +100.
     2. Quan Nguyên (dễ): sống qua 60 tuổi (61%). Sức khỏe khởi đầu +5.
@@ -50,10 +50,12 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
     10. Bách Hội (rất khó): Chứng Đạo trước 600 tuổi (2,2%). Chân thân thức tỉnh, danh hiệu "Khai Mạch", hào quang riêng.
   - Tổng kỳ vọng khoảng 120 kiếp; người chơi lâu (khoảng 4 kiếp/ngày) mất 3-5 tuần. Ghi vào meta danh sách huyệt đã khai và kiếp khai (không tính lại từ dữ liệu cũ). Kiểm tra thử thách lúc kiếp kết thúc từ chính Character (tông môn, đạo lữ, linh thú, đạo tâm, tuổi, cảnh giới, phi thăng, Chứng Đạo).
   - Ngũ Hành (Khí): mỗi kiếp mang 1 bản mệnh. Mỗi hành 3 tầng: kiếp mệnh đó lên Hóa Thần / phi thăng / Chứng Đạo. Tầng 1 hào quang màu hành, tầng 2 ngoại trang hành, tầng 3 danh hiệu "{Hành} Viên Mãn". Đủ 5 hành tầng 3: "Ngũ Hành Hợp Nhất". Ước ~75 kiếp mỗi hành, ~170 kiếp cho cả 5. Chỉ mỹ quan.
-  - 26 Đạo (Đạo), tính cả thành tích cũ:
-    - 13 Thiên đạo (đường lên trời, sao trên đầu): Vấn Thiên (lần đầu Hóa Thần), Lôi Kiếp (chết dưới thiên kiếp 3 lần), Phi Thăng, Tam Giới (Tiên, Ma, Thái Hư), Chứng Đạo, Hộ Đạo (Vạn Kiếp Hộ Đạo đỡ lôi), Trường Sinh (sống 1000 tuổi), Sinh Tử (40 kết cục), Thiên Thư (10 mảnh Q.I), Hồng Hoang (lên Chuẩn Thánh), Khai Thiên, ẩn Thiên Cơ (20 mảnh), ẩn Thiên Đạo (kết cục Hóa Thành Thiên Đạo).
-    - 13 Địa đạo (đường ở đời, ấn dưới chân): Nhập Thế (5 tông môn), Lục Lộ (6 đường), Chính (phi thăng với đạo tâm 100), Ma (phi thăng với đạo tâm -100), Nhân Duyên (đạo lữ 20 kiếp), Ngự Thú (30 linh thú), Bảo Khí (150 đồ), Phú Quý (100.000 linh thạch trong 1 kiếp), Giang Hồ (100 trận lôi đài), Lôi Đài (top 3 tuần), Hương Hỏa (500 hương), ẩn Từ Bi (thắp 100 mộ), ẩn Truyền Đạo (môn hạ 20, cần Sư Đồ).
-    - Thưởng: mỗi đạo 1 sao/ấn; đủ 13 Thiên: "Thiên Tôn"; đủ 13 Địa: "Địa Tôn"; đủ cả 51 dấu: "Tam Tài Viên Mãn". Chỉ mỹ quan, không thêm sức mạnh sau Chứng Đạo.
+  - 27 Đạo. Mốc dùng dữ liệu có sẵn thì tính cả thành tích cũ; mốc cần bộ đếm mới thì tính từ 4.5.0. Đạo (ẩn) giấu tên và cách mở.
+    - Thiên: Vấn Thiên (lần đầu Hóa Thần, `career.maxRealm`), Phi Thăng (`achievements` phi_thang), Tam Thiên (đủ Tiên, Ma, Thái Hư, `career.cosmoses`), Chứng Đạo (`endings`), Hộ Đạo (Vạn Kiếp Hộ Đạo đỡ lôi, THÊM cờ), Trường Sinh (1000 tuổi, `career.maxAge`), Thiên Thư (10 mảnh Q.I, `lore`), Hồng Hoang (Chuẩn Thánh, `career.maxRealm`), ẩn Thiên Đạo (kết cục Hóa Thành Thiên Đạo, `endings`).
+    - Hồng Trần: Nhập Thế (5 tông môn, THÊM `career.sects`), Lục Lộ (6 đường, `career.paths`), Chính Tà (phi thăng một lần đạo tâm ≥90 và một lần ≤-90, THÊM 2 cờ), Nhân Duyên (đạo lữ trong 20 kiếp, THÊM bộ đếm), Ngự Thú (30 loài, `petBook`), Bảo Khí (150 đồ ẩn, `itemBook`), Phú Quý (100.000 linh thạch trong 1 kiếp, THÊM `career.maxMoney`), Giang Hồ (thắng 100 người chơi, `career.duelWins`), ẩn Truyền Đạo (20 môn hạ, cần Sư Đồ).
+    - U Minh: Sinh Tử (40 kết cục, `endings`), Lôi Kiếp (chết dưới thiên kiếp 3 lần, THÊM bộ đếm), Nại Hà (5 kiếp liền không uống canh, `noDrink`), Mạnh Bà (uống canh 30 lần, THÊM bộ đếm), Diêm La (chết không phi thăng khi đạo tâm ≤-90, THÊM cờ), Oan Hồn (báo thù 10 người chơi, `career.revenges`), Hương Hỏa (mộ mình được 500 hương, đọc từ Nghĩa trang), ẩn Từ Bi (thắp 100 mộ khác nhau, đọc từ Nghĩa trang), ẩn Minh Chung (đánh bại Kẻ Gõ Chuông, `chuongWin`).
+    - Bộ đếm mới gom vào `career` (sects, partnerLives, maxMoney, thienKiepDeaths, soupDrinks, flags: hoDao, ascRight, ascLeft, diemLa). Cập nhật trong `updateCareer` lúc kiếp kết thúc.
+    - Thưởng: mỗi đạo một sao / ấn / hồn đăng. Ngoại trang ở Phi Thăng, Chứng Đạo, Chính Tà, Bảo Khí, Diêm La, Minh Chung. Đủ 9 mỗi cõi: "Thiên Tôn", "Hồng Trần Tôn", "U Minh Tôn". Đủ 42 dấu: "Tam Tài Viên Mãn". Chỉ mỹ quan.
 - [ ] Cân bằng: `npx tsx scripts/sim-do-kho.ts 3000` trước và sau với đủ 10 huyệt. Tỉ lệ lên Hóa Thần tăng không quá 3 điểm, nếu quá thì giảm số.
 - Xong:
 - Ghi chú:
@@ -73,15 +75,15 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
   - Dòng nhỏ dưới trang phục: "Ngoại trang khác nằm rải trên đường tu: khai huyệt, viên mãn ngũ hành, ngộ đạo."
   - Nút "Định chân thân". Sau khi định: "{Pháp danh}. Ngươi nhớ ra rồi."
 - [ ] Màn giới thiệu "Tam Tài Đồ" (ngay sau khi định chân thân, trước màn cáo biệt): 4 khung, chạm để qua, có nút Bỏ qua. Chân thân vừa tạo đứng giữa. Mỗi khung một câu dẫn + một dòng nhỏ luật.
-  1. Tam Tài: "Trời có Thiên đạo, đất có Địa đạo, người đứng giữa. Chân thân của ngươi là chữ Nhân ấy." (10 huyệt · 5 hành · 26 đạo)
+  1. Tam Tài: "Ngươi có thân để mang, có khí để thở, có đạo để đi. Ba thứ ấy là Tam Tài của ngươi." (10 huyệt · 5 hành · 27 đạo)
   2. Thân: "Thân có mười đại huyệt. Trong mộng làm được việc huyệt đòi, mộng tan thì huyệt khai." (Mỗi kiếp tối đa 1 huyệt, dễ trước khó sau. Huyệt khai thì kiếp sau mạnh hơn một chút.)
   3. Khí: "Mỗi giấc mộng mang một bản mệnh: Kim, Mộc, Thủy, Hỏa, Thổ. Mộng đi xa, hành ấy sáng." (Mỗi hành 3 tầng: Hóa Thần, phi thăng, Chứng Đạo.)
-  4. Đạo: "Mười ba Thiên đạo ở trên, mười ba Địa đạo ở dưới. Đạo không ngộ trong một kiếp, mà qua vạn kiếp." (Thiên đạo: đường lên trời. Địa đạo: đường ở đời.)
+  4. Đạo: "Trên đầu, chín Thiên đạo. Dưới chân, chín nẻo Hồng Trần. Trong bóng ngươi, chín ngọn đèn U Minh. Đạo không ngộ trong một kiếp, mà qua vạn kiếp." (Thiên: đường lên trời. Hồng Trần: đường ở đời. U Minh: đường của cái chết.)
   - Kết: "Huyệt đầu tiên, Dũng Tuyền, đợi ngươi lên Kim Đan." Nếu kiếp vừa rồi đã đạt thì cho xem Dũng Tuyền khai ngay (chớp sáng, câu khai huyệt 1), rồi sang màn cáo biệt.
   - Người cũ: xem sau màn tạo, kết thúc như trên. Các đạo và tầng hành đã đạt từ trước hiện sáng sẵn (tính thành tích cũ), huyệt thì vẫn từ 1.
   - Xem lại được: nút "?" ở trang `/chan-than`, trên chip thử thách trong kiếp và ở bảng Tam Tài mở lại 4 khung này.
   - Đo: `huyet_intro` (xem hết hay bỏ ở khung nào, xem lại từ đâu).
-- [ ] Lời dẫn khi khai (dữ liệu chữ trong `lib/game/khaiMach.ts`, đủ bộ ở doc Docs "Kịch bản và lời dẫn"): 10 câu khai huyệt, câu kiếp không khai ("Mộng này chưa đủ. Huyệt {tên} vẫn đợi: {thử thách}."), câu khai hành theo mẫu + 5 câu viên mãn + "Năm khí quy về một thân. Ngũ Hành Hợp Nhất.", 26 câu ngộ đạo, câu Thiên Tôn, Địa Tôn, Tam Tài Viên Mãn.
+- [ ] Lời dẫn khi khai (dữ liệu chữ trong `lib/game/khaiMach.ts`, đủ bộ ở doc Docs "Kịch bản và lời dẫn"): 10 câu khai huyệt, câu kiếp không khai ("Mộng này chưa đủ. Huyệt {tên} vẫn đợi: {thử thách}."), câu khai hành theo mẫu + 5 câu viên mãn + "Năm khí quy về một thân. Ngũ Hành Hợp Nhất.", 27 câu ngộ đạo, câu Thiên Tôn, Hồng Trần Tôn, U Minh Tôn, Tam Tài Viên Mãn.
 - [ ] Khi nào hiện:
   - Người mới: ngay sau khi kiếp 1 khép lại, trước màn cáo biệt. Không chen vào trước kiếp 1.
   - Người cũ (đã có kiếp): lần đầu vào sau bản này, từ trang chủ: đoạn mở đầu, màn tạo chân thân, Tam Tài Đồ. Bắt đầu từ huyệt 1 như người mới.
@@ -94,9 +96,9 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
 ## Ngày 3 - Huyệt trên giao diện
 - [ ] Màn cáo biệt: chân thân của người chơi (không phải nhân vật kiếp vừa rồi) với các huyệt là chấm pixel dọc thân. Huyệt vừa khai to hơn và chớp sáng, kèm dòng "Huyệt Khí Hải khai: tu luyện +2% từ kiếp sau". Bên dưới: thanh 10 ô Thập Kiếp và thử thách của huyệt kế. Kiếp không khai huyệt thì chỉ hiện thử thách đang chờ.
 - [ ] Trang chủ: thẻ "Chân thân" dưới dải giang hồ, trên nút Lôi đài (dòng Thất Nhật Lục dời vào Tàng Kiếp Các). Thẻ có hình chân thân nhỏ với huyệt sáng, tên chân thân, thanh 10 ô, thử thách của huyệt kế, lợi ích đang hưởng. Chạm mở `/chan-than`.
-- [ ] Trang `/chan-than`: chân thân lớn, tên, nút đổi ngoại hình và tên, bảng Tam Tài 3 tab: Thân (10 huyệt với thử thách và lợi ích), Khí (5 hành x 3 tầng), Đạo (13 sao Thiên đạo trên, 13 ấn Địa đạo dưới; đạo ẩn để "?"), tủ ngoại trang (bộ đã có và ô khóa ghi gợi ý cách mở).
+- [ ] Trang `/chan-than`: chân thân lớn, tên, nút đổi ngoại hình và tên, bảng Tam Tài 3 tab: Thân (10 huyệt với thử thách và lợi ích), Khí (5 hành x 3 tầng), Đạo (9 sao Thiên trên đầu, 9 ấn Hồng Trần dưới chân, 9 hồn đăng U Minh trong bóng; đạo ẩn để "?"), tủ ngoại trang (bộ đã có và ô khóa ghi gợi ý cách mở).
 - [ ] Trong kiếp: chip nhỏ góc trên trái sân khấu chỉ ghi thử thách, ví dụ "Huyệt Thiên Đột: lên Kim Đan" (không vẽ chân thân trong kiếp). Chạm mở bảng. Khi kiếp này đạt thử thách: thông báo "Kiếp này đã đủ khai huyệt X, huyệt khai khi kiếp khép lại", chip đổi sang vàng.
-- [ ] Màn đầu thai: một dòng nhỏ "Tam Tài 20/51", chạm mở bảng.
+- [ ] Màn đầu thai: một dòng nhỏ "Tam Tài 20/42", chạm mở bảng.
 - [ ] Cảnh "Chân thân thức tỉnh" khi khai huyệt 10, 4 nhịp: chân thân ngồi nhắm mắt (im lặng); 10 huyệt sáng từ chân lên đỉnh đầu, mỗi huyệt một tiếng chuông, "Mười tiếng chuông."; chân thân mở mắt, "Lần này, người tỉnh dậy là ngươi."; danh hiệu "Khai Mạch.". Chạm để bỏ qua.
 - [ ] Màn cáo biệt cũng hiện câu khai hành / ngộ đạo khi kiếp đó vừa đạt (tối đa 2 dòng, huyệt ưu tiên).
 - [ ] Thẻ khoe chân thân (dùng `lib/shareCard.ts`): chân thân, tên, số huyệt, danh hiệu.
