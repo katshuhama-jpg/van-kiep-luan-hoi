@@ -31,6 +31,7 @@ Tyler chốt 10/11: toàn bộ 4.6.0 xong trong đêm 17/11, lên bản 18/11. M
 - Mỗi kiếp chơi xong nạp linh khí cho động phủ (có trần mỗi ngày). Kiếp nuôi động phủ, động phủ không cộng sức mạnh ngược vào kiếp.
 - Sư Đồ gộp vào đây: sơn môn là liên minh, sư phụ kéo đệ tử vào môn.
 - Mở động phủ bắt buộc tài khoản đã liên kết (Google hoặc Sổ Luân Hồi).
+- Trần linh khí từ kiếp: 300/ngày/tài khoản (Tyler 10/11).
 - Lên trang 5:00: giờ ít người nhất (14 ngày tới 10/11: 4h có 104 người, 5h có 98 người, cao nhất 22h có 438 người). Lịch chạy đêm bắt đầu 21:17 hôm trước để đủ giờ làm hai khối.
 
 ## Vì sao

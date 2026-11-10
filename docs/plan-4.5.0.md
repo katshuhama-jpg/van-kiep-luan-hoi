@@ -25,6 +25,8 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
 - KHÔNG hiện chân thân trong kiếp (kể cả bóng mờ). Chân thân chỉ ở ngoài: màn cáo biệt, trang chủ, bảng Tam Tài.
 - Tam Tài (Tyler 10/11): Thân 10 huyệt + Khí 5 hành + Đạo 27 đạo chia ba cõi: 9 Thiên (sao trên đầu), 9 Hồng Trần (ấn dưới chân), 9 U Minh (hồn đăng trong bóng). Tổng 42 dấu. Bỏ tên "Chu Thiên 36 huyệt". Không dùng "Nhân đạo" (trùng nghĩa nhân từ), không để chữ "Âm" đứng ngay trước "đạo": nhãn ngắn của U Minh là "Âm Ti". Lời dẫn đầy đủ ở doc Docs mục "Kịch bản và lời dẫn".
 - Biên niên giang hồ: Tyler tự đăng lên Page, không làm task tự đăng.
+- Viên mãn một hành KHÔNG cho tự chọn bản mệnh, bản mệnh mỗi kiếp vẫn ngẫu nhiên (Tyler 10/11, giữ cân bằng Lôi đài).
+- 27 đạo tính cả thành tích trước 4.5.0 (mốc có dữ liệu sẵn); 10 huyệt thì không (Tyler 10/11).
 
 ## Ngày 1 - Dữ liệu chân thân và huyệt
 Lên bản: 2026-11-11 (cùng Ngày 2, giấu sau cờ).
