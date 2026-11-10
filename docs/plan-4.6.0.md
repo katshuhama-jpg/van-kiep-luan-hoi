@@ -8,21 +8,20 @@ Luật chung như đầu `docs/plan-4.5.0.md`: mỗi lần chạy làm mọi kh�
 
 ## Lịch tổng từ 11/11 (lên trang 5:00 mỗi sáng)
 
+Tyler chốt 10/11: toàn bộ 4.6.0 xong trong đêm 17/11, lên bản 18/11. Mỗi đêm 14-16/11 làm hai khối.
+
 | Ngày | Bản | Việc | Người chơi thấy |
 |---|---|---|---|
 | 11/11 | 4.5.0 Ngày 1-2 | Dữ liệu chân thân, Tam Tài, Mộng Tỉnh, màn tạo, Tam Tài Đồ | Chưa |
 | 12/11 | 4.5.0 Ngày 3 | Cáo biệt, thẻ trang chủ, trang chân thân, chip, thức tỉnh | Chưa |
 | 13/11 | 4.5.0 Ngày 4 | Bật chân thân, cáo thị 4.5.0 | Có |
-| 14/11 | 4.6.0 Ngày 1 | Máy chủ Sơn Môn | Chưa |
-| 15/11 | 4.6.0 Ngày 2 | Số liệu, mô phỏng | Chưa |
-| 16/11 | 4.6.0 Ngày 3 | Màn động phủ | Chưa |
-| 17/11 | 4.6.0 Ngày 4 | Bản đồ, xuất quân, chiến báo | Chưa |
-| 18/11 | 4.6.0 Ngày 5 | Sơn môn, Sư Đồ | Chưa |
-| 19/11 | 4.6.0 Ngày 6 | Hero, phúc địa, Thiên Đạo Đài | Chưa |
-| 20/11 | 4.6.0 Ngày 7 | Kết Kỷ, thử 30 bot | Chưa |
-| 21/11 | 4.6.0 Ngày 8 | Bật Sơn Môn, Kỷ 1 bắt đầu, cáo thị 4.6.0 | Có |
-| 4/12 21:00 | | Kỷ 1 kết thúc | |
-| 6/12 | | Kỷ 2 bắt đầu | |
+| 14/11 | 4.6.0 Ngày 1 + 2 | Máy chủ Sơn Môn, số liệu, mô phỏng | Chưa |
+| 15/11 | 4.6.0 Ngày 3 + 4 | Màn động phủ, bản đồ, xuất quân, chiến báo | Chưa |
+| 16/11 | 4.6.0 Ngày 5 + 6 | Sơn môn, Sư Đồ, hero, phúc địa, Thiên Đạo Đài | Chưa |
+| 17/11 | 4.6.0 Ngày 7 | Kết Kỷ, thử 30 bot, sửa lỗi. Xong toàn bộ | Chưa |
+| 18/11 | 4.6.0 Ngày 8 | Bật Sơn Môn, Kỷ 1 bắt đầu, cáo thị 4.6.0 | Có |
+| 1/12 21:00 | | Kỷ 1 kết thúc | |
+| 3/12 | | Kỷ 2 bắt đầu | |
 
 ## Đã chốt (Tyler 10/11)
 
@@ -103,7 +102,7 @@ Luật chung như đầu `docs/plan-4.5.0.md`: mỗi lần chạy làm mọi kh�
 | 120-300 | 14 ngày | 31x31 |
 | Trên 300 | 21 ngày | 41x41 |
 
-- Kỷ 1: 14 ngày (31x31), bắt đầu 5:00 ngày 21/11/2026, kết thúc 21:00 ngày 4/12/2026. Nghỉ 1 ngày giữa hai Kỷ (5/12), Kỷ 2 bắt đầu 5:00 ngày 6/12.
+- Kỷ 1: 14 ngày (31x31), bắt đầu 5:00 ngày 18/11/2026, kết thúc 21:00 ngày 1/12/2026. Nghỉ 1 ngày giữa hai Kỷ (2/12), Kỷ 2 bắt đầu 5:00 ngày 3/12.
 - **Mốc cuối Kỷ**: còn 4 ngày (Kỷ 10 ngày: còn 3) thì Thiên Đạo Đài mở. Sơn môn chiếm một Đài từ tay Tam Giáo, rồi góp tài nguyên và linh khí xây tầng 1-20. Đài bị công phá thì mất tầng. Môn đầu tiên xây tới tầng 20, hoặc tầng cao nhất khi hết giờ, **Khai Thiên Lập Địa**: Kỷ sau mang tên môn đó ("Kỷ Thanh Hư").
 - **Hết Kỷ**: thế giới reset. Giữ vĩnh viễn: danh hiệu, ngoại trang chân thân, tên trên bia Kỷ ở Nghĩa trang. Không mang tài nguyên hay quân sang Kỷ sau.
 - **Sự kiện**: mỗi Thứ 7 20:00 có Yêu Triều (sóng NPC đánh mọi động phủ, thủ được thì nhận thưởng). Tam Giới Hội Chiến tháng để Kỷ 3 trở đi khi đủ người.
@@ -131,7 +130,7 @@ Lên bản: 2026-11-14 (giấu sau cờ). Chỉ làm khi 4.5.0 (bật 13/11) kh�
 - Ghi chú:
 
 ## Ngày 2 - Số liệu và mô phỏng
-Lên bản: 2026-11-15 (giấu sau cờ).
+Lên bản: 2026-11-14 (giấu sau cờ).
 - [ ] `lib/sonmon/data.ts`: công trình (giá, giờ theo cấp), 15 loại đệ tử, nghiên cứu, công thức trận (bản TypeScript dùng để hiện ước tính; máy chủ là bản thật).
 - [ ] `scripts/sim-son-mon.ts`: mô phỏng 200 người chơi 14 ngày (người chơi 1 lần/ngày, 4 lần/ngày, người hăng). Mục tiêu: người 1 lần/ngày lên Chính Điện cấp 10 vào khoảng ngày 7; người hăng không quá 2 lần người thường; 3 giới thắng thua lệch không quá 55/45. Ghi số vào "Ghi chú:".
 - [ ] Đưa số đã cân bằng vào hàm máy chủ.
@@ -139,7 +138,7 @@ Lên bản: 2026-11-15 (giấu sau cờ).
 - Ghi chú:
 
 ## Ngày 3 - Giao diện động phủ
-Lên bản: 2026-11-16 (giấu sau cờ).
+Lên bản: 2026-11-15 (giấu sau cờ).
 - [ ] Trang `/son-mon`: lần đầu là màn chọn giới (3 thẻ, mỗi thẻ 1 câu lợi thế và bộ đệ tử) rồi chọn vùng (gần tâm, giữa, rìa). Lời dẫn giọng Thiên Đạo.
 - [ ] Màn động phủ: tài nguyên, sơ đồ công trình dạng ô pixel, hàng chờ có đồng hồ, nút xây và luyện to, dùng được một tay.
 - [ ] Trang chủ: thẻ "Động phủ" cạnh thẻ chân thân (hàng chờ xong, quân đang tới). Màn cáo biệt kiếp: dòng "+20 linh khí về động phủ".
@@ -148,7 +147,7 @@ Lên bản: 2026-11-16 (giấu sau cờ).
 - Ghi chú:
 
 ## Ngày 4 - Bản đồ, xuất quân, chiến báo
-Lên bản: 2026-11-17 (giấu sau cờ).
+Lên bản: 2026-11-15 (giấu sau cờ).
 - [ ] Bản đồ cuộn ô pixel, chạm ô xem chủ, cấp, khoảng cách. Lọc: yêu động gần nhất, phúc địa trống.
 - [ ] Xuất quân 3 lần bấm (ô, kiểu, bộ quân). Quân đi đường hiện ở thẻ động phủ.
 - [ ] `pg_cron` mỗi phút xử lý quân tới nơi: tính trận, cướp, công phá, chiêu hàng, viện binh, quân về. Giờ đêm thủ x2.
@@ -158,7 +157,7 @@ Lên bản: 2026-11-17 (giấu sau cờ).
 - Ghi chú:
 
 ## Ngày 5 - Sơn môn và Sư Đồ
-Lên bản: 2026-11-18 (giấu sau cờ).
+Lên bản: 2026-11-16 (giấu sau cờ).
 - [ ] Lập sơn môn (Chính Điện cấp 5, tên ghép), mời, rời (chờ 24 giờ), trần 12 người.
 - [ ] Viện binh, xem quân đang tới đồng môn, tin trong môn bằng câu chọn sẵn.
 - [ ] Link Sư Đồ `/?su=<tên>`: lưu cookie, người mới vào thẳng môn, động phủ đặt gần sư phụ. Thưởng sư phụ theo mốc đệ tử, tối đa 5 đệ tử mới/tuần. Thẻ chia sẻ OG: chân thân sư phụ và dòng "<tên> mời ngươi nhập môn".
@@ -167,7 +166,7 @@ Lên bản: 2026-11-18 (giấu sau cờ).
 - Ghi chú:
 
 ## Ngày 6 - Chân thân làm hero, phúc địa, Thiên Đạo Đài
-Lên bản: 2026-11-19 (giấu sau cờ).
+Lên bản: 2026-11-16 (giấu sau cờ).
 - [ ] Chân thân dẫn quân: cộng từ huyệt và hành, bị thương nghỉ 6 giờ.
 - [ ] Chiếm phúc địa (tối đa 2), chiêu hàng động phủ, dời phủ cho người bị chiếm.
 - [ ] Thiên Đạo Đài: mở ở mốc cuối Kỷ, chiếm từ Tam Giáo, góp xây tầng, bị công phá mất tầng, Khai Thiên Lập Địa.
@@ -176,7 +175,7 @@ Lên bản: 2026-11-19 (giấu sau cờ).
 - Ghi chú:
 
 ## Ngày 7 - Hết Kỷ, xếp hạng, thử toàn bộ
-Lên bản: 2026-11-20 (giấu sau cờ).
+Lên bản: 2026-11-17 (giấu sau cờ).
 - [ ] Kết Kỷ: xếp hạng, phát danh hiệu và ngoại trang, bia Kỷ trong Nghĩa trang, reset, sinh bản đồ Kỷ mới theo bảng số người.
 - [ ] Thử: chạy một Kỷ rút gọn 2 giờ trên nhánh preview với 30 bot (script) để kiểm tra cron, trận, Đài, kết Kỷ. Playwright 390x844 cho người mới: chọn giới, xây, luyện, đánh yêu động, vào môn qua link.
 - [ ] Trang quản trị nhỏ cho Tyler: số động phủ mỗi giới, trận/ngày, các tài khoản bị đánh dấu.
@@ -184,7 +183,7 @@ Lên bản: 2026-11-20 (giấu sau cờ).
 - Ghi chú:
 
 ## Ngày 8 - Lên bản, Kỷ 1 bắt đầu
-Lên bản: 2026-11-21. Bật cờ `SON_MON_ON`, có cáo thị 4.6.0.
+Lên bản: 2026-11-18. Bật cờ `SON_MON_ON`, có cáo thị 4.6.0.
 - [ ] Tạo Kỷ 1 (14 ngày, 31x31) bắt đầu đúng 5:00.
 - [ ] Cáo thị 4.6.0 ngắn: động phủ, ba giới, sơn môn, sư đồ, Kỷ 14 ngày, Khai Thiên Lập Địa. Không hứa ngày Kỷ sau.
 - [ ] Video ngắn 9:16 (Playwright quay): chọn giới, xây, xuất quân, chiến báo. Gửi Tyler, không tự đăng.
