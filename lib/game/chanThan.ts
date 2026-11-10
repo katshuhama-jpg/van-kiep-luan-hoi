@@ -163,4 +163,4 @@ export function ctSuggestName(gender: Gender, rnd: () => number = Math.random): 
 }
 
 /** Đổi pháp danh: lần đầu miễn phí, từ lần thứ hai tốn chừng này phúc duyên */
-export const CT_RENAME_COST = 50;
+export const CT_RENAME_COST = 100;
