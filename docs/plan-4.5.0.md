@@ -2,7 +2,7 @@
 
 Nguồn: brainstorm 9/11/2026 (doc Project `brainstorm-kiep-2-10.md`, báo cáo `giu-chan-sau-cot-truyen.md`), nháp giao diện canvas "Chu Thiên Khai Mạch". Tyler chốt 9-10/11 (xem mục "Đã chốt").
 
-Chỉ làm sau khi 4.4.x Hồng Hoang đã lên main. Luật trả lời góp ý, tặng phúc, thử trước khi đẩy: như đầu `docs/plan-4.1.0.md`. Mỗi lần chạy làm khối đầu tiên còn ô trống, ghi "Xong:" và "Ghi chú:". Toàn bộ 4.5.0 lên cùng một cáo thị khi xong khối Ngày 4 (các khối trước có thể đẩy lên nhưng giấu sau cờ `CHAN_THAN_ON`, tắt mặc định).
+Chỉ làm sau khi 4.4.x Hồng Hoang đã lên main. Luật trả lời góp ý, tặng phúc, thử trước khi đẩy: như đầu `docs/plan-4.1.0.md`. Mỗi lần chạy làm MỌI khối còn ô trống có ngày "Lên bản" bằng hoặc trước hôm nay (giờ Việt Nam), theo thứ tự, ghi "Xong:" và "Ghi chú:". Bản lên trang lúc 5:00 sáng ngày ghi ở "Lên bản" (Tyler chốt 10/11): làm và thử xong trước, đẩy `next` khi xong, đẩy `main` đúng 5:00. Toàn bộ 4.5.0 lên cùng một cáo thị khi xong khối Ngày 4 (các khối trước có thể đẩy lên nhưng giấu sau cờ `CHAN_THAN_ON`, tắt mặc định).
 
 ## Vì sao (số thật 9/11)
 
@@ -27,6 +27,7 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
 - Biên niên giang hồ: Tyler tự đăng lên Page, không làm task tự đăng.
 
 ## Ngày 1 - Dữ liệu chân thân và huyệt
+Lên bản: 2026-11-11 (cùng Ngày 2, giấu sau cờ).
 - [ ] Ghi mốc vào `docs/so-lieu.md`: còn chơi sau 1 và 7 ngày theo tuần vào, phân bố số kiếp, % đủ 10 và 31 kiếp trong 7 và 14 ngày (để lại câu SQL để chạy lại).
 - [ ] `meta.chanThan`: `{ name, gender, skin, hair, hairColor, outfit, createdAt, renamed }`, lưu cùng meta (đồng bộ lên `vkl_saves` như các trường meta khác). Chưa có thì là `null`.
 - [ ] `lib/game/chanThan.ts`:
@@ -61,6 +62,7 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
 - Ghi chú:
 
 ## Ngày 2 - Đoạn mở đầu, màn tạo chân thân, giới thiệu huyệt đạo
+Lên bản: 2026-11-11 (cùng Ngày 1, giấu sau cờ).
 - [ ] Đoạn mở đầu "Mộng Tỉnh" (cảnh pixel trong game, không dùng video): 5 khung, chạm để qua, có nút Bỏ qua, tiếng chuông xa. Giọng dẫn là Thiên Đạo, xưng "ngươi".
   1. Màn tối, nhân vật kiếp vừa rồi tan thành bụi sáng. "Chuông vang. Một giấc mộng vừa tan."
   2. Hư không, bụi sáng trôi lên. "Kẻ vừa chết kia là ngươi. Nhưng cũng không phải ngươi."
@@ -94,6 +96,7 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
 - Ghi chú:
 
 ## Ngày 3 - Huyệt trên giao diện
+Lên bản: 2026-11-12 (giấu sau cờ).
 - [ ] Màn cáo biệt: chân thân của người chơi (không phải nhân vật kiếp vừa rồi) với các huyệt là chấm pixel dọc thân. Huyệt vừa khai to hơn và chớp sáng, kèm dòng "Huyệt Khí Hải khai: tu luyện +2% từ kiếp sau". Bên dưới: thanh 10 ô Thập Kiếp và thử thách của huyệt kế. Kiếp không khai huyệt thì chỉ hiện thử thách đang chờ.
 - [ ] Trang chủ: thẻ "Chân thân" dưới dải giang hồ, trên nút Lôi đài (dòng Thất Nhật Lục dời vào Tàng Kiếp Các). Thẻ có hình chân thân nhỏ với huyệt sáng, tên chân thân, thanh 10 ô, thử thách của huyệt kế, lợi ích đang hưởng. Chạm mở `/chan-than`.
 - [ ] Trang `/chan-than`: chân thân lớn, tên, nút đổi ngoại hình và tên, bảng Tam Tài 3 tab: Thân (10 huyệt với thử thách và lợi ích), Khí (5 hành x 3 tầng), Đạo (9 sao Thiên trên đầu, 9 ấn Hồng Trần dưới chân, 9 hồn đăng U Minh trong bóng; đạo ẩn để "?"), tủ ngoại trang (bộ đã có và ô khóa ghi gợi ý cách mở).
@@ -107,15 +110,22 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
 - Ghi chú:
 
 ## Ngày 4 - Thử, cáo thị, lên bản
+Lên bản: 2026-11-13. Bật cờ, có cáo thị 4.5.0.
 - [ ] Thử: Playwright 390x844 cho người mới (kiếp 1 xong, mở đầu, tạo chân thân, giới thiệu huyệt, cáo biệt có huyệt 1), người cũ 40 kiếp (mở đầu, tạo, bắt đầu từ huyệt 1), kiếp đạt huyệt khó chỉ khai huyệt kế tiếp, tên tục bị chặn, đổi tên lần hai trừ phúc. Chụp ảnh gửi Tyler.
 - [ ] Quay lại đoạn mở đầu thành video ngắn dọc 9:16 (Playwright quay màn) để Tyler đăng Page và Threads làm teaser. Gửi file cho Tyler, không tự đăng.
 - [ ] Bật cờ `CHAN_THAN_ON`. Cáo thị 4.5.0 ngắn: chân thân, Tam Tài (huyệt, hành, đạo), ngoại trang sẽ có thêm. Không ghi số cụ thể.
 - Xong:
 - Ghi chú:
 
-## Ngày 5-6 - Sư Đồ (sau khi 4.5.0 chạy ổn 3 ngày)
+## Ngày 5 - Sư Đồ phần máy chủ
+Lên bản: 2026-11-17, chỉ khi 4.5.0 chạy ổn 14-16/11 (Vercel runtime errors không tăng bất thường, không có góp ý báo lỗi chân thân chưa sửa). Không ổn thì không làm, báo Tyler. Giấu sau cờ `SU_DO_ON`.
 - [ ] Supabase (hàm mới, không sửa hàm cũ): bảng `vkl_master` (disciple pk, master, via 'link'|'auto', created_at, milestones jsonb). RPC `vkl_master_bind(token, master)`: chỉ gắn khi đệ tử có tối đa 3 kiếp và chưa có sư phụ, không tự bái mình. RPC `vkl_master_auto(token)`: ghép người đã Chứng Đạo, chơi trong 3 ngày qua, ít đệ tử nhất.
 - [ ] Trigger trên `vkl_lives` (sau `lives_guard`): kiếp của đệ tử đạt Trúc Cơ, Kim Đan, phi thăng, Chứng Đạo lần đầu thì ghi mốc và gửi thư giang hồ cho sư phụ. Chống clone: chỉ tính đệ tử từ kiếp 3 trở đi, sư phụ tính tối đa 5 đệ tử mới mỗi ngày.
+- Xong:
+- Ghi chú:
+
+## Ngày 6 - Sư Đồ phần người chơi
+Lên bản: 2026-11-18. Bật cờ `SU_DO_ON`, có cáo thị 4.5.1 ngắn về Sư Đồ.
 - [ ] Link mời `/?su=<tên>`: lưu cookie, gắn khi đăng ký. Nút "Thu đệ tử" ở màn Chứng Đạo và `/chan-than` mở bảng chia sẻ có thẻ OG riêng: chân thân của sư phụ và dòng "<tên chân thân> mời ngươi nhập môn".
 - [ ] Trong kiếp đệ tử (kiếp 1-10): sự kiện "Sư phụ truyền đạo" một lần mỗi kiếp, hiện tên chân thân của sư phụ (chỉ chữ và chân dung nhỏ trong khung sự kiện, như các NPC khác), 4 lựa chọn như sự kiện thường (nhận đan, nhận chỉ điểm, xin theo đi trừ yêu, cáo từ). Kiếp 1-3: sư phụ đỡ một lần chết.
 - [ ] Danh hiệu sư phụ "Môn hạ 5/20/50 người", khung bia và một bộ ngoại trang chân thân, chỉ mỹ quan.
