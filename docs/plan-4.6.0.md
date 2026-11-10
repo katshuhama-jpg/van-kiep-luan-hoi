@@ -2,7 +2,7 @@
 
 Nguồn: báo cáo "Lãnh địa và chiến tranh bất đồng bộ" (10/11/2026), Tyler chốt 10/11 hướng Text-Based Strategy MMO (Travian, Tribal Wars, Ikariam, OGame, Utopia, Torn, Politics and War). Thay cho Sư Đồ đơn lẻ ở Ngày 5-6 của 4.5.0.
 
-DUYỆT: (chưa) - Tyler ghi "DUYỆT: Tyler <ngày>" vào dòng này thì lịch chạy đêm mới được làm các khối bên dưới.
+DUYỆT: Tyler 10/11/2026
 
 Luật chung như đầu `docs/plan-4.5.0.md`: mỗi lần chạy làm mọi khối còn ô trống có ngày "Lên bản" bằng hoặc trước hôm nay, đẩy `next` khi xong, đẩy `main` đúng 5:00. Mọi thứ giấu sau cờ `SON_MON_ON` (tắt mặc định) cho tới khối Ngày 8.
 
@@ -30,6 +30,8 @@ Tyler chốt 10/11: toàn bộ 4.6.0 xong trong đêm 17/11, lên bản 18/11. M
 - Mỗi "Kỷ" (vòng đời thế giới) dài 3 tuần hoặc ít hơn, tùy số người chơi (bảng ở mục Kỷ).
 - Mỗi kiếp chơi xong nạp linh khí cho động phủ (có trần mỗi ngày). Kiếp nuôi động phủ, động phủ không cộng sức mạnh ngược vào kiếp.
 - Sư Đồ gộp vào đây: sơn môn là liên minh, sư phụ kéo đệ tử vào môn.
+- Mở động phủ bắt buộc tài khoản đã liên kết (Google hoặc Sổ Luân Hồi).
+- Lên trang 5:00: giờ ít người nhất (14 ngày tới 10/11: 4h có 104 người, 5h có 98 người, cao nhất 22h có 438 người). Lịch chạy đêm bắt đầu 21:17 hôm trước để đủ giờ làm hai khối.
 
 ## Vì sao
 
@@ -87,7 +89,7 @@ Tyler chốt 10/11: toàn bộ 4.6.0 xong trong đêm 17/11, lên bản 18/11. M
 
 ## Sơn môn (liên minh) và Sư Đồ
 
-- Lập khi Chính Điện cấp 5. Tên ghép từ danh sách chữ có sẵn (2 chữ + Tông/Môn/Cung/Các), không gõ tự do.
+- Lập khi Chính Điện cấp 5. Tên ghép từ danh sách chữ có sẵn (2 chữ + Tông/Môn/Cung/Các), có nút "Ngẫu nhiên" ghép sẵn một tên, không gõ tự do (Tyler 10/11).
 - Tối đa 12 người ở Kỷ 1. Rời môn chờ 24 giờ mới vào môn khác.
 - Trong môn: viện binh cho nhau, xem quân đang tới đồng môn, tin trong môn (câu chọn sẵn, không chat tự do ở bản này).
 - **Sư Đồ**: link mời `/?su=<tên chân thân>`. Người mới vào bằng link thì vào thẳng môn của sư phụ, động phủ đặt gần sư phụ. Sư phụ nhận thưởng khi đệ tử đạt mốc (Chính Điện cấp 5 và 10, 7 ngày chơi khác nhau), không nhận lúc bái sư. Mỗi sư phụ tối đa 5 đệ tử mới/tuần.
@@ -158,7 +160,7 @@ Lên bản: 2026-11-15 (giấu sau cờ).
 
 ## Ngày 5 - Sơn môn và Sư Đồ
 Lên bản: 2026-11-16 (giấu sau cờ).
-- [ ] Lập sơn môn (Chính Điện cấp 5, tên ghép), mời, rời (chờ 24 giờ), trần 12 người.
+- [ ] Lập sơn môn (Chính Điện cấp 5, tên ghép từ chữ có sẵn, nút Ngẫu nhiên), mời, rời (chờ 24 giờ), trần 12 người.
 - [ ] Viện binh, xem quân đang tới đồng môn, tin trong môn bằng câu chọn sẵn.
 - [ ] Link Sư Đồ `/?su=<tên>`: lưu cookie, người mới vào thẳng môn, động phủ đặt gần sư phụ. Thưởng sư phụ theo mốc đệ tử, tối đa 5 đệ tử mới/tuần. Thẻ chia sẻ OG: chân thân sư phụ và dòng "<tên> mời ngươi nhập môn".
 - [ ] Đo: `mon_create`, `mon_join` (via link/tự vào), `su_bind`, `reinforce_send`.
