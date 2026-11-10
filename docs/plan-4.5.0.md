@@ -20,17 +20,18 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
 - Làm cho mọi tài khoản, không chỉ người mới. Không khóa hệ thống nào đang có.
 - Huyệt KHÔNG mở theo số lần chết (dễ spam). Mở theo thử thách làm được trong một kiếp.
 - Chân thân là nhân vật cố định qua mọi kiếp, người chơi chọn ngoại hình và đặt tên. Nhân vật trong mỗi kiếp vẫn đầu thai ngẫu nhiên như cũ.
-- Màn tạo chân thân: chọn giới tính, màu da, 1 trong 10 kiểu tóc và 1 trong 10 bộ trang phục đơn giản, mỗi giới tính 10 tóc và 10 trang phục. Báo rõ cho người chơi: ngoại trang khác sẽ tìm được ở các phần tiếp theo.
+- Màn tạo chân thân: chọn giới tính, màu da, 1 trong 10 kiểu tóc, màu tóc, và 1 trong 10 bộ trang phục đơn giản, mỗi giới tính 10 tóc và 10 trang phục. Báo rõ cho người chơi: ngoại trang khác sẽ tìm được ở các phần tiếp theo.
 - Có đoạn mở đầu dạng animation để người chơi hiểu chân thân là gì, và màn giới thiệu huyệt đạo để hiểu huyệt là gì, khai thế nào, được gì.
 - KHÔNG hiện chân thân trong kiếp (kể cả bóng mờ). Chân thân chỉ ở ngoài: màn cáo biệt, trang chủ, bảng Chu Thiên.
 - Biên niên giang hồ: Tyler tự đăng lên Page, không làm task tự đăng.
 
 ## Ngày 1 - Dữ liệu chân thân và huyệt
 - [ ] Ghi mốc vào `docs/so-lieu.md`: còn chơi sau 1 và 7 ngày theo tuần vào, phân bố số kiếp, % đủ 10 và 31 kiếp trong 7 và 14 ngày (để lại câu SQL để chạy lại).
-- [ ] `meta.chanThan`: `{ name, gender, skin, hair, outfit, createdAt, renamed }`, lưu cùng meta (đồng bộ lên `vkl_saves` như các trường meta khác). Chưa có thì là `null`.
+- [ ] `meta.chanThan`: `{ name, gender, skin, hair, hairColor, outfit, createdAt, renamed }`, lưu cùng meta (đồng bộ lên `vkl_saves` như các trường meta khác). Chưa có thì là `null`.
 - [ ] `lib/game/chanThan.ts`:
   - Bảng màu da: 6 màu, dùng đúng các tông da LPC đang có.
-  - 20 kiểu tóc (10 nam, 10 nữ) từ các lớp `hair_*` có trong `public/lpc`, mỗi kiểu kèm sẵn một màu tóc (đen, nâu là chính, vài kiểu bạc hoặc đỏ). Đặt tên ngắn: "Búi cao", "Xõa dài", "Đuôi ngựa"...
+  - 20 kiểu tóc (10 nam, 10 nữ) từ các lớp `hair_*` có trong `public/lpc`.
+  - 8 màu tóc dùng chung cho mọi kiểu, nhuộm bằng đúng cách tô màu lớp LPC đang dùng: đen tuyền, nâu đen, nâu hạt dẻ, đỏ sẫm, vàng rơm, bạc, trắng tuyết, xanh lam đậm. Mặc định đen tuyền. Đặt tên ngắn: "Búi cao", "Xõa dài", "Đuôi ngựa"...
   - 20 bộ trang phục khởi đầu (10 nam, 10 nữ), không gồm tóc: áo + màu áo từ các lớp LPC có sẵn (kimono, áo vải, đạo bào...), chỉ kiểu đơn giản, không giáp, không cánh, không hào quang. Đặt tên mộc mạc: "Áo vải thôn dã", "Đạo bào xanh", "Thư sinh"...
   - Hàm vẽ chân thân dùng lại bộ ghép lớp LPC đang có cho nhân vật, tư thế ngồi thiền (hoặc đứng nếu chưa có khung ngồi).
   - Lọc tên: 2-12 ký tự, chữ cái tiếng Việt và khoảng trắng, chặn danh sách từ tục (đưa vào `lib/game/tenCam.ts`, có cả dạng viết tắt, không dấu). Gợi ý tên ngẫu nhiên từ bộ họ tên tu tiên đang dùng.
@@ -51,7 +52,7 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
   5. Bóng người hiện rõ, chuyển sang màn tạo chân thân.
 - [ ] Màn tạo chân thân (một màn, đọc và bấm):
   - Chân thân lớn ở giữa, đổi ngay khi chọn.
-  - Hàng 1: giới tính (2 nút). Hàng 2: màu da (6 ô). Hàng 3: kiểu tóc, lướt ngang 10 kiểu của giới tính đã chọn. Hàng 4: trang phục, lướt ngang 10 bộ, mỗi bộ có tên. Đổi giới tính thì tóc và trang phục về lựa chọn đầu của giới đó.
+  - Hàng 1: giới tính (2 nút). Hàng 2: màu da (6 ô). Hàng 3: kiểu tóc, lướt ngang 10 kiểu của giới tính đã chọn. Hàng 4: màu tóc (8 ô). Hàng 5: trang phục, lướt ngang 10 bộ, mỗi bộ có tên. Đổi giới tính thì kiểu tóc và trang phục về lựa chọn đầu của giới đó, giữ màu da và màu tóc.
   - Nút "Ngẫu nhiên".
   - Ô tên, điền sẵn tên gợi ý, nút xúc xắc đổi tên gợi ý.
   - Dòng nhỏ dưới trang phục: "Ngoại trang khác sẽ tìm được trên đường tu: khai huyệt, kết cục hiếm, cõi trên."
@@ -69,7 +70,7 @@ Chỉ số đo: tỉ lệ còn chơi sau 7 ngày của nhóm vào sau bản này
   - Người cũ (đã có kiếp): lần đầu vào sau bản này, từ trang chủ: đoạn mở đầu, màn tạo chân thân, rồi cảnh "Chân thân thức tỉnh" nếu đã đủ 10 huyệt.
   - Bỏ qua đoạn mở đầu được, nhưng màn tạo chân thân thì phải xong mới đi tiếp (có nút Ngẫu nhiên nên chỉ mất một chạm).
 - [ ] Đổi về sau (trong trang `/chan-than`): đổi ngoại hình miễn phí bất cứ lúc nào. Đổi tên: lần đầu miễn phí, từ lần thứ hai tốn phúc duyên. Tên đi qua bộ lọc trên cả máy chủ (hàm Supabase mới), không chỉ trên trình duyệt.
-- [ ] Đo: `ct_intro` (xem hết hay bỏ qua, khung bỏ), `ct_create` (gender, hair, outfit, random hay tự chọn, sửa tên hay giữ gợi ý), `ct_rename`.
+- [ ] Đo: `ct_intro` (xem hết hay bỏ qua, khung bỏ), `ct_create` (gender, hair, hairColor, outfit, random hay tự chọn, sửa tên hay giữ gợi ý), `ct_rename`.
 - Xong:
 - Ghi chú:
 
