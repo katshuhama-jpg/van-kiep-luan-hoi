@@ -112,6 +112,12 @@ export interface Character {
   coDuyenUntil?: number; // 4.1.0 Q3: thua trận còn sống thì tới tuổi này dễ gặp cơ duyên hơn
   hh?: { lo: number; thu: string[]; tinh?: string; rival?: string; bo?: boolean; at?: number; loAt?: number; tinhAt?: number; boAt?: number; thuAt?: number }; // 4.1.0: Hợp Hoan Tông - số lô đỉnh, người từng bị hút, người thật lòng, đối thủ trong tông, đã bỏ tông, mốc tuổi
   element?: Element; // ngũ hành bản mệnh
+  huyet?: number; // 4.5.0: số đại huyệt chân thân đã khai lúc đầu thai
+  ngocBoi16?: boolean; // 4.5.0: huyệt Ấn Đường, tới 16 tuổi nhận ngọc bội hộ thân
+  cdAge?: number; // 4.5.0: tuổi lúc chứng đạo
+  ascDao?: number; // 4.5.0: đạo tâm lúc phi thăng
+  maxLinhThach?: number; // 4.5.0: linh thạch nhiều nhất trong kiếp (đạo Phú Quý)
+  sectsSeen?: string[]; // 4.5.0: các tông môn đã bái trong kiếp (đạo Nhập Thế)
   danDoc?: { y: number; n: number }; // số viên đan đã uống trong năm (đan độc)
   petKind?: string; // loại thú cưng (xem lib/game/pets.ts)
   petSeen?: string[]; // #168: mọi loài đã nuôi trong kiếp này (kể cả đã bỏ đi, đã thả), cuối kiếp gộp vào sổ
@@ -358,6 +364,20 @@ export interface Meta {
   xaLoi?: boolean; // kiếp trước kết cục Xá Lợi Đen: kiếp sau tâm ma +15
   ttDecay?: number; // đếm để tĩnh tâm phai dần
   kiepTich?: number; // kiếp tích mang sang kiếp sau
+  chanThan?: ChanThanLook | null; // 4.5.0: chân thân cố định qua mọi kiếp (null: chưa tạo)
+  huyet?: { id: number; life: number }[]; // 4.5.0: các đại huyệt đã khai (id 1-10) và kiếp khai
+}
+
+/** 4.5.0: ngoại hình và pháp danh chân thân */
+export interface ChanThanLook {
+  name: string;
+  gender: Gender;
+  skin: number; // chỉ số trong CT_SKINS
+  hair: number; // chỉ số kiểu tóc trong CT_HAIR[gender]
+  hairColor: number; // chỉ số trong CT_HAIR_COLORS
+  outfit: number; // chỉ số trong CT_OUTFITS[gender]
+  createdAt: number; // ms
+  renamed: number; // số lần đã đổi tên
 }
 
 export interface Career {
@@ -369,6 +389,17 @@ export interface Career {
   revenges: number;
   cosmoses?: string[]; // các cõi đã từng lên: tien, ma, hu
   nhdClean?: boolean; // từng qua Ngũ Hành Đài mà chưa ngã lần nào
+  // 4.5.0: bộ đếm cho 27 đạo (tính từ 4.5.0)
+  sects?: string[]; // các tông môn từng bái
+  partnerLives?: number; // số kiếp có đạo lữ
+  maxMoney?: number; // linh thạch nhiều nhất trong một kiếp
+  thienKiepDeaths?: number; // số lần chết dưới thiên kiếp
+  soupDrinks?: number; // số lần uống canh Mạnh Bà
+  hoDao?: boolean; // từng được Vạn Kiếp Hộ Đạo đỡ lôi
+  ascRight?: boolean; // từng phi thăng khi đạo tâm >= 90
+  ascLeft?: boolean; // từng phi thăng khi đạo tâm <= -90
+  diemLa?: boolean; // từng chết chưa phi thăng khi đạo tâm <= -90
+  hanh?: Partial<Record<Element, number>>; // tầng cao nhất mỗi hành bản mệnh (1 Hóa Thần, 2 phi thăng, 3 Chứng Đạo)
 }
 
 export type MileKind = 'birth' | 'path' | 'realm' | 'love' | 'pet' | 'mount' | 'duel' | 'revenge' | 'sect' | 'wealth' | 'treasure' | 'hunt' | 'journey' | 'fate' | 'death';

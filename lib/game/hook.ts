@@ -1,4 +1,5 @@
 import { ENDINGS } from './endings';
+import { hanhTier } from './khaiMach';
 import type { Career, Character, Meta } from './types';
 import { tr } from '../i18n';
 import { ITEMS, type Item } from './data';
@@ -302,6 +303,17 @@ export function updateCareer(meta: Meta, c: Character): { career: Career; newly:
     revenges: k0.revenges + (c.qf?.revenge ?? 0),
     cosmoses: c.cosmos && !(k0.cosmoses ?? []).includes(c.cosmos) ? [...(k0.cosmoses ?? []), c.cosmos] : (k0.cosmoses ?? []),
     nhdClean: !!k0.nhdClean || (!!c.nhd?.done && !c.nhd?.lost),
+    // 4.5.0: bộ đếm cho 27 đạo và tầng ngũ hành (tính từ 4.5.0)
+    sects: [...new Set([...(k0.sects ?? []), ...(c.sectsSeen ?? []), ...(c.sect ? [c.sect] : [])])],
+    partnerLives: (k0.partnerLives ?? 0) + (c.partner ? 1 : 0),
+    maxMoney: Math.max(k0.maxMoney ?? 0, Math.floor(Math.max(c.maxLinhThach ?? 0, c.linhThach ?? 0))),
+    thienKiepDeaths: (k0.thienKiepDeaths ?? 0) + (c.qf?.tkDie ? 1 : 0),
+    soupDrinks: (k0.soupDrinks ?? 0) + (c.tanHon ? 1 : 0),
+    hoDao: !!k0.hoDao || !!c.qf?.hoDao,
+    ascRight: !!k0.ascRight || (!!c.ascended && (c.ascDao ?? -999) >= 90),
+    ascLeft: !!k0.ascLeft || (!!c.ascended && (c.ascDao ?? 999) <= -90),
+    diemLa: !!k0.diemLa || (!c.ascended && c.daoTam <= -90),
+    hanh: c.element && hanhTier(c) > (k0.hanh?.[c.element] ?? 0) ? { ...(k0.hanh ?? {}), [c.element]: hanhTier(c) } : (k0.hanh ?? {}),
   };
   const have = meta.achievements ?? [];
   const m2 = { ...meta, career };

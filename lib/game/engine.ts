@@ -62,6 +62,7 @@ import { petName } from './pets';
 import { ELEMENTS } from './nguhanh';
 import { tr } from '../i18n';
 import { nameOf } from '../hanviet';
+import { applyHuyet, huyetBreak, huyetCultMul, huyetYear } from './khaiMach';
 
 export const rnd = () => Math.random();
 
@@ -286,6 +287,8 @@ export function newCharacter(meta: Meta, gifts: string[] = [], base?: Character)
     c.petKind = rare[Math.floor(rnd() * rare.length)];
     c.log.push({ age: 0, tone: 'good', text: tr('Ngày bạn chào đời, một linh thú lạ nằm canh bên nôi, từ đó không rời.', "The day you are born, a strange spirit beast lies guarding your cradle, and never leaves your side.") });
   }
+  // 4.5.0: lợi ích các đại huyệt chân thân đã khai
+  applyHuyet(c, meta);
   return c;
 }
 
@@ -326,6 +329,8 @@ function enterRealm(c: Character, realm: number, ctx: EffectCtx, talents: string
   c.breakFail = undefined;
   c.realm = realm;
   c.layer = 1;
+  // 4.5.0 huyệt Khí Hải: lên Nguyên Anh khi đang ở tông môn
+  if (realm === 4 && c.sect && !c.cosmos) c.qf = { ...(c.qf ?? {}), naSect: 1 };
   c.cultivation = 0;
   const base = REALMS[realm]?.life ?? c.lifespan;
   // 4.0.3 (#51): thọ thêm từ đan, đào, kỳ ngộ (lifeExtra) không bị trần thọ cắt mất khi đột phá; cùng luật với trần hằng năm
@@ -411,6 +416,7 @@ export function yearlyGain(c: Character) {
     cpCultMul(c) *
     htCultMul(c) *
     hgCultMul(c) *
+    huyetCultMul(c) *
     lean
   );
 }
@@ -715,6 +721,11 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
     c.qf = { ...(c.qf ?? {}), maThienHint: 1 };
     ctx.log(tr('Ma công trong người run rẩy, như sợ chính tấm lòng của bạn. Sổ Sinh Tử lật sang một trang khác.', 'The demonic arts within you tremble, as if afraid of your own heart. The Book of Life and Death turns to a different page.'), 'good');
   }
+  // 4.5.0 đạo Phú Quý: linh thạch nhiều nhất trong kiếp
+  if (c.linhThach > (c.maxLinhThach ?? 0)) c.maxLinhThach = Math.floor(c.linhThach);
+  // 4.5.0 huyệt Ấn Đường: 16 tuổi nhận ngọc bội hộ thân
+  const nb = huyetYear(c);
+  if (nb) ctx.log(nb, 'good');
   // ấn Mộc trên vũ khí: mỗi năm hồi thêm sức khỏe
   const moc = sealLv(c, 'moc');
   if (moc) stat(c, 'sucKhoe', moc);
@@ -1059,6 +1070,7 @@ function breakChance(c: Character) {
       (omenIs('loi_van') ? 0.06 : 0) +
       (hasGift(c, 'g_thien_menh') ? 0.1 : 0) +
       htBreak(c) +
+      huyetBreak(c) +
       // độ khó 1.0.3: hạ nền từ 0.39, mỗi cảnh giới khó thêm 0.08 thay vì 0.07
       0.34 -
       // tiên giới, ma giới tính lại từ đầu: Chân Tiên khó như Trúc Cơ, càng lên càng khó
@@ -1096,6 +1108,7 @@ function breakEvent(c: Character): GameEvent {
 
 /** Vượt kiếp cuối của Đại La Kim Tiên, Ma Đế: chứng đạo, thoát khỏi mọi giới. hoDao: được vạn kiếp đỡ lôi thay */
 export function chungDao(c: Character, ctx: EffectCtx, hoDao = false): string {
+  if (c.cdAge === undefined) c.cdAge = Math.floor(c.age);
   // 4.4.0: chứng đạo xong chưa chết ngay, khe tím mở ra: tọa hóa như cũ hay bước vào Hồng Hoang
   if (!c.hong && c.cosmos !== 'hg' && c.hgGate === undefined) {
     c.hgGate = hoDao ? 2 : 1;
@@ -1145,6 +1158,7 @@ function attempt(c: Character, ctx: EffectCtx, bonus: number): string {
     if (target === ASCEND_REALM) {
       c.ascended = true;
       c.ascendAge = Math.floor(c.age);
+      c.ascDao = c.daoTam;
       // tà tu không lên tiên giới mà vượt huyết kiếp, thành Ma Tôn, mở ra ma giới
       if (destOf(c) === 'ma') {
         c.cosmos = 'ma';
@@ -1192,6 +1206,8 @@ function attempt(c: Character, ctx: EffectCtx, bonus: number): string {
   if (c.stats.sucKhoe <= 0) {
     if (c.cosmos) c.endTag = COSMOS_DEATH_TAG[c.cosmos];
     die(c, c.cosmos ? COSMOS_KIEP_TEXT[c.cosmos] : kiep ? tr('Bạn hóa thành tro bụi dưới thiên kiếp.', "You are reduced to ash by the heavenly tribulation.") : tr('Xung quan thất bại, kinh mạch đứt đoạn.', "The breakthrough fails and your meridians snap."), ctx);
+    // 4.5.0 đạo Lôi Kiếp: đếm số lần chết dưới thiên kiếp
+    if (c.dead && kiep) c.qf = { ...(c.qf ?? {}), tkDie: 1 };
     return tr('Đột phá thất bại.', "Breakthrough failed.");
   }
   return tr('Đột phá thất bại, tu vi tụt mất một đoạn.', "Breakthrough failed, and you lose a chunk of cultivation.") + t + binh;

@@ -13,6 +13,10 @@ const H = require(root + '/lib/game/helpers');
 let CP: any = null;
 try { CP = require(root + '/lib/game/congPhap'); } catch {}
 const N = Number(process.argv[2] ?? 3000);
+// 4.5.0: HUYET=10 npx tsx scripts/sim-do-kho.ts 3000 để chạy với chân thân đã khai đủ 10 huyệt
+const HUYET = Number(process.env.HUYET ?? 0);
+if (process.env.HUYET_SO) Object.assign(require(root + '/lib/game/khaiMach').HUYET_SO, JSON.parse(process.env.HUYET_SO));
+const META_EXTRA = HUYET ? { chanThan: { name: 'Thử', gender: 'nam', skin: 0, hair: 0, hairColor: 0, outfit: 0, createdAt: 0, renamed: 0 }, huyet: Array.from({ length: HUYET }, (_, i) => ({ id: i + 1, life: i + 1 })) } : {};
 const rnd = Math.random;
 let clock = 0;
 if (H.forcedClock) H.forcedClock.now = () => clock;
@@ -55,7 +59,7 @@ const tally = (c: any, r: any) => { const k = c.path ?? 'chua'; const v = (byPat
 const ages: number[] = []; const realms: number[] = []; let asc = 0; let stones = 0;
 const deathAt: Record<number, number> = {}; const reach: Record<number, number> = {};
 for (let i = 0; i < N; i++) {
-  const c = E.newCharacter({ ...E.emptyMeta(), lives: 10 }); c.focus = 'tu_luyen';
+  const c = E.newCharacter({ ...E.emptyMeta(), lives: 10, ...META_EXTRA }); c.focus = 'tu_luyen';
   const ctx = E.makeCtx(c, []); let g = 0; let maxR = 0;
   while (!c.dead && g++ < 400 && !c.cosmos) {
     c.age += 1; clock += 20000;

@@ -84,6 +84,8 @@ export function sectCultMul(c: Character): number {
 /** Nhập môn: đặt bậc, hẹn lần Đại bỉ đầu tiên */
 export function joinSect(c: Character, sect: string, rank: number) {
   c.sect = sect;
+  // 4.5.0 đạo Nhập Thế: các tông môn từng bái trong kiếp
+  if (!(c.sectsSeen ?? []).includes(sect)) c.sectsSeen = [...(c.sectsSeen ?? []), sect];
   c.sectRank = Math.max(0, Math.min(3, rank));
   c.daiBiAt = Math.floor(c.age) + (sect === 'Kiếm Cốc' ? 3 : 4);
   c.sectSaved = false;
