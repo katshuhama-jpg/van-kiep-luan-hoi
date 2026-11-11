@@ -197,6 +197,8 @@ export default function PlayPage() {
   const [ghiDanh, setGhiDanh] = useState<{ name: string; realm: string; age: number; ascended: boolean; worthy?: boolean } | null>(null); // chơi thử mà chết ở cảnh giới cao: mời ghi danh
   const [loreNews, setLoreNews] = useState<string[]>([]); // mảnh Thiên thư vừa mở
   const [ctNews, setCtNews] = useState<{ text: string; sub?: string }[]>([]); // 4.5.0: huyệt, hành, đạo vừa khai
+  // 4.5.0 (sửa 11/11 theo Tyler): Mộng Tỉnh mở SAU khi lập bia xong, không chen trước màn cáo biệt. Giữ kiếp vừa khép để khai huyệt khi tạo xong chân thân.
+  const ctDeadRef = useRef<Character | null>(null);
 
   const charRef = useRef<Character | null>(null);
   const lifeT0 = useRef(0); // lúc bắt đầu kiếp trong phiên này, để đo thời gian một kiếp
@@ -1984,6 +1986,7 @@ export default function PlayPage() {
       const h = (m.huyet ?? []).find((x) => x.life === c.lifeNo);
       if (h) track('huyet_open', { id: h.id, lifeNo: c.lifeNo });
     } else setCtNews([]);
+    ctDeadRef.current = CHAN_THAN_ON && !m.chanThan ? c : null;
     if (car.newly.length) {
       m.achievements = [...(m.achievements ?? []), ...car.newly.map((a) => a.id)];
       m.phucDuyen += car.newly.reduce((x, a) => x + a.reward, 0);
@@ -2021,6 +2024,8 @@ export default function PlayPage() {
   }
 
   if (phase === 'birth') {
+    // 4.5.0: chưa có chân thân thì Mộng Tỉnh mở trước, các bảng khác (ghi danh, cáo thị) chờ sau
+    const ctWait = CHAN_THAN_ON && !meta.chanThan && meta.lives >= 1;
     return (
       <main className="app">
         <header className="topbar">
@@ -2044,13 +2049,21 @@ export default function PlayPage() {
             </Link>
           </div>
         </header>
-        {CHAN_THAN_ON && !meta.chanThan && meta.lives >= 1 && (
+        {ctWait && (
           <CtFlow
             meta={meta}
-            dead={null}
-            from="birth"
+            dead={ctDeadRef.current && ctDeadRef.current.lifeNo === meta.lives ? ctDeadRef.current : null}
+            from={ctDeadRef.current ? 'death' : 'birth'}
             onDone={(ct) => {
-              const m2 = { ...meta, chanThan: ct };
+              // kiếp vừa khép lại (ngay trước khi nhớ lại chân thân) cũng được xét khai huyệt
+              const d = ctDeadRef.current && ctDeadRef.current.lifeNo === meta.lives ? ctDeadRef.current : null;
+              const m2 = d ? khaiAfterLife({ ...meta, chanThan: ct }, d) : { ...meta, chanThan: ct };
+              ctDeadRef.current = null;
+              if (d) {
+                setCtNews(tamTaiNews(meta, m2).slice(0, 3));
+                const h = (m2.huyet ?? []).find((x) => x.life === d.lifeNo);
+                if (h) track('huyet_open', { id: h.id, lifeNo: d.lifeNo });
+              }
               metaRef.current = m2;
               setMeta(m2);
               saveMeta(user, m2).catch(() => {});
@@ -2098,9 +2111,9 @@ export default function PlayPage() {
         )}
         {(setScreen('dau_thai'), null)}
         <BirthPanel meta={meta} onCheckin={meta.lives > 0 ? () => setCiOpen(true) : undefined} onHoanHon={hoanHon} onBorn={born} onKho={() => setSheet('kho')} onSoSinhTu={() => seeBook('e')} />
-        {relOpen && !ghiDanh && <ReleaseNotice onClose={closeRel} />}
-        {downOpen && !relOpen && !ghiDanh && <DownNotice onClose={() => setDownOpen(false)} />}
-        {ghiDanh && <GhiDanh {...ghiDanh} lives={meta.lives} onClose={() => setGhiDanh(null)} />}
+        {relOpen && !ghiDanh && !ctWait && <ReleaseNotice onClose={closeRel} />}
+        {downOpen && !relOpen && !ghiDanh && !ctWait && <DownNotice onClose={() => setDownOpen(false)} />}
+        {ghiDanh && !ctWait && <GhiDanh {...ghiDanh} lives={meta.lives} onClose={() => setGhiDanh(null)} />}
         {user && !setupOpen && <ProtectGate bonus={meta.protectBonus ? 0 : PROTECT_BONUS} ggBonus={meta.ggBonus ? 0 : PROTECT_BONUS} onOpen={() => track('protect_show', { at: 'luan_hoi' })} onDone={(kind) => grantProtect(kind)} />}
         {user && <AccountSetup start={setupStart()} onOpen={() => setSetupOpen(true)} onDone={() => (clearSetup(), setSetupOpen(false), setUnprotected(false))} />}
         {user && protectOpen && <ProtectGate mode="manage" bonus={meta.protectBonus || !unprotected ? 0 : PROTECT_BONUS} ggBonus={meta.ggBonus ? 0 : PROTECT_BONUS} onDone={(kind) => (setProtectOpen(false), grantProtect(kind))} />}
@@ -2524,20 +2537,7 @@ export default function PlayPage() {
           </div>
         </Sheet>
       )}
-      {c.dead && CHAN_THAN_ON && !meta.chanThan && (
-        <CtFlow
-          meta={meta}
-          dead={c}
-          from="death"
-          onDone={(ct) => {
-            const m2 = { ...meta, chanThan: ct };
-            metaRef.current = m2;
-            setMeta(m2);
-            saveMeta(user, m2).catch(() => {});
-          }}
-        />
-      )}
-      {c.dead && !protectFinish && (!CHAN_THAN_ON || !!meta.chanThan) && <DeathSheet c={c} meta={meta} karma={karmaOf(c)} isNew={!meta.endings?.[endingOf(c).id]} onDone={(...a) => (unprotected ? (track('protect_show', { at: 'death' }), setProtectFinish(a)) : finishLife(...a))} />}
+      {c.dead && !protectFinish && <DeathSheet c={c} meta={meta} karma={karmaOf(c)} isNew={!meta.endings?.[endingOf(c).id]} onDone={(...a) => (unprotected ? (track('protect_show', { at: 'death' }), setProtectFinish(a)) : finishLife(...a))} />}
       {protectFinish && (
         <ProtectGate
           mode="death"

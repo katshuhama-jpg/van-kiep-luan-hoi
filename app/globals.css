@@ -5291,3 +5291,6 @@ body[data-ctflow='1'] { overflow: hidden; }
 .ct-panel { min-height: 300px; }
 .ct-tile-head { display: block; height: 72px; width: 100%; overflow: hidden; position: relative; }
 .ct-tile-head .lpc { position: absolute; left: 50%; top: 2px; margin-left: -55px; }
+.ct-dead { display: flex; flex-direction: column; align-items: center; animation: ct-fade 3.2s steps(8) forwards; }
+.ct-dead-name { color: #b9ad94; font-size: 14px; margin-top: 4px; }
+@keyframes ct-fade { to { opacity: 0.3; } }

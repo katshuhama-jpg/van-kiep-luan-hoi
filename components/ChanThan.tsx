@@ -15,7 +15,7 @@ import type { Player } from '@/lib/auth';
 import { musicPref } from '@/lib/music';
 import { track } from '@/lib/track';
 import { tr } from '@/lib/i18n';
-import Sprite from './Sprite';
+import { lpcLayers } from './Sprite';
 import { PixelFx, fxMotes } from './PixelFx';
 
 // ---------------- Hình chân thân ----------------
@@ -116,7 +116,8 @@ function MongTinh({ dead, onDone }: { dead: Character | null; onDone: (skipAt: n
         {i <= 3 && <PixelFx spec={fxMotes(i === 0 ? 10 : 16, '#ffe9a8')} scale={4} dur={i === 3 ? 1.6 : 3.2} className={`ct-dust d${i}`} />}
         {i === 0 && dead && (
           <div className="ct-dead">
-            <Sprite c={dead} size={150} />
+            <LpcFigure layers={lpcLayers({ ...dead, dead: false }, true)} size={170} />
+            <small className="ct-dead-name">{tr(`${dead.name} · kiếp ${dead.lifeNo}`, `${dead.name} · life ${dead.lifeNo}`)}</small>
           </div>
         )}
         {i >= 2 && (
