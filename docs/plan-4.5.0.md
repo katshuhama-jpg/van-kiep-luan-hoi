@@ -99,17 +99,17 @@ Lên bản: 2026-11-11 (cùng Ngày 1, giấu sau cờ).
 
 ## Ngày 3 - Huyệt trên giao diện
 Lên bản: 2026-11-12 (giấu sau cờ).
-- [ ] Màn cáo biệt: chân thân của người chơi (không phải nhân vật kiếp vừa rồi) với các huyệt là chấm pixel dọc thân. Huyệt vừa khai to hơn và chớp sáng, kèm dòng "Huyệt Khí Hải khai: tu luyện +2% từ kiếp sau". Bên dưới: thanh 10 ô Thập Kiếp và thử thách của huyệt kế. Kiếp không khai huyệt thì chỉ hiện thử thách đang chờ.
-- [ ] Trang chủ: thẻ "Chân thân" dưới dải giang hồ, trên nút Lôi đài (dòng Thất Nhật Lục dời vào Tàng Kiếp Các). Thẻ có hình chân thân nhỏ với huyệt sáng, tên chân thân, thanh 10 ô, thử thách của huyệt kế, lợi ích đang hưởng. Chạm mở `/chan-than`.
-- [ ] Trang `/chan-than`: chân thân lớn, tên, nút đổi ngoại hình và tên, bảng Tam Tài 3 tab: Thân (10 huyệt với thử thách và lợi ích), Khí (5 hành x 3 tầng), Đạo (9 sao Thiên trên đầu, 9 ấn Hồng Trần dưới chân, 9 hồn đăng U Minh trong bóng; đạo ẩn để "?"), tủ ngoại trang (bộ đã có và ô khóa ghi gợi ý cách mở).
-- [ ] Trong kiếp: chip nhỏ góc trên trái sân khấu chỉ ghi thử thách, ví dụ "Huyệt Thiên Đột: lên Kim Đan" (không vẽ chân thân trong kiếp). Chạm mở bảng. Khi kiếp này đạt thử thách: thông báo "Kiếp này đã đủ khai huyệt X, huyệt khai khi kiếp khép lại", chip đổi sang vàng.
-- [ ] Màn đầu thai: một dòng nhỏ "Tam Tài 20/42", chạm mở bảng.
-- [ ] Cảnh "Chân thân thức tỉnh" khi khai huyệt 10, 4 nhịp: chân thân ngồi nhắm mắt (im lặng); 10 huyệt sáng từ chân lên đỉnh đầu, mỗi huyệt một tiếng chuông, "Mười tiếng chuông."; chân thân mở mắt, "Lần này, người tỉnh dậy là ngươi."; danh hiệu "Khai Mạch.". Chạm để bỏ qua.
-- [ ] Màn cáo biệt cũng hiện câu khai hành / ngộ đạo khi kiếp đó vừa đạt (tối đa 2 dòng, huyệt ưu tiên).
-- [ ] Thẻ khoe chân thân (dùng `lib/shareCard.ts`): chân thân, tên, số huyệt, danh hiệu.
-- [ ] Đo: `huyet_open` (id, lifeNo), `huyet_view`, `huyet_share`, `ct_card_tap`.
-- Xong:
-- Ghi chú:
+- [x] Màn cáo biệt: chân thân của người chơi (không phải nhân vật kiếp vừa rồi) với các huyệt là chấm pixel dọc thân. Huyệt vừa khai to hơn và chớp sáng, kèm dòng "Huyệt Khí Hải khai: tu luyện +2% từ kiếp sau". Bên dưới: thanh 10 ô Thập Kiếp và thử thách của huyệt kế. Kiếp không khai huyệt thì chỉ hiện thử thách đang chờ.
+- [x] Trang chủ: thẻ "Chân thân" dưới dải giang hồ, trên nút Lôi đài (dòng Thất Nhật Lục dời vào Tàng Kiếp Các). Thẻ có hình chân thân nhỏ với huyệt sáng, tên chân thân, thanh 10 ô, thử thách của huyệt kế, lợi ích đang hưởng. Chạm mở `/chan-than`.
+- [x] Trang `/chan-than`: chân thân lớn, tên, nút đổi ngoại hình và tên, bảng Tam Tài 3 tab: Thân (10 huyệt với thử thách và lợi ích), Khí (5 hành x 3 tầng), Đạo (9 sao Thiên trên đầu, 9 ấn Hồng Trần dưới chân, 9 hồn đăng U Minh trong bóng; đạo ẩn để "?"), tủ ngoại trang (bộ đã có và ô khóa ghi gợi ý cách mở).
+- [x] Trong kiếp: chip nhỏ góc trên trái sân khấu chỉ ghi thử thách, ví dụ "Huyệt Thiên Đột: lên Kim Đan" (không vẽ chân thân trong kiếp). Chạm mở bảng. Khi kiếp này đạt thử thách: thông báo "Kiếp này đã đủ khai huyệt X, huyệt khai khi kiếp khép lại", chip đổi sang vàng.
+- [x] Màn đầu thai: một dòng nhỏ "Tam Tài 20/42", chạm mở bảng.
+- [x] Cảnh "Chân thân thức tỉnh" khi khai huyệt 10, 4 nhịp: chân thân ngồi nhắm mắt (im lặng); 10 huyệt sáng từ chân lên đỉnh đầu, mỗi huyệt một tiếng chuông, "Mười tiếng chuông."; chân thân mở mắt, "Lần này, người tỉnh dậy là ngươi."; danh hiệu "Khai Mạch.". Chạm để bỏ qua.
+- [x] Màn cáo biệt cũng hiện câu khai hành / ngộ đạo khi kiếp đó vừa đạt (tối đa 2 dòng, huyệt ưu tiên).
+- [x] Thẻ khoe chân thân (dùng `lib/shareCard.ts`): chân thân, tên, số huyệt, danh hiệu.
+- [x] Đo: `huyet_open` (id, lifeNo), `huyet_view`, `huyet_share`, `ct_card_tap`.
+- Xong: 12/11/2026 904de4e
+- Ghi chú: Thử (cờ bật tạm): `NEXT_PUBLIC_CHAN_THAN=1 npx next dev -p 3314` rồi `node scripts/smoke-chanthan.cjs <thư mục ảnh>` (41 mục, 390x844: thẻ trang chủ, trang chân thân 3 tab và tủ ngoại trang, chip thường và vàng, cáo biệt khai và không khai, lập bia ghi huyệt, dòng Tam Tài ở đầu thai, thức tỉnh 4 nhịp). Smoke, smoke-login (cả FAIL_ME), smoke-linhthu, tsc, build đều sạch với cờ tắt. Không đổi số cân bằng nên không chạy mô phỏng. Bộ LPC chưa có khung ngồi nên cảnh thức tỉnh để chân thân đứng; nhắm mắt bằng cách bỏ lớp mắt ở nhịp 1-2. Câu khai huyệt, hành, đạo dời từ màn luân hồi sang màn cáo biệt (báo trước theo hồ sơ dự tính, số thật vẫn ghi lúc lập bia). Ngoại trang thưởng (5 hành tầng 2 và 6 đạo) đã mặc được trong tủ ngoại trang, chỉ mỹ quan. Đạo Hương Hỏa và Từ Bi đã nối: bảng `vkl_huong_log`, hàm `vkl_huong_ghi` (gọi sau `vkl_thap_huong`, hàm cũ không đổi) và `vkl_ct_ext`, SQL ở `supabase/chan_than_2026_11_12.sql`; Từ Bi chỉ đếm mộ thắp từ 12/11 (trước đó không lưu ai thắp mộ nào). Đo thêm `huyet_rung` (kiếp đạt thử thách) và `huyet_wake` (xem xong thức tỉnh).
 
 ## Ngày 4 - Thử, cáo thị, lên bản
 Lên bản: 2026-11-13. Bật cờ, có cáo thị 4.5.0.
