@@ -4,6 +4,8 @@ Nguồn: brainstorm 9/11/2026 (doc Project `brainstorm-kiep-2-10.md`, báo cáo 
 
 Chỉ làm sau khi 4.4.x Hồng Hoang đã lên main. Luật trả lời góp ý, tặng phúc, thử trước khi đẩy: như đầu `docs/plan-4.1.0.md`. Mỗi lần chạy làm MỌI khối còn ô trống có ngày "Lên bản" bằng hoặc trước hôm nay (giờ Việt Nam), theo thứ tự, ghi "Xong:" và "Ghi chú:". Bản lên trang lúc 5:00 sáng ngày ghi ở "Lên bản" (Tyler chốt 10/11): làm và thử xong trước, đẩy `next` khi xong, đẩy `main` đúng 5:00. Toàn bộ 4.5.0 lên cùng một cáo thị khi xong khối Ngày 4 (các khối trước có thể đẩy lên nhưng giấu sau cờ `CHAN_THAN_ON`, tắt mặc định).
 
+Đánh dấu lên bản (Tyler để Claude quyết 11/11): máy chủ chặn đẩy tag (lỗi 403), nên thay bước gắn tag `len-ban-<ngày>` bằng đẩy NHÁNH cùng tên: `git push -f origin HEAD:refs/heads/len-ban-<ngày lên bản YYYY-MM-DD>`, chỉ khi thử sạch. Tác vụ 5:00 đã sửa để nhận nhánh này.
+
 ## Vì sao (số thật 9/11)
 
 - Kiếp 1 ổn: 79% chơi xong (trung vị 12,6 phút), 71% lên Kim Đan.

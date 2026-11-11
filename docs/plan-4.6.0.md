@@ -6,6 +6,8 @@ DUYỆT: Tyler 10/11/2026
 
 Luật chung như đầu `docs/plan-4.5.0.md`: mỗi lần chạy làm mọi khối còn ô trống có ngày "Lên bản" bằng hoặc trước hôm nay, đẩy `next` khi xong, đẩy `main` đúng 5:00. Mọi thứ giấu sau cờ `SON_MON_ON` (tắt mặc định) cho tới khối Ngày 8.
 
+Đánh dấu lên bản (Tyler để Claude quyết 11/11): máy chủ chặn đẩy tag (lỗi 403), nên thay bước gắn tag `len-ban-<ngày>` bằng đẩy NHÁNH cùng tên: `git push -f origin HEAD:refs/heads/len-ban-<ngày lên bản YYYY-MM-DD>`, chỉ khi thử sạch. Tác vụ 5:00 đã sửa để nhận nhánh này.
+
 ## Lịch tổng từ 11/11 (lên trang 5:00 mỗi sáng)
 
 Tyler chốt 10/11: toàn bộ 4.6.0 xong trong đêm 17/11, lên bản 18/11. Mỗi đêm 14-16/11 làm hai khối.
