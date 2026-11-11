@@ -344,21 +344,14 @@ export const MONG_TINH = () => [
 // ---------------- Ngày 3: hiển thị trên giao diện ----------------
 
 /**
- * Vị trí chấm huyệt trên hình chân thân (tỉ lệ theo cạnh khung LpcFigure, đo trên ảnh chụp 12/11):
- * đi từ lòng bàn chân lên đỉnh đầu. Mệnh Môn ở lưng nên lệch sang bên.
+ * Vị trí chấm huyệt quanh hình chân thân (tỉ lệ theo cạnh khung LpcFigure). Sửa 12/11 theo Tyler: chấm đặt trên thân che hết người,
+ * nay xếp thành vòng tròn quanh chân thân: huyệt 1 ở dưới chân, các huyệt sau leo dần hai bên (trái, phải xen kẽ), huyệt 10 trên đỉnh đầu.
  */
-export const HUYET_POS: Record<number, { x: number; y: number }> = {
-  1: { x: 0.5, y: 0.82 },
-  2: { x: 0.5, y: 0.585 },
-  3: { x: 0.5, y: 0.545 },
-  4: { x: 0.585, y: 0.52 },
-  5: { x: 0.5, y: 0.485 },
-  6: { x: 0.5, y: 0.445 },
-  7: { x: 0.5, y: 0.405 },
-  8: { x: 0.5, y: 0.36 },
-  9: { x: 0.5, y: 0.235 },
-  10: { x: 0.5, y: 0.14 },
-};
+const RING = { cx: 0.5, cy: 0.47, r: 0.46 };
+const RING_DEG = [180, -144, 144, -108, 108, -72, 72, -36, 36, 0];
+export const HUYET_POS: Record<number, { x: number; y: number }> = Object.fromEntries(
+  RING_DEG.map((d, k) => [k + 1, { x: RING.cx + RING.r * Math.sin((d * Math.PI) / 180), y: RING.cy - RING.r * Math.cos((d * Math.PI) / 180) }]),
+);
 
 /** Lợi ích đang hưởng từ các huyệt đã khai (dòng ngắn, gộp bằng dấu phẩy) */
 export const huyetGiftsNow = (meta: Pick<Meta, 'huyet'>) =>

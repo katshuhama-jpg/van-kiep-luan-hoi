@@ -52,7 +52,7 @@ export function HuyetBody({ ct, open, size = 140, flash, eyes = true, className,
     const l = ctLayers(ct);
     return eyes ? l : l.filter((x) => !x.key.startsWith('eyes'));
   }, [ct, eyes]);
-  const dot = Math.max(4, Math.round(size / 40));
+  const dot = Math.max(4, Math.round(size / 28));
   return (
     <div className={`hb ${className ?? ''}`} style={{ width: size, height: size }}>
       <LpcFigure layers={layers} size={size} />
