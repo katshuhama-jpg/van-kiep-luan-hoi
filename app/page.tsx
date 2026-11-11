@@ -16,7 +16,7 @@ import { track } from '@/lib/track';
 import { FB_PAGE } from '@/lib/links';
 import { ContinueBar, LiveStrip, NewGraves, NewsToast, useLive } from '@/components/LiveWorld';
 import { HomeVanKiep } from '@/components/TangKiep';
-import { HomeChanThan } from '@/components/ChanThan';
+import { HomeCt } from '@/components/TamTai';
 import { CHAN_THAN_ON } from '@/lib/flags';
 
 const link = { textDecoration: 'none', display: 'block' } as const;
@@ -42,7 +42,8 @@ export default function Home() {
       </h1>
 
       <LiveStrip d={live} />
-      <HomeVanKiep user={user} ready={ready} />
+      <HomeVanKiep user={user} ready={ready} noWeek={CHAN_THAN_ON} />
+      <HomeCt user={user} ready={ready} on={CHAN_THAN_ON} />
 
       <nav className="menu home-menu" aria-label={tr('Các tính năng', 'Features')}>
         <LoiDaiButton />
@@ -107,7 +108,6 @@ export default function Home() {
       <NewsToast d={live} />
       <ContinueBar user={user} ready={ready} guest={ready && !user} />
       {rel && <ReleaseNotice onClose={() => setRel(false)} />}
-      <HomeChanThan user={user} ready={ready} on={CHAN_THAN_ON} />
     <ProtectPrompt at="home" />
       </main>
   );

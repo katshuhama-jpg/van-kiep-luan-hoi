@@ -21,7 +21,8 @@ import { ENDINGS, alsoEndings, endingOf } from '@/lib/game/endings';
 import { buyCharm, buyTinh, forge, sell, smelt } from '@/lib/game/forge';
 import { CHAN_THAN_ON } from '@/lib/flags';
 import { CtFlow } from '@/components/ChanThan';
-import { khaiAfterLife, tamTaiNews } from '@/lib/game/khaiMach';
+import { khaiAfterLife, khaiCheck } from '@/lib/game/khaiMach';
+import { HuyetChip, TamTaiLine, TamTaiSheet, ThucTinh } from '@/components/TamTai';
 import { BagSheet, BaoKhoSheet, BeQuanSheet, BirthPanel, DeathSheet, EventCard, FocusGrid, HuntSheet, LogPanel, OverworkBar, SEASONS, ShopSheet, Sheet, StageStrip, StatsPanel } from '@/components/Panels';
 import Radar, { charAxes, wealthScore } from '@/components/Radar';
 import { giftOf } from '@/lib/game/gacha';
@@ -196,7 +197,9 @@ export default function PlayPage() {
   const [achNews, setAchNews] = useState<string[]>([]); // thành tựu vừa đạt
   const [ghiDanh, setGhiDanh] = useState<{ name: string; realm: string; age: number; ascended: boolean; worthy?: boolean } | null>(null); // chơi thử mà chết ở cảnh giới cao: mời ghi danh
   const [loreNews, setLoreNews] = useState<string[]>([]); // mảnh Thiên thư vừa mở
-  const [ctNews, setCtNews] = useState<{ text: string; sub?: string }[]>([]); // 4.5.0: huyệt, hành, đạo vừa khai
+  const [ttOpen, setTtOpen] = useState<string | null>(null); // 4.5.0 Ngày 3: bảng Tam Tài mở từ đâu (chip trong kiếp, màn đầu thai)
+  const [thucTinh, setThucTinh] = useState(false); // 4.5.0 Ngày 3: cảnh Chân thân thức tỉnh khi khai huyệt 10
+  const rungRef = useRef(0); // kiếp đã báo "đủ khai huyệt" (mỗi kiếp một lần)
   // 4.5.0 (sửa 11/11 theo Tyler): Mộng Tỉnh mở SAU khi lập bia xong, không chen trước màn cáo biệt. Giữ kiếp vừa khép để khai huyệt khi tạo xong chân thân.
   const ctDeadRef = useRef<Character | null>(null);
 
@@ -380,7 +383,7 @@ export default function PlayPage() {
   const [wares, setWares] = useState<Ware[] | null>(null);
   // 4.1.0: kết quả hội đấu giá hiện thành thẻ riêng (trước chỉ ghi vào gia phả, người chơi không biết thắng hay thua)
   const [auctionRes, setAuctionRes] = useState<{ item: string; won: boolean; text: string } | null>(null);
-  activeRef.current = running && sheet === null && !ciOpen && wares === null && auctionRes === null && phase === 'play' && kiep === null && hoTro === null && vanDao === null && !vanThien && !tut && !protectOpen && !setupOpen && cn === null && duelWarn === null && !nhdPeek && !relOpen && !downOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
+  activeRef.current = running && sheet === null && ttOpen === null && !ciOpen && wares === null && auctionRes === null && phase === 'play' && kiep === null && hoTro === null && vanDao === null && !vanThien && !tut && !protectOpen && !setupOpen && cn === null && duelWarn === null && !nhdPeek && !relOpen && !downOpen && !gifts && !ascend && (nhd === null || nhd.view === 'fight');
 
   /** Ngũ hành giữa bạn và loài quái */
   function monElem(c: Character, m: { el?: Element }) {
@@ -1979,13 +1982,14 @@ export default function PlayPage() {
     m.career = car.career;
     // 4.5.0 Tam Tài: khai huyệt (khi đã có chân thân), tin khai huyệt, hành, đạo
     if (CHAN_THAN_ON && m.chanThan) {
+      // câu khai huyệt, hành, đạo đã hiện ở màn cáo biệt (CtFarewell); ở đây chỉ ghi hồ sơ
+      const n0 = m.huyet?.length ?? 0;
       const khai = khaiAfterLife(m, c);
       m.huyet = khai.huyet;
-      const news = tamTaiNews(meta, m);
-      setCtNews(news.slice(0, 3));
-      const h = (m.huyet ?? []).find((x) => x.life === c.lifeNo);
+      const h = (m.huyet?.length ?? 0) > n0 ? m.huyet![m.huyet!.length - 1] : null;
       if (h) track('huyet_open', { id: h.id, lifeNo: c.lifeNo });
-    } else setCtNews([]);
+      if (h?.id === 10) setThucTinh(true);
+    }
     ctDeadRef.current = CHAN_THAN_ON && !m.chanThan ? c : null;
     if (car.newly.length) {
       m.achievements = [...(m.achievements ?? []), ...car.newly.map((a) => a.id)];
@@ -2060,7 +2064,6 @@ export default function PlayPage() {
               const m2 = d ? khaiAfterLife({ ...meta, chanThan: ct }, d) : { ...meta, chanThan: ct };
               ctDeadRef.current = null;
               if (d) {
-                setCtNews(tamTaiNews(meta, m2).slice(0, 3));
                 const h = (m2.huyet ?? []).find((x) => x.life === d.lifeNo);
                 if (h) track('huyet_open', { id: h.id, lifeNo: d.lifeNo });
               }
@@ -2069,16 +2072,6 @@ export default function PlayPage() {
               saveMeta(user, m2).catch(() => {});
             }}
           />
-        )}
-        {CHAN_THAN_ON && ctNews.length > 0 && (
-          <Link href="/chan-than" className="quest-news lore" style={{ display: 'block', textDecoration: 'none' }}>
-            {ctNews.map((n, k) => (
-              <span key={k} style={{ display: 'block' }}>
-                {n.text}
-                {n.sub && <small style={{ display: 'block' }}>{n.sub}</small>}
-              </span>
-            ))}
-          </Link>
         )}
         {loreNews.length > 0 && (
           <Link href="/so-sinh-tu#thien-thu" className="quest-news lore" style={{ display: 'block', textDecoration: 'none' }}>
@@ -2110,10 +2103,13 @@ export default function PlayPage() {
           />
         )}
         {(setScreen('dau_thai'), null)}
+        {CHAN_THAN_ON && meta.chanThan && !ctWait && <TamTaiLine meta={meta} onOpen={() => setTtOpen('dau_thai')} />}
+        {CHAN_THAN_ON && ttOpen && meta.chanThan && <TamTaiSheet meta={meta} from={ttOpen} onClose={() => setTtOpen(null)} />}
+        {CHAN_THAN_ON && thucTinh && meta.chanThan && <ThucTinh ct={meta.chanThan} onDone={() => (track('huyet_wake', {}), setThucTinh(false))} />}
         <BirthPanel meta={meta} onCheckin={meta.lives > 0 ? () => setCiOpen(true) : undefined} onHoanHon={hoanHon} onBorn={born} onKho={() => setSheet('kho')} onSoSinhTu={() => seeBook('e')} />
-        {relOpen && !ghiDanh && !ctWait && <ReleaseNotice onClose={closeRel} />}
-        {downOpen && !relOpen && !ghiDanh && !ctWait && <DownNotice onClose={() => setDownOpen(false)} />}
-        {ghiDanh && !ctWait && <GhiDanh {...ghiDanh} lives={meta.lives} onClose={() => setGhiDanh(null)} />}
+        {relOpen && !ghiDanh && !ctWait && !thucTinh && <ReleaseNotice onClose={closeRel} />}
+        {downOpen && !relOpen && !ghiDanh && !ctWait && !thucTinh && <DownNotice onClose={() => setDownOpen(false)} />}
+        {ghiDanh && !ctWait && !thucTinh && <GhiDanh {...ghiDanh} lives={meta.lives} onClose={() => setGhiDanh(null)} />}
         {user && !setupOpen && <ProtectGate bonus={meta.protectBonus ? 0 : PROTECT_BONUS} ggBonus={meta.ggBonus ? 0 : PROTECT_BONUS} onOpen={() => track('protect_show', { at: 'luan_hoi' })} onDone={(kind) => grantProtect(kind)} />}
         {user && <AccountSetup start={setupStart()} onOpen={() => setSetupOpen(true)} onDone={() => (clearSetup(), setSetupOpen(false), setUnprotected(false))} />}
         {user && protectOpen && <ProtectGate mode="manage" bonus={meta.protectBonus || !unprotected ? 0 : PROTECT_BONUS} ggBonus={meta.ggBonus ? 0 : PROTECT_BONUS} onDone={(kind) => (setProtectOpen(false), grantProtect(kind))} />}
@@ -2123,6 +2119,18 @@ export default function PlayPage() {
 
   const c = charRef.current!;
   const pending = pendingRef.current;
+  // 4.5.0 Ngày 3: kiếp này vừa đạt thử thách huyệt kế thì báo một lần (chip trong kiếp chuyển vàng)
+  if (CHAN_THAN_ON && meta.chanThan && !c.dead && rungRef.current !== c.lifeNo) {
+    const hy = khaiCheck(meta, c);
+    if (hy) {
+      rungRef.current = c.lifeNo;
+      const text = tr(`Kiếp này đã đủ khai huyệt ${hy.name}, huyệt khai khi kiếp khép lại.`, `This life has done enough to open the ${hy.name} point. It opens when the life ends.`);
+      if (!c.log.some((l) => l.text === text)) {
+        c.log.push({ age: Math.floor(c.age), tone: 'good', text });
+        track('huyet_rung', { id: hy.id, lifeNo: c.lifeNo });
+      }
+    }
+  }
   setScreen(c.dead ? 'chet' : pending ? 'su_kien' : sheet ? `bang_${sheet}` : 'choi');
   setLifeCtx({ life: c.lifeNo, age: Math.floor(c.age) });
   if (c.dead && deathSeen.current !== c.lifeNo) {
@@ -2130,7 +2138,7 @@ export default function PlayPage() {
     track('death', { lifeNo: c.lifeNo, realm: c.realm, age: Math.floor(c.age), path: c.path, cosmos: c.cosmos ?? null, endTag: c.endTag ?? null, ending: endingOf(c).id, killer: c.killer ?? null, min: lifeT0.current ? Math.round((Date.now() - lifeT0.current) / 6000) / 10 : null });
   }
   const battleNow = duelRef.current ?? ambushRef.current ?? (c.focus === 'tru_yeu' && c.age >= 10 && battleRef.current?.m.id === c.huntTarget ? battleRef.current : null);
-  const paused = !running || !!pending || sheet !== null || ciOpen || c.dead;
+  const paused = !running || !!pending || sheet !== null || ttOpen !== null || ciOpen || c.dead;
   const season = seasonOf(c.age);
   const omenIcon = omenToday().icon;
   const stats = collectStats(meta);
@@ -2249,6 +2257,7 @@ export default function PlayPage() {
         />
         {!battleNow && <NhdMirror c={c} onOpen={() => setNhdPeek(true)} />}
         {!battleNow && c.pet && !c.dead && c.age >= 6 && <PetBadge c={c} onOpen={() => setSheet('thu')} />}
+        {CHAN_THAN_ON && !battleNow && <HuyetChip meta={meta} c={c} shift={!c.cosmos && c.realm >= 5 && !c.nhd?.done} onOpen={() => setTtOpen('kiep')} />}
         <button
           className="strip-btn"
           onClick={(e) => ((e.target as HTMLElement).closest('.cult.wait') ? setNhdPeek(true) : setSheet('info'))}
@@ -2537,6 +2546,7 @@ export default function PlayPage() {
           </div>
         </Sheet>
       )}
+      {CHAN_THAN_ON && ttOpen && meta.chanThan && !c.dead && <TamTaiSheet meta={meta} from={ttOpen} onClose={() => setTtOpen(null)} />}
       {c.dead && !protectFinish && <DeathSheet c={c} meta={meta} karma={karmaOf(c)} isNew={!meta.endings?.[endingOf(c).id]} onDone={(...a) => (unprotected ? (track('protect_show', { at: 'death' }), setProtectFinish(a)) : finishLife(...a))} />}
       {protectFinish && (
         <ProtectGate

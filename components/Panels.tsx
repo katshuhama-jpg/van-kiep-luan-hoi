@@ -40,6 +40,8 @@ import { ArenaNudge } from './LoiDaiButton';
 import { useAuth } from '@/lib/useAuth';
 import { addFeedback } from '@/lib/storage';
 import { tr } from '@/lib/i18n';
+import { CHAN_THAN_ON } from '@/lib/flags';
+import { CtFarewell } from './TamTai';
 import { BREAK_EVENT_ID } from '@/lib/game/events';
 import { setOf, wornSet, SET_MAX } from '@/lib/game/gearSets';
 
@@ -1432,6 +1434,7 @@ export function DeathSheet({
         </span>
       </div>
       {c.endTag === 'chung_dao' && <SauChungDao c={c} meta={meta} />}
+      {CHAN_THAN_ON && meta.chanThan && <CtFarewell c={c} meta={meta} />}
       <VanKiepRow c={c} />
       {q.newly.length > 0 && (
         <p className="death-quests">

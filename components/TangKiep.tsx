@@ -85,7 +85,8 @@ export function GioNotice({ user, lives }: { user: Player | null; lives: PastSel
 }
 
 /** Trang đầu: ngày giỗ nếu có, không thì nhắc Thất Nhật Lục */
-export function HomeVanKiep({ user, ready }: { user: Player | null; ready: boolean }) {
+/** noWeek (4.5.0): bỏ dòng Thất Nhật Lục ở trang đầu, dời vào Tàng Kiếp Các (thẻ chân thân thế chỗ) */
+export function HomeVanKiep({ user, ready, noWeek }: { user: Player | null; ready: boolean; noWeek?: boolean }) {
   const lives = usePastSelves(user, ready);
   if (!lives || !lives.length) return null;
   // một dòng gọn ngay dưới dải giang hồ để luôn thấy trong màn đầu
@@ -100,6 +101,7 @@ export function HomeVanKiep({ user, ready }: { user: Player | null; ready: boole
         </span>
       </Link>
     );
+  if (noWeek) return null;
   const w = weekWrap(lives);
   if (!w.n) return null;
   return (

@@ -256,7 +256,23 @@ export async function thapHuong(user: Player | null, id: number | string): Promi
   const sb = supabase();
   if (!sb || !user || typeof id !== 'number') return null;
   const { data } = await sb.rpc('vkl_thap_huong', { p_token: user.token, p_life_id: id });
+  // 4.5.0: ghi mộ đã thắp cho đạo Từ Bi (hàm mới, không đụng hàm cũ)
+  if (typeof data === 'number') sb.rpc('vkl_huong_ghi', { p_token: user.token, p_life_id: id }).then(() => {}, () => {});
   return typeof data === 'number' ? data : null;
+}
+
+/** 4.5.0: số liệu Nghĩa trang cho đạo Hương Hỏa và Từ Bi (tổng hương mộ mình, số mộ người khác đã thắp) */
+export async function ctExt(user: Player | null): Promise<{ incense: number; litGraves: number } | null> {
+  const sb = supabase();
+  if (!sb || !user) return null;
+  try {
+    const { data, error } = await sb.rpc('vkl_ct_ext', { p_token: user.token });
+    if (error || !data) return null;
+    const d = data as { incense?: number; lit?: number };
+    return { incense: Number(d.incense ?? 0), litGraves: Number(d.lit ?? 0) };
+  } catch {
+    return null;
+  }
 }
 
 export type RankKind = 'power' | 'wealth' | 'age';

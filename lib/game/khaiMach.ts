@@ -340,3 +340,64 @@ export const MONG_TINH = () => [
   tr('Mỗi kiếp là một giấc mộng. Mộng tan, chân thân còn. Điều ngươi làm được trong mộng sẽ khắc vào thân.', 'Each life is a dream. The dream ends, the true self remains. What you achieve in the dream is carved into the body.'),
   tr('Nhưng ngươi đã quên mặt mình. Hãy nhớ lại.', 'But you have forgotten your own face. Remember it.'),
 ];
+
+// ---------------- Ngày 3: hiển thị trên giao diện ----------------
+
+/**
+ * Vị trí chấm huyệt trên hình chân thân (tỉ lệ theo cạnh khung LpcFigure, đo trên ảnh chụp 12/11):
+ * đi từ lòng bàn chân lên đỉnh đầu. Mệnh Môn ở lưng nên lệch sang bên.
+ */
+export const HUYET_POS: Record<number, { x: number; y: number }> = {
+  1: { x: 0.5, y: 0.82 },
+  2: { x: 0.5, y: 0.585 },
+  3: { x: 0.5, y: 0.545 },
+  4: { x: 0.585, y: 0.52 },
+  5: { x: 0.5, y: 0.485 },
+  6: { x: 0.5, y: 0.445 },
+  7: { x: 0.5, y: 0.405 },
+  8: { x: 0.5, y: 0.36 },
+  9: { x: 0.5, y: 0.235 },
+  10: { x: 0.5, y: 0.14 },
+};
+
+/** Lợi ích đang hưởng từ các huyệt đã khai (dòng ngắn, gộp bằng dấu phẩy) */
+export const huyetGiftsNow = (meta: Pick<Meta, 'huyet'>) =>
+  HUYET.slice(0, huyetCount(meta))
+    .map((h) => h.gift)
+    .join(', ');
+
+export const HUYET_TIER_NAME = () => ({ de: tr('dễ', 'easy'), vua: tr('vừa', 'medium'), kho: tr('khó', 'hard'), rat_kho: tr('rất khó', 'very hard') });
+
+/** Danh hiệu chân thân đã đạt (Khai Mạch, hành viên mãn, các Tôn, Tam Tài Viên Mãn) */
+export function ctTitles(meta: Meta, ext: DaoExt = {}): string[] {
+  const out: string[] = [];
+  if (tamTaiCount(meta, ext) >= 42) out.push(tr('Tam Tài Viên Mãn', 'Three Treasures Perfected'));
+  if (huyetCount(meta) >= 10) out.push(tr('Khai Mạch', 'Meridians Opened'));
+  const done = daoDone(meta, ext);
+  for (const coi of COI) if (DAO.filter((d) => d.coi === coi.id).every((d) => done.includes(d.id))) out.push(coi.ton);
+  if (hanhFull(meta) === 5) out.push(tr('Ngũ Hành Hợp Nhất', 'Five Elements United'));
+  else for (const h of HANH) if ((meta.career?.hanh?.[h.id] ?? 0) >= 3) out.push(tr(`${h.name} Viên Mãn`, `${h.name} Perfected`));
+  return out;
+}
+
+/** Ngoại trang thưởng: tầng 2 mỗi hành và 6 đạo. Chỉ mỹ quan. Mặc bằng outfit = 100 + chỉ số. */
+export interface CtReward {
+  id: string;
+  name: string;
+  hint: string; // gợi ý cách mở, ghi trên ô khóa
+  has: (meta: Meta, ext: DaoExt) => boolean;
+}
+const daoHas = (id: string) => (m: Meta, e: DaoExt) => daoDone(m, e).includes(id);
+const daoHint = (id: string) => {
+  const d = DAO.find((x) => x.id === id)!;
+  return d.hidden ? tr('Một đạo ẩn trong U Minh', 'A hidden Dao of the Netherworld') : tr(`Ngộ đạo ${d.name}: ${d.how.toLowerCase()}`, `Grasp the ${d.name} Dao: ${d.how.toLowerCase()}`);
+};
+export const CT_REWARDS = (): CtReward[] => [
+  ...HANH.map((h) => ({ id: `hanh_${h.id}`, name: tr(`${h.name} bào`, `${h.name} robe`), hint: tr(`Một kiếp mệnh ${h.name} phi thăng`, `A ${h.name}-fated life ascends`), has: (m: Meta) => (m.career?.hanh?.[h.id] ?? 0) >= 2 })),
+  { id: 'phi_thang', name: tr('Tiên y', 'Immortal garb'), hint: daoHint('phi_thang'), has: daoHas('phi_thang') },
+  { id: 'chung_dao', name: tr('Đạo bào Chứng Đạo', 'Dao-attained robe'), hint: daoHint('chung_dao'), has: daoHas('chung_dao') },
+  { id: 'chinh_ta', name: tr('Áo âm dương', 'Yin-yang robe'), hint: daoHint('chinh_ta'), has: daoHas('chinh_ta') },
+  { id: 'bao_khi', name: tr('Áo đa bảo', 'Many-treasure robe'), hint: daoHint('bao_khi'), has: daoHas('bao_khi') },
+  { id: 'diem_la', name: tr('Huyền y Diêm La', 'Yama’s dark robe'), hint: daoHint('diem_la'), has: daoHas('diem_la') },
+  { id: 'minh_chung', name: tr('Áo người gõ chuông', 'Bell-ringer’s robe'), hint: daoHint('minh_chung'), has: daoHas('minh_chung') },
+];

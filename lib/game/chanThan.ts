@@ -99,6 +99,27 @@ export const CT_OUTFITS: Record<Gender, CtOutfit[]> = {
   ],
 };
 
+/**
+ * 4.5.0 Ngày 3: ngoại trang thưởng (cùng thứ tự với CT_REWARDS trong khaiMach.ts), mặc bằng outfit = CT_REWARD_BASE + chỉ số.
+ * Dùng chung cho nam và nữ. Chỉ mỹ quan.
+ */
+export const CT_REWARD_BASE = 100;
+export const CT_REWARD_OUTFITS: CtOutfit[] = [
+  { name: 'kim', cut: 'normal', body: '#e8e2c8', trim: '#a8862e', obi: '#a8862e', pants: '#c9bf9a', sleeves: '#fff8e0' },
+  { name: 'moc', cut: 'normal', body: '#4f9a4a', trim: '#e9ffd8', obi: '#2f6a2c', pants: '#2f6a2c', sleeves: '#7cc46a' },
+  { name: 'thuy', cut: 'normal', body: '#3a78b8', trim: '#d8f0ff', obi: '#1f4a7a', pants: '#1f4a7a', sleeves: '#6aa8e0' },
+  { name: 'hoa', cut: 'normal', body: '#c8442a', trim: '#ffd36b', obi: '#7a1f12', pants: '#7a1f12', sleeves: '#ff7a3a' },
+  { name: 'tho', cut: 'normal', body: '#a8823a', trim: '#f3e2b0', obi: '#5a4120', pants: '#5a4120', sleeves: '#c99a4a' },
+  { name: 'phi_thang', cut: 'normal', body: '#fbf8f0', trim: '#e0b02a', obi: '#e0b02a', pants: '#e8e2d0', sleeves: '#ffffff', mantal: '#fff3c8' },
+  { name: 'chung_dao', cut: 'normal', body: '#5a3488', trim: '#ffd36b', obi: '#ffd36b', pants: '#3a2058', sleeves: '#7a4ab0', mantal: '#ffd36b' },
+  { name: 'chinh_ta', cut: 'normal', body: '#f2f2f2', trim: '#141217', obi: '#141217', pants: '#141217', sleeves: '#26222e', scarf: '#f2f2f2' },
+  { name: 'bao_khi', cut: 'normal', body: '#a8303a', trim: '#ffd36b', obi: '#ffd36b', pants: '#5a1420', sleeves: '#e0b02a' },
+  { name: 'diem_la', cut: 'normal', body: '#2a0e14', trim: '#a8202a', obi: '#a8202a', pants: '#141217', sleeves: '#3a141c', mantal: '#5a1420' },
+  { name: 'minh_chung', cut: 'split', body: '#5c636c', trim: '#c9962e', obi: '#8a5a2a', pants: '#3e434a', mantal: '#7d8590' },
+];
+/** Bộ đang mặc (bộ khởi đầu theo giới tính, hoặc ngoại trang thưởng) */
+export const ctOutfitOf = (g: Gender, outfit: number): CtOutfit => (outfit >= CT_REWARD_BASE ? CT_REWARD_OUTFITS[outfit - CT_REWARD_BASE] : CT_OUTFITS[g][outfit]) ?? CT_OUTFITS[g][0];
+
 /** Chân thân mặc định theo giới tính (lựa chọn đầu, da và tóc giữ nguyên nếu đã có) */
 export function ctDefault(gender: Gender = 'nam', keep?: Partial<ChanThanLook>): ChanThanLook {
   return { name: keep?.name ?? '', gender, skin: keep?.skin ?? 0, hair: 0, hairColor: keep?.hairColor ?? 0, outfit: 0, createdAt: 0, renamed: keep?.renamed ?? 0 };
@@ -117,7 +138,7 @@ export function ctLayers(ct: Pick<ChanThanLook, 'gender' | 'skin' | 'hair' | 'ha
   const skin = CT_SKINS[ct.skin]?.tint ?? undefined;
   const hair = CT_HAIR[g][ct.hair] ?? CT_HAIR[g][0];
   const hc = (CT_HAIR_COLORS[ct.hairColor] ?? CT_HAIR_COLORS[0]).hex;
-  const o = CT_OUTFITS[g][ct.outfit] ?? CT_OUTFITS[g][0];
+  const o = ctOutfitOf(g, ct.outfit);
   const kim = o.cut === 'split' ? 'kimono_split' : 'kimono_normal';
   const out: Layer[] = [];
   if (hair.bg) out.push({ key: `hair_${hair.key}_bg`, tint: hc });

@@ -10,8 +10,6 @@ import { CT_HAIR, CT_HAIR_COLORS, CT_OUTFITS, CT_SKINS, ctBlockedLine, ctCleanNa
 import { COI, DAO, HANH, MONG_TINH, TAM_TAI_END, TAM_TAI_INTRO, daoDone, huyetCount, khaiCheck } from '@/lib/game/khaiMach';
 import type { Character, ChanThanLook, Gender, Meta } from '@/lib/game/types';
 import { supabase } from '@/lib/supabase';
-import { loadAll, saveMeta } from '@/lib/storage';
-import type { Player } from '@/lib/auth';
 import { musicPref } from '@/lib/music';
 import { track } from '@/lib/track';
 import { tr } from '@/lib/i18n';
@@ -456,38 +454,5 @@ export function TamTaiReview({ meta, from, onClose }: { meta: Meta; from: string
     <div className="ct-flow" role="dialog" aria-modal="true" aria-label={tr('Tam Tài Đồ', 'The Three Treasures')}>
       <TamTaiDo ct={meta.chanThan ?? null} meta={meta} from={from} onDone={onClose} />
     </div>
-  );
-}
-
-// ---------------- Trang chủ: người cũ chưa có chân thân ----------------
-
-/**
- * Người đã có kiếp mà chưa có chân thân: lần đầu vào trang chủ sau bản này thì mở Mộng Tỉnh, màn tạo, Tam Tài Đồ.
- * Màn tạo phải xong mới đi tiếp (có nút Thuận theo duyên nên chỉ mất một chạm). Chỉ tải hồ sơ khi cờ bật.
- */
-export function HomeChanThan({ user, ready, on }: { user: Player | null; ready: boolean; on: boolean }) {
-  const [meta, setMeta] = useState<Meta | null>(null);
-  useEffect(() => {
-    if (!on || !ready) return;
-    let live = true;
-    loadAll(user)
-      .then(({ meta: m }) => live && setMeta(m))
-      .catch(() => {});
-    return () => {
-      live = false;
-    };
-  }, [on, ready, user]);
-  if (!on || !meta || meta.chanThan || (meta.lives ?? 0) < 1) return null;
-  return (
-    <CtFlow
-      meta={meta}
-      dead={null}
-      from="home"
-      onDone={(ct) => {
-        const m2 = { ...meta, chanThan: ct };
-        setMeta(m2);
-        saveMeta(user, m2).catch(() => {});
-      }}
-    />
   );
 }

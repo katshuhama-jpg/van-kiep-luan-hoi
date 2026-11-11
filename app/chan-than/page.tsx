@@ -1,17 +1,22 @@
 'use client';
 
 /**
- * 4.5.0 Trang chân thân (Ngày 2: đổi ngoại hình, đổi pháp danh, xem lại Tam Tài Đồ).
- * Bảng Tam Tài đầy đủ làm ở Ngày 3. Giấu sau cờ CHAN_THAN_ON: cờ tắt thì về trang đầu.
+ * 4.5.0 Trang chân thân: chân thân lớn với chấm huyệt, pháp danh, danh hiệu, đổi ngoại hình và tên,
+ * bảng Tam Tài 3 tab (Thân, Khí, Đạo), tủ ngoại trang, khoe thẻ, xem lại Tam Tài Đồ. Giấu sau cờ CHAN_THAN_ON: cờ tắt thì về trang đầu.
  */
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import BackButton from '@/components/BackButton';
-import { CtCreate, CtSprite, TamTaiReview, checkCtName } from '@/components/ChanThan';
+import { CtCreate, TamTaiReview, checkCtName } from '@/components/ChanThan';
+import { CtWardrobe, HuyetBar, HuyetBody, TamTaiBoard, useCtExt } from '@/components/TamTai';
+import ShareSheet from '@/components/ShareSheet';
+import { shareChanThan } from '@/lib/ctCard';
+import type { ShareOut } from '@/lib/shareCard';
+import { displayName } from '@/lib/storage';
 import { CHAN_THAN_ON } from '@/lib/flags';
 import { CT_RENAME_COST, ctSuggestName } from '@/lib/game/chanThan';
-import { huyetCount, nextHuyet, huyetChip } from '@/lib/game/khaiMach';
+import { ctTitles, huyetCount, nextHuyet, huyetChip } from '@/lib/game/khaiMach';
 import type { Meta } from '@/lib/game/types';
 import { loadAll, saveMeta } from '@/lib/storage';
 import { useAuth } from '@/lib/useAuth';
@@ -27,9 +32,20 @@ export default function ChanThanPage() {
   const [name, setName] = useState('');
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [out, setOut] = useState<ShareOut | null>(null);
+  const [saved, setSaved] = useState(false);
+  const [drawing, setDrawing] = useState(false);
+  const ext = useCtExt(user, CHAN_THAN_ON);
+  const viewed = useRef(false);
   useEffect(() => {
     if (!CHAN_THAN_ON) router.replace('/');
   }, [router]);
+  useEffect(() => {
+    if (meta?.chanThan && !viewed.current) {
+      viewed.current = true;
+      track('huyet_view', { from: 'chan_than', n: huyetCount(meta) });
+    }
+  }, [meta]);
   useEffect(() => {
     if (!CHAN_THAN_ON || !ready) return;
     loadAll(user)
@@ -67,29 +83,65 @@ export default function ChanThanPage() {
         </section>
       )}
       {meta && ct && mode === 'view' && (
-        <section className="panel ct-card-big">
-          <div className="ct-big">
-            <CtSprite ct={ct} size={170} />
-          </div>
-          <h2 style={{ margin: '6px 0 0', textAlign: 'center' }}>{ct.name}</h2>
-          <p style={{ textAlign: 'center', margin: '4px 0' }}>{tr(`Thân: ${huyetCount(meta)}/10 huyệt`, `Body: ${huyetCount(meta)}/10 points`)}</p>
-          {h && <p style={{ textAlign: 'center', margin: '0 0 8px' }}>{huyetChip(h)}</p>}
-          <div className="home-grid">
-            <button className="btn" onClick={() => setMode('look')}>
-              {tr('Đổi ngoại hình', 'Change appearance')}
-            </button>
+        <>
+          <section className="panel ct-card-big">
+            <div className="ct-big">
+              <HuyetBody ct={ct} open={huyetCount(meta)} size={190} />
+            </div>
+            <h2 style={{ margin: '6px 0 0', textAlign: 'center' }}>{ct.name}</h2>
+            {ctTitles(meta, ext).length > 0 && <p className="ct-titles">{ctTitles(meta, ext).join(' · ')}</p>}
+            <div style={{ display: 'flex', justifyContent: 'center', margin: '6px 0 2px' }}>
+              <HuyetBar n={huyetCount(meta)} />
+            </div>
+            <p style={{ textAlign: 'center', margin: '4px 0' }}>{tr(`Thân: ${huyetCount(meta)}/10 huyệt`, `Body: ${huyetCount(meta)}/10 points`)}</p>
+            {h && <p style={{ textAlign: 'center', margin: '0 0 8px' }}>{huyetChip(h)}</p>}
+            <div className="home-grid">
+              <button className="btn" onClick={() => setMode('look')}>
+                {tr('Đổi ngoại hình', 'Change appearance')}
+              </button>
+              <button
+                className="btn"
+                onClick={() => {
+                  setName(ct.name);
+                  setErr(null);
+                  setMode('name');
+                }}
+              >
+                {tr('Đổi pháp danh', 'Change name')}
+              </button>
+            </div>
             <button
-              className="btn"
-              onClick={() => {
-                setName(ct.name);
-                setErr(null);
-                setMode('name');
+              className="btn btn-red"
+              style={{ width: '100%', marginTop: 8 }}
+              disabled={drawing}
+              onClick={async () => {
+                setDrawing(true);
+                track('huyet_share', { n: huyetCount(meta) });
+                const r = await shareChanThan(meta, ext, user ? displayName(user) : ct.name).catch(() => null);
+                setDrawing(false);
+                if (r?.link) setOut(r);
+                else if (r?.saved) setSaved(true);
               }}
             >
-              {tr('Đổi pháp danh', 'Change name')}
+              {drawing ? tr('Đang vẽ thẻ...', 'Drawing your card...') : tr('Khoe chân thân', 'Share your true self')}
             </button>
-          </div>
-        </section>
+            {saved && <small className="note">{tr('Đã tải thẻ về máy. Đăng nhập để có link khoe hiện hình.', 'Card downloaded. Log in to get a link that shows the picture.')}</small>}
+          </section>
+          <section className="panel ct-dark">
+            <TamTaiBoard meta={meta} ext={ext} onHelp={() => (track('huyet_intro_open', { from: 'bang' }), setHelp(true))} />
+          </section>
+          <section className="panel ct-dark">
+            <CtWardrobe
+              meta={meta}
+              ext={ext}
+              onWear={(o) => {
+                save({ ...meta, chanThan: { ...ct, outfit: o } });
+                track('ct_look', { gender: ct.gender, hair: ct.hair, hairColor: ct.hairColor, outfit: o });
+              }}
+            />
+          </section>
+          {out && <ShareSheet out={out} kind="life" onClose={() => setOut(null)} />}
+        </>
       )}
       {meta && ct && mode === 'look' && (
         <section className="panel ct-dark">
