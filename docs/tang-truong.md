@@ -68,6 +68,10 @@ Nội dung soạn sẵn (Tyler tự đăng, Claude không đăng):
 - Caption Page: "Mỗi kiếp là một giấc mộng. Mộng tan, chân thân còn. Từ hôm nay, Vạn Kiếp Luân Hồi có chân thân của riêng ngươi: tự chọn dáng, đặt pháp danh, mỗi kiếp làm được việc gì thì khắc vào thân một huyệt. Kẻ vừa chết kia là ngươi. Nhưng cũng không phải ngươi. Chơi miễn phí trên trình duyệt."
 - Caption Threads ngắn: "Chết 40 kiếp rồi mới nhớ ra mặt mình. Bản 4.5.0: chân thân, thập đại huyệt, Tam Tài."
 
+Tyler trả lời 12/11 tối:
+- Đồng ý ưu tiên hai lỗi mất đồ #224 (hợp 9 món ra 3 món cực mà túi không thấy) và #223 (cà sa đang mặc tự mất) trong đêm 13/11. Việc đầu tiên của phần Tăng trưởng đêm 13/11: soi `mergeItems` (lib/game/market.ts) và luồng mặc/tháo đồ, tìm đường làm mất đồ, sửa, viết smoke tái hiện.
+- Hỏi lại về quảng cáo: không chạy thì người chơi tụt. Claude đề xuất chạy thử nhỏ ngay từ 13/11 thay vì chờ 21/11, chờ Tyler chốt ngân sách.
+
 Tiến độ việc nhiều đêm: không có.
 
 ## Sổ cải thiện tính năng
