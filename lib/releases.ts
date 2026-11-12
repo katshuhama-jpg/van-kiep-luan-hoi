@@ -24,6 +24,33 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '4.5.0',
+    date: '13/11/2026',
+    title: tr('Chân Thân', 'True Self'),
+    lead: tr('Mỗi kiếp là một giấc mộng. Mộng tan, chân thân còn. Điều ngươi làm được trong mộng sẽ khắc vào thân.', 'Every life is a dream. The dream fades, the true self remains. What you achieve in the dream is carved into your body.'),
+    groups: [
+      {
+        h: tr('Chân thân', 'True self'),
+        hot: true,
+        items: [
+          tr('Ngươi có một chân thân cố định qua mọi kiếp: tự chọn ngoại hình và đặt pháp danh. Nhân vật trong mỗi kiếp vẫn đầu thai ngẫu nhiên như cũ.', 'You now have a true self that stays across every life: choose its look and give it a name. Each life is still born at random as before.'),
+          tr('Đạo hữu đã chơi từ trước: lần đầu vào sẽ nhớ lại chân thân ngay ở trang đầu. Người mới: sau khi kiếp đầu khép lại.', 'Returning players remember their true self on the home page the first time they come back. New players: after the first life ends.'),
+          tr('Đổi ngoại hình bất cứ lúc nào, đổi tên lần đầu không tốn gì, ở trang Chân thân.', 'Change your look any time, and your first rename is free, on the True Self page.'),
+        ],
+      },
+      {
+        h: tr('Tam Tài: huyệt, hành, đạo', 'Three Talents: points, elements, Daos'),
+        items: [
+          tr('Thân: thập đại huyệt. Trong mộng làm được việc huyệt đòi, mộng tan thì huyệt khai, kiếp sau mạnh hơn một chút. Dễ trước khó sau, ai cũng bắt đầu từ huyệt đầu tiên.', 'Body: ten great points. Do what a point asks within a dream and it opens when the dream ends, making later lives a little stronger. Easy first, hard later, everyone starts from the first point.'),
+          tr('Khí: mỗi kiếp mang một bản mệnh ngũ hành. Mộng đi xa, hành ấy sáng.', 'Breath: every life carries one of the five elements. The further the dream goes, the brighter that element shines.'),
+          tr('Đạo: Thiên, Hồng Trần, U Minh. Thành tích cũ được tính sẵn.', 'Dao: Heaven, the Mortal World, the Underworld. Past achievements already count.'),
+          tr('Ngoại trang khác nằm rải trên đường tu: khai huyệt, viên mãn ngũ hành, ngộ đạo.', 'More outfits lie scattered along the path: opening points, perfecting elements, grasping Daos.'),
+        ],
+      },
+    ],
+    more: [tr('Chân thân của riêng ngươi', 'Your own true self'), tr('Khai huyệt qua từng kiếp', 'Open points life by life'), tr('Ngoại trang mới', 'New outfits')],
+  },
+  {
     v: '4.4.4',
     date: '12/11/2026',
     title: tr('Trảm Tam Thi Không Còn Lặp', 'Three Corpses, No More Loops'),
