@@ -131,6 +131,14 @@ export default function Arena({ user }: { user: Player | null }) {
       return null;
     }
     const r = await arenaPick2(user, target.lifeId ?? 0);
+    // Ra đài lại sau khi tắt game giữa trận (góp ý #227): trận đã rút vẫn chờ, dùng đúng bóng máy chủ đang giữ để đánh nốt
+    if (r?.error === 'PENDING' && !c && r.champ) {
+      const held = toRival(user.username, r.champ);
+      if (held) {
+        champRef.current = { day: vnDate(), c: held };
+        return held;
+      }
+    }
     if (r?.error === 'PENDING') {
       setErr(tr('Đang có trận đã rút đối thủ, đánh xong trận đó rồi hẵng đổi kiếp.', 'You have a drawn match waiting. Finish it before changing lives.'));
       return null;

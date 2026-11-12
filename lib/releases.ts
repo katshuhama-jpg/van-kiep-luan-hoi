@@ -47,6 +47,10 @@ export const RELEASES: Release[] = [
           tr('Ngoại trang khác nằm rải trên đường tu: khai huyệt, viên mãn ngũ hành, ngộ đạo.', 'More outfits lie scattered along the path: opening points, perfecting elements, grasping Daos.'),
         ],
       },
+      {
+        h: tr('Sửa lỗi', 'Fixes'),
+        items: [tr('Lôi đài: tắt game giữa trận rồi quay lại thì đánh nốt được trận đang chờ, không còn bị báo đang có trận mà không vào được.', 'Arena: if you close the game mid-match, coming back now lets you finish the waiting match instead of being stuck.')],
+      },
     ],
     more: [tr('Chân thân của riêng ngươi', 'Your own true self'), tr('Khai huyệt qua từng kiếp', 'Open points life by life'), tr('Ngoại trang mới', 'New outfits')],
   },
