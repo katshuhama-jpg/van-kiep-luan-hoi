@@ -76,12 +76,19 @@ Tyler trả lời 12/11 tối:
 
 - Tyler cho biết 12/11: đợt quảng cáo trước chi 300.000đ trong 7 ngày (khoảng 43.000đ/ngày). Đợt đó mang về khoảng 1.000 lượt vào từ Facebook (utm fb 2-9/11), tức khoảng 300đ một lượt vào. Claude đề xuất đợt mới 100.000đ/ngày x 5 ngày, chạy song song ảnh manhua và ảnh hình game thật, mỗi mẫu một utm_content riêng.
 
-Quảng cáo đợt Chân Thân (Tyler 12/11: "muốn rẻ, nghĩ như mình nghèo"). Kế hoạch tiết kiệm, trần 300.000đ cho 7 ngày 13-19/11 (bằng tuần trước, Tyler chốt 12/11):
-- 13-14/11, 0đ: đăng miễn phí hai video ("Địa Phủ" 18,5 giây, "Bụi Vàng" 20 giây; khổ 4:5 và 9:16) lên Reels Page, TikTok, Threads và 5-10 nhóm Facebook tiên hiệp/truyện chữ/game. Mỗi kênh một link utm riêng (utm_source=page|tiktok|threads|nhom, utm_content=diaphu|buivang).
-- Đêm 14/11 đo theo utm: người chơi xong kiếp 1 và tạo chân thân. Chọn video và kênh thắng.
-- 15-19/11: chỉ đẩy (boost) bài đăng thắng đã có tương tác tự nhiên, 60.000đ/ngày (5 ngày = 300.000đ), chỉ chạy 18h-23h (giờ đông người nhất, 21h đỉnh). Không chạy chiến dịch lạnh.
-- Dừng nếu dưới 60% tạo chân thân hoặc dưới 25% còn chơi sau 1 ngày. Chỉ tăng ngân sách khi người từ quảng cáo còn chơi sau 7 ngày từ 11% trở lên.
-- Việc trong game (làm trong các đêm tăng trưởng, đối chiếu plan 4.6.0 Sư Đồ trước): link khoe chân thân và khoe kết cục có utm riêng, ảnh xem trước đẹp, để người chơi tự mời bạn.
+Quảng cáo đợt Chân Thân - bản chốt (Tyler chạy từ 13/11, 300.000đ/7 ngày, muốn rẻ):
+- 1 chiến dịch Lưu lượng truy cập, tối ưu lượt click liên kết (web chưa có Meta Pixel). Ngân sách TRỌN ĐỜI 300.000đ, 13/11 00:00 - 19/11 23:59, lịch chạy 17:00-23:59 mỗi ngày.
+- 1 nhóm quảng cáo: Việt Nam, 18-40, Advantage+ đối tượng (gợi ý sở thích: tiểu thuyết tiên hiệp, truyện chữ, game nhập vai, game di động), vị trí Advantage+.
+- 3 quảng cáo trong cùng nhóm, link vào thẳng /choi:
+  - diaphu: video Địa Phủ (9:16 cho Reels/Stories, 4:5 cho bảng tin). Hook: "Kiếp 4 · Chết Dưới Răng Thỏ".
+  - buivang: video Bụi Vàng. Hook: "Ngươi đã chết bao nhiêu lần?".
+  - anh40: ảnh "Chết 40 kiếp rồi mới nhớ ra mặt mình."
+  - Link: https://van-kiep-luan-hoi.vercel.app/choi?utm_source=fb&utm_medium=paid&utm_campaign=chanthan&utm_content=<mã>
+- Không sửa gì 13-14/11 (Meta đang học). Sáng 15/11: tắt quảng cáo có giá mỗi người chơi xong kiếp 1 cao nhất (đo bằng vkl_events: open có data.q chứa utm_content, nối sid với life_end). Không đổi ngân sách giữa chừng.
+- Dừng cả chiến dịch nếu dưới 60% người mới tạo chân thân hoặc dưới 25% còn chơi sau 1 ngày.
+- Mốc tuần trước (300k): khoảng 1.000 lượt vào từ Facebook. Mục tiêu tuần này: bằng hoặc hơn số lượt vào, và nhiều người chơi xong kiếp 1 hơn nhờ link vào thẳng game.
+- Song song, miễn phí: đăng hai video lên Reels Page, TikTok, Threads, nhóm Facebook (utm_source=page|tiktok|threads|nhom).
+- Ý tưởng chờ Tyler: video người làm game tự kể (founder content, rẻ và hay chạy tốt nhất trên Meta). Chỉ làm khi Tyler đồng ý và tự kể câu chuyện thật.
 
 Tiến độ việc nhiều đêm: không có.
 
