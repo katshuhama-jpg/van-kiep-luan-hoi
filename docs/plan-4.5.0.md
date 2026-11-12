@@ -115,11 +115,11 @@ Lên bản: 2026-11-12 (giấu sau cờ).
 
 ## Ngày 4 - Thử, cáo thị, lên bản
 Lên bản: 2026-11-13. Bật cờ, có cáo thị 4.5.0.
-- [ ] Thử: Playwright 390x844 cho người mới (kiếp 1 xong, mở đầu, tạo chân thân, giới thiệu huyệt, cáo biệt có huyệt 1), người cũ 40 kiếp (mở đầu, tạo, bắt đầu từ huyệt 1), kiếp đạt huyệt khó chỉ khai huyệt kế tiếp, tên tục bị chặn, đổi tên lần hai trừ phúc. Chụp ảnh gửi Tyler.
-- [ ] Quay lại đoạn mở đầu thành video ngắn dọc 9:16 (Playwright quay màn) để Tyler đăng Page và Threads làm teaser. Gửi file cho Tyler, không tự đăng.
-- [ ] Bật cờ `CHAN_THAN_ON`. Cáo thị 4.5.0 ngắn: chân thân, Tam Tài (huyệt, hành, đạo), ngoại trang sẽ có thêm. Không ghi số cụ thể.
-- Xong:
-- Ghi chú:
+- [x] Thử: Playwright 390x844 cho người mới (kiếp 1 xong, mở đầu, tạo chân thân, giới thiệu huyệt, cáo biệt có huyệt 1), người cũ 40 kiếp (mở đầu, tạo, bắt đầu từ huyệt 1), kiếp đạt huyệt khó chỉ khai huyệt kế tiếp, tên tục bị chặn, đổi tên lần hai trừ phúc. Chụp ảnh gửi Tyler.
+- [x] Quay lại đoạn mở đầu thành video ngắn dọc 9:16 (Playwright quay màn) để Tyler đăng Page và Threads làm teaser. Gửi file cho Tyler, không tự đăng.
+- [x] Bật cờ `CHAN_THAN_ON`. Cáo thị 4.5.0 ngắn: chân thân, Tam Tài (huyệt, hành, đạo), ngoại trang sẽ có thêm. Không ghi số cụ thể.
+- Xong: 12/11/2026 6dad98d
+- Ghi chú: Cờ `CHAN_THAN_ON` bật mặc định (`lib/flags.ts`); muốn tắt gấp thì đặt `NEXT_PUBLIC_CHAN_THAN=0` rồi build lại. Thử: `node scripts/smoke-len-450.cjs <thư mục ảnh>` (390x844, 27 mục): người mới kiếp 1 lên Nguyên Anh -> cáo biệt -> Mộng Tỉnh 5 khung -> tạo -> "Ngươi nhớ ra rồi" -> Tam Tài Đồ -> Dũng Tuyền khai ngay, hồ sơ huyet=[1]; người cũ 40 kiếp vào trang đầu bỏ qua Mộng Tỉnh, phải tạo xong mới đi tiếp, huyet rỗng, thẻ trang đầu chờ Dũng Tuyền; kiếp Chứng Đạo 500 tuổi khi mới có huyệt 1 chỉ khai Quan Nguyên (không thức tỉnh); tên "Đít Me" bị chặn; đổi tên lần hai trừ đúng 100 phúc. smoke-chanthan (41 mục), smoke, smoke-login (cả FAIL_ME), smoke-linhthu, tsc, build sạch với cờ bật. Video Mộng Tỉnh 9:16 (1080x1920, 27 giây, có tiếng chuông dựng lại vì Playwright không ghi tiếng) đã gửi Tyler, không tự đăng. Cáo thị 4.5.0 không ghi số. Không đổi số cân bằng nên không chạy mô phỏng.
 
 ## Ngày 5-6 - Sư Đồ: CHUYỂN sang 4.6.0
 Tyler chốt 10/11: Sư Đồ gộp vào Sơn Môn Tranh Bá, xem `docs/plan-4.6.0.md`. Khối này không còn việc.
