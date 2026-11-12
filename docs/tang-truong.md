@@ -76,6 +76,15 @@ Tyler trả lời 12/11 tối:
 
 - Tyler cho biết 12/11: đợt quảng cáo trước chi 300.000đ trong 7 ngày (khoảng 43.000đ/ngày). Đợt đó mang về khoảng 1.000 lượt vào từ Facebook (utm fb 2-9/11), tức khoảng 300đ một lượt vào. Claude đề xuất đợt mới 100.000đ/ngày x 5 ngày, chạy song song ảnh manhua và ảnh hình game thật, mỗi mẫu một utm_content riêng.
 
+Quảng cáo đợt Chân Thân (Tyler giao Claude quyết 12/11, "nghĩ như đồng sở hữu"):
+- Hai video, chạy song song, mỗi video 2 khổ (4:5 bảng tin, 9:16 Reels/Stories):
+  - "Địa Phủ": hồn các kiếp xếp hàng qua cầu Nại Hà, bảng gỗ ghi kết cục thật (Chết Dưới Răng Thỏ, Chết Đói Đầu Đường...), tan thành bụi vàng, tụ thành chân thân, 10 huyệt sáng có chuông. 18,5 giây. utm_content=diaphu45 / diaphu916.
+  - "Bụi Vàng": "Ngươi đã chết bao nhiêu lần?", 10 kiếp lướt nhanh, lưới 40 kiếp tan thành bụi, chân thân và huyệt. 20 giây. utm_content=buivang45 / buivang916.
+- Ngân sách đề xuất 100.000đ/ngày, 5 ngày (13-17/11), chia đều hai video. Link: https://van-kiep-luan-hoi.vercel.app/?utm_source=fb&utm_campaign=chanthan&utm_content=<mã trên>.
+- Mỗi đêm đo theo utm_content: lượt vào, tài khoản mới, chơi xong kiếp 1, tạo chân thân, còn chơi sau 1 ngày. Sau 2 ngày video thua thì tắt, dồn tiền cho video thắng.
+- Dừng hẳn nếu dưới 60% tạo chân thân hoặc dưới 25% còn chơi sau 1 ngày. Qua cả hai mốc thì tăng lên 150-200k/ngày tới 18/11.
+- Video dựng từ nhân vật LPC và nền Địa Phủ có sẵn của game, nhạc ngũ cung 8-bit tự sinh như nhạc trong game, không dùng ảnh AI.
+
 Tiến độ việc nhiều đêm: không có.
 
 ## Sổ cải thiện tính năng
