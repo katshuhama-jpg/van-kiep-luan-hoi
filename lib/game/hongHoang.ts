@@ -145,7 +145,20 @@ function gateEvent(c: Character): GameEvent {
 
 export function thiTarget(c: Character): ThiKind | null {
   if (c.realm !== HH_REALM) return null;
-  return THI_ORDER[c.layer - 1] ?? null;
+  // 4.4.4: lấy thi chưa chém đầu tiên theo đúng thứ tự, không dựa vào tầng (tầng có thể lệch nếu trận bị tính hai lần)
+  const done = c.hong?.thi ?? {};
+  return THI_ORDER.find((k) => !done[k]) ?? null;
+}
+
+/** 4.4.4: sửa tầng Chuẩn Thánh cho khớp số thi đã chém (bản lưu bị lệch tầng vì một trận thi tính hai lần) */
+export function hgFix(c: Character) {
+  if (c.cosmos !== 'hg' || c.realm !== HH_REALM) return;
+  const n = THI_ORDER.filter((k) => c.hong?.thi?.[k]).length;
+  const want = Math.min(3, n + 1);
+  if (c.layer !== want) {
+    c.layer = want;
+    c.cultivation = Math.min(c.cultivation, needFor(c));
+  }
 }
 
 /** Thi lấy hình từ chính lịch sử người chơi */
@@ -203,6 +216,8 @@ function thiEvent(c: Character): GameEvent {
 /** Thắng một trận Trảm Thi: ghi lại, trao đồ, lên tầng hay lên Thánh Nhân */
 function winThi(c: Character, k: ThiKind, mode: 'tram' | 'thu', ctx: EffectCtx): string {
   const s = hg(c);
+  // 4.4.4: thi này đã chém rồi thì không tính lần nữa (tránh nhảy tầng hai lần)
+  if (s.thi?.[k]) return tr(`${THI_NAME[k]} đã tan từ trước, trận này chỉ là dư âm.`, `The ${THI_NAME[k]} was already gone; this fight was only an echo.`);
   s.thi = { ...(s.thi ?? {}), [k]: mode };
   let t =
     mode === 'thu'
@@ -229,7 +244,7 @@ function winThi(c: Character, k: ThiKind, mode: 'tram' | 'thu', ctx: EffectCtx):
     t += giveHg(c, 'hg_lap_giao_y', ctx);
   } else {
     c.cultivation = 0;
-    c.layer += 1;
+    c.layer = Math.min(3, Object.keys(s.thi).length + 1);
     ctx.fx('layer', `${REALMS[c.realm].name}`);
   }
   return t;

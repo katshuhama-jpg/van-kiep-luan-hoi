@@ -47,7 +47,7 @@ import {
   realmLabel,
 } from './data';
 import { BREAK_EVENT_ID, EVENTS, HUT_CONG_ID, PATH_EVENT_ID, pathChoices } from './events';
-import { HG_GATE_ID, hgApi, hgCultMul, hgFindEvent, hgGateFor } from './hongHoang';
+import { HG_GATE_ID, hgApi, hgCultMul, hgFindEvent, hgFix, hgGateFor } from './hongHoang';
 import { maChainYear } from './sectEvents2';
 import { ASCEND_MIN_AGE, anOf, destOf, keyAn, needTrial } from './nguHanhDai';
 import { ASCEND_GEAR } from './items2';
@@ -504,6 +504,7 @@ function progress(c: Character, ctx: EffectCtx, talents: string[]): PendingEvent
   let guard = 0;
   // 4.4.0: đang chờ vào trận Hồng Hoang thì chưa mở cửa ải nào khác
   if (c.hgFight) return null;
+  hgFix(c);
   while (c.cultivation >= needFor(c) && guard++ < 20) {
     // 4.4.0 Hồng Hoang: Chuẩn Thánh, Hỗn Nguyên lên tầng phải qua cửa ải (chém thi, chặt xích)
     if (c.cosmos === 'hg' && c.layer < R.layers && (c.realm === HH_REALM || c.realm === HH_REALM + 2)) {

@@ -24,6 +24,22 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '4.4.4',
+    date: '12/11/2026',
+    title: tr('Trảm Tam Thi Không Còn Lặp', 'Three Corpses, No More Loops'),
+    lead: tr('Có bạn chém Ác thi xong lại bị bắt chém Thiện thi mãi không lên được. Lỗi đã sửa, ai đang kẹt vào game là đi tiếp được.', 'A player slew the Evil Corpse and then got stuck slaying the Good Corpse over and over. Fixed - anyone stuck can move on now.'),
+    groups: [
+      {
+        h: tr('Hồng Hoang', 'Honghuang'),
+        hot: true,
+        items: [
+          tr('Thi đã chém rồi thì không bị đánh lại lần nữa.', 'A corpse already slain is never fought again.'),
+          tr('Ai đang kẹt ở Chuẩn Thánh được đưa về đúng tầng, thi tiếp theo là thi chưa chém.', 'Anyone stuck at Quasi-Saint is put back on the right layer, facing the corpse not yet slain.'),
+        ],
+      },
+    ],
+  },
+  {
     v: '4.4.3',
     date: '10/11/2026',
     title: tr('Thiên Phú Lớn Nói Rõ Lý Do', 'Major Talents, Explained'),

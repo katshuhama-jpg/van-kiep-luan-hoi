@@ -891,6 +891,13 @@ export default function PlayPage() {
     const f = c.hgFight;
     c.hgFight = null;
     if (!f) return;
+    // 4.4.4: trận thi đã chém rồi (bản lưu cũ còn sót lệnh vào trận) thì bỏ qua, không đánh lại
+    if (f.kind === 'thi' && c.hong?.thi?.[f.id as 'thien' | 'ac' | 'chap']) {
+      persist(true);
+      return;
+    }
+    // ghi ngay việc đã vào trận để tải lại trang giữa chừng không mở thêm một trận nữa
+    persist(true);
     const { m, ms, ps, name } = hgFoe(c, f);
     ambushRef.current = {
       m,
