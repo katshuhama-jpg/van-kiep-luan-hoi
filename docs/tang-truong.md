@@ -74,6 +74,8 @@ Tyler trả lời 12/11 tối:
 
 - Cần xem đêm 13/11: ở màn cáo biệt, ảnh chụp thanh Thập Kiếp chỉ thấy 1 ô sáng trong khi chữ ghi "2/10" (dù class của 2 ô đều là `on`). Kiểm lại trên điện thoại thật.
 
+- Tyler cho biết 12/11: đợt quảng cáo trước chi 300.000đ trong 7 ngày (khoảng 43.000đ/ngày). Đợt đó mang về khoảng 1.000 lượt vào từ Facebook (utm fb 2-9/11), tức khoảng 300đ một lượt vào. Claude đề xuất đợt mới 100.000đ/ngày x 5 ngày, chạy song song ảnh manhua và ảnh hình game thật, mỗi mẫu một utm_content riêng.
+
 Tiến độ việc nhiều đêm: không có.
 
 ## Sổ cải thiện tính năng
