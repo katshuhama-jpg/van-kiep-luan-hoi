@@ -508,8 +508,18 @@ export function weeklyTitles(): Promise<Record<string, string[]>> {
   titlesCache = (async () => {
     const sb = supabase();
     if (!sb) return {};
-    const { data, error } = await sb.rpc('vkl_titles_char');
-    if (error || !data) return {};
+    // 14/11: lấy qua bộ đệm Vercel (app/api/pub/titles), lỗi thì mới gọi thẳng
+    let data: unknown = null;
+    try {
+      const r = await fetch('/api/pub/titles');
+      if (!r.ok) throw new Error(String(r.status));
+      data = await r.json();
+    } catch {
+      const res = await sb.rpc('vkl_titles_char');
+      if (res.error) return {};
+      data = res.data;
+    }
+    if (!Array.isArray(data)) return {};
     const out: Record<string, string[]> = {};
     for (const r of data as { username: string; life_no: number; title: string }[]) {
       const k = titleKey(r.username, r.life_no);
