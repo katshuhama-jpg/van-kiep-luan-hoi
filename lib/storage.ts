@@ -291,7 +291,9 @@ export async function leaderboard(kind: RankKind, lean: RankLean, path: string, 
     data = await r.json();
   } catch {
     // 5/11: bảng mới bỏ người sửa save (số vô lý, danh sách ẩn); máy chủ chưa có thì dùng bảng cũ
-    ({ data, error } = await sb.rpc('vkl_leaderboard2', { p_kind: kind, p_lean: lean, p_path: path, p_scope: scope }));
+    // 13/11: vkl_leaderboard3 đọc bảng tính sẵn (làm mới 2 phút/lần), nhanh hơn nhiều; lỗi thì lùi về bảng cũ
+    ({ data, error } = await sb.rpc('vkl_leaderboard3', { p_kind: kind, p_lean: lean, p_path: path, p_scope: scope }));
+    if (error) ({ data, error } = await sb.rpc('vkl_leaderboard2', { p_kind: kind, p_lean: lean, p_path: path, p_scope: scope }));
     if (error) ({ data, error } = await sb.rpc('vkl_leaderboard', { p_kind: kind, p_lean: lean, p_path: path, p_scope: scope }));
   }
   if (error || !Array.isArray(data)) return null;

@@ -23,7 +23,9 @@ export async function GET(req: Request) {
   if (!kind || !url || !key) return Response.json({ error: 'bad' }, { status: 400, headers: { 'Cache-Control': 'no-store' } });
   const sb = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
   const args = { p_kind: kind, p_lean: lean, p_path: path, p_scope: scope };
-  let { data, error } = await sb.rpc('vkl_leaderboard2', args);
+  // 13/11: vkl_leaderboard3 đọc bảng tính sẵn vkl_priv.lb_row (pg_cron làm mới 2 phút/lần, supabase/bang_xep_hang_2026_11_13.sql)
+  let { data, error } = await sb.rpc('vkl_leaderboard3', args);
+  if (error) ({ data, error } = await sb.rpc('vkl_leaderboard2', args));
   if (error) ({ data, error } = await sb.rpc('vkl_leaderboard', args));
   if (error) return Response.json({ error: 'db' }, { status: 502, headers: { 'Cache-Control': 'public, s-maxage=15' } });
   return Response.json(data ?? [], { headers: { 'Cache-Control': 'public, s-maxage=120, stale-while-revalidate=600' } });
