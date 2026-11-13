@@ -164,6 +164,27 @@ Vì sao `vkl_leaderboard2` chậm (đọc từ định nghĩa trong `supabase/ch
 
 Có nên nâng compute Supabase không: CHƯA nên. Chậm là do thuật toán quét toàn bảng mỗi lần gọi, nâng máy chỉ giảm thời gian theo tỉ lệ CPU, còn số kiếp tăng mỗi ngày thì lại chậm dần. Nay bảng xếp hạng đã qua bộ đệm Vercel và `vkl_leaderboard3`; nếu giờ cao điểm truy vấn đơn giản vẫn mất trên 300 ms thì mới xét nâng một bậc. Việc phải làm khi Supabase kết nối lại: `select query, calls, mean_exec_time, total_exec_time from extensions.pg_stat_statements order by total_exec_time desc limit 15;`, `select relname, pg_size_pretty(pg_total_relation_size(relid)) from pg_statio_user_tables order by pg_total_relation_size(relid) desc limit 10;`, get_advisors (performance), và explain trên máy thật; ghi số vào đây.
 
+### Bổ sung 14/11 00:30 (Supabase kết nối lại, đọc vkl_events / vkl_players)
+
+Số chính:
+- Tài khoản mới: 12/11 39, 13/11 86 (quảng cáo Chân Thân chạy từ 17:00). D1 nhóm 9-11/11: 31,3% / 32,8% / 29,2% (đầu tháng 35-42%). D7 nhóm 1-5/11: 12,0% / 15,7% / 12,7% / 7,6% / 10,1%.
+- Phiên mỗi ngày (vkl_daily.sid): 11/11 930, 12/11 814, 13/11 1.128. Màn rời nhiều nhất 13/11: đầu thai 515, đang chơi 352, sự kiện 255, chưa rõ 243.
+- Phễu chân thân từ 5:00 13/11 (số phiên): xem Mộng Tỉnh 261 (191 xem hết) -> tạo chân thân 250 (96%). Màn tạo KHÔNG làm rơi người, không cần rút gọn (điều kiện dừng của plan là dưới 60%). Xem Tam Tài Đồ 258, xem huyệt 280, bấm "Vào kiếp mới" từ màn Chân thân 39, chia sẻ huyệt 7.
+- Quảng cáo từ 17:00 13/11: 321 phiên từ Facebook -> 145 vào kiếp (45%) -> 82 xong kiếp 1 -> 67 tạo chân thân -> 50 đủ 2 kiếp (16%), 44 đăng ký. Phiên mới 7 ngày: quảng cáo 50,0% vào kiếp / 25,5% xong kiếp 1 / 16,8% đủ 2 kiếp; nguồn khác 43,9% / 26,5% / 17,3%. Người từ quảng cáo không tệ hơn người tự tới.
+- 123/140 phiên quảng cáo không vào kiếp rời ở màn đầu thai (Lá số kiếp 1), trung vị ở lại 21 giây.
+
+Nhận định:
+1. Chỗ rơi lớn nhất là màn Lá số kiếp 1: một nửa người mới mở game không bao giờ bấm Đầu thai. Màn này có hướng dẫn 3 bước, lá số 6 dòng, 5 lá thiên phú, tốc độ thời gian, nhiệm vụ ngày - quá nhiều chữ cho người vừa bấm quảng cáo trên điện thoại. Quảng cáo kể chuyện "chết rồi tỉnh mộng", màn đầu lại là bảng chỉ số.
+2. Chỗ rơi thứ hai: một nửa người đã vào kiếp 1 bỏ giữa chừng (rời ở màn đang chơi, sự kiện), trước khi tới màn chết và Mộng Tỉnh - tức trước khi thấy tính năng mới.
+3. Lỗi đo: Tracker cắt `q` ở 60 ký tự nên mất `utm_content`, không biết mẫu quảng cáo nào tốt. Đã sửa nóng trên main 14/11 00:40 (6230991, 200 ký tự). Sáng 15/11 đã đủ số theo mẫu.
+4. 4.5.0 không làm hại phễu: 96% người chết kiếp 1 đi hết màn tạo chân thân.
+
+Việc cho đêm 14/11 (phần Tăng trưởng, ưu tiên 1, Claude chốt theo vai đồng sở hữu):
+- Kiếp đầu tiên của người mới (chưa có kiếp nào): màn Lá số rút còn một màn: một câu mở đầu khớp quảng cáo ("Ngươi sắp sống kiếp đầu tiên. Chết rồi sẽ tỉnh."), hình nhân vật, tên, một nút lớn "Bắt đầu kiếp đầu" ngay giữa màn. Ẩn thiên phú, tốc độ, nhiệm vụ ngày, Xem chỉ số ở kiếp 1 (tự chọn tốc độ Nhanh, không thiên phú). Từ kiếp 2 hiện đủ như cũ. Giấu sau cờ, bật khi thử sạch.
+- Đo: % phiên mới có life_start (mốc 7 ngày: 44-50%, mục tiêu 65%+), % xong kiếp 1, thời gian từ open tới life_start.
+- Đối chiếu: không trùng plan-4.5.0 (Mộng Tỉnh ở SAU kiếp 1), plan-4.6.0 (Sơn Môn, layout 4 tab không đụng màn đầu thai trong /choi).
+- Ưu tiên 2 (nếu còn giờ, hoặc đêm 15/11): đo người bỏ giữa kiếp 1 rời ở tuổi nào, sự kiện nào (vkl_events có sc, thêm tuổi nếu chưa có), rồi rút ngắn hoặc làm kịch tính đoạn đó.
+
 ## Sổ cải thiện tính năng
 
 - Bán / phân giải đồ thừa (túi đồ), lần 1 (13/11, góp ý #224 #225): chiếc gốc Cực phẩm không còn tính là thừa, chỉ đụng đồ ở tab đang chọn, bước xác nhận ghi tên món. Số dùng trước: chưa đo (không có sự kiện riêng; đêm nay không đọc được vkl_events). Sau: đo bằng `do_thua` từ 14/11, và số góp ý báo mất đồ.
