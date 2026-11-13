@@ -1,214 +1,183 @@
-# Kế hoạch 4.6.0 - Sơn Môn Tranh Bá
+# Kế hoạch 4.6.0 - Sơn Môn Tranh Bá (bản gọn)
 
-Nguồn: báo cáo "Lãnh địa và chiến tranh bất đồng bộ" (10/11/2026), Tyler chốt 10/11 hướng Text-Based Strategy MMO (Travian, Tribal Wars, Ikariam, OGame, Utopia, Torn, Politics and War). Thay cho Sư Đồ đơn lẻ ở Ngày 5-6 của 4.5.0.
+DUYỆT: Tyler 14/11/2026 (duyệt wireframe Sơn Môn bản gọn, thay bản động phủ/tài nguyên duyệt 10/11)
 
-DUYỆT: Tyler 10/11/2026
+Wireframe: Design canvas "VKL trang đầu 4.6 - wireframe" (https://claude.ai/artifact/AYtP1hhkiZ4BQ8eajwxS7N), hàng Sơn Môn M1-M10 và các ghi chú n1-n7. Code và chữ trên màn theo đúng wireframe; chỗ nào plan này khác wireframe thì theo plan (plan mới hơn).
 
-Luật chung như đầu `docs/plan-4.5.0.md`: mỗi lần chạy làm mọi khối còn ô trống có ngày "Lên bản" bằng hoặc trước hôm nay, đẩy `next` khi xong, đẩy `main` đúng 5:00. Mọi thứ giấu sau cờ `SON_MON_ON` (tắt mặc định) cho tới khối Ngày 8.
+Luật chung như đầu `docs/plan-4.5.0.md`: mỗi lần chạy làm mọi khối còn ô trống có ngày "Lên bản" bằng hoặc trước hôm nay, đẩy `next` khi xong; tác vụ 5:00 đẩy `main`. Mọi thứ giấu sau cờ `SON_MON_ON` (tắt mặc định) cho tới khối Ngày 7. Đánh dấu lên bản bằng NHÁNH `len-ban-<YYYY-MM-DD>` (máy chủ chặn đẩy tag), chỉ khi thử sạch.
 
-Đánh dấu lên bản (Tyler để Claude quyết 11/11): máy chủ chặn đẩy tag (lỗi 403), nên thay bước gắn tag `len-ban-<ngày>` bằng đẩy NHÁNH cùng tên: `git push -f origin HEAD:refs/heads/len-ban-<ngày lên bản YYYY-MM-DD>`, chỉ khi thử sạch. Tác vụ 5:00 đã sửa để nhận nhánh này.
+## BỎ bản cũ (đọc trước khi làm)
 
-## Lịch tổng từ 11/11 (lên trang 5:00 mỗi sáng)
+- Bản 10/11 (động phủ, 3 tài nguyên, công trình, 15 loại đệ tử, yêu động, phúc địa, Thiên Đạo Đài, linh khí từ kiếp) KHÔNG làm nữa. Tyler 13/11: "không đánh quái, không tài nguyên, chưa cần cấp".
+- KHÔNG áp `supabase/son_mon_2026_11_14.sql` và `supabase/son_mon_cfg_2026_11_14.sql` lên Supabase. Hai file đã chuyển sang `supabase/_bo/` để tham khảo cách viết (RLS, trigger nuốt lỗi, sinh bản đồ), không dùng.
+- `lib/sonmon/data.ts` và `scripts/sim-son-mon.ts` bản cũ: viết lại ở Ngày 2 (giữ tên file).
 
-Tyler chốt 10/11: toàn bộ 4.6.0 xong trong đêm 17/11, lên bản 18/11. Mỗi đêm 14-16/11 làm hai khối.
+## Lịch (lên trang 5:00)
 
-| Ngày | Bản | Việc | Người chơi thấy |
+| Đêm làm | Lên bản | Khối | Người chơi thấy |
 |---|---|---|---|
-| 11/11 | 4.5.0 Ngày 1-2 | Dữ liệu chân thân, Tam Tài, Mộng Tỉnh, màn tạo, Tam Tài Đồ | Chưa |
-| 12/11 | 4.5.0 Ngày 3 | Cáo biệt, thẻ trang chủ, trang chân thân, chip, thức tỉnh | Chưa |
-| 13/11 | 4.5.0 Ngày 4 | Bật chân thân, cáo thị 4.5.0 | Có |
-| 14/11 | 4.6.0 Ngày 1 + 2 | Máy chủ Sơn Môn, số liệu, mô phỏng | Chưa |
-| 15/11 | 4.6.0 Ngày 3 + 4 | Màn động phủ, bản đồ, xuất quân, chiến báo | Chưa |
-| 16/11 | 4.6.0 Ngày 5 + 6 | Sơn môn, Sư Đồ, hero, phúc địa, Thiên Đạo Đài | Chưa |
-| 17/11 | 4.6.0 Ngày 7 | Kết Kỷ, thử 30 bot, sửa lỗi. Xong toàn bộ | Chưa |
-| 18/11 | 4.6.0 Ngày 8 | Bật Sơn Môn, Kỷ 1 bắt đầu, cáo thị 4.6.0 | Có |
-| 1/12 21:00 | | Kỷ 1 kết thúc | |
-| 3/12 | | Kỷ 2 bắt đầu | |
+| 14/11 | 15/11 | Ngày 1 máy chủ + Ngày 2 số liệu, mô phỏng | Chưa |
+| 15/11 | 16/11 | Ngày 3 vào môn, lập môn, môn nhà + Ngày 4 bản đồ, đánh nhau | Chưa |
+| 16/11 | 17/11 | Ngày 5 thành viên, Kỷ, Lực chiến, thanh 4 tab + Ngày 6 hết Kỷ, thử 30 bot | Chưa |
+| 17/11 | 18/11 | Ngày 7 bật cờ, Kỷ 1 bắt đầu, cáo thị 4.6.0 | Có |
+| | 1/12 21:00 | Kỷ 1 kết thúc | |
 
-## Đã chốt (Tyler 10/11)
+## Vòng chơi
 
-- Thể loại: chiến lược xây dựng và xâm chiếm kiểu Travian/Tribal Wars, chơi một tay: mọi thao tác là bấm xây, bấm luyện, bấm xuất quân rồi chờ đồng hồ.
-- Mở cho mọi người đã có chân thân (không cần Chứng Đạo).
-- Mỗi "Kỷ" (vòng đời thế giới) dài 3 tuần hoặc ít hơn, tùy số người chơi (bảng ở mục Kỷ).
-- Mỗi kiếp chơi xong nạp linh khí cho động phủ (có trần mỗi ngày). Kiếp nuôi động phủ, động phủ không cộng sức mạnh ngược vào kiếp.
-- Sư Đồ gộp vào đây: sơn môn là liên minh, sư phụ kéo đệ tử vào môn.
-- Mở động phủ bắt buộc tài khoản đã liên kết (Google hoặc Sổ Luân Hồi).
-- Trần linh khí từ kiếp: 300/ngày/tài khoản (Tyler 10/11).
-- Lên trang 5:00: giờ ít người nhất (14 ngày tới 10/11: 4h có 104 người, 5h có 98 người, cao nhất 22h có 438 người). Lịch chạy đêm bắt đầu 21:17 hôm trước để đủ giờ làm hai khối.
+Chơi kiếp như thường → kiếp đạt mốc thì xong nhiệm vụ ngày của môn → môn có Khí vận → Khí vận cộng sức cho mọi trận của môn từ 5:00 hôm sau → môn giữ và chiếm ô trên bản đồ → hết Kỷ xếp hạng theo số ô. Không thêm tiền tệ, không công trình, không cấp. Thứ duy nhất người chơi "tích" là Lực chiến, và Lực chiến chỉ lên khi chơi kiếp.
 
-## Vì sao
+## Đã chốt (Tyler 13/11 + 14/11, Claude chốt phần Tyler giao)
 
-- ~220 người chơi/ngày, ~950/tuần (10/11). Người cũ chơi ~4 kiếp/ngày, cần một mục tiêu dài hơi giữa các kiếp và lý do quay lại nhiều lần trong ngày (hàng chờ xong, quân về, bị đánh).
-- Thể loại này giữ người nhờ đồng hồ và liên minh: mở lại để thu tài nguyên, đặt hàng chờ mới, xem chiến báo, giúp đồng môn.
-- Chỉ số đo: tỉ lệ còn chơi sau 7 ngày (mốc 11-14%), % người có chân thân mở động phủ, số lần mở game/ngày của người có động phủ, số trận/ngày.
+### Vào môn, lập môn
+- Ai có chân thân và tài khoản đã liên kết (Google hoặc Sổ Luân Hồi) đều vào môn được. Khách chơi thử thì thấy màn giải thích và nút liên kết.
+- **Lập môn** cần: từ 50 kiếp (không tính kiếp chết trước 16 tuổi), 5 ngày chơi khác nhau, và 2 người khác ký cùng lập trong 24 giờ. Môn dùng được ngay khi lập (vào được, điểm danh được, chọn ô được), hết 24 giờ chưa đủ 2 chữ ký thì tự giải tán, ô trả về trống.
+  - Số liệu 13/11: 770 tài khoản chơi trong 7 ngày, 78 người đủ 50 kiếp + 5 ngày → dự kiến 20-26 môn.
+  - **Van an toàn (mới, sau review 14/11):** khi các môn đã đầy trên 80% chỗ (đếm lúc 5:00 mỗi ngày), điều kiện lập môn tự hạ còn 30 kiếp + 4 ngày (162 người đủ). Để người mới không bị đứng ngoài vì hết chỗ.
+- Mỗi môn tối đa 15 người. Môn chủ đặt điều kiện vào (từ X kiếp, tuổi đạo Y) và chọn "Mở cửa" (vào ngay) hoặc "Duyệt đơn".
+- **Tên môn:** ghép từ 3 danh sách chọn sẵn (tiền tố, gốc, hậu tố: "Thanh Hư" + "Tông"...), nút Ngẫu nhiên, không gõ tự do (khỏi kiểm duyệt). Trùng tên thì báo chọn lại.
+- **Huy hiệu:** 30 huy hiệu pixel (khiên + biểu tượng, 6 màu x 5 hình). **Chính điện:** 10 hình pixel. Chỉ để nhận diện, không cộng gì.
+- **Khóa thành viên:** môn đã cắm cờ thì ai TỰ RỜI phải chờ hết Kỷ mới vào môn khác. Ai BỊ ĐUỔI thì vào môn khác ngay. Được báo rõ trước khi bấm vào môn.
+- Chức: Môn chủ (1), Trưởng lão (tối đa 3), Đệ tử. Môn chủ và trưởng lão nhận người, phát lệnh xuất chinh, cắm cờ ô trống. Môn chủ rời môn thì trưởng lão có Lực chiến cao nhất lên thay.
 
-## Thế giới
+### Hằng ngày (đổi lúc 5:00)
+- **Điểm danh:** +1 Khí vận cho môn. Chuỗi 7 ngày liền tặng một ngoại trang chân thân (mỗi Kỷ một lần).
+- **3 nhiệm vụ ngày**, làm ngay trong kiếp, tự xong khi kiếp khép lại (trigger trên `vkl_lives`, không cần bấm nhận). Khó theo Lực chiến người chơi (3 bậc). Chỉ dùng mốc người chơi tự điều khiển được: số kiếp chơi xong, tuổi sống tới, cảnh giới đạt được. KHÔNG dùng mốc may rủi (mệnh, linh căn, thiên phú). Thưởng +2, +3, +5 Khí vận.
+  - Bậc 1 (Lực chiến dưới 1.500): chơi xong 1 kiếp / một kiếp sống qua 60 tuổi / một kiếp lên Trúc Cơ.
+  - Bậc 2 (1.500-5.000): chơi xong 2 kiếp / qua 120 tuổi / lên Kim Đan.
+  - Bậc 3 (trên 5.000): chơi xong 3 kiếp / qua 300 tuổi / lên Nguyên Anh.
+  - Màn nhiệm vụ hiện "kiếp tốt nhất hôm nay: 87 tuổi" để thấy còn thiếu bao nhiêu.
+- **Khí vận cả môn mỗi ngày:** đạt 30 → +10% Lực chiến cả môn từ 5:00 sáng mai tới 5:00 hôm sau (cả đánh lẫn giữ). Đạt 60 → +20%. Khí vận không tiêu, không cộng dồn qua ngày, chỉ là thước đo, nên không có lạm phát.
+  - Kiểm tra số: môn 12 người, mỗi người điểm danh (1) và làm 2 nhiệm vụ dễ (2+3) = 6/người → 72. Môn 8 người chăm = 48 (qua mốc 30). Môn 15 người mà chỉ 5 người chơi = 30. Mốc 60 cần khoảng 10 người chăm, là phần thưởng cho môn đông và đều.
 
-- **Ba giới là ba tộc** (như tộc Travian). Chọn khi mở động phủ, giữ suốt Kỷ, đổi ở Kỷ sau.
-  - Thiên: công mạnh, đi nhanh, nghiên cứu rẻ hơn 10%.
-  - Hồng Trần: sản xuất +10%, tường thành mạnh, chiêu hàng rẻ.
-  - U Minh: trinh sát mạnh, đệ tử tử trận 20% hoàn hồn về động phủ.
-- **Bản đồ** ô vuông, cỡ theo số người (Kỷ 1: 31x31). Ba khu hình quạt quanh tâm: Thiên phía bắc, Hồng Trần đông nam, U Minh tây nam. Người chơi chọn khu của giới mình rồi chọn "gần tâm / giữa / rìa" (gần tâm nhiều tài nguyên hơn nhưng dễ bị đánh hơn), máy đặt ô trống ngẫu nhiên trong vùng đó.
-- **Tâm bản đồ**: 3 ô Thiên Đạo Đài do Tam Giáo NPC (Xiển, Triệt, Nhân) giữ, mở ở mốc cuối Kỷ.
-- **Phúc địa** (như oasis Travian): ô có yêu thú NPC giữ, +25% một loại tài nguyên cho động phủ chiếm được, mỗi động phủ chiếm tối đa 2.
-- **Yêu động** (như làng barbarian): động NPC rải đều, để cướp tài nguyên, tự hồi theo giờ. Giữ cho thế giới đông vui khi ít người.
+### Lực chiến (theo người, theo chân thân)
+- `Lực chiến = (30 x √tổng năm đã sống + 200 x ln(1 + số kiếp) + 80 x bậc cảnh giới cao nhất + 15 x số kết cục (tối đa 100) + 50 x số ngày chơi (tối đa 30)) x (1 + 4% mỗi huyệt + 3% mỗi hành viên mãn)`. Kiếp chết trước 16 tuổi không tính.
+- Số 13/11 trên dữ liệu thật: người mới khoảng 680, trung vị 2.235, top 10% khoảng 5.660, cao nhất khoảng 17.300.
+- **Trần đóng góp (mới, sau review 14/11):** người cao nhất bằng 7,7 người trung vị, nên một môn 3 người rất mạnh có thể thắng môn 12 người chăm. Khi cộng Lực chiến của môn trong trận, mỗi người tính đủ tới 6.000; phần trên 6.000 chỉ tính một nửa. Người cao nhất khi đó bằng khoảng 5,2 người trung vị. Trần này áp như nhau cho mọi người, màn Lực chiến ghi rõ.
+- Lực chiến tính lại mỗi khi kiếp khép lại (cùng trigger), lưu trong bảng, không tính lúc đánh.
 
-## Động phủ
+### Bản đồ
+- Ô lục giác, bán kính 6 (127 ô) khi tới 30 môn, bán kính 7 (169 ô) khi 31-45 môn. Cỡ đặt lúc mở Kỷ.
+- Mỗi ô có tên riêng (ghép từ danh sách: "Vọng Nguyệt" + "Phong"...), người chơi chỉ thấy tên, tọa độ để code dùng.
+- 3 cõi chia đều quanh tâm (Thiên, Hồng Trần, U Minh), chỉ để kể chuyện và nhận diện, không cộng gì.
+- Ô có huy hiệu môn chủ ô, ô của môn ta viền vàng, ô trống tối.
+- Mỗi môn giữ tối đa 1 + (số người / 3) ô (15 người = 6 ô). Đủ ô thì nút Xuất chinh khóa, ghi "Cần thêm 3 người mới đánh được ô mới". Không có luật giữ tạm.
+- Kiểm tra số: 25 môn x tối đa 6 ô = 150 > 127 ô → đủ chỗ cho mọi môn cắm cờ, không đủ để tất cả cùng giữ tối đa, nên phải tranh.
 
-- **Tài nguyên**: linh thạch, linh thảo, khoáng thạch (sinh theo giờ), và **linh khí** (chỉ từ kiếp, dùng cho nâng cấp lớn, đệ tử tinh anh và Thiên Đạo Đài).
-- **Linh khí từ kiếp** (ghi bằng trigger khi `vkl_lives` nhận kiếp mới, theo cảnh giới cao nhất của kiếp): Phàm Nhân/Luyện Khí 5, Trúc Cơ 10, Kim Đan 20, Nguyên Anh 30, Hóa Thần 45, Luyện Hư/Độ Kiếp 60, phi thăng 90, Chứng Đạo 120. Trần 300 linh khí/ngày/tài khoản (kiếp còn tính ở trình duyệt, trần chặn bơm).
-- **Công trình** (cấp 1-20, giờ xây tăng theo cấp):
-  - Chính Điện: tăng tốc xây, mở công trình khác, cấp 5 được lập sơn môn.
-  - Linh Mạch, Dược Viên, Khoáng Động: sinh linh thạch, linh thảo, khoáng thạch.
-  - Tàng Bảo Khố: sức chứa; một phần được giấu, không bị cướp.
-  - Luyện Võ Trường: luyện đệ tử.
-  - Tàng Kinh Các: nghiên cứu (tăng công, thủ, tốc độ).
-  - Hộ Sơn Đại Trận: tường thành, cộng % thủ.
-  - Truyền Tống Trận: đi nhanh hơn, mở viện binh xa.
-- **Hàng chờ**: 1 công trình và 1 lượt luyện cùng lúc (2 khi Chính Điện cấp 10).
-- **Chân thân là hero**: dẫn một đạo quân; 10 huyệt cộng công/thủ nhỏ, hành viên mãn cộng theo tương khắc với ô đánh tới, đạo chỉ mỹ quan. Chân thân không chết, bị thương thì nghỉ 6 giờ.
+### Đánh nhau
+- **Đứng giữ (Claude chốt 13/11, Tyler duyệt 14/11):** mỗi người chọn sẵn một ô của môn để đứng giữ; offline vẫn tính. Chưa chọn thì đứng ở ô cắm cờ đầu tiên (ô chính điện).
+- **Trinh sát:** mất 10 phút mỗi ô (đi và về), báo số người đang đứng giữ và Lực chiến ước tính (sai số ±15%).
+- **Xuất chinh:** môn chủ hoặc trưởng lão chọn một ô kề lãnh thổ. 30 phút tập hợp, thành viên bấm "Theo" (rút lại được trước khi hết giờ). Rồi đi 20 phút mỗi ô. Môn bị đánh thấy ngay lúc xuất phát; ai đang online có thể dồn sang ô bị đánh trong thời gian đó.
+- **Tính trận** khi tới nơi (pg_cron mỗi phút): tổng Lực chiến bên đánh (có trần) x (1 + Khí vận) so với tổng Lực chiến người đứng giữ (có trần) x 1,25 sân nhà x (1 + Khí vận của họ) x 2 nếu tới nơi lúc 0-7h. Bên lớn hơn thắng, không ngẫu nhiên. Bằng nhau thì bên giữ thắng.
+- Ô trống: tới nơi là cắm cờ.
+- Thắng: ô đổi chủ, được bảo hộ 6 giờ. Người đứng giữ ô vừa mất tự về ô chính điện. Thua: người đi theo nghỉ 2 giờ (không theo, không giữ được), không mất gì khác.
+- **Mất ô chính điện:** môn chọn lại ô chính điện trong số ô còn giữ. Mất hết ô thì môn còn nguyên người, được cắm cờ một ô trống bất kỳ (không cần kề), bảo hộ 12 giờ.
+- **Chống lăn cầu tuyết (mới, sau review 14/11):** môn đang giữ 1 ô được +15% khi giữ ô đó.
+- Mỗi chân thân một việc một lúc: đi đánh, đứng giữ, hoặc đang nghỉ.
+- Màn trận KHÔNG hiện phép nhân: chỉ thanh Ta/Họ và một câu kết luận ("Đang thiếu khoảng 1.650 - thêm 1 người như ngươi là đủ"). Công thức nằm ở màn Lực chiến.
 
-## Đệ tử (quân)
+### Đồng minh
+- Chưa làm. Bản đồ và màn Môn có dòng "Đồng minh: sắp có - các sơn môn kết minh để không đánh nhau và cùng giữ ô". Không hứa ngày.
 
-| Giới | Công | Thủ | Trinh sát | Chiêu hàng |
-|---|---|---|---|---|
-| Thiên | Thiên Binh | Kim Giáp Vệ | Tuần Thiên Ưng | Tuyên Chỉ Sứ |
-| Hồng Trần | Kiếm Tu | Thiết Vệ | Du Hiệp | Thuyết Khách |
-| U Minh | Quỷ Binh | Cốt Vệ | U Hồn | Câu Hồn Sứ |
+### Kỷ
+- Kỷ 1: 18/11 5:00 - 1/12 21:00. Từ Kỷ 2 mỗi Kỷ 28 ngày (Tyler chốt sau khi xem số Kỷ 1).
+- Xếp hạng theo số ô giữ lúc hết Kỷ, bằng nhau thì xét tổng Khí vận cả Kỷ.
+- Thưởng chỉ đồ trang trí: hạng 1 hào quang chân thân + tên môn khắc ở Sổ Sinh Tử; hạng 2-3 khung tên môn vàng; mọi người đủ 7 ngày điểm danh nhận ngoại trang. Không thưởng chỉ số.
+- Hết Kỷ: mọi ô về trống, khóa thành viên mở. Tên, huy hiệu, người trong môn giữ nguyên.
 
-- Mỗi giới thêm 1 đệ tử tinh anh (tốn linh khí) mở ở Tàng Kinh Các cấp 10.
-- Chỉ số, giá, giờ luyện, tốc độ ở `lib/sonmon/data.ts`, cân bằng bằng mô phỏng (Ngày 2).
+### Chống gian lận
+- Toàn bộ trạng thái ở máy chủ (Supabase), trình duyệt chỉ gửi lệnh; mọi lệnh kiểm tra quyền, khóa, lượt ở hàm.
+- Lực chiến tính ở máy chủ từ `vkl_lives` (đã có `lives_guard` và chống sửa save 5/11).
+- Đánh dấu để Tyler xem tay: nhiều tài khoản mới vào cùng một môn trong một ngày; một cặp môn đánh nhau một chiều liên tục; tài khoản chưa tới 3 ngày tuổi ký lập môn.
 
-## Đánh nhau
+## Kiểm tra theo người chơi (game-design player-experience + balance-review, 14/11)
 
-- **Xuất quân** (3 lần bấm): chọn ô trên bản đồ, chọn kiểu (Cướp, Công phá, Trinh sát, Chiêu hàng, Viện binh), chọn bộ quân sẵn (Toàn quân, Nửa quân, Chỉ trinh sát) hoặc chỉnh số. Giờ đi theo khoảng cách và đệ tử chậm nhất.
-- Bên bị đánh thấy "có quân đang tới" và giờ tới, kịp gọi viện binh đồng môn.
-- **Tính trận ở máy chủ**: tổng công so tổng thủ x (1 + tường), thiệt hại theo tỉ lệ lũy thừa như Travian. Chiến báo bằng chữ, giọng giang hồ.
-- **Cướp** lấy tài nguyên ngoài phần giấu. **Công phá** hạ cấp tường hoặc một công trình. **Chiêu hàng** giảm lòng quy thuận của động phủ hoặc phúc địa; về 0 thì chiếm (động phủ bị chiếm thì chủ cũ được dời phủ về rìa, giữ 50% tài nguyên, không mất tài khoản).
-- **Giờ đêm 0:00-7:00** (giờ Việt Nam): thủ x2 (như Tribal Wars), để không ai phải thức canh.
-- **Bảo hộ người mới**: 5 ngày đầu hoặc tới khi tự đánh người chơi khác. Không bị đánh, chỉ đánh được yêu động.
-- **Bế quan**: tối thiểu 2 ngày, tổng tối đa 7 ngày/Kỷ. Không bị đánh, không sản xuất.
-- Chỉ ghi điểm xếp hạng khi đánh động phủ có điểm từ 1/3 điểm mình trở lên (chống bắt nạt người mới).
+- Người mới từ quảng cáo (vừa xong kiếp 1): có chân thân nhưng thường chưa liên kết tài khoản → màn Sơn Môn phải nói thẳng "Liên kết tài khoản để vào môn" + nút, không để màn trống. Vào môn rồi có việc ngay: điểm danh + nhiệm vụ bậc 1 làm được trong kiếp kế.
+- Người trung vị (8 kiếp, 2 ngày): không lập được môn, vào môn mở cửa. Mỗi ngày 2-3 phút ở tab Sơn Môn (điểm danh, xem nhiệm vụ, chọn ô đứng giữ), còn lại chơi kiếp như cũ. Điểm dừng tự nhiên: 3 nhiệm vụ xong.
+- Người chơi lâu: lập môn, tuyển người, phát lệnh. Lý do quay lại trong ngày: lệnh xuất chinh, bị đánh, Khí vận gần mốc.
+- Ngày 1 của Kỷ (18/11 5:00) chưa có môn nào: vì môn dùng được ngay khi lập, người đủ điều kiện lập được từ 5:00. Màn danh sách lúc chưa có môn: "Chưa có môn nào mở. Các môn đang chờ người ký" + danh sách chờ ký (người đủ điều kiện ký được) + nút "Báo ta khi có môn mở cửa" (hiện chấm đỏ ở tab Sơn Môn khi có).
+- Màn hết kiếp (cáo biệt, 71% người chơi chỉ đi qua đây): một dòng "Kiếp này góp +2 Khí vận cho <tên môn>" nếu có môn, hoặc "Vào một sơn môn để mỗi kiếp góp Khí vận" nếu chưa.
+- Rủi ro đã xét: thế bế tắc (bên giữ luôn lợi): bên đánh dồn hết người vào một ô còn bên giữ phải chia người ra nhiều ô, nên dồn quân là cách thắng; mô phỏng ở Ngày 2 phải cho ra 35-65% trận đánh ô có người giữ thành công.
 
-## Sơn môn (liên minh) và Sư Đồ
-
-- Lập khi Chính Điện cấp 5. Tên ghép từ danh sách chữ có sẵn (2 chữ + Tông/Môn/Cung/Các), có nút "Ngẫu nhiên" ghép sẵn một tên, không gõ tự do (Tyler 10/11).
-- Tối đa 12 người ở Kỷ 1. Rời môn chờ 24 giờ mới vào môn khác.
-- Trong môn: viện binh cho nhau, xem quân đang tới đồng môn, tin trong môn (câu chọn sẵn, không chat tự do ở bản này).
-- **Sư Đồ**: link mời `/?su=<tên chân thân>`. Người mới vào bằng link thì vào thẳng môn của sư phụ, động phủ đặt gần sư phụ. Sư phụ nhận thưởng khi đệ tử đạt mốc (Chính Điện cấp 5 và 10, 7 ngày chơi khác nhau), không nhận lúc bái sư. Mỗi sư phụ tối đa 5 đệ tử mới/tuần.
-
-## Kỷ (vòng đời thế giới)
-
-- Dài theo số người mở động phủ trong tuần trước khi Kỷ bắt đầu:
-
-| Người chơi Sơn Môn/tuần | Dài Kỷ | Bản đồ |
-|---|---|---|
-| Dưới 120 | 10 ngày | 25x25 |
-| 120-300 | 14 ngày | 31x31 |
-| Trên 300 | 21 ngày | 41x41 |
-
-- Kỷ 1: 14 ngày (31x31), bắt đầu 5:00 ngày 18/11/2026, kết thúc 21:00 ngày 1/12/2026. Nghỉ 1 ngày giữa hai Kỷ (2/12), Kỷ 2 bắt đầu 5:00 ngày 3/12.
-- **Mốc cuối Kỷ**: còn 4 ngày (Kỷ 10 ngày: còn 3) thì Thiên Đạo Đài mở. Sơn môn chiếm một Đài từ tay Tam Giáo, rồi góp tài nguyên và linh khí xây tầng 1-20. Đài bị công phá thì mất tầng. Môn đầu tiên xây tới tầng 20, hoặc tầng cao nhất khi hết giờ, **Khai Thiên Lập Địa**: Kỷ sau mang tên môn đó ("Kỷ Thanh Hư").
-- **Hết Kỷ**: thế giới reset. Giữ vĩnh viễn: danh hiệu, ngoại trang chân thân, tên trên bia Kỷ ở Nghĩa trang. Không mang tài nguyên hay quân sang Kỷ sau.
-- **Sự kiện**: mỗi Thứ 7 20:00 có Yêu Triều (sóng NPC đánh mọi động phủ, thủ được thì nhận thưởng). Tam Giới Hội Chiến tháng để Kỷ 3 trở đi khi đủ người.
-
-## Thưởng
-
-- Xếp hạng Kỷ: công, thủ, cướp, dân số động phủ, sơn môn. Top mỗi bảng nhận danh hiệu Kỷ và một món ngoại trang chân thân.
-- Sơn môn Khai Thiên Lập Địa: tên trên Kỷ sau, hào quang môn cho mọi thành viên, bia trong Nghĩa trang.
-- Mọi người chơi tới cuối Kỷ có động phủ cấp 10 trở lên: huy hiệu Kỷ. Không thưởng sức mạnh vào kiếp.
-
-## Chống gian lận
-
-- Toàn bộ trạng thái ở máy chủ (Supabase): tài nguyên tính lười theo thời gian khi đọc, hàng chờ và quân đi đường xử lý bằng hàm và `pg_cron` mỗi phút. Trình duyệt chỉ gửi lệnh, mọi lệnh kiểm tra đủ tài nguyên, đủ quân, đúng lượt.
-- Mỗi tài khoản một động phủ. Mở động phủ cần tài khoản đã liên kết (Google hoặc Sổ Luân Hồi), không cho khách vãng lai.
-- Không cho gửi tài nguyên giữa người chơi ở Kỷ 1 (chặn nuôi acc phụ). Viện binh được, nhưng quân viện ăn lương của chủ động phủ.
-- Linh khí từ kiếp có trần 300/ngày. Máy đánh dấu để Tyler xem tay: nhiều tài khoản mới vào cùng một môn trong một ngày, cặp động phủ đánh nhau một chiều liên tục, linh khí chạm trần nhiều ngày liền.
-
-## Ngày 1 - Máy chủ: dữ liệu và động phủ
-Lên bản: 2026-11-14 (giấu sau cờ). Chỉ làm khi 4.5.0 (bật 13/11) không có lỗi chặn: Vercel runtime errors không tăng bất thường, không có góp ý báo lỗi chân thân chưa sửa. Có lỗi thì sửa lỗi 4.5.0 trước, khối này dời sang đêm sau, báo Tyler.
-- [ ] Supabase (bảng và hàm mới, không sửa hàm cũ): `vkl_ky` (Kỷ: id, tên, bắt đầu, kết thúc, cỡ bản đồ), `vkl_tile` (ô: x, y, loại, chủ), `vkl_phu` (động phủ: player, ky, x, y, gioi, tài nguyên, last_at, bảo hộ, bế quan), `vkl_phu_building`, `vkl_phu_queue`, `vkl_phu_troop`, `vkl_march`, `vkl_report`, `vkl_mon`, `vkl_mon_member`, `vkl_linh_khi_log`. RLS: chỉ đọc qua hàm.
-- [ ] RPC: `phu_found(token, gioi, vung)`, `phu_state(token)` (tính tài nguyên lười), `phu_build(token, building)`, `phu_train(token, unit, n)`. Kiểm tra đủ điều kiện ở máy chủ.
-- [ ] Trigger trên `vkl_lives` (sau `lives_guard`): cộng linh khí theo bảng, trần 300/ngày.
-- [ ] Sinh bản đồ Kỷ: yêu động, phúc địa, 3 ô Thiên Đạo Đài, chia 3 khu.
+## Ngày 1 - Máy chủ
+Lên bản: 2026-11-15 (giấu sau cờ). Kỹ năng: `supabase:supabase-postgres-best-practices` (đọc trước khi viết SQL).
+- [ ] Chuyển `supabase/son_mon_2026_11_14.sql`, `supabase/son_mon_cfg_2026_11_14.sql` sang `supabase/_bo/`.
+- [ ] Bảng (tiền tố `vkl_sm_`, RLS bật, không policy, chỉ đọc/ghi qua hàm SECURITY DEFINER): `ky` (id, bắt đầu, kết thúc, bán kính), `tile` (ky, q, r, tên, cõi, mon_id, chinh_dien bool, bao_ho_toi), `mon` (ky_lap, tên 3 phần, huy_hieu 0-29, chinh_dien_hinh 0-9, dk_kiep, dk_tuoi_dao, mo_cua bool, môn chủ, lap_luc, het_han_ky), `mon_ky` (chữ ký cùng lập), `member` (player, mon, chức, dung_o, khoa_toi, nghi_toi), `don` (đơn xin vào), `luc_chien` (player, lc, cập nhật lúc), `ngay` (mon, ngày, khí vận), `diem_danh` (player, ngày, chuỗi), `nv` (player, ngày, 3 nhiệm vụ, tiến độ, xong), `chinh` (lệnh xuất chinh: mon, từ ô, tới ô, tập hợp tới, tới nơi lúc, trạng thái), `chinh_theo`, `bao` (chiến báo), `co` (đánh dấu nghi gian lận).
+- [ ] Hàm `vkl_priv.sm_lc(player)` theo công thức; trigger `after insert on vkl_lives` (tên `vkl_lives_zz_son_mon`, nuốt mọi lỗi để không chặn ghi bia): cập nhật Lực chiến và tiến độ nhiệm vụ ngày, cộng Khí vận cho môn.
+- [ ] RPC (tiền tố `vkl_sm_`): `state(token)` (môn của ta, nhiệm vụ, khí vận, lệnh đang chạy), `list(token)`, `found(token, tên, huy hiệu, chính điện, dk)`, `cosign(token, mon)`, `pick_tile(token, q, r)`, `join(token, mon)`, `apply`/`accept`/`kick`/`leave`, `checkin(token)`, `guard(token, q, r)`, `scout(token, q, r)`, `march(token, q, r)`, `follow(token, chinh)`, `unfollow`, `map(ky)` (công khai, đọc qua bộ đệm Vercel 30 giây), `rank(ky)`.
+- [ ] `pg_cron` mỗi phút: xử lý trinh sát xong, lệnh tới nơi (tính trận, ghi chiến báo), môn hết 24 giờ chưa đủ chữ ký, hạ điều kiện lập môn lúc 5:00 nếu các môn đầy trên 80%.
+- [ ] Sinh bản đồ Kỷ (`vkl_priv.sm_ky_create(bắt đầu, kết thúc, bán kính)`): tên ô ghép từ danh sách, 3 cõi chia đều.
+- [ ] Thử trên Postgres cục bộ trước, rồi áp lên Supabase bằng apply_migration. Lưu SQL vào `supabase/son_mon_gon_2026_11_15.sql`.
 - Xong:
-- Ghi chú: Đêm 13/11 máy chủ Supabase (và Vercel) không kết nối được trong phiên chạy đêm, nên CHƯA ÁP gì lên Supabase; mọi ô để trống tới khi áp. Đã viết xong và thử trên Postgres 16 cục bộ (bảng giả vkl_players, vkl_sessions, vkl_lives, hàm vkl_player): `supabase/son_mon_cfg_2026_11_14.sql` (hàm `vkl_priv.sm_cfg()` sinh từ `lib/sonmon/data.ts` bằng `npx tsx scripts/gen-son-mon-sql.ts`) rồi `supabase/son_mon_2026_11_14.sql` (11 bảng, RLS không policy; RPC `vkl_phu_found`, `vkl_phu_state`, `vkl_phu_build`, `vkl_phu_train`; trigger `vkl_lives_zz_linh_khi` after insert, nuốt mọi lỗi để không chặn ghi bia; `vkl_priv.sm_gen_map`, `vkl_priv.sm_ky_create`). Tên RPC đặt tiền tố `vkl_` như các hàm cũ. Đã thử: mở phủ chặn đúng NOT_LOGGED_IN / NOT_LINKED / NO_CHAN_THAN / BAD_GIOI / ALREADY, ô đúng khu và vòng; linh khí trước khi mở phủ trong ngày được mang vào, trần 300/ngày đúng (20+120+120+40, các kiếp sau 0); hàng chờ QUEUE_FULL, LOCKED, MAX_LEVEL, NO_RES, BAD_UNIT, BAD_N; sản lượng tính lười đổi đúng lúc công trình xong giữa chừng (1 giờ cấp 1 + 1 giờ cấp 2) và trừ đúng phần bế quan; sức chứa. Bản đồ 31x31 tròn: 697 ô, yêu động 48 và phúc địa 21 chia ĐỀU 3 khu theo từng vòng (công bằng cho 3 giới), ô tâm là Thánh địa, 3 Đài quanh tâm (Xiển, Triệt, Nhân). Đêm sau (14/11) áp hai file theo thứ tự cfg rồi son_mon TRƯỚC khi làm Ngày 3, rồi đánh dấu các ô trên.
+- Ghi chú:
 
 ## Ngày 2 - Số liệu và mô phỏng
-Lên bản: 2026-11-14 (giấu sau cờ).
-- [x] `lib/sonmon/data.ts`: công trình (giá, giờ theo cấp), 15 loại đệ tử, nghiên cứu, công thức trận (bản TypeScript dùng để hiện ước tính; máy chủ là bản thật).
-- [x] `scripts/sim-son-mon.ts`: mô phỏng 200 người chơi 14 ngày (người chơi 1 lần/ngày, 4 lần/ngày, người hăng). Mục tiêu: người 1 lần/ngày lên Chính Điện cấp 10 vào khoảng ngày 7; người hăng không quá 2 lần người thường; 3 giới thắng thua lệch không quá 55/45. Ghi số vào "Ghi chú:".
-- [ ] Đưa số đã cân bằng vào hàm máy chủ.
-- Xong: 13/11/2026 0ac5622 (hai ô đầu; ô thứ ba đã nằm trong SQL, chờ áp lên Supabase)
-- Ghi chú: Số chốt (`lib/sonmon/data.ts`): sản lượng cấp L = 36 x 1,17^(L-1)/giờ (cấp 0: 15), giá xây x1,31 mỗi cấp, giờ xây x1,29 mỗi cấp, Chính Điện bớt 5% giờ xây mỗi cấp, cấp trên 10 tốn linh khí 8 x (L-10). Đệ tử tinh anh tốn 15 linh khí. Mô phỏng `npx tsx scripts/sim-son-mon.ts` (200 người: 100 người 1 lần/ngày lúc 21h, 70 người 4 lần/ngày, 30 người hăng 12 lần/ngày; phiên 8 phút; linh khí từ kiếp 30/100/150 mỗi ngày):
-  - Thử trước khi chốt (số ban đầu, sản lượng 40, giá x1,28, giờ x1,33): người 1 lần/ngày lên Chính Điện 10 ngày thứ 9, người 4 lần và người hăng ngày thứ 4, Chính Điện cuối Kỷ 19; điểm người hăng gấp 2,1-2,2 lần người 1 lần/ngày (quá mốc 2). Giờ xây dài hơn (x1,45-1,55) làm người 1 lần/ngày chậm hẳn (ngày 11 hoặc không tới) và tỉ lệ lên 2,5-3,9, nên chọn hướng ngược lại: tài nguyên là thứ phải chờ, giờ xây ngắn.
-  - Số chốt: người 1 lần/ngày lên Chính Điện 10 vào ngày thứ 7 (trung vị 6,9 ngày, 100% đạt), người 4 lần/ngày và người hăng ngày 5,3. Điểm người hăng so người 1 lần/ngày: ngày 1 1,43; ngày 3 1,52; ngày 5 1,45; ngày 7 1,35; ngày 10 1,27; ngày 13 1,16 (dưới mốc 2). Chính Điện cuối Kỷ: 14 (1 lần/ngày), 15 (hăng), nên cấp 16-20 còn chỗ cho cuối Kỷ và Thiên Đạo Đài. Người 4 lần và người hăng ra cùng điểm vì đều bị giới hạn bởi tài nguyên; người hăng hơn ở cướp và đánh (chưa mô phỏng ở đây).
-  - Giờ xây đi kèm: cấp 10 khoảng 5-10 phút, cấp 15 khoảng 30 phút, cấp 20 khoảng 2 giờ; đồng hồ đáng chờ là luyện quân và hành quân.
-  - 3 giới (30.000 trận ngẫu nhiên, bên đánh mang 0,8-2,4 lần ngân sách bên thủ, tường 0-10, 30% giờ đêm; thắng là công phá được hoặc giữ được thành), 3 lần chạy: Thiên 49,8-50,5%, Hồng Trần 48,9-50,1%, U Minh 50,2-50,8%; từng cặp bên đánh thắng 47,6-54,8% (trong mốc 55/45). Trước khi chỉnh, U Minh đánh Thiên 55,5-59,2%: đã tăng thủ Kim Giáp Vệ 58 lên 61, Cốt Vệ 57 lên 59, giảm công Quỷ Binh 57 xuống 56.
-  - Máy chủ đọc đúng bộ số này qua `vkl_priv.sm_cfg()` (sinh bằng `npx tsx scripts/gen-son-mon-sql.ts > supabase/son_mon_cfg_2026_11_14.sql`); đã so trên Postgres cục bộ: giá Chính Điện cấp 12, giờ xây, sản lượng Hồng Trần, sức chứa, giờ luyện khớp từng số với bản TypeScript. Chưa áp lên Supabase (xem Ngày 1).
-
-## Ngày 3 - Giao diện động phủ
-Lên bản: 2026-11-15 (giấu sau cờ).
-- [ ] Trang `/son-mon`: lần đầu là màn chọn giới (3 thẻ, mỗi thẻ 1 câu lợi thế và bộ đệ tử) rồi chọn vùng (gần tâm, giữa, rìa). Lời dẫn giọng Thiên Đạo.
-- [ ] Màn động phủ: tài nguyên, sơ đồ công trình dạng ô pixel, hàng chờ có đồng hồ, nút xây và luyện to, dùng được một tay.
-- [ ] Trang chủ: thẻ "Động phủ" cạnh thẻ chân thân (hàng chờ xong, quân đang tới). Màn cáo biệt kiếp: dòng "+20 linh khí về động phủ".
-- [ ] Đo: `phu_found` (gioi, vung), `phu_build`, `phu_train`, `phu_open`.
+Lên bản: 2026-11-15 (giấu sau cờ). Kỹ năng: `anthropic-skills:game-design` (balance-review).
+- [ ] Viết lại `lib/sonmon/data.ts`: danh sách tên môn 3 phần, tên ô, 30 huy hiệu (màu + hình), 10 chính điện, nhiệm vụ 3 bậc, công thức Lực chiến và trận (bản TypeScript để hiện ước tính; máy chủ là bản thật).
+- [ ] Viết lại `scripts/sim-son-mon.ts` bằng Lực chiến THẬT của người chơi (đọc `vkl_sm_luc_chien` hoặc tính từ `vkl_lives`): chia 25 môn theo cách người chơi tự vào (người mạnh lập môn, người khác vào môn mở cửa), 14 ngày, mỗi người online theo giờ thật (`vkl_events` 7 ngày). Đo:
+  - % trận đánh ô có người giữ thành công (mục tiêu 35-65%).
+  - Số ô của môn nhất / môn trung vị cuối Kỷ (mục tiêu không quá 3 lần).
+  - % ngày môn trung vị đạt Khí vận 30 (mục tiêu 50-80%) và 60 (mục tiêu 10-40%).
+  - Ngoài mốc thì chỉnh hệ số (sân nhà, trần đóng góp, Khí vận) và ghi số trước/sau vào "Ghi chú:".
+- [ ] Đưa số đã chốt vào hàm máy chủ.
 - Xong:
 - Ghi chú:
 
-## Ngày 4 - Bản đồ, xuất quân, chiến báo
-Lên bản: 2026-11-15 (giấu sau cờ).
-- [ ] Bản đồ cuộn ô pixel, chạm ô xem chủ, cấp, khoảng cách. Lọc: yêu động gần nhất, phúc địa trống.
-- [ ] Xuất quân 3 lần bấm (ô, kiểu, bộ quân). Quân đi đường hiện ở thẻ động phủ.
-- [ ] `pg_cron` mỗi phút xử lý quân tới nơi: tính trận, cướp, công phá, chiêu hàng, viện binh, quân về. Giờ đêm thủ x2.
-- [ ] Chiến báo bằng chữ (mẫu câu theo giới), hộp thư chiến báo.
-- [ ] Đo: `march_send` (kiểu), `report_open`.
+## Ngày 3 - Vào môn, lập môn, môn nhà
+Lên bản: 2026-11-16 (giấu sau cờ). Kỹ năng: `anthropic-skills:uiux-pro-max`, `anthropic-skills:humanizer` (chữ trên màn).
+- [ ] Trang `/son-mon` theo wireframe M1 (danh sách, lọc Đủ điều kiện / Còn chỗ, thẻ Tự lập môn ghi rõ còn thiếu gì), M2 (lập môn: tên 3 phần + Ngẫu nhiên, 30 huy hiệu, 10 chính điện, điều kiện vào, Mở cửa / Duyệt đơn), M3 (chọn ô trống trên bản đồ, cảnh báo khóa thành viên, chờ 2 chữ ký), M4 (môn nhà: thẻ môn, cảnh báo bị đánh, điểm danh chuỗi 7, 3 nhiệm vụ có tiến độ, thanh Khí vận có vạch 30/60).
+- [ ] Màn trống ngày đầu và khách chưa liên kết (xem mục Kiểm tra theo người chơi).
+- [ ] 30 huy hiệu và 10 chính điện: pixel, vẽ bằng lưới ô vuông trong code (như icon cũ) hoặc ghép từ tileset LPC sẵn có; KHÔNG dùng emoji.
+- [ ] Màn cáo biệt kiếp: dòng Khí vận (có môn / chưa có môn).
+- [ ] Đo: `sm_open`, `sm_join` (mở cửa/đơn), `sm_found`, `sm_cosign`, `sm_checkin`, `sm_nv_done`.
+- [ ] Mọi nút cao từ 44px, một nút chính mỗi màn, chữ ít nhất 12px, không đoạn chữ quá 3 dòng trên điện thoại.
 - Xong:
 - Ghi chú:
 
-## Ngày 5 - Sơn môn và Sư Đồ
-Lên bản: 2026-11-16 (giấu sau cờ).
-- [ ] Lập sơn môn (Chính Điện cấp 5, tên ghép từ chữ có sẵn, nút Ngẫu nhiên), mời, rời (chờ 24 giờ), trần 12 người.
-- [ ] Viện binh, xem quân đang tới đồng môn, tin trong môn bằng câu chọn sẵn.
-- [ ] Link Sư Đồ `/?su=<tên>`: lưu cookie, người mới vào thẳng môn, động phủ đặt gần sư phụ. Thưởng sư phụ theo mốc đệ tử, tối đa 5 đệ tử mới/tuần. Thẻ chia sẻ OG: chân thân sư phụ và dòng "<tên> mời ngươi nhập môn".
-- [ ] Đo: `mon_create`, `mon_join` (via link/tự vào), `su_bind`, `reinforce_send`.
+## Ngày 4 - Bản đồ và đánh nhau
+Lên bản: 2026-11-16 (giấu sau cờ). Kỹ năng: `anthropic-skills:uiux-pro-max`, `anthropic-skills:gamedev` (game-ui-ux).
+- [ ] M5 bản đồ lục giác (kéo để xem, nút Về lãnh thổ), chạm ô: tên ô, môn chủ, kề hay không, trinh sát gần nhất, nút Trinh sát / Xuất chinh. Đọc bản đồ qua `/api/pub/sm-map` (bộ đệm Vercel 30 giây).
+- [ ] M6 xuất chinh: 4 bước (Trinh sát, Tập hợp, Di chuyển, Giao tranh) có đồng hồ, danh sách người theo, nút THEO XUẤT CHINH, thanh Ta/Họ + một câu.
+- [ ] M7 chiến sự: cảnh báo bị đánh có đồng hồ, danh sách người đang đứng giữ, nút "Sang giữ <tên ô>", ô ngươi đang đứng giữ + Đổi, chiến báo gần đây bằng chữ.
+- [ ] Làm mới trạng thái 60 giây một lần khi tab đang mở (không làm mới khi tab ẩn).
+- [ ] Đo: `sm_scout`, `sm_march`, `sm_follow`, `sm_guard`, `sm_battle` (thắng/thua, bên).
 - Xong:
 - Ghi chú:
 
-## Ngày 6 - Chân thân làm hero, phúc địa, Thiên Đạo Đài
-Lên bản: 2026-11-16 (giấu sau cờ).
-- [ ] Chân thân dẫn quân: cộng từ huyệt và hành, bị thương nghỉ 6 giờ.
-- [ ] Chiếm phúc địa (tối đa 2), chiêu hàng động phủ, dời phủ cho người bị chiếm.
-- [ ] Thiên Đạo Đài: mở ở mốc cuối Kỷ, chiếm từ Tam Giáo, góp xây tầng, bị công phá mất tầng, Khai Thiên Lập Địa.
-- [ ] Bảo hộ người mới, bế quan, Yêu Triều Thứ 7 20:00.
+## Ngày 5 - Thành viên, Kỷ, Lực chiến, thanh 4 tab
+Lên bản: 2026-11-17 (giấu sau cờ). Kỹ năng: `anthropic-skills:uiux-pro-max`.
+- [ ] M8 thành viên: bảng (tên, chức, Lực chiến, Khí vận góp hôm nay, đang đứng ở ô nào), đơn xin vào (Nhận/Từ chối), Mời người chưa có môn, Sửa điều kiện vào, luật rời/đuổi.
+- [ ] M9 Kỷ: đếm ngược, bảng xếp hạng (số ô, Khí vận), thưởng trang trí, chuyện gì xảy ra khi hết Kỷ.
+- [ ] M10 Lực chiến: công thức bằng lời, từng phần của ngươi, trần 6.000, Khí vận.
+- [ ] Thanh 4 tab theo wireframe layout (Mộng · Nhân vật · Sơn Môn · Lôi đài), nút Mời trà luôn ở thanh trên. Chỉ bật cùng cờ `SON_MON_ON`; tắt cờ thì giữ menu như cũ.
 - Xong:
 - Ghi chú:
 
-## Ngày 7 - Hết Kỷ, xếp hạng, thử toàn bộ
+## Ngày 6 - Hết Kỷ, thử toàn bộ
 Lên bản: 2026-11-17 (giấu sau cờ).
-- [ ] Kết Kỷ: xếp hạng, phát danh hiệu và ngoại trang, bia Kỷ trong Nghĩa trang, reset, sinh bản đồ Kỷ mới theo bảng số người.
-- [ ] Thử: chạy một Kỷ rút gọn 2 giờ trên nhánh preview với 30 bot (script) để kiểm tra cron, trận, Đài, kết Kỷ. Playwright 390x844 cho người mới: chọn giới, xây, luyện, đánh yêu động, vào môn qua link.
-- [ ] Trang quản trị nhỏ cho Tyler: số động phủ mỗi giới, trận/ngày, các tài khoản bị đánh dấu.
+- [ ] Kết Kỷ: xếp hạng, phát danh hiệu và ngoại trang, ghi tên môn vào Sổ Sinh Tử, ô về trống, mở khóa thành viên.
+- [ ] Thử: Kỷ rút gọn 2 giờ (đồng hồ chia 20) trên Postgres cục bộ với 30 bot (script): lập môn, ký, vào môn, điểm danh, nhiệm vụ qua trigger, xuất chinh, đứng giữ, trận đêm, bảo hộ, môn mất hết ô, kết Kỷ. Playwright 390x844: người mới vào môn mở cửa; môn chủ lập môn, chọn ô, phát lệnh.
+- [ ] Trang quản trị nhỏ cho Tyler: số môn, số người trong môn, trận/ngày, các đánh dấu nghi gian lận.
 - Xong:
 - Ghi chú:
 
-## Ngày 8 - Lên bản, Kỷ 1 bắt đầu
+## Ngày 7 - Lên bản, Kỷ 1 bắt đầu
 Lên bản: 2026-11-18. Bật cờ `SON_MON_ON`, có cáo thị 4.6.0.
-- [ ] Tạo Kỷ 1 (14 ngày, 31x31) bắt đầu đúng 5:00.
-- [ ] Cáo thị 4.6.0 ngắn: động phủ, ba giới, sơn môn, sư đồ, Kỷ 14 ngày, Khai Thiên Lập Địa. Không hứa ngày Kỷ sau.
-- [ ] Video ngắn 9:16 (Playwright quay): chọn giới, xây, xuất quân, chiến báo. Gửi Tyler, không tự đăng.
+- [ ] Tạo Kỷ 1 (18/11 5:00 - 1/12 21:00, bán kính 6) trước 5:00.
+- [ ] Cáo thị 4.6.0 ngắn: sơn môn, điểm danh và nhiệm vụ trong kiếp, bản đồ lục giác, Kỷ 1 tới 1/12. Không hứa đồng minh hay Kỷ sau có gì.
+- [ ] Video ngắn 9:16 (Playwright quay): vào môn, điểm danh, bản đồ, xuất chinh, chiến báo. Gửi Tyler, không tự đăng.
 - Xong:
 - Ghi chú:
 
 ## Ngoài game (Tyler tự làm)
-- Đăng "Biên niên Kỷ" mỗi tuần và lúc kết Kỷ (Claude soạn khi Tyler hỏi): sơn môn mạnh nhất, trận lớn, ai Khai Thiên Lập Địa.
+- Đăng "Biên niên Kỷ" mỗi tuần và lúc kết Kỷ (Claude soạn khi Tyler hỏi): môn giữ nhiều ô nhất, trận lớn, môn lật ngược thế cờ.
 
 ## Để sau
-- Trao đổi tài nguyên giữa người chơi, chợ.
-- Tam Giới Hội Chiến tháng (từ Kỷ 3 nếu đủ người).
+- Đồng minh (kết minh giữa các môn).
+- Tài nguyên, công trình, cấp môn (bản 10/11) nếu Kỷ 1 cho thấy người chơi muốn thêm chiều sâu.
 - Chat tự do trong môn (cần kiểm duyệt).
 - Thông báo đẩy khi bị đánh.
 
 ## Điều kiện dừng
-- Sau Kỷ 1: nếu dưới 25% người có chân thân mở động phủ, hoặc dưới 30% người mở động phủ còn vào sau 3 ngày: rút Kỷ 2 xuống 10 ngày, bản đồ 25x25, xem lại tốc độ đầu game.
-- Nếu tỉ lệ còn chơi sau 7 ngày của nhóm mở động phủ không cao hơn nhóm không mở: dừng mở rộng, xem lại.
+- Sau 7 ngày Kỷ 1: dưới 25% người có chân thân (đã liên kết) vào môn, hoặc dưới 30% người trong môn điểm danh sau 3 ngày → rút Kỷ 2 xuống 14 ngày, xem lại màn vào môn và nhiệm vụ.
+- Nếu tỉ lệ còn chơi sau 7 ngày của người trong môn không cao hơn người không vào môn: dừng mở rộng, xem lại.
+- Trận đánh ô có người giữ thành công dưới 20% hoặc trên 80% trong 3 ngày liền: chỉnh hệ số sân nhà (báo Tyler trước).
