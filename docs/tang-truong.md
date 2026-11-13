@@ -148,6 +148,20 @@ Phần của phiên làm kế hoạch (cùng đêm 13/11):
 
 Tiến độ việc nhiều đêm: không có.
 
+### Bảng xếp hạng chậm (Tyler bấm chạy tay 22:06 13/11, dặn ưu tiên)
+
+Đêm nay vẫn không kết nối được Supabase (lỗi 502), nên CHƯA chạy được `explain (analyze, buffers)` trên máy thật, pg_stat_statements, kích thước bảng hay get_advisors. Đã đo thay trên Postgres 16 cục bộ với dữ liệu giả cùng cỡ: 30.000 kiếp (look ~1,7KB mỗi kiếp, đúng cỡ đo từ 300 kiếp mới nhất trên máy thật; máy thật có 26.949 kiếp lúc 22:30) và 3.000 bản lưu.
+
+Vì sao `vkl_leaderboard2` chậm (đọc từ định nghĩa trong `supabase/chong_gian_lan_2026_11_05.sql`): mỗi lần gọi, hàm dựng lại jsonb cho TOÀN BỘ vkl_lives và mọi bản lưu đang sống, gộp `look` với 12 trường, chạy `sane_char` từng dòng, rồi sắp xếp theo biểu thức jsonb. Mọi cột lọc và sắp xếp đều nằm trong jsonb vừa dựng nên không chỉ mục nào dùng được. Chi phí tăng theo số kiếp (mỗi ngày thêm ~1.000-2.500), nên càng ngày càng chậm. Cục bộ: 1,0-1,6 giây mỗi lần (máy cục bộ nhanh; máy Supabase đo được ~4 giây). Với 3 bảng mỗi lần vào kiếp mới, giờ quảng cáo dễ làm nghẹt máy.
+
+Cách sửa đã soạn, CHƯA CHẠY: `supabase/bang_xep_hang_2026_11_14_nhap.sql`.
+- Bảng tính sẵn `vkl_priv.lb_row` (cột số có chỉ mục + đúng jsonb `c` như cũ), làm mới TĂNG DẦN bằng `vkl_priv.lb_refresh()` mỗi 2 phút qua pg_cron: chỉ kiếp có id mới và bản lưu có updated_at mới. Không thêm trigger vào đường ghi kiếp hay lưu game.
+- Hàm đọc MỚI `public.vkl_leaderboard3` cùng chữ ký, cùng thứ tự. Không sửa `vkl_leaderboard`/`vkl_leaderboard2`, không cấp lại quyền `vkl_leaderboard2`.
+- Thử cục bộ: đọc 27-41 ms (trước 1.000-1.600 ms, nhanh hơn ~40 lần); làm mới tăng dần 5 ms; dựng lần đầu 4,5-6 giây (máy thật có thể ~20 giây, chạy một lần lúc vắng người, hàm tự nới statement_timeout 120 giây). Kết quả trùng `vkl_leaderboard2` ở 6/7 tổ hợp thử; tổ hợp còn lại (bảng tuổi) cùng tập người, chỉ khác thứ tự giữa những người bằng tuổi (cả hai hàm đều không có tiêu chí phá hòa). Bản lưu chết đi và kiếp mới khép đều được cập nhật đúng sau lần làm mới.
+- Muốn bật (Tyler quyết): (1) chạy file SQL trong SQL editor lúc vắng người (4-6h); (2) bỏ dấu `--` ở 2 dòng pg_cron cuối file; (3) đổi code `app/api/pub/lb/route.ts` và `lib/storage.ts` gọi `vkl_leaderboard3` trước, lùi về `vkl_leaderboard2`/`vkl_leaderboard` khi lỗi (2 dòng mỗi file). Đêm nay chưa đổi code để bản sáng 14/11 giữ nguyên như đã thử.
+
+Có nên nâng compute Supabase không: CHƯA nên. Chậm là do thuật toán quét toàn bảng mỗi lần gọi, nâng máy chỉ giảm thời gian theo tỉ lệ CPU, còn số kiếp tăng mỗi ngày thì lại chậm dần. Sau khi bảng xếp hạng qua bộ đệm Vercel (đã lên) và đổi sang `vkl_leaderboard3`, nếu giờ cao điểm truy vấn đơn giản vẫn mất trên 300 ms thì mới xét nâng một bậc. Việc phải làm khi Supabase kết nối lại: `select query, calls, mean_exec_time, total_exec_time from extensions.pg_stat_statements order by total_exec_time desc limit 15;`, `select relname, pg_size_pretty(pg_total_relation_size(relid)) from pg_statio_user_tables order by pg_total_relation_size(relid) desc limit 10;`, get_advisors (performance), và explain trên máy thật; ghi số vào đây.
+
 ## Sổ cải thiện tính năng
 
 - Bán / phân giải đồ thừa (túi đồ), lần 1 (13/11, góp ý #224 #225): chiếc gốc Cực phẩm không còn tính là thừa, chỉ đụng đồ ở tab đang chọn, bước xác nhận ghi tên món. Số dùng trước: chưa đo (không có sự kiện riêng; đêm nay không đọc được vkl_events). Sau: đo bằng `do_thua` từ 14/11, và số góp ý báo mất đồ.
