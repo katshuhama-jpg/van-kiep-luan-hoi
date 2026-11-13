@@ -385,9 +385,10 @@ function rivalLoot(c: Character, r: RivalChar, ctx: EffectCtx, chance: number, s
   return tr(`${say(`${tag} ${it.name}`)} (${fxText(it.fx)}) Mở Túi đồ để mặc.`, `${say(`${tag} ${it.name}`)} (${fxText(it.fx)}) Open your Inventory to equip it.`);
 }
 
-/** Bị lột n món đang mặc (bỏ qua áo vải khởi đầu). Mặc từ 2 món trở lên thì luôn chừa lại ít nhất một món. */
+/** Bị lột n món đang mặc (bỏ qua áo vải khởi đầu và thần binh truyền kiếp). Mặc từ 2 món trở lên thì luôn chừa lại ít nhất một món. */
 export function robGear(c: Character, ctx: EffectCtx, n: number, ids?: string[]): string[] {
-  const worn = (Object.entries(c.equipped) as [Slot, string | undefined][]).filter(([, id]) => id && id !== 'ao_vai') as [Slot, string][];
+  // #236: thần binh truyền kiếp không bị lột (như không vỡ khi rèn), mất nó là mất công nhiều kiếp
+  const worn = (Object.entries(c.equipped) as [Slot, string | undefined][]).filter(([, id]) => id && id !== 'ao_vai' && id !== c.legend?.item) as [Slot, string][];
   const k = Math.min(n, worn.length <= 1 ? worn.length : worn.length - 1);
   const names: string[] = [];
   for (let i = 0; i < k; i++) {

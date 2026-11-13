@@ -269,7 +269,7 @@ export function LinhThuSheet({ c, book, onEvolve, onClose }: { c: Character; boo
                     const L = r === 'SSR' || r === 'SSS';
                     const s = seen.has(x);
                     return (
-                      <button key={x} className={`lt-book-i ${L ? 'big' : ''} ${show === x ? 'on' : ''}`} onClick={() => setView(x)} aria-label={s || L ? baseName(x) : tr('Chưa gặp', 'Not yet met')}>
+                      <button key={x} className={`lt-book-i ${L ? 'big' : ''} ${show === x ? 'on' : ''}`} data-seen={s ? 1 : 0} onClick={() => setView(x)} aria-label={s || L ? baseName(x) : tr('Chưa gặp', 'Not yet met')}>
                         <PetPic id={x} box={L ? 50 : 40} still dark={!s} />
                         {L && <small>{baseName(x)}</small>}
                       </button>

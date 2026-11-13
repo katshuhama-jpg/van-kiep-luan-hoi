@@ -2427,7 +2427,7 @@ export default function PlayPage() {
       {sheet === 'thu' && (
         <LinhThuSheet
           c={c}
-          book={meta.petBook ?? []}
+          book={Array.from(new Set([...(meta.petBook ?? []), ...(c.petSeen ?? [])]))}
           onEvolve={() =>
             act((ch, out) => {
               const t = evolve(ch, makeCtx(ch, out));
