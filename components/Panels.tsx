@@ -40,7 +40,7 @@ import { ArenaNudge } from './LoiDaiButton';
 import { useAuth } from '@/lib/useAuth';
 import { addFeedback } from '@/lib/storage';
 import { tr } from '@/lib/i18n';
-import { CHAN_THAN_ON } from '@/lib/flags';
+import { CHAN_THAN_ON, FIRST_SIMPLE_ON } from '@/lib/flags';
 import { CtFarewell } from './TamTai';
 import { BREAK_EVENT_ID } from '@/lib/game/events';
 import { setOf, wornSet, SET_MAX } from '@/lib/game/gearSets';
@@ -999,9 +999,20 @@ export function BirthPanel({
   const speed = yearSec === 10 ? 'Nhanh' : yearSec === 30 ? tr('Chậm', "Slow") : tr('Vừa', "Normal");
   const barNote = lhOn ? tr('tiếp theo: Cầu Nại Hà', "next: Naihe Bridge") : [picked.length + gifts.length ? tr(`${picked.length + gifts.length} thiên phú`, `${picked.length + gifts.length} talents`) : '', tr(`thời gian ${speed.toLowerCase()}`, `speed: ${speed.toLowerCase()}`)].filter(Boolean).join(' · ');
   const go = (d: boolean) => onBorn(picked, yearSec, gifts, gSpent, base, d);
+  // 14/11: kiếp đầu của người mới chỉ còn một màn gọn (xem FIRST_SIMPLE_ON trong lib/flags.ts)
+  const simple = first && FIRST_SIMPLE_ON;
+  useEffect(() => {
+    if (simple) track('first_simple', {});
+  }, [simple]);
   return (
     <div className="birth-flow">
-      {first ? (
+      {simple ? (
+        <section className="howto-strip first-hook" aria-label={tr("Kiếp đầu tiên", "Your first life")}>
+          <b className="hs-title">{tr("Kiếp đầu tiên", "Your first life")}</b>
+          <p>{tr("Ngươi sắp sống trọn một đời người. Năm tháng tự trôi, gặp chuyện thì chọn một cách.", "You are about to live a whole life. The years roll by on their own; when something happens, pick what to do.")}</p>
+          <p><b>{tr("Chết rồi sẽ tỉnh, và nhớ ra mình là ai.", "When you die, you wake up and remember who you are.")}</b></p>
+        </section>
+      ) : first ? (
         <section className="howto-strip" aria-label={tr("Cách chơi", "How to play")}>
           <b className="hs-title">{tr("Lần đầu luân hồi", "First reincarnation")}</b>
           <ol>
@@ -1050,6 +1061,7 @@ export function BirthPanel({
         busy={busy}
         lifeNo={meta.lives + 1}
         barNote={barNote}
+        simple={simple}
         onBorn={() => (lhOn ? setBridge(true) : go(false))}
         onChange={(g, s, b) => {
           setGifts(g);
@@ -1058,6 +1070,7 @@ export function BirthPanel({
         }}
       />
 
+      {!simple && (
       <section className="prep">
         <h2 className="prep-title">{tr("Chuẩn bị trước khi đầu thai", "Prepare before rebirth")}</h2>
 
@@ -1159,7 +1172,9 @@ export function BirthPanel({
           </div>
         </div>
       </section>
+      )}
 
+      {!simple && (
       <details className="prep-row today-row">
         <summary>
           <span className="pr-name">{tr("Hôm nay · ", "Today · ")}{omen.name}</span>
@@ -1172,6 +1187,7 @@ export function BirthPanel({
           <TodayScroll meta={meta} />
         </div>
       </details>
+      )}
 
       {bridge && (
         <ManhBaBridge

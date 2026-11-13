@@ -4,3 +4,10 @@
  * Muốn tắt gấp: đặt biến môi trường `NEXT_PUBLIC_CHAN_THAN=0` rồi build lại.
  */
 export const CHAN_THAN_ON = process.env.NEXT_PUBLIC_CHAN_THAN !== '0';
+
+/**
+ * FIRST_SIMPLE_ON (14/11, tăng trưởng): kiếp đầu tiên của người mới chỉ còn một màn gọn - lá số, một câu mở đầu, một nút lớn.
+ * Lý do: 13/11 một nửa người mới (và 123/140 người từ quảng cáo không vào kiếp) rời ở màn Lá số kiếp 1, trung vị 21 giây.
+ * Muốn tắt: `NEXT_PUBLIC_FIRST_SIMPLE=0` rồi build lại.
+ */
+export const FIRST_SIMPLE_ON = process.env.NEXT_PUBLIC_FIRST_SIMPLE !== '0';

@@ -179,7 +179,7 @@ Nhận định:
 3. Lỗi đo: Tracker cắt `q` ở 60 ký tự nên mất `utm_content`, không biết mẫu quảng cáo nào tốt. Đã sửa nóng trên main 14/11 00:40 (6230991, 200 ký tự). Sáng 15/11 đã đủ số theo mẫu.
 4. 4.5.0 không làm hại phễu: 96% người chết kiếp 1 đi hết màn tạo chân thân.
 
-Việc cho đêm 14/11 (phần Tăng trưởng, ưu tiên 1, Claude chốt theo vai đồng sở hữu):
+ĐÃ LÀM 14/11 ~01:00 theo yêu cầu Tyler (lên bản 5:00 14/11), cờ FIRST_SIMPLE_ON trong lib/flags.ts, sự kiện đo `first_simple`. Đêm 14/11 KHÔNG làm lại, chỉ đo (so % phiên mới có life_start trước/sau 14/11 5:00) rồi làm ưu tiên 2. Mô tả gốc:
 - Kiếp đầu tiên của người mới (chưa có kiếp nào): màn Lá số rút còn một màn: một câu mở đầu khớp quảng cáo ("Ngươi sắp sống kiếp đầu tiên. Chết rồi sẽ tỉnh."), hình nhân vật, tên, một nút lớn "Bắt đầu kiếp đầu" ngay giữa màn. Ẩn thiên phú, tốc độ, nhiệm vụ ngày, Xem chỉ số ở kiếp 1 (tự chọn tốc độ Nhanh, không thiên phú). Từ kiếp 2 hiện đủ như cũ. Giấu sau cờ, bật khi thử sạch.
 - Đo: % phiên mới có life_start (mốc 7 ngày: 44-50%, mục tiêu 65%+), % xong kiếp 1, thời gian từ open tới life_start.
 - Đối chiếu: không trùng plan-4.5.0 (Mộng Tỉnh ở SAU kiếp 1), plan-4.6.0 (Sơn Môn, layout 4 tab không đụng màn đầu thai trong /choi).

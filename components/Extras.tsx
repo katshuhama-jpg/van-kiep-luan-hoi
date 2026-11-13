@@ -42,7 +42,7 @@ export function clearLaSo() {
   } catch {}
 }
 
-export function GachaPanel({ phuc, onChange, onBorn, busy, lifeNo, barNote }: { phuc: number; onChange: (gifts: string[], spent: number, base: Character | null) => void; onBorn: () => void; busy?: boolean; lifeNo?: number; barNote?: string }) {
+export function GachaPanel({ phuc, onChange, onBorn, busy, lifeNo, barNote, simple }: { phuc: number; onChange: (gifts: string[], spent: number, base: Character | null) => void; onBorn: () => void; busy?: boolean; lifeNo?: number; barNote?: string; simple?: boolean }) {
   const [cards, setCards] = useState<string[]>([]);
   const [picked, setPicked] = useState<string[]>([]);
   const [rolls, setRolls] = useState(0);
@@ -100,8 +100,8 @@ export function GachaPanel({ phuc, onChange, onBorn, busy, lifeNo, barNote }: { 
     <>
       <section className="panel la-so">
         <div className="ls-head">
-          <h2>{tr("Lá số ", "Fate chart: ")}{lifeNo ? tr(`kiếp ${lifeNo}`, `life ${lifeNo}`) : tr('kiếp này', "this life")}</h2>
-          {base && (
+          <h2>{simple ? tr('Ngươi kiếp này', 'You, in this life') : <>{tr("Lá số ", "Fate chart: ")}{lifeNo ? tr(`kiếp ${lifeNo}`, `life ${lifeNo}`) : tr('kiếp này', "this life")}</>}</h2>
+          {base && !simple && (
             <button className="link-btn" onClick={() => setShowRadar(!showRadar)} aria-expanded={showRadar}>
               {showRadar ? tr('Ẩn chỉ số', "Hide stats") : tr('Xem chỉ số', "Show stats")}
             </button>
@@ -109,7 +109,7 @@ export function GachaPanel({ phuc, onChange, onBorn, busy, lifeNo, barNote }: { 
         </div>
         {base && <BirthCard key={'b' + flip} c={base} />}
         {base && showRadar && <GiftRadar base={base} picked={picked} />}
-        {cards.length > 0 && (
+        {cards.length > 0 && !simple && (
           <div className="ls-gifts">
             <h3>
               
@@ -146,8 +146,8 @@ export function GachaPanel({ phuc, onChange, onBorn, busy, lifeNo, barNote }: { 
           <small>{cost ? tr(`-${cost} phúc`, `-${cost} Fortune`) : tr('miễn phí', "free")}</small>
         </button>
         <button className="btn btn-red btn-big" onClick={onBorn} disabled={busy || !base}>
-          <span>{tr("Đầu thai ▶", "Be reborn ▶")}</span>
-          {barNote && <small>{barNote}</small>}
+          <span>{simple ? tr('Vào kiếp đầu ▶', 'Start life 1 ▶') : tr("Đầu thai ▶", "Be reborn ▶")}</span>
+          {simple ? <small>{tr('năm tháng tự trôi', 'the years roll by')}</small> : barNote && <small>{barNote}</small>}
         </button>
       </div>
     </>
