@@ -55,7 +55,7 @@ export function useLive(): LiveData {
       sb.rpc('vkl_live_feed').then(({ data }) => live && Array.isArray(data) && setFeed(data as FeedItem[]));
       // số luôn tăng (tổng kiếp) làm số lớn, thay cho số người đang chơi có lúc bằng 0
       sb.from('vkl_lives')
-        .select('id', { count: 'exact', head: true })
+        .select('id', { count: 'estimated', head: true })
         .then(({ count }) => live && count !== null && setTotal(count));
       const midnight = new Date();
       midnight.setHours(0, 0, 0, 0);
@@ -71,7 +71,10 @@ export function useLive(): LiveData {
         .then(({ data }) => live && setLives(((data as Life[] | null) ?? []).filter((l) => !isTest(l.player_name))));
     };
     load();
-    const t = setInterval(load, 45000);
+    // Chỉ làm mới khi tab đang mở trên màn hình, 2 phút một lần, để đỡ tải máy chủ
+    const t = setInterval(() => {
+      if (typeof document === 'undefined' || document.visibilityState === 'visible') load();
+    }, 120000);
     return () => {
       live = false;
       clearInterval(t);

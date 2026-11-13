@@ -365,6 +365,7 @@ export default function PlayPage() {
   useEffect(() => {
     if (!user) return;
     const id = setInterval(() => {
+      if (document.visibilityState !== 'visible') return;
       unreadMail(user)
         .then((n) => setUnread(n))
         .catch(() => {});
