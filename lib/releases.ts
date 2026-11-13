@@ -49,7 +49,11 @@ export const RELEASES: Release[] = [
       },
       {
         h: tr('Sửa lỗi', 'Fixes'),
-        items: [tr('Lôi đài: tắt game giữa trận rồi quay lại thì đánh nốt được trận đang chờ, không còn bị báo đang có trận mà không vào được.', 'Arena: if you close the game mid-match, coming back now lets you finish the waiting match instead of being stuck.')],
+        items: [
+          tr('Lôi đài: tắt game giữa trận rồi quay lại thì đánh nốt được trận đang chờ, không còn bị báo đang có trận mà không vào được.', 'Arena: if you close the game mid-match, coming back now lets you finish the waiting match instead of being stuck.'),
+          tr('Túi đồ: nút bán và phân giải đồ thừa không còn bán món Cực phẩm vừa hợp được (chỉ bán bản trùng), chỉ đụng đồ ở tab đang chọn, và ghi tên từng món trước khi bán.', 'Bag: the sell and dismantle spares buttons no longer sell a Supreme item you just fused (only duplicates), only touch the tab you are on, and list each item before selling.'),
+          tr('Đồ tông môn ghi rõ bị tông thu lại khi bị trục xuất, và nhật ký nêu đích danh món bị thu.', 'Sect gear now says it is taken back if you are expelled, and the log names each item taken.'),
+        ],
       },
     ],
     more: [tr('Chân thân của riêng ngươi', 'Your own true self'), tr('Khai huyệt qua từng kiếp', 'Open points life by life'), tr('Ngoại trang mới', 'New outfits')],

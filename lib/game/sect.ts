@@ -1,5 +1,6 @@
 import { addMile } from './miles';
 import { SECT_GEAR, SECT_GEAR_BY } from './items2';
+import { ITEMS } from './data';
 import type { Character, EffectCtx } from './types';
 import { tr } from '../i18n';
 import { nameOf } from '../hanviet';
@@ -42,6 +43,8 @@ export function rankShort(c: Character): string {
   return (side === 'ta' ? RANK_SHORT_TA : side === 'trung' ? RANK_SHORT_TRUNG : RANK_SHORT_CHINH)[r] ?? '';
 }
 /** Đồ tông môn theo bậc: tông có đồ riêng thì dùng, không thì theo phe */
+/** đồ tông môn (áo bào, lệnh bài theo bậc): bị trục xuất thì tông thu lại */
+export const isSectGear = (id: string) => Object.values(SECT_GEAR_BY).some((g) => g.flat().includes(id)) || Object.values(SECT_GEAR).some((g) => g.flat().includes(id));
 export function sectGear(c: Pick<Character, 'sect'>): string[][] {
   return (c.sect && SECT_GEAR_BY[c.sect]) || SECT_GEAR[sectSide(c) ?? 'chinh'];
 }
@@ -173,6 +176,10 @@ export function leaveSect(c: Character, expelled: boolean) {
   const side = sectSide(c);
   if (expelled && side) {
     const gear = sectGear(c).flat();
+    // 13/11 (góp ý #223): nêu đích danh món bị thu lại, để người chơi biết đồ đi đâu
+    const lost = c.inventory.filter((id) => gear.includes(id)).map((id) => ITEMS.find((i) => i.id === id)?.name).filter(Boolean);
+    if (lost.length && c.log)
+      c.log.push({ age: Math.floor(c.age), tone: 'bad', text: tr(`${c.sect} thu lại đồ tông môn: ${lost.join(', ')}.`, `${nameOf(c.sect ?? '')} takes back its sect gear: ${lost.join(', ')}.`) });
     c.inventory = c.inventory.filter((id) => !gear.includes(id));
     for (const k of Object.keys(c.equipped) as (keyof Character['equipped'])[]) {
       if (gear.includes(c.equipped[k] ?? '')) c.equipped[k] = k === 'ao' ? 'ao_vai' : undefined;

@@ -56,7 +56,7 @@ const save = async (p) => JSON.parse(await p.evaluate(() => localStorage.getItem
   ok((await p.locator('.inv-pop .btn', { hasText: 'Bán' }).count()) === 0, 'món đã khóa không có nút Bán');
   await p.locator('.inv-pop-x').click().catch(() => {});
   await p.waitForTimeout(200);
-  const clean = p.locator('.inv-clean');
+  const clean = p.locator('.inv-clean').first(); // có hai nút (bán, phân giải): bấm nút bán
   await clean.click({ timeout: 5000 }).catch(() => {});
   await p.waitForTimeout(200);
   await clean.click({ timeout: 5000 }).catch(() => {});

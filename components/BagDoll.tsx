@@ -12,6 +12,8 @@ import type { MergeResult } from '@/lib/game/market';
 import type { Character, Slot } from '@/lib/game/types';
 import { tr } from '@/lib/i18n';
 import { dupOf, isLocked } from '@/lib/game/helpers';
+import { isSectGear } from '@/lib/game/sect';
+import { track } from '@/lib/track';
 import { SET_MAX, inSet, saveSet, setOf, toggleLock, wearSet, wornSet } from '@/lib/game/gearSets';
 
 const RARE_SHORT = [tr('Thường', 'Com'), tr('Tốt', 'Fine'), tr('Hiếm', 'Rare'), tr('Cực', 'Supr')];
@@ -80,14 +82,23 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
     return r < ro || (r === ro && it.price <= on.price);
   };
   // 5/11: bản trùng cất thêm luôn tính là thừa
-  const spareN = (it: Item) => dupOf(c, it.id) + (origSpare(it) ? 1 : 0);
+  // 13/11 (góp ý #224, #225): đồ Cực phẩm rơi và hợp ra đều giá 0, nên trước đây món Cực phẩm mới hợp được tính là "thừa"
+  // ngay khi đang mặc một món Cực phẩm khác cùng ô, rồi bị nút bán đồ thừa bán mất. Nay chiếc gốc của món Cực phẩm
+  // không bao giờ tính là thừa (bản trùng vẫn tính); muốn bỏ thì bán từng món. Nút bán/phân giải chỉ đụng đồ ở tab đang chọn.
+  const spareN = (it: Item) => dupOf(c, it.id) + (origSpare(it) && (it.rare ?? 0) < 3 ? 1 : 0);
   const isSpare = (it: Item) => spareN(it) > 0;
-  const spareUnits = owned.flatMap((it) => Array.from({ length: spareN(it) }, () => it));
+  const bulkN = spareN;
+  const spareUnits = shownItems.flatMap((it) => Array.from({ length: bulkN(it) }, () => it));
+  const spareNames = (() => {
+    const names = [...new Set(spareUnits.map((it) => it.name))];
+    return names.length > 4 ? tr(`${names.slice(0, 4).join(', ')} và ${names.length - 4} món khác`, `${names.slice(0, 4).join(', ')} and ${names.length - 4} more`) : names.join(', ');
+  })();
   const [sure, setSure] = useState(false);
   useEffect(() => setSure(false), [spareUnits.length]);
   const sellSpares = () => {
     if (!onSell) return;
     if (!sure) return setSure(true);
+    track('do_thua', { act: 'ban', n: spareUnits.length, tab: kind });
     spareUnits.forEach((it) => onSell(it.id));
     setSure(false);
   };
@@ -97,6 +108,7 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
   const smeltSpares = () => {
     if (!onSmelt) return;
     if (!sureS) return setSureS(true);
+    track('do_thua', { act: 'phan', n: spareUnits.length, tab: kind });
     spareUnits.forEach((it) => onSmelt(it.id));
     setSureS(false);
   };
@@ -223,17 +235,17 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
       {onSell && spareUnits.length > 0 && kind !== 'dan' && (
         <button className={`btn inv-clean ${sure ? 'btn-red' : ''}`} onClick={sellSpares}>
           {sure
-            ? tr(`Chắc chưa? Bấm lần nữa để bán ${spareUnits.length} món`, `Sure? Tap again to sell ${spareUnits.length} items`)
+            ? tr(`Chắc chưa? Bấm lần nữa để bán ${spareUnits.length} món: ${spareNames}`, `Sure? Tap again to sell ${spareUnits.length} items: ${spareNames}`)
             : tr(`Bán ${spareUnits.length} món thừa · +${spareUnits.reduce((x, it, k) => x + sellValue(it.id, c, k), 0)} linh thạch`, `Sell ${spareUnits.length} spare items · +${spareUnits.reduce((x, it, k) => x + sellValue(it.id, c, k), 0)} spirit stones`)}
-          <small className="inv-clean-note">{tr('không bán đồ đã khóa, đã rèn, nằm trong bộ đồ', 'never sells locked, forged or set items')}</small>
+          <small className="inv-clean-note">{tr('chỉ đồ ở tab này; không bán Cực phẩm (trừ bản trùng), đồ đã khóa, đã rèn, nằm trong bộ đồ', 'this tab only; never sells Supreme items (except duplicates), locked, forged or set items')}</small>
         </button>
       )}
       {onSmelt && spareUnits.length > 0 && kind !== 'dan' && (
         <button className={`btn inv-clean ${sureS ? 'btn-red' : ''}`} onClick={smeltSpares}>
           {sureS
-            ? tr(`Chắc chưa? Bấm lần nữa để phân giải ${spareUnits.length} món`, `Sure? Tap again to dismantle ${spareUnits.length} items`)
+            ? tr(`Chắc chưa? Bấm lần nữa để phân giải ${spareUnits.length} món: ${spareNames}`, `Sure? Tap again to dismantle ${spareUnits.length} items: ${spareNames}`)
             : tr(`Phân giải ${spareUnits.length} món thừa · +${spareUnits.reduce((x, it) => x + smeltValue(it.id), 0)} tinh thiết`, `Dismantle ${spareUnits.length} spare items · +${spareUnits.reduce((x, it) => x + smeltValue(it.id), 0)} refined iron`)}
-          <small className="inv-clean-note">{tr('không đụng đồ đã khóa, đã rèn, nằm trong bộ đồ', 'never touches locked, forged or set items')}</small>
+          <small className="inv-clean-note">{tr('chỉ đồ ở tab này; không đụng Cực phẩm (trừ bản trùng), đồ đã khóa, đã rèn, nằm trong bộ đồ', 'this tab only; never touches Supreme items (except duplicates), locked, forged or set items')}</small>
         </button>
       )}
       {(kind === 'all' ? GROUPS : [[kind, '']] as [Kind, string][]).map(([g, label]) => {
@@ -302,6 +314,7 @@ export default function BagDoll({ c, onEquip, onUsePill, onSmelt, onSell, onForg
             </span>
           </div>
           <p className="inv-desc">{selItem.desc}</p>
+          {isSectGear(selItem.id) && <p className="note inv-sect-note">{tr('Đồ tông môn: bị trục xuất khỏi tông thì tông thu lại.', 'Sect gear: taken back if you are expelled from the sect.')}</p>}
           <div className="inv-acts">
             <button className={`btn ${isOn(selItem.id) ? 'btn-jade' : 'btn-red'}`} onClick={() => onEquip(selItem.id)}>
               {isOn(selItem.id) ? tr('Đang dùng', "Equipped") : tr('Dùng', "Use")}

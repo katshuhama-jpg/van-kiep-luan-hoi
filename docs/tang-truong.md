@@ -92,9 +92,47 @@ Quảng cáo đợt Chân Thân - bản chốt (Tyler chạy từ 13/11, 300.000
 
 Tiến độ việc nhiều đêm: không có.
 
+## Đêm 13/11/2026 (lên bản 14/11)
+
+Lưu ý: đêm nay có HAI phiên chạy cùng lúc (tác vụ bị gọi hai lần). Phiên kia làm 4.6.0 Ngày 1 (SQL Sơn Môn, thử trên Postgres cục bộ) và `lib/sonmon/data.ts`; phiên này làm phần Tăng trưởng dưới đây. Bản mô phỏng Sơn Môn phiên này viết trước khi thấy phiên kia được cất ở nhánh `sim-ban-song-song` (dùng `data.ts` khác, chưa gộp) để đêm 14/11 tham khảo khi làm Ngày 2, tránh làm hai lần.
+
+Không kết nối được Supabase và Vercel (máy chủ công cụ báo lỗi 502), nên không chạy được các câu SQL ở trên (vkl_players, vkl_events, vkl_daily không đọc được bằng khóa công khai) và không xem được lỗi Vercel. Số dưới đây đọc từ bảng bia `vkl_lives` (đọc công khai) và danh sách góp ý công khai, nên "người mới" ở đây là người xong kiếp 1 trong ngày, KHÔNG so thẳng với số tài khoản mới của đêm 12/11.
+
+Số chính (theo người xong kiếp 1, giờ VN, bỏ tài khoản test_/ui_):
+- Người xong kiếp 1 mỗi ngày: 7/11 120, 8/11 115, 9/11 41, 10/11 46, 11/11 35, 12/11 32, 13/11 44 (tới 22:07; quảng cáo Chân Thân chạy từ 17:00).
+- Còn chơi sau 1 ngày (có kiếp khác sau 24 giờ): nhóm 5/11 48,8%, 6/11 50,0%, 7/11 45,0%, 8/11 36,5%, 9/11 36,6%, 10/11 41,3%.
+- Còn chơi sau 7 ngày: nhóm 1/11 14,6%, 2/11 19,2%, 3/11 14,9%, 4/11 9,6% (mốc 11-14%).
+- Đủ 2 kiếp: nhóm 13/11 đã 29/44 (66%) ngay trong ngày; đủ 10 kiếp: nhóm 9-10/11 khoảng 45%.
+- Người có ít nhất một kiếp mỗi ngày: 8/11 337, 9/11 233, 10/11 217, 11/11 194, 12/11 182, 13/11 173 (tới 22:07). Kiếp mỗi ngày: 2.276 -> 991 (12/11).
+- Giờ đông nhất 24 giờ qua (số kiếp): 21h 84, 22h 68, 20h 63; vắng nhất 4-6h.
+- Góp ý mới từ 11/11: #220-#238 (19 góp ý), chưa có góp ý nào báo lỗi chân thân sau khi 4.5.0 lên. Báo lỗi còn mở: #235 thu phục Cùng Kỳ mà sổ linh thú không ghi, #236 bị cướp rìu Bàn Cổ không tìm được người để trả thù, #222 chết khi máu 60%.
+
+Nhận định:
+- Người chơi mỗi ngày giảm đều từ khi tắt quảng cáo (337 -> 182 trong 4 ngày). Ngày đầu 4.5.0 và quảng cáo mới: người xong kiếp 1 tăng từ 32 lên 44, tỉ lệ đủ 2 kiếp trong ngày 66%. Cần số `ct_intro` -> `ct_create` (vkl_events) để biết màn tạo chân thân có làm rơi người không; đêm sau đọc khi Supabase kết nối lại.
+- #224/#225 (hợp 9 món ra 3 món Cực phẩm rồi mất, "mất nhiều món đồ cực do lỗi bug game") đã tìm ra nguyên nhân: đồ Cực phẩm rơi và hợp ra đều có giá 0, nên khi đang mặc một món Cực phẩm cùng ô, món Cực phẩm mới hợp được bị tính là "thừa" (luật cũ: cùng phẩm và giá thấp hơn hoặc bằng món đang mặc). Nút "Bán N món thừa" / "Phân giải N món thừa" bán luôn các món đó. Thêm nữa: nút ở tab Áo vẫn bán cả vũ khí, phụ kiện thừa ở tab khác mà người chơi không thấy. Hàm hợp đồ (`mergeItems`) đúng: thử 3.600 lần hợp ở cảnh giới 2-7, món ra luôn nằm trong túi.
+- #223 (La Hán kim lan cà sa đang mặc tự mất, đổi sang áo thường): cà sa là đồ tông môn Phổ Đà Sơn; khi bị trục xuất (lộ thân phận vì đạo tâm lệch, hoặc phản sư thất bại) tông thu lại áo bào và mặc áo vải. Đúng luật, nhưng nhật ký chỉ ghi "lột áo bào" mà không nêu tên món, và trong túi không có chỗ nào báo trước.
+
+Việc đêm nay (Tyler dặn 12/11 ưu tiên #224 và #223):
+1. Túi đồ (`components/BagDoll.tsx`): chiếc gốc của món Cực phẩm không bao giờ tính là thừa (bản trùng vẫn tính), nên nút bán/phân giải đồ thừa không còn bán món Cực phẩm; muốn bỏ thì bán từng món. Nút chỉ đụng đồ ở tab đang chọn. Bước "Chắc chưa?" ghi tên từng món sẽ bán. Không đổi giá bán, không đổi luật hợp đồ.
+2. Đồ tông môn: túi đồ ghi "Đồ tông môn: bị trục xuất khỏi tông thì tông thu lại." ngay dưới mô tả; khi trục xuất, nhật ký thêm dòng "<tông> thu lại đồ tông môn: <tên các món>." Không đổi luật trục xuất.
+3. Đo: sự kiện mới `do_thua` (act ban/phan, n, tab) khi bấm bán/phân giải đồ thừa; theo dõi góp ý báo mất đồ sau khi lên bản.
+4. Cáo thị: thêm 2 dòng vào nhóm "Sửa lỗi" của 4.5.0 (không tạo số bản mới).
+- Đối chiếu: không trùng plan-4.5.0 (Ngày 1-4 xong, không đụng túi đồ), plan-4.6.0 (Sơn Môn, không đụng túi đồ và tông môn trong kiếp); không có docs/yeu-cau-lam-tinh-nang.md.
+- Thử: `node scripts/smoke-do-thua.cjs` (mới, 12 mục, 390x844), smoke, smoke-login (cả FAIL_ME), smoke-linhthu, smoke-tui (sửa lỗi sẵn có trong script: có hai nút `.inv-clean` nên phải bấm nút đầu), tsc, build sạch. Không đổi cân bằng nên không chạy mô phỏng kiếp.
+- Góp ý cần trả lời sau khi lên trang (tác vụ 5:00 gửi, tặng 10 phúc mỗi góp ý, reply_ver 4.5.0):
+  - #224: "Thiên Đạo đã tìm ra lỗi: món Cực phẩm vừa hợp bị nút Bán đồ thừa coi là đồ thừa nên bị bán mất. Bản sáng 14/11 đã sửa: nút bán và phân giải đồ thừa không còn đụng tới món Cực phẩm (chỉ bán bản trùng), chỉ bán đồ ở tab đang chọn và ghi tên từng món trước khi bán. Đồ đã bán thì không lấy lại được, Thiên Đạo tặng đạo hữu chút phúc duyên bù lại. Cảm ơn đạo hữu đã báo."
+  - #225: "Cảm ơn đạo hữu đã chấm kiếp. Lỗi mất đồ Cực phẩm khi bấm Bán đồ thừa đã sửa trong bản sáng 14/11: nút này không còn bán món Cực phẩm, chỉ bán bản trùng."
+  - #223: "Thiên Đạo đã xem: La Hán kim lan cà sa là đồ tông môn Phổ Đà Sơn, khi bị trục xuất (lộ thân phận vì đạo tâm lệch, hoặc phản sư) tông sẽ thu lại và đạo hữu mặc lại áo vải. Từ bản sáng 14/11, túi đồ ghi rõ điều này trên món đồ tông môn, và nhật ký nêu tên từng món bị thu lại."
+
+Đề xuất chờ Tyler:
+- Lỗi vặt trong smoke đêm 12/11 (thanh Thập Kiếp 1 ô sáng mà chữ ghi 2/10): chưa tái hiện được. Ô mới khai có hiệu ứng chớp 6 lần (`hb-flash`), ảnh chụp đúng lúc chớp có thể trông như chưa sáng. Tyler thấy trên máy thật thì báo lại.
+- Quảng cáo: đang chạy đợt Chân Thân (300.000đ, 13-19/11). Giữ đúng kế hoạch, không sửa 13-14/11. Sáng 15/11 cần số vkl_events (open có utm_content, nối sid với life_end) để tắt mẫu đắt nhất; nếu Supabase vẫn không kết nối được thì xem số click trong Trình quản lý quảng cáo và tạm giữ cả 3 mẫu.
+
+Tiến độ việc nhiều đêm: không có.
+
 ## Sổ cải thiện tính năng
 
-(chưa có tính năng nào đang cải thiện)
+- Bán / phân giải đồ thừa (túi đồ), lần 1 (13/11, góp ý #224 #225): chiếc gốc Cực phẩm không còn tính là thừa, chỉ đụng đồ ở tab đang chọn, bước xác nhận ghi tên món. Số dùng trước: chưa đo (không có sự kiện riêng; đêm nay không đọc được vkl_events). Sau: đo bằng `do_thua` từ 14/11, và số góp ý báo mất đồ.
 
 ## Tính năng đã ẩn
 
