@@ -128,11 +128,30 @@ Việc đêm nay (Tyler dặn 12/11 ưu tiên #224 và #223):
 - Lỗi vặt trong smoke đêm 12/11 (thanh Thập Kiếp 1 ô sáng mà chữ ghi 2/10): chưa tái hiện được. Ô mới khai có hiệu ứng chớp 6 lần (`hb-flash`), ảnh chụp đúng lúc chớp có thể trông như chưa sáng. Tyler thấy trên máy thật thì báo lại.
 - Quảng cáo: đang chạy đợt Chân Thân (300.000đ, 13-19/11). Giữ đúng kế hoạch, không sửa 13-14/11. Sáng 15/11 cần số vkl_events (open có utm_content, nối sid với life_end) để tắt mẫu đắt nhất; nếu Supabase vẫn không kết nối được thì xem số click trong Trình quản lý quảng cáo và tạm giữ cả 3 mẫu.
 
+Phần của phiên làm kế hoạch (cùng đêm 13/11):
+- Kế hoạch: 4.6.0 Ngày 1 (SQL Sơn Môn) và Ngày 2 (`lib/sonmon/data.ts`, `scripts/sim-son-mon.ts`) đã đẩy `next`; SQL CHƯA áp lên Supabase vì không kết nối được, đêm 14/11 áp trước khi làm Ngày 3. Số mô phỏng ở "Ghi chú:" Ngày 2 của plan-4.6.0. Nhánh `sim-ban-song-song` của phiên kia chỉ để tham khảo, KHÔNG gộp (bản trong `next` là bản chốt).
+- Sửa thêm (commit "tăng trưởng: thần binh truyền kiếp..."):
+  1. #236, #229: thần binh truyền kiếp (vũ khí mang qua nhiều kiếp, ví dụ rìu Bàn Cổ 10 kiếp) bị lột khi thua trận thì mất luôn chuỗi kiếp. Giờ `robGear` (lib/game/duel.ts) bỏ qua thần binh truyền kiếp, như nó vốn không vỡ khi rèn và không phân giải được. Các món khác vẫn bị lột như cũ. Thử: `npx tsx scripts/thu-lot-than-binh.ts` (2.000 lần, 0 lần mất thần binh).
+  2. #235: sổ linh thú trong kiếp chỉ đọc sổ cũ (cập nhật lúc kiếp khép lại) cộng con đang nuôi, nên thu phục Cùng Kỳ rồi đổi con khác thì sổ không thấy. Giờ sổ gộp cả các loài đã nuôi trong kiếp này. Thử: `node scripts/smoke-so-thu.cjs` (390x844).
+  - Đối chiếu: không trùng plan-4.5.0, plan-4.6.0 (không đụng giao đấu, linh thú); không trùng việc túi đồ của phiên kia.
+  - Đo: số góp ý báo mất thần binh hoặc sổ linh thú thiếu loài sau khi lên bản (không thêm sự kiện đo riêng).
+  - Cáo thị 4.5.0: thêm 1 dòng vào "Sửa lỗi".
+- Thử chung trên bản gộp cả hai phiên: tsc, smoke, smoke-login (cả FAIL_ME), smoke-linhthu, smoke-tui, smoke-do-thua, smoke-so-thu, build đều sạch.
+- Góp ý cần trả lời sau khi lên trang (tác vụ 5:00 gửi, tặng 10 phúc mỗi góp ý, reply_ver 4.5.0):
+  - #236: "Thiên Đạo đã sửa trong bản sáng 14/11: thần binh truyền kiếp không còn bị lột khi thua trận nữa. Cây rìu đã mất thì không lấy lại được: kẻ cướp là người giang hồ không phải người chơi thật nên không có mối thù để báo. Thiên Đạo tặng đạo hữu chút phúc duyên bù lại."
+  - #229: "Thiên Đạo nghe rồi. Từ bản sáng 14/11, thần binh truyền kiếp (như Bàn Cổ chân phủ mang qua nhiều kiếp) không còn bị lột khi thua trận. Đồ thường vẫn có thể bị cướp, gặp lại người chơi đã cướp thì báo thù để đòi lại."
+  - #235: "Thiên Đạo đã sửa trong bản sáng 14/11: sổ linh thú ghi ngay loài vừa thu phục trong kiếp, không đợi tới khi kiếp khép lại. Cùng Kỳ đạo hữu đã thu phục được ghi vào sổ khi kiếp đó kết thúc, kiếp đang chơi thì giờ đã thấy ngay."
+
+Đề xuất chờ Tyler (thêm):
+- Đồ Cực phẩm vẫn bị lột khi thua giao đấu (đồng môn ma môn, đồng đạo giả nhân nghĩa, địch thủ). Chỉ khi kẻ cướp là người chơi thật mới có mối thù để đòi lại; kẻ cướp là người giang hồ thì mất hẳn (#236 không tìm được ai để trả thù). Tyler muốn: (a) giữ nguyên, (b) kẻ cướp chỉ lột món không phải Cực phẩm, hay (c) món bị người giang hồ cướp có thể chuộc lại ở Vạn Bảo Lâu?
+- Sơn Môn: số chốt làm tài nguyên là thứ phải chờ, giờ xây ngắn (cấp 10 khoảng 5-10 phút, cấp 20 khoảng 2 giờ), để người 1 lần/ngày không thua xa. Đồng hồ đáng chờ là luyện quân và hành quân. Tyler muốn giờ xây dài hơn kiểu Travian (vài giờ mỗi cấp) thì người 1 lần/ngày sẽ chỉ tới Chính Điện 10 vào ngày 11 trở đi và người hăng hơn gấp 2,5-3 lần.
+
 Tiến độ việc nhiều đêm: không có.
 
 ## Sổ cải thiện tính năng
 
 - Bán / phân giải đồ thừa (túi đồ), lần 1 (13/11, góp ý #224 #225): chiếc gốc Cực phẩm không còn tính là thừa, chỉ đụng đồ ở tab đang chọn, bước xác nhận ghi tên món. Số dùng trước: chưa đo (không có sự kiện riêng; đêm nay không đọc được vkl_events). Sau: đo bằng `do_thua` từ 14/11, và số góp ý báo mất đồ.
+- Lột đồ khi thua trận (`robGear`), lần 1 (13/11, góp ý #236 #229): không lột thần binh truyền kiếp. Số trước: 2 góp ý báo mất thần binh trong 2 ngày. Sau: đếm góp ý báo mất thần binh từ 14/11.
 
 ## Tính năng đã ẩn
 
