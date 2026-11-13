@@ -33,7 +33,7 @@ export default function Tracker() {
         mobile: matchMedia('(pointer: coarse)').matches,
         w: innerWidth,
         ret,
-        q: location.search.slice(0, 60),
+        q: location.search.slice(0, 200), // 14/11: 60 ký tự cắt mất utm_content, không phân biệt được mẫu quảng cáo
       });
     } else track('page');
   }, [path]);
