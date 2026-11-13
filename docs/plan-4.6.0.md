@@ -132,15 +132,15 @@ Lên bản: 2026-11-14 (giấu sau cờ). Chỉ làm khi 4.5.0 (bật 13/11) kh�
 - [ ] Trigger trên `vkl_lives` (sau `lives_guard`): cộng linh khí theo bảng, trần 300/ngày.
 - [ ] Sinh bản đồ Kỷ: yêu động, phúc địa, 3 ô Thiên Đạo Đài, chia 3 khu.
 - Xong:
-- Ghi chú:
+- Ghi chú: Đêm 13/11 chưa làm được, dời sang đêm 14/11 (làm cùng Ngày 3 + 4). Lý do: phiên chạy đêm 13/11 không kết nối được Supabase và Vercel (máy chủ công cụ báo lỗi 502), nên không tạo được bảng/hàm (`apply_migration`) và không kiểm được điều kiện "Vercel runtime errors không tăng". Phần kiểm được: từ khi 4.5.0 lên (13/11 5:00) tới 22:00 không có góp ý nào báo lỗi chân thân (#233-#238: đánh giá kiếp, đề nghị tính năng, #235 linh thú Cùng Kỳ không ghi sổ, #236 bị cướp rìu không thấy người để trả thù). Hàm khu và vùng cho bản đồ (`zoneOf`, `ringOf`, `kyTheoSoNguoi`) đã có ở `lib/sonmon/data.ts` để viết SQL sinh bản đồ theo đúng số. Bản nháp SQL (chưa chạy trên Supabase): xem `supabase/son_mon_2026_11_14_nhap.sql` nếu có.
 
 ## Ngày 2 - Số liệu và mô phỏng
 Lên bản: 2026-11-14 (giấu sau cờ).
-- [ ] `lib/sonmon/data.ts`: công trình (giá, giờ theo cấp), 15 loại đệ tử, nghiên cứu, công thức trận (bản TypeScript dùng để hiện ước tính; máy chủ là bản thật).
-- [ ] `scripts/sim-son-mon.ts`: mô phỏng 200 người chơi 14 ngày (người chơi 1 lần/ngày, 4 lần/ngày, người hăng). Mục tiêu: người 1 lần/ngày lên Chính Điện cấp 10 vào khoảng ngày 7; người hăng không quá 2 lần người thường; 3 giới thắng thua lệch không quá 55/45. Ghi số vào "Ghi chú:".
+- [x] `lib/sonmon/data.ts`: công trình (giá, giờ theo cấp), 15 loại đệ tử, nghiên cứu, công thức trận (bản TypeScript dùng để hiện ước tính; máy chủ là bản thật).
+- [x] `scripts/sim-son-mon.ts`: mô phỏng 200 người chơi 14 ngày (người chơi 1 lần/ngày, 4 lần/ngày, người hăng). Mục tiêu: người 1 lần/ngày lên Chính Điện cấp 10 vào khoảng ngày 7; người hăng không quá 2 lần người thường; 3 giới thắng thua lệch không quá 55/45. Ghi số vào "Ghi chú:".
 - [ ] Đưa số đã cân bằng vào hàm máy chủ.
-- Xong:
-- Ghi chú:
+- Xong: 13/11/2026 (hai việc đầu) 7c5b50e
+- Ghi chú: Việc 3 chờ Ngày 1 (hàm máy chủ chưa có vì đêm 13/11 không kết nối được Supabase); khi viết `phu_build`, `phu_train`, công thức trận trong SQL thì chép đúng số ở `lib/sonmon/data.ts`. Số chốt: giá công trình x1,4 (`SO.gia`), hàng chờ xây 1 mục đang xây + 5 mục chờ (đã trả tài nguyên lúc đặt; 2 mục cùng lúc khi Chính Điện 10), luyện 1 lượt + 2 lượt chờ; sản lượng mỏ cấp L = 20 x 1,21^(L-1) + 4L mỗi giờ; kho 1.200 x 1,3^cấp; trận kiểu Travian lũy thừa 1,5, cướp thì hai bên cùng mất. `npx tsx scripts/sim-son-mon.ts 200 14 <hạt giống>` (hạt 1-3): người 1 lần/ngày lên Chính Điện 10 ở ngày 6,1 (trung vị, tức trong ngày thứ 7), 100% đạt trong 14 ngày; 4 lần/ngày ngày 5,4; người hăng 12 lần/ngày ngày 7,3 (đi đánh nhiều nên mất quân và tài nguyên). Dân số ngày 14: người hăng gấp 1,07-1,08 lần người 1 lần/ngày (trần 2 lần), 0,88-0,89 lần người 4 lần/ngày. Trận cân tài nguyên (20.000 trận mỗi cặp giới, cùng tài nguyên, tường và nghiên cứu ngẫu nhiên, 29% trận rơi vào giờ đêm): Thiên 48%, Hồng Trần 52-53%, U Minh 50% (trong 55/45). Số thắng trong mô phỏng cả thế giới lệch hơn (Hồng Trần 44-47%, U Minh 52-55%) vì người đánh trinh sát rồi né chỗ thủ mạnh nên Hồng Trần (thủ dày nhất) ít phải làm bên thủ, không phải do giới yếu; xem lại khi có số thật Kỷ 1. Trước khi chốt: hàng chờ 2 thì người 1 lần/ngày tới ngày 13 mới lên Chính Điện 10 và người hăng gấp 2,1-2,9 lần, nên nới hàng chờ. Người đi đánh thắng 28-44% (trinh sát 3 nơi rồi chọn chỗ thủ yếu nhất).
 
 ## Ngày 3 - Giao diện động phủ
 Lên bản: 2026-11-15 (giấu sau cờ).
