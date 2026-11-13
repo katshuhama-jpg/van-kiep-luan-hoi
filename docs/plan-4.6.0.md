@@ -132,7 +132,7 @@ Lên bản: 2026-11-14 (giấu sau cờ). Chỉ làm khi 4.5.0 (bật 13/11) kh�
 - [ ] Trigger trên `vkl_lives` (sau `lives_guard`): cộng linh khí theo bảng, trần 300/ngày.
 - [ ] Sinh bản đồ Kỷ: yêu động, phúc địa, 3 ô Thiên Đạo Đài, chia 3 khu.
 - Xong:
-- Ghi chú:
+- Ghi chú: Đêm 13/11 máy chủ Supabase (và Vercel) không kết nối được trong phiên chạy đêm, nên CHƯA ÁP gì lên Supabase; mọi ô để trống tới khi áp. Đã viết xong và thử trên Postgres 16 cục bộ (bảng giả vkl_players, vkl_sessions, vkl_lives, hàm vkl_player): `supabase/son_mon_cfg_2026_11_14.sql` (hàm `vkl_priv.sm_cfg()` sinh từ `lib/sonmon/data.ts` bằng `npx tsx scripts/gen-son-mon-sql.ts`) rồi `supabase/son_mon_2026_11_14.sql` (11 bảng, RLS không policy; RPC `vkl_phu_found`, `vkl_phu_state`, `vkl_phu_build`, `vkl_phu_train`; trigger `vkl_lives_zz_linh_khi` after insert, nuốt mọi lỗi để không chặn ghi bia; `vkl_priv.sm_gen_map`, `vkl_priv.sm_ky_create`). Tên RPC đặt tiền tố `vkl_` như các hàm cũ. Đã thử: mở phủ chặn đúng NOT_LOGGED_IN / NOT_LINKED / NO_CHAN_THAN / BAD_GIOI / ALREADY, ô đúng khu và vòng; linh khí trước khi mở phủ trong ngày được mang vào, trần 300/ngày đúng (20+120+120+40, các kiếp sau 0); hàng chờ QUEUE_FULL, LOCKED, MAX_LEVEL, NO_RES, BAD_UNIT, BAD_N; sản lượng tính lười đổi đúng lúc công trình xong giữa chừng (1 giờ cấp 1 + 1 giờ cấp 2) và trừ đúng phần bế quan; sức chứa. Bản đồ 31x31 tròn: 697 ô, yêu động 48 và phúc địa 21 chia ĐỀU 3 khu theo từng vòng (công bằng cho 3 giới), ô tâm là Thánh địa, 3 Đài quanh tâm (Xiển, Triệt, Nhân). Đêm sau (14/11) áp hai file theo thứ tự cfg rồi son_mon TRƯỚC khi làm Ngày 3, rồi đánh dấu các ô trên.
 
 ## Ngày 2 - Số liệu và mô phỏng
 Lên bản: 2026-11-14 (giấu sau cờ).
