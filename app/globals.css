@@ -5397,3 +5397,10 @@ body[data-ctflow='1'] { overflow: hidden; }
 @keyframes hb-rise { from { background: #4a4258; box-shadow: 0 0 0 2px #14101e; } to { background: #ffd36b; box-shadow: 0 0 0 2px #7a4a12, 0 0 0 6px rgba(255, 211, 107, 0.3); } }
 .tw-b3 .hb-dot.lit { box-shadow: 0 0 0 2px #7a4a12, 0 0 0 6px rgba(255, 211, 107, 0.3); }
 .ttai-wake-title { font-size: 40px; color: var(--gold-l); margin: 18px 0 6px; letter-spacing: 2px; animation: ct-in 0.8s steps(4) both; }
+
+/* 4.5.0 Chân thân: khối hướng dẫn khai huyệt */
+.ct-how { margin: 4px 0 10px; padding: 8px 10px; background: #fff6e0; border: 2px solid #b07c28; text-align: left; }
+.ct-how-h { margin: 0 0 4px; font-weight: bold; }
+.ct-new { display: inline-block; padding: 0 5px; margin-right: 4px; background: #a8201a; color: #fff3dc; font-size: 12px; line-height: 18px; vertical-align: 1px; }
+.ct-how-steps { margin: 0 0 6px; padding-left: 20px; }
+.ct-how-steps li { margin: 2px 0; line-height: 1.45; }

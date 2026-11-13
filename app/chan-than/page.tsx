@@ -16,7 +16,7 @@ import type { ShareOut } from '@/lib/shareCard';
 import { displayName } from '@/lib/storage';
 import { CHAN_THAN_ON } from '@/lib/flags';
 import { CT_RENAME_COST, ctSuggestName } from '@/lib/game/chanThan';
-import { ctTitles, huyetCount, nextHuyet, huyetChip } from '@/lib/game/khaiMach';
+import { ctTitles, huyetCount, nextHuyet } from '@/lib/game/khaiMach';
 import type { Meta } from '@/lib/game/types';
 import { loadAll, saveMeta } from '@/lib/storage';
 import { useAuth } from '@/lib/useAuth';
@@ -94,7 +94,33 @@ export default function ChanThanPage() {
               <HuyetBar n={huyetCount(meta)} />
             </div>
             <p style={{ textAlign: 'center', margin: '4px 0' }}>{tr(`Thân: ${huyetCount(meta)}/10 huyệt`, `Body: ${huyetCount(meta)}/10 points`)}</p>
-            {h && <p style={{ textAlign: 'center', margin: '0 0 8px' }}>{huyetChip(h)}</p>}
+            {h && (
+              <div className="ct-how">
+                <p className="ct-how-h">
+                  <span className="ct-new">{tr('MỚI', 'NEW')}</span> {tr('Khai huyệt chơi thế nào?', 'How do points open?')}
+                </p>
+                <ol className="ct-how-steps">
+                  <li>{tr('Vào một kiếp mới, chơi như mọi khi.', 'Start a new life and play as usual.')}</li>
+                  <li>
+                    {tr(`Kiếp nào ${h.task}, lúc kiếp đó kết thúc thì huyệt ${h.name} sáng.`, `In any life where you ${h.task}, the ${h.name} point lights up when that life ends.`)}
+                  </li>
+                  <li>{tr('Huyệt đã sáng giúp mọi kiếp sau mạnh hơn một chút. Mỗi kiếp sáng tối đa một huyệt.', 'Lit points make every later life a little stronger. At most one point per life.')}</li>
+                </ol>
+                {huyetCount(meta) === 0 && (
+                  <small className="note" style={{ display: 'block', margin: '0 0 6px' }}>
+                    {tr('Huyệt mới có từ bản này, nên ai cũng bắt đầu từ 0, kể cả người đã chơi lâu.', 'Points are new in this version, so everyone starts from 0, even long-time players.')}
+                  </small>
+                )}
+                <Link
+                  href="/choi"
+                  className="btn"
+                  style={{ display: 'block', textDecoration: 'none', textAlign: 'center' }}
+                  onClick={() => track('huyet_go_play', { from: 'chan_than', n: huyetCount(meta) })}
+                >
+                  {tr('Vào kiếp mới', 'Start a new life')}
+                </Link>
+              </div>
+            )}
             <div className="home-grid">
               <button className="btn" onClick={() => setMode('look')}>
                 {tr('Đổi ngoại hình', 'Change appearance')}
