@@ -39,7 +39,7 @@ export const SM = {
   /** sản lượng mỗi giờ khi công trình tài nguyên ở cấp 0 */
   prodBase: 15,
   /** sản lượng mỗi giờ ở cấp L: prodA * prodG^(L-1) */
-  prodA: 40,
+  prodA: 36,
   prodG: 1.17,
   /** Hồng Trần sản xuất thêm */
   hongTranProd: 0.1,
@@ -50,8 +50,8 @@ export const SM = {
   hideA: 0.1,
   hideL: 0.015,
   /** giá xây cấp L = base * costG^(L-1); giờ xây = baseSec * timeG^(L-1) * cdSpeed^(chính điện - 1) */
-  costG: 1.28,
-  timeG: 1.33,
+  costG: 1.31,
+  timeG: 1.29,
   cdSpeed: 0.95,
   /** linh khí cho cấp trên 10: lkPer * (L - 10) */
   lkPer: 8,
@@ -153,7 +153,7 @@ const u = (id: string, gioi: Gioi, role: UnitRole, vi: string, en: string, atk: 
 /** 15 loại đệ tử: mỗi giới công, thủ, trinh sát, chiêu hàng, tinh anh */
 export const UNITS: UnitDef[] = [
   u('thien_binh', 'thien', 'cong', 'Thiên Binh', 'Heavenly Soldier', 62, 22, 7, 55, { ls: 130, lt: 90, kt: 160, lk: 0 }, 600, 1, 1, 0),
-  u('kim_giap_ve', 'thien', 'thu', 'Kim Giáp Vệ', 'Golden Guard', 18, 58, 5, 20, { ls: 110, lt: 100, kt: 150, lk: 0 }, 600, 1, 1, 0),
+  u('kim_giap_ve', 'thien', 'thu', 'Kim Giáp Vệ', 'Golden Guard', 18, 61, 5, 20, { ls: 110, lt: 100, kt: 150, lk: 0 }, 600, 1, 1, 0),
   u('tuan_thien_ung', 'thien', 'trinh_sat', 'Tuần Thiên Ưng', 'Sky Patrol Hawk', 0, 8, 18, 0, { ls: 60, lt: 50, kt: 40, lk: 0 }, 400, 1, 3, 0, 30),
   u('tuyen_chi_su', 'thien', 'chieu_hang', 'Tuyên Chỉ Sứ', 'Edict Envoy', 30, 35, 4, 0, { ls: 900, lt: 800, kt: 900, lk: 0 }, 5400, 4, 5, 5),
   u('loi_bo_than_tuong', 'thien', 'tinh_anh', 'Lôi Bộ Thần Tướng', 'Thunder General', 160, 90, 6, 80, { ls: 450, lt: 350, kt: 500, lk: 15 }, 2400, 3, 5, 10),
@@ -164,8 +164,8 @@ export const UNITS: UnitDef[] = [
   u('thuyet_khach', 'hong_tran', 'chieu_hang', 'Thuyết Khách', 'Persuader', 25, 35, 4, 0, { ls: 700, lt: 650, kt: 700, lk: 0 }, 5400, 4, 5, 5),
   u('kiem_tien', 'hong_tran', 'tinh_anh', 'Kiếm Tiên', 'Sword Immortal', 145, 110, 6, 90, { ls: 450, lt: 350, kt: 500, lk: 15 }, 2400, 3, 5, 10),
 
-  u('quy_binh', 'u_minh', 'cong', 'Quỷ Binh', 'Ghost Soldier', 57, 24, 6, 50, { ls: 115, lt: 85, kt: 145, lk: 0 }, 600, 1, 1, 0),
-  u('cot_ve', 'u_minh', 'thu', 'Cốt Vệ', 'Bone Guard', 16, 57, 5, 20, { ls: 105, lt: 95, kt: 140, lk: 0 }, 600, 1, 1, 0),
+  u('quy_binh', 'u_minh', 'cong', 'Quỷ Binh', 'Ghost Soldier', 56, 24, 6, 50, { ls: 115, lt: 85, kt: 145, lk: 0 }, 600, 1, 1, 0),
+  u('cot_ve', 'u_minh', 'thu', 'Cốt Vệ', 'Bone Guard', 16, 59, 5, 20, { ls: 105, lt: 95, kt: 140, lk: 0 }, 600, 1, 1, 0),
   u('u_hon', 'u_minh', 'trinh_sat', 'U Hồn', 'Wraith', 0, 12, 19, 0, { ls: 55, lt: 45, kt: 35, lk: 0 }, 380, 1, 3, 0, 45),
   u('cau_hon_su', 'u_minh', 'chieu_hang', 'Câu Hồn Sứ', 'Soul Reaper', 28, 35, 4, 0, { ls: 900, lt: 800, kt: 900, lk: 0 }, 5400, 4, 5, 5),
   u('diem_la_quy_tuong', 'u_minh', 'tinh_anh', 'Diêm La Quỷ Tướng', 'Yama General', 150, 95, 6, 70, { ls: 430, lt: 330, kt: 480, lk: 15 }, 2400, 3, 5, 10),

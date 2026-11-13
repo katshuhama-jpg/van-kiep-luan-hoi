@@ -136,11 +136,16 @@ Lên bản: 2026-11-14 (giấu sau cờ). Chỉ làm khi 4.5.0 (bật 13/11) kh�
 
 ## Ngày 2 - Số liệu và mô phỏng
 Lên bản: 2026-11-14 (giấu sau cờ).
-- [ ] `lib/sonmon/data.ts`: công trình (giá, giờ theo cấp), 15 loại đệ tử, nghiên cứu, công thức trận (bản TypeScript dùng để hiện ước tính; máy chủ là bản thật).
-- [ ] `scripts/sim-son-mon.ts`: mô phỏng 200 người chơi 14 ngày (người chơi 1 lần/ngày, 4 lần/ngày, người hăng). Mục tiêu: người 1 lần/ngày lên Chính Điện cấp 10 vào khoảng ngày 7; người hăng không quá 2 lần người thường; 3 giới thắng thua lệch không quá 55/45. Ghi số vào "Ghi chú:".
+- [x] `lib/sonmon/data.ts`: công trình (giá, giờ theo cấp), 15 loại đệ tử, nghiên cứu, công thức trận (bản TypeScript dùng để hiện ước tính; máy chủ là bản thật).
+- [x] `scripts/sim-son-mon.ts`: mô phỏng 200 người chơi 14 ngày (người chơi 1 lần/ngày, 4 lần/ngày, người hăng). Mục tiêu: người 1 lần/ngày lên Chính Điện cấp 10 vào khoảng ngày 7; người hăng không quá 2 lần người thường; 3 giới thắng thua lệch không quá 55/45. Ghi số vào "Ghi chú:".
 - [ ] Đưa số đã cân bằng vào hàm máy chủ.
-- Xong:
-- Ghi chú:
+- Xong: 13/11/2026 SHA_N2 (hai ô đầu; ô thứ ba đã nằm trong SQL, chờ áp lên Supabase)
+- Ghi chú: Số chốt (`lib/sonmon/data.ts`): sản lượng cấp L = 36 x 1,17^(L-1)/giờ (cấp 0: 15), giá xây x1,31 mỗi cấp, giờ xây x1,29 mỗi cấp, Chính Điện bớt 5% giờ xây mỗi cấp, cấp trên 10 tốn linh khí 8 x (L-10). Đệ tử tinh anh tốn 15 linh khí. Mô phỏng `npx tsx scripts/sim-son-mon.ts` (200 người: 100 người 1 lần/ngày lúc 21h, 70 người 4 lần/ngày, 30 người hăng 12 lần/ngày; phiên 8 phút; linh khí từ kiếp 30/100/150 mỗi ngày):
+  - Thử trước khi chốt (số ban đầu, sản lượng 40, giá x1,28, giờ x1,33): người 1 lần/ngày lên Chính Điện 10 ngày thứ 9, người 4 lần và người hăng ngày thứ 4, Chính Điện cuối Kỷ 19; điểm người hăng gấp 2,1-2,2 lần người 1 lần/ngày (quá mốc 2). Giờ xây dài hơn (x1,45-1,55) làm người 1 lần/ngày chậm hẳn (ngày 11 hoặc không tới) và tỉ lệ lên 2,5-3,9, nên chọn hướng ngược lại: tài nguyên là thứ phải chờ, giờ xây ngắn.
+  - Số chốt: người 1 lần/ngày lên Chính Điện 10 vào ngày thứ 7 (trung vị 6,9 ngày, 100% đạt), người 4 lần/ngày và người hăng ngày 5,3. Điểm người hăng so người 1 lần/ngày: ngày 1 1,43; ngày 3 1,52; ngày 5 1,45; ngày 7 1,35; ngày 10 1,27; ngày 13 1,16 (dưới mốc 2). Chính Điện cuối Kỷ: 14 (1 lần/ngày), 15 (hăng), nên cấp 16-20 còn chỗ cho cuối Kỷ và Thiên Đạo Đài. Người 4 lần và người hăng ra cùng điểm vì đều bị giới hạn bởi tài nguyên; người hăng hơn ở cướp và đánh (chưa mô phỏng ở đây).
+  - Giờ xây đi kèm: cấp 10 khoảng 5-10 phút, cấp 15 khoảng 30 phút, cấp 20 khoảng 2 giờ; đồng hồ đáng chờ là luyện quân và hành quân.
+  - 3 giới (30.000 trận ngẫu nhiên, bên đánh mang 0,8-2,4 lần ngân sách bên thủ, tường 0-10, 30% giờ đêm; thắng là công phá được hoặc giữ được thành), 3 lần chạy: Thiên 49,8-50,5%, Hồng Trần 48,9-50,1%, U Minh 50,2-50,8%; từng cặp bên đánh thắng 47,6-54,8% (trong mốc 55/45). Trước khi chỉnh, U Minh đánh Thiên 55,5-59,2%: đã tăng thủ Kim Giáp Vệ 58 lên 61, Cốt Vệ 57 lên 59, giảm công Quỷ Binh 57 xuống 56.
+  - Máy chủ đọc đúng bộ số này qua `vkl_priv.sm_cfg()` (sinh bằng `npx tsx scripts/gen-son-mon-sql.ts > supabase/son_mon_cfg_2026_11_14.sql`); đã so trên Postgres cục bộ: giá Chính Điện cấp 12, giờ xây, sản lượng Hồng Trần, sức chứa, giờ luyện khớp từng số với bản TypeScript. Chưa áp lên Supabase (xem Ngày 1).
 
 ## Ngày 3 - Giao diện động phủ
 Lên bản: 2026-11-15 (giấu sau cờ).
