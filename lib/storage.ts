@@ -282,10 +282,19 @@ export type RankScope = 'all' | 'alive' | 'dead' | 'week';
 export async function leaderboard(kind: RankKind, lean: RankLean, path: string, scope: RankScope = 'all'): Promise<{ username: string; c: Character; alive: boolean }[] | null> {
   const sb = supabase();
   if (!sb) return null;
-  // 5/11: bảng mới bỏ người sửa save (số vô lý, danh sách ẩn); máy chủ chưa có thì dùng bảng cũ
-  let { data, error } = await sb.rpc('vkl_leaderboard2', { p_kind: kind, p_lean: lean, p_path: path, p_scope: scope });
-  if (error) ({ data, error } = await sb.rpc('vkl_leaderboard', { p_kind: kind, p_lean: lean, p_path: path, p_scope: scope }));
-  if (error) return null;
+  // 13/11: lấy qua bộ đệm Vercel (app/api/pub/lb), mỗi bảng chỉ tính lại 2 phút một lần cho cả server
+  let data: unknown = null;
+  let error: unknown = null;
+  try {
+    const r = await fetch(`/api/pub/lb?kind=${kind}&lean=${lean}&path=${encodeURIComponent(path)}&scope=${scope}`);
+    if (!r.ok) throw new Error(String(r.status));
+    data = await r.json();
+  } catch {
+    // 5/11: bảng mới bỏ người sửa save (số vô lý, danh sách ẩn); máy chủ chưa có thì dùng bảng cũ
+    ({ data, error } = await sb.rpc('vkl_leaderboard2', { p_kind: kind, p_lean: lean, p_path: path, p_scope: scope }));
+    if (error) ({ data, error } = await sb.rpc('vkl_leaderboard', { p_kind: kind, p_lean: lean, p_path: path, p_scope: scope }));
+  }
+  if (error || !Array.isArray(data)) return null;
   const list = ((data as { username: string; c: Character; alive: boolean }[] | null) ?? []).slice();
   // máy chủ trả các người bằng điểm theo thứ tự ngẫu nhiên nên hạng nhảy mỗi lần tải: xếp lại các nhóm bằng điểm cho cố định
   const key = (r: { c: Character }) => {

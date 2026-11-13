@@ -50,7 +50,21 @@ export function useLive(): LiveData {
     const sb = supabase();
     if (!sb) return;
     let live = true;
+    // 13/11: lấy qua bộ đệm Vercel (app/api/pub/live), lỗi thì mới gọi thẳng cơ sở dữ liệu
     const load = () => {
+      fetch('/api/pub/live')
+        .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+        .then((d: LiveData) => {
+          if (!live) return;
+          if (typeof d.online === 'number') setOnline(d.online);
+          if (Array.isArray(d.feed)) setFeed(d.feed);
+          if (typeof d.total === 'number') setTotal(d.total);
+          if (typeof d.today === 'number') setToday(d.today);
+          if (Array.isArray(d.lives)) setLives(d.lives);
+        })
+        .catch(loadDirect);
+    };
+    const loadDirect = () => {
       sb.rpc('vkl_online_now7').then(({ data }) => live && typeof data === 'number' && setOnline(data));
       sb.rpc('vkl_live_feed').then(({ data }) => live && Array.isArray(data) && setFeed(data as FeedItem[]));
       // số luôn tăng (tổng kiếp) làm số lớn, thay cho số người đang chơi có lúc bằng 0
