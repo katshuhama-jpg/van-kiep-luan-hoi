@@ -233,3 +233,11 @@ Nội dung soạn sẵn (Tyler tự đăng, Claude không đăng): chưa có th�
 ## Tính năng đã ẩn
 
 (chưa có)
+
+## 14/11 22:xx - Xử lý góp ý #243, #250, #251 (ngoài lịch đêm)
+
+- #250 (sau phi thăng trảm Yêu Thánh không ra tu vi): không phải lỗi, tu vi mỗi năm bị chặn sau phi thăng. Đã sửa: khi tu vi năm đó đầy, mỗi con trảm cho x3 linh thạch, báo một lần mỗi năm, danh sách săn ghi "tu vi năm nay đã đầy, linh thạch x3".
+- #251 (kiếm tiền chậm so với giá đồ): linh thạch trảm yêu nhân thêm 1 + 0,3 x (cảnh giới - 1), tối đa x4. sim-farm số năm cày cho một món: R2 2,4 → ~2; R5 5,7 → 3,9; R7 7,0 → 4,1. sim-do-kho gần như không đổi (r5 thua 14,5% → 13,5%, r7 0,9%).
+- #243 (mất một kiếp): bia của dkunn kiếp 3 không lên máy chủ (tắt app/rớt mạng lúc lập bia). Toàn hệ thống 142 người thiếu 1.063 bia. Đã sửa: bia lưu vào máy trước khi gửi, mở game lại tự khắc bù (kiểm tra trùng player_name + life_no). Bù dkunn +200 phúc duyên (880 → 1.080).
+- Đã trả lời 3 góp ý trong vkl_feedback, status da_xong. Lên bản 5:00 15/11 (commit 432c343).
+- Lịch đêm đã đổi: tự quyết rồi báo sau, mỗi đêm đọc góp ý và bình luận FB, dùng game-design để đưa vào game.
