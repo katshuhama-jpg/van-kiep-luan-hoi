@@ -25,9 +25,9 @@ Chưa qua đủ 2 bước thì không đánh dấu `len-ban`, báo Tyler lý do.
 | Đêm làm | Lên bản | Khối | Người chơi thấy |
 |---|---|---|---|
 | 14/11 | 15/11 | Ngày 1 máy chủ + Ngày 2 số liệu, mô phỏng | Chưa |
-| 15/11 | 16/11 | Ngày 3 vào môn, lập môn, môn nhà + Ngày 4 bản đồ, đánh nhau | Chưa |
+| 15/11 | 16/11 | Ngày 3 vào môn, lập môn, môn nhà + Ngày 3b Sư Đồ + Ngày 4 bản đồ, đánh nhau | Sư Đồ: có. Sơn Môn: chưa |
 | 16/11 | 17/11 | Ngày 5 thành viên, Kỷ, Lực chiến, thanh 4 tab + Ngày 6 hết Kỷ, thử 30 bot | Thanh 4 tab; tab Sơn Môn chỉ có màn chờ "Mở cửa 5:00 sáng 18/11" |
-| 17/11 | 18/11 | Ngày 7 bật cờ, Kỷ 1 bắt đầu, Sư Đồ, cáo thị 4.6.0 | Có |
+| 17/11 | 18/11 | Ngày 7 bật cờ, Kỷ 1 bắt đầu, cáo thị 4.6.0 | Có |
 | | 1/12 21:00 | Kỷ 1 kết thúc | |
 
 ## Vòng chơi
@@ -151,6 +151,14 @@ Lên bản: 2026-11-16 (giấu sau cờ). Kỹ năng: `anthropic-skills:uiux-pro
 - Xong:
 - Ghi chú:
 
+
+## Ngày 3b - Sư Đồ
+Lên bản: 2026-11-16 (người chơi thấy luôn, có cáo thị một dòng trong bản gần nhất). Tyler chốt 14/11: Sư Đồ lên 16/11, Sơn Môn 18/11.
+- [ ] Sư Đồ (mục "Sư Đồ" ở trên), cờ riêng `SU_DO_ON` (bật mặc định, KHÔNG phụ thuộc `SON_MON_ON`), người chơi thấy từ 16/11. Nút "Vào môn của sư phụ" chỉ hiện khi `SON_MON_ON` bật (18/11): bảng `vkl_su` (sư phụ, đệ tử, bái lúc, thành tài lúc), cookie `?su=` 7 ngày, gắn lúc tạo chân thân, trigger trên `vkl_lives` đếm kiếp đệ tử và cộng phúc duyên (nuốt lỗi), hàm MỚI `vkl_su_count(token)` trả số đệ tử thành tài, client gộp vào `disciples` của DaoExt cho đạo Truyền Đạo (không sửa `vkl_ct_ext` có sẵn), nút Mời đệ tử + thẻ chia sẻ OG, dòng sư phụ/đệ tử ở màn Chân thân. Đo `su_link_open`, `su_bind`, `su_done`. Thử: 3 tài khoản giả (sư phụ, đệ tử mới, tài khoản cũ bấm link không thành đệ tử).
+- [ ] Đăng ký trước khi Sơn Môn mở: đệ tử bái sư từ 16/11 vẫn được tính, thành tài tính theo 7 ngày kể từ lúc bái.
+- Xong:
+- Ghi chú:
+
 ## Ngày 4 - Bản đồ và đánh nhau
 Lên bản: 2026-11-16 (giấu sau cờ). Kỹ năng: `anthropic-skills:uiux-pro-max`, `anthropic-skills:gamedev` (game-ui-ux).
 - [ ] M5 bản đồ lục giác (kéo để xem, nút Về lãnh thổ), chạm ô: tên ô, môn chủ, kề hay không, trinh sát gần nhất, nút Trinh sát / Xuất chinh. Đọc bản đồ qua `/api/pub/sm-map` (bộ đệm Vercel 30 giây).
@@ -184,7 +192,6 @@ Lên bản: 2026-11-17 (giấu sau cờ).
 
 ## Ngày 7 - Lên bản, Kỷ 1 bắt đầu
 Lên bản: 2026-11-18. Bật cờ `SON_MON_ON`, có cáo thị 4.6.0.
-- [ ] Sư Đồ (mục "Sư Đồ" ở trên), giấu sau `SON_MON_ON`, bật cùng Kỷ 1: bảng `vkl_su` (sư phụ, đệ tử, bái lúc, thành tài lúc), cookie `?su=` 7 ngày, gắn lúc tạo chân thân, trigger trên `vkl_lives` đếm kiếp đệ tử và cộng phúc duyên (nuốt lỗi), hàm MỚI `vkl_su_count(token)` trả số đệ tử thành tài, client gộp vào `disciples` của DaoExt cho đạo Truyền Đạo (không sửa `vkl_ct_ext` có sẵn), nút Mời đệ tử + thẻ chia sẻ OG, dòng sư phụ/đệ tử ở màn Chân thân. Đo `su_link_open`, `su_bind`, `su_done`. Thử: 3 tài khoản giả (sư phụ, đệ tử mới, tài khoản cũ bấm link không thành đệ tử).
 - [ ] Tạo Kỷ 1 (18/11 5:00 - 1/12 21:00, bán kính 6) trước 5:00.
 - [ ] Cáo thị 4.6.0 ngắn: sơn môn, điểm danh và nhiệm vụ trong kiếp, bản đồ lục giác, Kỷ 1 tới 1/12. Không hứa đồng minh hay Kỷ sau có gì.
 - [ ] Trước khi bật cờ: chạy đủ 2 bước của "Luật giao diện mới" (uiux-pro-max với vai người mới và người cũ, humanizer cho chữ trên màn và cáo thị) trên toàn bộ màn Sơn Môn (thanh 4 tab đã soát ở bản 17/11). Bật cờ thì màn chờ của tab Sơn Môn phải biến mất.
