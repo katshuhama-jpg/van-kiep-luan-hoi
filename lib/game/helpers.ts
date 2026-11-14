@@ -123,6 +123,13 @@ export function addCult(c: Character, amount: number): number {
   return c.cultivation - before;
 }
 
+/** 15/11 (#250): sau phi thăng, năm nay còn hấp thu thêm được bao nhiêu tu vi (Infinity nếu chưa phi thăng) */
+export function cultRoom(c: Character): number {
+  if (!c.cosmos) return Infinity;
+  const used = c.cgY === Math.floor(c.age) ? (c.cgN ?? 0) : 0;
+  return Math.max(0, needFor(c) / ((c.realm >= 11 ? COSMOS_YEARS_TOP : COSMOS_YEARS_PER_LAYER) + ((c.kiepSo ?? 0) >= 8 ? 2 : 0)) - used);
+}
+
 const BASE_YEAR = [6, 30, 30, 34, 38, 42, 46, 50];
 
 /** Phần thưởng tu vi: x tầng ở cảnh giới thấp, nhưng ở cảnh giới cao chỉ bằng khoảng x*3 năm tu luyện */

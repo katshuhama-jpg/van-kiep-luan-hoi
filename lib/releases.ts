@@ -54,6 +54,7 @@ export const RELEASES: Release[] = [
           tr('Túi đồ: nút bán và phân giải đồ thừa không còn bán món Cực phẩm vừa hợp được (chỉ bán bản trùng), chỉ đụng đồ ở tab đang chọn, và ghi tên từng món trước khi bán.', 'Bag: the sell and dismantle spares buttons no longer sell a Supreme item you just fused (only duplicates), only touch the tab you are on, and list each item before selling.'),
           tr('Đồ tông môn ghi rõ bị tông thu lại khi bị trục xuất, và nhật ký nêu đích danh món bị thu.', 'Sect gear now says it is taken back if you are expelled, and the log names each item taken.'),
           tr('Thần binh truyền kiếp không còn bị lột khi thua trận, như nó vốn không vỡ khi rèn. Sổ linh thú ghi ngay loài vừa thu phục, không đợi tới cuối kiếp.', 'A divine weapon passed down through lives can no longer be stripped from you when you lose a fight, just as it never breaks at the forge. The Spirit Beast book now records a beast the moment you tame it, not at the end of the life.'),
+          tr('Trảm yêu cho linh thạch tăng theo cảnh giới. Sau phi thăng, khi tu vi năm đó đã đầy, mỗi con trảm cho gấp ba linh thạch. Bia lập dở vì rớt mạng được khắc bù khi mở lại game.', 'Slaying beasts gives more spirit stones the higher your realm. After ascension, once a year\'s cultivation is full, every kill gives triple stones. A gravestone that failed to save because of a lost connection is carved again when you reopen the game.'),
         ],
       },
     ],

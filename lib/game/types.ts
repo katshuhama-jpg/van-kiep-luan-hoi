@@ -193,7 +193,8 @@ export interface Character {
   kiepBonus?: number; // thưởng/phạt từ mini-game thiên kiếp
   an?: Partial<Record<Element, number>>; // Ngũ Hành Ấn thu được khi diệt quái có hệ (tối đa 5 mỗi hệ)
   cgY?: number; // năm đang tính trần tu vi sau phi thăng
-  cgN?: number; // tu vi đã hấp thu trong năm đó
+  cgN?: number;
+  cgNote?: number; // 15/11: năm đã báo 'tu vi năm nay đã đầy' khi trảm yêu // tu vi đã hấp thu trong năm đó
   daiHan?: boolean; // đã gặp đại hạn ở Độ Kiếp (tọa hóa hay truyền công)
   truyenCong?: boolean; // chọn truyền công lúc tọa hóa: game gửi phúc duyên cho người khác
   suy?: number; // dấu hiệu suy tàn đã hiện ở ba cõi (0-4)

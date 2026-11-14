@@ -19,7 +19,7 @@ import { FOCUS, ITEMS, PATHS, PILLS, REALMS, SEASONS, TALENTS, fxParts, fxText, 
 import { describeLean } from '@/lib/game/engine';
 import { DANGER_TEXT, MONSTERS, combatLevel, dangerOf, dropFactor, monstersFor, haPhamMonsters, effLv, killExp, monsterName, playerStats, tierOf } from '@/lib/game/combat';
 import { MonsterSprite } from './Battle';
-import { cultPct, fmt, needFor } from '@/lib/game/helpers';
+import { cultPct, cultRoom, fmt, needFor } from '@/lib/game/helpers';
 import type { Character, Focus, LogEntry, Meta, PendingEvent, Slot } from '@/lib/game/types';
 import { QUEST_BONUS, QUEST_REWARD, dailyOf, omenToday, evalQuests, nearEndings, pickProphecy, questName } from '@/lib/game/hook';
 import { HIDDEN_ITEMS, collectStats, isHidden, itemHint } from '@/lib/game/collect';
@@ -1762,7 +1762,7 @@ export function HuntSheet({ c, onPick, onToggleFlee, onClose }: { c: Character; 
                     {tr("Cao thủ", "Master")}
                   </span>
                 )}
-                <small>{hidden ? m.place : m.boss ? tr(`${m.place} · ${m.desc} Chưa từng ai thắng.`, `${m.place} · ${m.desc} No one has ever won.`) : ha ? tr(`${m.place} · ${c.kills?.[m.id] ?? 0} đã trảm`, `${m.place} · ${c.kills?.[m.id] ?? 0} slain`) : tr(`${m.place} · ~${fmt(killExp(c, m))} tu vi/con · ${c.kills?.[m.id] ?? 0} đã trảm`, `${m.place} · ~${fmt(killExp(c, m))} cultivation each · ${c.kills?.[m.id] ?? 0} slain`)}</small>
+                <small>{hidden ? m.place : m.boss ? tr(`${m.place} · ${m.desc} Chưa từng ai thắng.`, `${m.place} · ${m.desc} No one has ever won.`) : ha ? tr(`${m.place} · ${c.kills?.[m.id] ?? 0} đã trảm`, `${m.place} · ${c.kills?.[m.id] ?? 0} slain`) : c.cosmos && cultRoom(c) <= 0 ? tr(`${m.place} · tu vi năm nay đã đầy, linh thạch x3 · ${c.kills?.[m.id] ?? 0} đã trảm`, `${m.place} · cultivation full this year, spirit stones x3 · ${c.kills?.[m.id] ?? 0} slain`) : tr(`${m.place} · ~${fmt(killExp(c, m))} tu vi/con · ${c.kills?.[m.id] ?? 0} đã trảm`, `${m.place} · ~${fmt(killExp(c, m))} cultivation each · ${c.kills?.[m.id] ?? 0} slain`)}</small>
                 {!hidden && !m.boss && ITEMS.some((i) => i.from?.includes(m.id)) && (
                   <small className="drop-line">
                     

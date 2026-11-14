@@ -689,6 +689,9 @@ export function hit(atk: number, def: number, rnd: () => number, critRate = 0.15
   return { dmg: Math.max(1, Math.round(raw - def * 0.5)), crit };
 }
 
+/** 15/11 (#251): hệ số linh thạch trảm yêu theo cảnh giới (Luyện Khí x1, Kim Đan x1,6, Hóa Thần x2,2, Độ Kiếp x2,8, sau phi thăng tối đa x4) */
+export const killCoinMul = (c: Character) => 1 + 0.3 * Math.min(Math.max(0, c.realm - 1), 10);
+
 /** Ước tính tu vi nhận được khi thắng (để hiện ở bảng chọn quái) */
 export function killExp(c: Character, m: Monster): number {
   if (m.boss || isHaPham(c, m)) return 0;
@@ -710,9 +713,22 @@ export const DROP_MUL = 0.75;
 
 export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance = 0.12): string[] {
   const notes: string[] = [];
-  addCult(c, killExp(c, m));
+  const want = killExp(c, m);
+  const got = addCult(c, want);
   // 4.1.0: linh thạch mỗi con giảm một nửa (trước 2 + 3 × cấp), chống treo máy cày tiền
-  money(c, Math.round((1 + m.lv * 1.5) * (0.7 + ctx.rnd() * 0.6)));
+  // 15/11 (#251): giá đồ tăng nhanh hơn tiền trảm yêu theo cảnh giới (R2 ~2 năm/món, R7 ~7 năm/món).
+  // Nhân theo cảnh giới để mỗi món đồ đúng cảnh giới tốn khoảng 2-4 năm trảm yêu ở mọi cảnh giới.
+  const coin = Math.round((1 + m.lv * 1.5) * killCoinMul(c) * (0.7 + ctx.rnd() * 0.6));
+  money(c, coin);
+  // 15/11 (#250): sau phi thăng, tu vi năm nay đã đầy thì yêu khí hóa thành linh thạch (gấp đôi), trảm yêu không phí công (tổng gấp 3)
+  if (c.cosmos && want > 0 && got < want * 0.5) {
+    money(c, coin * 2);
+    const y = Math.floor(c.age);
+    if (c.cgNote !== y) {
+      c.cgNote = y;
+      notes.push(tr(`Tu vi năm nay đã đầy, yêu khí không vào được đan điền nữa. Từ giờ tới hết năm, mỗi con trảm được gấp ba linh thạch.`, `Your cultivation is full for this year. Until the year ends, every kill gives three times the spirit stones.`));
+    }
+  }
   // 4.2.0: tàn quyển công pháp theo hệ của quái (quái chặn đường gọi với lootChance cao nên dễ rơi hơn)
   // 5/11 Tyler: tăng rơi (thường 1,5% → 3%, quái chặn đường 25% → 35%)
   if (ctx.rnd() < (lootChance >= 0.5 ? 0.35 : 0.03)) {

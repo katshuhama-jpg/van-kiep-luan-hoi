@@ -1910,9 +1910,9 @@ export default function PlayPage() {
       },
     };
     // mạng chập chờn thì không để người chơi kẹt ở màn lập bia: quá 10 giây thì giữ bia lại, lần sau khắc tiếp
-    await within(addMemorial(user, grave), 11000).catch(() => {
-      if (user) addRetryGrave(grave);
-    });
+    // 15/11 (#243): giữ bia trên máy trước khi gửi; gửi xong mới bỏ (đóng app giữa chừng vẫn khắc bù được lần mở sau)
+    if (user) addRetryGrave(grave);
+    await within(addMemorial(user, grave), 11000).catch(() => {});
     // chơi thử: kiếp đáng ghi danh thì giữ bia lại, đăng ký xong sẽ khắc lên Nghĩa trang tu sĩ
     // khách: mời ngay từ kiếp đầu (3 kiếp đầu, rồi cứ 5 kiếp một lần), không đợi tới Kim Đan; mời ghi danh đang được bấm 42%
     if (!user) {

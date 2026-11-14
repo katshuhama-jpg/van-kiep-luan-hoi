@@ -96,6 +96,7 @@ export async function loadAll(user: Player | null): Promise<{ meta: Meta; save: 
         sb.rpc('vkl_save_meta2', { p_token: user.token, p_meta: meta }).then(() => {}, () => {});
       }
       writeLocal(metaKey(user), meta);
+      flushRetry(user).catch(() => {});
       // bản lưu trên máy có thể mới hơn bản trên mây (mây lưu chậm hơn, hoặc bị ngắt khi chuyển trang).
       // Bản nào là kiếp đã xong (máy cũ còn giữ kiếp cũ, mây đã xóa khi sang kiếp mới) thì bỏ, không được hồi sinh kiếp cũ.
       const rawLocal = readLocal<SaveState>(userKey(user));
@@ -171,6 +172,7 @@ export async function addMemorial(user: Player | null, m: Omit<Memorial, 'id' | 
   if (user && sb) {
     const { error } = await sb.rpc('vkl_add_life', { p_token: user.token, p_life: m });
     if (error) throw error;
+    dropRetry(m.life_no);
     flushRetry(user).catch(() => {});
     return;
   }
@@ -200,14 +202,36 @@ export function addPendingGrave(g: GraveIn) {
 /** Bia khắc lỗi vì mạng (đã đăng nhập): giữ lại, lần lập bia sau khắc bù */
 const RETRY = 'vkl.retryGraves';
 export function addRetryGrave(g: GraveIn) {
-  writeLocal(RETRY, [...(readLocal<GraveIn[]>(RETRY) ?? []), g].slice(-5));
+  const ls = (readLocal<GraveIn[]>(RETRY) ?? []).filter((x) => x.life_no !== g.life_no);
+  writeLocal(RETRY, [...ls, g].slice(-10));
 }
-async function flushRetry(user: Player) {
+function dropRetry(lifeNo: number) {
+  const ls = readLocal<GraveIn[]>(RETRY);
+  if (ls?.some((x) => x.life_no === lifeNo)) writeLocal(RETRY, ls.filter((x) => x.life_no !== lifeNo));
+}
+/**
+ * Khắc bù bia chưa lên máy chủ. 15/11 (#243): bia được giữ trên máy TRƯỚC khi gửi (đóng app, mất mạng lúc lập bia vẫn còn),
+ * khắc bù ngay lúc mở game chứ không đợi lần chết sau, và hỏi máy chủ trước để không khắc trùng.
+ */
+export async function flushRetry(user: Player) {
   const ls = readLocal<GraveIn[]>(RETRY);
   if (!ls?.length) return;
-  writeLocal(RETRY, null);
   const sb = supabase();
-  for (const g of ls) await sb?.rpc('vkl_add_life', { p_token: user.token, p_life: g }).then(({ error }) => error && addRetryGrave(g), () => addRetryGrave(g));
+  if (!sb) return;
+  for (const g of ls) {
+    if (g.player_name && g.player_name !== user.username) continue; // bia của tài khoản khác trên cùng máy
+    try {
+      const { data: have } = await sb.from('vkl_lives').select('id').eq('player_name', user.username).eq('life_no', g.life_no).limit(1);
+      if (have?.length) {
+        dropRetry(g.life_no);
+        continue;
+      }
+      const { error } = await sb.rpc('vkl_add_life', { p_token: user.token, p_life: g });
+      if (!error) dropRetry(g.life_no);
+    } catch {
+      // mạng lỗi: giữ lại, lần sau thử tiếp
+    }
+  }
 }
 export function pendingGraves(): GraveIn[] {
   return readLocal<GraveIn[]>(K.pending) ?? [];
