@@ -185,9 +185,49 @@ Nhận định:
 - Đối chiếu: không trùng plan-4.5.0 (Mộng Tỉnh ở SAU kiếp 1), plan-4.6.0 (Sơn Môn, layout 4 tab không đụng màn đầu thai trong /choi).
 - Ưu tiên 2 (nếu còn giờ, hoặc đêm 15/11): đo người bỏ giữa kiếp 1 rời ở tuổi nào, sự kiện nào (vkl_events có sc, thêm tuổi nếu chưa có), rồi rút ngắn hoặc làm kịch tính đoạn đó.
 
+## Đêm 14/11/2026 (lên bản 15/11)
+
+Kế hoạch đêm nay: 4.6.0 Ngày 1 (máy chủ Sơn Môn) và Ngày 2 (số liệu, mô phỏng), xong và đã đẩy `next` (7aa34ac, 9ecc331). Supabase mới áp được phần 1 (bảng + hàm nội bộ); phần 2 bị chặn vì máy chủ Supabase hỏi xác nhận mà không ai trả lời (xem Ghi chú Ngày 1 trong plan-4.6.0). Người chơi không thấy gì khác từ kế hoạch.
+
+Số chính (so với đêm 13/11):
+- Tài khoản mới: 12/11 39, 13/11 86, 14/11 107 (tới 22:00; quảng cáo Chân Thân chạy 17:00-24:00). Người có ít nhất một kiếp: 13/11 201, 14/11 205 (12/11 182); kiếp mỗi ngày 919 -> 1.111.
+- D1: nhóm 10/11 34,5%, 11/11 29,2%, 12/11 22,6% (đầu tháng 35-42%). D7: nhóm 5/11 11,3%, 6/11 4,4% (mốc 11-14%).
+- Kiếp đầu gọn (FIRST_SIMPLE_ON, lên 14/11 5:00): 306 phiên mới thấy màn gọn -> 190 vào kiếp 1 (62%, trước 44-50%, mục tiêu 65%) -> 99 xong kiếp 1 (32%, trước 25-27%) -> 78 tạo chân thân. Riêng quảng cáo: 164 phiên -> 99 vào kiếp (60%, trước 50%) -> 49 xong kiếp 1 (30%, trước 25,5%).
+- Quảng cáo theo mẫu (utm_content, từ 14/11 00:40): Meta dồn gần hết vào ảnh `anh40`: 207 phiên -> 114 vào kiếp -> 62 xong kiếp 1 -> 47 chân thân, 42 đăng ký, 35 đủ 2 kiếp. Hai video `diaphu`, `buivang` gần như không được phát (1 phiên). Không có mẫu nào để tắt.
+- Phiên mỗi ngày (vkl_daily.sid) 13/11 1.128. Giờ đông nhất 24 giờ qua (phiên mở game): 20h 131, 17h 108, 21h và 23h 102.
+- Dùng tính năng 24 giờ qua (số phiên): khai huyệt 355, xem huyệt 314, điểm danh 298, bán/phân giải đồ thừa (đo mới) 212, Mộng Tỉnh 198 -> tạo chân thân 186 (94%), Lôi đài ra đài 94 / đánh 101 (khớp, không còn kẹt), bấm thẻ chân thân 59, chia sẻ huyệt 7.
+- Góp ý mới từ 13/11 tối: #237-#254 (18), không có góp ý báo mất đồ hay kẹt Lôi đài sau bản 14/11. Đáng xem: #250 (sau phi thăng, đánh tới Yêu Thánh quái ngừng cho tu vi dù không chênh 3 cấp), #243 (bị mất một kiếp), #251 (kiếm tiền quá chậm so với giá đồ), #242 (đồ truyền đời không ghi rõ cộng gì).
+- Lỗi Vercel 24 giờ qua: không có.
+
+Nhận định:
+1. Màn kiếp đầu gọn có tác dụng: vào kiếp 1 từ 44-50% lên 62%, xong kiếp 1 từ 26% lên 32%.
+2. Chỗ rơi kế tiếp nằm NGAY SAU đó: 91/190 người vào kiếp 1 bỏ giữa chừng, đa số ở tuổi 0-9 (24 người ở màn sự kiện sau 2,7 phút, 18 người ở màn chơi chỉ sau 0,9 phút). Việc cuối cùng của 42/91 người (46%) là đọc cẩm nang TỰ MỞ: Hồi 1 "Một kiếp người" (4 trang, mở ngay sau sự kiện đầu đời) 29 người, Hồi 2 "Thang cảnh giới" 10, Hồi 3 3. Kiếp 1 hiện tự mở tới 5 hồi (khoảng 20 trang) - trái với nguyên tắc "không cần nghĩ, chỉ đọc và bấm" mà màn kiếp đầu gọn vừa làm.
+3. D1 nhóm 12/11 thấp (22,6%) trước khi có màn gọn; nhóm 13-14/11 có số D1 từ đêm 15-16/11.
+
+Việc đêm nay (tăng trưởng): cải thiện "Kiếp đầu gọn" lần 2 - kiếp 1 không tự mở cẩm nang (cờ `KIEP1_CN_GON`, TẮT mặc định đêm nay).
+- Giả thuyết: người vừa bấm "Vào kiếp đầu" gặp ngay 4 trang hướng dẫn rồi 4 trang nữa; nhiều người rời ở đó. Bỏ tự mở trong kiếp 1 (vẫn mở tay được từ nút Cẩm nang), dời các hồi sang kiếp 2-4 (khi người chơi đã chết một lần và hiểu vòng chơi).
+- Đổi gì: `app/choi/page.tsx` điều kiện tự mở cẩm nang: khi cờ bật, chỉ tự mở từ kiếp 2 tới kiếp 4 (`meta.lives` 1-3, trước là 0-2); Hồi 1 hiện ở đầu kiếp 2 thay vì kiếp 1. Không đổi chữ, không đổi luật.
+- Đối chiếu: không trùng plan-4.5.0 (Ngày 1-4 xong, Mộng Tỉnh ở SAU kiếp 1, không đụng cẩm nang), plan-4.6.0 (Sơn Môn; thanh 4 tab Ngày 5 không đụng màn chơi `/choi` trong kiếp); không có docs/yeu-cau-lam-tinh-nang.md. Nối tiếp việc "Kiếp đầu gọn" (FIRST_SIMPLE_ON) của 14/11.
+- Đo: trong các phiên thấy màn kiếp đầu gọn, % xong kiếp 1 trên số vào kiếp 1 (mốc 14/11: 99/190 = 52%, mục tiêu 60%+); % bỏ ở tuổi 0-9; số lần `camnang_open` từ `auto` ở kiếp 2 (xem có rơi người ở kiếp 2 không).
+- Thử: `node scripts/smoke-kiep1-cn.cjs <thư mục ảnh>` (mới, 390x844): cờ bật thì kiếp 1 trả lời sự kiện 25 giây không có cẩm nang tự mở, kiếp 2 thì Hồi 1 tự mở; `CN_TAT=1` với cờ tắt thì kiếp 1 vẫn tự mở như cũ. smoke, smoke-login (cả FAIL_ME), smoke-linhthu, tsc, build sạch.
+- Bật: đêm 15/11 đổi mặc định cờ thành bật (sau khi đã thử ở đêm nay), trừ khi Tyler muốn bật ngay sáng 15/11.
+- Cáo thị: không thêm (cờ tắt, người chơi chưa thấy gì khác).
+
+Tiến độ việc nhiều đêm:
+- Kiếp đầu gọn: lần 1 (màn lá số gọn) đã lên 14/11; lần 2 (bỏ cẩm nang tự mở ở kiếp 1) code xong sau cờ, bật đêm 15/11; lần 3 (nếu cần): xem các sự kiện tuổi 0-9 có quá nhiều chữ không.
+
+Đề xuất chờ Tyler:
+- Supabase hỏi xác nhận khi áp phần 2 máy chủ Sơn Môn (có câu `drop trigger if exists`) mà phiên đêm không trả lời được. Tyler có thể bấm duyệt khi được hỏi trong phiên đêm 15/11, hoặc mở Supabase SQL Editor dán cả file `supabase/son_mon_gon_2026_11_15.sql` và chạy (file áp lại nhiều lần không hỏng). Ngày 3 (16/11) cần các hàm này.
+- Mốc Khí vận thứ hai đổi 60 -> 50 sau mô phỏng (môn trung vị chỉ 7-8 người, mốc 60 chỉ đạt 5% số ngày). Tyler đồng ý không?
+- Quảng cáo: giữ nguyên tới 19/11 (Meta đã tự dồn vào `anh40`, mẫu này đang tốt: 30% phiên xong kiếp 1, 17% đủ 2 kiếp). Không nên chạy thêm đợt mới trước khi có D1 của nhóm 13-14/11 (đêm 15-16/11). Nếu D1 nhóm 13-14/11 từ 30% trở lên thì đề xuất đợt Sơn Môn: Lưu lượng truy cập, 18-25/11, 50.000đ/ngày (350.000đ), Việt Nam 18-40, 2 mẫu: ảnh `anh40` (giữ) và ảnh bản đồ Sơn Môn lục giác có huy hiệu ("Lập môn cùng đạo hữu, giữ đất trên bản đồ. Kỷ 1 tới 1/12."), link thẳng /choi có utm_content; dừng mẫu nào có dưới 20% phiên xong kiếp 1 sau 2 ngày.
+
+Nội dung soạn sẵn (Tyler tự đăng, Claude không đăng): chưa có thứ mới người chơi thấy được đêm nay. Bài báo trước cho Sơn Môn để dành tới 17/11 khi có màn chờ.
+
 ## Sổ cải thiện tính năng
 
 - Bán / phân giải đồ thừa (túi đồ), lần 1 (13/11, góp ý #224 #225): chiếc gốc Cực phẩm không còn tính là thừa, chỉ đụng đồ ở tab đang chọn, bước xác nhận ghi tên món. Số dùng trước: chưa đo (không có sự kiện riêng; đêm nay không đọc được vkl_events). Sau: đo bằng `do_thua` từ 14/11, và số góp ý báo mất đồ.
+- Kiếp đầu gọn, lần 1 (14/11, FIRST_SIMPLE_ON, màn lá số kiếp 1 chỉ còn câu mở đầu và một nút): trước 44-50% phiên mới vào kiếp 1, 25-27% xong kiếp 1. Sau (14/11, 306 phiên): 62% vào kiếp 1, 32% xong kiếp 1.
+- Kiếp đầu gọn, lần 2 (14/11 đêm, KIEP1_CN_GON, tắt mặc định, bật đêm 15/11): kiếp 1 không tự mở cẩm nang, các hồi dời sang kiếp 2-4. Trước: 52% người vào kiếp 1 xong kiếp 1; 46% người bỏ giữa kiếp 1 có việc cuối là đọc cẩm nang tự mở. Sau: đo từ khi bật.
 - Lột đồ khi thua trận (`robGear`), lần 1 (13/11, góp ý #236 #229): không lột thần binh truyền kiếp. Số trước: 2 góp ý báo mất thần binh trong 2 ngày. Sau: đếm góp ý báo mất thần binh từ 14/11.
 
 ## Tính năng đã ẩn

@@ -19,7 +19,7 @@ import { HG_GATE_ID, HG_TURNS, HG_VAN_THIEN_ID, VT_TOTAL, finishHgFight, vanThie
 import { hgFoe } from '@/lib/game/hongHoangFight';
 import { ENDINGS, alsoEndings, endingOf } from '@/lib/game/endings';
 import { buyCharm, buyTinh, forge, sell, smelt } from '@/lib/game/forge';
-import { CHAN_THAN_ON } from '@/lib/flags';
+import { CHAN_THAN_ON, KIEP1_CN_GON } from '@/lib/flags';
 import { CtFlow } from '@/components/ChanThan';
 import { khaiAfterLife, khaiCheck } from '@/lib/game/khaiMach';
 import { HuyetChip, TamTaiLine, TamTaiSheet, ThucTinh } from '@/components/TamTai';
@@ -2154,7 +2154,9 @@ export default function PlayPage() {
   const newBook = nb.endings || nb.items;
   const yearPct = (c.age % 1) * 100;
   // Cẩm nang đúng lúc: chỉ cho người mới (ít kiếp), mỗi hồi một lần, không chen ngang trận đấu hay bảng đang mở
-  if (!cn && !protectOpen && !setupOpen && !c.dead && meta.lives < 3 && sheet === null && !tut && !relOpen && !downOpen && !ciOpen && kiep === null && !nhd && !duelWarn && !ascend && !gifts) {
+  // KIEP1_CN_GON (15/11, tăng trưởng): kiếp 1 không tự mở cẩm nang (46% người bỏ giữa kiếp 1 rời ngay sau Hồi 1/Hồi 2), dời sang kiếp 2-4
+  const cnLives = KIEP1_CN_GON ? meta.lives >= 1 && meta.lives < 4 : meta.lives < 3;
+  if (!cn && !protectOpen && !setupOpen && !c.dead && cnLives && sheet === null && !tut && !relOpen && !downOpen && !ciOpen && kiep === null && !nhd && !duelWarn && !ascend && !gifts) {
     const seen = cnSeen();
     const want: CnChapter | null =
       pending?.id === '__chon_duong'
@@ -2163,7 +2165,7 @@ export default function PlayPage() {
           ? 'tong_mon'
           : pending
           ? null
-          : meta.lives === 0 && c.lifeNo <= 1 && !seen.includes('mot_kiep')
+          : (KIEP1_CN_GON ? meta.lives === 1 : meta.lives === 0 && c.lifeNo <= 1) && !seen.includes('mot_kiep')
             ? 'mot_kiep'
             : c.lifeNo >= 2 && c.age < 6 && !seen.includes('luan_hoi')
               ? 'luan_hoi'
