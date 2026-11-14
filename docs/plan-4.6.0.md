@@ -25,8 +25,8 @@ Chưa qua đủ 2 bước thì không đánh dấu `len-ban`, báo Tyler lý do.
 | Đêm làm | Lên bản | Khối | Người chơi thấy |
 |---|---|---|---|
 | 14/11 | 15/11 | Ngày 1 máy chủ + Ngày 2 số liệu, mô phỏng | Chưa |
-| 15/11 | 16/11 | Ngày 3 vào môn, lập môn, môn nhà + Ngày 3b Sư Đồ + Ngày 4 bản đồ, đánh nhau | Sư Đồ: có. Sơn Môn: chưa |
-| 16/11 | 17/11 | Ngày 5 thành viên, Kỷ, Lực chiến, thanh 4 tab + Ngày 6 hết Kỷ, thử 30 bot | Thanh 4 tab; tab Sơn Môn chỉ có màn chờ "Mở cửa 5:00 sáng 18/11" |
+| 15/11 | 16/11 | Ngày 3 vào môn, lập môn, môn nhà + Ngày 3b Sư Đồ + Ngày 4 bản đồ, đánh nhau + Ngày 5 thành viên, Kỷ, Lực chiến, thanh 4 tab + Ngày 6 hết Kỷ, thử 30 bot (Tyler chốt 14/11 tối: gộp bản 17/11 vào 16/11) | Sư Đồ, thanh 4 tab; tab Sơn Môn chỉ có màn chờ "Mở cửa 5:00 sáng 18/11" |
+| 16/11 | 17/11 | Không có khối nào (để sửa lỗi bản 16/11 nếu có, và soát lại trước khi mở 18/11) | Như bản 16/11 |
 | 17/11 | 18/11 | Ngày 7 bật cờ, Kỷ 1 bắt đầu, cáo thị 4.6.0 | Có |
 | | 1/12 21:00 | Kỷ 1 kết thúc | |
 
@@ -179,20 +179,20 @@ Lên bản: 2026-11-16 (giấu sau cờ). Kỹ năng: `anthropic-skills:uiux-pro
 - Ghi chú:
 
 ## Ngày 5 - Thành viên, Kỷ, Lực chiến, thanh 4 tab
-Lên bản: 2026-11-17 (giấu sau cờ). Kỹ năng: `anthropic-skills:uiux-pro-max`.
+Lên bản: 2026-11-16 (giấu sau cờ, riêng thanh 4 tab người chơi thấy luôn; Tyler chốt 14/11 tối gộp bản 17/11 vào 16/11). Kỹ năng: `anthropic-skills:uiux-pro-max`.
 - [ ] M8 thành viên: bảng (tên, chức, Lực chiến, Khí vận góp hôm nay, đang đứng ở ô nào), đơn xin vào (Nhận/Từ chối), Mời người chưa có môn, Sửa điều kiện vào, luật rời/đuổi.
 - [ ] M9 Kỷ: đếm ngược, bảng xếp hạng (số ô, Khí vận), thưởng trang trí, chuyện gì xảy ra khi hết Kỷ.
 - [ ] M10 Lực chiến: công thức bằng lời, từng phần của ngươi, trần 6.000, Khí vận.
-- [ ] Thanh 4 tab theo wireframe layout (Mộng · Nhân vật · Sơn Môn · Lôi đài), nút Mời trà luôn ở thanh trên. Tyler chốt 14/11: giao diện mới là giao diện có tab, nên thanh tab KHÔNG giấu theo cờ `SON_MON_ON` mà lên trang cùng bản 17/11, có cờ riêng `TAB_ON` (bật mặc định, tắt gấp thì về menu cũ).
+- [ ] Thanh 4 tab theo wireframe layout (Mộng · Nhân vật · Sơn Môn · Lôi đài), nút Mời trà luôn ở thanh trên. Tyler chốt 14/11: giao diện mới là giao diện có tab, nên thanh tab KHÔNG giấu theo cờ `SON_MON_ON` mà lên trang cùng bản 16/11, có cờ riêng `TAB_ON` (bật mặc định, tắt gấp thì về menu cũ).
   - Tab Sơn Môn trước ngày mở (cờ `SON_MON_ON` tắt): bấm vào chỉ thấy một màn chờ, không có nội dung môn nào: tên "Sơn Môn", một câu ngắn nói đây là gì (lập môn cùng đạo hữu, giữ đất trên bản đồ), và ngày mở "Mở cửa 5:00 sáng 18/11". Không có nút bấm nào khác. Đo `sm_teaser` (số người bấm vào tab khi chưa mở).
   - Từ 18/11 (Ngày 7 bật `SON_MON_ON`): tab Sơn Môn hiện nội dung thật, màn chờ biến mất.
   - Người cũ lần đầu thấy thanh tab: một câu hướng dẫn ngắn chỉ chỗ các nút cũ (Đầu thai, túi đồ, bảng xếp hạng, chân thân nằm ở tab nào).
-  - Trước khi đánh dấu lên bản 17/11: chạy đủ 2 bước của "Luật giao diện mới" cho thanh tab và màn chờ Sơn Môn.
+  - Trước khi đánh dấu lên bản 16/11: chạy đủ 2 bước của "Luật giao diện mới" cho thanh tab và màn chờ Sơn Môn.
 - Xong:
 - Ghi chú:
 
 ## Ngày 6 - Hết Kỷ, thử toàn bộ
-Lên bản: 2026-11-17 (giấu sau cờ).
+Lên bản: 2026-11-16 (giấu sau cờ; Tyler chốt 14/11 tối gộp bản 17/11 vào 16/11).
 - [ ] Kết Kỷ: xếp hạng, phát danh hiệu và ngoại trang, ghi tên môn vào Sổ Sinh Tử, ô về trống, mở khóa thành viên.
 - [ ] Thử: Kỷ rút gọn 2 giờ (đồng hồ chia 20) trên Postgres cục bộ với 30 bot (script): lập môn, ký, vào môn, điểm danh, nhiệm vụ qua trigger, xuất chinh, đứng giữ, trận đêm, bảo hộ, môn mất hết ô, kết Kỷ. Playwright 390x844: người mới vào môn mở cửa; môn chủ lập môn, chọn ô, phát lệnh.
 - [ ] Trang quản trị nhỏ cho Tyler: số môn, số người trong môn, trận/ngày, các đánh dấu nghi gian lận.
@@ -203,7 +203,7 @@ Lên bản: 2026-11-17 (giấu sau cờ).
 Lên bản: 2026-11-18. Bật cờ `SON_MON_ON`, có cáo thị 4.6.0.
 - [ ] Tạo Kỷ 1 (18/11 5:00 - 1/12 21:00, bán kính 6) trước 5:00.
 - [ ] Cáo thị 4.6.0 ngắn: sơn môn, điểm danh và nhiệm vụ trong kiếp, bản đồ lục giác, Kỷ 1 tới 1/12. Không hứa đồng minh hay Kỷ sau có gì.
-- [ ] Trước khi bật cờ: chạy đủ 2 bước của "Luật giao diện mới" (uiux-pro-max với vai người mới và người cũ, humanizer cho chữ trên màn và cáo thị) trên toàn bộ màn Sơn Môn (thanh 4 tab đã soát ở bản 17/11). Bật cờ thì màn chờ của tab Sơn Môn phải biến mất.
+- [ ] Trước khi bật cờ: chạy đủ 2 bước của "Luật giao diện mới" (uiux-pro-max với vai người mới và người cũ, humanizer cho chữ trên màn và cáo thị) trên toàn bộ màn Sơn Môn (thanh 4 tab đã soát ở bản 16/11). Bật cờ thì màn chờ của tab Sơn Môn phải biến mất.
 - [ ] Video ngắn 9:16 (Playwright quay): vào môn, điểm danh, bản đồ, xuất chinh, chiến báo. Gửi Tyler, không tự đăng.
 - Xong:
 - Ghi chú:
