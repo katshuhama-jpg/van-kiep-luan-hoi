@@ -156,7 +156,7 @@ Lên bản: 2026-11-17 (giấu sau cờ). Kỹ năng: `anthropic-skills:uiux-pro
 - [ ] M8 thành viên: bảng (tên, chức, Lực chiến, Khí vận góp hôm nay, đang đứng ở ô nào), đơn xin vào (Nhận/Từ chối), Mời người chưa có môn, Sửa điều kiện vào, luật rời/đuổi.
 - [ ] M9 Kỷ: đếm ngược, bảng xếp hạng (số ô, Khí vận), thưởng trang trí, chuyện gì xảy ra khi hết Kỷ.
 - [ ] M10 Lực chiến: công thức bằng lời, từng phần của ngươi, trần 6.000, Khí vận.
-- [ ] Thanh 4 tab theo wireframe layout (Mộng · Nhân vật · Sơn Môn · Lôi đài), nút Mời trà luôn ở thanh trên. Chỉ bật cùng cờ `SON_MON_ON`; tắt cờ thì giữ menu như cũ.
+- [ ] Thanh 4 tab theo wireframe layout (Mộng · Nhân vật · Sơn Môn · Lôi đài), nút Mời trà luôn ở thanh trên. Chỉ bật cùng cờ `SON_MON_ON`; tắt cờ thì giữ menu như cũ. Tyler chốt 14/11: Sơn Môn làm thành tab là được, nhưng người chơi chỉ thấy thanh tab từ ngày ra mắt 18/11 (Ngày 7), trước đó trên trang thật không được lộ tab hay nút Sơn Môn nào.
 - Xong:
 - Ghi chú:
 
