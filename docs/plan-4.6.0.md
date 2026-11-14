@@ -184,7 +184,7 @@ Lên bản: 2026-11-17 (giấu sau cờ).
 
 ## Ngày 7 - Lên bản, Kỷ 1 bắt đầu
 Lên bản: 2026-11-18. Bật cờ `SON_MON_ON`, có cáo thị 4.6.0.
-- [ ] Sư Đồ (mục "Sư Đồ" ở trên), giấu sau `SON_MON_ON`, bật cùng Kỷ 1: bảng `vkl_su` (sư phụ, đệ tử, bái lúc, thành tài lúc), cookie `?su=` 7 ngày, gắn lúc tạo chân thân, trigger trên `vkl_lives` đếm kiếp đệ tử và cộng phúc duyên (nuốt lỗi), `vkl_ct_ext` trả thêm `disciples` (đệ tử thành tài) cho đạo Truyền Đạo, nút Mời đệ tử + thẻ chia sẻ OG, dòng sư phụ/đệ tử ở màn Chân thân. Đo `su_link_open`, `su_bind`, `su_done`. Thử: 3 tài khoản giả (sư phụ, đệ tử mới, tài khoản cũ bấm link không thành đệ tử).
+- [ ] Sư Đồ (mục "Sư Đồ" ở trên), giấu sau `SON_MON_ON`, bật cùng Kỷ 1: bảng `vkl_su` (sư phụ, đệ tử, bái lúc, thành tài lúc), cookie `?su=` 7 ngày, gắn lúc tạo chân thân, trigger trên `vkl_lives` đếm kiếp đệ tử và cộng phúc duyên (nuốt lỗi), hàm MỚI `vkl_su_count(token)` trả số đệ tử thành tài, client gộp vào `disciples` của DaoExt cho đạo Truyền Đạo (không sửa `vkl_ct_ext` có sẵn), nút Mời đệ tử + thẻ chia sẻ OG, dòng sư phụ/đệ tử ở màn Chân thân. Đo `su_link_open`, `su_bind`, `su_done`. Thử: 3 tài khoản giả (sư phụ, đệ tử mới, tài khoản cũ bấm link không thành đệ tử).
 - [ ] Tạo Kỷ 1 (18/11 5:00 - 1/12 21:00, bán kính 6) trước 5:00.
 - [ ] Cáo thị 4.6.0 ngắn: sơn môn, điểm danh và nhiệm vụ trong kiếp, bản đồ lục giác, Kỷ 1 tới 1/12. Không hứa đồng minh hay Kỷ sau có gì.
 - [ ] Trước khi bật cờ: chạy đủ 2 bước của "Luật giao diện mới" (uiux-pro-max với vai người mới và người cũ, humanizer cho chữ trên màn và cáo thị) trên toàn bộ màn Sơn Môn (thanh 4 tab đã soát ở bản 17/11). Bật cờ thì màn chờ của tab Sơn Môn phải biến mất.
