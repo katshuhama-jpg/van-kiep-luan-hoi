@@ -11,3 +11,9 @@ export const CHAN_THAN_ON = process.env.NEXT_PUBLIC_CHAN_THAN !== '0';
  * Muốn tắt: `NEXT_PUBLIC_FIRST_SIMPLE=0` rồi build lại.
  */
 export const FIRST_SIMPLE_ON = process.env.NEXT_PUBLIC_FIRST_SIMPLE !== '0';
+
+/**
+ * SON_MON_ON (4.6.0 Sơn Môn Tranh Bá): tắt mặc định, bật ở khối Ngày 7 (lên bản 18/11).
+ * Thử trên máy: `NEXT_PUBLIC_SON_MON=1 npx next dev`.
+ */
+export const SON_MON_ON = process.env.NEXT_PUBLIC_SON_MON === '1';

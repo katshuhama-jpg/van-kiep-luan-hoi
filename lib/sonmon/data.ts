@@ -1,263 +1,172 @@
 /**
- * 4.6.0 Sơn Môn Tranh Bá: số liệu dùng chung.
+ * 4.6.0 Sơn Môn Tranh Bá (bản gọn, Tyler duyệt 14/11): số liệu dùng chung.
  * Bản TypeScript để giao diện hiện ước tính và để mô phỏng (scripts/sim-son-mon.ts).
- * Máy chủ là bản thật: `scripts/gen-son-mon-sql.ts` sinh hàm `vkl_priv.sm_cfg()` từ đúng các số ở đây
- * (supabase/son_mon_cfg_*.sql), nên đổi số ở đây thì phải sinh lại SQL và áp lên Supabase.
- * Giấu sau cờ SON_MON_ON (tắt mặc định) cho tới khối Ngày 8.
+ * Máy chủ là bản thật: supabase/son_mon_gon_2026_11_15.sql (bảng vkl_sm_cfg giữ các hệ số trận, lập môn, giờ).
+ * Đổi số ở SM_CFG thì phải đổi cùng số trong bảng vkl_sm_cfg.
+ * Danh sách tên môn, tên ô trùng từng chữ với hàm vkl_sm_found và vkl_priv.sm_ky_create.
+ * Giấu sau cờ SON_MON_ON (tắt mặc định) cho tới khối Ngày 7 (18/11).
  */
 import { tr } from '../i18n';
 
-export type Gioi = 'thien' | 'hong_tran' | 'u_minh';
-export type Res = { ls: number; lt: number; kt: number; lk?: number };
-export type BuildingId =
-  | 'chinh_dien'
-  | 'linh_mach'
-  | 'duoc_vien'
-  | 'khoang_dong'
-  | 'tang_bao'
-  | 'luyen_vo'
-  | 'tang_kinh'
-  | 'ho_son'
-  | 'truyen_tong';
-export type UnitRole = 'cong' | 'thu' | 'trinh_sat' | 'chieu_hang' | 'tinh_anh';
-export type MarchKind = 'cuop' | 'cong_pha' | 'trinh_sat' | 'chieu_hang' | 'vien_binh';
+/** Hệ số chốt sau mô phỏng Ngày 2 (khớp bảng vkl_sm_cfg). */
+export const SM_CFG = {
+  lap: { kiep: 50, ngay: 5, kiepHa: 30, ngayHa: 4, daySau: 0.8 },
+  tran: { tran: 6000, sanNha: 1.25, dem: 2.0, motO: 1.15, moc1: 30, moc2: 50, kv30: 0.1, kv60: 0.2 },
+  gio: { trinhPhut: 10, tapHopPhut: 30, diPhut: 20, baoHoGio: 6, baoHoMatHetGio: 12, nghiGio: 2, kyGio: 24 },
+  mon: { toiDa: 15, lao: 3, kyCan: 2 },
+  /** giờ đêm (giờ VN) bên giữ được nhân đôi: 0:00 - 6:59 */
+  demTu: 0,
+  demToi: 7,
+} as const;
 
-export const GIOI: Record<Gioi, { name: string; line: string }> = {
-  thien: { name: tr('Thiên', 'Heaven'), line: tr('Công mạnh, đi nhanh, nghiên cứu rẻ hơn.', 'Strong attack, fast marches, cheaper research.') },
-  hong_tran: { name: tr('Hồng Trần', 'Mortal Realm'), line: tr('Sản xuất nhiều hơn, tường thành vững, chiêu hàng rẻ.', 'More production, sturdy walls, cheap persuasion.') },
-  u_minh: { name: tr('U Minh', 'Netherworld'), line: tr('Trinh sát giỏi, đệ tử tử trận có phần hoàn hồn.', 'Keen scouts, some fallen disciples return as souls.') },
-};
+// ---------- Tên môn: 3 phần, chọn từ danh sách (không gõ tự do) ----------
+export const TEN1 = ['Thanh', 'Huyền', 'Tử', 'Bích', 'Kim', 'Ngọc', 'Thiên', 'Vân', 'Lăng', 'Hàn', 'Liệt', 'Bạch', 'Xích', 'U', 'Thái', 'Vô', 'Cửu', 'Lạc', 'Thương', 'Phi'] as const;
+export const TEN2 = ['Hư', 'Tiêu', 'Dương', 'Nguyệt', 'Phong', 'Lôi', 'Kiếm', 'Hà', 'Sơn', 'Hải', 'Linh', 'Đỉnh', 'Vân', 'Tinh', 'Hỏa', 'Thủy', 'Mộc', 'Long', 'Phượng', 'Hạc'] as const;
+export const TEN3 = ['Tông', 'Môn', 'Phái', 'Cung', 'Các', 'Cốc', 'Điện', 'Sơn Trang', 'Đạo Viện', 'Kiếm Phái'] as const;
 
-/** Hằng số chung. Đơn vị giờ thật; khoảng cách đo bằng ô (Euclid). */
-export const SM = {
-  maxLevel: 20,
-  startRes: { ls: 750, lt: 750, kt: 750, lk: 0 } as Res,
-  /** công trình có sẵn khi mở động phủ */
-  startLevels: { chinh_dien: 1, linh_mach: 1, duoc_vien: 1, khoang_dong: 1 } as Partial<Record<BuildingId, number>>,
-  /** quân tối đa một lượt luyện */
-  trainMax: 500,
-  /** sản lượng mỗi giờ khi công trình tài nguyên ở cấp 0 */
-  prodBase: 15,
-  /** sản lượng mỗi giờ ở cấp L: prodA * prodG^(L-1) */
-  prodA: 36,
-  prodG: 1.17,
-  /** Hồng Trần sản xuất thêm */
-  hongTranProd: 0.1,
-  /** sức chứa Tàng Bảo Khố ở cấp L: capA * capG^L */
-  capA: 1500,
-  capG: 1.27,
-  /** phần giấu không bị cướp: hideA + hideL * cấp */
-  hideA: 0.1,
-  hideL: 0.015,
-  /** giá xây cấp L = base * costG^(L-1); giờ xây = baseSec * timeG^(L-1) * cdSpeed^(chính điện - 1) */
-  costG: 1.31,
-  timeG: 1.29,
-  cdSpeed: 0.95,
-  /** linh khí cho cấp trên 10: lkPer * (L - 10) */
-  lkPer: 8,
-  /** Luyện Võ Trường: giờ luyện nhân lvSpeed^(cấp - 1) */
-  lvSpeed: 0.95,
-  /** Hộ Sơn Đại Trận: % thủ mỗi cấp */
-  wallPer: 0.03,
-  wallPerHongTran: 0.04,
-  /** Truyền Tống Trận: % tốc độ hành quân mỗi cấp */
-  ttSpeed: 0.05,
-  /** nghiên cứu: mỗi cấp +2% công hoặc thủ, +4% tốc độ; Thiên rẻ hơn 10% */
-  researchPer: { cong: 0.02, thu: 0.02, toc: 0.04 },
-  researchCostMul: 1.6,
-  thienResearch: 0.9,
-  /** giờ đêm (giờ Việt Nam) thủ x2 */
-  nightFrom: 0,
-  nightTo: 7,
-  nightDef: 2,
-  /** bảo hộ người mới, bế quan, chân thân bị thương */
-  protectDays: 5,
-  beQuanMinDays: 2,
-  beQuanMaxDays: 7,
-  heroRestHours: 6,
-  /** U Minh: phần đệ tử tử trận hoàn hồn về động phủ */
-  uMinhReturn: 0.2,
-  /** chiêu hàng: lòng quy thuận mất mỗi đệ tử chiêu hàng sống sót */
-  loyaltyPer: { min: 20, max: 30 },
-  loyaltyRegenPerHour: 1,
-  /** trần linh khí từ kiếp mỗi ngày (giờ Việt Nam) */
-  lkDayCap: 300,
-  /** hàng chờ: 1 công trình và 1 lượt luyện, 2 khi Chính Điện cấp 10 */
-  queue2At: 10,
-  /** lập sơn môn khi Chính Điện cấp 5, tối đa 12 người */
-  monAt: 5,
-  monMax: 12,
-  /** chỉ ghi điểm khi đánh động phủ có điểm từ 1/3 điểm mình */
-  fairRatio: 1 / 3,
-  /** thiệt hại lũy thừa như Travian */
-  lossExp: 1.5,
-};
-
-/** Linh khí về động phủ theo kiếp vừa khép (cảnh giới cao nhất của kiếp) */
-export function linhKhiOfLife(realmNo: number, ascended: boolean, chungDao: boolean): number {
-  if (chungDao) return 120;
-  if (ascended) return 90;
-  if (realmNo >= 6) return 60; // Luyện Hư, Độ Kiếp
-  return [5, 5, 10, 20, 30, 45][Math.max(0, realmNo)] ?? 60;
+export const tenMon = (a: string, b: string, c: string) => `${a} ${b} ${c}`;
+export function tenNgauNhien(rand: () => number = Math.random): [string, string, string] {
+  const pick = <T,>(xs: readonly T[]) => xs[Math.floor(rand() * xs.length)];
+  return [pick(TEN1), pick(TEN2), pick(TEN3)];
 }
 
-export type BuildingDef = {
-  id: BuildingId;
-  name: string;
-  line: string;
-  base: Res;
-  baseSec: number;
-  /** cần Chính Điện cấp mấy mới xây được */
-  needCd: number;
-  /** điểm (dân số) mỗi cấp */
-  pop: number;
+// ---------- Tên ô (máy chủ ghép, đây chỉ để hiện thử) ----------
+export const O_A = ['Vọng Nguyệt', 'Thanh Phong', 'Lạc Hà', 'Bích Thủy', 'Hàn Sương', 'Tử Trúc', 'Kim Ô', 'Ngọc Hư', 'Huyền Băng', 'Xích Diễm',
+  'Lưu Vân', 'Bạch Lộc', 'Thương Lang', 'U Lan', 'Phi Tuyết', 'Cổ Tùng', 'Hồng Liên', 'Thiết Huyết', 'Lăng Tiêu', 'Vạn Tượng',
+  'Thất Tinh', 'Cửu Khúc', 'Long Ngâm', 'Phượng Minh', 'Tàng Kiếm', 'Vô Vọng', 'Đoạn Hồn', 'Nghênh Khách'] as const;
+export const O_B = ['Phong', 'Cốc', 'Nhai', 'Hồ', 'Lĩnh', 'Động', 'Đài', 'Nguyên', 'Xuyên', 'Lâm', 'Tuyền', 'Khâu'] as const;
+
+export type Coi = 'thien' | 'hong_tran' | 'u_minh';
+export const COI: Record<Coi, { name: string; line: string }> = {
+  thien: { name: tr('Thiên', 'Heaven'), line: tr('Cõi trên mây, gần trời.', 'The realm above the clouds, close to Heaven.') },
+  hong_tran: { name: tr('Hồng Trần', 'Mortal Dust'), line: tr('Cõi người, chợ búa và đường cái.', 'The realm of people, markets and roads.') },
+  u_minh: { name: tr('U Minh', 'Netherworld'), line: tr('Cõi tối, sát bờ Vong Xuyên.', 'The dark realm, by the river of forgetting.') },
 };
 
-export const BUILDINGS: BuildingDef[] = [
-  { id: 'chinh_dien', name: tr('Chính Điện', 'Main Hall'), line: tr('Xây nhanh hơn, mở công trình khác. Cấp 5 lập được sơn môn.', 'Builds faster, unlocks other buildings. Level 5 can found a sect.'), base: { ls: 90, lt: 60, kt: 90 }, baseSec: 60, needCd: 0, pop: 3 },
-  { id: 'linh_mach', name: tr('Linh Mạch', 'Spirit Vein'), line: tr('Sinh linh thạch.', 'Produces spirit stones.'), base: { ls: 50, lt: 60, kt: 50 }, baseSec: 45, needCd: 0, pop: 2 },
-  { id: 'duoc_vien', name: tr('Dược Viên', 'Herb Garden'), line: tr('Sinh linh thảo, nuôi đệ tử.', 'Produces spirit herbs, feeds disciples.'), base: { ls: 60, lt: 40, kt: 60 }, baseSec: 45, needCd: 0, pop: 2 },
-  { id: 'khoang_dong', name: tr('Khoáng Động', 'Ore Cave'), line: tr('Sinh khoáng thạch.', 'Produces ore.'), base: { ls: 60, lt: 60, kt: 40 }, baseSec: 45, needCd: 0, pop: 2 },
-  { id: 'tang_bao', name: tr('Tàng Bảo Khố', 'Treasury'), line: tr('Chứa nhiều hơn, giấu một phần khỏi kẻ cướp.', 'Holds more, hides part from raiders.'), base: { ls: 70, lt: 70, kt: 90 }, baseSec: 50, needCd: 1, pop: 1 },
-  { id: 'luyen_vo', name: tr('Luyện Võ Trường', 'Training Ground'), line: tr('Luyện đệ tử, cấp cao luyện nhanh hơn.', 'Trains disciples, faster at higher levels.'), base: { ls: 110, lt: 90, kt: 120 }, baseSec: 90, needCd: 2, pop: 2 },
-  { id: 'tang_kinh', name: tr('Tàng Kinh Các', 'Scripture Pavilion'), line: tr('Nghiên cứu công, thủ, tốc độ. Cấp 10 mở đệ tử tinh anh.', 'Research attack, defence, speed. Level 10 unlocks elite disciples.'), base: { ls: 130, lt: 120, kt: 110 }, baseSec: 120, needCd: 5, pop: 2 },
-  { id: 'ho_son', name: tr('Hộ Sơn Đại Trận', 'Mountain Ward'), line: tr('Tường thành, cộng thủ cho động phủ.', 'Walls, adds defence to your abode.'), base: { ls: 80, lt: 50, kt: 120 }, baseSec: 75, needCd: 3, pop: 1 },
-  { id: 'truyen_tong', name: tr('Truyền Tống Trận', 'Teleport Array'), line: tr('Hành quân nhanh hơn.', 'Faster marches.'), base: { ls: 160, lt: 120, kt: 160 }, baseSec: 150, needCd: 8, pop: 2 },
+// ---------- Huy hiệu (6 màu x 5 hình) và chính điện (10 hình). Chỉ để nhận diện, không cộng gì. ----------
+export const HUY_MAU = [
+  { id: 'xich', name: tr('Đỏ son', 'Vermilion'), hex: '#c0392b' },
+  { id: 'kim', name: tr('Vàng kim', 'Gold'), hex: '#d4a017' },
+  { id: 'bich', name: tr('Xanh ngọc', 'Jade'), hex: '#1e8f6e' },
+  { id: 'lam', name: tr('Xanh lam', 'Azure'), hex: '#2f5fb3' },
+  { id: 'tu', name: tr('Tím', 'Purple'), hex: '#7d3cab' },
+  { id: 'huyen', name: tr('Đen huyền', 'Obsidian'), hex: '#2b2b33' },
+] as const;
+export const HUY_HINH = [
+  { id: 'kiem', name: tr('Kiếm', 'Sword') },
+  { id: 'lien', name: tr('Sen', 'Lotus') },
+  { id: 'nguyet', name: tr('Trăng', 'Moon') },
+  { id: 'long', name: tr('Rồng', 'Dragon') },
+  { id: 'son', name: tr('Núi', 'Mountain') },
+] as const;
+/** huy hiệu 0-29: màu = id / 5, hình = id % 5 */
+export const huyHieu = (id: number) => ({ mau: HUY_MAU[Math.floor(id / 5) % 6], hinh: HUY_HINH[id % 5] });
+
+export const CHINH_DIEN = [
+  tr('Điện mái cong', 'Curved-roof hall'), tr('Lầu ba tầng', 'Three-storey tower'), tr('Tháp đá', 'Stone pagoda'), tr('Am tranh', 'Thatched hermitage'),
+  tr('Cung trên mây', 'Cloud palace'), tr('Động đá', 'Rock cave'), tr('Đài sen', 'Lotus terrace'), tr('Thành gỗ', 'Wooden fort'),
+  tr('Miếu cổ', 'Old shrine'), tr('Lầu bát giác', 'Octagonal pavilion'),
 ];
-export const BUILDING_BY = Object.fromEntries(BUILDINGS.map((b) => [b.id, b])) as Record<BuildingId, BuildingDef>;
-export const RES_BUILDING: Record<'ls' | 'lt' | 'kt', BuildingId> = { ls: 'linh_mach', lt: 'duoc_vien', kt: 'khoang_dong' };
 
-export type UnitDef = {
-  id: string;
-  gioi: Gioi;
-  role: UnitRole;
-  name: string;
-  atk: number;
-  def: number;
-  /** ô mỗi giờ */
-  speed: number;
-  carry: number;
-  cost: Res;
-  trainSec: number;
-  /** linh thảo ăn mỗi giờ */
-  upkeep: number;
-  /** cần Luyện Võ cấp mấy, Tàng Kinh cấp mấy */
-  needLv: number;
-  needTk: number;
-  /** sức trinh sát (chỉ trinh sát) */
-  scout?: number;
+// ---------- Nhiệm vụ ngày (3 bậc theo Lực chiến). Chỉ mốc người chơi tự điều khiển được. ----------
+export type NvBac = 1 | 2 | 3;
+export const NV_THUONG = [2, 3, 5] as const;
+/** [số kiếp xong, tuổi sống tới, cảnh giới (realm_no: 2 Trúc Cơ, 3 Kim Đan, 4 Nguyên Anh)] */
+export const NV_MUC: Record<NvBac, [number, number, number]> = { 1: [1, 60, 2], 2: [2, 120, 3], 3: [3, 300, 4] };
+const CANH_TEN: Record<number, string> = { 2: tr('Trúc Cơ', 'Foundation'), 3: tr('Kim Đan', 'Golden Core'), 4: tr('Nguyên Anh', 'Nascent Soul') };
+export const nvBac = (lc: number): NvBac => (lc < 1500 ? 1 : lc <= 5000 ? 2 : 3);
+export function nvChu(bac: NvBac): [string, string, string] {
+  const [k, t, c] = NV_MUC[bac];
+  return [
+    k === 1 ? tr('Chơi xong 1 kiếp', 'Finish 1 life') : tr(`Chơi xong ${k} kiếp`, `Finish ${k} lives`),
+    tr(`Một kiếp sống qua ${t} tuổi`, `One life past age ${t}`),
+    tr(`Một kiếp lên ${CANH_TEN[c]}`, `One life reaches ${CANH_TEN[c]}`),
+  ];
+}
+
+// ---------- Lực chiến ----------
+export type LcPhan = { nam: number; kiep: number; canh: number; ketCuc: number; ngay: number; huyet: number; vienMan: number };
+/** (30√năm + 200·ln(1+kiếp) + 80·cảnh + 15·kết cục(≤100) + 50·ngày(≤30)) × (1 + 4%·huyệt + 3%·hành viên mãn). Kiếp chết trước 16 tuổi không tính. */
+export function lucChien(p: LcPhan): number {
+  const base = 30 * Math.sqrt(p.nam) + 200 * Math.log(1 + p.kiep) + 80 * p.canh + 15 * Math.min(p.ketCuc, 100) + 50 * Math.min(p.ngay, 30);
+  return Math.round(base * (1 + 0.04 * Math.min(p.huyet, 10) + 0.03 * Math.min(p.vienMan, 5)));
+}
+/** Trần đóng góp: tới 6.000 tính đủ, phần trên tính một nửa. */
+export const capLc = (lc: number) => Math.min(lc, SM_CFG.tran.tran) + Math.max(lc - SM_CFG.tran.tran, 0) / 2;
+/** Hệ số Khí vận cho hôm sau: đạt moc1 (30) +10%, đạt moc2 +20%. moc2 hạ từ 60 xuống 50 sau mô phỏng 14/11 (môn trung vị chỉ 7-8 người). */
+export const kvBonus = (kv: number) => (kv >= SM_CFG.tran.moc2 ? SM_CFG.tran.kv60 : kv >= SM_CFG.tran.moc1 ? SM_CFG.tran.kv30 : 0);
+
+// ---------- Trận (máy chủ là bản thật: vkl_priv.sm_tran) ----------
+export type TranVao = {
+  atk: number[]; // Lực chiến từng người theo xuất chinh
+  def: number[]; // Lực chiến từng người đang đứng giữ ô
+  kvA?: number; // Khí vận hôm qua của bên đánh
+  kvB?: number; // Khí vận hôm qua của bên giữ
+  dem?: boolean; // tới nơi lúc 0:00-6:59
+  motO?: boolean; // bên giữ chỉ còn 1 ô
 };
-
-const u = (id: string, gioi: Gioi, role: UnitRole, vi: string, en: string, atk: number, def: number, speed: number, carry: number, cost: Res, trainSec: number, upkeep: number, needLv: number, needTk: number, scout?: number): UnitDef => ({ id, gioi, role, name: tr(vi, en), atk, def, speed, carry, cost, trainSec, upkeep, needLv, needTk, scout });
-
-/** 15 loại đệ tử: mỗi giới công, thủ, trinh sát, chiêu hàng, tinh anh */
-export const UNITS: UnitDef[] = [
-  u('thien_binh', 'thien', 'cong', 'Thiên Binh', 'Heavenly Soldier', 62, 22, 7, 55, { ls: 130, lt: 90, kt: 160, lk: 0 }, 600, 1, 1, 0),
-  u('kim_giap_ve', 'thien', 'thu', 'Kim Giáp Vệ', 'Golden Guard', 18, 61, 5, 20, { ls: 110, lt: 100, kt: 150, lk: 0 }, 600, 1, 1, 0),
-  u('tuan_thien_ung', 'thien', 'trinh_sat', 'Tuần Thiên Ưng', 'Sky Patrol Hawk', 0, 8, 18, 0, { ls: 60, lt: 50, kt: 40, lk: 0 }, 400, 1, 3, 0, 30),
-  u('tuyen_chi_su', 'thien', 'chieu_hang', 'Tuyên Chỉ Sứ', 'Edict Envoy', 30, 35, 4, 0, { ls: 900, lt: 800, kt: 900, lk: 0 }, 5400, 4, 5, 5),
-  u('loi_bo_than_tuong', 'thien', 'tinh_anh', 'Lôi Bộ Thần Tướng', 'Thunder General', 160, 90, 6, 80, { ls: 450, lt: 350, kt: 500, lk: 15 }, 2400, 3, 5, 10),
-
-  u('kiem_tu', 'hong_tran', 'cong', 'Kiếm Tu', 'Sword Cultivator', 55, 30, 6, 60, { ls: 120, lt: 90, kt: 150, lk: 0 }, 600, 1, 1, 0),
-  u('thiet_ve', 'hong_tran', 'thu', 'Thiết Vệ', 'Iron Guard', 18, 62, 5, 25, { ls: 110, lt: 100, kt: 150, lk: 0 }, 600, 1, 1, 0),
-  u('du_hiep', 'hong_tran', 'trinh_sat', 'Du Hiệp', 'Wandering Ranger', 0, 10, 15, 0, { ls: 60, lt: 50, kt: 40, lk: 0 }, 400, 1, 3, 0, 30),
-  u('thuyet_khach', 'hong_tran', 'chieu_hang', 'Thuyết Khách', 'Persuader', 25, 35, 4, 0, { ls: 700, lt: 650, kt: 700, lk: 0 }, 5400, 4, 5, 5),
-  u('kiem_tien', 'hong_tran', 'tinh_anh', 'Kiếm Tiên', 'Sword Immortal', 145, 110, 6, 90, { ls: 450, lt: 350, kt: 500, lk: 15 }, 2400, 3, 5, 10),
-
-  u('quy_binh', 'u_minh', 'cong', 'Quỷ Binh', 'Ghost Soldier', 56, 24, 6, 50, { ls: 115, lt: 85, kt: 145, lk: 0 }, 600, 1, 1, 0),
-  u('cot_ve', 'u_minh', 'thu', 'Cốt Vệ', 'Bone Guard', 16, 59, 5, 20, { ls: 105, lt: 95, kt: 140, lk: 0 }, 600, 1, 1, 0),
-  u('u_hon', 'u_minh', 'trinh_sat', 'U Hồn', 'Wraith', 0, 12, 19, 0, { ls: 55, lt: 45, kt: 35, lk: 0 }, 380, 1, 3, 0, 45),
-  u('cau_hon_su', 'u_minh', 'chieu_hang', 'Câu Hồn Sứ', 'Soul Reaper', 28, 35, 4, 0, { ls: 900, lt: 800, kt: 900, lk: 0 }, 5400, 4, 5, 5),
-  u('diem_la_quy_tuong', 'u_minh', 'tinh_anh', 'Diêm La Quỷ Tướng', 'Yama General', 150, 95, 6, 70, { ls: 430, lt: 330, kt: 480, lk: 15 }, 2400, 3, 5, 10),
-];
-export const UNIT_BY = Object.fromEntries(UNITS.map((x) => [x.id, x])) as Record<string, UnitDef>;
-export const unitsOf = (g: Gioi) => UNITS.filter((x) => x.gioi === g);
-
-/** Yêu động (NPC): thủ theo cấp, của cải hồi theo giờ */
-export const YEU_DONG = { defA: 120, defG: 1.45, resA: 300, resG: 1.35, regenPerHour: 0.08 };
-/** Phúc địa: yêu thú giữ, +25% một loại tài nguyên, mỗi động phủ tối đa 2 */
-export const PHUC_DIA = { bonus: 0.25, max: 2, defA: 600, defG: 1.4 };
-
-// ---------- công thức ----------
-const pow = Math.pow;
-const r0 = (x: number) => Math.round(x);
-
-export function buildCost(id: BuildingId, level: number): Res {
-  const b = BUILDING_BY[id];
-  const m = pow(SM.costG, level - 1);
-  return { ls: r0(b.base.ls * m), lt: r0(b.base.lt * m), kt: r0(b.base.kt * m), lk: level > 10 ? SM.lkPer * (level - 10) : 0 };
+export function tran(v: TranVao) {
+  const sum = (xs: number[]) => xs.reduce((s, x) => s + capLc(x), 0);
+  const atk = sum(v.atk) * (1 + kvBonus(v.kvA ?? 0));
+  const def = sum(v.def) * SM_CFG.tran.sanNha * (1 + kvBonus(v.kvB ?? 0)) * (v.dem ? SM_CFG.tran.dem : 1) * (v.motO ? SM_CFG.tran.motO : 1);
+  return { atk, def, thang: atk > def, thieu: Math.max(0, def - atk) };
 }
-export function buildSec(id: BuildingId, level: number, cdLevel: number): number {
-  return r0(BUILDING_BY[id].baseSec * pow(SM.timeG, level - 1) * pow(SM.cdSpeed, Math.max(0, cdLevel - 1)));
+/** Một câu kết luận cho thanh Ta/Họ (màn trận không hiện phép nhân). */
+export function tranCau(atk: number, def: number, lcTa: number): string {
+  if (atk > def) return tr(`Đang hơn khoảng ${fmt(atk - def)}.`, `Ahead by about ${fmt(atk - def)}.`);
+  const thieu = def - atk;
+  const nguoi = Math.max(1, Math.ceil(thieu / Math.max(1, capLc(lcTa))));
+  return tr(`Đang thiếu khoảng ${fmt(thieu)} - thêm ${nguoi} người như ngươi là đủ.`, `Short by about ${fmt(thieu)} - ${nguoi} more like you would do it.`);
 }
-export function prodPerHour(level: number, gioi: Gioi): number {
-  const p = level <= 0 ? SM.prodBase : SM.prodA * pow(SM.prodG, level - 1);
-  return p * (gioi === 'hong_tran' ? 1 + SM.hongTranProd : 1);
+const fmt = (n: number) => Math.round(n).toLocaleString('vi-VN');
+
+// ---------- Lục giác (tọa độ trục q, r) ----------
+export type Hex = { q: number; r: number };
+export const HEX_KE: Hex[] = [{ q: 1, r: 0 }, { q: -1, r: 0 }, { q: 0, r: 1 }, { q: 0, r: -1 }, { q: 1, r: -1 }, { q: -1, r: 1 }];
+export const hexDist = (a: Hex, b: Hex) => (Math.abs(a.q - b.q) + Math.abs(a.r - b.r) + Math.abs(a.q + a.r - b.q - b.r)) / 2;
+export const hexKe = (h: Hex) => HEX_KE.map((d) => ({ q: h.q + d.q, r: h.r + d.r }));
+export const trongBanDo = (h: Hex, banKinh: number) => Math.abs(h.q) <= banKinh && Math.abs(h.r) <= banKinh && Math.abs(h.q + h.r) <= banKinh;
+export function banDo(banKinh: number): Hex[] {
+  const out: Hex[] = [];
+  for (let q = -banKinh; q <= banKinh; q++) for (let r = -banKinh; r <= banKinh; r++) if (Math.abs(q + r) <= banKinh) out.push({ q, r });
+  return out;
 }
-export const capOf = (tangBao: number) => r0(SM.capA * pow(SM.capG, tangBao));
-export const hiddenOf = (tangBao: number) => Math.min(0.5, SM.hideA + SM.hideL * tangBao);
-export const wallOf = (level: number, gioi: Gioi) => level * (gioi === 'hong_tran' ? SM.wallPerHongTran : SM.wallPer);
-export function trainSec(unitId: string, lvLevel: number): number {
-  return r0(UNIT_BY[unitId].trainSec * pow(SM.lvSpeed, Math.max(0, lvLevel - 1)));
-}
-export function researchCost(kind: 'cong' | 'thu' | 'toc', level: number, gioi: Gioi): Res {
-  const m = 200 * pow(SM.researchCostMul, level - 1) * (gioi === 'thien' ? SM.thienResearch : 1) * (kind === 'toc' ? 1.2 : 1);
-  return { ls: r0(m), lt: r0(m * 0.8), kt: r0(m), lk: 0 };
-}
-/** điểm động phủ (dân số): tổng pop * cấp(cấp+1)/2 */
-export function pointsOf(levels: Partial<Record<BuildingId, number>>): number {
-  let s = 0;
-  for (const b of BUILDINGS) {
-    const l = levels[b.id] ?? 0;
-    s += (b.pop * l * (l + 1)) / 2;
-  }
-  return r0(s);
-}
-export function isNightVN(d: Date): boolean {
-  const h = (d.getUTCHours() + 7) % 24;
-  return h >= SM.nightFrom && h < SM.nightTo;
+/** Bán kính theo số môn: tới 30 môn bán kính 6 (127 ô), 31-45 môn bán kính 7 (169 ô). */
+export const banKinhTheoMon = (soMon: number) => (soMon <= 30 ? 6 : 7);
+/** Số ô tối đa một môn giữ: 1 + người / 3. */
+export const oToiDa = (soNguoi: number) => 1 + Math.floor(soNguoi / 3);
+/** Cõi của ô (giống máy chủ): chia 3 phần đều theo góc quanh tâm. */
+export function coiCua(h: Hex): Coi {
+  if (h.q === 0 && h.r === 0) return 'thien';
+  const deg = (Math.atan2((h.r * Math.sqrt(3)) / 2, h.q + h.r / 2) * 180) / Math.PI;
+  const k = Math.floor((((deg + 360 + 30.001) % 360) / 120));
+  return (['thien', 'hong_tran', 'u_minh'] as const)[k];
 }
 
-export type Army = Record<string, number>;
-export type BattleSide = { army: Army; atkMul?: number; defMul?: number };
-/** Tính trận như Travian: công so với thủ x (1 + tường) (x2 giờ đêm), thiệt hại theo tỉ lệ lũy thừa 1,5. */
-export function battle(att: BattleSide, def: BattleSide & { wall?: number; night?: boolean; npcDef?: number }, kind: MarchKind) {
-  let A = 0;
-  for (const [id, n] of Object.entries(att.army)) A += (UNIT_BY[id]?.atk ?? 0) * n;
-  A *= att.atkMul ?? 1;
-  let D = def.npcDef ?? 0;
-  for (const [id, n] of Object.entries(def.army)) D += (UNIT_BY[id]?.def ?? 0) * n;
-  D = Math.max(1, D * (def.defMul ?? 1) * (1 + (def.wall ?? 0)) * (def.night ? SM.nightDef : 1));
-  const win = A > D;
-  let attLoss: number;
-  let defLoss: number;
-  if (kind === 'cuop') {
-    const x = pow(Math.min(A, D) / Math.max(A, D, 1), SM.lossExp);
-    const winnerLoss = x / (1 + x);
-    const loserLoss = 1 / (1 + x);
-    attLoss = win ? winnerLoss : loserLoss;
-    defLoss = win ? loserLoss : winnerLoss;
-  } else {
-    attLoss = win ? pow(D / A, SM.lossExp) : 1;
-    defLoss = win ? 1 : pow(A / D, SM.lossExp);
-  }
-  return { A: r0(A), D: r0(D), win, attLoss, defLoss };
-}
-export function distance(x1: number, y1: number, x2: number, y2: number) {
-  return Math.hypot(x2 - x1, y2 - y1);
-}
-/** giây đường đi: theo đệ tử chậm nhất, Truyền Tống và nghiên cứu tốc độ */
-export function marchSec(army: Army, dist: number, ttLevel = 0, tocLevel = 0, gioi?: Gioi): number {
-  let slow = Infinity;
-  for (const [id, n] of Object.entries(army)) if (n > 0) slow = Math.min(slow, UNIT_BY[id]?.speed ?? 5);
-  if (!isFinite(slow)) slow = 6;
-  const mul = (1 + SM.ttSpeed * ttLevel) * (1 + SM.researchPer.toc * tocLevel) * (gioi === 'thien' ? 1.1 : 1);
-  return r0((dist / (slow * mul)) * 3600);
+/** Ngày Sơn Môn đổi lúc 5:00 giờ VN. */
+export function smNgay(t: Date = new Date()): string {
+  const vn = new Date(t.getTime() + 7 * 3600e3 - 5 * 3600e3);
+  return vn.toISOString().slice(0, 10);
 }
 
-/** Bảng chia khu Kỷ theo số người mở động phủ tuần trước */
-export function kyShape(players: number): { days: number; size: number } {
-  if (players < 120) return { days: 10, size: 25 };
-  if (players <= 300) return { days: 14, size: 31 };
-  return { days: 21, size: 41 };
-}
+/** Mã lỗi máy chủ -> câu cho người chơi. */
+export const SM_LOI: Record<string, string> = {
+  SM_AUTH: tr('Liên kết tài khoản để vào sơn môn.', 'Link your account to join a sect.'),
+  SM_NO_CT: tr('Cần có chân thân trước.', 'You need a true body first.'),
+  SM_CHUA_MO: tr('Kỷ chưa mở.', 'The era has not begun.'),
+  SM_CHUA_DU_LAP: tr('Chưa đủ điều kiện lập môn.', 'Not yet eligible to found a sect.'),
+  SM_TRUNG_TEN: tr('Tên này đã có môn dùng. Chọn tên khác.', 'That name is taken. Pick another.'),
+  SM_DA_CO_MON: tr('Ngươi đã ở trong một môn.', 'You are already in a sect.'),
+  SM_KHOA: tr('Ngươi đã tự rời môn, phải chờ hết Kỷ.', 'You left a sect and must wait for the era to end.'),
+  SM_CAN_DON: tr('Môn này duyệt đơn. Gửi đơn xin vào.', 'This sect reviews applications.'),
+  SM_CHUA_DU_DK: tr('Chưa đủ điều kiện vào môn này.', 'You do not meet this sect’s requirements.'),
+  SM_DAY: tr('Môn đã đủ 15 người.', 'The sect is full.'),
+  SM_QUYEN: tr('Việc này cần môn chủ hoặc trưởng lão.', 'Only the master or elders can do this.'),
+  SM_DU_O: tr('Môn đã giữ đủ ô. Cần thêm người mới đánh được ô mới.', 'Your sect holds its limit. Recruit more to take new land.'),
+  SM_KHONG_KE: tr('Chỉ xuất chinh tới ô kề lãnh thổ.', 'You can only march to a tile next to your land.'),
+  SM_BAO_HO: tr('Ô này đang được bảo hộ.', 'This tile is protected.'),
+  SM_DANG_CHINH: tr('Môn đang có một lệnh xuất chinh.', 'Your sect already has a march under way.'),
+  SM_NGHI: tr('Ngươi đang nghỉ sau trận thua.', 'You are resting after a defeat.'),
+  SM_DA_DIEM_DANH: tr('Hôm nay đã điểm danh.', 'Already checked in today.'),
+  SM_HET_TAP_HOP: tr('Đã hết giờ tập hợp.', 'Gathering time is over.'),
+};
