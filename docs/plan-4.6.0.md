@@ -6,6 +6,14 @@ Wireframe: Design canvas "VKL trang đầu 4.6 - wireframe" (https://claude.ai/a
 
 Luật chung như đầu `docs/plan-4.5.0.md`: mỗi lần chạy làm mọi khối còn ô trống có ngày "Lên bản" bằng hoặc trước hôm nay, đẩy `next` khi xong; tác vụ 5:00 đẩy `main`. Mọi thứ giấu sau cờ `SON_MON_ON` (tắt mặc định) cho tới khối Ngày 7. Đánh dấu lên bản bằng NHÁNH `len-ban-<YYYY-MM-DD>` (máy chủ chặn đẩy tag), chỉ khi thử sạch.
 
+Luật giao diện mới (Tyler chốt 14/11): mọi thay đổi người chơi THẤY trên màn (màn mới, đổi bố cục, thêm thanh tab, đổi chữ) trước khi đánh dấu `len-ban` phải qua 2 bước, ghi kết quả vào "Ghi chú:" của khối:
+1. Dùng skill `anthropic-skills:uiux-pro-max` xem lại giao diện trên ảnh chụp 390x844, đi theo 2 vai:
+   - Người mới (chưa có kiếp nào, vào từ link quảng cáo `/choi?utm_source=fb...`): mở ra có hiểu ngay phải bấm gì không, có bị nhiều chữ hay nhiều nút cùng lúc không.
+   - Người cũ (đã chơi nhiều kiếp, quen bố cục cũ): thứ họ hay dùng (Đầu thai, túi đồ, Lôi đài, bảng xếp hạng, chân thân) còn ở chỗ dễ thấy không, chỗ nào đổi thì có câu báo ngắn không.
+   Sửa hết lỗi mức nặng trước khi lên. Lỗi nhỏ ghi lại, làm đêm sau.
+2. Dùng skill `anthropic-skills:humanizer` soát mọi chữ trên màn mới và cáo thị: câu ngắn, từ ngoài đời, một thứ một tên, không trộn tiếng Anh, giữ giọng tu tiên của game.
+Chưa qua đủ 2 bước thì không đánh dấu `len-ban`, báo Tyler lý do.
+
 ## BỎ bản cũ (đọc trước khi làm)
 
 - Bản 10/11 (động phủ, 3 tài nguyên, công trình, 15 loại đệ tử, yêu động, phúc địa, Thiên Đạo Đài, linh khí từ kiếp) KHÔNG làm nữa. Tyler 13/11: "không đánh quái, không tài nguyên, chưa cần cấp".
@@ -164,6 +172,7 @@ Lên bản: 2026-11-17 (giấu sau cờ).
 Lên bản: 2026-11-18. Bật cờ `SON_MON_ON`, có cáo thị 4.6.0.
 - [ ] Tạo Kỷ 1 (18/11 5:00 - 1/12 21:00, bán kính 6) trước 5:00.
 - [ ] Cáo thị 4.6.0 ngắn: sơn môn, điểm danh và nhiệm vụ trong kiếp, bản đồ lục giác, Kỷ 1 tới 1/12. Không hứa đồng minh hay Kỷ sau có gì.
+- [ ] Trước khi bật cờ: chạy đủ 2 bước của "Luật giao diện mới" (uiux-pro-max với vai người mới và người cũ, humanizer cho chữ trên màn và cáo thị) trên toàn bộ màn Sơn Môn và thanh 4 tab. Người cũ lần đầu thấy thanh 4 tab phải có một câu hướng dẫn ngắn chỉ chỗ các nút cũ.
 - [ ] Video ngắn 9:16 (Playwright quay): vào môn, điểm danh, bản đồ, xuất chinh, chiến báo. Gửi Tyler, không tự đăng.
 - Xong:
 - Ghi chú:
