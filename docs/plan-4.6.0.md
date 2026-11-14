@@ -27,7 +27,7 @@ Chưa qua đủ 2 bước thì không đánh dấu `len-ban`, báo Tyler lý do.
 | 14/11 | 15/11 | Ngày 1 máy chủ + Ngày 2 số liệu, mô phỏng | Chưa |
 | 15/11 | 16/11 | Ngày 3 vào môn, lập môn, môn nhà + Ngày 4 bản đồ, đánh nhau | Chưa |
 | 16/11 | 17/11 | Ngày 5 thành viên, Kỷ, Lực chiến, thanh 4 tab + Ngày 6 hết Kỷ, thử 30 bot | Thanh 4 tab; tab Sơn Môn chỉ có màn chờ "Mở cửa 5:00 sáng 18/11" |
-| 17/11 | 18/11 | Ngày 7 bật cờ, Kỷ 1 bắt đầu, cáo thị 4.6.0 | Có |
+| 17/11 | 18/11 | Ngày 7 bật cờ, Kỷ 1 bắt đầu, Sư Đồ, cáo thị 4.6.0 | Có |
 | | 1/12 21:00 | Kỷ 1 kết thúc | |
 
 ## Vòng chơi
@@ -82,6 +82,16 @@ Chơi kiếp như thường → kiếp đạt mốc thì xong nhiệm vụ ngày
 - **Chống lăn cầu tuyết (mới, sau review 14/11):** môn đang giữ 1 ô được +15% khi giữ ô đó.
 - Mỗi chân thân một việc một lúc: đi đánh, đứng giữ, hoặc đang nghỉ.
 - Màn trận KHÔNG hiện phép nhân: chỉ thanh Ta/Họ và một câu kết luận ("Đang thiếu khoảng 1.650 - thêm 1 người như ngươi là đủ"). Công thức nằm ở màn Lực chiến.
+
+### Sư Đồ (thêm 14/11, Claude chốt theo vai đồng sở hữu)
+- Bản gọn 13/11 lỡ bỏ Sư Đồ; thêm lại vì đây là đường mời bạn duy nhất của game và là điều kiện của đạo Truyền Đạo (20 đệ tử).
+- **Link mời:** `https://van-kiep-luan-hoi.vercel.app/?su=<tên tài khoản>`. Nút "Mời đệ tử" ở tab Nhân vật (màn Chân thân) và màn Thành viên của Sơn Môn. Thẻ chia sẻ có hình chân thân sư phụ và dòng "<pháp danh> mời ngươi bái sư".
+- **Bái sư:** người bấm link được nhớ 7 ngày (cookie). Lúc người đó TẠO chân thân thì thành đệ tử của chủ link, một lần, không đổi được. Người đã có chân thân từ trước không thành đệ tử (chặn tự mời tài khoản cũ).
+- **Đệ tử thành tài:** đệ tử chơi xong 10 kiếp (không tính kiếp chết trước 16 tuổi) trong 7 ngày đầu. Chỉ đệ tử thành tài mới được tính cho đạo Truyền Đạo và mới có thưởng.
+- **Thưởng:** mỗi đệ tử thành tài: sư phụ +20 phúc duyên, đệ tử +20 phúc duyên. Sư phụ nhận thưởng tối đa 5 đệ tử mỗi tuần (vẫn đếm đủ cho Truyền Đạo). Danh hiệu sư phụ ở mốc 5 và 20 đệ tử thành tài.
+- **Với Sơn Môn:** sư phụ có môn thì môn đó đứng đầu danh sách của đệ tử, có nút "Vào môn của sư phụ" (vẫn phải đủ điều kiện vào môn). Không bắt buộc vào.
+- **Chống gian lận:** đánh dấu cho Tyler xem khi nhiều đệ tử của cùng một sư phụ dùng chung một thiết bị (sid) hoặc thành tài trong cùng một giờ.
+- Màn Chân thân hiện: sư phụ của ngươi (nếu có), số đệ tử, số đệ tử thành tài.
 
 ### Đồng minh
 - Chưa làm. Bản đồ và màn Môn có dòng "Đồng minh: sắp có - các sơn môn kết minh để không đánh nhau và cùng giữ ô". Không hứa ngày.
@@ -174,6 +184,7 @@ Lên bản: 2026-11-17 (giấu sau cờ).
 
 ## Ngày 7 - Lên bản, Kỷ 1 bắt đầu
 Lên bản: 2026-11-18. Bật cờ `SON_MON_ON`, có cáo thị 4.6.0.
+- [ ] Sư Đồ (mục "Sư Đồ" ở trên), giấu sau `SON_MON_ON`, bật cùng Kỷ 1: bảng `vkl_su` (sư phụ, đệ tử, bái lúc, thành tài lúc), cookie `?su=` 7 ngày, gắn lúc tạo chân thân, trigger trên `vkl_lives` đếm kiếp đệ tử và cộng phúc duyên (nuốt lỗi), `vkl_ct_ext` trả thêm `disciples` (đệ tử thành tài) cho đạo Truyền Đạo, nút Mời đệ tử + thẻ chia sẻ OG, dòng sư phụ/đệ tử ở màn Chân thân. Đo `su_link_open`, `su_bind`, `su_done`. Thử: 3 tài khoản giả (sư phụ, đệ tử mới, tài khoản cũ bấm link không thành đệ tử).
 - [ ] Tạo Kỷ 1 (18/11 5:00 - 1/12 21:00, bán kính 6) trước 5:00.
 - [ ] Cáo thị 4.6.0 ngắn: sơn môn, điểm danh và nhiệm vụ trong kiếp, bản đồ lục giác, Kỷ 1 tới 1/12. Không hứa đồng minh hay Kỷ sau có gì.
 - [ ] Trước khi bật cờ: chạy đủ 2 bước của "Luật giao diện mới" (uiux-pro-max với vai người mới và người cũ, humanizer cho chữ trên màn và cáo thị) trên toàn bộ màn Sơn Môn (thanh 4 tab đã soát ở bản 17/11). Bật cờ thì màn chờ của tab Sơn Môn phải biến mất.
