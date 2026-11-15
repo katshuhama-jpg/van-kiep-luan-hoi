@@ -98,6 +98,9 @@ export function googleError(msg: string): string {
   if (msg.includes('ALREADY_LINKED')) return tr('Tài khoản game này đã gắn với một tài khoản Google khác.', 'This game account is already linked to a different Google account.');
   if (msg.includes('USERNAME_TAKEN')) return tr('Tên đăng nhập này đã có người dùng.', 'This username is already taken.');
   if (msg.includes('USERNAME_INVALID')) return tr('Tên đăng nhập không hợp lệ.', 'Invalid username.');
+  if (msg.includes('GOOGLE_MISMATCH')) return tr('Đây không phải tài khoản Google đang gắn với tài khoản game này. Chọn đúng tài khoản Google cũ.', 'This is not the Google account linked to this game account. Pick the linked one.');
+  if (msg.includes('PASSWORD_INVALID')) return tr('Mật khẩu mới dài từ 3 đến 6 ký tự.', 'New password must be 3 to 6 characters.');
+  if (msg.includes('NOT_LINKED')) return tr('Tài khoản này chưa liên kết Google.', 'This account is not linked to Google.');
   if (msg.includes('SESSION')) return tr('Phiên đăng nhập đã hết, đăng nhập lại rồi liên kết.', 'Your session expired, log in again and link.');
   return tr('Không kết nối được máy chủ, thử lại sau.', "Can't reach the server, try again later.");
 }

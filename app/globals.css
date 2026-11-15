@@ -5405,3 +5405,8 @@ body[data-ctflow='1'] { overflow: hidden; }
 .ct-new { display: inline-block; padding: 0 5px; margin-right: 4px; background: #a8201a; color: #fff3dc; font-size: 12px; line-height: 18px; vertical-align: 1px; }
 .ct-how-steps { margin: 0 0 6px; padding-left: 20px; }
 .ct-how-steps li { margin: 2px 0; line-height: 1.45; }
+
+/* ===== 15/11: gỡ liên kết Google ===== */
+.gg-unlink { align-self: flex-start; min-height: 44px; padding: 0 12px; font: inherit; font-size: 15px; color: var(--ink); background: transparent; border: 2px solid var(--ink); cursor: pointer; }
+.protect-opt label.note { display: flex; flex-direction: column; gap: 4px; }
+.protect-opt label.note input { min-height: 44px; padding: 0 10px; font: inherit; font-size: 16px; border: 3px solid var(--ink); background: #fff; }

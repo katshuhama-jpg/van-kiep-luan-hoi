@@ -55,6 +55,7 @@ export const RELEASES: Release[] = [
           tr('Đồ tông môn ghi rõ bị tông thu lại khi bị trục xuất, và nhật ký nêu đích danh món bị thu.', 'Sect gear now says it is taken back if you are expelled, and the log names each item taken.'),
           tr('Thần binh truyền kiếp không còn bị lột khi thua trận, như nó vốn không vỡ khi rèn. Sổ linh thú ghi ngay loài vừa thu phục, không đợi tới cuối kiếp.', 'A divine weapon passed down through lives can no longer be stripped from you when you lose a fight, just as it never breaks at the forge. The Spirit Beast book now records a beast the moment you tame it, not at the end of the life.'),
           tr('Trảm yêu cho linh thạch tăng theo cảnh giới. Sau phi thăng, khi tu vi năm đó đã đầy, mỗi con trảm cho gấp ba linh thạch. Bia lập dở vì rớt mạng được khắc bù khi mở lại game.', 'Slaying beasts gives more spirit stones the higher your realm. After ascension, once a year\'s cultivation is full, every kill gives triple stones. A gravestone that failed to save because of a lost connection is carved again when you reopen the game.'),
+          tr('Bảo vệ tài khoản: gỡ được liên kết Google. Đặt mật khẩu mới và xác nhận đúng Google đang gắn, gỡ xong vào bằng tên và mật khẩu, nhân vật giữ nguyên.', 'Account protection: you can now unlink Google. Set a new password and confirm with the linked Google account; afterwards you log in with your username and password, and your character stays the same.'),
         ],
       },
     ],

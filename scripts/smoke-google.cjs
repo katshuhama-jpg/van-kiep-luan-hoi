@@ -127,6 +127,17 @@ async function playing(b, sec, char, ua) {
   await r.p.locator('.menu-btn').click({ timeout: 5000 }).catch(() => {});
   await r.p.waitForTimeout(400);
   ok(await r.p.locator('button', { hasText: 'Đã liên kết tài khoản Google' }).count() === 1, 'menu: nút Đã liên kết tài khoản Google');
+  // 15/11: gỡ liên kết Google: phải đặt mật khẩu mới rồi mới hiện nút Google xác nhận
+  await r.p.locator('button', { hasText: 'Đã liên kết tài khoản Google' }).click({ timeout: 5000 }).catch(() => {});
+  await r.p.waitForTimeout(800);
+  await r.p.locator('.gg-gate .gg-unlink', { hasText: 'Gỡ liên kết Google' }).click({ timeout: 5000 }).catch(() => {});
+  await r.p.waitForTimeout(300);
+  ok(await r.p.locator('.gg-gate .fake-gg').count() === 0, 'gỡ liên kết: chưa nhập mật khẩu mới thì chưa hiện nút Google');
+  await r.p.locator('.gg-gate label.note input').fill('abc12');
+  await r.p.waitForTimeout(800);
+  if (SHOT) await r.p.screenshot({ path: SHOT + '/gg-unlink.png', fullPage: true });
+  ok(await r.p.locator('.gg-gate .fake-gg').count() === 1, 'gỡ liên kết: nhập mật khẩu mới xong thì hiện nút Google xác nhận');
+  ok(await r.p.locator('.gg-gate .gg-unlink', { hasText: 'Thôi, giữ liên kết' }).count() === 1, 'gỡ liên kết: có nút hủy');
   await r.ctx.close();
 
   // 2b. trang đầu và Lôi đài (không phải màn chơi chính): hỏi bảo vệ tài khoản

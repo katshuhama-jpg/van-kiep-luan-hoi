@@ -144,6 +144,14 @@ export async function googleLink(sb: Rpc): Promise<string | null> {
   return error ? error.message : null;
 }
 
+/** Gỡ liên kết Google: phải xác thực lại đúng Google đang gắn và đặt mật khẩu mới cùng lúc (để không bị khóa ngoài) */
+export async function googleUnlink(sb: Rpc, newPw: string): Promise<string | null> {
+  const p = currentPlayer();
+  if (!p) return 'SESSION';
+  const { error } = await sb.rpc('vkl_google_unlink', { p_token: p.token, p_new: newPw });
+  return error ? error.message : null;
+}
+
 /** Tài khoản đang đăng nhập đã liên kết Google chưa; null nếu không hỏi được (mạng lỗi thì không chặn người chơi) */
 export async function googleLinked(): Promise<boolean | null> {
   const p = currentPlayer();

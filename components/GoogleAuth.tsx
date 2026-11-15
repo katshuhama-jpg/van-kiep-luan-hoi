@@ -10,7 +10,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { googleError, googleOn, inAppBrowser, mountGoogleButton } from '@/lib/google';
-import { changePassword, createRecovery, currentPlayer, googleLink, recoverAccount, securityStatus, type Security } from '@/lib/auth';
+import { changePassword, createRecovery, currentPlayer, googleLink, googleUnlink, recoverAccount, securityStatus, type Security } from '@/lib/auth';
 import { track } from '@/lib/track';
 import { tr } from '@/lib/i18n';
 import { FB_PAGE } from '@/lib/links';
@@ -166,6 +166,9 @@ export function ProtectGate({ mode = 'gate', onOpen, onDone, fresh, bonus, ggBon
   const [code, setCode] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const [unl, setUnl] = useState(false); // đang mở phần gỡ liên kết
+  const [unlPw, setUnlPw] = useState('');
+  const [unlDone, setUnlDone] = useState(false);
   const gg = googleOn();
   useEffect(() => {
     if (!currentPlayer()) return;
@@ -215,10 +218,57 @@ export function ProtectGate({ mode = 'gate', onOpen, onDone, fresh, bonus, ggBon
             {gg && (
               <div className="protect-opt">
                 <b>{tr('Cách 1: Liên kết Google', 'Option 1: Link Google')}</b>
+                {unlDone && !sec?.google && <span className="gg-linked">✓ {tr('Đã gỡ liên kết Google. Từ giờ vào game bằng tên đăng nhập và mật khẩu mới.', 'Google unlinked. From now on log in with your username and new password.')}</span>}
                 {sec?.google ? (
                   <>
                     <span className="gg-linked">✓ {tr('Đã liên kết tài khoản Google', 'Google account linked')}{sec.email ? ` · ${sec.email}` : ''}</span>
                     <span className="note">{tr('Quên mật khẩu hay đổi máy thì bấm Đăng nhập bằng Google.', 'Forgot your password or changed phones? Just sign in with Google.')}</span>
+                    {mode === 'manage' && !unl && (
+                      <button type="button" className="gg-unlink" onClick={() => { setUnl(true); setErr(null); track('gg_unlink_open'); }}>
+                        {tr('Gỡ liên kết Google', 'Unlink Google')}
+                      </button>
+                    )}
+                    {mode === 'manage' && unl && (
+                      <>
+                        <span className="note">
+                          {tr('Gỡ xong, bạn vào game bằng tên đăng nhập và mật khẩu mới dưới đây. Nhân vật, các kiếp và đồ đạc giữ nguyên. Muốn gắn Google khác thì liên kết lại sau.', 'After unlinking, you log in with your username and the new password below. Your character, lives and items stay the same. You can link another Google account afterwards.')}
+                        </span>
+                        <label className="note">
+                          {tr('Mật khẩu mới (3-6 ký tự)', 'New password (3-6 characters)')}
+                          <input type="password" value={unlPw} maxLength={6} autoComplete="new-password" onChange={(e) => setUnlPw(e.target.value)} />
+                        </label>
+                        {unlPw.length >= 3 ? (
+                          <>
+                            <span className="note">{tr('Để chắc là bạn, chọn đúng tài khoản Google đang gắn:', 'To confirm it is you, pick the linked Google account:')}</span>
+                            <GoogleButton
+                              from="unlink"
+                              text="continue_with"
+                              onAuth={async (sb) => {
+                                setBusy(true);
+                                setErr(null);
+                                const e = await googleUnlink(sb, unlPw);
+                                setBusy(false);
+                                if (e) {
+                                  setErr(googleError(e));
+                                  track('gg_unlink_fail', { e: e.slice(0, 40) });
+                                  return;
+                                }
+                                track('gg_unlink');
+                                setUnl(false);
+                                setUnlPw('');
+                                setUnlDone(true);
+                                setSec((s) => (s ? { ...s, google: false, email: null, must_change: false } : s));
+                              }}
+                            />
+                          </>
+                        ) : (
+                          <span className="note">{tr('Nhập mật khẩu mới trước, rồi mới hiện nút Google.', 'Enter a new password first, then the Google button appears.')}</span>
+                        )}
+                        <button type="button" className="gg-unlink" onClick={() => { setUnl(false); setUnlPw(''); setErr(null); }}>
+                          {tr('Thôi, giữ liên kết', 'Cancel, keep it linked')}
+                        </button>
+                      </>
+                    )}
                   </>
                 ) : busy ? (
                   <span className="note">{tr('Đang liên kết...', 'Linking...')}</span>
