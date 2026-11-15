@@ -127,3 +127,10 @@ p.sm-card { display: block; }
 .sm-clock { font-variant-numeric: tabular-nums; font-weight: 700; }
 .sm-sheet { position: fixed; inset: 0; z-index: 60; background: rgba(20, 12, 6, 0.55); display: flex; align-items: flex-end; justify-content: center; }
 .sm-sheet > div { width: 100%; max-width: 460px; background: var(--paper); border: 3px solid var(--ink); border-bottom: 0; padding: 14px 14px 22px; display: flex; flex-direction: column; gap: 10px; }
+
+/* Ngày 6: trang quản trị (/quan-tri/son-mon) */
+.sm-so { display: flex; flex-direction: column; gap: 2px; padding: 6px 8px; border: 2px solid #4a4060; min-width: 0; }
+.sm-so b { font-size: 26px; line-height: 1.1; color: var(--gold-l); font-variant-numeric: tabular-nums; }
+.sm-so b small { font-size: 15px; }
+.sm-co { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.sm-co li { display: flex; flex-direction: column; gap: 1px; padding: 6px 8px; background: #fff6e0; border-left: 4px solid #b07c28; font-size: 15px; overflow-wrap: anywhere; }

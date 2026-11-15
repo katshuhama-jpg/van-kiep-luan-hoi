@@ -14,6 +14,8 @@ import { ACHIEVEMENTS } from '@/lib/game/hook';
 import { useAuth } from '@/lib/useAuth';
 import { LORE1, LORE2, LORE2_TOTAL, LORE_TOTAL, lore1Count, lore2Count, quyNhatDone, type LoreFragment } from '@/lib/game/lore';
 import { tr } from '@/lib/i18n';
+import { SON_MON_ON } from '@/lib/flags';
+import { SmSoSinhTu } from '@/components/sonmon/SmSoSinhTu';
 
 export default function SoSinhTu() {
   const { user, ready } = useAuth();
@@ -88,6 +90,7 @@ export default function SoSinhTu() {
           );
         })}
       </div>
+      {SON_MON_ON && <SmSoSinhTu />}
       <section className="panel" style={{ marginTop: 10 }}>
         <h2>{tr("Kỳ ngộ chuyển đạo", "Path-changing encounters")}</h2>
         <p className="note" style={{ marginTop: 0 }}>
