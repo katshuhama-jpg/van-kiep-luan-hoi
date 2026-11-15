@@ -157,7 +157,7 @@ Lên bản: 2026-11-16 (giấu sau cờ). Kỹ năng: `anthropic-skills:uiux-pro
 - [x] Màn cáo biệt kiếp: dòng Khí vận (có môn / chưa có môn).
 - [x] Đo: `sm_open`, `sm_join` (mở cửa/đơn), `sm_found`, `sm_cosign`, `sm_checkin`, `sm_nv_done`.
 - [x] Mọi nút cao từ 44px, một nút chính mỗi màn, chữ ít nhất 12px, không đoạn chữ quá 3 dòng trên điện thoại.
-- Xong: 15/11/2026 92fd714, 3a2c9f5, e16e493
+- Xong: 15/11/2026 4924ed7, 7c79bac, cbc26dc
 - Ghi chú: Trang `/son-mon` (components/sonmon/*, điểm vào `SonMonHome`), cờ tắt thì chỉ có màn chờ. Huy hiệu và chính điện vẽ pixel bằng SVG rect. Dòng Khí vận ở màn cáo biệt: `components/sonmon/SmFarewell.tsx` (tính trước từ nhiệm vụ ngày, máy chủ cộng thật khi bia được ghi). Thử: `scripts/smoke-son-mon.cjs` 16 màn (dữ liệu giả `?demo=<vai>` chỉ khi chạy dev), không tràn ngang, nút từ 44px, chữ từ 12px. Đo thêm ngoài plan: sm_notify, sm_link_click, sm_pick_tile, sm_invite, sm_accept, sm_set_dk, sm_role, sm_kick, sm_leave.
   - Claude tự chốt: "tuổi đạo" ghi "Tuổi đạo (ngày đã chơi)" 0-30 theo máy chủ; thanh Khí vận đầy ở 50, vạch ở 30; nút "Báo ta khi có môn mở cửa" lưu `localStorage['vkl.sm.baoMo']` (chấm đỏ ở tab Sơn Môn: làm ở Ngày 7); "Mời người chưa có môn" dùng chung link Sư Đồ.
   - Lỗi nhỏ để Ngày 7: M2 có hai nút quay lại; biểu tượng rồng 8x8 trông giống chữ S; chưa chọn ô bằng bàn phím được.
@@ -167,7 +167,7 @@ Lên bản: 2026-11-16 (giấu sau cờ). Kỹ năng: `anthropic-skills:uiux-pro
 Lên bản: 2026-11-16 (người chơi thấy luôn, có cáo thị một dòng trong bản gần nhất). Tyler chốt 14/11: Sư Đồ lên 16/11, Sơn Môn 18/11.
 - [x] Sư Đồ (mục "Sư Đồ" ở trên), cờ riêng `SU_DO_ON` (bật mặc định, KHÔNG phụ thuộc `SON_MON_ON`), người chơi thấy từ 16/11. Nút "Vào môn của sư phụ" chỉ hiện khi `SON_MON_ON` bật (18/11): bảng `vkl_su` (sư phụ, đệ tử, bái lúc, thành tài lúc), cookie `?su=` 7 ngày, gắn lúc tạo chân thân, trigger trên `vkl_lives` đếm kiếp đệ tử và cộng phúc duyên (nuốt lỗi), hàm MỚI `vkl_su_count(token)` trả số đệ tử thành tài, client gộp vào `disciples` của DaoExt cho đạo Truyền Đạo (không sửa `vkl_ct_ext` có sẵn), nút Mời đệ tử + thẻ chia sẻ OG, dòng sư phụ/đệ tử ở màn Chân thân. Đo `su_link_open`, `su_bind`, `su_done`. Thử: 3 tài khoản giả (sư phụ, đệ tử mới, tài khoản cũ bấm link không thành đệ tử).
 - [x] Đăng ký trước khi Sơn Môn mở: đệ tử bái sư từ 16/11 vẫn được tính, thành tài tính theo 7 ngày kể từ lúc bái.
-- Xong: 15/11/2026 8b29259 (máy chủ: migration `su_do_2026_11_16` đã áp lên Supabase)
+- Xong: 15/11/2026 168bf79 (máy chủ: migration `su_do_2026_11_16` đã áp lên Supabase)
 - Ghi chú: Bảng `vkl_su`, hàm mới `vkl_su_bind`, `vkl_su_info`, `vkl_su_claim`, `vkl_su_count`, trigger mới `vkl_lives_zz_su_do` (nuốt lỗi). SQL ở `supabase/su_do_2026_11_16.sql`. Thử Postgres cục bộ 3+ tài khoản giả: tài khoản cũ SU_OLD, tự bái SU_SELF, bái lần hai SU_DONE, kiếp dưới 16 tuổi không tính, 10 kiếp thì thành tài, nhận thưởng đúng một lần, trần 5 đệ tử/tuần, cờ nghi gian lận su_cung_may/su_cung_gio. `scripts/smoke-su-do.cjs` 19/19 OK. Cờ `SU_DO_ON` bật mặc định.
   - Claude tự chốt: thưởng phúc duyên KHÔNG ghi thẳng vào meta máy chủ (máy khách ghi đè meta), mà máy chủ giữ số "chờ nhận", màn Chân thân gọi `vkl_su_claim` rồi cộng vào hồ sơ. Link chia sẻ là thẻ `/k/<id>?su=<tên>` (có ảnh OG chân thân sư phụ, tiêu đề "<pháp danh> mời ngươi bái sư"); `/?su=<tên>` vẫn dùng được. Bắt link trên mọi trang (components/SuDoLink.tsx ở layout), chỉ nhớ khi máy chưa có chân thân. Tài khoản cũ = tạo quá 8 ngày hoặc đã có quá 5 kiếp. Mã máy mới `vkl.did` để so đệ tử cùng máy. Danh hiệu sư phụ: "Danh sư" (5), "Truyền Đạo Tôn Sư" (20).
   - Chưa làm (chuyển sang Ngày 7): nút "Vào môn của sư phụ" khi `SON_MON_ON` bật.
@@ -180,7 +180,7 @@ Lên bản: 2026-11-16 (giấu sau cờ). Kỹ năng: `anthropic-skills:uiux-pro
 - [x] M7 chiến sự: cảnh báo bị đánh có đồng hồ, danh sách người đang đứng giữ, nút "Sang giữ <tên ô>", ô ngươi đang đứng giữ + Đổi, chiến báo gần đây bằng chữ.
 - [x] Làm mới trạng thái 60 giây một lần khi tab đang mở (không làm mới khi tab ẩn).
 - [x] Đo: `sm_scout`, `sm_march`, `sm_follow`, `sm_guard`, `sm_battle` (thắng/thua, bên).
-- Xong: 15/11/2026 92fd714, 3a2c9f5
+- Xong: 15/11/2026 4924ed7, 7c79bac
 - Ghi chú: M5-M7 xong sau cờ, route `/api/pub/sm-map` (s-maxage=30, cờ tắt trả 404). Máy chủ chưa trả tên người theo xuất chinh và sức bên đánh trong `bi_danh`: M6 chỉ ghi số người và ước tính, M7 chỉ "Sức giữ khoảng X". Làm hàm MỚI trả thêm hai thứ này ở Ngày 7 nếu kịp (không sửa `vkl_sm_state`).
 
 ## Ngày 5 - Thành viên, Kỷ, Lực chiến, thanh 4 tab
@@ -193,7 +193,7 @@ Lên bản: 2026-11-16 (giấu sau cờ, riêng thanh 4 tab người chơi thấ
   - Từ 18/11 (Ngày 7 bật `SON_MON_ON`): tab Sơn Môn hiện nội dung thật, màn chờ biến mất.
   - Người cũ lần đầu thấy thanh tab: một câu hướng dẫn ngắn chỉ chỗ các nút cũ (Đầu thai, túi đồ, bảng xếp hạng, chân thân nằm ở tab nào).
   - Trước khi đánh dấu lên bản 16/11: chạy đủ 2 bước của "Luật giao diện mới" cho thanh tab và màn chờ Sơn Môn.
-- Xong: 15/11/2026 92fd714, e16e493
+- Xong: 15/11/2026 4924ed7, cbc26dc
 - Ghi chú: M8-M10 sau cờ. Thanh 4 tab: `components/TabBar.tsx`, cờ `TAB_ON` (bật mặc định), có ở trang đầu (Mộng), /chan-than (Nhân vật), /son-mon (Sơn Môn, màn chờ, đo `sm_teaser`), /loi-dai (thêm nút Bảng xếp hạng). Thanh trên: Mời trà + Menu (Cập nhật, Góp ý, Facebook, Mời tác giả chén trà, ngôn ngữ, nhạc, đăng nhập/đăng xuất). Trang đầu bỏ 3 nút Góp ý, Cập nhật, Facebook khỏi lưới (đã vào Menu), giữ Lôi đài hằng ngày, Bảng xếp hạng, Tàng Kiếp Các, Nghĩa trang, Sổ Sinh Tử, thẻ Mời tác giả chén trà, nút Đầu thai. Đo thêm: `tab_open`, `tab_hint_ok`, `menu_open`.
   - Luật giao diện mới, bước 1 (uiux-pro-max, ảnh 390x844 `scripts/smoke-tab.cjs`): vai người mới: thấy logo, chân thân (nếu có), nút Đầu thai ngay ở đáy, thanh tab; không có câu hướng dẫn thêm, ít nút hơn trước (bỏ 3 nút). Vai người cũ: câu "Bố cục mới. Đầu thai và túi đồ ở Mộng, chân thân ở Nhân vật, bảng xếp hạng ở Lôi đài. Góp ý, Cập nhật nằm trong nút Menu ở góc trên." hiện một lần. Lỗi nặng tìm được và đã sửa: câu hướng dẫn che nút Đầu thai ngay ở đáy, đã dời lên dưới thanh trên. Kiểm: nút tab và thanh trên cao từ 44px, không tràn ngang, cuối trang không bị thanh tab che, màn chờ Sơn Môn không có nút nào khác. Lỗi nhỏ: màn chờ Sơn Môn còn trống nhiều (theo plan chỉ một thẻ).
   - Bước 2 (humanizer): chữ tab, Menu, câu hướng dẫn, màn chờ và cáo thị: câu ngắn, một thứ một tên ("Menu", "Mời trà"), không trộn tiếng Anh ngoài chữ "Menu" đã có trong wireframe.
@@ -203,7 +203,7 @@ Lên bản: 2026-11-16 (giấu sau cờ; Tyler chốt 14/11 tối gộp bản 17
 - [x] Kết Kỷ: xếp hạng, phát danh hiệu và ngoại trang, ghi tên môn vào Sổ Sinh Tử, ô về trống, mở khóa thành viên.
 - [x] Thử: Kỷ rút gọn 2 giờ (đồng hồ chia 20) trên Postgres cục bộ với 30 bot (script): lập môn, ký, vào môn, điểm danh, nhiệm vụ qua trigger, xuất chinh, đứng giữ, trận đêm, bảo hộ, môn mất hết ô, kết Kỷ. Playwright 390x844: người mới vào môn mở cửa; môn chủ lập môn, chọn ô, phát lệnh.
 - [x] Trang quản trị nhỏ cho Tyler: số môn, số người trong môn, trận/ngày, các đánh dấu nghi gian lận.
-- Xong: 15/11/2026 41bc01f (máy chủ: migration `son_mon_ket_ky_2026_11_16` đã áp lên Supabase)
+- Xong: 15/11/2026 0c6efdc (máy chủ: migration `son_mon_ket_ky_2026_11_16` đã áp lên Supabase)
 - Ghi chú: Hàm mới `vkl_priv.sm_ket_ky`, `sm_ket_ky_tick` (pg_cron mới `vkl_sm_ket_ky` mỗi phút), `sm_ky_moi` (mở Kỷ sau, mang môn sang), RPC mới `vkl_sm_ky_kq`, `vkl_sm_admin`; bảng mới `vkl_sm_ky_kq`, `vkl_sm_admin_user` (có `tudang`). `scripts/bot-son-mon.sh`: 30 bot, Kỷ rút gọn 2 giờ trên Postgres 16 cục bộ, 107/107 bước đạt (lập môn, ký, vào môn, điểm danh, nhiệm vụ qua trigger, xuất chinh, đứng giữ, trận đêm, bảo hộ, mất hết ô, kết Kỷ, Kỷ sau). Trang `/quan-tri/son-mon` (noindex, sau cờ). Sổ Sinh Tử có mục "Sơn môn các Kỷ" khi cờ bật. Playwright người mới/môn chủ: ảnh từ dữ liệu giả qua `scripts/smoke-son-mon.cjs`.
   - Claude tự chốt: hạng chỉ có thưởng khi môn còn ít nhất 1 ô; bằng ô và Khí vận thì môn lập trước đứng trên; "đủ 7 ngày điểm danh" = 7 ngày khác nhau trong Kỷ.
   - Để Ngày 7: Kỷ 2 phải tạo bằng `vkl_priv.sm_ky_moi`; màn M9 khi Kỷ đã kết còn đếm ngược về 0 (nên báo "Kỷ đã kết"); hào quang, khung vàng, ngoại trang mới ghi vào `vkl_sm_thuong`, chưa có màn nào hiện.
