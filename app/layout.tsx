@@ -1,6 +1,7 @@
 import { NavTracker } from '@/components/BackButton';
 import VersionWatch from '@/components/VersionWatch';
 import Tracker from '@/components/Tracker';
+import SuDoLink from '@/components/SuDoLink';
 import type { Metadata, Viewport } from 'next';
 import { cookies } from 'next/headers';
 import LangGate from '@/components/LangGate';
@@ -41,6 +42,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body>
         <NavTracker />
         <Tracker />
+        <SuDoLink />
         <LangGate en={en}>
           {children}
           <VersionWatch />

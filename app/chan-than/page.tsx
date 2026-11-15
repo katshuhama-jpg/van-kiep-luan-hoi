@@ -6,15 +6,16 @@
  */
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import BackButton from '@/components/BackButton';
 import { CtCreate, TamTaiReview, checkCtName } from '@/components/ChanThan';
 import { CtWardrobe, HuyetBar, HuyetBody, TamTaiBoard, useCtExt } from '@/components/TamTai';
 import ShareSheet from '@/components/ShareSheet';
+import SuDoPanel from '@/components/SuDoPanel';
 import { shareChanThan } from '@/lib/ctCard';
 import type { ShareOut } from '@/lib/shareCard';
 import { displayName } from '@/lib/storage';
-import { CHAN_THAN_ON } from '@/lib/flags';
+import { CHAN_THAN_ON, SU_DO_ON } from '@/lib/flags';
 import { CT_RENAME_COST, ctSuggestName } from '@/lib/game/chanThan';
 import { ctTitles, huyetCount, nextHuyet } from '@/lib/game/khaiMach';
 import type { Meta } from '@/lib/game/types';
@@ -37,6 +38,26 @@ export default function ChanThanPage() {
   const [drawing, setDrawing] = useState(false);
   const ext = useCtExt(user, CHAN_THAN_ON);
   const viewed = useRef(false);
+  // Sư Đồ: cộng phúc duyên vừa nhận vào bản hồ sơ MỚI NHẤT rồi lưu (thử lại một lần nếu lỗi)
+  const metaRef = useRef<Meta | null>(null);
+  useEffect(() => {
+    metaRef.current = meta;
+  }, [meta]);
+  const onSuGain = useCallback(
+    async (n: number) => {
+      const m = metaRef.current;
+      if (!m) return;
+      const nm = { ...m, phucDuyen: (m.phucDuyen ?? 0) + n };
+      metaRef.current = nm;
+      setMeta(nm);
+      try {
+        await saveMeta(user, nm);
+      } catch {
+        await saveMeta(user, nm).catch(() => {});
+      }
+    },
+    [user],
+  );
   useEffect(() => {
     if (!CHAN_THAN_ON) router.replace('/');
   }, [router]);
@@ -153,6 +174,7 @@ export default function ChanThanPage() {
             </button>
             {saved && <small className="note">{tr('Đã tải thẻ về máy. Đăng nhập để có link khoe hiện hình.', 'Card downloaded. Log in to get a link that shows the picture.')}</small>}
           </section>
+          {SU_DO_ON && <SuDoPanel user={user} meta={meta} onGain={onSuGain} />}
           <section className="panel ct-dark">
             <TamTaiBoard meta={meta} ext={ext} onHelp={() => (track('huyet_intro_open', { from: 'bang' }), setHelp(true))} />
           </section>

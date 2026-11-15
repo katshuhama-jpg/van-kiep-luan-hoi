@@ -25,3 +25,9 @@ export const SON_MON_ON = process.env.NEXT_PUBLIC_SON_MON === '1';
  * Tắt mặc định (đêm 14/11), bật bằng `NEXT_PUBLIC_KIEP1_CN_GON=1` hoặc đổi dòng dưới khi đã đo xong.
  */
 export const KIEP1_CN_GON = process.env.NEXT_PUBLIC_KIEP1_CN_GON === '1';
+
+/**
+ * SU_DO_ON (4.6.0 Ngày 3b Sư Đồ): bật mặc định, người chơi thấy từ 16/11. KHÔNG phụ thuộc SON_MON_ON.
+ * Muốn tắt gấp: `NEXT_PUBLIC_SU_DO=0` rồi build lại (máy chủ vẫn giữ bảng vkl_su, chỉ ẩn giao diện và link mời).
+ */
+export const SU_DO_ON = process.env.NEXT_PUBLIC_SU_DO !== '0';

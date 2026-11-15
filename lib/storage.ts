@@ -132,6 +132,8 @@ function live(s: SaveState | null | undefined, meta: Meta): s is SaveState {
 /** Hồ sơ trên máy chủ chưa tải được trong phiên này: không ghi hồ sơ lên, tránh ghi đè số kiếp, phúc duyên thật bằng bản trống */
 let metaLocked = false;
 const metaKey = (user: Player) => `vkl.meta.u.${user.username}`;
+/** Hồ sơ ghi được lên máy chủ (đã tải được trong phiên này): dùng trước khi nhận thưởng phải ghi vào meta (Sư Đồ) */
+export const metaWritable = () => !metaLocked;
 
 export async function saveMeta(user: Player | null, meta: Meta) {
   if (!user) return void writeLocal(K.meta, meta);

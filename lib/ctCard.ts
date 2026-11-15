@@ -2,7 +2,8 @@
  * 4.5.0 Ngày 3: thẻ khoe chân thân (dọc 1080x1350 và ngang cho xem trước link).
  * Chân thân, pháp danh, số huyệt, danh hiệu. Vẽ pixel bằng các hàm của lib/shareCard.ts.
  */
-import { CW, OH, OW, SITE, box, canvas, deliver, paper, seal, txt, type ShareOut } from './shareCard';
+import { CW, OH, OW, SITE, box, canvas, deliver, paper, publish, seal, txt, wrapTxt, type ShareOut } from './shareCard';
+import { SITE_URL } from './seo';
 import { composeFrame } from './lpc';
 import { ctLayers } from './game/chanThan';
 import { HUYET, HUYET_POS, ctTitles, huyetCount, tamTaiCount, type DaoExt } from './game/khaiMach';
@@ -73,4 +74,40 @@ export async function shareChanThan(meta: Meta, ext: DaoExt, who: string): Promi
   const desc = tr(`Tam Tài ${tt}/42. Mỗi kiếp là một giấc mộng; mộng tan, chân thân còn.`, `Three Treasures ${tt}/42. Each life is a dream; the dream ends, the true self remains.`);
   const text = tr(`Chân thân ${ct.name} của tôi đã khai ${n}/10 đại huyệt.`, `My true self ${ct.name} has opened ${n}/10 great points.`);
   return deliver(cv, o.cv, 'life', `chan-than-${who.replace(/[^\w-]+/g, '')}`, title, desc, text);
+}
+
+/**
+ * 4.6.0 Sư Đồ: thẻ mời bái sư. Hình chân thân sư phụ, dòng "<pháp danh> mời ngươi bái sư".
+ * Link chia sẻ = link thẻ /k/<mã> nối thêm ?su=<tên tài khoản> (xem trước link hiện hình chân thân).
+ * Không tạo được thẻ thì chia sẻ thẳng link trang đầu kèm ?su= (không tải ảnh về máy như deliver, vì mục đích là link mời).
+ */
+export async function shareSuDo(meta: Meta, username: string): Promise<ShareOut> {
+  const ct = meta.chanThan;
+  const direct = `${SITE_URL}/?su=${encodeURIComponent(username)}`;
+  const name = ct?.name ?? username;
+  const title = tr(`${name} mời ngươi bái sư`, `${name} invites you to become a disciple`);
+  const desc = tr(
+    'Vào Vạn Kiếp Luân Hồi bằng link này, chơi xong 10 kiếp trong 7 ngày: thầy trò mỗi người +20 phúc duyên.',
+    'Join Ten Thousand Rebirths with this link and finish 10 lives in 7 days: master and disciple each get +20 Fortune.',
+  );
+  const text = tr(`${name} mời ngươi bái sư ở Vạn Kiếp Luân Hồi. Chơi xong 10 kiếp trong 7 ngày, thầy trò mỗi người +20 phúc duyên.`, `${name} invites you to be a disciple in Ten Thousand Rebirths. Finish 10 lives in 7 days and we each get +20 Fortune.`);
+  const fallback: ShareOut = { link: direct, title, text, saved: false };
+  if (!ct) return fallback;
+  try {
+    const o = await canvas(OW, OH);
+    if (!o) return fallback;
+    const g = o.x;
+    paper(g, 'dem', OW, OH);
+    await drawCt(g, meta, 300, 80, 440);
+    txt(g, tr('BÁI SƯ', 'DISCIPLESHIP'), 820, 140, 44, '#ffd36b', { w: 700, shadow: '#000' });
+    txt(g, ct.name, 820, 236, 68, '#fff3dc', { w: 700, shadow: '#000', max: 640 });
+    txt(g, tr('mời ngươi bái sư', 'invites you to be a disciple'), 820, 300, 40, '#ffb0a0', { w: 700, max: 640 });
+    wrapTxt(g, tr('Chơi xong 10 kiếp trong 7 ngày: thầy trò mỗi người +20 phúc duyên.', 'Finish 10 lives in 7 days: master and disciple each get +20 Fortune.'), 820, 380, 600, 44, 32, '#9ff0c8', 3);
+    txt(g, `@${username} · VẠN KIẾP LUÂN HỒI`, 820, 566, 26, '#c8b89a', { max: 640 });
+    const link = await publish('life', title, desc, o.cv).catch(() => null);
+    if (!link) return fallback;
+    return { link: `${link}?su=${encodeURIComponent(username)}`, title, text, saved: false };
+  } catch {
+    return fallback;
+  }
 }

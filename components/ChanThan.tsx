@@ -13,6 +13,8 @@ import { supabase } from '@/lib/supabase';
 import { musicPref } from '@/lib/music';
 import { track } from '@/lib/track';
 import { tr } from '@/lib/i18n';
+import { currentPlayer } from '@/lib/auth';
+import { trySuBind } from '@/lib/suDo';
 import { lpcLayers } from './Sprite';
 import { PixelFx, fxMotes } from './PixelFx';
 
@@ -426,6 +428,8 @@ export function CtFlow({ meta, dead, from, onDone }: { meta: Meta; dead: Charact
             onDone={(x, info) => {
               const made = { ...x, createdAt: Date.now(), renamed: 0 };
               track('ct_create', { gender: made.gender, hair: CT_HAIR[made.gender][made.hair]?.key, hairColor: made.hairColor, skin: made.skin, outfit: made.outfit, random: info.random, nameEdited: info.nameEdited, from });
+              // Sư Đồ: đã đăng nhập và có link mời thì bái sư ngay lúc tạo chân thân
+              trySuBind(currentPlayer()).catch(() => {});
               setCt(made);
               setStep('nho');
               setTimeout(() => setStep('tamtai'), 1800);

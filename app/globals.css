@@ -5410,3 +5410,17 @@ body[data-ctflow='1'] { overflow: hidden; }
 .gg-unlink { align-self: flex-start; min-height: 44px; padding: 0 12px; font: inherit; font-size: 15px; color: var(--ink); background: transparent; border: 2px solid var(--ink); cursor: pointer; }
 .protect-opt label.note { display: flex; flex-direction: column; gap: 4px; }
 .protect-opt label.note input { min-height: 44px; padding: 0 10px; font: inherit; font-size: 16px; border: 3px solid var(--ink); background: #fff; }
+/* 4.6.0 Sư Đồ: khối ở màn Chân thân, dòng báo đã bái sư */
+.su-do { margin-top: 10px; }
+.su-h { margin: 0 0 6px; font-size: 18px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.su-title { display: inline-block; padding: 0 6px; background: #a8201a; color: #fff3dc; font-size: 13px; line-height: 20px; }
+.su-gain { margin: 0 0 6px; padding: 4px 8px; background: #1f160d; color: #ffd36b; border: 2px solid #ffd36b; font-weight: 700; }
+.su-rows { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; margin: 0 0 8px; }
+.su-rows dt { font-weight: 700; color: var(--ink); }
+.su-rows dd { margin: 0; line-height: 1.35; }
+.su-rows small { color: #6a5640; }
+.su-invite { display: block; width: 100%; min-height: 46px; }
+.su-sub { display: block; margin-top: 4px; font-size: 13px; line-height: 1.4; color: #6a5640; }
+.su-bound { position: fixed; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 70; transform: translateX(-50%); width: min(92vw, 420px); display: flex; align-items: flex-start; gap: 8px; padding: 8px 8px 8px 12px; background: #1f160d; color: #fff3dc; border: 3px solid #ffd36b; box-shadow: 0 0 0 3px #1f160d; font-size: 14px; line-height: 1.4; }
+.su-bound span { flex: 1; }
+.su-bound-x { background: transparent; color: #ffd36b; border: 2px solid #ffd36b; font: inherit; font-weight: 700; min-width: 32px; min-height: 32px; }

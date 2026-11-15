@@ -37,6 +37,8 @@ import { ctExt, loadAll, saveMeta } from '@/lib/storage';
 import { musicPref } from '@/lib/music';
 import { track } from '@/lib/track';
 import { tr } from '@/lib/i18n';
+import { SU_DO_ON } from '@/lib/flags';
+import { suCount } from '@/lib/suDo';
 import { CtFlow, LpcFigure, TamTaiReview } from './ChanThan';
 
 type Look = Pick<ChanThanLook, 'gender' | 'skin' | 'hair' | 'hairColor' | 'outfit'>;
@@ -92,7 +94,12 @@ export function useCtExt(user: Player | null, on = true): DaoExt {
   useEffect(() => {
     if (!on || !user) return;
     let live = true;
-    ctExt(user).then((x) => live && x && setExt(x));
+    ctExt(user).then((x) => live && x && setExt((e) => ({ ...e, ...x })));
+    // Sư Đồ: số đệ tử thành tài cho đạo Truyền Đạo (hàm riêng vkl_su_count, lỗi thì bỏ qua)
+    if (SU_DO_ON)
+      suCount(user)
+        .then((n) => live && n !== null && setExt((e) => ({ ...e, disciples: n })))
+        .catch(() => {});
     return () => {
       live = false;
     };
