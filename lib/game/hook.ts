@@ -110,8 +110,8 @@ export const QUESTS: Quest[] = [
 export const QUEST_REWARD = 4; // phúc duyên mỗi nhiệm vụ
 export const QUEST_BONUS = 6; // xong cả 3
 
-export function questsFor(day: string): string[] {
-  const ids = QUESTS.map((q) => q.id);
+export function questsFor(day: string, skip: string[] = []): string[] {
+  const ids = QUESTS.map((q) => q.id).filter((id) => !skip.includes(id));
   const out: string[] = [];
   let h = hash('q' + day);
   while (out.length < 3) {
@@ -124,8 +124,26 @@ export function questsFor(day: string): string[] {
 }
 
 /** Nhiệm vụ hôm nay của người chơi (tạo mới khi sang ngày) */
+/** 15/11 (góp ý #211): nhiệm vụ không thể làm với người này (đã mở gần hết đồ ẩn hoặc kết cục) thì đổi sang nhiệm vụ khác */
+const HIDDEN_N = ITEMS.filter((i) => (i.src === 'drop' || i.src === 'event') && i.id !== 'ao_vai').map((i) => i.id);
+export function questSkip(meta: Meta): string[] {
+  const out: string[] = [];
+  const book = new Set(meta.itemBook ?? []);
+  if (HIDDEN_N.filter((id) => !book.has(id)).length < 3) out.push('bao_vat_moi');
+  const opened = meta.endings ?? {};
+  if (ENDINGS.filter((e) => !opened[e.id] && e.id !== 'bat_dac').length < 3) out.push('ket_cuc_moi');
+  return out;
+}
+
 export function dailyOf(meta: Meta, day: string = vnDay()): { day: string; quests: string[]; done: string[] } {
-  return meta.daily?.day === day ? meta.daily : { day, quests: questsFor(day), done: [] };
+  const skip = questSkip(meta);
+  if (meta.daily?.day !== day) return { day, quests: questsFor(day, skip), done: [] };
+  const d = meta.daily;
+  if (!d.quests.some((q) => skip.includes(q) && !d.done.includes(q))) return d;
+  // đã nhận danh sách hôm nay mà có nhiệm vụ không làm được: thay đúng nhiệm vụ đó bằng nhiệm vụ đầu tiên còn lại
+  const alt = questsFor(day, [...skip, ...d.quests]);
+  let k = 0;
+  return { ...d, quests: d.quests.map((q) => (skip.includes(q) && !d.done.includes(q) ? alt[k++] ?? q : q)) };
 }
 
 /** Chấm nhiệm vụ khi một đời kết thúc. Trả về meta mới, danh sách vừa xong, phúc duyên thưởng. */

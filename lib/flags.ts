@@ -22,9 +22,9 @@ export const SON_MON_ON = process.env.NEXT_PUBLIC_SON_MON === '1';
  * KIEP1_CN_GON (15/11, tăng trưởng, cải thiện "Kiếp đầu gọn" lần 2): kiếp 1 của người mới không tự mở cẩm nang
  * (Hồi 1 Một kiếp người, Hồi 2 Thang cảnh giới, Hồi 3, Hồi 4...). Các hồi dời sang kiếp 2-4, vẫn mở tay được từ nút Cẩm nang.
  * Lý do: 14/11, trong 91 người vào kiếp 1 rồi bỏ giữa chừng, 42 người (46%) có việc cuối cùng là đọc cẩm nang tự mở.
- * Tắt mặc định (đêm 14/11), bật bằng `NEXT_PUBLIC_KIEP1_CN_GON=1` hoặc đổi dòng dưới khi đã đo xong.
+ * Bật mặc định từ đêm 15/11 (bản 16/11) sau khi đo: 44% người bỏ giữa kiếp 1 có việc cuối là cẩm nang tự mở. Tắt: `NEXT_PUBLIC_KIEP1_CN_GON=0`.
  */
-export const KIEP1_CN_GON = process.env.NEXT_PUBLIC_KIEP1_CN_GON === '1';
+export const KIEP1_CN_GON = process.env.NEXT_PUBLIC_KIEP1_CN_GON !== '0';
 
 /**
  * SU_DO_ON (4.6.0 Ngày 3b Sư Đồ): bật mặc định, người chơi thấy từ 16/11. KHÔNG phụ thuộc SON_MON_ON.
