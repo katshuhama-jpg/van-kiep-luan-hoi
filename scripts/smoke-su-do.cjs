@@ -11,6 +11,13 @@ const today = new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10);
 const CT = { name: 'Vân Tâm', gender: 'nu', skin: 1, hair: 2, hairColor: 5, outfit: 3, createdAt: 1, renamed: 0 };
 const career = { maxAge: 320, maxRealm: 7, ascPaths: ['kiem'], paths: ['kiem', 'dan'], duelWins: 3, revenges: 0, cosmoses: ['tien'], hanh: { kim: 2, thuy: 1 } };
 const META = { phucDuyen: 50, nghiep: 0, lives: 5, talents: [], enemy: null, streak: { day: today, n: 1 }, checkin: today, chanThan: CT, huyet: [1, 2, 3].map((id) => ({ id, life: id })), career, achievements: [], endings: { chung_dao: 1 } };
+const iso = (h) => new Date(Date.now() + h * 3600e3).toISOString();
+const DS = [
+  { ten: 'de_a', phap_danh: 'Lăng Vân', kiep: 7, bai_luc: iso(-72), han: iso(96), thanh_tai_luc: null, choi_luc: iso(-2) },
+  { ten: 'de_b', phap_danh: null, kiep: 2, bai_luc: iso(-24), han: iso(144), thanh_tai_luc: null, choi_luc: iso(-30) },
+  ...Array.from({ length: 5 }, (_, i) => ({ ten: 'xong_' + i, phap_danh: 'Tử Yên ' + i, kiep: 10, bai_luc: iso(-200), han: iso(-32), thanh_tai_luc: iso(-50 - i), choi_luc: iso(-5) })),
+  { ten: 'het_c', phap_danh: 'Bạch Y', kiep: 4, bai_luc: iso(-240), han: iso(-72), thanh_tai_luc: null, choi_luc: iso(-100) },
+];
 let fail = 0;
 const ok = (c, m) => { console.log((c ? 'OK  ' : 'HỎNG') + ' ' + m); if (!c) fail++; };
 
@@ -103,6 +110,7 @@ const suCookie = async (ctx) => (await ctx.cookies()).find((c) => c.name === 'vk
     if (fn === 'vkl_su_info') return json({ su: { ten: 'tyler', phap_danh: 'Thanh Phong' }, kiep: 4, han: new Date(Date.now() + 3.5 * 86400e3).toISOString(), thanh_tai: false, de_tu: 6, thanh_tai_n: 5, cho_nhan: 40 });
     if (fn === 'vkl_su_claim') return json(claims++ ? 0 : 40);
     if (fn === 'vkl_su_count') return json(5);
+    if (fn === 'vkl_su_ds') return json(DS);
     if (fn === 'vkl_ct_ext') return json({ incense: 0, lit: 0 });
     if (fn === 'vkl_save_meta2') { saved = body.p_meta; return json(null); }
     return json(null);
@@ -124,6 +132,20 @@ const suCookie = async (ctx) => (await ctx.cookies()).find((c) => c.name === 'vk
   ok(/Danh sư/.test(t), 'danh hiệu Danh sư ở mốc 5');
   ok(!(await p.locator('.su-invite').isDisabled()), 'đăng nhập: nút Mời đệ tử bấm được');
   ok(claims === 1, `gọi nhận thưởng đúng một lần (${claims})`);
+  await p.waitForSelector('.su-item', { timeout: 10000 }).catch(() => {});
+  const items = p.locator('.su-do .su-item');
+  ok((await items.count()) === 5, `danh sách đệ tử hiện 5 người đầu (${await items.count()})`);
+  const t2 = await p.locator('.su-do').innerText();
+  ok(/Lăng Vân/.test(t2) && /7\/10 kiếp, còn 4 ngày/.test(t2) && /chơi 2 giờ trước/.test(t2), 'đệ tử đang tu: tiến độ 7/10, còn 4 ngày, lần chơi gần nhất');
+  ok(/@de_b/.test(t2), 'đệ tử chưa có pháp danh: hiện tên tài khoản');
+  ok(/Thành tài ngày/.test(t2), 'đệ tử thành tài: ghi ngày thành tài');
+  ok((await p.locator('.su-do .su-item .su-bar i.on').count()) >= 7 + 2, 'thanh 10 ô tô đúng số kiếp');
+  await p.click('.su-more');
+  ok((await items.count()) === 8, `bấm Xem cả 8 đệ tử thì hiện đủ (${await items.count()})`);
+  ok(/hết hạn 7 ngày/.test(await p.locator('.su-do').innerText()), 'đệ tử quá 7 ngày: ghi đã hết hạn');
+  const mb = await p.locator('.su-more').boundingBox();
+  ok(mb && mb.height >= 44, 'nút Xem cả cao từ 44px');
+  ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'danh sách không tràn ngang');
   await p.waitForTimeout(1500);
   ok(saved && saved.phucDuyen === 90, `lưu hồ sơ phúc duyên 50 + 40 = ${saved && saved.phucDuyen}`);
   if (DIR) {
@@ -131,6 +153,43 @@ const suCookie = async (ctx) => (await ctx.cookies()).find((c) => c.name === 'vk
     await p.waitForTimeout(400);
     await p.locator('.su-do').screenshot({ path: path.join(DIR, 'su-do-dang-nhap.png') });
   }
+  ok(!p.errs.length, 'không lỗi ' + p.errs.join(' | '));
+  await ctx.close();
+
+  // F. Trang quản trị /quan-tri/su-do: không có quyền thì báo, có quyền thì thấy mọi cặp, lọc được
+  ({ ctx, p } = await page(b));
+  let quyen = false;
+  await p.route(/rest\/v1\/rpc\/(vkl_\w+)/, async (r) => {
+    const fn = r.request().url().match(/rpc\/(vkl_\w+)/)[1];
+    const json = (v, st = 200) => r.fulfill({ status: st, body: JSON.stringify(v), contentType: 'application/json' });
+    if (fn === 'vkl_su_admin') {
+      if (!quyen) return json({ code: 'P0001', message: 'SU_QUYEN' }, 400);
+      return json({ luc: iso(0), tong: { cap: 3, su_phu: 2, dang_tu: 1, thanh_tai: 1, het_han: 1, bai_24h: 1 }, co: [{ loai: 'su_cung_may', chi_tiet: {}, luc: iso(-1) }], cap: [
+        { su: 'tyler', su_pd: 'Thanh Phong', de: 'de_a', de_pd: 'Lăng Vân', kiep: 7, bai_luc: iso(-72), thanh_tai_luc: null, het_han: false, thuong_su: false, su_nhan: false, de_nhan: false },
+        { su: 'tyler', su_pd: 'Thanh Phong', de: 'xong_0', de_pd: 'Tử Yên', kiep: 10, bai_luc: iso(-200), thanh_tai_luc: iso(-50), het_han: false, thuong_su: true, su_nhan: true, de_nhan: false },
+        { su: 'khac', su_pd: null, de: 'het_c', de_pd: 'Bạch Y', kiep: 4, bai_luc: iso(-240), thanh_tai_luc: null, het_han: true, thuong_su: false, su_nhan: false, de_nhan: false },
+      ] });
+    }
+    return json(null);
+  });
+  await p.goto(URL + '/khong-co-trang-nay');
+  await p.evaluate(() => localStorage.setItem('vkl.session', JSON.stringify({ username: 'thu_nghiem', token: '00000000-0000-0000-0000-000000000001' })));
+  await p.goto(URL + '/quan-tri/su-do');
+  await p.waitForTimeout(2500);
+  ok(/chỉ dành cho quản trị viên/.test(await p.locator('main').innerText()), 'quản trị: tài khoản thường thấy câu báo không có quyền');
+  quyen = true;
+  await p.reload();
+  await p.waitForSelector('.su-adm-tong', { timeout: 15000 }).catch(() => {});
+  await p.addStyleTag({ content: 'nextjs-portal{display:none!important}' });
+  ok((await p.locator('main .su-item').count()) === 4, 'quản trị: 3 cặp + 1 đánh dấu');
+  await p.click('.su-adm-loc .btn:nth-child(2)');
+  ok((await p.locator('.su-list').first().locator('.su-item').count()) === 1, 'lọc Đang tu còn 1 cặp');
+  await p.click('.su-adm-loc .btn:nth-child(1)');
+  await p.fill('.su-adm-tim input', 'bạch');
+  ok((await p.locator('.su-list').first().locator('.su-item').count()) === 1, 'tìm theo pháp danh');
+  await p.fill('.su-adm-tim input', '');
+  ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'quản trị không tràn ngang');
+  if (DIR) await p.screenshot({ path: path.join(DIR, 'quan-tri-su-do.png'), fullPage: true });
   ok(!p.errs.length, 'không lỗi ' + p.errs.join(' | '));
   await ctx.close();
 

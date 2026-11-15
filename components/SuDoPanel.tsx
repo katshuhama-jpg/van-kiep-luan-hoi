@@ -11,14 +11,81 @@ import { shareSuDo } from '@/lib/ctCard';
 import type { Meta } from '@/lib/game/types';
 import type { ShareOut } from '@/lib/shareCard';
 import { metaWritable } from '@/lib/storage';
-import { suClaim, suInfo, suTitle, type SuInfo } from '@/lib/suDo';
+import { suClaim, suInfo, suList, suState, suTitle, type SuDe, type SuInfo } from '@/lib/suDo';
 import { track } from '@/lib/track';
 import { tr } from '@/lib/i18n';
 
 const DAY = 86400000;
+const HOUR = 3600000;
+
+/** thanh 10 ô: số kiếp đã tính tới thành tài */
+function SuBar({ n, st }: { n: number; st: 'tai' | 'tu' | 'het' }) {
+  return (
+    <span className={`su-bar su-bar-${st}`} role="img" aria-label={tr(`${n}/10 kiếp`, `${n}/10 lives`)}>
+      {Array.from({ length: 10 }, (_, i) => (
+        <i key={i} className={i < n ? 'on' : ''} />
+      ))}
+    </span>
+  );
+}
+
+const ngay = (iso: string) => {
+  const d = new Date(Date.parse(iso) + 7 * HOUR);
+  return `${d.getUTCDate()}/${d.getUTCMonth() + 1}`;
+};
+function truoc(iso: string | null): string | null {
+  if (!iso) return null;
+  const ms = Date.now() - Date.parse(iso);
+  if (ms < HOUR) return tr('vừa chơi', 'just played');
+  if (ms < DAY) return tr(`chơi ${Math.floor(ms / HOUR)} giờ trước`, `played ${Math.floor(ms / HOUR)}h ago`);
+  return tr(`chơi ${Math.floor(ms / DAY)} ngày trước`, `played ${Math.floor(ms / DAY)}d ago`);
+}
+
+/** một dòng tiến độ (dùng cho cả sư phụ của ngươi và từng đệ tử) */
+function suLine(kiep: number, han: string | null, thanhTai: string | null): string {
+  const st = suState({ thanh_tai_luc: thanhTai, han });
+  if (st === 'tai') return tr(`Thành tài ngày ${ngay(thanhTai!)}`, `Graduated on ${ngay(thanhTai!)}`);
+  if (st === 'het') return tr(`${kiep}/10 kiếp, đã hết hạn 7 ngày`, `${kiep}/10 lives, the 7 days are over`);
+  const left = Math.max(1, Math.ceil((Date.parse(han!) - Date.now()) / DAY));
+  return tr(`${kiep}/10 kiếp, còn ${left} ngày`, `${kiep}/10 lives, ${left} day${left === 1 ? '' : 's'} left`);
+}
+
+function SuDeList({ ds }: { ds: SuDe[] }) {
+  const [all, setAll] = useState(false);
+  const shown = all ? ds : ds.slice(0, 5);
+  return (
+    <>
+      <ul className="su-list">
+        {shown.map((d) => {
+          const st = suState(d);
+          const seen = st === 'tu' ? truoc(d.choi_luc) : null;
+          return (
+            <li key={d.ten} className={`su-item su-${st}`}>
+              <div className="su-item-h">
+                <b>{d.phap_danh ?? d.ten}</b> <small>@{d.ten}</small>
+                <span className={`su-chip su-chip-${st}`}>{st === 'tai' ? tr('Thành tài', 'Graduated') : st === 'tu' ? tr('Đang tu', 'Training') : tr('Hết hạn', 'Time up')}</span>
+              </div>
+              <SuBar n={d.kiep} st={st} />
+              <small className="su-item-s">
+                {suLine(d.kiep, d.han, d.thanh_tai_luc)}
+                {seen ? ` · ${seen}` : ''}
+              </small>
+            </li>
+          );
+        })}
+      </ul>
+      {ds.length > 5 && (
+        <button className="btn su-more" onClick={() => setAll(!all)}>
+          {all ? tr('Thu gọn', 'Show less') : tr(`Xem cả ${ds.length} đệ tử`, `See all ${ds.length} disciples`)}
+        </button>
+      )}
+    </>
+  );
+}
 
 export default function SuDoPanel({ user, meta, onGain }: { user: Player | null; meta: Meta; onGain: (n: number) => Promise<void> }) {
   const [info, setInfo] = useState<SuInfo | null>(null);
+  const [ds, setDs] = useState<SuDe[] | null>(null);
   const [gain, setGain] = useState(0);
   const [drawing, setDrawing] = useState(false);
   const [out, setOut] = useState<ShareOut | null>(null);
@@ -32,6 +99,7 @@ export default function SuDoPanel({ user, meta, onGain }: { user: Player | null;
       const x = await suInfo(user);
       if (!x) return;
       setInfo(x);
+      if (x.de_tu > 0) suList(user).then((l) => l && setDs(l)).catch(() => {});
       // chỉ nhận khi hồ sơ ghi được lên máy chủ, nếu không phúc duyên vừa nhận sẽ mất
       if (x.cho_nhan > 0 && metaWritable()) {
         const n = await suClaim(user);
@@ -46,7 +114,6 @@ export default function SuDoPanel({ user, meta, onGain }: { user: Player | null;
   }, [user, onGain]);
 
   const title = info ? suTitle(info.thanh_tai_n) : null;
-  const left = info?.han ? Math.ceil((Date.parse(info.han) - Date.now()) / DAY) : 0;
   return (
     <section className="panel su-do" aria-label={tr('Sư Đồ', 'Master and Disciple')}>
       <h3 className="su-h">
@@ -63,13 +130,8 @@ export default function SuDoPanel({ user, meta, onGain }: { user: Player | null;
                 {info.su.phap_danh ? `${info.su.phap_danh} ` : ''}
                 <small>@{info.su.ten}</small>
                 <br />
-                <small>
-                  {info.thanh_tai
-                    ? tr('Ngươi đã thành tài.', 'You have graduated.')
-                    : left > 0
-                      ? tr(`${Math.min(info.kiep, 10)}/10 kiếp, còn ${left} ngày`, `${Math.min(info.kiep, 10)}/10 lives, ${left} day${left === 1 ? '' : 's'} left`)
-                      : tr(`${Math.min(info.kiep, 10)}/10 kiếp, đã hết hạn`, `${Math.min(info.kiep, 10)}/10 lives, time is up`)}
-                </small>
+                <SuBar n={Math.min(info.kiep, 10)} st={suState({ thanh_tai_luc: info.thanh_tai ? new Date().toISOString() : null, han: info.han })} />
+                <small>{info.thanh_tai ? tr('Ngươi đã thành tài.', 'You have graduated.') : suLine(Math.min(info.kiep, 10), info.han, null)}</small>
               </dd>
             </>
           )}
@@ -79,6 +141,7 @@ export default function SuDoPanel({ user, meta, onGain }: { user: Player | null;
           </dd>
         </dl>
       )}
+      {ds && ds.length > 0 && <SuDeList ds={ds} />}
       <button
         className="btn su-invite"
         disabled={!user || drawing}

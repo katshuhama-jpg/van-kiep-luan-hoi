@@ -172,3 +172,53 @@ export function suTitle(n: number): string | null {
   if (n >= 5) return tr('Danh sư', 'Renowned Master');
   return null;
 }
+
+/** Đệ tử của ngươi kèm tiến độ từng người (vkl_su_ds, supabase/su_do_ds_2026_11_16.sql) */
+export type SuDe = { ten: string; phap_danh: string | null; kiep: number; bai_luc: string; han: string; thanh_tai_luc: string | null; choi_luc: string | null };
+
+export async function suList(user: Player | null): Promise<SuDe[] | null> {
+  const sb = supabase();
+  if (!SU_DO_ON || !user || !sb) return null;
+  try {
+    const { data, error } = await sb.rpc('vkl_su_ds', { p_token: user.token });
+    if (error || !Array.isArray(data)) return null;
+    return (data as Partial<SuDe>[]).map((d) => ({
+      ten: String(d.ten ?? ''),
+      phap_danh: d.phap_danh ? String(d.phap_danh) : null,
+      kiep: Math.min(10, Number(d.kiep ?? 0)),
+      bai_luc: String(d.bai_luc ?? ''),
+      han: String(d.han ?? ''),
+      thanh_tai_luc: d.thanh_tai_luc ? String(d.thanh_tai_luc) : null,
+      choi_luc: d.choi_luc ? String(d.choi_luc) : null,
+    }));
+  } catch {
+    return null;
+  }
+}
+
+/** Trạng thái một người đang tu: 'tai' đã thành tài, 'tu' còn hạn, 'het' quá 7 ngày chưa đủ 10 kiếp */
+export function suState(x: { thanh_tai_luc: string | null; han: string | null }): 'tai' | 'tu' | 'het' {
+  if (x.thanh_tai_luc) return 'tai';
+  return x.han && Date.parse(x.han) >= Date.now() ? 'tu' : 'het';
+}
+
+/** Quản trị: mọi cặp thầy trò (vkl_su_admin, chỉ tên đăng nhập trong vkl_sm_admin_user) */
+export type SuCap = { su: string; su_pd: string | null; de: string; de_pd: string | null; kiep: number; bai_luc: string; thanh_tai_luc: string | null; het_han: boolean; thuong_su: boolean; su_nhan: boolean; de_nhan: boolean };
+export type SuAdmin = {
+  luc: string;
+  tong: { cap: number; su_phu: number; dang_tu: number; thanh_tai: number; het_han: number; bai_24h: number };
+  cap: SuCap[];
+  co: { loai: string; chi_tiet: Record<string, unknown>; luc: string }[];
+};
+
+export async function suAdmin(user: Player | null): Promise<SuAdmin | 'quyen' | 'loi'> {
+  const sb = supabase();
+  if (!user || !sb) return 'quyen';
+  try {
+    const { data, error } = await sb.rpc('vkl_su_admin', { p_token: user.token });
+    if (error) return /SU_QUYEN|SU_AUTH/.test(error.message ?? '') ? 'quyen' : 'loi';
+    return data as SuAdmin;
+  } catch {
+    return 'loi';
+  }
+}
