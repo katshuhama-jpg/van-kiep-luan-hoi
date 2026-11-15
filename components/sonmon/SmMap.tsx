@@ -61,15 +61,26 @@ export function HexMap({
     if (!el) return;
     const c = px(center[0], center[1]);
     setOff({ x: el.clientWidth / 2 - c.x, y: el.clientHeight / 2 - c.y });
-  }, [center, recenter]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [center[0], center[1], recenter]);
+  const pan = (dx: number, dy: number) => setOff((o) => ({ x: o.x + dx, y: o.y + dy }));
 
   const mau = (id: number | null) => (id == null ? '#3a2f5a' : HUY_MAU[Math.floor((map.mon[String(id)]?.huy_hieu ?? 0) / 5) % 6].hex);
 
   return (
+    <>
     <div
       ref={box}
       className="sm-map"
       role="application"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        const d: Record<string, [number, number]> = { ArrowLeft: [80, 0], ArrowRight: [-80, 0], ArrowUp: [0, 80], ArrowDown: [0, -80] };
+        if (d[e.key]) {
+          e.preventDefault();
+          pan(...d[e.key]);
+        }
+      }}
       aria-label={tr('Bản đồ ô lục giác. Kéo để xem, chạm một ô để xem chi tiết.', 'Hex map. Drag to look around, tap a tile for details.')}
       onPointerDown={(e) => {
         drag.current = { x: e.clientX, y: e.clientY, ox: off.x, oy: off.y, moved: false, id: e.pointerId };
@@ -117,6 +128,16 @@ export function HexMap({
         })}
       </svg>
     </div>
+    <div className="sm-pan" role="group" aria-label={tr('Dời bản đồ', 'Pan the map')}>
+      {([['left', 80, 0, tr('Sang trái', 'Left')], ['up', 0, 80, tr('Lên trên', 'Up')], ['down', 0, -80, tr('Xuống dưới', 'Down')], ['right', -80, 0, tr('Sang phải', 'Right')]] as const).map(([k, dx, dy, l]) => (
+        <button key={k} className="sm-btn small" aria-label={l} onClick={() => pan(dx, dy)}>
+          <svg width="16" height="16" viewBox="0 0 8 8" shapeRendering="crispEdges" aria-hidden style={{ transform: `rotate(${{ up: 0, right: 90, down: 180, left: 270 }[k]}deg)` }}>
+            <path d="M3 1h2v1h1v1h1v1H5v3H3V4H1V3h1V2h1z" fill="currentColor" />
+          </svg>
+        </button>
+      ))}
+    </div>
+    </>
   );
 }
 

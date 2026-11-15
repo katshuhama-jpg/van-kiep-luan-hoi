@@ -99,6 +99,7 @@ p.sm-card { display: block; }
 /* bản đồ */
 .sm-map { position: relative; height: 330px; overflow: hidden; background: #1e1a2e; border: 3px solid var(--ink-dark); touch-action: none; user-select: none; -webkit-user-select: none; cursor: grab; }
 .sm-map svg { position: absolute; left: 0; top: 0; }
+.sm-pan { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: -4px; }
 .sm-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 13px; color: var(--muted); }
 .sm-legend span { display: inline-flex; align-items: center; gap: 4px; }
 .sm-sw { display: inline-block; width: 14px; height: 14px; border: 2px solid; }

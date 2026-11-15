@@ -94,6 +94,22 @@ async function check(p, name) {
     await check(p, name);
     ok(errs.length === 0, `${name}: không lỗi trang ${errs.join(' | ')}`);
     if (DIR) await p.screenshot({ path: path.join(DIR, name + '.png'), fullPage: true });
+    if (name === 'M5-ban-do') {
+      // kéo bản đồ: vị trí phải giữ nguyên sau vài nhịp đồng hồ
+      const tf = () => p.evaluate(() => document.querySelector('.sm-map svg').style.transform);
+      const t0 = await tf();
+      const box = await p.locator('.sm-map').boundingBox();
+      await p.mouse.move(box.x + 100, box.y + 100);
+      await p.mouse.down();
+      await p.mouse.move(box.x + 160, box.y + 140, { steps: 5 });
+      await p.mouse.up();
+      await p.waitForTimeout(1500);
+      const t1 = await tf();
+      ok(t0 !== t1, `${name}: kéo bản đồ giữ vị trí (${t0} -> ${t1})`);
+      await p.getByRole('button', { name: 'Về lãnh thổ' }).click();
+      await p.waitForTimeout(200);
+      ok((await tf()) === t0, `${name}: nút Về lãnh thổ về chỗ cũ`);
+    }
     await ctx.close();
   }
   await b.close();
