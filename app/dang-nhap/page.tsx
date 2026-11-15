@@ -50,8 +50,8 @@ export default function LoginPage() {
     setBusy(true);
     setError(null);
     const r = await googleSignIn(sb);
+    if ('ok' in r) return done(false); // giữ busy để không bấm lại trong lúc chuyển trang
     setBusy(false);
-    if ('ok' in r) return done(false);
     if ('error' in r) return setError(googleError(r.error));
     // Google chưa gắn tài khoản nào: chọn tên để tạo tài khoản mới
     setGgSb(sb);
@@ -68,7 +68,13 @@ export default function LoginPage() {
     setError(null);
     setSuggest(null);
     const err = await googleSignUp(ggSb, ggName.trim().toLowerCase());
-    setBusy(false);
+    // 15/11: bấm Tạo hai lần (lần đầu đã tạo xong, đang chuyển trang) thì lần sau báo GOOGLE_USED.
+    // Google này đã có tài khoản rồi: đăng nhập luôn thay vì báo lỗi.
+    if (err && /GOOGLE_USED/.test(err)) {
+      const r = await googleSignIn(ggSb);
+      if ('ok' in r) return done(false);
+    }
+    if (err) setBusy(false);
     if (err) {
       const m = /[A-Z_]{5,}/.test(err) ? googleError(err) : err;
       setError(m);
