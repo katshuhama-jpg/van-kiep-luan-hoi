@@ -95,7 +95,7 @@ export default function SuDoPanel({ user, meta, onGain }: { user: Player | null;
       </button>
       <small className="su-sub">
         {user
-          ? tr('Bạn mới vào bằng link của ngươi và chơi xong 10 kiếp trong 7 ngày: mỗi người +20 phúc duyên.', 'A new player who joins through your link and finishes 10 lives in 7 days: you each get +20 Fortune.')
+          ? tr('Người mới vào bằng link của ngươi, chơi xong 10 kiếp trong 7 ngày: thầy trò mỗi người +20 phúc duyên.', 'A new player who joins through your link and finishes 10 lives in 7 days: you each get +20 Fortune.')
           : tr('Đăng nhập để có link mời', 'Log in to get an invite link')}
       </small>
       {out && <ShareSheet out={out} kind="life" onClose={() => setOut(null)} />}

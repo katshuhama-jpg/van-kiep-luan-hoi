@@ -31,3 +31,9 @@ export const KIEP1_CN_GON = process.env.NEXT_PUBLIC_KIEP1_CN_GON === '1';
  * Muốn tắt gấp: `NEXT_PUBLIC_SU_DO=0` rồi build lại (máy chủ vẫn giữ bảng vkl_su, chỉ ẩn giao diện và link mời).
  */
 export const SU_DO_ON = process.env.NEXT_PUBLIC_SU_DO !== '0';
+
+/**
+ * TAB_ON (4.6.0 Ngày 5, lên 16/11): thanh 4 tab (Mộng · Nhân vật · Sơn Môn · Lôi đài) + thanh trên có Mời trà và Menu.
+ * Bật mặc định, KHÔNG phụ thuộc SON_MON_ON. Tắt gấp: `NEXT_PUBLIC_TAB=0` rồi build lại, trang đầu về menu cũ.
+ */
+export const TAB_ON = process.env.NEXT_PUBLIC_TAB !== '0';

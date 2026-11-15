@@ -30,6 +30,13 @@ export const RELEASES: Release[] = [
     lead: tr('Mỗi kiếp là một giấc mộng. Mộng tan, chân thân còn. Điều ngươi làm được trong mộng sẽ khắc vào thân.', 'Every life is a dream. The dream fades, the true self remains. What you achieve in the dream is carved into your body.'),
     groups: [
       {
+        h: tr('Mới 16/11', 'New on Nov 16'),
+        items: [
+          tr('Sư Đồ: ở trang Chân thân có nút Mời đệ tử. Người mới vào bằng link của ngươi, chơi xong 10 kiếp trong 7 ngày đầu thì thầy trò mỗi người được 20 phúc duyên.', 'Master and Disciple: the True Self page has an Invite a disciple button. If a newcomer joins through your link and finishes 10 lives in their first 7 days, you each get 20 Fortune.'),
+          tr('Thanh tab dưới đáy: Mộng, Nhân vật, Sơn Môn, Lôi đài. Góp ý, Cập nhật, ngôn ngữ và nhạc nằm trong nút Menu ở góc trên. Sơn Môn mở cửa 5:00 sáng 18/11.', 'A tab bar at the bottom: Dream, Character, Sects, Arena. Feedback, Updates, language and music are in the Menu button at the top. Sects open at 5:00 AM on Nov 18.'),
+        ],
+      },
+      {
         h: tr('Chân thân', 'True self'),
         hot: true,
         items: [

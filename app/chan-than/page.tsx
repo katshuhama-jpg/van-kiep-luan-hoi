@@ -15,7 +15,8 @@ import SuDoPanel from '@/components/SuDoPanel';
 import { shareChanThan } from '@/lib/ctCard';
 import type { ShareOut } from '@/lib/shareCard';
 import { displayName } from '@/lib/storage';
-import { CHAN_THAN_ON, SU_DO_ON } from '@/lib/flags';
+import { CHAN_THAN_ON, SU_DO_ON, TAB_ON } from '@/lib/flags';
+import { TabBar, TopMenu } from '@/components/TabBar';
 import { CT_RENAME_COST, ctSuggestName } from '@/lib/game/chanThan';
 import { ctTitles, huyetCount, nextHuyet } from '@/lib/game/khaiMach';
 import type { Meta } from '@/lib/game/types';
@@ -82,7 +83,8 @@ export default function ChanThanPage() {
   const cost = ct && ct.renamed >= 1 ? CT_RENAME_COST : 0;
   const h = meta ? nextHuyet(meta) : null;
   return (
-    <main className="app ct-page">
+    <main className={`app ct-page${TAB_ON ? ' has-tabs' : ''}`}>
+      {TAB_ON && <TopMenu at="nv" />}
       <header className="topbar">
         <div className="topbar-row">
           <BackButton />
@@ -252,6 +254,7 @@ export default function ChanThanPage() {
         </section>
       )}
       {help && meta && <TamTaiReview meta={meta} from="chan_than" onClose={() => setHelp(false)} />}
+      {TAB_ON && <TabBar cur="nv" />}
     </main>
   );
 }

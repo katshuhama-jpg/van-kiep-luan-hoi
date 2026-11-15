@@ -17,7 +17,8 @@ import { FB_PAGE } from '@/lib/links';
 import { ContinueBar, LiveStrip, NewGraves, NewsToast, useLive } from '@/components/LiveWorld';
 import { HomeVanKiep } from '@/components/TangKiep';
 import { HomeCt } from '@/components/TamTai';
-import { CHAN_THAN_ON } from '@/lib/flags';
+import { CHAN_THAN_ON, TAB_ON } from '@/lib/flags';
+import { TabBar, TopMenu } from '@/components/TabBar';
 
 const link = { textDecoration: 'none', display: 'block' } as const;
 
@@ -31,11 +32,15 @@ export default function Home() {
     else if (needNotice()) setRel(true);
   }, []);
   return (
-    <main className="app title-screen has-bar">
-      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-        <LangToggle />
-        <MusicToggle />
-      </div>
+    <main className={`app title-screen has-bar${TAB_ON ? ' has-tabs' : ''}`}>
+      {TAB_ON ? (
+        <TopMenu at="mong" />
+      ) : (
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+          <LangToggle />
+          <MusicToggle />
+        </div>
+      )}
       <h1 className={`logo ${tr('', 'logo-en')}`}>
         {tr('Vạn Kiếp Luân Hồi', 'Ten Thousand Rebirths')}
         <small>{tr('Một kiếp người, vạn con đường tu tiên', 'One life, ten thousand paths to immortality')}</small>
@@ -60,22 +65,26 @@ export default function Home() {
           <Link href="/so-sinh-tu" className="btn" style={link}>
             {tr('Sổ Sinh Tử', 'Life & Death')}
           </Link>
-          <Link href="/gop-y" className="btn" style={link}>
-            {tr('Góp ý', 'Feedback')}
-          </Link>
-          <Link href="/cap-nhat" className="btn" style={link}>
-            {tr('Cập nhật ', 'Updates ')}
-            <small className="ver-tag">{CURRENT_VERSION}</small>
-          </Link>
+          {!TAB_ON && (
+            <Link href="/gop-y" className="btn" style={link}>
+              {tr('Góp ý', 'Feedback')}
+            </Link>
+          )}
+          {!TAB_ON && (
+            <Link href="/cap-nhat" className="btn" style={link}>
+              {tr('Cập nhật ', 'Updates ')}
+              <small className="ver-tag">{CURRENT_VERSION}</small>
+            </Link>
+          )}
         </div>
         <Link href="/moi-tra" className="btn home-tra" style={link} onClick={() => track('tra_open', { from: 'home' })}>
           {tr('Mời tác giả chén trà', 'Buy the author a tea')}
           <small>{tr('game miễn phí, không quảng cáo', 'free, no ads')}</small>
         </Link>
-        <a href={FB_PAGE} target="_blank" rel="noopener noreferrer" className="btn home-fb" style={link} onClick={() => track('fb_open', { from: 'home' })}>
+        {!TAB_ON && <a href={FB_PAGE} target="_blank" rel="noopener noreferrer" className="btn home-fb" style={link} onClick={() => track('fb_open', { from: 'home' })}>
           {tr('Theo dõi trang Facebook', 'Follow us on Facebook')}
           <small>{tr('báo bản mới, sự kiện', 'updates and events')}</small>
-        </a>
+        </a>}
         {ready && enabled && !user && (
           <Link href="/dang-nhap" className="btn btn-dark" style={link}>
             {tr('Đăng nhập / Đăng ký', 'Log in / Sign up')}
@@ -108,6 +117,7 @@ export default function Home() {
       <NewsToast d={live} />
       <ContinueBar user={user} ready={ready} guest={ready && !user} />
       {rel && <ReleaseNotice onClose={() => setRel(false)} />}
+      {TAB_ON && <TabBar cur="mong" />}
     <ProtectPrompt at="home" />
       </main>
   );
