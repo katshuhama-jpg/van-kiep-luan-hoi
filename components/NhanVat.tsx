@@ -10,9 +10,7 @@ import type { ChanThanLook, Meta } from '@/lib/game/types';
 import { ctRobeLayers, type CtOutfit } from '@/lib/game/chanThan';
 import { CT_GEAR, CT_GEAR_ON, ctGearOf, ctNgoaiId, ctNgoaiList, ctPower, type CtGearItem, type CtGearSlot } from '@/lib/game/ctGear';
 import { LpcFigure } from './ChanThan';
-import { ctTitles, type DaoExt } from '@/lib/game/khaiMach';
-import { REALMS } from '@/lib/game/data';
-import { PixelFx, fxBatQuai, fxSen } from './PixelFx';
+import type { DaoExt } from '@/lib/game/khaiMach';
 import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
 import { LpcCropIcon } from './ItemIcon';
@@ -90,17 +88,14 @@ export function NhanVatStage({ ct, meta, ext, onSlot, active }: { ct: ChanThanLo
       </button>
     );
   };
-  const titles = ctTitles(meta, ext);
-  const mr = meta.career?.maxRealm ?? 0;
-  // danh hiệu: danh hiệu Tam Tài cao nhất nếu có, nếu chưa thì cảnh giới cao nhất từng lên qua mọi kiếp
-  const title = titles[0] ?? (REALMS[mr]?.name || tr('Phàm Nhân', 'Mortal'));
+  // 16/11 (Tyler chốt): chân thân mọi người hiện là Phàm Nhân. Cách tăng cấp, có đồ, công pháp chân thân làm sau Sơn Môn.
+  const title = tr('Phàm Nhân', 'Mortal');
   return (
     <>
       <div className="nv-stage">
         <span className="nv-name">{ct.name}</span>
         <button className="nv-title" onClick={() => (setWhy(false), setTt((v) => !v))} aria-expanded={tt}>
           {title}
-          {titles.length > 1 && <small> +{titles.length - 1}</small>}
         </button>
         <div className="nv-col left">
           {slot('mu')}
@@ -112,28 +107,14 @@ export function NhanVatStage({ ct, meta, ext, onSlot, active }: { ct: ChanThanLo
           {slot('canh')}
           {slot('ngoai')}
         </div>
-        <div className="tk-floor">
-          <PixelFx spec={fxBatQuai('#ffd36b')} scale={3} dur={2.4} />
-        </div>
         <div className="nv-me">
           <LpcFigure layers={layers} size={132} />
         </div>
-        <div className="tk-sen">
-          <PixelFx spec={fxSen()} scale={3} dur={1} />
-        </div>
         {tt && (
           <div className="nv-why nv-tt" role="dialog" aria-label={tr('Danh hiệu', 'Titles')} onClick={() => setTt(false)}>
-            <b>{tr('Danh hiệu', 'Titles')}</b>
-            {titles.length ? (
-              <ul>
-                {titles.map((x) => (
-                  <li key={x}>{x}</li>
-                ))}
-              </ul>
-            ) : (
-              <p>{tr(`Chưa có danh hiệu Tam Tài, nên hiện cảnh giới cao nhất ngươi từng lên qua mọi kiếp: ${title}.`, `No Three Treasures title yet, so this shows the highest realm you ever reached: ${title}.`)}</p>
-            )}
-            <small>{tr('Danh hiệu có khi khai đủ 10 huyệt, viên mãn một hành, ngộ đủ đạo một cõi. Xem ở tab Tam Tài. Chạm để đóng.', 'Titles come from opening all 10 points, perfecting an element, or attaining every Dao of a realm. See the Treasures tab. Tap to close.')}</small>
+            <b>{tr('Cấp chân thân: Phàm Nhân', 'True self rank: Mortal')}</b>
+            <p>{tr('Chân thân của mọi người hiện đều là Phàm Nhân. Cách tu luyện chân thân, đồ và công pháp sẽ mở sau Sơn Môn.', 'Every true self is still a Mortal for now. True self cultivation, gear and techniques open after the Sects update.')}</p>
+            <small>{tr('Chạm để đóng.', 'Tap to close.')}</small>
           </div>
         )}
       </div>
@@ -145,7 +126,11 @@ export function NhanVatStage({ ct, meta, ext, onSlot, active }: { ct: ChanThanLo
           </svg>
           <small className="nv-pw-lbl">{tr('Lực chiến', 'Power')}</small>
           <b className="nv-pw-n">{fmt(p.total)}</b>
-          <i aria-hidden="true">{why ? '▴' : '▾'}</i>
+          <i className={`nv-pw-go${why ? ' up' : ''}`} aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 9 9" shapeRendering="crispEdges">
+              <path d="M1 2h1v1h-1zM2 3h1v1h-1zM3 4h1v1h-1zM4 5h1v1h-1zM5 4h1v1h-1zM6 3h1v1h-1zM7 2h1v1h-1zM1 3h1v1h-1zM2 4h1v1h-1zM3 5h1v1h-1zM4 6h1v1h-1zM5 5h1v1h-1zM6 4h1v1h-1zM7 3h1v1h-1z" fill="currentColor" />
+            </svg>
+          </i>
         </span>
       </button>
       {why && (

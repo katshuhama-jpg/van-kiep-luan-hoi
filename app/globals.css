@@ -5588,6 +5588,12 @@ body[data-ctflow='1'] { overflow: hidden; }
 .nv-pw-ic { flex: none; filter: drop-shadow(1px 1px 0 #000); }
 .nv-pw-lbl { padding: 1px 6px; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #ffd36b; background: #a8202a; border: 2px solid #ffd36b; }
 .nv-pw-n { font-size: 30px; line-height: 1; letter-spacing: 1px; color: #ffd36b; text-shadow: 2px 0 0 #7a1f12, -2px 0 0 #7a1f12, 0 2px 0 #7a1f12, 0 -2px 0 #7a1f12, 3px 3px 0 #1f160d; }
-.nv-power > .nv-pw-in > i { font-style: normal; font-size: 12px; color: #e6cfa4; }
+
 /* nút quay lại đứng đầu hàng thì luôn sát mép trái, không bị đẩy ra giữa */
 .topbar-row > .icon-btn:first-child { margin-left: 0; }
+/* mũi tên lực chiến to, có khung, nảy nhẹ để thấy là bấm được */
+.nv-pw-go { flex: none; display: grid; place-items: center; width: 38px; height: 38px; color: #1f160d; background: #ffd36b; border: 2px solid #7a4a12; box-shadow: 2px 2px 0 #000; animation: nvGo 1.2s steps(2) infinite; }
+.nv-pw-go.up { animation: none; transform: rotate(180deg); }
+@keyframes nvGo { 50% { transform: translateY(2px); } }
+@media (prefers-reduced-motion: reduce) { .nv-pw-go { animation: none; } }
+.nv-power .nv-pw-go { color: #1f160d; font-style: normal; }

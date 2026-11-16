@@ -28,7 +28,8 @@ const meta = (p) => p.evaluate(() => JSON.parse(localStorage.getItem('vkl.meta')
   const lc = await p.textContent('.nv-power b');
   ok(/^[0-9.]+$/.test(lc.trim()) && parseInt(lc.replace(/\./g, '')) > 1000, 'có lực chiến: ' + lc);
   await p.click('.nv-power'); ok(!!(await p.$('.nv-why2')), 'chạm lực chiến thấy cách tính'); await p.click('.nv-power');
-  ok((await p.textContent('.nv-title')).trim() === 'Kim Đan', 'danh hiệu theo cảnh giới cao nhất (Kim Đan)');
+  ok((await p.textContent('.nv-title')).trim() === 'Phàm Nhân', 'cấp chân thân: Phàm Nhân (16/11, ai cũng vậy)');
+  ok(!(await p.$('.nv-stage .tk-floor, .nv-stage .tk-sen')), 'chưa có pháp trận, đài sen dưới chân');
   // 16/11: chưa ai có đồ; Mũ, Vũ khí, Cánh, Phụ kiện, Quần áo để trống
   ok((await p.textContent('.nv-tab.on')).includes('Ngoại trang'), 'mở trang thấy tab Ngoại trang trước');
   for (const t of ['Mũ', 'Vũ khí', 'Cánh', 'Phụ kiện']) {
