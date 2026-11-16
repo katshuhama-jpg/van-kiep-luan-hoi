@@ -242,7 +242,7 @@ Lên bản: 2026-11-18. Bật cờ `SON_MON_ON`, có cáo thị 4.6.0.
     - #265: "Cảm ơn bạn đã báo. Trưa 16/11 nút Ra đài bị thanh tab dưới đáy che, mình sửa ngay chiều hôm đó, giờ Lôi đài đánh bình thường rồi. Mình tặng bạn chút phúc duyên bù cho mấy lượt bị kẹt."
     - #261: "Mình hiểu, có thành tựu cần chỉ số thấp mà chỉ số cứ tăng. Mình ghi lại ý thêm cách tự hạ chỉ số."
     - #264: "Mình ghi nhận: tâm pháp lên cấp cao mà không thêm gì thì phí công. Mình sẽ xem lại để mỗi cấp tâm pháp có thêm tác dụng."
-    - #269: "Ý hay, cảm ơn bạn. Sơn Môn mở 5:00 sáng 18/11, số kết cục ngươi đã mở được tính vào Lực chiến ở đó. Thưởng riêng cho kết cục chết mình ghi lại."
+    - #269: "Ý hay, cảm ơn bạn. Sơn Môn mở 5:00 sáng 18/11, số kết cục bạn đã mở được tính vào Lực chiến ở đó. Thưởng riêng cho kết cục chết mình ghi lại."
     - #270: "Cảm ơn bạn. Kiếp 2 đã lên Chân Tiên thì đúng là nhanh. Mình ghi lại ý cho chọn độ khó."
     - #259: "Cảm ơn bạn đã chấm. Thua giao đấu để lại thương nặng, nghỉ vài năm cho lành rồi hẵng đánh tiếp sẽ đỡ hơn."
     - #260: "Kiếp hay nhất trong 13 kiếp, nghe vui quá. Cảm ơn bạn!"
