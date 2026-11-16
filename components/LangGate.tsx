@@ -4,13 +4,14 @@ import { useEffect, useState } from 'react';
 import { lang } from '@/lib/i18n';
 
 /**
- * Bản tiếng Anh dựng hoàn toàn ở máy người chơi (dữ liệu game dịch lúc tải trang),
- * nên máy chủ không vẽ trước để khỏi lệch chữ khi hydrate. Tiếng Việt vẫn vẽ trước như cũ.
+ * Trang được dựng sẵn một lần (tiếng Việt) và lấy từ CDN. Ngôn ngữ chỉ biết ở máy người chơi (localStorage),
+ * và dữ liệu game dịch ngay lúc tải mã, nên nội dung trang chỉ vẽ ở máy người chơi để không lệch chữ khi hydrate.
+ * (Trước 16/11 máy chủ đọc cookie vkl_lang để vẽ trước bản tiếng Việt; bỏ để trang không phải dựng lại mỗi lần mở.)
  */
-export default function LangGate({ en, children }: { en: boolean; children: React.ReactNode }) {
-  const [ok, setOk] = useState(!en);
+export default function LangGate({ children }: { children: React.ReactNode }) {
+  const [ok, setOk] = useState(false);
   useEffect(() => {
-    // link chia sẻ ?lang=en (hoặc vi): đặt ngôn ngữ rồi tải lại một lần, bỏ tham số khỏi link
+    // link chia sẻ ?lang=en (hoặc vi): đặt ngôn ngữ rồi tải lại một lần nếu khác ngôn ngữ đang dùng, bỏ tham số khỏi link
     try {
       const q = new URLSearchParams(location.search).get('lang');
       if (q === 'en' || q === 'vi') {
@@ -18,22 +19,15 @@ export default function LangGate({ en, children }: { en: boolean; children: Reac
         document.cookie = `vkl_lang=${q}; path=/; max-age=31536000; samesite=lax`;
         const u = new URL(location.href);
         u.searchParams.delete('lang');
-        if (lang() !== q || en !== (q === 'en')) {
+        if (lang() !== q) {
           location.replace(u.toString());
           return;
         }
         history.replaceState(null, '', u.toString());
       }
     } catch {}
-    const want = lang() === 'en';
-    if (want !== en) {
-      // cookie và máy lệch nhau (xóa cookie, đổi máy...): đồng bộ cookie rồi tải lại một lần
-      try {
-        document.cookie = `vkl_lang=${want ? 'en' : 'vi'}; path=/; max-age=31536000; samesite=lax`;
-      } catch {}
-      if (want) location.reload();
-    }
+    document.documentElement.lang = lang();
     setOk(true);
-  }, [en]);
+  }, []);
   return ok ? <>{children}</> : null;
 }

@@ -7,6 +7,13 @@ import { tr } from '@/lib/i18n';
 
 type Props = { params: Promise<{ id: string }> };
 
+/** 16/11: thẻ khoe không đổi sau khi tạo; dựng lần đầu có người mở rồi CDN giữ 1 giờ, khỏi chạy hàm máy chủ mỗi lần mở */
+export const revalidate = 3600;
+export const dynamicParams = true;
+export function generateStaticParams() {
+  return [];
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const m = /^[A-Za-z0-9]{6,16}$/.test(id) ? await cardMeta(id) : null;
