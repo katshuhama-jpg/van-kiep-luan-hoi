@@ -245,6 +245,12 @@ Quảng cáo Facebook: CHƯA chạy đợt Sơn Môn. Điều kiện đặt đê
 
 Nội dung soạn sẵn: không có thứ mới đáng khoe đêm nay (sửa chữ và cân bằng nhỏ). Bài Sơn Môn để đêm 17/11.
 
+Bổ sung 22:10 (Tyler gửi ảnh Trình quản lý quảng cáo lúc 21:59):
+- Sửa số: so cùng khung giờ (trước 22h), phiên từ quảng cáo 13/11 210, 14/11 236, 15/11 224, 16/11 134 (giảm khoảng 40%, không phải 237 -> 70 như tin trước, tin trước so cả ngày với nửa ngày).
+- Meta: đã tiêu 152.967đ / 300.000đ, 698 click, 219đ mỗi click, CTR 12,4%, tần suất 1,3. anh40 591 click (126.190đ), diaphu 67, manhua1 32, buivang 8. Ngân sách chưa hết: còn khoảng 147.000đ cho 17-19/11, Meta sẽ tiêu khoảng 49.000đ mỗi tối.
+- Phễu quảng cáo 13-16/11 (vkl_events): 980 phiên -> 474 vào kiếp -> 251 xong kiếp 1 -> 194 tạo chân thân -> 157 đăng ký. Giá: khoảng 156đ mỗi phiên, 610đ mỗi người xong kiếp 1, 975đ mỗi tài khoản. Rẻ hơn rất xa mốc dừng 6.000đ mỗi người xong kiếp 1.
+- Đề xuất (đổi so với tin trước): giữ đợt này tới 19/11, không sửa. Đợt Sơn Môn chạy 20-26/11, 50.000đ/ngày (350.000đ), 17h-24h, VN 18-40 Advantage+, Lưu lượng truy cập; 2 mẫu: anh40 (giữ nguyên ảnh, chỉ đổi utm_campaign) và ảnh bản đồ Sơn Môn lục giác ("Lập môn cùng đạo hữu, giữ đất trên bản đồ. Kỷ 1 tới 1/12."), bỏ hai video. Dừng mẫu nào trên 2.000đ mỗi người xong kiếp 1 sau 2 tối, hoặc D1 nhóm quảng cáo dưới 20%.
+
 ## Đêm 15/11/2026 (lên bản 16/11)
 
 Kế hoạch đêm nay: 4.6.0 Ngày 3, 3b, 4, 5, 6 xong và đẩy `next`. Người chơi thấy từ 16/11: Sư Đồ (nút Mời đệ tử ở trang Chân thân) và thanh 4 tab + Menu. Sơn Môn vẫn sau cờ, tab Sơn Môn chỉ có màn chờ "Mở cửa 5:00 sáng 18/11". Máy chủ đã áp 2 migration mới (`su_do_2026_11_16`, `son_mon_ket_ky_2026_11_16`), không sửa hàm cũ.
