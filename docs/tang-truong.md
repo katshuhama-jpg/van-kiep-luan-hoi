@@ -4,6 +4,21 @@ Tyler chốt 12/11/2026: mỗi đêm sau khi xong khối kế hoạch, xem số 
 
 Mốc so sánh: còn chơi sau 7 ngày (D7) 11-14% (`docs/so-lieu.md`, mốc trước 4.5.0).
 
+## Việc Tyler giao cho đêm 16/11 - lên bản 5:00 sáng 17/11 (bắt buộc)
+
+**Lỗi chữ "oan hồn đỡ đòn vô cớ"** (Nguyễn Quang báo qua Messenger 16/11 15:00, đã hứa với bạn ấy là sửa).
+
+- Hiện tượng: chọn lựa chọn có rủi ro chết (`fatal()`), xúc xắc ra chết nhưng được cứu (oan hồn `c.oanHon`, sư phụ cứu `masterSaves`, hoặc thân tu đạo `phamGuard` chỉ bị thương). Sự kiện vẫn in đoạn kết "bình an" và vẫn cộng thưởng, rồi mới nối câu cứu mạng. Ví dụ `canh_doc` (Quán trọ ven đường): "Canh ngon thật. Hóa ra chủ quán chỉ là người tốt bụng." + "Một bóng oan hồn... lao ra chắn đòn", còn +10 sức khỏe. Tiệc Hồng Môn cũng vậy (+200 linh thạch).
+- Phạm vi: 65 chỗ dạng `return <kết bình an> + (f ?? '')` - events.ts 49, hopHoan.ts 8, events2.ts 5, events3.ts 2, ambush.ts 1.
+- Cách sửa: khi `f` khác null thì người chơi đã gặp nạn thật. Mỗi chỗ đổi thành: một câu ngắn kể nạn có thật (canh có độc, rượu có độc, kẻ phục kích ra tay...) + `f`, không in kết bình an, không cộng phần thưởng của nhánh bình an. Viết câu theo từng sự kiện cho khớp lời kể (dùng /humanizer, có bản tiếng Anh, dùng "-" không dùng "—"). Câu cứu mạng trong `fatal()` giữ nguyên.
+- Kiểm tra: thêm script chạy từng lựa chọn trong 65 chỗ với `c.oanHon = true` và xúc xắc ép ra chết, xác nhận chữ trả về không còn câu kết bình an và không cộng thưởng; tsc, build, smoke như thường lệ.
+- Cáo thị 17/11 (ngắn, không số): "Khi oan hồn hay sư phụ cứu ngươi khỏi cửa tử, sự kiện giờ kể đúng là ngươi vừa thoát chết. Cảm ơn Nguyễn Quang đã báo."
+- Sau khi lên bản và kiểm tra site chạy thật: nhắn Quang một dòng ngắn "bản sáng nay 17/11 sửa rồi nha bạn" (Tyler duyệt gửi trước).
+
+Hai việc nhỏ cùng nguồn (Quang hỏi 16/11), làm nếu còn thời gian, không bắt buộc cho 17/11:
+- Biểu đồ chỉ số nhân vật: trục "Tài" (điểm giàu theo linh thạch, `wealthScore`) dễ hiểu nhầm. Chạm vào trục hiện một dòng giải thích, hoặc đổi nhãn rõ hơn.
+- Thiên phú cộng sức khỏe bị chặn ở 100 mà người chơi không biết. Màn mua thiên phú ghi rõ "sức khỏe tối đa 100", hoặc phần dư đổi thành thọ nguyên (cần mô phỏng cân bằng trước).
+
 ## Câu SQL dùng mỗi đêm
 
 ```sql
