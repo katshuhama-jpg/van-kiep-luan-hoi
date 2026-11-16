@@ -220,10 +220,11 @@ export const COSMOS_EVENTS: GameEvent[] = [
             ch.endTag = 'tu_tran';
             return tr('Trận chiến kéo dài bảy ngày.', "The battle rages for seven days.") + f;
           }
+          if (f) return tr('Trận chiến kéo dài bảy ngày, bạn bị vây giữa vạn quân.', "The battle rages for seven days, and you are surrounded by ten thousand troops.") + f; // thoát chết thật: kể nạn, không thưởng
           addCult(ch, reward(ch, 2));
           stat(ch, 'sucKhoe', -30);
           dao(ch, ch.cosmos === 'ma' ? -10 : 10);
-          return tr(`Bạn chém tướng đoạt cờ, công lao đứng đầu. Tu vi tăng vọt.${f ?? ''}`, `You slay generals and seize banners, earning top merit. Your cultivation soars.${f ?? ''}`);
+          return tr(`Bạn chém tướng đoạt cờ, công lao đứng đầu. Tu vi tăng vọt.`, `You slay generals and seize banners, earning top merit. Your cultivation soars.`);
         },
       },
       {
@@ -340,10 +341,11 @@ export const COSMOS_EVENTS: GameEvent[] = [
         run: (c, ctx) => {
           const f = fatal(c, ctx, 0.22, tr('Bạn bị chính thuộc hạ đâm sau lưng khi vừa ngồi lên ngai xương. Ma giới không có lòng trung thành.', "Your own subordinate stabs you in the back the moment you sit on the bone throne. The Demon Realm knows no loyalty."));
           if (c.dead) return tr('Bạn ra tay.', "You strike.") + f;
+          if (f) return tr('Bạn ra tay. Thuộc hạ sau lưng cũng ra tay, một nhát đâm vào tim.', "You strike. The underling behind you strikes too, a stab at your heart.") + f; // thoát chết thật: kể nạn, không thưởng
           addCult(c, reward(c, 1.8));
           dao(c, -10);
           money(c, 2000);
-          return tr(`Bạn chém ma chúa già, ngồi lên ngai xương. Trăm ma vương quỳ xuống.${f ?? ''}`, `You cut down the old demon lord and take the bone throne. A hundred demon kings kneel.${f ?? ''}`);
+          return tr(`Bạn chém ma chúa già, ngồi lên ngai xương. Trăm ma vương quỳ xuống.`, `You cut down the old demon lord and take the bone throne. A hundred demon kings kneel.`);
         },
       },
       {

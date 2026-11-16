@@ -265,8 +265,9 @@ export const EVENTS: GameEvent[] = [
             run: (c, ctx) => {
               const f = fatal(c, ctx, 0.08, tr('Bạn trượt tay rơi từ vách đá xuống. Năm ấy bạn mới lên bảy.', "Your hand slips and you fall from the cliff. You were only seven that year."));
               if (c.dead) return tr('Gần tới tổ chim rồi...', "Almost at the nest...") + f;
+              if (f) return tr('Bạn trượt tay, rơi từ vách đá xuống.', "Your hand slips and you fall from the cliff.") + f; // thoát chết thật: kể nạn, không thưởng
               stat(c, 'sucKhoe', 6);
-              return tr('Bạn mang về ba quả trứng chim, mẹ mắng nhưng vẫn luộc cho ăn.', "You bring home three bird eggs. Mother scolds you, but boils them for you anyway.") + (f ?? '');
+              return tr('Bạn mang về ba quả trứng chim, mẹ mắng nhưng vẫn luộc cho ăn.', "You bring home three bird eggs. Mother scolds you, but boils them for you anyway.");
             },
           },
           {
@@ -329,7 +330,8 @@ export const EVENTS: GameEvent[] = [
           }
           const f = fatal(c, ctx, 0.35, tr(`Nhà không đủ tiền mời thầy. Bạn mất vì đậu mùa năm ${Math.floor(c.age)} tuổi.`, `Your family couldn't afford a physician. You died of smallpox at age ${Math.floor(c.age)}.`));
           if (c.dead) return tr('Thầy lang lắc đầu bỏ đi...', "The physician shakes his head and leaves...") + f;
-          return tr('Thầy lang không chịu tới. May sao bạn tự qua khỏi.', "The physician refuses to come. Luckily, you pull through on your own.") + (f ?? '');
+          if (f) return tr('Không thầy, không thuốc, cơn sốt đậu mùa kéo bạn tới sát cửa tử.', "No physician, no medicine - the smallpox fever drags you to death's door.") + f; // thoát chết thật: kể nạn, không thưởng
+          return tr('Thầy lang không chịu tới. May sao bạn tự qua khỏi.', "The physician refuses to come. Luckily, you pull through on your own.");
         },
       },
       {
@@ -338,8 +340,9 @@ export const EVENTS: GameEvent[] = [
         run: (c, ctx) => {
           const f = fatal(c, ctx, 0.15, tr('Mẹ ôm bạn suốt bảy đêm, nhưng cơn sốt không dứt. Bạn ra đi trong vòng tay mẹ.', "Mother holds you for seven nights, but the fever won't break. You pass away in her arms."));
           if (c.dead) return tr('Đêm thứ bảy...', "The seventh night...") + f;
+          if (f) return tr('Tới đêm thứ bảy, cơn sốt lên cao, hơi thở bạn yếu dần.', "By the seventh night the fever peaks and your breath grows faint.") + f; // thoát chết thật: kể nạn, không thưởng
           stat(c, 'tamCanh', 6);
-          return tr('Sáng ngày thứ tám bạn mở mắt, thấy mẹ ngủ gục bên giường.', "On the eighth morning you open your eyes and find Mother asleep by the bed.") + (f ?? '');
+          return tr('Sáng ngày thứ tám bạn mở mắt, thấy mẹ ngủ gục bên giường.', "On the eighth morning you open your eyes and find Mother asleep by the bed.");
         },
       },
       {
@@ -348,8 +351,9 @@ export const EVENTS: GameEvent[] = [
         run: (c, ctx) => {
           const f = fatal(c, ctx, 0.3, tr('Thầy mo bắt uống nước bùa lẫn tro. Bạn không qua khỏi.', "The shaman makes you drink talisman water mixed with ash. You don't make it."));
           if (c.dead) return tr('Khói hương nghi ngút...', "Incense smoke billows...") + f;
+          if (f) return tr('Nước bùa lẫn tro vào bụng, bạn co giật rồi lịm đi.', "The ash-laced talisman water hits your stomach. You convulse, then go limp.") + f; // thoát chết thật: kể nạn, không thưởng
           stat(c, 'khiVan', 5);
-          return tr('Không biết nhờ bùa hay nhờ trời, bạn khỏi bệnh.', "Whether it was the talisman or Heaven's mercy, you recover.") + (f ?? '');
+          return tr('Không biết nhờ bùa hay nhờ trời, bạn khỏi bệnh.', "Whether it was the talisman or Heaven's mercy, you recover.");
         },
       },
       {
@@ -358,8 +362,9 @@ export const EVENTS: GameEvent[] = [
         run: (c, ctx) => {
           const f = fatal(c, ctx, 0.1, tr('Đường lên chùa xa quá. Bạn trút hơi thở cuối trên lưng cha.', "The road to the temple is too long. You breathe your last on Father's back."));
           if (c.dead) return tr('Cha chạy suốt đêm...', "Father runs all night...") + f;
+          if (f) return tr('Đường lên chùa xa quá, bạn lịm đi trên lưng cha.', "The road to the temple is long, and you go limp on Father's back.") + f; // thoát chết thật: kể nạn, không thưởng
           dao(c, 4);
-          return tr('Sư cụ cho thuốc, còn xoa đầu bảo bạn có duệ căn.', "The old abbot gives you medicine and pats your head, saying you have Buddha-nature.") + (f ?? '');
+          return tr('Sư cụ cho thuốc, còn xoa đầu bảo bạn có duệ căn.', "The old abbot gives you medicine and pats your head, saying you have Buddha-nature.");
         },
       },
     ],
@@ -383,8 +388,9 @@ export const EVENTS: GameEvent[] = [
             run: (c, ctx) => {
               const f = fatal(c, ctx, 0.15, tr('Bạn trượt chân rơi xuống giếng cổ. Ba ngày sau người ta mới vớt được.', "You slip and fall into the old well. They only fish you out three days later."));
               if (c.dead) return tr('Bạn lấy đà...', "You take a running start...") + f;
+              if (f) return tr('Bạn trượt chân, rơi tõm xuống giếng cổ.', "You slip and plunge into the old well.") + f; // thoát chết thật: kể nạn, không thưởng
               stat(c, 'khiVan', 4);
-              return tr('Bạn nhảy qua ngon lành, không ai tìm ra.', "You clear it with ease. Nobody finds you.") + (f ?? '');
+              return tr('Bạn nhảy qua ngon lành, không ai tìm ra.', "You clear it with ease. Nobody finds you.");
             },
           },
           {
@@ -393,8 +399,9 @@ export const EVENTS: GameEvent[] = [
             run: (c, ctx) => {
               const f = fatal(c, ctx, 0.08, tr('Cành cây gãy. Bạn rơi xuống đất, không bao giờ tỉnh lại.', "The branch snaps. You hit the ground and never wake up."));
               if (c.dead) return tr('Càng trèo càng cao...', "Higher and higher...") + f;
+              if (f) return tr('Cành cây gãy rắc, bạn rơi thẳng xuống đất.', "The branch snaps and you drop straight to the ground.") + f; // thoát chết thật: kể nạn, không thưởng
               stat(c, 'sucKhoe', 4);
-              return tr('Bạn ngủ quên trên cây, cả làng đi tìm đến tối.', "You fall asleep in the tree. The whole village searches for you until dark.") + (f ?? '');
+              return tr('Bạn ngủ quên trên cây, cả làng đi tìm đến tối.', "You fall asleep in the tree. The whole village searches for you until dark.");
             },
           },
           {
@@ -453,8 +460,9 @@ export const EVENTS: GameEvent[] = [
         run: (c, ctx) => {
           const f = fatal(c, ctx, 0.5, tr('Bạn bị bắt cóc, bán sang biên ải. Không ai còn thấy bạn nữa.', "You are kidnapped and sold beyond the frontier. No one ever sees you again."));
           if (c.dead) return tr('Gã dắt tay bạn đi xa dần...', "He leads you farther and farther away...") + f;
+          if (f) return tr('Gã bịt miệng bạn, dắt đi xa dần khỏi làng.', "He gags you and leads you farther and farther from the village.") + f; // thoát chết thật: kể nạn, không thưởng
           stat(c, 'khiVan', 5);
-          return tr('Đi được nửa đường thì gặp tuần binh. Gã bỏ chạy, bạn được đưa về nhà.', "Halfway there you run into a patrol. He flees, and you're brought home.") + (f ?? '');
+          return tr('Đi được nửa đường thì gặp tuần binh. Gã bỏ chạy, bạn được đưa về nhà.', "Halfway there you run into a patrol. He flees, and you're brought home.");
         },
       },
       {
@@ -504,8 +512,9 @@ export const EVENTS: GameEvent[] = [
             run: (c, ctx) => {
               const f = fatal(c, ctx, 0.1, tr('Bạn bị dòng xoáy kéo xuống. Khúc sông năm ấy cướp mất một đứa trẻ.', "A whirlpool drags you under. That year the river took a child."));
               if (c.dead) return tr('Bạn hít một hơi thật sâu...', "You take a deep breath...") + f;
+              if (f) return tr('Giữa sông, dòng xoáy kéo bạn chìm xuống.', "Midstream, a whirlpool drags you under.") + f; // thoát chết thật: kể nạn, không thưởng
               stat(c, 'sucKhoe', 6);
-              return tr('Bạn thắng, lũ bạn phục sát đất.', "You win. Your friends are in awe.") + (f ?? '');
+              return tr('Bạn thắng, lũ bạn phục sát đất.', "You win. Your friends are in awe.");
             },
           },
           {
@@ -515,8 +524,9 @@ export const EVENTS: GameEvent[] = [
               dao(c, 10);
               const f = fatal(c, ctx, 0.15, tr('Bạn cứu được bạn mình, nhưng kiệt sức và bị nước cuốn đi.', "You save your friend, but you're exhausted and the current sweeps you away."));
               if (c.dead) return tr('Bạn bơi ra giữa dòng...', "You swim out into the current...") + f;
+              if (f) return tr('Bạn đẩy được bạn mình vào bờ, rồi kiệt sức, bị nước cuốn đi.', "You push your friend to shore, then, exhausted, the current sweeps you away.") + f; // thoát chết thật: kể nạn, không thưởng
               stat(c, 'khiVan', 6);
-              return tr('Bạn kéo được bạn vào bờ. Nhà nó mang gà sang cảm ơn.', "You drag your friend to shore. Their family brings over a chicken as thanks.") + (f ?? '');
+              return tr('Bạn kéo được bạn vào bờ. Nhà nó mang gà sang cảm ơn.', "You drag your friend to shore. Their family brings over a chicken as thanks.");
             },
           },
           {
@@ -569,7 +579,8 @@ export const EVENTS: GameEvent[] = [
         run: (c, ctx) => {
           const f = fatal(c, ctx, 0.15, tr('Thích khách tìm ra mật thất. Bạn chết khi mới vài tuổi đầu.', "The assassin finds the secret chamber. You die when you're barely a few years old."));
           if (c.dead) return tr('Bạn nín thở trong bóng tối...', "You hold your breath in the dark...") + f;
-          return tr('Thích khách lục soát cả đêm không thấy. Từ đó bạn ngủ không yên.', "The assassin searches all night and finds nothing. You never sleep soundly again.") + (f ?? '');
+          if (f) return tr('Thích khách tìm ra mật thất, lưỡi dao đã kề cổ bạn.', "The assassin finds the secret chamber and his blade is at your throat.") + f; // thoát chết thật: kể nạn, không thưởng
+          return tr('Thích khách lục soát cả đêm không thấy. Từ đó bạn ngủ không yên.', "The assassin searches all night and finds nothing. You never sleep soundly again.");
         },
       },
       {
@@ -578,8 +589,9 @@ export const EVENTS: GameEvent[] = [
         run: (c, ctx) => {
           const f = fatal(c, ctx, 0.2, tr('Một mũi phi tiêu tẩm độc trúng lưng khi bạn băng qua sân.', "A poisoned dart strikes your back as you dash across the courtyard."));
           if (c.dead) return tr('Bạn chạy băng qua sân...', "You dash across the courtyard...") + f;
+          if (f) return tr('Một mũi phi tiêu tẩm độc trúng lưng bạn giữa sân.', "A poisoned dart hits your back in the middle of the courtyard.") + f; // thoát chết thật: kể nạn, không thưởng
           dao(c, 4);
-          return tr('Cha kịp đánh lui thích khách. Gia tộc rúng động.', "Father drives off the assassin in time. The whole clan is shaken.") + (f ?? '');
+          return tr('Cha kịp đánh lui thích khách. Gia tộc rúng động.', "Father drives off the assassin in time. The whole clan is shaken.");
         },
       },
       {
@@ -588,8 +600,9 @@ export const EVENTS: GameEvent[] = [
         run: (c, ctx) => {
           const f = fatal(c, ctx, 0.35, tr('Thích khách không cần biết bạn thức hay ngủ.', "The assassin doesn't care whether you're awake or asleep."));
           if (c.dead) return tr('Bạn nhắm mắt...', "You close your eyes...") + f;
+          if (f) return tr('Thích khách giơ dao lên.', "The assassin raises his blade.") + f; // thoát chết thật: kể nạn, không thưởng
           stat(c, 'tamCanh', 8);
-          return tr('Hắn đứng nhìn bạn rất lâu, rồi lặng lẽ bỏ đi. Có lẽ hắn cũng có con.', "He stands watching you for a long time, then quietly leaves. Perhaps he has a child too.") + (f ?? '');
+          return tr('Hắn đứng nhìn bạn rất lâu, rồi lặng lẽ bỏ đi. Có lẽ hắn cũng có con.', "He stands watching you for a long time, then quietly leaves. Perhaps he has a child too.");
         },
       },
       {
@@ -599,8 +612,9 @@ export const EVENTS: GameEvent[] = [
           dao(c, -6);
           const f = fatal(c, ctx, 0.12, tr('Lửa lan quá nhanh, bạn không thoát ra được.', "The fire spreads too fast. You can't get out."));
           if (c.dead) return tr('Ngọn lửa bùng lên...', "The flames roar up...") + f;
+          if (f) return tr('Lửa lan quá nhanh, khói đặc vây kín phòng.', "The fire spreads too fast and thick smoke fills the room.") + f; // thoát chết thật: kể nạn, không thưởng
           c.enemy = c.enemy ?? tr('chi trưởng Lâm gia', "the main branch of the Lin clan");
-          return tr('Thích khách chết cháy, bạn nhảy qua cửa sổ thoát thân.', "The assassin burns to death. You leap out the window and escape.") + (f ?? '');
+          return tr('Thích khách chết cháy, bạn nhảy qua cửa sổ thoát thân.', "The assassin burns to death. You leap out the window and escape.");
         },
       },
     ],
@@ -625,8 +639,9 @@ export const EVENTS: GameEvent[] = [
             run: (c, ctx) => {
               const f = fatal(c, ctx, 0.12, tr('Bạn ăn nhầm rễ cây độc. Cả nhà khóc ngất.', "You eat a poisonous root by mistake. The family weeps themselves faint."));
               if (c.dead) return tr('Bạn nhai rễ cây đắng ngắt...', "You chew the bitter roots...") + f;
+              if (f) return tr('Bạn ăn nhầm rễ độc, ngã vật ra đất.', "You eat a poisonous root by mistake and collapse.") + f; // thoát chết thật: kể nạn, không thưởng
               stat(c, 'sucKhoe', -6);
-              return tr('Đắng, nhưng sống qua được mùa đói.', "Bitter, but it gets you through the famine.") + (f ?? '');
+              return tr('Đắng, nhưng sống qua được mùa đói.', "Bitter, but it gets you through the famine.");
             },
           },
           {
@@ -645,8 +660,9 @@ export const EVENTS: GameEvent[] = [
               dao(c, -6);
               const f = fatal(c, ctx, 0.18, tr('Bạn bị lính canh bắt được, đánh chết ngay trước cổng kho.', "The guards catch you and beat you to death right at the granary gate."));
               if (c.dead) return tr('Bạn chui qua lỗ chó...', "You squeeze through the dog hole...") + f;
+              if (f) return tr('Lính canh tóm được bạn, gậy gộc giáng xuống tới tấp.', "The guards catch you and the clubs rain down.") + f; // thoát chết thật: kể nạn, không thưởng
               money(c, 10);
-              return tr('Bạn vác về được nửa bao gạo. Cả nhà sống qua mùa đông.', "You haul home half a sack of rice. The family survives the winter.") + (f ?? '');
+              return tr('Bạn vác về được nửa bao gạo. Cả nhà sống qua mùa đông.', "You haul home half a sack of rice. The family survives the winter.");
             },
           },
           {
@@ -665,8 +681,9 @@ export const EVENTS: GameEvent[] = [
               dao(c, 8);
               const f = fatal(c, ctx, 0.1, tr('Bạn nhường hết phần ăn, rồi gầy dần và không qua khỏi mùa đông ấy.', "You give away all your food, waste away, and don't survive that winter."));
               if (c.dead) return tr('Bạn bảo mình không đói...', "You say you're not hungry...") + f;
+              if (f) return tr('Bạn nhường hết phần ăn, tới giữa đông thì ngã gục.', "You give away all your food, and by midwinter you collapse.") + f; // thoát chết thật: kể nạn, không thưởng
               stat(c, 'tamCanh', 8);
-              return tr('Em bạn sống. Bạn cũng sống, gầy trơ xương.', "Your sibling lives. So do you, nothing but skin and bones.") + (f ?? '');
+              return tr('Em bạn sống. Bạn cũng sống, gầy trơ xương.', "Your sibling lives. So do you, nothing but skin and bones.");
             },
           },
         ],
@@ -747,7 +764,8 @@ export const EVENTS: GameEvent[] = [
         run: (c, ctx) => {
           const f = fatal(c, ctx, 0.3, tr('Thợ săn bắn trúng bạn. Bộ da yêu hồ được bán giá cao ở phường thị.', "A hunter shoots you. Your fox demon pelt fetches a high price at the Market."));
           if (c.dead) return tr('Bạn rón rén lại gần...', "You creep closer...") + f;
-          return tr('Bạn chạy thoát, mất một nhúm lông đuôi.', "You escape, minus a tuft of tail fur.") + (f ?? '');
+          if (f) return tr('Thợ săn buông tên, mũi tên lao thẳng vào bạn.', "The hunter looses an arrow straight at you.") + f; // thoát chết thật: kể nạn, không thưởng
+          return tr('Bạn chạy thoát, mất một nhúm lông đuôi.', "You escape, minus a tuft of tail fur.");
         },
       },
       {
@@ -807,9 +825,10 @@ export const EVENTS: GameEvent[] = [
             run: (c, ctx) => {
               const f = fatal(c, ctx, 0.4, tr('Đó là bầy sói đói. Sáng hôm sau người ta chỉ tìm thấy chiếc dép nhỏ.', "It's a pack of hungry wolves. The next morning, all anyone finds is a small sandal."));
               if (c.dead) return tr('Bạn tò mò đi tới...', "Curious, you walk toward it...") + f;
+              if (f) return tr('Đó là bầy sói đói. Chúng vây lấy bạn.', "It's a pack of hungry wolves, and they surround you.") + f; // thoát chết thật: kể nạn, không thưởng
               c.pet = true;
               c.petKind = 'soi_con';
-              return tr('Hóa ra là một con sói con bị thương. Bạn băng bó cho nó, nó đi theo bạn về làng.', "It's just a wounded wolf cub. You bandage it, and it follows you home.") + (f ?? '');
+              return tr('Hóa ra là một con sói con bị thương. Bạn băng bó cho nó, nó đi theo bạn về làng.', "It's just a wounded wolf cub. You bandage it, and it follows you home.");
             },
           },
           {
@@ -826,7 +845,8 @@ export const EVENTS: GameEvent[] = [
             run: (c, ctx) => {
               const f = fatal(c, ctx, 0.08, tr('Lửa bén vào cỏ khô. Cháy rừng.', "The fire catches the dry grass. Forest fire."));
               if (c.dead) return tr('Bạn nhóm lửa...', "You kindle a fire...") + f;
-              return tr('Ánh lửa giúp dân làng tìm thấy bạn.', "The firelight helps the villagers find you.") + (f ?? '');
+              if (f) return tr('Lửa bén vào cỏ khô, cháy lan quanh chỗ bạn ngồi.', "The fire catches the dry grass and spreads all around you.") + f; // thoát chết thật: kể nạn, không thưởng
+              return tr('Ánh lửa giúp dân làng tìm thấy bạn.', "The firelight helps the villagers find you.");
             },
           },
         ],
@@ -2171,8 +2191,9 @@ export const EVENTS: GameEvent[] = [
         run: (c, ctx) => {
           const f = fatal(c, ctx, 0.3, tr('Trong canh có Đoạn Trường Thảo. Bạn gục xuống bàn, chủ quán lục túi bạn rồi kéo xác ra sau bếp.', "The soup is laced with Heartbreak Grass. You slump onto the table; the innkeeper rifles your pouch and drags your body out back."));
           if (c.dead) return tr('Canh ngọt lạ thường...', "The soup is unusually sweet...") + f;
+          if (f) return tr('Trong canh có Đoạn Trường Thảo. Bạn gục xuống bàn.', "The soup is laced with Heartbreak Grass. You slump onto the table.") + f; // thoát chết thật: kể nạn, không thưởng
           stat(c, 'sucKhoe', 10);
-          return tr('Canh ngon thật. Hóa ra chủ quán chỉ là người tốt bụng.', "The soup really is delicious. Turns out the innkeeper is just a kind soul.") + (f ?? '');
+          return tr('Canh ngon thật. Hóa ra chủ quán chỉ là người tốt bụng.', "The soup really is delicious. Turns out the innkeeper is just a kind soul.");
         },
       },
       {
@@ -2222,8 +2243,9 @@ export const EVENTS: GameEvent[] = [
         run: (c, ctx) => {
           const f = fatal(c, ctx, c.realm >= 2 ? 0.05 : 0.2, tr(`Thuốc không cứu nổi. Bạn qua đời vì lao phổi ở tuổi ${Math.floor(c.age)}.`, `The medicine can't save you. You die of consumption at age ${Math.floor(c.age)}.`));
           if (c.dead) return tr('Bệnh mỗi ngày một nặng...', "The illness worsens by the day...") + f;
+          if (f) return tr('Thuốc không đỡ, bạn ho ra máu rồi ngất lịm.', "The medicine doesn't help. You cough blood and black out.") + f; // thoát chết thật: kể nạn, không thưởng
           stat(c, 'sucKhoe', 25);
-          return tr('Uống ba trăm thang thuốc đắng, bệnh lui dần.', "After three hundred bitter doses, the illness slowly recedes.") + (f ?? '');
+          return tr('Uống ba trăm thang thuốc đắng, bệnh lui dần.', "After three hundred bitter doses, the illness slowly recedes.");
         },
       },
       {
@@ -2282,10 +2304,11 @@ export const EVENTS: GameEvent[] = [
           dao(c, -15);
           const f = fatal(c, ctx, 0.3, tr('Luyện đến tầng ba, chân khí nghịch chuyển. Bạn tẩu hỏa nhập ma, bảy khiếu phun máu mà chết.', "At the third layer, your true qi flows in reverse. You suffer qi deviation and die bleeding from all seven orifices."));
           if (c.dead) return tr('Bạn ngồi xếp bằng, lật trang đầu...', "You sit cross-legged and turn the first page...") + f;
+          if (f) return tr('Luyện đến tầng ba, chân khí nghịch chuyển, bảy khiếu rỉ máu.', "At the third layer your true qi flows in reverse and blood seeps from all seven orifices.") + f; // thoát chết thật: kể nạn, không thưởng
           addCult(c, reward(c, 2));
           stat(c, 'tamMa', 20);
           ctx.fx('evil', tr('Ma công đại thành', "Demonic art mastered"));
-          return tr('Bạn luyện thành! Tu vi tăng vọt, đôi mắt từ nay đỏ ngầu.', "You master it! Your cultivation soars, and your eyes are bloodshot red from now on.") + (f ?? '');
+          return tr('Bạn luyện thành! Tu vi tăng vọt, đôi mắt từ nay đỏ ngầu.', "You master it! Your cultivation soars, and your eyes are bloodshot red from now on.");
         },
       },
       {
@@ -2295,9 +2318,10 @@ export const EVENTS: GameEvent[] = [
           dao(c, -6);
           const f = fatal(c, ctx, 0.08, tr('Một đêm trăng tròn, ma khí phản phệ. Bạn tẩu hỏa nhập ma.', "On a full-moon night, the demonic qi backlashes. You suffer qi deviation."));
           if (c.dead) return tr('Ba năm luyện chậm...', "Three years of slow practice...") + f;
+          if (f) return tr('Một đêm trăng tròn, ma khí phản phệ, bạn ngã vật ra.', "On a full-moon night the demonic qi backlashes and you collapse.") + f; // thoát chết thật: kể nạn, không thưởng
           addCult(c, reward(c, 0.8));
           stat(c, 'tamMa', 8);
-          return tr('Bạn chỉ luyện vài thức phòng thân. Tu vi nhích lên.', "You learn only a few forms for self-defense. Your cultivation inches up.") + (f ?? '');
+          return tr('Bạn chỉ luyện vài thức phòng thân. Tu vi nhích lên.', "You learn only a few forms for self-defense. Your cultivation inches up.");
         },
       },
       {
@@ -2422,8 +2446,9 @@ export const EVENTS: GameEvent[] = [
           }
           const f = fatal(c, ctx, 0.1, tr('Dây thừng đứt. Bạn rơi xuống vực.', "The rope snaps. You fall into the abyss."));
           if (c.dead) return tr('Bạn thả dây xuống...', "You lower the rope...") + f;
+          if (f) return tr('Dây thừng đứt, bạn rơi xuống vực.', "The rope snaps and you fall into the abyss.") + f; // thoát chết thật: kể nạn, không thưởng
           addCult(c, reward(c, 0.4));
-          return tr('Chật vật nửa ngày, cuối cùng cũng hái được.', "After half a day of struggle, you finally get it.") + (f ?? '');
+          return tr('Chật vật nửa ngày, cuối cùng cũng hái được.', "After half a day of struggle, you finally get it.");
         },
       },
       {
@@ -2466,7 +2491,8 @@ export const EVENTS: GameEvent[] = [
         run: (c, ctx) => {
           const f = fatal(c, ctx, c.realm >= 2 ? 0.02 : c.realm === 1 ? 0.12 : 0.5, tr('Độc chạy vào tim. Bạn ngã xuống ở bước thứ bảy.', "The venom reaches your heart. You collapse on the seventh step."));
           if (c.dead) return tr('Bạn ngồi xuống vận công...', "You sit down and circulate your qi...") + f;
-          return tr('Một dòng máu đen phun ra từ vết cắn. Bạn thoát chết.', "A stream of black blood spurts from the bite. You cheat death.") + (f ?? '');
+          if (f) return tr('Độc chạy vào tim, bạn ngã xuống ở bước thứ bảy.', "The venom reaches your heart and you collapse on the seventh step.") + f; // thoát chết thật: kể nạn, không thưởng
+          return tr('Một dòng máu đen phun ra từ vết cắn. Bạn thoát chết.', "A stream of black blood spurts from the bite. You cheat death.");
         },
       },
       {
@@ -2482,7 +2508,8 @@ export const EVENTS: GameEvent[] = [
           }
           const f = fatal(c, ctx, 0.4, tr('Lục túi không thấy đan dược. Bạn chết trong rừng sâu.', "You search your pouch and find no pills. You die deep in the forest."));
           if (c.dead) return tr('Bạn lục túi...', "You rummage through your pouch...") + f;
-          return tr('Không có đan, may mà con rắn này độc nhẹ.', "No pills, but luckily this snake's venom is mild.") + (f ?? '');
+          if (f) return tr('Không có đan, độc rắn lan khắp người, bạn ngã gục giữa rừng.', "No pills. The venom spreads and you collapse in the forest.") + f; // thoát chết thật: kể nạn, không thưởng
+          return tr('Không có đan, may mà con rắn này độc nhẹ.', "No pills, but luckily this snake's venom is mild.");
         },
       },
       {
@@ -2491,8 +2518,9 @@ export const EVENTS: GameEvent[] = [
         run: (c, ctx) => {
           const f = fatal(c, ctx, 0.2, tr('Thảo dược đắp nhầm lại là cỏ Đoạn Hồn. Bạn chết vì hai thứ độc.', "The herb you used is Soul-Severing Grass. You die from two poisons at once."));
           if (c.dead) return tr('Bạn nhai mấy lá cây...', "You chew up a few leaves...") + f;
+          if (f) return tr('Lá cây đắp nhầm lại là cỏ Đoạn Hồn, hai thứ độc cùng phát tác.', "The leaves were Soul-Severing Grass, and two poisons flare up at once.") + f; // thoát chết thật: kể nạn, không thưởng
           stat(c, 'ngoTinh', 3);
-          return tr('Đúng là Thanh Đại thảo, giải được độc rắn. Bạn học thêm một bài thuốc.', "It really was indigo herb - it cures snake venom. You learn a new remedy.") + (f ?? '');
+          return tr('Đúng là Thanh Đại thảo, giải được độc rắn. Bạn học thêm một bài thuốc.', "It really was indigo herb - it cures snake venom. You learn a new remedy.");
         },
       },
       {
@@ -2501,7 +2529,8 @@ export const EVENTS: GameEvent[] = [
         run: (c, ctx) => {
           const f = fatal(c, ctx, 0.5, tr('Bước thứ bảy, bạn ngã xuống. Lời đồn là thật.', "On the seventh step, you collapse. The rumor was true."));
           if (c.dead) return tr('Một, hai, ba...', "One, two, three...") + f;
-          return tr('Bạn đi tám bước, chín bước, vẫn sống. Lời đồn là giả.', "Eight steps, nine steps, still alive. The rumor was false.") + (f ?? '');
+          if (f) return tr('Bước thứ bảy, bạn ngã xuống. Lời đồn là thật.', "On the seventh step you collapse. The rumor was true.") + f; // thoát chết thật: kể nạn, không thưởng
+          return tr('Bạn đi tám bước, chín bước, vẫn sống. Lời đồn là giả.', "Eight steps, nine steps, still alive. The rumor was false.");
         },
       },
     ],
@@ -2535,7 +2564,8 @@ export const EVENTS: GameEvent[] = [
           const f = fatal(c, ctx, 0.15, tr('Một mũi tên tẩm độc cắm vào lưng khi bạn vừa nhảy ra ngoài.', "A poisoned arrow sinks into your back just as you leap outside."));
           if (c.dead) return tr('Bạn tung người qua cửa sổ...', "You fling yourself through the window...") + f;
           money(c, -c.linhThach * 0.3);
-          return tr('Bạn chạy thoát trong đêm, bỏ lại một phần gia sản.', "You escape into the night, leaving part of your fortune behind.") + (f ?? '');
+          if (f) return tr('Một mũi tên tẩm độc cắm vào lưng khi bạn vừa nhảy ra ngoài.', "A poisoned arrow sinks into your back as you leap outside.") + f; // thoát chết thật: kể nạn, không thưởng
+          return tr('Bạn chạy thoát trong đêm, bỏ lại một phần gia sản.', "You escape into the night, leaving part of your fortune behind.");
         },
       },
       {
@@ -2581,10 +2611,11 @@ export const EVENTS: GameEvent[] = [
           dao(c, -10);
           const f = fatal(c, ctx, 0.25, tr('Trăm loại độc cùng phát tác. Thân thể bạn tan thành nước đen trong hũ.', "A hundred poisons erupt at once. Your body dissolves into black liquid in the vat."));
           if (c.dead) return tr('Bạn nhảy vào...', "You jump in...") + f;
+          if (f) return tr('Trăm loại độc cùng phát tác, da thịt bạn bắt đầu tan ra.', "A hundred poisons erupt at once and your flesh starts to dissolve.") + f; // thoát chết thật: kể nạn, không thưởng
           addCult(c, reward(c, 1.4));
           stat(c, 'sucKhoe', 15);
           ctx.fx('evil', tr('Bách độc bất xâm', "Immune to all poisons"));
-          return tr('Bảy ngày bảy đêm, bạn bước ra. Từ nay bách độc bất xâm.', "After seven days and nights, you step out. From now on, no poison can touch you.") + (f ?? '');
+          return tr('Bảy ngày bảy đêm, bạn bước ra. Từ nay bách độc bất xâm.', "After seven days and nights, you step out. From now on, no poison can touch you.");
         },
       },
       {
@@ -2616,7 +2647,8 @@ export const EVENTS: GameEvent[] = [
           const f = fatal(c, ctx, 0.15, tr('Ma môn truy sát kẻ phản đồ. Bạn bị bắt lại và xử tử trước mặt mọi người.', "The demonic sect hunts down traitors. You're caught and executed in front of everyone."));
           if (c.dead) return tr('Bạn trốn đi trong đêm...', "You slip away in the night...") + f;
           c.enemy = c.enemy ?? tr('ma môn truy sát kẻ phản đồ', "the demonic sect hunting its traitor");
-          return tr('Bạn trốn thoát. Từ nay ma môn treo thưởng cái đầu bạn.', "You escape. From now on, the demonic sect has a bounty on your head.") + (f ?? '');
+          if (f) return tr('Ma môn đuổi kịp kẻ phản đồ ngay trong đêm.', "The demonic sect catches up with its traitor that same night.") + f; // thoát chết thật: kể nạn, không thưởng
+          return tr('Bạn trốn thoát. Từ nay ma môn treo thưởng cái đầu bạn.', "You escape. From now on, the demonic sect has a bounty on your head.");
         },
       },
     ],
@@ -2677,7 +2709,8 @@ export const EVENTS: GameEvent[] = [
           stat(c, 'tamMa', 12);
           const f = fatal(c, ctx, 0.05, tr('Trắng tay, bạn treo cổ sau sòng bạc.', "Penniless, you hang yourself behind the gambling den."));
           if (c.dead) return tr('Đá vụn...', "Rubble...") + f;
-          return tr('Đá vụn. Bạn bước ra khỏi sòng với hai bàn tay trắng.', "Rubble. You walk out of the den with empty hands.") + (f ?? '');
+          if (f) return tr('Đá vụn. Bạn mất trắng, đêm ấy suýt không qua khỏi.', "Rubble. You lose everything, and that night you nearly don't make it.") + f; // thoát chết thật: kể nạn, không thưởng
+          return tr('Đá vụn. Bạn bước ra khỏi sòng với hai bàn tay trắng.', "Rubble. You walk out of the den with empty hands.");
         },
       },
       {
@@ -2792,7 +2825,8 @@ export const EVENTS: GameEvent[] = [
           const f = fatal(c, ctx, 0.12, tr('Người của thương hội chờ sẵn. Bạn bị đánh chết trong đám cháy.', "The guild's men are waiting. You're beaten to death in the fire."));
           if (c.dead) return tr('Đêm đó lửa cháy rực trời...', "That night the fire lights up the sky...") + f;
           c.enemy = c.enemy ?? tr('Vạn Phúc thương hội', "the Wanfu Merchant Guild");
-          return tr('Kho của chúng cháy rụi. Chiến tranh thương trường bắt đầu.', "Their warehouse burns to the ground. The trade war begins.") + (f ?? '');
+          if (f) return tr('Người của thương hội chờ sẵn, vây bạn giữa đám cháy.', "The guild's men are waiting and trap you in the flames.") + f; // thoát chết thật: kể nạn, không thưởng
+          return tr('Kho của chúng cháy rụi. Chiến tranh thương trường bắt đầu.', "Their warehouse burns to the ground. The trade war begins.");
         },
       },
       {
@@ -2855,7 +2889,8 @@ export const EVENTS: GameEvent[] = [
           dao(c, -8);
           const f = fatal(c, ctx, 0.06, tr('Dân đói phá cổng xông vào. Bạn bị đám đông giẫm chết.', "The starving mob breaks down the gate. You're trampled to death."));
           if (c.dead) return tr('Đám đông nổi giận...', "The crowd turns furious...") + f;
-          return tr('Gia nhân xua dân đi. Có đứa trẻ chết ngay trước cổng.', "Your servants drive the crowd away. A child dies right at your gate.") + (f ?? '');
+          if (f) return tr('Dân đói phá cổng xông vào, đám đông xô bạn ngã.', "The starving mob breaks down the gate and knocks you down.") + f; // thoát chết thật: kể nạn, không thưởng
+          return tr('Gia nhân xua dân đi. Có đứa trẻ chết ngay trước cổng.', "Your servants drive the crowd away. A child dies right at your gate.");
         },
       },
     ],
@@ -2898,8 +2933,9 @@ export const EVENTS: GameEvent[] = [
               dao(c, -8);
               const f = fatal(c, ctx, 0.12, tr('Bạn bị gia đinh bắt được, đánh chết ngay trong sân.', "The household guards catch you and beat you to death in the courtyard."));
               if (c.dead) return tr('Bạn trèo tường vào...', "You climb over the wall...") + f;
+              if (f) return tr('Gia đinh tóm được bạn trong sân, đánh tới tấp.', "The household guards catch you in the courtyard and beat you.") + f; // thoát chết thật: kể nạn, không thưởng
               money(c, 80);
-              return tr('Bạn lấy được ít bạc vụn, chạy thoát trong đêm.', "You grab some loose silver and escape into the night.") + (f ?? '');
+              return tr('Bạn lấy được ít bạc vụn, chạy thoát trong đêm.', "You grab some loose silver and escape into the night.");
             },
           },
           {
@@ -2927,7 +2963,8 @@ export const EVENTS: GameEvent[] = [
               }
               const f = fatal(c, ctx, 0.05, tr('Trượt chân xuống khe núi lúc đào sâm.', "You slip into a ravine while digging for ginseng."));
               if (c.dead) return tr('Vách núi trơn...', "The cliff is slippery...") + f;
-              return tr('Chẳng đào được gì, chỉ thêm đói.', "You dig up nothing and just get hungrier.") + (f ?? '');
+              if (f) return tr('Bạn trượt chân, lăn xuống khe núi.', "You slip and tumble into a ravine.") + f; // thoát chết thật: kể nạn, không thưởng
+              return tr('Chẳng đào được gì, chỉ thêm đói.', "You dig up nothing and just get hungrier.");
             },
           },
           {

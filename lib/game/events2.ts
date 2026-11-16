@@ -309,8 +309,9 @@ export const EVENTS2: GameEvent[] = [
             }
             const f = fatal(ch, ctx, 0.12 + lv * 0.04, tr(`Oán hồn của ${g.char} bóp cổ bạn đến chết ngay trên miệng huyệt.`, `The vengeful ghost of ${g.char} strangles you to death right at the mouth of the grave.`));
             if (ch.dead) return tr('Nắp quan tài bật mở...', "The coffin lid flies open...") + f;
+            if (f) return tr(`Oán hồn của ${g.char} hiện ra, bóp chặt cổ bạn.`, `The vengeful ghost of ${g.char} appears and grips your throat.`) + f; // thoát chết thật: kể nạn, không thưởng
             stat(ch, 'tamMa', 12);
-            return tr(`Oán hồn của ${g.char} hiện ra. Bạn bỏ chạy, mất mấy năm không dám ngủ tối.`, `The vengeful ghost of ${g.char} appears. You flee, and for years you don't dare sleep at night.`) + (f ?? '');
+            return tr(`Oán hồn của ${g.char} hiện ra. Bạn bỏ chạy, mất mấy năm không dám ngủ tối.`, `The vengeful ghost of ${g.char} appears. You flee, and for years you don't dare sleep at night.`);
           },
         },
         {
@@ -431,8 +432,9 @@ export const EVENTS2: GameEvent[] = [
             dao(ch, -15);
             const f = fatal(ch, ctx, 0.25, tr(`${m.name} quay lại, ánh kiếm lóe lên. Bạn chết trước khi kịp chạm vào túi.`, `${m.name} turns, and a sword flashes. You die before you can touch the pouch.`));
             if (ch.dead) return tr('Bạn vừa đưa tay...', "You reach out...") + f;
+            if (f) return tr(`${m.name} quay lại, ánh kiếm lóe lên ngay trước mặt bạn.`, `${m.name} turns, and a sword flashes right in front of you.`) + f; // thoát chết thật: kể nạn, không thưởng
             money(ch, 300);
-            return tr('Bạn móc được ít linh thạch rồi lặn mất. Người cố ý tha cho bạn chăng?', "You fish out a few spirit stones and slip away. Did they let you go on purpose?") + (f ?? '');
+            return tr('Bạn móc được ít linh thạch rồi lặn mất. Người cố ý tha cho bạn chăng?', "You fish out a few spirit stones and slip away. Did they let you go on purpose?");
           },
         },
         {

@@ -38,6 +38,7 @@ export const SECT_EVENTS: GameEvent[] = [
               const f = fatal(ch, ctx, 0.15, tr(`Rời ${name} chưa được ba ngày, sát thủ ma môn đuổi kịp. Kẻ phản môn không được sống.`, `Not three days after leaving ${name}, demonic sect assassins catch up with you. Traitors don't get to live.`));
               if (ch.dead) return tr('Bạn lẳng lặng xuống núi trong đêm...', "You slip down the mountain quietly at night...") + f;
               ch.enemy = ch.enemy ?? tr('ma môn truy sát kẻ phản đồ', "the demonic sect hunting a traitor");
+              if (f) return tr(`Rời ${name} chưa được ba ngày, sát thủ ma môn đã đuổi kịp.`, `Not three days after leaving ${name}, demonic sect assassins catch up with you.`) + f; // thoát chết thật: kể nạn
               return tr(`Bạn trả lại lệnh bài, xuống núi trong đêm. Từ nay ${name} coi bạn là kẻ phản đồ.${f ?? ''}`, `You return your token and leave the mountain by night. From now on ${name} counts you a traitor.${f ?? ''}`);
             }
             return tr(`Bạn quỳ trước chính điện, xin rời ${name}. Chưởng môn thở dài phất tay áo: "Đạo khác nhau, không cùng mưu. Đi đi."`, `You kneel before the main hall and ask to leave ${name}. The Sect Leader sighs and waves his sleeve: "Different paths, different plans. Go."`);

@@ -665,9 +665,10 @@ export const HH_EVENTS: GameEvent[] = [
         run: (c, ctx) => {
           const f = fatal(c, ctx, 0.3, tr(`Chân khí của ${c.hh?.lo} lô đỉnh nổ tung cùng lúc. Bạn tẩu hỏa nhập ma giữa Hoan Hỷ Điện.`, `The qi of ${c.hh?.lo} cauldrons explodes at once. You suffer qi deviation in the middle of the Hall of Joy.`) + atAge(c));
           if (c.dead) return lead(tr('Kinh mạch căng như dây đàn...', 'Your meridians stretch like zither strings...'), f);
+          if (f) return tr('Chân khí các lô đỉnh nổ tung cùng lúc, kinh mạch bạn rách toạc.', "The cauldrons' qi explodes at once and tears your meridians.") + f; // thoát chết thật: kể nạn, không thưởng
           addCult(c, reward(c, 1.5));
           stat(c, 'tamMa', 10);
-          return tr('Bạn nuốt trọn. Tu vi vọt lên một đoạn dài, nhưng đêm nào cũng nghe tiếng người cười trong đan điền.', 'You swallow it whole. Your cultivation leaps forward, but every night you hear laughter in your dantian.') + (f ?? '');
+          return tr('Bạn nuốt trọn. Tu vi vọt lên một đoạn dài, nhưng đêm nào cũng nghe tiếng người cười trong đan điền.', 'You swallow it whole. Your cultivation leaps forward, but every night you hear laughter in your dantian.');
         },
       },
     ],

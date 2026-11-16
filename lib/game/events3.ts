@@ -2,11 +2,13 @@ import { addCult, addPill, dao, fatal, hurt, money, reward, stat } from './helpe
 import type { Character, EffectCtx, GameEvent } from './types';
 import { tr } from '../i18n';
 
-/** Thử vận: sống thì được thưởng, xui thì chết. Trả về câu kết. */
-function gamble(c: Character, ctx: EffectCtx, chance: number, cause: string, lead: string, win: (c: Character, ctx: EffectCtx) => string): string {
+/** Thử vận: sống thì được thưởng, xui thì chết, được cứu thì kể nạn (lead, near). Trả về câu kết. */
+function gamble(c: Character, ctx: EffectCtx, chance: number, cause: string, [lead, near]: [string, string], win: (c: Character, ctx: EffectCtx) => string): string {
   const f = fatal(c, ctx, chance, cause);
   if (c.dead) return lead + (f ?? '');
-  return win(c, ctx) + (f ?? '');
+  // thoát chết thật (oan hồn, sư phụ cứu, thân tu đạo): kể nạn đã xảy ra, không chạy nhánh thưởng
+  if (f) return near + f;
+  return win(c, ctx);
 }
 
 /** 10 kịch bản có thể chết */
@@ -25,7 +27,7 @@ export const EVENTS3: GameEvent[] = [
         hint: tr('rất liều', "very risky"),
         lean: 'trung',
         run: (c, ctx) =>
-          gamble(c, ctx, 0.3, tr('Bạn ăn phải nấm Quỷ Đăng. Đêm đó bạn cười không ngừng, rồi không bao giờ tỉnh lại.', "It was a Ghost Lantern mushroom. That night you laugh and laugh, and never wake up again."), tr('Vị ngọt lịm...', "So sweet..."), (ch, cx) => {
+          gamble(c, ctx, 0.3, tr('Bạn ăn phải nấm Quỷ Đăng. Đêm đó bạn cười không ngừng, rồi không bao giờ tỉnh lại.', "It was a Ghost Lantern mushroom. That night you laugh and laugh, and never wake up again."), [tr('Vị ngọt lịm...', "So sweet..."), tr('Nấm Quỷ Đăng! Bạn cười không ngừng rồi ngã lăn ra.', "A Ghost Lantern mushroom! You laugh and laugh, then keel over.")], (ch, cx) => {
             addCult(ch, reward(ch, 2));
             stat(ch, 'ngoTinh', 10);
             cx.fx('breakthrough', tr('Linh chi', "Lingzhi"));
@@ -70,7 +72,7 @@ export const EVENTS3: GameEvent[] = [
         hint: tr('nguy', "risky"),
         lean: 'trung',
         run: (c, ctx) =>
-          gamble(c, ctx, 0.35, tr('Sáng hôm sau, tiều phu tìm thấy một cái xác khô quắt trong miếu. Yêu tinh đã hút cạn dương khí của bạn.', "The next morning a woodcutter finds a shrivelled corpse in the temple. A demon drained every drop of your yang essence."), tr('Rượu ngọt lạ thường...', "The wine is strangely sweet..."), (ch) => {
+          gamble(c, ctx, 0.35, tr('Sáng hôm sau, tiều phu tìm thấy một cái xác khô quắt trong miếu. Yêu tinh đã hút cạn dương khí của bạn.', "The next morning a woodcutter finds a shrivelled corpse in the temple. A demon drained every drop of your yang essence."), [tr('Rượu ngọt lạ thường...', "The wine is strangely sweet..."), tr('Yêu tinh hiện nguyên hình, bắt đầu hút dương khí của bạn.', "The demon shows its true form and starts draining your yang qi.")], (ch) => {
             stat(ch, 'tamCanh', 6);
             return tr('Người ấy chỉ là một tiểu thư lạc đường. Hai người trò chuyện đến sáng.', "They were just a lost young noble. The two of you talk until dawn.");
           }),
@@ -125,7 +127,7 @@ export const EVENTS3: GameEvent[] = [
         hint: tr('liều', "risky"),
         lean: 'trung',
         run: (c, ctx) =>
-          gamble(c, ctx, 0.15, tr('Dây cầu đứt phựt ở giữa. Bạn rơi xuống vực Vạn Trượng, tiếng kêu vọng mãi không dứt.', "The rope snaps in the middle. You fall into the Wanzhang Chasm, your scream echoing forever."), tr('Đến giữa cầu, có tiếng rắc...', "Halfway across, there's a crack..."), (ch) => {
+          gamble(c, ctx, 0.15, tr('Dây cầu đứt phựt ở giữa. Bạn rơi xuống vực Vạn Trượng, tiếng kêu vọng mãi không dứt.', "The rope snaps in the middle. You fall into the Wanzhang Chasm, your scream echoing forever."), [tr('Đến giữa cầu, có tiếng rắc...', "Halfway across, there's a crack..."), tr('Dây cầu đứt phựt ở giữa, bạn rơi xuống vực.', "The rope snaps in the middle and you fall into the chasm.")], (ch) => {
             stat(ch, 'khiVan', 3);
             return tr('Bạn vừa đặt chân sang bờ bên kia thì cầu đứt. Tim đập thình thịch.', "The moment your foot touches the far side, the bridge gives way. Your heart is pounding.");
           }),
@@ -136,7 +138,7 @@ export const EVENTS3: GameEvent[] = [
         lean: 'trung',
         run: (c, ctx) => {
           if (c.realm >= 2) return tr('Bạn nhẹ nhàng lướt qua vực sâu. Tu sĩ thì cần gì cầu.', "You glide lightly over the abyss. What does a cultivator need a bridge for?");
-          return gamble(c, ctx, 0.4, tr('Tu vi chưa đủ để ngự khí. Bạn rơi giữa chừng.', "Your cultivation isn't enough to ride the qi. You drop halfway."), tr('Bạn nhún người bay lên...', "You spring into the air..."), () => tr('Bạn chạm được vách đá bên kia, móng tay bật máu.', "You catch the cliff face on the other side, fingernails torn bloody."));
+          return gamble(c, ctx, 0.4, tr('Tu vi chưa đủ để ngự khí. Bạn rơi giữa chừng.', "Your cultivation isn't enough to ride the qi. You drop halfway."), [tr('Bạn nhún người bay lên...', "You spring into the air..."), tr('Tu vi chưa đủ để ngự khí, bạn rơi giữa chừng.', "Your cultivation can't hold the qi and you drop halfway.")], () => tr('Bạn chạm được vách đá bên kia, móng tay bật máu.', "You catch the cliff face on the other side, fingernails torn bloody."));
         },
       },
       {
@@ -174,7 +176,7 @@ export const EVENTS3: GameEvent[] = [
         hint: tr('nguy', "risky"),
         lean: 'trung',
         run: (c, ctx) =>
-          gamble(c, ctx, 0.4, tr('Rượu có Đoạn Trường Tán. Bạn gục xuống bàn tiệc, máu đen trào ra khóe miệng.', "The wine was laced with Gut-Severing Powder. You slump over the table, black blood trickling from your lips."), tr('Bạn nâng chén...', "You raise the cup..."), (ch) => {
+          gamble(c, ctx, 0.4, tr('Rượu có Đoạn Trường Tán. Bạn gục xuống bàn tiệc, máu đen trào ra khóe miệng.', "The wine was laced with Gut-Severing Powder. You slump over the table, black blood trickling from your lips."), [tr('Bạn nâng chén...', "You raise the cup..."), tr('Rượu có Đoạn Trường Tán, máu đen trào ra khóe miệng.', "The wine is laced with Gut-Severing Powder and black blood wells at your lips.")], (ch) => {
             money(ch, 200);
             return tr('Hóa ra thành chủ chỉ thử lòng can đảm. Ông thưởng bạn 200 linh thạch.', "The City Lord was only testing your nerve. He rewards you 200 spirit stones.");
           }),
@@ -185,7 +187,7 @@ export const EVENTS3: GameEvent[] = [
         lean: 'ta',
         run: (c, ctx) => {
           dao(c, -12);
-          return gamble(c, ctx, 0.3, tr('Ba mươi đao phủ ùa ra. Bạn chết dưới loạn đao.', "Thirty axemen pour out. You fall beneath a storm of blades."), tr('Bạn hất tung bàn tiệc...', "You hurl the table aside..."), (ch, cx) => {
+          return gamble(c, ctx, 0.3, tr('Ba mươi đao phủ ùa ra. Bạn chết dưới loạn đao.', "Thirty axemen pour out. You fall beneath a storm of blades."), [tr('Bạn hất tung bàn tiệc...', "You hurl the table aside..."), tr('Ba mươi đao phủ ùa ra, loạn đao chém xuống.', "Thirty axemen pour out and the blades come down.")], (ch, cx) => {
             money(ch, 800);
             cx.fx('coin', '+800');
             ch.enemy = tr('triều đình truy nã', "wanted by the imperial court");
@@ -227,7 +229,7 @@ export const EVENTS3: GameEvent[] = [
         hint: tr('liều', "risky"),
         lean: 'trung',
         run: (c, ctx) =>
-          gamble(c, ctx, 0.25, tr('Mặt băng nứt toác. Bạn rơi xuống nước lạnh buốt, không ai kịp kéo lên.', "The ice cracks wide open. You plunge into the freezing water before anyone can pull you out."), tr('Băng kêu răng rắc dưới tay...', "The ice creaks under your hands..."), (ch, cx) => {
+          gamble(c, ctx, 0.25, tr('Mặt băng nứt toác. Bạn rơi xuống nước lạnh buốt, không ai kịp kéo lên.', "The ice cracks wide open. You plunge into the freezing water before anyone can pull you out."), [tr('Băng kêu răng rắc dưới tay...', "The ice creaks under your hands..."), tr('Mặt băng nứt toác, bạn rơi xuống nước lạnh buốt.', "The ice cracks open and you plunge into the freezing water.")], (ch, cx) => {
             money(ch, 300);
             addPill(ch, 'dien_tho');
             cx.fx('coin', tr('Băng Liên', "Ice Lotus"));
@@ -271,7 +273,7 @@ export const EVENTS3: GameEvent[] = [
         lean: 'chinh',
         run: (c, ctx) => {
           dao(c, 15);
-          return gamble(c, ctx, 0.25, tr('Bạn cứu được hơn trăm người, rồi chính bạn nhiễm dịch. Dân trấn lập miếu thờ bạn.', "You save over a hundred people, then catch the plague yourself. The townsfolk build a shrine in your honour."), tr('Ngày thứ bốn mươi, bạn bắt đầu ho...', "On the fortieth day, you start to cough..."), (ch) => {
+          return gamble(c, ctx, 0.25, tr('Bạn cứu được hơn trăm người, rồi chính bạn nhiễm dịch. Dân trấn lập miếu thờ bạn.', "You save over a hundred people, then catch the plague yourself. The townsfolk build a shrine in your honour."), [tr('Ngày thứ bốn mươi, bạn bắt đầu ho...', "On the fortieth day, you start to cough..."), tr('Bạn nhiễm dịch, sốt mê man nhiều ngày.', "You catch the plague and lie delirious for days.")], (ch) => {
             stat(ch, 'khiVan', 12);
             stat(ch, 'tamCanh', 10);
             return tr('Ba tháng không ngủ, bạn cứu được cả trấn. Người người gọi bạn là thần y.', "Three sleepless months, and you save the whole town. Everyone calls you a miracle doctor.");
@@ -287,7 +289,7 @@ export const EVENTS3: GameEvent[] = [
             ctx,
             0.1,
             tr('Bạn đã nhiễm bệnh từ trước khi trốn. Chết bên vệ đường, không ai dám lại gần.', "You were already infected before you fled. You die by the roadside, and no one dares come near."),
-            tr('Bạn chạy suốt đêm...', "You run all night..."),
+            [tr('Bạn chạy suốt đêm...', "You run all night..."), tr('Giữa đường bạn lên cơn sốt, ngã gục bên vệ đường.', "Halfway there the fever takes you and you collapse by the road.")],
             () => tr('Bạn trốn thoát. Đêm nào cũng mơ thấy những người bị bỏ lại.', "You escape. Every night you dream of those left behind."),
           ),
       },
@@ -326,7 +328,7 @@ export const EVENTS3: GameEvent[] = [
         hint: tr('liều, thưởng lớn', "risky, big reward"),
         lean: 'trung',
         run: (c, ctx) =>
-          gamble(c, ctx, 0.35, tr('Mãng xà quấn chặt lấy bạn, xương cốt vỡ vụn rồi nuốt chửng.', "The python coils around you, crushes your bones, and swallows you whole."), tr('Bạn vung kiếm...', "You swing your sword..."), (ch, cx) => {
+          gamble(c, ctx, 0.35, tr('Mãng xà quấn chặt lấy bạn, xương cốt vỡ vụn rồi nuốt chửng.', "The python coils around you, crushes your bones, and swallows you whole."), [tr('Bạn vung kiếm...', "You swing your sword..."), tr('Mãng xà quấn chặt lấy bạn, xương cốt kêu răng rắc.', "The python coils around you and your bones start to crack.")], (ch, cx) => {
             addCult(ch, reward(ch, 2.5));
             cx.fx('breakthrough', tr('Trảm mãng', "Python slain"));
             return tr('Một kiếm xuyên mắt! Mãng xà giãy chết. Bạn mổ lấy mật rắn, tu vi tăng vọt.', "One thrust through the eye! The python thrashes and dies. You cut out its gallbladder and your cultivation soars.");
@@ -335,7 +337,7 @@ export const EVENTS3: GameEvent[] = [
       {
         label: tr('Nằm im giả chết', "Lie still and play dead"),
         lean: 'trung',
-        run: (c, ctx) => gamble(c, ctx, 0.15, tr('Mãng xà không quan tâm bạn chết hay sống. Nó nuốt luôn.', "The python doesn't care if you're dead or alive. It swallows you anyway."), tr('Bạn nín thở...', "You hold your breath..."), () => tr('Nó trườn đi. Bạn nằm im thêm một canh giờ mới dám đứng dậy.', "It slithers away. You lie still for another hour before you dare stand up.")),
+        run: (c, ctx) => gamble(c, ctx, 0.15, tr('Mãng xà không quan tâm bạn chết hay sống. Nó nuốt luôn.', "The python doesn't care if you're dead or alive. It swallows you anyway."), [tr('Bạn nín thở...', "You hold your breath..."), tr('Mãng xà há miệng đớp tới.', "The python's jaws come down on you.")], () => tr('Nó trườn đi. Bạn nằm im thêm một canh giờ mới dám đứng dậy.', "It slithers away. You lie still for another hour before you dare stand up.")),
       },
       {
         label: tr('Rải hùng hoàng rồi chạy', "Scatter realgar and run"),
@@ -355,7 +357,7 @@ export const EVENTS3: GameEvent[] = [
             stat(c, 'khiVan', 10);
             return tr('Nó nhận ra bạn là yêu tộc, cúi đầu nhường đường rồi tặng một chiếc vảy.', "It recognises you as yao kin, bows its head to let you pass, and gifts you a scale.");
           }
-          return gamble(c, ctx, 0.3, tr('Nó không hiểu tiếng người. Bạn trở thành bữa tối.', "It doesn't understand human speech. You become dinner."), tr('Bạn ghé sát tai nó...', "You lean close to its ear..."), () => tr('Nó lè lưỡi liếm mặt bạn rồi bỏ đi. Thật khó hiểu.', "It flicks its tongue across your face and leaves. Baffling."));
+          return gamble(c, ctx, 0.3, tr('Nó không hiểu tiếng người. Bạn trở thành bữa tối.', "It doesn't understand human speech. You become dinner."), [tr('Bạn ghé sát tai nó...', "You lean close to its ear..."), tr('Nó không hiểu tiếng người, há miệng đớp tới.', "It doesn't understand human speech and lunges for you.")], () => tr('Nó lè lưỡi liếm mặt bạn rồi bỏ đi. Thật khó hiểu.', "It flicks its tongue across your face and leaves. Baffling."));
         },
       },
     ],
@@ -375,7 +377,7 @@ export const EVENTS3: GameEvent[] = [
         lean: 'trung',
         run: (c, ctx) => {
           ctx.fx('lightning');
-          return gamble(c, ctx, 0.4, tr('Tia sét thứ hai đánh trúng mũi kiếm. Bạn hóa thành than đen trên đỉnh núi.', "A second bolt hits the tip of your sword. You become a lump of charcoal on the mountaintop."), tr('Bạn giơ cao thanh kiếm...', "You raise your sword high..."), (ch, cx) => {
+          return gamble(c, ctx, 0.4, tr('Tia sét thứ hai đánh trúng mũi kiếm. Bạn hóa thành than đen trên đỉnh núi.', "A second bolt hits the tip of your sword. You become a lump of charcoal on the mountaintop."), [tr('Bạn giơ cao thanh kiếm...', "You raise your sword high..."), tr('Tia sét thứ hai đánh trúng mũi kiếm.', "A second bolt strikes the tip of your sword.")], (ch, cx) => {
             addCult(ch, reward(ch, 3));
             stat(ch, 'ngoTinh', 12);
             cx.fx('breakthrough', tr('Lôi pháp', "Thunder law"));
@@ -405,7 +407,7 @@ export const EVENTS3: GameEvent[] = [
         lean: 'chinh',
         run: (c, ctx) => {
           if (c.daoTam < -30)
-            return gamble(c, ctx, 0.3, tr('Trời không tha. Sét đánh trúng đỉnh đầu bạn đang cúi xuống.', "Heaven does not forgive. Lightning strikes the top of your bowed head."), tr('Bạn khấn vái...', "You pray..."), (ch) => {
+            return gamble(c, ctx, 0.3, tr('Trời không tha. Sét đánh trúng đỉnh đầu bạn đang cúi xuống.', "Heaven does not forgive. Lightning strikes the top of your bowed head."), [tr('Bạn khấn vái...', "You pray..."), tr('Trời không tha, sét giáng thẳng xuống đầu bạn.', "Heaven does not forgive. Lightning comes straight down at your head.")], (ch) => {
               dao(ch, 10);
               return tr('Mây tan. Có lẽ trời cho bạn thêm một cơ hội.', "The clouds part. Perhaps Heaven is giving you another chance.");
             });
@@ -462,7 +464,7 @@ export const EVENTS3: GameEvent[] = [
         lean: 'ta',
         run: (c, ctx) => {
           dao(c, -5);
-          return gamble(c, ctx, 0.3, tr('Ông lão chỉ liếc nhìn. Bạn hóa thành tượng đá đứng mãi trên đỉnh núi.', "The old man merely glances at you. You turn to stone and stand on that peak forever."), tr('Bạn thò tay...', "You reach out..."), (ch) => {
+          return gamble(c, ctx, 0.3, tr('Ông lão chỉ liếc nhìn. Bạn hóa thành tượng đá đứng mãi trên đỉnh núi.', "The old man merely glances at you. You turn to stone and stand on that peak forever."), [tr('Bạn thò tay...', "You reach out..."), tr('Ông lão liếc nhìn, chân tay bạn bắt đầu hóa đá.', "The old man glances at you and your limbs begin to turn to stone.")], (ch) => {
             money(ch, 500);
             return tr('Quân cờ bằng ngọc tiên, bán được 500 linh thạch.', "The Go stone is immortal jade - it sells for 500 spirit stones.");
           });
@@ -492,7 +494,7 @@ export const EVENTS3: GameEvent[] = [
         hint: tr('liều vì tiền', "risking it for money"),
         lean: 'trung',
         run: (c, ctx) =>
-          gamble(c, ctx, 0.3, tr('Xà nhà sập xuống. Người ta đào được xác bạn vẫn ôm chặt túi linh thạch.', "A beam comes crashing down. They dig out your corpse still clutching the bag of spirit stones."), tr('Bạn chạy vào kho...', "You dash into the storeroom..."), (ch) => {
+          gamble(c, ctx, 0.3, tr('Xà nhà sập xuống. Người ta đào được xác bạn vẫn ôm chặt túi linh thạch.', "A beam comes crashing down. They dig out your corpse still clutching the bag of spirit stones."), [tr('Bạn chạy vào kho...', "You dash into the storeroom..."), tr('Xà nhà sập xuống đè lên người bạn.', "A beam crashes down on top of you.")], (ch) => {
             money(ch, 100);
             return tr('Bạn ôm được túi linh thạch chạy ra ngay trước khi mái nhà đổ.', "You grab the bag of spirit stones and get out just before the roof caves in.");
           }),
@@ -503,7 +505,7 @@ export const EVENTS3: GameEvent[] = [
         lean: 'chinh',
         run: (c, ctx) => {
           dao(c, 12);
-          return gamble(c, ctx, 0.2, tr('Bạn đẩy được đứa bé ra ngoài, rồi bức tường đổ ập lên người bạn.', "You shove the child to safety, then the wall collapses on top of you."), tr('Bạn lao vào đống đổ nát...', "You charge into the rubble..."), (ch) => {
+          return gamble(c, ctx, 0.2, tr('Bạn đẩy được đứa bé ra ngoài, rồi bức tường đổ ập lên người bạn.', "You shove the child to safety, then the wall collapses on top of you."), [tr('Bạn lao vào đống đổ nát...', "You charge into the rubble..."), tr('Bạn đẩy được đứa bé ra ngoài, rồi bức tường đổ ập xuống.', "You shove the child out, then the wall collapses on you.")], (ch) => {
             stat(ch, 'khiVan', 10);
             money(ch, -Math.round(ch.linhThach * 0.5));
             return tr('Bạn cứu được đứa bé, nhưng kho linh thạch bị vùi mất một nửa.', "You save the child, but half your spirit stones are buried.");

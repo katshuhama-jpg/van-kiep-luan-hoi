@@ -272,8 +272,10 @@ const PERILS: ((c: Character, ctx: EffectCtx) => string)[] = [
     }
     const f = fatal(c, ctx, 0.25 * perilMul(c), tr('Chính tà giao tranh, bạn xung phong đi đầu. Trận ấy chính phái thắng, nhưng bạn không trở về.', "In the clash of righteous and evil, you volunteer for the front line. The righteous win that battle, but you never return."));
     if (c.dead) return f ?? '';
-    money(c, Math.round(merit / 2));
     const t = hurt(c, Math.round(r(ctx, 25, 40) * perilMul(c)), ctx);
+    // thoát chết thật: kể nạn, không chia chiến lợi phẩm
+    if (f) return tr(`Chính phái triệu tập đi diệt ma, bạn xung phong đi đầu và ngã xuống giữa trận.${t}`, `The righteous sects muster to wipe out the demons. You volunteer for the front line and fall mid-battle.${t}`) + f;
+    money(c, Math.round(merit / 2));
     return tr(`Chính phái triệu tập đi diệt ma, bạn là người xung phong đầu tiên. Thắng trận, được chia ${Math.round(merit / 2)} linh thạch, nhưng bạn mang về không ít thương tích.${t}${f ?? ''}`, `The righteous sects muster to wipe out the demons, and you're the first to volunteer. They win and you get ${Math.round(merit / 2)} spirit stones in spoils, but you come back with plenty of wounds.${t}${f ?? ''}`);
   },
 ];

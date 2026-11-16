@@ -68,12 +68,15 @@ export const TA_EVENTS: GameEvent[] = [
         hint: tr('tu vi tăng vọt, tâm ma +, đạo tâm -', "cultivation soars, heart demon +, Dao Heart -"),
         lean: 'ta',
         run: (c, ctx) => {
-          addCult(c, reward(c, 2.5));
           stat(c, 'tamMa', 12);
           dao(c, -10);
-          ctx.fx('evil', tr('Ma công', "Demonic art"));
           const f = fatal(c, ctx, 0.04, tr('Ma công phản phệ ngay lần luyện đầu. Bạn hóa thành một bộ xương nữa trong hang.', "The demonic art backfires on your first attempt. You become one more skeleton in the cave."));
-          return tr(`Ma khí tràn vào kinh mạch, tu vi bạn tăng vọt.${f ?? ''}`, `Demonic qi floods your meridians, and your cultivation soars.${f ?? ''}`);
+          if (c.dead) return tr('Ma khí cuộn vào kinh mạch...', "Demonic qi surges into your meridians...") + f;
+          // thoát chết thật: kể nạn, không thưởng
+          if (f) return tr('Ma công phản phệ ngay lần luyện đầu, kinh mạch bạn nứt toác.', "The demonic art backfires on your first attempt and your meridians crack.") + f;
+          addCult(c, reward(c, 2.5));
+          ctx.fx('evil', tr('Ma công', "Demonic art"));
+          return tr('Ma khí tràn vào kinh mạch, tu vi bạn tăng vọt.', "Demonic qi floods your meridians, and your cultivation soars.");
         },
       },
       {

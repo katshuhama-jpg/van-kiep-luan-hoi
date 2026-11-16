@@ -30,6 +30,14 @@ export const RELEASES: Release[] = [
     lead: tr('Mỗi kiếp là một giấc mộng. Mộng tan, chân thân còn. Điều ngươi làm được trong mộng sẽ khắc vào thân.', 'Every life is a dream. The dream fades, the true self remains. What you achieve in the dream is carved into your body.'),
     groups: [
       {
+        h: tr('Mới 17/11', 'New on Nov 17'),
+        items: [
+          tr('Khi oan hồn hay sư phụ cứu ngươi khỏi cửa tử, sự kiện giờ kể đúng là ngươi vừa thoát chết. Cảm ơn Nguyễn Quang đã báo.', 'When a wronged spirit or your Master pulls you back from death, the event now tells it as the close call it was. Thanks to Nguyen Quang for the report.'),
+          tr('Thiên phú Thiên sinh kiếm cốt nay cộng 30% công trong mọi trận (trước chỉ 10% mà không ghi ra). Mô tả Trời sinh thần lực và Huyết Ma Đao chờ chủ ghi đúng với cách chúng chạy.', 'The Born with sword bones gift now gives +30% attack in every fight (it was a hidden 10%). Born with divine strength and Blood Demon Saber awaits now describe what they actually do.'),
+          tr('Biểu đồ chỉ số: trục Tài đổi tên thành Giàu cho khỏi nhầm (tính theo linh thạch). Thiên phú cộng sức khỏe ghi rõ sức khỏe tối đa 100.', 'Stat chart: the Wealth axis is labelled more clearly (it follows spirit stones). Gifts that add Health now say Health caps at 100.'),
+        ],
+      },
+      {
         h: tr('Mới 16/11', 'New on Nov 16'),
         items: [
           tr('Sư Đồ: ở trang Chân thân có nút Mời đệ tử. Người mới vào bằng link của ngươi, chơi xong 10 kiếp trong 7 ngày đầu thì thầy trò mỗi người được 20 phúc duyên.', 'Master and Disciple: the True Self page has an Invite a disciple button. If a newcomer joins through your link and finishes 10 lives in their first 7 days, you each get 20 Fortune.'),
