@@ -5488,19 +5488,18 @@ body[data-ctflow='1'] { overflow: hidden; }
 .nv-panel > :not(.nv-stage) { margin-left: 10px; margin-right: 10px; }
 .nv-panel > .home-grid, .nv-panel > .btn-red { width: calc(100% - 20px) !important; }
 .nv-panel > :last-child { margin-bottom: 10px; }
-.nv-stage { position: relative; height: 300px; overflow: hidden; background: #2a3a5a url(/bg/tu_luyen-1.png) center bottom / cover no-repeat; image-rendering: pixelated; border-bottom: 3px solid #1f160d; }
+.nv-stage { position: relative; height: 312px; overflow: hidden; background: #2a3a5a url(/bg/tu_luyen-1.png) center bottom / cover no-repeat; image-rendering: pixelated; border-bottom: 3px solid #1f160d; }
 .nv-stage::before { content: ''; position: absolute; inset: 0; background: rgba(14, 22, 40, 0.35); }
 .nv-stage.tt { background: #07060c; border-bottom-color: #2e2840; }
 .nv-stage.tt::before { display: none; }
 .nv-name { position: absolute; left: 50%; top: 0; z-index: 3; transform: translateX(-50%); padding: 2px 14px; font-size: 16px; font-weight: 700; color: #ffd36b; background: #1f160d; border: 2px solid #a8862e; border-top: 0; white-space: nowrap; }
 .tt-count { position: absolute; right: 8px; top: 8px; z-index: 3; font-size: 13px; font-weight: 700; color: #b9ad94; }
-.nv-me { position: absolute; left: 50%; bottom: 44px; transform: translateX(-50%); z-index: 2; }
-.nv-stage.tt .nv-me { bottom: 50px; }
-.nv-col { position: absolute; top: 40px; z-index: 3; display: flex; flex-direction: column; gap: 14px; }
+.nv-me { position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 2; }
+.nv-col { position: absolute; top: 36px; z-index: 3; display: flex; flex-direction: column; gap: 8px; }
 .nv-col.left { left: 8px; }
 .nv-col.right { right: 8px; }
 .nv-slot { display: flex; flex-direction: column; align-items: center; gap: 2px; width: 72px; padding: 0; font: inherit; background: none; border: 0; cursor: pointer; color: #fff3dc; }
-.nv-slot-box { display: grid; place-items: center; width: 56px; height: 56px; color: #6a6078; background: #1f160d; border: 3px solid #4a4258; box-shadow: inset 0 0 0 2px #2e2840, 0 3px 0 rgba(0, 0, 0, 0.45); }
+.nv-slot-box { display: grid; place-items: center; width: 52px; height: 52px; color: #6a6078; background: #1f160d; border: 3px solid #4a4258; box-shadow: inset 0 0 0 2px #2e2840, 0 3px 0 rgba(0, 0, 0, 0.45); }
 .nv-slot.has .nv-slot-box { color: #ffd36b; border-color: #a8862e; }
 .nv-slot.sel .nv-slot-box { border-color: #ffd36b; box-shadow: inset 0 0 0 2px #7a4a12, 0 0 0 2px #ffd36b; }
 .nv-slot small { max-width: 72px; font-size: 11px; font-weight: 700; line-height: 1.1; text-align: center; text-shadow: 1px 1px 0 #1f160d, -1px -1px 0 #1f160d, 1px -1px 0 #1f160d, -1px 1px 0 #1f160d; }
@@ -5512,8 +5511,8 @@ body[data-ctflow='1'] { overflow: hidden; }
 .nv-why li { display: flex; justify-content: space-between; gap: 8px; border-bottom: 1px dashed #4a3a2a; padding: 2px 0; }
 .nv-why small { display: block; color: #b9ad94; font-size: 12px; }
 .nv-bag { margin-top: 8px; }
-.nv-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; margin-bottom: 6px; }
-.nv-tab { min-height: 44px; padding: 0 4px; font: inherit; font-size: 15px; font-weight: 700; color: var(--ink); background: var(--paper-3); border: 2px solid var(--ink); cursor: pointer; }
+.nv-tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; margin-bottom: 6px; }
+.nv-tab { min-height: 44px; padding: 0 2px; font: inherit; font-size: 14px; font-weight: 700; color: var(--ink); background: var(--paper-3); border: 2px solid var(--ink); cursor: pointer; }
 .nv-tab.on { background: var(--ink); color: var(--gold-l); }
 .nv-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-bottom: 6px; }
 .nv-cell { min-height: 104px; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 4px; font: inherit; text-align: center; color: #efe6d0; background: #13101c; border: 2px solid #2e2840; cursor: pointer; }
@@ -5532,4 +5531,22 @@ body[data-ctflow='1'] { overflow: hidden; }
 .tt-gift { text-align: center; margin: 0 0 6px; font-size: 14px; color: #b9ad94; }
 .ct-dark .ct-how { color: var(--ink); }
 .nv-panel .ct-note { color: var(--muted); }
-.nv-cell.lock .nv-swatch { filter: grayscale(1) brightness(0.6); }
+.nv-ico { display: grid; place-items: center; width: 62px; height: 62px; margin: 2px 0; background: #241c2e; border: 2px solid #3a3248; }
+.nv-cell.on .nv-ico { border-color: #a8862e; }
+.nv-cell.lock .nv-ico .px-icon { filter: brightness(0) opacity(0.55); }
+.nv-slot-box .px-icon { filter: drop-shadow(0 1px 0 #000); }
+/* 16/11: nhân vật cùng chỗ, cùng cỡ Tàng Kinh Các; danh hiệu dưới tên; lực chiến thành dải dưới sân khấu */
+.nv-stage .tk-floor, .nv-stage .tk-sen { z-index: 1; }
+.nv-title { position: absolute; left: 50%; top: 30px; z-index: 3; transform: translateX(-50%); min-height: 28px; padding: 0 10px; font: inherit; font-size: 13px; font-weight: 700; color: #1f160d; background: #ffd36b; border: 2px solid #7a4a12; cursor: pointer; white-space: nowrap; }
+.nv-title small { font-size: 11px; }
+.nv-tt { top: 64px; bottom: auto; }
+.nv-tt li { justify-content: flex-start; }
+.nv-tt p { margin: 4px 0; }
+.nv-power { position: static; transform: none; width: 100%; justify-content: center; margin: 0 !important; min-height: 46px; border: 0; border-bottom: 3px solid #a8862e; }
+.nv-power i { font-style: normal; font-size: 12px; color: #e6cfa4; }
+.nv-panel > .nv-power { width: 100% !important; }
+.nv-why2 { margin-top: 0 !important; padding: 8px 10px; background: #1f160d; color: #fff3dc; font-size: 13px; line-height: 1.35; }
+.nv-why2 ul { list-style: none; margin: 0 0 4px; padding: 0; }
+.nv-why2 li { display: flex; justify-content: space-between; gap: 8px; border-bottom: 1px dashed #4a3a2a; padding: 2px 0; }
+.nv-why2 small { color: #b9ad94; font-size: 12px; }
+.nv-panel > .nv-why2 { margin-left: 0 !important; margin-right: 0 !important; }

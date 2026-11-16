@@ -78,7 +78,7 @@ export default function TamTaiPage() {
               <span className="nv-name">{ct.name}</span>
               <span className="tt-count">{tr(`Tam Tài ${tamTaiCount(meta, ext)}/42`, `Treasures ${tamTaiCount(meta, ext)}/42`)}</span>
               <div className="nv-me">
-                <HuyetBody ct={bare!} open={n} size={170} />
+                <HuyetBody ct={bare!} open={n} size={132} />
               </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'center', margin: '8px 0 2px' }}>

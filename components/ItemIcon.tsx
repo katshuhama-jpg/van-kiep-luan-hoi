@@ -70,3 +70,40 @@ function RobeIcon({ item, size }: { item: Item; size: number }) {
     />
   );
 }
+
+/**
+ * 16/11: icon ghép từ lớp LPC bất kỳ rồi cắt một vùng trong khung 128 (dùng cho đồ chân thân: áo, mũ, cánh).
+ * crop = [x, y, w]: vùng vuông bắt đầu ở (x, y), rộng w điểm ảnh. Ghép theo hàng đợi như icon áo.
+ */
+export function LpcCropIcon({ id, layers, size, crop, className }: { id: string; layers: import('@/lib/lpc').Layer[]; size: number; crop: [number, number, number]; className?: string }) {
+  const [url, setUrl] = useState(() => (typeof window !== 'undefined' ? (ICON_URL.get(id) ?? readyStrip(layers, 'idle', 2)) : undefined));
+  useEffect(() => {
+    let live = true;
+    if (ICON_URL.has(id)) return void setUrl(ICON_URL.get(id));
+    queued(() => (live ? composeStrip(layers, 'idle', 2) : Promise.resolve(''))).then((u) => {
+      if (!u) return;
+      ICON_URL.set(id, u);
+      if (live) setUrl(u);
+    });
+    return () => {
+      live = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+  const k = size / crop[2];
+  return (
+    <span
+      className={`px-icon ${className ?? ''}`}
+      style={{
+        display: 'inline-block',
+        width: size,
+        height: size,
+        backgroundImage: url ? `url(${url})` : undefined,
+        backgroundSize: `${2 * 128 * k}px ${128 * k}px`,
+        backgroundPosition: `-${crop[0] * k}px -${crop[1] * k}px`,
+        backgroundRepeat: 'no-repeat',
+        imageRendering: 'pixelated',
+      }}
+    />
+  );
+}

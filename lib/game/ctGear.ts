@@ -10,7 +10,7 @@ import { CT_REWARDS, daoDone, hanhFull, huyetCount, type DaoExt } from './khaiMa
 import type { Layer } from '../lpc';
 import type { Meta } from './types';
 
-export type CtGearSlot = 'mu' | 'vu_khi' | 'canh';
+export type CtGearSlot = 'mu' | 'vu_khi' | 'canh' | 'phu_kien';
 export type CtGearWorn = Partial<Record<CtGearSlot, string>>;
 
 export interface CtGearItem {
@@ -20,6 +20,10 @@ export interface CtGearItem {
   /** lớp vẽ sau lưng (trước thân) và trước mặt (sau tóc) */
   back?: Layer[];
   front?: Layer[];
+  /** ảnh có sẵn trong /icons (vũ khí dùng đúng icon đồ trong kiếp) */
+  icon?: string;
+  /** vùng cắt icon [x, y, rộng] trong khung 128 khi ghép từ lớp LPC (món nhỏ cắt sát hơn) */
+  crop?: [number, number, number];
   hint: string;
   has: (m: Meta, ext: DaoExt) => boolean;
 }
@@ -35,20 +39,26 @@ const free = { hint: '', has: () => true };
 export const CT_GEAR: CtGearItem[] = [
   // Mũ
   { id: 'non_la', slot: 'mu', name: tr('Nón lá', 'Conical hat'), front: [{ key: 'non_la', tint: '#d8b46a' }], ...free },
-  { id: 'khan_tran', slot: 'mu', name: tr('Khăn buộc trán', 'Headband'), front: [{ key: 'headband', tint: '#c0402e' }], ...free },
+  { id: 'khan_tran', slot: 'mu', crop: [50, 42, 28], name: tr('Khăn buộc trán', 'Headband'), front: [{ key: 'headband', tint: '#c0402e' }], ...free },
   { id: 'mu_da', slot: 'mu', name: tr('Mũ da', 'Leather cap'), front: [{ key: 'leather_cap', tint: '#7a5a3a' }], ...lived(10) },
-  { id: 'ngan_thoa', slot: 'mu', name: tr('Ngân thoa', 'Silver circlet'), front: [{ key: 'tiara_silver' }], ...reached(3) },
-  { id: 'kim_thoa', slot: 'mu', name: tr('Kim thoa', 'Gold circlet'), front: [{ key: 'tiara_gold' }], ...reached(4) },
-  { id: 'kim_mien', slot: 'mu', name: tr('Kim miện', 'Gold crown'), front: [{ key: 'crown_gold' }], ...reached(7) },
+  { id: 'ngan_thoa', slot: 'mu', crop: [54, 45, 20], name: tr('Ngân thoa', 'Silver circlet'), front: [{ key: 'tiara_silver' }], ...reached(3) },
+  { id: 'kim_thoa', slot: 'mu', crop: [54, 45, 20], name: tr('Kim thoa', 'Gold circlet'), front: [{ key: 'tiara_gold' }], ...reached(4) },
+  { id: 'kim_mien', slot: 'mu', crop: [50, 28, 28], name: tr('Kim miện', 'Gold crown'), front: [{ key: 'crown_gold' }], ...reached(7) },
   // Vũ khí
-  { id: 'moc_kiem', slot: 'vu_khi', name: tr('Mộc kiếm', 'Wooden sword'), back: [{ key: 'w_sword_bg', tint: '#a0703a' }], front: [{ key: 'w_sword', tint: '#a0703a' }], ...free },
-  { id: 'truong', slot: 'vu_khi', name: tr('Thiền trượng', 'Monk staff'), back: [{ key: 'w_staff_bg' }], front: [{ key: 'w_staff' }], ...lived(5) },
-  { id: 'thuong', slot: 'vu_khi', name: tr('Trường thương', 'Long spear'), back: [{ key: 'w_spear_bg' }], front: [{ key: 'w_spear' }], ...reached(2) },
-  { id: 'thiet_kiem', slot: 'vu_khi', name: tr('Thiết kiếm', 'Iron sword'), back: [{ key: 'w_sword_bg' }], front: [{ key: 'w_sword' }], ...reached(3) },
-  { id: 'dao', slot: 'vu_khi', name: tr('Đao', 'Saber'), back: [{ key: 'w_katana_bg' }], front: [{ key: 'w_katana' }], ...dao('giang_ho', tr('Thắng 100 người chơi', 'Defeat 100 players')) },
-  { id: 'liem', slot: 'vu_khi', name: tr('Huyết liêm', 'Blood scythe'), front: [{ key: 'w_scythe', tint: '#a8202a' }], ...dao('diem_la', tr('Ngộ đạo Diêm La', 'Attain the Dao of King Yama')) },
+  { id: 'moc_kiem', slot: 'vu_khi', icon: 'moc_kiem', name: tr('Mộc kiếm', 'Wooden sword'), back: [{ key: 'w_sword_bg', tint: '#a0703a' }], front: [{ key: 'w_sword', tint: '#a0703a' }], ...free },
+  { id: 'truong', slot: 'vu_khi', icon: 'g_thien_truong_go', name: tr('Thiền trượng', 'Monk staff'), back: [{ key: 'w_staff_bg' }], front: [{ key: 'w_staff' }], ...lived(5) },
+  { id: 'thuong', slot: 'vu_khi', icon: 'truong_thuong', name: tr('Trường thương', 'Long spear'), back: [{ key: 'w_spear_bg' }], front: [{ key: 'w_spear' }], ...reached(2) },
+  { id: 'thiet_kiem', slot: 'vu_khi', icon: 'thiet_kiem', name: tr('Thiết kiếm', 'Iron sword'), back: [{ key: 'w_sword_bg' }], front: [{ key: 'w_sword' }], ...reached(3) },
+  { id: 'dao', slot: 'vu_khi', icon: 'g_han_nguyet_dao', name: tr('Đao', 'Saber'), back: [{ key: 'w_katana_bg' }], front: [{ key: 'w_katana' }], ...dao('giang_ho', tr('Thắng 100 người chơi', 'Defeat 100 players')) },
+  { id: 'liem', slot: 'vu_khi', icon: 'huyet_liem', name: tr('Huyết liêm', 'Blood scythe'), front: [{ key: 'w_scythe', tint: '#a8202a' }], ...dao('diem_la', tr('Ngộ đạo Diêm La', 'Attain the Dao of King Yama')) },
+  // Phụ kiện (16/11, Tyler thêm): đeo ở cổ, tai; icon dùng đúng icon phụ kiện trong kiếp khi có
+  { id: 'ngoc_boi', slot: 'phu_kien', icon: 'ngoc_boi', name: tr('Ngọc bội', 'Jade pendant'), front: [{ key: 'gem' }], ...free },
+  { id: 'chuoi_hat', slot: 'phu_kien', icon: 'pd_bo_de_boi', name: tr('Chuỗi bồ đề', 'Bodhi beads'), front: [{ key: 'beads' }], ...lived(5) },
+  { id: 'bua_ho_menh', slot: 'phu_kien', icon: 'charm_ho_khi', name: tr('Bùa hộ mệnh', 'Protective charm'), front: [{ key: 'amulet' }], ...reached(2) },
+  { id: 'hoa_tai', slot: 'phu_kien', crop: [50, 51, 28], name: tr('Hoa tai vàng', 'Gold earrings'), front: [{ key: 'earrings', tint: '#e0b02a' }], ...reached(3) },
+  { id: 'tinh_ha_chau', slot: 'phu_kien', icon: 'tinh_ha_chau', name: tr('Tinh hà châu', 'Star-river pearl'), front: [{ key: 'charm' }], ...dao('phi_thang', tr('Phi thăng một lần', 'Ascend once')) },
   // Cánh
-  { id: 'ao_choang', slot: 'canh', name: tr('Áo choàng', 'Cape'), back: [{ key: 'cape_bg', tint: '#7a1f12' }], front: [{ key: 'cape_fg', tint: '#7a1f12' }], ...reached(3) },
+  { id: 'ao_choang', slot: 'canh', crop: [48, 62, 32], name: tr('Áo choàng', 'Cape'), back: [{ key: 'cape_bg', tint: '#7a1f12' }], front: [{ key: 'cape_fg', tint: '#7a1f12' }], ...reached(3) },
   { id: 'canh_tien', slot: 'canh', name: tr('Cánh tiên', 'Immortal wings'), back: [{ key: 'wings_bg' }], front: [{ key: 'wings_fg' }], ...dao('phi_thang', tr('Phi thăng một lần', 'Ascend once')) },
   { id: 'canh_ma', slot: 'canh', name: tr('Cánh ma', 'Demon wings'), back: [{ key: 'bwings_bg' }], front: [{ key: 'bwings_fg' }], ...dao('diem_la', tr('Ngộ đạo Diêm La', 'Attain the Dao of King Yama')) },
 ];
@@ -61,7 +71,7 @@ export function ctGearLayers(worn?: CtGearWorn): { back: Layer[]; front: Layer[]
   const front: Layer[] = [];
   // cánh xa nhất, rồi vũ khí; trước mặt: mũ, cánh, vũ khí (vũ khí trên cùng như trong kiếp)
   for (const s of ['canh', 'vu_khi'] as CtGearSlot[]) back.push(...(ctGearOf(worn?.[s])?.back ?? []));
-  for (const s of ['mu', 'canh', 'vu_khi'] as CtGearSlot[]) front.push(...(ctGearOf(worn?.[s])?.front ?? []));
+  for (const s of ['mu', 'phu_kien', 'canh', 'vu_khi'] as CtGearSlot[]) front.push(...(ctGearOf(worn?.[s])?.front ?? []));
   return { back, front };
 }
 

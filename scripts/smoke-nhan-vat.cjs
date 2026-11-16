@@ -24,10 +24,11 @@ const meta = (p) => p.evaluate(() => JSON.parse(localStorage.getItem('vkl.meta')
   await p.goto(URL + '/'); await p.waitForTimeout(3000);
   ok(!(await p.$('.ct-home')), 'trang đầu không còn thẻ chân thân đen');
   await p.goto(URL + '/chan-than'); await p.waitForSelector('.nv-stage');
-  ok((await p.$$('.nv-slot')).length === 4, 'sân khấu có 4 ô đồ');
+  ok((await p.$$('.nv-slot')).length === 5, 'sân khấu có 5 ô đồ (thêm Phụ kiện)');
   const lc = await p.textContent('.nv-power b');
   ok(/^[0-9.]+$/.test(lc.trim()) && parseInt(lc.replace(/\./g, '')) > 1000, 'có lực chiến: ' + lc);
-  await p.click('.nv-power'); ok(!!(await p.$('.nv-why')), 'chạm lực chiến thấy cách tính'); await p.click('.nv-why');
+  await p.click('.nv-power'); ok(!!(await p.$('.nv-why2')), 'chạm lực chiến thấy cách tính'); await p.click('.nv-power');
+  ok((await p.textContent('.nv-title')).trim() === 'Kim Đan', 'danh hiệu theo cảnh giới cao nhất (Kim Đan)');
   // Mũ: mang nón lá rồi bỏ
   await p.click('.nv-slot >> nth=0'); await p.waitForTimeout(300);
   ok((await p.textContent('.nv-tab.on')).includes('Mũ'), 'chạm ô Mũ mở tab Mũ');

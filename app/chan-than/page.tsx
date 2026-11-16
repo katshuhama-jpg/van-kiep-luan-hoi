@@ -20,7 +20,7 @@ import { displayName } from '@/lib/storage';
 import { CHAN_THAN_ON, SU_DO_ON, TAB_ON } from '@/lib/flags';
 import { TabBar, TopMenu } from '@/components/TabBar';
 import { CT_RENAME_COST, ctSuggestName } from '@/lib/game/chanThan';
-import { ctTitles, huyetCount } from '@/lib/game/khaiMach';
+import { huyetCount } from '@/lib/game/khaiMach';
 import type { Meta } from '@/lib/game/types';
 import { loadAll, saveMeta } from '@/lib/storage';
 import { useAuth } from '@/lib/useAuth';
@@ -100,7 +100,6 @@ export default function ChanThanPage() {
         <>
           <section className="panel nv-panel">
             <NhanVatStage ct={ct} meta={meta} ext={ext} active={bagTab} onSlot={(t) => (setBagTab(t), track('ct_slot_tap', { slot: t }))} />
-            {ctTitles(meta, ext).length > 0 && <p className="ct-titles">{ctTitles(meta, ext).join(' · ')}</p>}
             <NhanVatBag ct={ct} meta={meta} ext={ext} tab={bagTab} setTab={setBagTab} onWear={(x) => save({ ...meta, chanThan: x })} />
             <div className="home-grid">
               <button className="btn" onClick={() => setMode('look')}>
