@@ -86,7 +86,7 @@ export function charAxes(s: S, life: number, wealth: number, base?: { s: S; life
     { label: tr('Tâm', "Mind"), value: s.tamCanh, base: base?.s.tamCanh },
     { label: tr('Ngộ', "Insight"), value: s.ngoTinh, base: base?.s.ngoTinh },
     { label: tr('Vận', "Luck"), value: s.khiVan, base: base?.s.khiVan },
-    { label: tr('Tài', "Wealth"), value: wealth, base: base?.wealth },
+    { label: tr('Giàu', "Wealth"), value: wealth, base: base?.wealth },
     { label: tr('Định', "Calm"), value: 100 - s.tamMa, base: base ? 100 - base.s.tamMa : undefined },
     { label: tr('Thọ', "Life"), value: lifeV(life), base: base ? lifeV(base.life) : undefined },
   ];

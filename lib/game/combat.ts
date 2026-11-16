@@ -638,7 +638,7 @@ export function playerStats(c: Character): Fighter {
   if (c.path === 'phat') ((hp *= 1.3), (def *= 1.3), (atk *= 1.1));
   if (c.path === 'dan') ((hp *= 1.15), (def *= 1.1)); // đan dược hộ thân
   if (c.gifts?.includes('g_than_luc')) atk *= 1.25;
-  if (c.gifts?.includes('g_kiem_cot')) atk *= 1.1;
+  if (c.gifts?.includes('g_kiem_cot')) atk *= 1.3; // góp ý #262: thiên phú Huyền phải hơn Trời sinh thần lực (Linh, x1,25)
   if (c.mount === 'rong') ((atk *= 1.2), (hp *= 1.2));
   // trang bị
   const g = gearFx(c.equipped);

@@ -17,7 +17,7 @@ export const RARE_W = [58, 28, 11, 2.9, 0.1];
 
 export const GIFTS: Gift[] = [
   // ---- Phàm ----
-  { id: 'g_trau', name: tr('Khỏe như trâu', "Strong as an ox"), desc: tr('Sức khỏe +12', "Health +12"), rare: 0, apply: (c) => stat(c, 'sucKhoe', 12) },
+  { id: 'g_trau', name: tr('Khỏe như trâu', "Strong as an ox"), desc: tr('Sức khỏe +12 (tối đa 100)', "Health +12 (max 100)"), rare: 0, apply: (c) => stat(c, 'sucKhoe', 12) },
   { id: 'g_lanh', name: tr('Lanh lợi', "Quick-witted"), desc: tr('Ngộ tính +6', "Insight +6"), rare: 0, apply: (c) => stat(c, 'ngoTinh', 6) },
   { id: 'g_mom', name: tr('Mồm mép tép nhảy', "Silver tongue"), desc: tr('+40 linh thạch, nói gì cũng lọt tai', "+40 spirit stones, and everything you say goes down smooth"), rare: 0, apply: (c) => money(c, 40) },
   {
@@ -68,7 +68,7 @@ export const GIFTS: Gift[] = [
   { id: 'g_tham', name: tr('Tham lam', "Greedy"), desc: tr('Nhà bỗng giàu to (+400). Nhưng tham thì thâm...', "Sudden fortune (+400). But greed brings grief..."), rare: 1, bad: true, apply: (c) => money(c, 400) },
   { id: 'g_dao_hoa', name: tr('Mệnh đào hoa', "Peach-blossom fate"), desc: tr('Dễ gặp đạo lữ gấp 3, tâm cảnh +5', "3x more likely to meet a Dao companion, Mind +5"), rare: 1, apply: (c) => stat(c, 'tamCanh', 5) },
   { id: 'g_menh_cung', name: tr('Mệnh cứng', "Hard to kill"), desc: tr('Khó chết hơn 30% trong mọi hiểm cảnh', "30% less likely to die in any danger"), rare: 1 },
-  { id: 'g_than_luc', name: tr('Trời sinh thần lực', "Born with divine strength"), desc: tr('Công khi trừ yêu +25%', "Attack +25% when hunting demons"), rare: 1 },
+  { id: 'g_than_luc', name: tr('Trời sinh thần lực', "Born with divine strength"), desc: tr('Công +25% trong mọi trận', "Attack +25% in every fight"), rare: 1 },
   {
     id: 'g_tram_uat',
     name: tr('Trời sinh u uất', "Born melancholy"),
@@ -84,7 +84,7 @@ export const GIFTS: Gift[] = [
   {
     id: 'g_kiem_cot',
     name: tr('Thiên sinh kiếm cốt', "Born with sword bones"),
-    desc: tr('Sinh ra cầm kiếm, du ngoạn và trừ yêu mạnh hơn', "Born holding a sword - stronger when wandering and hunting demons"),
+    desc: tr('Công +30% trong mọi trận, sinh ra đã cầm Mộc kiếm, sức khỏe +8', "Attack +30% in every fight, born holding a Wooden sword, Health +8"),
     rare: 2,
     apply: (c) => {
       giveItem(c, 'moc_kiem');
@@ -96,7 +96,7 @@ export const GIFTS: Gift[] = [
   {
     id: 'g_thanh_the',
     name: tr('Thánh thể', "Saint body"),
-    desc: tr('Sức khỏe +20, thọ nguyên +10%', "Health +20, lifespan +10%"),
+    desc: tr('Sức khỏe +20 (tối đa 100), thọ nguyên +10%', "Health +20 (max 100), lifespan +10%"),
     rare: 2,
     apply: (c) => {
       stat(c, 'sucKhoe', 20);

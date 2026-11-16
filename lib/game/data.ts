@@ -964,7 +964,7 @@ export const TALENTS: Talent[] = [
   { id: 'tien_cot', name: tr('Tiên cốt trời sinh', "Born immortal bones"), desc: tr('Chắc chắn mang Thiên linh căn, tu luyện nhanh hơn hẳn', "Guaranteed Heavenly Spiritual Root, much faster cultivation"), cost: 250 },
   // thiên phú của tà đạo, trả bằng nghiệp lực
   { id: 'ta_huyet', name: tr('Huyết mạch ma tộc', "Demon bloodline"), desc: tr('Sinh ra đã nghiêng về tà (đạo tâm -30), ngộ tính +10', "Born leaning evil (Dao Heart -30), Insight +10"), cost: 30, ta: true },
-  { id: 'ta_dao', name: tr('Huyết Ma Đao chờ chủ', "Blood Demon Saber awaits"), desc: tr('Huyết Ma Đao nằm sẵn trong túi, đủ Trúc Cơ là cầm được', "The Blood Demon Saber waits in your bag, usable at Foundation"), cost: 40, ta: true },
+  { id: 'ta_dao', name: tr('Huyết Ma Đao chờ chủ', "Blood Demon Saber awaits"), desc: tr('Huyết Ma Đao nằm sẵn trong túi, cầm được ngay từ nhỏ', "The Blood Demon Saber waits in your bag, usable from childhood"), cost: 40, ta: true },
   { id: 'ta_kien', name: tr('Ma tâm kiên cố', "Iron demonic heart"), desc: tr('Tâm ma tăng chậm hơn 35% suốt kiếp này', "Heart demons grow 35% slower this life"), cost: 45, ta: true },
   { id: 'ta_cong', name: tr('Ma công nhập thể', "Demonic arts in the body"), desc: tr('Linh căn mạnh hơn 20%, đổi lại tâm ma khởi đầu +10', "Spiritual root 20% stronger, but starting heart demon +10"), cost: 50, ta: true },
   { id: 'ta_hon', name: tr('Oan hồn hộ thể', "Vengeful ghost guardian"), desc: tr('Oan hồn kiếp trước đỡ cho một lần chết', "A vengeful ghost from a past life blocks one death"), cost: 70, ta: true },
