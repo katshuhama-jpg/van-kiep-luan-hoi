@@ -236,6 +236,18 @@ Lên bản: 2026-11-18. Bật cờ `SON_MON_ON`, có cáo thị 4.6.0.
 - [ ] Video ngắn 9:16 (Playwright quay): vào môn, điểm danh, bản đồ, xuất chinh, chiến báo. Gửi Tyler, không tự đăng.
 - Xong:
 - Ghi chú:
+  - Trả lời góp ý từ đêm 16/11 (tác vụ 5:00 ngày 17/11 gửi SAU khi bản 17/11 lên trang; reply_ver '4.5.0'; tặng 10 phúc mỗi góp ý báo lỗi như thường lệ; gửi xong đặt status 'da_xong'):
+    - #262: "Bạn nói đúng, Thiên sinh kiếm cốt (rút lúc đầu thai) và Kiếm tâm thông minh (mua bằng phúc duyên) là hai thứ khác nhau. Kiếm cốt vốn chỉ cộng 10% công mà không ghi ra, nên còn yếu hơn thiên phú Linh. Từ bản 17/11 kiếm cốt cộng 30% công trong mọi trận và ghi rõ trên thẻ."
+    - #263: "Cảm ơn bạn. Huyết Ma Đao chờ chủ vốn cầm được ngay từ nhỏ, chỗ sai là dòng mô tả. Bản 17/11 đã sửa mô tả cho đúng, cách chạy giữ nguyên."
+    - #265: "Cảm ơn bạn đã báo. Trưa 16/11 nút Ra đài bị thanh tab dưới đáy che, mình sửa ngay chiều hôm đó, giờ Lôi đài đánh bình thường rồi. Mình tặng bạn chút phúc duyên bù cho mấy lượt bị kẹt."
+    - #261: "Mình hiểu, có thành tựu cần chỉ số thấp mà chỉ số cứ tăng. Mình ghi lại ý thêm cách tự hạ chỉ số."
+    - #264: "Mình ghi nhận: tâm pháp lên cấp cao mà không thêm gì thì phí công. Mình sẽ xem lại để mỗi cấp tâm pháp có thêm tác dụng."
+    - #269: "Ý hay, cảm ơn bạn. Sơn Môn mở 5:00 sáng 18/11, số kết cục ngươi đã mở được tính vào Lực chiến ở đó. Thưởng riêng cho kết cục chết mình ghi lại."
+    - #270: "Cảm ơn bạn. Kiếp 2 đã lên Chân Tiên thì đúng là nhanh. Mình ghi lại ý cho chọn độ khó."
+    - #259: "Cảm ơn bạn đã chấm. Thua giao đấu để lại thương nặng, nghỉ vài năm cho lành rồi hẵng đánh tiếp sẽ đỡ hơn."
+    - #260: "Kiếp hay nhất trong 13 kiếp, nghe vui quá. Cảm ơn bạn!"
+    - #258, #266, #267: "Cảm ơn bạn đã chơi và chấm kiếp!"
+    - #268: "Thanks for the review! Noted that passing on the relic weapon wasn't clear. I'll look at showing the rule right on the item."
 
 ## Ngoài game (Tyler tự làm)
 - Đăng "Biên niên Kỷ" mỗi tuần và lúc kết Kỷ (Claude soạn khi Tyler hỏi): môn giữ nhiều ô nhất, trận lớn, môn lật ngược thế cờ.

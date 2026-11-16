@@ -14,6 +14,7 @@ Mốc so sánh: còn chơi sau 7 ngày (D7) 11-14% (`docs/so-lieu.md`, mốc tr�
 - Kiểm tra: thêm script chạy từng lựa chọn trong 65 chỗ với `c.oanHon = true` và xúc xắc ép ra chết, xác nhận chữ trả về không còn câu kết bình an và không cộng thưởng; tsc, build, smoke như thường lệ.
 - Cáo thị 17/11 (ngắn, không số): "Khi oan hồn hay sư phụ cứu ngươi khỏi cửa tử, sự kiện giờ kể đúng là ngươi vừa thoát chết. Cảm ơn Nguyễn Quang đã báo."
 - Sau khi lên bản và kiểm tra site chạy thật: nhắn Quang một dòng ngắn "bản sáng nay 17/11 sửa rồi nha bạn" (Tyler duyệt gửi trước).
+- ĐÃ LÀM đêm 16/11 (d706964): xem "Đêm 16/11" bên dưới. Hai việc nhỏ (trục Tài, sức khỏe tối đa 100) cũng đã làm (4e5e0cf).
 
 Hai việc nhỏ cùng nguồn (Quang hỏi 16/11), làm nếu còn thời gian, không bắt buộc cho 17/11:
 - Biểu đồ chỉ số nhân vật: trục "Tài" (điểm giàu theo linh thạch, `wealthScore`) dễ hiểu nhầm. Chạm vào trục hiện một dòng giải thích, hoặc đổi nhãn rõ hơn.
@@ -200,6 +201,50 @@ Nhận định:
 - Đối chiếu: không trùng plan-4.5.0 (Mộng Tỉnh ở SAU kiếp 1), plan-4.6.0 (Sơn Môn, layout 4 tab không đụng màn đầu thai trong /choi).
 - Ưu tiên 2 (nếu còn giờ, hoặc đêm 15/11): đo người bỏ giữa kiếp 1 rời ở tuổi nào, sự kiện nào (vkl_events có sc, thêm tuổi nếu chưa có), rồi rút ngắn hoặc làm kịch tính đoạn đó.
 
+## Đêm 16/11/2026 (lên bản 17/11)
+
+Kế hoạch: không có khối nào tới hạn (4.5.0 xong hết; 4.6.0 Ngày 7 lên bản 18/11). Đêm nay làm việc Tyler giao (lỗi chữ oan hồn) và góp ý.
+
+Việc Tyler giao - lỗi chữ "oan hồn đỡ đòn vô cớ" (d706964):
+- Mỗi chỗ có kết bình an: khi `fatal()` trả câu cứu mạng (oan hồn, sư phụ, thân tu đạo, trời thương, ngọc bội) thì in một câu kể nạn đã xảy ra rồi câu cứu, bỏ nhánh thưởng. 37 chỗ trong events.ts, 2 events2.ts, 1 hopHoan.ts; thêm 5 chỗ cùng lỗi nhưng viết khác (`${f ?? ''}` trong chuỗi): Tiên Ma đại chiến, Tranh ngai Ma giới (+2.000 linh thạch), Ma điện luyện ma công, rời tông bị ma môn truy sát, theo chính phái diệt ma. events3.ts: `gamble()` nhận `[lead, near]`, 17 lựa chọn (Tiệc Hồng Môn...) có câu kể nạn riêng.
+- Giữ nguyên các kết vốn đã là thua hoặc trọng thương (Lôi đài thua, bị phát hiện, Hợp Hoan bị truy...): câu cứu nối vào vẫn khớp, không có thưởng. Danh sách trong `KE_NAN` của script thử.
+- Thử: `npx tsx scripts/thu-thoat-chet.ts` (mới): chạy mọi lựa chọn của mọi sự kiện với oan hồn + xúc xắc ép ra chết, 59 lựa chọn có câu cứu, 0 lỗi (trước sửa: 8 sự kiện còn kết bình an hoặc cộng thưởng ngoài 65 chỗ đã biết). tsc, smoke, smoke-login (cả FAIL_ME), smoke-linhthu, build sạch.
+- Mô phỏng `sim-do-kho.ts 6000` trước/sau: tới Trúc Cơ 80,1/79,9%, Kim Đan 64,1/64,2%, Nguyên Anh 42,2/41,8%, Hóa Thần 22,5/22,3%, Luyện Hư 9,5/9,6%, Độ Kiếp 2,9/2,5%; tuổi chết TB 111/113. Trong sai số.
+- Cáo thị 4.5.0 thêm nhóm "Mới 17/11" (câu Tyler duyệt, nguyên văn).
+
+Số chính (đọc khoảng 21:40):
+- Tài khoản mới: 14/11 139, 15/11 165 (cả ngày), 16/11 56 tới 21:40 (15/11 cùng giờ khoảng 124). Phiên mở game cùng khung giờ: 1.169 -> 1.013; người mới thấy màn kiếp đầu gọn 391 -> 250. Quảng cáo Chân Thân vẫn chạy tới 19/11, lượt từ quảng cáo trong ngày 237 -> 70: Meta phát ít hẳn hôm nay (Tyler xem Trình quản lý quảng cáo).
+- D1: nhóm 13/11 37,2%, nhóm 14/11 21,7% (thấp), 12/11 25,6%. D7: nhóm 7/11 8,2%, 8/11 7,7% (dưới mốc 11-14%).
+- Phiên mỗi ngày (vkl_daily): 14/11 1.235 -> 15/11 1.639 (phiên mới 616, đăng ký 165, trung vị 3,1 phút). Màn rời nhiều nhất 15/11: đầu thai 718, đang chơi 528, chưa rõ 418, sự kiện 336.
+- Kiếp đầu gọn (theo ngày thấy màn gọn): xong kiếp 1 / vào kiếp 1: 14/11 55,3%, 15/11 46,4%, 16/11 40,7% (ngày đầu bật `KIEP1_CN_GON`, còn nhiều phiên đang chơi dở nên chưa kết luận; đo đủ 3 ngày tới 19/11). Quảng cáo xong kiếp 1: 65/201 (32%) -> 50/237 (21%) -> 10/70.
+- Tính năng 24 giờ (phiên): khai huyệt 296, xem huyệt 311, cẩm nang 215, Mộng Tỉnh 149 -> tạo chân thân 140 (94%). Sư Đồ ngày đầu: 38 phiên bấm Mời đệ tử, 8 phiên mở link mời, 1 bái sư.
+- Lôi đài: ra đài và đánh khớp nhau mọi giờ. Lỗi Vercel 24 giờ: không có.
+
+Góp ý (13 góp ý 'moi' từ 15/11 23:00):
+- #265 "Lôi đài lỗi không đánh được" (14:03 16/11): dữ liệu của người báo cho thấy 13:49 và 13:59 bấm ra đài, rút đối thủ rồi dừng (nút Ra đài bị thanh tab che, đúng lỗi Tyler báo và sửa nóng trưa 16/11); 14:01 đã đánh lại được 2 trận. Không cần sửa thêm.
+- #262 Thiên sinh kiếm cốt (Huyền, 11% số lần rút) chỉ cộng công x1,1 mà không ghi ra, yếu hơn Trời sinh thần lực (Linh, x1,25). Sửa (4e5e0cf): x1,3 và thẻ ghi "Công +30% trong mọi trận, sinh ra đã cầm Mộc kiếm, sức khỏe +8". Mô tả Trời sinh thần lực ghi đúng là "Công +25% trong mọi trận" (trước ghi "khi trừ yêu" nhưng code cộng mọi trận). Không chạy sim-do-kho vì mô phỏng không rút thiên phú; thay đổi chỉ chạm người rút trúng kiếm cốt.
+- #263 Huyết Ma Đao chờ chủ ghi "đủ Trúc Cơ là cầm được" nhưng cầm được từ 0 tuổi: túi đồ không chặn cảnh giới với món nào. Tự chốt: sửa mô tả cho đúng ("cầm được ngay từ nhỏ"), không thêm chặn (thêm chặn sẽ đụng cả thần binh truyền kiếp và đồ đang mặc của mọi người).
+- Quang hỏi 16/11: trục "Tài" của biểu đồ đổi tên thành "Giàu"; thiên phú cộng sức khỏe ghi "(tối đa 100)". Không đổi luật.
+- Ghi lại, chưa làm: #261 muốn cách tự hạ chỉ số để làm thành tựu; #264 tâm pháp lên cấp 8-9 không thêm gì (cần xem lại cân bằng tâm pháp, việc nhiều đêm); #269 thưởng khi mở nhiều kết cục chết (Lực chiến Sơn Môn đã tính số kết cục từ 18/11); #270 game hơi dễ, muốn chọn độ khó; #268 không biết cách truyền thần binh.
+- Câu trả lời đã soạn: ở "Ghi chú:" Ngày 7 trong plan-4.6.0 (tác vụ 5:00 gửi sau khi bản 17/11 lên trang).
+- Bù: không ai mất đồ hay kiếp vì lỗi đêm nay; #265 có 2 lượt ra đài bị kẹt, tặng 10 phúc như mọi góp ý báo lỗi.
+
+Nhận định:
+1. Người mới hôm nay ít hẳn (lượt quảng cáo 237 -> 70) dù không có lỗi: nhiều khả năng Meta phát ít ngày thứ Hai hoặc ngân sách trọn đời đã tiêu nhanh 3 ngày đầu. Không phải do bản 16/11 (tỉ lệ open -> vào kiếp giữ nguyên).
+2. Xong kiếp 1 trên vào kiếp 1 đang đi xuống ba ngày liền (55 -> 46 -> 41%), phần cuối có thể do phiên chưa xong. Đây vẫn là chỗ thủng lớn nhất; đo tiếp `KIEP1_CN_GON` tới 19/11 trước khi làm lần 3 (dòng gợi ý thay cẩm nang).
+3. D1 nhóm 14/11 chỉ 21,7% so với 37,2% nhóm 13/11; nhóm 14/11 là ngày nhiều quảng cáo nhất. Theo dõi D1 nhóm 15-16/11.
+
+Đối chiếu: không trùng plan-4.5.0 (xong), plan-4.6.0 (Ngày 7 chỉ Sơn Môn, cáo thị 4.6.0 riêng; đêm nay không đụng Sơn Môn), không có docs/yeu-cau-lam-tinh-nang.md. Việc đêm nay nằm trong "Việc Tyler giao cho đêm 16/11".
+
+Tiến độ việc nhiều đêm:
+- Kiếp đầu gọn lần 2: đo tới 19/11 (mục tiêu 55% xong kiếp 1 / vào kiếp 1).
+- Sơn Môn: Ngày 7 đêm 17/11.
+- Mới ghi: xem lại tâm pháp cấp cao (#264), cần đọc `lib/game/congPhap.ts` và mô phỏng trước khi đổi.
+
+Quảng cáo Facebook: CHƯA chạy đợt Sơn Môn. Điều kiện đặt đêm 15/11 (quảng cáo xong kiếp 1 về lại 28%+) chưa đạt (21% ngày 15/11, hôm nay chưa đủ số). Đợt Chân Thân còn tới 19/11; nếu sáng 17/11 Trình quản lý báo đã tiêu gần hết 300.000đ thì để nó tự hết, không nạp thêm. Đề xuất đợt Sơn Môn giữ nguyên như đêm 15/11, quyết lại đêm 18/11 khi có số ngày đầu Sơn Môn.
+
+Nội dung soạn sẵn: không có thứ mới đáng khoe đêm nay (sửa chữ và cân bằng nhỏ). Bài Sơn Môn để đêm 17/11.
+
 ## Đêm 15/11/2026 (lên bản 16/11)
 
 Kế hoạch đêm nay: 4.6.0 Ngày 3, 3b, 4, 5, 6 xong và đẩy `next`. Người chơi thấy từ 16/11: Sư Đồ (nút Mời đệ tử ở trang Chân thân) và thanh 4 tab + Menu. Sơn Môn vẫn sau cờ, tab Sơn Môn chỉ có màn chờ "Mở cửa 5:00 sáng 18/11". Máy chủ đã áp 2 migration mới (`su_do_2026_11_16`, `son_mon_ket_ky_2026_11_16`), không sửa hàm cũ.
@@ -290,6 +335,7 @@ Nội dung soạn sẵn (Tyler tự đăng, Claude không đăng): chưa có th�
 - Kiếp đầu gọn, lần 2 (14/11 đêm, KIEP1_CN_GON, tắt mặc định, bật đêm 15/11): kiếp 1 không tự mở cẩm nang, các hồi dời sang kiếp 2-4. Trước: 52% người vào kiếp 1 xong kiếp 1; 46% người bỏ giữa kiếp 1 có việc cuối là đọc cẩm nang tự mở. Sau: đo từ khi bật.
 - Kiếp đầu gọn, lần 2 (bật từ bản 16/11): trước (15/11, cờ tắt) 43% người vào kiếp 1 xong kiếp 1, 44% người bỏ có việc cuối là cẩm nang tự mở, 55% bỏ trong 2 phút đầu. Sau: đo từ 16/11 (ít nhất 3 ngày).
 - Nhiệm vụ ngày, lần 1 (15/11, góp ý #211): người đã mở gần hết đồ ẩn hay kết cục không còn nhận nhiệm vụ không làm được. Trước: 1 góp ý. Sau: đếm góp ý về nhiệm vụ ngày.
+- Thiên sinh kiếm cốt (thiên phú), lần 1 (16/11, góp ý #262): công x1,1 không ghi -> x1,3 có ghi trên thẻ. Đo: góp ý về thiên phú yếu.
 - Lột đồ khi thua trận (`robGear`), lần 1 (13/11, góp ý #236 #229): không lột thần binh truyền kiếp. Số trước: 2 góp ý báo mất thần binh trong 2 ngày. Sau: đếm góp ý báo mất thần binh từ 14/11.
 
 ## Tính năng đã ẩn
