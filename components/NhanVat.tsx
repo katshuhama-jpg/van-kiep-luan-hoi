@@ -8,7 +8,7 @@
 import { useMemo, useState, type ReactNode } from 'react';
 import type { ChanThanLook, Meta } from '@/lib/game/types';
 import { ctRobeLayers, type CtOutfit } from '@/lib/game/chanThan';
-import { CT_AO, CT_GEAR, ctAoOf, ctGearOf, ctNgoaiId, ctNgoaiList, ctPower, type CtGearItem, type CtGearSlot } from '@/lib/game/ctGear';
+import { CT_GEAR, CT_GEAR_ON, ctGearOf, ctNgoaiId, ctNgoaiList, ctPower, type CtGearItem, type CtGearSlot } from '@/lib/game/ctGear';
 import { LpcFigure } from './ChanThan';
 import { ctTitles, type DaoExt } from '@/lib/game/khaiMach';
 import { REALMS } from '@/lib/game/data';
@@ -58,6 +58,11 @@ export function GearIcon({ g, size }: { g: CtGearItem; size: number }) {
   return <LpcCropIcon id={`ct-g-${g.id}`} layers={[...(g.back ?? []), ...(g.front ?? [])]} size={size} crop={g.crop ?? GEAR_CROP[g.slot]} />;
 }
 
+/** ngọn lửa pixel 13x13 cạnh số lực chiến */
+const pxPath = (rows: string[]) => rows.flatMap((r, y) => [...r].map((c, x) => (c === '#' ? `M${x} ${y}h1v1h-1z` : ''))).join('');
+const FLAME_OUT = pxPath(['......#......', '.....##......', '.....###.....', '....####.....', '...######.#..', '..#########..', '..##########.', '.###########.', '.###########.', '.###########.', '..#########..', '...#######...', '.....###.....']);
+const FLAME_IN = pxPath(['.............', '.............', '.............', '.............', '......#......', '.....###.....', '....####.....', '....#####....', '...#######...', '...#######...', '....#####....', '.....###.....', '.............']);
+
 const fmt = (n: number) => n.toLocaleString('vi-VN');
 
 export function NhanVatStage({ ct, meta, ext, onSlot, active }: { ct: ChanThanLook; meta: Meta; ext: DaoExt; onSlot: (t: NvTab) => void; active: NvTab }) {
@@ -70,8 +75,7 @@ export function NhanVatStage({ ct, meta, ext, onSlot, active }: { ct: ChanThanLo
     let name: string | undefined;
     let icon: ReactNode = null;
     if (t === 'ao') {
-      const a = ctAoOf(ct.gear?.ao);
-      if (a) (name = a.name), (icon = <OutfitIcon o={a.spec} k={`ao-${a.id}`} size={44} />);
+      // 16/11: chưa ai có quần áo, ô để trống
     } else if (t === 'ngoai') {
       const n = ctNgoaiList().find((x) => x.id === ctNgoaiId(ct));
       if (n) (name = n.name), (icon = <OutfitIcon o={n.spec} k={`ng-${n.id}`} size={44} />);
@@ -133,10 +137,16 @@ export function NhanVatStage({ ct, meta, ext, onSlot, active }: { ct: ChanThanLo
           </div>
         )}
       </div>
-      <button className="nv-power" onClick={() => (setTt(false), setWhy((v) => !v), track('ct_power_open', { lc: p.total }))} aria-expanded={why}>
-        <small>{tr('Lực chiến', 'Power')}</small>
-        <b>{fmt(p.total)}</b>
-        <i aria-hidden="true">{why ? '▴' : '▾'}</i>
+      <button className="nv-power" onClick={() => (setTt(false), setWhy((v) => !v), track('ct_power_open', { lc: p.total }))} aria-expanded={why} aria-label={tr(`Lực chiến ${fmt(p.total)}, chạm xem cách tính`, `Power ${fmt(p.total)}, tap to see how it is counted`)}>
+        <span className="nv-pw-in">
+          <svg className="nv-pw-ic" width="26" height="26" viewBox="0 0 13 13" aria-hidden="true" shapeRendering="crispEdges">
+            <path d={FLAME_OUT} fill="#a8202a" />
+            <path d={FLAME_IN} fill="#ffd36b" />
+          </svg>
+          <small className="nv-pw-lbl">{tr('Lực chiến', 'Power')}</small>
+          <b className="nv-pw-n">{fmt(p.total)}</b>
+          <i aria-hidden="true">{why ? '▴' : '▾'}</i>
+        </span>
       </button>
       {why && (
         <div className="nv-why2" role="region" aria-label={tr('Lực chiến tính thế nào', 'How power is counted')}>
@@ -172,19 +182,24 @@ export function NhanVatBag({ ct, meta, ext, tab, setTab, onWear }: { ct: ChanTha
   const put = (k: keyof NonNullable<ChanThanLook['gear']>, id: string | null): ChanThanLook => {
     const g2 = { ...gear };
     if (ct.outfit >= 100 && !g2.ngoai) g2.ngoai = ctNgoaiId(ct);
+    // bộ mặc ở ô Quần áo cũ (16/11 sáng) nay là ngoại trang
+    if (g2.ao) {
+      if (!g2.ngoai) g2.ngoai = g2.ao;
+      delete g2.ao;
+    }
     if (id) g2[k] = id;
     else delete g2[k];
     return { ...ct, outfit: base, gear: g2 };
   };
   const list: Entry[] =
     tab === 'ao'
-      ? CT_AO.map((a) => ({ id: a.id, name: a.name, hint: a.hint, has: a.has(meta, ext), on: gear.ao === a.id, icon: <OutfitIcon o={a.spec} k={`ao-${a.id}`} size={40} />, wear: () => put('ao', gear.ao === a.id ? null : a.id) }))
+      ? []
       : tab === 'ngoai'
         ? ctNgoaiList().map((n) => {
             const on = ctNgoaiId(ct) === n.id;
             return { id: n.id, name: n.name, hint: n.hint, has: n.has(meta, ext), on, icon: <OutfitIcon o={n.spec} k={`ng-${n.id}`} size={40} />, wear: () => put('ngoai', on ? null : n.id) };
           })
-        : CT_GEAR.filter((x) => x.slot === tab).map((x) => ({ id: x.id, name: x.name, hint: x.hint, has: x.has(meta, ext), on: gear[tab] === x.id, icon: <GearIcon g={x} size={40} />, wear: () => put(tab, gear[tab] === x.id ? null : x.id) }));
+        : CT_GEAR.filter((x) => CT_GEAR_ON && x.slot === tab).map((x) => ({ id: x.id, name: x.name, hint: x.hint, has: x.has(meta, ext), on: gear[tab] === x.id, icon: <GearIcon g={x} size={40} />, wear: () => put(tab, gear[tab] === x.id ? null : x.id) }));
   const nHas = list.filter((e) => e.has).length;
   return (
     <section className="nv-bag">
@@ -195,11 +210,15 @@ export function NhanVatBag({ ct, meta, ext, tab, setTab, onWear }: { ct: ChanTha
           </button>
         ))}
       </div>
-      <p className="nv-count">
-        {tr(`Đã có ${nHas}/${list.length}`, `Owned ${nHas}/${list.length}`)}
-        {tab === 'ao' && !gear.ao && <small>{tr(' · đang mặc bộ khởi đầu', ' · wearing your starting outfit')}</small>}
-      </p>
-      <div className="nv-grid">
+      {list.length === 0 ? (
+        <p className="nv-empty">{tr(`Chưa ai có ${(TABS.find((t) => t.id === tab)?.vi ?? '').toLowerCase()}. Sẽ có ở bản sau. Hiện chỉ có Ngoại trang.`, 'Nobody has these yet; they come in a later version. Only Costumes are available for now.')}</p>
+      ) : (
+        <p className="nv-count">
+          {tr(`Đã có ${nHas}/${list.length}`, `Owned ${nHas}/${list.length}`)}
+          {tab === 'ngoai' && !ctNgoaiId(ct) && <small>{tr(' · đang mặc bộ khởi đầu', ' · wearing your starting outfit')}</small>}
+        </p>
+      )}
+      {list.length > 0 && <div className="nv-grid">
         {list.map((e) => (
           <button
             key={e.id}
@@ -222,11 +241,13 @@ export function NhanVatBag({ ct, meta, ext, tab, setTab, onWear }: { ct: ChanTha
             <small className="nv-cell-n">{e.name}</small>
           </button>
         ))}
-      </div>
+      </div>}
+      {list.length > 0 && (
       <p className="nv-say" role="status">
         {say ?? tr('Chạm món đã có để mặc, chạm lần nữa để cởi. Chạm món khóa để xem cách mở.', 'Tap an owned item to wear it, tap again to take it off. Tap a locked item to see how to unlock it.')}
       </p>
-      <small className="ct-note">{tr('Đồ chỉ để ngắm, không đổi sức mạnh trong kiếp. Ngoại trang mặc đè lên Quần áo.', 'Gear is cosmetic only. Costumes are worn over Clothes.')}</small>
+      )}
+      <small className="ct-note">{tr('Đồ chỉ để ngắm, không đổi sức mạnh trong kiếp. Không mặc ngoại trang thì chân thân mặc bộ khởi đầu (đổi ở Đổi ngoại hình).', 'Gear is cosmetic only. Without a costume your true self wears its starting outfit (change it in Change appearance).')}</small>
     </section>
   );
 }

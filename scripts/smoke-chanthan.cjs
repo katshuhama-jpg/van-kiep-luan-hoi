@@ -65,15 +65,15 @@ async function open(b, url, m, char) {
   await p.locator('.ttai-board .ct-tab').nth(2).click();
   ok(await p.locator('.ttai-coi').count() === 3, 'tab Đạo có 3 cõi');
   ok(await p.locator('.ttai-coi li').count() === 27, 'đủ 27 đạo');
-  ok(await p.locator('.ttai-coi li b', { hasText: /^\?$/ }).count() === 4, 'đạo ẩn chưa ngộ để "?"');
+  ok(await p.locator('.ttai-coi li b', { hasText: /^\?$/ }).count() === 0 && /Kẻ Gõ Chuông/.test(await p.locator('.ttai-coi').last().innerText()), '16/11: không còn đạo ẩn, ghi rõ cách ngộ (Minh Chung)');
   await p.locator('.ttai-board').screenshot({ path: DIR ? path.join(DIR, '4-tab-dao.png') : undefined });
   ok(!p.errs.length, 'tab Tam Tài không lỗi ' + p.errs.join(' | '));
   await p.close();
   p = await open(b, '/chan-than', meta([1, 2, 3, 4, 5, 6, 7]));
   await p.waitForSelector('.nv-grid');
   await p.locator('.nv-tab', { hasText: 'Ngoại trang' }).click();
-  ok(await p.locator('.nv-grid .nv-cell').count() === 11, 'tab Ngoại trang: 11 bộ');
-  ok(await p.locator('.nv-grid .nv-cell:not(.lock)').count() === 3, 'mở 3 bộ (Kim bào, Tiên y, Đạo bào Chứng Đạo)');
+  ok(await p.locator('.nv-grid .nv-cell').count() === 17, 'tab Ngoại trang: 17 bộ');
+  ok(await p.locator('.nv-cell:not(.lock)', { hasText: /^(Kim bào|Tiên y|Đạo bào Chứng Đạo)$/ }).count() === 3, 'mở 3 bộ thưởng (Kim bào, Tiên y, Đạo bào Chứng Đạo)');
   await p.locator('.nv-cell.lock').first().click();
   ok(/Cách mở/.test(await p.locator('.nv-say').innerText()), 'chạm ô khóa thấy cách mở');
   await p.locator('.nv-cell:has-text("Tiên y")').click();

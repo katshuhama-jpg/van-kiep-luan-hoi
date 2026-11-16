@@ -241,7 +241,7 @@ export const DAO: DaoMark[] = [
   { id: 'truong_sinh', coi: 'thien', name: tr('Trường Sinh', 'Longevity'), how: tr('Sống tới 1000 tuổi', 'Live to 1000'), line: tr('Một nghìn năm, ngươi nhìn núi mòn.', 'A thousand years, you watched the mountains wear away.'), check: (_m, k) => k.maxAge >= 1000 },
   { id: 'thien_thu', coi: 'thien', name: tr('Thiên Thư', 'Heavenly Tome'), how: tr('Mở đủ 10 mảnh Thiên thư quyển I', 'Unlock all 10 fragments of Heavenly Tome volume I'), line: tr('Mười mảnh ký ức ghép lại thành một câu hỏi.', 'Ten fragments of memory piece together into one question.'), check: (m) => loreDone(m) },
   { id: 'hong_hoang', coi: 'thien', name: tr('Hồng Hoang', 'Primordial'), how: tr('Lên Chuẩn Thánh', 'Reach Quasi-Saint'), line: tr('Ngươi bước ra ngoài trời đất cũ.', 'You stepped outside the old heaven and earth.'), check: (_m, k) => k.maxRealm >= HG_CHUAN_THANH },
-  { id: 'thien_dao', coi: 'thien', hidden: true, name: tr('Thiên Đạo', 'Heavenly Dao'), how: '', line: tr('Chỗ ngồi kia vốn để trống cho ai?', 'For whom was that seat left empty?'), check: (m) => hasEnd(m, 'hg_thien_dao') },
+  { id: 'thien_dao', coi: 'thien', name: tr('Thiên Đạo', 'Heavenly Dao'), how: tr('Ở Hồng Hoang thắng Vấn Thiên rồi chọn ngồi vào chỗ Thiên Đạo', 'In the Primordial realm, win Questioning Heaven and take the Heavenly Dao’s seat'), line: tr('Chỗ ngồi kia vốn để trống cho ai?', 'For whom was that seat left empty?'), check: (m) => hasEnd(m, 'hg_thien_dao') },
   // Hồng Trần
   { id: 'nhap_the', coi: 'tran', name: tr('Nhập Thế', 'Entering the World'), how: tr('Bái 5 tông môn khác nhau', 'Join 5 different sects'), line: tr('Năm cửa tông môn, ngươi đều đã bái.', 'You have bowed at the gates of five sects.'), check: (_m, k) => (k.sects?.length ?? 0) >= 5 },
   { id: 'luc_lo', coi: 'tran', name: tr('Lục Lộ', 'Six Roads'), how: tr('Đi đủ 6 con đường', 'Walk all 6 Paths'), line: tr('Sáu nẻo đường, ngươi đã đi hết.', 'Six roads, and you have walked them all.'), check: (_m, k) => k.paths.length >= 6 },
@@ -251,7 +251,7 @@ export const DAO: DaoMark[] = [
   { id: 'bao_khi', coi: 'tran', name: tr('Bảo Khí', 'Treasures'), how: tr('Có 150 món đồ ẩn', 'Own 150 hidden treasures'), line: tr('Một trăm năm mươi món, món nào cũng có chuyện.', 'One hundred and fifty items, each with its own story.'), check: (m) => (m.itemBook?.length ?? 0) >= 150 },
   { id: 'phu_quy', coi: 'tran', name: tr('Phú Quý', 'Wealth'), how: tr('Có 100.000 linh thạch trong một kiếp', 'Hold 100,000 spirit stones in one life'), line: tr('Giàu nứt vách, rồi cũng nằm xuống.', 'Rich beyond measure, and still you lay down in the end.'), check: (_m, k) => (k.maxMoney ?? 0) >= 100000 },
   { id: 'giang_ho', coi: 'tran', name: tr('Giang Hồ', 'Jianghu'), how: tr('Thắng 100 người chơi', 'Defeat 100 players'), line: tr('Trăm trận, giang hồ biết tên ngươi.', 'A hundred battles, and the jianghu knows your name.'), check: (_m, k) => k.duelWins >= 100 },
-  { id: 'truyen_dao', coi: 'tran', hidden: true, name: tr('Truyền Đạo', 'Passing On the Dao'), how: '', line: tr('Đạo của ngươi đã có người đi tiếp.', 'Someone now walks on along your Dao.'), check: (_m, _k, e) => (e.disciples ?? 0) >= 20 },
+  { id: 'truyen_dao', coi: 'tran', name: tr('Truyền Đạo', 'Passing On the Dao'), how: tr('Có 20 đệ tử thành tài (Sư Đồ, ở tab Nhân vật)', 'Have 20 graduated disciples (Master and Disciple, Character tab)'), line: tr('Đạo của ngươi đã có người đi tiếp.', 'Someone now walks on along your Dao.'), check: (_m, _k, e) => (e.disciples ?? 0) >= 20 },
   // U Minh
   { id: 'sinh_tu', coi: 'minh', name: tr('Sinh Tử', 'Life and Death'), how: tr('Mở 40 kết cục', 'Unlock 40 endings'), line: tr('Bốn mươi cách chết, ngươi đều đã nếm.', 'Forty ways to die, and you have tasted them all.'), check: (m) => nEnd(m) >= 40 },
   { id: 'loi_kiep', coi: 'minh', name: tr('Lôi Kiếp', 'Lightning Tribulation'), how: tr('Chết dưới thiên kiếp 3 lần', 'Die to the heavenly tribulation 3 times'), line: tr('Sét đánh ba lần, ngươi vẫn đứng dậy trong mộng sau.', 'Struck three times, and still you rose in the next dream.'), check: (_m, k) => (k.thienKiepDeaths ?? 0) >= 3 },
@@ -260,8 +260,8 @@ export const DAO: DaoMark[] = [
   { id: 'diem_la', coi: 'minh', name: tr('Diêm La', 'King Yama'), how: tr('Chết chưa phi thăng khi đạo tâm từ -90', 'Die unascended with a Dao Heart of -90 or below'), line: tr('Sổ tội của ngươi, Diêm La đọc mất ba ngày.', 'Your ledger of sins took King Yama three days to read.'), check: (_m, k) => !!k.diemLa },
   { id: 'oan_hon', coi: 'minh', name: tr('Oan Hồn', 'Vengeful Ghost'), how: tr('Báo thù 10 người chơi', 'Take revenge on 10 players'), line: tr('Mười món nợ máu, ngươi đều đã đòi.', 'Ten blood debts, and you collected them all.'), check: (_m, k) => k.revenges >= 10 },
   { id: 'huong_hoa', coi: 'minh', name: tr('Hương Hỏa', 'Incense'), how: tr('Mộ mình được thắp 500 nén hương', 'Your graves receive 500 incense sticks'), line: tr('Người đời chưa quên ngươi.', 'The world has not forgotten you.'), check: (_m, _k, e) => (e.incense ?? 0) >= 500 },
-  { id: 'tu_bi', coi: 'minh', hidden: true, name: tr('Từ Bi', 'Compassion'), how: '', line: tr('Ngươi nhớ đến người khác nhiều hơn chính mình.', 'You remembered others more than yourself.'), check: (_m, _k, e) => (e.litGraves ?? 0) >= 100 },
-  { id: 'minh_chung', coi: 'minh', hidden: true, name: tr('Minh Chung', 'Underworld Bell'), how: '', line: tr('Ngươi đã đứng trước kẻ gõ chuông. Hắn nhớ mặt ngươi.', 'You stood before the bell-ringer. He remembers your face.'), check: (m) => !!m.chuongWin },
+  { id: 'tu_bi', coi: 'minh', name: tr('Từ Bi', 'Compassion'), how: tr('Thắp hương ở 100 mộ khác nhau trong Nghĩa trang', 'Light incense at 100 different graves in the Cemetery'), line: tr('Ngươi nhớ đến người khác nhiều hơn chính mình.', 'You remembered others more than yourself.'), check: (_m, _k, e) => (e.litGraves ?? 0) >= 100 },
+  { id: 'minh_chung', coi: 'minh', name: tr('Minh Chung', 'Underworld Bell'), how: tr('Đánh bại Kẻ Gõ Chuông khi gặp hắn trong kiếp', 'Defeat the Bell-Ringer when you meet him in a life'), line: tr('Ngươi đã đứng trước kẻ gõ chuông. Hắn nhớ mặt ngươi.', 'You stood before the bell-ringer. He remembers your face.'), check: (m) => !!m.chuongWin },
 ];
 /** Chuẩn Thánh: cảnh giới đầu của Hồng Hoang (xem REALMS trong data.ts) */
 const HG_CHUAN_THANH = 12;
@@ -383,7 +383,7 @@ export interface CtReward {
 const daoHas = (id: string) => (m: Meta, e: DaoExt) => daoDone(m, e).includes(id);
 const daoHint = (id: string) => {
   const d = DAO.find((x) => x.id === id)!;
-  return d.hidden ? tr('Một đạo ẩn trong U Minh', 'A hidden Dao of the Netherworld') : tr(`Ngộ đạo ${d.name}: ${d.how.toLowerCase()}`, `Grasp the ${d.name} Dao: ${d.how.toLowerCase()}`);
+  return tr(`Ngộ đạo ${d.name}: ${d.how.toLowerCase()}`, `Grasp the ${d.name} Dao: ${d.how.toLowerCase()}`);
 };
 export const CT_REWARDS = (): CtReward[] => [
   ...HANH.map((h) => ({ id: `hanh_${h.id}`, name: tr(`${h.name} bào`, `${h.name} robe`), hint: tr(`Một kiếp mệnh ${h.name} phi thăng`, `A ${h.name}-fated life ascends`), has: (m: Meta) => (m.career?.hanh?.[h.id] ?? 0) >= 2 })),

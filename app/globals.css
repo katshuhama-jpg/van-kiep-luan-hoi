@@ -5503,9 +5503,6 @@ body[data-ctflow='1'] { overflow: hidden; }
 .nv-slot.has .nv-slot-box { color: #ffd36b; border-color: #a8862e; }
 .nv-slot.sel .nv-slot-box { border-color: #ffd36b; box-shadow: inset 0 0 0 2px #7a4a12, 0 0 0 2px #ffd36b; }
 .nv-slot small { max-width: 72px; font-size: 11px; font-weight: 700; line-height: 1.1; text-align: center; text-shadow: 1px 1px 0 #1f160d, -1px -1px 0 #1f160d, 1px -1px 0 #1f160d, -1px 1px 0 #1f160d; }
-.nv-power { position: absolute; left: 50%; bottom: 8px; z-index: 3; transform: translateX(-50%); display: flex; align-items: baseline; gap: 8px; min-height: 44px; padding: 2px 14px; font: inherit; color: #fff3dc; background: #1f160d; border: 2px solid #a8862e; cursor: pointer; white-space: nowrap; }
-.nv-power small { font-size: 13px; color: #e6cfa4; }
-.nv-power b { font-size: 22px; color: #ffd36b; letter-spacing: 1px; text-shadow: 2px 2px 0 #7a1f12; }
 .nv-why { position: absolute; left: 10px; right: 10px; bottom: 50px; z-index: 4; padding: 8px 10px; background: #1f160d; color: #fff3dc; border: 2px solid #ffd36b; font-size: 13px; line-height: 1.35; }
 .nv-why ul { list-style: none; margin: 4px 0; padding: 0; }
 .nv-why li { display: flex; justify-content: space-between; gap: 8px; border-bottom: 1px dashed #4a3a2a; padding: 2px 0; }
@@ -5542,8 +5539,6 @@ body[data-ctflow='1'] { overflow: hidden; }
 .nv-tt { top: 64px; bottom: auto; }
 .nv-tt li { justify-content: flex-start; }
 .nv-tt p { margin: 4px 0; }
-.nv-power { position: static; transform: none; width: 100%; justify-content: center; margin: 0 !important; min-height: 46px; border: 0; border-bottom: 3px solid #a8862e; }
-.nv-power i { font-style: normal; font-size: 12px; color: #e6cfa4; }
 .nv-panel > .nv-power { width: 100% !important; }
 .nv-why2 { margin-top: 0 !important; padding: 8px 10px; background: #1f160d; color: #fff3dc; font-size: 13px; line-height: 1.35; }
 .nv-why2 ul { list-style: none; margin: 0 0 4px; padding: 0; }
@@ -5583,3 +5578,16 @@ body[data-ctflow='1'] { overflow: hidden; }
 .su-home-t b { font-size: 17px; color: #ffd36b; }
 .su-home-t small { font-size: 13px; line-height: 1.35; color: #e6dcc4; }
 .su-home-go { flex: none; width: auto; min-height: 44px; margin: 0; padding: 0 12px; font-size: 15px; display: inline-flex; align-items: center; text-decoration: none; background: var(--gold); color: var(--ink-dark); }
+.nv-empty { margin: 6px 0; padding: 14px 10px; text-align: center; font-size: 14px; line-height: 1.4; color: var(--muted); background: var(--paper-3); border: 2px dashed var(--ink); }
+/* 16/11 tối: khung lực chiến kiểu bảng hiệu: viền vàng đôi, góc chạm, số vàng viền đỏ (chỉ pixel, không gradient) */
+.nv-power { position: relative; display: block; width: 100%; margin: 0 !important; font: inherit; color: #fff3dc; cursor: pointer; padding: 6px 10px; background: #2a1a10; border: 0; border-bottom: 3px solid #1f160d; min-height: 58px; }
+.nv-pw-in { position: relative; display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 46px; padding: 0 14px; background: #1f160d; border: 3px solid #e0b02a; box-shadow: inset 0 0 0 2px #1f160d, inset 0 0 0 4px #7a4a12, 0 0 0 2px #1f160d; }
+.nv-pw-in::before, .nv-pw-in::after { content: ''; position: absolute; top: 50%; width: 8px; height: 8px; margin-top: -4px; background: #ffd36b; box-shadow: 0 0 0 2px #7a4a12; transform: rotate(45deg); }
+.nv-pw-in::before { left: -7px; }
+.nv-pw-in::after { right: -7px; }
+.nv-pw-ic { flex: none; filter: drop-shadow(1px 1px 0 #000); }
+.nv-pw-lbl { padding: 1px 6px; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #ffd36b; background: #a8202a; border: 2px solid #ffd36b; }
+.nv-pw-n { font-size: 30px; line-height: 1; letter-spacing: 1px; color: #ffd36b; text-shadow: 2px 0 0 #7a1f12, -2px 0 0 #7a1f12, 0 2px 0 #7a1f12, 0 -2px 0 #7a1f12, 3px 3px 0 #1f160d; }
+.nv-power > .nv-pw-in > i { font-style: normal; font-size: 12px; color: #e6cfa4; }
+/* nút quay lại đứng đầu hàng thì luôn sát mép trái, không bị đẩy ra giữa */
+.topbar-row > .icon-btn:first-child { margin-left: 0; }

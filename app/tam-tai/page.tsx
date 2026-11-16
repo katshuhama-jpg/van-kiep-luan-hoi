@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import BackButton from '@/components/BackButton';
 import { TamTaiReview } from '@/components/ChanThan';
+import { PixelFx, fxBatQuai, fxSen } from '@/components/PixelFx';
 import { HuyetBar, HuyetBody, TamTaiBoard, useCtExt } from '@/components/TamTai';
 import { CHAN_THAN_ON, TAB_ON } from '@/lib/flags';
 import { TabBar, TopMenu } from '@/components/TabBar';
@@ -77,8 +78,14 @@ export default function TamTaiPage() {
             <div className="nv-stage tt">
               <span className="nv-name">{ct.name}</span>
               <span className="tt-count">{tr(`Tam Tài ${tamTaiCount(meta, ext)}/42`, `Treasures ${tamTaiCount(meta, ext)}/42`)}</span>
+              <div className="tk-floor">
+                <PixelFx spec={fxBatQuai('#ffd36b')} scale={3} dur={2.4} />
+              </div>
               <div className="nv-me">
                 <HuyetBody ct={bare!} open={n} size={132} />
+              </div>
+              <div className="tk-sen">
+                <PixelFx spec={fxSen()} scale={3} dur={1} />
               </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'center', margin: '8px 0 2px' }}>

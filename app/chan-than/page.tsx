@@ -32,7 +32,7 @@ export default function ChanThanPage() {
   const { user, ready } = useAuth();
   const [meta, setMeta] = useState<Meta | null>(null);
   const [mode, setMode] = useState<'view' | 'look' | 'name'>('view');
-  const [bagTab, setBagTab] = useState<NvTab>('ao');
+  const [bagTab, setBagTab] = useState<NvTab>('ngoai');
   const [name, setName] = useState('');
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);

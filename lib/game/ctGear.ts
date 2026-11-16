@@ -63,7 +63,12 @@ export const CT_GEAR: CtGearItem[] = [
   { id: 'canh_ma', slot: 'canh', name: tr('Cánh ma', 'Demon wings'), back: [{ key: 'bwings_bg' }], front: [{ key: 'bwings_fg' }], ...dao('diem_la', tr('Ngộ đạo Diêm La', 'Attain the Dao of King Yama')) },
 ];
 
-export const ctGearOf = (id?: string) => (id ? CT_GEAR.find((g) => g.id === id) : undefined);
+/**
+ * 16/11 (Tyler chốt): hiện chưa ai có đồ. Mũ, Vũ khí, Cánh, Phụ kiện, Quần áo để trống, chỉ Ngoại trang là có.
+ * Danh mục CT_GEAR giữ lại cho bản sau; bật bằng cách đổi CT_GEAR_ON. Đồ ai lỡ mang trong sáng 16/11 cũng không vẽ nữa.
+ */
+export const CT_GEAR_ON = false;
+export const ctGearOf = (id?: string) => (CT_GEAR_ON && id ? CT_GEAR.find((g) => g.id === id) : undefined);
 
 /** Lớp sau lưng và trước mặt của đồ đang mang (ctLayers chèn vào đúng chỗ) */
 export function ctGearLayers(worn?: CtGearWorn): { back: Layer[]; front: Layer[] } {
@@ -77,7 +82,7 @@ export function ctGearLayers(worn?: CtGearWorn): { back: Layer[]; front: Layer[]
 
 /** Số ngoại trang áo (thưởng) đã có */
 export const ctOutfitsOwned = (m: Meta, ext: DaoExt = {}) => CT_REWARDS().filter((r) => r.has(m, ext)).length;
-export const ctGearOwned = (m: Meta, ext: DaoExt = {}) => CT_GEAR.filter((g) => g.has(m, ext)).length;
+export const ctGearOwned = (m: Meta, ext: DaoExt = {}) => (CT_GEAR_ON ? CT_GEAR.filter((g) => g.has(m, ext)).length : 0);
 /** Áo thưởng có mặc được không (bộ khởi đầu luôn được) */
 export const ctOutfitHas = (m: Meta, ext: DaoExt, outfit: number) => outfit < CT_REWARD_BASE || !!CT_REWARDS()[outfit - CT_REWARD_BASE]?.has(m, ext);
 
@@ -95,8 +100,8 @@ export function ctPower(m: Meta, ext: DaoExt = {}): { total: number; parts: { na
 }
 
 // ---------------- Quần áo và Ngoại trang (16/11 tối, Tyler yêu cầu) ----------------
-// Quần áo: áo mặc lên chân thân, mở theo thành tựu như các đồ khác (người mới chưa có món nào).
-// Ngoại trang: các bộ thưởng Tam Tài (Kim bào ... Áo người gõ chuông), mặc đè lên Quần áo. Không mặc gì thì là bộ khởi đầu chọn lúc tạo.
+// 16/11 (Tyler chốt lần 2): mọi bộ áo đều là Ngoại trang (11 bộ thưởng Tam Tài + 6 bộ CT_AO bên dưới).
+// Tab Quần áo để trống: chưa ai có quần áo, sẽ thêm ở bản sau. Không mặc ngoại trang thì là bộ khởi đầu chọn lúc tạo.
 export interface CtAoItem {
   id: string;
   name: string;
@@ -119,11 +124,13 @@ export const ctAoOf = (id?: string) => (id ? CT_AO.find((a) => a.id === id) : un
 
 /** Ngoại trang theo id (cùng thứ tự CT_REWARDS và CT_REWARD_OUTFITS) */
 export function ctNgoaiList() {
-  return CT_REWARDS().map((r, k) => ({ id: r.id, name: r.name, hint: r.hint, has: r.has, spec: CT_REWARD_OUTFITS[k] }));
+  return [...CT_REWARDS().map((r, k) => ({ id: r.id, name: r.name, hint: r.hint, has: r.has, spec: CT_REWARD_OUTFITS[k] })), ...CT_AO];
 }
 /** Ngoại trang đang mặc: gear.ngoai, hoặc bản cũ mặc bằng outfit >= 100 */
 export function ctNgoaiId(ct: Pick<ChanThanLook, 'outfit'> & { gear?: ChanThanLook['gear'] }): string | undefined {
   if (ct.gear?.ngoai) return ct.gear.ngoai;
+  // bản 16/11 sáng có ô Quần áo riêng: bộ đã mặc ở đó coi như ngoại trang
+  if (ct.gear?.ao && ctAoOf(ct.gear.ao)) return ct.gear.ao;
   if (ct.outfit >= CT_REWARD_BASE) return CT_REWARDS()[ct.outfit - CT_REWARD_BASE]?.id;
   return undefined;
 }
@@ -138,6 +145,8 @@ export function ctDressOf(ct: Pick<ChanThanLook, 'gender' | 'outfit'> & { gear?:
   if (ng) {
     const k = CT_REWARDS().findIndex((r) => r.id === ng);
     if (k >= 0 && CT_REWARD_OUTFITS[k]) return CT_REWARD_OUTFITS[k];
+    const a = ctAoOf(ng);
+    if (a) return a.spec;
   }
   return ctAoOf(ct.gear?.ao)?.spec ?? ctBaseOutfit(ct);
 }

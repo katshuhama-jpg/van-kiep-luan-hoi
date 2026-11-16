@@ -29,27 +29,21 @@ const meta = (p) => p.evaluate(() => JSON.parse(localStorage.getItem('vkl.meta')
   ok(/^[0-9.]+$/.test(lc.trim()) && parseInt(lc.replace(/\./g, '')) > 1000, 'có lực chiến: ' + lc);
   await p.click('.nv-power'); ok(!!(await p.$('.nv-why2')), 'chạm lực chiến thấy cách tính'); await p.click('.nv-power');
   ok((await p.textContent('.nv-title')).trim() === 'Kim Đan', 'danh hiệu theo cảnh giới cao nhất (Kim Đan)');
-  // Mũ: mang nón lá rồi bỏ
-  await p.click('.nv-slot >> nth=0'); await p.waitForTimeout(300);
-  ok((await p.textContent('.nv-tab.on')).includes('Mũ'), 'chạm ô Mũ mở tab Mũ');
-  await p.click('.nv-cell:has-text("Nón lá")'); await p.waitForTimeout(300);
-  ok((await meta(p)).chanThan.gear?.mu === 'non_la', 'mang nón lá được lưu');
-  ok((await p.textContent('.nv-slot >> nth=0')).includes('Nón lá'), 'ô Mũ ghi Nón lá');
-  await p.click('.nv-cell:has-text("Kim miện")'); await p.waitForTimeout(200);
-  ok(/chưa mở/.test(await p.textContent('.nv-say')) && !(await meta(p)).chanThan.gear?.mu?.includes('kim'), 'Kim miện khóa: chạm thấy cách mở, không mặc được');
-  await p.click('.nv-cell:has-text("Nón lá")'); await p.waitForTimeout(300);
-  ok(!(await meta(p)).chanThan.gear?.mu, 'chạm lần nữa thì bỏ mũ');
-  // Vũ khí: Ngân thoa, Thiết kiếm mở từ Kim Đan
-  await p.click('.nv-tab:has-text("Vũ khí")');
-  await p.click('.nv-cell:has-text("Thiết kiếm")'); await p.waitForTimeout(300);
-  ok((await meta(p)).chanThan.gear?.vu_khi === 'thiet_kiem', 'mang Thiết kiếm (đã lên Kim Đan)');
-  // Quần áo: người mới chưa có món nào, chạm thấy cách mở
+  // 16/11: chưa ai có đồ; Mũ, Vũ khí, Cánh, Phụ kiện, Quần áo để trống
+  ok((await p.textContent('.nv-tab.on')).includes('Ngoại trang'), 'mở trang thấy tab Ngoại trang trước');
+  for (const t of ['Mũ', 'Vũ khí', 'Cánh', 'Phụ kiện']) {
+    await p.click(`.nv-tab:has-text("${t}")`);
+    ok((await p.$$('.nv-cell')).length === 0 && !!(await p.$('.nv-empty')), `${t}: để trống`);
+  }
+  ok((await p.$$('.nv-slot.has')).length === 0, 'chưa mặc gì: các ô đồ trống');
+  // Quần áo: chưa ai có, tab để trống
   await p.click('.nv-tab:has-text("Quần áo")');
-  ok((await p.$$('.nv-cell.lock')).length === (await p.$$('.nv-cell')).length, 'Quần áo: chưa có món nào (đều khóa)');
+  ok((await p.$$('.nv-cell')).length === 0 && !!(await p.$('.nv-empty')), 'Quần áo: để trống, ghi chưa ai có');
   // Ngoại trang: ô thứ 6 dưới Cánh
   await p.click('.nv-slot:has-text("Ngoại trang")'); await p.waitForTimeout(200);
   ok((await p.textContent('.nv-tab.on')).includes('Ngoại trang'), 'chạm ô Ngoại trang mở tab Ngoại trang');
-  ok((await p.$$('.nv-cell')).length === 11, 'Ngoại trang có 11 bộ (có Áo người gõ chuông)');
+  ok((await p.$$('.nv-cell')).length === 17, 'Ngoại trang có 17 bộ (11 bộ Tam Tài + 6 bộ chuyển từ Quần áo)');
+  ok(!!(await p.$('.nv-cell:has-text("Kim giáp")')), 'Kim giáp nằm ở Ngoại trang');
   ok(!!(await p.$('.nv-cell:has-text("Áo người gõ chuông")')), 'có Áo người gõ chuông');
   const small = await p.$$eval('.nv-tab, .nv-power', (els) => els.filter((e) => e.getBoundingClientRect().height < 44).length);
   ok(small === 0, 'nút từ 44px');
