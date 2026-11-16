@@ -3,7 +3,6 @@ import VersionWatch from '@/components/VersionWatch';
 import Tracker from '@/components/Tracker';
 import SuDoLink from '@/components/SuDoLink';
 import type { Metadata, Viewport } from 'next';
-import { cookies } from 'next/headers';
 import LangGate from '@/components/LangGate';
 import './globals.css';
 import { pageMeta, SITE_DESC, SITE_NAME, SITE_URL } from '@/lib/seo';
@@ -26,11 +25,14 @@ export const viewport: Viewport = {
   themeColor: '#3b2a1a',
 };
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  // ngôn ngữ người chơi chọn (cookie do nút đổi ngôn ngữ đặt)
-  const en = (await cookies()).get('vkl_lang')?.value === 'en';
+/**
+ * 16/11: khung chung không đọc cookie ở máy chủ nữa, để mọi trang được dựng sẵn một lần lúc build và
+ * lấy từ CDN (trước đây đọc cookie ngôn ngữ làm mọi trang phải dựng lại mỗi lần mở, tốn hàm máy chủ).
+ * Ngôn ngữ do LangGate đọc ở máy người chơi.
+ */
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang={en ? 'en' : 'vi'}>
+    <html lang="vi">
       <head>
         {/* 4/11: máy iOS 14-15 (iPhone 7, 8...) thiếu vài hàm mới, bù trước khi mã game chạy */}
         <script dangerouslySetInnerHTML={{ __html: "!function(){var d=Object.defineProperty;function at(n){n=Math.trunc(n)||0;if(n<0)n+=this.length;return n<0||n>=this.length?void 0:this[n]}[Array,String].forEach(function(C){C.prototype.at||d(C.prototype,'at',{value:at,writable:!0,configurable:!0})});Object.hasOwn||d(Object,'hasOwn',{value:function(o,k){return Object.prototype.hasOwnProperty.call(o,k)},writable:!0,configurable:!0});window.structuredClone||(window.structuredClone=function(v){return v===void 0?v:JSON.parse(JSON.stringify(v))});if(!(window.CSS&&CSS.supports&&CSS.supports('height','100dvh'))){var ex=/CriOS|FxiOS|EdgiOS|coc_coc|GSA\\//.test(navigator.userAgent)?50:0,h=function(){document.documentElement.style.setProperty('--vh1',(window.innerHeight-ex)/100+'px')};h();window.addEventListener('resize',h);window.addEventListener('orientationchange',function(){setTimeout(h,300)})}}();" }} />
@@ -43,7 +45,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <NavTracker />
         <Tracker />
         <SuDoLink />
-        <LangGate en={en}>
+        <LangGate>
           {children}
           <VersionWatch />
         </LangGate>
