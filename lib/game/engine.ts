@@ -48,7 +48,7 @@ import {
 } from './data';
 import { BREAK_EVENT_ID, EVENTS, HUT_CONG_ID, PATH_EVENT_ID, pathChoices } from './events';
 import { HG_GATE_ID, hgApi, hgCultMul, hgFindEvent, hgFix, hgGateFor } from './hongHoang';
-import { maChainYear } from './sectEvents2';
+import { maChainYear, TIM_DEN_ID, timDenDue } from './sectEvents2';
 import { ASCEND_MIN_AGE, anOf, destOf, keyAn, needTrial } from './nguHanhDai';
 import { ASCEND_GEAR } from './items2';
 import { usesVanDao } from './vanDao';
@@ -978,7 +978,14 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
   if (brk) return brk;
   if (needPath(c)) return buildPending(c, pathEvent(c));
 
-  if (opts.noEvents || opts.closed) return null;
+  if (opts.noEvents) return null;
+  // 16/11 (góp ý Phan Anh Tuấn): tới Kim Đan mà chưa có tông thì tông môn chắc chắn tìm đến một lần, cả khi đang bế quan,
+  // để huyệt Khí Hải (lên Nguyên Anh khi ở tông môn) không bị khóa với người tu nhanh
+  if (timDenDue(c)) {
+    const td = findEvent(c, TIM_DEN_ID);
+    if (td && eligible(c, td)) return buildPending(c, td);
+  }
+  if (opts.closed) return null;
   // 4.1.0 Q7 (#13): đệ tử chính phái vừa theo ma đạo (hay đạo tâm sa đọa) thì tông môn phản ứng ngay, không đợi sự kiện ngẫu nhiên
   if (!c.cosmos && c.sect && !c.sectHide && sectSide(c) === 'chinh' && sectConflict(c)) {
     const pm = EVENTS.find((x) => x.id === 'phan_mon');

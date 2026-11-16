@@ -1,6 +1,6 @@
 import { realmName } from './data';
 import { addCult, addPill, dao, fatal, giveItem, hurt, luck, money, reward, stat } from './helpers';
-import { joinSect, promote, rankByRoot, rankName, rankOf } from './sect';
+import { joinSect, promote, rankByRoot, rankByWit, rankName, rankOf } from './sect';
 import type { Character, Choice, GameEvent } from './types';
 import { tr } from '../i18n';
 import { once } from './once';
@@ -21,7 +21,81 @@ const decline = (text: string): Choice => ({
 });
 const totalKills = (c: Character) => Object.values(c.kills ?? {}).reduce((a, b) => a + b, 0);
 
+
+/**
+ * 16/11 (góp ý Phan Anh Tuấn): tu nhanh (ma tu, yêu tu, thiên phú mạnh) hay bế quan nhiều thì lên Nguyên Anh
+ * trước khi kịp gặp lời mời ngẫu nhiên nào, huyệt Khí Hải (lên Nguyên Anh khi đang ở tông môn) không mở được.
+ * Tới Kim Đan mà vẫn chưa có tông thì một tông môn hợp con đường tu chắc chắn tìm đến, mỗi kiếp một lần (engine gọi cả khi bế quan).
+ */
+export const TIM_DEN_ID = 'tong_mon_tim_den';
+export const timDenDue = (c: Character) => !c.sect && !c.cosmos && c.realm === 3 && c.seenEvents[TIM_DEN_ID] === undefined;
+
+/** tông hợp con đường và đạo tâm, không vướng luật tông (chính phái không nhận ma tu, ma môn không nhận phật tu) */
+function fitSect(c: Character): { name: string; rank: number; side: 'chinh' | 'ta' | 'trung' } {
+  const root = Math.max(1, rankByRoot(c.linhCanMul));
+  const ta = { name: tr('Huyết Sát Môn', "Xuesha Sect"), rank: root, side: 'ta' as const };
+  const trung = { name: tr('Thiên Cơ Các', "Tianji Pavilion"), rank: Math.max(1, rankByWit(c.stats.ngoTinh)), side: 'trung' as const };
+  if (c.path === 'yeu' || (c.race === 'yeu' && c.path !== 'phat')) return { name: tr('Yêu Thần Điện', "Yêu Thần Điện"), rank: 2, side: 'ta' };
+  if (c.path === 'ma') return ta;
+  if (c.path === 'tran') return trung;
+  if (c.path === 'dan' && c.daoTam <= 10) return { name: tr('Vạn Độc Môn', "Vạn Độc Môn"), rank: root, side: 'ta' };
+  if (c.daoTam <= -40) return c.path === 'phat' ? trung : ta;
+  if (c.path === 'phat') return { name: tr('Phổ Đà Sơn', "Phổ Đà Sơn"), rank: Math.min(3, root + 1), side: 'chinh' };
+  if (c.path === 'kiem') return { name: tr('Kiếm Cốc', "Kiếm Cốc"), rank: root, side: 'chinh' };
+  if (c.daoTam <= -15) return ta;
+  return { name: tr('Thanh Vân Tông', "Qingyun Sect"), rank: root, side: 'chinh' };
+}
+
+const timDen: GameEvent = {
+  id: TIM_DEN_ID,
+  minRealm: 3,
+  maxRealm: 3,
+  once: true,
+  weight: 0,
+  when: timDenDue,
+  title: tr('Tông môn tìm đến', 'A sect comes calling'),
+  text: (c) => {
+    const f = fitSect(c);
+    return tr(
+      `Tiếng ngươi kết Kim Đan một mình đã lan khắp vùng. Sứ giả ${f.name} tìm tới tận nơi, đặt lệnh bài lên bàn: "Tán tu đi được tới đây là hiếm. Vào tông thì có sư môn hộ pháp lúc kết Nguyên Anh."`,
+      `Word that you formed a Golden Core alone has spread far. An envoy of ${f.name} seeks you out and lays a token on your table: "Few rogue cultivators get this far. Join us, and the sect will stand guard when you form your Nascent Soul."`,
+    );
+  },
+  choices: (c0) => {
+    const f = fitSect(c0);
+    const out: Choice[] = [
+      {
+        label: tr(`Nhận lệnh bài ${f.name}`, `Accept the ${f.name} token`),
+        hint: f.side === 'chinh' ? tr('chính phái · có sư môn', 'righteous · gain a sect') : f.side === 'ta' ? tr('tà phái · có sư môn', 'evil · gain a sect') : tr('trung lập · có sư môn', 'neutral · gain a sect'),
+        lean: f.side,
+        run: (c, ctx) => {
+          const g = fitSect(c);
+          joinSect(c, g.name, g.rank);
+          addCult(c, reward(c, 0.3));
+          ctx.fx('buy', rankName(c));
+          return tr(`Bạn nhận lệnh bài, thành ${rankName(c)} ${g.name}. Lên Nguyên Anh trong tông, sư môn sẽ hộ pháp cho bạn.`, `You accept the token and become a ${rankName(c)} of ${g.name}. When you reach Nascent Soul, the sect will stand guard for you.`);
+        },
+      },
+    ];
+    if (f.side !== 'trung')
+      out.push({
+        label: tr('Đến Thiên Cơ Các thay vào đó', 'Go to Tianji Pavilion instead'),
+        hint: tr('trung lập · kén người thông minh', 'neutral · picky about brains'),
+        lean: 'trung',
+        run: (c, ctx) => {
+          joinSect(c, tr('Thiên Cơ Các', "Tianji Pavilion"), Math.max(1, rankByWit(c.stats.ngoTinh)));
+          stat(c, 'ngoTinh', 3);
+          ctx.fx('buy', rankName(c));
+          return tr(`Thiên Cơ Các không hỏi chính tà. Bạn thành ${rankName(c)} Thiên Cơ Các.`, `Tianji Pavilion asks nothing of righteous or evil. You become a ${rankName(c)} of Tianji Pavilion.`);
+        },
+      });
+    out.push(decline(tr('Bạn trả lại lệnh bài. Tán tu thì tự hộ pháp cho mình.', 'You hand the token back. A rogue cultivator stands guard alone.')));
+    return out;
+  },
+};
+
 export const SECT_EVENTS2: GameEvent[] = [
+  timDen,
   // ================= Bái sư =================
   {
     id: 'bai_pho_da',
