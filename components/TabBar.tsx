@@ -5,7 +5,9 @@
  * Cờ riêng TAB_ON (bật mặc định, tắt gấp bằng NEXT_PUBLIC_TAB=0 thì về menu cũ). KHÔNG phụ thuộc SON_MON_ON.
  * Biểu tượng vẽ pixel bằng lưới ô vuông (không emoji, không gradient).
  */
-import Link from 'next/link';
+import Link, { useLinkStatus } from 'next/link';
+// 16/11: nạp sẵn CSS Sơn Môn (nhỏ, chỉ lớp .sm-*) để bấm tab Sơn Môn không phải chèn stylesheet mới rồi tính lại toàn trang
+import './sonmon/sonmon.css';
 import { useEffect, useState } from 'react';
 import LangToggle from './LangToggle';
 import MusicToggle from './MusicToggle';
@@ -27,12 +29,27 @@ const ICON: Record<TabId, string[]> = {
   ld: ['#.........#', '.#.......#.', '..#.....#..', '...#...#...', '....#.#....', '.....#.....', '....#.#....', '.##.....##.', '.##.....##.', '##.......##', '#.........#'],
 };
 
+/** 16/11: mỗi biểu tượng vẽ bằng MỘT path (trước là ~45 ô <rect> riêng, 4 tab ~180 phần tử trên mỗi trang) */
+const ICON_D: Record<TabId, string> = Object.fromEntries(
+  (Object.keys(ICON) as TabId[]).map((id) => [id, ICON[id].flatMap((r, y) => [...r].map((ch, x) => (ch === '#' ? `M${x} ${y}h1v1h-1z` : ''))).join('')]),
+) as Record<TabId, string>;
+
 function PxIcon({ id }: { id: TabId }) {
-  const rows = ICON[id];
   return (
-    <svg width="22" height="22" viewBox="0 0 11 11" aria-hidden="true" shapeRendering="crispEdges" style={{ imageRendering: 'pixelated' }}>
-      {rows.flatMap((r, y) => [...r].map((ch, x) => (ch === '#' ? <rect key={`${x}-${y}`} x={x} y={y} width="1" height="1" fill="currentColor" /> : null)))}
+    <svg width="22" height="22" viewBox="0 0 11 11" aria-hidden="true" shapeRendering="crispEdges">
+      <path d={ICON_D[id]} fill="currentColor" />
     </svg>
+  );
+}
+
+/** Đổi màu tab ngay khi bấm, không chờ trang mới tải xong (useLinkStatus phải nằm trong Link) */
+function TabInner({ id, label }: { id: TabId; label: string }) {
+  const { pending } = useLinkStatus();
+  return (
+    <span className={`tab-in${pending ? ' wait' : ''}`}>
+      <PxIcon id={id} />
+      <span>{label}</span>
+    </span>
   );
 }
 
@@ -60,6 +77,8 @@ function oldPlayer(): boolean {
 
 export function TabBar({ cur }: { cur: TabId }) {
   const [hint, setHint] = useState(false);
+  // tab vừa bấm: sáng lên ngay, tab cũ tắt, để người chơi thấy đã nhận lệnh trong lúc trang mới đang tải
+  const [tap, setTap] = useState<TabId | null>(null);
   useEffect(() => {
     try {
       if (!localStorage.getItem(HINT_KEY) && oldPlayer()) setHint(true);
@@ -91,12 +110,16 @@ export function TabBar({ cur }: { cur: TabId }) {
           <Link
             key={t.id}
             href={t.href}
-            className={`tab-item${t.id === cur ? ' on' : ''}`}
+            prefetch={t.id === cur ? false : true}
+            className={`tab-item${t.id === (tap ?? cur) ? ' on' : ''}`}
             aria-current={t.id === cur ? 'page' : undefined}
-            onClick={() => t.id !== cur && track('tab_open', { tab: t.id, from: cur })}
+            onClick={() => {
+              if (t.id === cur) return;
+              setTap(t.id);
+              track('tab_open', { tab: t.id, from: cur });
+            }}
           >
-            <PxIcon id={t.id} />
-            <span>{tr(t.vi, t.en)}</span>
+            <TabInner id={t.id} label={tr(t.vi, t.en)} />
           </Link>
         ))}
       </nav>

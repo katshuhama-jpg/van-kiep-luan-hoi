@@ -10,6 +10,7 @@ import './sonmon.css';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import BackButton from '@/components/BackButton';
 import { SON_MON_ON } from '@/lib/flags';
+import { SmWait } from './SmWait';
 import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
 import { realApi, SmErr, smLoi, type SmAct, type SmApi, type SmMap, type SmMembers, type SmMonRow, type SmRankRow, type SmState } from '@/lib/sonmon/api';
@@ -62,18 +63,6 @@ export function SonMonHome({ embedded = false }: { embedded?: boolean }) {
   return <SonMonInner embedded={embedded} />;
 }
 export default SonMonHome;
-
-/** cờ tắt: màn chờ, không có nội dung môn nào */
-function SmWait({ embedded }: { embedded: boolean }) {
-  const body = (
-    <section className="sm-card dark">
-      <h2>{tr('Sơn Môn', 'Sects')}</h2>
-      <p>{tr('Lập môn cùng đạo hữu, giữ đất trên bản đồ.', 'Found a sect with friends and hold land on the map.')}</p>
-      <p className="sm-big" style={{ fontSize: 22 }}>{tr('Mở cửa 5:00 sáng 18/11', 'Opens 5:00 AM, Nov 18')}</p>
-    </section>
-  );
-  return embedded ? <div className="sm">{body}</div> : <main className="app sm">{body}</main>;
-}
 
 function SonMonInner({ embedded }: { embedded: boolean }) {
   const api = useSmApi();

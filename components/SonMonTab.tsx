@@ -5,10 +5,14 @@
  * Cờ bật: nội dung Sơn Môn thật (components/sonmon/SonMonHome.tsx) kèm thanh tab.
  */
 import { useEffect } from 'react';
-import { SonMonHome } from './sonmon/SonMonHome';
+import dynamic from 'next/dynamic';
+import { SmWait } from './sonmon/SmWait';
 import { TabBar, TopMenu } from './TabBar';
 import { SON_MON_ON, TAB_ON } from '@/lib/flags';
 import { track } from '@/lib/track';
+
+// 16/11: bộ Sơn Môn đầy đủ chỉ tải khi cờ bật, màn chờ nhẹ không kéo theo cả bộ
+const SonMonHome = dynamic(() => import('./sonmon/SonMonHome').then((m) => m.SonMonHome));
 
 export default function SonMonTab() {
   useEffect(() => {
@@ -25,7 +29,7 @@ export default function SonMonTab() {
   return (
     <main className="app has-tabs">
       <TopMenu at="sm" />
-      <SonMonHome embedded />
+      <SmWait embedded />
       <TabBar cur="sm" />
     </main>
   );
