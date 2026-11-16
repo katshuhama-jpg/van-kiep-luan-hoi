@@ -379,6 +379,7 @@ export interface ChanThanLook {
   outfit: number; // chỉ số trong CT_OUTFITS[gender]
   createdAt: number; // ms
   renamed: number; // số lần đã đổi tên
+  gear?: Partial<Record<'mu' | 'vu_khi' | 'canh', string>>; // 16/11: đồ chân thân đang mang (lib/game/ctGear.ts), chỉ để ngắm
 }
 
 export interface Career {

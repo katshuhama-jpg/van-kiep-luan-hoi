@@ -9,6 +9,7 @@ import { genNameVi } from './engine';
 import { tenTuc } from './tenCam';
 import { tr } from '../i18n';
 import { nameOf } from '../hanviet';
+import { ctGearLayers } from './ctGear';
 
 /** 6 màu da: 5 tông nhân vật đang dùng (gốc và 4 tông nhân màu) + 1 tông sẫm nhuộm cùng cách */
 export const CT_SKINS: { tint: string | null; swatch: string }[] = [
@@ -133,14 +134,15 @@ export function ctRandom(name = '', rnd: () => number = Math.random): ChanThanLo
 }
 
 /** Lớp ảnh LPC của chân thân (người lớn, không vũ khí, không phụ kiện) */
-export function ctLayers(ct: Pick<ChanThanLook, 'gender' | 'skin' | 'hair' | 'hairColor' | 'outfit'>): Layer[] {
+export function ctLayers(ct: Pick<ChanThanLook, 'gender' | 'skin' | 'hair' | 'hairColor' | 'outfit'> & { gear?: ChanThanLook['gear'] }): Layer[] {
+  const gl = ctGearLayers(ct.gear);
   const g: Gender = ct.gender === 'nu' ? 'nu' : 'nam';
   const skin = CT_SKINS[ct.skin]?.tint ?? undefined;
   const hair = CT_HAIR[g][ct.hair] ?? CT_HAIR[g][0];
   const hc = (CT_HAIR_COLORS[ct.hairColor] ?? CT_HAIR_COLORS[0]).hex;
   const o = ctOutfitOf(g, ct.outfit);
   const kim = o.cut === 'split' ? 'kimono_split' : 'kimono_normal';
-  const out: Layer[] = [];
+  const out: Layer[] = [...gl.back];
   if (hair.bg) out.push({ key: `hair_${hair.key}_bg`, tint: hc });
   out.push({ key: 'body_adult', tint: skin }, { key: g === 'nam' ? 'head_m' : 'head_f', tint: skin }, { key: 'eyes_brown' });
   out.push({ key: 'pants', tint: o.pants }, { key: 'shoes' });
@@ -150,6 +152,7 @@ export function ctLayers(ct: Pick<ChanThanLook, 'gender' | 'skin' | 'hair' | 'ha
   if (o.mantal) out.push({ key: 'mantal', tint: o.mantal });
   out.push({ key: `hair_${hair.key}_fg`, tint: hc });
   if (o.scarf) out.push({ key: 'scarf', tint: o.scarf });
+  out.push(...gl.front);
   return out;
 }
 

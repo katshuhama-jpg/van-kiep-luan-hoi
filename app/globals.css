@@ -5426,7 +5426,7 @@ body[data-ctflow='1'] { overflow: hidden; }
 .su-bound-x { background: transparent; color: #ffd36b; border: 2px solid #ffd36b; font: inherit; font-weight: 700; min-width: 32px; min-height: 32px; }
 
 /* 4.6.0 Ngày 5: thanh 4 tab + thanh trên (cờ TAB_ON) */
-.tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 45; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); background: var(--ink); border-top: 3px solid var(--ink-dark); padding-bottom: env(safe-area-inset-bottom); }
+.tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 45; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); background: var(--ink); border-top: 3px solid var(--ink-dark); padding-bottom: env(safe-area-inset-bottom); }
 .tab-item { min-height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: var(--paper-2); text-decoration: none; font-size: 14px; font-weight: 600; line-height: 1; -webkit-tap-highlight-color: transparent; }
 .tab-item.on { background: var(--red); color: #fff3dc; font-weight: 700; }
 .tab-item:active { background: var(--red-d); }
@@ -5482,3 +5482,54 @@ body[data-ctflow='1'] { overflow: hidden; }
 .su-adm-tim { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; font-size: 14px; font-weight: 600; }
 .su-adm-tim input { min-height: 44px; padding: 0 10px; font: inherit; font-size: 16px; border: 3px solid var(--ink); background: var(--paper-3); }
 .su-rows .su-bar { display: flex; width: max-content; }
+
+/* 16/11: tab Nhân vật kiểu màn nhân vật (sân khấu như Tàng Kinh Các) và tab Tam Tài cùng khung */
+.nv-panel { padding: 0; overflow: hidden; }
+.nv-panel > :not(.nv-stage) { margin-left: 10px; margin-right: 10px; }
+.nv-panel > .home-grid, .nv-panel > .btn-red { width: calc(100% - 20px) !important; }
+.nv-panel > :last-child { margin-bottom: 10px; }
+.nv-stage { position: relative; height: 300px; overflow: hidden; background: #2a3a5a url(/bg/tu_luyen-1.png) center bottom / cover no-repeat; image-rendering: pixelated; border-bottom: 3px solid #1f160d; }
+.nv-stage::before { content: ''; position: absolute; inset: 0; background: rgba(14, 22, 40, 0.35); }
+.nv-stage.tt { background: #07060c; border-bottom-color: #2e2840; }
+.nv-stage.tt::before { display: none; }
+.nv-name { position: absolute; left: 50%; top: 0; z-index: 3; transform: translateX(-50%); padding: 2px 14px; font-size: 16px; font-weight: 700; color: #ffd36b; background: #1f160d; border: 2px solid #a8862e; border-top: 0; white-space: nowrap; }
+.tt-count { position: absolute; right: 8px; top: 8px; z-index: 3; font-size: 13px; font-weight: 700; color: #b9ad94; }
+.nv-me { position: absolute; left: 50%; bottom: 44px; transform: translateX(-50%); z-index: 2; }
+.nv-stage.tt .nv-me { bottom: 50px; }
+.nv-col { position: absolute; top: 40px; z-index: 3; display: flex; flex-direction: column; gap: 14px; }
+.nv-col.left { left: 8px; }
+.nv-col.right { right: 8px; }
+.nv-slot { display: flex; flex-direction: column; align-items: center; gap: 2px; width: 72px; padding: 0; font: inherit; background: none; border: 0; cursor: pointer; color: #fff3dc; }
+.nv-slot-box { display: grid; place-items: center; width: 56px; height: 56px; color: #6a6078; background: #1f160d; border: 3px solid #4a4258; box-shadow: inset 0 0 0 2px #2e2840, 0 3px 0 rgba(0, 0, 0, 0.45); }
+.nv-slot.has .nv-slot-box { color: #ffd36b; border-color: #a8862e; }
+.nv-slot.sel .nv-slot-box { border-color: #ffd36b; box-shadow: inset 0 0 0 2px #7a4a12, 0 0 0 2px #ffd36b; }
+.nv-slot small { max-width: 72px; font-size: 11px; font-weight: 700; line-height: 1.1; text-align: center; text-shadow: 1px 1px 0 #1f160d, -1px -1px 0 #1f160d, 1px -1px 0 #1f160d, -1px 1px 0 #1f160d; }
+.nv-power { position: absolute; left: 50%; bottom: 8px; z-index: 3; transform: translateX(-50%); display: flex; align-items: baseline; gap: 8px; min-height: 44px; padding: 2px 14px; font: inherit; color: #fff3dc; background: #1f160d; border: 2px solid #a8862e; cursor: pointer; white-space: nowrap; }
+.nv-power small { font-size: 13px; color: #e6cfa4; }
+.nv-power b { font-size: 22px; color: #ffd36b; letter-spacing: 1px; text-shadow: 2px 2px 0 #7a1f12; }
+.nv-why { position: absolute; left: 10px; right: 10px; bottom: 50px; z-index: 4; padding: 8px 10px; background: #1f160d; color: #fff3dc; border: 2px solid #ffd36b; font-size: 13px; line-height: 1.35; }
+.nv-why ul { list-style: none; margin: 4px 0; padding: 0; }
+.nv-why li { display: flex; justify-content: space-between; gap: 8px; border-bottom: 1px dashed #4a3a2a; padding: 2px 0; }
+.nv-why small { display: block; color: #b9ad94; font-size: 12px; }
+.nv-bag { margin-top: 8px; }
+.nv-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; margin-bottom: 6px; }
+.nv-tab { min-height: 44px; padding: 0 4px; font: inherit; font-size: 15px; font-weight: 700; color: var(--ink); background: var(--paper-3); border: 2px solid var(--ink); cursor: pointer; }
+.nv-tab.on { background: var(--ink); color: var(--gold-l); }
+.nv-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-bottom: 6px; }
+.nv-cell { min-height: 104px; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 4px; font: inherit; text-align: center; color: #efe6d0; background: #13101c; border: 2px solid #2e2840; cursor: pointer; }
+.nv-cell.on { border-color: var(--gold-l); box-shadow: inset 0 0 0 2px #7a4a12; }
+.nv-cell.lock { cursor: default; opacity: 0.8; }
+.nv-cell:disabled { color: #b9ad94; }
+.nv-cell-n { font-size: 12px; font-weight: 700; line-height: 1.2; }
+.nv-cell-s { font-size: 11px; line-height: 1.25; color: #b9ad94; }
+.nv-cell.on .nv-cell-s { color: #ffd36b; }
+.nv-swatch { display: flex; gap: 0; margin: 6px 0 4px; border: 2px solid #000; }
+.nv-swatch i { width: 16px; height: 30px; }
+.nv-lock { display: block; width: 40px; height: 40px; margin: 12px 0 4px; background: #262630; border: 2px solid #4a4a5a; clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 100%, 0 100%, 0 30%); }
+.nv-cp h3 { margin: 0 0 8px; font-size: 18px; color: #ffd36b; }
+.nv-cp-row { display: flex; justify-content: space-between; gap: 6px; margin-bottom: 8px; }
+.nv-cp-row .tk-orb.lock b { font-size: 11px; }
+.tt-gift { text-align: center; margin: 0 0 6px; font-size: 14px; color: #b9ad94; }
+.ct-dark .ct-how { color: var(--ink); }
+.nv-panel .ct-note { color: var(--muted); }
+.nv-cell.lock .nv-swatch { filter: grayscale(1) brightness(0.6); }

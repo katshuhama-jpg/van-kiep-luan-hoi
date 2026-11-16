@@ -39,29 +39,25 @@ async function open(b, url, m, char) {
 }
 (async () => {
   const b = await chromium.launch();
-  // A. Trang chủ: thẻ chân thân, không còn dòng Thất Nhật Lục
+  // A. Trang chủ (16/11): thẻ chân thân đen đã dời sang tab Tam Tài, trang chủ không còn thẻ
   let p = await open(b, '/', meta([1, 2, 3]));
-  ok(await p.locator('.ct-home').count() === 1, 'trang chủ có thẻ Chân thân');
-  ok(await p.locator('.ct-home .hb-dot.lit').count() === 3, 'thẻ có 3 huyệt sáng');
-  ok(/Mệnh Môn/.test(await p.locator('.ct-home').innerText()), 'thẻ ghi thử thách huyệt kế (Mệnh Môn)');
-  ok(/Đang hưởng/.test(await p.locator('.ct-home').innerText()), 'thẻ ghi lợi ích đang hưởng');
-  const cardY = (await p.locator('.ct-home').boundingBox()).y, arenaY = (await p.locator('.home-menu').boundingBox()).y;
-  ok(cardY < arenaY, 'thẻ nằm trên nút Lôi đài');
+  ok(await p.locator('.ct-home').count() === 0, 'trang chủ không còn thẻ Chân thân (đã sang tab Tam Tài)');
   ok(await p.locator('.wk-line:not(.gio-line)').count() === 0, 'không còn dòng Thất Nhật Lục ở trang chủ');
   await shot(p, '1-trang-chu');
-  await p.locator('.ct-home').click();
-  await p.waitForURL(/chan-than/, { timeout: 8000 }).catch(() => {});
-  await p.waitForTimeout(3000);
-  ok(/chan-than/.test(p.url()), 'chạm thẻ mở /chan-than');
   ok(!p.errs.length, 'trang chủ không lỗi ' + p.errs.join(' | '));
   await p.close();
+  p = await open(b, '/tam-tai', meta([1, 2, 3]));
+  ok(await p.locator('.nv-stage.tt .hb-dot.lit').count() === 3, 'tab Tam Tài: 3 huyệt sáng');
+  ok(/Mệnh Môn/.test(await p.locator('main').innerText()), 'tab Tam Tài ghi thử thách huyệt kế (Mệnh Môn)');
+  ok(/Đang hưởng/.test(await p.locator('main').innerText()), 'tab Tam Tài ghi lợi ích đang hưởng');
+  await p.close();
 
-  // B. Trang chân thân: bảng Tam Tài 3 tab, tủ ngoại trang
-  p = await open(b, '/chan-than', meta([1, 2, 3, 4, 5, 6, 7]));
-  ok(await p.locator('.ct-big .hb-dot.lit').count() === 7, 'chân thân lớn có 7 huyệt sáng');
+  // B. Tab Tam Tài: bảng 3 tab. Tab Nhân vật: tủ quần áo
+  p = await open(b, '/tam-tai', meta([1, 2, 3, 4, 5, 6, 7]));
+  ok(await p.locator('.nv-stage.tt .hb-dot.lit').count() === 7, 'chân thân lớn có 7 huyệt sáng');
   ok(await p.locator('.ttai-row').count() === 10, 'tab Thân có 10 huyệt');
   ok(await p.locator('.ttai-row.next').count() === 1 && /Thiên Đột/.test(await p.locator('.ttai-row.next').innerText()), 'huyệt kế là Thiên Đột');
-  await shot(p, '2-chan-than');
+  await shot(p, '2-tam-tai');
   await p.locator('.ttai-board .ct-tab').nth(1).click();
   ok(await p.locator('.ttai-hanh').count() === 5, 'tab Khí có 5 hành');
   ok(await p.locator('.ttai-tierbox.on').count() === 3, 'Kim 2 tầng + Thủy 1 tầng sáng');
@@ -71,15 +67,19 @@ async function open(b, url, m, char) {
   ok(await p.locator('.ttai-coi li').count() === 27, 'đủ 27 đạo');
   ok(await p.locator('.ttai-coi li b', { hasText: /^\?$/ }).count() === 4, 'đạo ẩn chưa ngộ để "?"');
   await p.locator('.ttai-board').screenshot({ path: DIR ? path.join(DIR, '4-tab-dao.png') : undefined });
-  ok(await p.locator('.ttai-ward-cell').count() === 11, 'tủ ngoại trang 11 ô');
-  ok(await p.locator('button.ttai-ward-cell').count() === 3, 'mở 3 bộ (Kim bào, Tiên y, Đạo bào Chứng Đạo)');
-  ok(/Cách mở/.test(await p.locator('.ttai-ward-cell.lock').first().innerText()), 'ô khóa ghi cách mở');
-  await p.locator('button.ttai-ward-cell').first().click();
+  ok(!p.errs.length, 'tab Tam Tài không lỗi ' + p.errs.join(' | '));
+  await p.close();
+  p = await open(b, '/chan-than', meta([1, 2, 3, 4, 5, 6, 7]));
+  await p.waitForSelector('.nv-grid');
+  ok(await p.locator('.nv-grid .nv-cell').count() === 21, 'tab Quần áo: 10 bộ khởi đầu + 11 ngoại trang');
+  ok(await p.locator('.nv-grid .nv-cell:not(:disabled)').count() === 13, 'mở 10 bộ khởi đầu + 3 ngoại trang (Kim bào, Tiên y, Đạo bào Chứng Đạo)');
+  ok(/Khóa/.test(await p.locator('.nv-cell.lock').first().innerText()), 'ô khóa ghi cách mở');
+  await p.locator('.nv-cell:has-text("Tiên y")').click();
   await p.waitForTimeout(500);
-  ok(/Đang mặc/.test(await p.locator('button.ttai-ward-cell').first().innerText()), 'mặc được ngoại trang thưởng');
-  await p.locator('.ttai-ward').screenshot({ path: DIR ? path.join(DIR, '5-tu-ngoai-trang.png') : undefined });
+  ok(/Đang mặc/.test(await p.locator('.nv-cell:has-text("Tiên y")').innerText()), 'mặc được ngoại trang thưởng');
+  await p.locator('.nv-bag').screenshot({ path: DIR ? path.join(DIR, '5-tu-ngoai-trang.png') : undefined });
   ok(await p.locator('button', { hasText: 'Khoe chân thân' }).count() === 1, 'có nút Khoe chân thân');
-  ok(!p.errs.length, 'trang chân thân không lỗi ' + p.errs.join(' | '));
+  ok(!p.errs.length, 'trang Nhân vật không lỗi ' + p.errs.join(' | '));
   await p.close();
 
   // C. Trong kiếp: chip thử thách, đạt thì vàng và báo một dòng

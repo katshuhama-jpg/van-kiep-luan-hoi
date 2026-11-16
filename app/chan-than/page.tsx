@@ -1,15 +1,17 @@
 'use client';
 
 /**
- * 4.5.0 Trang chân thân: chân thân lớn với chấm huyệt, pháp danh, danh hiệu, đổi ngoại hình và tên,
- * bảng Tam Tài 3 tab (Thân, Khí, Đạo), tủ ngoại trang, khoe thẻ, xem lại Tam Tài Đồ. Giấu sau cờ CHAN_THAN_ON: cờ tắt thì về trang đầu.
+ * Tab Nhân vật (16/11, Tyler yêu cầu): chân thân giữa sân khấu, ô đồ hai bên, lực chiến, tab con Quần áo / Mũ / Vũ khí / Cánh,
+ * công pháp chân thân (để trống chờ bản sau), Sư Đồ, đổi tóc da và pháp danh, khoe thẻ.
+ * Bảng Tam Tài và huyệt nay ở tab riêng /tam-tai. Giấu sau cờ CHAN_THAN_ON: cờ tắt thì về trang đầu.
  */
 import Link from 'next/link';
+import { NhanVatBag, NhanVatCongPhap, NhanVatStage, type NvTab } from '@/components/NhanVat';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import BackButton from '@/components/BackButton';
-import { CtCreate, TamTaiReview, checkCtName } from '@/components/ChanThan';
-import { CtWardrobe, HuyetBar, HuyetBody, TamTaiBoard, useCtExt } from '@/components/TamTai';
+import { CtCreate, checkCtName } from '@/components/ChanThan';
+import { useCtExt } from '@/components/TamTai';
 import ShareSheet from '@/components/ShareSheet';
 import SuDoPanel from '@/components/SuDoPanel';
 import { shareChanThan } from '@/lib/ctCard';
@@ -18,7 +20,7 @@ import { displayName } from '@/lib/storage';
 import { CHAN_THAN_ON, SU_DO_ON, TAB_ON } from '@/lib/flags';
 import { TabBar, TopMenu } from '@/components/TabBar';
 import { CT_RENAME_COST, ctSuggestName } from '@/lib/game/chanThan';
-import { ctTitles, huyetCount, nextHuyet } from '@/lib/game/khaiMach';
+import { ctTitles, huyetCount } from '@/lib/game/khaiMach';
 import type { Meta } from '@/lib/game/types';
 import { loadAll, saveMeta } from '@/lib/storage';
 import { useAuth } from '@/lib/useAuth';
@@ -30,7 +32,7 @@ export default function ChanThanPage() {
   const { user, ready } = useAuth();
   const [meta, setMeta] = useState<Meta | null>(null);
   const [mode, setMode] = useState<'view' | 'look' | 'name'>('view');
-  const [help, setHelp] = useState(false);
+  const [bagTab, setBagTab] = useState<NvTab>('ao');
   const [name, setName] = useState('');
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -38,7 +40,6 @@ export default function ChanThanPage() {
   const [saved, setSaved] = useState(false);
   const [drawing, setDrawing] = useState(false);
   const ext = useCtExt(user, CHAN_THAN_ON);
-  const viewed = useRef(false);
   // Sư Đồ: cộng phúc duyên vừa nhận vào bản hồ sơ MỚI NHẤT rồi lưu (thử lại một lần nếu lỗi)
   const metaRef = useRef<Meta | null>(null);
   useEffect(() => {
@@ -63,12 +64,6 @@ export default function ChanThanPage() {
     if (!CHAN_THAN_ON) router.replace('/');
   }, [router]);
   useEffect(() => {
-    if (meta?.chanThan && !viewed.current) {
-      viewed.current = true;
-      track('huyet_view', { from: 'chan_than', n: huyetCount(meta) });
-    }
-  }, [meta]);
-  useEffect(() => {
     if (!CHAN_THAN_ON || !ready) return;
     loadAll(user)
       .then(({ meta: m }) => setMeta(m))
@@ -81,7 +76,6 @@ export default function ChanThanPage() {
   };
   const ct = meta?.chanThan ?? null;
   const cost = ct && ct.renamed >= 1 ? CT_RENAME_COST : 0;
-  const h = meta ? nextHuyet(meta) : null;
   return (
     <main className={`app ct-page${TAB_ON ? ' has-tabs' : ''}`}>
       {TAB_ON && <TopMenu at="nv" />}
@@ -89,11 +83,8 @@ export default function ChanThanPage() {
         <div className="topbar-row">
           <BackButton />
           <span className="age-big" style={{ fontSize: 26 }}>
-            {tr('Chân thân', 'True Self')}
+            {tr('Nhân vật', 'Character')}
           </span>
-          <button className="icon-btn" aria-label={tr('Xem lại Tam Tài Đồ', 'Review the Three Treasures')} onClick={() => (track('huyet_intro_open', { from: 'chan_than' }), setHelp(true))}>
-            ?
-          </button>
         </div>
       </header>
       {!meta && <p>{tr('Đang tìm chân thân...', 'Looking for your true self...')}</p>}
@@ -107,46 +98,13 @@ export default function ChanThanPage() {
       )}
       {meta && ct && mode === 'view' && (
         <>
-          <section className="panel ct-card-big">
-            <div className="ct-big">
-              <HuyetBody ct={ct} open={huyetCount(meta)} size={190} />
-            </div>
-            <h2 style={{ margin: '6px 0 0', textAlign: 'center' }}>{ct.name}</h2>
+          <section className="panel nv-panel">
+            <NhanVatStage ct={ct} meta={meta} ext={ext} active={bagTab} onSlot={(t) => (setBagTab(t), track('ct_slot_tap', { slot: t }))} />
             {ctTitles(meta, ext).length > 0 && <p className="ct-titles">{ctTitles(meta, ext).join(' · ')}</p>}
-            <div style={{ display: 'flex', justifyContent: 'center', margin: '6px 0 2px' }}>
-              <HuyetBar n={huyetCount(meta)} />
-            </div>
-            <p style={{ textAlign: 'center', margin: '4px 0' }}>{tr(`Thân: ${huyetCount(meta)}/10 huyệt`, `Body: ${huyetCount(meta)}/10 points`)}</p>
-            {h && (
-              <div className="ct-how">
-                <p className="ct-how-h">
-                  <span className="ct-new">{tr('MỚI', 'NEW')}</span> {tr('Khai huyệt chơi thế nào?', 'How do points open?')}
-                </p>
-                <ol className="ct-how-steps">
-                  <li>{tr('Vào một kiếp mới, chơi như mọi khi.', 'Start a new life and play as usual.')}</li>
-                  <li>
-                    {tr(`Kiếp nào ${h.task}, lúc kiếp đó kết thúc thì huyệt ${h.name} sáng.`, `In any life where you ${h.task}, the ${h.name} point lights up when that life ends.`)}
-                  </li>
-                  <li>{tr('Huyệt đã sáng giúp mọi kiếp sau mạnh hơn một chút. Mỗi kiếp sáng tối đa một huyệt.', 'Lit points make every later life a little stronger. At most one point per life.')}</li>
-                </ol>
-                {huyetCount(meta) === 0 && (
-                  <small className="note" style={{ display: 'block', margin: '0 0 6px' }}>
-                    {tr('Huyệt mới có từ bản này, nên ai cũng bắt đầu từ 0, kể cả người đã chơi lâu.', 'Points are new in this version, so everyone starts from 0, even long-time players.')}
-                  </small>
-                )}
-                <Link
-                  href="/choi"
-                  className="btn"
-                  style={{ display: 'block', textDecoration: 'none', textAlign: 'center' }}
-                  onClick={() => track('huyet_go_play', { from: 'chan_than', n: huyetCount(meta) })}
-                >
-                  {tr('Vào kiếp mới', 'Start a new life')}
-                </Link>
-              </div>
-            )}
+            <NhanVatBag ct={ct} meta={meta} ext={ext} tab={bagTab} setTab={setBagTab} onWear={(x) => save({ ...meta, chanThan: x })} />
             <div className="home-grid">
               <button className="btn" onClick={() => setMode('look')}>
-                {tr('Đổi ngoại hình', 'Change appearance')}
+                {tr('Đổi tóc, da', 'Change hair, skin')}
               </button>
               <button
                 className="btn"
@@ -176,20 +134,10 @@ export default function ChanThanPage() {
             </button>
             {saved && <small className="note">{tr('Đã tải thẻ về máy. Đăng nhập để có link khoe hiện hình.', 'Card downloaded. Log in to get a link that shows the picture.')}</small>}
           </section>
+          <section className="panel ct-dark">
+            <NhanVatCongPhap />
+          </section>
           {SU_DO_ON && <SuDoPanel user={user} meta={meta} onGain={onSuGain} />}
-          <section className="panel ct-dark">
-            <TamTaiBoard meta={meta} ext={ext} onHelp={() => (track('huyet_intro_open', { from: 'bang' }), setHelp(true))} />
-          </section>
-          <section className="panel ct-dark">
-            <CtWardrobe
-              meta={meta}
-              ext={ext}
-              onWear={(o) => {
-                save({ ...meta, chanThan: { ...ct, outfit: o } });
-                track('ct_look', { gender: ct.gender, hair: ct.hair, hairColor: ct.hairColor, outfit: o });
-              }}
-            />
-          </section>
           {out && <ShareSheet out={out} kind="life" onClose={() => setOut(null)} />}
         </>
       )}
@@ -198,7 +146,7 @@ export default function ChanThanPage() {
           <CtCreate
             init={ct}
             nameLocked
-            title={tr('Đổi ngoại hình', 'Change appearance')}
+            title={tr('Đổi tóc, da', 'Change hair, skin')}
             confirm={tr('Giữ dáng này', 'Keep this look')}
             onDone={(x) => {
               save({ ...meta, chanThan: { ...ct, gender: x.gender, skin: x.skin, hair: x.hair, hairColor: x.hairColor, outfit: x.outfit } });
@@ -253,7 +201,6 @@ export default function ChanThanPage() {
           </div>
         </section>
       )}
-      {help && meta && <TamTaiReview meta={meta} from="chan_than" onClose={() => setHelp(false)} />}
       {TAB_ON && <TabBar cur="nv" />}
     </main>
   );

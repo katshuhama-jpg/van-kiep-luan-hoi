@@ -37,7 +37,7 @@ import { ctExt, loadAll, saveMeta } from '@/lib/storage';
 import { musicPref } from '@/lib/music';
 import { track } from '@/lib/track';
 import { tr } from '@/lib/i18n';
-import { SU_DO_ON } from '@/lib/flags';
+import { SU_DO_ON, TAB_ON } from '@/lib/flags';
 import { suCount } from '@/lib/suDo';
 import { CtFlow, LpcFigure, TamTaiReview } from './ChanThan';
 
@@ -467,7 +467,8 @@ export function HomeCt({ user, ready, on }: { user: Player | null; ready: boolea
     };
   }, [on, ready, user]);
   if (!on || !meta) return null;
-  if (meta.chanThan) return <HomeCtCard meta={meta} />;
+  // 16/11 (Tyler yêu cầu): thẻ chân thân đen dời sang tab Tam Tài; trang đầu chỉ còn mở luồng tạo cho người cũ
+  if (meta.chanThan) return TAB_ON ? null : <HomeCtCard meta={meta} />;
   if ((meta.lives ?? 0) < 1) return null;
   return (
     <CtFlow

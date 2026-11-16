@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * 4.6.0 Ngày 5: thanh 4 tab (Mộng · Nhân vật · Sơn Môn · Lôi đài) và thanh trên có nút Mời trà + Menu.
+ * 4.6.0 Ngày 5: thanh tab (Mộng · Tam Tài (16/11) · Nhân vật · Sơn Môn · Lôi đài) và thanh trên có nút Mời trà + Menu.
  * Cờ riêng TAB_ON (bật mặc định, tắt gấp bằng NEXT_PUBLIC_TAB=0 thì về menu cũ). KHÔNG phụ thuộc SON_MON_ON.
  * Biểu tượng vẽ pixel bằng lưới ô vuông (không emoji, không gradient).
  */
@@ -19,11 +19,12 @@ import { displayName } from '@/lib/storage';
 import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
 
-export type TabId = 'mong' | 'nv' | 'sm' | 'ld';
+export type TabId = 'mong' | 'tt' | 'nv' | 'sm' | 'ld';
 
 /** lưới 11x11, '#' là ô tô */
 const ICON: Record<TabId, string[]> = {
   mong: ['....###....', '..##.......', '.##........', '.#.........', '##.........', '##.........', '##.......#.', '.##.....##.', '.###..###..', '..######...', '....###....'],
+  tt: ['....###....', '...#####...', '....###....', '.....#.....', '...........', '.###...###.', '#####.#####', '.###...###.', '..#.....#..', '...........', '###########'],
   nv: ['....###....', '...#####...', '...#####...', '....###....', '..#######..', '.#.#####.#.', '.#.#####.#.', '...#####...', '...##.##...', '...##.##...', '..###.###..'],
   sm: ['.....#.....', '.....##....', '.....###...', '.....#.....', '....###....', '...#####...', '...#####.#.', '..#######.#', '.#########.', '###########', '###########'],
   ld: ['#.........#', '.#.......#.', '..#.....#..', '...#...#...', '....#.#....', '.....#.....', '....#.#....', '.##.....##.', '.##.....##.', '##.......##', '#.........#'],
@@ -55,6 +56,7 @@ function TabInner({ id, label }: { id: TabId; label: string }) {
 
 const TABS: { id: TabId; href: string; vi: string; en: string }[] = [
   { id: 'mong', href: '/', vi: 'Mộng', en: 'Dream' },
+  { id: 'tt', href: '/tam-tai', vi: 'Tam Tài', en: 'Treasures' },
   { id: 'nv', href: '/chan-than', vi: 'Nhân vật', en: 'Character' },
   { id: 'sm', href: '/son-mon', vi: 'Sơn Môn', en: 'Sects' },
   { id: 'ld', href: '/loi-dai', vi: 'Lôi đài', en: 'Arena' },
@@ -98,7 +100,7 @@ export function TabBar({ cur }: { cur: TabId }) {
         <div className="tab-hint" role="status">
           <p>
             <b>{tr('Bố cục mới. ', 'New layout. ')}</b>
-            {tr('Đầu thai và túi đồ ở Mộng, chân thân ở Nhân vật, bảng xếp hạng ở Lôi đài. Góp ý, Cập nhật nằm trong nút Menu ở góc trên.', 'Rebirth and your bag are in Dream, your true self in Character, the leaderboard in Arena. Feedback and Updates are in the Menu button at the top.')}
+            {tr('Đầu thai và túi đồ ở Mộng, huyệt và Tam Tài ở Tam Tài, chân thân ở Nhân vật, bảng xếp hạng ở Lôi đài. Góp ý, Cập nhật nằm trong nút Menu ở góc trên.', 'Rebirth and your bag are in Dream, points in Treasures, your true self in Character, the leaderboard in Arena. Feedback and Updates are in the Menu button at the top.')}
           </p>
           <button className="btn tab-hint-ok" onClick={closeHint}>
             {tr('Đã hiểu', 'Got it')}

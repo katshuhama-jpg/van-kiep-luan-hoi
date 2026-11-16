@@ -34,6 +34,7 @@ export const RELEASES: Release[] = [
         items: [
           tr('Sư Đồ: ở trang Chân thân có nút Mời đệ tử. Người mới vào bằng link của ngươi, chơi xong 10 kiếp trong 7 ngày đầu thì thầy trò mỗi người được 20 phúc duyên.', 'Master and Disciple: the True Self page has an Invite a disciple button. If a newcomer joins through your link and finishes 10 lives in their first 7 days, you each get 20 Fortune.'),
           tr('Thanh tab dưới đáy: Mộng, Nhân vật, Sơn Môn, Lôi đài. Góp ý, Cập nhật, ngôn ngữ và nhạc nằm trong nút Menu ở góc trên. Sơn Môn mở cửa 5:00 sáng 18/11.', 'A tab bar at the bottom: Dream, Character, Sects, Arena. Feedback, Updates, language and music are in the Menu button at the top. Sects open at 5:00 AM on Nov 18.'),
+          tr('Tab Tam Tài mới giữa Mộng và Nhân vật: chân thân với các huyệt và bảng Tam Tài. Tab Nhân vật thành màn nhân vật: ô đồ hai bên, lực chiến, tủ Quần áo, Mũ, Vũ khí, Cánh (chỉ để ngắm, mở theo thành tựu).', 'A new Treasures tab between Dream and Character: your true self with its points and the Three Treasures board. The Character tab is now a character screen: gear slots, power, and Clothes, Hats, Weapons and Wings (cosmetic, unlocked by achievements).'),
           tr('Nhiệm vụ ngày không còn đòi đồ ẩn mới hay kết cục mới khi ngươi đã mở gần hết, mà đổi sang việc khác làm được.', 'Daily tasks no longer ask for a new hidden item or a new ending once you have unlocked almost all of them; you get a task you can actually do.'),
         ],
       },

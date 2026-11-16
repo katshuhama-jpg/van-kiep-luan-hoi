@@ -1,0 +1,85 @@
+/**
+ * 16/11 (Tyler yêu cầu): đồ và ngoại trang của chân thân ở tab Nhân vật. Chỉ để ngắm, không đổi sức mạnh trong kiếp.
+ * Mỗi món mở theo thành tựu đã có trong hồ sơ (số kiếp, cảnh giới cao nhất, đạo đã ngộ), không mua bằng gì.
+ * Lực chiến chân thân: một con số lớn dần theo Tam Tài, ngoại trang, số kiếp. Chưa dùng trong Lôi đài.
+ */
+import { tr } from '../i18n';
+import { REALMS } from './data';
+import { CT_REWARD_BASE } from './chanThan';
+import { CT_REWARDS, daoDone, hanhFull, huyetCount, type DaoExt } from './khaiMach';
+import type { Layer } from '../lpc';
+import type { Meta } from './types';
+
+export type CtGearSlot = 'mu' | 'vu_khi' | 'canh';
+export type CtGearWorn = Partial<Record<CtGearSlot, string>>;
+
+export interface CtGearItem {
+  id: string;
+  slot: CtGearSlot;
+  name: string;
+  /** lớp vẽ sau lưng (trước thân) và trước mặt (sau tóc) */
+  back?: Layer[];
+  front?: Layer[];
+  hint: string;
+  has: (m: Meta, ext: DaoExt) => boolean;
+}
+
+const lives = (m: Meta) => m.lives ?? 0;
+const maxRealm = (m: Meta) => m.career?.maxRealm ?? 0;
+const realmName = (i: number) => REALMS[i]?.name ?? '';
+const reached = (i: number) => ({ hint: tr(`Từng lên ${realmName(i)}`, `Reach ${realmName(i)} once`), has: (m: Meta) => maxRealm(m) >= i });
+const lived = (n: number) => ({ hint: tr(`Chơi đủ ${n} kiếp`, `Play ${n} lives`), has: (m: Meta) => lives(m) >= n });
+const dao = (id: string, hint: string) => ({ hint, has: (m: Meta, e: DaoExt) => daoDone(m, e).includes(id) });
+const free = { hint: '', has: () => true };
+
+export const CT_GEAR: CtGearItem[] = [
+  // Mũ
+  { id: 'non_la', slot: 'mu', name: tr('Nón lá', 'Conical hat'), front: [{ key: 'non_la', tint: '#d8b46a' }], ...free },
+  { id: 'khan_tran', slot: 'mu', name: tr('Khăn buộc trán', 'Headband'), front: [{ key: 'headband', tint: '#c0402e' }], ...free },
+  { id: 'mu_da', slot: 'mu', name: tr('Mũ da', 'Leather cap'), front: [{ key: 'leather_cap', tint: '#7a5a3a' }], ...lived(10) },
+  { id: 'ngan_thoa', slot: 'mu', name: tr('Ngân thoa', 'Silver circlet'), front: [{ key: 'tiara_silver' }], ...reached(3) },
+  { id: 'kim_thoa', slot: 'mu', name: tr('Kim thoa', 'Gold circlet'), front: [{ key: 'tiara_gold' }], ...reached(4) },
+  { id: 'kim_mien', slot: 'mu', name: tr('Kim miện', 'Gold crown'), front: [{ key: 'crown_gold' }], ...reached(7) },
+  // Vũ khí
+  { id: 'moc_kiem', slot: 'vu_khi', name: tr('Mộc kiếm', 'Wooden sword'), back: [{ key: 'w_sword_bg', tint: '#a0703a' }], front: [{ key: 'w_sword', tint: '#a0703a' }], ...free },
+  { id: 'truong', slot: 'vu_khi', name: tr('Thiền trượng', 'Monk staff'), back: [{ key: 'w_staff_bg' }], front: [{ key: 'w_staff' }], ...lived(5) },
+  { id: 'thuong', slot: 'vu_khi', name: tr('Trường thương', 'Long spear'), back: [{ key: 'w_spear_bg' }], front: [{ key: 'w_spear' }], ...reached(2) },
+  { id: 'thiet_kiem', slot: 'vu_khi', name: tr('Thiết kiếm', 'Iron sword'), back: [{ key: 'w_sword_bg' }], front: [{ key: 'w_sword' }], ...reached(3) },
+  { id: 'dao', slot: 'vu_khi', name: tr('Đao', 'Saber'), back: [{ key: 'w_katana_bg' }], front: [{ key: 'w_katana' }], ...dao('giang_ho', tr('Thắng 100 người chơi', 'Defeat 100 players')) },
+  { id: 'liem', slot: 'vu_khi', name: tr('Huyết liêm', 'Blood scythe'), front: [{ key: 'w_scythe', tint: '#a8202a' }], ...dao('diem_la', tr('Ngộ đạo Diêm La', 'Attain the Dao of King Yama')) },
+  // Cánh
+  { id: 'ao_choang', slot: 'canh', name: tr('Áo choàng', 'Cape'), back: [{ key: 'cape_bg', tint: '#7a1f12' }], front: [{ key: 'cape_fg', tint: '#7a1f12' }], ...reached(3) },
+  { id: 'canh_tien', slot: 'canh', name: tr('Cánh tiên', 'Immortal wings'), back: [{ key: 'wings_bg' }], front: [{ key: 'wings_fg' }], ...dao('phi_thang', tr('Phi thăng một lần', 'Ascend once')) },
+  { id: 'canh_ma', slot: 'canh', name: tr('Cánh ma', 'Demon wings'), back: [{ key: 'bwings_bg' }], front: [{ key: 'bwings_fg' }], ...dao('diem_la', tr('Ngộ đạo Diêm La', 'Attain the Dao of King Yama')) },
+];
+
+export const ctGearOf = (id?: string) => (id ? CT_GEAR.find((g) => g.id === id) : undefined);
+
+/** Lớp sau lưng và trước mặt của đồ đang mang (ctLayers chèn vào đúng chỗ) */
+export function ctGearLayers(worn?: CtGearWorn): { back: Layer[]; front: Layer[] } {
+  const back: Layer[] = [];
+  const front: Layer[] = [];
+  // cánh xa nhất, rồi vũ khí; trước mặt: mũ, cánh, vũ khí (vũ khí trên cùng như trong kiếp)
+  for (const s of ['canh', 'vu_khi'] as CtGearSlot[]) back.push(...(ctGearOf(worn?.[s])?.back ?? []));
+  for (const s of ['mu', 'canh', 'vu_khi'] as CtGearSlot[]) front.push(...(ctGearOf(worn?.[s])?.front ?? []));
+  return { back, front };
+}
+
+/** Số ngoại trang áo (thưởng) đã có */
+export const ctOutfitsOwned = (m: Meta, ext: DaoExt = {}) => CT_REWARDS().filter((r) => r.has(m, ext)).length;
+export const ctGearOwned = (m: Meta, ext: DaoExt = {}) => CT_GEAR.filter((g) => g.has(m, ext)).length;
+/** Áo thưởng có mặc được không (bộ khởi đầu luôn được) */
+export const ctOutfitHas = (m: Meta, ext: DaoExt, outfit: number) => outfit < CT_REWARD_BASE || !!CT_REWARDS()[outfit - CT_REWARD_BASE]?.has(m, ext);
+
+/** Lực chiến chân thân, kèm từng phần để người chơi thấy vì sao */
+export function ctPower(m: Meta, ext: DaoExt = {}): { total: number; parts: { name: string; n: number; each: number }[] } {
+  const parts = [
+    { name: tr('Huyệt đã khai', 'Points opened'), n: huyetCount(m), each: 1200 },
+    { name: tr('Hành viên mãn', 'Elements perfected'), n: hanhFull(m), each: 1500 },
+    { name: tr('Đạo đã ngộ', 'Daos attained'), n: daoDone(m, ext).length, each: 800 },
+    { name: tr('Ngoại trang, đồ', 'Outfits, gear'), n: ctOutfitsOwned(m, ext) + ctGearOwned(m, ext), each: 100 },
+    { name: tr('Kiếp đã sống', 'Lives lived'), n: Math.min(lives(m), 1000), each: 20 },
+    { name: tr('Đệ tử thành tài', 'Graduated disciples'), n: ext.disciples ?? 0, each: 300 },
+  ];
+  return { total: 1000 + parts.reduce((s, p) => s + p.n * p.each, 0), parts };
+}

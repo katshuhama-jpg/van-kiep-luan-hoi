@@ -35,12 +35,12 @@ async function smallTargets(p, sel) {
 
 (async () => {
   const b = await chromium.launch();
-  // người mới: không có câu hướng dẫn, thanh tab có đủ 4 tab
+  // người mới: không có câu hướng dẫn, thanh tab có đủ 5 tab (16/11 thêm Tam Tài)
   let p = await page(b, null, false);
   await p.goto(URL + '/');
   await p.waitForSelector('.tabbar');
   const tabs = await p.$$eval('.tab-item', (e) => e.map((x) => x.textContent.trim()));
-  ok(tabs.join('|') === 'Mộng|Nhân vật|Sơn Môn|Lôi đài', 'đủ 4 tab: ' + tabs.join(', '));
+  ok(tabs.join('|') === 'Mộng|Tam Tài|Nhân vật|Sơn Môn|Lôi đài', 'đủ 5 tab: ' + tabs.join(', '));
   ok((await onTab(p)).includes('Mộng'), 'trang đầu sáng tab Mộng');
   ok(!(await p.$('.tab-hint')), 'người mới không thấy câu hướng dẫn');
   ok(!!(await p.$('.top-tra')), 'Mời trà ở thanh trên');
@@ -56,7 +56,7 @@ async function smallTargets(p, sel) {
   await p.click('.drawer-x');
   ok(!(await p.$('.drawer')), 'đóng menu');
   // Sơn Môn: màn chờ
-  await p.click('.tab-item:nth-child(3)');
+  await p.click('.tab-item:nth-child(4)');
   await p.waitForURL(/son-mon/);
   await p.waitForSelector('.sm-card');
   const sm = await p.textContent('main');
@@ -65,7 +65,7 @@ async function smallTargets(p, sel) {
   ok((await onTab(p)).includes('Sơn Môn'), 'sáng tab Sơn Môn');
   await shot(p, 'tab-son-mon');
   // Lôi đài
-  await p.click('.tab-item:nth-child(4)');
+  await p.click('.tab-item:nth-child(5)');
   await p.waitForURL(/loi-dai/);
   await p.waitForSelector('a[href="/bang-xep-hang"]');
   ok(true, 'tab Lôi đài có Bảng xếp hạng');
@@ -85,8 +85,15 @@ async function smallTargets(p, sel) {
   await p.waitForSelector('.tabbar');
   await p.waitForTimeout(500);
   ok(!(await p.$('.tab-hint')), 'bấm Đã hiểu thì không hiện lại');
-  // Nhân vật
+  // Tam Tài
   await p.click('.tab-item:nth-child(2)');
+  await p.waitForURL(/tam-tai/);
+  await p.waitForTimeout(1500);
+  ok((await onTab(p)).includes('Tam Tài'), 'sáng tab Tam Tài');
+  ok(await noHScroll(p), 'Tam Tài không tràn ngang');
+  await shot(p, 'tab-tam-tai');
+  // Nhân vật
+  await p.click('.tab-item:nth-child(3)');
   await p.waitForURL(/chan-than/);
   await p.waitForTimeout(1500);
   ok((await onTab(p)).includes('Nhân vật'), 'sáng tab Nhân vật');
