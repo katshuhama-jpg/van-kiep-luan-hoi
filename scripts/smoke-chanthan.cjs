@@ -71,12 +71,14 @@ async function open(b, url, m, char) {
   await p.close();
   p = await open(b, '/chan-than', meta([1, 2, 3, 4, 5, 6, 7]));
   await p.waitForSelector('.nv-grid');
-  ok(await p.locator('.nv-grid .nv-cell').count() === 21, 'tab Quần áo: 10 bộ khởi đầu + 11 ngoại trang');
-  ok(await p.locator('.nv-grid .nv-cell:not(:disabled)').count() === 13, 'mở 10 bộ khởi đầu + 3 ngoại trang (Kim bào, Tiên y, Đạo bào Chứng Đạo)');
-  ok(/Khóa/.test(await p.locator('.nv-cell.lock').first().innerText()), 'ô khóa ghi cách mở');
+  await p.locator('.nv-tab', { hasText: 'Ngoại trang' }).click();
+  ok(await p.locator('.nv-grid .nv-cell').count() === 11, 'tab Ngoại trang: 11 bộ');
+  ok(await p.locator('.nv-grid .nv-cell:not(.lock)').count() === 3, 'mở 3 bộ (Kim bào, Tiên y, Đạo bào Chứng Đạo)');
+  await p.locator('.nv-cell.lock').first().click();
+  ok(/Cách mở/.test(await p.locator('.nv-say').innerText()), 'chạm ô khóa thấy cách mở');
   await p.locator('.nv-cell:has-text("Tiên y")').click();
   await p.waitForTimeout(500);
-  ok(/Đang mặc/.test(await p.locator('.nv-cell:has-text("Tiên y")').innerText()), 'mặc được ngoại trang thưởng');
+  ok(await p.locator('.nv-cell.on:has-text("Tiên y")').count() === 1, 'mặc được ngoại trang thưởng');
   await p.locator('.nv-bag').screenshot({ path: DIR ? path.join(DIR, '5-tu-ngoai-trang.png') : undefined });
   ok(await p.locator('button', { hasText: 'Khoe chân thân' }).count() === 1, 'có nút Khoe chân thân');
   ok(!p.errs.length, 'trang Nhân vật không lỗi ' + p.errs.join(' | '));

@@ -5,13 +5,13 @@
  */
 import { tr } from '../i18n';
 import { REALMS } from './data';
-import { CT_REWARD_BASE } from './chanThan';
+import { CT_OUTFITS, CT_REWARD_BASE, CT_REWARD_OUTFITS, type CtOutfit } from './chanThan';
 import { CT_REWARDS, daoDone, hanhFull, huyetCount, type DaoExt } from './khaiMach';
 import type { Layer } from '../lpc';
-import type { Meta } from './types';
+import type { ChanThanLook, Meta } from './types';
 
 export type CtGearSlot = 'mu' | 'vu_khi' | 'canh' | 'phu_kien';
-export type CtGearWorn = Partial<Record<CtGearSlot, string>>;
+export type CtGearWorn = NonNullable<ChanThanLook['gear']>;
 
 export interface CtGearItem {
   id: string;
@@ -87,9 +87,58 @@ export function ctPower(m: Meta, ext: DaoExt = {}): { total: number; parts: { na
     { name: tr('Huyệt đã khai', 'Points opened'), n: huyetCount(m), each: 1200 },
     { name: tr('Hành viên mãn', 'Elements perfected'), n: hanhFull(m), each: 1500 },
     { name: tr('Đạo đã ngộ', 'Daos attained'), n: daoDone(m, ext).length, each: 800 },
-    { name: tr('Ngoại trang, đồ', 'Outfits, gear'), n: ctOutfitsOwned(m, ext) + ctGearOwned(m, ext), each: 100 },
+    { name: tr('Ngoại trang, đồ', 'Outfits, gear'), n: ctOutfitsOwned(m, ext) + ctGearOwned(m, ext) + ctAoOwned(m, ext), each: 100 },
     { name: tr('Kiếp đã sống', 'Lives lived'), n: Math.min(lives(m), 1000), each: 20 },
     { name: tr('Đệ tử thành tài', 'Graduated disciples'), n: ext.disciples ?? 0, each: 300 },
   ];
   return { total: 1000 + parts.reduce((s, p) => s + p.n * p.each, 0), parts };
 }
+
+// ---------------- Quần áo và Ngoại trang (16/11 tối, Tyler yêu cầu) ----------------
+// Quần áo: áo mặc lên chân thân, mở theo thành tựu như các đồ khác (người mới chưa có món nào).
+// Ngoại trang: các bộ thưởng Tam Tài (Kim bào ... Áo người gõ chuông), mặc đè lên Quần áo. Không mặc gì thì là bộ khởi đầu chọn lúc tạo.
+export interface CtAoItem {
+  id: string;
+  name: string;
+  spec: CtOutfit;
+  hint: string;
+  has: (m: Meta, ext: DaoExt) => boolean;
+}
+const sects = (n: number) => ({ hint: tr(`Bái ${n} tông môn khác nhau`, `Join ${n} different sects`), has: (m: Meta) => (m.career?.sects?.length ?? 0) >= n });
+const duels = (n: number) => ({ hint: tr(`Thắng ${n} người chơi`, `Defeat ${n} players`), has: (m: Meta) => (m.career?.duelWins ?? 0) >= n });
+const path = (id: string, name: string) => ({ hint: tr(`Đi đạo ${name} một kiếp`, `Walk the ${name} path once`), has: (m: Meta) => (m.career?.paths ?? []).includes(id) });
+export const CT_AO: CtAoItem[] = [
+  { id: 'dao_bao_tong', name: tr('Đạo bào tông môn', 'Sect robe'), spec: { name: '', cut: 'normal', body: '#2f5a8a', trim: '#e6dcc4', obi: '#1f3a5a', pants: '#1f3a5a', sleeves: '#4f7aaa' }, ...sects(3) },
+  { id: 'giap_da', name: tr('Giáp da', 'Leather armour'), spec: { name: '', cut: 'split', body: '#5a4128', trim: '#8a6a44', obi: '#3a2a1a', pants: '#3a2a22', armour: 'leather' }, ...duels(10) },
+  { id: 'nhuyen_giap', name: tr('Nhuyễn giáp', 'Chain vest'), spec: { name: '', cut: 'split', body: '#2e2e36', trim: '#b4bac2', obi: '#141217', pants: '#2e2e36', armour: 'chain' }, ...reached(4) },
+  { id: 'ca_sa', name: tr('Cà sa', 'Kasaya'), spec: { name: '', cut: 'normal', body: '#d8742a', trim: '#ffd36b', obi: '#a8482a', pants: '#a8482a', sleeves: '#d8742a' }, ...path('phat', tr('Phật', 'Buddhist')) },
+  { id: 'kim_giap', name: tr('Kim giáp', 'Golden armour'), spec: { name: '', cut: 'normal', body: '#c9962e', trim: '#ffd36b', obi: '#7a4a12', pants: '#5a3a12', armour: 'plate', pauldrons: '#e0b02a' }, ...reached(5) },
+  { id: 'long_bao', name: tr('Long bào', 'Dragon robe'), spec: { name: '', cut: 'normal', body: '#c8442a', trim: '#ffd36b', obi: '#ffd36b', pants: '#7a1f12', sleeves: '#e0b02a', mantal: '#ffd36b' }, ...dao('phu_quy', tr('Ngộ đạo Phú Quý', 'Attain the Dao of Wealth')) },
+];
+export const ctAoOf = (id?: string) => (id ? CT_AO.find((a) => a.id === id) : undefined);
+
+/** Ngoại trang theo id (cùng thứ tự CT_REWARDS và CT_REWARD_OUTFITS) */
+export function ctNgoaiList() {
+  return CT_REWARDS().map((r, k) => ({ id: r.id, name: r.name, hint: r.hint, has: r.has, spec: CT_REWARD_OUTFITS[k] }));
+}
+/** Ngoại trang đang mặc: gear.ngoai, hoặc bản cũ mặc bằng outfit >= 100 */
+export function ctNgoaiId(ct: Pick<ChanThanLook, 'outfit'> & { gear?: ChanThanLook['gear'] }): string | undefined {
+  if (ct.gear?.ngoai) return ct.gear.ngoai;
+  if (ct.outfit >= CT_REWARD_BASE) return CT_REWARDS()[ct.outfit - CT_REWARD_BASE]?.id;
+  return undefined;
+}
+/** Bộ khởi đầu (chọn lúc tạo, đổi ở Đổi ngoại hình) */
+export function ctBaseOutfit(ct: Pick<ChanThanLook, 'gender' | 'outfit'>): CtOutfit {
+  const g = ct.gender === 'nu' ? 'nu' : 'nam';
+  return CT_OUTFITS[g][ct.outfit] ?? CT_OUTFITS[g][0];
+}
+/** Bộ đang mặc thật: Ngoại trang > Quần áo > bộ khởi đầu */
+export function ctDressOf(ct: Pick<ChanThanLook, 'gender' | 'outfit'> & { gear?: ChanThanLook['gear'] }): CtOutfit {
+  const ng = ctNgoaiId(ct);
+  if (ng) {
+    const k = CT_REWARDS().findIndex((r) => r.id === ng);
+    if (k >= 0 && CT_REWARD_OUTFITS[k]) return CT_REWARD_OUTFITS[k];
+  }
+  return ctAoOf(ct.gear?.ao)?.spec ?? ctBaseOutfit(ct);
+}
+export const ctAoOwned = (m: Meta, ext: DaoExt = {}) => CT_AO.filter((a) => a.has(m, ext)).length;

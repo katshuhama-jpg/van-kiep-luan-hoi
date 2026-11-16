@@ -11,7 +11,8 @@ import { shareSuDo } from '@/lib/ctCard';
 import type { Meta } from '@/lib/game/types';
 import type { ShareOut } from '@/lib/shareCard';
 import { metaWritable } from '@/lib/storage';
-import { suClaim, suInfo, suList, suState, suTitle, type SuDe, type SuInfo } from '@/lib/suDo';
+import { suAnSet, suClaim, suInfo, suList, suState, suTim, suTitle, type SuDe, type SuInfo, type SuTim } from '@/lib/suDo';
+import { SuTimSheet } from './SuTim';
 import { track } from '@/lib/track';
 import { tr } from '@/lib/i18n';
 
@@ -90,6 +91,15 @@ export default function SuDoPanel({ user, meta, onGain }: { user: Player | null;
   const [drawing, setDrawing] = useState(false);
   const [out, setOut] = useState<ShareOut | null>(null);
   const asked = useRef<string | null>(null);
+  const [tim, setTim] = useState<SuTim | null>(null);
+  const [find, setFind] = useState(false);
+  useEffect(() => {
+    let live = true;
+    suTim(user).then((x) => live && setTim(x));
+    return () => {
+      live = false;
+    };
+  }, [user]);
 
   useEffect(() => {
     if (!user || asked.current === user.username) return;
@@ -115,7 +125,7 @@ export default function SuDoPanel({ user, meta, onGain }: { user: Player | null;
 
   const title = info ? suTitle(info.thanh_tai_n) : null;
   return (
-    <section className="panel su-do" aria-label={tr('Sư Đồ', 'Master and Disciple')}>
+    <section id="su-do" className="panel su-do" aria-label={tr('Sư Đồ', 'Master and Disciple')}>
       <h3 className="su-h">
         {tr('Sư Đồ', 'Master and Disciple')}
         {title && <span className="su-title">{title}</span>}
@@ -161,6 +171,26 @@ export default function SuDoPanel({ user, meta, onGain }: { user: Player | null;
           ? tr('Người mới vào bằng link của ngươi, chơi xong 10 kiếp trong 7 ngày: thầy trò mỗi người +20 phúc duyên.', 'A new player who joins through your link and finishes 10 lives in 7 days: you each get +20 Fortune.')
           : tr('Đăng nhập để có link mời', 'Log in to get an invite link')}
       </small>
+      {/* 16/11 tối: người mới chưa có sư phụ thì tìm; người chơi lâu chọn có hiện tên trong danh sách Tìm sư phụ không */}
+      {tim?.can && !info?.su && (
+        <button className="btn su-invite" style={{ marginTop: 8 }} onClick={() => (setFind(true), track('su_tim_open_panel'))}>
+          {tr('Tìm sư phụ', 'Find a master')}
+        </button>
+      )}
+      {tim && user && (meta.lives ?? 0) >= 20 && (
+        <label className="su-an">
+          <input
+            type="checkbox"
+            checked={!tim.an}
+            onChange={async (e) => {
+              const r = await suAnSet(user, !e.target.checked);
+              if (r !== null) setTim({ ...tim, an: r });
+            }}
+          />
+          {tr('Hiện tên ta trong danh sách Tìm sư phụ của người mới', 'Show me in the Find a master list for new players')}
+        </label>
+      )}
+      {find && <SuTimSheet user={user} onClose={() => setFind(false)} onDone={() => suInfo(user).then((x) => x && setInfo(x))} />}
       {out && <ShareSheet out={out} kind="life" onClose={() => setOut(null)} />}
     </section>
   );

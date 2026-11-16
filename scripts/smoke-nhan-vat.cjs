@@ -24,7 +24,7 @@ const meta = (p) => p.evaluate(() => JSON.parse(localStorage.getItem('vkl.meta')
   await p.goto(URL + '/'); await p.waitForTimeout(3000);
   ok(!(await p.$('.ct-home')), 'trang đầu không còn thẻ chân thân đen');
   await p.goto(URL + '/chan-than'); await p.waitForSelector('.nv-stage');
-  ok((await p.$$('.nv-slot')).length === 5, 'sân khấu có 5 ô đồ (thêm Phụ kiện)');
+  ok((await p.$$('.nv-slot')).length === 6, 'sân khấu có 6 ô đồ (Phụ kiện, Ngoại trang)');
   const lc = await p.textContent('.nv-power b');
   ok(/^[0-9.]+$/.test(lc.trim()) && parseInt(lc.replace(/\./g, '')) > 1000, 'có lực chiến: ' + lc);
   await p.click('.nv-power'); ok(!!(await p.$('.nv-why2')), 'chạm lực chiến thấy cách tính'); await p.click('.nv-power');
@@ -35,22 +35,28 @@ const meta = (p) => p.evaluate(() => JSON.parse(localStorage.getItem('vkl.meta')
   await p.click('.nv-cell:has-text("Nón lá")'); await p.waitForTimeout(300);
   ok((await meta(p)).chanThan.gear?.mu === 'non_la', 'mang nón lá được lưu');
   ok((await p.textContent('.nv-slot >> nth=0')).includes('Nón lá'), 'ô Mũ ghi Nón lá');
-  ok(await p.$eval('.nv-cell:has-text("Kim miện")', (e) => e.disabled), 'Kim miện khóa khi chưa đủ cảnh giới');
+  await p.click('.nv-cell:has-text("Kim miện")'); await p.waitForTimeout(200);
+  ok(/chưa mở/.test(await p.textContent('.nv-say')) && !(await meta(p)).chanThan.gear?.mu?.includes('kim'), 'Kim miện khóa: chạm thấy cách mở, không mặc được');
   await p.click('.nv-cell:has-text("Nón lá")'); await p.waitForTimeout(300);
   ok(!(await meta(p)).chanThan.gear?.mu, 'chạm lần nữa thì bỏ mũ');
   // Vũ khí: Ngân thoa, Thiết kiếm mở từ Kim Đan
   await p.click('.nv-tab:has-text("Vũ khí")');
   await p.click('.nv-cell:has-text("Thiết kiếm")'); await p.waitForTimeout(300);
   ok((await meta(p)).chanThan.gear?.vu_khi === 'thiet_kiem', 'mang Thiết kiếm (đã lên Kim Đan)');
-  // Quần áo
+  // Quần áo: người mới chưa có món nào, chạm thấy cách mở
   await p.click('.nv-tab:has-text("Quần áo")');
-  await p.click('.nv-cell:has-text("Hắc y")'); await p.waitForTimeout(300);
-  const m2 = await meta(p);
-  ok(m2.chanThan.outfit === 8 && m2.chanThan.gear?.vu_khi === 'thiet_kiem', 'đổi áo giữ nguyên đồ đang mang');
-  const small = await p.$$eval('.nv-tab, .nv-cell:not(:disabled), .nv-power', (els) => els.filter((e) => e.getBoundingClientRect().height < 44).length);
+  ok((await p.$$('.nv-cell.lock')).length === (await p.$$('.nv-cell')).length, 'Quần áo: chưa có món nào (đều khóa)');
+  // Ngoại trang: ô thứ 6 dưới Cánh
+  await p.click('.nv-slot:has-text("Ngoại trang")'); await p.waitForTimeout(200);
+  ok((await p.textContent('.nv-tab.on')).includes('Ngoại trang'), 'chạm ô Ngoại trang mở tab Ngoại trang');
+  ok((await p.$$('.nv-cell')).length === 11, 'Ngoại trang có 11 bộ (có Áo người gõ chuông)');
+  ok(!!(await p.$('.nv-cell:has-text("Áo người gõ chuông")')), 'có Áo người gõ chuông');
+  const small = await p.$$eval('.nv-tab, .nv-power', (els) => els.filter((e) => e.getBoundingClientRect().height < 44).length);
   ok(small === 0, 'nút từ 44px');
   ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'không tràn ngang');
   ok(!!(await p.$('.nv-cp')), 'có mục công pháp chân thân (để trống)');
+  const order = await p.evaluate(() => { const st = document.querySelector('.nv-stage').getBoundingClientRect().top, su = document.querySelector('#su-do')?.getBoundingClientRect().top ?? -1, bag = document.querySelector('.nv-bag').getBoundingClientRect().top; return st < su && su < bag; });
+  ok(order, 'Sư Đồ nằm giữa nhân vật và hòm đồ');
   // Tam Tài
   await p.goto(URL + '/tam-tai'); await p.waitForSelector('.nv-stage.tt');
   ok((await p.$$('.hb-dot.lit')).length === 1, 'Tam Tài: 1 huyệt sáng');

@@ -17,6 +17,7 @@ import { FB_PAGE } from '@/lib/links';
 import { ContinueBar, LiveStrip, NewGraves, NewsToast, useLive } from '@/components/LiveWorld';
 import { HomeVanKiep } from '@/components/TangKiep';
 import { HomeCt } from '@/components/TamTai';
+import { SuDoHome } from '@/components/SuTim';
 import { CHAN_THAN_ON, TAB_ON } from '@/lib/flags';
 import { TabBar, TopMenu } from '@/components/TabBar';
 
@@ -49,6 +50,7 @@ export default function Home() {
       <LiveStrip d={live} />
       <HomeVanKiep user={user} ready={ready} noWeek={CHAN_THAN_ON} />
       <HomeCt user={user} ready={ready} on={CHAN_THAN_ON} />
+      <SuDoHome user={user} ready={ready} />
 
       <nav className="menu home-menu" aria-label={tr('Các tính năng', 'Features')}>
         <LoiDaiButton />

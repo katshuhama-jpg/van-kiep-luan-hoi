@@ -2,16 +2,15 @@
 
 /**
  * 16/11 (Tyler yêu cầu): tab Nhân vật kiểu màn nhân vật game: chân thân đứng giữa sân khấu (giống Tàng Kinh Các),
- * ô đồ hai bên (Mũ, Áo, Phụ kiện bên trái; Vũ khí, Cánh bên phải), lực chiến dưới chân, tab con chia đồ như Túi đồ.
+ * ô đồ hai bên (Mũ, Quần áo, Phụ kiện bên trái; Vũ khí, Cánh, Ngoại trang bên phải), lực chiến dưới chân, tab con chia đồ như Túi đồ.
  * Đồ và áo chỉ để ngắm. Công pháp chân thân để trống chờ bản sau.
  */
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import type { ChanThanLook, Meta } from '@/lib/game/types';
-import { CT_OUTFITS, CT_REWARD_BASE, CT_REWARD_OUTFITS, ctOutfitOf, type CtOutfit } from '@/lib/game/chanThan';
-import { CT_GEAR, ctGearOf, ctOutfitHas, ctPower, type CtGearItem, type CtGearSlot } from '@/lib/game/ctGear';
-import type { Layer } from '@/lib/lpc';
+import { ctRobeLayers, type CtOutfit } from '@/lib/game/chanThan';
+import { CT_AO, CT_GEAR, ctAoOf, ctGearOf, ctNgoaiId, ctNgoaiList, ctPower, type CtGearItem, type CtGearSlot } from '@/lib/game/ctGear';
 import { LpcFigure } from './ChanThan';
-import { CT_REWARDS, ctTitles, type DaoExt } from '@/lib/game/khaiMach';
+import { ctTitles, type DaoExt } from '@/lib/game/khaiMach';
 import { REALMS } from '@/lib/game/data';
 import { PixelFx, fxBatQuai, fxSen } from './PixelFx';
 import { tr } from '@/lib/i18n';
@@ -19,9 +18,10 @@ import { track } from '@/lib/track';
 import { LpcCropIcon } from './ItemIcon';
 import { ctLayers } from '@/lib/game/chanThan';
 
-type NvTab = 'ao' | CtGearSlot;
+type NvTab = 'ao' | 'ngoai' | CtGearSlot;
 const TABS: { id: NvTab; vi: string; en: string }[] = [
   { id: 'ao', vi: 'Quần áo', en: 'Clothes' },
+  { id: 'ngoai', vi: 'Ngoại trang', en: 'Costumes' },
   { id: 'mu', vi: 'Mũ', en: 'Hats' },
   { id: 'vu_khi', vi: 'Vũ khí', en: 'Weapons' },
   { id: 'canh', vi: 'Cánh', en: 'Wings' },
@@ -34,6 +34,7 @@ const GLYPH: Record<NvTab, string[]> = {
   mu: ['.........', '....#....', '...###...', '..#####..', '.#######.', '#########', '.........', '.........', '.........'],
   vu_khi: ['........#', '.......#.', '......#..', '.....#...', '....#....', '.#.#.....', '..#......', '.#.#.....', '#........'],
   phu_kien: ['..#####..', '.#.....#.', '#.......#', '#.......#', '.#.....#.', '..#.#.#..', '...###...', '..#####..', '...###...'],
+  ngoai: ['...###...', '..#####..', '.#######.', '#########', '.#######.', '.#######.', '.#######.', '.#######.', '##.....##'],
   canh: ['#.......#', '##.....##', '###...###', '####.####', '#########', '.###.###.', '..##.##..', '...#.#...', '.........'],
 };
 const GLYPH_D = Object.fromEntries(
@@ -47,18 +48,9 @@ function Glyph({ k, size = 26 }: { k: NvTab; size?: number }) {
   );
 }
 
-/** Hình món đồ như icon trong Túi đồ: áo ghép từ lớp áo, mũ và cánh cắt từ lớp LPC, vũ khí dùng icon có sẵn */
-function robeLayers(o: CtOutfit): Layer[] {
-  const kim = o.cut === 'split' ? 'kimono_split' : 'kimono_normal';
-  const out: Layer[] = [{ key: kim, tint: o.body }, { key: `${kim}_trim`, tint: o.trim }];
-  if (o.sleeves) out.push({ key: 'kimono_sleeves_oversize', tint: o.sleeves }, { key: 'kimono_sleeves_oversize_trim', tint: o.trim });
-  out.push({ key: 'obi', tint: o.obi });
-  if (o.mantal) out.push({ key: 'mantal', tint: o.mantal });
-  if (o.scarf) out.push({ key: 'scarf', tint: o.scarf });
-  return out;
-}
+/** Hình món đồ như icon trong Túi đồ: áo ghép từ lớp áo, mũ và cánh cắt từ lớp LPC, vũ khí và phụ kiện dùng icon có sẵn */
 export function OutfitIcon({ o, k, size }: { o: CtOutfit; k: string; size: number }) {
-  return <LpcCropIcon id={`ct-ao-${k}`} layers={robeLayers(o)} size={size} crop={[40, 50, 48]} />;
+  return <LpcCropIcon id={`ct-ao-${k}`} layers={ctRobeLayers(o)} size={size} crop={[40, 50, 48]} />;
 }
 const GEAR_CROP: Record<CtGearSlot, [number, number, number]> = { mu: [40, 22, 48], canh: [16, 22, 96], vu_khi: [16, 16, 96], phu_kien: [44, 40, 40] };
 export function GearIcon({ g, size }: { g: CtGearItem; size: number }) {
@@ -73,16 +65,24 @@ export function NhanVatStage({ ct, meta, ext, onSlot, active }: { ct: ChanThanLo
   const [tt, setTt] = useState(false);
   const p = useMemo(() => ctPower(meta, ext), [meta, ext]);
   const layers = useMemo(() => ctLayers(ct), [ct]);
-  const g = ct.gender === 'nu' ? 'nu' : 'nam';
   const slot = (t: NvTab) => {
-    const gi = t === 'ao' ? undefined : ctGearOf(ct.gear?.[t]);
-    const name = t === 'ao' ? ctOutfitOf(g, ct.outfit).name : gi?.name;
     const label = TABS.find((x) => x.id === t)!;
-    const outfitName = t === 'ao' && ct.outfit >= CT_REWARD_BASE ? CT_REWARDS()[ct.outfit - CT_REWARD_BASE]?.name : name;
+    let name: string | undefined;
+    let icon: ReactNode = null;
+    if (t === 'ao') {
+      const a = ctAoOf(ct.gear?.ao);
+      if (a) (name = a.name), (icon = <OutfitIcon o={a.spec} k={`ao-${a.id}`} size={44} />);
+    } else if (t === 'ngoai') {
+      const n = ctNgoaiList().find((x) => x.id === ctNgoaiId(ct));
+      if (n) (name = n.name), (icon = <OutfitIcon o={n.spec} k={`ng-${n.id}`} size={44} />);
+    } else {
+      const gi = ctGearOf(ct.gear?.[t]);
+      if (gi) (name = gi.name), (icon = <GearIcon g={gi} size={44} />);
+    }
     return (
-      <button key={t} className={`nv-slot${name ? ' has' : ''}${active === t ? ' sel' : ''}`} onClick={() => onSlot(t)} aria-label={`${tr(label.vi, label.en)}: ${outfitName ?? tr('trống', 'empty')}`}>
-        <span className="nv-slot-box">{t === 'ao' ? <OutfitIcon o={ctOutfitOf(g, ct.outfit)} k={`${g}-${ct.outfit}`} size={46} /> : gi ? <GearIcon g={gi} size={46} /> : <Glyph k={t} />}</span>
-        <small>{outfitName ?? tr(label.vi, label.en)}</small>
+      <button key={t} className={`nv-slot${name ? ' has' : ''}${active === t ? ' sel' : ''}`} onClick={() => onSlot(t)} aria-label={`${tr(label.vi, label.en)}: ${name ?? tr('trống', 'empty')}`}>
+        <span className="nv-slot-box">{icon ?? <Glyph k={t} />}</span>
+        <small>{name ?? tr(label.vi, label.en)}</small>
       </button>
     );
   };
@@ -106,6 +106,7 @@ export function NhanVatStage({ ct, meta, ext, onSlot, active }: { ct: ChanThanLo
         <div className="nv-col right">
           {slot('vu_khi')}
           {slot('canh')}
+          {slot('ngoai')}
         </div>
         <div className="tk-floor">
           <PixelFx spec={fxBatQuai('#ffd36b')} scale={3} dur={2.4} />
@@ -160,74 +161,72 @@ export function NhanVatStage({ ct, meta, ext, onSlot, active }: { ct: ChanThanLo
   );
 }
 
-/** Lưới đồ theo tab con, mỗi ô là hình món đồ như Túi đồ trong kiếp; món chưa mở hiện bóng tối kèm cách mở. */
+type Entry = { id: string; name: string; hint: string; has: boolean; on: boolean; icon: ReactNode; wear: () => ChanThanLook };
+
+/** Lưới đồ theo tab con, gọn 4 cột như Túi đồ: hình món đồ, tên, dấu Mặc; món khóa hiện bóng tối, chạm xem cách mở. */
 export function NhanVatBag({ ct, meta, ext, tab, setTab, onWear }: { ct: ChanThanLook; meta: Meta; ext: DaoExt; tab: NvTab; setTab: (t: NvTab) => void; onWear: (ct: ChanThanLook) => void }) {
-  const g = ct.gender === 'nu' ? 'nu' : 'nam';
+  const [say, setSay] = useState<string | null>(null);
+  const gear = ct.gear ?? {};
+  // bản cũ mặc ngoại trang bằng outfit >= 100: chuyển sang gear.ngoai, bộ khởi đầu về 0
+  const base = ct.outfit >= 100 ? 0 : ct.outfit;
+  const put = (k: keyof NonNullable<ChanThanLook['gear']>, id: string | null): ChanThanLook => {
+    const g2 = { ...gear };
+    if (ct.outfit >= 100 && !g2.ngoai) g2.ngoai = ctNgoaiId(ct);
+    if (id) g2[k] = id;
+    else delete g2[k];
+    return { ...ct, outfit: base, gear: g2 };
+  };
+  const list: Entry[] =
+    tab === 'ao'
+      ? CT_AO.map((a) => ({ id: a.id, name: a.name, hint: a.hint, has: a.has(meta, ext), on: gear.ao === a.id, icon: <OutfitIcon o={a.spec} k={`ao-${a.id}`} size={40} />, wear: () => put('ao', gear.ao === a.id ? null : a.id) }))
+      : tab === 'ngoai'
+        ? ctNgoaiList().map((n) => {
+            const on = ctNgoaiId(ct) === n.id;
+            return { id: n.id, name: n.name, hint: n.hint, has: n.has(meta, ext), on, icon: <OutfitIcon o={n.spec} k={`ng-${n.id}`} size={40} />, wear: () => put('ngoai', on ? null : n.id) };
+          })
+        : CT_GEAR.filter((x) => x.slot === tab).map((x) => ({ id: x.id, name: x.name, hint: x.hint, has: x.has(meta, ext), on: gear[tab] === x.id, icon: <GearIcon g={x} size={40} />, wear: () => put(tab, gear[tab] === x.id ? null : x.id) }));
+  const nHas = list.filter((e) => e.has).length;
   return (
     <section className="nv-bag">
       <div className="nv-tabs" role="tablist">
         {TABS.map((t) => (
-          <button key={t.id} role="tab" aria-selected={tab === t.id} className={`nv-tab${tab === t.id ? ' on' : ''}`} onClick={() => (setTab(t.id), track('ct_bag_tab', { tab: t.id }))}>
+          <button key={t.id} role="tab" aria-selected={tab === t.id} className={`nv-tab${tab === t.id ? ' on' : ''}`} onClick={() => (setTab(t.id), setSay(null), track('ct_bag_tab', { tab: t.id }))}>
             {tr(t.vi, t.en)}
           </button>
         ))}
       </div>
-      {tab === 'ao' ? (
-        <div className="nv-grid">
-          {[...CT_OUTFITS[g].map((o, i) => ({ id: i, o, name: o.name, hint: '' })), ...CT_REWARD_OUTFITS.map((o, k) => ({ id: CT_REWARD_BASE + k, o, name: CT_REWARDS()[k]?.name ?? '', hint: CT_REWARDS()[k]?.hint ?? '' }))].map(({ id, o, name, hint }) => {
-            const has = ctOutfitHas(meta, ext, id);
-            const on = ct.outfit === id;
-            return (
-              <button
-                key={id}
-                className={`nv-cell${on ? ' on' : ''}${has ? '' : ' lock'}`}
-                aria-pressed={on}
-                disabled={!has}
-                onClick={() => {
-                  if (on) return;
-                  onWear({ ...ct, outfit: id });
-                  track('ct_look', { gender: ct.gender, hair: ct.hair, hairColor: ct.hairColor, outfit: id });
-                }}
-              >
-                <span className="nv-ico" aria-hidden="true">
-                  <OutfitIcon o={o} k={`${g}-${id}`} size={54} />
-                </span>
-                <small className="nv-cell-n">{name}</small>
-                <small className="nv-cell-s">{on ? tr('Đang mặc', 'Wearing') : has ? tr('Chạm để mặc', 'Tap to wear') : tr(`Khóa: ${hint}`, `Locked: ${hint}`)}</small>
-              </button>
-            );
-          })}
-        </div>
-      ) : (
-        <div className="nv-grid">
-          {CT_GEAR.filter((x) => x.slot === tab).map((x) => {
-            const has = x.has(meta, ext);
-            const on = ct.gear?.[tab] === x.id;
-            return (
-              <button
-                key={x.id}
-                className={`nv-cell${on ? ' on' : ''}${has ? '' : ' lock'}`}
-                aria-pressed={on}
-                disabled={!has}
-                onClick={() => {
-                  const gear = { ...(ct.gear ?? {}) };
-                  if (on) delete gear[tab];
-                  else gear[tab] = x.id;
-                  onWear({ ...ct, gear });
-                  track('ct_gear', { slot: tab, id: on ? null : x.id });
-                }}
-              >
-                <span className="nv-ico" aria-hidden="true">
-                  <GearIcon g={x} size={54} />
-                </span>
-                <small className="nv-cell-n">{x.name}</small>
-                <small className="nv-cell-s">{on ? tr('Đang mang · chạm để bỏ', 'Wearing · tap to remove') : has ? tr('Chạm để mang', 'Tap to wear') : tr(`Khóa: ${x.hint}`, `Locked: ${x.hint}`)}</small>
-              </button>
-            );
-          })}
-        </div>
-      )}
-      <small className="ct-note">{tr('Đồ và ngoại trang chỉ để ngắm, không đổi sức mạnh trong kiếp. Thẻ khoe chân thân cũng vẽ đồ đang mang.', 'Gear and outfits are cosmetic and do not change power inside a life. Your share card shows what you wear.')}</small>
+      <p className="nv-count">
+        {tr(`Đã có ${nHas}/${list.length}`, `Owned ${nHas}/${list.length}`)}
+        {tab === 'ao' && !gear.ao && <small>{tr(' · đang mặc bộ khởi đầu', ' · wearing your starting outfit')}</small>}
+      </p>
+      <div className="nv-grid">
+        {list.map((e) => (
+          <button
+            key={e.id}
+            className={`nv-cell${e.on ? ' on' : ''}${e.has ? '' : ' lock'}`}
+            aria-pressed={e.on}
+            aria-label={`${e.name}: ${e.on ? tr('đang mặc', 'wearing') : e.has ? tr('chạm để mặc', 'tap to wear') : tr(`khóa, ${e.hint}`, `locked, ${e.hint}`)}`}
+            onClick={() => {
+              if (!e.has) return setSay(tr(`${e.name} chưa mở. Cách mở: ${e.hint}.`, `${e.name} is locked. To unlock: ${e.hint}.`));
+              const next = e.wear();
+              onWear(next);
+              setSay(e.on ? tr(`Đã cởi ${e.name}.`, `Took off ${e.name}.`) : tr(`Đang mặc ${e.name}.`, `Now wearing ${e.name}.`));
+              track('ct_gear', { slot: tab, id: e.on ? null : e.id });
+            }}
+          >
+            <span className="nv-ico" aria-hidden="true">
+              {e.icon}
+              {e.on && <i className="nv-badge">{tr('Mặc', 'On')}</i>}
+              {!e.has && <i className="nv-badge lk">{tr('Khóa', 'Lock')}</i>}
+            </span>
+            <small className="nv-cell-n">{e.name}</small>
+          </button>
+        ))}
+      </div>
+      <p className="nv-say" role="status">
+        {say ?? tr('Chạm món đã có để mặc, chạm lần nữa để cởi. Chạm món khóa để xem cách mở.', 'Tap an owned item to wear it, tap again to take it off. Tap a locked item to see how to unlock it.')}
+      </p>
+      <small className="ct-note">{tr('Đồ chỉ để ngắm, không đổi sức mạnh trong kiếp. Ngoại trang mặc đè lên Quần áo.', 'Gear is cosmetic only. Costumes are worn over Clothes.')}</small>
     </section>
   );
 }

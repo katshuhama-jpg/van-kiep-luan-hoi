@@ -222,3 +222,72 @@ export async function suAdmin(user: Player | null): Promise<SuAdmin | 'quyen' | 
     return 'loi';
   }
 }
+
+// ---------------- Tìm sư phụ (16/11 tối, Tyler yêu cầu; máy chủ: supabase/su_tim_2026_11_16.sql) ----------------
+export type SuUng = { ten: string; phap_danh: string | null; huyet: number; kiep: number; tai: number; choi_luc: string | null };
+export type SuTim = { can: boolean; an: boolean; ds: SuUng[] };
+
+/** Danh sách sư phụ để chọn. null: máy chủ chưa có hàm hoặc lỗi mạng (giao diện ẩn phần tìm). Khách cũng xem được. */
+export async function suTim(user: Player | null): Promise<SuTim | null> {
+  const sb = supabase();
+  if (!SU_DO_ON || !sb) return null;
+  try {
+    const { data, error } = await sb.rpc('vkl_su_tim', { p_token: user?.token ?? null });
+    if (error || !data) return null;
+    const d = data as { can?: boolean; an?: boolean; ds?: Partial<SuUng>[] };
+    return {
+      can: !!d.can,
+      an: !!d.an,
+      ds: (Array.isArray(d.ds) ? d.ds : []).map((x) => ({
+        ten: String(x.ten ?? ''),
+        phap_danh: x.phap_danh ? String(x.phap_danh) : null,
+        huyet: Number(x.huyet ?? 0),
+        kiep: Number(x.kiep ?? 0),
+        tai: Number(x.tai ?? 0),
+        choi_luc: x.choi_luc ? String(x.choi_luc) : null,
+      })),
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** Chọn sư phụ trong danh sách. Đã đăng nhập: bái ngay (mã như vkl_su_bind). Khách: nhớ lựa chọn như link mời, đăng ký xong tự bái. */
+export async function suChon(user: Player | null, ten: string): Promise<string> {
+  if (!SU_RE.test(ten)) return 'SU_NONE';
+  if (!user) {
+    try {
+      document.cookie = `${COOKIE}=${ten}; max-age=604800; path=/; samesite=lax`;
+    } catch {}
+    track('su_tim_chon', { su: ten, guest: true });
+    return 'GUEST';
+  }
+  const sb = supabase();
+  if (!sb) return 'SU_NET';
+  try {
+    const { data, error } = await sb.rpc('vkl_su_bind', { p_token: user.token, p_su: ten, p_sid: deviceId() });
+    if (error || typeof data !== 'string') return 'SU_NET';
+    track(data === 'OK' ? 'su_bind' : 'su_bind_no', { su: ten, code: data, from: 'tim' });
+    if (data === 'OK') {
+      try {
+        window.dispatchEvent(new CustomEvent(SU_BOUND_EV, { detail: ten }));
+      } catch {}
+    }
+    return data;
+  } catch {
+    return 'SU_NET';
+  }
+}
+
+/** Ẩn hoặc hiện tên mình trong danh sách Tìm sư phụ. Trả trạng thái mới, null nếu lỗi. */
+export async function suAnSet(user: Player | null, an: boolean): Promise<boolean | null> {
+  const sb = supabase();
+  if (!SU_DO_ON || !user || !sb) return null;
+  try {
+    const { data, error } = await sb.rpc('vkl_su_an_set', { p_token: user.token, p_an: an });
+    if (error || typeof data !== 'boolean') return null;
+    return data;
+  } catch {
+    return null;
+  }
+}

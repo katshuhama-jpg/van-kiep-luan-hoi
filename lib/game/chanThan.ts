@@ -9,7 +9,7 @@ import { genNameVi } from './engine';
 import { tenTuc } from './tenCam';
 import { tr } from '../i18n';
 import { nameOf } from '../hanviet';
-import { ctGearLayers } from './ctGear';
+import { ctDressOf, ctGearLayers } from './ctGear';
 
 /** 6 màu da: 5 tông nhân vật đang dùng (gốc và 4 tông nhân màu) + 1 tông sẫm nhuộm cùng cách */
 export const CT_SKINS: { tint: string | null; swatch: string }[] = [
@@ -72,6 +72,9 @@ export interface CtOutfit {
   sleeves?: string;
   mantal?: string;
   scarf?: string;
+  /** 16/11 Quần áo chân thân: giáp mặc ngoài thân áo, giáp vai */
+  armour?: 'plate' | 'leather' | 'chain';
+  pauldrons?: string;
 }
 export const CT_OUTFITS: Record<Gender, CtOutfit[]> = {
   nam: [
@@ -133,23 +136,36 @@ export function ctRandom(name = '', rnd: () => number = Math.random): ChanThanLo
   return { name, gender, skin: pick(CT_SKINS.length), hair: pick(10), hairColor: pick(CT_HAIR_COLORS.length), outfit: pick(10), createdAt: 0, renamed: 0 };
 }
 
-/** Lớp ảnh LPC của chân thân (người lớn, không vũ khí, không phụ kiện) */
+/** Lớp áo (quần, giày, thân áo, giáp, đai, khăn vai). withLegs: thêm quần, giày (khi vẽ người); icon thì bỏ. Khăn cổ vẽ sau tóc ở ctLayers. */
+export function ctRobeLayers(o: CtOutfit, withLegs = false): Layer[] {
+  const out: Layer[] = [];
+  if (withLegs) out.push({ key: 'pants', tint: o.pants }, { key: 'shoes' });
+  const kim = o.cut === 'split' ? 'kimono_split' : 'kimono_normal';
+  if (o.armour === 'plate') out.push({ key: 'armour_plate', tint: o.body });
+  else {
+    out.push({ key: kim, tint: o.body }, { key: `${kim}_trim`, tint: o.trim });
+    if (o.armour === 'chain') out.push({ key: 'chainmail', tint: o.trim });
+    if (o.armour === 'leather') out.push({ key: 'armour_leather', tint: o.trim });
+    if (o.sleeves) out.push({ key: 'kimono_sleeves_oversize', tint: o.sleeves }, { key: 'kimono_sleeves_oversize_trim', tint: o.trim });
+  }
+  out.push({ key: 'obi', tint: o.obi });
+  if (o.pauldrons) out.push({ key: 'pauldrons', tint: o.pauldrons });
+  else if (o.mantal) out.push({ key: 'mantal', tint: o.mantal });
+  return out;
+}
+
+/** Lớp ảnh LPC của chân thân: bộ đang mặc theo thứ tự ưu tiên Ngoại trang > Quần áo > bộ khởi đầu, rồi đồ mang thêm */
 export function ctLayers(ct: Pick<ChanThanLook, 'gender' | 'skin' | 'hair' | 'hairColor' | 'outfit'> & { gear?: ChanThanLook['gear'] }): Layer[] {
   const gl = ctGearLayers(ct.gear);
   const g: Gender = ct.gender === 'nu' ? 'nu' : 'nam';
   const skin = CT_SKINS[ct.skin]?.tint ?? undefined;
   const hair = CT_HAIR[g][ct.hair] ?? CT_HAIR[g][0];
   const hc = (CT_HAIR_COLORS[ct.hairColor] ?? CT_HAIR_COLORS[0]).hex;
-  const o = ctOutfitOf(g, ct.outfit);
-  const kim = o.cut === 'split' ? 'kimono_split' : 'kimono_normal';
+  const o = ctDressOf(ct);
   const out: Layer[] = [...gl.back];
   if (hair.bg) out.push({ key: `hair_${hair.key}_bg`, tint: hc });
   out.push({ key: 'body_adult', tint: skin }, { key: g === 'nam' ? 'head_m' : 'head_f', tint: skin }, { key: 'eyes_brown' });
-  out.push({ key: 'pants', tint: o.pants }, { key: 'shoes' });
-  out.push({ key: kim, tint: o.body }, { key: `${kim}_trim`, tint: o.trim });
-  if (o.sleeves) out.push({ key: 'kimono_sleeves_oversize', tint: o.sleeves }, { key: 'kimono_sleeves_oversize_trim', tint: o.trim });
-  out.push({ key: 'obi', tint: o.obi });
-  if (o.mantal) out.push({ key: 'mantal', tint: o.mantal });
+  out.push(...ctRobeLayers(o, true));
   out.push({ key: `hair_${hair.key}_fg`, tint: hc });
   if (o.scarf) out.push({ key: 'scarf', tint: o.scarf });
   out.push(...gl.front);

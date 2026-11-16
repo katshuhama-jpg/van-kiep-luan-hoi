@@ -99,11 +99,14 @@ export default function ChanThanPage() {
       {meta && ct && mode === 'view' && (
         <>
           <section className="panel nv-panel">
-            <NhanVatStage ct={ct} meta={meta} ext={ext} active={bagTab} onSlot={(t) => (setBagTab(t), track('ct_slot_tap', { slot: t }))} />
+            <NhanVatStage ct={ct} meta={meta} ext={ext} active={bagTab} onSlot={(t) => (setBagTab(t), track('ct_slot_tap', { slot: t }), document.querySelector('.nv-bag')?.scrollIntoView({ behavior: 'smooth', block: 'start' }))} />
+          </section>
+          {SU_DO_ON && <SuDoPanel user={user} meta={meta} onGain={onSuGain} />}
+          <section className="panel">
             <NhanVatBag ct={ct} meta={meta} ext={ext} tab={bagTab} setTab={setBagTab} onWear={(x) => save({ ...meta, chanThan: x })} />
             <div className="home-grid">
               <button className="btn" onClick={() => setMode('look')}>
-                {tr('Đổi tóc, da', 'Change hair, skin')}
+                {tr('Đổi ngoại hình', 'Change appearance')}
               </button>
               <button
                 className="btn"
@@ -136,7 +139,6 @@ export default function ChanThanPage() {
           <section className="panel ct-dark">
             <NhanVatCongPhap />
           </section>
-          {SU_DO_ON && <SuDoPanel user={user} meta={meta} onGain={onSuGain} />}
           {out && <ShareSheet out={out} kind="life" onClose={() => setOut(null)} />}
         </>
       )}
@@ -145,7 +147,7 @@ export default function ChanThanPage() {
           <CtCreate
             init={ct}
             nameLocked
-            title={tr('Đổi tóc, da', 'Change hair, skin')}
+            title={tr('Đổi ngoại hình', 'Change appearance')}
             confirm={tr('Giữ dáng này', 'Keep this look')}
             onDone={(x) => {
               save({ ...meta, chanThan: { ...ct, gender: x.gender, skin: x.skin, hair: x.hair, hairColor: x.hairColor, outfit: x.outfit } });
