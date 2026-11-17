@@ -6,6 +6,19 @@ Mốc so sánh: còn chơi sau 7 ngày (D7) 11-14% (`docs/so-lieu.md`, mốc tr�
 
 ## Việc Tyler giao cho đêm 17/11 - lên bản 5:00 sáng 18/11 cùng chuyến Sơn Môn 4.6.0 (bắt buộc)
 
+**Nút "Luyện tâm pháp" khó hiểu khi chiêu chạm trần** (Truong Pham hỏi qua Messenger 17/11 19:07: đủ quyển, đủ thục luyện mà không nâng được; page đã hứa sửa chữ trong bản sáng 18/11).
+
+- Hiện tượng: chiêu chỉ lên tối đa tầng tâm pháp + 2 (`capOf`, `TAM_GAP`). Khi chạm trần, nút xám ghi "Luyện tâm pháp" (`components/TangKinhCac.tsx` nhánh `blk === 'cap'`) nên người chơi tưởng lỗi.
+- Cách sửa: nút ghi rõ "Cần tâm pháp T{n}" (n = tầng chiêu - 1), kèm một dòng nhỏ "Chiêu cao hơn tâm pháp tối đa 2 tầng". Nếu tâm pháp đang thiếu quyển mà có quyển chiêu khác dư để chép 3 thành 1 thì gợi ý luôn. Có bản tiếng Anh, chạm vào là đọc được trên điện thoại.
+- Cáo thị 18/11 gộp dòng: "Tàng Kinh Các ghi rõ khi nào cần nâng tâm pháp trước."
+- Sau khi lên bản: Tyler duyệt rồi nhắn Truong "bản sáng nay 18/11 sửa chữ rồi nha bạn".
+
+**Lôi đài kẹt trận treo - ĐÃ SỬA TRÊN MÁY CHỦ 17/11 20:40, không cần lên bản** (Hoang Le, tài khoản `ton`).
+
+- Nguyên nhân: `vkl_arena_state2` reset lượt khi sang ngày mới nhưng không xóa `pending`; bóng ngày cũ hết hạn nên `/api/loi-dai` trả `NO_SHADOW` -> "Máy chủ chưa ghi được trận này". 22 tài khoản kẹt, sớm nhất từ 2/11.
+- Đã làm (`supabase/loi_dai_tran_treo_2026_11_17.sql`): state2 xóa trận treo khi sang ngày mới hoặc khi bóng đã hết hạn; pick2 cho chọn bóng mới khi trận treo thuộc bóng ngày cũ; Tyler chốt đền bù 100 phúc duyên + thư tạ lỗi cho 22 tài khoản; đã gỡ hết trận treo. Kiểm tra: 0 tài khoản còn kẹt, `ton` chạy thử chọn bóng - rút đối thủ - ghi trận thành công.
+- Còn lại cho đêm nay (không bắt buộc): khi `/api/loi-dai` trả `NO_SHADOW` thì game tự gọi chọn bóng lại rồi rút trận mới, thay vì báo "Máy chủ chưa ghi được"; ghi `console.error` mã lỗi ở route để lần sau xem được log.
+
 **Chữ mô tả chiêu hút máu chưa thống nhất** (Nguyễn Quang hỏi qua Messenger 17/11 10:23, page đã hứa sửa chữ trong bản sáng 18/11).
 
 - Hiện tượng: 4 chiêu hút máu ghi mỗi chỗ một kiểu, người chơi tưởng "hút 50% máu" là lấy 50% máu quái. Trong `lib/game/congPhap.ts` (dòng `main:`): `kim_xa` "hút 30% máu", `huyet_anh_trao` "Hút 30% sát thương thành máu", `thon_phe` "Đòn nặng, hút 50% máu", `huyet_te` "Đòn máu, hút nửa sát thương". Cả 4 cùng cơ chế `leech`: hồi cho mình theo % sát thương vừa gây ra.
