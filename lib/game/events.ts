@@ -2986,7 +2986,8 @@ export const EVENTS: GameEvent[] = [
     minAge: 16,
     weight: 7,
     cooldown: 20,
-    when: (c) => c.linhThach >= 1500,
+    // 17/11 (góp ý #279): Luyện Hư rồi mà còn gặp trộm vặt thì lạc giọng; từ Hóa Thần trộm phàm không dám bén mảng
+    when: (c) => c.linhThach >= 1500 && c.realm < 5,
     title: tr('Trộm đột nhập', "Burglar"),
     text: () => tr('Nửa đêm, bạn nghe tiếng sột soạt ở kho. Có kẻ đang cạy rương linh thạch.', "At midnight, you hear rustling in the storeroom. Someone is prying open your spirit stone chest."),
     choices: () => [

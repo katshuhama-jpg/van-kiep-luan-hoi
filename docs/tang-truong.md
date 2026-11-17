@@ -6,6 +6,8 @@ Mốc so sánh: còn chơi sau 7 ngày (D7) 11-14% (`docs/so-lieu.md`, mốc tr�
 
 ## Việc Tyler giao cho đêm 17/11 - lên bản 5:00 sáng 18/11 cùng chuyến Sơn Môn 4.6.0 (bắt buộc)
 
+ĐÃ LÀM đêm 17/11 (4401b40, cáo thị trong 4.6.0 nhóm "Sửa lỗi 18/11"): cả ba việc bắt buộc, và ghi mã lỗi Lôi đài ra log Vercel (`console.warn`, để không lẫn vào lỗi thật). Chưa làm phần tự chọn bóng lại khi `NO_SHADOW` vì máy chủ đã gỡ gốc lỗi; xem lại nếu log còn `NO_SHADOW`. Xem "Đêm 17/11" bên dưới.
+
 **Nút "Luyện tâm pháp" khó hiểu khi chiêu chạm trần** (Truong Pham hỏi qua Messenger 17/11 19:07: đủ quyển, đủ thục luyện mà không nâng được; page đã hứa sửa chữ trong bản sáng 18/11).
 
 - Hiện tượng: chiêu chỉ lên tối đa tầng tâm pháp + 2 (`capOf`, `TAM_GAP`). Khi chạm trần, nút xám ghi "Luyện tâm pháp" (`components/TangKinhCac.tsx` nhánh `blk === 'cap'`) nên người chơi tưởng lỗi.
@@ -50,6 +52,57 @@ Mốc so sánh: còn chơi sau 7 ngày (D7) 11-14% (`docs/so-lieu.md`, mốc tr�
 Hai việc nhỏ cùng nguồn (Quang hỏi 16/11), làm nếu còn thời gian, không bắt buộc cho 17/11:
 - Biểu đồ chỉ số nhân vật: trục "Tài" (điểm giàu theo linh thạch, `wealthScore`) dễ hiểu nhầm. Chạm vào trục hiện một dòng giải thích, hoặc đổi nhãn rõ hơn.
 - Thiên phú cộng sức khỏe bị chặn ở 100 mà người chơi không biết. Màn mua thiên phú ghi rõ "sức khỏe tối đa 100", hoặc phần dư đổi thành thọ nguyên (cần mô phỏng cân bằng trước).
+
+## Đêm 17/11/2026 (lên bản 18/11)
+
+Kế hoạch: 4.6.0 Ngày 7 xong (7e5a9be): bật Sơn Môn, Kỷ 1 đã tạo trên Supabase (18/11 5:00 - 1/12 21:00, 127 ô), cáo thị 4.6.0, nút "Vào môn của sư phụ", chấm đỏ tab Sơn Môn, sửa lỗi nhỏ Ngày 3/6, video 9:16. Chi tiết ở Ghi chú Ngày 7 trong plan-4.6.0.
+
+Việc Tyler giao (4401b40):
+- Nút tâm pháp: chiêu chạm trần ghi "Cần tâm pháp T{n}" + dòng "Chiêu chỉ cao hơn tâm pháp tối đa 2 tầng." + gợi ý "Thiếu quyển tâm pháp? Chép 3 quyển X thành 1." khi tâm pháp thiếu quyển mà có chiêu cùng đạo dư từ 3 quyển. Thử: `scripts/smoke-tam-phap-cap.cjs` (Playwright 390x844), 5/5 OK.
+- Chiêu hút máu: 4 chiêu cùng mẫu "hồi máu bằng X% sát thương gây ra" (Anh: "heals you for X% of damage dealt"), mô tả đạo Ma và Nhu đổi theo. Không đổi số.
+- Tuyệt kỹ đã dung hợp: tàn quyển tuyệt kỹ tiếp tục rơi từ trận khó và bán ở Phường thị (giá cũ `TQ_TUYET_MUL`, chung giới hạn mỗi năm) cho tới khi đủ quyển lên tầng 9; thẻ Phường thị ghi "Tuyệt kỹ · đang tầng N". Thử: `npx tsx scripts/thu-tuyet-tang.ts`: cả 6 đạo, tầng 5 sau dung hợp, rơi đủ 10 quyển (đủ tới tầng 9) rồi thôi rơi, Phường thị bán khi còn thiếu và thôi bán khi đủ, chưa có chiêu tầng 9 thì vẫn không rơi tuyệt kỹ. `sim-tan-quyen` không đổi (mô phỏng chưa tới tuyệt kỹ).
+
+Số chính (đọc khoảng 21:30):
+- Tài khoản mới: 15/11 165, 16/11 76, 17/11 41 (tới 21:30). Phiên mỗi ngày (vkl_daily): 15/11 1.639, 16/11 1.329.
+- D1: nhóm 13/11 38,4%, 14/11 28,8%, 15/11 29,1%. D7: nhóm 8/11 9,6%, 9/11 7,5% (dưới mốc 11-14%).
+- Phễu tài khoản theo ngày vào (đủ 2 kiếp / đủ 10 kiếp): 14/11 92/43 trên 139, 15/11 96/44 trên 165.
+- Màn rời nhiều nhất 16/11: đầu thai 542, đang chơi 417, chưa rõ 369, sự kiện 311, chết 142.
+- Phát hiện mới: 30 giờ qua có khoảng 200 phiên rộng đúng 411px, không nguồn (hoặc từ quảng cáo), ẩn trong vòng 10 giây, chỉ khoảng 3% vào kiếp (máy khác 40-50%). 17/11 chiếm 168/325 phiên thấy màn kiếp đầu gọn. Nghi trình duyệt trong app Facebook tải trước hoặc máy duyệt quảng cáo. Bỏ nhóm này ra thì vào kiếp 1 / thấy màn kiếp đầu: 14/11 66%, 15/11 65%, 16/11 64%, 17/11 52% (ngày chưa hết).
+- Tính năng 24 giờ (phiên): Tàng Kinh Các 450, lò rèn 297, mua tàn quyển 304, đấu giá 459, điểm danh 252, khai huyệt 254, Lôi đài ra đài 102 / đánh 112 (khớp), màn chờ Sơn Môn 107 (16/11 130), Sư Đồ: Mời đệ tử 28, mở link mời 14, bái sư 3 (16/11: 46 / 8 / 1). Tạo chân thân 85/85 người xem Mộng Tỉnh.
+- Lỗi Vercel 24 giờ: không có.
+
+Góp ý (12 góp ý 'moi' từ #271 tới #282, đã xem hết):
+- #279 (Luyện Hư còn gặp sự kiện bắt trộm vặt): sửa trong đêm, sự kiện "Trộm đột nhập" chỉ ra khi dưới Hóa Thần. Mô phỏng `sim-do-kho 3000` trước/sau: tới Trúc Cơ 79,6/79,8%, Kim Đan 66,5/66,1%, Nguyên Anh 45,0/45,8%, Hóa Thần 23,4/23,9%, Luyện Hư 9,6/8,6%, Độ Kiếp 2,1/1,8%; tuổi chết TB 119/120; thắng trận 72,7/72,9%. Trong sai số. Thêm một dòng vào cáo thị 4.6.0.
+- Ghi lại, chưa làm: #272 bán lại đan dược; #273 công pháp cùng hệ linh căn mạnh hơn; #274 chân truyền được phát linh thạch; #278 học chiêu ngoài đạo. #277 bị cướp giết vì ôm nhiều tiền đi đêm: đúng luật, trả lời cách tránh. Còn lại là chấm sao.
+- Câu trả lời đã soạn ở Ghi chú Ngày 7 (plan-4.6.0), kèm nhóm lập tông môn (#174, #185, #201, #221) để gửi khi Sơn Môn mở. Không ai bị thiệt vì lỗi cần bù đêm nay.
+- Không đọc được bình luận Facebook: phiên này không có Claude in Chrome.
+
+Nhận định:
+1. Phễu kiếp 1 đo bằng `first_simple` đang bị nhóm 411px kéo xuống mạnh (17/11 còn 33% nếu tính cả). Trước khi cải thiện kiếp đầu lần 3 phải tách được nhóm này, nếu không sẽ sửa nhầm chỗ.
+2. Người mới đang ít đi (quảng cáo Chân Thân gần hết ngân sách, tới 19/11). Sơn Môn mở 18/11 là thứ mới lớn nhất để kéo người cũ quay lại; người mới chưa vào được môn ngay vì cần tài khoản và chân thân, nên màn Sơn Môn cho khách dẫn thẳng tới Liên kết tài khoản.
+
+Việc tăng trưởng đêm nay:
+1. Đo sạch phễu (tăng trưởng, Tracker): sự kiện `open` ghi thêm `vis` (trang mở khi đang ẩn), `pre` (tải trước), `wd` (trình duyệt tự động), `iab` (fb/ig/ms/zalo/th), `bot`. Người chơi không thấy gì khác.
+   - Giả thuyết: nhóm 411px là phiên không phải người (tải trước trong app Facebook). Chỉ số: tỉ lệ phiên `open` có `vis = hidden` hoặc `bot`, và tỉ lệ vào kiếp 1 khi bỏ các phiên đó. Cải thiện tiếp: nếu đúng là tải trước thì sửa câu SQL hằng đêm loại các phiên này, và báo Tyler loại vị trí quảng cáo gây ra (nếu `iab` cho thấy một nguồn).
+   - Đối chiếu: không trùng với plan-4.5.0 (xong), plan-4.6.0 (Ngày 7 chỉ Sơn Môn), không có docs/yeu-cau-lam-tinh-nang.md.
+2. Sửa #279 (ở trên).
+
+Quyết định tự chốt:
+- Bật `SON_MON_ON` bằng cách đổi mặc định trong code (không đổi biến môi trường trên Vercel, vì không được sửa cấu hình).
+- Màn lập môn và chọn ô: nút quay lại trên thanh đầu quay về bước trước trong Sơn Môn thay vì rời trang; bỏ nút "‹" thứ hai.
+- Chấm đỏ tab Sơn Môn chỉ cho người đã bấm "Báo ta khi có môn mở cửa", tắt sau khi họ mở tab (không thành thông báo dồn dập).
+
+Tiến độ việc nhiều đêm:
+- Kiếp đầu gọn lần 2: đo tới 19/11, nhưng phải tách nhóm 411px trước (dữ liệu mới từ bản 18/11).
+- Sơn Môn: Kỷ 1 mở 18/11 5:00. Đo theo "Điều kiện dừng" của plan-4.6.0 từ 25/11. Còn lại: tên người theo xuất chinh, màn thưởng Kỷ.
+- Xem lại tâm pháp cấp cao (#264): chưa làm.
+
+Nội dung soạn sẵn (Tyler tự đăng, Claude không đăng):
+- Bài Page (sáng 18/11): "Sơn Môn mở cửa rồi. Từ 5:00 sáng nay, đạo hữu nào đủ 50 kiếp và 5 ngày chơi có thể lập môn, mời hai người ký cùng lập là dựng cờ được ngay. Chưa đủ thì vào một môn đang mở cửa: mỗi ngày điểm danh, làm 3 nhiệm vụ ngay trong kiếp, góp Khí vận cho cả môn. Môn chủ phát lệnh xuất chinh trên bản đồ ô lục giác, ai cũng chọn được ô để đứng giữ. Kỷ 1 kéo tới 21:00 ngày 1/12, môn giữ nhiều đất nhất đứng đầu. Không có gì phải mua, Lực chiến chỉ lên khi ngươi chơi. Chơi trên trình duyệt: van-kiep-luan-hoi.vercel.app"
+- Caption ngắn: "Sơn Môn mở cửa. Lập môn cùng đạo hữu, giữ đất tới 1/12."
+- Video 9:16 25 giây (đã gửi Tyler, file `son-mon-9x16.mp4`): vào môn - điểm danh - nhiệm vụ - bản đồ - xuất chinh - chiến báo. Gợi ý chữ trên video: 0-4s "Ngươi chưa có sơn môn?", 4-10s "Điểm danh, 3 nhiệm vụ mỗi ngày", 10-15s "Giữ đất trên bản đồ", 15-21s "Môn chủ ra lệnh, đệ tử theo", 21-25s "Kỷ 1 tới 1/12" + link.
+
+Quảng cáo Facebook: giữ đề xuất đêm 16/11 (đợt Sơn Môn 20-26/11, 50.000đ/ngày, 17h-24h, Việt Nam 18-40, mục tiêu Lưu lượng truy cập, 2 mẫu: anh40 và ảnh bản đồ Sơn Môn; dừng mẫu nào trên 2.000đ mỗi người xong kiếp 1 sau 2 tối, hoặc D1 nhóm quảng cáo dưới 20%). Thêm một điều kiện trước khi chạy: đêm 18-19/11 xem `iab`/`vis` của nhóm 411px; nếu là tải trước của Facebook thì tính giá mỗi người xong kiếp 1 trên phiên thật, và nếu nhóm này đến từ một vị trí quảng cáo (Audience Network) thì bỏ vị trí đó.
 
 ## Câu SQL dùng mỗi đêm
 
@@ -373,6 +426,8 @@ Nội dung soạn sẵn (Tyler tự đăng, Claude không đăng): chưa có th�
 - Kiếp đầu gọn, lần 2 (bật từ bản 16/11): trước (15/11, cờ tắt) 43% người vào kiếp 1 xong kiếp 1, 44% người bỏ có việc cuối là cẩm nang tự mở, 55% bỏ trong 2 phút đầu. Sau: đo từ 16/11 (ít nhất 3 ngày).
 - Nhiệm vụ ngày, lần 1 (15/11, góp ý #211): người đã mở gần hết đồ ẩn hay kết cục không còn nhận nhiệm vụ không làm được. Trước: 1 góp ý. Sau: đếm góp ý về nhiệm vụ ngày.
 - Thiên sinh kiếm cốt (thiên phú), lần 1 (16/11, góp ý #262): công x1,1 không ghi -> x1,3 có ghi trên thẻ. Đo: góp ý về thiên phú yếu.
+- Tàng Kinh Các - nút nâng chiêu khi chạm trần tâm pháp, lần 1 (17/11, Truong Pham hỏi): "Luyện tâm pháp" -> "Cần tâm pháp T{n}" + lý do + gợi ý chép 3 thành 1. Số trước: 1 tin hỏi qua Messenger; `cp_tang` 450 phiên/24 giờ. Sau: đếm góp ý hỏi về nút này, `cp_tang` -> nâng tầng.
+- Tuyệt kỹ sau dung hợp, lần 1 (17/11, Phan Anh Tuấn báo): có tàn quyển rơi và bán tới tầng 9. Số trước: `cp_dung_hop` 101 phiên/24 giờ, tuyệt kỹ kẹt ở tầng 5. Sau: đếm `mua_tq` cho tuyệt kỹ và tầng tuyệt kỹ trong bia.
 - Lột đồ khi thua trận (`robGear`), lần 1 (13/11, góp ý #236 #229): không lột thần binh truyền kiếp. Số trước: 2 góp ý báo mất thần binh trong 2 ngày. Sau: đếm góp ý báo mất thần binh từ 14/11.
 
 ## Tính năng đã ẩn

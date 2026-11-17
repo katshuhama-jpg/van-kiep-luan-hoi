@@ -229,13 +229,33 @@ Lên bản: 2026-11-16 (giấu sau cờ; Tyler chốt 14/11 tối gộp bản 17
 
 ## Ngày 7 - Lên bản, Kỷ 1 bắt đầu
 Lên bản: 2026-11-18. Bật cờ `SON_MON_ON`, có cáo thị 4.6.0.
-- [ ] Tạo Kỷ 1 (18/11 5:00 - 1/12 21:00, bán kính 6) trước 5:00.
-- [ ] Cáo thị 4.6.0 ngắn: sơn môn, điểm danh và nhiệm vụ trong kiếp, bản đồ lục giác, Kỷ 1 tới 1/12. Không hứa đồng minh hay Kỷ sau có gì.
-- [ ] Trước khi bật cờ: chạy đủ 2 bước của "Luật giao diện mới" (uiux-pro-max với vai người mới và người cũ, humanizer cho chữ trên màn và cáo thị) trên toàn bộ màn Sơn Môn (thanh 4 tab đã soát ở bản 16/11). Bật cờ thì màn chờ của tab Sơn Môn phải biến mất.
-- [ ] Nút "Vào môn của sư phụ" (Sư Đồ, khi `SON_MON_ON` bật) và chấm đỏ tab Sơn Môn khi có môn mở cửa (`vkl.sm.baoMo`). Sửa lỗi nhỏ ghi ở Ngày 3, 4, 6.
-- [ ] Video ngắn 9:16 (Playwright quay): vào môn, điểm danh, bản đồ, xuất chinh, chiến báo. Gửi Tyler, không tự đăng.
-- Xong:
+- [x] Tạo Kỷ 1 (18/11 5:00 - 1/12 21:00, bán kính 6) trước 5:00.
+- [x] Cáo thị 4.6.0 ngắn: sơn môn, điểm danh và nhiệm vụ trong kiếp, bản đồ lục giác, Kỷ 1 tới 1/12. Không hứa đồng minh hay Kỷ sau có gì.
+- [x] Trước khi bật cờ: chạy đủ 2 bước của "Luật giao diện mới" (uiux-pro-max với vai người mới và người cũ, humanizer cho chữ trên màn và cáo thị) trên toàn bộ màn Sơn Môn (thanh 4 tab đã soát ở bản 16/11). Bật cờ thì màn chờ của tab Sơn Môn phải biến mất.
+- [x] Nút "Vào môn của sư phụ" (Sư Đồ, khi `SON_MON_ON` bật) và chấm đỏ tab Sơn Môn khi có môn mở cửa (`vkl.sm.baoMo`). Sửa lỗi nhỏ ghi ở Ngày 3, 4, 6.
+- [x] Video ngắn 9:16 (Playwright quay): vào môn, điểm danh, bản đồ, xuất chinh, chiến báo. Gửi Tyler, không tự đăng.
+- Xong: 17/11/2026 7e5a9be (máy chủ: Kỷ 1 đã tạo, migration `son_mon_ky1_2026_11_18`, `son_mon_su_mon_2026_11_18`, `son_mon_mo_n_2026_11_18`)
 - Ghi chú:
+  - Kỷ 1 trên Supabase: id 1, 18/11 05:00 - 1/12 21:00 (giờ VN), bán kính 6, 127 ô, đủ 3 cõi. Trước 5:00 `sm_ky_now()` trả null nên màn ghi "Kỷ 1 mở lúc 05:00 ngày 18/11". SQL: `supabase/son_mon_ky1_2026_11_18.sql` (chỉ tạo khi chưa có Kỷ nào).
+  - Cờ `SON_MON_ON` bật mặc định (tắt gấp `NEXT_PUBLIC_SON_MON=0`). Tab Sơn Môn bỏ màn chờ, vào thẳng Sơn Môn.
+  - Hàm MỚI (không sửa hàm cũ): `vkl_sm_su_mon(token)` trả môn sư phụ đang ở; `vkl_sm_mo_n()` công khai, đếm môn đủ chữ ký, mở cửa, còn chỗ. Danh sách môn đưa môn sư phụ lên đầu (thẻ viền vàng "Môn của sư phụ ngươi", nút "Vào môn của sư phụ" / "Xin vào môn của sư phụ"); trang Chân thân có nút "Vào môn của sư phụ" khi sư phụ đã vào môn. Chấm đỏ tab Sơn Môn: chỉ người đã bấm "Báo ta khi có môn mở cửa", mở tab Sơn Môn thì thôi báo (`vkl.sm.baoMo` = 'da'), đo `sm_dot_seen`, `su_mon_open`.
+  - Lỗi nhỏ đã sửa: M2/M3 chỉ còn một nút quay lại (nút trên thanh đầu quay về bước trước trong Sơn Môn); huy hiệu rồng vẽ lại thành đầu rồng có sừng và mắt; bản đồ chọn ô bằng Enter (ô giữa khung), mũi tên để dời; Kỷ đã kết thì ghi "Kỷ 1 đã kết" (trước ghi "Kỷ chưa mở").
+  - Chưa làm (để sau, không chặn mở Kỷ): tên người theo xuất chinh và sức bên đánh trong cảnh báo (cần hàm mới, Ngày 4); màn hiện hào quang, khung vàng (chỉ phát lúc kết Kỷ 1/12, còn 2 tuần).
+  - Luật giao diện mới, bước 1 (uiux-pro-max, ảnh 390x844 `scripts/smoke-son-mon.cjs` 17 màn + `scripts/smoke-son-mon-mo.cjs` máy chủ thật): vai người mới từ quảng cáo (`/son-mon?utm_source=fb`, khách): một thẻ "Liên kết tài khoản để vào môn", một nút chính, thanh tab giữ nguyên. Vai người cũ: cáo thị 4.6.0 hiện một lần, các tab cũ (Mộng, Tam Tài, Nhân vật, Lôi đài) không đổi chỗ; môn sư phụ đứng đầu. Mọi màn: không tràn ngang, nút từ 44px, chữ từ 12px, không lỗi JS. Lỗi nặng: không có. Lỗi nhỏ ghi lại: thẻ cáo thị gọn chỉ có chip "Còn có" (chưa có tranh mở đầu riêng cho Sơn Môn).
+  - Bước 2 (humanizer): cáo thị 4.6.0 viết câu ngắn, một thứ một tên (Sơn Môn, Khí vận, Lực chiến, Kỷ), không hứa đồng minh hay Kỷ sau; câu mới ở danh sách môn, Chân thân, Kỷ đã kết đã soát.
+  - Video 9:16 (25 giây, 1080x1920, dữ liệu giả `?demo=`): danh sách môn - vào môn - điểm danh - nhiệm vụ - bản đồ kéo xem - xuất chinh - chiến sự và chiến báo. Quay lại: `node scripts/video-son-mon.cjs <thư mục>` rồi ffmpeg đổi sang mp4. Đã gửi Tyler, không tự đăng.
+  - Trả lời góp ý cho tác vụ 5:00 ngày 18/11 (gửi SAU khi bản 18/11 lên trang; reply_ver '4.6.0'; góp ý báo lỗi tặng 10 phúc như thường lệ; gửi xong đặt status 'da_xong'):
+    - Lập tông môn (#174, #185, #201, #221): "Sơn Môn đã mở từ 5:00 sáng 18/11. Vào tab Sơn Môn để vào một môn đang mở cửa, hoặc tự lập môn khi đủ 50 kiếp và 5 ngày chơi. Kỷ 1 kéo tới 21:00 ngày 1/12."
+    - #271: "Kiếp đầu mà lên tới Huyền Tiên, giỏi thật. Cảm ơn bạn đã chấm 5 sao!"
+    - #272: "Cảm ơn bạn. Hiện đan dược chưa bán lại được ở Phường thị. Mình ghi ý này lại để xem cùng phần kinh tế."
+    - #273: "Ý hay, cảm ơn bạn. Hiện công pháp đi theo con đường tu chứ chưa theo linh căn. Mình ghi lại ý cho công pháp cùng hệ với linh căn được mạnh hơn."
+    - #274: "Cảm ơn bạn. Mình ghi lại ý cho đệ tử chân truyền được tông môn phát linh thạch."
+    - #275, #280, #281: "Cảm ơn bạn đã chơi và chấm kiếp!"
+    - #276: "Khai Thiên Hậu kỳ, mở được cả thế giới mang tên mình. Quá đỉnh, cảm ơn bạn!"
+    - #277: "Tiếc thật. Ôm nhiều linh thạch mà hay đi đêm thì dễ bị cướp nhắm tới, kiếp sau thử tránh đi đêm hoặc tiêu bớt nhé."
+    - #278: "Cảm ơn bạn. Mỗi đạo có chiêu riêng và vài chiêu chung. Mình ghi lại ý mở thêm chiêu học được ngoài đạo."
+    - #279 (báo lỗi, tặng 10 phúc): "Cảm ơn bạn. Luyện Hư rồi mà còn bắt trộm vặt thì đúng là lạc giọng. Từ bản 18/11, từ Hóa Thần trở lên không còn gặp sự kiện trộm này nữa."
+    - #282: "Cảm ơn bạn. Kim Sí Đại Bằng cấp 19 rất mạnh so với Kim Đan sơ kỳ, gặp quái cao hơn nhiều cấp thì nên tránh hoặc nghỉ cho lành thương rồi hẵng đánh."
   - Trả lời góp ý từ đêm 16/11 (tác vụ 5:00 ngày 17/11 gửi SAU khi bản 17/11 lên trang; reply_ver '4.5.0'; tặng 10 phúc mỗi góp ý báo lỗi như thường lệ; gửi xong đặt status 'da_xong'):
     - #262: "Bạn nói đúng, Thiên sinh kiếm cốt (rút lúc đầu thai) và Kiếm tâm thông minh (mua bằng phúc duyên) là hai thứ khác nhau. Kiếm cốt vốn chỉ cộng 10% công mà không ghi ra, nên còn yếu hơn thiên phú Linh. Từ bản 17/11 kiếm cốt cộng 30% công trong mọi trận và ghi rõ trên thẻ."
     - #263: "Cảm ơn bạn. Huyết Ma Đao chờ chủ vốn cầm được ngay từ nhỏ, chỗ sai là dòng mô tả. Bản 17/11 đã sửa mô tả cho đúng, cách chạy giữ nguyên."

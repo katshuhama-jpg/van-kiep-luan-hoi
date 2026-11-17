@@ -47,6 +47,7 @@ export const RELEASES: Release[] = [
         items: [
           tr('Tàng Kinh Các ghi rõ khi nào cần nâng tâm pháp trước.', 'The Scripture Pavilion now says clearly when you must raise your heart art first.'),
           tr('Tuyệt kỹ đã dung hợp giờ vẫn nhặt và mua được tàn quyển để lên tầng. Mô tả các chiêu hút máu ghi rõ là hồi máu theo sát thương gây ra. Cảm ơn Nguyễn Quang và Phan Anh Tuấn.', 'A fused ultimate can still find and buy fragments to raise its stage. Lifesteal skills now say clearly that they heal you for a share of the damage dealt. Thanks to Nguyen Quang and Phan Anh Tuan.'),
+          tr('Từ Hóa Thần, trộm vặt không còn dám mò vào kho của ngươi.', 'From Spirit Transformation on, petty thieves no longer dare to break into your storeroom.'),
         ],
       },
     ],

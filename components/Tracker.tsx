@@ -4,6 +4,25 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { flush, track } from '@/lib/track';
 
+/**
+ * 17/11 (tăng trưởng): 30 giờ qua có ~200 phiên rộng đúng 411px, không nguồn, ẩn sau dưới 10 giây, chỉ ~3% vào kiếp
+ * (máy thường ~45%). Nghi là trình duyệt trong app Facebook tải trước hoặc máy duyệt quảng cáo, làm sai phễu kiếp 1.
+ * Ghi thêm vài dấu hiệu để tách: trang mở khi đang ẩn (vis), đang tải trước (pre), trình duyệt tự động (wd), trình duyệt trong app (iab).
+ */
+function openHints(): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  try {
+    out.vis = document.visibilityState;
+    if ((document as Document & { prerendering?: boolean }).prerendering) out.pre = true;
+    if (navigator.webdriver) out.wd = true;
+    const ua = navigator.userAgent || '';
+    const iab = /FBAN|FBAV|FB_IAB|FBIOS/.test(ua) ? 'fb' : /Instagram/.test(ua) ? 'ig' : /Zalo/i.test(ua) ? 'zalo' : /Messenger/.test(ua) ? 'ms' : /Threads|Barcelona/.test(ua) ? 'th' : '';
+    if (iab) out.iab = iab;
+    if (/bot|crawl|spider|facebookexternalhit|HeadlessChrome|Lighthouse/i.test(ua)) out.bot = true;
+  } catch {}
+  return out;
+}
+
 /** Đo phiên chơi: mở game, đổi trang, nhịp 60 giây khi tab đang mở, ẩn tab và quay lại */
 export default function Tracker() {
   const path = usePathname();
@@ -34,6 +53,7 @@ export default function Tracker() {
         w: innerWidth,
         ret,
         q: location.search.slice(0, 200), // 14/11: 60 ký tự cắt mất utm_content, không phân biệt được mẫu quảng cáo
+        ...openHints(),
       });
     } else track('page');
   }, [path]);
