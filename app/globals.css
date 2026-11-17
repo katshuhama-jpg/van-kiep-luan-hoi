@@ -3250,6 +3250,10 @@ input, textarea, select { font-family: var(--font); font-weight: 500; }
 .rel-items li { margin-bottom: 4px; }
 .rel-acts { display: flex; flex-direction: column; align-items: stretch; gap: 8px; margin-top: 14px; }
 .rel-link { text-align: center; font-size: 15px; color: #8a1a1a; }
+.rel-more-link { display: block; width: 100%; min-height: 44px; background: none; border: none; font: inherit; font-size: 15px; font-weight: 600; text-decoration: underline; cursor: pointer; }
+.rel-sum .rel-feats .rel-feat-px, .rel-feats .rel-feat-px { flex: 0 0 40px; width: 40px; display: flex; flex-direction: row; align-items: center; justify-content: center; }
+.rel-feats li > span:last-child { flex: 1; min-width: 0; }
+.rel-acts a.btn { display: flex; align-items: center; justify-content: center; text-decoration: none; }
 .rel-panel { position: relative; }
 .rel-panel .rel-kick { text-align: left; }
 .rel-panel h2 { text-align: left; }
@@ -4951,6 +4955,8 @@ button.shadow-card { cursor: pointer; }
 .tk-bien.cuong { background: #b8432f; } .tk-bien.nhu { background: #2f6b5a; }
 .tk-up.tk-bien-btn.cuong { background: #f2a58e; } .tk-up.tk-bien-btn.nhu { background: #9fd8b8; }
 .tk-cp-side small.bad { color: #b0201a; font-weight: 700; }
+.tk-cap { display: block; margin-top: 3px; padding: 4px 6px; font-size: 13px; line-height: 1.3; color: #8a1a1a; background: #fff0c8; border-left: 3px solid #b0201a; }
+.tk-cap small { display: block; margin-top: 2px; font-size: 12px; color: #3a2414; }
 /* 4.1.0: thẻ kết quả đấu giá */
 .auc-res { max-width: 360px; }
 .auc-res-stage { position: relative; height: 150px; display: grid; place-items: center; background: #2a1f18 url(/bg/luyen_dan-1.png) center / cover; image-rendering: pixelated; border-bottom: 3px solid #1f160d; }

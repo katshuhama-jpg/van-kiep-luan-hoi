@@ -7,6 +7,7 @@ import { tr } from '@/lib/i18n';
 import Sprite from './Sprite';
 import { PixelFx, fxKiem } from './PixelFx';
 import { demoChar } from '@/lib/game/demo';
+import { ChinhDien, HuyHieu } from './sonmon/Pixel';
 
 const HERO_KIEM = demoChar({ path: 'kiem', age: 28, realm: 5, equipped: { ao: 'thanh_sam', vu_khi: 'thanh_phong' } });
 let heroSpec: ReturnType<typeof fxKiem> | null = null;
@@ -33,14 +34,23 @@ function ReleaseHero({ hero }: { hero: NonNullable<Release['hero']> }) {
   );
 }
 
+/** 4.6.0: biểu tượng thẻ điểm nhấn: ảnh trong /icons, hoặc hình pixel Sơn Môn ('sm-huy-<0-29>', 'sm-cd-<0-9>') */
+function FeatIcon({ icon }: { icon: string }) {
+  const huy = /^sm-huy-(\d+)$/.exec(icon);
+  if (huy) return <span className="rel-feat-px"><HuyHieu id={Number(huy[1])} size={36} /></span>;
+  const cd = /^sm-cd-(\d+)$/.exec(icon);
+  if (cd) return <span className="rel-feat-px"><ChinhDien id={Number(cd[1])} size={40} /></span>;
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src={`/icons/${icon}.png`} width={40} height={40} alt="" />;
+}
+
 function ReleaseFeatures({ r }: { r: Release }) {
   if (!r.features) return null;
   return (
     <ul className="rel-feats">
       {r.features.map((f) => (
         <li key={f.h}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`/icons/${f.icon}.png`} width={40} height={40} alt="" />
+          <FeatIcon icon={f.icon} />
           <span>
             <b>{f.h}</b>
             <small>{f.t}</small>
@@ -163,7 +173,12 @@ export default function ReleaseNotice({ onClose, onGo }: { onClose: (v: string) 
             </div>
           )}
           <div className="rel-acts">
-            {r.cta && onGo && (
+            {r.cta?.go === 'sonmon' && (
+              <Link href="/son-mon" className="btn btn-red btn-big" onClick={close}>
+                {r.cta.label}
+              </Link>
+            )}
+            {r.cta && r.cta.go !== 'sonmon' && onGo && (
               <button
                 className="btn btn-red btn-big"
                 onClick={() => {
@@ -174,11 +189,11 @@ export default function ReleaseNotice({ onClose, onGo }: { onClose: (v: string) 
                 {r.cta.label}
               </button>
             )}
-            <button className={`btn btn-big ${r.cta && onGo ? '' : 'btn-red'}`} onClick={close}>
+            <button className={`btn btn-big ${r.cta && (onGo || r.cta.go === 'sonmon') ? '' : 'btn-red'}`} onClick={close}>
               {tr('Chơi tiếp', 'Keep playing')}
             </button>
             {!full && (
-              <button className="btn btn-big rel-more" onClick={() => setFull(true)}>
+              <button className={r.features ? 'rel-link rel-more-link' : 'btn btn-big rel-more'} onClick={() => setFull(true)}>
                 {tr('Xem chi tiết', 'See details')}
               </button>
             )}

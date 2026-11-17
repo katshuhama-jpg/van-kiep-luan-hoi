@@ -69,8 +69,9 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onSwap,
   const tamId = eq[0] ?? '';
   const tamO = tamId ? owned(c, tamId) : undefined;
   const tamFrom = tamO && tamO.tang < 9 && tqOf(c, tamId) < tqCost(tamO.tang) ? list.find((x) => x.id !== tamId && canSwap(c, x.id, tamId)) : undefined;
+  const tamName = short(cpOf(tamId)?.name ?? tr('tâm pháp', 'heart art'));
   const tamSwapHint = tamFrom
-    ? tr(`Thiếu quyển tâm pháp? Chép ${SWAP_RATE} quyển ${short(tamFrom.name)} thành 1.`, `Short on heart art fragments? Rework ${SWAP_RATE} ${short(tamFrom.name)} into 1.`)
+    ? tr(`${tamName} thiếu quyển: bấm ${short(tamFrom.name)}, chép ${SWAP_RATE} quyển thành 1.`, `${tamName} lacks fragments: tap ${short(tamFrom.name)} and rework ${SWAP_RATE} into 1.`)
     : null;
   // 4/11 (Tyler: bấm Mang tự tháo chiêu khác, khó hiểu): ô đầy thì hỏi thay ô nào, mang xong báo rõ vào ô nào
   const [pick, setPick] = useState<string | null>(null);
@@ -303,7 +304,13 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onSwap,
                       {o && d.kind !== 'tam' && (
                         <span className="tk-cp-desc tk-pow">
                           {tr('Lực chiêu', 'Power')} {Math.round(tangMul(o.tang) * 100)}%{o.tang < 9 ? ` → ${Math.round(tangMul(o.tang + 1) * 100)}%` : ''}
-                          {d.kind === 'chieu' && o.tang < 9 && ` · ${tr(`trần T${capOf(c, d.id)} (tâm pháp T${tamTang(c)} + ${TAM_GAP})`, `cap S${capOf(c, d.id)} (heart art S${tamTang(c)} + ${TAM_GAP})`)}`}
+                          {d.kind === 'chieu' && o.tang < 9 && blk !== 'cap' && ` · ${tr(`trần T${capOf(c, d.id)} (tâm pháp T${tamTang(c)} + ${TAM_GAP})`, `cap S${capOf(c, d.id)} (heart art S${tamTang(c)} + ${TAM_GAP})`)}`}
+                        </span>
+                      )}
+                      {blk === 'cap' && (
+                        <span className="tk-cap">
+                          {tr(`Chiêu chỉ hơn tâm pháp ${TAM_GAP} tầng. Nâng ${tamName} lên T${(o?.tang ?? 1) + 1 - TAM_GAP} để luyện tiếp.`, `A skill can only be ${TAM_GAP} stages above your heart art. Raise ${tamName} to S${(o?.tang ?? 1) + 1 - TAM_GAP} to keep going.`)}
+                          {capHint && <small>{capHint}</small>}
                         </span>
                       )}
                       {o && o.tang < 9 && (
@@ -315,7 +322,7 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onSwap,
                         </span>
                       )}
                       {!o && <span className="tk-cp-desc tk-how">{unlockText(d)}</span>}
-                      {o && d.kind === 'chieu' && o.tang === BIEN_TANG - 1 && !o.bien && <span className="tk-cp-desc tk-how">{tr(`Lên T${BIEN_TANG} chọn biến chiêu, giữ cả kiếp: Cương đánh x1,3 nhưng chậm 1 lượt; Nhu nhanh 1 lượt, hiệu ứng đậm 30%.`, `Stage ${BIEN_TANG} locks a variant for this life: Hard hits x1.3 but 1 turn slower; Soft is 1 turn faster with 30% stronger effects.`)}</span>}
+                      {o && d.kind === 'chieu' && o.tang === BIEN_TANG - 1 && !o.bien && blk !== 'cap' && <span className="tk-cp-desc tk-how">{tr(`Lên T${BIEN_TANG} chọn biến chiêu, giữ cả kiếp: Cương đánh x1,3 nhưng chậm 1 lượt; Nhu nhanh 1 lượt, hiệu ứng đậm 30%.`, `Stage ${BIEN_TANG} locks a variant for this life: Hard hits x1.3 but 1 turn slower; Soft is 1 turn faster with 30% stronger effects.`)}</span>}
                       {swapTo.length > 0 && (
                         <span className="tk-swap">
                           <small>{tr(`Chép ${SWAP_RATE} quyển này thành 1 quyển:`, `Rework ${SWAP_RATE} of these into 1 of:`)}</small>
@@ -383,7 +390,7 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onSwap,
                               : blk === 'exp'
                                 ? tr('Đang luyện', 'Training')
                                 : blk === 'cap'
-                                  ? tr(`Cần tâm pháp T${(o?.tang ?? 1) + 1 - TAM_GAP}`, `Need heart art S${(o?.tang ?? 1) + 1 - TAM_GAP}`)
+                                  ? tr('Chạm trần', 'Capped')
                                   : blk === 'tq'
                                     ? tr('Thiếu quyển', 'Need fragment')
                                     : blk === 'tuvi'
@@ -393,8 +400,6 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onSwap,
                                         : tr('Nâng tầng', 'Raise')}
                           </button>
                         )}
-                        {blk === 'cap' && <small className="bad">{tr(`Chiêu chỉ cao hơn tâm pháp tối đa ${TAM_GAP} tầng.`, `A skill can be at most ${TAM_GAP} stages above your heart art.`)}</small>}
-                        {blk === 'cap' && capHint && <small>{capHint}</small>}
                         {tv > 0 && <small className={blk === 'tuvi' ? 'bad' : ''}>{tr(`-${tv} tu vi`, `-${tv} cultivation`)}</small>}
                         <small>{cdText(d)}</small>
                         {d.kind !== 'tuyet' && !(d.kind === 'tam' && on) && (

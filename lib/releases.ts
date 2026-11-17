@@ -19,7 +19,7 @@ export interface Release {
   /** Bản lớn: các thẻ điểm nhấn (biểu tượng, tên, một câu), hiện ngay ở cáo thị thay cho dòng chữ nhỏ */
   features?: { icon: string; h: string; t: string }[];
   /** Nút làm ngay, ví dụ mở Tàng Kinh Các */
-  cta?: { label: string; go: 'congphap' | 'linhthu' | 'camnang' | 'baove' };
+  cta?: { label: string; go: 'congphap' | 'linhthu' | 'camnang' | 'baove' | 'sonmon' };
 }
 
 export const RELEASES: Release[] = [
@@ -28,6 +28,13 @@ export const RELEASES: Release[] = [
     date: '18/11/2026',
     title: tr('Sơn Môn', 'Sects'),
     lead: tr('Lập môn cùng đạo hữu, giữ đất trên bản đồ. Kỷ 1 mở lúc 5:00 sáng 18/11 và kết thúc 21:00 ngày 1/12.', 'Found a sect with fellow cultivators and hold land on the map. Era 1 opens at 5:00 AM on Nov 18 and ends at 9:00 PM on Dec 1.'),
+    features: [
+      { icon: 'sm-cd-0', h: tr('Vào môn hoặc tự lập môn', 'Join or found a sect'), t: tr('Vào một môn đang mở cửa. Đủ 50 kiếp và 5 ngày chơi thì tự dựng môn.', 'Join an open sect. With 50 lives and 5 days played, found your own.') },
+      { icon: 'sm-huy-15', h: tr('Mỗi ngày 3 nhiệm vụ', '3 tasks a day'), t: tr('Làm ngay trong kiếp, kiếp khép lại là xong. Góp Khí vận cho cả môn.', 'Done inside your lives, complete when the life ends. Adds Fortune to the sect.') },
+      { icon: 'sm-huy-3', h: tr('Giữ đất trên bản đồ', 'Hold land on the map'), t: tr('Môn chủ phát lệnh xuất chinh, đệ tử bấm Theo. Vắng mặt vẫn đứng giữ.', 'The master calls a march, disciples follow. You still guard while away.') },
+      { icon: 'sm-huy-24', h: tr('Kỷ 1 tới 21:00 ngày 1/12', 'Era 1 until Dec 1, 9 PM'), t: tr('Môn giữ nhiều ô nhất đứng đầu. Thưởng chỉ để ngắm, không có gì phải mua.', 'Most tiles wins. Rewards are cosmetic, nothing to buy.') },
+    ],
+    cta: { label: tr('Vào Sơn Môn', 'Open Sects'), go: 'sonmon' },
     groups: [
       {
         h: tr('Sơn Môn', 'Sects'),

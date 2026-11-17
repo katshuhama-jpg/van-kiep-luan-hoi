@@ -49,9 +49,9 @@ const save = async (p) => JSON.parse(await p.evaluate(() => localStorage.getItem
   await row.scrollIntoViewIfNeeded().catch(() => {});
   const btn = (await row.locator('.tk-up').textContent().catch(() => '')) || '';
   const why = (await row.textContent().catch(() => '')) || '';
-  ok(/Cần tâm pháp T4/.test(btn), 'nút ghi "Cần tâm pháp T4": ' + btn);
-  ok(/tối đa 2 tầng/.test(why), 'có dòng lý do chiêu cao hơn tâm pháp tối đa 2 tầng');
-  ok(/Thiếu quyển tâm pháp\? Chép 3 quyển Liệt Hỏa/.test(why), 'gợi ý chép 3 quyển dư thành quyển tâm pháp');
+  ok(/Chạm trần/.test(btn), 'nút ghi "Chạm trần": ' + btn);
+  ok(/Nâng Thanh Liên lên T4 để luyện tiếp/.test(why), 'dòng lý do nêu tên tâm pháp và tầng cần nâng');
+  ok(/Thanh Liên thiếu quyển: bấm Liệt Hỏa, chép 3 quyển thành 1/.test(why), 'gợi ý chép 3 quyển dư thành quyển tâm pháp');
   ok(/hồi máu bằng 30% sát thương gây ra/.test(why), 'mô tả Kim Xà ghi hồi máu theo sát thương');
   if (process.argv[2]) await row.screenshot({ path: process.argv[2] });
   ok(!p.errs.length, 'không lỗi JS ' + p.errs.join(' | '));
