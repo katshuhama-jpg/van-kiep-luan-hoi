@@ -29,6 +29,9 @@ export function SmKy({ c }: { c: SmCtx }) {
           ‹ {tr('Danh sách môn', 'Sect list')}
         </button>
       )}
+      <button className="sm-btn small" style={{ alignSelf: 'flex-end' }} onClick={() => c.go('luat')}>
+        {tr('Luật Sơn Môn', 'Sect rules')}
+      </button>
       <section className="sm-card dark">
         <p className="sm-note">{tr(`Kỷ ${ky.id} kết thúc sau`, `Era ${ky.id} ends in`)}</p>
         <p className="sm-big">{demNguoc(new Date(ky.ket_thuc).getTime() - now)}</p>

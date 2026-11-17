@@ -7,6 +7,7 @@ import { track } from '@/lib/track';
 import type { SmMonRow } from '@/lib/sonmon/api';
 import { SM_CFG } from '@/lib/sonmon/data';
 import { HuyHieu } from './Pixel';
+import { SmBaCau } from './SmLuat';
 import { clock, fmtN, Msg, ngayThang, useNow, type SmCtx } from './ui';
 
 const BAO_KEY = 'vkl.sm.baoMo';
@@ -72,6 +73,7 @@ export function SmList({ c }: { c: SmCtx }) {
           {tr(`Của ngươi: ${st.kiep} kiếp · ${st.ngay} ngày chơi · Lực chiến ${fmtN(st.lc ?? 0)}`, `Yours: ${st.kiep} lives · ${st.ngay} days · Power ${fmtN(st.lc ?? 0)}`)}
         </p>
       </section>
+      <SmBaCau c={c} />
       {khoa && (
         <p className="sm-card warn">
           {tr(`Ngươi đã tự rời môn đã cắm cờ, phải chờ hết Kỷ (${ngayThang(khoa)}) mới vào môn khác.`, `You left a flagged sect and must wait until the era ends (${ngayThang(khoa)}).`)}

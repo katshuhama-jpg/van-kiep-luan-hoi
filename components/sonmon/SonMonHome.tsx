@@ -15,6 +15,7 @@ import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
 import { realApi, SmErr, smLoi, type SmAct, type SmApi, type SmMap, type SmMembers, type SmMonRow, type SmRankRow, type SmState } from '@/lib/sonmon/api';
 import { smNgay } from '@/lib/sonmon/data';
+import { SmLuat } from './SmLuat';
 import { SM_VIEWS, type SmCtx, type SmDraft, type SmView } from './ui';
 import { SmChuaMo, SmGuest, SmNoCt } from './SmEntry';
 import { SmList } from './SmList';
@@ -115,7 +116,7 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
   const coMon = !!st?.mon;
   const v: SmView = useMemo(() => {
     if (!st) return view;
-    if (!coMon) return ['lap', 'chon-o', 'ky', 'luc-chien'].includes(view) ? view : 'list';
+    if (!coMon) return ['lap', 'chon-o', 'ky', 'luc-chien', 'luat'].includes(view) ? view : 'list';
     if (view === 'list' || view === 'lap') return 'mon';
     if (view === 'chon-o' && (st.mon!.cam_co || st.mon!.chuc === 'de')) return 'mon';
     return view;
@@ -245,6 +246,7 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
         {v === 'thanh-vien' && <SmThanhVien c={ctx} />}
         {v === 'ky' && <SmKy c={ctx} />}
         {v === 'luc-chien' && <SmLucChien c={ctx} />}
+        {v === 'luat' && <SmLuat c={ctx} />}
       </>
     );
   }

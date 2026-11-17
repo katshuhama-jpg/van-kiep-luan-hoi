@@ -7,6 +7,7 @@ import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
 import { nvChu, SM_CFG } from '@/lib/sonmon/data';
 import { ChinhDien, ChuoiO, HuyHieu } from './Pixel';
+import { SmBaCau } from './SmLuat';
 import { chucTen, clock, DongMinh, fmtN, Msg, useNow, type SmCtx } from './ui';
 
 const CANH: Record<number, string> = { 0: '-', 1: 'Luyện Khí', 2: 'Trúc Cơ', 3: 'Kim Đan', 4: 'Nguyên Anh', 5: 'Hóa Thần' };
@@ -63,6 +64,7 @@ export function SmMonNha({ c }: { c: SmCtx }) {
         </button>
       </section>
 
+      <SmBaCau c={c} anDuoc />
       {!m.du_ky && (
         <section className="sm-card warn">
           <b>{tr(`Cần ${SM_CFG.mon.kyCan} đạo hữu ký cùng lập · đã có ${m.so_ky}/${SM_CFG.mon.kyCan}`, `Needs ${SM_CFG.mon.kyCan} co-signers · ${m.so_ky}/${SM_CFG.mon.kyCan}`)}</b>

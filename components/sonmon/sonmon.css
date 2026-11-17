@@ -136,3 +136,12 @@ p.sm-card { display: block; }
 .sm-so b small { font-size: 15px; }
 .sm-co { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .sm-co li { display: flex; flex-direction: column; gap: 1px; padding: 6px 8px; background: #fff6e0; border-left: 4px solid #b07c28; font-size: 15px; overflow-wrap: anywhere; }
+
+/* 17/11: Sơn Môn trong 3 câu, luật dạng hỏi - đáp */
+.sm-bacau { border-color: var(--gold); }
+.sm-bacau ol { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 4px; font-size: 15px; line-height: 1.35; }
+.sm-bacau ol li::marker { font-weight: 700; color: var(--red); }
+.sm-hoi { padding: 0; }
+.sm-hoi-q { width: 100%; min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 12px; background: none; border: 0; font: inherit; font-size: 16px; font-weight: 700; text-align: left; color: var(--ink); cursor: pointer; }
+.sm-hoi-q b { font-size: 20px; line-height: 1; }
+.sm-hoi p { margin: 0; padding: 0 12px 12px; font-size: 15px; line-height: 1.45; }
