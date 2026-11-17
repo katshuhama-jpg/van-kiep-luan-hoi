@@ -6,6 +6,13 @@ Mốc so sánh: còn chơi sau 7 ngày (D7) 11-14% (`docs/so-lieu.md`, mốc tr�
 
 ## Việc Tyler giao cho đêm 17/11 - lên bản 5:00 sáng 18/11 cùng chuyến Sơn Môn 4.6.0 (bắt buộc)
 
+**Chữ mô tả chiêu hút máu chưa thống nhất** (Nguyễn Quang hỏi qua Messenger 17/11 10:23, page đã hứa sửa chữ trong bản sáng 18/11).
+
+- Hiện tượng: 4 chiêu hút máu ghi mỗi chỗ một kiểu, người chơi tưởng "hút 50% máu" là lấy 50% máu quái. Trong `lib/game/congPhap.ts` (dòng `main:`): `kim_xa` "hút 30% máu", `huyet_anh_trao` "Hút 30% sát thương thành máu", `thon_phe` "Đòn nặng, hút 50% máu", `huyet_te` "Đòn máu, hút nửa sát thương". Cả 4 cùng cơ chế `leech`: hồi cho mình theo % sát thương vừa gây ra.
+- Cách sửa: chỉ đổi chữ, không đổi số. Một mẫu chung cho mọi chiêu có `leech`: "..., hồi máu bằng X% sát thương gây ra" (tiếng Anh "heals you for X% of damage dealt"). Soát luôn chỗ khác hiện mô tả chiêu (Tàng Kinh Các, Phường thị, cẩm nang) cho cùng một cách gọi. Dùng /humanizer, dùng "-" không dùng "—".
+- Cáo thị 18/11 gộp chung dòng với lỗi tuyệt kỹ, ngắn: "Mô tả các chiêu hút máu ghi rõ là hồi máu theo sát thương gây ra. Cảm ơn Nguyễn Quang và Phan Anh Tuấn."
+- Sau khi lên bản: Tyler duyệt rồi nhắn Quang "bản sáng nay 18/11 sửa chữ rồi nha bạn".
+
 **Tuyệt kỹ đã dung hợp bị kẹt tầng** (Phan Anh Tuấn báo trong bình luận bài bia mộ 16/11, page đã trả lời hứa sửa trong bản 5:00 sáng 18/11).
 
 - Hiện tượng: tuyệt kỹ dung hợp xong (tầng 5 trong ảnh của Tuấn) đầy thục luyện nhưng không có tàn quyển để lên tầng.
