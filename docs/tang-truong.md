@@ -21,6 +21,12 @@ Mốc so sánh: còn chơi sau 7 ngày (D7) 11-14% (`docs/so-lieu.md`, mốc tr�
 - Đã làm (`supabase/loi_dai_tran_treo_2026_11_17.sql`): state2 xóa trận treo khi sang ngày mới hoặc khi bóng đã hết hạn; pick2 cho chọn bóng mới khi trận treo thuộc bóng ngày cũ; Tyler chốt đền bù 100 phúc duyên + thư tạ lỗi cho 22 tài khoản; đã gỡ hết trận treo. Kiểm tra: 0 tài khoản còn kẹt, `ton` chạy thử chọn bóng - rút đối thủ - ghi trận thành công.
 - Còn lại cho đêm nay (không bắt buộc): khi `/api/loi-dai` trả `NO_SHADOW` thì game tự gọi chọn bóng lại rồi rút trận mới, thay vì báo "Máy chủ chưa ghi được"; ghi `console.error` mã lỗi ở route để lần sau xem được log.
 
+**Chữ biến chiêu Nhu ghi sai một phần** (Nguyễn Quang hỏi qua Messenger 17/11 23:32 "hiệu ứng đậm 30% là sao", ảnh Đại Lực Kim Cang Chưởng T5; page hứa sửa chữ trong bản sáng 18/11).
+
+- Hiện tượng: `BIEN_DESC.nhu` ghi "thiêu/độc/hút máu/choáng/khiên/phản đòn đậm hơn 30%", nhưng `bienDef` cho độc +1 tầng và khiên +1 đòn (không phải 30%), còn né và hồi máu cũng +30% mà chữ không nhắc. Chiêu chỉ có `mul`/`pierce` (như `kim_cang_chuong`) thì Nhu chỉ còn hồi nhanh 1 lượt, chữ không nói nên người chơi chọn nhầm.
+- Cách sửa: chỉ đổi chữ, không đổi số. Ở màn chọn biến chiêu (tầng 6), mỗi nút ghi kết quả cụ thể cho đúng chiêu đó, tính từ `bienDef`: ví dụ Kim Chung Tráo "Nhu: chặn 2 đòn, phản 65%, hồi nhanh 1 lượt"; Kim Cang Chưởng "Nhu: chỉ hồi nhanh 1 lượt". Sửa luôn `BIEN_DESC.nhu` chung cho đúng (độc thêm 1 tầng, khiên chặn thêm 1 đòn, các hiệu ứng khác mạnh hơn 30%). Có bản tiếng Anh.
+- Cáo thị 18/11 gộp chung dòng chữ chiêu thức.
+
 **Chữ mô tả chiêu hút máu chưa thống nhất** (Nguyễn Quang hỏi qua Messenger 17/11 10:23, page đã hứa sửa chữ trong bản sáng 18/11).
 
 - Hiện tượng: 4 chiêu hút máu ghi mỗi chỗ một kiểu, người chơi tưởng "hút 50% máu" là lấy 50% máu quái. Trong `lib/game/congPhap.ts` (dòng `main:`): `kim_xa` "hút 30% máu", `huyet_anh_trao` "Hút 30% sát thương thành máu", `thon_phe` "Đòn nặng, hút 50% máu", `huyet_te` "Đòn máu, hút nửa sát thương". Cả 4 cùng cơ chế `leech`: hồi cho mình theo % sát thương vừa gây ra.
