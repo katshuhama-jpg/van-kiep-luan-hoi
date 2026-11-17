@@ -7,7 +7,7 @@ import { track } from '@/lib/track';
 import type { SmMember } from '@/lib/sonmon/api';
 import { oToiDa, SM_CFG } from '@/lib/sonmon/data';
 import { DkForm } from './SmFound';
-import { chucTen, fmtN, Msg, ngayThang, type SmCtx, type SmDraft } from './ui';
+import { chucTen, fmtN, Msg, type SmCtx, type SmDraft } from './ui';
 
 export function SmThanhVien({ c }: { c: SmCtx }) {
   const { st, members } = c;
@@ -177,7 +177,7 @@ export function SmThanhVien({ c }: { c: SmCtx }) {
 
       <section className="sm-card warn">
         <p style={{ fontSize: 15 }}>{tr('Môn chủ và trưởng lão nhận người, phát lệnh xuất chinh. Đệ tử điểm danh, làm nhiệm vụ, theo đánh và giữ ô.', 'The master and elders recruit and order marches. Disciples check in, do tasks, march and guard.')}</p>
-        <p style={{ fontSize: 15 }}>{tr('Tự rời môn đã cắm cờ thì chờ hết Kỷ mới vào môn khác. Bị đuổi thì vào môn khác được ngay.', 'Leave a flagged sect yourself and you wait until the era ends. If expelled, you can join another at once.')}</p>
+        <p style={{ fontSize: 15 }}>{tr('Tự rời môn đã cắm cờ thì chờ 24 giờ mới vào môn khác. Bị đuổi thì vào môn khác được ngay.', 'Leave a flagged sect yourself and you wait 24 hours to join another. If expelled, you can join another at once.')}</p>
         <button className="sm-btn wide" onClick={() => setRoi(true)}>
           {tr('Rời môn', 'Leave the sect')}
         </button>
@@ -229,7 +229,7 @@ export function SmThanhVien({ c }: { c: SmCtx }) {
             <h2>{tr(`Rời ${m.ten}?`, `Leave ${m.ten}?`)}</h2>
             <p className="sm-card warn" style={{ fontSize: 15 }}>
               {m.cam_co
-                ? tr(`Môn đã cắm cờ: rời xong ngươi phải chờ hết Kỷ ${st.ky?.id ?? ''} (${st.ky ? ngayThang(st.ky.ket_thuc) : ''}) mới vào môn khác.`, `The sect has a flag: you must wait until era ${st.ky?.id ?? ''} ends to join another.`)
+                ? tr('Môn đã cắm cờ: rời xong ngươi phải chờ 24 giờ mới vào hoặc lập môn khác.', 'The sect has a flag: after leaving you wait 24 hours to join or found another.')
                 : tr('Môn chưa cắm cờ nên rời xong vào môn khác được ngay.', 'No flag yet, so you can join another sect at once.')}
               {m.chuc === 'chu' ? tr(' Ngươi là môn chủ: trưởng lão Lực chiến cao nhất sẽ lên thay.', ' You are the master: the strongest elder takes over.') : ''}
             </p>

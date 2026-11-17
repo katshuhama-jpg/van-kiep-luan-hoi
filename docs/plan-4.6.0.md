@@ -276,6 +276,8 @@ Lên bản: 2026-11-18. Bật cờ `SON_MON_ON`, có cáo thị 4.6.0.
     - #260: "Kiếp hay nhất trong 13 kiếp, nghe vui quá. Cảm ơn bạn!"
     - #258, #266, #267: "Cảm ơn bạn đã chơi và chấm kiếp!"
     - #268: "Thanks for the review! Noted that passing on the relic weapon wasn't clear. I'll look at showing the rule right on the item."
+  - Bản đồ dễ nhìn hơn (Tyler: ô có người khó nhìn): ô có môn giữ nền sáng pha màu huy hiệu, viền sáng, quầng sáng, huy hiệu 30px; ô môn ta viền vàng đôi; ô trống lùi vào nền.
+- Tyler 18/11 sáng: "rời sơn môn hết Kỷ mới được lập thì hơi dở, để là sau 24h". Đổi luật: tự rời môn đã cắm cờ chỉ chờ 24 giờ (không quá lúc hết Kỷ) rồi vào hoặc lập môn khác; bị đuổi vẫn vào ngay. Cấu hình `gio.roi_gio` = 24; sửa hàm `vkl_sm_leave` (chỉ dòng tính khóa), migration `son_mon_roi_24h_2026_11_18`. 1 người đã rời sáng 18/11 được rút khóa còn tới 06:58 ngày 19/11. Chữ trên màn, Luật Sơn Môn, lỗi SM_KHOA đã đổi theo.
 
 ## Ngoài game (Tyler tự làm)
 - Đăng "Biên niên Kỷ" mỗi tuần và lúc kết Kỷ (Claude soạn khi Tyler hỏi): môn giữ nhiều ô nhất, trận lớn, môn lật ngược thế cờ.

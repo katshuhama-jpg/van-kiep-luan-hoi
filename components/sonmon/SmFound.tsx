@@ -218,7 +218,7 @@ export function SmChonO({ c }: { c: SmCtx }) {
         <p className="sm-card warn" style={{ fontSize: 15 }}>
           {tr('Cắm cờ xong, ai trong ', 'Once the flag is planted, anyone in ')}
           <b>{ten}</b>
-          {tr(` tự rời thì phải chờ hết Kỷ ${st.ky?.id ?? ''} mới vào môn khác (bị đuổi thì vào được ngay).`, ` who leaves on their own must wait until era ${st.ky?.id ?? ''} ends (expelled members can join elsewhere at once).`)}
+          {tr(' tự rời thì phải chờ 24 giờ mới vào môn khác (bị đuổi thì vào được ngay).', ' who leaves on their own must wait 24 hours to join another (expelled members can join elsewhere at once).')}
           {!duKy &&
             (mon
               ? tr(` Cần ${SM_CFG.mon.kyCan} đạo hữu ký cùng lập, đã có ${soKy}/${SM_CFG.mon.kyCan}, còn ${clock(new Date(mon.het_han_ky).getTime() - now)}.`, ` Needs ${SM_CFG.mon.kyCan} co-signers: ${soKy}/${SM_CFG.mon.kyCan}, ${clock(new Date(mon.het_han_ky).getTime() - now)} left.`)

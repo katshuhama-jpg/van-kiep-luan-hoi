@@ -8,7 +8,7 @@ import { smLoi, type SmMonNguoi, type SmMonRow } from '@/lib/sonmon/api';
 import { SM_CFG } from '@/lib/sonmon/data';
 import { HuyHieu } from './Pixel';
 import { SmBaCau } from './SmLuat';
-import { chucTen, clock, fmtN, Msg, ngayThang, useNow, type SmCtx } from './ui';
+import { chucTen, clock, fmtN, hhmm, Msg, ngayThang, useNow, type SmCtx } from './ui';
 
 const BAO_KEY = 'vkl.sm.baoMo';
 
@@ -105,7 +105,7 @@ export function SmList({ c }: { c: SmCtx }) {
       <SmBaCau c={c} />
       {khoa && (
         <p className="sm-card warn">
-          {tr(`Ngươi đã tự rời môn đã cắm cờ, phải chờ hết Kỷ (${ngayThang(khoa)}) mới vào môn khác.`, `You left a flagged sect and must wait until the era ends (${ngayThang(khoa)}).`)}
+          {tr(`Ngươi đã tự rời môn đã cắm cờ, chờ tới ${hhmm(khoa)} ngày ${ngayThang(khoa)} mới vào hoặc lập môn khác.`, `You left a flagged sect. You can join or found another at ${hhmm(khoa)} on ${ngayThang(khoa)}.`)}
         </p>
       )}
       <Msg err={err} ok={ok} />
@@ -139,7 +139,7 @@ export function SmList({ c }: { c: SmCtx }) {
           {shown.map((m) => (
             <MonRow key={m.id} m={m} st={c.st} busy={c.busy} onVao={() => bamVao(m)} onXem={() => moXem(m)} />
           ))}
-          <p className="sm-note">{tr('Vào môn đã cắm cờ thì tự rời phải chờ hết Kỷ mới vào môn khác. Bị đuổi thì vào môn khác được ngay.', 'Leave a flagged sect yourself and you wait until the era ends. If expelled, you can join another at once.')}</p>
+          <p className="sm-note">{tr('Tự rời môn đã cắm cờ thì chờ 24 giờ mới vào môn khác. Bị đuổi thì vào môn khác được ngay.', 'Leave a flagged sect yourself and you wait 24 hours to join another. If expelled, you can join another at once.')}</p>
           {cho.length > 0 && (
             <>
               <h3>{tr(`Môn đang chờ người ký (${cho.length})`, `Sects awaiting co-signers (${cho.length})`)}</h3>
@@ -170,7 +170,7 @@ export function SmList({ c }: { c: SmCtx }) {
             {tr(' Kiếp chết trước 16 tuổi không tính.', ' Lives ending before 16 do not count.')}
           </p>
         )}
-        {duLap && khoa && <p className="sm-why">{tr('Đang bị khóa tới hết Kỷ.', 'Locked until the era ends.')}</p>}
+        {duLap && khoa && <p className="sm-why">{tr(`Chờ tới ${hhmm(khoa)} ngày ${ngayThang(khoa)} mới lập được.`, `You can found one at ${hhmm(khoa)} on ${ngayThang(khoa)}.`)}</p>}
       </section>
 
       {xem && <XemNguoi c={c} m={xem} onVao={() => bamVao(xem)} onDong={() => setXem(null)} />}
@@ -183,7 +183,7 @@ export function SmList({ c }: { c: SmCtx }) {
               <h2 className="sm-grow">{hoi.mo_cua ? tr(`Vào ${hoi.ten}?`, `Join ${hoi.ten}?`) : tr(`Xin vào ${hoi.ten}?`, `Apply to ${hoi.ten}?`)}</h2>
             </div>
             <p className="sm-card warn">
-              {tr(`Môn này đã cắm cờ. Nếu ngươi tự rời, phải chờ hết Kỷ ${c.st.ky?.id ?? ''} mới vào môn khác. Bị đuổi thì vào môn khác được ngay.`, `This sect has planted its flag. If you leave on your own, you wait until era ${c.st.ky?.id ?? ''} ends. If expelled, you can join another at once.`)}
+              {tr('Môn này đã cắm cờ. Nếu ngươi tự rời, phải chờ 24 giờ mới vào môn khác. Bị đuổi thì vào môn khác được ngay.', 'This sect has planted its flag. If you leave on your own, you wait 24 hours to join another. If expelled, you can join another at once.')}
             </p>
             <button className="sm-btn main wide" disabled={c.busy} onClick={() => vao(hoi)}>
               {hoi.mo_cua ? tr('Vào môn', 'Join') : tr('Gửi đơn', 'Apply')}
@@ -199,7 +199,7 @@ export function SmList({ c }: { c: SmCtx }) {
 }
 
 function lyDo(m: SmMonRow, st: SmCtx['st']): string | null {
-  if (st.khoa_toi) return tr('Đang chờ hết Kỷ', 'Locked until era ends');
+  if (st.khoa_toi) return tr(`Chờ tới ${hhmm(st.khoa_toi)}`, `Wait until ${hhmm(st.khoa_toi)}`);
   if (m.n >= m.toi_da) return tr(`Đã đủ ${m.toi_da} người`, `Full (${m.toi_da})`);
   if (!m.du_dk) return tr(`Cần ${m.dk_kiep} kiếp, ${m.dk_tuoi_dao} ngày chơi`, `Needs ${m.dk_kiep} lives, ${m.dk_tuoi_dao} days`);
   if (st.don.some((d) => d.mon === m.id)) return tr('Đang chờ duyệt', 'Awaiting review');
