@@ -65,6 +65,13 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onSwap,
       Number(!!owned(c, b.id)) - Number(!!owned(c, a.id)) || Number(b.path === path) - Number(a.path === path) || ['tuyet', 'tam', 'chieu'].indexOf(a.kind) - ['tuyet', 'tam', 'chieu'].indexOf(b.kind),
   );
   const [sel, setSel] = useState<string>(eq[1] || eq[0] || list[0]?.id || '');
+  // 17/11 (Truong Pham hỏi): chiêu chạm trần vì tâm pháp thấp. Tâm pháp thiếu quyển mà có chiêu cùng đạo dư quyển thì gợi ý chép 3 thành 1
+  const tamId = eq[0] ?? '';
+  const tamO = tamId ? owned(c, tamId) : undefined;
+  const tamFrom = tamO && tamO.tang < 9 && tqOf(c, tamId) < tqCost(tamO.tang) ? list.find((x) => x.id !== tamId && canSwap(c, x.id, tamId)) : undefined;
+  const tamSwapHint = tamFrom
+    ? tr(`Tâm pháp còn thiếu quyển: có thể chép ${SWAP_RATE} quyển ${tamFrom.name} thành 1 quyển tâm pháp (bấm vào ${tamFrom.name}).`, `Your heart art lacks fragments: rework ${SWAP_RATE} ${tamFrom.name} fragments into 1 (tap ${tamFrom.name}).`)
+    : null;
   // 4/11 (Tyler: bấm Mang tự tháo chiêu khác, khó hiểu): ô đầy thì hỏi thay ô nào, mang xong báo rõ vào ô nào
   const [pick, setPick] = useState<string | null>(null);
   const [said, setSaid] = useState<string | null>(null);
@@ -280,6 +287,7 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onSwap,
                 const tv = o && o.tang >= 3 && o.tang < 9 ? tuviCost(c, d.id) : 0;
                 const cost = o ? tqCost(o.tang) : 0;
                 const held = tqOf(c, d.id);
+                const capHint = blk === 'cap' ? tamSwapHint : null;
                 const swapTo = sel === d.id && held >= SWAP_RATE ? list.filter((x) => canSwap(c, d.id, x.id)) : [];
                 return (
                   <div key={d.id} id={`tk-${d.id}`} className={`tk-cp ${PHAM_CLS[d.pham]} ${sel === d.id ? 'sel' : ''} ${o ? '' : 'lock'}`} onClick={() => setSel(d.id)}>
@@ -375,7 +383,7 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onSwap,
                               : blk === 'exp'
                                 ? tr('Đang luyện', 'Training')
                                 : blk === 'cap'
-                                  ? tr('Luyện tâm pháp', 'Train heart art')
+                                  ? tr(`Cần tâm pháp T${(o?.tang ?? 1) + 1 - TAM_GAP}`, `Need heart art S${(o?.tang ?? 1) + 1 - TAM_GAP}`)
                                   : blk === 'tq'
                                     ? tr('Thiếu quyển', 'Need fragment')
                                     : blk === 'tuvi'
@@ -385,6 +393,8 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onSwap,
                                         : tr('Nâng tầng', 'Raise')}
                           </button>
                         )}
+                        {blk === 'cap' && <small className="bad">{tr(`Chiêu cao hơn tâm pháp tối đa ${TAM_GAP} tầng. Nâng tâm pháp trước.`, `A skill can be at most ${TAM_GAP} stages above your heart art. Raise the heart art first.`)}</small>}
+                        {blk === 'cap' && capHint && <small>{capHint}</small>}
                         {tv > 0 && <small className={blk === 'tuvi' ? 'bad' : ''}>{tr(`-${tv} tu vi`, `-${tv} cultivation`)}</small>}
                         <small>{cdText(d)}</small>
                         {d.kind !== 'tuyet' && !(d.kind === 'tam' && on) && (

@@ -60,7 +60,7 @@ export const CP: CpDef[] = [
   // ---- Kiếm tu: chém liên hoàn, đòn trúng tích kiếm ý ----
   C({ id: 'thanh_lien', path: 'kiem', kind: 'tam', pham: 1, name: tr('Thanh Liên Kiếm Tâm Quyết', 'Azure Lotus Sword Heart Art'), main: tr('Tu luyện +12%, công +6%', 'Cultivation +12%, attack +6%'), fx: 'thuong', tam: { cult: 12, atk: 6 } }),
   C({ id: 'liet_hoa', path: 'kiem', kind: 'chieu', pham: 1, name: tr('Liệt Hỏa Kiếm Quyết', 'Blazing Fire Sword Art'), main: tr('Kiếm khí lửa, thiêu đốt 2 hiệp', 'Fire sword qi, burns for 2 rounds'), fx: 'liet', cd: 3, eff: { mul: 1.45, burn: [2, 0.25] } }),
-  C({ id: 'kim_xa', path: 'kiem', kind: 'chieu', pham: 0, name: tr('Kim Xà Kiếm Pháp', 'Golden Serpent Sword Art'), main: tr('Kiếm quang uốn như rắn, hút 30% máu', 'Serpentine sword light, 30% lifesteal'), fx: 'kimxa', cd: 3, eff: { mul: 1.35, leech: 0.3 } }),
+  C({ id: 'kim_xa', path: 'kiem', kind: 'chieu', pham: 0, name: tr('Kim Xà Kiếm Pháp', 'Golden Serpent Sword Art'), main: tr('Kiếm quang uốn như rắn, hồi máu bằng 30% sát thương gây ra', 'Serpentine sword light, heals you for 30% of damage dealt'), fx: 'kimxa', cd: 3, eff: { mul: 1.35, leech: 0.3 } }),
   C({ id: 'thai_cuc_kiem', path: 'kiem', kind: 'chieu', pham: 2, name: tr('Thái Cực Kiếm', 'Taiji Sword'), main: tr('Phản 30% sát thương 2 hiệp', 'Reflects 30% damage for 2 rounds'), fx: 'taiji', cd: 4, eff: { mul: 1.2, reflect: [2, 0.3] } }),
   C({ id: 'van_kiem', path: 'kiem', kind: 'tuyet', pham: 3, name: tr('Vạn Kiếm Quy Tông', 'Ten Thousand Swords Return'), main: tr('Năm luồng phi kiếm, không thể né', 'Five flying swords, unblockable'), fx: 'vankiem', eff: { hits: 5, mul: 0.75, pierce: true } }),
   // ---- Đan tu: ném đan, độc cộng dồn, tự hồi ----
@@ -83,10 +83,10 @@ export const CP: CpDef[] = [
   C({ id: 'nhu_lai', path: 'phat', kind: 'tuyet', pham: 3, name: tr('Như Lai Thần Chưởng', 'Buddha’s Divine Palm'), main: tr('Bàn tay vàng che trời, chắc chắn choáng', 'A golden palm blots out the sky, sure stun'), fx: 'nhulai', eff: { mul: 2.8, pierce: true, stun: 1 } }),
   // ---- Ma tu: đốt máu lấy sức, hút máu bù ----
   C({ id: 'huyet_hai', path: 'ma', kind: 'tam', pham: 2, name: tr('Huyết Hải Ma Công', 'Sea of Blood Demonic Art'), main: tr('Tu luyện +20%, công +8%', 'Cultivation +20%, attack +8%'), fx: 'thuong', tam: { cult: 20, atk: 8 } }),
-  C({ id: 'huyet_anh_trao', path: 'ma', kind: 'chieu', pham: 1, name: tr('Huyết Ảnh Trảo', 'Blood Shadow Claw'), main: tr('Hút 30% sát thương thành máu', 'Converts 30% of damage into HP'), fx: 'huyettrao', cd: 2, eff: { mul: 1.25, leech: 0.3 } }),
-  C({ id: 'thon_phe', path: 'ma', kind: 'chieu', pham: 3, name: tr('Thôn Phệ Ma Công', 'Devouring Demonic Art'), main: tr('Đòn nặng, hút 50% máu', 'Heavy strike, 50% lifesteal'), fx: 'thonphe', cd: 5, eff: { mul: 1.6, leech: 0.5 } }),
+  C({ id: 'huyet_anh_trao', path: 'ma', kind: 'chieu', pham: 1, name: tr('Huyết Ảnh Trảo', 'Blood Shadow Claw'), main: tr('Vuốt máu, hồi máu bằng 30% sát thương gây ra', 'A blood claw, heals you for 30% of damage dealt'), fx: 'huyettrao', cd: 2, eff: { mul: 1.25, leech: 0.3 } }),
+  C({ id: 'thon_phe', path: 'ma', kind: 'chieu', pham: 3, name: tr('Thôn Phệ Ma Công', 'Devouring Demonic Art'), main: tr('Đòn nặng, hồi máu bằng 50% sát thương gây ra', 'Heavy strike, heals you for 50% of damage dealt'), fx: 'thonphe', cd: 5, eff: { mul: 1.6, leech: 0.5 } }),
   C({ id: 'cuong_ma', path: 'ma', kind: 'chieu', pham: 1, name: tr('Cuồng Ma Hóa', 'Demonic Frenzy'), main: tr('Đốt 15% máu, công x1,6 trong 3 hiệp', 'Burn 15% HP, attack x1.6 for 3 rounds'), fx: 'cuongma', cd: 6, eff: { mul: 1, rage: [3, 1.6, 0.15] } }),
-  C({ id: 'huyet_te', path: 'ma', kind: 'tuyet', pham: 3, name: tr('Huyết Tế Thiên Ma', 'Blood Sacrifice Heaven Demon'), main: tr('Đòn máu, hút nửa sát thương', 'A blood strike, drains half the damage'), fx: 'huyette', eff: { mul: 2.8, leech: 0.5 } }),
+  C({ id: 'huyet_te', path: 'ma', kind: 'tuyet', pham: 3, name: tr('Huyết Tế Thiên Ma', 'Blood Sacrifice Heaven Demon'), main: tr('Đòn máu, hồi máu bằng 50% sát thương gây ra', 'A blood strike, heals you for 50% of damage dealt'), fx: 'huyette', eff: { mul: 2.8, leech: 0.5 } }),
   // ---- Yêu tu: huyết mạch, hóa hình ----
   C({ id: 'yeu_than', path: 'yeu', kind: 'tam', pham: 1, name: tr('Yêu Thần Luyện Thể', 'Yao God Body Tempering'), main: tr('Máu +20%, mỗi hiệp hồi 2% máu', 'HP +20%, restores 2% HP per round'), fx: 'thuong', tam: { hp: 20, regen: 2 } }),
   C({ id: 'thien_ho', path: 'yeu', kind: 'chieu', pham: 2, name: tr('Thiên Hồ Mị Thuật', 'Sky Fox Charm'), main: tr('Đối thủ đánh trượt 30% trong 2 hiệp (tối đa 35%), tuyệt kỹ và đòn xuyên giáp không né được', 'Foe misses 30% for 2 rounds (max 35%); ultimates and armor-piercing strikes cannot be dodged'), fx: 'cuuvi', cd: 4, eff: { mul: 0.9, evade: [2, 0.3] } }),
@@ -113,7 +113,7 @@ export const PATH_IDEA: Record<string, string> = {
   dan: tr('Ném đan, rải độc, tự hồi máu. Độc cộng dồn tầng, đánh lâu mới mạnh.', 'Throw pills, spread poison, heal yourself. Poison stacks, so long fights favor you.'),
   tran: tr('Bày trận trước, đánh sau. Mỗi chiêu dựng một cột trận, đủ 3 cột thì đại trận tự mở.', 'Set the array first, then strike. Each technique raises a pillar; three pillars open the grand array.'),
   phat: tr('Chịu đòn rồi trả đòn. Mỗi lần bị đánh tích định lực, đầy thì phản một chưởng lớn.', 'Take the blow, then return it. Every hit taken builds samadhi; when full, a great palm answers.'),
-  ma: tr('Đốt máu mình lấy sức mạnh, hút máu quái bù lại. Máu càng thấp sát khí càng lên nhanh.', 'Burn your own blood for power and drain the foe to recover. The lower your HP, the faster killing intent rises.'),
+  ma: tr('Đốt máu mình lấy sức mạnh, đánh trúng thì hồi máu bù lại. Máu càng thấp sát khí càng lên nhanh.', 'Burn your own blood for power and heal back by hitting. The lower your HP, the faster killing intent rises.'),
   yeu: tr('Dựa vào huyết mạch và thể chất. Đầy yêu lực thì hiện chân thân.', 'Rely on bloodline and body. When yao force is full, your true body appears.'),
   chung: tr('Chưa chọn con đường: chỉ có quyền cước cơ bản.', 'No path yet: only basic fists.'),
 };
@@ -131,7 +131,7 @@ export const BIEN_TANG = 6;
 export const BIEN_NAME: Record<Bien, string> = { cuong: tr('Cương', 'Hard'), nhu: tr('Nhu', 'Soft') };
 export const BIEN_DESC: Record<Bien, string> = {
   cuong: tr('Sát thương x1,3, hồi chiêu chậm thêm 1 lượt', 'Damage x1.3, cooldown +1 turn'),
-  nhu: tr('Hồi chiêu nhanh hơn 1 lượt, thiêu/độc/hút máu/choáng/khiên/phản đòn đậm hơn 30%', 'Cooldown -1 turn; burn, poison, lifesteal, stun, shield and reflect 30% stronger'),
+  nhu: tr('Hồi chiêu nhanh hơn 1 lượt, thiêu/độc/hồi máu khi đánh/choáng/khiên/phản đòn đậm hơn 30%', 'Cooldown -1 turn; burn, poison, lifesteal, stun, shield and reflect 30% stronger'),
 };
 export function bienDef(d: CpDef, b?: Bien | null): CpDef {
   if (!b || d.kind !== 'chieu') return d;
@@ -384,6 +384,8 @@ export function dropTq(c: Character, src: TqSrc, rnd: () => number): string | nu
   }
   // tàn quyển tuyệt kỹ chỉ rơi từ trận khó, khi đã có 2 chiêu viên mãn
   if (tu && strong && nine >= 2 && s.tuyet !== tu.id) pool.push({ id: tu.id, w: 2 / (1 + 0.5 * tqOf(c, tu.id)) });
+  // 17/11 (Phan Anh Tuấn báo): đã dung hợp thì tàn quyển tuyệt kỹ vẫn rơi từ trận khó cho tới khi đủ quyển lên tầng 9
+  if (tu && strong && tuyetNeedsTq(c)) pool.push({ id: tu.id, w: 2 / (1 + 0.5 * tqOf(c, tu.id)) });
   const sum = pool.reduce((x, p) => x + p.w, 0);
   if (!sum) return null;
   let r = rnd() * sum;
@@ -409,9 +411,17 @@ export function tqShopPrice(c: Character, id: string): number {
 }
 export const tqShopLeft = (c: Character) => TQ_SHOP_YEAR - (c.tqBuy && c.tqBuy.y === Math.floor(c.age) ? c.tqBuy.n : 0);
 /** Tuyệt kỹ của đạo bán ở Phường thị khi: đã có 2 chiêu tầng 9, chưa lĩnh ngộ, chưa đủ tàn quyển để dung hợp */
+/** Tuyệt kỹ đã dung hợp, chưa tầng 9 và chưa đủ quyển cho tới tầng 9 */
+export function tuyetNeedsTq(c: Character): boolean {
+  const tu = tuyetOf(c);
+  if (!tu || c.cp?.tuyet !== tu.id) return false;
+  const o = owned(c, tu.id);
+  return !!o && o.tang < 9 && tqOf(c, tu.id) < TQ_COST.slice(o.tang).reduce((x, y) => x + y, 0);
+}
 function tuyetForSale(c: Character): CpDef | null {
   const tu = tuyetOf(c);
-  if (!tu || c.cp?.tuyet === tu.id) return null;
+  if (!tu) return null;
+  if (c.cp?.tuyet === tu.id) return tuyetNeedsTq(c) ? tu : null;
   const nine = cpOfPath(c.path!).filter((x) => x.kind === 'chieu' && (owned(c, x.id)?.tang ?? 0) >= 9).length;
   return nine >= 2 && tqOf(c, tu.id) < FUSE_COST ? tu : null;
 }

@@ -569,7 +569,7 @@ export function ShopSheet({ c, onBuyItem, onBuyPill, onBuyShelf, onBuyCharm, onB
                   </div>
                   <div className="item-body">
                     <span>{tr(`Tàn quyển ${d.name}`, `${d.name} fragment`)}</span>
-                    <small>{d.kind === 'tuyet' ? tr(`Tuyệt kỹ · cần ${FUSE_COST} quyển để dung hợp · đang có ${c.tq?.[d.id] ?? 0}`, `Ultimate · ${FUSE_COST} needed to fuse · you have ${c.tq?.[d.id] ?? 0}`) : tr(`Đang tầng ${o?.tang ?? 0} · đang có ${c.tq?.[d.id] ?? 0} quyển`, `Stage ${o?.tang ?? 0} · you have ${c.tq?.[d.id] ?? 0}`)}</small>
+                    <small>{d.kind === 'tuyet' && c.cp?.tuyet === d.id ? tr(`Tuyệt kỹ · đang tầng ${o?.tang ?? 0} · đang có ${c.tq?.[d.id] ?? 0} quyển`, `Ultimate · stage ${o?.tang ?? 0} · you have ${c.tq?.[d.id] ?? 0}`) : d.kind === 'tuyet' ? tr(`Tuyệt kỹ · cần ${FUSE_COST} quyển để dung hợp · đang có ${c.tq?.[d.id] ?? 0}`, `Ultimate · ${FUSE_COST} needed to fuse · you have ${c.tq?.[d.id] ?? 0}`) : tr(`Đang tầng ${o?.tang ?? 0} · đang có ${c.tq?.[d.id] ?? 0} quyển`, `Stage ${o?.tang ?? 0} · you have ${c.tq?.[d.id] ?? 0}`)}</small>
                   </div>
                   <button className="btn btn-red" disabled={tqShopLeft(c) <= 0 || c.linhThach < price} onClick={() => onBuyTq(d.id)}>
                     {fmt(price)}

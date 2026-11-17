@@ -19,7 +19,11 @@ const MAX_SWORDS = 60;
 
 type Body = { token?: string; mode?: 'arena' | 'thach'; opp?: string; revenge?: number | null; lifeId?: number; myLifeId?: number; swords?: number };
 
-const bad = (error: string, status = 400) => Response.json({ error }, { status, headers: { 'Cache-Control': 'no-store' } });
+// 17/11: ghi mã lỗi ra log Vercel để lần sau soi được (vụ trận treo NO_SHADOW)
+const bad = (error: string, status = 400) => {
+  console.warn('loi-dai', error);
+  return Response.json({ error }, { status, headers: { 'Cache-Control': 'no-store' } });
+};
 
 export async function POST(req: Request) {
   const secret = process.env.VKL_SRV_SECRET;
