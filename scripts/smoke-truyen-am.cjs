@@ -1,0 +1,46 @@
+// 17/11: thử Truyền âm (chat trong môn) bằng dữ liệu giả (?demo=, chỉ khi chạy dev): gửi tin, câu nhanh, chạm tin để ẩn/báo,
+// không tràn ngang, ô nhập chữ 16px và nút từ 44px. Chạy: npx next dev -p 3314, rồi node scripts/smoke-truyen-am.cjs [thư mục ảnh]
+const { chromium } = require('playwright');
+const URL = process.env.SMOKE_URL || 'http://localhost:3314';
+const DIR = process.argv[2];
+let fail = 0;
+const ok = (c, m) => { console.log((c ? 'OK  ' : 'HỎNG') + ' ' + m); if (!c) fail++; };
+(async () => {
+  const b = await chromium.launch();
+  const p = await b.newPage({ viewport: { width: 390, height: 844 } });
+  const errs = []; p.on('pageerror', (e) => { if (!/Hydration|#418/.test(e.message)) errs.push(e.message); });
+  await p.goto(`${URL}/son-mon?demo=chu&m=mon`);
+  await p.locator('.sm-nav button', { hasText: 'Truyền âm' }).waitFor({ timeout: 20000 });
+  await p.addStyleTag({ content: 'nextjs-portal{display:none!important}' });
+  ok((await p.locator('.sm-nav button').count()) === 5, 'thanh mục giữ 5 mục');
+  await p.locator('.sm-nav button', { hasText: 'Truyền âm' }).locator('.sm-dot').waitFor({ timeout: 5000 }).catch(() => {});
+  ok((await p.locator('.sm-nav button', { hasText: 'Truyền âm' }).locator('.sm-dot').count()) === 1, 'chấm tin mới ở mục Truyền âm');
+  await p.locator('.sm-nav button', { hasText: 'Truyền âm' }).click();
+  await p.locator('.sm-tin').first().waitFor({ timeout: 10000 });
+  const n0 = await p.locator('.sm-tin').count();
+  ok(n0 === 5, 'thấy 5 tin của môn: ' + n0);
+  await p.fill('#sm-chat-in', 'Tối nay giữ Lạc Hà Cốc nhé');
+  await p.locator('.sm-chat-form button[type=submit]').click();
+  await p.waitForTimeout(600);
+  ok((await p.locator('.sm-tin.ta').last().textContent()).includes('Tối nay giữ Lạc Hà Cốc'), 'gửi tin, tin hiện bên phải');
+  ok((await p.inputValue('#sm-chat-in')) === '', 'ô nhập trống sau khi gửi');
+  await p.locator('.sm-chat-nhanh .sm-chip', { hasText: 'Đã điểm danh.' }).click();
+  await p.waitForTimeout(600);
+  ok((await p.locator('.sm-tin').count()) === n0 + 2, 'câu nhanh gửi được');
+  const fs = await p.$eval('#sm-chat-in', (e) => parseFloat(getComputedStyle(e).fontSize));
+  ok(fs >= 16, 'ô nhập chữ từ 16px (' + fs + ')');
+  ok(await p.$eval('label[for=sm-chat-in]', (e) => e.getBoundingClientRect().height > 0), 'ô nhập có nhãn nhìn thấy');
+  await p.locator('.sm-tin:not(.ta) .sm-tin-b').first().click();
+  ok(await p.locator('.sm-tin-act button', { hasText: 'Báo xấu' }).isVisible(), 'chạm tin người khác có nút Báo xấu');
+  ok(await p.locator('.sm-tin-act button', { hasText: 'Ẩn tin' }).isVisible(), 'môn chủ có nút Ẩn tin');
+  await p.locator('.sm-tin-act button', { hasText: 'Ẩn tin' }).click();
+  await p.waitForTimeout(500);
+  ok((await p.locator('.sm-tin').count()) === n0 + 1, 'ẩn tin xong tin biến mất');
+  const ov = await p.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+  ok(ov <= 0, 'không tràn ngang (' + ov + 'px)');
+  if (DIR) await p.screenshot({ path: `${DIR}/truyen-am.png` });
+  ok(!errs.length, 'không lỗi JS ' + errs.join(' | '));
+  await b.close();
+  console.log(fail ? `HỎNG ${fail}` : 'Tất cả OK');
+  process.exit(fail ? 1 : 0);
+})();

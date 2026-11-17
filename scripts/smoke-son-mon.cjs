@@ -26,6 +26,8 @@ const SCREENS = [
   ['M9-ky', 'chu', 'ky'],
   ['M10-luc-chien', 'chu', 'luc-chien'],
   ['M11-luat', 'chua', 'luat'],
+  ['M12-truyen-am', 'chu', 'chat'],
+  ['M12-truyen-am-de', 'de', 'chat'],
   ['M4-de-tu', 'de', 'mon'],
 ];
 

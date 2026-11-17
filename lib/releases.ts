@@ -31,7 +31,7 @@ export const RELEASES: Release[] = [
     features: [
       { icon: 'sm-cd-0', h: tr('Vào môn hoặc tự lập môn', 'Join or found a sect'), t: tr('Vào một môn đang mở cửa. Đủ 50 kiếp và 5 ngày chơi thì tự dựng môn.', 'Join an open sect. With 50 lives and 5 days played, found your own.') },
       { icon: 'sm-huy-15', h: tr('Mỗi ngày 3 nhiệm vụ', '3 tasks a day'), t: tr('Làm ngay trong kiếp, kiếp khép lại là xong. Góp Khí vận cho cả môn.', 'Done inside your lives, complete when the life ends. Adds Fortune to the sect.') },
-      { icon: 'sm-huy-3', h: tr('Giữ đất trên bản đồ', 'Hold land on the map'), t: tr('Môn chủ phát lệnh xuất chinh, đệ tử bấm Theo. Vắng mặt vẫn đứng giữ.', 'The master calls a march, disciples follow. You still guard while away.') },
+      { icon: 'sm-huy-3', h: tr('Giữ đất, bàn nhau qua Truyền âm', 'Hold land, plan in sect chat'), t: tr('Môn chủ ra lệnh xuất chinh, đệ tử bấm Theo. Cả môn trò chuyện ngay trong tab.', 'The master calls a march, disciples follow. The whole sect chats right in the tab.') },
       { icon: 'sm-huy-24', h: tr('Kỷ 1 tới 21:00 ngày 1/12', 'Era 1 until Dec 1, 9 PM'), t: tr('Lúc hết Kỷ, môn nào đang chiếm nhiều ô đất nhất trên bản đồ thì xếp hạng nhất. Thưởng chỉ để ngắm.', 'When the era ends, the sect holding the most land tiles on the map ranks first. Rewards are cosmetic.') },
     ],
     cta: { label: tr('Vào Sơn Môn', 'Open Sects'), go: 'sonmon' },
@@ -46,6 +46,7 @@ export const RELEASES: Release[] = [
           tr('Bản đồ ô lục giác: môn chủ và trưởng lão phát lệnh xuất chinh, đệ tử bấm Theo. Ai cũng chọn được ô đứng giữ, lúc vắng mặt vẫn tính.', 'A hex map: the master and elders call marches, disciples tap Follow. Everyone picks a tile to guard, and it still counts while you are away.'),
           tr('Lực chiến chỉ lên khi ngươi chơi kiếp: năm đã sống, số kiếp, cảnh giới, kết cục, ngày chơi và huyệt đã khai. Không có tiền mới, không có gì phải mua.', 'Power only grows by playing lives: years lived, lives, realms, endings, days played and opened points. No new currency, nothing to buy.'),
           tr('Lúc hết Kỷ 1, môn nào đang chiếm nhiều ô đất nhất trên bản đồ thì xếp hạng nhất (bằng nhau thì xét tổng Khí vận cả Kỷ). Thưởng chỉ để ngắm: hào quang, khung tên môn, và ngoại trang cho ai điểm danh đủ 7 ngày.', 'When Era 1 ends, the sect holding the most tiles comes first. Rewards are cosmetic: an aura, a gold sect frame, and an outfit for anyone who checks in on 7 days.'),
+          tr('Truyền âm: trò chuyện với người cùng môn ngay trong tab Sơn Môn. Link và số điện thoại tự ẩn, lời tục bị che, chạm một tin để báo xấu.', 'Sect chat: talk with your sect right in the Sects tab. Links and phone numbers are hidden, swearing is masked, tap a message to report it.'),
           tr('Có sư phụ thì môn của sư phụ đứng đầu danh sách, kèm nút Vào môn của sư phụ.', "If you have a master, their sect sits at the top of the list with a Join master's sect button."),
         ],
       },

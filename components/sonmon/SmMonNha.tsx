@@ -74,9 +74,14 @@ export function SmMonNha({ c }: { c: SmCtx }) {
             </p>
           </div>
         </div>
-        <button className="sm-btn small sm-ghost" style={{ color: 'var(--gold-l)', borderColor: '#8a6a3d' }} onClick={() => c.go('luc-chien')}>
-          {tr('Lực chiến tính thế nào', 'How power works')}
-        </button>
+        <div className="sm-row">
+          <button className="sm-btn small sm-ghost sm-grow" style={{ color: 'var(--gold-l)', borderColor: '#8a6a3d' }} onClick={() => c.go('ky')}>
+            {tr('Xếp hạng Kỷ', 'Era ranking')}
+          </button>
+          <button className="sm-btn small sm-ghost sm-grow" style={{ color: 'var(--gold-l)', borderColor: '#8a6a3d' }} onClick={() => c.go('luc-chien')}>
+            {tr('Lực chiến', 'Power')}
+          </button>
+        </div>
       </section>
 
       {!m.du_ky && (

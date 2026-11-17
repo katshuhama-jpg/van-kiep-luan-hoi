@@ -5,7 +5,7 @@
  * trong (ngày đầu, chưa môn nào mở), khach (chưa liên kết), noct (chưa có chân thân), chuamo (Kỷ chưa mở).
  */
 import { banDo, coiCua, O_A, O_B } from './data';
-import { SmErr, type SmAct, type SmApi, type SmMap, type SmMapO, type SmMembers, type SmMonRow, type SmRankRow, type SmState } from './api';
+import { SmErr, type SmAct, type SmApi, type SmChat, type SmMap, type SmMapO, type SmMembers, type SmMonRow, type SmRankRow, type SmState } from './api';
 
 const now = Date.now();
 const at = (min: number) => new Date(now + min * 60_000).toISOString();
@@ -150,6 +150,14 @@ const RANK: SmRankRow[] = [
   { id: 7, ten: 'Lăng Tiêu Các', huy_hieu: 19, o: 1, kv: 121, n: 4 },
 ];
 
+const CHAT: SmChat[] = [
+  { id: 1, luc: at(-190), nd: 'Chào cả môn! Tối nay ai online thì điểm danh nhé.', ta: false, tk: 'vannhi', ten: 'Vân Nhi', chuc: 'lao' },
+  { id: 2, luc: at(-150), nd: 'Đã điểm danh. Kiếp này ta lên Kim Đan rồi, +5 Khí vận.', ta: false, tk: 'hanbang', ten: 'Hàn Băng', chuc: 'de' },
+  { id: 3, luc: at(-60), nd: 'Huyết Sát Cung đang đánh Lạc Hà Cốc, ai rảnh sang giữ với.', ta: false, tk: 'thuyte', ten: 'Thủy Tề', chuc: 'de' },
+  { id: 4, luc: at(-40), nd: 'Ta sang ngay. Còn 40 phút nữa họ tới.', ta: true, tk: 'lacpham', ten: 'Lạc Phàm', chuc: 'chu' },
+  { id: 5, luc: at(-5), nd: '30 Khí vận rồi, mai cả môn +10% nhé các vị.', ta: false, tk: 'vannhi', ten: 'Vân Nhi', chuc: 'lao' },
+];
+
 const wait = <T,>(v: T) => new Promise<T>((ok) => setTimeout(() => ok(structuredClone(v)), 120));
 
 export function demoApi(vaiIn: string): SmApi {
@@ -157,6 +165,7 @@ export function demoApi(vaiIn: string): SmApi {
   const coMon = vai === 'chu' || vai === 'de' || vai === 'cho';
   let st: SmState = coMon ? monState(vai) : baseState(vai);
   const list = vai === 'trong' ? CHO_KY : [...LIST, ...CHO_KY];
+  let chat: SmChat[] = vai === 'chu' || vai === 'de' ? structuredClone(CHAT) : [];
   return {
     demo: true,
     linked: vai !== 'khach',
@@ -166,6 +175,18 @@ export function demoApi(vaiIn: string): SmApi {
     map: () => wait(map(coMon && vai !== 'cho')),
     rank: () => wait(RANK),
     suMon: () => wait(vai === 'su' ? (LIST[1]?.id ?? null) : null),
+    chatList: (sau) => wait(chat.filter((x) => x.id > sau)),
+    chatSend: async (nd) => {
+      const x: SmChat = { id: chat.length + 1, luc: new Date().toISOString(), nd, ta: true, tk: 'lacpham', ten: 'Lạc Phàm', chuc: vai === 'de' ? 'de' : 'chu' };
+      chat.push(x);
+      return wait(x);
+    },
+    chatN: () => wait(vai === 'chu' ? 3 : 0),
+    chatHide: async (id) => {
+      chat = chat.filter((x) => x.id !== id);
+      return wait({ ok: true });
+    },
+    chatReport: () => wait({ so_bao: 1, an: false }),
     members: () => wait(vai === 'de' ? { ...MEMBERS, don: null } : MEMBERS),
     act: async (a: SmAct) => {
       await wait(null);

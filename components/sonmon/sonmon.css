@@ -145,3 +145,26 @@ p.sm-card { display: block; }
 .sm-hoi-q { width: 100%; min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 12px; background: none; border: 0; font: inherit; font-size: 16px; font-weight: 700; text-align: left; color: var(--ink); cursor: pointer; }
 .sm-hoi-q b { font-size: 20px; line-height: 1; }
 .sm-hoi p { margin: 0; padding: 0 12px 12px; font-size: 15px; line-height: 1.45; }
+
+/* 17/11: Truyền âm (chat trong môn) */
+.sm-chat { display: flex; flex-direction: column; gap: 8px; }
+.sm-chat-head { margin: 0; }
+.sm-chat-log { display: flex; flex-direction: column; gap: 6px; min-height: 220px; height: calc(100dvh - 430px); overflow-y: auto; overscroll-behavior: contain; padding: 8px; background: var(--paper); border: 2px solid var(--ink); }
+.sm-chat-empty { margin: auto; text-align: center; font-size: 15px; color: #6a5a44; padding: 16px; }
+.sm-tin { display: flex; flex-direction: column; align-items: flex-start; max-width: 86%; }
+.sm-tin.ta { align-self: flex-end; align-items: flex-end; }
+.sm-tin-b { display: flex; flex-direction: column; gap: 2px; min-height: 44px; padding: 6px 10px; text-align: left; font: inherit; color: var(--ink); background: #fff8e6; border: 2px solid var(--ink); cursor: pointer; }
+.sm-tin.ta .sm-tin-b { background: #ffe3a3; }
+.sm-tin-ai { display: flex; align-items: baseline; gap: 6px; font-size: 13px; }
+.sm-tin-ai b { color: #8a1a1a; }
+.sm-tin-ai i { font-style: normal; font-size: 12px; font-weight: 700; color: var(--gold-l); background: var(--ink); padding: 0 4px; }
+.sm-tin-ai small { font-size: 12px; color: #6a5a44; }
+.sm-tin-nd { font-size: 16px; line-height: 1.35; overflow-wrap: anywhere; white-space: pre-wrap; }
+.sm-tin-act { display: flex; gap: 6px; margin-top: 4px; }
+.sm-chat-nhanh { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+.sm-chat-nhanh .sm-chip { flex: none; }
+.sm-chat-form { display: flex; flex-direction: column; gap: 4px; }
+.sm-chat-form label { font-size: 13px; font-weight: 700; }
+.sm-chat-form input { min-height: 48px; font: inherit; font-size: 16px; padding: 0 10px; background: #fffdf5; border: 2px solid var(--ink); color: var(--ink); min-width: 0; }
+.sm-chat-form input:focus-visible { outline: 3px solid var(--gold); outline-offset: 1px; }
+.sm-chat-form .sm-btn.main { min-width: 72px; }

@@ -16,6 +16,7 @@ import { track } from '@/lib/track';
 import { realApi, SmErr, smLoi, type SmAct, type SmApi, type SmMap, type SmMembers, type SmMonRow, type SmRankRow, type SmState } from '@/lib/sonmon/api';
 import { smNgay } from '@/lib/sonmon/data';
 import { SmLuat } from './SmLuat';
+import { lastSeenChat, SmChat } from './SmChat';
 import { SM_VIEWS, type SmCtx, type SmDraft, type SmView } from './ui';
 import { SmChuaMo, SmGuest, SmNoCt } from './SmEntry';
 import { SmList } from './SmList';
@@ -26,13 +27,14 @@ import { SmChienSu, SmXuatChinh } from './SmWar';
 import { SmThanhVien } from './SmMembers';
 import { SmKy, SmLucChien } from './SmKy';
 
-const IN_MON: SmView[] = ['mon', 'ban-do', 'chien-su', 'thanh-vien', 'ky'];
+const IN_MON: SmView[] = ['mon', 'chat', 'ban-do', 'chien-su', 'thanh-vien', 'ky'];
 const NAV: { v: SmView; vi: string; en: string }[] = [
   { v: 'mon', vi: 'Môn', en: 'Sect' },
+  // 17/11: Truyền âm thay chỗ Kỷ trên thanh mục (giữ 5 mục); Kỷ mở từ thẻ môn ở màn Môn và từ màn Luật
+  { v: 'chat', vi: 'Truyền âm', en: 'Chat' },
   { v: 'ban-do', vi: 'Bản đồ', en: 'Map' },
   { v: 'chien-su', vi: 'Chiến sự', en: 'War' },
   { v: 'thanh-vien', vi: 'Thành viên', en: 'Members' },
-  { v: 'ky', vi: 'Kỷ', en: 'Era' },
 ];
 
 function readParam(k: string): string | null {
@@ -80,6 +82,7 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
   const [members, setMembers] = useState<SmMembers | null>(null);
   const [rank, setRank] = useState<SmRankRow[] | null>(null);
   const [busy, setBusy] = useState(false);
+  const [chatMoi, setChatMoi] = useState(0);
   const opened = useRef(false);
 
   const loadState = useCallback(async () => {
@@ -150,6 +153,18 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
       document.removeEventListener('visibilitychange', onVis);
     };
   }, [api, v, reload]);
+
+  // 17/11 Truyền âm: đếm tin mới của người khác (chấm ở mục Truyền âm); 60 giây một lần, không hỏi khi đang ở màn chat
+  useEffect(() => {
+    if (!api || !api.linked || !coMon) return;
+    if (v === 'chat') return setChatMoi(0);
+    const hoi = () => {
+      if (!document.hidden) api.chatN(lastSeenChat()).then(setChatMoi, () => {});
+    };
+    hoi();
+    const id = setInterval(hoi, 60_000);
+    return () => clearInterval(id);
+  }, [api, coMon, v]);
 
   // đo: mở màn Sơn Môn (một lần mỗi lần vào)
   useEffect(() => {
@@ -235,7 +250,7 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
     const ctx: SmCtx = { api, st, list, map, members, rank, go, target, draft, setDraft, run, busy, reload };
     body = (
       <>
-        {coMon && IN_MON.includes(v) && <SmNav v={v} go={go} st={st} />}
+        {coMon && IN_MON.includes(v) && <SmNav v={v} go={go} st={st} chatMoi={chatMoi} />}
         {v === 'list' && <SmList c={ctx} />}
         {v === 'lap' && <SmLap c={ctx} />}
         {v === 'chon-o' && <SmChonO c={ctx} />}
@@ -247,6 +262,7 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
         {v === 'ky' && <SmKy c={ctx} />}
         {v === 'luc-chien' && <SmLucChien c={ctx} />}
         {v === 'luat' && <SmLuat c={ctx} />}
+        {v === 'chat' && <SmChat c={ctx} />}
       </>
     );
   }
@@ -276,7 +292,7 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
   );
 }
 
-function SmNav({ v, go, st }: { v: SmView; go: SmCtx['go']; st: SmState }) {
+function SmNav({ v, go, st, chatMoi }: { v: SmView; go: SmCtx['go']; st: SmState; chatMoi: number }) {
   const biDanh = (st.bi_danh?.length ?? 0) > 0;
   const donCho = (st.mon?.don_cho ?? 0) > 0;
   return (
@@ -284,7 +300,7 @@ function SmNav({ v, go, st }: { v: SmView; go: SmCtx['go']; st: SmState }) {
       {NAV.map((n) => (
         <button key={n.v} aria-current={v === n.v ? 'page' : undefined} onClick={() => go(n.v)}>
           {tr(n.vi, n.en)}
-          {((n.v === 'chien-su' && biDanh) || (n.v === 'thanh-vien' && donCho)) && <span className="sm-dot" aria-label={tr('có việc mới', 'new')} />}
+          {((n.v === 'chien-su' && biDanh) || (n.v === 'thanh-vien' && donCho) || (n.v === 'chat' && chatMoi > 0)) && <span className="sm-dot" aria-label={tr('có việc mới', 'new')} />}
         </button>
       ))}
     </nav>

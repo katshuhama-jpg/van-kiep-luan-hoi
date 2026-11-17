@@ -152,6 +152,10 @@ export function smNgay(t: Date = new Date()): string {
 /** Mã lỗi máy chủ -> câu cho người chơi. */
 export const SM_LOI: Record<string, string> = {
   SM_AUTH: tr('Liên kết tài khoản để vào sơn môn.', 'Link your account to join a sect.'),
+  SM_CHAT_TRONG: tr('Chưa có chữ nào.', 'Write something first.'),
+  SM_CHAT_DAI: tr('Tin dài quá, tối đa 200 chữ.', 'Too long, 200 characters at most.'),
+  SM_CHAT_NHANH: tr('Truyền âm chậm lại chút, vài giây nữa gửi tiếp.', 'Slow down a little, try again in a few seconds.'),
+  SM_CHAT_KHONG_CO: tr('Tin này không còn.', 'That message is gone.'),
   SM_NO_CT: tr('Cần có chân thân trước.', 'You need a true body first.'),
   SM_CHUA_MO: tr('Kỷ chưa mở.', 'The era has not begun.'),
   SM_CHUA_DU_LAP: tr('Chưa đủ điều kiện lập môn.', 'Not yet eligible to found a sect.'),

@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react';
 import { tr } from '@/lib/i18n';
 import type { SmAct, SmApi, SmMap, SmMembers, SmMonRow, SmRankRow, SmState } from '@/lib/sonmon/api';
 
-export type SmView = 'list' | 'lap' | 'chon-o' | 'mon' | 'ban-do' | 'xuat-chinh' | 'chien-su' | 'thanh-vien' | 'ky' | 'luc-chien' | 'luat';
-export const SM_VIEWS: SmView[] = ['list', 'lap', 'chon-o', 'mon', 'ban-do', 'xuat-chinh', 'chien-su', 'thanh-vien', 'ky', 'luc-chien', 'luat'];
+export type SmView = 'list' | 'lap' | 'chon-o' | 'mon' | 'ban-do' | 'xuat-chinh' | 'chien-su' | 'thanh-vien' | 'ky' | 'luc-chien' | 'luat' | 'chat';
+export const SM_VIEWS: SmView[] = ['list', 'lap', 'chon-o', 'mon', 'ban-do', 'xuat-chinh', 'chien-su', 'thanh-vien', 'ky', 'luc-chien', 'luat', 'chat'];
 
 /** bản nháp lập môn (M2 -> M3) */
 export type SmDraft = { ten: [string, string, string]; huy: number; cd: number; dkKiep: number; dkNgay: number; moCua: boolean };

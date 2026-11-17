@@ -149,6 +149,9 @@ export type SmAct =
   | { fn: 'set_dk'; dkKiep: number; dkNgay: number; moCua: boolean }
   | { fn: 'leave' | 'checkin' };
 
+/** một tin Truyền âm; nd đã được máy chủ che từ tục, ẩn link và số điện thoại */
+export type SmChat = { id: number; luc: string; nd: string; ta: boolean; tk: string; ten: string; chuc: 'chu' | 'lao' | 'de' | null };
+
 export interface SmApi {
   demo: boolean;
   /** có tài khoản (token) hay không: khách chơi thử thì false */
@@ -159,6 +162,12 @@ export interface SmApi {
   map(): Promise<SmMap>;
   rank(): Promise<SmRankRow[]>;
   members(): Promise<SmMembers>;
+  /** 17/11 Truyền âm (chat trong môn) */
+  chatList(sau: number): Promise<SmChat[]>;
+  chatSend(nd: string): Promise<SmChat>;
+  chatN(sau: number): Promise<number>;
+  chatHide(id: number): Promise<unknown>;
+  chatReport(id: number): Promise<{ so_bao: number; an: boolean }>;
   /** id môn sư phụ đang ở (Sư Đồ), null nếu không có */
   suMon(): Promise<number | null>;
   act(a: SmAct): Promise<Record<string, unknown>>;
@@ -218,6 +227,11 @@ export function realApi(): SmApi {
     list: () => rpc<SmMonRow[]>('vkl_sm_list', {}),
     members: () => rpc<SmMembers>('vkl_sm_members', {}),
     rank: () => rpc<SmRankRow[]>('vkl_sm_rank', {}, false),
+    chatList: (sau) => rpc<SmChat[]>('vkl_sm_chat_list', { p_sau: sau }),
+    chatSend: (nd) => rpc<SmChat>('vkl_sm_chat_send', { p_nd: nd }),
+    chatN: (sau) => rpc<number>('vkl_sm_chat_n', { p_sau: sau }).then((x) => Number(x) || 0, () => 0),
+    chatHide: (id) => rpc('vkl_sm_chat_hide', { p_id: id }),
+    chatReport: (id) => rpc<{ so_bao: number; an: boolean }>('vkl_sm_chat_report', { p_id: id }),
     suMon: () => rpc<number | null>('vkl_sm_su_mon', {}).then((x) => (x == null ? null : Number(x)), () => null),
     map: async () => {
       let r: Response;

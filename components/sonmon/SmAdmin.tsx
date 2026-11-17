@@ -18,6 +18,7 @@ const LOAI_CO: Record<string, [string, string]> = {
   moi_vao_dong: ['Nhiều tài khoản mới vào cùng một môn trong một ngày', 'Many new accounts joined one sect in a day'],
   mot_chieu: ['Một cặp môn đánh nhau một chiều liên tục', 'One sect keeps attacking the same sect'],
   ky_moi: ['Tài khoản chưa tới 3 ngày tuổi ký lập môn', 'Account under 3 days old co-signed a sect'],
+  chat_bao: ['Tin Truyền âm bị báo xấu', 'Sect chat message reported'],
 };
 
 function coChu(c: SmAdminCo): string {
