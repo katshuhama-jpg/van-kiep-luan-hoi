@@ -4,6 +4,17 @@ Tyler chốt 12/11/2026: mỗi đêm sau khi xong khối kế hoạch, xem số 
 
 Mốc so sánh: còn chơi sau 7 ngày (D7) 11-14% (`docs/so-lieu.md`, mốc trước 4.5.0).
 
+## Việc Tyler giao cho đêm 17/11 - lên bản 5:00 sáng 18/11 cùng chuyến Sơn Môn 4.6.0 (bắt buộc)
+
+**Tuyệt kỹ đã dung hợp bị kẹt tầng** (Phan Anh Tuấn báo trong bình luận bài bia mộ 16/11, page đã trả lời hứa sửa trong bản 5:00 sáng 18/11).
+
+- Hiện tượng: tuyệt kỹ dung hợp xong (tầng 5 trong ảnh của Tuấn) đầy thục luyện nhưng không có tàn quyển để lên tầng.
+- Nguyên nhân (`lib/game/congPhap.ts`): rơi tàn quyển tuyệt kỹ chỉ khi `s.tuyet !== tu.id` (dòng ~386), nên đã lĩnh ngộ là thôi rơi; Phường thị `tuyetForSale` trả null khi đã lĩnh ngộ và `tqShopEq` lọc bỏ `kind === 'tuyet'`. Còn lại chỉ tàn quyển vạn năng rất hiếm.
+- Cách sửa: sau khi đã dung hợp, tàn quyển tuyệt kỹ tiếp tục rơi từ trận khó cho tới khi đủ quyển lên tầng 9 (như bộ thường, giảm dần khi đang ôm nhiều), và Phường thị bán tàn quyển tuyệt kỹ đang có cho tới tầng 9 (giá `TQ_TUYET_MUL`, chung giới hạn mỗi năm). Không đổi giá, không đổi `TQ_COST`.
+- Kiểm tra: mô phỏng một kiếp có tuyệt kỹ tầng 5 đầy thục luyện, xác nhận có đường lên tầng 6-9 bằng rơi và bằng Phường thị; tsc, build, smoke.
+- Cáo thị 18/11 (ngắn, không số): "Tuyệt kỹ đã dung hợp giờ vẫn nhặt và mua được tàn quyển để lên tầng. Cảm ơn Phan Anh Tuấn đã báo."
+- Sau khi lên bản và kiểm tra site chạy thật: Tyler duyệt rồi trả lời Tuấn dưới bình luận "bản sáng nay 18/11 sửa rồi nha bạn".
+
 ## Việc Tyler giao cho đêm 16/11 - lên bản 5:00 sáng 17/11 (bắt buộc)
 
 **Lỗi chữ "oan hồn đỡ đòn vô cớ"** (Nguyễn Quang báo qua Messenger 16/11 15:00, đã hứa với bạn ấy là sửa).
