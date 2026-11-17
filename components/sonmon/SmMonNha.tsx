@@ -38,6 +38,21 @@ export function SmMonNha({ c }: { c: SmCtx }) {
     if (e) setErr(e);
   };
   const chuNv = nv ? nvChu(nv.bac) : null;
+  const nhoKy = async () => {
+    const url = `${location.origin}/son-mon?ky=${m.id}`;
+    const text = tr(`Ký giúp ta lập ${m.ten} trong Vạn Kiếp Luân Hồi, chỉ một nút bấm`, `Help me found ${m.ten} in Ten Thousand Rebirths, one tap`);
+    track('sm_nho_ky', { so_ky: m.so_ky });
+    try {
+      if (navigator.share) {
+        await navigator.share({ text, url });
+        return;
+      }
+      await navigator.clipboard.writeText(`${text}: ${url}`);
+      setOk(tr('Đã chép link. Dán gửi đạo hữu qua Messenger hay Zalo.', 'Link copied. Paste it to a friend.'));
+    } catch {
+      setOk(tr(`Link: ${url}`, `Link: ${url}`));
+    }
+  };
 
   return (
     <>
@@ -64,13 +79,16 @@ export function SmMonNha({ c }: { c: SmCtx }) {
         </button>
       </section>
 
-      <SmBaCau c={c} anDuoc />
       {!m.du_ky && (
         <section className="sm-card warn">
           <b>{tr(`Cần ${SM_CFG.mon.kyCan} đạo hữu ký cùng lập · đã có ${m.so_ky}/${SM_CFG.mon.kyCan}`, `Needs ${SM_CFG.mon.kyCan} co-signers · ${m.so_ky}/${SM_CFG.mon.kyCan}`)}</b>
           <p style={{ fontSize: 15 }}>
-            {tr(`Còn ${clock(new Date(m.het_han_ky).getTime() - now)}. Hết giờ chưa đủ thì môn tự giải tán, ô trả về trống. Rủ đạo hữu mở tab Sơn Môn và bấm Ký cùng lập.`, `${clock(new Date(m.het_han_ky).getTime() - now)} left, or the sect disbands. Ask friends to open Sects and co-sign.`)}
+            {tr(`Còn ${clock(new Date(m.het_han_ky).getTime() - now)}. Hết giờ chưa đủ thì môn tự giải tán. Ai có chân thân và tài khoản cũng ký được, không cần đủ kiếp.`, `${clock(new Date(m.het_han_ky).getTime() - now)} left, or the sect disbands. Anyone with a true self and an account can sign.`)}
           </p>
+          {/* 17/11 (Tyler: 2 người ký có vẻ khó): gửi link, người bấm link thấy môn này ghim đầu danh sách với nút Ký cùng lập */}
+          <button className="sm-btn main wide" onClick={() => nhoKy()}>
+            {tr('Gửi link nhờ đạo hữu ký', 'Send a co-sign link')}
+          </button>
         </section>
       )}
       {!m.cam_co && m.chuc !== 'de' && (
@@ -83,6 +101,7 @@ export function SmMonNha({ c }: { c: SmCtx }) {
         </section>
       )}
 
+      <SmBaCau c={c} anDuoc />
       {bi.map((b) => (
         <button key={b.id} className="sm-card alert" style={{ textAlign: 'left', font: 'inherit', cursor: 'pointer', minHeight: 44 }} onClick={() => c.go('chien-su')}>
           <span className="sm-between" style={{ width: '100%' }}>

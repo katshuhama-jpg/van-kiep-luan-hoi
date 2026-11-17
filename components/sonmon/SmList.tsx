@@ -22,6 +22,15 @@ export function SmList({ c }: { c: SmCtx }) {
   const now = useNow();
   // Ngày 7 (Sư Đồ): môn của sư phụ đứng đầu danh sách, nút "Vào môn của sư phụ" (vẫn phải đủ điều kiện)
   const [suMon, setSuMon] = useState<number | null>(null);
+  // 17/11: mở bằng link nhờ ký (?ky=<id>) thì môn đó ghim đầu, kèm nút Ký cùng lập
+  const [kyId] = useState<number | null>(() => {
+    try {
+      const v = Number(new URLSearchParams(location.search).get('ky'));
+      return v > 0 ? v : null;
+    } catch {
+      return null;
+    }
+  });
   useEffect(() => {
     let live = true;
     c.api.suMon().then((x) => live && setSuMon(x), () => {});
@@ -30,7 +39,9 @@ export function SmList({ c }: { c: SmCtx }) {
     };
   }, [c.api]);
   const mo = (list ?? []).filter((m) => m.du_ky);
-  const cho = (list ?? []).filter((m) => !m.du_ky);
+  const choAll = (list ?? []).filter((m) => !m.du_ky);
+  const kyM = choAll.find((m) => m.id === kyId) ?? null;
+  const cho = choAll.filter((m) => m.id !== kyId);
   const khoa = st.khoa_toi;
 
   const thieuK = Math.max(0, st.lap_can.kiep - st.kiep);
@@ -73,6 +84,13 @@ export function SmList({ c }: { c: SmCtx }) {
           {tr(`Của ngươi: ${st.kiep} kiếp · ${st.ngay} ngày chơi · Lực chiến ${fmtN(st.lc ?? 0)}`, `Yours: ${st.kiep} lives · ${st.ngay} days · Power ${fmtN(st.lc ?? 0)}`)}
         </p>
       </section>
+      {kyM && (
+        <section className="sm-card sm-bacau">
+          <h3>{tr(`${kyM.mon_chu ?? 'Một đạo hữu'} nhờ ngươi ký cùng lập`, `${kyM.mon_chu ?? 'A friend'} asks you to co-sign`)}</h3>
+          <ChoKy m={kyM} now={now} busy={c.busy} onKy={() => cosign(kyM)} />
+          <p className="sm-note">{tr('Ký không bắt ngươi vào môn này, chỉ giúp môn đủ người để dựng.', 'Signing does not make you join; it only helps the sect get founded.')}</p>
+        </section>
+      )}
       <SmBaCau c={c} />
       {khoa && (
         <p className="sm-card warn">

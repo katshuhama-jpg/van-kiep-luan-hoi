@@ -13,6 +13,8 @@ const SCREENS = [
   ['01-trong-ngay-dau', 'trong', 'list'],
   ['M1-danh-sach', 'chua', 'list'],
   ['M1-su-phu', 'su', 'list'],
+  ['M1-nho-ky', 'trong', 'list&ky=9'],
+  ['M3b-cho-ky-chu', 'cho', 'mon'],
   ['M2-lap-mon', 'du', 'lap'],
   ['M3-chon-o', 'du', 'chon-o'],
   ['M3b-cho-ky', 'cho', 'mon'],
