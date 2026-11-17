@@ -10,7 +10,7 @@ import { tr } from '../i18n';
 
 /** Hệ số chốt sau mô phỏng Ngày 2 (khớp bảng vkl_sm_cfg). */
 export const SM_CFG = {
-  lap: { kiep: 50, ngay: 5, kiepHa: 30, ngayHa: 4, daySau: 0.8 },
+  lap: { kiep: 30, ngay: 5, kiepHa: 20, ngayHa: 4, daySau: 0.8 }, // 17/11: 50 -> 30 kiếp (người chơi cẩn thận thấy 50 quá xa)
   tran: { tran: 6000, sanNha: 1.25, dem: 2.0, motO: 1.15, moc1: 30, moc2: 50, kv30: 0.1, kv60: 0.2 },
   gio: { trinhPhut: 10, tapHopPhut: 30, diPhut: 20, baoHoGio: 6, baoHoMatHetGio: 12, nghiGio: 2, kyGio: 24 },
   mon: { toiDa: 15, lao: 3, kyCan: 2 },

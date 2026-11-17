@@ -29,7 +29,7 @@ export const RELEASES: Release[] = [
     title: tr('Sơn Môn', 'Sects'),
     lead: tr('Lập môn cùng đạo hữu, giữ đất trên bản đồ. Kỷ 1 mở lúc 5:00 sáng 18/11 và kết thúc 21:00 ngày 1/12.', 'Found a sect with fellow cultivators and hold land on the map. Era 1 opens at 5:00 AM on Nov 18 and ends at 9:00 PM on Dec 1.'),
     features: [
-      { icon: 'sm-cd-0', h: tr('Vào môn hoặc tự lập môn', 'Join or found a sect'), t: tr('Vào một môn đang mở cửa. Đủ 50 kiếp và 5 ngày chơi thì tự dựng môn.', 'Join an open sect. With 50 lives and 5 days played, found your own.') },
+      { icon: 'sm-cd-0', h: tr('Vào môn hoặc tự lập môn', 'Join or found a sect'), t: tr('Vào một môn đang mở cửa. Đủ 30 kiếp và 5 ngày chơi thì tự dựng môn.', 'Join an open sect. With 30 lives and 5 days played, found your own.') },
       { icon: 'sm-huy-15', h: tr('Mỗi ngày 3 nhiệm vụ', '3 tasks a day'), t: tr('Làm ngay trong kiếp, kiếp khép lại là xong. Góp Khí vận cho cả môn.', 'Done inside your lives, complete when the life ends. Adds Fortune to the sect.') },
       { icon: 'sm-huy-3', h: tr('Giữ đất, bàn nhau qua Truyền âm', 'Hold land, plan in sect chat'), t: tr('Môn chủ ra lệnh xuất chinh, đệ tử bấm Theo. Cả môn trò chuyện ngay trong tab.', 'The master calls a march, disciples follow. The whole sect chats right in the tab.') },
       { icon: 'sm-huy-24', h: tr('Kỷ 1 tới 21:00 ngày 1/12', 'Era 1 until Dec 1, 9 PM'), t: tr('Lúc hết Kỷ, môn nào đang chiếm nhiều ô đất nhất trên bản đồ thì xếp hạng nhất. Thưởng chỉ để ngắm.', 'When the era ends, the sect holding the most land tiles on the map ranks first. Rewards are cosmetic.') },
@@ -40,7 +40,7 @@ export const RELEASES: Release[] = [
         h: tr('Sơn Môn', 'Sects'),
         hot: true,
         items: [
-          tr('Mở tab Sơn Môn để vào một môn đang mở cửa. Đủ 50 kiếp và 5 ngày chơi thì tự lập môn được, cần 2 đạo hữu ký cùng lập trong 24 giờ.', 'Open the Sects tab to join an open sect. With 50 lives and 5 days played you can found your own; 2 fellow cultivators must co-sign within 24 hours.'),
+          tr('Mở tab Sơn Môn để vào một môn đang mở cửa. Đủ 30 kiếp và 5 ngày chơi thì tự lập môn được, cần 2 đạo hữu ký cùng lập trong 24 giờ.', 'Open the Sects tab to join an open sect. With 30 lives and 5 days played you can found your own; 2 fellow cultivators must co-sign within 24 hours.'),
           tr('Mỗi ngày có điểm danh và 3 nhiệm vụ làm ngay trong kiếp: chơi xong kiếp, sống tới một tuổi, lên một cảnh giới. Kiếp khép lại là nhiệm vụ tự xong.', 'Every day: a check-in and 3 tasks you do inside your lives: finish a life, live to a certain age, reach a realm. They complete by themselves when the life ends.'),
           tr('Điểm danh và nhiệm vụ góp Khí vận cho môn. Cả môn đạt 30 hay 50 Khí vận trong ngày thì hôm sau môn đánh và giữ đất mạnh hơn.', 'Check-ins and tasks add Fortune to your sect. If the whole sect reaches 30 or 50 in a day, it fights and holds land harder the next day.'),
           tr('Bản đồ ô lục giác: môn chủ và trưởng lão phát lệnh xuất chinh, đệ tử bấm Theo. Ai cũng chọn được ô đứng giữ, lúc vắng mặt vẫn tính.', 'A hex map: the master and elders call marches, disciples tap Follow. Everyone picks a tile to guard, and it still counts while you are away.'),

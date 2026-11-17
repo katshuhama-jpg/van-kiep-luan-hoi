@@ -258,7 +258,7 @@ function SmTrong({ c, cho, cosign, now }: { c: SmCtx; cho: SmMonRow[]; cosign: (
           </button>
         )}
       </section>
-      {cho.length === 0 && <p className="sm-note">{tr('Chưa ai lập môn. Người đủ 50 kiếp và 5 ngày chơi lập được ngay.', 'Nobody has founded a sect yet.')}</p>}
+      {cho.length === 0 && <p className="sm-note">{tr('Chưa ai lập môn. Người đủ 30 kiếp và 5 ngày chơi lập được ngay.', 'Nobody has founded a sect yet.')}</p>}
       {cho.map((m) => (
         <ChoKy key={m.id} m={m} now={now} busy={c.busy} onKy={() => cosign(m)} />
       ))}

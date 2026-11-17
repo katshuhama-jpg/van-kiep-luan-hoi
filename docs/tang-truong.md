@@ -98,7 +98,7 @@ Tiến độ việc nhiều đêm:
 - Xem lại tâm pháp cấp cao (#264): chưa làm.
 
 Nội dung soạn sẵn (Tyler tự đăng, Claude không đăng):
-- Bài Page (sáng 18/11): "Sơn Môn mở cửa rồi. Từ 5:00 sáng nay, đạo hữu nào đủ 50 kiếp và 5 ngày chơi có thể lập môn, mời hai người ký cùng lập là dựng cờ được ngay. Chưa đủ thì vào một môn đang mở cửa: mỗi ngày điểm danh, làm 3 nhiệm vụ ngay trong kiếp, góp Khí vận cho cả môn. Môn chủ phát lệnh xuất chinh trên bản đồ ô lục giác, ai cũng chọn được ô để đứng giữ. Kỷ 1 kéo tới 21:00 ngày 1/12, môn giữ nhiều đất nhất đứng đầu. Không có gì phải mua, Lực chiến chỉ lên khi ngươi chơi. Chơi trên trình duyệt: van-kiep-luan-hoi.vercel.app"
+- Bài Page (sáng 18/11): "Sơn Môn mở cửa rồi. Từ 5:00 sáng nay, đạo hữu nào đủ 30 kiếp và 5 ngày chơi có thể lập môn, mời hai người ký cùng lập là dựng cờ được ngay. Chưa đủ thì vào một môn đang mở cửa: mỗi ngày điểm danh, làm 3 nhiệm vụ ngay trong kiếp, góp Khí vận cho cả môn. Môn chủ phát lệnh xuất chinh trên bản đồ ô lục giác, ai cũng chọn được ô để đứng giữ. Kỷ 1 kéo tới 21:00 ngày 1/12, môn chiếm nhiều ô đất nhất xếp hạng nhất. Trong môn có Truyền âm để bàn nhau. Không có gì phải mua, Lực chiến chỉ lên khi ngươi chơi. Chơi trên trình duyệt: van-kiep-luan-hoi.vercel.app"
 - Caption ngắn: "Sơn Môn mở cửa. Lập môn cùng đạo hữu, giữ đất tới 1/12."
 - Video 9:16 25 giây (đã gửi Tyler, file `son-mon-9x16.mp4`): vào môn - điểm danh - nhiệm vụ - bản đồ - xuất chinh - chiến báo. Gợi ý chữ trên video: 0-4s "Ngươi chưa có sơn môn?", 4-10s "Điểm danh, 3 nhiệm vụ mỗi ngày", 10-15s "Giữ đất trên bản đồ", 15-21s "Môn chủ ra lệnh, đệ tử theo", 21-25s "Kỷ 1 tới 1/12" + link.
 

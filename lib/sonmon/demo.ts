@@ -59,7 +59,7 @@ function baseState(vai: string): SmState {
     lc_phan: du ? LC_PHAN : LC_MOI,
     kiep: du ? 64 : 8,
     ngay: du ? 7 : 2,
-    lap_can: { kiep: 50, ngay: 5, ha: false },
+    lap_can: { kiep: 30, ngay: 5, ha: false },
     khoa_toi: null,
     nghi_toi: null,
     ky_cung: [],
