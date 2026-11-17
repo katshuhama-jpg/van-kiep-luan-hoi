@@ -23,7 +23,7 @@ export function SmSoSinhTu() {
     <section className="panel" style={{ marginTop: 10 }}>
       <h2>{tr('Sơn môn các Kỷ', 'Sects of each era')}</h2>
       {!ds ? null : ds.length === 0 ? (
-        <p className="note" style={{ marginTop: 0 }}>{tr('Chưa Kỷ nào khép lại. Hết Kỷ, môn giữ nhiều ô nhất được khắc tên ở đây.', 'No era has ended yet. When one ends, the sect holding the most tiles is engraved here.')}</p>
+        <p className="note" style={{ marginTop: 0 }}>{tr('Chưa Kỷ nào khép lại. Hết Kỷ, môn chiếm nhiều ô đất nhất trên bản đồ được khắc tên ở đây.', 'No era has ended yet. When one ends, the sect holding the most tiles is engraved here.')}</p>
       ) : (
         ds.map((k) => (
           <div key={k.ky} style={{ marginTop: 8 }}>

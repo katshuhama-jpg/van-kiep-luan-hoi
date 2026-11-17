@@ -32,7 +32,7 @@ export const RELEASES: Release[] = [
       { icon: 'sm-cd-0', h: tr('Vào môn hoặc tự lập môn', 'Join or found a sect'), t: tr('Vào một môn đang mở cửa. Đủ 50 kiếp và 5 ngày chơi thì tự dựng môn.', 'Join an open sect. With 50 lives and 5 days played, found your own.') },
       { icon: 'sm-huy-15', h: tr('Mỗi ngày 3 nhiệm vụ', '3 tasks a day'), t: tr('Làm ngay trong kiếp, kiếp khép lại là xong. Góp Khí vận cho cả môn.', 'Done inside your lives, complete when the life ends. Adds Fortune to the sect.') },
       { icon: 'sm-huy-3', h: tr('Giữ đất trên bản đồ', 'Hold land on the map'), t: tr('Môn chủ phát lệnh xuất chinh, đệ tử bấm Theo. Vắng mặt vẫn đứng giữ.', 'The master calls a march, disciples follow. You still guard while away.') },
-      { icon: 'sm-huy-24', h: tr('Kỷ 1 tới 21:00 ngày 1/12', 'Era 1 until Dec 1, 9 PM'), t: tr('Môn giữ nhiều ô nhất đứng đầu. Thưởng chỉ để ngắm, không có gì phải mua.', 'Most tiles wins. Rewards are cosmetic, nothing to buy.') },
+      { icon: 'sm-huy-24', h: tr('Kỷ 1 tới 21:00 ngày 1/12', 'Era 1 until Dec 1, 9 PM'), t: tr('Lúc hết Kỷ, môn nào đang chiếm nhiều ô đất nhất trên bản đồ thì xếp hạng nhất. Thưởng chỉ để ngắm.', 'When the era ends, the sect holding the most land tiles on the map ranks first. Rewards are cosmetic.') },
     ],
     cta: { label: tr('Vào Sơn Môn', 'Open Sects'), go: 'sonmon' },
     groups: [
@@ -45,7 +45,7 @@ export const RELEASES: Release[] = [
           tr('Điểm danh và nhiệm vụ góp Khí vận cho môn. Cả môn đạt 30 hay 50 Khí vận trong ngày thì hôm sau môn đánh và giữ đất mạnh hơn.', 'Check-ins and tasks add Fortune to your sect. If the whole sect reaches 30 or 50 in a day, it fights and holds land harder the next day.'),
           tr('Bản đồ ô lục giác: môn chủ và trưởng lão phát lệnh xuất chinh, đệ tử bấm Theo. Ai cũng chọn được ô đứng giữ, lúc vắng mặt vẫn tính.', 'A hex map: the master and elders call marches, disciples tap Follow. Everyone picks a tile to guard, and it still counts while you are away.'),
           tr('Lực chiến chỉ lên khi ngươi chơi kiếp: năm đã sống, số kiếp, cảnh giới, kết cục, ngày chơi và huyệt đã khai. Không có tiền mới, không có gì phải mua.', 'Power only grows by playing lives: years lived, lives, realms, endings, days played and opened points. No new currency, nothing to buy.'),
-          tr('Hết Kỷ 1, môn giữ nhiều ô nhất đứng đầu. Thưởng chỉ để ngắm: hào quang, khung tên môn, và ngoại trang cho ai điểm danh đủ 7 ngày.', 'When Era 1 ends, the sect holding the most tiles comes first. Rewards are cosmetic: an aura, a gold sect frame, and an outfit for anyone who checks in on 7 days.'),
+          tr('Lúc hết Kỷ 1, môn nào đang chiếm nhiều ô đất nhất trên bản đồ thì xếp hạng nhất (bằng nhau thì xét tổng Khí vận cả Kỷ). Thưởng chỉ để ngắm: hào quang, khung tên môn, và ngoại trang cho ai điểm danh đủ 7 ngày.', 'When Era 1 ends, the sect holding the most tiles comes first. Rewards are cosmetic: an aura, a gold sect frame, and an outfit for anyone who checks in on 7 days.'),
           tr('Có sư phụ thì môn của sư phụ đứng đầu danh sách, kèm nút Vào môn của sư phụ.', "If you have a master, their sect sits at the top of the list with a Join master's sect button."),
         ],
       },
