@@ -173,6 +173,76 @@ export function chinhKhoa(st: SmState, o: SmMapO, now: number): string | null {
 }
 
 export function SmBanDo({ c }: { c: SmCtx }) {
+  if (!c.st.mon) return <SmBanDoXem c={c} />;
+  return <SmBanDoMon c={c} />;
+}
+
+/** 18/11: người chưa vào môn xem bản đồ (chỉ xem: tên ô, cõi, môn nào giữ). Không trinh sát, không xuất chinh. */
+function SmBanDoXem({ c }: { c: SmCtx }) {
+  const { map } = c;
+  const [sel, setSel] = useState<SmMapO | null>(null);
+  const [rc, setRc] = useState(0);
+  const now = useNow();
+  const back = (
+    <button className="sm-btn small" style={{ alignSelf: 'flex-start' }} onClick={() => c.go('list')}>
+      ‹ {tr('Danh sách môn', 'Sect list')}
+    </button>
+  );
+  if (!map)
+    return (
+      <>
+        {back}
+        <p className="sm-note">{tr('Đang mở bản đồ...', 'Opening the map...')}</p>
+      </>
+    );
+  const giu = new Map<number, number>();
+  for (const o of map.o) if (o[4] != null) giu.set(o[4], (giu.get(o[4]) ?? 0) + 1);
+  const chu = sel?.[4] ?? null;
+  return (
+    <>
+      {back}
+      <div className="sm-between">
+        <span className="sm-note">{tr(`Kéo để xem cả ${map.o.length} ô · ${giu.size} môn đã cắm cờ`, `Drag to see all ${map.o.length} tiles · ${giu.size} sects flagged`)}</span>
+        <button className="sm-btn small" onClick={() => setRc(rc + 1)}>
+          {tr('Về giữa', 'Center')}
+        </button>
+      </div>
+      <HexMap map={map} mine={null} sel={sel ? [sel[0], sel[1]] : null} onPick={setSel} center={[0, 0]} recenter={rc} />
+      <div className="sm-legend">
+        <span>
+          <i className="sm-sw" style={{ borderColor: '#e5483a', background: '#3b3358' }} />
+          {tr('ô có môn giữ (theo huy hiệu)', 'held by a sect (by crest)')}
+        </span>
+        <span>
+          <i className="sm-sw" style={{ borderColor: '#3a2f5a', background: '#221b32' }} />
+          {tr('ô trống', 'empty')}
+        </span>
+      </div>
+      {sel ? (
+        <section className="sm-card">
+          <div className="sm-row">
+            {chu != null ? <HuyHieu id={map.mon[String(chu)]?.huy_hieu ?? 0} size={40} /> : <span style={{ width: 40 }} />}
+            <div className="sm-grow">
+              <h3 className="sm-clip">
+                {sel[2]} · {chu == null ? tr('Còn trống', 'Empty') : (map.mon[String(chu)]?.ten ?? '?')}
+              </h3>
+              <p className="sm-note">
+                {tr(`Cõi ${COI[sel[3]].name}`, `${COI[sel[3]].name} realm`)}
+                {chu != null ? tr(` · môn này giữ ${giu.get(chu) ?? 0} ô`, ` · this sect holds ${giu.get(chu) ?? 0} tiles`) : ''}
+              </p>
+            </div>
+          </div>
+          {sel[6] && new Date(sel[6]).getTime() > now && <p className="sm-note">{tr(`Bảo hộ tới ${hhmm(sel[6])}.`, `Protected until ${hhmm(sel[6])}.`)}</p>}
+        </section>
+      ) : (
+        <p className="sm-card">{tr('Chạm một ô để xem tên ô và môn nào đang giữ.', 'Tap a tile to see its name and which sect holds it.')}</p>
+      )}
+      <p className="sm-note">{tr('Vào một môn để đứng giữ ô, trinh sát và xuất chinh.', 'Join a sect to guard tiles, scout and march.')}</p>
+    </>
+  );
+}
+
+function SmBanDoMon({ c }: { c: SmCtx }) {
   const { st, map } = c;
   const m = st.mon!;
   const cd = m.tiles.find((t) => t.cd) ?? m.tiles[0];

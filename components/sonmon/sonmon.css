@@ -168,3 +168,7 @@ p.sm-card { display: block; }
 .sm-chat-form input { min-height: 48px; font: inherit; font-size: 16px; padding: 0 10px; background: #fffdf5; border: 2px solid var(--ink); color: var(--ink); min-width: 0; }
 .sm-chat-form input:focus-visible { outline: 3px solid var(--gold); outline-offset: 1px; }
 .sm-chat-form .sm-btn.main { min-width: 72px; }
+
+/* 18/11: nút xem người trong môn (ở danh sách môn) */
+.sm-xem { all: unset; cursor: pointer; display: inline-flex; align-items: center; min-height: 44px; margin: -6px 0 -10px; font-size: 15px; font-weight: 700; color: var(--chinh, #a8402e); text-decoration: underline; text-underline-offset: 3px; }
+.sm-xem:focus-visible { outline: 2px solid var(--ink-dark); outline-offset: 2px; }

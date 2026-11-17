@@ -5,7 +5,7 @@
  * trong (ngày đầu, chưa môn nào mở), khach (chưa liên kết), noct (chưa có chân thân), chuamo (Kỷ chưa mở).
  */
 import { banDo, coiCua, O_A, O_B } from './data';
-import { SmErr, type SmAct, type SmApi, type SmChat, type SmMap, type SmMapO, type SmMembers, type SmMonRow, type SmRankRow, type SmState } from './api';
+import { SmErr, type SmAct, type SmApi, type SmChat, type SmMap, type SmMapO, type SmMembers, type SmMonNguoi, type SmMonRow, type SmRankRow, type SmState } from './api';
 
 const now = Date.now();
 const at = (min: number) => new Date(now + min * 60_000).toISOString();
@@ -188,6 +188,10 @@ export function demoApi(vaiIn: string): SmApi {
     },
     chatReport: () => wait({ so_bao: 1, an: false }),
     members: () => wait(vai === 'de' ? { ...MEMBERS, don: null } : MEMBERS),
+    monDs: (mon) => {
+      const n = [...LIST, ...CHO_KY].find((m) => m.id === mon)?.n ?? 0;
+      return wait(MEMBERS.ds.concat(MEMBERS.ds).slice(0, n).map((x, i): SmMonNguoi => ({ ten: i < MEMBERS.ds.length ? x.ten : `${x.ten} ${i}`, chuc: i === 0 ? 'chu' : x.chuc === 'chu' ? 'de' : x.chuc, lc: Math.max(300, x.lc - i * 40) })));
+    },
     act: async (a: SmAct) => {
       await wait(null);
       const m = st.mon;

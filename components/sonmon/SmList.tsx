@@ -4,11 +4,11 @@
 import { useEffect, useState } from 'react';
 import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
-import type { SmMonRow } from '@/lib/sonmon/api';
+import { smLoi, type SmMonNguoi, type SmMonRow } from '@/lib/sonmon/api';
 import { SM_CFG } from '@/lib/sonmon/data';
 import { HuyHieu } from './Pixel';
 import { SmBaCau } from './SmLuat';
-import { clock, fmtN, Msg, ngayThang, useNow, type SmCtx } from './ui';
+import { chucTen, clock, fmtN, Msg, ngayThang, useNow, type SmCtx } from './ui';
 
 const BAO_KEY = 'vkl.sm.baoMo';
 
@@ -17,6 +17,8 @@ export function SmList({ c }: { c: SmCtx }) {
   const [duDk, setDuDk] = useState(false);
   const [conCho, setConCho] = useState(false);
   const [hoi, setHoi] = useState<SmMonRow | null>(null);
+  // 18/11: xem người trong môn trước khi vào
+  const [xem, setXem] = useState<SmMonRow | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [ok, setOk] = useState<string | null>(null);
   const now = useNow();
@@ -71,6 +73,15 @@ export function SmList({ c }: { c: SmCtx }) {
   };
 
   const suM = mo.find((m) => m.id === suMon) ?? null;
+  const bamVao = (m: SmMonRow) => {
+    setXem(null);
+    if (m.o > 0) setHoi(m);
+    else vao(m);
+  };
+  const moXem = (m: SmMonRow) => {
+    track('sm_xem_ds', { mon: m.id, n: m.n });
+    setXem(m);
+  };
   const shown = mo.filter((m) => m.id !== suMon && (!duDk || m.du_dk) && (!conCho || m.n < m.toi_da));
 
   return (
@@ -112,11 +123,21 @@ export function SmList({ c }: { c: SmCtx }) {
             <button className="sm-chip" aria-pressed={conCho} onClick={() => setConCho(!conCho)}>
               {tr('Còn chỗ', 'Has room')}
             </button>
+            <button
+              className="sm-chip"
+              style={{ marginLeft: 'auto' }}
+              onClick={() => {
+                track('sm_xem_ban_do', { tu: 'list' });
+                c.go('ban-do');
+              }}
+            >
+              {tr('Xem bản đồ', 'See the map')}
+            </button>
           </div>
-          {suM && <MonRow m={suM} st={c.st} busy={c.busy} su onVao={() => (suM.o > 0 ? setHoi(suM) : vao(suM))} />}
+          {suM && <MonRow m={suM} st={c.st} busy={c.busy} su onVao={() => bamVao(suM)} onXem={() => moXem(suM)} />}
           {shown.length === 0 && !suM && <p className="sm-note">{tr('Không có môn nào hợp bộ lọc.', 'No sect matches the filter.')}</p>}
           {shown.map((m) => (
-            <MonRow key={m.id} m={m} st={c.st} busy={c.busy} onVao={() => (m.o > 0 ? setHoi(m) : vao(m))} />
+            <MonRow key={m.id} m={m} st={c.st} busy={c.busy} onVao={() => bamVao(m)} onXem={() => moXem(m)} />
           ))}
           <p className="sm-note">{tr('Vào môn đã cắm cờ thì tự rời phải chờ hết Kỷ mới vào môn khác. Bị đuổi thì vào môn khác được ngay.', 'Leave a flagged sect yourself and you wait until the era ends. If expelled, you can join another at once.')}</p>
           {cho.length > 0 && (
@@ -152,6 +173,8 @@ export function SmList({ c }: { c: SmCtx }) {
         {duLap && khoa && <p className="sm-why">{tr('Đang bị khóa tới hết Kỷ.', 'Locked until the era ends.')}</p>}
       </section>
 
+      {xem && <XemNguoi c={c} m={xem} onVao={() => bamVao(xem)} onDong={() => setXem(null)} />}
+
       {hoi && (
         <div className="sm-sheet" role="dialog" aria-modal="true" aria-label={tr('Xác nhận vào môn', 'Confirm joining')} onClick={() => setHoi(null)}>
           <div onClick={(e) => e.stopPropagation()}>
@@ -175,14 +198,17 @@ export function SmList({ c }: { c: SmCtx }) {
   );
 }
 
-function MonRow({ m, st, busy, onVao, su }: { m: SmMonRow; st: SmCtx['st']; busy: boolean; onVao: () => void; su?: boolean }) {
-  const day = m.n >= m.toi_da;
+function lyDo(m: SmMonRow, st: SmCtx['st']): string | null {
+  if (st.khoa_toi) return tr('Đang chờ hết Kỷ', 'Locked until era ends');
+  if (m.n >= m.toi_da) return tr(`Đã đủ ${m.toi_da} người`, `Full (${m.toi_da})`);
+  if (!m.du_dk) return tr(`Cần ${m.dk_kiep} kiếp, ${m.dk_tuoi_dao} ngày chơi`, `Needs ${m.dk_kiep} lives, ${m.dk_tuoi_dao} days`);
+  if (st.don.some((d) => d.mon === m.id)) return tr('Đang chờ duyệt', 'Awaiting review');
+  return null;
+}
+
+function MonRow({ m, st, busy, onVao, onXem, su }: { m: SmMonRow; st: SmCtx['st']; busy: boolean; onVao: () => void; onXem: () => void; su?: boolean }) {
   const daDon = st.don.some((d) => d.mon === m.id);
-  let why: string | null = null;
-  if (st.khoa_toi) why = tr('Đang chờ hết Kỷ', 'Locked until era ends');
-  else if (day) why = tr(`Đã đủ ${m.toi_da} người`, `Full (${m.toi_da})`);
-  else if (!m.du_dk) why = tr(`Cần ${m.dk_kiep} kiếp, ${m.dk_tuoi_dao} ngày chơi`, `Needs ${m.dk_kiep} lives, ${m.dk_tuoi_dao} days`);
-  else if (daDon) why = tr('Đang chờ duyệt', 'Awaiting review');
+  const why = lyDo(m, st);
   const dk = [m.dk_kiep > 0 && tr(`từ ${m.dk_kiep} kiếp`, `${m.dk_kiep}+ lives`), m.dk_tuoi_dao > 0 && tr(`${m.dk_tuoi_dao} ngày chơi`, `${m.dk_tuoi_dao}+ days`)].filter(Boolean).join(', ');
   return (
     <section className={`sm-mon${su ? ' su' : ''}`}>
@@ -196,6 +222,10 @@ function MonRow({ m, st, busy, onVao, su }: { m: SmMonRow; st: SmCtx['st']; busy
           {m.mo_cua ? tr('Mở cửa', 'Open') : tr('Duyệt đơn', 'Review')}
           {dk ? ` · ${dk}` : tr(' · ai cũng vào được', ' · anyone')}
         </span>
+        <br />
+        <button className="sm-xem" onClick={onXem} aria-label={tr(`Xem người trong ${m.ten}`, `See members of ${m.ten}`)}>
+          {tr(`Xem ${m.n} người trong môn`, `See ${m.n} members`)}
+        </button>
       </div>
       <div className="sm-mon-act">
         <button className={`sm-btn small ${why ? '' : 'dark'}`} disabled={!!why || busy} onClick={onVao}>
@@ -263,5 +293,80 @@ function SmTrong({ c, cho, cosign, now }: { c: SmCtx; cho: SmMonRow[]; cosign: (
         <ChoKy key={m.id} m={m} now={now} busy={c.busy} onKy={() => cosign(m)} />
       ))}
     </>
+  );
+}
+
+/** 18/11: xem người trong môn trước khi vào (tên, chức, Lực chiến). Không hiện tài khoản, không hiện chỗ đứng. */
+function XemNguoi({ c, m, onVao, onDong }: { c: SmCtx; m: SmMonRow; onVao: () => void; onDong: () => void }) {
+  const [ds, setDs] = useState<SmMonNguoi[] | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+  useEffect(() => {
+    let live = true;
+    c.api.monDs(m.id).then(
+      (x) => live && setDs(x),
+      (e: unknown) => live && setErr(smLoi(e)),
+    );
+    return () => {
+      live = false;
+    };
+  }, [c.api, m.id]);
+  const why = lyDo(m, c.st);
+  const daDon = c.st.don.some((d) => d.mon === m.id);
+  return (
+    <div className="sm-sheet" role="dialog" aria-modal="true" aria-label={tr(`Người trong ${m.ten}`, `Members of ${m.ten}`)} onClick={onDong}>
+      <div onClick={(e) => e.stopPropagation()} style={{ maxHeight: '85vh' }}>
+        <div className="sm-row">
+          <HuyHieu id={m.huy_hieu} size={44} />
+          <div className="sm-grow">
+            <h2>{m.ten}</h2>
+            <span className="sm-note">
+              {tr(`${m.n}/${m.toi_da} người · Lực chiến cả môn ${fmtN(m.lc)}`, `${m.n}/${m.toi_da} members · total power ${fmtN(m.lc)}`)}
+            </span>
+          </div>
+        </div>
+        <Msg err={err} ok={null} />
+        <div style={{ overflowY: 'auto', minHeight: 0, flex: '1 1 auto' }}>
+          {!ds && !err && <p className="sm-note">{tr('Đang xem người trong môn...', 'Loading members...')}</p>}
+          {ds && (
+            <table className="sm-table">
+              <colgroup>
+                <col style={{ width: '64%' }} />
+                <col style={{ width: '36%' }} />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>{tr('Tên · chức', 'Name · rank')}</th>
+                  <th className="num">{tr('Lực chiến', 'Power')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ds.map((x, i) => (
+                  <tr key={i} className={x.ta ? 'me' : ''}>
+                    <td>
+                      <span>{x.ten}</span>
+                      <div className="sm-note" style={{ fontSize: 13 }}>
+                        {chucTen(x.chuc)}
+                        {x.ta ? tr(' · ngươi', ' · you') : ''}
+                      </div>
+                    </td>
+                    <td className="num">{fmtN(x.lc)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+        {why ? (
+          <p className="sm-why">{daDon ? tr('Ngươi đã gửi đơn vào môn này, đang chờ duyệt.', 'You applied; awaiting review.') : why}</p>
+        ) : (
+          <button className="sm-btn main wide" disabled={c.busy} onClick={onVao}>
+            {m.mo_cua ? tr('Vào môn này', 'Join this sect') : tr('Xin vào môn này', 'Apply to this sect')}
+          </button>
+        )}
+        <button className="sm-btn sm-ghost wide" onClick={onDong}>
+          {tr('Đóng', 'Close')}
+        </button>
+      </div>
+    </div>
   );
 }

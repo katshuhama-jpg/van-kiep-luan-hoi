@@ -119,7 +119,7 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
   const coMon = !!st?.mon;
   const v: SmView = useMemo(() => {
     if (!st) return view;
-    if (!coMon) return ['lap', 'chon-o', 'ky', 'luc-chien', 'luat'].includes(view) ? view : 'list';
+    if (!coMon) return ['lap', 'chon-o', 'ky', 'luc-chien', 'luat', 'ban-do'].includes(view) ? view : 'list'; // 18/11: chưa có môn vẫn xem được bản đồ (chỉ xem)
     if (view === 'list' || view === 'lap') return 'mon';
     if (view === 'chon-o' && (st.mon!.cam_co || st.mon!.chuc === 'de')) return 'mon';
     return view;

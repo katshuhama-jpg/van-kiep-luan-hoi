@@ -92,6 +92,8 @@ export type SmMap = {
   di: { mon: number; tu: [number, number]; toi: [number, number]; toi_noi_luc: string; trang_thai: string }[];
 };
 export type SmMember = { ten: string; tk: string; chuc: SmChuc; lc: number; dung: [number, number] | null; nghi: boolean; kv: number };
+/** 18/11: người trong một môn, cho người chưa vào môn xem trước (vkl_sm_mon_ds) */
+export type SmMonNguoi = { ten: string; chuc: SmChuc; lc: number; ta?: boolean };
 export type SmMembers = { ds: SmMember[]; don: { id: number; ten: string; lc: number; luc: string }[] | null };
 export type SmRankRow = { id: number; ten: string; huy_hieu: number; o: number; kv: number; n: number };
 
@@ -162,6 +164,8 @@ export interface SmApi {
   map(): Promise<SmMap>;
   rank(): Promise<SmRankRow[]>;
   members(): Promise<SmMembers>;
+  /** 18/11: xem người trong một môn trước khi vào */
+  monDs(mon: number): Promise<SmMonNguoi[]>;
   /** 17/11 Truyền âm (chat trong môn) */
   chatList(sau: number): Promise<SmChat[]>;
   chatSend(nd: string): Promise<SmChat>;
@@ -226,6 +230,7 @@ export function realApi(): SmApi {
     state: () => rpc<SmState>('vkl_sm_state', {}),
     list: () => rpc<SmMonRow[]>('vkl_sm_list', {}),
     members: () => rpc<SmMembers>('vkl_sm_members', {}),
+    monDs: (mon) => rpc<SmMonNguoi[]>('vkl_sm_mon_ds', { p_mon: mon }),
     rank: () => rpc<SmRankRow[]>('vkl_sm_rank', {}, false),
     chatList: (sau) => rpc<SmChat[]>('vkl_sm_chat_list', { p_sau: sau }),
     chatSend: (nd) => rpc<SmChat>('vkl_sm_chat_send', { p_nd: nd }),
