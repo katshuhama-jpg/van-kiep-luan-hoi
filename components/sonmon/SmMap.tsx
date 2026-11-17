@@ -21,6 +21,14 @@ const HEX_IN = Array.from({ length: 6 }, (_, i) => {
   return `${(S - 5) * Math.cos(a)},${(S - 5) * Math.sin(a)}`;
 }).join(' ');
 const NEN: Record<string, string> = { thien: '#2e2850', hong_tran: '#2a2a40', u_minh: '#221b32' };
+// 18/11 (Tyler: ô có người khó nhìn): ô trống lùi vào nền tối; ô có môn giữ nền sáng pha màu huy hiệu, viền màu huy hiệu, quầng sáng, huy hiệu to hơn
+const VIEN_TRONG = '#2c2545';
+/** trộn màu a với b theo tỉ lệ t (0 = a, 1 = b) */
+function tron(a: string, b: string, t: number) {
+  const n = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const x = n(a), y = n(b);
+  return '#' + x.map((v, i) => Math.round(v + (y[i] - v) * t).toString(16).padStart(2, '0')).join('');
+}
 
 function fromPx(x: number, y: number) {
   const q = ((Math.sqrt(3) / 3) * x - (1 / 3) * y) / S;
@@ -65,7 +73,12 @@ export function HexMap({
   }, [center[0], center[1], recenter]);
   const pan = (dx: number, dy: number) => setOff((o) => ({ x: o.x + dx, y: o.y + dy }));
 
-  const mau = (id: number | null) => (id == null ? '#3a2f5a' : HUY_MAU[Math.floor((map.mon[String(id)]?.huy_hieu ?? 0) / 5) % 6].hex);
+  const mau = (id: number | null) => (id == null ? VIEN_TRONG : HUY_MAU[Math.floor((map.mon[String(id)]?.huy_hieu ?? 0) / 5) % 6].hex);
+  // viền ô có chủ: màu huy hiệu làm sáng lên (Đen huyền thì dùng xám bạc để không chìm vào nền)
+  const vien = (id: number) => {
+    const m = mau(id);
+    return m === '#2b2b33' ? '#b9b4c8' : tron(m, '#ffffff', 0.25);
+  };
 
   return (
     <>
@@ -113,18 +126,25 @@ export function HexMap({
     >
       <svg width={1200} height={1200} style={{ transform: `translate(${off.x}px, ${off.y}px)`, overflow: 'visible' }} aria-hidden>
         {map.o.map((o) => {
+          if (o[4] == null) return null;
+          const p = px(o[0], o[1]);
+          const ta = mine != null && o[4] === mine;
+          return <polygon key={`g${o[0]},${o[1]}`} points={HEX} transform={`translate(${p.x},${p.y}) scale(1.12)`} fill="none" stroke={ta ? '#f2c14e' : vien(o[4])} strokeWidth={7} opacity={pickEmpty ? 0.12 : 0.35} />;
+        })}
+        {map.o.map((o) => {
           const [q, r, , coi, chu, cd, bh] = o;
           const p = px(q, r);
           const ta = mine != null && chu === mine;
           const isSel = sel && sel[0] === q && sel[1] === r;
           const trong = chu == null;
-          const stroke = isSel ? '#fff3dc' : ta ? '#f2c14e' : trong ? (pickEmpty ? '#c9952e' : '#3a2f5a') : mau(chu);
+          const stroke = isSel ? '#fff3dc' : ta ? '#f2c14e' : trong ? (pickEmpty ? '#c9952e' : VIEN_TRONG) : vien(chu);
           return (
             <g key={`${q},${r}`} transform={`translate(${p.x},${p.y})`} opacity={pickEmpty && !trong ? 0.45 : 1}>
-              <polygon points={HEX} fill={trong ? NEN[coi] : '#3b3358'} stroke={stroke} strokeWidth={isSel || ta ? 3 : 2} />
-              {bh && <polygon points={HEX_IN} fill="none" stroke="#fff3dc" strokeWidth={1} strokeDasharray="2 2" />}
-              {!trong && <HuyHieu id={map.mon[String(chu)]?.huy_hieu ?? 0} size={22} x={-11} y={-12} label="" />}
-              {cd && !trong && <rect x={-3} y={-S + 3} width={6} height={4} fill="#e8c35a" stroke="#1f160d" strokeWidth={1} />}
+              <polygon points={HEX} fill={trong ? NEN[coi] : tron(mau(chu), '#f3e6c4', 0.72)} stroke={stroke} strokeWidth={isSel || ta ? 3.5 : trong ? 1.5 : 3} />
+              {ta && !isSel && <polygon points={HEX_IN} fill="none" stroke="#f2c14e" strokeWidth={2.5} />}
+              {bh && <polygon points={HEX_IN} fill="none" stroke={trong ? '#fff3dc' : '#3a2a14'} strokeWidth={1.2} strokeDasharray="2 2" />}
+              {!trong && <HuyHieu id={map.mon[String(chu)]?.huy_hieu ?? 0} size={30} x={-15} y={-14} label="" />}
+              {cd && !trong && <rect x={-4} y={-S + 2} width={8} height={5} fill="#e8c35a" stroke="#1f160d" strokeWidth={1} />}
             </g>
           );
         })}
@@ -210,11 +230,11 @@ function SmBanDoXem({ c }: { c: SmCtx }) {
       <HexMap map={map} mine={null} sel={sel ? [sel[0], sel[1]] : null} onPick={setSel} center={[0, 0]} recenter={rc} />
       <div className="sm-legend">
         <span>
-          <i className="sm-sw" style={{ borderColor: '#e5483a', background: '#3b3358' }} />
+          <i className="sm-sw" style={{ borderColor: '#e06a5c', background: '#e5b699' }} />
           {tr('ô có môn giữ (theo huy hiệu)', 'held by a sect (by crest)')}
         </span>
         <span>
-          <i className="sm-sw" style={{ borderColor: '#3a2f5a', background: '#221b32' }} />
+          <i className="sm-sw" style={{ borderColor: '#2c2545', background: '#221b32' }} />
           {tr('ô trống', 'empty')}
         </span>
       </div>
@@ -265,15 +285,15 @@ function SmBanDoMon({ c }: { c: SmCtx }) {
       <HexMap map={map} mine={m.id} sel={sel ? [sel[0], sel[1]] : null} onPick={(o) => (setSel(o), setErr(null), setOk(null))} center={home} recenter={rc} />
       <div className="sm-legend">
         <span>
-          <i className="sm-sw" style={{ borderColor: '#f2c14e', background: '#3b3358' }} />
+          <i className="sm-sw" style={{ borderColor: '#f2c14e', background: '#efdcb0', boxShadow: 'inset 0 0 0 2px #fff6e0, inset 0 0 0 4px #f2c14e' }} />
           {tr('môn ta', 'ours')}
         </span>
         <span>
-          <i className="sm-sw" style={{ borderColor: '#e5483a', background: '#3b3358' }} />
+          <i className="sm-sw" style={{ borderColor: '#e06a5c', background: '#e5b699' }} />
           {tr('môn khác (theo huy hiệu)', 'other sects (by crest)')}
         </span>
         <span>
-          <i className="sm-sw" style={{ borderColor: '#3a2f5a', background: '#221b32' }} />
+          <i className="sm-sw" style={{ borderColor: '#2c2545', background: '#221b32' }} />
           {tr('ô trống', 'empty')}
         </span>
       </div>
