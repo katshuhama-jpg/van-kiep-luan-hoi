@@ -159,6 +159,8 @@ export interface SmApi {
   map(): Promise<SmMap>;
   rank(): Promise<SmRankRow[]>;
   members(): Promise<SmMembers>;
+  /** id môn sư phụ đang ở (Sư Đồ), null nếu không có */
+  suMon(): Promise<number | null>;
   act(a: SmAct): Promise<Record<string, unknown>>;
 }
 
@@ -216,6 +218,7 @@ export function realApi(): SmApi {
     list: () => rpc<SmMonRow[]>('vkl_sm_list', {}),
     members: () => rpc<SmMembers>('vkl_sm_members', {}),
     rank: () => rpc<SmRankRow[]>('vkl_sm_rank', {}, false),
+    suMon: () => rpc<number | null>('vkl_sm_su_mon', {}).then((x) => (x == null ? null : Number(x)), () => null),
     map: async () => {
       let r: Response;
       try {

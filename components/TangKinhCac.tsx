@@ -70,7 +70,7 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onSwap,
   const tamO = tamId ? owned(c, tamId) : undefined;
   const tamFrom = tamO && tamO.tang < 9 && tqOf(c, tamId) < tqCost(tamO.tang) ? list.find((x) => x.id !== tamId && canSwap(c, x.id, tamId)) : undefined;
   const tamSwapHint = tamFrom
-    ? tr(`Tâm pháp còn thiếu quyển: có thể chép ${SWAP_RATE} quyển ${tamFrom.name} thành 1 quyển tâm pháp (bấm vào ${tamFrom.name}).`, `Your heart art lacks fragments: rework ${SWAP_RATE} ${tamFrom.name} fragments into 1 (tap ${tamFrom.name}).`)
+    ? tr(`Thiếu quyển tâm pháp? Chép ${SWAP_RATE} quyển ${short(tamFrom.name)} thành 1.`, `Short on heart art fragments? Rework ${SWAP_RATE} ${short(tamFrom.name)} into 1.`)
     : null;
   // 4/11 (Tyler: bấm Mang tự tháo chiêu khác, khó hiểu): ô đầy thì hỏi thay ô nào, mang xong báo rõ vào ô nào
   const [pick, setPick] = useState<string | null>(null);
@@ -393,7 +393,7 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onSwap,
                                         : tr('Nâng tầng', 'Raise')}
                           </button>
                         )}
-                        {blk === 'cap' && <small className="bad">{tr(`Chiêu cao hơn tâm pháp tối đa ${TAM_GAP} tầng. Nâng tâm pháp trước.`, `A skill can be at most ${TAM_GAP} stages above your heart art. Raise the heart art first.`)}</small>}
+                        {blk === 'cap' && <small className="bad">{tr(`Chiêu chỉ cao hơn tâm pháp tối đa ${TAM_GAP} tầng.`, `A skill can be at most ${TAM_GAP} stages above your heart art.`)}</small>}
                         {blk === 'cap' && capHint && <small>{capHint}</small>}
                         {tv > 0 && <small className={blk === 'tuvi' ? 'bad' : ''}>{tr(`-${tv} tu vi`, `-${tv} cultivation`)}</small>}
                         <small>{cdText(d)}</small>

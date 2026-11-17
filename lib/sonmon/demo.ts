@@ -165,6 +165,7 @@ export function demoApi(vaiIn: string): SmApi {
     list: () => wait(list),
     map: () => wait(map(coMon && vai !== 'cho')),
     rank: () => wait(RANK),
+    suMon: () => wait(vai === 'su' ? (LIST[1]?.id ?? null) : null),
     members: () => wait(vai === 'de' ? { ...MEMBERS, don: null } : MEMBERS),
     act: async (a: SmAct) => {
       await wait(null);

@@ -13,10 +13,10 @@ export const CHAN_THAN_ON = process.env.NEXT_PUBLIC_CHAN_THAN !== '0';
 export const FIRST_SIMPLE_ON = process.env.NEXT_PUBLIC_FIRST_SIMPLE !== '0';
 
 /**
- * SON_MON_ON (4.6.0 Sơn Môn Tranh Bá): tắt mặc định, bật ở khối Ngày 7 (lên bản 18/11).
- * Thử trên máy: `NEXT_PUBLIC_SON_MON=1 npx next dev`.
+ * SON_MON_ON (4.6.0 Sơn Môn Tranh Bá): bật từ khối Ngày 7 (lên bản 18/11, Kỷ 1 bắt đầu 5:00).
+ * Tắt gấp: `NEXT_PUBLIC_SON_MON=0` rồi build lại (tab Sơn Môn về màn chờ).
  */
-export const SON_MON_ON = process.env.NEXT_PUBLIC_SON_MON === '1';
+export const SON_MON_ON = process.env.NEXT_PUBLIC_SON_MON !== '0';
 
 /**
  * KIEP1_CN_GON (15/11, tăng trưởng, cải thiện "Kiếp đầu gọn" lần 2): kiếp 1 của người mới không tự mở cẩm nang

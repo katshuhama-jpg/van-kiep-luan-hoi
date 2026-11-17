@@ -61,7 +61,7 @@ const BIEU: string[][] = [
   ['...ww...', '...ww...', '...ww...', '...ww...', '...ww...', '.wwwwww.', '...ww...', '...ww...'],
   ['...ww...', '..wwww..', 'w.wwww.w', 'ww.ww.ww', '.wwwwww.', '..wwww..', '...ww...', '...ww...'],
   ['..wwww..', '.www....', 'www.....', 'www.....', 'www.....', 'www.....', '.www....', '..wwww..'],
-  ['....www.', '...w.www', '..ww....', '.ww.....', '.wwwww..', '.....ww.', '....ww..', 'wwwww...'],
+  ['..w..w..', '..wwwww.', '.ww.wwww', 'wwwwwwww', 'www.....', 'wwwwww..', '.wwww...', '..ww....'],
   ['........', '...w....', '..www...', '..www.w.', '.wwwwwww', '.wwwwwww', 'wwwwwwww', '........'],
 ];
 const mix = (hex: string, to: number, t: number) => {

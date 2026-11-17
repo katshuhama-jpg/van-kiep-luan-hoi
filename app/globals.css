@@ -5420,6 +5420,7 @@ body[data-ctflow='1'] { overflow: hidden; }
 .su-rows dd { margin: 0; line-height: 1.35; }
 .su-rows small { color: #6a5640; }
 .su-invite { display: block; width: 100%; min-height: 46px; }
+.su-mon { display: flex; align-items: center; justify-content: center; min-height: 44px; margin-top: 6px; text-decoration: none; }
 .su-sub { display: block; margin-top: 4px; font-size: 13px; line-height: 1.4; color: #6a5640; }
 .su-bound { position: fixed; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 70; transform: translateX(-50%); width: min(92vw, 420px); display: flex; align-items: flex-start; gap: 8px; padding: 8px 8px 8px 12px; background: #1f160d; color: #fff3dc; border: 3px solid #ffd36b; box-shadow: 0 0 0 3px #1f160d; font-size: 14px; line-height: 1.4; }
 .su-bound span { flex: 1; }
@@ -5433,6 +5434,8 @@ body[data-ctflow='1'] { overflow: hidden; }
 .tab-item:focus-visible { outline: 3px solid var(--gold-l); outline-offset: -3px; }
 /* 16/11: tab bấm rồi đang chờ trang mới: chữ nhấp nháy theo bước (không gradient) */
 .tab-in { display: contents; }
+.tab-item { position: relative; }
+.tab-dot { position: absolute; top: 8px; right: calc(50% - 20px); width: 10px; height: 10px; background: var(--red); border: 2px solid #fff3dc; }
 .tab-in.wait > span { animation: tabWait 0.6s steps(2) infinite; }
 @keyframes tabWait { 50% { opacity: 0.55; } }
 .has-tabs { padding-bottom: calc(76px + env(safe-area-inset-bottom)) !important; }

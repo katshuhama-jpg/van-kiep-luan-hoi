@@ -24,6 +24,35 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '4.6.0',
+    date: '18/11/2026',
+    title: tr('Sơn Môn', 'Sects'),
+    lead: tr('Lập môn cùng đạo hữu, giữ đất trên bản đồ. Kỷ 1 mở lúc 5:00 sáng 18/11 và kết thúc 21:00 ngày 1/12.', 'Found a sect with fellow cultivators and hold land on the map. Era 1 opens at 5:00 AM on Nov 18 and ends at 9:00 PM on Dec 1.'),
+    groups: [
+      {
+        h: tr('Sơn Môn', 'Sects'),
+        hot: true,
+        items: [
+          tr('Mở tab Sơn Môn để vào một môn đang mở cửa. Đủ 50 kiếp và 5 ngày chơi thì tự lập môn được, cần 2 đạo hữu ký cùng lập trong 24 giờ.', 'Open the Sects tab to join an open sect. With 50 lives and 5 days played you can found your own; 2 fellow cultivators must co-sign within 24 hours.'),
+          tr('Mỗi ngày có điểm danh và 3 nhiệm vụ làm ngay trong kiếp: chơi xong kiếp, sống tới một tuổi, lên một cảnh giới. Kiếp khép lại là nhiệm vụ tự xong.', 'Every day: a check-in and 3 tasks you do inside your lives: finish a life, live to a certain age, reach a realm. They complete by themselves when the life ends.'),
+          tr('Điểm danh và nhiệm vụ góp Khí vận cho môn. Cả môn đạt 30 hay 50 Khí vận trong ngày thì hôm sau môn đánh và giữ đất mạnh hơn.', 'Check-ins and tasks add Fortune to your sect. If the whole sect reaches 30 or 50 in a day, it fights and holds land harder the next day.'),
+          tr('Bản đồ ô lục giác: môn chủ và trưởng lão phát lệnh xuất chinh, đệ tử bấm Theo. Ai cũng chọn được ô đứng giữ, lúc vắng mặt vẫn tính.', 'A hex map: the master and elders call marches, disciples tap Follow. Everyone picks a tile to guard, and it still counts while you are away.'),
+          tr('Lực chiến chỉ lên khi ngươi chơi kiếp: năm đã sống, số kiếp, cảnh giới, kết cục, ngày chơi và huyệt đã khai. Không có tiền mới, không có gì phải mua.', 'Power only grows by playing lives: years lived, lives, realms, endings, days played and opened points. No new currency, nothing to buy.'),
+          tr('Hết Kỷ 1, môn giữ nhiều ô nhất đứng đầu. Thưởng chỉ để ngắm: hào quang, khung tên môn, và ngoại trang cho ai điểm danh đủ 7 ngày.', 'When Era 1 ends, the sect holding the most tiles comes first. Rewards are cosmetic: an aura, a gold sect frame, and an outfit for anyone who checks in on 7 days.'),
+          tr('Có sư phụ thì môn của sư phụ đứng đầu danh sách, kèm nút Vào môn của sư phụ.', "If you have a master, their sect sits at the top of the list with a Join master's sect button."),
+        ],
+      },
+      {
+        h: tr('Sửa lỗi 18/11', 'Fixes on Nov 18'),
+        items: [
+          tr('Tàng Kinh Các ghi rõ khi nào cần nâng tâm pháp trước.', 'The Scripture Pavilion now says clearly when you must raise your heart art first.'),
+          tr('Tuyệt kỹ đã dung hợp giờ vẫn nhặt và mua được tàn quyển để lên tầng. Mô tả các chiêu hút máu ghi rõ là hồi máu theo sát thương gây ra. Cảm ơn Nguyễn Quang và Phan Anh Tuấn.', 'A fused ultimate can still find and buy fragments to raise its stage. Lifesteal skills now say clearly that they heal you for a share of the damage dealt. Thanks to Nguyen Quang and Phan Anh Tuan.'),
+        ],
+      },
+    ],
+    more: [tr('Lập môn cùng đạo hữu', 'Found a sect together'), tr('Bản đồ lục giác', 'Hex map'), tr('Kỷ 1 tới 1/12', 'Era 1 until Dec 1')],
+  },
+  {
     v: '4.5.0',
     date: '13/11/2026',
     title: tr('Chân Thân', 'True Self'),

@@ -4,12 +4,15 @@
  * 4.6.0 Sư Đồ: khối nhỏ ở màn Chân thân. Sư phụ của ngươi và tiến độ thành tài, số đệ tử, danh hiệu sư phụ,
  * nút Mời đệ tử (thẻ chia sẻ có hình chân thân), nhận phúc duyên thưởng khi có đệ tử thành tài.
  */
+import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import ShareSheet from '@/components/ShareSheet';
 import type { Player } from '@/lib/auth';
 import { shareSuDo } from '@/lib/ctCard';
 import type { Meta } from '@/lib/game/types';
 import type { ShareOut } from '@/lib/shareCard';
+import { SON_MON_ON } from '@/lib/flags';
+import { realApi } from '@/lib/sonmon/api';
 import { metaWritable } from '@/lib/storage';
 import { suAnSet, suClaim, suInfo, suList, suState, suTim, suTitle, type SuDe, type SuInfo, type SuTim } from '@/lib/suDo';
 import { SuTimSheet } from './SuTim';
@@ -86,6 +89,19 @@ function SuDeList({ ds }: { ds: SuDe[] }) {
 
 export default function SuDoPanel({ user, meta, onGain }: { user: Player | null; meta: Meta; onGain: (n: number) => Promise<void> }) {
   const [info, setInfo] = useState<SuInfo | null>(null);
+  // Ngày 7: sư phụ đã vào sơn môn thì có nút sang môn đó (môn sư phụ đứng đầu danh sách ở tab Sơn Môn)
+  const [suMon, setSuMon] = useState(false);
+  const coSu = !!info?.su;
+  useEffect(() => {
+    if (!SON_MON_ON || !coSu) return;
+    let live = true;
+    realApi()
+      .suMon()
+      .then((x) => live && setSuMon(x != null), () => {});
+    return () => {
+      live = false;
+    };
+  }, [coSu]);
   const [ds, setDs] = useState<SuDe[] | null>(null);
   const [gain, setGain] = useState(0);
   const [drawing, setDrawing] = useState(false);
@@ -142,6 +158,11 @@ export default function SuDoPanel({ user, meta, onGain }: { user: Player | null;
                 <br />
                 <SuBar n={Math.min(info.kiep, 10)} st={suState({ thanh_tai_luc: info.thanh_tai ? new Date().toISOString() : null, han: info.han })} />
                 <small>{info.thanh_tai ? tr('Ngươi đã thành tài.', 'You have graduated.') : suLine(Math.min(info.kiep, 10), info.han, null)}</small>
+                {SON_MON_ON && suMon && (
+                  <Link className="btn su-mon" href="/son-mon" onClick={() => track('su_mon_open')}>
+                    {tr('Vào môn của sư phụ', "Go to master's sect")}
+                  </Link>
+                )}
               </dd>
             </>
           )}

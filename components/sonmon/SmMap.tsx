@@ -79,9 +79,15 @@ export function HexMap({
         if (d[e.key]) {
           e.preventDefault();
           pan(...d[e.key]);
+        } else if ((e.key === 'Enter' || e.key === ' ') && box.current) {
+          // Ngày 7: chọn ô bằng bàn phím = ô nằm giữa khung bản đồ
+          e.preventDefault();
+          const h = fromPx(box.current.clientWidth / 2 - off.x, box.current.clientHeight / 2 - off.y);
+          const o = idx.get(`${h.q},${h.r}`);
+          if (o && (!pickEmpty || o[4] == null)) onPick(o);
         }
       }}
-      aria-label={tr('Bản đồ ô lục giác. Kéo để xem, chạm một ô để xem chi tiết.', 'Hex map. Drag to look around, tap a tile for details.')}
+      aria-label={tr('Bản đồ ô lục giác. Kéo để xem, chạm một ô để xem chi tiết. Bàn phím: mũi tên để dời, Enter chọn ô ở giữa.', 'Hex map. Drag to look around, tap a tile for details. Keyboard: arrows to pan, Enter picks the centre tile.')}
       onPointerDown={(e) => {
         drag.current = { x: e.clientX, y: e.clientY, ox: off.x, oy: off.y, moved: false, id: e.pointerId };
         (e.currentTarget as HTMLDivElement).setPointerCapture?.(e.pointerId);

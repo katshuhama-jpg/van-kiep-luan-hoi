@@ -1,7 +1,7 @@
 'use client';
 
 /** 4.6.0 Sơn Môn M1: chưa có môn - danh sách môn, lọc, tự lập môn; màn trống ngày đầu (chỉ có môn chờ ký). */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
 import type { SmMonRow } from '@/lib/sonmon/api';
@@ -19,6 +19,15 @@ export function SmList({ c }: { c: SmCtx }) {
   const [err, setErr] = useState<string | null>(null);
   const [ok, setOk] = useState<string | null>(null);
   const now = useNow();
+  // Ngày 7 (Sư Đồ): môn của sư phụ đứng đầu danh sách, nút "Vào môn của sư phụ" (vẫn phải đủ điều kiện)
+  const [suMon, setSuMon] = useState<number | null>(null);
+  useEffect(() => {
+    let live = true;
+    c.api.suMon().then((x) => live && setSuMon(x), () => {});
+    return () => {
+      live = false;
+    };
+  }, [c.api]);
   const mo = (list ?? []).filter((m) => m.du_ky);
   const cho = (list ?? []).filter((m) => !m.du_ky);
   const khoa = st.khoa_toi;
@@ -49,7 +58,8 @@ export function SmList({ c }: { c: SmCtx }) {
     c.reload(['list']);
   };
 
-  const shown = mo.filter((m) => (!duDk || m.du_dk) && (!conCho || m.n < m.toi_da));
+  const suM = mo.find((m) => m.id === suMon) ?? null;
+  const shown = mo.filter((m) => m.id !== suMon && (!duDk || m.du_dk) && (!conCho || m.n < m.toi_da));
 
   return (
     <>
@@ -83,7 +93,8 @@ export function SmList({ c }: { c: SmCtx }) {
               {tr('Còn chỗ', 'Has room')}
             </button>
           </div>
-          {shown.length === 0 && <p className="sm-note">{tr('Không có môn nào hợp bộ lọc.', 'No sect matches the filter.')}</p>}
+          {suM && <MonRow m={suM} st={c.st} busy={c.busy} su onVao={() => (suM.o > 0 ? setHoi(suM) : vao(suM))} />}
+          {shown.length === 0 && !suM && <p className="sm-note">{tr('Không có môn nào hợp bộ lọc.', 'No sect matches the filter.')}</p>}
           {shown.map((m) => (
             <MonRow key={m.id} m={m} st={c.st} busy={c.busy} onVao={() => (m.o > 0 ? setHoi(m) : vao(m))} />
           ))}
@@ -144,7 +155,7 @@ export function SmList({ c }: { c: SmCtx }) {
   );
 }
 
-function MonRow({ m, st, busy, onVao }: { m: SmMonRow; st: SmCtx['st']; busy: boolean; onVao: () => void }) {
+function MonRow({ m, st, busy, onVao, su }: { m: SmMonRow; st: SmCtx['st']; busy: boolean; onVao: () => void; su?: boolean }) {
   const day = m.n >= m.toi_da;
   const daDon = st.don.some((d) => d.mon === m.id);
   let why: string | null = null;
@@ -154,9 +165,10 @@ function MonRow({ m, st, busy, onVao }: { m: SmMonRow; st: SmCtx['st']; busy: bo
   else if (daDon) why = tr('Đang chờ duyệt', 'Awaiting review');
   const dk = [m.dk_kiep > 0 && tr(`từ ${m.dk_kiep} kiếp`, `${m.dk_kiep}+ lives`), m.dk_tuoi_dao > 0 && tr(`${m.dk_tuoi_dao} ngày chơi`, `${m.dk_tuoi_dao}+ days`)].filter(Boolean).join(', ');
   return (
-    <section className="sm-mon">
+    <section className={`sm-mon${su ? ' su' : ''}`}>
       <HuyHieu id={m.huy_hieu} size={44} />
       <div className="sm-mon-t">
+        {su && <span className="sm-su-tag">{tr('Môn của sư phụ ngươi', "Your master's sect")}</span>}
         <b>{m.ten}</b>
         {tr(`${m.n}/${m.toi_da} người · ${m.o > 0 ? `${m.o} ô` : 'chưa cắm cờ'}`, `${m.n}/${m.toi_da} members · ${m.o > 0 ? `${m.o} tiles` : 'no flag yet'}`)}
         <br />
@@ -167,7 +179,7 @@ function MonRow({ m, st, busy, onVao }: { m: SmMonRow; st: SmCtx['st']; busy: bo
       </div>
       <div className="sm-mon-act">
         <button className={`sm-btn small ${why ? '' : 'dark'}`} disabled={!!why || busy} onClick={onVao}>
-          {daDon ? tr('Đã gửi đơn', 'Applied') : m.mo_cua ? tr('Vào ngay', 'Join') : tr('Xin vào', 'Apply')}
+          {daDon ? tr('Đã gửi đơn', 'Applied') : su ? (m.mo_cua ? tr('Vào môn của sư phụ', "Join master's sect") : tr('Xin vào môn của sư phụ', "Apply to master's sect")) : m.mo_cua ? tr('Vào ngay', 'Join') : tr('Xin vào', 'Apply')}
         </button>
         {why && !daDon && <span className="sm-why">{why}</span>}
       </div>

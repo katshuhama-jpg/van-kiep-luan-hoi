@@ -254,7 +254,14 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
     <main className="app sm">
       <header className="topbar">
         <div className="topbar-row sm-top">
-          <BackButton fallback="/choi" />
+          {/* Ngày 7: màn lập môn và chọn ô chỉ còn một nút quay lại (trước có hai), quay về bước trước trong Sơn Môn */}
+          {v === 'lap' || v === 'chon-o' ? (
+            <button className="icon-btn" aria-label={tr('Quay lại', 'Back')} onClick={() => go(v === 'lap' ? 'list' : coMon ? 'mon' : 'lap')}>
+              ‹
+            </button>
+          ) : (
+            <BackButton fallback="/choi" />
+          )}
           <span className="sm-title">
             {tr('Sơn Môn', 'Sects')}
             {st?.ky ? tr(` · Kỷ ${st.ky.id}`, ` · Era ${st.ky.id}`) : ''}

@@ -61,9 +61,6 @@ export function SmLap({ c }: { c: SmCtx }) {
   return (
     <>
       <div className="sm-row">
-        <button className="sm-btn small" onClick={() => c.go('list')} aria-label={tr('Quay lại danh sách', 'Back to list')}>
-          ‹
-        </button>
         <h2 className="sm-grow">{tr('Lập sơn môn', 'Found a sect')}</h2>
         <span className="sm-note">{tr('bước 1/2', 'step 1/2')}</span>
       </div>
@@ -195,9 +192,6 @@ export function SmChonO({ c }: { c: SmCtx }) {
   return (
     <>
       <div className="sm-row">
-        <button className="sm-btn small" onClick={() => c.go(mon ? 'mon' : 'lap')} aria-label={tr('Quay lại', 'Back')}>
-          ‹
-        </button>
         <h2 className="sm-grow">{tr('Chọn ô cắm cờ', 'Pick a tile')}</h2>
         {!mon && <span className="sm-note">{tr('bước 2/2', 'step 2/2')}</span>}
       </div>

@@ -48,6 +48,22 @@ export function SmNoCt() {
 export function SmChuaMo({ st }: { st: SmState }) {
   const k = st.ky;
   const sau = k && new Date(k.bat_dau).getTime() > Date.now();
+  // Ngày 7: Kỷ vừa kết (đã qua giờ kết thúc) thì báo đã kết, không ghi "chưa mở"
+  const daKet = !!k && new Date(k.ket_thuc).getTime() <= Date.now();
+  if (daKet && k)
+    return (
+      <section className="sm-card dark">
+        <Hero />
+        <h2>{tr(`Kỷ ${k.id} đã kết`, `Era ${k.id} has ended`)}</h2>
+        <p>{tr(`Kỷ ${k.id} kết lúc ${hhmm(k.ket_thuc)} ngày ${ngayThang(k.ket_thuc)}. Mọi ô đã về trống, tên môn và người trong môn giữ nguyên. Kỷ mới sẽ báo trong mục Cập nhật.`, `Era ${k.id} ended at ${hhmm(k.ket_thuc)} on ${ngayThang(k.ket_thuc)}. All tiles are empty again; sect names and members stay. The next era will be announced in Updates.`)}</p>
+        <Link href="/so-sinh-tu" className="sm-btn wide">
+          {tr('Xem các môn đứng đầu ở Sổ Sinh Tử', 'See the top sects in the Book of Life and Death')}
+        </Link>
+        <Link href="/choi" className="sm-btn main wide">
+          {tr('Chơi thêm kiếp', 'Play another life')}
+        </Link>
+      </section>
+    );
   return (
     <section className="sm-card dark">
       <Hero />
