@@ -92,6 +92,14 @@ export type SmMonRow = {
 };
 /** ô bản đồ: [q, r, tên, cõi, môn chủ, chính điện, bảo hộ tới] */
 export type SmMapO = [number, number, string, 'thien' | 'hong_tran' | 'u_minh', number | null, boolean, string | null];
+/** 18/11 tối: môn chủ vắng 48 giờ thì cả môn bầu môn chủ mới (vkl_sm_bau). Gọi hàm này cũng ghi "đang có mặt". */
+export type SmBau = {
+  vang_gio: number;
+  chu_hd: string | null;
+  mo_duoc: boolean;
+  dang: { id: number; het_luc: string; mo_boi: string | null; n: number; bau_duoc: boolean; ta_chon: string | null; phieu: { tk: string; ten: string; n: number }[] } | null;
+  gan_nhat: { ket_qua: 'thang' | 'huy_ve' | 'huy_trong' | 'huy_doi'; xong_luc: string; chu_moi: string | null } | null;
+};
 export type SmMap = {
   ky: SmKy | null;
   o: SmMapO[];
@@ -149,6 +157,10 @@ const LOI_THEM: Record<string, string> = {
   SM_CHUA_CO_O: tr('Môn chưa cắm cờ ô nào.', 'Your sect has not planted a flag yet.'),
   SM_O_CUA_TA: tr('Ô này đã là của môn ta.', 'This tile is already ours.'),
   SM_TEN_O_THIEU: tr('Máy chủ thiếu tên ô.', 'Server is missing tile names.'),
+  SM_BAU_DANG: tr('Môn đang có một cuộc bầu môn chủ.', 'A leader vote is already running.'),
+  SM_CHU_CON: tr('Môn chủ vẫn còn ghé môn, chưa bầu được.', 'The leader is still active, no vote yet.'),
+  SM_BAU_HET: tr('Cuộc bầu đã xong.', 'The vote has ended.'),
+  SM_BAU_AI: tr('Chỉ bầu được người trong môn, trừ môn chủ cũ.', 'Vote for a sect member other than the old leader.'),
   SM_NET: tr('Không kết nối được máy chủ, thử lại sau.', "Can't reach the server, try again later."),
 };
 export class SmErr extends Error {
@@ -171,11 +183,11 @@ export type SmAct =
   | { fn: 'pick_tile' | 'guard' | 'scout' | 'march' | 'march_tt' | 'khai_hoang'; q: number; r: number }
   | { fn: 'follow' | 'unfollow' | 'rut_quan'; chinh: number }
   | { fn: 'accept'; don: number; nhan: boolean }
-  | { fn: 'kick'; tk: string }
+  | { fn: 'kick' | 'bau_bo'; tk: string }
   | { fn: 'xep'; tk: string; q: number; r: number }
   | { fn: 'role'; tk: string; chuc: 'lao' | 'de' }
   | { fn: 'set_dk'; dkKiep: number; dkNgay: number; moCua: boolean }
-  | { fn: 'leave' | 'checkin' };
+  | { fn: 'leave' | 'checkin' | 'bau_mo' };
 
 /** một tin Truyền âm; nd đã được máy chủ che từ tục, ẩn link và số điện thoại */
 export type SmChat = { id: number; luc: string; nd: string; ta: boolean; tk: string; ten: string; chuc: 'chu' | 'lao' | 'de' | null };
@@ -202,6 +214,8 @@ export interface SmApi {
   suMon(): Promise<number | null>;
   /** 18/11 tối: cơ hội thắng một ô (null nếu máy chủ chưa có hàm hay lỗi) */
   coHoi(q: number, r: number): Promise<SmCoHoi | null>;
+  /** 18/11 tối: bầu môn chủ khi môn chủ vắng (null nếu máy chủ chưa có hàm hay lỗi) */
+  bau(): Promise<SmBau | null>;
   act(a: SmAct): Promise<Record<string, unknown>>;
 }
 
@@ -227,6 +241,7 @@ function args(a: SmAct): Record<string, unknown> {
     case 'accept':
       return { p_don: a.don, p_nhan: a.nhan };
     case 'kick':
+    case 'bau_bo':
       return { p_username: a.tk };
     case 'xep':
       return { p_username: a.tk, p_q: a.q, p_r: a.r };
@@ -302,6 +317,7 @@ export function realApi(): SmApi {
       return (await r.json()) as SmMap;
     },
     coHoi: (q, r) => rpc<SmCoHoi>('vkl_sm_co_hoi', { p_q: q, p_r: r }, true, true).catch(() => null),
+    bau: () => rpc<SmBau>('vkl_sm_bau', {}, true, true).catch(() => null),
     act: (a) => rpc<Record<string, unknown>>(`vkl_sm_${a.fn}`, args(a)),
   };
 }

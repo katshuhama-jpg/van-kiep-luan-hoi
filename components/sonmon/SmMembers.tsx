@@ -4,11 +4,11 @@
 import { useEffect, useState } from 'react';
 import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
-import type { SmMember, SmMonNguoi } from '@/lib/sonmon/api';
+import type { SmBau, SmMember, SmMonNguoi } from '@/lib/sonmon/api';
 import { hexDist, oToiDa, SM_CFG } from '@/lib/sonmon/data';
 import { DkForm } from './SmFound';
 import { NguoiList, NguoiSheet } from './SmNguoi';
-import { chucTen, fmtN, hhmm, Msg, smCo, type SmCtx, type SmDraft } from './ui';
+import { chucTen, clock, fmtN, hhmm, Msg, smCo, useNow, type SmCtx, type SmDraft } from './ui';
 
 export function SmThanhVien({ c }: { c: SmCtx }) {
   const { st, members } = c;
@@ -91,6 +91,7 @@ export function SmThanhVien({ c }: { c: SmCtx }) {
         {m.n >= SM_CFG.mon.toiDa && <p className="sm-why">{tr('Môn đã đủ 15 người.', 'The sect is full.')}</p>}
       </section>
       <Msg err={err} ok={ok} />
+      <SmBauCard c={c} />
 
       <section className="sm-card" style={{ padding: '8px 6px' }}>
         {!members ? (
@@ -283,4 +284,120 @@ export function SmThanhVien({ c }: { c: SmCtx }) {
       )}
     </>
   );
+}
+
+/** 18/11 tối (Tyler, Chí Triệu Kiên than môn chủ không online): môn chủ vắng 48 giờ thì cả môn bầu môn chủ mới. */
+export function useBau(c: SmCtx, dep?: unknown) {
+  const [bau, setBau] = useState<SmBau | null>(null);
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    let live = true;
+    c.api.bau().then((b) => live && setBau(b), () => {});
+    return () => {
+      live = false;
+    };
+  }, [c.api, dep, n]);
+  return [bau, () => setN((x) => x + 1)] as const;
+}
+
+const ngayVang = (iso: string | null) => (iso ? Math.max(2, Math.floor((Date.now() - new Date(iso).getTime()) / 86_400_000)) : 2);
+
+function SmBauCard({ c }: { c: SmCtx }) {
+  const [bau, lai] = useBau(c, c.members);
+  const now = useNow(!!bau?.dang);
+  const [err, setErr] = useState<string | null>(null);
+  const [ok, setOk] = useState<string | null>(null);
+  if (!bau) return null;
+  const { dang, gan_nhat: gn } = bau;
+  const sau = (e: string | null, msg: string) => {
+    setErr(e);
+    if (!e) setOk(msg);
+    lai();
+    c.reload(['state', 'members']);
+  };
+  if (dang) {
+    const can = Math.floor(dang.n / 2) + 1;
+    const so = (tk: string) => dang.phieu.find((p) => p.tk === tk)?.n ?? 0;
+    const ds = (c.members?.ds ?? []).filter((x) => x.chuc !== 'chu').sort((a, b) => so(b.tk) - so(a.tk) || b.lc - a.lc);
+    return (
+      <section className="sm-card">
+        <div className="sm-between">
+          <h3>{tr('Bầu môn chủ mới', 'Leader vote')}</h3>
+          <b>{tr(`còn ${clock(new Date(dang.het_luc).getTime() - now)}`, `${clock(new Date(dang.het_luc).getTime() - now)} left`)}</b>
+        </div>
+        <p className="sm-note">
+          {tr(
+            `${dang.mo_boi ?? 'Một đạo hữu'} mở bầu vì môn chủ vắng mặt. Mỗi người 1 phiếu, đổi được. Ai được ${can}/${dang.n} phiếu thì lên ngay, hết giờ thì người nhiều phiếu nhất lên. Môn chủ quay lại thì bầu hủy.`,
+            `${dang.mo_boi ?? 'Someone'} started a vote because the leader is away. One vote each, changeable. ${can}/${dang.n} votes wins at once; otherwise the most votes win when time is up. If the leader returns, the vote is cancelled.`,
+          )}
+        </p>
+        {ds.map((x) => {
+          const chon = dang.ta_chon === x.tk;
+          return (
+            <div key={x.tk} className="sm-row" style={{ borderTop: '1px solid #d9c493', paddingTop: 6 }}>
+              <div className="sm-grow">
+                <b className="sm-clip" style={{ display: 'block' }}>
+                  {x.ten}
+                </b>
+                <span className="sm-note">
+                  {chucTen(x.chuc)} · {tr(`Lực chiến ${fmtN(x.lc)}`, `Power ${fmtN(x.lc)}`)} · {tr(`${so(x.tk)} phiếu`, `${so(x.tk)} votes`)}
+                </span>
+              </div>
+              {dang.bau_duoc && (
+                <button
+                  className={`sm-btn small ${chon ? '' : 'dark'}`}
+                  disabled={c.busy || chon}
+                  onClick={async () => {
+                    const e = await c.run({ fn: 'bau_bo', tk: x.tk }, () => track('sm_bau_bo', { n: dang.n }));
+                    sau(e, tr(`Đã bầu ${x.ten}.`, `Voted for ${x.ten}.`));
+                  }}
+                >
+                  {chon ? tr('Đã bầu', 'Voted') : tr('Bầu', 'Vote')}
+                </button>
+              )}
+            </div>
+          );
+        })}
+        <Msg err={err} ok={ok} />
+      </section>
+    );
+  }
+  if (bau.mo_duoc) {
+    return (
+      <section className="sm-card">
+        <h3>{tr('Môn chủ đang vắng mặt', 'The leader is away')}</h3>
+        <p className="sm-note">
+          {tr(
+            `Môn chủ đã vắng hơn ${ngayVang(bau.chu_hd)} ngày. Ai trong môn cũng mở được cuộc bầu môn chủ mới, bầu trong 24 giờ.`,
+            `The leader has been away for over ${ngayVang(bau.chu_hd)} days. Anyone in the sect can start a 24-hour vote for a new leader.`,
+          )}
+        </p>
+        <button
+          className="sm-btn main wide"
+          disabled={c.busy}
+          onClick={async () => {
+            const e = await c.run({ fn: 'bau_mo' }, () => track('sm_bau_mo', {}));
+            sau(e, tr('Đã mở cuộc bầu. Báo anh em trong Truyền âm vào bầu nhé.', 'Vote started. Tell everyone in sect chat.'));
+          }}
+        >
+          {tr('Mở bầu môn chủ mới', 'Start a leader vote')}
+        </button>
+        <Msg err={err} ok={ok} />
+      </section>
+    );
+  }
+  if (gn && gn.ket_qua !== 'huy_doi') {
+    return (
+      <section className="sm-card">
+        <p className="sm-note">
+          {gn.ket_qua === 'thang'
+            ? tr(`${gn.chu_moi ?? 'Một đạo hữu'} được bầu làm môn chủ mới (${hhmm(gn.xong_luc)}).`, `${gn.chu_moi ?? 'Someone'} was voted in as the new leader.`)
+            : gn.ket_qua === 'huy_ve'
+              ? tr('Môn chủ đã quay lại nên cuộc bầu môn chủ hủy.', 'The leader came back, so the vote was cancelled.')
+              : tr('Hết giờ mà không ai bỏ phiếu nên cuộc bầu môn chủ hủy.', 'Nobody voted, so the leader vote was cancelled.')}
+        </p>
+      </section>
+    );
+  }
+  return null;
 }

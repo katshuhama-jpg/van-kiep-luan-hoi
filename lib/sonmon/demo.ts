@@ -211,6 +211,19 @@ export function demoApi(vaiIn: string): SmApi {
           })),
       );
     },
+    // 18/11 tối: ?demo=de thấy môn chủ vắng 3 ngày, đang có cuộc bầu; vai khác thấy môn chủ vừa ghé
+    bau: () =>
+      wait(
+        vai === 'de'
+          ? {
+              vang_gio: 48,
+              chu_hd: at(-3 * 1440),
+              mo_duoc: false,
+              dang: { id: 1, het_luc: at(17 * 60), mo_boi: 'Tử Doanh', n: 8, bau_duoc: true, ta_chon: null, phieu: [{ tk: MEMBERS.ds[1]?.tk ?? 'x', ten: MEMBERS.ds[1]?.ten ?? 'X', n: 2 }] },
+              gan_nhat: null,
+            }
+          : { vang_gio: 48, chu_hd: at(-30), mo_duoc: false, dang: null, gan_nhat: null },
+      ),
     coHoi: (q, r) => {
       const tr = (st.trinh ?? []).find((t) => t.o[0] === q && t.o[1] === r && t.ket_qua && !t.ket_qua.trong);
       const ta = (st.chinh?.[0]?.theo ?? []).reduce((s, x) => s + x.lc, 0) || (st.lc ?? 0);
