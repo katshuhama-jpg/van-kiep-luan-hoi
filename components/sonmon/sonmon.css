@@ -99,7 +99,7 @@ p.sm-card { display: block; }
 .sm-nv .sm-plus { flex: none; font-weight: 700; color: var(--jade); }
 
 /* bản đồ */
-.sm-map { position: relative; height: 330px; overflow: hidden; background: #1e1a2e; border: 3px solid var(--ink-dark); touch-action: none; user-select: none; -webkit-user-select: none; cursor: grab; }
+.sm-map { position: relative; height: min(64vh, 560px); min-height: 360px; overflow: hidden; background: #1e1a2e; border: 3px solid var(--ink-dark); touch-action: none; user-select: none; -webkit-user-select: none; cursor: grab; }
 .sm-map svg { position: absolute; left: 0; top: 0; }
 .sm-pan { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: -4px; }
 .sm-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 13px; color: var(--muted); }
@@ -234,3 +234,8 @@ p.sm-card { display: block; }
 .sm-o-pips { display: flex; gap: 3px; }
 .sm-o-pips i { width: 12px; height: 12px; border: 2px solid #8a6a3d; background: transparent; display: block; }
 .sm-o-pips i.on { background: #f2c14e; border-color: #1f160d; }
+
+/* 18/11 bản đồ to hơn: nút phóng to/thu nhỏ nổi ở góc bản đồ */
+.sm-map-wrap { position: relative; }
+.sm-zoom { position: absolute; right: 8px; top: 8px; display: flex; flex-direction: column; gap: 6px; z-index: 2; }
+.sm-zoom .sm-btn { width: 44px; min-height: 44px; padding: 0; font-size: 22px; font-weight: 700; line-height: 1; }

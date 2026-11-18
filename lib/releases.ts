@@ -48,6 +48,7 @@ export const RELEASES: Release[] = [
           tr('Lúc hết Kỷ 1, môn nào đang chiếm nhiều ô đất nhất trên bản đồ thì xếp hạng nhất (bằng nhau thì xét tổng Khí vận cả Kỷ). Thưởng chỉ để ngắm: hào quang, khung tên môn, và ngoại trang cho ai điểm danh đủ 7 ngày.', 'When Era 1 ends, the sect holding the most tiles comes first. Rewards are cosmetic: an aura, a gold sect frame, and an outfit for anyone who checks in on 7 days.'),
           tr('Truyền âm: trò chuyện với người cùng môn ngay trong tab Sơn Môn. Link và số điện thoại tự ẩn, lời tục bị che, chạm một tin để báo xấu.', 'Sect chat: talk with your sect right in the Sects tab. Links and phone numbers are hidden, swearing is masked, tap a message to report it.'),
           tr('Có sư phụ thì môn của sư phụ đứng đầu danh sách, kèm nút Vào môn của sư phụ.', "If you have a master, their sect sits at the top of the list with a Join master's sect button."),
+          tr('Khai hoang: chạm ô trống có dấu + kề đất của môn rồi bấm Khai hoang, cờ cắm ngay, không phải đánh ai. Ai trong môn cũng làm được. Bản đồ to hơn, phóng to thu nhỏ được.', 'Claim: tap an empty tile marked + next to your land and press Claim; the flag goes up at once, no fighting. Any member can. The map is bigger and zoomable.'),
         ],
       },
       {

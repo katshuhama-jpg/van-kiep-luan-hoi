@@ -24,6 +24,13 @@ const HEX_IN = Array.from({ length: 6 }, (_, i) => {
 const NEN: Record<string, string> = { thien: '#2e2850', hong_tran: '#2a2a40', u_minh: '#221b32' };
 // 18/11 (Tyler: ô có người khó nhìn): ô trống lùi vào nền tối; ô có môn giữ nền sáng pha màu huy hiệu, viền màu huy hiệu, quầng sáng, huy hiệu to hơn
 const VIEN_TRONG = '#2c2545';
+// 18/11 (Tyler: bản đồ nhỏ, chưa hấp dẫn): sao pixel cố định phía sau, trôi theo bản đồ
+const SAO = Array.from({ length: 140 }, (_, i) => {
+  const h = (n: number) => ((Math.sin(i * 12.9898 + n * 78.233) * 43758.5453) % 1 + 1) % 1;
+  return { x: -700 + h(1) * 1400, y: -700 + h(2) * 1400, s: h(3) > 0.85 ? 3 : 2, o: 0.25 + h(4) * 0.5 };
+});
+const COI_MAU: Record<string, string> = { thien: '#cfc6ff', hong_tran: '#ffd9a8', u_minh: '#b98cff' };
+const Z_MIN = 0.7, Z_MAX = 1.9;
 /** thời gian bảo hộ còn lại gọn để vẽ trên ô: "47g", "35p"; null nếu hết */
 export function bhCon(iso: string | null | undefined, now = Date.now()): string | null {
   if (!iso) return null;
@@ -79,6 +86,27 @@ export function HexMap({
 }) {
   const box = useRef<HTMLDivElement>(null);
   const [off, setOff] = useState({ x: 0, y: 0 });
+  // 18/11: phóng to / thu nhỏ (nút +/-, lăn chuột), mặc định to hơn để ô và huy hiệu dễ nhìn trên điện thoại
+  const [z, setZ] = useState(1.25);
+  const zoom = (k: number) => {
+    const el = box.current;
+    if (!el) return;
+    const z1 = Math.min(Z_MAX, Math.max(Z_MIN, Math.round(z * k * 100) / 100));
+    if (z1 === z) return;
+    const cx = el.clientWidth / 2, cy = el.clientHeight / 2;
+    setOff((o) => ({ x: cx - (cx - o.x) * (z1 / z), y: cy - (cy - o.y) * (z1 / z) }));
+    setZ(z1);
+  };
+  // tên 3 cõi đặt ở giữa vùng của mỗi cõi
+  const coiNhan = useMemo(() => {
+    const acc: Record<string, { x: number; y: number; n: number }> = {};
+    for (const o of map.o) {
+      const p = px(o[0], o[1]);
+      const a = (acc[o[3]] ??= { x: 0, y: 0, n: 0 });
+      a.x += p.x; a.y += p.y; a.n++;
+    }
+    return Object.entries(acc).map(([k, a]) => ({ k, x: (a.x / a.n) * 1.35, y: (a.y / a.n) * 1.35 }));
+  }, [map]);
   const drag = useRef<{ x: number; y: number; ox: number; oy: number; moved: boolean; id: number } | null>(null);
   const idx = useMemo(() => new Map(map.o.map((o) => [`${o[0]},${o[1]}`, o])), [map]);
 
@@ -86,7 +114,7 @@ export function HexMap({
     const el = box.current;
     if (!el) return;
     const c = px(center[0], center[1]);
-    setOff({ x: el.clientWidth / 2 - c.x, y: el.clientHeight / 2 - c.y });
+    setOff({ x: el.clientWidth / 2 - c.x * z, y: el.clientHeight / 2 - c.y * z });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [center[0], center[1], recenter]);
   const pan = (dx: number, dy: number) => setOff((o) => ({ x: o.x + dx, y: o.y + dy }));
@@ -100,6 +128,7 @@ export function HexMap({
 
   return (
     <>
+    <div className="sm-map-wrap">
     <div
       ref={box}
       className="sm-map"
@@ -107,13 +136,15 @@ export function HexMap({
       tabIndex={0}
       onKeyDown={(e) => {
         const d: Record<string, [number, number]> = { ArrowLeft: [80, 0], ArrowRight: [-80, 0], ArrowUp: [0, 80], ArrowDown: [0, -80] };
-        if (d[e.key]) {
+        if (e.key === '+' || e.key === '=') zoom(1.2);
+        else if (e.key === '-') zoom(1 / 1.2);
+        else if (d[e.key]) {
           e.preventDefault();
           pan(...d[e.key]);
         } else if ((e.key === 'Enter' || e.key === ' ') && box.current) {
           // Ngày 7: chọn ô bằng bàn phím = ô nằm giữa khung bản đồ
           e.preventDefault();
-          const h = fromPx(box.current.clientWidth / 2 - off.x, box.current.clientHeight / 2 - off.y);
+          const h = fromPx((box.current.clientWidth / 2 - off.x) / z, (box.current.clientHeight / 2 - off.y) / z);
           const o = idx.get(`${h.q},${h.r}`);
           if (o && (!pickEmpty || o[4] == null)) onPick(o);
         }
@@ -136,13 +167,22 @@ export function HexMap({
         drag.current = null;
         if (!d || d.moved) return;
         const rect = box.current!.getBoundingClientRect();
-        const h = fromPx(e.clientX - rect.left - off.x, e.clientY - rect.top - off.y);
+        const h = fromPx((e.clientX - rect.left - off.x) / z, (e.clientY - rect.top - off.y) / z);
         const o = idx.get(`${h.q},${h.r}`);
         if (o && (!pickEmpty || o[4] == null)) onPick(o);
       }}
       onPointerCancel={() => (drag.current = null)}
+      onWheel={(e) => zoom(e.deltaY < 0 ? 1.1 : 1 / 1.1)}
     >
-      <svg width={1200} height={1200} style={{ transform: `translate(${off.x}px, ${off.y}px)`, overflow: 'visible' }} aria-hidden>
+      <svg width={1200} height={1200} style={{ transform: `translate(${off.x}px, ${off.y}px) scale(${z})`, transformOrigin: '0 0', overflow: 'visible' }} aria-hidden>
+        {SAO.map((s, i) => (
+          <rect key={`s${i}`} x={s.x} y={s.y} width={s.s} height={s.s} fill="#e9e2ff" opacity={s.o} />
+        ))}
+        {coiNhan.map((c) => (
+          <text key={c.k} x={c.x} y={c.y} textAnchor="middle" fontSize={22} fontWeight={700} fill={COI_MAU[c.k] ?? '#ffffff'} opacity={0.32} fontFamily="inherit" letterSpacing={2}>
+            {COI[c.k as keyof typeof COI]?.name.toUpperCase()}
+          </text>
+        ))}
         {map.o.map((o) => {
           if (o[4] == null) return null;
           const p = px(o[0], o[1]);
@@ -187,6 +227,15 @@ export function HexMap({
           return <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke={d.mon === mine ? '#6a8fd9' : '#e5483a'} strokeWidth={3} strokeDasharray="5 3" />;
         })}
       </svg>
+    </div>
+    <div className="sm-zoom" role="group" aria-label={tr('Phóng to thu nhỏ', 'Zoom')}>
+      <button className="sm-btn small" aria-label={tr('Phóng to', 'Zoom in')} onClick={() => zoom(1.25)} disabled={z >= Z_MAX}>
+        +
+      </button>
+      <button className="sm-btn small" aria-label={tr('Thu nhỏ', 'Zoom out')} onClick={() => zoom(1 / 1.25)} disabled={z <= Z_MIN}>
+        −
+      </button>
+    </div>
     </div>
     <div className="sm-pan" role="group" aria-label={tr('Dời bản đồ', 'Pan the map')}>
       {([['left', 80, 0, tr('Sang trái', 'Left')], ['up', 0, 80, tr('Lên trên', 'Up')], ['down', 0, -80, tr('Xuống dưới', 'Down')], ['right', -80, 0, tr('Sang phải', 'Right')]] as const).map(([k, dx, dy, l]) => (
@@ -393,7 +442,13 @@ function SmBanDoMon({ c }: { c: SmCtx }) {
             : duOCau(st)}
         </p>
       )}
-      <HexMap map={map} mine={m.id} sel={sel ? [sel[0], sel[1]] : null} onPick={(o) => (setSel(o), setErr(null), setOk(null))} center={home} recenter={rc} kh={kh} />
+      <HexMap map={map} mine={m.id} sel={sel ? [sel[0], sel[1]] : null} onPick={(o) => {
+          setSel(o);
+          setErr(null);
+          setOk(null);
+          // bản đồ cao, thẻ ô nằm dưới: cuộn nhẹ cho thẻ hiện ra
+          setTimeout(() => document.querySelector('.sm-o-card')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
+        }} center={home} recenter={rc} kh={kh} />
       <div className="sm-legend">
         <span>
           <i className="sm-sw" style={{ borderColor: '#f2c14e', background: '#efdcb0', boxShadow: 'inset 0 0 0 2px #fff6e0, inset 0 0 0 4px #f2c14e' }} />
@@ -445,7 +500,7 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
   const dangDi = dangDung && m.di_toi && new Date(m.di_toi).getTime() > now;
   const coDi = smCo(st).di;
   return (
-    <section className="sm-card">
+    <section className="sm-card sm-o-card">
       <div className="sm-row">
         {chu != null ? <HuyHieu id={map?.mon[String(chu)]?.huy_hieu ?? 0} size={40} /> : <span style={{ width: 40 }} />}
         <div className="sm-grow">

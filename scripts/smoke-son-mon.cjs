@@ -91,7 +91,8 @@ async function check(p, name) {
       const box = await p.locator('.sm-map').boundingBox();
       if (box) {
         const S = 24, W = Math.sqrt(3) * S;
-        const dx = W * (0 + 2 / 2) - W * (1 + 0 / 2), dy = 1.5 * S * 2;
+        const Z = 1.25; // 18/11: bản đồ mặc định phóng 1,25
+        const dx = (W * (0 + 2 / 2) - W * (1 + 0 / 2)) * Z, dy = 1.5 * S * 2 * Z;
         await p.mouse.click(box.x + box.width / 2 + dx, box.y + box.height / 2 + dy);
       }
       await p.waitForTimeout(300);
@@ -103,6 +104,7 @@ async function check(p, name) {
     if (name === 'M5-ban-do') {
       // kéo bản đồ: vị trí phải giữ nguyên sau vài nhịp đồng hồ
       const tf = () => p.evaluate(() => document.querySelector('.sm-map svg').style.transform);
+      await p.evaluate(() => document.querySelector('.sm-map').scrollIntoView({ block: 'start' }));
       const t0 = await tf();
       const box = await p.locator('.sm-map').boundingBox();
       await p.mouse.move(box.x + 100, box.y + 100);
