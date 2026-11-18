@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
 import type { SmMap, SmMapO, SmMember, SmState } from '@/lib/sonmon/api';
-import { capLc, COI, HUY_MAU, hexDist, SM_CFG } from '@/lib/sonmon/data';
+import { capLc, COI, HUY_MAU, hexDist, khDan, SM_CFG } from '@/lib/sonmon/data';
 import { HuyHieu } from './Pixel';
 import { XemMon } from './SmList';
 import { DongMinh, fmtN, hhmm, mocGio, Msg, smCo, truoc, useNow, type SmCtx } from './ui';
@@ -62,6 +62,9 @@ function fromPx(x: number, y: number) {
   else if (!(dy > dz)) rz = -rx - ry;
   return { q: rx, r: rz };
 }
+
+/** Ngày 8 (game-feel): ô vừa khai hoang - cờ pixel dựng lên 0,6 giây, ô sáng nhấp 3 lần (trong 4 giây sau khi cắm) */
+let coMoi: { k: string; t: number } | null = null;
 
 export function HexMap({
   map,
@@ -213,6 +216,23 @@ export function HexMap({
                 </g>
               )}
               {cd && !trong && <rect x={-4} y={-S + 2} width={8} height={5} fill="#e8c35a" stroke="#1f160d" strokeWidth={1} />}
+              {ta && !cd && (
+                <g className="sm-co-bay" transform={`translate(${S * 0.42}, ${-S * 0.62})`}>
+                  <rect x={0} y={0} width={1.6} height={11} fill="#1f160d" />
+                  <rect x={1.6} y={0} width={7} height={5} fill="#f2c14e" stroke="#1f160d" strokeWidth={0.8} />
+                  <rect x={3.5} y={1.6} width={2} height={1.8} fill="#a8303a" />
+                </g>
+              )}
+              {ta && coMoi?.k === `${q},${r}` && Date.now() - coMoi.t < 4000 && (
+                <g key={coMoi.t}>
+                  <polygon className="sm-o-sang" points={HEX} fill="#fff3dc" />
+                  <g className="sm-co-dung">
+                    <rect x={-1} y={-20} width={2} height={22} fill="#1f160d" />
+                    <rect x={1} y={-20} width={13} height={9} fill={mau(chu)} stroke="#1f160d" strokeWidth={1} />
+                    <rect x={5} y={-17.5} width={4} height={4} fill="#f2c14e" />
+                  </g>
+                </g>
+              )}
               {trong && kh?.has(`${q},${r}`) && (
                 <g className="sm-kh">
                   <polygon points={HEX_IN} fill="#f2c14e" fillOpacity={0.16} stroke="#f2c14e" strokeWidth={2} strokeDasharray="5 3" />
@@ -635,10 +655,15 @@ function KhaiHoang({ c, o, d, now, setErr, setOk }: { c: SmCtx; o: SmMapO; d: nu
           setErr(e);
           if (!e) {
             const bh = (kq as { bao_ho_toi?: string | null } | null)?.bao_ho_toi;
+            const dan = khDan(o[3]);
+            coMoi = { k: `${q},${r}`, t: Date.now() };
+            try {
+              localStorage.setItem('vkl.sm.kh1', '1');
+            } catch {}
             setOk(
-              bh
+              dan + ' ' + (bh
                 ? tr(`Đã cắm cờ ${ten}! Đất này được bảo hộ tới ${mocGio(bh, Date.now())}. Nhớ cử người sang đứng giữ.`, `Flag planted on ${ten}! Protected until ${mocGio(bh, Date.now())}. Send someone to guard it.`)
-                : tr(`Đã cắm cờ ${ten}! Ô này chưa có ai giữ, nhớ cử người sang đứng giữ.`, `Flag planted on ${ten}! Nobody guards it yet, send someone over.`),
+                : tr(`Đã cắm cờ ${ten}! Ô này chưa có ai giữ, nhớ cử người sang đứng giữ.`, `Flag planted on ${ten}! Nobody guards it yet, send someone over.`)),
             );
             c.reload(['state', 'map']);
           }

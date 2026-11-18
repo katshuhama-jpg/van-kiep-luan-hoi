@@ -43,6 +43,30 @@ export const COI: Record<Coi, { name: string; line: string }> = {
   u_minh: { name: tr('U Minh', 'Netherworld'), line: tr('Cõi tối, sát bờ Vong Xuyên.', 'The dark realm, by the river of forgetting.') },
 };
 
+/** Ngày 8: câu dẫn khi khai hoang thành công, 3 câu mỗi cõi, chọn ngẫu nhiên */
+export const KH_DAN: Record<Coi, [string, string][]> = {
+  thien: [
+    ['Mây tách làm đôi khi cờ cắm xuống. Gió trên cao mang tên môn ta đi khắp chín tầng.', 'The clouds part as the flag goes in. High winds carry our name across the nine heavens.'],
+    ['Đỉnh này trước giờ chỉ có hạc đậu. Từ hôm nay có thêm lá cờ của môn ta.', 'Only cranes ever rested on this peak. From today our flag stands here too.'],
+    ['Ánh sáng thượng giới rọi lên mặt cờ. Đất trên mây nhận chủ mới.', 'Light from above falls on the banner. The land above the clouds has a new master.'],
+  ],
+  hong_tran: [
+    ['Người dưới chợ dừng tay nhìn lên. Lá cờ mới bay trên đường cái.', 'People at the market stop and look up. A new flag flies over the road.'],
+    ['Khói bếp bay ngang lá cờ. Từ nay dân quanh đây biết đất này có người giữ.', 'Kitchen smoke drifts past the flag. The locals now know this land is guarded.'],
+    ['Đứa trẻ chăn trâu chạy về báo làng: trên đồi có tiên nhân cắm cờ.', 'A buffalo boy runs home with the news: immortals planted a flag on the hill.'],
+  ],
+  u_minh: [
+    ['Cờ cắm xuống đất lạnh, ma trơi lùi ra xa. Bờ Vong Xuyên có thêm một chỗ đứng chân.', 'The flag bites cold earth and the will-o-wisps back away. We hold a foothold by the river of forgetting.'],
+    ['Gió âm thổi rách mép cờ mà không đổ được cán. Đất tối nhận chủ mới.', 'The ghost wind tears the edge of the flag but cannot fell the pole. The dark land has a new master.'],
+    ['Bên kia sông vọng lại một hồi chuông. Cõi tối đã biết tên môn ta.', 'A bell tolls across the river. The dark realm has learned our name.'],
+  ],
+};
+export const khDan = (coi: Coi) => {
+  const ds = KH_DAN[coi] ?? KH_DAN.hong_tran;
+  const [vi, en] = ds[Math.floor(Math.random() * ds.length)];
+  return tr(vi, en);
+};
+
 // ---------- Huy hiệu (6 màu x 5 hình) và chính điện (10 hình). Chỉ để nhận diện, không cộng gì. ----------
 export const HUY_MAU = [
   { id: 'xich', name: tr('Đỏ son', 'Vermilion'), hex: '#c0392b' },

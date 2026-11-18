@@ -205,7 +205,7 @@ export type SmAct =
   | { fn: 'leave' | 'checkin' | 'bau_mo' };
 
 /** một tin Truyền âm; nd đã được máy chủ che từ tục, ẩn link và số điện thoại */
-export type SmChat = { id: number; luc: string; nd: string; ta: boolean; tk: string; ten: string; chuc: 'chu' | 'lao' | 'de' | null };
+export type SmChat = { id: number; luc: string; nd: string; ta: boolean; tk: string; ten: string; chuc: 'chu' | 'lao' | 'de' | null; he?: boolean; nd_en?: string | null };
 
 export interface SmApi {
   demo: boolean;
@@ -303,6 +303,7 @@ async function rpc<T>(fn: string, a: Record<string, unknown>, withToken = true, 
   }
 }
 
+let list2Off = false;
 export function realApi(): SmApi {
   const p = currentPlayer();
   return {
@@ -314,7 +315,18 @@ export function realApi(): SmApi {
     members: () => rpc<SmMembers>('vkl_sm_members', {}, true, true),
     monDs: (mon) => rpc<SmMonNguoi[]>('vkl_sm_mon_ds', { p_mon: mon }, true, true),
     rank: () => rpc<SmRankRow[]>('vkl_sm_rank', {}, false, true),
-    chatList: (sau) => rpc<SmChat[]>('vkl_sm_chat_list', { p_sau: sau }, true, true),
+    // Ngày 8: vkl_sm_chat_list2 có thêm tin hệ thống; máy chủ chưa có hàm thì dùng hàm cũ (thử một lần mỗi lần mở trang)
+    chatList: async (sau) => {
+      if (!list2Off) {
+        try {
+          return await rpc1<SmChat[]>('vkl_sm_chat_list2', { p_sau: sau }, true);
+        } catch (e) {
+          if (e instanceof SmErr && e.code !== 'SM_NET') throw e;
+          list2Off = true;
+        }
+      }
+      return rpc<SmChat[]>('vkl_sm_chat_list', { p_sau: sau }, true, true);
+    },
     chatSend: (nd) => rpc<SmChat>('vkl_sm_chat_send', { p_nd: nd }),
     chatN: (sau) => rpc<number>('vkl_sm_chat_n', { p_sau: sau }).then((x) => Number(x) || 0, () => 0),
     chatHide: (id) => rpc('vkl_sm_chat_hide', { p_id: id }),

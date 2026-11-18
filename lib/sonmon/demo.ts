@@ -157,6 +157,7 @@ const CHAT: SmChat[] = [
   { id: 1, luc: at(-190), nd: 'Chào cả môn! Tối nay ai online thì điểm danh nhé.', ta: false, tk: 'vannhi', ten: 'Vân Nhi', chuc: 'lao' },
   { id: 2, luc: at(-150), nd: 'Đã điểm danh. Kiếp này ta lên Kim Đan rồi, +5 Khí vận.', ta: false, tk: 'hanbang', ten: 'Hàn Băng', chuc: 'de' },
   { id: 3, luc: at(-60), nd: 'Huyết Sát Cung đang đánh Lạc Hà Cốc, ai rảnh sang giữ với.', ta: false, tk: 'thuyte', ten: 'Thủy Tề', chuc: 'de' },
+  { id: 3.5, luc: at(-45), nd: 'Hàn Băng vừa khai hoang Bích Thủy Hồ (4/5 ô).', nd_en: 'Han Bang claimed Bich Thuy Ho (4/5 tiles).', ta: false, tk: '', ten: '', chuc: null, he: true },
   { id: 4, luc: at(-40), nd: 'Ta sang ngay. Còn 40 phút nữa họ tới.', ta: true, tk: 'lacpham', ten: 'Lạc Phàm', chuc: 'chu' },
   { id: 5, luc: at(-5), nd: '30 Khí vận rồi, mai cả môn +10% nhé các vị.', ta: false, tk: 'vannhi', ten: 'Vân Nhi', chuc: 'lao' },
 ];

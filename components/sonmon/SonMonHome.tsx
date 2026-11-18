@@ -27,6 +27,8 @@ import { SmChienSu, SmXuatChinh } from './SmWar';
 import { SmThanhVien } from './SmMembers';
 import { SmKy, SmLucChien } from './SmKy';
 import { SmThuong } from './SmThuong';
+import { khaiDuoc } from './SmMap';
+import { VIEC_KEY, VIEC_SEEN } from '@/components/TabBar';
 
 const IN_MON: SmView[] = ['mon', 'chat', 'ban-do', 'chien-su', 'thanh-vien', 'ky'];
 const NAV: { v: SmView; vi: string; en: string }[] = [
@@ -201,6 +203,20 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
       if (maxId > 0) localStorage.setItem('vkl.sm.bao', String(maxId));
     } catch {}
   }, [st]);
+
+  // Ngày 8: ghi việc cho chấm đỏ tab Sơn Môn (đất trống kề lãnh thổ, môn đang bị đánh). Mở bản đồ là đã xem đất hiện có.
+  useEffect(() => {
+    if (!st?.mon) return;
+    try {
+      const kh = st.mon.cam_co && st.mon.o < st.mon.o_max && map ? [...khaiDuoc(st, map)].sort().join(';') : '';
+      const sig = kh ? `${st.mon.id}|${kh}` : '';
+      localStorage.setItem(VIEC_KEY, JSON.stringify({ sig, bi: (st.bi_danh?.length ?? 0) > 0, t: Date.now() }));
+      if (v === 'ban-do' && sig) {
+        if (localStorage.getItem(VIEC_SEEN) !== sig) track('sm_dot_dat', {});
+        localStorage.setItem(VIEC_SEEN, sig);
+      }
+    } catch {}
+  }, [st, map, v]);
 
   const go = useCallback(
     (nv: SmView, o?: { target?: [number, number] }) => {

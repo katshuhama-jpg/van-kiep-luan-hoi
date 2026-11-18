@@ -2,7 +2,7 @@
 
 /** 4.6.0 Sơn Môn M4 môn nhà: thẻ môn, cảnh báo bị đánh, điểm danh chuỗi 7, 3 nhiệm vụ ngày, thanh Khí vận (vạch 30/50). */
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
 import { nvChu, SM_CFG } from '@/lib/sonmon/data';
@@ -61,6 +61,7 @@ export function SmMonNha({ c }: { c: SmCtx }) {
 
   return (
     <>
+      <BaBuoc c={c} diemDanh={diemDanh} />
       <section className="sm-card dark">
         <div className="sm-row">
           <ChinhDien id={m.chinh_dien_hinh} size={64} />
@@ -268,6 +269,98 @@ function LanhTho({ c }: { c: SmCtx }) {
         <p style={{ fontSize: 15 }}>{duOCau(c.st)}</p>
       )}
       <SmCongDong c={c} />
+    </section>
+  );
+}
+
+/**
+ * Ngày 8: ba bước đầu cho người mới vào môn (thẻ đầu môn nhà, có ô tích, xong cả ba thì ẩn hẳn).
+ * 1 điểm danh, 2 khai hoang một ô (môn đủ ô hay chưa cắm cờ thì bỏ qua), 3 chọn ô đứng giữ. Đo sm_3buoc từng bước.
+ */
+const BUOC_KEY = 'vkl.sm.3buoc';
+function BaBuoc({ c, diemDanh }: { c: SmCtx; diemDanh: () => void }) {
+  const m = c.st.mon!;
+  const [xong, setXong] = useState(() => {
+    try {
+      return localStorage.getItem(BUOC_KEY) === 'xong';
+    } catch {
+      return true;
+    }
+  });
+  let kh1 = false;
+  try {
+    kh1 = localStorage.getItem('vkl.sm.kh1') === '1';
+  } catch {}
+  const boQua = !m.cam_co || m.o >= m.o_max;
+  const buoc = [
+    { ok: !!c.st.diem_danh?.hom_nay, vi: 'Điểm danh hôm nay', en: 'Check in today', why: tr('+1 Khí vận cho môn, +1 Công cho ngươi.', '+1 fortune for the sect, +1 merit for you.') },
+    {
+      ok: kh1 || boQua,
+      vi: boQua ? 'Khai hoang một ô (môn đủ ô, bỏ qua)' : 'Khai hoang một ô',
+      en: boQua ? 'Claim a tile (sect is full, skip)' : 'Claim a tile',
+      why: tr('Chạm ô có dấu + trên bản đồ, cắm cờ ngay, không phải đánh ai.', 'Tap a tile marked + on the map; the flag goes up at once.'),
+    },
+    { ok: !!m.dung, vi: 'Chọn ô đứng giữ', en: 'Pick a tile to guard', why: tr('Chạm một ô của môn trên bản đồ rồi bấm Đứng giữ. Vắng mặt vẫn được tính.', 'Tap one of our tiles on the map and press Guard. It counts while you are away.') },
+  ];
+  const n = buoc.filter((b) => b.ok).length;
+  useEffect(() => {
+    if (xong) return;
+    try {
+      const da: boolean[] = JSON.parse(localStorage.getItem(BUOC_KEY + '.da') ?? '[false,false,false]');
+      buoc.forEach((b, i) => {
+        if (b.ok && !da[i]) track('sm_3buoc', { buoc: i + 1, bo_qua: i === 1 && boQua ? 1 : undefined });
+      });
+      localStorage.setItem(BUOC_KEY + '.da', JSON.stringify(buoc.map((b, i) => b.ok || da[i])));
+      if (n === 3) {
+        localStorage.setItem(BUOC_KEY, 'xong');
+        track('sm_3buoc', { buoc: 'xong' });
+      }
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [n, xong]);
+  if (xong || n === 3) return null;
+  const toi = buoc.findIndex((b) => !b.ok);
+  return (
+    <section className="sm-card sm-3buoc">
+      <div className="sm-between">
+        <h3>{tr('Ba bước đầu trong môn', 'First three steps')}</h3>
+        <span className="sm-note">{n}/3</span>
+      </div>
+      <ol>
+        {buoc.map((b, i) => (
+          <li key={i} className={b.ok ? 'xong' : i === toi ? 'toi' : ''}>
+            <span className="sm-tich" aria-hidden>
+              {b.ok ? '✓' : ''}
+            </span>
+            <span className="sm-grow">
+              <b>{tr(b.vi, b.en)}</b>
+              {i === toi && <span className="sm-note" style={{ display: 'block' }}>{b.why}</span>}
+            </span>
+          </li>
+        ))}
+      </ol>
+      {toi === 0 ? (
+        <button className="sm-btn main wide" disabled={c.busy} onClick={diemDanh}>
+          {tr('ĐIỂM DANH', 'CHECK IN')}
+        </button>
+      ) : (
+        <button className="sm-btn main wide" onClick={() => c.go('ban-do')}>
+          {toi === 1 ? tr('MỞ BẢN ĐỒ KHAI HOANG', 'OPEN MAP TO CLAIM') : tr('MỞ BẢN ĐỒ CHỌN Ô', 'OPEN MAP TO PICK')}
+        </button>
+      )}
+      <button
+        className="sm-btn small sm-ghost"
+        style={{ alignSelf: 'flex-end' }}
+        onClick={() => {
+          try {
+            localStorage.setItem(BUOC_KEY, 'xong');
+          } catch {}
+          track('sm_3buoc', { buoc: 'an' });
+          setXong(true);
+        }}
+      >
+        {tr('Ẩn', 'Hide')}
+      </button>
     </section>
   );
 }

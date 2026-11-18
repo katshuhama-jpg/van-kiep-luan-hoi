@@ -25,6 +25,7 @@ import { supabase } from '@/lib/supabase';
 const BAO_KEY = 'vkl.sm.baoMo';
 function useSmDot(cur: TabId): boolean {
   const [dot, setDot] = useState(false);
+  const viec = useSmViec(cur);
   useEffect(() => {
     if (!SON_MON_ON) return;
     let bao = false;
@@ -52,7 +53,28 @@ function useSmDot(cur: TabId): boolean {
       live = false;
     };
   }, [cur]);
-  return dot;
+  return dot || viec;
+}
+
+/**
+ * Ngày 8: chấm đỏ tab Sơn Môn khi môn còn ô chưa dùng và quanh lãnh thổ còn đất trống (tới khi mở bản đồ, có đất mới thì
+ * báo lại), hoặc khi môn đang bị đánh (tin trong 2 giờ). Đọc từ máy (SonMonHome ghi lúc xem môn), không gọi máy chủ.
+ */
+export const VIEC_KEY = 'vkl.sm.viec';
+export const VIEC_SEEN = 'vkl.sm.viecSeen';
+function useSmViec(cur: TabId): boolean {
+  const [v, setV] = useState(false);
+  useEffect(() => {
+    if (!SON_MON_ON || cur === 'sm') return setV(false);
+    try {
+      const x = JSON.parse(localStorage.getItem(VIEC_KEY) ?? 'null') as { sig: string; bi: boolean; t: number } | null;
+      if (!x) return;
+      const bi = x.bi && Date.now() - x.t < 2 * 3600e3;
+      const dat = !!x.sig && localStorage.getItem(VIEC_SEEN) !== x.sig;
+      setV(bi || dat);
+    } catch {}
+  }, [cur]);
+  return v;
 }
 
 export type TabId = 'mong' | 'tt' | 'nv' | 'sm' | 'ld';
@@ -159,7 +181,7 @@ export function TabBar({ cur }: { cur: TabId }) {
             }}
           >
             <TabInner id={t.id} label={tr(t.vi, t.en)} />
-            {t.id === 'sm' && smDot && <span className="tab-dot" aria-label={tr('Có môn mở cửa', 'A sect is open')} />}
+            {t.id === 'sm' && smDot && <span className="tab-dot" aria-label={tr('Sơn Môn có việc mới', 'Something new in Sects')} />}
           </Link>
         ))}
       </nav>

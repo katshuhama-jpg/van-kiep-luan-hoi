@@ -136,7 +136,12 @@ export function SmChat({ c }: { c: SmCtx }) {
       }}>
         {tin === null && <p className="sm-note">{tr('Đang nghe truyền âm...', 'Loading...')}</p>}
         {tin !== null && tin.length === 0 && <p className="sm-chat-empty">{tr('Chưa ai truyền âm. Chào cả môn một câu đi.', 'No messages yet. Say hello to your sect.')}</p>}
-        {(tin ?? []).map((x) => (
+        {(tin ?? []).map((x) =>
+          x.he ? (
+            <p key={x.id} className="sm-tin-he">
+              {tr(x.nd, x.nd_en || x.nd)} <small>{hhmm(x.luc)}</small>
+            </p>
+          ) : (
           <div key={x.id} className={`sm-tin${x.ta ? ' ta' : ''}`}>
             <button className="sm-tin-b" aria-expanded={mo === x.id} onClick={() => setMo(mo === x.id ? null : x.id)}>
               <span className="sm-tin-ai">
@@ -161,7 +166,8 @@ export function SmChat({ c }: { c: SmCtx }) {
               </span>
             )}
           </div>
-        ))}
+          ),
+        )}
       </div>
 
       <div className="sm-chat-nhanh" role="group" aria-label={tr('Câu nhanh', 'Quick lines')}>
