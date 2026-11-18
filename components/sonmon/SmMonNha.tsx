@@ -86,8 +86,8 @@ export function SmMonNha({ c }: { c: SmCtx }) {
 
       {m.moi_bh_toi && new Date(m.moi_bh_toi).getTime() > now && (
         <section className="sm-card sm-bh">
-          <b>{tr(`Môn mới được bảo hộ tới ${mocGio(m.moi_bh_toi, now)}`, `New-sect protection until ${mocGio(m.moi_bh_toi, now)}`)}</b>
-          <p style={{ fontSize: 15 }}>{tr('Không môn nào đánh được ô của môn ta. Chiếm ô trống vẫn giữ bảo hộ; xuất chinh vào ô có chủ thì mất bảo hộ ngay.', 'No sect can attack our tiles. Taking empty tiles keeps it; marching on an owned tile ends it at once.')}</p>
+          <b>{tr(`Môn mới được bảo hộ, lâu nhất tới ${mocGio(m.moi_bh_toi, now)}`, `New-sect protection, at most until ${mocGio(m.moi_bh_toi, now)}`)}</b>
+          <p style={{ fontSize: 15 }}>{tr('Ô cắm cờ được bảo hộ 48 giờ. Ô chiếm thêm được ít dần: ô 2 được 24 giờ, ô 3 được 12 giờ, ô 4 được 6 giờ, từ ô 5 thì không. Chạm ô trên bản đồ để xem còn bao lâu. Xuất chinh vào ô có chủ thì mất hết bảo hộ ngay.', 'The flag tile is protected 48 hours; later tiles get 24, 12, 6 hours, none from the 5th. Tap a tile on the map to see. Marching on an owned tile ends all protection at once.')}</p>
         </section>
       )}
 

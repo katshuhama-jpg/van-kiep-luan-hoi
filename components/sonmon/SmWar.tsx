@@ -7,7 +7,7 @@ import { track } from '@/lib/track';
 import type { SmBao, SmMember, SmState } from '@/lib/sonmon/api';
 import { capLc, SM_CFG, tranCau } from '@/lib/sonmon/data';
 import { HuyHieu } from './Pixel';
-import { bhConDu, chinhKhoa } from './SmMap';
+import { chinhKhoa } from './SmMap';
 import { clock, fmtN, hhmm, mocGio, Msg, truoc, useNow, type SmCtx } from './ui';
 
 const vnGio = (t: number) => new Date(t + 7 * 3600e3).getUTCHours();
@@ -153,14 +153,14 @@ export function SmXuatChinh({ c }: { c: SmCtx }) {
             </button>
             {khoa && <p className="sm-why">{khoa}</p>}
             {!khoa && bhTa && chuO != null && (
-              <p className="sm-why">{tr(`Môn ta đang được bảo hộ (${bhConDu(bhTa, now)}). Đánh ô có chủ thì mất bảo hộ ngay.`, `We are protected (${bhConDu(bhTa, now)}). Attacking an owned tile ends it at once.`)}</p>
+              <p className="sm-why">{tr('Môn ta đang được bảo hộ môn mới. Đánh ô có chủ thì mất hết bảo hộ ngay.', 'We are under new-sect protection. Attacking an owned tile ends it at once.')}</p>
             )}
             {hoiBh && bhTa && (
               <div className="sm-sheet" role="dialog" aria-modal="true" aria-label={tr('Mất bảo hộ?', 'Lose protection?')} onClick={() => setHoiBh(false)}>
                 <div onClick={(e) => e.stopPropagation()}>
                   <h2>{tr('Bỏ bảo hộ để đánh?', 'Drop protection to attack?')}</h2>
                   <p className="sm-card warn">
-                    {tr(`Môn ta còn được bảo hộ tới ${mocGio(bhTa, now)} (${bhConDu(bhTa, now)}). Phát lệnh đánh ô có chủ thì mất bảo hộ ngay, mọi môn đánh được ô của ta.`, `We are protected until ${mocGio(bhTa, now)}. Ordering an attack on an owned tile ends it now, and every sect can attack our tiles.`)}
+                    {tr(`Các ô của môn ta đang được bảo hộ môn mới (ô cắm cờ tới ${mocGio(bhTa, now)}). Phát lệnh đánh ô có chủ thì mất hết bảo hộ ngay, mọi môn đánh được ô của ta.`, `Our tiles are under new-sect protection (flag tile until ${mocGio(bhTa, now)}). Ordering an attack on an owned tile ends it all now.`)}
                   </p>
                   <button className="sm-btn main wide" disabled={c.busy} onClick={phat}>
                     {tr('Vẫn xuất chinh', 'March anyway')}
