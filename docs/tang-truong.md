@@ -457,3 +457,10 @@ Nội dung soạn sẵn (Tyler tự đăng, Claude không đăng): chưa có th�
 - #243 (mất một kiếp): bia của dkunn kiếp 3 không lên máy chủ (tắt app/rớt mạng lúc lập bia). Toàn hệ thống 142 người thiếu 1.063 bia. Đã sửa: bia lưu vào máy trước khi gửi, mở game lại tự khắc bù (kiểm tra trùng player_name + life_no). Bù dkunn +200 phúc duyên (880 → 1.080).
 - Đã trả lời 3 góp ý trong vkl_feedback, status da_xong. Lên bản 5:00 15/11 (commit 432c343).
 - Lịch đêm đã đổi: tự quyết rồi báo sau, mỗi đêm đọc góp ý và bình luận FB, dùng game-design để đưa vào game.
+
+## 18/11 16:40 - Sơn Môn ngày đầu: Khai hoang (Tyler giao)
+
+- Số: 11 môn, 69 người, 18/127 ô có chủ, 8 xuất chinh đều tới ô trống, 0 trận giữa môn. Môn 15 người mà chỉ 1 ô.
+- Làm: Khai hoang (cắm cờ ngay ô trống kề, ai cũng làm được), thẻ Lãnh thổ X/Y, dấu + trên bản đồ, luật 3 câu viết lại. Commit 3b0351e.
+- Đo từ 19/11: số khai hoang/ngày (track sm_khai_hoang), tỉ lệ môn dùng hết ô, % thành viên có hành động trên bản đồ.
+- Việc nhiều đêm: xem docs/brainstorm-son-mon-ky1.md. Đợt 1 (mục 1-5) làm từ đêm 19/11 sau khối kế hoạch; Đợt 2 để sau cờ, mô phỏng trước.
