@@ -81,17 +81,17 @@ export function SmThuong({ c }: { c: SmCtx }) {
         <h2>{tr(`Phần thưởng Kỷ ${kyId}`, `Era ${kyId} rewards`)}</h2>
         <p className="sm-note">
           {tr(
-            `Kỷ khép lại lúc ${ket}. Ba môn đứng đầu nhận pháp bảo phẩm cao, bảy người nhiều Công nhất mỗi môn nhận vũ khí, môn chủ nhận thêm ấn. Pháp bảo có chỉ số, lắp vào chân thân, dùng mãi.`,
-            `The era closes at ${ket}. Top sects get higher grades; the 7 members with the most merit in each sect get weapons; the leader also gets a seal. Treasures carry stats, go on your true self, and last forever.`,
+            `Thưởng chỉ phát một lần, lúc Kỷ khép lại (${ket}), không phát trong Kỷ. Ba môn đứng đầu nhận pháp bảo phẩm cao, bảy người nhiều Công nhất mỗi môn nhận vũ khí, môn chủ nhận thêm ấn. Pháp bảo có chỉ số, lắp vào chân thân, dùng mãi.`,
+            `Rewards are handed out once, when the era closes (${ket}), not during it. Top sects get higher grades; the 7 members with the most merit in each sect get weapons; the leader also gets a seal. Treasures carry stats, go on your true self, and last forever.`,
           )}
         </p>
       </section>
 
       <section className={nhan.length ? 'sm-card sm-bv-nhan' : 'sm-card'}>
-        <h3>{tr('Nếu Kỷ kết thúc bây giờ', 'If the era ended now')}</h3>
+        <h3>{tr('Dự kiến phần thưởng cuối Kỷ', 'Expected end-of-era reward')}</h3>
         {nhan.length ? (
           <>
-            <p style={{ fontSize: 15 }}>{tr('Ngươi nhận:', 'You receive:')}</p>
+            <p style={{ fontSize: 15 }}>{tr(`Giữ được hạng như bây giờ thì ${ket} ngươi nhận:`, `Hold your current rank and at ${ket} you receive:`)}</p>
             <div className="sm-shop c2">
               {nhan.map((x) => (
                 <BvThe key={x.o} loai={x.loai} pham={x.pham} tag={x.o === 'phu_kien' ? tr('Phụ kiện', 'Trinket') : tr('Vũ khí', 'Weapon')} ten={x.ten ?? bvTen(x.loai, x.pham)} />
@@ -102,7 +102,7 @@ export function SmThuong({ c }: { c: SmCtx }) {
           <p style={{ fontSize: 15 }}>{tr('Vào một môn để có Công và phần thưởng.', 'Join a sect to earn merit and rewards.')}</p>
         ) : (
           <>
-            <p style={{ fontSize: 15 }}>{tr('Ngươi chưa có phần.', 'Nothing for you yet.')}</p>
+            <p style={{ fontSize: 15 }}>{tr(`Theo hạng bây giờ, ${ket} ngươi chưa có phần.`, `At your current rank, you get nothing at ${ket}.`)}</p>
             {lyDo.map((l) => (
               <p key={l} className="sm-why">
                 {l}
