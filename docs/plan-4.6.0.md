@@ -288,6 +288,47 @@ Lên bản: 2026-11-18. Bật cờ `SON_MON_ON`, có cáo thị 4.6.0.
   - Tyler tự chạy 2 migration trong SQL Editor lúc ~08:30 18/11 (file gộp). Đã kiểm: 3 môn được bảo hộ (Huyền Hư Cung tới 05:13, Vô Hư Cốc 05:40, môn 4 tới 08:05 ngày 20/11), ô các môn nâng bảo hộ đúng; xếp người đi 20 phút và không tính giữ trong lúc đi; mất bảo hộ thì bảo hộ ô bỏ đúng (thử trong giao dịch rồi hủy). Trước đó: Supabase hỏi xác nhận 2 lần nhưng câu hỏi không tới Tyler. Tyler bảo đẩy luôn: giao diện đã lên `main` nhưng tự nhận máy chủ cũ (state chưa có khóa `moi_bh_toi` / `di_toi` thì giữ giao diện cũ, ẩn nút xếp ô, ẩn 2 câu luật mới). Áp 2 migration xong là tính năng tự hiện, không cần lên bản lại.
 - Tyler 18/11 ~08:40: bảo hộ ô giảm dần theo thứ tự mở (chia đôi): ô cắm cờ 48 giờ, ô 2: 24 giờ, ô 3: 12 giờ, ô 4: 6 giờ, từ ô 5: không; tính từ lúc chiếm, không quá mốc 48 giờ của môn. SQL `supabase/son_mon_bao_ho_giam_2026_11_18.sql` (thay trigger `sm_tile_bh`, `sm_mon_bh_o`, tính lại ô đã chiếm). Supabase MCP hỏi xác nhận không tới Tyler nên Tyler tự chạy file trong SQL Editor.
 
+## Ngày 8 - Khai hoang, bản đồ to, hướng dẫn người trong môn
+Lên bản: 2026-11-19. Cáo thị: thêm dòng vào 4.6.0 (đã có dòng Khai hoang + bản đồ).
+Lý do (số 18/11 chiều): 11 môn, 69 người, 18/127 ô có chủ, 8 xuất chinh đều tới ô trống, 0 trận giữa môn; 2 môn 15 người chỉ giữ 1 ô vì tưởng mở rộng là phải đánh. Chi tiết: docs/brainstorm-son-mon-ky1.md.
+- [x] Khai hoang: chạm ô trống kề lãnh thổ, cắm cờ ngay, ai trong môn cũng làm được, theo trần ô. Hàm MỚI `vkl_sm_khai_hoang` (đã áp 18/11). Thẻ "Lãnh thổ X/Y ô" ở môn nhà, dấu + nhấp nháy trên bản đồ, luật 3 câu và luật đủ viết lại, chiến báo "X khai hoang Y". Xong: 18/11 3b0351e.
+- [x] Bản đồ to (cao theo màn hình, 360-560px), phóng to/thu nhỏ (nút +/-, lăn chuột, phím +/-), sao pixel và tên 3 cõi phía sau, thẻ ô tự cuộn ra khi chạm. Xong: 18/11 c48dfdd.
+- [ ] Ba bước đầu cho người mới vào môn (thẻ ở đầu môn nhà, có ô tích, xong thì ẩn): điểm danh, khai hoang một ô (hoặc "môn đủ ô" thì bỏ qua), chọn ô đứng giữ. Đo `sm_3buoc` từng bước.
+- [ ] Hiệu ứng cắm cờ: khai hoang/chiếm xong thì cờ pixel dựng lên ô (0,6 giây) và ô sáng nhấp 3 lần; ô môn ta có cờ nhỏ bay (tắt khi prefers-reduced-motion). game-feel, chỉ pixel.
+- [ ] Chấm đỏ tab Sơn Môn (thanh dưới) khi môn còn ô chưa dùng và quanh lãnh thổ còn đất trống, hoặc khi môn đang bị đánh. Mở bản đồ là tắt tới khi có đất mới.
+- [ ] Tin hệ thống trong Truyền âm (dòng riêng, không tên người gửi): "X vừa khai hoang Y (3/6 ô)", "Z đang tới Y, tới lúc hh:mm", "Môn thắng/thua trận ở Y". Hàm MỚI ghi vào `vkl_sm_chat` loại hệ thống (không sửa hàm chat cũ), gọi từ trigger trên `vkl_sm_bao`.
+- [ ] Câu dẫn khi khai hoang theo cõi (story-writing, humanizer), hiện trong thông báo thành công, mỗi cõi 3 câu, chọn ngẫu nhiên.
+- Ghi chú:
+
+## Ngày 9 - Kỷ 2 làm sớm: máy chủ (giấu sau cờ)
+Lên bản: 2026-11-20. Giấu sau cờ `SM_DAT_ON` (tắt mặc định). Có cáo thị: thêm một dòng vào 4.6.0 báo trước "Từ 5:00 ngày 21/11 hạng Kỷ tính theo Điểm giữ đất".
+Tyler chốt 18/11: "Làm luôn Kỷ 2 vào 21/11 coi như tính năng". Nguồn ý: báo cáo `claude/nghien-cuu-game-chien-thuat-text-son-mon.md` (Travian oasis, Torn territory, Tribal Wars giữ làng, Utopia/SFC2 dải sức mạnh, Mob Wars boss).
+Claude chốt (vai chủ game):
+- **Điểm giữ đất thay số ô để xếp hạng Kỷ 1, tính từ 5:00 21/11** (mọi môn bắt đầu từ 0, báo trước 2 ngày nên không ai mất lợi): mỗi giờ mỗi ô môn đang giữ cộng điểm: ô thường 1, Linh Mạch 3, Thiên Trì (ô tâm 0,0) 5. Bằng điểm thì xét số ô rồi tổng Khí vận. Bảng Kỷ hiện điểm và số ô. pg_cron mỗi giờ phút 0.
+- **Linh Mạch:** 12 ô (4 mỗi cõi, ở vòng 3-4), đặt tên riêng, biểu tượng mạch ngọc trên bản đồ. Môn giữ Linh Mạch lúc 5:00 được +2 Khí vận mỗi ô cho hôm đó. Không cộng chỉ số vào kiếp.
+- **Thiên Trì** (ô tâm): mở từ 21/11, 5 điểm/giờ, người đứng giữ ô này +10% lực giữ (ô ai cũng muốn).
+- **Yêu thú chiếm ô (đánh máy):** mỗi ngày 5:00 tối đa 8 ô trống ở vòng ngoài (vòng 5-6) bị yêu thú chiếm, lực giữ cố định 1.500-6.000 theo vòng (mô phỏng chỉnh để môn 5-8 người thắng được). Không khai hoang được ô yêu thú, phải xuất chinh như thường (trinh sát thấy đúng lực). Thắng: ô về môn, mỗi người đi theo +10 phúc duyên. Thua: nghỉ 2 giờ như thường. Yêu thú không đánh ai. Hết ngày chưa ai đánh thì ô về trống.
+- **Dải sức mạnh:** chỉ xuất chinh vào ô của môn có tổng Lực chiến (có trần) từ 1/3 môn mình trở lên. Ngoại lệ: Linh Mạch và Thiên Trì ai cũng đánh được (không trốn trên đất quý).
+- **Thù 12 giờ:** môn vừa chiếm ô của môn khác thì 12 giờ sau mới đánh tiếp ô khác của môn đó (chống dồn đánh một môn).
+- **Môn bỏ hoang:** môn 72 giờ không ai trong môn chơi kiếp hay mở Sơn Môn thì mọi ô trừ chính điện về trống (báo trong chiến báo).
+- [ ] Bảng/cột MỚI: `vkl_sm_tile.loai` ('thuong','linh_mach','thien_tri','yeu_thu') + `yeu_luc`; bảng `vkl_sm_diem` (ky_id, mon_id, diem, cap_nhat). Hàm MỚI `vkl_priv.sm_diem_gio()` (cron mỗi giờ), `vkl_priv.sm_yeu_thu_5h()` (cron 5:00), `vkl_priv.sm_bo_hoang()`; đặt 12 Linh Mạch + Thiên Trì cho Kỷ 1 (chỉ ô đang trống; ô đã có chủ thì giữ nguyên chủ, đổi loại).
+- [ ] Tính trận với ô yêu thú: hàm MỚI thay thế (không sửa `sm_tran` cũ) và gọi từ tick mới, hoặc nhánh trong hàm mới `vkl_sm_march2` + `sm_tran2`; giữ đúng luật trận cũ cho ô môn khác.
+- [ ] Dải sức mạnh + thù 12 giờ: trong `vkl_sm_march2` (hàm mới), giao diện gọi hàm mới khi cờ bật.
+- [ ] `vkl_sm_rank2`, `vkl_sm_map2` (trả loại ô, điểm), `vkl_sm_state` thêm điểm Kỷ (hàm mới `vkl_sm_state2` nếu cần).
+- [ ] Mô phỏng `scripts/sim-son-mon.ts` thêm điểm giữ đất, Linh Mạch, yêu thú: môn 15 người / 8 người / 3 người cuối Kỷ được bao nhiêu điểm, môn 3 người giữ 1 Linh Mạch có vượt môn 15 người toàn ô thường không (mục tiêu: có, nếu giữ đủ lâu). Ghi số vào Ghi chú.
+- [ ] Thử SQL trong giao dịch rồi hủy (như Khai hoang 18/11), cron chạy 2 lần không hỏng.
+- Ghi chú:
+
+## Ngày 10 - Kỷ 2 làm sớm: giao diện, bật cờ
+Lên bản: 2026-11-21. Bật cờ `SM_DAT_ON` lúc 5:00 21/11 (điểm bắt đầu tính). Có cáo thị 4.6.1 (bản mới): "Đất có giá": Linh Mạch, Thiên Trì, yêu thú, điểm giữ đất, luật dải sức mạnh.
+- [ ] Bản đồ: biểu tượng pixel Linh Mạch (mạch ngọc xanh), Thiên Trì (hồ sen vàng), yêu thú (đầu thú đỏ, ghi lực giữ); chú thích; chạm ô ghi "+3 điểm mỗi giờ, +2 Khí vận mỗi sáng".
+- [ ] Môn nhà: thẻ Lãnh thổ thêm "Điểm Kỷ: 1.240 · +9 mỗi giờ"; Xếp hạng Kỷ theo điểm (vẫn ghi số ô).
+- [ ] Xuất chinh: ô ngoài dải ghi lý do "Môn này yếu hơn 1/3 môn ta, đánh không được trừ ở Linh Mạch và Thiên Trì"; ô yêu thú ghi "Đánh máy, thắng mỗi người +10 phúc duyên".
+- [ ] Luật Sơn Môn: thêm câu hỏi "Điểm giữ đất là gì?", "Yêu thú là gì?", "Sao không đánh được môn kia?"; thẻ 3 câu đổi câu 3: "Hết Kỷ, môn nhiều Điểm giữ đất nhất thắng".
+- [ ] uiux-pro-max + humanizer cho mọi màn mới; `smoke-son-mon` thêm màn Linh Mạch, yêu thú, ô ngoài dải.
+- [ ] Bài đăng Page + Group cho Tyler tự đăng (không tự đăng): "Từ hôm nay đất có giá".
+- Ghi chú:
+
 ## Ngoài game (Tyler tự làm)
 - Đăng "Biên niên Kỷ" mỗi tuần và lúc kết Kỷ (Claude soạn khi Tyler hỏi): môn giữ nhiều ô nhất, trận lớn, môn lật ngược thế cờ.
 
