@@ -51,6 +51,12 @@ export const RELEASES: Release[] = [
         ],
       },
       {
+        h: tr('Sửa lỗi 19/11', 'Fixes on Nov 19'),
+        items: [
+          tr('Lúc chọn biến chiêu ở tầng 6, Tàng Kinh Các ghi rõ Cương và Nhu đổi gì cho đúng chiêu đó, ví dụ Kim Chung Tráo Nhu: chặn 2 đòn, phản 65% sát thương. Chiêu không có hiệu ứng phụ thì Nhu chỉ nhanh hơn 1 lượt. Cảm ơn Nguyễn Quang.', 'When picking a variant at stage 6, the Scripture Pavilion now shows exactly what Hard and Soft change for that move, e.g. Golden Bell Soft: blocks 2 hits, reflects 65% damage. Moves with no side effect only get 1 turn faster with Soft. Thanks to Nguyen Quang.'),
+        ],
+      },
+      {
         h: tr('Sửa lỗi 18/11', 'Fixes on Nov 18'),
         items: [
           tr('Tàng Kinh Các ghi rõ khi nào cần nâng tâm pháp trước.', 'The Scripture Pavilion now says clearly when you must raise your heart art first.'),

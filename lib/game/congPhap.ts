@@ -131,8 +131,35 @@ export const BIEN_TANG = 6;
 export const BIEN_NAME: Record<Bien, string> = { cuong: tr('Cương', 'Hard'), nhu: tr('Nhu', 'Soft') };
 export const BIEN_DESC: Record<Bien, string> = {
   cuong: tr('Sát thương x1,3, hồi chiêu chậm thêm 1 lượt', 'Damage x1.3, cooldown +1 turn'),
-  nhu: tr('Hồi chiêu nhanh hơn 1 lượt, thiêu/độc/hồi máu khi đánh/choáng/khiên/phản đòn đậm hơn 30%', 'Cooldown -1 turn; burn, poison, lifesteal, stun, shield and reflect 30% stronger'),
+  // 19/11 (Nguyễn Quang hỏi): ghi đúng theo bienDef - độc thêm 1 tầng, khiên chặn thêm 1 đòn, còn lại mạnh hơn 30%
+  nhu: tr(
+    'Hồi chiêu nhanh hơn 1 lượt. Hiệu ứng phụ của chiêu mạnh hơn: độc thêm 1 tầng, khiên chặn thêm 1 đòn; thiêu, hồi máu, choáng, phản đòn, né, tự hồi mạnh hơn 30%. Chiêu không có hiệu ứng phụ thì chỉ nhanh hơn 1 lượt.',
+    'Cooldown -1 turn. Side effects get stronger: poison +1 stack, shield blocks 1 more hit; burn, lifesteal, stun, reflect, evade and self-heal 30% stronger. Moves with no side effect only get the faster cooldown.',
+  ),
 };
+/** 19/11: một dòng nói rõ biến chiêu này đổi gì cho đúng chiêu d (tính từ bienDef, không đoán). */
+export function bienLine(d: CpDef, b: Bien): string {
+  const a = d.eff ?? {};
+  const n = bienDef(d, b);
+  const e = n.eff ?? {};
+  const p = (x: number) => `${Math.round(x * 100)}%`;
+  const cd0 = d.cd ?? 3;
+  const cd1 = n.cd ?? 3;
+  const cdTxt = cd1 === cd0 ? tr(`hồi chiêu giữ ${cd0} lượt (đã nhanh nhất)`, `cooldown stays ${cd0} (already fastest)`) : tr(`hồi chiêu ${cd0} → ${cd1} lượt`, `cooldown ${cd0} → ${cd1} turns`);
+  if (b === 'cuong') return [tr(`Sát thương x1,3`, `Damage x1.3`), cdTxt].join(', ');
+  const parts: string[] = [];
+  if (a.burn && e.burn) parts.push(tr(`thiêu ${p(a.burn[1])} → ${p(e.burn[1])} công mỗi hiệp`, `burn ${p(a.burn[1])} → ${p(e.burn[1])} attack per round`));
+  if (a.poison && e.poison) parts.push(tr(`độc ${a.poison} → ${e.poison} tầng`, `poison ${a.poison} → ${e.poison} stacks`));
+  if (a.leech && e.leech) parts.push(tr(`hồi máu ${p(a.leech)} → ${p(e.leech)} sát thương gây ra`, `heal ${p(a.leech)} → ${p(e.leech)} of damage dealt`));
+  if (a.stun && e.stun) parts.push(tr(`choáng ${p(a.stun)} → ${p(e.stun)}`, `stun ${p(a.stun)} → ${p(e.stun)}`));
+  if (a.shield && e.shield) parts.push(tr(`chặn ${a.shield} → ${e.shield} đòn`, `block ${a.shield} → ${e.shield} hits`));
+  if (a.reflect && e.reflect) parts.push(tr(`phản ${p(a.reflect[1])} → ${p(e.reflect[1])} sát thương`, `reflect ${p(a.reflect[1])} → ${p(e.reflect[1])} damage`));
+  if (a.evade && e.evade) parts.push(tr(`né ${p(a.evade[1])} → ${p(e.evade[1])}`, `evade ${p(a.evade[1])} → ${p(e.evade[1])}`));
+  if (a.heal && e.heal) parts.push(tr(`tự hồi ${p(a.heal)} → ${p(e.heal)} máu`, `self-heal ${p(a.heal)} → ${p(e.heal)} HP`));
+  if (a.rage && e.rage && a.rage[2] > 0) parts.push(tr(`tự đốt máu ${p(a.rage[2])} → ${p(e.rage[2])}`, `self-burn ${p(a.rage[2])} → ${p(e.rage[2])}`));
+  if (!parts.length) return tr(`Chiêu này không có hiệu ứng phụ nên Nhu chỉ đổi ${cdTxt}`, `No side effect on this move, Soft only changes ${cdTxt}`);
+  return [...parts, cdTxt].join(', ');
+}
 export function bienDef(d: CpDef, b?: Bien | null): CpDef {
   if (!b || d.kind !== 'chieu') return d;
   const e = { ...(d.eff ?? {}) };

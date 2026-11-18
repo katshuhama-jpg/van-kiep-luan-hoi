@@ -4,6 +4,16 @@ Tyler chốt 12/11/2026: mỗi đêm sau khi xong khối kế hoạch, xem số 
 
 Mốc so sánh: còn chơi sau 7 ngày (D7) 11-14% (`docs/so-lieu.md`, mốc trước 4.5.0).
 
+## Việc Tyler giao 18/11 tối - lên bản 5:00 sáng 19/11
+
+**Chữ biến chiêu Nhu - ĐÃ LÀM 18/11 tối** (sót ở bản 18/11; Tyler chốt sửa và hứa với Nguyễn Quang).
+
+- `lib/game/congPhap.ts`: `BIEN_DESC.nhu` ghi đúng theo `bienDef` (độc +1 tầng, khiên +1 đòn, các hiệu ứng khác +30%, chiêu không có hiệu ứng phụ thì chỉ nhanh 1 lượt); hàm mới `bienLine(d, b)` tính dòng riêng cho từng chiêu, ví dụ Kim Chung Tráo "Nhu: chặn 1 → 2 đòn, phản 50% → 65% sát thương, hồi chiêu 6 → 5 lượt", Kim Cang Chưởng "chỉ đổi hồi chiêu 3 → 2 lượt".
+- `components/TangKinhCac.tsx`: ở tầng 5 (báo trước) và lúc chọn biến chiêu, ghi hai dòng Cương/Nhu cho đúng chiêu đó. Không đổi số.
+- Cáo thị: nhóm "Sửa lỗi 19/11" trong 4.6.0. tsc, build, smoke-congphap sạch.
+- Sau khi lên bản: page đã hứa với Quang bản 5:00 sáng 19/11.
+- SmList "50 kiếp" đã sửa thành 30 trong commit khác của 18/11. Đền bù lôi đài của `tudang`: Tyler chốt giữ.
+
 ## Việc Tyler giao cho đêm 17/11 - lên bản 5:00 sáng 18/11 cùng chuyến Sơn Môn 4.6.0 (bắt buộc)
 
 ĐÃ LÀM đêm 17/11 (4401b40, cáo thị trong 4.6.0 nhóm "Sửa lỗi 18/11"): cả ba việc bắt buộc, và ghi mã lỗi Lôi đài ra log Vercel (`console.warn`, để không lẫn vào lỗi thật). Chưa làm phần tự chọn bóng lại khi `NO_SHADOW` vì máy chủ đã gỡ gốc lỗi; xem lại nếu log còn `NO_SHADOW`. Xem "Đêm 17/11" bên dưới.

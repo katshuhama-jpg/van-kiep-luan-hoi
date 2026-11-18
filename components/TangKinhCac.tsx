@@ -5,7 +5,7 @@
  */
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { Character } from '@/lib/game/types';
-import { CP, FUSE_CHANCE, FUSE_COST, FUSE_TANG, GAUGE_NAME, PATH_IDEA, PHAM_NAME, SLOT_REALM, SWAP_RATE, TAM_GAP, BIEN_DESC, BIEN_NAME, BIEN_TANG, tuviCost, canFuse, canSwap, capOf, cpOf, cpOfPath, heirChoices, owned, slotOpen, tamTang, tangMul, tqCost, tqOf, tuyetOf, upgradeBlock, vanNeed, type Bien, type CpDef } from '@/lib/game/congPhap';
+import { CP, FUSE_CHANCE, FUSE_COST, FUSE_TANG, GAUGE_NAME, PATH_IDEA, PHAM_NAME, SLOT_REALM, SWAP_RATE, TAM_GAP, BIEN_DESC, BIEN_NAME, BIEN_TANG, bienLine, tuviCost, canFuse, canSwap, capOf, cpOf, cpOfPath, heirChoices, owned, slotOpen, tamTang, tangMul, tqCost, tqOf, tuyetOf, upgradeBlock, vanNeed, type Bien, type CpDef } from '@/lib/game/congPhap';
 import { PATHS, REALMS } from '@/lib/game/data';
 import { tr } from '@/lib/i18n';
 import Sprite from './Sprite';
@@ -322,7 +322,16 @@ export function TangKinhCac({ c, onClose, onEquip, onUnequip, onUpgrade, onSwap,
                         </span>
                       )}
                       {!o && <span className="tk-cp-desc tk-how">{unlockText(d)}</span>}
-                      {o && d.kind === 'chieu' && o.tang === BIEN_TANG - 1 && !o.bien && blk !== 'cap' && <span className="tk-cp-desc tk-how">{tr(`Lên T${BIEN_TANG} chọn biến chiêu, giữ cả kiếp: Cương đánh x1,3 nhưng chậm 1 lượt; Nhu nhanh 1 lượt, hiệu ứng đậm 30%.`, `Stage ${BIEN_TANG} locks a variant for this life: Hard hits x1.3 but 1 turn slower; Soft is 1 turn faster with 30% stronger effects.`)}</span>}
+                      {o && d.kind === 'chieu' && !o.bien && ((o.tang === BIEN_TANG - 1 && blk !== 'cap') || blk === 'bien') && (
+                        // 19/11 (Nguyễn Quang hỏi): ghi đúng biến chiêu đổi gì cho CHÍNH chiêu này, không ghi chung "đậm 30%"
+                        <span className="tk-cp-desc tk-how">
+                          {blk === 'bien' ? tr('Chọn biến chiêu, giữ cả kiếp:', 'Pick a variant, kept for this life:') : tr(`Lên T${BIEN_TANG} chọn biến chiêu, giữ cả kiếp:`, `Stage ${BIEN_TANG} locks a variant for this life:`)}
+                          <br />
+                          {tr('Cương', 'Hard')}: {bienLine(d, 'cuong')}.
+                          <br />
+                          {tr('Nhu', 'Soft')}: {bienLine(d, 'nhu')}.
+                        </span>
+                      )}
                       {swapTo.length > 0 && (
                         <span className="tk-swap">
                           <small>{tr(`Chép ${SWAP_RATE} quyển này thành 1 quyển:`, `Rework ${SWAP_RATE} of these into 1 of:`)}</small>
