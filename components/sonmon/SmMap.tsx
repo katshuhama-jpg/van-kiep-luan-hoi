@@ -383,8 +383,10 @@ function SmBanDoXem({ c }: { c: SmCtx }) {
           {tr('đang bảo hộ (số giờ còn lại)', 'protected (hours left)')}
         </span>
       </div>
-      {sel ? (
-        <section className="sm-card">
+      {/* 19/11 (Tyler: chạm ô không thấy gì vì thẻ nằm dưới bản đồ cao): thông tin ô và môn hiện ở bottom sheet */}
+      {sel && xem == null ? (
+        <div className="sm-sheet" role="dialog" aria-modal="true" aria-label={sel[2]} onClick={() => setSel(null)}>
+        <div onClick={(e) => e.stopPropagation()}>
           <div className="sm-row">
             {chu != null ? <HuyHieu id={map.mon[String(chu)]?.huy_hieu ?? 0} size={40} /> : <span style={{ width: 40 }} />}
             <div className="sm-grow">
@@ -413,18 +415,30 @@ function SmBanDoXem({ c }: { c: SmCtx }) {
               <p className="sm-note">{tr('Phải trinh sát mới biết. Vào một môn để trinh sát.', 'Scout to find out. Join a sect to scout.')}</p>
             </div>
           )}
+          {chu != null && (() => {
+            const row = (c.list ?? []).find((x) => x.id === chu);
+            return row ? (
+              <p className="sm-note">
+                {tr(`${row.n}/${SM_CFG.mon.toiDa} người · ${row.mo_cua ? 'mở cửa, vào ngay được' : 'phải gửi đơn, chờ duyệt'}`, `${row.n}/${SM_CFG.mon.toiDa} members · ${row.mo_cua ? 'open, join at once' : 'apply and wait'}`)}
+              </p>
+            ) : null;
+          })()}
           {chu != null && (
-            <button className="sm-btn wide" onClick={() => (setXem(chu), track('sm_xem_mon', { tu: 'ban_do' }))}>
-              {tr(`Xem ${map.mon[String(chu)]?.ten ?? 'môn này'}`, `View ${map.mon[String(chu)]?.ten ?? 'this sect'}`)}
+            <button className="sm-btn main wide" onClick={() => (setXem(chu), track('sm_xem_mon', { tu: 'ban_do' }))}>
+              {tr(`Xem người trong ${map.mon[String(chu)]?.ten ?? 'môn này'}`, `See members of ${map.mon[String(chu)]?.ten ?? 'this sect'}`)}
             </button>
           )}
-        </section>
+          <button className="sm-btn sm-ghost wide" onClick={() => setSel(null)}>
+            {tr('Đóng', 'Close')}
+          </button>
+        </div>
+        </div>
       ) : (
         <p className="sm-card">{tr('Chạm một ô để xem tên ô và môn nào đang giữ.', 'Tap a tile to see its name and which sect holds it.')}</p>
       )}
       <p className="sm-note">{tr('Vào một môn để đứng giữ ô, trinh sát và xuất chinh.', 'Join a sect to guard tiles, scout and march.')}</p>
       {xem != null && (
-        <XemMon c={c} id={xem} ten={map.mon[String(xem)]?.ten ?? '?'} huy={map.mon[String(xem)]?.huy_hieu ?? 0} row={(c.list ?? []).find((x) => x.id === xem) ?? null} onDong={() => setXem(null)} />
+        <XemMon c={c} id={xem} ten={map.mon[String(xem)]?.ten ?? '?'} huy={map.mon[String(xem)]?.huy_hieu ?? 0} row={(c.list ?? []).find((x) => x.id === xem) ?? null} onDong={() => (setXem(null), setSel(null))} />
       )}
     </>
   );
