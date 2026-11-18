@@ -225,3 +225,12 @@ p.sm-card { display: block; }
 .sm-giu-ds li span:last-child { font-variant-numeric: tabular-nums; font-weight: 700; }
 .sm-giu.la { border-color: #6a5a7a; background: #efe9f3; }
 .sm-giu.la .sm-giu-n { color: #4a3f6b; letter-spacing: 2px; }
+
+/* 18/11 khai hoang: ô trống kề lãnh thổ nhấp nháy dấu + (tắt khi người dùng giảm chuyển động) */
+.sm-kh { animation: sm-kh-nhip 1.6s ease-in-out infinite; }
+@keyframes sm-kh-nhip { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+@media (prefers-reduced-motion: reduce) { .sm-kh { animation: none; } }
+.sm-kh-tip { border-color: #c9952e; background: #fff6e0; font-size: 15px; }
+.sm-o-pips { display: flex; gap: 3px; }
+.sm-o-pips i { width: 12px; height: 12px; border: 2px solid #8a6a3d; background: transparent; display: block; }
+.sm-o-pips i.on { background: #f2c14e; border-color: #1f160d; }

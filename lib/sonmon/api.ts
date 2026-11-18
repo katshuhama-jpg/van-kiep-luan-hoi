@@ -40,7 +40,7 @@ export type SmBao = {
   ten_a: string | null;
   ten_b: string | null;
   o: [number, number];
-  nd: { kq?: string; ten_o?: string; atk?: number; def?: number; n_atk?: number; n_def?: number; dau?: boolean; ly_do?: string } | null;
+  nd: { kq?: string; ten_o?: string; atk?: number; def?: number; n_atk?: number; n_def?: number; dau?: boolean; ly_do?: string; khai_hoang?: boolean; nguoi?: string } | null;
 };
 export type SmLcPhan = {
   nam: number; kiep: number; canh: number; ket_cuc: number; ngay: number; huyet: number; vien_man: number;
@@ -159,7 +159,7 @@ const codeOf = (msg: string) => (msg.match(/SM_[A-Z_]+/) ?? ['SM_NET'])[0];
 export type SmAct =
   | { fn: 'found'; ten: [string, string, string]; huy: number; cd: number; dkKiep: number; dkNgay: number; moCua: boolean }
   | { fn: 'cosign' | 'join' | 'apply'; mon: number }
-  | { fn: 'pick_tile' | 'guard' | 'scout' | 'march'; q: number; r: number }
+  | { fn: 'pick_tile' | 'guard' | 'scout' | 'march' | 'khai_hoang'; q: number; r: number }
   | { fn: 'follow' | 'unfollow'; chinh: number }
   | { fn: 'accept'; don: number; nhan: boolean }
   | { fn: 'kick'; tk: string }
@@ -206,6 +206,7 @@ function args(a: SmAct): Record<string, unknown> {
     case 'guard':
     case 'scout':
     case 'march':
+    case 'khai_hoang':
       return { p_q: a.q, p_r: a.r };
     case 'follow':
     case 'unfollow':

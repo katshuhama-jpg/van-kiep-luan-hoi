@@ -64,8 +64,11 @@ export function HexMap({
   pickEmpty = false,
   center,
   recenter,
+  kh,
 }: {
   map: SmMap;
+  /** 18/11 khai hoang: ô trống kề lãnh thổ môn ta, còn chỗ mở rộng (vẽ dấu + nhấp nháy) */
+  kh?: Set<string>;
   mine: number | null;
   sel: [number, number] | null;
   onPick: (o: SmMapO) => void;
@@ -170,6 +173,12 @@ export function HexMap({
                 </g>
               )}
               {cd && !trong && <rect x={-4} y={-S + 2} width={8} height={5} fill="#e8c35a" stroke="#1f160d" strokeWidth={1} />}
+              {trong && kh?.has(`${q},${r}`) && (
+                <g className="sm-kh">
+                  <polygon points={HEX_IN} fill="#f2c14e" fillOpacity={0.16} stroke="#f2c14e" strokeWidth={2} strokeDasharray="5 3" />
+                  <path d="M-2 -8h4v6h6v4h-6v6h-4v-6h-6v-4h6z" fill="#f2c14e" stroke="#1f160d" strokeWidth={1} />
+                </g>
+              )}
             </g>
           );
         })}
@@ -218,17 +227,34 @@ export function gan(st: SmState, q: number, r: number) {
   return Math.min(...tiles.map((t) => hexDist(t, { q, r })));
 }
 
+/** 18/11 khai hoang: các ô trống kề lãnh thổ môn ta mà môn còn chỗ mở rộng (không tính ô đang có môn kéo quân tới) */
+export function khaiDuoc(st: SmState, map: SmMap | null): Set<string> {
+  const out = new Set<string>();
+  const m = st.mon;
+  if (!m || !map || !m.tiles.length || m.o >= m.o_max) return out;
+  const dangToi = new Set(map.di.map((d) => `${d.toi[0]},${d.toi[1]}`));
+  for (const o of map.o) {
+    if (o[4] != null || dangToi.has(`${o[0]},${o[1]}`)) continue;
+    if (m.tiles.some((t) => hexDist(t, { q: o[0], r: o[1] }) === 1)) out.add(`${o[0]},${o[1]}`);
+  }
+  return out;
+}
+
+/** câu "cần thêm bao nhiêu người để mở thêm ô" khi môn đã đủ ô */
+export function duOCau(st: SmState): string {
+  const m = st.mon!;
+  const can = SM_CFG.mon.toiDa > m.n ? 3 * m.o_max - m.n : 0;
+  return can > 0
+    ? tr(`Môn đã giữ đủ ${m.o_max} ô. Thêm ${can} người vào môn là mở thêm 1 ô.`, `Your sect holds its limit of ${m.o_max}. ${can} more members open one more tile.`)
+    : tr(`Môn đã giữ đủ ${m.o_max} ô, tối đa của môn 15 người. Muốn đất tốt hơn thì giành ô của môn khác.`, `Your sect holds the maximum ${m.o_max} tiles.`);
+}
+
 /** lý do nút Xuất chinh bị khóa (null = bấm được) */
 export function chinhKhoa(st: SmState, o: SmMapO, now: number): string | null {
   const m = st.mon!;
   if (m.chuc === 'de') return tr('Chỉ môn chủ hoặc trưởng lão phát lệnh xuất chinh.', 'Only the master or elders can order a march.');
   if (!m.tiles.length) return tr('Môn chưa cắm cờ ô nào.', 'Your sect has no tile yet.');
-  if (m.o >= m.o_max) {
-    const can = SM_CFG.mon.toiDa > m.n ? 3 * m.o_max - m.n : 0;
-    return can > 0
-      ? tr(`Môn đã giữ đủ ${m.o_max} ô. Cần thêm ${can} người mới đánh được ô mới.`, `Your sect holds its limit of ${m.o_max}. Recruit ${can} more to take new land.`)
-      : tr(`Môn đã giữ đủ ${m.o_max} ô, tối đa của môn 15 người.`, `Your sect holds the maximum ${m.o_max} tiles.`);
-  }
+  if (m.o >= m.o_max) return duOCau(st);
   if (gan(st, o[0], o[1]) !== 1) return tr('Chỉ xuất chinh tới ô kề lãnh thổ.', 'You can only march to a tile next to your land.');
   if (o[6] && o[4] != null && new Date(o[6]).getTime() > now) return tr(`Ô đang được bảo hộ tới ${mocGio(o[6], now)}.`, `Protected until ${mocGio(o[6], now)}.`);
   if ((st.chinh ?? []).length) return tr('Môn đang có một lệnh xuất chinh.', 'Your sect already has a march under way.');
@@ -347,6 +373,9 @@ function SmBanDoMon({ c }: { c: SmCtx }) {
   const now = useNow();
   if (!map) return <p className="sm-note">{tr('Đang mở bản đồ...', 'Opening the map...')}</p>;
   const nTile = map.o.length;
+  const kh = khaiDuoc(st, map);
+  // ô đang chọn lấy bản mới nhất từ bản đồ (vừa khai hoang xong thì ô đổi chủ)
+  const cur = sel ? map.o.find((x) => x[0] === sel[0] && x[1] === sel[1]) ?? sel : null;
   return (
     <>
       <div className="sm-between">
@@ -355,12 +384,27 @@ function SmBanDoMon({ c }: { c: SmCtx }) {
           {tr('Về lãnh thổ', 'My land')}
         </button>
       </div>
-      <HexMap map={map} mine={m.id} sel={sel ? [sel[0], sel[1]] : null} onPick={(o) => (setSel(o), setErr(null), setOk(null))} center={home} recenter={rc} />
+      {m.tiles.length > 0 && (
+        <p className={m.o < m.o_max && kh.size ? 'sm-card sm-kh-tip' : 'sm-note'}>
+          {m.o < m.o_max
+            ? kh.size
+              ? tr(`Môn giữ ${m.o}/${m.o_max} ô. Ô có dấu + là đất trống kề lãnh thổ: chạm vào rồi bấm Khai hoang, cắm cờ ngay, không phải đánh ai.`, `We hold ${m.o}/${m.o_max} tiles. Tiles marked + are empty land next to ours: tap one and Claim it at once, no fighting.`)
+              : tr(`Môn giữ ${m.o}/${m.o_max} ô. Quanh lãnh thổ hết đất trống, muốn thêm ô thì phải giành của môn khác.`, `We hold ${m.o}/${m.o_max} tiles. No empty land next to ours; take tiles from other sects to grow.`)
+            : duOCau(st)}
+        </p>
+      )}
+      <HexMap map={map} mine={m.id} sel={sel ? [sel[0], sel[1]] : null} onPick={(o) => (setSel(o), setErr(null), setOk(null))} center={home} recenter={rc} kh={kh} />
       <div className="sm-legend">
         <span>
           <i className="sm-sw" style={{ borderColor: '#f2c14e', background: '#efdcb0', boxShadow: 'inset 0 0 0 2px #fff6e0, inset 0 0 0 4px #f2c14e' }} />
           {tr('môn ta', 'ours')}
         </span>
+        {kh.size > 0 && (
+          <span>
+            <i className="sm-sw" style={{ borderColor: '#f2c14e', borderStyle: 'dashed', background: '#3a3150', color: '#f2c14e', textAlign: 'center', lineHeight: '12px', fontWeight: 700 }}>+</i>
+            {tr('khai hoang được', 'claimable')}
+          </span>
+        )}
         <span>
           <i className="sm-sw" style={{ borderColor: '#e06a5c', background: '#e5b699' }} />
           {tr('môn khác (theo huy hiệu)', 'other sects (by crest)')}
@@ -375,7 +419,7 @@ function SmBanDoMon({ c }: { c: SmCtx }) {
         </span>
       </div>
       <Msg err={err} ok={ok} />
-      {sel ? <OInfo c={c} o={sel} now={now} setErr={setErr} setOk={setOk} /> : <p className="sm-card">{tr('Chạm một ô để xem tên, chủ ô và trinh sát.', 'Tap a tile to see its name, owner and scouting.')}</p>}
+      {cur ? <OInfo key={`${cur[0]},${cur[1]},${cur[4]}`} c={c} o={cur} now={now} setErr={setErr} setOk={setOk} /> : <p className="sm-card">{tr('Chạm một ô để xem tên, chủ ô. Ô có dấu + thì khai hoang được ngay.', 'Tap a tile to see its name and owner. Tiles marked + can be claimed now.')}</p>}
       <DongMinh />
     </>
   );
@@ -411,7 +455,7 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
           <p className="sm-note">
             {tr(`Cõi ${COI[coi].name}`, `${COI[coi].name} realm`)}
             {' · '}
-            {ta ? tr('ô của môn ta', 'our tile') : d === 1 ? tr('kề lãnh thổ ta · đi 20 phút', 'next to our land · 20 min march') : d != null ? tr(`không kề · cách ${d} ô`, `not adjacent · ${d} tiles away`) : ''}
+            {ta ? tr('ô của môn ta', 'our tile') : d === 1 ? (chu == null ? tr('kề lãnh thổ ta · khai hoang được', 'next to our land · claimable') : tr('kề lãnh thổ ta · đi 20 phút', 'next to our land · 20 min march')) : d != null ? tr(`không kề · cách ${d} ô`, `not adjacent · ${d} tiles away`) : ''}
           </p>
         </div>
       </div>
@@ -446,7 +490,7 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
         </div>
       )}
       {!ta && chu == null && (
-        <p style={{ fontSize: 15 }}>{tr('Ô trống, chưa môn nào giữ.', 'Empty tile, held by no sect.')}</p>
+        <p style={{ fontSize: 15 }}>{tr('Đất trống, chưa môn nào giữ.', 'Empty land, held by no sect.')}</p>
       )}
       {ta && <GiuO c={c} q={q} r={r} />}
       {ta ? (
@@ -474,6 +518,8 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
             {coDi ? tr(`Sang giữ ${ten} · đi ${diPhut} phút`, `Guard ${ten} · ${diPhut} min walk`) : tr(`Đứng giữ ${ten}`, `Guard ${ten}`)}
           </button>
         )
+      ) : chu == null ? (
+        <KhaiHoang c={c} o={o} d={d} now={now} setErr={setErr} setOk={setOk} />
       ) : (
         <>
           <div className="sm-grid2">
@@ -499,6 +545,58 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
         </>
       )}
     </section>
+  );
+}
+
+/** 18/11 (Tyler: người chơi không biết mở rộng ô, tưởng phải đánh nhau): ô trống kề lãnh thổ thì khai hoang, cắm cờ ngay.
+ * Ai trong môn cũng làm được, theo trần số ô của môn. */
+function KhaiHoang({ c, o, d, now, setErr, setOk }: { c: SmCtx; o: SmMapO; d: number | null; now: number; setErr: (s: string | null) => void; setOk: (s: string | null) => void }) {
+  const { st, map } = c;
+  const m = st.mon!;
+  const [q, r, ten] = o;
+  const dangToi = !!map?.di.some((x) => x.toi[0] === q && x.toi[1] === r);
+  const khoa = !m.tiles.length
+    ? tr('Môn chưa cắm cờ ô nào.', 'Your sect has no tile yet.')
+    : m.o >= m.o_max
+      ? duOCau(st)
+      : d !== 1
+        ? tr(`Ô này cách lãnh thổ ${d ?? '?'} ô. Chỉ khai hoang được ô kề đất ta (ô có dấu +), mở dần ra.`, `This tile is ${d ?? '?'} away. Only tiles next to our land (marked +) can be claimed.`)
+        : dangToi
+          ? tr('Có môn đang kéo quân tới ô này.', 'A sect is marching on this tile.')
+          : st.nghi_toi && new Date(st.nghi_toi).getTime() > now
+            ? tr(`Ngươi đang nghỉ sau trận thua tới ${hhmm(st.nghi_toi)}.`, `You rest until ${hhmm(st.nghi_toi)}.`)
+            : null;
+  return (
+    <>
+      <button
+        className="sm-btn main wide"
+        disabled={c.busy || !!khoa}
+        onClick={async () => {
+          let kq: Record<string, unknown> | null = null;
+          const e = await c.run({ fn: 'khai_hoang', q, r }, (x) => {
+            kq = x ?? null;
+            track('sm_khai_hoang', { o: m.o + 1, chuc: m.chuc });
+          });
+          setErr(e);
+          if (!e) {
+            const bh = (kq as { bao_ho_toi?: string | null } | null)?.bao_ho_toi;
+            setOk(
+              bh
+                ? tr(`Đã cắm cờ ${ten}! Đất này được bảo hộ tới ${mocGio(bh, Date.now())}. Nhớ cử người sang đứng giữ.`, `Flag planted on ${ten}! Protected until ${mocGio(bh, Date.now())}. Send someone to guard it.`)
+                : tr(`Đã cắm cờ ${ten}! Ô này chưa có ai giữ, nhớ cử người sang đứng giữ.`, `Flag planted on ${ten}! Nobody guards it yet, send someone over.`),
+            );
+            c.reload(['state', 'map']);
+          }
+        }}
+      >
+        {tr(`KHAI HOANG ${ten.toUpperCase()}`, `CLAIM ${ten.toUpperCase()}`)}
+      </button>
+      {khoa ? (
+        <p className="sm-why">{khoa}</p>
+      ) : (
+        <p className="sm-note">{tr('Cắm cờ ngay, không phải đánh ai. Ai trong môn cũng khai hoang được.', 'Plant the flag right away, no fighting. Any member can claim.')}</p>
+      )}
+    </>
   );
 }
 

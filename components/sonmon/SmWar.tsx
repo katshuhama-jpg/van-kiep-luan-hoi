@@ -218,6 +218,7 @@ function dungO(st: SmState, ds: SmMember[], q: number, r: number) {
 
 function baoCau(b: SmBao, mine: number): { tag: string; cls: string; chu: string } {
   const o = b.nd?.ten_o ?? '';
+  if (b.loai === 'cam_co' && b.nd?.khai_hoang) return { tag: tr('Cờ', 'Flag'), cls: 'flag', chu: tr(`${b.nd?.nguoi ?? 'Đạo hữu'} khai hoang ${o}`, `${b.nd?.nguoi ?? 'A member'} claimed ${o}`) };
   if (b.loai === 'cam_co') return { tag: tr('Cờ', 'Flag'), cls: 'flag', chu: tr(`Cắm cờ ${o}${b.nd?.dau ? ', ô đầu tiên của môn' : ''}`, `Planted the flag on ${o}`) };
   if (b.loai === 'huy') return { tag: tr('Hủy', 'Off'), cls: 'lose', chu: tr(`Lệnh xuất chinh tới ${o} bị hủy vì không ai theo`, `March to ${o} called off, nobody joined`) };
   if (b.loai === 'mat_het') return { tag: tr('Mất', 'Lost'), cls: 'lose', chu: tr('Môn mất hết ô. Cắm cờ lại một ô trống bất kỳ, bảo hộ 12 giờ.', 'The sect lost all tiles. Plant again anywhere, protected 12 h.') };

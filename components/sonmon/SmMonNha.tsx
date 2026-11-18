@@ -8,6 +8,7 @@ import { track } from '@/lib/track';
 import { nvChu, SM_CFG } from '@/lib/sonmon/data';
 import { ChinhDien, ChuoiO, HuyHieu } from './Pixel';
 import { SmBaCau } from './SmLuat';
+import { duOCau, khaiDuoc } from './SmMap';
 import { chucTen, clock, DongMinh, fmtN, mocGio, Msg, useNow, type SmCtx } from './ui';
 
 const CANH: Record<number, string> = { 0: '-', 1: 'Luyện Khí', 2: 'Trúc Cơ', 3: 'Kim Đan', 4: 'Nguyên Anh', 5: 'Hóa Thần' };
@@ -83,6 +84,8 @@ export function SmMonNha({ c }: { c: SmCtx }) {
           </button>
         </div>
       </section>
+
+      {m.cam_co && <LanhTho c={c} />}
 
       {m.moi_bh_toi && new Date(m.moi_bh_toi).getTime() > now && (
         <section className="sm-card sm-bh">
@@ -214,5 +217,40 @@ export function SmMonNha({ c }: { c: SmCtx }) {
       </section>
       <DongMinh />
     </>
+  );
+}
+
+/** 18/11 (Tyler: người chơi không biết mở rộng ô): thẻ lãnh thổ ở môn nhà, đếm ô đã giữ và đất trống kề bên, nút khai hoang */
+function LanhTho({ c }: { c: SmCtx }) {
+  const m = c.st.mon!;
+  const kh = khaiDuoc(c.st, c.map);
+  const con = m.o < m.o_max;
+  return (
+    <section className={con && kh.size ? 'sm-card sm-kh-tip' : 'sm-card'}>
+      <div className="sm-between">
+        <h3>{tr(`Lãnh thổ ${m.o}/${m.o_max} ô`, `Land ${m.o}/${m.o_max} tiles`)}</h3>
+        <span className="sm-o-pips" aria-hidden>
+          {Array.from({ length: m.o_max }, (_, i) => (
+            <i key={i} className={i < m.o ? 'on' : ''} />
+          ))}
+        </span>
+      </div>
+      {con ? (
+        <>
+          <p style={{ fontSize: 15 }}>
+            {c.map
+              ? kh.size
+                ? tr(`Còn ${m.o_max - m.o} ô chưa dùng. Quanh lãnh thổ có ${kh.size} ô đất trống: khai hoang là cắm cờ ngay, không phải đánh ai. Ai trong môn cũng làm được.`, `${m.o_max - m.o} tiles unused. ${kh.size} empty tiles border our land: claim them at once, no fighting. Any member can.`)
+                : tr('Quanh lãnh thổ hết đất trống. Muốn thêm ô thì trinh sát rồi xuất chinh giành ô của môn khác.', 'No empty land next to ours. Scout and march to take tiles from other sects.')
+              : tr(`Còn ${m.o_max - m.o} ô chưa dùng. Khai hoang ô trống kề lãnh thổ là cắm cờ ngay, không phải đánh ai.`, `${m.o_max - m.o} tiles unused. Claim empty land next to ours at once, no fighting.`)}
+          </p>
+          <button className="sm-btn main wide" onClick={() => (track('sm_kh_mo', { o: m.o, max: m.o_max, n: kh.size }), c.go('ban-do'))}>
+            {tr('KHAI HOANG THÊM ĐẤT', 'CLAIM MORE LAND')}
+          </button>
+        </>
+      ) : (
+        <p style={{ fontSize: 15 }}>{duOCau(c.st)}</p>
+      )}
+    </section>
   );
 }

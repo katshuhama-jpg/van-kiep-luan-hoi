@@ -232,6 +232,10 @@ export function demoApi(vaiIn: string): SmApi {
         case 'march':
           if (st.chinh?.length) throw new SmErr('SM_DANG_CHINH');
           return { id: 8 };
+        case 'khai_hoang':
+          if (m && m.o >= m.o_max) throw new SmErr('SM_DU_O');
+          if (m) st = { ...st, mon: { ...m, o: m.o + 1, tiles: [...m.tiles, { q: a.q, r: a.r, ten: 'Vọng Nguyệt Lâm', cd: false, bao_ho_toi: at(24 * 60) }] } };
+          return { ok: true, ten_o: 'Vọng Nguyệt Lâm', o: (m?.o ?? 0) + 1, o_max: m?.o_max ?? 6 };
         case 'found':
           st = monState('cho');
           if (st.mon) st.mon = { ...st.mon, ten: a.ten.join(' '), ten1: a.ten[0], ten2: a.ten[1], ten3: a.ten[2], huy_hieu: a.huy, chinh_dien_hinh: a.cd };
