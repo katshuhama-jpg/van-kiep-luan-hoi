@@ -11,6 +11,7 @@ import type { Player } from '@/lib/auth';
 import { suGui, suHop, suTimDe, suTra, type SuDeUng, type SuHop, type SuThu } from '@/lib/suDo';
 import { track } from '@/lib/track';
 import { tr } from '@/lib/i18n';
+import { SITE_URL } from '@/lib/seo';
 
 const HOUR = 3600000;
 export function suLuc(iso: string | null): string {
@@ -128,9 +129,9 @@ export function SuTimDeSheet({ user, onClose }: { user: Player | null; onClose: 
   };
   return (
     <div className="drawer-bg su-tim-bg" onClick={onClose}>
-      <section className="su-tim" role="dialog" aria-modal="true" aria-label={tr('Tìm đệ tử', 'Find disciples')} onClick={(e) => e.stopPropagation()}>
+      <section className="su-tim" role="dialog" aria-modal="true" aria-label={tr('Mời đệ tử', 'Invite disciples')} onClick={(e) => e.stopPropagation()}>
         <div className="drawer-head">
-          <b>{tr('Tìm đệ tử', 'Find disciples')}</b>
+          <b>{tr('Mời đệ tử', 'Invite disciples')}</b>
           <button className="btn drawer-x" aria-label={tr('Đóng', 'Close')} onClick={onClose}>
             ×
           </button>
@@ -139,6 +140,7 @@ export function SuTimDeSheet({ user, onClose }: { user: Player | null; onClose: 
           <p className="su-tim-lead">
             {tr('Người mới (dưới 8 ngày, chưa quá 5 kiếp) chưa có sư phụ. Bấm Mời, người đó nhận là thành thầy trò. Đệ tử chơi xong 10 kiếp trong 7 ngày: mỗi người +20 phúc duyên.', 'New players (under 8 days, at most 5 lives) without a master. Tap Invite; once they accept you are master and disciple. When they finish 10 lives in 7 days, you each get +20 Fortune.')}
           </p>
+          <SuLinkMoi user={user} from="tim_de" />
           {hop && hop.den.some((t) => t.loai === 'xin') && (
             <>
               <h4 className="su-hop-h">{tr('Lời xin bái sư gửi ngươi', 'Requests to you')}</h4>
@@ -176,6 +178,51 @@ export function SuTimDeSheet({ user, onClose }: { user: Player | null; onClose: 
           </p>
         </div>
       </section>
+    </div>
+  );
+}
+
+/** 18/11 (người chơi hỏi: gửi link cho bạn bè ở đâu): link mời hiện rõ, chép một chạm, chia sẻ qua Messenger/Zalo */
+export function SuLinkMoi({ user, from }: { user: Player | null; from: string }) {
+  const [ok, setOk] = useState<string | null>(null);
+  if (!user) return null;
+  const link = `${SITE_URL}/?su=${encodeURIComponent(user.username)}`;
+  const text = tr('Vào Vạn Kiếp Luân Hồi bằng link này để bái ta làm sư phụ. Chơi xong 10 kiếp trong 7 ngày, thầy trò mỗi người +20 phúc duyên.', 'Join Ten Thousand Rebirths with this link to become my disciple. Finish 10 lives in 7 days and we each get +20 Fortune.');
+  const chep = async () => {
+    track('su_link_copy', { from });
+    try {
+      await navigator.clipboard.writeText(link);
+      setOk(tr('Đã chép link. Dán gửi bạn bè qua Messenger, Zalo.', 'Link copied. Paste it to a friend.'));
+    } catch {
+      setOk(tr('Máy chưa cho chép tự động, giữ tay vào link ở trên để chép.', 'Could not copy automatically; press and hold the link to copy it.'));
+    }
+  };
+  const chia = async () => {
+    track('su_link_share', { from });
+    try {
+      await navigator.share({ text, url: link });
+    } catch {}
+  };
+  return (
+    <div className="su-link">
+      <b>{tr('Link mời đệ tử của ngươi', 'Your disciple invite link')}</b>
+      <input className="su-link-o" readOnly value={link} onFocus={(e) => e.currentTarget.select()} aria-label={tr('Link mời', 'Invite link')} />
+      <div className="su-link-act">
+        <button className="btn su-tim-go" onClick={chep}>
+          {tr('Chép link', 'Copy link')}
+        </button>
+        {typeof navigator !== 'undefined' && 'share' in navigator && (
+          <button className="btn su-hop-no" onClick={chia}>
+            {tr('Gửi qua app khác', 'Share')}
+          </button>
+        )}
+      </div>
+      <small className="su-item-s">{tr('Người mới vào bằng link này rồi tạo tài khoản là tự bái ngươi làm sư phụ, không cần chờ nhận.', 'New players who sign up through this link become your disciples automatically.')}</small>
+      {ok && (
+        <p className="su-tim-warn" role="status">
+          {ok}
+        </p>
+      )}
     </div>
   );
 }

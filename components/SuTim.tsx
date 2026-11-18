@@ -177,13 +177,13 @@ export function SuDoHome({ user, ready }: { user: Player | null; ready: boolean 
         </b>
         <small>
           {mode === 'moi'
-            ? tr('Tìm người mới theo tên rồi bấm Mời, hoặc gửi link cho bạn bè. Đệ tử chơi đủ 10 kiếp trong 7 ngày: thầy trò mỗi người +20 phúc duyên.', 'Search new players and invite them, or send your link. When a disciple finishes 10 lives in 7 days, you both get +20 Fortune.')
+            ? tr('Bấm Mời đệ tử để chép link gửi bạn bè, hoặc tìm người mới theo tên. Đệ tử chơi đủ 10 kiếp trong 7 ngày: thầy trò mỗi người +20 phúc duyên.', 'Tap Invite to copy your link for friends, or search new players. When a disciple finishes 10 lives in 7 days, you both get +20 Fortune.')
             : tr('Người mới chọn một sư phụ đang chơi. Đủ 10 kiếp trong 7 ngày: thầy trò mỗi người +20 phúc duyên.', 'New players pick an active master. Finish 10 lives in 7 days: you both get +20 Fortune.')}
         </small>
       </span>
       {mode === 'moi' ? (
         <button className="btn su-home-go" onClick={() => (setTimDe(true), track('su_home_tap', { mode, cho: nCho }))}>
-          {nCho > 0 ? tr('Xem', 'View') : tr('Tìm đệ tử', 'Find')}
+          {nCho > 0 ? tr('Xem', 'View') : tr('Mời đệ tử', 'Invite')}
         </button>
       ) : (
         !done && (

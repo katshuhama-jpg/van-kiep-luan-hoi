@@ -16,7 +16,7 @@ import { realApi } from '@/lib/sonmon/api';
 import { metaWritable } from '@/lib/storage';
 import { suAnSet, suClaim, suHop, suInfo, suList, suState, suTim, suTitle, type SuDe, type SuHop, type SuInfo, type SuTim } from '@/lib/suDo';
 import { SuTimSheet } from './SuTim';
-import { SuHopList, SuTimDeSheet } from './SuMoi';
+import { SuHopList, SuLinkMoi, SuTimDeSheet } from './SuMoi';
 import { track } from '@/lib/track';
 import { tr } from '@/lib/i18n';
 
@@ -199,6 +199,7 @@ export default function SuDoPanel({ user, meta, onGain }: { user: Player | null;
         </>
       )}
       {ds && ds.length > 0 && <SuDeList ds={ds} />}
+      {user && <SuLinkMoi user={user} from="nhan_vat" />}
       {user && laSu && (
         <button className="btn su-invite" style={{ marginBottom: 8 }} onClick={() => setTimDe(true)}>
           {tr('Tìm người mới để mời', 'Find new players to invite')}
