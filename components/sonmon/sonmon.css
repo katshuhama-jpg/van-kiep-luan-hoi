@@ -217,3 +217,11 @@ p.sm-card { display: block; }
 .sm-cuon { overflow-y: auto; overflow-x: hidden; min-height: 0; flex: 1 1 auto; touch-action: pan-y; overscroll-behavior: contain; padding: 0 4px 4px 0; }
 .sm-ng-list, .sm-ng-list li { min-width: 0; max-width: 100%; }
 .sm-ng { max-width: 100%; }
+/* 18/11: lực giữ từng ô của môn ta */
+.sm-giu { padding: 8px 10px; background: #fff6e0; border: 2px solid #b07c28; display: flex; flex-direction: column; gap: 4px; }
+.sm-giu-n { font-size: 22px; color: var(--chinh, #a8402e); font-variant-numeric: tabular-nums; }
+.sm-giu-ds { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.sm-giu-ds li { display: flex; justify-content: space-between; gap: 8px; padding: 4px 0; border-bottom: 1px dashed #d9c493; font-size: 15px; }
+.sm-giu-ds li span:last-child { font-variant-numeric: tabular-nums; font-weight: 700; }
+.sm-giu.la { border-color: #6a5a7a; background: #efe9f3; }
+.sm-giu.la .sm-giu-n { color: #4a3f6b; letter-spacing: 2px; }

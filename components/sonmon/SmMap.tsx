@@ -4,8 +4,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
-import type { SmMap, SmMapO, SmState } from '@/lib/sonmon/api';
-import { COI, HUY_MAU, hexDist, SM_CFG } from '@/lib/sonmon/data';
+import type { SmMap, SmMapO, SmMember, SmState } from '@/lib/sonmon/api';
+import { capLc, COI, HUY_MAU, hexDist, SM_CFG } from '@/lib/sonmon/data';
 import { HuyHieu } from './Pixel';
 import { XemMon } from './SmList';
 import { DongMinh, fmtN, hhmm, mocGio, Msg, smCo, truoc, useNow, type SmCtx } from './ui';
@@ -192,6 +192,25 @@ export function HexMap({
   );
 }
 
+/** 18/11: ai đang giữ một ô của môn ta và lực giữ (cùng cách máy chủ tính: người đứng ở ô, chưa chọn thì ở chính điện,
+ * không đang nghỉ, không đang đi đường; mỗi người tính tới trần; nhân sân nhà và Khí vận hôm nay) */
+export function giuO(st: SmState, ds: SmMember[] | null | undefined, q: number, r: number) {
+  const m = st.mon;
+  if (!m || !ds) return null;
+  const cd = m.tiles.find((t) => t.cd);
+  const now = Date.now();
+  const o = (x: SmMember) => x.dung ?? (cd ? [cd.q, cd.r] : null);
+  const tai = ds.filter((x) => {
+    const d = o(x);
+    return d && d[0] === q && d[1] === r;
+  });
+  const dangDi = (x: SmMember) => !!x.di_toi && new Date(x.di_toi).getTime() > now;
+  const giu = tai.filter((x) => !x.nghi && !dangDi(x));
+  const goc = giu.reduce((a, x) => a + capLc(x.lc), 0);
+  const he = SM_CFG.tran.sanNha * (1 + (m.kv_bonus ?? 0)) * (m.tiles.length === 1 ? SM_CFG.tran.motO : 1);
+  return { giu, toi: tai.filter(dangDi), nghi: tai.filter((x) => x.nghi), goc, luc: Math.round(goc * he), he };
+}
+
 /** khoảng cách tới ô gần nhất của môn ta (null nếu chưa có ô) */
 export function gan(st: SmState, q: number, r: number) {
   const tiles = st.mon?.tiles ?? [];
@@ -289,6 +308,15 @@ function SmBanDoXem({ c }: { c: SmCtx }) {
               <br />
               {tr(`Tới ${mocGio(sel[6], now)}, chưa môn nào đánh được ô này.`, `Until ${mocGio(sel[6], now)}; no sect can attack it.`)}
             </p>
+          )}
+          {chu != null && (
+            <div className="sm-giu la">
+              <div className="sm-between">
+                <b>{tr('Lực giữ ô', 'Tile defence')}</b>
+                <b className="sm-giu-n">???</b>
+              </div>
+              <p className="sm-note">{tr('Phải trinh sát mới biết. Vào một môn để trinh sát.', 'Scout to find out. Join a sect to scout.')}</p>
+            </div>
           )}
           {chu != null && (
             <button className="sm-btn wide" onClick={() => (setXem(chu), track('sm_xem_mon', { tu: 'ban_do' }))}>
@@ -400,20 +428,27 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
         </button>
       )}
       {xemMon && chu != null && <XemMon c={c} id={chu} ten={chuTen} huy={map?.mon[String(chu)]?.huy_hieu ?? 0} onDong={() => setXemMon(false)} />}
-      {!ta && (
-        <p style={{ fontSize: 15 }}>
-          {dangTrinh
-            ? tr(`Đang trinh sát, xong lúc ${hhmm(trinh!.xong_luc)}.`, `Scouting, back at ${hhmm(trinh!.xong_luc)}.`)
-            : trinh?.ket_qua
-              ? trinh.ket_qua.trong
-                ? tr(`Trinh sát ${truoc(trinh.xong_luc, now)}: ô trống.`, `Scouted ${truoc(trinh.xong_luc, now)}: empty.`)
-                : tr(
-                    `Trinh sát ${truoc(trinh.xong_luc, now)}: ${trinh.ket_qua.n} người đứng giữ, Lực chiến khoảng ${fmtN(trinh.ket_qua.lc ?? 0)}.`,
-                    `Scouted ${truoc(trinh.xong_luc, now)}: ${trinh.ket_qua.n} guards, power about ${fmtN(trinh.ket_qua.lc ?? 0)}.`,
-                  )
-              : tr('Chưa trinh sát ô này.', 'Not scouted yet.')}
-        </p>
+      {!ta && chu != null && (
+        <div className="sm-giu la">
+          <div className="sm-between">
+            <b>{tr('Lực giữ ô', 'Tile defence')}</b>
+            <b className="sm-giu-n">{trinh?.ket_qua && !trinh.ket_qua.trong ? fmtN(trinh.ket_qua.lc ?? 0) : '???'}</b>
+          </div>
+          <p className="sm-note">
+            {dangTrinh
+              ? tr(`Đang trinh sát, có tin lúc ${hhmm(trinh!.xong_luc)}.`, `Scouting, back at ${hhmm(trinh!.xong_luc)}.`)
+              : trinh?.ket_qua
+                ? trinh.ket_qua.trong
+                  ? tr(`Trinh sát ${truoc(trinh.xong_luc, now)}: ô trống.`, `Scouted ${truoc(trinh.xong_luc, now)}: empty.`)
+                  : tr(`Trinh sát ${truoc(trinh.xong_luc, now)}: ${trinh.ket_qua.n} người đứng giữ (chưa tính sân nhà). Người giữ có thể đã đổi, trinh sát lại trước khi đánh.`, `Scouted ${truoc(trinh.xong_luc, now)}: ${trinh.ket_qua.n} guards (before home bonus).`)
+                : tr('Phải trinh sát mới biết ô này có bao nhiêu người giữ, Lực chiến bao nhiêu.', 'Scout to learn how many guard this tile and their power.')}
+          </p>
+        </div>
       )}
+      {!ta && chu == null && (
+        <p style={{ fontSize: 15 }}>{tr('Ô trống, chưa môn nào giữ.', 'Empty tile, held by no sect.')}</p>
+      )}
+      {ta && <GiuO c={c} q={q} r={r} />}
       {ta ? (
         dangDung ? (
           dangDi ? (
@@ -464,5 +499,37 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
         </>
       )}
     </section>
+  );
+}
+
+/** 18/11: ô của môn ta: lực giữ và ai đang giữ, ai đang đi tới, ai đang nghỉ */
+function GiuO({ c, q, r }: { c: SmCtx; q: number; r: number }) {
+  const g = giuO(c.st, c.members?.ds, q, r);
+  if (!g) return <p className="sm-note">{tr('Đang xem ai giữ ô...', 'Loading guards...')}</p>;
+  const ten = (ds: SmMember[]) => ds.map((x) => x.ten).join(', ');
+  return (
+    <div className="sm-giu">
+      <div className="sm-between">
+        <b>{tr('Lực giữ ô', 'Tile defence')}</b>
+        <b className="sm-giu-n">{fmtN(g.luc)}</b>
+      </div>
+      <p className="sm-note">
+        {tr(`${g.giu.length} người đang giữ, Lực chiến ${fmtN(Math.round(g.goc))}, nhân sân nhà${c.st.mon?.kv_bonus ? ` và Khí vận +${Math.round((c.st.mon.kv_bonus) * 100)}%` : ''}${(c.st.mon?.tiles.length ?? 0) === 1 ? ', thêm 15% vì là ô cuối' : ''}. Đánh ban đêm (0-7h) bên giữ còn gấp đôi.`, `${g.giu.length} guarding, power ${fmtN(Math.round(g.goc))}, with home bonus. Doubled at night (0-7h).`)}
+      </p>
+      {g.giu.length > 0 ? (
+        <ul className="sm-giu-ds">
+          {[...g.giu].sort((a, b) => b.lc - a.lc).map((x) => (
+            <li key={x.tk}>
+              <span>{x.ten}</span>
+              <span>{fmtN(x.lc)}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="sm-why">{tr('Chưa ai giữ ô này. Bị đánh là mất ngay.', 'Nobody guards this tile. It falls to any attack.')}</p>
+      )}
+      {g.toi.length > 0 && <p className="sm-note">{tr(`Đang đi tới: ${ten(g.toi)}`, `On the way: ${ten(g.toi)}`)}</p>}
+      {g.nghi.length > 0 && <p className="sm-note">{tr(`Đang nghỉ (không tính): ${ten(g.nghi)}`, `Resting (not counted): ${ten(g.nghi)}`)}</p>}
+    </div>
   );
 }
