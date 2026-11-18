@@ -312,31 +312,52 @@ function SmTrong({ c, cho, cosign, now }: { c: SmCtx; cho: SmMonRow[]; cosign: (
 
 /** 18/11: xem người trong môn trước khi vào (tên, chức, Lực chiến). Không hiện tài khoản, không hiện chỗ đứng. */
 function XemNguoi({ c, m, onVao, onDong }: { c: SmCtx; m: SmMonRow; onVao: () => void; onDong: () => void }) {
+  return <XemMon c={c} id={m.id} ten={m.ten} huy={m.huy_hieu} row={m} onVao={onVao} onDong={onDong} />;
+}
+
+/**
+ * 18/11: xem người trong một môn. Có row (danh sách môn) và người xem chưa có môn: hiện nút vào/xin vào.
+ * Người đã ở môn khác (mở từ bản đồ): chỉ xem.
+ */
+export function XemMon({ c, id, ten, huy, row, onVao, onDong }: { c: SmCtx; id: number; ten: string; huy: number; row?: SmMonRow | null; onVao?: () => void; onDong: () => void }) {
   const [ds, setDs] = useState<SmMonNguoi[] | null>(null);
   const [ai, setAi] = useState<SmMonNguoi | null>(null);
   const [err, setErr] = useState<string | null>(null);
   useEffect(() => {
     let live = true;
-    c.api.monDs(m.id).then(
+    c.api.monDs(id).then(
       (x) => live && setDs(x),
       (e: unknown) => live && setErr(smLoi(e)),
     );
     return () => {
       live = false;
     };
-  }, [c.api, m.id]);
-  const why = lyDo(m, c.st);
-  const daDon = c.st.don.some((d) => d.mon === m.id);
+  }, [c.api, id]);
+  const coVao = !!row && !c.st.mon;
+  const why = coVao ? lyDo(row!, c.st) : null;
+  const daDon = c.st.don.some((d) => d.mon === id);
+  const n = row?.n ?? ds?.length ?? 0;
+  const lc = row?.lc ?? (ds ? ds.reduce((a, x) => a + x.lc, 0) : 0);
+  // mở từ bản đồ (không có onVao từ danh sách): tự vào hoặc gửi đơn
+  const vaoNgay = async () => {
+    if (!row) return;
+    setErr(null);
+    const e = await c.run({ fn: row.mo_cua ? 'join' : 'apply', mon: row.id }, () => track('sm_join', { mode: row.mo_cua ? 'mo_cua' : 'don', mon: row.id, tu: 'ban_do' }));
+    if (e) return setErr(e);
+    onDong();
+    if (row.mo_cua) c.go('mon');
+    c.reload(['list']);
+  };
   return (
     <>
-    <div className="sm-sheet" role="dialog" aria-modal="true" aria-label={tr(`Người trong ${m.ten}`, `Members of ${m.ten}`)} onClick={onDong}>
+    <div className="sm-sheet" role="dialog" aria-modal="true" aria-label={tr(`Người trong ${ten}`, `Members of ${ten}`)} onClick={onDong}>
       <div onClick={(e) => e.stopPropagation()} style={{ maxHeight: '85vh' }}>
         <div className="sm-row">
-          <HuyHieu id={m.huy_hieu} size={44} />
+          <HuyHieu id={huy} size={44} />
           <div className="sm-grow">
-            <h2>{m.ten}</h2>
+            <h2>{ten}</h2>
             <span className="sm-note">
-              {tr(`${m.n}/${m.toi_da} người · Lực chiến cả môn ${fmtN(m.lc)}`, `${m.n}/${m.toi_da} members · total power ${fmtN(m.lc)}`)}
+              {tr(`${n}/${SM_CFG.mon.toiDa} người · Lực chiến cả môn ${fmtN(lc)}`, `${n}/${SM_CFG.mon.toiDa} members · total power ${fmtN(lc)}`)}
             </span>
           </div>
         </div>
@@ -345,19 +366,23 @@ function XemNguoi({ c, m, onVao, onDong }: { c: SmCtx; m: SmMonRow; onVao: () =>
           {!ds && !err && <p className="sm-note">{tr('Đang xem người trong môn...', 'Loading members...')}</p>}
           {ds && <NguoiList ds={ds} onPick={setAi} />}
         </div>
-        {why ? (
-          <p className="sm-why">{daDon ? tr('Ngươi đã gửi đơn vào môn này, đang chờ duyệt.', 'You applied; awaiting review.') : why}</p>
-        ) : (
-          <button className="sm-btn main wide" disabled={c.busy} onClick={onVao}>
-            {m.mo_cua ? tr('Vào môn này', 'Join this sect') : tr('Xin vào môn này', 'Apply to this sect')}
-          </button>
-        )}
+        {coVao &&
+          (why ? (
+            <p className="sm-why">{daDon ? tr('Ngươi đã gửi đơn vào môn này, đang chờ duyệt.', 'You applied; awaiting review.') : why}</p>
+          ) : (
+            <>
+              {!onVao && row!.o > 0 && <p className="sm-note">{tr('Môn này đã cắm cờ: tự rời thì chờ 12 giờ mới vào môn khác. Bị đuổi thì vào môn khác được ngay.', 'This sect has a flag: leave on your own and you wait 12 hours to join another.')}</p>}
+              <button className="sm-btn main wide" disabled={c.busy} onClick={onVao ?? vaoNgay}>
+                {row!.mo_cua ? tr('Vào môn này', 'Join this sect') : tr('Xin vào môn này', 'Apply to this sect')}
+              </button>
+            </>
+          ))}
         <button className="sm-btn sm-ghost wide" onClick={onDong}>
           {tr('Đóng', 'Close')}
         </button>
       </div>
     </div>
-      {ai && <NguoiSheet x={ai} mon={m.ten} onClose={() => setAi(null)} />}
+      {ai && <NguoiSheet x={ai} mon={ten} onClose={() => setAi(null)} />}
     </>
   );
 }

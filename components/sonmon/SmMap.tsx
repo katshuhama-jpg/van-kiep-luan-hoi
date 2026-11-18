@@ -7,6 +7,7 @@ import { track } from '@/lib/track';
 import type { SmMap, SmMapO, SmState } from '@/lib/sonmon/api';
 import { COI, HUY_MAU, hexDist, SM_CFG } from '@/lib/sonmon/data';
 import { HuyHieu } from './Pixel';
+import { XemMon } from './SmList';
 import { DongMinh, fmtN, hhmm, mocGio, Msg, smCo, truoc, useNow, type SmCtx } from './ui';
 
 const S = 24; // bán kính ô (px)
@@ -225,6 +226,8 @@ export function SmBanDo({ c }: { c: SmCtx }) {
 function SmBanDoXem({ c }: { c: SmCtx }) {
   const { map } = c;
   const [sel, setSel] = useState<SmMapO | null>(null);
+  // 18/11: chạm ô có chủ: xem môn đó, chưa có môn thì vào hoặc xin vào luôn
+  const [xem, setXem] = useState<number | null>(null);
   const [rc, setRc] = useState(0);
   const now = useNow();
   const back = (
@@ -280,12 +283,26 @@ function SmBanDoXem({ c }: { c: SmCtx }) {
               </p>
             </div>
           </div>
-          {sel[6] && new Date(sel[6]).getTime() > now && <p className="sm-note">{tr(`Bảo hộ tới ${hhmm(sel[6])}.`, `Protected until ${hhmm(sel[6])}.`)}</p>}
+          {chu != null && sel[6] && new Date(sel[6]).getTime() > now && (
+            <p className="sm-bh-o">
+              <b>{tr('Đang được bảo hộ', 'Protected')}</b> · {bhConDu(sel[6], now)}
+              <br />
+              {tr(`Tới ${mocGio(sel[6], now)}, chưa môn nào đánh được ô này.`, `Until ${mocGio(sel[6], now)}; no sect can attack it.`)}
+            </p>
+          )}
+          {chu != null && (
+            <button className="sm-btn wide" onClick={() => (setXem(chu), track('sm_xem_mon', { tu: 'ban_do' }))}>
+              {tr(`Xem ${map.mon[String(chu)]?.ten ?? 'môn này'}`, `View ${map.mon[String(chu)]?.ten ?? 'this sect'}`)}
+            </button>
+          )}
         </section>
       ) : (
         <p className="sm-card">{tr('Chạm một ô để xem tên ô và môn nào đang giữ.', 'Tap a tile to see its name and which sect holds it.')}</p>
       )}
       <p className="sm-note">{tr('Vào một môn để đứng giữ ô, trinh sát và xuất chinh.', 'Join a sect to guard tiles, scout and march.')}</p>
+      {xem != null && (
+        <XemMon c={c} id={xem} ten={map.mon[String(xem)]?.ten ?? '?'} huy={map.mon[String(xem)]?.huy_hieu ?? 0} row={(c.list ?? []).find((x) => x.id === xem) ?? null} onDong={() => setXem(null)} />
+      )}
     </>
   );
 }
@@ -343,6 +360,7 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
   const ta = chu === m.id;
   const d = gan(st, q, r);
   const chuTen = chu == null ? tr('Còn trống', 'Empty') : ta ? m.ten : map?.mon[String(chu)]?.ten ?? '?';
+  const [xemMon, setXemMon] = useState(false);
   const trinh = (st.trinh ?? []).find((t) => t.o[0] === q && t.o[1] === r);
   const dangTrinh = trinh && !trinh.ket_qua;
   const phut = SM_CFG.gio.trinhPhut * Math.max(1, d ?? 1);
@@ -376,6 +394,12 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
           {tr(`Tới ${mocGio(bh, now)}, chưa môn nào đánh được ô này.`, `Until ${mocGio(bh, now)}; no sect can attack this tile.`)}
         </p>
       )}
+      {!ta && chu != null && (
+        <button className="sm-btn small" style={{ alignSelf: 'flex-start' }} onClick={() => (setXemMon(true), track('sm_xem_mon', { tu: 'ban_do_mon' }))}>
+          {tr(`Xem người ${chuTen}`, `View ${chuTen}`)}
+        </button>
+      )}
+      {xemMon && chu != null && <XemMon c={c} id={chu} ten={chuTen} huy={map?.mon[String(chu)]?.huy_hieu ?? 0} onDong={() => setXemMon(false)} />}
       {!ta && (
         <p style={{ fontSize: 15 }}>
           {dangTrinh

@@ -129,7 +129,7 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
   useEffect(() => {
     if (!st || !st.ky) return;
     const need: ('list' | 'map' | 'members' | 'rank')[] = [];
-    if (v === 'list' && !list) need.push('list');
+    if ((v === 'list' || (v === 'ban-do' && !coMon)) && !list) need.push('list');
     if (['chon-o', 'ban-do', 'xuat-chinh', 'chien-su'].includes(v) && !map) need.push('map');
     if (['thanh-vien', 'chien-su', 'xuat-chinh'].includes(v) && coMon && !members) need.push('members');
     if (['ky', 'mon'].includes(v) && !rank) need.push('rank');
