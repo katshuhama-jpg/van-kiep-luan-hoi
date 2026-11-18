@@ -309,25 +309,63 @@ Tyler chốt 18/11: top 3 môn có đồ xịn theo hạng; top 7 người đón
 - **Đóng góp (điểm Công, tính theo người, trong môn đang ở lúc kết Kỷ):** điểm danh +1; nhiệm vụ ngày +2/+3/+5 (đúng Khí vận đã góp); khai hoang +3; theo xuất chinh +3 (thắng thêm +3); đứng giữ ô của môn (không nghỉ, không đi đường) +1 mỗi 6 giờ. Trần 20 Công mỗi ngày. Tính lại được từ dữ liệu có sẵn (`vkl_sm_diem_danh`, `vkl_sm_nv`, `vkl_sm_bao` khai hoang có 'nguoi', `vkl_sm_chinh_theo`) từ 18/11; phần đứng giữ đếm từ cron mỗi giờ (bắt đầu từ lúc lên bản).
 - **Điều kiện nhận (chống gian lận, chống nhảy môn):** môn còn tồn tại lúc kết Kỷ, đủ chữ ký, có ít nhất 3 người; người nhận ở trong môn ít nhất 3 ngày trước lúc kết Kỷ, tài khoản từ 7 ngày tuổi, Công từ 10 trở lên. Từ 21:00 ngày 29/11 khóa danh sách: vào môn sau mốc này không được tính. Tài khoản bị `lives_guard` gắn cờ thì không nhận.
 - **Phát thưởng:** tự động lúc kết Kỷ (hàm mới gọi sau `sm_ket_ky`), có thư trong game báo đã nhận; đồ nằm trong tủ, người chơi tự bấm mặc.
-- [ ] Máy chủ (hàm MỚI, không sửa hàm cũ): bảng `vkl_sm_cong` (ky_id, player_id, mon_id, ngay, cong) hoặc view tính từ dữ liệu sẵn có + bảng đứng giữ; `vkl_sm_cong_bang(token)` trả bảng Công của môn mình (top 7 sáng lên, hạng mình); bảng `vkl_sm_bao_vat` (id, player_id, ky_id, mon_id, o 'vu_khi'|'phu_kien', loai 'kiem'|'dao'|'thuong'|'quat'|'phat_tran'|'cung'|'song_chuy'|'tran_mon_kiem'|'an', pham, hang_cong, them_pct, ten, mac, luc); `vkl_sm_bao_vat_ds(token)`, `vkl_sm_bao_vat_mac(token, id)`; `vkl_priv.sm_phat_thuong(ky_id)` (phát đúng luật trên, chạy được nhiều lần không phát trùng); cron đứng giữ mỗi giờ.
-- [ ] Giao diện: màn "Phần thưởng Kỷ" (mở từ thẻ môn và Xếp hạng Kỷ): 5 phẩm với hình pixel và % sức mạnh, dòng "Nếu Kỷ kết thúc bây giờ, ngươi nhận: ..." theo hạng môn và hạng Công hiện tại; mục "Công đóng góp" trong tab Thành viên (top 7 viền vàng, mình được làm nổi). Trang Chân thân: 2 ô Pháp bảo Sơn Môn (Vũ khí, Phụ kiện) (trống thì ghi "Kết Kỷ 1 (21:00 1/12) nhận"). Thẻ Lãnh thổ ở môn nhà thêm một dòng "Ngươi đang hạng N Công trong môn".
-- [ ] Hình pixel: 7 loại vũ khí + Trấn Môn Kiếm + Chưởng Môn Ấn, mỗi loại 5 phẩm (45 hình), phẩm cao dáng to và nhiều chi tiết hơn như mô tả trên. Vẽ bằng lưới pixel trong code (SVG rect), chỉ pixel, không gradient. Màn Phần thưởng hiện đủ 7 hình theo hạng Công để người chơi thấy mình đang nhắm món nào.
-- [ ] Tác dụng trong trận: làm sẵn hàm tính Lực chiến có pháp bảo (`vkl_priv.sm_lc_bv`) nhưng CHỈ nối vào trận từ Kỷ 2 (khối Ngày 11). Kỷ 1 không đổi trận.
-- [ ] Mô phỏng `scripts/sim-son-mon.ts`: phân bố Công theo người (dữ liệu 18/11), bao nhiêu người đủ 10 Công; Kỷ 2 môn có đồ Thần vs môn không đồ cùng cỡ thắng bao nhiêu %. Ghi số.
-- [ ] Luật Sơn Môn thêm câu "Phần thưởng Kỷ là gì?"; humanizer cho chữ; smoke-son-mon thêm màn Phần thưởng và bảng Công.
+- [x] Máy chủ (hàm MỚI, không sửa hàm cũ): bảng `vkl_sm_cong` (ky_id, player_id, mon_id, ngay, cong) hoặc view tính từ dữ liệu sẵn có + bảng đứng giữ; `vkl_sm_cong_bang(token)` trả bảng Công của môn mình (top 7 sáng lên, hạng mình); bảng `vkl_sm_bao_vat` (id, player_id, ky_id, mon_id, o 'vu_khi'|'phu_kien', loai 'kiem'|'dao'|'thuong'|'quat'|'phat_tran'|'cung'|'song_chuy'|'tran_mon_kiem'|'an', pham, hang_cong, them_pct, ten, mac, luc); `vkl_sm_bao_vat_ds(token)`, `vkl_sm_bao_vat_mac(token, id)`; `vkl_priv.sm_phat_thuong(ky_id)` (phát đúng luật trên, chạy được nhiều lần không phát trùng); cron đứng giữ mỗi giờ.
+- [x] Giao diện: màn "Phần thưởng Kỷ" (mở từ thẻ môn và Xếp hạng Kỷ): 5 phẩm với hình pixel và % sức mạnh, dòng "Nếu Kỷ kết thúc bây giờ, ngươi nhận: ..." theo hạng môn và hạng Công hiện tại; mục "Công đóng góp" trong tab Thành viên (top 7 viền vàng, mình được làm nổi). Trang Chân thân: 2 ô Pháp bảo Sơn Môn (Vũ khí, Phụ kiện) (trống thì ghi "Kết Kỷ 1 (21:00 1/12) nhận"). Thẻ Lãnh thổ ở môn nhà thêm một dòng "Ngươi đang hạng N Công trong môn".
+- [x] Hình pixel: 7 loại vũ khí + Trấn Môn Kiếm + Chưởng Môn Ấn, mỗi loại 5 phẩm (45 hình), phẩm cao dáng to và nhiều chi tiết hơn như mô tả trên. Vẽ bằng lưới pixel trong code (SVG rect), chỉ pixel, không gradient. Màn Phần thưởng hiện đủ 7 hình theo hạng Công để người chơi thấy mình đang nhắm món nào.
+- [x] Tác dụng trong trận: làm sẵn hàm tính Lực chiến có pháp bảo (`vkl_priv.sm_lc_bv`) nhưng CHỈ nối vào trận từ Kỷ 2 (khối Ngày 11). Kỷ 1 không đổi trận.
+- [x] Mô phỏng `scripts/sim-son-mon.ts`: phân bố Công theo người (dữ liệu 18/11), bao nhiêu người đủ 10 Công; Kỷ 2 môn có đồ Thần vs môn không đồ cùng cỡ thắng bao nhiêu %. Ghi số.
+- [x] Luật Sơn Môn thêm câu "Phần thưởng Kỷ là gì?"; humanizer cho chữ; smoke-son-mon thêm màn Phần thưởng và bảng Công.
+- Xong: 2026-11-18 2be814c
 - Ghi chú:
+  - Máy chủ (migration `son_mon_thuong_ky_2026_11_19`, file `supabase/son_mon_thuong_ky_2026_11_19.sql`, chỉ bảng/hàm/cron MỚI): Công tính lại từ dữ liệu có sẵn bằng `vkl_priv.sm_cong_ds(ky)` (không cần bảng `vkl_sm_cong`), riêng đứng giữ ghi vào bảng `vkl_sm_cong_giu` bằng cron `vkl_sm_cong_giu` (phút 2 mỗi giờ; chạy 2 lần trong cùng giờ không đếm trùng, đã thử). `vkl_priv.sm_thuong_tinh(ky)` tính ai nhận gì (dùng cho cả "nếu Kỷ kết thúc bây giờ" và lúc phát), `vkl_priv.sm_phat_thuong(ky)` phát và gửi thư `thien_dao`, cron `vkl_sm_phat_thuong` mỗi 10 phút phát cho Kỷ đã kết mà chưa phát (bảng `vkl_sm_bv_phat`). RPC: `vkl_sm_cong_bang(token)` (một lệnh cho màn Phần thưởng, bảng Công, dòng ở thẻ Lãnh thổ; trình duyệt nhớ 60 giây), `vkl_sm_bao_vat_ds`, `vkl_sm_bao_vat_mac` (chạm để mặc, chạm lại để tháo). `vkl_priv.sm_lc_bv(player, ky)` làm sẵn, CHƯA nối trận (Ngày 11).
+  - Hạng môn để chọn phẩm tính trong các môn đủ điều kiện (đủ chữ ký, từ 3 người), theo `vkl_sm_ky_kq.hang` khi đã kết. Bằng Công thì người vào môn sớm hơn đứng trên. Môn chủ không đủ điều kiện thì trưởng lão Công cao nhất nhận ấn (và Trấn Môn Kiếm nếu ngoài top 7).
+  - Thử trên máy chủ thật trong giao dịch rồi hủy (đặt Kỷ 1 đã kết giả): lần 1 phát 38 món cho 6 môn đủ điều kiện, 32 thư; lần 2 phát 0 (không trùng). Một người mặc Thần phẩm Kiếm +15%: Lực chiến 9.225, sau trần 7.612, có pháp bảo 8.754.
+  - Số 18/11 tối (Kỷ chạy khoảng 16 giờ): 91 người có Công, 36 người đủ 10 Công, trung vị 9, cao nhất 20 (chạm trần ngày). Nhiệm vụ ngày chiếm phần lớn (565 Công), điểm danh 80, theo xuất chinh 84, khai hoang 27.
+  - Mô phỏng `BV=1 npx tsx scripts/sim-son-mon.ts 5000` (môn 8 người, Lực chiến 315 người chơi thật): không đồ 79,4% / 80,1% (bên đánh thắng, hai chiều); Thần phẩm đánh môn không đồ thắng 83,8%, bị môn không đồ đánh thì bên kia thắng 74,4%; Bảo phẩm 82,0% / 78,2%; Phàm 81,3% / 78,1%. Môn 15 người (`CO=15`): Thần 75,0% / 69,9% so với không đồ 73,0% / 73,6%. Môn có đồ Thần mạnh hơn khoảng 4-6 điểm %, vẫn thua được.
+  - Hình pixel: 9 loại x 5 phẩm vẽ bằng code trong `components/sonmon/BaoVat.tsx` (lưới 16x24, viền mực tự dựng; phẩm đổi dáng: Bảo thêm đai và tua, Linh khắc vân và ngọc, Tiên dài hơn và có cánh mây, Thần to nhất và có lửa nhấp nháy 2 khung, tắt khi prefers-reduced-motion). Không gradient.
+  - Luật giao diện mới, bước 1 (uiux-pro-max + huashu-design, ảnh 390x844 `?demo=chu|de|chua&m=thuong`, `m=thanh-vien`, `m=mon`): vai người mới: màn Phần thưởng mở bằng "Nếu Kỷ kết thúc bây giờ", lý do chưa có phần ghi ngay dưới (thiếu Công, vào muộn, môn chưa đủ người). Vai người cũ: thẻ môn thêm nút thứ ba "Phần thưởng", nút cũ không đổi chỗ; bảng Công nằm dưới danh sách người. Không tràn ngang, nút từ 44px, chữ từ 12px (smoke-son-mon 22 màn sạch). Chấm 5 mặt huashu: nhất quán 8, thứ bậc nhìn 7, chi tiết 8 (45 hình vũ khí là chi tiết làm tới 120%), dễ dùng 7, mới lạ 7. Sửa mức nặng: tên món Tiên phẩm chữ vàng trên nền giấy thiếu tương phản, đổi sang màu chữ đậm riêng theo phẩm. Không chạy cổng "3 hướng" của huashu-design: game đã có phong cách pixel riêng (sonmon.css), màn mới là lặp trong phong cách đã chọn.
+  - Bước 2 (humanizer): chữ màn Phần thưởng, bảng Công, câu Luật mới, dòng cáo thị "Phần thưởng Kỷ 1"; sửa câu "Thưởng chỉ để ngắm" ở cáo thị và Luật (không còn đúng).
+  - Đo: `sm_thuong_mo`, `sm_bv_mac`. Vài sự kiện `sm_thuong_mo` tối 18/11 là của Claude lúc chụp ảnh thử (dev nối máy chủ thật), không phải người chơi.
+  - Trả lời góp ý cho tác vụ 5:00 ngày 19/11 (gửi SAU khi bản 19/11 lên trang; reply_ver '4.6.0'; góp ý báo lỗi tặng 10 phúc như thường lệ; gửi xong đặt status 'da_xong'):
+    - #135, #283 (báo lỗi, tặng 10 phúc mỗi người): "Cảm ơn bạn. Bước qua khe nứt là khép kiếp mà trước giờ nút không ghi ra, nên dễ mất một kiếp đang lên. Từ bản 19/11 nút đó ghi rõ: bước qua là kiếp này khép lại. Mình tặng bạn 10 phúc duyên bù cho kiếp đó."
+    - #284: "Cảm ơn bạn đã phân tích kỹ. Bản 19/11 đã ghi rõ Cương và Nhu đổi gì cho từng chiêu. Ý chỉnh Cương/Nhu theo hồi chiêu và cho Nhu tác động cả hiệu ứng buff, mình ghi lại để xem ở lần cân bằng công pháp tới."
+    - #285: "Ý hay, cảm ơn bạn. Tụ Khí Đan đúng là yếu dần từ Nguyên Anh. Mình ghi lại cách cộng theo phần trăm tu vi và nút tự dùng đan."
+    - #286: "Cảm ơn bạn. Vài thiên phú chỉ cộng chỉ số cơ bản thì đúng là nhạt. Mình ghi lại để xem lại sức mạnh thiên phú, nhất là loại tím."
+    - #287: "Cảm ơn bạn. Mình ghi lại ý ghi rõ hiệu quả tu luyện của từng linh căn ngay trên màn, và ý cho linh căn thấp được cường hóa qua cơ duyên."
+    - #288: "Cảm ơn bạn. Tạm thời bạn chia thành vài góp ý nhé, mình đọc hết. Mình ghi lại ý nới giới hạn chữ."
+    - #289: "Ý hay. Lên tiên rồi còn uống Trúc Cơ Đan thì đúng là lạ. Mình ghi lại để đổi tên đan theo cảnh giới."
+    - #290: "Lên ngôi Thiên Đế ở kiếp 5, sống dai thật. Cảm ơn bạn đã chấm 5 sao!"
+    - #291: "Cảm ơn bạn. Tự dừng khi máu xuống thấp lúc săn yêu là ý đáng làm. Mình ghi lại cùng nút tạm dừng."
+    - #292: "Cảm ơn bạn. Mình ghi lại ý cho bộ đồ mỗi đạo có trạng thái riêng."
+    - #293: "Một mình chặn cửa Thiên Cơ Các, ngã xuống cũng oai. Cảm ơn bạn đã chấm 5 sao!"
+    - #294: "Cảm ơn bạn. Mình đang làm phần cho người đã chứng đạo: Thiên thư quyển III và chọn thế giới khởi đầu khi đầu thai. Ý luyện khí mình ghi lại."
+    - Góp ý tồn từ 31/10-12/11 (status 'moi', chưa ai trả lời), gửi theo nhóm:
+      - Chấm kiếp (#52, 65, 66, 68, 71, 72, 73, 75, 80, 88, 91, 95, 108, 109, 113, 115, 122, 136, 142, 144, 146, 150, 156, 157, 160, 166, 176, 177, 180, 183, 184, 188, 191, 192, 193, 196, 199, 207, 212, 217, 219, 232): "Cảm ơn bạn đã chơi và chấm kiếp!"
+      - Sau chứng đạo (#35, 42, 44, 45, 56, 57, 63, 81, 100, 106, 110, 125, 127, 145, 153, 155, 169, 175, 179, 186, 187, 198, 200, 231): "Cảm ơn bạn. Mình đang làm phần cho người đã chứng đạo: Thiên thư quyển III với 30 kết cục mới và chọn thế giới khởi đầu khi đầu thai. Ý của bạn mình ghi vào cùng phần này."
+      - Bản apk (#69, 137, 147): "Game chạy trên trình duyệt. Bạn mở game bằng Chrome hoặc Safari rồi chọn Thêm vào màn hình chính là dùng như app. Bản apk riêng mình chưa làm."
+      - #195: "Cảm ơn bạn. Sơn Môn đã mở từ 18/11, có môn phái và đánh nhau giành đất. Ý công pháp và phụ tu mình ghi lại."
+      - #204: "Kết nghĩa và Lôi đài đã có trong game rồi bạn nhé, xem ở tab Lôi đài."
+      - #210: "Từ bản 18/11, tuyệt kỹ đã dung hợp vẫn nhặt và mua được tàn quyển để lên tầng."
+      - #228: "Bản 19/11 đã ghi rõ Cương và Nhu đổi gì cho từng chiêu. Cảm ơn bạn."
+      - Còn lại (#62, 70, 96, 114, 124, 138, 164, 203, 206, 213, 214, 215, 216, 218, 220, 230, 234): "Cảm ơn bạn đã góp ý. Mình đã đọc và ghi lại để xem trong các lần cân bằng tới."
 
 ## Ngày 8 - Khai hoang, bản đồ to, hướng dẫn người trong môn
 Lên bản: 2026-11-19. Cáo thị: thêm dòng vào 4.6.0 (đã có dòng Khai hoang + bản đồ).
 Lý do (số 18/11 chiều): 11 môn, 69 người, 18/127 ô có chủ, 8 xuất chinh đều tới ô trống, 0 trận giữa môn; 2 môn 15 người chỉ giữ 1 ô vì tưởng mở rộng là phải đánh. Chi tiết: docs/brainstorm-son-mon-ky1.md.
 - [x] Khai hoang: chạm ô trống kề lãnh thổ, cắm cờ ngay, ai trong môn cũng làm được, theo trần ô. Hàm MỚI `vkl_sm_khai_hoang` (đã áp 18/11). Thẻ "Lãnh thổ X/Y ô" ở môn nhà, dấu + nhấp nháy trên bản đồ, luật 3 câu và luật đủ viết lại, chiến báo "X khai hoang Y". Xong: 18/11 3b0351e.
 - [x] Bản đồ to (cao theo màn hình, 360-560px), phóng to/thu nhỏ (nút +/-, lăn chuột, phím +/-), sao pixel và tên 3 cõi phía sau, thẻ ô tự cuộn ra khi chạm. Xong: 18/11 c48dfdd.
-- [ ] Ba bước đầu cho người mới vào môn (thẻ ở đầu môn nhà, có ô tích, xong thì ẩn): điểm danh, khai hoang một ô (hoặc "môn đủ ô" thì bỏ qua), chọn ô đứng giữ. Đo `sm_3buoc` từng bước.
-- [ ] Hiệu ứng cắm cờ: khai hoang/chiếm xong thì cờ pixel dựng lên ô (0,6 giây) và ô sáng nhấp 3 lần; ô môn ta có cờ nhỏ bay (tắt khi prefers-reduced-motion). game-feel, chỉ pixel.
-- [ ] Chấm đỏ tab Sơn Môn (thanh dưới) khi môn còn ô chưa dùng và quanh lãnh thổ còn đất trống, hoặc khi môn đang bị đánh. Mở bản đồ là tắt tới khi có đất mới.
+- [x] Ba bước đầu cho người mới vào môn (thẻ ở đầu môn nhà, có ô tích, xong thì ẩn): điểm danh, khai hoang một ô (hoặc "môn đủ ô" thì bỏ qua), chọn ô đứng giữ. Đo `sm_3buoc` từng bước.
+- [x] Hiệu ứng cắm cờ: khai hoang/chiếm xong thì cờ pixel dựng lên ô (0,6 giây) và ô sáng nhấp 3 lần; ô môn ta có cờ nhỏ bay (tắt khi prefers-reduced-motion). game-feel, chỉ pixel.
+- [x] Chấm đỏ tab Sơn Môn (thanh dưới) khi môn còn ô chưa dùng và quanh lãnh thổ còn đất trống, hoặc khi môn đang bị đánh. Mở bản đồ là tắt tới khi có đất mới.
 - [ ] Tin hệ thống trong Truyền âm (dòng riêng, không tên người gửi): "X vừa khai hoang Y (3/6 ô)", "Z đang tới Y, tới lúc hh:mm", "Môn thắng/thua trận ở Y". Hàm MỚI ghi vào `vkl_sm_chat` loại hệ thống (không sửa hàm chat cũ), gọi từ trigger trên `vkl_sm_bao`.
-- [ ] Câu dẫn khi khai hoang theo cõi (story-writing, humanizer), hiện trong thông báo thành công, mỗi cõi 3 câu, chọn ngẫu nhiên.
+- [x] Câu dẫn khi khai hoang theo cõi (story-writing, humanizer), hiện trong thông báo thành công, mỗi cõi 3 câu, chọn ngẫu nhiên.
+- Xong (4/5 việc còn lại): 2026-11-18 dded81d
 - Ghi chú:
+  - Ba bước đầu: thẻ ở đầu môn nhà (điểm danh; khai hoang một ô, bỏ qua khi môn đủ ô hay chưa cắm cờ; chọn ô đứng giữ), một nút chính theo bước đang tới, nút Ẩn. Xong cả ba thì ẩn hẳn. Đo `sm_3buoc` (buoc 1/2/3/xong/an).
+  - Cờ: khai hoang xong thì cờ pixel màu huy hiệu dựng lên ô (0,6 giây) và ô sáng nhấp 3 lần; ô môn ta (trừ chính điện) có cờ vàng nhỏ phấp phới. Tắt khi prefers-reduced-motion.
+  - Chấm đỏ tab Sơn Môn: đọc từ máy (`vkl.sm.viec`, SonMonHome ghi khi xem môn), không gọi thêm máy chủ: còn ô chưa dùng và có đất trống kề lãnh thổ (mở Bản đồ là đã xem, có đất mới thì báo lại), hoặc môn đang bị đánh (tin trong 2 giờ). Đo `sm_dot_dat`.
+  - Câu dẫn khai hoang: 3 câu mỗi cõi (Thiên, Hồng Trần, U Minh) trong `lib/sonmon/data.ts` `KH_DAN`, rà humanizer.
+  - Tin hệ thống Truyền âm: CHƯA XONG phần máy chủ. Giao diện đã sẵn (dòng giữa, nền tối, không tên; dùng `vkl_sm_chat_list2`, máy chủ chưa có thì tự dùng hàm cũ). SQL `supabase/son_mon_chat_he_2026_11_19.sql` (bảng MỚI `vkl_sm_chat_he` chung dãy id với chat, trigger nuốt lỗi trên `vkl_sm_bao` và `vkl_sm_chinh`, hàm MỚI `vkl_sm_chat_list2`) bị chặn: Supabase MCP hỏi xác nhận (có trigger trên bảng cũ) mà câu hỏi không tới ai, hết 180 giây. Không lách. Tyler chạy file này trong SQL Editor là tính năng tự hiện, không cần lên bản lại. Để ô [ ] ở việc này.
 
 ## Ngày 8c - Đánh không cần đoán: cơ hội thắng, tự trinh sát, rút quân
 Lên bản: 2026-11-19 (Tyler 20:16 18/11: làm và đẩy luôn). Xong: 2026-11-18 (Claude làm trong phiên chat).
@@ -344,17 +382,20 @@ Tyler hỏi 18/11: có người không trinh sát mà đánh luôn, thì sao bi�
 - **4. Rút quân:** trong lúc tập hợp, môn chủ hoặc trưởng lão bấm "Rút quân", hủy lệnh, không ai bị nghỉ, không mất gì. Đã xuất phát (đi 20 phút) thì không rút được. Chiến báo ghi "X rút quân".
 - **5. Nói rõ sai lệch lúc tới:** lực giữ có thể đổi trong 20 phút đi đường (bên kia gọi người về giữ). Chiến báo ghi lực giữ lúc tới và "lúc trinh sát là ...", để thua không thấy bị lừa.
 - Không đổi luật trận, không đổi số nhân. Không tiết lộ số thật cho người chưa trinh sát.
-- [ ] Máy chủ (hàm MỚI, không sửa hàm cũ; khớp với `vkl_sm_march2` của Ngày 9 nếu làm cùng): `vkl_priv.sm_uoc(ky, q, r)` trả mức thô (nhiễu băm theo ô + giờ); `vkl_sm_map2` hoặc RPC riêng `vkl_sm_uoc_o(token, q, r)` trả mức cho ô có chủ; `vkl_sm_march_tt(token, q, r)` = xuất chinh + tự trinh sát; `vkl_sm_co_hoi(token, chinh_id)` trả lực đang có, ước tính, mức cơ hội, số cần thêm; `vkl_sm_rut_quan(token, chinh_id)` (chỉ khi 'tap_hop', chuc chủ/lão, đặt 'huy' ly_do 'rut_quan', ghi chiến báo).
-- [ ] Giao diện: mức thô trên thẻ ô (thay "???"), thanh Cơ hội thắng 4 nấc bằng ô pixel (không gradient) có chữ, dòng "cần thêm", cảnh báo bỏ trống ô, nút Rút quân có hỏi lại một lần. Chữ qua humanizer, rà uiux-pro-max 2 vai.
-- [ ] Mô phỏng `scripts/sim-son-mon.ts`: 1.000 lần xuất chinh mù với/không có thanh cơ hội (người chơi dừng khi "Thấp"): tỉ lệ thua và số giờ nghỉ trung bình; kiểm nhiễu ±35% không đoán ngược ra số thật sau 24 lần xem.
-- [ ] Đo: `sm_co_hoi_xem`, `sm_rut_quan`, tỉ lệ thắng xuất chinh trước/sau, số người theo trung bình mỗi lệnh. smoke-son-mon thêm màn tập hợp có thanh cơ hội.
+- [x] Máy chủ (hàm MỚI, không sửa hàm cũ; khớp với `vkl_sm_march2` của Ngày 9 nếu làm cùng): `vkl_priv.sm_uoc(ky, q, r)` trả mức thô (nhiễu băm theo ô + giờ); `vkl_sm_map2` hoặc RPC riêng `vkl_sm_uoc_o(token, q, r)` trả mức cho ô có chủ; `vkl_sm_march_tt(token, q, r)` = xuất chinh + tự trinh sát; `vkl_sm_co_hoi(token, chinh_id)` trả lực đang có, ước tính, mức cơ hội, số cần thêm; `vkl_sm_rut_quan(token, chinh_id)` (chỉ khi 'tap_hop', chuc chủ/lão, đặt 'huy' ly_do 'rut_quan', ghi chiến báo).
+- [x] Giao diện: mức thô trên thẻ ô (thay "???"), thanh Cơ hội thắng 4 nấc bằng ô pixel (không gradient) có chữ, dòng "cần thêm", cảnh báo bỏ trống ô, nút Rút quân có hỏi lại một lần. Chữ qua humanizer, rà uiux-pro-max 2 vai.
+- [x] Mô phỏng `scripts/sim-son-mon.ts`: 1.000 lần xuất chinh mù với/không có thanh cơ hội (người chơi dừng khi "Thấp"): tỉ lệ thua và số giờ nghỉ trung bình; kiểm nhiễu ±35% không đoán ngược ra số thật sau 24 lần xem.
+- [x] Đo: `sm_co_hoi_xem`, `sm_rut_quan`, tỉ lệ thắng xuất chinh trước/sau, số người theo trung bình mỗi lệnh. smoke-son-mon thêm màn tập hợp có thanh cơ hội.
 - Ghi chú:
+  - Máy chủ và giao diện đã làm trong phiên chat 18/11 (e943d07, migration `son_mon_co_hoi_2026_11_18` + `son_mon_co_hoi_bo_uoc_2026_11_18`); mức thô `sm_uoc` BỎ theo Tyler 20:20 (chưa trinh sát vẫn "???"). Đêm 18/11 chỉ thêm đo và mô phỏng (d813930).
+  - Mô phỏng `CH=1 npx tsx scripts/sim-son-mon.ts 1000` (Lực chiến 315 người thật, bên giữ đổi ±15% lúc tới): đánh mù thua 47,3%, nghỉ trung bình 3,2 giờ-người mỗi lệnh; có thanh Cơ hội (rút khi "Thấp") rút 40%, đánh 600 lần thua 12,2%, nghỉ 0,6 giờ-người mỗi lệnh. Phần "nhiễu ±35%" không còn (đã bỏ mức thô).
+  - Đo: `sm_co_hoi_xem` (lần đầu thấy thanh có số trinh sát), `sm_rut_quan` (đã có). Số 18/11: 11 lệnh xuất chinh đều vào ô trống, chưa có trận giữa môn, nên chưa có tỉ lệ thắng trước/sau. Đo lại từ 21/11.
 
 ## Ngày 8d - Người chơi đã "full": kết cục mới, cảnh giới mới, chọn thế giới khởi đầu (góp ý Hoang Le)
 Lên bản: 2026-11-19. Đêm nay chủ yếu là NGHIÊN CỨU + THIẾT KẾ (tài liệu), chỉ code phần nhỏ chắc chắn xong. Không chen trước 8a.
 Tyler 20:44 18/11: suy nghĩ kỹ về bình luận Facebook (bài "Đủ 30: +10% - Đủ 50: +20%", 18/11): Hoang Le: "Ra thêm kết cục và cảnh giới mới đi ông. Ông ra thêm lúc vào chọn 1 thế giới đi với cảnh giới đó luôn cho dễ. Chứ full hết rồi". Ảnh kèm: Sổ Sinh Tử 86/95, Thiên thư 10/10, Bảo khố 297/297, Kiếp Số 10 - Hồn vẹn 100, nhiệm vụ 3/3, đã mua thiên phú (3487 phúc duyên), thiên phú tà đạo (1950 nghiệp lực).
-- [ ] Số liệu: bao nhiêu người đã gần hết nội dung (Sổ Sinh Tử từ 80/95, Thiên thư 10/10, Bảo khố đầy, đã đạt cảnh giới cao nhất); họ còn chơi mỗi ngày không, chơi gì (Lôi đài, Sơn Môn, chỉ đầu thai cày); kết cục nào ít ai đạt nhất. Ghi vào docs/tang-truong.md.
-- [ ] Thiết kế (game-design: game-direction, player-experience, balance-review; story-writing cho nội dung), lưu `docs/thiet-ke-hau-ky.md`:
+- [x] Số liệu: bao nhiêu người đã gần hết nội dung (Sổ Sinh Tử từ 80/95, Thiên thư 10/10, Bảo khố đầy, đã đạt cảnh giới cao nhất); họ còn chơi mỗi ngày không, chơi gì (Lôi đài, Sơn Môn, chỉ đầu thai cày); kết cục nào ít ai đạt nhất. Ghi vào docs/tang-truong.md.
+- [x] Thiết kế (game-design: game-direction, player-experience, balance-review; story-writing cho nội dung), lưu `docs/thiet-ke-hau-ky.md`:
   1. **Kết cục mới - THIÊN THƯ QUYỂN III, 30 kết cục (Tyler chốt 20:48 18/11; 21:04: tổng 30, mạch chính 20):** dùng `anthropic-skills:story-writing` (story-long-write: mạch truyện xuyên kiếp, sổ theo dõi tính liền mạch) và `anthropic-skills:script-writing` (plot-points, drama-planner: móc câu, cú lật) để viết.
      - Phải HỢP LÝ: đọc kỹ `lib/game/lore.ts` (quyển I: 10 mảnh, "vì sao cứ phải luân hồi") và quyển II (Kẻ Gõ Chuông, gõ/đập chuông trong `lib/game/endings.ts`) để quyển III nối tiếp câu chuyện, không mâu thuẫn, trả lời câu hỏi còn treo và mở câu hỏi mới. Lưu dàn ý truyện quyển III vào `docs/thien-thu-3.md` (bối cảnh, nhân vật, các mảnh/chặng, 30 kết cục xếp theo chặng, điều kiện mở từng cái).
      - 30 kết cục chia nhóm: mạch chính quyển III (20, mở theo thứ tự như quyển I/II, chia 4 chặng x 5), kết cục gắn hệ thống mới (Sơn Môn, Sư Đồ, chân thân, Lôi đài, cảnh giới mới, chọn thế giới khởi đầu: 6), kết cục hiếm/bí ẩn cho người tò mò (4). Mỗi kết cục có tên, lời dẫn, `hint` và `how` như kết cục cũ, viết tr('Việt', 'English'), rà humanizer.
@@ -363,8 +404,29 @@ Tyler 20:44 18/11: suy nghĩ kỹ về bình luận Facebook (bài "Đủ 30: +1
   2. **Cảnh giới mới trên cảnh giới cao nhất hiện tại:** tên, điều kiện mở, làm gì khác (không chỉ số to hơn), mô phỏng `sim-do-kho.ts` để không phá cân bằng kiếp thường.
   3. **"Chọn thế giới đi với cảnh giới đó" (ý chính của Hoang Le):** người đã đạt cảnh giới X ở kiếp trước thì lúc đầu thai được chọn thế giới/cõi khởi đầu tương ứng (ví dụ đã từng Hóa Thần thì có thể sinh thẳng vào giới tu tiên cao, bỏ đoạn đầu), đổi lại phần thưởng/kết cục khác. Đánh giá: tiết kiệm thời gian cho người cũ vs mất cảm giác lớn dần; cách giữ người mới không bị bỏ lại; có nên chỉ mở cho người full Sổ Sinh Tử.
   4. Thứ tự làm và chia đêm, cái nào lên trước (ưu tiên thứ người full thấy ngay: kết cục mới + chọn thế giới).
-- [ ] Nếu kịp và chắc chắn: code chặng đầu Thiên thư quyển III (5 kết cục mạch chính chặng 1, thêm chặng 2 nếu kịp), thử như thường lệ (sim-do-kho trước/sau nếu đổi điều kiện kiếp). Chưa đủ chặng thì giấu sau cờ.
-- [ ] Soạn sẵn câu trả lời bình luận cho Tyler tự đăng (xưng "mình", gọi "bạn", không hứa ngày, nói đang làm gì; humanizer). KHÔNG tự đăng.
+- [ ] (CHUYỂN sang Ngày 8e) Nếu kịp và chắc chắn: code chặng đầu Thiên thư quyển III (5 kết cục mạch chính chặng 1, thêm chặng 2 nếu kịp), thử như thường lệ (sim-do-kho trước/sau nếu đổi điều kiện kiếp). Chưa đủ chặng thì giấu sau cờ.
+- [x] Soạn sẵn câu trả lời bình luận cho Tyler tự đăng (xưng "mình", gọi "bạn", không hứa ngày, nói đang làm gì; humanizer). KHÔNG tự đăng.
+- Xong (3/4, phần code chuyển 8e): 2026-11-18 dbe6cbf
+- Ghi chú:
+  - Số liệu và thiết kế: `docs/thiet-ke-hau-ky.md` (bảng số, cảnh giới Chân Nhân, chọn thế giới khởi đầu, thứ tự làm, câu trả lời Hoang Le). Dàn ý và chữ đủ 30 kết cục: `docs/thien-thu-3.md` (Claude chốt các chỗ còn treo ở mục 1 của thiết kế).
+  - Số chính: 22 người xong quyển II (16 chơi hôm nay, 13 ở Sơn Môn); 257 người có Quy Nhất mà chưa xong quyển II; 191 người đã Khai Thiên Lập Địa; chỉ 2 người từ 60/95 kết cục.
+  - Claude tự chốt: KHÔNG code chặng 1 đêm nay. Chặng 1 chạm vòng đời kiếp (gắn `c.tt3`, hàm ghi kèm cạnh `alsoEndings`, nút Uống ở cầu Nại Hà) và màn Thiên thư; làm vội sau 3 khối Sơn Môn thì không thử đủ. Chuyển thành khối Ngày 8e (lên bản 20/11, giấu sau cờ).
+
+## Ngày 8e - Thiên thư quyển III: khung + chặng 1 (giấu sau cờ)
+Lên bản: 2026-11-20. Giấu sau cờ `TT3_ON` (tắt mặc định) tới khi thử sạch; bật trong cùng khối nếu sạch. Có cáo thị: thêm một dòng vào bản gần nhất "Thiên thư quyển III mở chặng 1 cho ai đã xong quyển II". Làm SAU các khối Sơn Môn tới hạn cùng đêm (Ngày 9). Kỹ năng: `anthropic-skills:gamedev` (save-systems cho trường Meta mới), `anthropic-skills:game-design` (player-experience), `anthropic-skills:story-writing`, `anthropic-skills:humanizer`.
+Nguồn: `docs/thien-thu-3.md` mục 4, 5 (chặng 1), 9; `docs/thiet-ke-hau-ky.md` mục 1, 4. Chữ lấy đúng từng chữ trong `docs/thien-thu-3.md`.
+- [ ] Khung: `LORE` thêm `book: 3` (trang XXI-XL), tab quyển III ở màn Thiên thư (chưa mở thì ghi lý do ngay trên tab: "Xong quyển II để mở"), `m.tt3Nhanh` (đặt một lần), `c.tt3` lúc đầu thai, hàm `tt3Endings(c, meta)` ghi kèm cạnh `alsoEndings`, mạch chính mở đúng thứ tự. Sổ Sinh Tử đếm đúng số kết cục đã có code.
+- [ ] Chặng 1: `tt3_du_am`, `tt3_dong_xanh`, `tt3_lang_duoi_nui`, `tt3_tre_quy_cua` (trọng số `nhan_de_tu` x5 khi `c.tt3 === 3`), `tt3_tieng_dau` (móc nút Uống ở cầu Nại Hà) và `tt3_than_khong_mong`.
+- [ ] Thử: `sim-do-kho 3000` trước/sau (kiếp thường không đổi), đo số kiếp trung bình để gặp đứa trẻ quỳ ở trang XXIV (mục tiêu dưới 4), Playwright 390x844 màn Thiên thư quyển III (người mới: không thấy tab; người full: thấy trang XXI), smoke như thường.
+- [ ] Đo: `tt3_mo` (mở trang), số người đạt từng kết cục chặng 1 sau 3 ngày.
+- Ghi chú:
+
+## Ngày 8f - Chọn thế giới khởi đầu khi đầu thai (giấu sau cờ)
+Lên bản: 2026-11-22 (làm 20-21/11, mỗi đêm một phần, giấu sau cờ `KHOI_DAU_ON`). Có cáo thị khi bật. Nguồn: `docs/thiet-ke-hau-ky.md` mục 3 (Phàm, Tu chân, Tiên, Hồng Hoang; mở khi đạt mốc 5 lần; phúc duyên x0,8 / x0,6 / x0,5; ô khóa ghi lý do ngay trên ô).
+- [ ] Máy: đếm số lần đạt Kim Đan / phi thăng / Khai Thiên qua các kiếp (Meta), màn chọn ở bước đầu thai (mặc định Phàm giới, người mới không thấy ô khác).
+- [ ] Khởi tạo nhân vật theo khởi đầu (tuổi, cảnh giới, chỉ số như người chăm tu); kiếp bỏ qua đoạn đầu không tính bảng xếp hạng tuổi; Lực chiến Sơn Môn chỉ tính năm sống thật.
+- [ ] Mô phỏng `sim-do-kho 3000` và `sim-farm 200` trước/sau; đo `khoi_dau`, thời gian một kiếp, số kiếp mỗi ngày của nhóm Khai Thiên.
+- [ ] uiux-pro-max + huashu-design (2 vai) + humanizer, rồi bật cờ.
 - Ghi chú:
 
 ## Ngày 9 - Kỷ 2 làm sớm: máy chủ (giấu sau cờ)
