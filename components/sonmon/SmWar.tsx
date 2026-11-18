@@ -123,7 +123,8 @@ export function SmXuatChinh({ c }: { c: SmCtx }) {
         </div>
         {chuO != null && <HuyHieu id={map?.mon[String(chuO)]?.huy_hieu ?? 0} size={36} />}
       </div>
-      <div className="sm-steps" style={{ gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}>
+      <div className="sm-steps">
+        <Step ten={tr('Trinh sát', 'Scout')} chu={trinh ? tr('xong', 'done') : tr('tùy ý', 'optional')} kieu={trinh ? 'done' : ''} />
         <Step ten={tr('Tập hợp', 'Gather')} chu={!chinh ? tr('30 phút', '30 min') : dangTap ? tr(`còn ${clock(tapHop - now)}`, `${clock(tapHop - now)} left`) : tr('xong', 'done')} kieu={!chinh ? '' : dangTap ? 'now' : 'done'} />
         <Step ten={tr('Di chuyển', 'Move')} chu={dangDi ? tr(`còn ${clock(toiNoi - now)}`, `${clock(toiNoi - now)} left`) : tr(`${SM_CFG.gio.diPhut} phút`, `${SM_CFG.gio.diPhut} min`)} kieu={dangDi ? 'now' : ''} />
         <Step ten={tr('Giao tranh', 'Battle')} chu={hhmm(new Date(toiNoi).toISOString())} kieu="" />
@@ -237,13 +238,23 @@ export function SmXuatChinh({ c }: { c: SmCtx }) {
       </section>
 
       <section className="sm-card">
-        {/* Tyler 19/11: không hiện thanh cơ hội, không ước tính. Đánh như mở túi mù: tới nơi mới biết thắng thua. */}
-        <h3>{chuO == null ? tr('Ô trống', 'Empty tile') : tr('Đánh mù', 'Blind battle')}</h3>
-        <p style={{ fontSize: 15 }}>
-          {chuO == null
-            ? tr('Tới nơi là cắm cờ.', 'Arrive and plant the flag.')
-            : tr('Không ai biết bên kia mạnh cỡ nào cho tới lúc quân tới nơi. Tới nơi, bên nào tổng Lực chiến lớn hơn thì thắng.', 'Nobody knows how strong they are until the army arrives. On arrival, the side with more total power wins.')}
-        </p>
+        {/* Tyler 19/11: không có thanh Cơ hội thắng. Đã trinh sát thì có ước tính như cũ; chưa trinh sát thì đánh như mở túi mù. */}
+        {chuO != null && trinh ? (
+          <>
+            <h3>{tr('Ước tính trận', 'Battle estimate')}</h3>
+            <VsBar ta={ta} ho={ho} />
+            <b style={{ color: ta > ho ? 'var(--jade)' : 'var(--red-d)', fontSize: 17 }}>{cau}</b>
+          </>
+        ) : (
+          <>
+            <h3>{chuO == null ? tr('Ô trống', 'Empty tile') : tr('Đánh mù', 'Blind battle')}</h3>
+            <p style={{ fontSize: 15 }}>
+              {chuO == null
+                ? tr('Tới nơi là cắm cờ.', 'Arrive and plant the flag.')
+                : tr('Chưa trinh sát ô này nên không biết bên kia mạnh cỡ nào, như mở túi mù. Tới nơi, bên nào tổng Lực chiến lớn hơn thì thắng. Muốn biết trước thì trinh sát ô này trên bản đồ.', 'Not scouted, so their strength is a blind draw. On arrival, the side with more total power wins. Scout the tile on the map to know first.')}
+            </p>
+          </>
+        )}
         <p className="sm-note">
           {tr(`Lực ta lúc này: ${fmtN(ta)}${chinh ? ` (${chinh.n} người theo)` : ''}, đã tính Khí vận. Bên giữ có lợi thế sân nhà, 0-7h còn mạnh gấp đôi.`, `Our power now: ${fmtN(ta)}${chinh ? ` (${chinh.n} joined)` : ''}, fortune included. Defenders get a home bonus, doubled 0-7h.`)}
         </p>
