@@ -14,6 +14,7 @@ import { CtCreate, checkCtName } from '@/components/ChanThan';
 import { useCtExt } from '@/components/TamTai';
 import ShareSheet from '@/components/ShareSheet';
 import SuDoPanel from '@/components/SuDoPanel';
+import { SmPhapBao } from '@/components/sonmon/SmPhapBao';
 import { shareChanThan } from '@/lib/ctCard';
 import type { ShareOut } from '@/lib/shareCard';
 import { displayName } from '@/lib/storage';
@@ -102,6 +103,7 @@ export default function ChanThanPage() {
             <NhanVatStage ct={ct} meta={meta} ext={ext} active={bagTab} onSlot={(t) => (setBagTab(t), track('ct_slot_tap', { slot: t }), document.querySelector('.nv-bag')?.scrollIntoView({ behavior: 'smooth', block: 'start' }))} />
           </section>
           {SU_DO_ON && <SuDoPanel user={user} meta={meta} onGain={onSuGain} />}
+          <SmPhapBao linked={!!user} />
           <section className="panel">
             <NhanVatBag ct={ct} meta={meta} ext={ext} tab={bagTab} setTab={setBagTab} onWear={(x) => save({ ...meta, chanThan: x })} />
             <div className="home-grid">

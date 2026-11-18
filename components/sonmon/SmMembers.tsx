@@ -8,6 +8,7 @@ import type { SmBau, SmMember, SmMonNguoi } from '@/lib/sonmon/api';
 import { hexDist, oToiDa, SM_CFG } from '@/lib/sonmon/data';
 import { DkForm } from './SmFound';
 import { NguoiList, NguoiSheet } from './SmNguoi';
+import { SmCongDs } from './SmThuong';
 import { chucTen, clock, fmtN, hhmm, Msg, smCo, useNow, type SmCtx, type SmDraft } from './ui';
 
 export function SmThanhVien({ c }: { c: SmCtx }) {
@@ -111,6 +112,7 @@ export function SmThanhVien({ c }: { c: SmCtx }) {
           {tr(' Chạm một người để xem chân thân', ' Tap someone to see their true self')}{quyen ? (smCo(st).di ? tr(', xếp vào ô, đổi chức hoặc đuổi.', ', assign a tile, change rank or expel.') : tr(', đổi chức hoặc đuổi.', ', change rank or expel.')) : '.'}
         </p>
       </section>
+      <SmCongDs c={c} />
 
       {quyen && members?.don && (
         <section className="sm-card">

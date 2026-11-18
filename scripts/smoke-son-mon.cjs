@@ -29,6 +29,10 @@ const SCREENS = [
   ['M12-truyen-am', 'chu', 'chat'],
   ['M12-truyen-am-de', 'de', 'chat'],
   ['M4-de-tu', 'de', 'mon'],
+  // Ngày 8a: Phần thưởng Kỷ (môn chủ hạng 2 Công, đệ tử chưa đủ 10 Công), bảng Công trong tab Thành viên
+  ['M13-thuong', 'chu', 'thuong'],
+  ['M13-thuong-de', 'de', 'thuong'],
+  ['M13-thuong-chua', 'chua', 'thuong'],
 ];
 
 let fail = 0;

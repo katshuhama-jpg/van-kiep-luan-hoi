@@ -5,7 +5,7 @@
  * trong (ngày đầu, chưa môn nào mở), khach (chưa liên kết), noct (chưa có chân thân), chuamo (Kỷ chưa mở).
  */
 import { banDo, coiCua, O_A, O_B } from './data';
-import { SmErr, type SmAct, type SmApi, type SmChat, type SmMap, type SmMapO, type SmMembers, type SmMonNguoi, type SmMonRow, type SmRankRow, type SmState } from './api';
+import { SmErr, type SmBvNhan, type SmAct, type SmApi, type SmChat, type SmMap, type SmMapO, type SmMembers, type SmMonNguoi, type SmMonRow, type SmRankRow, type SmState } from './api';
 
 const now = Date.now();
 const at = (min: number) => new Date(now + min * 60_000).toISOString();
@@ -224,6 +224,27 @@ export function demoApi(vaiIn: string): SmApi {
             }
           : { vang_gio: 48, chu_hd: at(-30), mo_duoc: false, dang: null, gan_nhat: null },
       ),
+    // Ngày 8a: bảng Công. ?demo=chu đứng hạng 2, môn hạng 1 (Thần phẩm); ?demo=de hạng 9 (ngoài top 7)
+    congBang: () => {
+      if (!st.mon) return wait({ ky: { id: 1, ket_thuc: at(13 * 1440), ket_xong: false, khoa: at(10 * 1440) } });
+      const ten = ['Tử Doanh', 'Lâm Phong', 'Hạ Vy', 'Mộc Thanh', 'Bạch Y', 'Lưu Ly', 'Vân Khê', 'Thiết Ngưu', 'Tiểu Hồ', 'Lục Trúc'];
+      const toi = vai === 'de' ? 8 : 1;
+      const LOAI = ['kiem', 'dao', 'thuong', 'quat', 'phat_tran', 'cung', 'song_chuy'];
+      const ds = ten.map((t, i) => ({
+        ten: i === toi ? 'Ta' : t, tk: i === toi ? 'ta' : `u${i}`, chuc: (i === 1 ? 'chu' : i === 3 ? 'lao' : 'de') as 'chu' | 'lao' | 'de',
+        cong: Math.max(0, 62 - i * 6 - (i > 6 ? 8 : 0)), hang: i + 1, ta: i === toi,
+        nhan: (i < 7 && 62 - i * 6 >= 10 ? [{ o: 'vu_khi', loai: LOAI[i], pham: 'than' }] : null) as SmBvNhan[] | null,
+      }));
+      ds[1].nhan = [...(ds[1].nhan ?? []), { o: 'phu_kien', loai: 'an', pham: 'than' }];
+      const me = ds[toi];
+      return wait({
+        ky: { id: 1, ket_thuc: at(13 * 1440), ket_xong: false, khoa: at(10 * 1440) },
+        ds,
+        ta: { hang: me.hang, cong: me.cong, dd: 1, nv: Math.max(0, me.cong - 7), kh: 3, xc: 3, giu: 0, vao_som: true },
+        nhan: (me.nhan ?? []).map((x) => ({ ...x, pct: x.o === 'phu_kien' ? 12 : me.hang === 1 ? 15 : me.hang <= 3 ? 14 : 12, ten: x.o === 'phu_kien' ? 'Thần phẩm Thanh Hư Chưởng Môn Ấn' : 'Thần phẩm Thanh Hư Đao', hang_cong: me.hang })),
+        mon_hang: 1, mon_du: true, tk_du: true, can: 10,
+      });
+    },
     coHoi: (q, r) => {
       const tr = (st.trinh ?? []).find((t) => t.o[0] === q && t.o[1] === r && t.ket_qua && !t.ket_qua.trong);
       const ta = (st.chinh?.[0]?.theo ?? []).reduce((s, x) => s + x.lc, 0) || (st.lc ?? 0);

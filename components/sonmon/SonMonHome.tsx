@@ -26,6 +26,7 @@ import { SmBanDo } from './SmMap';
 import { SmChienSu, SmXuatChinh } from './SmWar';
 import { SmThanhVien } from './SmMembers';
 import { SmKy, SmLucChien } from './SmKy';
+import { SmThuong } from './SmThuong';
 
 const IN_MON: SmView[] = ['mon', 'chat', 'ban-do', 'chien-su', 'thanh-vien', 'ky'];
 const NAV: { v: SmView; vi: string; en: string }[] = [
@@ -119,7 +120,7 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
   const coMon = !!st?.mon;
   const v: SmView = useMemo(() => {
     if (!st) return view;
-    if (!coMon) return ['lap', 'chon-o', 'ky', 'luc-chien', 'luat', 'ban-do'].includes(view) ? view : 'list'; // 18/11: chưa có môn vẫn xem được bản đồ (chỉ xem)
+    if (!coMon) return ['lap', 'chon-o', 'ky', 'luc-chien', 'luat', 'ban-do', 'thuong'].includes(view) ? view : 'list'; // 18/11: chưa có môn vẫn xem được bản đồ (chỉ xem)
     if (view === 'list' || view === 'lap') return 'mon';
     if (view === 'chon-o' && (st.mon!.cam_co || st.mon!.chuc === 'de')) return 'mon';
     return view;
@@ -266,6 +267,7 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
         {v === 'luc-chien' && <SmLucChien c={ctx} />}
         {v === 'luat' && <SmLuat c={ctx} />}
         {v === 'chat' && <SmChat c={ctx} />}
+        {v === 'thuong' && <SmThuong c={ctx} />}
       </>
     );
   }

@@ -10,6 +10,7 @@ import { ChinhDien, ChuoiO, HuyHieu } from './Pixel';
 import { SmBaCau } from './SmLuat';
 import { duOCau, khaiDuoc } from './SmMap';
 import { useBau } from './SmMembers';
+import { SmCongDong } from './SmThuong';
 import { chucTen, clock, DongMinh, fmtN, mocGio, Msg, useNow, type SmCtx } from './ui';
 
 const CANH: Record<number, string> = { 0: '-', 1: 'Luyện Khí', 2: 'Trúc Cơ', 3: 'Kim Đan', 4: 'Nguyên Anh', 5: 'Hóa Thần' };
@@ -84,6 +85,9 @@ export function SmMonNha({ c }: { c: SmCtx }) {
           </button>
           <button className="sm-btn small sm-ghost sm-grow" style={{ color: 'var(--gold-l)', borderColor: '#8a6a3d' }} onClick={() => c.go('luc-chien')}>
             {tr('Lực chiến', 'Power')}
+          </button>
+          <button className="sm-btn small sm-ghost sm-grow" style={{ color: 'var(--gold-l)', borderColor: '#8a6a3d' }} onClick={() => c.go('thuong')}>
+            {tr('Phần thưởng', 'Rewards')}
           </button>
         </div>
       </section>
@@ -263,6 +267,7 @@ function LanhTho({ c }: { c: SmCtx }) {
       ) : (
         <p style={{ fontSize: 15 }}>{duOCau(c.st)}</p>
       )}
+      <SmCongDong c={c} />
     </section>
   );
 }

@@ -40,6 +40,51 @@ function rng(seed: number) {
   let s = seed >>> 0;
   return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296);
 }
+
+// Ngày 8a: BV=1 npx tsx scripts/sim-son-mon.ts 5000 -> Kỷ 2 môn có pháp bảo Kỷ 1 vs môn không có, cùng cỡ.
+if (process.env.BV) {
+  simBaoVat(Number(process.argv[2] ?? 5000));
+  process.exit(0);
+}
+function simBaoVat(N: number) {
+  const R = rng(77);
+  const lcs = raw.map((x) => x[0]).filter((x) => x > 0);
+  const PCT: Record<string, number[]> = {
+    than: [15, 14, 14, 12, 12, 12, 12], tien: [12, 11, 11, 9, 9, 9, 9], linh: [10, 9, 9, 7, 7, 7, 7], bao: [7, 6, 6, 4, 4, 4, 4], pham: [5, 4, 4, 2, 2, 2, 2],
+  };
+  const AN: Record<string, number> = { than: 12, tien: 9, linh: 7, bao: 4, pham: 2 };
+  const CO = Number(process.env.CO ?? 8);
+  const mon = (pham: string | null) => {
+    const ng = Array.from({ length: CO }, () => lcs[Math.floor(R() * lcs.length)]);
+    const pct = ng.map(() => 0);
+    if (pham) {
+      const rank = ng.map((_, i) => i).sort(() => R() - 0.5); // Công không phụ thuộc Lực chiến
+      rank.slice(0, 7).forEach((i, h) => (pct[i] = PCT[pham][h]));
+      const chu = rank[Math.floor(R() * Math.min(7, CO))];
+      pct[chu] = Math.min(25, pct[chu] + AN[pham]);
+    }
+    return ng.map((lc, i) => cap(lc) * (1 + pct[i] / 100));
+  };
+  const chon = (a: number[], k: number) => a.map((x) => [R(), x]).sort((x, y) => x[0] - y[0]).slice(0, k).map((x) => x[1]);
+  const tran = (danh: number[], giu: number[]) => {
+    const kA = 3 + Math.floor(R() * (CO - 2));
+    const kD = 1 + Math.floor(R() * Math.ceil(CO / 2));
+    const atk = chon(danh, kA).reduce((s, x) => s + x, 0);
+    const def = chon(giu, kD).reduce((s, x) => s + x, 0) * SAN_NHA;
+    return atk > def;
+  };
+  console.log(`Pháp bảo Kỷ 1 dùng ở Kỷ 2: môn ${CO} người, ${N} trận mỗi dòng, Lực chiến từ ${lcs.length} người chơi thật, sân nhà x${SAN_NHA}.`);
+  for (const ph of [null, 'than', 'tien', 'linh', 'bao', 'pham']) {
+    let w1 = 0, w2 = 0;
+    for (let i = 0; i < N; i++) {
+      if (tran(mon(ph), mon(null))) w1++;
+      if (tran(mon(null), mon(ph))) w2++;
+    }
+    const sum = mon(ph).reduce((s, x) => s + x, 0);
+    void sum;
+    console.log(`${ph ?? 'không đồ'}: môn có đồ đánh môn không đồ thắng ${(100 * w1 / N).toFixed(1)}%, môn không đồ đánh môn có đồ thắng ${(100 * w2 / N).toFixed(1)}%`);
+  }
+}
 const key = (h: Hex) => `${h.q},${h.r}`;
 const unkey = (k: string): Hex => { const [q, r] = k.split(',').map(Number); return { q, r }; };
 

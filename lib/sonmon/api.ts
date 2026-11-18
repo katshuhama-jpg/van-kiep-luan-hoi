@@ -128,6 +128,21 @@ export type SmCoHoi = {
   muc?: number; n_muc?: number; trinh_ve?: string | null;
   dem?: boolean; toi?: string;
 };
+/** Ngày 8a: bảng Công trong môn + "nếu Kỷ kết thúc bây giờ" (vkl_sm_cong_bang) */
+export type SmBvNhan = { o: 'vu_khi' | 'phu_kien'; loai: string; pham: string; pct?: number; ten?: string; hang_cong?: number };
+export type SmCongNguoi = { ten: string; tk: string; chuc: SmChuc; cong: number; hang: number; ta: boolean; nhan: SmBvNhan[] | null };
+export type SmCongBang = {
+  ky: { id: number; ket_thuc: string; ket_xong: boolean; khoa: string } | null;
+  ds?: SmCongNguoi[];
+  ta?: { hang: number; cong: number; dd: number; nv: number; kh: number; xc: number; giu: number; vao_som: boolean } | null;
+  nhan?: SmBvNhan[];
+  mon_hang?: number | null;
+  mon_du?: boolean;
+  tk_du?: boolean;
+  can?: number;
+};
+/** Ngày 8a: pháp bảo đã nhận (vkl_sm_bao_vat_ds) */
+export type SmBaoVat = { id: number; ky: number; o: 'vu_khi' | 'phu_kien'; loai: string; pham: string; pct: number; ten: string; khac: string | null; mac: boolean; hang_cong: number | null; hang_mon: number | null };
 export type SmRankRow = { id: number; ten: string; huy_hieu: number; o: number; kv: number; n: number };
 
 // ---------- Lỗi ----------
@@ -216,6 +231,8 @@ export interface SmApi {
   coHoi(q: number, r: number): Promise<SmCoHoi | null>;
   /** 18/11 tối: bầu môn chủ khi môn chủ vắng (null nếu máy chủ chưa có hàm hay lỗi) */
   bau(): Promise<SmBau | null>;
+  /** Ngày 8a: bảng Công + phần thưởng nếu Kỷ kết thúc bây giờ (null nếu máy chủ chưa có hàm hay lỗi) */
+  congBang(): Promise<SmCongBang | null>;
   act(a: SmAct): Promise<Record<string, unknown>>;
 }
 
@@ -318,6 +335,21 @@ export function realApi(): SmApi {
     },
     coHoi: (q, r) => rpc<SmCoHoi>('vkl_sm_co_hoi', { p_q: q, p_r: r }, true, true).catch(() => null),
     bau: () => rpc<SmBau>('vkl_sm_bau', {}, true, true).catch(() => null),
+    congBang: () => rpc<SmCongBang>('vkl_sm_cong_bang', {}, true, true).catch(() => null),
     act: (a) => rpc<Record<string, unknown>>(`vkl_sm_${a.fn}`, args(a)),
   };
+}
+
+/** Ngày 8a: pháp bảo Sơn Môn của người đang đăng nhập (dùng ở trang Chân thân, ngoài Sơn Môn) */
+export async function baoVatDs(): Promise<SmBaoVat[] | null> {
+  if (!currentPlayer()?.token) return null;
+  try {
+    return await rpc<SmBaoVat[]>('vkl_sm_bao_vat_ds', {}, true, true);
+  } catch {
+    return null;
+  }
+}
+/** mặc (hoặc tháo nếu đang mặc), trả lại danh sách mới */
+export async function baoVatMac(id: number): Promise<SmBaoVat[]> {
+  return rpc<SmBaoVat[]>('vkl_sm_bao_vat_mac', { p_id: id });
 }
