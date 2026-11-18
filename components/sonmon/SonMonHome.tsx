@@ -148,9 +148,12 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
       if (!document.hidden) reload(extra());
     };
     document.addEventListener('visibilitychange', onVis);
+    // 18/11: có mạng lại thì tự tải lại (trước phải bấm Thử lại)
+    window.addEventListener('online', onVis);
     return () => {
       clearInterval(id);
       document.removeEventListener('visibilitychange', onVis);
+      window.removeEventListener('online', onVis);
     };
   }, [api, v, reload]);
 

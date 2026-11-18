@@ -96,7 +96,16 @@ export type SmMap = {
 };
 export type SmMember = { ten: string; tk: string; chuc: SmChuc; lc: number; dung: [number, number] | null; nghi: boolean; kv: number };
 /** 18/11: người trong một môn, cho người chưa vào môn xem trước (vkl_sm_mon_ds) */
-export type SmMonNguoi = { ten: string; chuc: SmChuc; lc: number; ta?: boolean };
+export type SmMonNguoi = {
+  ten: string; chuc: SmChuc; lc: number; ta?: boolean;
+  /** 18/11 chiều: chi tiết để vẽ thẻ người (máy chủ cũ không có thì bỏ trống) */
+  tk?: string | null;
+  ct?: { gender: 'nam' | 'nu'; skin: number; hair: number; hairColor: number; outfit: number; gear?: Record<string, string> } | null;
+  vao_luc?: string | null;
+  choi_luc?: string | null;
+  kiep?: number;
+  phan?: Partial<SmLcPhan> | null;
+};
 export type SmMembers = { ds: SmMember[]; don: { id: number; ten: string; lc: number; luc: string }[] | null };
 export type SmRankRow = { id: number; ten: string; huy_hieu: number; o: number; kv: number; n: number };
 
@@ -209,7 +218,7 @@ function args(a: SmAct): Record<string, unknown> {
   }
 }
 
-async function rpc<T>(fn: string, a: Record<string, unknown>, withToken = true): Promise<T> {
+async function rpc1<T>(fn: string, a: Record<string, unknown>, withToken: boolean): Promise<T> {
   const sb = supabase();
   if (!sb) throw new SmErr('SM_NET');
   const tok = currentPlayer()?.token;
@@ -224,30 +233,50 @@ async function rpc<T>(fn: string, a: Record<string, unknown>, withToken = true):
   return res.data as T;
 }
 
+/**
+ * 18/11 (Tyler hay gặp "Không kết nối được máy chủ"): điện thoại vừa mở lại trình duyệt hay mạng chập chờn thì lệnh đọc
+ * hỏng ngay lần đầu. Lệnh ĐỌC tự thử lại 2 lần (0,6 giây rồi 1,5 giây) trước khi báo lỗi. Lệnh GHI (act, chat gửi) không
+ * tự thử lại để khỏi làm hai lần.
+ */
+async function rpc<T>(fn: string, a: Record<string, unknown>, withToken = true, doc = false): Promise<T> {
+  const cho = [600, 1500];
+  for (let i = 0; ; i++) {
+    try {
+      return await rpc1<T>(fn, a, withToken);
+    } catch (e) {
+      if (!doc || !(e instanceof SmErr) || e.code !== 'SM_NET' || i >= cho.length) throw e;
+      await new Promise((ok) => setTimeout(ok, cho[i]));
+    }
+  }
+}
+
 export function realApi(): SmApi {
   const p = currentPlayer();
   return {
     demo: false,
     linked: !!p,
     username: p?.username ?? null,
-    state: () => rpc<SmState>('vkl_sm_state', {}),
-    list: () => rpc<SmMonRow[]>('vkl_sm_list', {}),
-    members: () => rpc<SmMembers>('vkl_sm_members', {}),
-    monDs: (mon) => rpc<SmMonNguoi[]>('vkl_sm_mon_ds', { p_mon: mon }),
-    rank: () => rpc<SmRankRow[]>('vkl_sm_rank', {}, false),
-    chatList: (sau) => rpc<SmChat[]>('vkl_sm_chat_list', { p_sau: sau }),
+    state: () => rpc<SmState>('vkl_sm_state', {}, true, true),
+    list: () => rpc<SmMonRow[]>('vkl_sm_list', {}, true, true),
+    members: () => rpc<SmMembers>('vkl_sm_members', {}, true, true),
+    monDs: (mon) => rpc<SmMonNguoi[]>('vkl_sm_mon_ds', { p_mon: mon }, true, true),
+    rank: () => rpc<SmRankRow[]>('vkl_sm_rank', {}, false, true),
+    chatList: (sau) => rpc<SmChat[]>('vkl_sm_chat_list', { p_sau: sau }, true, true),
     chatSend: (nd) => rpc<SmChat>('vkl_sm_chat_send', { p_nd: nd }),
     chatN: (sau) => rpc<number>('vkl_sm_chat_n', { p_sau: sau }).then((x) => Number(x) || 0, () => 0),
     chatHide: (id) => rpc('vkl_sm_chat_hide', { p_id: id }),
     chatReport: (id) => rpc<{ so_bao: number; an: boolean }>('vkl_sm_chat_report', { p_id: id }),
     suMon: () => rpc<number | null>('vkl_sm_su_mon', {}).then((x) => (x == null ? null : Number(x)), () => null),
     map: async () => {
-      let r: Response;
-      try {
-        r = await fetch('/api/pub/sm-map');
-      } catch {
-        throw new SmErr('SM_NET');
+      let r: Response | null = null;
+      for (const cho of [0, 600, 1500]) {
+        if (cho) await new Promise((ok) => setTimeout(ok, cho));
+        try {
+          r = await fetch('/api/pub/sm-map');
+          break;
+        } catch {}
       }
+      if (!r) throw new SmErr('SM_NET');
       if (!r.ok) throw new SmErr(r.status === 404 ? 'SM_CHUA_MO' : 'SM_NET');
       return (await r.json()) as SmMap;
     },

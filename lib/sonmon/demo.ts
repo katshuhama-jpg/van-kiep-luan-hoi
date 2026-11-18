@@ -192,7 +192,23 @@ export function demoApi(vaiIn: string): SmApi {
     members: () => wait(vai === 'de' ? { ...MEMBERS, don: null } : MEMBERS),
     monDs: (mon) => {
       const n = [...LIST, ...CHO_KY].find((m) => m.id === mon)?.n ?? 0;
-      return wait(MEMBERS.ds.concat(MEMBERS.ds).slice(0, n).map((x, i): SmMonNguoi => ({ ten: i < MEMBERS.ds.length ? x.ten : `${x.ten} ${i}`, chuc: i === 0 ? 'chu' : x.chuc === 'chu' ? 'de' : x.chuc, lc: Math.max(300, x.lc - i * 40) })));
+      const nhaMinh = st.mon?.id === mon;
+      return wait(
+        MEMBERS.ds
+          .concat(MEMBERS.ds)
+          .slice(0, n)
+          .map((x, i): SmMonNguoi => ({
+            ten: i < MEMBERS.ds.length ? x.ten : `${x.ten} ${i}`,
+            chuc: i === 0 ? 'chu' : x.chuc === 'chu' ? 'de' : x.chuc,
+            lc: Math.max(300, x.lc - i * 40),
+            tk: nhaMinh ? (i < MEMBERS.ds.length ? x.tk : `${x.tk}${i}`) : null,
+            ct: { gender: i % 2 ? 'nu' : 'nam', skin: i % 4, hair: i % 3, hairColor: (i * 3) % 8, outfit: i % 6 },
+            vao_luc: at(-(i * 97 + 30)),
+            choi_luc: at(-(i * 23 + 5)),
+            kiep: 120 - i * 9,
+            phan: { huyet: Math.max(0, 10 - i), vien_man: Math.max(0, 5 - (i >> 1)), canh: 15 - (i % 6), ket_cuc: 60 - i * 4, kiep: 100 },
+          })),
+      );
     },
     act: async (a: SmAct) => {
       await wait(null);

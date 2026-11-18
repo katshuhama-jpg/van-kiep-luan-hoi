@@ -1,12 +1,13 @@
 'use client';
 
 /** 4.6.0 Sơn Môn M8 thành viên: bảng người, đơn xin vào, mời người, sửa điều kiện vào, luật rời/đuổi. */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
-import type { SmMember } from '@/lib/sonmon/api';
+import type { SmMember, SmMonNguoi } from '@/lib/sonmon/api';
 import { oToiDa, SM_CFG } from '@/lib/sonmon/data';
 import { DkForm } from './SmFound';
+import { NguoiList, NguoiSheet } from './SmNguoi';
 import { chucTen, fmtN, Msg, type SmCtx, type SmDraft } from './ui';
 
 export function SmThanhVien({ c }: { c: SmCtx }) {
@@ -18,6 +19,19 @@ export function SmThanhVien({ c }: { c: SmCtx }) {
   const [sua, setSua] = useState(false);
   const [dk, setDk] = useState<Pick<SmDraft, 'dkKiep' | 'dkNgay' | 'moCua'>>({ dkKiep: m.dk_kiep, dkNgay: m.dk_tuoi_dao, moCua: m.mo_cua });
   const [ai, setAi] = useState<SmMember | null>(null);
+  // 18/11: hình chân thân, vào môn lúc nào, từng chỉ số (vkl_sm_mon_ds), ghép theo tên đăng nhập
+  const [chiTiet, setChiTiet] = useState<Record<string, SmMonNguoi>>({});
+  const [xem, setXem] = useState<SmMonNguoi | null>(null);
+  useEffect(() => {
+    let live = true;
+    c.api.monDs(m.id).then(
+      (ds) => live && setChiTiet(Object.fromEntries(ds.filter((x) => x.tk).map((x) => [x.tk as string, x]))),
+      () => {},
+    );
+    return () => {
+      live = false;
+    };
+  }, [c.api, m.id, members]);
   const [roi, setRoi] = useState(false);
   const toi = c.api.username;
   const tenO = (x: SmMember) => {
@@ -74,52 +88,18 @@ export function SmThanhVien({ c }: { c: SmCtx }) {
         {!members ? (
           <p className="sm-note">{tr('Đang xem thành viên...', 'Loading members...')}</p>
         ) : (
-          <table className="sm-table">
-            <colgroup>
-              <col style={{ width: '42%' }} />
-              <col style={{ width: '19%' }} />
-              <col style={{ width: '12%' }} />
-              <col style={{ width: '27%' }} />
-            </colgroup>
-            <thead>
-              <tr>
-                <th>{tr('Tên · chức', 'Name · rank')}</th>
-                <th className="num">{tr('Lực chiến', 'Power')}</th>
-                <th className="num">{tr('Góp', 'Gave')}</th>
-                <th>{tr('Đứng ở', 'Guards')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {members.ds.map((x) => {
-                const la = x.tk === toi;
-                const bam = !la && (m.chuc === 'chu' || (m.chuc === 'lao' && x.chuc === 'de'));
-                return (
-                  <tr key={x.tk} className={`${la ? 'me' : ''} ${bam ? 'tap' : ''}`} onClick={bam ? () => setAi(x) : undefined}>
-                    <td>
-                      {bam ? (
-                        <button style={{ all: 'unset', cursor: 'pointer', display: 'block', minHeight: 32, overflow: 'hidden', textOverflow: 'ellipsis' }} aria-label={tr(`Việc với ${x.ten}`, `Actions for ${x.ten}`)}>
-                          {x.ten}
-                        </button>
-                      ) : (
-                        <span>{x.ten}</span>
-                      )}
-                      <div className="sm-note" style={{ fontSize: 13 }}>
-                        {chucTen(x.chuc)}
-                        {la ? tr(' · ngươi', ' · you') : ''}
-                      </div>
-                    </td>
-                    <td className="num">{fmtN(x.lc)}</td>
-                    <td className="num">{x.kv}</td>
-                    <td style={{ fontSize: 14 }}>{tenO(x)}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <NguoiList
+            ds={members.ds.map((x) => ({ ...(chiTiet[x.tk] ?? {}), ten: x.ten, chuc: x.chuc, lc: x.lc, tk: x.tk, ta: x.tk === toi }))}
+            onPick={(x) => setXem(x)}
+            extra={(x) => {
+              const mb = members.ds.find((y) => y.tk === x.tk);
+              return mb ? <span className="sm-ng-s">{tr(`Góp ${mb.kv} Khí vận hôm nay · ${tenO(mb)}`, `Gave ${mb.kv} fortune today · ${tenO(mb)}`)}</span> : null;
+            }}
+          />
         )}
         <p className="sm-note" style={{ padding: '4px 4px 0' }}>
           {tr('"Góp" là Khí vận góp hôm nay.', '"Gave" is fortune given today.')}
-          {quyen ? tr(' Chạm tên để đổi chức hoặc đuổi.', ' Tap a name to change rank or expel.') : ''}
+          {tr(' Chạm một người để xem chân thân', ' Tap someone to see their true self')}{quyen ? tr(', đổi chức hoặc đuổi.', ', change rank or expel.') : '.'}
         </p>
       </section>
 
@@ -183,6 +163,19 @@ export function SmThanhVien({ c }: { c: SmCtx }) {
         </button>
       </section>
 
+      {xem && (
+        <NguoiSheet x={xem} mon={m.ten} onClose={() => setXem(null)}>
+          {(() => {
+            const mb = members?.ds.find((y) => y.tk === xem.tk);
+            const bam = !!mb && mb.tk !== toi && (m.chuc === 'chu' || (m.chuc === 'lao' && mb.chuc === 'de'));
+            return bam ? (
+              <button className="sm-btn dark wide" onClick={() => (setXem(null), setAi(mb!))}>
+                {m.chuc === 'chu' ? tr('Đổi chức hoặc đuổi', 'Change rank or expel') : tr('Đuổi khỏi môn', 'Expel')}
+              </button>
+            ) : null;
+          })()}
+        </NguoiSheet>
+      )}
       {ai && (
         <div className="sm-sheet" role="dialog" aria-modal="true" aria-label={ai.ten} onClick={() => setAi(null)}>
           <div onClick={(e) => e.stopPropagation()}>

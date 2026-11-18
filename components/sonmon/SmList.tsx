@@ -7,6 +7,7 @@ import { track } from '@/lib/track';
 import { smLoi, type SmMonNguoi, type SmMonRow } from '@/lib/sonmon/api';
 import { SM_CFG } from '@/lib/sonmon/data';
 import { HuyHieu } from './Pixel';
+import { NguoiList, NguoiSheet } from './SmNguoi';
 import { SmBaCau } from './SmLuat';
 import { chucTen, clock, fmtN, mocGio, Msg, useNow, type SmCtx } from './ui';
 
@@ -312,6 +313,7 @@ function SmTrong({ c, cho, cosign, now }: { c: SmCtx; cho: SmMonRow[]; cosign: (
 /** 18/11: xem người trong môn trước khi vào (tên, chức, Lực chiến). Không hiện tài khoản, không hiện chỗ đứng. */
 function XemNguoi({ c, m, onVao, onDong }: { c: SmCtx; m: SmMonRow; onVao: () => void; onDong: () => void }) {
   const [ds, setDs] = useState<SmMonNguoi[] | null>(null);
+  const [ai, setAi] = useState<SmMonNguoi | null>(null);
   const [err, setErr] = useState<string | null>(null);
   useEffect(() => {
     let live = true;
@@ -326,6 +328,7 @@ function XemNguoi({ c, m, onVao, onDong }: { c: SmCtx; m: SmMonRow; onVao: () =>
   const why = lyDo(m, c.st);
   const daDon = c.st.don.some((d) => d.mon === m.id);
   return (
+    <>
     <div className="sm-sheet" role="dialog" aria-modal="true" aria-label={tr(`Người trong ${m.ten}`, `Members of ${m.ten}`)} onClick={onDong}>
       <div onClick={(e) => e.stopPropagation()} style={{ maxHeight: '85vh' }}>
         <div className="sm-row">
@@ -340,34 +343,7 @@ function XemNguoi({ c, m, onVao, onDong }: { c: SmCtx; m: SmMonRow; onVao: () =>
         <Msg err={err} ok={null} />
         <div style={{ overflowY: 'auto', minHeight: 0, flex: '1 1 auto' }}>
           {!ds && !err && <p className="sm-note">{tr('Đang xem người trong môn...', 'Loading members...')}</p>}
-          {ds && (
-            <table className="sm-table">
-              <colgroup>
-                <col style={{ width: '64%' }} />
-                <col style={{ width: '36%' }} />
-              </colgroup>
-              <thead>
-                <tr>
-                  <th>{tr('Tên · chức', 'Name · rank')}</th>
-                  <th className="num">{tr('Lực chiến', 'Power')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {ds.map((x, i) => (
-                  <tr key={i} className={x.ta ? 'me' : ''}>
-                    <td>
-                      <span>{x.ten}</span>
-                      <div className="sm-note" style={{ fontSize: 13 }}>
-                        {chucTen(x.chuc)}
-                        {x.ta ? tr(' · ngươi', ' · you') : ''}
-                      </div>
-                    </td>
-                    <td className="num">{fmtN(x.lc)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+          {ds && <NguoiList ds={ds} onPick={setAi} />}
         </div>
         {why ? (
           <p className="sm-why">{daDon ? tr('Ngươi đã gửi đơn vào môn này, đang chờ duyệt.', 'You applied; awaiting review.') : why}</p>
@@ -381,5 +357,7 @@ function XemNguoi({ c, m, onVao, onDong }: { c: SmCtx; m: SmMonRow; onVao: () =>
         </button>
       </div>
     </div>
+      {ai && <NguoiSheet x={ai} mon={m.ten} onClose={() => setAi(null)} />}
+    </>
   );
 }
