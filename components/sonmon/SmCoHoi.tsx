@@ -8,6 +8,7 @@
  */
 import { useEffect, useState } from 'react';
 import { tr } from '@/lib/i18n';
+import { track } from '@/lib/track';
 import type { SmCoHoi } from '@/lib/sonmon/api';
 import { fmtN, hhmm, type SmCtx } from './ui';
 
@@ -37,7 +38,20 @@ export function useCoHoi(c: SmCtx, q: number | null, r: number | null, khoa: str
   useEffect(() => {
     if (q == null || r == null) return;
     let song = true;
-    const lay = () => c.api.coHoi(q, r).then((v) => song && setX(v), () => song && setX(null));
+    let daDo = false;
+    const lay = () =>
+      c.api.coHoi(q, r).then(
+        (v) => {
+          if (!song) return;
+          setX(v);
+          // 8c: đo lần đầu thấy thanh cơ hội có số trinh sát
+          if (v?.nguon === 'trinh' && !daDo) {
+            daDo = true;
+            track('sm_co_hoi_xem', { nac: nacCoHoi(v), n: v.n_ta });
+          }
+        },
+        () => song && setX(null),
+      );
     lay();
     const id = songSong ? setInterval(lay, 20e3) : null;
     return () => {

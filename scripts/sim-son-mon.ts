@@ -42,6 +42,35 @@ function rng(seed: number) {
 }
 
 // Ngày 8a: BV=1 npx tsx scripts/sim-son-mon.ts 5000 -> Kỷ 2 môn có pháp bảo Kỷ 1 vs môn không có, cùng cỡ.
+// Ngày 8c: CH=1 npx tsx scripts/sim-son-mon.ts 1000 -> xuất chinh mù vs có thanh Cơ hội thắng (dừng khi "Thấp")
+if (process.env.CH) {
+  simCoHoi(Number(process.argv[2] ?? 1000));
+  process.exit(0);
+}
+function simCoHoi(N: number) {
+  const R = rng(91);
+  const lcs = raw.map((x) => x[0]).filter((x) => x > 0);
+  const pick = () => cap(lcs[Math.floor(R() * lcs.length)]);
+  let thuaMu = 0, nghiMu = 0, thuaCo = 0, nghiCo = 0, rut = 0, danhCo = 0;
+  for (let i = 0; i < N; i++) {
+    const nGiu = 1 + Math.floor(R() * 4);
+    const giu = Array.from({ length: nGiu }, pick).reduce((s, x) => s + x, 0) * SAN_NHA * (R() < 0.3 ? DEM : 1);
+    const nTa = 2 + Math.floor(R() * 5);
+    const ta = Array.from({ length: nTa }, pick).reduce((s, x) => s + x, 0);
+    // bên giữ đổi lực trong 20 phút đi đường: ±15% (trinh sát không thấy)
+    const luc = giu * (0.85 + R() * 0.3);
+    if (ta <= luc) { thuaMu++; nghiMu += nTa * 2; }
+    // có thanh: thấy giu (trinh sát chính xác lúc đó), lo = giu/1.15; "Thấp" (ta < lo) thì rút quân
+    if (ta < giu / 1.15) { rut++; continue; }
+    danhCo++;
+    if (ta <= luc) { thuaCo++; nghiCo += nTa * 2; }
+  }
+  const pc = (x: number) => (100 * x).toFixed(1) + '%';
+  console.log(`Xuất chinh vào ô có người giữ, ${N} lần (Lực chiến ${lcs.length} người thật):`);
+  console.log(`Mù: thua ${pc(thuaMu / N)}, giờ nghỉ trung bình mỗi lệnh ${(nghiMu / N).toFixed(1)}`);
+  console.log(`Có thanh cơ hội (rút khi Thấp): rút ${pc(rut / N)}, đánh ${danhCo} lần thua ${pc(thuaCo / Math.max(1, danhCo))}, giờ nghỉ trung bình mỗi lệnh ${(nghiCo / N).toFixed(1)}`);
+}
+
 if (process.env.BV) {
   simBaoVat(Number(process.argv[2] ?? 5000));
   process.exit(0);
