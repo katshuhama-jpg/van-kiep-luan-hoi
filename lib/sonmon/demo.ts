@@ -51,7 +51,7 @@ const LC_PHAN = { nam: 6400, kiep: 64, canh: 7, ket_cuc: 22, ngay: 7, huyet: 2, 
 const LC_MOI = { nam: 1148, kiep: 8, canh: 3, ket_cuc: 8, ngay: 2, huyet: 0, vien_man: 0, p_nam: 1016, p_kiep: 439, p_canh: 240, p_ket_cuc: 120, p_ngay: 100, nhan: 1 };
 
 function baseState(vai: string): SmState {
-  const du = vai === 'du' || vai === 'chu' || vai === 'cho';
+  const du = vai === 'du' || vai === 'chu' || vai === 'cho' || vai === 'roi';
   return {
     ky: vai === 'chuamo' ? null : { id: 1, bat_dau: at(-8 * 1440), ket_thuc: at(6 * 1440 + 200), ban_kinh: 6 },
     ky_chay: vai !== 'chuamo',
@@ -60,7 +60,9 @@ function baseState(vai: string): SmState {
     kiep: du ? 64 : 8,
     ngay: du ? 7 : 2,
     lap_can: { kiep: 30, ngay: 5, ha: false },
-    khoa_toi: null,
+    // ?demo=roi: vừa tự rời môn đã cắm cờ (vào lại sau 12 giờ, lập sau 24 giờ)
+    khoa_toi: vai === 'roi' ? at(20 * 60) : null,
+    khoa_vao_toi: vai === 'roi' ? at(8 * 60) : null,
     nghi_toi: null,
     ky_cung: [],
     don: vai === 'chua' ? [{ id: 4, mon: 3, ten: 'Vân Hà Các' }] : [],

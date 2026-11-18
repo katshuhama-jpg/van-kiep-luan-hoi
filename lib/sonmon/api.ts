@@ -66,7 +66,10 @@ export type SmState = {
   kiep: number;
   ngay: number;
   lap_can: { kiep: number; ngay: number; ha: boolean };
+  /** khóa LẬP môn sau khi tự rời (24 giờ) */
   khoa_toi: string | null;
+  /** 18/11: khóa VÀO môn sau khi tự rời (12 giờ); máy chủ cũ không trả thì coi như khoa_toi */
+  khoa_vao_toi?: string | null;
   nghi_toi: string | null;
   ky_cung: number[];
   don: { id: number; mon: number; ten: string }[];

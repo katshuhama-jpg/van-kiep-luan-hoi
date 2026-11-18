@@ -8,7 +8,7 @@ import { smLoi, type SmMonNguoi, type SmMonRow } from '@/lib/sonmon/api';
 import { SM_CFG } from '@/lib/sonmon/data';
 import { HuyHieu } from './Pixel';
 import { SmBaCau } from './SmLuat';
-import { chucTen, clock, fmtN, hhmm, Msg, ngayThang, useNow, type SmCtx } from './ui';
+import { chucTen, clock, fmtN, mocGio, Msg, useNow, type SmCtx } from './ui';
 
 const BAO_KEY = 'vkl.sm.baoMo';
 
@@ -44,7 +44,9 @@ export function SmList({ c }: { c: SmCtx }) {
   const choAll = (list ?? []).filter((m) => !m.du_ky);
   const kyM = choAll.find((m) => m.id === kyId) ?? null;
   const cho = choAll.filter((m) => m.id !== kyId);
+  // 18/11: tự rời môn đã cắm cờ: vào môn khác sau 12 giờ (khoa_vao_toi), lập môn sau 24 giờ (khoa_toi)
   const khoa = st.khoa_toi;
+  const khoaVao = khoaVaoCua(st);
 
   const thieuK = Math.max(0, st.lap_can.kiep - st.kiep);
   const thieuN = Math.max(0, st.lap_can.ngay - st.ngay);
@@ -103,10 +105,14 @@ export function SmList({ c }: { c: SmCtx }) {
         </section>
       )}
       <SmBaCau c={c} />
-      {khoa && (
-        <p className="sm-card warn">
-          {tr(`Ngươi đã tự rời môn đã cắm cờ, chờ tới ${hhmm(khoa)} ngày ${ngayThang(khoa)} mới vào hoặc lập môn khác.`, `You left a flagged sect. You can join or found another at ${hhmm(khoa)} on ${ngayThang(khoa)}.`)}
-        </p>
+      {(khoa || khoaVao) && (
+        <section className="sm-card warn">
+          <p>{tr('Ngươi vừa tự rời môn đã cắm cờ.', 'You just left a flagged sect.')}</p>
+          <ul style={{ margin: '4px 0 0', paddingLeft: 20 }}>
+            <li>{khoaVao ? tr(`Vào môn khác: từ ${mocGio(khoaVao, now)}`, `Join another: from ${mocGio(khoaVao, now)}`) : tr('Vào môn khác: được rồi', 'Join another: now')}</li>
+            {khoa && <li>{tr(`Lập môn mới: từ ${mocGio(khoa, now)}`, `Found a new one: from ${mocGio(khoa, now)}`)}</li>}
+          </ul>
+        </section>
       )}
       <Msg err={err} ok={ok} />
 
@@ -139,7 +145,7 @@ export function SmList({ c }: { c: SmCtx }) {
           {shown.map((m) => (
             <MonRow key={m.id} m={m} st={c.st} busy={c.busy} onVao={() => bamVao(m)} onXem={() => moXem(m)} />
           ))}
-          <p className="sm-note">{tr('Tự rời môn đã cắm cờ thì chờ 24 giờ mới vào môn khác. Bị đuổi thì vào môn khác được ngay.', 'Leave a flagged sect yourself and you wait 24 hours to join another. If expelled, you can join another at once.')}</p>
+          <p className="sm-note">{tr('Tự rời môn đã cắm cờ thì chờ 12 giờ mới vào môn khác, 24 giờ mới lập môn mới. Bị đuổi thì vào môn khác được ngay.', 'Leave a flagged sect yourself and you wait 12 hours to join another, 24 hours to found one. If expelled, you can join another at once.')}</p>
           {cho.length > 0 && (
             <>
               <h3>{tr(`Môn đang chờ người ký (${cho.length})`, `Sects awaiting co-signers (${cho.length})`)}</h3>
@@ -170,7 +176,7 @@ export function SmList({ c }: { c: SmCtx }) {
             {tr(' Kiếp chết trước 16 tuổi không tính.', ' Lives ending before 16 do not count.')}
           </p>
         )}
-        {duLap && khoa && <p className="sm-why">{tr(`Chờ tới ${hhmm(khoa)} ngày ${ngayThang(khoa)} mới lập được.`, `You can found one at ${hhmm(khoa)} on ${ngayThang(khoa)}.`)}</p>}
+        {duLap && khoa && <p className="sm-why">{tr(`Lập được từ ${mocGio(khoa, now)}.`, `You can found one from ${mocGio(khoa, now)}.`)}</p>}
       </section>
 
       {xem && <XemNguoi c={c} m={xem} onVao={() => bamVao(xem)} onDong={() => setXem(null)} />}
@@ -183,7 +189,7 @@ export function SmList({ c }: { c: SmCtx }) {
               <h2 className="sm-grow">{hoi.mo_cua ? tr(`Vào ${hoi.ten}?`, `Join ${hoi.ten}?`) : tr(`Xin vào ${hoi.ten}?`, `Apply to ${hoi.ten}?`)}</h2>
             </div>
             <p className="sm-card warn">
-              {tr('Môn này đã cắm cờ. Nếu ngươi tự rời, phải chờ 24 giờ mới vào môn khác. Bị đuổi thì vào môn khác được ngay.', 'This sect has planted its flag. If you leave on your own, you wait 24 hours to join another. If expelled, you can join another at once.')}
+              {tr('Môn này đã cắm cờ. Nếu ngươi tự rời, phải chờ 12 giờ mới vào môn khác, 24 giờ mới lập môn mới. Bị đuổi thì vào môn khác được ngay.', 'This sect has planted its flag. If you leave on your own, you wait 12 hours to join another and 24 hours to found one. If expelled, you can join another at once.')}
             </p>
             <button className="sm-btn main wide" disabled={c.busy} onClick={() => vao(hoi)}>
               {hoi.mo_cua ? tr('Vào môn', 'Join') : tr('Gửi đơn', 'Apply')}
@@ -198,8 +204,15 @@ export function SmList({ c }: { c: SmCtx }) {
   );
 }
 
+/** khóa vào môn còn hiệu lực (máy chủ cũ không có khoa_vao_toi thì dùng khoa_toi) */
+function khoaVaoCua(st: SmCtx['st']): string | null {
+  const k = st.khoa_vao_toi === undefined ? st.khoa_toi : st.khoa_vao_toi;
+  return k && new Date(k).getTime() > Date.now() ? k : null;
+}
+
 function lyDo(m: SmMonRow, st: SmCtx['st']): string | null {
-  if (st.khoa_toi) return tr(`Chờ tới ${hhmm(st.khoa_toi)}`, `Wait until ${hhmm(st.khoa_toi)}`);
+  const kv = khoaVaoCua(st);
+  if (kv) return tr(`Vào từ ${mocGio(kv, Date.now(), true)}`, `From ${mocGio(kv, Date.now(), true)}`);
   if (m.n >= m.toi_da) return tr(`Đã đủ ${m.toi_da} người`, `Full (${m.toi_da})`);
   if (!m.du_dk) return tr(`Cần ${m.dk_kiep} kiếp, ${m.dk_tuoi_dao} ngày chơi`, `Needs ${m.dk_kiep} lives, ${m.dk_tuoi_dao} days`);
   if (st.don.some((d) => d.mon === m.id)) return tr('Đang chờ duyệt', 'Awaiting review');

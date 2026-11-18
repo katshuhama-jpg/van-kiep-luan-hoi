@@ -63,6 +63,18 @@ export function ngayThang(iso: string) {
   return `${d.getUTCDate()}/${d.getUTCMonth() + 1}`;
 }
 
+/** 18/11: mốc giờ kèm ngày, ví dụ "18:58 hôm nay (18/11)", "06:58 ngày mai (19/11)", "06:58 ngày 20/11" */
+export function mocGio(iso: string, now = Date.now(), gon = false) {
+  const ngay = (t: number) => Math.floor((t + 7 * 3600e3) / 86400e3);
+  const d = ngay(new Date(iso).getTime()) - ngay(now);
+  const nt = ngayThang(iso);
+  if (gon && d === 0) return tr(`${hhmm(iso)} hôm nay`, `${hhmm(iso)} today`);
+  if (gon && d === 1) return tr(`${hhmm(iso)} ngày mai`, `${hhmm(iso)} tomorrow`);
+  if (d === 0) return tr(`${hhmm(iso)} hôm nay (${nt})`, `${hhmm(iso)} today (${nt})`);
+  if (d === 1) return tr(`${hhmm(iso)} ngày mai (${nt})`, `${hhmm(iso)} tomorrow (${nt})`);
+  return tr(`${hhmm(iso)} ngày ${nt}`, `${hhmm(iso)} on ${nt}`);
+}
+
 /** bao lâu trước: vừa xong, 12 phút, 3 giờ, hôm qua, 3 ngày */
 export function truoc(iso: string, now = Date.now()) {
   const m = Math.floor((now - new Date(iso).getTime()) / 60000);
