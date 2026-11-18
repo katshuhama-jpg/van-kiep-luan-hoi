@@ -212,3 +212,8 @@ p.sm-card { display: block; }
 .sm-xep-o { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 6px; }
 .sm-xep-o .sm-btn span { display: flex; flex-direction: column; align-items: center; line-height: 1.2; }
 .sm-xep-o .sm-btn small { font-size: 12px; font-weight: 600; }
+/* 18/11: bảng trượt từ dưới chỉ cuộn dọc, không trượt ngang (Tyler thấy kéo ngang được trên iPhone) */
+.sm-sheet > div { overflow-x: hidden; overscroll-behavior: contain; touch-action: pan-y; }
+.sm-cuon { overflow-y: auto; overflow-x: hidden; min-height: 0; flex: 1 1 auto; touch-action: pan-y; overscroll-behavior: contain; padding: 0 4px 4px 0; }
+.sm-ng-list, .sm-ng-list li { min-width: 0; max-width: 100%; }
+.sm-ng { max-width: 100%; }

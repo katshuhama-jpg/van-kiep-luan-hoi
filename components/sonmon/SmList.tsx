@@ -362,7 +362,7 @@ export function XemMon({ c, id, ten, huy, row, onVao, onDong }: { c: SmCtx; id: 
           </div>
         </div>
         <Msg err={err} ok={null} />
-        <div style={{ overflowY: 'auto', minHeight: 0, flex: '1 1 auto' }}>
+        <div className="sm-cuon">
           {!ds && !err && <p className="sm-note">{tr('Đang xem người trong môn...', 'Loading members...')}</p>}
           {ds && <NguoiList ds={ds} onPick={setAi} />}
         </div>
