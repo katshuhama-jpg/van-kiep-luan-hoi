@@ -13,6 +13,7 @@ Luật giao diện mới (Tyler chốt 14/11): mọi thay đổi người chơi 
    Sửa hết lỗi mức nặng trước khi lên. Lỗi nhỏ ghi lại, làm đêm sau.
 2. Dùng skill `anthropic-skills:humanizer` soát mọi chữ trên màn mới và cáo thị: câu ngắn, từ ngoài đời, một thứ một tên, không trộn tiếng Anh, giữ giọng tu tiên của game.
 Chưa qua đủ 2 bước thì không đánh dấu `len-ban`, báo Tyler lý do.
+Bổ sung (Tyler chốt 21:07 18/11): bước 1 dùng CẢ `anthropic-skills:uiux-pro-max` VÀ `anthropic-skills:huashu-design` để làm đẹp và đúng trải nghiệm người chơi. Với huashu-design: dùng phần chống "AI slop", "từ nội dung mà ra hình", "một chi tiết làm 120%", và chấm 5 mặt (Step 10 critique: nhất quán, thứ bậc nhìn, chi tiết, dễ dùng, mới lạ) trên ảnh 390x844, ghi điểm và sửa mục "Fix" mức nặng. KHÔNG chạy cổng "3 hướng chờ người chọn" của huashu-design: game đã có phong cách pixel riêng (sonmon.css, globals.css) nên mỗi màn mới là lặp trong phong cách đã chọn (thuộc diện miễn của skill); ghi một dòng lý do vào "Ghi chú:". Giữ luật dự án: chỉ pixel/LPC, không gradient, chữ từ 12px, nút từ 44px.
 
 Luật hiệu năng và chi phí (Tyler chốt 18/11, MỖI ĐÊM, kể cả đêm không có khối nào): trước khi làm khối, dành một phần đêm nghiên cứu và tối ưu tốc độ và tiền:
 1. Đo: Vercel (`list_billing_charges`, `get_runtime_logs`, lượt gọi hàm, băng thông, ảnh), Supabase (`get_advisors` performance + security, `pg_stat_statements` 20 câu tốn nhất theo total_exec_time, cỡ bảng lớn nhất, pg_cron chạy bao lâu, số kết nối), cỡ trang `/` và `/son-mon` sau build (JS gửi xuống máy người chơi).
