@@ -349,6 +349,19 @@ Tyler hỏi 18/11: có người không trinh sát mà đánh luôn, thì sao bi�
 - [ ] Đo: `sm_co_hoi_xem`, `sm_rut_quan`, tỉ lệ thắng xuất chinh trước/sau, số người theo trung bình mỗi lệnh. smoke-son-mon thêm màn tập hợp có thanh cơ hội.
 - Ghi chú:
 
+## Ngày 8d - Người chơi đã "full": kết cục mới, cảnh giới mới, chọn thế giới khởi đầu (góp ý Hoang Le)
+Lên bản: 2026-11-19. Đêm nay chủ yếu là NGHIÊN CỨU + THIẾT KẾ (tài liệu), chỉ code phần nhỏ chắc chắn xong. Không chen trước 8a.
+Tyler 20:44 18/11: suy nghĩ kỹ về bình luận Facebook (bài "Đủ 30: +10% - Đủ 50: +20%", 18/11): Hoang Le: "Ra thêm kết cục và cảnh giới mới đi ông. Ông ra thêm lúc vào chọn 1 thế giới đi với cảnh giới đó luôn cho dễ. Chứ full hết rồi". Ảnh kèm: Sổ Sinh Tử 86/95, Thiên thư 10/10, Bảo khố 297/297, Kiếp Số 10 - Hồn vẹn 100, nhiệm vụ 3/3, đã mua thiên phú (3487 phúc duyên), thiên phú tà đạo (1950 nghiệp lực).
+- [ ] Số liệu: bao nhiêu người đã gần hết nội dung (Sổ Sinh Tử từ 80/95, Thiên thư 10/10, Bảo khố đầy, đã đạt cảnh giới cao nhất); họ còn chơi mỗi ngày không, chơi gì (Lôi đài, Sơn Môn, chỉ đầu thai cày); kết cục nào ít ai đạt nhất. Ghi vào docs/tang-truong.md.
+- [ ] Thiết kế (game-design: game-direction, player-experience, balance-review; story-writing cho nội dung), lưu `docs/thiet-ke-hau-ky.md`:
+  1. **Kết cục mới:** 10-15 kết cục mới cho người đã có nhiều kiếp (điều kiện khó, nối với Sơn Môn, Sư Đồ, chân thân, Lôi đài), có số mới cho Sổ Sinh Tử (95 -> 110).
+  2. **Cảnh giới mới trên cảnh giới cao nhất hiện tại:** tên, điều kiện mở, làm gì khác (không chỉ số to hơn), mô phỏng `sim-do-kho.ts` để không phá cân bằng kiếp thường.
+  3. **"Chọn thế giới đi với cảnh giới đó" (ý chính của Hoang Le):** người đã đạt cảnh giới X ở kiếp trước thì lúc đầu thai được chọn thế giới/cõi khởi đầu tương ứng (ví dụ đã từng Hóa Thần thì có thể sinh thẳng vào giới tu tiên cao, bỏ đoạn đầu), đổi lại phần thưởng/kết cục khác. Đánh giá: tiết kiệm thời gian cho người cũ vs mất cảm giác lớn dần; cách giữ người mới không bị bỏ lại; có nên chỉ mở cho người full Sổ Sinh Tử.
+  4. Thứ tự làm và chia đêm, cái nào lên trước (ưu tiên thứ người full thấy ngay: kết cục mới + chọn thế giới).
+- [ ] Nếu kịp và chắc chắn: làm 3-5 kết cục mới đầu tiên (giấu sau cờ nếu chưa đủ), thử như thường lệ.
+- [ ] Soạn sẵn câu trả lời bình luận cho Tyler tự đăng (xưng "mình", gọi "bạn", không hứa ngày, nói đang làm gì; humanizer). KHÔNG tự đăng.
+- Ghi chú:
+
 ## Ngày 9 - Kỷ 2 làm sớm: máy chủ (giấu sau cờ)
 Lên bản: 2026-11-20. Giấu sau cờ `SM_DAT_ON` (tắt mặc định). Có cáo thị: thêm một dòng vào 4.6.0 báo trước "Từ 5:00 ngày 21/11 hạng Kỷ tính theo Điểm giữ đất".
 Tyler chốt 18/11: "Làm luôn Kỷ 2 vào 21/11 coi như tính năng". Nguồn ý: báo cáo `claude/nghien-cuu-game-chien-thuat-text-son-mon.md` (Travian oasis, Torn territory, Tribal Wars giữ làng, Utopia/SFC2 dải sức mạnh, Mob Wars boss).
