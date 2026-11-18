@@ -1019,7 +1019,8 @@ export const EVENTS2: GameEvent[] = [
     choices: () => [
       {
         label: tr('Bước vào', "Step in"),
-        hint: '???',
+        // 19/11 (góp ý #135, #283): người chơi mất kiếp mạnh vì không biết bước vào là khép kiếp
+        hint: tr('??? Bước qua là kiếp này khép lại', '??? Stepping through ends this life'),
         lean: 'trung',
         run: (c, ctx) => {
           c.dead = true;
