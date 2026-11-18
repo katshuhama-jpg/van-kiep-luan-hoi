@@ -7,6 +7,7 @@ import { track } from '@/lib/track';
 import type { SmBao, SmMember, SmState } from '@/lib/sonmon/api';
 import { capLc, SM_CFG, tranCau } from '@/lib/sonmon/data';
 import { HuyHieu } from './Pixel';
+import { CoHoiThe, useCoHoi } from './SmCoHoi';
 import { chinhKhoa } from './SmMap';
 import { clock, fmtN, hhmm, mocGio, Msg, truoc, useNow, type SmCtx } from './ui';
 
@@ -44,8 +45,12 @@ export function SmXuatChinh({ c }: { c: SmCtx }) {
   const now = useNow();
   const [err, setErr] = useState<string | null>(null);
   const [hoiBh, setHoiBh] = useState(false);
+  const [hoiRut, setHoiRut] = useState(false);
   const chinh = (st.chinh ?? [])[0] ?? null;
   const toi: [number, number] | null = chinh ? chinh.toi : c.target;
+  const dangTapSom = chinh?.trang_thai === 'tap_hop' && new Date(chinh.tap_hop_toi).getTime() > now;
+  // 18/11 tối: lực ta chính xác + lực giữ khi đã trinh sát (chưa trinh sát vẫn "???"); làm mới mỗi 20 giây khi tập hợp
+  const coHoi = useCoHoi(c, toi?.[0] ?? null, toi?.[1] ?? null, `${chinh?.id ?? 0}-${chinh?.n ?? 0}-${chinh?.ta_theo ? 1 : 0}-${(st.trinh ?? []).map((t) => t.id + (t.ket_qua ? 'x' : '')).join('.')}`, dangTapSom);
   if (!toi) {
     return (
       <section className="sm-card">
@@ -90,10 +95,19 @@ export function SmXuatChinh({ c }: { c: SmCtx }) {
     if (bhTa && chuO != null && !hoiBh) return setHoiBh(true);
     setHoiBh(false);
     setErr(null);
-    const e = await c.run({ fn: 'march', q: toi[0], r: toi[1] }, () => track('sm_march', { trong: chuO == null, trinh: !!trinh }));
+    const e = await c.run({ fn: 'march_tt', q: toi[0], r: toi[1] }, (x) => track('sm_march', { trong: chuO == null, trinh: !!trinh, tu_trinh: !!x?.tu_trinh }));
     setErr(e);
     c.reload(['map']);
   };
+  const rut = async () => {
+    if (!chinh) return;
+    setErr(null);
+    const e = await c.run({ fn: 'rut_quan', chinh: chinh.id }, () => track('sm_rut_quan', { n: chinh.n }));
+    setErr(e);
+    setHoiRut(false);
+    c.reload(['map']);
+  };
+  const quyen = m.chuc === 'chu' || m.chuc === 'lao';
   const theo = async (on: boolean) => {
     if (!chinh) return;
     setErr(null);
@@ -119,6 +133,20 @@ export function SmXuatChinh({ c }: { c: SmCtx }) {
         <Step ten={tr('Di chuyển', 'Move')} chu={dangDi ? tr(`còn ${clock(toiNoi - now)}`, `${clock(toiNoi - now)} left`) : tr(`${SM_CFG.gio.diPhut} phút`, `${SM_CFG.gio.diPhut} min`)} kieu={dangDi ? 'now' : ''} />
         <Step ten={tr('Giao tranh', 'Battle')} chu={hhmm(new Date(toiNoi).toISOString())} kieu="" />
       </div>
+      {dangTap && (
+        <section className="sm-tap" aria-live="polite">
+          <div className="sm-tap-dong">
+            <span>{tr('Tập hợp còn', 'Gathering ends in')}</span>
+            <b className="sm-clock">{clock(tapHop - now)}</b>
+          </div>
+          <div className="sm-tap-vach" aria-hidden>
+            <i style={{ width: `${Math.max(0, Math.min(100, ((tapHop - now) / (SM_CFG.gio.tapHopPhut * 60e3)) * 100))}%` }} />
+          </div>
+          <p>
+            {tr(`Hết giờ, môn tự xuất phát với ${chinh!.n} người đã theo. Tới nơi lúc ${hhmm(chinh!.toi_noi_luc)}.`, `When time is up the sect marches with the ${chinh!.n} who joined. Arrives ${hhmm(chinh!.toi_noi_luc)}.`)}
+          </p>
+        </section>
+      )}
 
       <section className="sm-card">
         <div className="sm-between">
@@ -191,16 +219,43 @@ export function SmXuatChinh({ c }: { c: SmCtx }) {
         ) : (
           <p className="sm-ok">{tr(`Đang trên đường, tới nơi lúc ${hhmm(chinh.toi_noi_luc)}.`, `On the way, arriving ${hhmm(chinh.toi_noi_luc)}.`)}</p>
         )}
+        {dangTap && quyen && (
+          <button className="sm-btn sm-ghost wide" disabled={c.busy} onClick={() => setHoiRut(true)}>
+            {tr('Rút quân (hủy lệnh)', 'Call off the march')}
+          </button>
+        )}
+        {hoiRut && chinh && (
+          <div className="sm-sheet" role="dialog" aria-modal="true" aria-label={tr('Rút quân?', 'Call off?')} onClick={() => setHoiRut(false)}>
+            <div onClick={(e) => e.stopPropagation()}>
+              <h2>{tr('Rút quân?', 'Call off the march?')}</h2>
+              <p>{tr(`Hủy lệnh đánh ${tenO}. ${chinh.n} người đã theo được về giữ ô như cũ, không ai phải nghỉ.`, `Cancel the march on ${tenO}. The ${chinh.n} who joined go back to guarding; nobody rests.`)}</p>
+              <button className="sm-btn main wide" disabled={c.busy} onClick={rut}>
+                {tr('Rút quân', 'Call it off')}
+              </button>
+              <button className="sm-btn sm-ghost wide" onClick={() => setHoiRut(false)}>
+                {tr('Thôi, vẫn đánh', 'Keep marching')}
+              </button>
+            </div>
+          </div>
+        )}
         <p className="sm-note">{tr('Đã theo thì chân thân bận tới khi về, không giữ ô khác được. Rút lại được trước khi hết giờ tập hợp.', 'Once joined you are busy until you return. You can withdraw before gathering ends.')}</p>
       </section>
 
       <section className="sm-card">
-        <h3>{tr('Ước tính trận', 'Battle estimate')}</h3>
-        {chuO != null && trinh && <VsBar ta={ta} ho={ho} />}
-        <b style={{ color: ta > ho || chuO == null ? 'var(--jade)' : 'var(--red-d)', fontSize: 17 }}>{cau}</b>
-        <p className="sm-note">
-          {tr('Đã tính Khí vận của môn ta và lợi thế sân nhà của họ. Họ thấy ta lúc xuất phát, ai đang online có 20 phút sang giữ thêm. Tới nơi lúc 0-7h thì bên giữ mạnh gấp đôi.', 'Includes our fortune and their home advantage. They see us leave and may reinforce. Arriving 0-7h doubles the defence.')}
+        {coHoi ? (
+          <CoHoiThe x={coHoi} dangTap={!!dangTap} />
+        ) : (
+          <>
+            <h3>{tr('Ước tính trận', 'Battle estimate')}</h3>
+            {chuO != null && trinh && <VsBar ta={ta} ho={ho} />}
+            <b style={{ color: ta > ho || chuO == null ? 'var(--jade)' : 'var(--red-d)', fontSize: 17 }}>{cau}</b>
+          </>
+        )}
+        {!coHoi && (
+          <p className="sm-note">
+            {tr('Đã tính Khí vận của môn ta và lợi thế sân nhà của họ. Họ thấy ta lúc xuất phát, ai đang online có 20 phút sang giữ thêm. Tới nơi lúc 0-7h thì bên giữ mạnh gấp đôi.', 'Includes our fortune and their home advantage. They see us leave and may reinforce. Arriving 0-7h doubles the defence.')}
         </p>
+        )}
         <p className="sm-note">
           {tr(`Thắng: ô về tay môn ta, bảo hộ ${SM_CFG.gio.baoHoGio} giờ. Thua: người đi theo nghỉ ${SM_CFG.gio.nghiGio} giờ, không mất gì khác.`, `Win: the tile is ours, protected ${SM_CFG.gio.baoHoGio} h. Lose: marchers rest ${SM_CFG.gio.nghiGio} h, nothing else lost.`)}
         </p>
@@ -220,6 +275,7 @@ function baoCau(b: SmBao, mine: number): { tag: string; cls: string; chu: string
   const o = b.nd?.ten_o ?? '';
   if (b.loai === 'cam_co' && b.nd?.khai_hoang) return { tag: tr('Cờ', 'Flag'), cls: 'flag', chu: tr(`${b.nd?.nguoi ?? 'Đạo hữu'} khai hoang ${o}`, `${b.nd?.nguoi ?? 'A member'} claimed ${o}`) };
   if (b.loai === 'cam_co') return { tag: tr('Cờ', 'Flag'), cls: 'flag', chu: tr(`Cắm cờ ${o}${b.nd?.dau ? ', ô đầu tiên của môn' : ''}`, `Planted the flag on ${o}`) };
+  if (b.loai === 'huy' && b.nd?.ly_do === 'rut_quan') return { tag: tr('Rút', 'Off'), cls: 'lose', chu: tr(`${b.nd?.nguoi ?? 'Môn chủ'} rút quân, hủy lệnh đánh ${o}`, `${b.nd?.nguoi ?? 'The leader'} called off the march on ${o}`) };
   if (b.loai === 'huy') return { tag: tr('Hủy', 'Off'), cls: 'lose', chu: tr(`Lệnh xuất chinh tới ${o} bị hủy vì không ai theo`, `March to ${o} called off, nobody joined`) };
   if (b.loai === 'mat_het') return { tag: tr('Mất', 'Lost'), cls: 'lose', chu: tr('Môn mất hết ô. Cắm cờ lại một ô trống bất kỳ, bảo hộ 12 giờ.', 'The sect lost all tiles. Plant again anywhere, protected 12 h.') };
   const danh = b.a === mine;

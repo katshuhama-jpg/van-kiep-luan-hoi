@@ -328,8 +328,9 @@ Lý do (số 18/11 chiều): 11 môn, 69 người, 18/127 ô có chủ, 8 xuất
 - [ ] Câu dẫn khi khai hoang theo cõi (story-writing, humanizer), hiện trong thông báo thành công, mỗi cõi 3 câu, chọn ngẫu nhiên.
 - Ghi chú:
 
-## Ngày 8c - Đánh không cần đoán: ước lượng lực giữ, cơ hội thắng, tự trinh sát, rút quân
-Lên bản: 2026-11-20. Có cáo thị: thêm dòng vào 4.6.0. KHÔNG giấu sau cờ (sửa trải nghiệm Kỷ 1 đang chạy).
+## Ngày 8c - Đánh không cần đoán: cơ hội thắng, tự trinh sát, rút quân
+Lên bản: 2026-11-19 (Tyler 20:16 18/11: làm và đẩy luôn). Xong: 2026-11-18 (Claude làm trong phiên chat).
+Tyler chốt 20:20 18/11: KHÔNG có mức ước lượng; chưa trinh sát thì lực giữ vẫn "???". Phát lệnh có 30 phút tập hợp, hết giờ môn tự đi đánh với người đã theo. Mục 1 dưới đây BỎ. Có cáo thị: thêm dòng vào 4.6.0. KHÔNG giấu sau cờ (sửa trải nghiệm Kỷ 1 đang chạy).
 Tyler hỏi 18/11: có người không trinh sát mà đánh luôn, thì sao biết cần bao nhiêu người theo để thắng. Claude chốt (game-design balance-review + game-ux-review, gamedev game-ui-ux):
 - **Vấn đề:** ô môn khác ghi "Lực giữ ???". Đánh mù mà thua thì mọi người theo nghỉ 2 giờ, nên người chơi hoặc kéo cả môn (bỏ trống nhà) hoặc không dám đánh. Trinh sát là bước thêm mà nhiều người bỏ qua.
 - **1. Ước lượng thô, ai cũng thấy, không cần trinh sát:** ô có chủ ghi mức "Lực giữ: Yếu (dưới 3.000) / Vừa (3.000-8.000) / Mạnh (8.000-15.000) / Rất mạnh (trên 15.000)", kèm số người đang giữ ghi "khoảng". Máy chủ tính từ lực giữ thật có cộng nhiễu ±35% cố định theo ô và theo giờ (không dò ra số thật bằng cách bấm lại). Mức này đã gồm sân nhà, Khí vận, ban đêm, còn 1 ô. Trinh sát vẫn có ích: ra số gần đúng (±15%) và số người thật.

@@ -124,3 +124,7 @@ revoke all on function public.vkl_sm_rut_quan(uuid, bigint) from public;
 grant execute on function public.vkl_sm_co_hoi(uuid, int, int) to anon, authenticated;
 grant execute on function public.vkl_sm_march_tt(uuid, int, int) to anon, authenticated;
 grant execute on function public.vkl_sm_rut_quan(uuid, bigint) to anon, authenticated;
+
+-- ===== 20:26 18/11 (Tyler "Làm"): bản đã áp, migration son_mon_co_hoi_bo_uoc_2026_11_18 =====
+-- vkl_sm_co_hoi thay bằng bản không có mức thô: chưa trinh sát thì nguon 'chua' (chỉ lực ta, trinh_ve), có trinh sát thì 'trinh'.
+-- drop function vkl_priv.sm_nhieu. (Thân hàm đầy đủ xem migration trên Supabase.)

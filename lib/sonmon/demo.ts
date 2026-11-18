@@ -237,8 +237,12 @@ export function demoApi(vaiIn: string): SmApi {
           st = { ...st, trinh: [{ id: 99, o: [a.q, a.r], xong_luc: at(10), ket_qua: null }, ...(st.trinh ?? [])] };
           return { xong_luc: at(10) };
         case 'march':
+        case 'march_tt':
           if (st.chinh?.length) throw new SmErr('SM_DANG_CHINH');
-          return { id: 8 };
+          return { id: 8, tu_trinh: a.fn === 'march_tt' ? at(10) : undefined };
+        case 'rut_quan':
+          st = { ...st, chinh: [] };
+          return { ok: true };
         case 'khai_hoang':
           if (m && m.o >= m.o_max) throw new SmErr('SM_DU_O');
           if (m) st = { ...st, mon: { ...m, o: m.o + 1, tiles: [...m.tiles, { q: a.q, r: a.r, ten: 'Vọng Nguyệt Lâm', cd: false, bao_ho_toi: at(24 * 60) }] } };

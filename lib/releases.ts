@@ -49,6 +49,7 @@ export const RELEASES: Release[] = [
           tr('Truyền âm: trò chuyện với người cùng môn ngay trong tab Sơn Môn. Link và số điện thoại tự ẩn, lời tục bị che, chạm một tin để báo xấu.', 'Sect chat: talk with your sect right in the Sects tab. Links and phone numbers are hidden, swearing is masked, tap a message to report it.'),
           tr('Có sư phụ thì môn của sư phụ đứng đầu danh sách, kèm nút Vào môn của sư phụ.', "If you have a master, their sect sits at the top of the list with a Join master's sect button."),
           tr('Khai hoang: chạm ô trống có dấu + kề đất của môn rồi bấm Khai hoang, cờ cắm ngay, không phải đánh ai. Ai trong môn cũng làm được. Bản đồ to hơn, phóng to thu nhỏ được.', 'Claim: tap an empty tile marked + next to your land and press Claim; the flag goes up at once, no fighting. Any member can. The map is bigger and zoomable.'),
+          tr('Xuất chinh: phát lệnh là tự gửi người đi trinh sát. Màn tập hợp có đồng hồ 30 phút, hết giờ môn tự đi đánh với người đã theo. Tin trinh sát về thì thấy cơ hội thắng và cần thêm bao nhiêu Lực chiến. Môn chủ và trưởng lão rút quân được trong lúc tập hợp, không ai phải nghỉ.', 'Marches: ordering one sends a scout too. Gathering shows a 30-minute clock; when it ends the sect marches with whoever joined. Once the scout is back you see the chance to win and how much more power is needed. Leaders can call it off while gathering, nobody rests.'),
         ],
       },
       {

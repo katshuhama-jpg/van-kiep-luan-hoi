@@ -239,3 +239,37 @@ p.sm-card { display: block; }
 .sm-map-wrap { position: relative; }
 .sm-zoom { position: absolute; right: 8px; top: 8px; display: flex; flex-direction: column; gap: 6px; z-index: 2; }
 .sm-zoom .sm-btn { width: 44px; min-height: 44px; padding: 0; font-size: 22px; font-weight: 700; line-height: 1; }
+
+/* 18/11 tối (khối 8c): đồng hồ tập hợp, thẻ Cơ hội thắng (4 nấc pixel + thước Ta/Họ). Chỉ khối màu phẳng, không gradient. */
+.sm-tap { background: #1e1a2e; color: #efe2c0; border: 3px solid var(--ink-dark); box-shadow: 4px 4px 0 var(--shadow); padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+.sm-tap-dong { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; font-size: 16px; }
+.sm-tap-dong .sm-clock { font-size: 30px; color: var(--gold-l); letter-spacing: 1px; }
+.sm-tap-vach { height: 12px; border: 2px solid #efe2c0; background: #2c2640; }
+.sm-tap-vach i { display: block; height: 100%; background: var(--gold-l); transition: width 1s linear; }
+.sm-tap p { font-size: 15px; color: #e6d9b5; }
+@media (prefers-reduced-motion: reduce) { .sm-tap-vach i { transition: none; } }
+
+.sm-ch { display: flex; flex-direction: column; gap: 8px; }
+.sm-ch-ten { font-size: 15px; padding: 3px 8px; border: 2px solid var(--ink-dark); background: #e8e0cc; color: var(--ink-dark); white-space: nowrap; }
+.sm-ch-ten.n0 { background: #a8402e; color: #fff3dc; }
+.sm-ch-ten.n1 { background: #e0a43a; color: #1f160d; }
+.sm-ch-ten.n2 { background: var(--jade); color: #f2fbf6; }
+.sm-ch-ten.n3 { background: var(--gold-l); color: #1f160d; box-shadow: inset 0 -3px 0 #c98a1e; }
+.sm-ch-nac { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.sm-ch-nac i { height: 20px; border: 2px solid var(--ink); background: var(--paper-3); display: flex; align-items: center; justify-content: center; font-style: normal; font-size: 13px; font-weight: 700; color: var(--muted); }
+.sm-ch-nac i.q { border-style: dashed; }
+.sm-ch-nac i.on.n0 { background: #a8402e; }
+.sm-ch-nac i.on.n1 { background: #e0a43a; }
+.sm-ch-nac i.on.n2 { background: var(--jade); }
+.sm-ch-nac i.on.n3 { background: var(--gold-l); box-shadow: inset 0 -4px 0 #c98a1e; }
+.sm-thuoc { position: relative; height: 22px; border: 2px solid var(--ink-dark); background: var(--paper-3); overflow: hidden; }
+.sm-thuoc span { position: absolute; top: 0; bottom: 0; display: block; }
+.sm-thuoc .ho { background: #f3b1a6; border-left: 3px solid #e5483a; border-right: 3px solid #e5483a; box-sizing: border-box; }
+.sm-thuoc .ta { left: 0; top: 5px; bottom: 5px; background: var(--chinh); }
+.sm-thuoc .vach { width: 3px; background: var(--ink-dark); margin-left: -1px; }
+.sm-thuoc-chu { font-size: 15px; font-variant-numeric: tabular-nums; }
+.sm-thuoc-chu small { color: var(--muted); }
+.sm-thuoc-chu .dau { display: inline-block; width: 10px; height: 10px; border: 2px solid var(--ink-dark); vertical-align: -1px; }
+.sm-thuoc-chu .dau.ta { background: var(--chinh); }
+.sm-thuoc-chu .dau.ho { background: #e5483a; }
+.sm-ch-can { font-size: 16px; font-weight: 700; color: #7a2a1a; background: #fff6e0; border: 2px solid #b07c28; padding: 6px 10px; }
