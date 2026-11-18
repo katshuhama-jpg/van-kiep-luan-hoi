@@ -206,3 +206,9 @@ p.sm-card { display: block; }
 .sm-ng-o > div { padding: 6px 8px; background: #fff6e0; border: 2px solid #d9c493; }
 .sm-ng-o dt { font-size: 13px; color: var(--muted); }
 .sm-ng-o dd { margin: 0; font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.sm-card.sm-bh { border-color: #3a7a5a; background: #e6f2e4; box-shadow: inset 4px 0 0 #3a7a5a; }
+.sm-bh-o { margin: 0; padding: 6px 8px; font-size: 15px; background: #e6f2e4; border: 2px solid #2f6b4a; color: #1f3a2a; }
+.sm-xep h3 { margin: 4px 0; }
+.sm-xep-o { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 6px; }
+.sm-xep-o .sm-btn span { display: flex; flex-direction: column; align-items: center; line-height: 1.2; }
+.sm-xep-o .sm-btn small { font-size: 12px; font-weight: 600; }

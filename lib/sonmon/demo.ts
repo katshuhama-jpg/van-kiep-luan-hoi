@@ -37,7 +37,8 @@ function map(withMine: boolean): SmMap {
     if (!withMine && chu === 1) chu = null;
     const ten = TEN_DAT[k] ?? `${O_A[(i * 7) % O_A.length]} ${O_B[(i * 5) % O_B.length]}`;
     const cd = ['1,0', '3,-1', '0,2', '-3,0', '2,3'].includes(k);
-    return [h.q, h.r, ten, coiCua(h), chu, cd, k === '0,2' ? null : k === '-4,1' ? at(200) : null];
+    // 18/11: môn 4 (Tử Lôi Phái) là môn mới, đang bảo hộ 41 giờ; ô -4,1 bảo hộ 3 giờ sau khi bị chiếm
+    return [h.q, h.r, ten, coiCua(h), chu, cd, chu === 4 ? at(41 * 60) : k === '-4,1' ? at(200) : null];
   });
   return {
     ky: { id: 1, bat_dau: at(-8 * 1440), ket_thuc: at(6 * 1440 + 200), ban_kinh: 6 },
@@ -85,7 +86,7 @@ function monState(vai: string): SmState {
     ...s,
     mon: {
       id: 1, ten: 'Thanh Hư Tông', ten1: 'Thanh', ten2: 'Hư', ten3: 'Tông', huy_hieu: 15, chinh_dien_hinh: 0,
-      dk_kiep: 5, dk_tuoi_dao: 2, mo_cua: true, du_ky: !cho, het_han_ky: at(cho ? 1100 : -5000), cam_co: !cho, so_ky: cho ? 1 : 2,
+      dk_kiep: 5, dk_tuoi_dao: 2, mo_cua: true, du_ky: !cho, het_han_ky: at(cho ? 1100 : -5000), cam_co: !cho, so_ky: cho ? 1 : 2, moi_bh_toi: cho ? null : at(30 * 60),
       n: cho ? 2 : 12, o: tiles.length, o_max: cho ? 1 : 5, kv_hom_nay: cho ? 3 : 24, kv_hom_qua: cho ? 0 : 33, kv_bonus: cho ? 0 : 0.1,
       chuc: vai === 'de' ? 'de' : 'chu', dung: cho ? null : [1, 0], tiles, don_cho: vai === 'de' ? null : cho ? 0 : 2,
     },
@@ -250,6 +251,8 @@ export function demoApi(vaiIn: string): SmApi {
         case 'leave':
           st = baseState('chua');
           return { ok: true };
+        case 'xep':
+          return { ok: true, di_toi: at(20) };
         default:
           return { ok: true };
       }

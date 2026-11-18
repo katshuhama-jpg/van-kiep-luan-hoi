@@ -7,8 +7,8 @@ import { track } from '@/lib/track';
 import type { SmBao, SmMember, SmState } from '@/lib/sonmon/api';
 import { capLc, SM_CFG, tranCau } from '@/lib/sonmon/data';
 import { HuyHieu } from './Pixel';
-import { chinhKhoa } from './SmMap';
-import { clock, fmtN, hhmm, Msg, truoc, useNow, type SmCtx } from './ui';
+import { bhConDu, chinhKhoa } from './SmMap';
+import { clock, fmtN, hhmm, mocGio, Msg, truoc, useNow, type SmCtx } from './ui';
 
 const vnGio = (t: number) => new Date(t + 7 * 3600e3).getUTCHours();
 const laDem = (t: number) => vnGio(t) >= SM_CFG.demTu && vnGio(t) < SM_CFG.demToi;
@@ -43,6 +43,7 @@ export function SmXuatChinh({ c }: { c: SmCtx }) {
   const m = st.mon!;
   const now = useNow();
   const [err, setErr] = useState<string | null>(null);
+  const [hoiBh, setHoiBh] = useState(false);
   const chinh = (st.chinh ?? [])[0] ?? null;
   const toi: [number, number] | null = chinh ? chinh.toi : c.target;
   if (!toi) {
@@ -83,7 +84,11 @@ export function SmXuatChinh({ c }: { c: SmCtx }) {
           : tranCau(ta, ho, lcTa);
   const khoa = !chinh && o ? chinhKhoa(st, o, now) : null;
 
+  // 18/11: môn ta đang bảo hộ môn mới mà đánh ô có chủ thì mất bảo hộ: hỏi lại trước
+  const bhTa = st.mon?.moi_bh_toi && new Date(st.mon.moi_bh_toi).getTime() > now ? st.mon.moi_bh_toi : null;
   const phat = async () => {
+    if (bhTa && chuO != null && !hoiBh) return setHoiBh(true);
+    setHoiBh(false);
     setErr(null);
     const e = await c.run({ fn: 'march', q: toi[0], r: toi[1] }, () => track('sm_march', { trong: chuO == null, trinh: !!trinh }));
     setErr(e);
@@ -147,6 +152,25 @@ export function SmXuatChinh({ c }: { c: SmCtx }) {
               {tr('PHÁT LỆNH XUẤT CHINH', 'ORDER THE MARCH')}
             </button>
             {khoa && <p className="sm-why">{khoa}</p>}
+            {!khoa && bhTa && chuO != null && (
+              <p className="sm-why">{tr(`Môn ta đang được bảo hộ (${bhConDu(bhTa, now)}). Đánh ô có chủ thì mất bảo hộ ngay.`, `We are protected (${bhConDu(bhTa, now)}). Attacking an owned tile ends it at once.`)}</p>
+            )}
+            {hoiBh && bhTa && (
+              <div className="sm-sheet" role="dialog" aria-modal="true" aria-label={tr('Mất bảo hộ?', 'Lose protection?')} onClick={() => setHoiBh(false)}>
+                <div onClick={(e) => e.stopPropagation()}>
+                  <h2>{tr('Bỏ bảo hộ để đánh?', 'Drop protection to attack?')}</h2>
+                  <p className="sm-card warn">
+                    {tr(`Môn ta còn được bảo hộ tới ${mocGio(bhTa, now)} (${bhConDu(bhTa, now)}). Phát lệnh đánh ô có chủ thì mất bảo hộ ngay, mọi môn đánh được ô của ta.`, `We are protected until ${mocGio(bhTa, now)}. Ordering an attack on an owned tile ends it now, and every sect can attack our tiles.`)}
+                  </p>
+                  <button className="sm-btn main wide" disabled={c.busy} onClick={phat}>
+                    {tr('Vẫn xuất chinh', 'March anyway')}
+                  </button>
+                  <button className="sm-btn sm-ghost wide" onClick={() => setHoiBh(false)}>
+                    {tr('Thôi, giữ bảo hộ', 'Keep protection')}
+                  </button>
+                </div>
+              </div>
+            )}
           </>
         ) : dangTap ? (
           chinh.ta_theo ? (

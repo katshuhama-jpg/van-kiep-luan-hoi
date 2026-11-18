@@ -5,10 +5,10 @@ import { useEffect, useState } from 'react';
 import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
 import type { SmMember, SmMonNguoi } from '@/lib/sonmon/api';
-import { oToiDa, SM_CFG } from '@/lib/sonmon/data';
+import { hexDist, oToiDa, SM_CFG } from '@/lib/sonmon/data';
 import { DkForm } from './SmFound';
 import { NguoiList, NguoiSheet } from './SmNguoi';
-import { chucTen, fmtN, Msg, type SmCtx, type SmDraft } from './ui';
+import { chucTen, fmtN, hhmm, Msg, type SmCtx, type SmDraft } from './ui';
 
 export function SmThanhVien({ c }: { c: SmCtx }) {
   const { st, members } = c;
@@ -39,7 +39,15 @@ export function SmThanhVien({ c }: { c: SmCtx }) {
     const cd = m.tiles.find((t) => t.cd);
     const d = x.dung ?? (cd ? [cd.q, cd.r] : null);
     const t = d && m.tiles.find((t) => t.q === d[0] && t.r === d[1]);
-    return t ? t.ten : '-';
+    if (t && x.di_toi && new Date(x.di_toi).getTime() > Date.now()) return tr(`đang đi tới ${t.ten} (tới ${hhmm(x.di_toi)})`, `walking to ${t.ten} (${hhmm(x.di_toi)})`);
+    return t ? tr(`giữ ${t.ten}`, `guards ${t.ten}`) : '-';
+  };
+  // 18/11: môn chủ xếp được mọi người; trưởng lão xếp được đệ tử và chính mình
+  const xepDuoc = (mb: SmMember) => m.chuc === 'chu' || (m.chuc === 'lao' && (mb.chuc === 'de' || mb.tk === toi));
+  const xep = async (mb: SmMember, q: number, r: number, ten: string) => {
+    const e = await c.run({ fn: 'xep', tk: mb.tk, q, r }, () => track('sm_xep', { la_ta: mb.tk === toi }));
+    setXem(null);
+    sau(e, tr(`${mb.ten} lên đường sang giữ ${ten}.`, `${mb.ten} is heading to ${ten}.`));
   };
   const sau = (r: string | null, msg: string) => {
     setErr(r);
@@ -99,7 +107,7 @@ export function SmThanhVien({ c }: { c: SmCtx }) {
         )}
         <p className="sm-note" style={{ padding: '4px 4px 0' }}>
           {tr('"Góp" là Khí vận góp hôm nay.', '"Gave" is fortune given today.')}
-          {tr(' Chạm một người để xem chân thân', ' Tap someone to see their true self')}{quyen ? tr(', đổi chức hoặc đuổi.', ', change rank or expel.') : '.'}
+          {tr(' Chạm một người để xem chân thân', ' Tap someone to see their true self')}{quyen ? tr(', xếp vào ô, đổi chức hoặc đuổi.', ', assign a tile, change rank or expel.') : '.'}
         </p>
       </section>
 
@@ -168,11 +176,39 @@ export function SmThanhVien({ c }: { c: SmCtx }) {
           {(() => {
             const mb = members?.ds.find((y) => y.tk === xem.tk);
             const bam = !!mb && mb.tk !== toi && (m.chuc === 'chu' || (m.chuc === 'lao' && mb.chuc === 'de'));
-            return bam ? (
-              <button className="sm-btn dark wide" onClick={() => (setXem(null), setAi(mb!))}>
-                {m.chuc === 'chu' ? tr('Đổi chức hoặc đuổi', 'Change rank or expel') : tr('Đuổi khỏi môn', 'Expel')}
-              </button>
-            ) : null;
+            const cd = m.tiles.find((t) => t.cd) ?? m.tiles[0];
+            const tu = mb ? (mb.dung ?? (cd ? [cd.q, cd.r] : null)) : null;
+            return (
+              <>
+                {mb && xepDuoc(mb) && m.tiles.length > 0 && (
+                  <section className="sm-xep" aria-label={tr('Xếp vào ô', 'Assign to a tile')}>
+                    <h3>{tr(`Xếp ${mb.ten} giữ ô`, `Assign ${mb.ten} to a tile`)}</h3>
+                    <p className="sm-note">{tr(`Đang ${tenO(mb)}. Sang ô khác mất ${SM_CFG.gio.diPhut} phút mỗi ô đường đi, trong lúc đi không giữ ô nào.`, `Now: ${tenO(mb)}. Moving takes ${SM_CFG.gio.diPhut} min per tile; nothing is guarded on the way.`)}</p>
+                    <div className="sm-xep-o">
+                      {m.tiles.map((t) => {
+                        const o = tu && tu[0] === t.q && tu[1] === t.r;
+                        const ph = tu ? SM_CFG.gio.diPhut * Math.max(1, hexDist({ q: tu[0], r: tu[1] }, t)) : SM_CFG.gio.diPhut;
+                        const n = members?.ds.filter((y) => !y.nghi && (y.dung ? y.dung[0] === t.q && y.dung[1] === t.r : t.cd)).length ?? 0;
+                        return (
+                          <button key={`${t.q},${t.r}`} className={`sm-btn small${o ? ' dark' : ''}`} disabled={c.busy || !!o || mb.nghi} onClick={() => xep(mb, t.q, t.r, t.ten)}>
+                            <span>
+                              {t.ten}
+                              {t.cd ? tr(' (chính điện)', ' (hall)') : ''}
+                              <small>{o ? tr('đang ở đây', 'here') : tr(`${n} người · đi ${ph} phút`, `${n} here · ${ph} min`)}</small>
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </section>
+                )}
+                {bam && (
+                  <button className="sm-btn dark wide" onClick={() => (setXem(null), setAi(mb!))}>
+                    {m.chuc === 'chu' ? tr('Đổi chức hoặc đuổi', 'Change rank or expel') : tr('Đuổi khỏi môn', 'Expel')}
+                  </button>
+                )}
+              </>
+            );
           })()}
         </NguoiSheet>
       )}

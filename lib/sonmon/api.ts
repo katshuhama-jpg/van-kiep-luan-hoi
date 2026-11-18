@@ -54,6 +54,10 @@ export type SmMonMine = {
   n: number; o: number; o_max: number;
   kv_hom_nay: number; kv_hom_qua: number; kv_bonus: number;
   chuc: SmChuc; dung: [number, number] | null;
+  /** 18/11: đang đi tới ô dung, tới lúc này (null: đã tới) */
+  di_toi?: string | null;
+  /** 18/11: môn mới được bảo hộ tới lúc này (48 giờ từ lúc cắm cờ; mất khi đánh ô có chủ) */
+  moi_bh_toi?: string | null;
   tiles: SmTileMine[];
   don_cho: number | null;
 };
@@ -94,7 +98,7 @@ export type SmMap = {
   mon: Record<string, { ten: string; huy_hieu: number }>;
   di: { mon: number; tu: [number, number]; toi: [number, number]; toi_noi_luc: string; trang_thai: string }[];
 };
-export type SmMember = { ten: string; tk: string; chuc: SmChuc; lc: number; dung: [number, number] | null; nghi: boolean; kv: number };
+export type SmMember = { ten: string; tk: string; chuc: SmChuc; lc: number; dung: [number, number] | null; nghi: boolean; kv: number; di_toi?: string | null };
 /** 18/11: người trong một môn, cho người chưa vào môn xem trước (vkl_sm_mon_ds) */
 export type SmMonNguoi = {
   ten: string; chuc: SmChuc; lc: number; ta?: boolean;
@@ -159,6 +163,7 @@ export type SmAct =
   | { fn: 'follow' | 'unfollow'; chinh: number }
   | { fn: 'accept'; don: number; nhan: boolean }
   | { fn: 'kick'; tk: string }
+  | { fn: 'xep'; tk: string; q: number; r: number }
   | { fn: 'role'; tk: string; chuc: 'lao' | 'de' }
   | { fn: 'set_dk'; dkKiep: number; dkNgay: number; moCua: boolean }
   | { fn: 'leave' | 'checkin' };
@@ -209,6 +214,8 @@ function args(a: SmAct): Record<string, unknown> {
       return { p_don: a.don, p_nhan: a.nhan };
     case 'kick':
       return { p_username: a.tk };
+    case 'xep':
+      return { p_username: a.tk, p_q: a.q, p_r: a.r };
     case 'role':
       return { p_username: a.tk, p_chuc: a.chuc };
     case 'set_dk':

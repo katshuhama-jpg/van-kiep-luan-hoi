@@ -7,7 +7,7 @@ import { track } from '@/lib/track';
 import type { SmMap, SmMapO, SmState } from '@/lib/sonmon/api';
 import { COI, HUY_MAU, hexDist, SM_CFG } from '@/lib/sonmon/data';
 import { HuyHieu } from './Pixel';
-import { DongMinh, fmtN, hhmm, Msg, truoc, useNow, type SmCtx } from './ui';
+import { DongMinh, fmtN, hhmm, mocGio, Msg, truoc, useNow, type SmCtx } from './ui';
 
 const S = 24; // bán kính ô (px)
 const W = Math.sqrt(3) * S;
@@ -23,6 +23,20 @@ const HEX_IN = Array.from({ length: 6 }, (_, i) => {
 const NEN: Record<string, string> = { thien: '#2e2850', hong_tran: '#2a2a40', u_minh: '#221b32' };
 // 18/11 (Tyler: ô có người khó nhìn): ô trống lùi vào nền tối; ô có môn giữ nền sáng pha màu huy hiệu, viền màu huy hiệu, quầng sáng, huy hiệu to hơn
 const VIEN_TRONG = '#2c2545';
+/** thời gian bảo hộ còn lại gọn để vẽ trên ô: "47g", "35p"; null nếu hết */
+export function bhCon(iso: string | null | undefined, now = Date.now()): string | null {
+  if (!iso) return null;
+  const ms = new Date(iso).getTime() - now;
+  if (ms <= 0) return null;
+  const h = Math.floor(ms / 3600e3);
+  return h >= 1 ? tr(`${h}g`, `${h}h`) : tr(`${Math.max(1, Math.ceil(ms / 60e3))}p`, `${Math.max(1, Math.ceil(ms / 60e3))}m`);
+}
+/** còn lại đầy đủ: "còn 45 giờ 12 phút" */
+export function bhConDu(iso: string, now = Date.now()): string {
+  const m = Math.max(1, Math.ceil((new Date(iso).getTime() - now) / 60e3));
+  const h = Math.floor(m / 60);
+  return h > 0 ? tr(`còn ${h} giờ ${m % 60} phút`, `${h}h ${m % 60}m left`) : tr(`còn ${m} phút`, `${m} min left`);
+}
 /** trộn màu a với b theo tỉ lệ t (0 = a, 1 = b) */
 function tron(a: string, b: string, t: number) {
   const n = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
@@ -142,8 +156,18 @@ export function HexMap({
             <g key={`${q},${r}`} transform={`translate(${p.x},${p.y})`} opacity={pickEmpty && !trong ? 0.45 : 1}>
               <polygon points={HEX} fill={trong ? NEN[coi] : tron(mau(chu), '#f3e6c4', 0.72)} stroke={stroke} strokeWidth={isSel || ta ? 3.5 : trong ? 1.5 : 3} />
               {ta && !isSel && <polygon points={HEX_IN} fill="none" stroke="#f2c14e" strokeWidth={2.5} />}
-              {bh && <polygon points={HEX_IN} fill="none" stroke={trong ? '#fff3dc' : '#3a2a14'} strokeWidth={1.2} strokeDasharray="2 2" />}
-              {!trong && <HuyHieu id={map.mon[String(chu)]?.huy_hieu ?? 0} size={30} x={-15} y={-14} label="" />}
+              {bhCon(bh) && !trong && <polygon points={HEX_IN} fill="none" stroke="#2f8a5a" strokeWidth={2.5} strokeDasharray="4 2" />}
+              {!trong && <HuyHieu id={map.mon[String(chu)]?.huy_hieu ?? 0} size={30} x={-15} y={bhCon(bh) ? -17 : -14} label="" />}
+              {/* 18/11: ô đang bảo hộ: nhãn xanh có khiên và thời gian còn lại */}
+              {bhCon(bh) && !trong && (
+                <g transform="translate(0, 12)">
+                  <rect x={-15} y={-5} width={30} height={11} fill="#2f6b4a" stroke="#0f2a1c" strokeWidth={1} />
+                  <path d="M-12 -3h5v3l-2.5 2l-2.5 -2z" fill="#c8f0d4" />
+                  <text x={4} y={3.5} textAnchor="middle" fontSize={8.5} fontWeight={700} fill="#ffffff" fontFamily="inherit">
+                    {bhCon(bh)}
+                  </text>
+                </g>
+              )}
               {cd && !trong && <rect x={-4} y={-S + 2} width={8} height={5} fill="#e8c35a" stroke="#1f160d" strokeWidth={1} />}
             </g>
           );
@@ -186,7 +210,7 @@ export function chinhKhoa(st: SmState, o: SmMapO, now: number): string | null {
       : tr(`Môn đã giữ đủ ${m.o_max} ô, tối đa của môn 15 người.`, `Your sect holds the maximum ${m.o_max} tiles.`);
   }
   if (gan(st, o[0], o[1]) !== 1) return tr('Chỉ xuất chinh tới ô kề lãnh thổ.', 'You can only march to a tile next to your land.');
-  if (o[6] && o[4] != null && new Date(o[6]).getTime() > now) return tr(`Ô đang được bảo hộ tới ${hhmm(o[6])}.`, `Protected until ${hhmm(o[6])}.`);
+  if (o[6] && o[4] != null && new Date(o[6]).getTime() > now) return tr(`Ô đang được bảo hộ tới ${mocGio(o[6], now)}.`, `Protected until ${mocGio(o[6], now)}.`);
   if ((st.chinh ?? []).length) return tr('Môn đang có một lệnh xuất chinh.', 'Your sect already has a march under way.');
   if (st.nghi_toi && new Date(st.nghi_toi).getTime() > now) return tr(`Ngươi đang nghỉ sau trận thua tới ${hhmm(st.nghi_toi)}.`, `You rest after a defeat until ${hhmm(st.nghi_toi)}.`);
   return null;
@@ -236,6 +260,10 @@ function SmBanDoXem({ c }: { c: SmCtx }) {
         <span>
           <i className="sm-sw" style={{ borderColor: '#2c2545', background: '#221b32' }} />
           {tr('ô trống', 'empty')}
+        </span>
+        <span>
+          <i className="sm-sw" style={{ borderColor: '#2f8a5a', borderStyle: 'dashed', background: '#2f6b4a' }} />
+          {tr('đang bảo hộ (số giờ còn lại)', 'protected (hours left)')}
         </span>
       </div>
       {sel ? (
@@ -296,6 +324,10 @@ function SmBanDoMon({ c }: { c: SmCtx }) {
           <i className="sm-sw" style={{ borderColor: '#2c2545', background: '#221b32' }} />
           {tr('ô trống', 'empty')}
         </span>
+        <span>
+          <i className="sm-sw" style={{ borderColor: '#2f8a5a', borderStyle: 'dashed', background: '#2f6b4a' }} />
+          {tr('đang bảo hộ (số giờ còn lại)', 'protected (hours left)')}
+        </span>
       </div>
       <Msg err={err} ok={ok} />
       {sel ? <OInfo c={c} o={sel} now={now} setErr={setErr} setOk={setOk} /> : <p className="sm-card">{tr('Chạm một ô để xem tên, chủ ô và trinh sát.', 'Tap a tile to see its name, owner and scouting.')}</p>}
@@ -316,6 +348,11 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
   const phut = SM_CFG.gio.trinhPhut * Math.max(1, d ?? 1);
   const khoa = ta ? null : chinhKhoa(st, o, now);
   const dangDung = m.dung ? m.dung[0] === q && m.dung[1] === r : !!m.tiles.find((t) => t.cd && t.q === q && t.r === r);
+  // 18/11: sang ô khác mất 20 phút mỗi ô, tính từ ô đang đứng (chưa chọn: chính điện)
+  const cdT = m.tiles.find((t) => t.cd) ?? m.tiles[0];
+  const tu = m.dung ?? (cdT ? [cdT.q, cdT.r] : null);
+  const diPhut = tu ? SM_CFG.gio.diPhut * Math.max(1, hexDist({ q: tu[0], r: tu[1] }, { q, r })) : SM_CFG.gio.diPhut;
+  const dangDi = dangDung && m.di_toi && new Date(m.di_toi).getTime() > now;
   return (
     <section className="sm-card">
       <div className="sm-row">
@@ -331,7 +368,13 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
           </p>
         </div>
       </div>
-      {bh && new Date(bh).getTime() > now && <p className="sm-note">{tr(`Bảo hộ tới ${hhmm(bh)}, chưa ai đánh được.`, `Protected until ${hhmm(bh)}.`)}</p>}
+      {bh && chu != null && new Date(bh).getTime() > now && (
+        <p className="sm-bh-o">
+          <b>{tr('Đang được bảo hộ', 'Protected')}</b> · {bhConDu(bh, now)}
+          <br />
+          {tr(`Tới ${mocGio(bh, now)}, chưa môn nào đánh được ô này.`, `Until ${mocGio(bh, now)}; no sect can attack this tile.`)}
+        </p>
+      )}
       {!ta && (
         <p style={{ fontSize: 15 }}>
           {dangTrinh
@@ -348,18 +391,22 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
       )}
       {ta ? (
         dangDung ? (
-          <p className="sm-ok">{tr('Ngươi đang đứng giữ ô này.', 'You are guarding this tile.')}</p>
+          dangDi ? (
+            <p className="sm-ok">{tr(`Ngươi đang đi tới ô này, tới lúc ${hhmm(m.di_toi!)}. Trong lúc đi chưa giữ ô nào.`, `On your way here, arriving ${hhmm(m.di_toi!)}. You guard nothing on the way.`)}</p>
+          ) : (
+            <p className="sm-ok">{tr('Ngươi đang đứng giữ ô này.', 'You are guarding this tile.')}</p>
+          )
         ) : (
           <button
             className="sm-btn main wide"
             disabled={c.busy}
             onClick={async () => {
-              const e = await c.run({ fn: 'guard', q, r }, () => track('sm_guard', { from: 'ban_do' }));
+              const e = await c.run({ fn: 'guard', q, r }, () => track('sm_guard', { from: 'ban_do', phut: diPhut }));
               setErr(e);
-              if (!e) setOk(tr(`Ngươi sang đứng giữ ${ten}.`, `You now guard ${ten}.`));
+              if (!e) setOk(tr(`Ngươi lên đường sang giữ ${ten}, ${diPhut} phút nữa tới. Trong lúc đi chưa giữ ô nào.`, `Heading to ${ten}, arriving in ${diPhut} min. You guard nothing on the way.`));
             }}
           >
-            {tr(`Đứng giữ ${ten}`, `Guard ${ten}`)}
+            {tr(`Sang giữ ${ten} · đi ${diPhut} phút`, `Guard ${ten} · ${diPhut} min walk`)}
           </button>
         )
       ) : (
@@ -381,6 +428,9 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
             </button>
           </div>
           {khoa && <p className="sm-why">{khoa}</p>}
+          {!khoa && chu != null && m.moi_bh_toi && new Date(m.moi_bh_toi).getTime() > now && (
+            <p className="sm-why">{tr('Môn ta đang được bảo hộ môn mới. Xuất chinh vào ô có chủ thì mất bảo hộ ngay.', 'Our sect is under new-sect protection. Marching on an owned tile ends it at once.')}</p>
+          )}
         </>
       )}
     </section>

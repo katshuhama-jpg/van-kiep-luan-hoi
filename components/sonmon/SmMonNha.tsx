@@ -8,7 +8,7 @@ import { track } from '@/lib/track';
 import { nvChu, SM_CFG } from '@/lib/sonmon/data';
 import { ChinhDien, ChuoiO, HuyHieu } from './Pixel';
 import { SmBaCau } from './SmLuat';
-import { chucTen, clock, DongMinh, fmtN, Msg, useNow, type SmCtx } from './ui';
+import { chucTen, clock, DongMinh, fmtN, mocGio, Msg, useNow, type SmCtx } from './ui';
 
 const CANH: Record<number, string> = { 0: '-', 1: 'Luyện Khí', 2: 'Trúc Cơ', 3: 'Kim Đan', 4: 'Nguyên Anh', 5: 'Hóa Thần' };
 const CANH_EN: Record<number, string> = { 0: '-', 1: 'Qi Refining', 2: 'Foundation', 3: 'Golden Core', 4: 'Nascent Soul', 5: 'Spirit' };
@@ -83,6 +83,13 @@ export function SmMonNha({ c }: { c: SmCtx }) {
           </button>
         </div>
       </section>
+
+      {m.moi_bh_toi && new Date(m.moi_bh_toi).getTime() > now && (
+        <section className="sm-card sm-bh">
+          <b>{tr(`Môn mới được bảo hộ tới ${mocGio(m.moi_bh_toi, now)}`, `New-sect protection until ${mocGio(m.moi_bh_toi, now)}`)}</b>
+          <p style={{ fontSize: 15 }}>{tr('Không môn nào đánh được ô của môn ta. Chiếm ô trống vẫn giữ bảo hộ; xuất chinh vào ô có chủ thì mất bảo hộ ngay.', 'No sect can attack our tiles. Taking empty tiles keeps it; marching on an owned tile ends it at once.')}</p>
+        </section>
+      )}
 
       {!m.du_ky && (
         <section className="sm-card warn">
