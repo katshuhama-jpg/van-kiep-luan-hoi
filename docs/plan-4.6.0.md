@@ -288,6 +288,25 @@ Lên bản: 2026-11-18. Bật cờ `SON_MON_ON`, có cáo thị 4.6.0.
   - Tyler tự chạy 2 migration trong SQL Editor lúc ~08:30 18/11 (file gộp). Đã kiểm: 3 môn được bảo hộ (Huyền Hư Cung tới 05:13, Vô Hư Cốc 05:40, môn 4 tới 08:05 ngày 20/11), ô các môn nâng bảo hộ đúng; xếp người đi 20 phút và không tính giữ trong lúc đi; mất bảo hộ thì bảo hộ ô bỏ đúng (thử trong giao dịch rồi hủy). Trước đó: Supabase hỏi xác nhận 2 lần nhưng câu hỏi không tới Tyler. Tyler bảo đẩy luôn: giao diện đã lên `main` nhưng tự nhận máy chủ cũ (state chưa có khóa `moi_bh_toi` / `di_toi` thì giữ giao diện cũ, ẩn nút xếp ô, ẩn 2 câu luật mới). Áp 2 migration xong là tính năng tự hiện, không cần lên bản lại.
 - Tyler 18/11 ~08:40: bảo hộ ô giảm dần theo thứ tự mở (chia đôi): ô cắm cờ 48 giờ, ô 2: 24 giờ, ô 3: 12 giờ, ô 4: 6 giờ, từ ô 5: không; tính từ lúc chiếm, không quá mốc 48 giờ của môn. SQL `supabase/son_mon_bao_ho_giam_2026_11_18.sql` (thay trigger `sm_tile_bh`, `sm_mon_bh_o`, tính lại ô đã chiếm). Supabase MCP hỏi xác nhận không tới Tyler nên Tyler tự chạy file trong SQL Editor.
 
+## Ngày 8a - Phần thưởng Sơn Môn: pháp bảo theo hạng môn và đóng góp
+Lên bản: 2026-11-19. Có cáo thị: thêm dòng vào 4.6.0 ("Phần thưởng Kỷ 1"). LÀM KHỐI NÀY TRƯỚC các việc còn dở của Ngày 8 (Tyler muốn lên sáng 19/11).
+Tyler chốt 18/11: top 3 môn có đồ xịn theo hạng; top 7 người đóng góp trong môn có đồ theo đóng góp; môn chủ 2 đồ, còn lại 1 đồ; đồ mặc vào tăng Lực chiến. Claude chốt logic (game-design balance-review, product brainstorm):
+- **Hai loại đồ, hai ô mặc** (trang Chân thân, mục "Pháp bảo Sơn Môn"):
+  - **Pháp khí đóng góp:** top 7 người đóng góp của MỖI môn đủ điều kiện nhận 1 món. Phẩm theo hạng môn: hạng 1 Thần phẩm, hạng 2 Tiên phẩm, hạng 3 Linh phẩm, hạng 4-10 Bảo phẩm, còn lại Phàm phẩm. Hình: kiếm / quạt / chuông / hồ lô (ngẫu nhiên, chỉ là hình).
+  - **Chưởng Môn Ấn:** môn chủ lúc kết Kỷ nhận thêm 1 ấn cùng phẩm với hạng môn. Môn chủ lọt top 7 thì có 2 món; không lọt top 7 (môn chủ vắng) thì chỉ có ấn.
+- **Sức mạnh (chỉ Lực chiến Sơn Môn, không đụng trận trong kiếp):** Thần +12%, Tiên +9%, Linh +7%, Bảo +4%, Phàm +2%. Người đóng góp hạng 1 trong môn thêm +3%, hạng 2-3 thêm +2%. Tổng 2 món tối đa +25%. Phần cộng tính SAU trần 6.000 mỗi người (trần vẫn giữ, người mạnh không vượt quá xa).
+- **Chống lăn cầu tuyết:** đồ chỉ có sức mạnh trong **Kỷ kế tiếp** (đồ Kỷ 1 mạnh trong Kỷ 2), hết Kỷ đó thành đồ ngắm (giữ hình, tên khắc "Kỷ 1"). Mỗi người mặc tối đa 1 pháp khí + 1 ấn. Môn hạng 1 Kỷ 1 mạnh hơn khoảng 10-15% ở Kỷ 2, vẫn thua được môn đông và chăm (mô phỏng phải xác nhận).
+- **Đóng góp (điểm Công, tính theo người, trong môn đang ở lúc kết Kỷ):** điểm danh +1; nhiệm vụ ngày +2/+3/+5 (đúng Khí vận đã góp); khai hoang +3; theo xuất chinh +3 (thắng thêm +3); đứng giữ ô của môn (không nghỉ, không đi đường) +1 mỗi 6 giờ. Trần 20 Công mỗi ngày. Tính lại được từ dữ liệu có sẵn (`vkl_sm_diem_danh`, `vkl_sm_nv`, `vkl_sm_bao` khai hoang có 'nguoi', `vkl_sm_chinh_theo`) từ 18/11; phần đứng giữ đếm từ cron mỗi giờ (bắt đầu từ lúc lên bản).
+- **Điều kiện nhận (chống gian lận, chống nhảy môn):** môn còn tồn tại lúc kết Kỷ, đủ chữ ký, có ít nhất 3 người; người nhận ở trong môn ít nhất 3 ngày trước lúc kết Kỷ, tài khoản từ 7 ngày tuổi, Công từ 10 trở lên. Từ 21:00 ngày 29/11 khóa danh sách: vào môn sau mốc này không được tính. Tài khoản bị `lives_guard` gắn cờ thì không nhận.
+- **Phát thưởng:** tự động lúc kết Kỷ (hàm mới gọi sau `sm_ket_ky`), có thư trong game báo đã nhận; đồ nằm trong tủ, người chơi tự bấm mặc.
+- [ ] Máy chủ (hàm MỚI, không sửa hàm cũ): bảng `vkl_sm_cong` (ky_id, player_id, mon_id, ngay, cong) hoặc view tính từ dữ liệu sẵn có + bảng đứng giữ; `vkl_sm_cong_bang(token)` trả bảng Công của môn mình (top 7 sáng lên, hạng mình); bảng `vkl_sm_bao_vat` (id, player_id, ky_id, loai 'phap_khi'|'an', pham, them_pct, hinh, mac, luc); `vkl_sm_bao_vat_ds(token)`, `vkl_sm_bao_vat_mac(token, id)`; `vkl_priv.sm_phat_thuong(ky_id)` (phát đúng luật trên, chạy được nhiều lần không phát trùng); cron đứng giữ mỗi giờ.
+- [ ] Giao diện: màn "Phần thưởng Kỷ" (mở từ thẻ môn và Xếp hạng Kỷ): 5 phẩm với hình pixel và % sức mạnh, dòng "Nếu Kỷ kết thúc bây giờ, ngươi nhận: ..." theo hạng môn và hạng Công hiện tại; mục "Công đóng góp" trong tab Thành viên (top 7 viền vàng, mình được làm nổi). Trang Chân thân: 2 ô Pháp bảo Sơn Môn (trống thì ghi "Kết Kỷ 1 (21:00 1/12) nhận"). Thẻ Lãnh thổ ở môn nhà thêm một dòng "Ngươi đang hạng N Công trong môn".
+- [ ] Hình pixel 5 phẩm (viền: Phàm xám, Bảo xanh, Linh tím, Tiên vàng, Thần đỏ có ánh) cho kiếm, quạt, chuông, hồ lô, ấn. Chỉ pixel, không gradient.
+- [ ] Tác dụng trong trận: làm sẵn hàm tính Lực chiến có pháp bảo (`vkl_priv.sm_lc_bv`) nhưng CHỈ nối vào trận từ Kỷ 2 (khối Ngày 11). Kỷ 1 không đổi trận.
+- [ ] Mô phỏng `scripts/sim-son-mon.ts`: phân bố Công theo người (dữ liệu 18/11), bao nhiêu người đủ 10 Công; Kỷ 2 môn có đồ Thần vs môn không đồ cùng cỡ thắng bao nhiêu %. Ghi số.
+- [ ] Luật Sơn Môn thêm câu "Phần thưởng Kỷ là gì?"; humanizer cho chữ; smoke-son-mon thêm màn Phần thưởng và bảng Công.
+- Ghi chú:
+
 ## Ngày 8 - Khai hoang, bản đồ to, hướng dẫn người trong môn
 Lên bản: 2026-11-19. Cáo thị: thêm dòng vào 4.6.0 (đã có dòng Khai hoang + bản đồ).
 Lý do (số 18/11 chiều): 11 môn, 69 người, 18/127 ô có chủ, 8 xuất chinh đều tới ô trống, 0 trận giữa môn; 2 môn 15 người chỉ giữ 1 ô vì tưởng mở rộng là phải đánh. Chi tiết: docs/brainstorm-son-mon-ky1.md.
@@ -327,6 +346,12 @@ Lên bản: 2026-11-21. Bật cờ `SM_DAT_ON` lúc 5:00 21/11 (điểm bắt đ
 - [ ] Luật Sơn Môn: thêm câu hỏi "Điểm giữ đất là gì?", "Yêu thú là gì?", "Sao không đánh được môn kia?"; thẻ 3 câu đổi câu 3: "Hết Kỷ, môn nhiều Điểm giữ đất nhất thắng".
 - [ ] uiux-pro-max + humanizer cho mọi màn mới; `smoke-son-mon` thêm màn Linh Mạch, yêu thú, ô ngoài dải.
 - [ ] Bài đăng Page + Group cho Tyler tự đăng (không tự đăng): "Từ hôm nay đất có giá".
+- Ghi chú:
+
+## Ngày 11 - Pháp bảo Sơn Môn có tác dụng trong trận (Kỷ 2)
+Lên bản: 2026-12-01. Không cáo thị riêng (đã báo ở 8a).
+- [ ] Nối `vkl_priv.sm_lc_bv` vào tính trận và lực giữ (hàm mới thay thế cho Kỷ 2, Kỷ 1 đã kết giữ nguyên). Chạy `sm_phat_thuong(1)` lúc kết Kỷ 1 (21:00 1/12) và kiểm tra ai nhận gì, gửi Tyler danh sách.
+- [ ] Tạo Kỷ 2 (từ 2/12) theo luật đã chốt ở Ngày 9-10.
 - Ghi chú:
 
 ## Ngoài game (Tyler tự làm)
