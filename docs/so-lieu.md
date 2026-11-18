@@ -70,3 +70,8 @@ select count(*) filter (where n_all = 0) k0, count(*) filter (where n_all = 1) k
   round(100.0 * avg((n14 >= 31)::int) filter (where created_at < now() - interval '14 day'), 1) du31_14n
 from c;
 ```
+
+## Hiệu năng và chi phí (mỗi đêm)
+
+| Ngày | Chi phí 24h | 3 câu tốn nhất | Đã sửa | Trước / sau |
+|---|---|---|---|---|
