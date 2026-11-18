@@ -111,6 +111,15 @@ export type SmMonNguoi = {
   phan?: Partial<SmLcPhan> | null;
 };
 export type SmMembers = { ds: SmMember[]; don: { id: number; ten: string; lc: number; luc: string }[] | null };
+/** 18/11 tối: cơ hội thắng một ô (vkl_sm_co_hoi). nguon 'trinh': có trinh sát 1 giờ qua; 'uoc': mức thô có nhiễu. */
+export type SmCoHoi = {
+  trong?: boolean; cua_ta?: boolean;
+  nguon?: 'trinh' | 'uoc' | 'chua';
+  ta?: number; n_ta?: number; avg?: number;
+  giu?: number; lo?: number; hi?: number | null; n?: number; trinh_luc?: string;
+  muc?: number; n_muc?: number; trinh_ve?: string | null;
+  dem?: boolean; toi?: string;
+};
 export type SmRankRow = { id: number; ten: string; huy_hieu: number; o: number; kv: number; n: number };
 
 // ---------- Lỗi ----------
@@ -159,8 +168,8 @@ const codeOf = (msg: string) => (msg.match(/SM_[A-Z_]+/) ?? ['SM_NET'])[0];
 export type SmAct =
   | { fn: 'found'; ten: [string, string, string]; huy: number; cd: number; dkKiep: number; dkNgay: number; moCua: boolean }
   | { fn: 'cosign' | 'join' | 'apply'; mon: number }
-  | { fn: 'pick_tile' | 'guard' | 'scout' | 'march' | 'khai_hoang'; q: number; r: number }
-  | { fn: 'follow' | 'unfollow'; chinh: number }
+  | { fn: 'pick_tile' | 'guard' | 'scout' | 'march' | 'march_tt' | 'khai_hoang'; q: number; r: number }
+  | { fn: 'follow' | 'unfollow' | 'rut_quan'; chinh: number }
   | { fn: 'accept'; don: number; nhan: boolean }
   | { fn: 'kick'; tk: string }
   | { fn: 'xep'; tk: string; q: number; r: number }
@@ -191,6 +200,8 @@ export interface SmApi {
   chatReport(id: number): Promise<{ so_bao: number; an: boolean }>;
   /** id môn sư phụ đang ở (Sư Đồ), null nếu không có */
   suMon(): Promise<number | null>;
+  /** 18/11 tối: cơ hội thắng một ô (null nếu máy chủ chưa có hàm hay lỗi) */
+  coHoi(q: number, r: number): Promise<SmCoHoi | null>;
   act(a: SmAct): Promise<Record<string, unknown>>;
 }
 
@@ -206,10 +217,12 @@ function args(a: SmAct): Record<string, unknown> {
     case 'guard':
     case 'scout':
     case 'march':
+    case 'march_tt':
     case 'khai_hoang':
       return { p_q: a.q, p_r: a.r };
     case 'follow':
     case 'unfollow':
+    case 'rut_quan':
       return { p_chinh: a.chinh };
     case 'accept':
       return { p_don: a.don, p_nhan: a.nhan };
@@ -288,6 +301,7 @@ export function realApi(): SmApi {
       if (!r.ok) throw new SmErr(r.status === 404 ? 'SM_CHUA_MO' : 'SM_NET');
       return (await r.json()) as SmMap;
     },
+    coHoi: (q, r) => rpc<SmCoHoi>('vkl_sm_co_hoi', { p_q: q, p_r: r }, true, true).catch(() => null),
     act: (a) => rpc<Record<string, unknown>>(`vkl_sm_${a.fn}`, args(a)),
   };
 }

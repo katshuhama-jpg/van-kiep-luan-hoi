@@ -211,6 +211,13 @@ export function demoApi(vaiIn: string): SmApi {
           })),
       );
     },
+    coHoi: (q, r) => {
+      const tr = (st.trinh ?? []).find((t) => t.o[0] === q && t.o[1] === r && t.ket_qua && !t.ket_qua.trong);
+      const ta = (st.chinh?.[0]?.theo ?? []).reduce((s, x) => s + x.lc, 0) || (st.lc ?? 0);
+      if (!tr?.ket_qua) return wait({ nguon: 'chua' as const, ta, n_ta: st.chinh?.[0]?.n ?? 1, avg: 2000, trinh_ve: at(6) });
+      const giu = (tr.ket_qua.lc ?? 0) * 1.1;
+      return wait({ nguon: 'trinh' as const, ta, n_ta: st.chinh?.[0]?.n ?? 1, avg: 2000, giu, lo: giu / 1.15, hi: giu / 0.85, n: tr.ket_qua.n, trinh_luc: tr.xong_luc });
+    },
     act: async (a: SmAct) => {
       await wait(null);
       const m = st.mon;
