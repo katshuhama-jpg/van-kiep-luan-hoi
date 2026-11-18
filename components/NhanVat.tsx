@@ -5,7 +5,10 @@
  * ô đồ hai bên (Mũ, Quần áo, Phụ kiện bên trái; Vũ khí, Cánh, Ngoại trang bên phải), lực chiến dưới chân, tab con chia đồ như Túi đồ.
  * Đồ và áo chỉ để ngắm. Công pháp chân thân để trống chờ bản sau.
  */
-import { useMemo, useState, type ReactNode } from 'react';
+import Link from 'next/link';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { SON_MON_ON } from '@/lib/flags';
+import { realApi } from '@/lib/sonmon/api';
 import type { ChanThanLook, Meta } from '@/lib/game/types';
 import { ctRobeLayers, type CtOutfit } from '@/lib/game/chanThan';
 import { CT_GEAR, CT_GEAR_ON, ctGearOf, ctNgoaiId, ctNgoaiList, ctPower, type CtGearItem, type CtGearSlot } from '@/lib/game/ctGear';
@@ -56,7 +59,28 @@ export function GearIcon({ g, size }: { g: CtGearItem; size: number }) {
   return <LpcCropIcon id={`ct-g-${g.id}`} layers={[...(g.back ?? []), ...(g.front ?? [])]} size={size} crop={g.crop ?? GEAR_CROP[g.slot]} />;
 }
 
-/** ngọn lửa pixel 13x13 cạnh số lực chiến */
+/** 18/11: Lực chiến Sơn Môn (máy chủ tính, dùng trong trận Sơn Môn) để người chơi khỏi nhầm với Tu vi */
+function SmLcLine() {
+  const [lc, setLc] = useState<number | null>(null);
+  useEffect(() => {
+    let live = true;
+    const api = realApi();
+    if (api.linked) api.state().then((s) => live && setLc(s.lc ?? 0), () => {});
+    return () => {
+      live = false;
+    };
+  }, []);
+  return (
+    <p className="nv-sm-lc">
+      {lc != null
+        ? tr(`Lực chiến Sơn Môn: ${fmt(lc)}. Đây là số khác, tính theo các kiếp đã chơi (năm sống, cảnh giới, kết cục, ngày chơi, huyệt), dùng khi đánh chiếm đất.`, `Sect power: ${fmt(lc)}. A separate number from your lives played, used in sect battles.`)
+        : tr('Lực chiến Sơn Môn là số khác, tính theo các kiếp đã chơi, xem ở tab Sơn Môn.', 'Sect power is a separate number, see the Sects tab.')}{' '}
+      <Link href="/son-mon">{tr('Xem', 'See')}</Link>
+    </p>
+  );
+}
+
+/** ngọn lửa pixel 13x13 cạnh số tu vi */
 const pxPath = (rows: string[]) => rows.flatMap((r, y) => [...r].map((c, x) => (c === '#' ? `M${x} ${y}h1v1h-1z` : ''))).join('');
 const FLAME_OUT = pxPath(['......#......', '.....##......', '.....###.....', '....####.....', '...######.#..', '..#########..', '..##########.', '.###########.', '.###########.', '.###########.', '..#########..', '...#######...', '.....###.....']);
 const FLAME_IN = pxPath(['.............', '.............', '.............', '.............', '......#......', '.....###.....', '....####.....', '....#####....', '...#######...', '...#######...', '....#####....', '.....###.....', '.............']);
@@ -118,13 +142,13 @@ export function NhanVatStage({ ct, meta, ext, onSlot, active }: { ct: ChanThanLo
           </div>
         )}
       </div>
-      <button className="nv-power" onClick={() => (setTt(false), setWhy((v) => !v), track('ct_power_open', { lc: p.total }))} aria-expanded={why} aria-label={tr(`Lực chiến ${fmt(p.total)}, chạm xem cách tính`, `Power ${fmt(p.total)}, tap to see how it is counted`)}>
+      <button className="nv-power" onClick={() => (setTt(false), setWhy((v) => !v), track('ct_power_open', { lc: p.total }))} aria-expanded={why} aria-label={tr(`Tu vi ${fmt(p.total)}, chạm xem cách tính`, `Cultivation ${fmt(p.total)}, tap to see how it is counted`)}>
         <span className="nv-pw-in">
           <svg className="nv-pw-ic" width="26" height="26" viewBox="0 0 13 13" aria-hidden="true" shapeRendering="crispEdges">
             <path d={FLAME_OUT} fill="#a8202a" />
             <path d={FLAME_IN} fill="#ffd36b" />
           </svg>
-          <small className="nv-pw-lbl">{tr('Lực chiến', 'Power')}</small>
+          <small className="nv-pw-lbl">{tr('Tu vi', 'Cultivation')}</small>
           <b className="nv-pw-n">{fmt(p.total)}</b>
           <i className={`nv-pw-go${why ? ' up' : ''}`} aria-hidden="true">
             <svg width="24" height="24" viewBox="0 0 9 9" shapeRendering="crispEdges">
@@ -134,7 +158,7 @@ export function NhanVatStage({ ct, meta, ext, onSlot, active }: { ct: ChanThanLo
         </span>
       </button>
       {why && (
-        <div className="nv-why2" role="region" aria-label={tr('Lực chiến tính thế nào', 'How power is counted')}>
+        <div className="nv-why2" role="region" aria-label={tr('Tu vi tính thế nào', 'How cultivation is counted')}>
           <ul>
             <li>
               <span>{tr('Gốc', 'Base')}</span>
@@ -149,7 +173,8 @@ export function NhanVatStage({ ct, meta, ext, onSlot, active }: { ct: ChanThanLo
               </li>
             ))}
           </ul>
-          <small>{tr('Tăng khi khai huyệt, ngộ đạo, mở thêm đồ và sống thêm kiếp. Chưa dùng trong Lôi đài.', 'Grows as you open points, attain Daos, unlock gear and live more lives. Not used in the Arena yet.')}</small>
+          <small>{tr('Tu vi tăng khi khai huyệt, ngộ đạo, mở thêm đồ và sống thêm kiếp. Chưa dùng trong Lôi đài.', 'Cultivation grows as you open points, attain Daos, unlock gear and live more lives. Not used in the Arena yet.')}</small>
+          {SON_MON_ON && <SmLcLine />}
         </div>
       )}
     </>
