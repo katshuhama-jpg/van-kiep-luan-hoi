@@ -328,6 +328,26 @@ Lý do (số 18/11 chiều): 11 môn, 69 người, 18/127 ô có chủ, 8 xuất
 - [ ] Câu dẫn khi khai hoang theo cõi (story-writing, humanizer), hiện trong thông báo thành công, mỗi cõi 3 câu, chọn ngẫu nhiên.
 - Ghi chú:
 
+## Ngày 8c - Đánh không cần đoán: ước lượng lực giữ, cơ hội thắng, tự trinh sát, rút quân
+Lên bản: 2026-11-20. Có cáo thị: thêm dòng vào 4.6.0. KHÔNG giấu sau cờ (sửa trải nghiệm Kỷ 1 đang chạy).
+Tyler hỏi 18/11: có người không trinh sát mà đánh luôn, thì sao biết cần bao nhiêu người theo để thắng. Claude chốt (game-design balance-review + game-ux-review, gamedev game-ui-ux):
+- **Vấn đề:** ô môn khác ghi "Lực giữ ???". Đánh mù mà thua thì mọi người theo nghỉ 2 giờ, nên người chơi hoặc kéo cả môn (bỏ trống nhà) hoặc không dám đánh. Trinh sát là bước thêm mà nhiều người bỏ qua.
+- **1. Ước lượng thô, ai cũng thấy, không cần trinh sát:** ô có chủ ghi mức "Lực giữ: Yếu (dưới 3.000) / Vừa (3.000-8.000) / Mạnh (8.000-15.000) / Rất mạnh (trên 15.000)", kèm số người đang giữ ghi "khoảng". Máy chủ tính từ lực giữ thật có cộng nhiễu ±35% cố định theo ô và theo giờ (không dò ra số thật bằng cách bấm lại). Mức này đã gồm sân nhà, Khí vận, ban đêm, còn 1 ô. Trinh sát vẫn có ích: ra số gần đúng (±15%) và số người thật.
+- **2. Tự trinh sát khi phát lệnh:** môn chủ xuất chinh vào ô chưa trinh sát trong 1 giờ qua thì máy chủ tự gửi một chuyến trinh sát song song, không tốn lượt của ai. Ô cách 1-3 bước thì kết quả về trước khi hết 30 phút tập hợp; xa hơn thì ghi "trinh sát về lúc HH:MM, sau giờ xuất phát".
+- **3. Thanh "Cơ hội thắng" ở màn tập hợp:** cập nhật mỗi khi có người bấm Theo. So lực tấn công hiện có (biết chính xác, đã nhân Khí vận) với lực giữ ước tính:
+  - Có số trinh sát: "Đang có 4.200 / cần khoảng 5.800. Thêm khoảng 1.600 Lực chiến (1-2 người)". Mức: Thấp / Ngang ngửa / Cao / Gần như chắc thắng (vượt cả mức trên của sai số +15%).
+  - Chỉ có mức thô: so với cả khoảng, ghi "Chưa rõ, đang chờ trinh sát" nếu khoảng phủ cả thắng lẫn thua.
+  - Màn tập hợp ghi thêm "Người theo bỏ ô đang giữ. Ô X còn N người giữ" để môn chủ không kéo hết người đi.
+  - Thẻ xuất chinh ở môn nhà và tin Truyền âm hệ thống hiện "cần thêm khoảng X" để người online bấm Theo đúng lúc.
+- **4. Rút quân:** trong lúc tập hợp, môn chủ hoặc trưởng lão bấm "Rút quân", hủy lệnh, không ai bị nghỉ, không mất gì. Đã xuất phát (đi 20 phút) thì không rút được. Chiến báo ghi "X rút quân".
+- **5. Nói rõ sai lệch lúc tới:** lực giữ có thể đổi trong 20 phút đi đường (bên kia gọi người về giữ). Chiến báo ghi lực giữ lúc tới và "lúc trinh sát là ...", để thua không thấy bị lừa.
+- Không đổi luật trận, không đổi số nhân. Không tiết lộ số thật cho người chưa trinh sát.
+- [ ] Máy chủ (hàm MỚI, không sửa hàm cũ; khớp với `vkl_sm_march2` của Ngày 9 nếu làm cùng): `vkl_priv.sm_uoc(ky, q, r)` trả mức thô (nhiễu băm theo ô + giờ); `vkl_sm_map2` hoặc RPC riêng `vkl_sm_uoc_o(token, q, r)` trả mức cho ô có chủ; `vkl_sm_march_tt(token, q, r)` = xuất chinh + tự trinh sát; `vkl_sm_co_hoi(token, chinh_id)` trả lực đang có, ước tính, mức cơ hội, số cần thêm; `vkl_sm_rut_quan(token, chinh_id)` (chỉ khi 'tap_hop', chuc chủ/lão, đặt 'huy' ly_do 'rut_quan', ghi chiến báo).
+- [ ] Giao diện: mức thô trên thẻ ô (thay "???"), thanh Cơ hội thắng 4 nấc bằng ô pixel (không gradient) có chữ, dòng "cần thêm", cảnh báo bỏ trống ô, nút Rút quân có hỏi lại một lần. Chữ qua humanizer, rà uiux-pro-max 2 vai.
+- [ ] Mô phỏng `scripts/sim-son-mon.ts`: 1.000 lần xuất chinh mù với/không có thanh cơ hội (người chơi dừng khi "Thấp"): tỉ lệ thua và số giờ nghỉ trung bình; kiểm nhiễu ±35% không đoán ngược ra số thật sau 24 lần xem.
+- [ ] Đo: `sm_co_hoi_xem`, `sm_rut_quan`, tỉ lệ thắng xuất chinh trước/sau, số người theo trung bình mỗi lệnh. smoke-son-mon thêm màn tập hợp có thanh cơ hội.
+- Ghi chú:
+
 ## Ngày 9 - Kỷ 2 làm sớm: máy chủ (giấu sau cờ)
 Lên bản: 2026-11-20. Giấu sau cờ `SM_DAT_ON` (tắt mặc định). Có cáo thị: thêm một dòng vào 4.6.0 báo trước "Từ 5:00 ngày 21/11 hạng Kỷ tính theo Điểm giữ đất".
 Tyler chốt 18/11: "Làm luôn Kỷ 2 vào 21/11 coi như tính năng". Nguồn ý: báo cáo `claude/nghien-cuu-game-chien-thuat-text-son-mon.md` (Travian oasis, Torn territory, Tribal Wars giữ làng, Utopia/SFC2 dải sức mạnh, Mob Wars boss).
