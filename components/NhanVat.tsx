@@ -17,6 +17,9 @@ import type { DaoExt } from '@/lib/game/khaiMach';
 import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
 import { LpcCropIcon } from './ItemIcon';
+import { BaoVatHinh } from './sonmon/BaoVat';
+import { baoVatMac } from '@/lib/sonmon/api';
+import { bvFxText, bvTen, smGearId, smGearParse, BV_TU_VI, bvDiem } from '@/lib/sonmon/baoVat';
 import { ctLayers } from '@/lib/game/chanThan';
 
 type NvTab = 'ao' | 'ngoai' | CtGearSlot;
@@ -55,6 +58,9 @@ export function OutfitIcon({ o, k, size }: { o: CtOutfit; k: string; size: numbe
 }
 const GEAR_CROP: Record<CtGearSlot, [number, number, number]> = { mu: [40, 22, 48], canh: [16, 22, 96], vu_khi: [16, 16, 96], phu_kien: [44, 40, 40] };
 export function GearIcon({ g, size }: { g: CtGearItem; size: number }) {
+  // 19/11: pháp bảo Sơn Môn dùng hình pixel riêng (cao gấp 1,5 nên thu bề ngang lại cho vừa ô vuông)
+  const sm = smGearParse(g.id);
+  if (sm) return <BaoVatHinh loai={sm.loai} pham={sm.pham} size={Math.round(size / 1.5)} />;
   if (g.icon) return <img src={`/icons/${g.icon}.png`} width={size} height={size} alt="" className="px-icon" loading="lazy" />;
   return <LpcCropIcon id={`ct-g-${g.id}`} layers={[...(g.back ?? []), ...(g.front ?? [])]} size={size} crop={g.crop ?? GEAR_CROP[g.slot]} />;
 }
@@ -181,7 +187,7 @@ export function NhanVatStage({ ct, meta, ext, onSlot, active }: { ct: ChanThanLo
   );
 }
 
-type Entry = { id: string; name: string; hint: string; has: boolean; on: boolean; icon: ReactNode; wear: () => ChanThanLook };
+type Entry = { id: string; name: string; hint: string; has: boolean; on: boolean; icon: ReactNode; wear: () => ChanThanLook; sm?: number; fx?: string };
 
 /** Lưới đồ theo tab con, gọn 4 cột như Túi đồ: hình món đồ, tên, dấu Mặc; món khóa hiện bóng tối, chạm xem cách mở. */
 export function NhanVatBag({ ct, meta, ext, tab, setTab, onWear }: { ct: ChanThanLook; meta: Meta; ext: DaoExt; tab: NvTab; setTab: (t: NvTab) => void; onWear: (ct: ChanThanLook) => void }) {
@@ -209,7 +215,29 @@ export function NhanVatBag({ ct, meta, ext, tab, setTab, onWear }: { ct: ChanTha
             const on = ctNgoaiId(ct) === n.id;
             return { id: n.id, name: n.name, hint: n.hint, has: n.has(meta, ext), on, icon: <OutfitIcon o={n.spec} k={`ng-${n.id}`} size={40} />, wear: () => put('ngoai', on ? null : n.id) };
           })
-        : CT_GEAR.filter((x) => CT_GEAR_ON && x.slot === tab).map((x) => ({ id: x.id, name: x.name, hint: x.hint, has: x.has(meta, ext), on: gear[tab] === x.id, icon: <GearIcon g={x} size={40} />, wear: () => put(tab, gear[tab] === x.id ? null : x.id) }));
+        : [
+            // 19/11: pháp bảo Sơn Môn đã nhận (máy chủ giữ ai có món nào, món nào đang lắp)
+            ...(SON_MON_ON && (tab === 'vu_khi' || tab === 'phu_kien')
+              ? (ext.smBv ?? [])
+                  .filter((b) => b.o === tab)
+                  .map((b): Entry => {
+                    const gid = smGearId(b.loai, b.pham);
+                    return {
+                      id: `smbv-${b.id}`,
+                      name: bvTen(b.loai, b.pham),
+                      hint: '',
+                      has: true,
+                      on: b.mac,
+                      icon: <BaoVatHinh loai={b.loai} pham={b.pham} size={27} />,
+                      wear: () => put(tab, b.mac ? null : gid),
+                      sm: b.id,
+                      fx: `${bvFxText(b.loai, b.pham)} · ${tr(`Tu vi +${fmt(bvDiem(b.loai, b.pham) * BV_TU_VI)}`, `Cultivation +${fmt(bvDiem(b.loai, b.pham) * BV_TU_VI)}`)}${b.khac ? ` · ${b.khac}` : ''}`,
+                    };
+                  })
+              : []),
+            ...CT_GEAR.filter((x) => CT_GEAR_ON && x.slot === tab).map((x) => ({ id: x.id, name: x.name, hint: x.hint, has: x.has(meta, ext), on: gear[tab] === x.id, icon: <GearIcon g={x} size={40} />, wear: () => put(tab, gear[tab] === x.id ? null : x.id) })),
+          ];
+  const smTab = SON_MON_ON && (tab === 'vu_khi' || tab === 'phu_kien');
   const nHas = list.filter((e) => e.has).length;
   return (
     <section className="nv-bag">
@@ -220,7 +248,14 @@ export function NhanVatBag({ ct, meta, ext, tab, setTab, onWear }: { ct: ChanTha
           </button>
         ))}
       </div>
-      {list.length === 0 ? (
+      {list.length === 0 && smTab ? (
+        <p className="nv-empty">
+          {tr(
+            `Chưa có ${tab === 'vu_khi' ? 'vũ khí' : 'phụ kiện'}. Pháp bảo Sơn Môn phát lúc kết Kỷ 1 (21:00 1/12): 7 người nhiều Công nhất mỗi môn nhận vũ khí, môn chủ nhận thêm ấn. Lắp vào đây để cộng Tu vi chân thân.`,
+            `No ${tab === 'vu_khi' ? 'weapons' : 'trinkets'} yet. Sect treasures are handed out when Era 1 ends (Dec 1, 9 PM): the top 7 by merit in each sect get weapons, the leader also gets a seal. Equip them here to raise cultivation.`,
+          )}
+        </p>
+      ) : list.length === 0 ? (
         <p className="nv-empty">{tr(`Chưa ai có ${(TABS.find((t) => t.id === tab)?.vi ?? '').toLowerCase()}. Sẽ có ở bản sau. Hiện chỉ có Ngoại trang.`, 'Nobody has these yet; they come in a later version. Only Costumes are available for now.')}</p>
       ) : (
         <p className="nv-count">
@@ -237,6 +272,19 @@ export function NhanVatBag({ ct, meta, ext, tab, setTab, onWear }: { ct: ChanTha
             aria-label={`${e.name}: ${e.on ? tr('đang mặc', 'wearing') : e.has ? tr('chạm để mặc', 'tap to wear') : tr(`khóa, ${e.hint}`, `locked, ${e.hint}`)}`}
             onClick={() => {
               if (!e.has) return setSay(tr(`${e.name} chưa mở. Cách mở: ${e.hint}.`, `${e.name} is locked. To unlock: ${e.hint}.`));
+              if (e.sm != null) {
+                // pháp bảo Sơn Môn: máy chủ ghi món đang lắp (mỗi ô một món), rồi chân thân cầm món đó
+                baoVatMac(e.sm).then(
+                  (ds) => {
+                    window.dispatchEvent(new CustomEvent('vkl-sm-bv', { detail: ds }));
+                    onWear(e.wear());
+                    setSay(e.on ? tr(`Đã tháo ${e.name}.`, `Removed ${e.name}.`) : tr(`Đã lắp ${e.name}: ${e.fx}.`, `Equipped ${e.name}: ${e.fx}.`));
+                    track('sm_bv_mac', { o: tab, thao: e.on });
+                  },
+                  () => setSay(tr('Không kết nối được máy chủ, thử lại sau.', "Can't reach the server, try again later.")),
+                );
+                return;
+              }
               const next = e.wear();
               onWear(next);
               setSay(e.on ? tr(`Đã cởi ${e.name}.`, `Took off ${e.name}.`) : tr(`Đang mặc ${e.name}.`, `Now wearing ${e.name}.`));
@@ -257,7 +305,8 @@ export function NhanVatBag({ ct, meta, ext, tab, setTab, onWear }: { ct: ChanTha
         {say ?? tr('Chạm món đã có để mặc, chạm lần nữa để cởi. Chạm món khóa để xem cách mở.', 'Tap an owned item to wear it, tap again to take it off. Tap a locked item to see how to unlock it.')}
       </p>
       )}
-      <small className="ct-note">{tr('Đồ chỉ để ngắm, không đổi sức mạnh trong kiếp. Không mặc ngoại trang thì chân thân mặc bộ khởi đầu (đổi ở Đổi ngoại hình).', 'Gear is cosmetic only. Without a costume your true self wears its starting outfit (change it in Change appearance).')}</small>
+      {smTab && <small className="ct-note">{tr('Pháp bảo Sơn Môn có chỉ số như đồ trong Mộng và không mất tác dụng. Lắp vào thì cộng Tu vi chân thân; chưa đổi trận trong kiếp.', 'Sect treasures carry stats like dream gear and never expire. Equipped, they add to your cultivation; lives are not affected yet.')}</small>}
+      {!smTab && <small className="ct-note">{tr('Đồ chỉ để ngắm, không đổi sức mạnh trong kiếp. Không mặc ngoại trang thì chân thân mặc bộ khởi đầu (đổi ở Đổi ngoại hình).', 'Gear is cosmetic only. Without a costume your true self wears its starting outfit (change it in Change appearance).')}</small>}
     </section>
   );
 }

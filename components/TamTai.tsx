@@ -37,7 +37,8 @@ import { ctExt, loadAll, saveMeta } from '@/lib/storage';
 import { musicPref } from '@/lib/music';
 import { track } from '@/lib/track';
 import { tr } from '@/lib/i18n';
-import { SU_DO_ON, TAB_ON } from '@/lib/flags';
+import { SON_MON_ON, SU_DO_ON, TAB_ON } from '@/lib/flags';
+import { baoVatDs } from '@/lib/sonmon/api';
 import { suCount } from '@/lib/suDo';
 import { CtFlow, LpcFigure, TamTaiReview } from './ChanThan';
 
@@ -100,8 +101,14 @@ export function useCtExt(user: Player | null, on = true): DaoExt {
       suCount(user)
         .then((n) => live && n !== null && setExt((e) => ({ ...e, disciples: n })))
         .catch(() => {});
+    // 19/11: pháp bảo Sơn Môn (lắp vào chân thân, cộng Tu vi); đổi đồ ở túi thì cập nhật qua sự kiện vkl-sm-bv
+    if (SON_MON_ON)
+      baoVatDs().then((ds) => live && ds && setExt((e) => ({ ...e, smBv: ds })));
+    const onBv = (ev: Event) => live && setExt((e) => ({ ...e, smBv: (ev as CustomEvent).detail }));
+    window.addEventListener('vkl-sm-bv', onBv);
     return () => {
       live = false;
+      window.removeEventListener('vkl-sm-bv', onBv);
     };
   }, [user, on]);
   return ext;

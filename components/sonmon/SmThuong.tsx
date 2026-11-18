@@ -8,7 +8,8 @@ import { useEffect, useState } from 'react';
 import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
 import type { SmApi, SmBvNhan, SmCongBang } from '@/lib/sonmon/api';
-import { BaoVatHinh, BaoVatO, BV_LOAI, BV_PHAM, bvLoai, bvPham } from './BaoVat';
+import { BaoVatHinh, BV_LOAI, BV_PHAM, bvLoai, bvPham } from './BaoVat';
+import { bvFxText, bvTen } from '@/lib/sonmon/baoVat';
 import { ngayThang, hhmm, type SmCtx } from './ui';
 
 let nho: { t: number; v: SmCongBang | null; api: SmApi } | null = null;
@@ -31,18 +32,19 @@ export function useCongBang(api: SmApi): SmCongBang | null | undefined {
 const phamTheoHang = (h: number | null | undefined) => (h == null ? null : h === 1 ? 'than' : h === 2 ? 'tien' : h === 3 ? 'linh' : h <= 10 ? 'bao' : 'pham');
 const LOAI7 = BV_LOAI.slice(0, 7);
 
-function MonNhan({ x }: { x: SmBvNhan }) {
-  const ph = bvPham(x.pham);
+/** 19/11 (Tyler: danh sách thưởng phải ngay ngắn như sàn thương mại điện tử): thẻ món hình vuông bằng nhau */
+function BvThe({ loai, pham, tag, ten, ta = false, mo = false }: { loai: string; pham: string; tag?: string; ten?: string; ta?: boolean; mo?: boolean }) {
+  const ph = bvPham(pham);
   return (
-    <div className="sm-row" style={{ gap: 10 }}>
-      <BaoVatO loai={x.loai} pham={x.pham} size={36} />
-      <div className="sm-grow">
-        <b style={{ color: ph.chu }}>{x.ten ?? `${tr(ph.vi, ph.en)} ${tr(bvLoai(x.loai).vi, bvLoai(x.loai).en)}`}</b>
-        <p className="sm-note">
-          {x.o === 'phu_kien' ? tr('Phụ kiện', 'Accessory') : tr('Vũ khí', 'Weapon')}
-          {x.pct != null && tr(` · +${x.pct}% Lực chiến Sơn Môn ở Kỷ sau`, ` · +${x.pct}% sect power next era`)}
-        </p>
+    <div className={`sm-shop-it${ta ? ' ta' : ''}${mo ? ' mo' : ''}`}>
+      <div className="sm-shop-img" style={{ borderColor: ph.vien }}>
+        {tag && <i className="sm-shop-tag">{tag}</i>}
+        <BaoVatHinh loai={loai} pham={pham} size={44} />
       </div>
+      <b className="sm-shop-n" style={{ color: ph.id === 'pham' ? undefined : ph.chu }}>
+        {ten ?? tr(bvLoai(loai).vi, bvLoai(loai).en)}
+      </b>
+      <small className="sm-shop-fx">{bvFxText(loai, pham, true)}</small>
     </div>
   );
 }
@@ -79,8 +81,8 @@ export function SmThuong({ c }: { c: SmCtx }) {
         <h2>{tr(`Phần thưởng Kỷ ${kyId}`, `Era ${kyId} rewards`)}</h2>
         <p className="sm-note">
           {tr(
-            `Kỷ khép lại lúc ${ket}. Ba môn đứng đầu nhận pháp bảo phẩm cao, bảy người nhiều Công nhất mỗi môn nhận vũ khí, môn chủ nhận thêm ấn.`,
-            `The era closes at ${ket}. Top sects get higher grades; the 7 members with the most merit in each sect get weapons; the leader also gets a seal.`,
+            `Kỷ khép lại lúc ${ket}. Ba môn đứng đầu nhận pháp bảo phẩm cao, bảy người nhiều Công nhất mỗi môn nhận vũ khí, môn chủ nhận thêm ấn. Pháp bảo có chỉ số, lắp vào chân thân, dùng mãi.`,
+            `The era closes at ${ket}. Top sects get higher grades; the 7 members with the most merit in each sect get weapons; the leader also gets a seal. Treasures carry stats, go on your true self, and last forever.`,
           )}
         </p>
       </section>
@@ -90,9 +92,11 @@ export function SmThuong({ c }: { c: SmCtx }) {
         {nhan.length ? (
           <>
             <p style={{ fontSize: 15 }}>{tr('Ngươi nhận:', 'You receive:')}</p>
-            {nhan.map((x) => (
-              <MonNhan key={x.o} x={x} />
-            ))}
+            <div className="sm-shop c2">
+              {nhan.map((x) => (
+                <BvThe key={x.o} loai={x.loai} pham={x.pham} tag={x.o === 'phu_kien' ? tr('Phụ kiện', 'Trinket') : tr('Vũ khí', 'Weapon')} ten={x.ten ?? bvTen(x.loai, x.pham)} />
+              ))}
+            </div>
           </>
         ) : !ta ? (
           <p style={{ fontSize: 15 }}>{tr('Vào một môn để có Công và phần thưởng.', 'Join a sect to earn merit and rewards.')}</p>
@@ -117,42 +121,35 @@ export function SmThuong({ c }: { c: SmCtx }) {
       <section className="sm-card">
         <h3>{tr('Vũ khí theo hạng Công trong môn', 'Weapon by merit rank')}</h3>
         <p className="sm-note">{tr('Mỗi hạng một loại, nhìn vũ khí là biết ai đứng thứ mấy.', 'One kind per rank, so the weapon shows where you stand.')}</p>
-        <div className="sm-bv-luoi">
-          {LOAI7.map((l, i) => {
-            const toi = ta && ta.hang === i + 1 && ta.cong >= can;
-            return (
-              <div key={l.id} className={toi ? 'sm-bv-cot ta' : 'sm-bv-cot'}>
-                <BaoVatO loai={l.id} pham={phMon} size={40} />
-                <b>{tr(`Hạng ${i + 1}`, `#${i + 1}`)}</b>
-                <span>{tr(l.vi, l.en)}</span>
-              </div>
-            );
-          })}
-          <div className="sm-bv-cot chu">
-            <BaoVatO loai="an" pham={phMon} size={40} />
-            <b>{tr('Môn chủ', 'Leader')}</b>
-            <span>{tr('Ấn', 'Seal')}</span>
-          </div>
+        <div className="sm-shop">
+          {LOAI7.map((l, i) => (
+            <BvThe key={l.id} loai={l.id} pham={phMon} tag={tr(`Hạng ${i + 1}`, `#${i + 1}`)} ta={!!ta && ta.hang === i + 1 && ta.cong >= can} />
+          ))}
+          <BvThe loai="tran_mon_kiem" pham={phMon} tag={tr('Môn chủ', 'Leader')} ten={tr('Trấn Môn Kiếm', 'Guardian Sword')} />
+          <BvThe loai="an" pham={phMon} tag={tr('Môn chủ', 'Leader')} ten={tr('Chưởng Môn Ấn', 'Sect Seal')} />
         </div>
         <p className="sm-note">
-          {tr('Môn chủ ngoài top 7 nhận Trấn Môn Kiếm thay vũ khí, top 7 còn 6 suất. Hạng 1 Công thêm 3%, hạng 2-3 thêm 2%.', 'A leader outside the top 7 gets the Sect Guardian Sword instead, leaving 6 slots. Merit #1 adds 3%, #2-3 add 2%.')}
+          {tr('Môn chủ luôn nhận Chưởng Môn Ấn. Môn chủ ngoài top 7 nhận Trấn Môn Kiếm thay vũ khí theo hạng, top 7 còn 6 suất.', 'The leader always gets the Sect Seal. A leader outside the top 7 gets the Guardian Sword instead, leaving 6 slots.')}
         </p>
       </section>
 
       <section className="sm-card">
         <h3>{tr('Phẩm theo hạng môn', 'Grade by sect rank')}</h3>
-        {BV_PHAM.map((p, i) => (
-          <div key={p.id} className={p.id === phMon && d.mon_hang ? 'sm-bv-pham ta' : 'sm-bv-pham'}>
-            <BaoVatHinh loai="kiem" pham={p.id} size={22} />
-            <b style={{ flex: 1 }}>{tr(p.vi, p.en)}</b>
-            <span>{[tr('Hạng 1', '#1'), tr('Hạng 2', '#2'), tr('Hạng 3', '#3'), tr('Hạng 4-10', '#4-10'), tr('Từ hạng 11', '#11+')][i]}</span>
-            <b className="sm-bv-pct">+{p.pct}%</b>
-          </div>
-        ))}
+        <div className="sm-shop c5">
+          {BV_PHAM.map((p, i) => (
+            <div key={p.id} className={`sm-shop-it${p.id === phMon && d.mon_hang ? ' ta' : ''}`}>
+              <div className="sm-shop-img" style={{ borderColor: p.vien }}>
+                <BaoVatHinh loai="kiem" pham={p.id} size={26} />
+              </div>
+              <b className="sm-shop-n" style={{ color: p.id === 'pham' ? undefined : p.chu }}>{tr(p.vi.replace(' phẩm', ''), p.en)}</b>
+              <small className="sm-shop-fx">{[tr('Hạng 1', '#1'), tr('Hạng 2', '#2'), tr('Hạng 3', '#3'), tr('Hạng 4-10', '#4-10'), tr('Từ 11', '#11+')][i]}</small>
+            </div>
+          ))}
+        </div>
         <p className="sm-note">
           {tr(
-            `Pháp bảo chỉ cộng Lực chiến Sơn Môn trong Kỷ ${kyId + 1}, cộng sau trần, hai món tối đa 25%. Hết Kỷ ${kyId + 1} thành đồ ngắm. Không đổi trận trong kiếp.`,
-            `Treasures only add sect power during era ${kyId + 1}, after the cap, at most 25% for both. Afterwards they are keepsakes. Lives are not affected.`,
+            'Phẩm càng cao chỉ số càng lớn: Thần gấp 5 lần Phàm. Pháp bảo không mất tác dụng: lắp vào ô Vũ khí, Phụ kiện của chân thân (tab Nhân vật) để cộng Tu vi.',
+            'Higher grades carry bigger stats: Divine is 5x Mortal. Treasures never expire: equip them in your true self’s Weapon and Trinket slots (Character tab) to raise cultivation.',
           )}
         </p>
       </section>

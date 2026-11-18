@@ -9,6 +9,7 @@ import { CT_OUTFITS, CT_REWARD_BASE, CT_REWARD_OUTFITS, type CtOutfit } from './
 import { CT_REWARDS, daoDone, hanhFull, huyetCount, type DaoExt } from './khaiMach';
 import type { Layer } from '../lpc';
 import type { ChanThanLook, Meta } from './types';
+import { BV_TU_VI, bvDiem, bvO, bvTen, smGearLayers, smGearParse } from '../sonmon/baoVat';
 
 export type CtGearSlot = 'mu' | 'vu_khi' | 'canh' | 'phu_kien';
 export type CtGearWorn = NonNullable<ChanThanLook['gear']>;
@@ -68,7 +69,12 @@ export const CT_GEAR: CtGearItem[] = [
  * Danh mục CT_GEAR giữ lại cho bản sau; bật bằng cách đổi CT_GEAR_ON. Đồ ai lỡ mang trong sáng 16/11 cũng không vẽ nữa.
  */
 export const CT_GEAR_ON = false;
-export const ctGearOf = (id?: string) => (CT_GEAR_ON && id ? CT_GEAR.find((g) => g.id === id) : undefined);
+export const ctGearOf = (id?: string): CtGearItem | undefined => {
+  // 19/11: pháp bảo Sơn Môn (sm_<loai>_<pham>) lắp được vào chân thân dù đồ thường chưa mở
+  const sm = smGearParse(id);
+  if (sm) return { id: id!, slot: bvO(sm.loai), name: bvTen(sm.loai, sm.pham), ...smGearLayers(sm.loai, sm.pham), hint: '', has: () => true };
+  return CT_GEAR_ON && id ? CT_GEAR.find((g) => g.id === id) : undefined;
+};
 
 /** Lớp sau lưng và trước mặt của đồ đang mang (ctLayers chèn vào đúng chỗ) */
 export function ctGearLayers(worn?: CtGearWorn): { back: Layer[]; front: Layer[] } {
@@ -96,6 +102,9 @@ export function ctPower(m: Meta, ext: DaoExt = {}): { total: number; parts: { na
     { name: tr('Kiếp đã sống', 'Lives lived'), n: Math.min(lives(m), 1000), each: 20 },
     { name: tr('Đệ tử thành tài', 'Graduated disciples'), n: ext.disciples ?? 0, each: 300 },
   ];
+  // 19/11: pháp bảo Sơn Môn đang lắp: mỗi điểm % chỉ số = 100 Tu vi
+  const sm = (ext.smBv ?? []).filter((b) => b.mac).reduce((s, b) => s + bvDiem(b.loai, b.pham), 0);
+  if (sm > 0) parts.push({ name: tr('Pháp bảo Sơn Môn (điểm chỉ số)', 'Sect treasures (stat points)'), n: sm, each: BV_TU_VI });
   return { total: 1000 + parts.reduce((s, p) => s + p.n * p.each, 0), parts };
 }
 

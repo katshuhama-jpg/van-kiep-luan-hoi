@@ -227,6 +227,8 @@ export interface DaoExt {
   incense?: number; // tổng hương mộ mình được thắp
   litGraves?: number; // số mộ khác nhau mình đã thắp
   disciples?: number; // số môn hạ (Sư Đồ, 4.6.0)
+  /** 19/11: pháp bảo Sơn Môn đã nhận (vkl_sm_bao_vat_ds), mac = đang lắp vào chân thân */
+  smBv?: { id: number; o: string; loai: string; pham: string; mac: boolean; ten: string; khac?: string | null }[];
 }
 const nEnd = (m: Meta) => Object.keys(m.endings ?? {}).length;
 const hasEnd = (m: Meta, id: string) => !!m.endings?.[id];

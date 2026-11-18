@@ -5,38 +5,9 @@
  *   Thần: to nhất, có lửa quanh viền nhấp nháy 2 khung (tắt khi prefers-reduced-motion).
  * Viền ngoài tự dựng (ô trống kề ô có màu thành nét mực), nên mọi món cùng một nét vẽ.
  */
-import { tr } from '@/lib/i18n';
-
-export type BvLoai = 'kiem' | 'dao' | 'thuong' | 'quat' | 'phat_tran' | 'cung' | 'song_chuy' | 'tran_mon_kiem' | 'an';
-export type BvPham = 'pham' | 'bao' | 'linh' | 'tien' | 'than';
-
-export const BV_PHAM: { id: BvPham; vi: string; en: string; pct: number; vien: string; chu: string }[] = [
-  { id: 'than', vi: 'Thần phẩm', en: 'Divine', pct: 12, vien: '#d8453a', chu: '#a8281f' },
-  { id: 'tien', vi: 'Tiên phẩm', en: 'Immortal', pct: 9, vien: '#e8c35a', chu: '#7d5a0c' },
-  { id: 'linh', vi: 'Linh phẩm', en: 'Spirit', pct: 7, vien: '#9a5cc8', chu: '#6a3399' },
-  { id: 'bao', vi: 'Bảo phẩm', en: 'Treasure', pct: 4, vien: '#3f86c8', chu: '#235f96' },
-  { id: 'pham', vi: 'Phàm phẩm', en: 'Mortal', pct: 2, vien: '#8d877a', chu: 'inherit' },
-];
-export const bvPham = (p: string) => BV_PHAM.find((x) => x.id === p) ?? BV_PHAM[4];
-
-/** 7 loại theo hạng Công 1-7, rồi 2 món riêng của môn chủ */
-export const BV_LOAI: { id: BvLoai; vi: string; en: string }[] = [
-  { id: 'kiem', vi: 'Kiếm', en: 'Sword' },
-  { id: 'dao', vi: 'Đao', en: 'Saber' },
-  { id: 'thuong', vi: 'Thương', en: 'Spear' },
-  { id: 'quat', vi: 'Quạt', en: 'Fan' },
-  { id: 'phat_tran', vi: 'Phất trần', en: 'Whisk' },
-  { id: 'cung', vi: 'Cung', en: 'Bow' },
-  { id: 'song_chuy', vi: 'Song chùy', en: 'Twin maces' },
-  { id: 'tran_mon_kiem', vi: 'Trấn Môn Kiếm', en: 'Sect Guardian Sword' },
-  { id: 'an', vi: 'Chưởng Môn Ấn', en: 'Sect Seal' },
-];
-export const bvLoai = (l: string) => BV_LOAI.find((x) => x.id === l) ?? BV_LOAI[0];
-export const bvTen = (l: string, p: string) => {
-  const ph = bvPham(p);
-  const lo = bvLoai(l);
-  return tr(`${ph.vi} ${lo.vi}`, `${ph.en} ${lo.en}`);
-};
+import { BV_LOAI, BV_PHAM, bvLoai, bvPham, bvTen, type BvLoai, type BvPham } from '@/lib/sonmon/baoVat';
+export { BV_LOAI, BV_PHAM, bvLoai, bvPham, bvTen };
+export type { BvLoai, BvPham };
 
 const W = 16;
 const H = 24;
