@@ -5609,3 +5609,13 @@ body[data-ctflow='1'] { overflow: hidden; }
 /* 16/11: nút Ra đài (ar-dock) nằm trên thanh tab, không bị thanh tab che */
 .has-tabs .ar-dock { bottom: calc(63px + env(safe-area-inset-bottom)); padding-bottom: 8px; }
 .app.has-tabs:has(.ar-dock) { padding-bottom: calc(150px + env(safe-area-inset-bottom)) !important; }
+
+/* 18/11: Sư Đồ hai chiều - ô tìm, lời mời / lời xin */
+.su-tim-o { display: flex; flex-direction: column; gap: 4px; margin: 0 0 8px; font-size: 14px; font-weight: 700; }
+.su-tim-o input { min-height: 44px; padding: 6px 10px; font-size: 16px; border: 2px solid var(--ink); background: #fffaf0; color: var(--ink); }
+.su-hop-h { margin: 4px 0 6px; font-size: 15px; }
+.su-hop { margin: 0 0 10px; }
+.su-hop-item { border-color: #a8862e; background: #fff3d0; }
+.su-hop-act { grid-column: 2; grid-row: 1 / span 2; display: flex; flex-direction: column; gap: 4px; }
+.su-hop-act .su-tim-go { grid-row: auto; }
+.su-hop-no { min-height: 36px; width: auto; margin: 0; padding: 0 10px; font-size: 14px; background: transparent; }

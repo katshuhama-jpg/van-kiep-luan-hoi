@@ -291,3 +291,98 @@ export async function suAnSet(user: Player | null, an: boolean): Promise<boolean
     return null;
   }
 }
+
+// ---------------- Mời đệ tử / xin bái sư hai chiều (18/11, Tyler yêu cầu; máy chủ: supabase/su_moi_2026_11_18.sql) ----------------
+/** người còn bái sư được, cho sư phụ tìm và mời */
+export type SuDeUng = { ten: string; phap_danh: string | null; kiep: number; choi_luc: string | null; da_moi: boolean };
+/** sư phụ để người mới tìm và xin (thêm da_xin: đã gửi lời xin, đang chờ) */
+export type SuSuUng = SuUng & { da_xin: boolean };
+export type SuThu = { id: number; loai: 'moi' | 'xin'; ten: string; phap_danh: string | null; kiep?: number; luc: string };
+export type SuHop = { den: SuThu[]; di: SuThu[] };
+
+async function rpcSu<T>(fn: string, args: Record<string, unknown>): Promise<T | null> {
+  const sb = supabase();
+  if (!SU_DO_ON || !sb) return null;
+  try {
+    const { data, error } = await sb.rpc(fn, args);
+    if (error) return null;
+    return data as T;
+  } catch {
+    return null;
+  }
+}
+
+/** Sư phụ tìm đệ tử theo tên (rỗng: người vừa chơi gần đây). null: lỗi mạng hoặc chưa đăng nhập. */
+export async function suTimDe(user: Player | null, q: string): Promise<{ can: boolean; ds: SuDeUng[] } | null> {
+  if (!user) return null;
+  const d = await rpcSu<{ can?: boolean; ds?: Partial<SuDeUng>[] }>('vkl_su_tim_de', { p_token: user.token, p_q: q });
+  if (!d) return null;
+  return {
+    can: !!d.can,
+    ds: (Array.isArray(d.ds) ? d.ds : []).map((x) => ({
+      ten: String(x.ten ?? ''),
+      phap_danh: x.phap_danh ? String(x.phap_danh) : null,
+      kiep: Number(x.kiep ?? 0),
+      choi_luc: x.choi_luc ? String(x.choi_luc) : null,
+      da_moi: !!x.da_moi,
+    })),
+  };
+}
+
+/** Người mới tìm sư phụ theo tên trong toàn bộ danh sách. Khách cũng xem được. */
+export async function suTimSu(user: Player | null, q: string): Promise<{ can: boolean; ds: SuSuUng[] } | null> {
+  const d = await rpcSu<{ can?: boolean; ds?: Partial<SuSuUng>[] }>('vkl_su_tim_su', { p_token: user?.token ?? null, p_q: q });
+  if (!d) return null;
+  return {
+    can: !!d.can,
+    ds: (Array.isArray(d.ds) ? d.ds : []).map((x) => ({
+      ten: String(x.ten ?? ''),
+      phap_danh: x.phap_danh ? String(x.phap_danh) : null,
+      huyet: Number(x.huyet ?? 0),
+      kiep: Number(x.kiep ?? 0),
+      tai: Number(x.tai ?? 0),
+      choi_luc: x.choi_luc ? String(x.choi_luc) : null,
+      da_xin: !!x.da_xin,
+    })),
+  };
+}
+
+/** Gửi lời mời (sư phụ -> người mới) hoặc lời xin (người mới -> sư phụ). Trả mã máy chủ, 'SU_NET' nếu lỗi mạng. */
+export async function suGui(user: Player | null, ten: string, loai: 'moi' | 'xin'): Promise<string> {
+  if (!user) return 'SU_AUTH';
+  const r = await rpcSu<string>('vkl_su_gui', { p_token: user.token, p_ten: ten, p_loai: loai });
+  const code = typeof r === 'string' ? r : 'SU_NET';
+  track(loai === 'moi' ? 'su_moi_gui' : 'su_xin_gui', { code });
+  return code;
+}
+
+/** Lời mời/xin đang chờ: gửi tới ta (den) và ta đã gửi (di). */
+export async function suHop(user: Player | null): Promise<SuHop | null> {
+  if (!user) return null;
+  const d = await rpcSu<{ den?: Partial<SuThu>[]; di?: Partial<SuThu>[] }>('vkl_su_hop', { p_token: user.token });
+  if (!d) return null;
+  const map = (a?: Partial<SuThu>[]): SuThu[] =>
+    (Array.isArray(a) ? a : []).map((x) => ({
+      id: Number(x.id ?? 0),
+      loai: x.loai === 'xin' ? 'xin' : 'moi',
+      ten: String(x.ten ?? ''),
+      phap_danh: x.phap_danh ? String(x.phap_danh) : null,
+      kiep: x.kiep == null ? undefined : Number(x.kiep),
+      luc: String(x.luc ?? ''),
+    }));
+  return { den: map(d.den), di: map(d.di) };
+}
+
+/** Nhận / từ chối một lời gửi tới ta (người gửi gọi với nhan=false để rút lại). Nhận thành công: trả 'OK' và báo đã bái sư. */
+export async function suTra(user: Player | null, thu: SuThu, nhan: boolean): Promise<string> {
+  if (!user) return 'SU_AUTH';
+  const r = await rpcSu<string>('vkl_su_tra', { p_token: user.token, p_id: thu.id, p_nhan: nhan });
+  const code = typeof r === 'string' ? r : 'SU_NET';
+  track('su_tra', { loai: thu.loai, nhan, code });
+  if (code === 'OK' && nhan && thu.loai === 'moi') {
+    try {
+      window.dispatchEvent(new CustomEvent(SU_BOUND_EV, { detail: thu.ten }));
+    } catch {}
+  }
+  return code;
+}

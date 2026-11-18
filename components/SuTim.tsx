@@ -9,52 +9,46 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import type { Player } from '@/lib/auth';
 import { SU_DO_ON } from '@/lib/flags';
-import { suChon, suInfo, suTim, type SuTim } from '@/lib/suDo';
+import { SU_BOUND_EV, suGui, suHop, suInfo, suTim, suTimSu, type SuHop, type SuSuUng } from '@/lib/suDo';
+import { SU_LOI, SuHopList, SuTimDeSheet, SuTimO, suLuc, useTim } from './SuMoi';
 import { loadAll } from '@/lib/storage';
 import { track } from '@/lib/track';
 import { tr } from '@/lib/i18n';
 
-const HOUR = 3600000;
-function luc(iso: string | null): string {
-  if (!iso) return '';
-  const ms = Date.now() - Date.parse(iso);
-  if (ms < HOUR) return tr('vừa chơi', 'just played');
-  if (ms < 24 * HOUR) return tr(`chơi ${Math.floor(ms / HOUR)} giờ trước`, `played ${Math.floor(ms / HOUR)}h ago`);
-  return tr(`chơi ${Math.floor(ms / (24 * HOUR))} ngày trước`, `played ${Math.floor(ms / (24 * HOUR))}d ago`);
-}
-const LOI: Record<string, string> = {
-  SU_DONE: tr('Ngươi đã có sư phụ rồi.', 'You already have a master.'),
-  SU_OLD: tr('Chỉ tài khoản mới (dưới 8 ngày, chưa quá 5 kiếp) mới bái sư được.', 'Only new accounts (under 8 days, at most 5 lives) can take a master.'),
-  SU_SELF: tr('Không bái người này được.', 'You cannot take this master.'),
-  SU_NONE: tr('Không tìm thấy người này.', 'This player was not found.'),
-  SU_AUTH: tr('Phiên đăng nhập đã hết, hãy đăng nhập lại.', 'Your session ended, please log in again.'),
-  SU_NET: tr('Mạng chập chờn, thử lại sau.', 'Network trouble, try again later.'),
-};
-
+/**
+ * 18/11: tìm theo tên trong toàn bộ danh sách sư phụ, bấm "Xin bái sư" gửi lời xin; sư phụ nhận mới thành thầy trò.
+ * Lời mời của sư phụ gửi tới ngươi hiện ở đầu (Nhận / Từ chối). Khách: mời đăng ký trước.
+ */
 export function SuTimSheet({ user, onClose, onDone }: { user: Player | null; onClose: () => void; onDone?: (ten: string) => void }) {
-  const [d, setD] = useState<SuTim | null | 'loi'>(null);
+  const { q, setQ, d, setD } = useTim((s) => suTimSu(user, s), [user]);
   const [busy, setBusy] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
-  const [guest, setGuest] = useState<string | null>(null);
+  const [guest, setGuest] = useState(false);
+  const [hop, setHop] = useState<SuHop | null>(null);
   useEffect(() => {
-    let live = true;
-    suTim(user).then((x) => live && setD(x ?? 'loi'));
     track('su_tim_open', { guest: !user });
-    return () => {
-      live = false;
-    };
+    suHop(user).then(setHop);
   }, [user]);
-  const pick = async (ten: string) => {
-    setBusy(ten);
-    const r = await suChon(user, ten);
+  const xin = async (x: SuSuUng) => {
+    if (!user) return setGuest(true);
+    setBusy(x.ten);
+    const r = await suGui(user, x.ten, 'xin');
     setBusy(null);
-    if (r === 'GUEST') return setGuest(ten);
-    if (r === 'OK') {
-      onDone?.(ten);
-      return onClose();
-    }
-    setMsg(LOI[r] ?? LOI.SU_NET);
+    if (r === 'OK' || r === 'SU_DA_GUI') {
+      // sư phụ đã mời mình trước đó thì máy chủ nhận luôn
+      const info = await suInfo(user);
+      if (info?.su) {
+        try {
+          window.dispatchEvent(new CustomEvent(SU_BOUND_EV, { detail: info.su.ten }));
+        } catch {}
+        onDone?.(info.su.ten);
+        return onClose();
+      }
+      setMsg(tr(`Đã gửi lời xin tới ${x.phap_danh ?? x.ten}. Sư phụ nhận là thành thầy trò.`, `Request sent to ${x.phap_danh ?? x.ten}. Once accepted, they are your master.`));
+      if (d && d !== 'loi') setD({ ...d, ds: d.ds.map((y) => (y.ten === x.ten ? { ...y, da_xin: true } : y)) });
+    } else setMsg(SU_LOI[r] ?? SU_LOI.SU_NET);
   };
+  const moi = hop ? { den: hop.den.filter((t) => t.loai === 'moi'), di: [] } : null;
   return (
     <div className="drawer-bg su-tim-bg" onClick={onClose}>
       <section className="su-tim" role="dialog" aria-modal="true" aria-label={tr('Tìm sư phụ', 'Find a master')} onClick={(e) => e.stopPropagation()}>
@@ -65,24 +59,41 @@ export function SuTimSheet({ user, onClose, onDone }: { user: Player | null; onC
           </button>
         </div>
         <div className="su-tim-body">
-          <p className="su-tim-lead">{tr('Bái một đạo hữu đã chơi lâu làm sư phụ. Chơi xong 10 kiếp (sống tới 16 tuổi) trong 7 ngày là thành tài: ngươi và sư phụ mỗi người +20 phúc duyên.', 'Take a seasoned player as your master. Finish 10 lives (reaching age 16) within 7 days to graduate: you and your master each get +20 Fortune.')}</p>
+          {moi && moi.den.length > 0 && (
+            <>
+              <h4 className="su-hop-h">{tr('Sư phụ mời ngươi', 'Masters inviting you')}</h4>
+              <SuHopList
+                user={user}
+                hop={moi}
+                onChange={(ten) => {
+                  if (ten) {
+                    onDone?.(ten);
+                    return onClose();
+                  }
+                  suHop(user).then(setHop);
+                }}
+              />
+            </>
+          )}
+          <p className="su-tim-lead">{tr('Bái một đạo hữu đã chơi lâu làm sư phụ. Bấm Xin bái sư, sư phụ nhận là thành thầy trò. Chơi xong 10 kiếp (sống tới 16 tuổi) trong 7 ngày là thành tài: ngươi và sư phụ mỗi người +20 phúc duyên.', 'Take a seasoned player as your master. Send a request; once they accept, you are master and disciple. Finish 10 lives (reaching age 16) within 7 days to graduate: you both get +20 Fortune.')}</p>
+          <SuTimO q={q} setQ={setQ} label={tr('Tìm sư phụ theo tên', 'Search masters by name')} />
           {d === null && <p>{tr('Đang tìm...', 'Searching...')}</p>}
           {d === 'loi' && <p>{tr('Chưa tải được danh sách. Thử lại sau.', 'Could not load the list. Try again later.')}</p>}
-          {d && d !== 'loi' && user && !d.can && <p className="su-tim-warn">{LOI.SU_OLD} {tr('Nếu đã có sư phụ, xem ở tab Nhân vật.', 'If you already have one, see the Character tab.')}</p>}
+          {d && d !== 'loi' && user && !d.can && <p className="su-tim-warn">{SU_LOI.SU_OLD} {tr('Nếu đã có sư phụ, xem ở tab Nhân vật.', 'If you already have one, see the Character tab.')}</p>}
           {guest && (
             <div className="su-tim-guest" role="status">
-              <p>{tr(`Đã chọn ${guest}. Tạo tài khoản (miễn phí) để bái sư; xong là tự bái, không cần làm lại.`, `You chose ${guest}. Create a free account to take them as master; it happens automatically.`)}</p>
+              <p>{tr('Tạo tài khoản (miễn phí) để gửi lời xin bái sư.', 'Create a free account to send a request.')}</p>
               <Link href="/dang-nhap" className="btn btn-dark" style={{ display: 'block', textDecoration: 'none', textAlign: 'center' }}>
                 {tr('Đăng ký / Đăng nhập', 'Sign up / Log in')}
               </Link>
             </div>
           )}
           {msg && (
-            <p className="su-tim-warn" role="alert">
+            <p className="su-tim-warn" role="status">
               {msg}
             </p>
           )}
-          {d && d !== 'loi' && d.ds.length === 0 && <p>{tr('Lúc này chưa có sư phụ nào đang rảnh. Quay lại sau nhé.', 'No master is free right now. Come back later.')}</p>}
+          {d && d !== 'loi' && d.ds.length === 0 && <p>{q ? tr('Không có sư phụ nào khớp tên này.', 'No master matches that name.') : tr('Lúc này chưa có sư phụ nào đang rảnh. Quay lại sau nhé.', 'No master is free right now. Come back later.')}</p>}
           {d && d !== 'loi' && (
             <ul className="su-tim-list">
               {d.ds.map((x) => (
@@ -92,10 +103,10 @@ export function SuTimSheet({ user, onClose, onDone }: { user: Player | null; onC
                     <small>@{x.ten}</small>
                   </span>
                   <span className="su-item-s">
-                    {tr(`${x.kiep} kiếp · ${x.huyet}/10 huyệt · ${x.tai} đệ tử thành tài · ${luc(x.choi_luc)}`, `${x.kiep} lives · ${x.huyet}/10 points · ${x.tai} graduated · ${luc(x.choi_luc)}`)}
+                    {tr(`${x.kiep} kiếp · ${x.huyet}/10 huyệt · ${x.tai} đệ tử thành tài · ${suLuc(x.choi_luc)}`, `${x.kiep} lives · ${x.huyet}/10 points · ${x.tai} graduated · ${suLuc(x.choi_luc)}`)}
                   </span>
-                  <button className="btn su-tim-go" disabled={!!busy || (!!user && !d.can)} onClick={() => pick(x.ten)}>
-                    {busy === x.ten ? '...' : tr('Bái sư', 'Take as master')}
+                  <button className="btn su-tim-go" disabled={!!busy || (!!user && !d.can) || x.da_xin} onClick={() => xin(x)}>
+                    {busy === x.ten ? '...' : x.da_xin ? tr('Đã xin', 'Requested') : tr('Xin bái sư', 'Ask')}
                   </button>
                 </li>
               ))}
@@ -115,6 +126,17 @@ export function SuDoHome({ user, ready }: { user: Player | null; ready: boolean 
   const [mode, setMode] = useState<'moi' | 'tim' | null>(null);
   const [open, setOpen] = useState(false);
   const [done, setDone] = useState<string | null>(null);
+  // 18/11: số lời mời (người mới) / lời xin bái sư (sư phụ) đang chờ
+  const [nCho, setNCho] = useState(0);
+  const [timDe, setTimDe] = useState(false);
+  useEffect(() => {
+    if (!mode || !user) return;
+    let live = true;
+    suHop(user).then((h) => live && h && setNCho(h.den.filter((t) => t.loai === (mode === 'tim' ? 'moi' : 'xin')).length));
+    return () => {
+      live = false;
+    };
+  }, [mode, user, open, timDe]);
   useEffect(() => {
     if (!SU_DO_ON || !ready) return;
     let live = true;
@@ -142,25 +164,36 @@ export function SuDoHome({ user, ready }: { user: Player | null; ready: boolean 
     <section className="su-home" aria-label={tr('Sư Đồ', 'Master and Disciple')}>
       <span className="su-home-ic" aria-hidden="true" />
       <span className="su-home-t">
-        <b>{mode === 'moi' ? tr('Thu nhận đệ tử', 'Take disciples') : done ? tr(`Đã bái ${done} làm sư phụ`, `${done} is now your master`) : tr('Bái sư học đạo', 'Find a master')}</b>
+        <b>
+          {mode === 'moi'
+            ? nCho > 0
+              ? tr(`${nCho} người xin bái ngươi làm sư phụ`, `${nCho} want you as their master`)
+              : tr('Thu nhận đệ tử', 'Take disciples')
+            : done
+              ? tr(`Đã bái ${done} làm sư phụ`, `${done} is now your master`)
+              : nCho > 0
+                ? tr(`${nCho} sư phụ mời ngươi làm đệ tử`, `${nCho} masters invite you`)
+                : tr('Bái sư học đạo', 'Find a master')}
+        </b>
         <small>
           {mode === 'moi'
-            ? tr('Mời bạn bè chơi bằng link của ngươi. Đệ tử chơi đủ 10 kiếp trong 7 ngày: thầy trò mỗi người +20 phúc duyên.', 'Invite friends with your link. When a disciple finishes 10 lives in 7 days, you both get +20 Fortune.')
+            ? tr('Tìm người mới theo tên rồi bấm Mời, hoặc gửi link cho bạn bè. Đệ tử chơi đủ 10 kiếp trong 7 ngày: thầy trò mỗi người +20 phúc duyên.', 'Search new players and invite them, or send your link. When a disciple finishes 10 lives in 7 days, you both get +20 Fortune.')
             : tr('Người mới chọn một sư phụ đang chơi. Đủ 10 kiếp trong 7 ngày: thầy trò mỗi người +20 phúc duyên.', 'New players pick an active master. Finish 10 lives in 7 days: you both get +20 Fortune.')}
         </small>
       </span>
       {mode === 'moi' ? (
-        <Link href="/chan-than#su-do" className="btn su-home-go" onClick={() => track('su_home_tap', { mode })}>
-          {tr('Mời đệ tử', 'Invite')}
-        </Link>
+        <button className="btn su-home-go" onClick={() => (setTimDe(true), track('su_home_tap', { mode, cho: nCho }))}>
+          {nCho > 0 ? tr('Xem', 'View') : tr('Tìm đệ tử', 'Find')}
+        </button>
       ) : (
         !done && (
           <button className="btn su-home-go" onClick={() => (setOpen(true), track('su_home_tap', { mode }))}>
-            {tr('Tìm sư phụ', 'Find master')}
+            {nCho > 0 ? tr('Xem lời mời', 'View') : tr('Tìm sư phụ', 'Find master')}
           </button>
         )
       )}
       {open && <SuTimSheet user={user} onClose={() => setOpen(false)} onDone={setDone} />}
+      {timDe && <SuTimDeSheet user={user} onClose={() => setTimDe(false)} />}
     </section>
   );
 }

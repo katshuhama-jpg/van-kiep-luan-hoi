@@ -14,8 +14,9 @@ import type { ShareOut } from '@/lib/shareCard';
 import { SON_MON_ON } from '@/lib/flags';
 import { realApi } from '@/lib/sonmon/api';
 import { metaWritable } from '@/lib/storage';
-import { suAnSet, suClaim, suInfo, suList, suState, suTim, suTitle, type SuDe, type SuInfo, type SuTim } from '@/lib/suDo';
+import { suAnSet, suClaim, suHop, suInfo, suList, suState, suTim, suTitle, type SuDe, type SuHop, type SuInfo, type SuTim } from '@/lib/suDo';
 import { SuTimSheet } from './SuTim';
+import { SuHopList, SuTimDeSheet } from './SuMoi';
 import { track } from '@/lib/track';
 import { tr } from '@/lib/i18n';
 
@@ -109,6 +110,17 @@ export default function SuDoPanel({ user, meta, onGain }: { user: Player | null;
   const asked = useRef<string | null>(null);
   const [tim, setTim] = useState<SuTim | null>(null);
   const [find, setFind] = useState(false);
+  // 18/11: lời mời / lời xin đang chờ, và sư phụ tìm người mới để mời
+  const [hop, setHop] = useState<SuHop | null>(null);
+  const [timDe, setTimDe] = useState(false);
+  const laSu = (meta.lives ?? 0) >= 20 && !!meta.chanThan;
+  useEffect(() => {
+    let live = true;
+    suHop(user).then((x) => live && setHop(x));
+    return () => {
+      live = false;
+    };
+  }, [user, timDe, find]);
   useEffect(() => {
     let live = true;
     suTim(user).then((x) => live && setTim(x));
@@ -172,7 +184,26 @@ export default function SuDoPanel({ user, meta, onGain }: { user: Player | null;
           </dd>
         </dl>
       )}
+      {hop && hop.den.length > 0 && (
+        <>
+          <h4 className="su-hop-h">{tr('Đang chờ ngươi trả lời', 'Waiting for your answer')}</h4>
+          <SuHopList
+            user={user}
+            hop={hop}
+            onChange={() => {
+              suHop(user).then(setHop);
+              suInfo(user).then((x) => x && setInfo(x));
+              suList(user).then((l) => l && setDs(l));
+            }}
+          />
+        </>
+      )}
       {ds && ds.length > 0 && <SuDeList ds={ds} />}
+      {user && laSu && (
+        <button className="btn su-invite" style={{ marginBottom: 8 }} onClick={() => setTimDe(true)}>
+          {tr('Tìm người mới để mời', 'Find new players to invite')}
+        </button>
+      )}
       <button
         className="btn su-invite"
         disabled={!user || drawing}
@@ -185,7 +216,7 @@ export default function SuDoPanel({ user, meta, onGain }: { user: Player | null;
           if (r?.link) setOut(r);
         }}
       >
-        {drawing ? tr('Đang vẽ thẻ...', 'Drawing your card...') : tr('Mời đệ tử', 'Invite a disciple')}
+        {drawing ? tr('Đang vẽ thẻ...', 'Drawing your card...') : tr('Gửi link mời', 'Share invite link')}
       </button>
       <small className="su-sub">
         {user
@@ -211,6 +242,7 @@ export default function SuDoPanel({ user, meta, onGain }: { user: Player | null;
           {tr('Hiện tên ta trong danh sách Tìm sư phụ của người mới', 'Show me in the Find a master list for new players')}
         </label>
       )}
+      {timDe && <SuTimDeSheet user={user} onClose={() => setTimDe(false)} />}
       {find && <SuTimSheet user={user} onClose={() => setFind(false)} onDone={() => suInfo(user).then((x) => x && setInfo(x))} />}
       {out && <ShareSheet out={out} kind="life" onClose={() => setOut(null)} />}
     </section>
