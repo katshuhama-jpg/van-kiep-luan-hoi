@@ -9,6 +9,7 @@ import { nvChu, SM_CFG } from '@/lib/sonmon/data';
 import { ChinhDien, ChuoiO, HuyHieu } from './Pixel';
 import { SmBaCau } from './SmLuat';
 import { duOCau, khaiDuoc } from './SmMap';
+import { useBau } from './SmMembers';
 import { chucTen, clock, DongMinh, fmtN, mocGio, Msg, useNow, type SmCtx } from './ui';
 
 const CANH: Record<number, string> = { 0: '-', 1: 'Luyện Khí', 2: 'Trúc Cơ', 3: 'Kim Đan', 4: 'Nguyên Anh', 5: 'Hóa Thần' };
@@ -17,6 +18,8 @@ const canhTen = (n: number) => tr(CANH[n] ?? `bậc ${n}`, CANH_EN[n] ?? `tier $
 
 export function SmMonNha({ c }: { c: SmCtx }) {
   const { st } = c;
+  // 18/11 tối: mở môn nhà cũng tính là có mặt (môn chủ vắng 48 giờ thì môn bầu người thay)
+  const [bau] = useBau(c);
   const m = st.mon!;
   const now = useNow();
   const [err, setErr] = useState<string | null>(null);
@@ -133,6 +136,15 @@ export function SmMonNha({ c }: { c: SmCtx }) {
               {chinh.ta_theo ? tr(' · ngươi đã theo', ' · you joined') : ''}
             </b>
             <b className="sm-clock">{clock(new Date(chinh.trang_thai === 'tap_hop' ? chinh.tap_hop_toi : chinh.toi_noi_luc).getTime() - now)} ›</b>
+          </span>
+        </button>
+      )}
+
+      {(bau?.dang || bau?.mo_duoc) && (
+        <button className="sm-card warn" style={{ textAlign: 'left', font: 'inherit', cursor: 'pointer', minHeight: 44 }} onClick={() => c.go('thanh-vien')}>
+          <span className="sm-between" style={{ width: '100%' }}>
+            <b>{bau.dang ? (bau.dang.ta_chon ? tr('Đang bầu môn chủ mới · ngươi đã bầu', 'Leader vote running · you voted') : tr('Đang bầu môn chủ mới · vào bầu', 'Leader vote running · cast yours')) : tr('Môn chủ vắng hơn 2 ngày · mở bầu người thay', 'Leader away 2+ days · start a vote')}</b>
+            <b>›</b>
           </span>
         </button>
       )}
