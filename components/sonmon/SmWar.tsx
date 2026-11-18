@@ -7,7 +7,6 @@ import { track } from '@/lib/track';
 import type { SmBao, SmMember, SmState } from '@/lib/sonmon/api';
 import { capLc, SM_CFG, tranCau } from '@/lib/sonmon/data';
 import { HuyHieu } from './Pixel';
-import { CoHoiThe, useCoHoi } from './SmCoHoi';
 import { chinhKhoa } from './SmMap';
 import { clock, fmtN, hhmm, mocGio, Msg, truoc, useNow, type SmCtx } from './ui';
 
@@ -48,9 +47,6 @@ export function SmXuatChinh({ c }: { c: SmCtx }) {
   const [hoiRut, setHoiRut] = useState(false);
   const chinh = (st.chinh ?? [])[0] ?? null;
   const toi: [number, number] | null = chinh ? chinh.toi : c.target;
-  const dangTapSom = chinh?.trang_thai === 'tap_hop' && new Date(chinh.tap_hop_toi).getTime() > now;
-  // 18/11 tối: lực ta chính xác + lực giữ khi đã trinh sát (chưa trinh sát vẫn "???"); làm mới mỗi 20 giây khi tập hợp
-  const coHoi = useCoHoi(c, toi?.[0] ?? null, toi?.[1] ?? null, `${chinh?.id ?? 0}-${chinh?.n ?? 0}-${chinh?.ta_theo ? 1 : 0}-${(st.trinh ?? []).map((t) => t.id + (t.ket_qua ? 'x' : '')).join('.')}`, dangTapSom);
   if (!toi) {
     return (
       <section className="sm-card">
@@ -95,7 +91,7 @@ export function SmXuatChinh({ c }: { c: SmCtx }) {
     if (bhTa && chuO != null && !hoiBh) return setHoiBh(true);
     setHoiBh(false);
     setErr(null);
-    const e = await c.run({ fn: 'march_tt', q: toi[0], r: toi[1] }, (x) => track('sm_march', { trong: chuO == null, trinh: !!trinh, tu_trinh: !!x?.tu_trinh }));
+    const e = await c.run({ fn: 'march', q: toi[0], r: toi[1] }, () => track('sm_march', { trong: chuO == null, mu: 1 }));
     setErr(e);
     c.reload(['map']);
   };
@@ -127,8 +123,7 @@ export function SmXuatChinh({ c }: { c: SmCtx }) {
         </div>
         {chuO != null && <HuyHieu id={map?.mon[String(chuO)]?.huy_hieu ?? 0} size={36} />}
       </div>
-      <div className="sm-steps">
-        <Step ten={tr('Trinh sát', 'Scout')} chu={trinh ? tr('xong', 'done') : tr('chưa', 'not yet')} kieu={trinh ? 'done' : ''} />
+      <div className="sm-steps" style={{ gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}>
         <Step ten={tr('Tập hợp', 'Gather')} chu={!chinh ? tr('30 phút', '30 min') : dangTap ? tr(`còn ${clock(tapHop - now)}`, `${clock(tapHop - now)} left`) : tr('xong', 'done')} kieu={!chinh ? '' : dangTap ? 'now' : 'done'} />
         <Step ten={tr('Di chuyển', 'Move')} chu={dangDi ? tr(`còn ${clock(toiNoi - now)}`, `${clock(toiNoi - now)} left`) : tr(`${SM_CFG.gio.diPhut} phút`, `${SM_CFG.gio.diPhut} min`)} kieu={dangDi ? 'now' : ''} />
         <Step ten={tr('Giao tranh', 'Battle')} chu={hhmm(new Date(toiNoi).toISOString())} kieu="" />
@@ -242,20 +237,16 @@ export function SmXuatChinh({ c }: { c: SmCtx }) {
       </section>
 
       <section className="sm-card">
-        {coHoi ? (
-          <CoHoiThe x={coHoi} dangTap={!!dangTap} />
-        ) : (
-          <>
-            <h3>{tr('Ước tính trận', 'Battle estimate')}</h3>
-            {chuO != null && trinh && <VsBar ta={ta} ho={ho} />}
-            <b style={{ color: ta > ho || chuO == null ? 'var(--jade)' : 'var(--red-d)', fontSize: 17 }}>{cau}</b>
-          </>
-        )}
-        {!coHoi && (
-          <p className="sm-note">
-            {tr('Đã tính Khí vận của môn ta và lợi thế sân nhà của họ. Họ thấy ta lúc xuất phát, ai đang online có 20 phút sang giữ thêm. Tới nơi lúc 0-7h thì bên giữ mạnh gấp đôi.', 'Includes our fortune and their home advantage. They see us leave and may reinforce. Arriving 0-7h doubles the defence.')}
+        {/* Tyler 19/11: không hiện thanh cơ hội, không ước tính. Đánh như mở túi mù: tới nơi mới biết thắng thua. */}
+        <h3>{chuO == null ? tr('Ô trống', 'Empty tile') : tr('Đánh mù', 'Blind battle')}</h3>
+        <p style={{ fontSize: 15 }}>
+          {chuO == null
+            ? tr('Tới nơi là cắm cờ.', 'Arrive and plant the flag.')
+            : tr('Không ai biết bên kia mạnh cỡ nào cho tới lúc quân tới nơi. Tới nơi, bên nào tổng Lực chiến lớn hơn thì thắng.', 'Nobody knows how strong they are until the army arrives. On arrival, the side with more total power wins.')}
         </p>
-        )}
+        <p className="sm-note">
+          {tr(`Lực ta lúc này: ${fmtN(ta)}${chinh ? ` (${chinh.n} người theo)` : ''}, đã tính Khí vận. Bên giữ có lợi thế sân nhà, 0-7h còn mạnh gấp đôi.`, `Our power now: ${fmtN(ta)}${chinh ? ` (${chinh.n} joined)` : ''}, fortune included. Defenders get a home bonus, doubled 0-7h.`)}
+        </p>
         <p className="sm-note">
           {tr(`Thắng: ô về tay môn ta, bảo hộ ${SM_CFG.gio.baoHoGio} giờ. Thua: người đi theo nghỉ ${SM_CFG.gio.nghiGio} giờ, không mất gì khác.`, `Win: the tile is ours, protected ${SM_CFG.gio.baoHoGio} h. Lose: marchers rest ${SM_CFG.gio.nghiGio} h, nothing else lost.`)}
         </p>

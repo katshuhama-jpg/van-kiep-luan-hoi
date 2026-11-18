@@ -389,6 +389,7 @@ Tyler hỏi 18/11: có người không trinh sát mà đánh luôn, thì sao bi�
 - Ghi chú:
   - Máy chủ và giao diện đã làm trong phiên chat 18/11 (e943d07, migration `son_mon_co_hoi_2026_11_18` + `son_mon_co_hoi_bo_uoc_2026_11_18`); mức thô `sm_uoc` BỎ theo Tyler 20:20 (chưa trinh sát vẫn "???"). Đêm 18/11 chỉ thêm đo và mô phỏng (d813930).
   - Mô phỏng `CH=1 npx tsx scripts/sim-son-mon.ts 1000` (Lực chiến 315 người thật, bên giữ đổi ±15% lúc tới): đánh mù thua 47,3%, nghỉ trung bình 3,2 giờ-người mỗi lệnh; có thanh Cơ hội (rút khi "Thấp") rút 40%, đánh 600 lần thua 12,2%, nghỉ 0,6 giờ-người mỗi lệnh. Phần "nhiễu ±35%" không còn (đã bỏ mức thô).
+  - Tyler 19/11 (sau bản đêm): KHÔNG hiện thanh Cơ hội thắng, không ước tính, đánh như mở túi mù. Đã bỏ thẻ Cơ hội/Ước tính ở màn xuất chinh (thay bằng thẻ "Đánh mù" chỉ ghi lực ta), bỏ bước "Trinh sát" trên thanh bước, phát lệnh dùng lại `vkl_sm_march` (không tự trinh sát). Nút trinh sát tay trên bản đồ vẫn giữ (không bắt buộc). Cáo thị 4.6.0 sửa dòng xuất chinh. Hàm máy chủ `vkl_sm_co_hoi`, `vkl_sm_march_tt` giữ nguyên, không gọi nữa.
   - Đo: `sm_co_hoi_xem` (lần đầu thấy thanh có số trinh sát), `sm_rut_quan` (đã có). Số 18/11: 11 lệnh xuất chinh đều vào ô trống, chưa có trận giữa môn, nên chưa có tỉ lệ thắng trước/sau. Đo lại từ 21/11.
 
 ## Ngày 8d - Người chơi đã "full": kết cục mới, cảnh giới mới, chọn thế giới khởi đầu (góp ý Hoang Le)
