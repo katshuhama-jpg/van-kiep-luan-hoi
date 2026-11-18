@@ -8,7 +8,7 @@ import type { SmMember, SmMonNguoi } from '@/lib/sonmon/api';
 import { hexDist, oToiDa, SM_CFG } from '@/lib/sonmon/data';
 import { DkForm } from './SmFound';
 import { NguoiList, NguoiSheet } from './SmNguoi';
-import { chucTen, fmtN, hhmm, Msg, type SmCtx, type SmDraft } from './ui';
+import { chucTen, fmtN, hhmm, Msg, smCo, type SmCtx, type SmDraft } from './ui';
 
 export function SmThanhVien({ c }: { c: SmCtx }) {
   const { st, members } = c;
@@ -107,7 +107,7 @@ export function SmThanhVien({ c }: { c: SmCtx }) {
         )}
         <p className="sm-note" style={{ padding: '4px 4px 0' }}>
           {tr('"Góp" là Khí vận góp hôm nay.', '"Gave" is fortune given today.')}
-          {tr(' Chạm một người để xem chân thân', ' Tap someone to see their true self')}{quyen ? tr(', xếp vào ô, đổi chức hoặc đuổi.', ', assign a tile, change rank or expel.') : '.'}
+          {tr(' Chạm một người để xem chân thân', ' Tap someone to see their true self')}{quyen ? (smCo(st).di ? tr(', xếp vào ô, đổi chức hoặc đuổi.', ', assign a tile, change rank or expel.') : tr(', đổi chức hoặc đuổi.', ', change rank or expel.')) : '.'}
         </p>
       </section>
 
@@ -180,7 +180,7 @@ export function SmThanhVien({ c }: { c: SmCtx }) {
             const tu = mb ? (mb.dung ?? (cd ? [cd.q, cd.r] : null)) : null;
             return (
               <>
-                {mb && xepDuoc(mb) && m.tiles.length > 0 && (
+                {mb && xepDuoc(mb) && m.tiles.length > 0 && smCo(st).di && (
                   <section className="sm-xep" aria-label={tr('Xếp vào ô', 'Assign to a tile')}>
                     <h3>{tr(`Xếp ${mb.ten} giữ ô`, `Assign ${mb.ten} to a tile`)}</h3>
                     <p className="sm-note">{tr(`Đang ${tenO(mb)}. Sang ô khác mất ${SM_CFG.gio.diPhut} phút mỗi ô đường đi, trong lúc đi không giữ ô nào.`, `Now: ${tenO(mb)}. Moving takes ${SM_CFG.gio.diPhut} min per tile; nothing is guarded on the way.`)}</p>

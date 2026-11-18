@@ -97,4 +97,9 @@ export function DongMinh() {
   return <p className="sm-note">{tr('Đồng minh: sắp có - các sơn môn kết minh để không đánh nhau và cùng giữ ô.', 'Alliances: coming - sects will ally so they do not fight and can hold tiles together.')}</p>;
 }
 
+/** 18/11: máy chủ đã có bảo hộ môn mới (moi_bh_toi) / đi đường khi đổi ô (di_toi) chưa. Chưa có thì giữ giao diện cũ. */
+export function smCo(st: { mon: object | null }) {
+  return { bh: !!st.mon && 'moi_bh_toi' in st.mon, di: !!st.mon && 'di_toi' in st.mon };
+}
+
 export const chucTen = (c: string) => (c === 'chu' ? tr('Môn chủ', 'Master') : c === 'lao' ? tr('Trưởng lão', 'Elder') : tr('Đệ tử', 'Disciple'));

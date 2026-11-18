@@ -8,7 +8,7 @@
 import { useState } from 'react';
 import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
-import type { SmCtx } from './ui';
+import { smCo, type SmCtx } from './ui';
 
 const HIEU_KEY = 'vkl.sm.baCau';
 
@@ -84,7 +84,7 @@ export function SmLuat({ c }: { c: SmCtx }) {
         <h2>{tr('Luật Sơn Môn', 'Sect rules')}</h2>
         <p>{tr('Chơi kiếp góp Khí vận. Khí vận làm môn mạnh. Môn mạnh thì giữ được đất. Hết Kỷ, môn nhiều đất nhất thắng.', 'Play lives to add Fortune. Fortune makes the sect strong. A strong sect holds land. Most land wins the era.')}</p>
       </section>
-      {HOI.map(([h, d, he, de], i) => (
+      {HOI.filter(([h]) => (h !== 'Môn mới có bị đánh ngay không?' || smCo(c.st).bh) && (h !== 'Giữ ô thế nào?' || smCo(c.st).di)).map(([h, d, he, de], i) => (
         <section key={h} className="sm-card sm-hoi">
           <button className="sm-hoi-q" aria-expanded={mo === i} onClick={() => setMo(mo === i ? null : i)}>
             <span>{tr(h, he)}</span>

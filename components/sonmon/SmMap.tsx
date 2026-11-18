@@ -7,7 +7,7 @@ import { track } from '@/lib/track';
 import type { SmMap, SmMapO, SmState } from '@/lib/sonmon/api';
 import { COI, HUY_MAU, hexDist, SM_CFG } from '@/lib/sonmon/data';
 import { HuyHieu } from './Pixel';
-import { DongMinh, fmtN, hhmm, mocGio, Msg, truoc, useNow, type SmCtx } from './ui';
+import { DongMinh, fmtN, hhmm, mocGio, Msg, smCo, truoc, useNow, type SmCtx } from './ui';
 
 const S = 24; // bán kính ô (px)
 const W = Math.sqrt(3) * S;
@@ -353,6 +353,7 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
   const tu = m.dung ?? (cdT ? [cdT.q, cdT.r] : null);
   const diPhut = tu ? SM_CFG.gio.diPhut * Math.max(1, hexDist({ q: tu[0], r: tu[1] }, { q, r })) : SM_CFG.gio.diPhut;
   const dangDi = dangDung && m.di_toi && new Date(m.di_toi).getTime() > now;
+  const coDi = smCo(st).di;
   return (
     <section className="sm-card">
       <div className="sm-row">
@@ -401,12 +402,17 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
             className="sm-btn main wide"
             disabled={c.busy}
             onClick={async () => {
-              const e = await c.run({ fn: 'guard', q, r }, () => track('sm_guard', { from: 'ban_do', phut: diPhut }));
+              const e = await c.run({ fn: 'guard', q, r }, () => track('sm_guard', { from: 'ban_do', phut: coDi ? diPhut : 0 }));
               setErr(e);
-              if (!e) setOk(tr(`Ngươi lên đường sang giữ ${ten}, ${diPhut} phút nữa tới. Trong lúc đi chưa giữ ô nào.`, `Heading to ${ten}, arriving in ${diPhut} min. You guard nothing on the way.`));
+              if (!e)
+                setOk(
+                  coDi
+                    ? tr(`Ngươi lên đường sang giữ ${ten}, ${diPhut} phút nữa tới. Trong lúc đi chưa giữ ô nào.`, `Heading to ${ten}, arriving in ${diPhut} min. You guard nothing on the way.`)
+                    : tr(`Ngươi sang đứng giữ ${ten}.`, `You now guard ${ten}.`),
+                );
             }}
           >
-            {tr(`Sang giữ ${ten} · đi ${diPhut} phút`, `Guard ${ten} · ${diPhut} min walk`)}
+            {coDi ? tr(`Sang giữ ${ten} · đi ${diPhut} phút`, `Guard ${ten} · ${diPhut} min walk`) : tr(`Đứng giữ ${ten}`, `Guard ${ten}`)}
           </button>
         )
       ) : (

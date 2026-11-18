@@ -169,7 +169,7 @@ export const SM_LOI: Record<string, string> = {
   SM_QUYEN: tr('Việc này cần môn chủ hoặc trưởng lão.', 'Only the master or elders can do this.'),
   SM_DU_O: tr('Môn đã giữ đủ ô. Cần thêm người mới đánh được ô mới.', 'Your sect holds its limit. Recruit more to take new land.'),
   SM_KHONG_KE: tr('Chỉ xuất chinh tới ô kề lãnh thổ.', 'You can only march to a tile next to your land.'),
-  SM_BAO_HO: tr('Ô này đang được bảo hộ (môn mới cắm cờ được bảo hộ 48 giờ, ô vừa bị chiếm được bảo hộ 6 giờ).', 'This tile is protected (new sects get 48 hours, freshly taken tiles 6 hours).'),
+  SM_BAO_HO: tr('Ô này đang được bảo hộ, chưa đánh được. Chạm ô trên bản đồ để xem còn bao lâu.', 'This tile is protected. Tap it on the map to see how long.'),
   SM_DANG_CHINH: tr('Môn đang có một lệnh xuất chinh.', 'Your sect already has a march under way.'),
   SM_NGHI: tr('Ngươi đang nghỉ sau trận thua.', 'You are resting after a defeat.'),
   SM_DA_DIEM_DANH: tr('Hôm nay đã điểm danh.', 'Already checked in today.'),
