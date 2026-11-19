@@ -32,6 +32,15 @@ Luật hiệu năng và chi phí (Tyler chốt 18/11, MỖI ĐÊM, kể cả đ�
 3. Việc lớn hơn (đổi gói, đổi kiến trúc, tắt tính năng) thì KHÔNG tự làm, ghi đề xuất kèm số tiền tiết kiệm ước tính.
 4. Ghi một dòng vào `docs/so-lieu.md` mục "Hiệu năng và chi phí" (ngày, chi phí 24h, 3 câu tốn nhất, đã sửa gì, số trước/sau) và gửi Tyler trong báo cáo sáng.
 
+## Ngày 7 - Phiên đầu của người mới (ƯU TIÊN TRƯỚC MỌI KHỐI, Tyler 19/11 tối)
+Lên bản: 2026-11-20 (hoặc 21 nếu chưa kịp).
+Lý do (số 13-19/11, xem tang-truong.md mục quảng cáo Chân Thân): người mới vào thẳng /choi thì 951/1.588 (60%) thấy màn "Kiếp đầu tiên" rồi đi sau trung vị 4,5 giây, chưa bấm "Vào kiếp đầu". Người mới quay lại hôm sau chỉ ~12% (cả quảng cáo lẫn tự đến). Người đến qua link mời/chia sẻ (nguồn "other") quay lại ~29%.
+- [ ] Đo trước: thêm vào `open`/`first_simple` số ms từ lúc điều hướng tới lúc màn đầu hiện (performance.now()) và `navigator.connection.effectiveType` nếu có, để tách "tải chậm" với "không muốn chơi".
+- [ ] Người chưa có kiếp nào vào /choi: không dừng ở màn chờ bấm. Màn "Kiếp đầu tiên" thành lớp phủ ngắn rồi tự đầu thai sau khoảng 2 giây (có nút "Vào luôn"); năm đầu trôi nhanh, lựa chọn đầu tiên xuất hiện trong khoảng 10 giây. Cờ mới, mặc định bật. Đo: tỉ lệ người mới có life_start (mục tiêu từ 50% lên 75%), ms tới first_choice.
+- [ ] Kiếp 1 của người mới gọn hơn (khoảng 3-5 phút tới kết cục), kết kiếp dẫn thẳng vào tạo chân thân; cuối phiên hiện "Quà ngày mai" khóa sẵn (điểm danh ngày 2) để có lý do quay lại. Đo: xong kiếp 1, tạo chân thân, quay lại hôm sau.
+- [ ] Vòng mời: sau kết cục kiếp 1-2 và ở màn chân thân, nút chia sẻ thẻ kết cục / mời Sư Đồ rõ hơn (link mang ?su= hoặc ref), đo `share` và người đến qua link.
+Ghi chú: không chạy quảng cáo tới khi người mới tự đến quay lại hôm sau từ 20% trở lên 3 ngày liền.
+
 ## Ngày 8 - Khai hoang, bản đồ to, hướng dẫn người trong môn
 Lên bản: 2026-11-19. Cáo thị: thêm dòng vào 4.6.0 (đã có dòng Khai hoang + bản đồ).
 Lý do (số 18/11 chiều): 11 môn, 69 người, 18/127 ô có chủ, 8 xuất chinh đều tới ô trống, 0 trận giữa môn; 2 môn 15 người chỉ giữ 1 ô vì tưởng mở rộng là phải đánh. Chi tiết: docs/brainstorm-son-mon-ky1.md.
