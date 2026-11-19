@@ -67,10 +67,13 @@ export default function Home() {
           <Link href="/so-sinh-tu" className="btn" style={link}>
             {tr('Sổ Sinh Tử', 'Life & Death')}
           </Link>
-          {!TAB_ON && (
-            <Link href="/gop-y" className="btn" style={link}>
-              {tr('Góp ý', 'Feedback')}
-            </Link>
+          <Link href="/gop-y" className="btn" style={link} onClick={() => track('gop_y_open', { from: 'home' })}>
+            {tr('Góp ý', 'Feedback')}
+          </Link>
+          {TAB_ON && (
+            <a href={FB_PAGE} target="_blank" rel="noopener noreferrer" className="btn" style={link} onClick={() => track('fb_open', { from: 'home' })}>
+              {tr('Fanpage', 'Facebook')}
+            </a>
           )}
           {!TAB_ON && (
             <Link href="/cap-nhat" className="btn" style={link}>
