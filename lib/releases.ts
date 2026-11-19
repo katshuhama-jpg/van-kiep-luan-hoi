@@ -24,6 +24,39 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '4.6.1',
+    date: '20/11/2026',
+    title: tr('Đánh ô môn khác, Thiên thư quyển III', "Attack other sects' tiles, Heavenly Tome Volume III"),
+    lead: tr('Môn đủ ô vẫn xuất chinh được. Thiên thư mở quyển III. Ba điều đạo hữu góp ý đã làm.', 'Sects at their tile limit can still march. The Heavenly Tome opens Volume III. Three things you asked for are done.'),
+    asked: [
+      { who: 'Aurora Vonka', short: tr('Thần binh chờ kiếp sau, giữ nguyên bậc', 'Heirloom weapon waits, keeps its tier'), text: tr('Kiếp sau chết trước khi rút thần binh thì thần binh vẫn chờ kiếp tiếp theo.', 'If your next life dies before drawing it, the weapon waits for the life after.') },
+      { who: 'Phan Anh Tuấn', short: tr('Lôi đài xếp bóng theo sức mạnh thật', 'Arena shadows ranked by real strength'), text: tr('Danh sách chọn bóng xếp theo Huyết, Công, Thủ; bóng đã chọn giữ qua ngày.', 'The shadow list is ranked by HP, Attack, Defense; your pick carries over.') },
+      { who: 'godwhale99', short: tr('Trừ yêu xếp quái theo cấp', 'Demon hunting sorted by level'), text: tr('Danh sách quái xếp từ cấp thấp tới cao.', 'Monsters listed from lowest to highest level.') },
+    ],
+    more: [tr('Môn đủ ô vẫn đánh ô môn khác', 'Full sects can still attack'), tr('Thiên thư quyển III', 'Heavenly Tome Vol. III'), tr('Mời đạo hữu ngay trong game', 'Invite friends in the game'), tr('Từ 21/11 xếp hạng theo Điểm giữ đất', 'From Nov 21, ranking by Land Points')],
+    cta: { label: tr('Vào Sơn Môn', 'Open Sects'), go: 'sonmon' },
+    groups: [
+      {
+        h: tr('Mới 20/11', 'New on Nov 20'),
+        hot: true,
+        items: [
+          tr('Thiên thư có thêm quyển III "Cơm Chiều" cho ai đã xong quyển II. Chặng đầu có 5 trang, xem ở Sổ Sinh Tử, mục Thiên thư.', 'The Heavenly Tome has a Volume III, "Evening Rice", for anyone who finished Volume II. The first part has 5 pages; find them in the Book of Life and Death, Heavenly Tome section.'),
+          tr('Sơn Môn: môn đã giữ đủ ô vẫn xuất chinh đánh ô của môn khác được. Thắng thì ô về tay môn ta, môn tự bỏ lại ô xa chính điện nhất. Ở Môn nhà và Bản đồ có thẻ "Ô kề có thể đánh", chạm là mở ô đó.', 'Sects: a sect at its tile limit can still march on another sect\'s tile. Win and the tile is ours; the sect leaves its tile farthest from the main hall. The Home and Map tabs show "Tiles we can attack"; tap one to open it.'),
+          tr('Từ 5:00 sáng 21/11, hạng Kỷ tính theo Điểm giữ đất: giữ ô càng lâu càng nhiều điểm, ô quý được nhiều hơn ô thường. Mọi môn bắt đầu từ 0.', 'From 5:00 AM on Nov 21, the era ranking counts Land Points: the longer you hold a tile, the more points, and rare tiles give more than plain ones. Every sect starts from 0.'),
+        ],
+      },
+      {
+        h: tr('Sửa lỗi 20/11', 'Fixes on Nov 20'),
+        items: [
+          tr('Sơn Môn: nút "Mời người chưa có môn" giờ mời ngay trong game. Tìm đạo hữu theo tên, bấm Mời; người đó thấy lời mời ở tab Sơn Môn và trong Thư, bấm Nhận là vào môn. Môn chờ ký cũng nhờ đạo hữu ký ngay trong game như vậy.', 'Sects: "Invite someone without a sect" now invites in the game. Search by name and tap Invite; they see it in the Sects tab and in Mail, and join with Accept. Sects waiting for signatures can ask for co-signs the same way.'),
+          tr('Trừ yêu: danh sách quái xếp theo cấp từ thấp tới cao. Cảm ơn godwhale99.', 'Demon hunting: monsters are now listed from lowest to highest level. Thanks to godwhale99.'),
+          tr('Thần binh truyền kiếp: kiếp sau chưa kịp rút thần binh lên (chết trước 12 tuổi) thì thần binh vẫn chờ kiếp tiếp theo, giữ nguyên bậc. Chỉ mất khi chọn "Để nó yên nghỉ" hoặc uống canh Mạnh Bà. Cảm ơn Aurora Vonka.', 'Heirloom weapon: if your next life dies before drawing it (before age 12), it waits for the life after, keeping its tier. It is only lost if you choose "Let it rest" or drink Meng Po\'s soup. Thanks to Aurora Vonka.'),
+          tr('Lôi đài: danh sách chọn bóng xếp theo sức mạnh thật (Huyết, Công, Thủ) chứ không theo cảnh giới, kiếp đang ra đài luôn nằm trong danh sách, và sang ngày mới giữ nguyên bóng đạo hữu đã chọn. Cảm ơn Phan Anh Tuấn.', 'Arena: the shadow list is ranked by real strength (HP, Attack, Defense) instead of realm, your fielded life always stays in the list, and your pick carries over to the next day. Thanks to Phan Anh Tuan.'),
+        ],
+      },
+    ],
+  },
+  {
     v: '4.6.0',
     date: '18/11/2026',
     title: tr('Sơn Môn', 'Sects'),
@@ -52,24 +85,6 @@ export const RELEASES: Release[] = [
           tr('Xuất chinh: trinh sát trước thì thấy ước tính lực hai bên; không trinh sát thì đánh như mở túi mù, tới nơi mới biết. Màn tập hợp có đồng hồ 30 phút, hết giờ môn tự đi đánh với người đã theo. Môn chủ và trưởng lão rút quân được trong lúc tập hợp, không ai phải nghỉ.', 'Marches: scout first to see an estimate of both sides; skip scouting and it is a blind draw until the army arrives. Gathering shows a 30-minute clock; when it ends the sect marches with whoever joined. Leaders can call it off while gathering, nobody rests.'),
           tr('Môn chủ vắng mặt 48 giờ thì ai trong môn cũng mở được cuộc bầu môn chủ mới ở tab Thành viên. Bầu trong 24 giờ, mỗi người 1 phiếu, ai được quá nửa thì lên ngay. Môn chủ quay lại thì bầu hủy. Cảm ơn Chí Triệu Kiên.', 'If the leader is away for 48 hours, anyone can start a leader vote in the Members tab. It runs 24 hours, one vote each, and a majority wins at once. If the leader returns, the vote is cancelled. Thanks to Chi Trieu Kien.'),
           tr('Phần thưởng Kỷ 1 (phát một lần lúc kết Kỷ, 21:00 1/12): môn hạng 1 nhận Thần phẩm, hạng 2 Tiên phẩm, hạng 3 Linh phẩm, hạng 4-10 Bảo phẩm. Trong môn, 7 người nhiều Công nhất nhận vũ khí, mỗi hạng một loại từ kiếm tới song chùy, môn chủ nhận thêm ấn. Công có từ điểm danh, nhiệm vụ, khai hoang, theo xuất chinh và đứng giữ ô. Pháp bảo có chỉ số như đồ trong Mộng, dùng mãi, lắp vào chân thân để cộng Tu vi. Xem ở nút Phần thưởng trên thẻ môn.', 'Era 1 rewards (handed out once when the era ends, Dec 1, 9 PM): the top sect gets Divine grade, 2nd Immortal, 3rd Spirit, 4th-10th Treasure. In each sect the 7 members with the most merit get weapons, one kind per rank from sword to twin maces, and the leader also gets a seal. Merit comes from check-ins, tasks, claiming land, joining marches and guarding tiles. Treasures carry stats like dream gear, never expire, and go on your true self to raise cultivation. See the Rewards button on your sect card.'),
-        ],
-      },
-      {
-        h: tr('Mới 20/11', 'New on Nov 20'),
-        hot: true,
-        items: [
-          tr('Thiên thư có thêm quyển III "Cơm Chiều" cho ai đã xong quyển II. Chặng đầu có 5 trang, xem ở Sổ Sinh Tử, mục Thiên thư.', 'The Heavenly Tome has a Volume III, "Evening Rice", for anyone who finished Volume II. The first part has 5 pages; find them in the Book of Life and Death, Heavenly Tome section.'),
-          tr('Sơn Môn: môn đã giữ đủ ô vẫn xuất chinh đánh ô của môn khác được. Thắng thì ô về tay môn ta, môn tự bỏ lại ô xa chính điện nhất. Ở Môn nhà và Bản đồ có thẻ "Ô kề có thể đánh", chạm là mở ô đó.', 'Sects: a sect at its tile limit can still march on another sect\'s tile. Win and the tile is ours; the sect leaves its tile farthest from the main hall. The Home and Map tabs show "Tiles we can attack"; tap one to open it.'),
-          tr('Từ 5:00 sáng 21/11, hạng Kỷ tính theo Điểm giữ đất: giữ ô càng lâu càng nhiều điểm, ô quý được nhiều hơn ô thường. Mọi môn bắt đầu từ 0.', 'From 5:00 AM on Nov 21, the era ranking counts Land Points: the longer you hold a tile, the more points, and rare tiles give more than plain ones. Every sect starts from 0.'),
-        ],
-      },
-      {
-        h: tr('Sửa lỗi 20/11', 'Fixes on Nov 20'),
-        items: [
-          tr('Sơn Môn: nút "Mời người chưa có môn" giờ mời ngay trong game. Tìm đạo hữu theo tên, bấm Mời; người đó thấy lời mời ở tab Sơn Môn và trong Thư, bấm Nhận là vào môn. Môn chờ ký cũng nhờ đạo hữu ký ngay trong game như vậy.', 'Sects: "Invite someone without a sect" now invites in the game. Search by name and tap Invite; they see it in the Sects tab and in Mail, and join with Accept. Sects waiting for signatures can ask for co-signs the same way.'),
-          tr('Trừ yêu: danh sách quái xếp theo cấp từ thấp tới cao. Cảm ơn godwhale99.', 'Demon hunting: monsters are now listed from lowest to highest level. Thanks to godwhale99.'),
-          tr('Thần binh truyền kiếp: kiếp sau chưa kịp rút thần binh lên (chết trước 12 tuổi) thì thần binh vẫn chờ kiếp tiếp theo, giữ nguyên bậc. Chỉ mất khi chọn "Để nó yên nghỉ" hoặc uống canh Mạnh Bà. Cảm ơn Aurora Vonka.', 'Heirloom weapon: if your next life dies before drawing it (before age 12), it waits for the life after, keeping its tier. It is only lost if you choose "Let it rest" or drink Meng Po\'s soup. Thanks to Aurora Vonka.'),
-          tr('Lôi đài: danh sách chọn bóng xếp theo sức mạnh thật (Huyết, Công, Thủ) chứ không theo cảnh giới, kiếp đang ra đài luôn nằm trong danh sách, và sang ngày mới giữ nguyên bóng đạo hữu đã chọn. Cảm ơn Phan Anh Tuấn.', 'Arena: the shadow list is ranked by real strength (HP, Attack, Defense) instead of realm, your fielded life always stays in the list, and your pick carries over to the next day. Thanks to Phan Anh Tuan.'),
         ],
       },
       {

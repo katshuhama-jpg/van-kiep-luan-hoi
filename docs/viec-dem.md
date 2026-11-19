@@ -41,7 +41,7 @@ Lên bản: 2026-11-22 (làm 20-21/11, mỗi đêm một phần, giấu sau cờ
 - Ghi chú:
 
 ## Ngày 10 - Kỷ 2 làm sớm: giao diện, bật cờ
-Lên bản: 2026-11-21. Bật cờ `SM_DAT_ON` lúc 5:00 21/11 (điểm bắt đầu tính). Có cáo thị 4.6.1 (bản mới): "Đất có giá": Linh Mạch, Thiên Trì, yêu thú, điểm giữ đất, luật dải sức mạnh.
+Lên bản: 2026-11-21. Bật cờ `SM_DAT_ON` lúc 5:00 21/11 (điểm bắt đầu tính). Có cáo thị 4.6.2 (bản mới; 4.6.1 đã dùng cho 20/11): "Đất có giá": Linh Mạch, Thiên Trì, yêu thú, điểm giữ đất, luật dải sức mạnh.
 - [ ] Bản đồ: biểu tượng pixel Linh Mạch (mạch ngọc xanh), Thiên Trì (hồ sen vàng), yêu thú (đầu thú đỏ, ghi lực giữ); chú thích; chạm ô ghi "+3 điểm mỗi giờ, +2 Khí vận mỗi sáng".
 - [ ] Môn nhà: thẻ Lãnh thổ thêm "Điểm Kỷ: 1.240 · +9 mỗi giờ"; Xếp hạng Kỷ theo điểm (vẫn ghi số ô).
 - [ ] Xuất chinh: ô ngoài dải ghi lý do "Môn này yếu hơn 1/3 môn ta, đánh không được trừ ở Linh Mạch và Thiên Trì"; ô yêu thú ghi "Đánh máy, thắng mỗi người +10 phúc duyên".
