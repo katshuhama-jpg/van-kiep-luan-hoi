@@ -267,7 +267,7 @@ export function applyProphecy(c: Character, pr: { id: string } | null | undefine
 // ---------------- Kết cục sắp mở ----------------
 /** Gợi ý 2 kết cục chưa mở, ưu tiên kết cục hợp con đường đang đi */
 export function nearEndings(c: Character, opened: Record<string, number> | undefined): { name: string; hint: string }[] {
-  const left = ENDINGS.filter((e) => !opened?.[e.id] && e.id !== 'bat_dac');
+  const left = ENDINGS.filter((e) => !opened?.[e.id] && e.id !== 'bat_dac' && (c.tt3 !== undefined || !e.id.startsWith('tt3_')));
   const pref: Record<string, string[]> = {
     kiem: ['kiem_than'],
     dan: ['dan_thanh'],

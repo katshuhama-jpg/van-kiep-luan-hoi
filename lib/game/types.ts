@@ -146,6 +146,8 @@ export interface Character {
   loreDone?: boolean; // đã gom đủ Thiên thư: kiếp này sẽ gặp lại chính mình
   quyNhat?: boolean; // tài khoản đã từng đạt Vạn Kiếp Quy Nhất: không gặp lại, đeo chuông vàng
   lore2?: number; // số mảnh Quyển II đã mở lúc đầu thai
+  tt3?: number; // Ngày 8e: số kết cục mạch chính Thiên thư quyển III đã có lúc đầu thai (không có = quyển III chưa mở)
+  tt3Nhanh?: 'go' | 'dap'; // nhánh quyển II đã chọn (gõ hay đập chuông)
   bell?: number; // Kẻ Gõ Chuông: 1 đã đánh bại (cầm dùi chuông), 2 đã chọn gõ hay đập
   kiepSo?: number; // Kiếp Số hiệu lực lúc đầu thai (Luân Hồi Đạo)
   kiepTich?: number; // kiếp tích: mỗi điểm +5% đột phá
@@ -356,6 +358,7 @@ export interface Meta {
   career?: Career; // số liệu cộng dồn qua các kiếp
   quyThuong?: boolean; // đã nhận thưởng Vạn Kiếp Quy Nhất
   chuongWin?: boolean; // đã đánh bại Kẻ Gõ Chuông
+  tt3Nhanh?: 'go' | 'dap'; // Ngày 8e: nhánh quyển II, đặt một lần khi quyển III mở
   checkin?: string; // 3.2.0 ngày (giờ VN) đã nhận quà điểm danh
   checkinNext?: { money?: number; item?: string; tinh?: number }; // quà điểm danh dành cho kiếp kế tiếp
   honPill?: { day: string; n: number }; // Hoàn Hồn Đan đã uống trong ngày

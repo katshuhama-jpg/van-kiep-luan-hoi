@@ -111,11 +111,20 @@ Tyler 20:44 18/11: suy nghĩ kỹ về bình luận Facebook (bài "Đủ 30: +1
 ## Ngày 8e - Thiên thư quyển III: khung + chặng 1 (giấu sau cờ)
 Lên bản: 2026-11-20. Giấu sau cờ `TT3_ON` (tắt mặc định) tới khi thử sạch; bật trong cùng khối nếu sạch. Có cáo thị: thêm một dòng vào bản gần nhất "Thiên thư quyển III mở chặng 1 cho ai đã xong quyển II". Làm SAU các khối Sơn Môn tới hạn cùng đêm (Ngày 9). Kỹ năng: `anthropic-skills:gamedev` (save-systems cho trường Meta mới), `anthropic-skills:game-design` (player-experience), `anthropic-skills:story-writing`, `anthropic-skills:humanizer`.
 Nguồn: `docs/thien-thu-3.md` mục 4, 5 (chặng 1), 9; `docs/thiet-ke-hau-ky.md` mục 1, 4. Chữ lấy đúng từng chữ trong `docs/thien-thu-3.md`.
-- [ ] Khung: `LORE` thêm `book: 3` (trang XXI-XL), tab quyển III ở màn Thiên thư (chưa mở thì ghi lý do ngay trên tab: "Xong quyển II để mở"), `m.tt3Nhanh` (đặt một lần), `c.tt3` lúc đầu thai, hàm `tt3Endings(c, meta)` ghi kèm cạnh `alsoEndings`, mạch chính mở đúng thứ tự. Sổ Sinh Tử đếm đúng số kết cục đã có code.
-- [ ] Chặng 1: `tt3_du_am`, `tt3_dong_xanh`, `tt3_lang_duoi_nui`, `tt3_tre_quy_cua` (trọng số `nhan_de_tu` x5 khi `c.tt3 === 3`), `tt3_tieng_dau` (móc nút Uống ở cầu Nại Hà) và `tt3_than_khong_mong`.
-- [ ] Thử: `sim-do-kho 3000` trước/sau (kiếp thường không đổi), đo số kiếp trung bình để gặp đứa trẻ quỳ ở trang XXIV (mục tiêu dưới 4), Playwright 390x844 màn Thiên thư quyển III (người mới: không thấy tab; người full: thấy trang XXI), smoke như thường.
-- [ ] Đo: `tt3_mo` (mở trang), số người đạt từng kết cục chặng 1 sau 3 ngày.
+- [x] Khung: `LORE` thêm `book: 3` (trang XXI-XL), tab quyển III ở màn Thiên thư (chưa mở thì ghi lý do ngay trên tab: "Xong quyển II để mở"), `m.tt3Nhanh` (đặt một lần), `c.tt3` lúc đầu thai, hàm `tt3Endings(c, meta)` ghi kèm cạnh `alsoEndings`, mạch chính mở đúng thứ tự. Sổ Sinh Tử đếm đúng số kết cục đã có code.
+- [x] Chặng 1: `tt3_du_am`, `tt3_dong_xanh`, `tt3_lang_duoi_nui`, `tt3_tre_quy_cua` (trọng số `nhan_de_tu` x5 khi `c.tt3 === 3`), `tt3_tieng_dau` (móc nút Uống ở cầu Nại Hà) và `tt3_than_khong_mong`.
+- [x] Thử: `sim-do-kho 3000` trước/sau (kiếp thường không đổi), đo số kiếp trung bình để gặp đứa trẻ quỳ ở trang XXIV (mục tiêu dưới 4), Playwright 390x844 màn Thiên thư quyển III (người mới: không thấy tab; người full: thấy trang XXI), smoke như thường.
+- [x] Đo: `tt3_mo` (mở trang), số người đạt từng kết cục chặng 1 sau 3 ngày.
+- Xong: 2026-11-19 (commit "Ngày 8e")
 - Ghi chú:
+  - Cờ `TT3_ON` (lib/flags.ts) bật mặc định vì thử sạch; tắt gấp bằng `NEXT_PUBLIC_TT3=0`.
+  - Code: `lib/game/tt3.ts` (TT3_MAIN, tt3Born gắn `c.tt3`/`c.tt3Nhanh` lúc đầu thai, tt3Endings ghi kèm, tt3AtBridge cho XXV, TT3_PAGES chữ đúng từng chữ docs/thien-thu-3.md). Trang Thiên thư quyển III làm riêng trong `TT3_PAGES` (không nhét vào LORE để không đụng đếm quyển I/II); `m.tt3Nhanh` đặt một lần khi kiếp khép mà quyển III đã mở; XXI có bản nhánh đập chuông. Kết cục ghi kèm xét SAU khai huyệt nên Thân Không Mơ đọc đúng số huyệt. Sổ Sinh Tử 95 -> 101. Gợi ý "gần mở nhất" không đưa kết cục quyển III cho người chưa mở quyển.
+  - Màn Thiên thư: tab quyển III chỉ hiện cho người đã mở quyển II; chưa xong quyển II thì tab ghi "Xong quyển II để mở". Trang chưa tới lượt ghi "Mở trang trước đã.", sau XXV có dòng "XXVI. Còn đang chép.".
+  - sim-do-kho 3000 (thêm biến TT3): kiếp thường không đổi (tuổi chết TB 108 và 110, Trúc Cơ 78,0% và 78,7%, sai số ngẫu nhiên). Nhận đồ đệ: 21,3% số kiếp (4,7 kiếp mới gặp) -> 31,4% khi đang ở trang XXIV (3,2 kiếp), đạt mục tiêu dưới 4 (người full lên Trúc Cơ chắc chắn nên còn nhanh hơn).
+  - Playwright 390x844: người full thấy 3 tab, quyển III 2/5, XXII mở sẵn, XXIII hiện cách mở; người mới chỉ thấy 2 tab (Quyển II phong ấn). Không lỗi trang. Smoke đủ 5 bộ OK.
+  - Đo: sự kiện `tt3_mo` (ids, lifeNo), `tt3_tab`. Sau 3 ngày đếm `vkl_players.meta->'endings'` có từng id tt3_.
+  - huashu-design chấm 5 mặt màn quyển III: nhất quán 9 (dùng đúng khung tt-list có sẵn), thứ bậc 8, chi tiết 7, dễ dùng 8, mới lạ 6 (lặp màn cũ, đúng ý đồ). Không có lỗi nặng. Cổng 3 hướng không chạy: màn lặp trong phong cách sẵn có.
+  - Cáo thị: nhóm "Mới 20/11" trong 4.6.0 (quyển III + báo trước Điểm giữ đất từ 5:00 21/11 cho Ngày 9).
 
 ## Ngày 8f - Chọn thế giới khởi đầu khi đầu thai (giấu sau cờ)
 Lên bản: 2026-11-22 (làm 20-21/11, mỗi đêm một phần, giấu sau cờ `KHOI_DAU_ON`). Có cáo thị khi bật. Nguồn: `docs/thiet-ke-hau-ky.md` mục 3 (Phàm, Tu chân, Tiên, Hồng Hoang; mở khi đạt mốc 5 lần; phúc duyên x0,8 / x0,6 / x0,5; ô khóa ghi lý do ngay trên ô).

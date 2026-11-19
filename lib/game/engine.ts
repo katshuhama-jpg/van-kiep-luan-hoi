@@ -5,6 +5,7 @@ import { applyHeir, cpCultMul, cpYear } from './congPhap';
 import { sealLv } from './forge';
 import { applyProphecy, checkNewbieGoal, newbieGoal, omenIs } from './hook';
 import { loreDone, lore2Count, quyNhatDone } from './lore';
+import { tt3Born } from './tt3';
 import { ksBreak, ksOf, ksPhuc } from './luanHoi';
 import { CHAN_TRUYEN_BREAK, leaveSect, promoteByRealm, rankOf, sectConflict, sectCultMul, sectSide } from './sect';
 import {
@@ -225,6 +226,7 @@ export function newCharacter(meta: Meta, gifts: string[] = [], base?: Character)
   c.loreDone = loreDone(meta);
   c.quyNhat = quyNhatDone(meta);
   c.lore2 = lore2Count(meta);
+  tt3Born(c, meta);
   c.kiepSo = ksOf(meta);
   c.kiepTich = meta.kiepTich ?? 0;
   c.bell = meta.endings?.go_chuong || meta.endings?.dap_chuong ? 2 : meta.chuongWin ? 1 : 0;
@@ -692,6 +694,8 @@ function pickEvent(c: Character): GameEvent | null {
     if (e.id === 'dao_lu' && c.focus === 'ket_duyen') w *= 4;
     if (e.id === 'dao_lu' && hasGift(c, 'g_dao_hoa')) w *= 3;
     if (e.id === 'he_thong' && hasGift(c, 'g_he_thong')) w *= 300;
+    // Ngày 8e: đang ở trang XXIV quyển III thì đứa trẻ quỳ trước cửa tới sớm hơn
+    if (e.id === 'nhan_de_tu' && c.tt3 === 3) w *= 5;
     if (CO_DUYEN_EVENTS.has(e.id) && c.coDuyenUntil !== undefined && c.age <= c.coDuyenUntil) w *= CO_DUYEN_MUL;
     return { e, w };
   });

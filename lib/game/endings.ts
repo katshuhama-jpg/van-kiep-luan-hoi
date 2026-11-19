@@ -1,5 +1,6 @@
 import type { Character } from './types';
 import { tr } from '../i18n';
+import { TT3_ON } from '../flags';
 
 /** Sổ Sinh Tử: các kết cục có thể mở. Thứ tự kiểm tra từ hiếm tới thường. */
 export interface Ending {
@@ -548,6 +549,17 @@ export const ENDINGS: Ending[] = [
     test: () => true,
   },
 ];
+
+/** Ngày 8e: Thiên thư quyển III chặng 1 + Thân Không Mơ. Chỉ ghi kèm (tt3Endings) hoặc ghi thẳng ở cầu Nại Hà, không làm kết cục chính. */
+const TT3_ENDINGS: Ending[] = [
+  { id: 'tt3_du_am', name: tr('Dư Âm', 'Afterring'), desc: tr('Chuông lớn đã có số phận của nó. Vậy mà chiều nay vẫn có một tiếng leng keng rất nhỏ, gọi bạn từ phía núi tuyết.', 'The great bell has met its fate. Yet this evening a tiny chime still calls to you from the snowy peak.'), hint: tr('Chuông đã xong, sao còn tiếng?', 'The bell is settled. Why is there still a sound?'), how: tr('Xong Thiên thư quyển II (gõ hay đập chuông đều được), rồi khép một kiếp sống qua 16 tuổi.', 'Finish Heavenly Tome Volume II (ring or shatter, either works), then end a life after age 16.'), rare: 2, test: () => false },
+  { id: 'tt3_dong_xanh', name: tr('Mảnh Đồng Rỉ Xanh', 'Green-Rusted Bronze'), desc: tr('Lẫn trong ấn Kim gom từ quái có một vảy đồng cũ, xanh rỉ, in vết răng sữa của một đứa trẻ.', "Among the Metal seals you took from monsters is an old flake of bronze, green with rust, marked by a child's milk teeth."), hint: tr('Kim nào cũng từng là một thứ gì đó.', 'All metal was once something else.'), how: tr('Đã có Dư Âm. Trong một kiếp, gom đủ 3 Ngũ Hành Ấn hệ Kim (diệt quái hệ Kim không ở mức Dễ) rồi khép kiếp.', 'Have Afterring. In one life, collect 3 Metal Five Element Seals (slay Metal monsters above Easy), then end that life.'), rare: 2, test: () => false },
+  { id: 'tt3_lang_duoi_nui', name: tr('Làng Dưới Chân Núi Tuyết', 'The Village Below the Snow'), desc: tr('Đủ sức bay lên mà bạn ở lại làng, già đi cùng ruộng lúa. Bà cụ nhà bên kể chuyện một cái chuông bị bẻ mất góc.', 'Strong enough to rise, you stayed in the village and grew old with the rice fields. The old woman next door tells of a bell with a broken corner.'), hint: tr('Dưới chân núi tuyết có làng không?', 'Is there a village below the snowy peak?'), how: tr('Đã có Mảnh Đồng Rỉ Xanh. Đạt Hóa Thần trở lên nhưng không phi thăng, sống ở phàm giới tới khi hết thọ nguyên.', 'Have Green-Rusted Bronze. Reach Spirit Transformation or higher but do not ascend; live in the mortal world until your lifespan runs out.'), rare: 3, test: () => false },
+  { id: 'tt3_tre_quy_cua', name: tr('Đứa Trẻ Quỳ Trước Cửa', 'The Child at the Door'), desc: tr('Bạn mở cửa cho đứa trẻ quỳ trong tuyết. Đêm ấy bạn mơ thấy một đứa trẻ khác gõ cổng núi suốt ba năm.', 'You opened the door for the child kneeling in the snow. That night you dreamed of another child who knocked at a mountain gate for three years.'), hint: tr('Có người từng gõ cửa rất lâu.', 'Someone once knocked for a very long time.'), how: tr('Đã có Làng Dưới Chân Núi Tuyết. Trong một kiếp, gặp đứa trẻ quỳ trước động phủ và nhận nó làm đồ đệ, rồi khép kiếp.', 'Have The Village Below the Snow. In one life, meet the child kneeling at your cave abode and take them as a disciple, then end that life.'), rare: 3, test: () => false },
+  { id: 'tt3_tieng_dau', name: tr('Tiếng Chuông Đầu Tiên', 'The First Toll'), desc: tr('Bên cầu Nại Hà, Mạnh Bà lắc một chiếc chuông đồng nhỏ trước khi múc canh. Đó là tiếng bạn nghe mỗi chiều.', 'At Naihe Bridge, Meng Po shakes a small bronze bell before she ladles the soup. It is the sound you hear every evening.'), hint: tr('Tiếng chuông đầu tiên không đếm ai.', 'The first toll counted no one.'), how: tr('Đã có Đứa Trẻ Quỳ Trước Cửa. Lần qua cầu Nại Hà ngay sau đó, chọn uống canh.', 'Have The Child at the Door. At your very next crossing of Naihe Bridge, choose to drink the soup.'), rare: 4, test: () => false },
+  { id: 'tt3_than_khong_mong', name: tr('Thân Không Mơ', 'The Body That Does Not Dream'), desc: tr('Mười huyệt đã khai. Một đêm chân thân không mơ, và bạn nghe tim mình đập, lần đầu không theo nhịp chuông.', 'All ten points are open. One night your true self does not dream, and you hear your own heart beating, for once not in time with the bell.'), hint: tr('Ngươi có còn muốn mơ nữa không?', 'Do you still wish to dream?'), how: tr('Đã có Dư Âm. Khai đủ 10 đại huyệt của chân thân và có ít nhất một hành viên mãn trong Tam Tài.', 'Have Afterring. Open all 10 great points of your true self and have at least one element fully complete in the Three Treasures.'), rare: 4, test: () => false },
+];
+if (TT3_ON) ENDINGS.splice(ENDINGS.length - 1, 0, ...TT3_ENDINGS);
 
 /** Kết cục vào cõi (phi thăng, Ma Tôn, Thái Hư) vẫn được ghi vào Sổ Sinh Tử khi chết ở cõi đó vì một kết cục riêng hơn */
 export function alsoEndings(c: Character): string[] {

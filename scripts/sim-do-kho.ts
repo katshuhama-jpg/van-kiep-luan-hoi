@@ -58,8 +58,10 @@ const byPath: Record<string, [number, number]> = {};
 const tally = (c: any, r: any) => { const k = c.path ?? 'chua'; const v = (byPath[k] ??= [0, 0]); v[1]++; if (r.r === 'win') v[0]++; };
 const ages: number[] = []; const realms: number[] = []; let asc = 0; let stones = 0;
 const deathAt: Record<number, number> = {}; const reach: Record<number, number> = {};
+// Ngày 8e: TT3=3 npx tsx scripts/sim-do-kho.ts 3000 để đo tỉ lệ kiếp nhận đồ đệ (trang XXIV quyển III, trọng số x5)
+const TT3 = process.env.TT3 !== undefined ? Number(process.env.TT3) : null; let deTu = 0;
 for (let i = 0; i < N; i++) {
-  const c = E.newCharacter({ ...E.emptyMeta(), lives: 10, ...META_EXTRA }); c.focus = 'tu_luyen';
+  const c = E.newCharacter({ ...E.emptyMeta(), lives: 10, ...META_EXTRA }); c.focus = 'tu_luyen'; if (TT3 !== null) c.tt3 = TT3;
   const ctx = E.makeCtx(c, []); let g = 0; let maxR = 0;
   while (!c.dead && g++ < 400 && !c.cosmos) {
     c.age += 1; clock += 20000;
@@ -73,6 +75,7 @@ for (let i = 0; i < N; i++) {
     if (!c.dead) { let q = E.checkProgress(c, ctx); let j = 0; while (q && !c.dead && j++ < 10) q = E.resolveChoice(c, q, Math.floor(rnd() * q.choices.length), ctx); }
     maxR = Math.max(maxR, c.realm);
   }
+  if ((c.arcs?.de_tu?.s ?? 0) >= 1 && c.arcs?.de_tu?.v !== 'no') deTu++;
   if (c.cosmos) asc++;
   ages.push(c.age); realms.push(maxR); stones += c.linhThach;
   for (let r = 0; r <= maxR; r++) reach[r] = (reach[r] ?? 0) + 1;
@@ -83,4 +86,5 @@ const pct = (x: number) => ((x / N) * 100).toFixed(1) + '%';
 console.log(`tuổi chết TB ${avg(ages).toFixed(0)}, phi thăng ${pct(asc)}, linh thạch lúc cuối TB ${(stones / N).toFixed(0)}`);
 console.log(`thắng ${((wins / Math.max(1, fights)) * 100).toFixed(1)}% trong ${fights} trận chặn đường/gặp người${CP ? ' (theo công pháp)' : ''}`);
 console.log('thắng theo đạo: ' + Object.entries(byPath).map(([k, [w, n]]) => `${k} ${((w / n) * 100).toFixed(0)}%`).join(', '));
+console.log(`nhận đồ đệ ${pct(deTu)} số kiếp${TT3 !== null ? ` (TT3=${TT3})` : ''}, trung bình ${(N / Math.max(1, deTu)).toFixed(1)} kiếp mới gặp một lần`);
 console.log('tới được: ' + [2, 3, 4, 5, 6, 7].map((r) => `r${r} ${pct(reach[r] ?? 0)}`).join(', '));

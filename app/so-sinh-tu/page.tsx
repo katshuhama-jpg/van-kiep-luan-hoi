@@ -13,6 +13,9 @@ import { PETS, PET_IDS } from '@/lib/game/pets';
 import { ACHIEVEMENTS } from '@/lib/game/hook';
 import { useAuth } from '@/lib/useAuth';
 import { LORE1, LORE2, LORE2_TOTAL, LORE_TOTAL, lore1Count, lore2Count, quyNhatDone, type LoreFragment } from '@/lib/game/lore';
+import { TT3_PAGES, tt3NhanhOf, tt3Open, tt3PageCount } from '@/lib/game/tt3';
+import { TT3_ON } from '@/lib/flags';
+import { track } from '@/lib/track';
 import { tr } from '@/lib/i18n';
 import { SON_MON_ON } from '@/lib/flags';
 import { SmSoSinhTu } from '@/components/sonmon/SmSoSinhTu';
@@ -186,13 +189,19 @@ export default function SoSinhTu() {
 /** Thiên thư hai quyển: Quyển II bị phong ấn tới khi đạt Vạn Kiếp Quy Nhất */
 function ThienThu({ meta }: { meta: Meta | null }) {
   const open2 = quyNhatDone(meta);
-  const [tab, setTab] = useState<1 | 2>(1);
+  const [tab, setTab] = useState<1 | 2 | 3>(1);
+  // Ngày 8e: quyển III chỉ hiện tab cho người đã mở quyển II; mở khi xong quyển II (gõ hay đập chuông)
+  const show3 = TT3_ON && open2;
+  const open3 = tt3Open(meta);
   useEffect(() => {
-    if (open2) setTab(2);
-  }, [open2]);
+    if (open3) setTab(3);
+    else if (open2) setTab(2);
+  }, [open2, open3]);
   const n1 = lore1Count(meta);
   const n2 = lore2Count(meta);
   const list: LoreFragment[] = tab === 1 ? LORE1 : LORE2;
+  const n3 = tt3PageCount(meta);
+  const nhanh = tt3NhanhOf(meta);
   return (
     <section className="panel thien-thu" id="thien-thu" style={{ marginBottom: 10 }}>
       <h2>{tr("Thiên thư · Vạn Kiếp", "Heavenly Tome · Ten Thousand Lives")}</h2>
@@ -204,8 +213,50 @@ function ThienThu({ meta }: { meta: Meta | null }) {
         <button role="tab" aria-selected={tab === 2} className={tab === 2 ? 'on' : ''} onClick={() => setTab(2)}>
           {open2 ? tr('Quyển II · Vạn Mảnh', "Volume II · Ten Thousand Shards") : tr('🔒 Quyển II', "🔒 Volume II")} <small>{open2 ? `${n2}/${LORE2_TOTAL}` : tr('phong ấn', "sealed")}</small>
         </button>
+        {show3 && (
+          <button role="tab" aria-selected={tab === 3} className={tab === 3 ? 'on' : ''} onClick={() => (setTab(3), track('tt3_tab', { open: open3 }))}>
+            {open3 ? tr('Quyển III · Cơm Chiều', 'Volume III · Evening Rice') : tr('Quyển III', 'Volume III')} <small>{open3 ? `${n3}/${TT3_PAGES.length}` : tr('Xong quyển II để mở', 'Finish Volume II to open')}</small>
+          </button>
+        )}
       </div>
-      {tab === 1 ? (
+      {tab === 3 ? (
+        open3 ? (
+          <>
+            <p className="note" style={{ marginTop: 0 }}>
+              {tr('Chuông đã có số phận của nó. Vậy mà chiều nào cũng còn một tiếng nhỏ hơn. Trang mới mở khi một kiếp khép lại, theo đúng thứ tự. Đã mở ', 'The bell has met its fate. Yet every evening a smaller sound remains. A new page opens when a life closes, in order. Opened ')}
+              {n3}/{TT3_PAGES.length}.
+            </p>
+            <ol className="tt-list">
+              {TT3_PAGES.map((p, i) => {
+                const has = !!meta?.endings?.[p.id];
+                const ke = !has && TT3_PAGES.slice(0, i).every((x) => !!meta?.endings?.[x.id]);
+                const last = has && !TT3_PAGES.slice(i + 1).some((x) => !!meta?.endings?.[x.id]);
+                return (
+                  <li key={p.id} className={has ? 'has' : ''}>
+                    {has ? (
+                      <details open={last}>
+                        <summary>{p.title}</summary>
+                        <p>{nhanh === 'dap' && p.text2 ? p.text2 : p.text}</p>
+                      </details>
+                    ) : (
+                      <>
+                        <b>{p.title.split('.')[0] + '. ???'}</b> <small>{ke ? p.hint : tr('Mở trang trước đã.', 'Open the page before first.')}</small>
+                      </>
+                    )}
+                  </li>
+                );
+              })}
+              <li>
+                <b>XXVI. ???</b> <small>{tr('Còn đang chép.', 'Still being copied.')}</small>
+              </li>
+            </ol>
+          </>
+        ) : (
+          <p className="note tt-seal" style={{ marginTop: 0 }}>
+            {tr('Quyển này mở khi bạn xong quyển II: cầm dùi chuông rồi chọn gõ tiếp hay đập vỡ.', 'This volume opens when you finish Volume II: take the bell striker and choose to ring on or shatter it.')}
+          </p>
+        )
+      ) : tab === 1 ? (
         <p className="note" style={{ marginTop: 0 }}>
           
           {tr("Vì sao bạn cứ phải luân hồi mãi? Mỗi mảnh ký ức mở khi đạt một cột mốc lớn qua các kiếp. Đã mở ", "Why must you keep reincarnating? Each memory shard unlocks when you reach a major milestone across your lives. Unlocked ")}{n1}/{LORE_TOTAL}.
@@ -223,7 +274,7 @@ function ThienThu({ meta }: { meta: Meta | null }) {
           {tr("Quyển sách bị niêm bằng một sợi chỉ vàng. Gom đủ 10 mảnh Quyển I và đạt kết cục Vạn Kiếp Quy Nhất để mở phong ấn.", "The book is sealed with a golden thread. Collect all 10 shards of Volume I and reach the ending Ten Thousand Lives Become One to break the seal.")}
         </p>
       )}
-      {(tab === 1 || open2) && (
+      {tab !== 3 && (tab === 1 || open2) && (
         <ol className="tt-list">
           {list.map((f, i) => {
             const has = meta?.lore?.includes(f.id);

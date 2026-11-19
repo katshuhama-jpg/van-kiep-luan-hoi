@@ -45,6 +45,7 @@ import type { Character, Element, Focus, Fx, Meta, PendingEvent } from '@/lib/ga
 import DuelWarning from '@/components/Duel';
 import { buyTq, GAUGE_NAME, act as cpAct, equip as cpEquip, fuse as cpFuse, unequip as cpUnequip, upgrade as cpUpgrade, swapTq as cpSwapTq, heirChoices, loadoutOf, newSide, npcLoadout, rivalCp, skipTurn, takeHit, type FightSide, type Loadout } from '@/lib/game/congPhap';
 import { smRefNhan } from '@/lib/smRef';
+import { TT3_PAGES, tt3AtBridge, tt3Endings, tt3NhanhOf, tt3Open } from '@/lib/game/tt3';
 import { trackMiles } from '@/lib/game/miles';
 import { ELEMENTS, elemHitTag, elemMul, elemRel, elementOf } from '@/lib/game/nguhanh';
 import { DUEL_INFO, DUEL_PER_YEAR, DUEL_TURNS, finishDuel, foeChar, foeStats, pickDuel, teaTrap, toRival, type DuelFoe } from '@/lib/game/duel';
@@ -1651,6 +1652,18 @@ export default function PlayPage() {
       c.log.push({ age: 0, tone: 'bad', text: tr('Bạn sinh ra trong tay nắm chặt một viên xá lợi đen. Nghiệp chướng kiếp trước còn đó: tâm ma +15.', 'You are born clutching a black relic. Last life\'s karma lingers: heart demon +15.') });
     }
     const m3: Meta = { ...m2, xaLoi: false, talents: [], stash: null, prophecy: null, legend: null, checkinNext: undefined, hon: lh ? { v: Math.max(0, honV - HON_COST), at: now } : m2.hon };
+    // Ngày 8e: XXV Tiếng Chuông Đầu Tiên, ghi thẳng ở cầu Nại Hà khi chọn Uống
+    const t25 = lh ? tt3AtBridge(meta, drink) : null;
+    if (t25) {
+      m3.endings = { ...(m3.endings ?? {}), [t25]: 1 };
+      const pg = TT3_PAGES.find((p) => p.id === t25);
+      if (pg) {
+        c.log.push({ age: 0, tone: 'big', text: pg.text });
+        setLoreNews([pg.title]);
+      }
+      c.tt3 = (c.tt3 ?? 0) + 1;
+      track('tt3_mo', { ids: t25, lifeNo: c.lifeNo });
+    }
     // dấu vết người chơi khác: tải nền, không chặn việc đầu thai
     fetchWorld(user)
       .then((w) => {
@@ -2019,10 +2032,17 @@ export default function PlayPage() {
       quyNote = tr(`Vạn Kiếp Quy Nhất: +${QUY_NHAT_PHUC} phúc, đeo chuông vàng qua mọi kiếp`, `Ten Thousand Lives Return to One: +${QUY_NHAT_PHUC} Fortune, wear the golden bell through every life`);
     }
     if (c.qf?.chuongWin) m.chuongWin = true;
+    // Ngày 8e: Thiên thư quyển III ghi kèm (sau khai huyệt để Thân Không Mơ đọc đúng số huyệt)
+    const t3 = tt3Endings(c, m);
+    if (t3.length) {
+      m.endings = t3.reduce((e, id) => ({ ...e, [id]: (e[id] ?? 0) + 1 }), { ...(m.endings ?? {}) } as Record<string, number>);
+      track('tt3_mo', { ids: t3.join(','), lifeNo: c.lifeNo });
+    }
+    if (tt3Open(m) && !m.tt3Nhanh) m.tt3Nhanh = tt3NhanhOf(m);
     // Thiên thư: mảnh ký ức mới
     const lore = newLore(m, c, car.career, social);
     if (lore.length) m.lore = [...(m.lore ?? []), ...lore.map((f) => f.id)];
-    setLoreNews(lore.map((f) => f.title));
+    setLoreNews([...lore.map((f) => f.title), ...TT3_PAGES.filter((p) => t3.includes(p.id)).map((p) => p.title)]);
     if (quyNote) setAchNews((a) => [quyNote, ...a]);
     setMeta(m);
     await within(saveMeta(user, m), 6000).catch(() => {});

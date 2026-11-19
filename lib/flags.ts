@@ -50,3 +50,9 @@ export const FIRST_AUTO_ON = process.env.NEXT_PUBLIC_FIRST_AUTO !== '0';
  * Ép cả nhóm về A: `NEXT_PUBLIC_FIRST_AB=a`.
  */
 export const FIRST_AB = process.env.NEXT_PUBLIC_FIRST_AB ?? '1';
+
+/**
+ * TT3_ON (Ngày 8e, 19/11): Thiên thư quyển III "Cơm Chiều" chặng 1 (XXI-XXV) và kết cục Thân Không Mơ, cho người đã xong quyển II.
+ * Tắt gấp: `NEXT_PUBLIC_TT3=0` rồi build lại (không ghi kết cục mới, ẩn tab quyển III; kết cục đã ghi vẫn giữ).
+ */
+export const TT3_ON = process.env.NEXT_PUBLIC_TT3 !== '0';

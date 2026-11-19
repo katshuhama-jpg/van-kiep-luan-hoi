@@ -55,6 +55,14 @@ export const RELEASES: Release[] = [
         ],
       },
       {
+        h: tr('Mới 20/11', 'New on Nov 20'),
+        hot: true,
+        items: [
+          tr('Thiên thư có thêm quyển III "Cơm Chiều" cho ai đã xong quyển II. Chặng đầu có 5 trang, xem ở Sổ Sinh Tử, mục Thiên thư.', 'The Heavenly Tome has a Volume III, "Evening Rice", for anyone who finished Volume II. The first part has 5 pages; find them in the Book of Life and Death, Heavenly Tome section.'),
+          tr('Từ 5:00 sáng 21/11, hạng Kỷ tính theo Điểm giữ đất: giữ ô càng lâu càng nhiều điểm, ô quý được nhiều hơn ô thường. Mọi môn bắt đầu từ 0.', 'From 5:00 AM on Nov 21, the era ranking counts Land Points: the longer you hold a tile, the more points, and rare tiles give more than plain ones. Every sect starts from 0.'),
+        ],
+      },
+      {
         h: tr('Sửa lỗi 20/11', 'Fixes on Nov 20'),
         items: [
           tr('Sơn Môn: nút "Mời người chưa có môn" giờ mời ngay trong game. Tìm đạo hữu theo tên, bấm Mời; người đó thấy lời mời ở tab Sơn Môn và trong Thư, bấm Nhận là vào môn. Môn chờ ký cũng nhờ đạo hữu ký ngay trong game như vậy.', 'Sects: "Invite someone without a sect" now invites in the game. Search by name and tap Invite; they see it in the Sects tab and in Mail, and join with Accept. Sects waiting for signatures can ask for co-signs the same way.'),
