@@ -143,6 +143,11 @@ export type SmCongBang = {
 };
 /** Ngày 8a: pháp bảo đã nhận (vkl_sm_bao_vat_ds) */
 export type SmBaoVat = { id: number; ky: number; o: 'vu_khi' | 'phu_kien'; loai: string; pham: string; pct: number; ten: string; khac: string | null; mac: boolean; hang_cong: number | null; hang_mon: number | null };
+/** 19/11: mời người chưa có môn trong game (giống mời Sư Đồ) */
+export type SmMoiNguoi = { ten: string; phap_danh: string | null; kiep: number; lc: number; choi_luc: string | null; da_moi: boolean; du_dk: boolean };
+export type SmMoiTim = { day: boolean; ds: SmMoiNguoi[] };
+/** lời mời vào môn đang chờ gửi tới ta */
+export type SmMoiThu = { id: number; mon: number; ten_mon: string; huy_hieu: number; n: number; nguoi: string; phap_danh: string | null; luc: string; du_dk: boolean; dk_kiep: number; dk_ngay: number };
 export type SmRankRow = { id: number; ten: string; huy_hieu: number; o: number; kv: number; n: number };
 
 // ---------- Lỗi ----------
@@ -176,6 +181,11 @@ const LOI_THEM: Record<string, string> = {
   SM_CHU_CON: tr('Môn chủ vẫn còn ghé môn, chưa bầu được.', 'The leader is still active, no vote yet.'),
   SM_BAU_HET: tr('Cuộc bầu đã xong.', 'The vote has ended.'),
   SM_BAU_AI: tr('Chỉ bầu được người trong môn, trừ môn chủ cũ.', 'Vote for a sect member other than the old leader.'),
+  SM_MOI_KHONG_NGUOI: tr('Không tìm thấy người này, hoặc người này chưa có chân thân.', 'Player not found or has no True Body yet.'),
+  SM_MOI_CO_MON: tr('Người này đã có môn hoặc vừa rời môn, chưa mời được.', 'This player is already in a sect or just left one.'),
+  SM_MOI_NHIEU: tr('Mỗi ngày gửi tối đa 10 lời mời. Mai mời tiếp nhé.', 'At most 10 invites a day. Try again tomorrow.'),
+  SM_DA_MOI: tr('Môn đã mời người này rồi, đang chờ trả lời.', 'Your sect already invited this player.'),
+  SM_MOI_HET: tr('Lời mời này đã hết hạn hoặc đã được trả lời.', 'This invite expired or was already answered.'),
   SM_NET: tr('Không kết nối được máy chủ, thử lại sau.', "Can't reach the server, try again later."),
 };
 export class SmErr extends Error {
@@ -198,6 +208,8 @@ export type SmAct =
   | { fn: 'pick_tile' | 'guard' | 'scout' | 'march' | 'march_tt' | 'khai_hoang'; q: number; r: number }
   | { fn: 'follow' | 'unfollow' | 'rut_quan'; chinh: number }
   | { fn: 'accept'; don: number; nhan: boolean }
+  | { fn: 'moi_gui'; ten: string }
+  | { fn: 'moi_tra'; id: number; nhan: boolean }
   | { fn: 'kick' | 'bau_bo'; tk: string }
   | { fn: 'xep'; tk: string; q: number; r: number }
   | { fn: 'role'; tk: string; chuc: 'lao' | 'de' }
@@ -233,6 +245,9 @@ export interface SmApi {
   bau(): Promise<SmBau | null>;
   /** Ngày 8a: bảng Công + phần thưởng nếu Kỷ kết thúc bây giờ (null nếu máy chủ chưa có hàm hay lỗi) */
   congBang(): Promise<SmCongBang | null>;
+  /** 19/11: tìm người chưa có môn để mời, và lời mời đang chờ gửi tới ta */
+  moiTim(q: string): Promise<SmMoiTim>;
+  moiDs(): Promise<SmMoiThu[]>;
   act(a: SmAct): Promise<Record<string, unknown>>;
 }
 
@@ -257,6 +272,10 @@ function args(a: SmAct): Record<string, unknown> {
       return { p_chinh: a.chinh };
     case 'accept':
       return { p_don: a.don, p_nhan: a.nhan };
+    case 'moi_gui':
+      return { p_ten: a.ten };
+    case 'moi_tra':
+      return { p_id: a.id, p_nhan: a.nhan };
     case 'kick':
     case 'bau_bo':
       return { p_username: a.tk };
@@ -348,6 +367,8 @@ export function realApi(): SmApi {
     coHoi: (q, r) => rpc<SmCoHoi>('vkl_sm_co_hoi', { p_q: q, p_r: r }, true, true).catch(() => null),
     bau: () => rpc<SmBau>('vkl_sm_bau', {}, true, true).catch(() => null),
     congBang: () => rpc<SmCongBang>('vkl_sm_cong_bang', {}, true, true).catch(() => null),
+    moiTim: (q) => rpc<SmMoiTim>('vkl_sm_moi_tim', { p_q: q }, true, true),
+    moiDs: () => rpc<SmMoiThu[]>('vkl_sm_moi_ds', {}, true, true).catch(() => []),
     act: (a) => rpc<Record<string, unknown>>(`vkl_sm_${a.fn}`, args(a)),
   };
 }

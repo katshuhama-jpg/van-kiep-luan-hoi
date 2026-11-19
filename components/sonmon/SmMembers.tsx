@@ -3,6 +3,7 @@
 /** 4.6.0 Sơn Môn M8 thành viên: bảng người, đơn xin vào, mời người, sửa điều kiện vào, luật rời/đuổi. */
 import { useEffect, useState } from 'react';
 import { tr } from '@/lib/i18n';
+import { SmMoiSheet } from './SmMoi';
 import { track } from '@/lib/track';
 import type { SmBau, SmMember, SmMonNguoi } from '@/lib/sonmon/api';
 import { hexDist, oToiDa, SM_CFG } from '@/lib/sonmon/data';
@@ -55,8 +56,10 @@ export function SmThanhVien({ c }: { c: SmCtx }) {
     if (!r) setOk(msg);
     c.reload(['members']);
   };
+  const [moiMo, setMoiMo] = useState(false);
   const moi = async () => {
-    const url = `${location.origin}/?su=${encodeURIComponent(toi ?? '')}`;
+    // 19/11: link ngoài game dẫn thẳng vào Sơn Môn (trước đây dùng nhầm link Sư Đồ ?su=)
+    const url = `${location.origin}/son-mon`;
     const text = tr(`Vào ${m.ten} cùng ta trong Vạn Kiếp Luân Hồi`, `Join ${m.ten} with me in Ten Thousand Rebirths`);
     track('sm_invite', { n: m.n });
     try {
@@ -86,12 +89,16 @@ export function SmThanhVien({ c }: { c: SmCtx }) {
           {m.dk_kiep > 0 ? tr(`, từ ${m.dk_kiep} kiếp`, `, ${m.dk_kiep}+ lives`) : ''}
           {m.dk_tuoi_dao > 0 ? tr(`, ${m.dk_tuoi_dao} ngày chơi`, `, ${m.dk_tuoi_dao}+ days`) : ''}.
         </p>
-        <button className="sm-btn main wide" onClick={moi} disabled={m.n >= SM_CFG.mon.toiDa}>
+        <button className="sm-btn main wide" onClick={() => setMoiMo(true)} disabled={m.n >= SM_CFG.mon.toiDa}>
           {tr('Mời người chưa có môn', 'Invite someone without a sect')}
+        </button>
+        <button className="sm-btn sm-ghost wide" onClick={moi} disabled={m.n >= SM_CFG.mon.toiDa}>
+          {tr('Gửi link cho bạn chưa chơi', 'Send a link to a friend')}
         </button>
         {m.n >= SM_CFG.mon.toiDa && <p className="sm-why">{tr('Môn đã đủ 15 người.', 'The sect is full.')}</p>}
       </section>
       <Msg err={err} ok={ok} />
+      {moiMo && <SmMoiSheet c={c} onClose={() => setMoiMo(false)} />}
       <SmBauCard c={c} />
 
       <section className="sm-card" style={{ padding: '8px 6px' }}>

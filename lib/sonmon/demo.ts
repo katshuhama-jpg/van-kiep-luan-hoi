@@ -253,6 +253,21 @@ export function demoApi(vaiIn: string): SmApi {
       const giu = (tr.ket_qua.lc ?? 0) * 1.1;
       return wait({ nguon: 'trinh' as const, ta, n_ta: st.chinh?.[0]?.n ?? 1, avg: 2000, giu, lo: giu / 1.15, hi: giu / 0.85, n: tr.ket_qua.n, trinh_luc: tr.xong_luc });
     },
+    moiTim: (q) =>
+      wait({
+        day: false,
+        ds: [
+          { ten: 'lamphong', phap_danh: 'Lâm Phong', kiep: 34, lc: 3120, choi_luc: at(-20), da_moi: false, du_dk: true },
+          { ten: 'tuyetnhi', phap_danh: 'Tuyết Nhi', kiep: 12, lc: 1480, choi_luc: at(-95), da_moi: true, du_dk: true },
+          { ten: 'hoangca', phap_danh: null, kiep: 3, lc: 420, choi_luc: at(-600), da_moi: false, du_dk: false },
+        ].filter((x) => !q || x.ten.includes(q.toLowerCase()) || (x.phap_danh ?? '').toLowerCase().includes(q.toLowerCase())),
+      }),
+    moiDs: () =>
+      wait(
+        vai === 'chua' || vai === 'trong'
+          ? [{ id: 5, mon: 2, ten_mon: 'Vô Hư Cốc', huy_hieu: 3, n: 9, nguoi: 'hansuong', phap_danh: 'Hàn Sương', luc: at(-40), du_dk: true, dk_kiep: 0, dk_ngay: 0 }]
+          : [],
+      ),
     act: async (a: SmAct) => {
       await wait(null);
       const m = st.mon;
@@ -275,6 +290,10 @@ export function demoApi(vaiIn: string): SmApi {
         case 'march_tt':
           if (st.chinh?.length) throw new SmErr('SM_DANG_CHINH');
           return { id: 8, tu_trinh: a.fn === 'march_tt' ? at(10) : undefined };
+        case 'moi_gui':
+          return { ok: true, vao: false };
+        case 'moi_tra':
+          return { ok: true, mon: 2 };
         case 'rut_quan':
           st = { ...st, chinh: [] };
           return { ok: true };

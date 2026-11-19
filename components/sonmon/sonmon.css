@@ -345,3 +345,16 @@ p.sm-card { display: block; }
 .sm-shop.c5 .sm-shop-n { font-size: 13px; text-align: center; }
 .sm-shop.c5 .sm-shop-fx { min-height: 0; text-align: center; }
 .sm-shop.c5 .sm-shop-img { border-width: 2px; }
+
+/* 19/11: mời người chưa có môn trong game; lời mời vào môn */
+.sm-moi-ds { display: flex; flex-direction: column; gap: 0; }
+.sm-moi-row { display: flex; align-items: center; gap: 8px; padding: 8px 2px; border-top: 1px solid #d9c493; }
+.sm-moi-row:first-child { border-top: 0; }
+.sm-moi-row .sm-grow { min-width: 0; }
+.sm-moi-act { display: flex; flex-direction: column; gap: 6px; }
+.sm-moi-thu { border-color: var(--gold); box-shadow: 4px 4px 0 var(--shadow); }
+.sm-moi-thu h3 { margin: 0; }
+.sm-moi-act .sm-btn { white-space: nowrap; }
+.sm-moi-row .sm-grow { flex: 1 1 auto; }
+.sm-moi-row > .sm-btn, .sm-moi-act { flex: 0 0 auto; margin-left: auto; }
+.sm-moi-row > .sm-btn, .sm-moi-act .sm-btn { min-width: 92px; }
