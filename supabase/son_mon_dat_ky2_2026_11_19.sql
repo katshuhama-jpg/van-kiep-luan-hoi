@@ -1,5 +1,4 @@
--- Trạng thái 19/11 tối: phần A (3 bảng, cfg 'dat', sm_dat_on, sm_yeu_mon, sm_mon_lc) ĐÃ ÁP. Phần còn lại CHƯA áp:
--- Supabase MCP hỏi xác nhận (hàm có UPDATE/DELETE trên bảng Sơn Môn) mà không ai trả lời, hết 180 giây.
+-- Đã áp hết 19/11 tối (phần bảng qua MCP, phần hàm Tyler chạy trong SQL Editor). Sửa sau: sm_dat_5h không ghi cột ten (cột sinh tự động).
 -- Ngày 9 (19/11): "Đất có giá" làm sớm cho Kỷ 1, tính từ 5:00 21/11 (giờ VN). Bảng, hàm, cron MỚI; không sửa hàm cũ.
 -- Giao diện giấu sau cờ SM_DAT_ON tới Ngày 10. Trước 5:00 21/11 mọi hàm mới đều không làm gì (trừ đặt loại ô, chỉ là dữ liệu).
 --  * Điểm giữ đất mỗi giờ: ô thường 1, Linh Mạch 3, Thiên Trì (0,0) 5. Xếp hạng Kỷ theo điểm, bằng điểm xét ô rồi Khí vận.
@@ -124,8 +123,8 @@ begin
   -- môn hệ thống giữ ô yêu thú (đã giải tán nên không hiện ở danh sách, xếp hạng)
   v_yeu := vkl_priv.sm_yeu_mon();
   if v_yeu is null or not exists (select 1 from public.vkl_sm_mon where id = v_yeu) then
-    insert into public.vkl_sm_mon (ky_lap, ten1, ten2, ten3, ten, huy_hieu, chinh_dien_hinh, het_han_ky, du_ky, giai_tan_luc)
-    values (v_ky, 'Yêu', 'Thú', '', 'Yêu Thú', 0, 0, now(), true, now()) returning id into v_yeu;
+    insert into public.vkl_sm_mon (ky_lap, ten1, ten2, ten3, huy_hieu, chinh_dien_hinh, het_han_ky, du_ky, giai_tan_luc)
+    values (v_ky, 'Yêu', 'Thú', '', 0, 0, now(), true, now()) returning id into v_yeu;
     update public.vkl_sm_cfg set v = v || jsonb_build_object('yeu_mon', v_yeu) where k = 'dat';
   end if;
   if not exists (select 1 from public.vkl_sm_dat where ky_id = v_ky and loai = 'linh_mach') then perform vkl_priv.sm_dat_dat(v_ky); end if;
