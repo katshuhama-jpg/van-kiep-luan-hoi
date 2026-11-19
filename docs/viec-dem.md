@@ -32,6 +32,8 @@ Luật hiệu năng và chi phí (Tyler chốt 18/11, MỖI ĐÊM, kể cả đ�
 3. Việc lớn hơn (đổi gói, đổi kiến trúc, tắt tính năng) thì KHÔNG tự làm, ghi đề xuất kèm số tiền tiết kiệm ước tính.
 4. Ghi một dòng vào `docs/so-lieu.md` mục "Hiệu năng và chi phí" (ngày, chi phí 24h, 3 câu tốn nhất, đã sửa gì, số trước/sau) và gửi Tyler trong báo cáo sáng.
 
+> ĐÊM 19/11 (Tyler 20:27): làm HẾT các khối tới hạn 20/11, thứ tự 7 → 7b → 9 → 8e. Không bỏ khối nào. Commit, thử và đẩy `next` sau MỖI khối để phiên dự phòng 01:30 nối tiếp được nếu phiên chính hết giờ.
+
 ## Ngày 7 - Phiên đầu của người mới (ƯU TIÊN TRƯỚC MỌI KHỐI, Tyler 19/11 tối)
 Lên bản: 2026-11-20 (hoặc 21 nếu chưa kịp).
 Lý do (số 13-19/11, xem tang-truong.md mục quảng cáo Chân Thân): người mới vào thẳng /choi thì 951/1.588 (60%) thấy màn "Kiếp đầu tiên" rồi đi sau trung vị 4,5 giây, chưa bấm "Vào kiếp đầu". Người mới quay lại hôm sau chỉ ~12% (cả quảng cáo lẫn tự đến). Người đến qua link mời/chia sẻ (nguồn "other") quay lại ~29%.
