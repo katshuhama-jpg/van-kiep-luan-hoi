@@ -15,6 +15,9 @@ import { rollBase } from '@/lib/game/engine';
 import type { Character } from '@/lib/game/types';
 import { ELEMENTS, elementOf } from '@/lib/game/nguhanh';
 import { tr } from '@/lib/i18n';
+import FirstScene, { AUTO_SEC } from './FirstScene';
+import { FIRST_AUTO_ON } from '@/lib/flags';
+import { currentPlayer } from '@/lib/auth';
 import { charLang, convertChar, loadDict } from '@/lib/retrans';
 import { lang } from '@/lib/i18n';
 
@@ -42,7 +45,7 @@ export function clearLaSo() {
   } catch {}
 }
 
-export function GachaPanel({ phuc, onChange, onBorn, busy, lifeNo, barNote, simple }: { phuc: number; onChange: (gifts: string[], spent: number, base: Character | null) => void; onBorn: () => void; busy?: boolean; lifeNo?: number; barNote?: string; simple?: boolean }) {
+export function GachaPanel({ phuc, onChange, onBorn, busy, lifeNo, barNote, simple, scene, invite }: { phuc: number; onChange: (gifts: string[], spent: number, base: Character | null) => void; onBorn: () => void; busy?: boolean; lifeNo?: number; barNote?: string; simple?: boolean; scene?: boolean; invite?: string | null }) {
   const [cards, setCards] = useState<string[]>([]);
   const [picked, setPicked] = useState<string[]>([]);
   const [rolls, setRolls] = useState(0);
@@ -96,6 +99,25 @@ export function GachaPanel({ phuc, onChange, onBorn, busy, lifeNo, barNote, simp
     onChange(next, spent, base);
   };
   const best = cards.reduce((m, id) => Math.max(m, giftOf(id)?.rare ?? 0), 0);
+  // Ngày 7: nhóm B (màn gọn cũ) cũng tự vào sau 4 giây, gieo lại thì đếm lại
+  const auto = !!simple && !scene && FIRST_AUTO_ON && !!base;
+  const [left, setLeft] = useState(AUTO_SEC);
+  const went = useRef(false);
+  useEffect(() => setLeft(AUTO_SEC), [flip]);
+  useEffect(() => {
+    if (!auto || busy) return;
+    const id = setInterval(() => {
+      if (document.visibilityState === 'visible') setLeft((x) => x - 1);
+    }, 1000);
+    return () => clearInterval(id);
+  }, [auto, busy, flip]);
+  useEffect(() => {
+    if (!auto || left > 0 || busy || went.current) return;
+    went.current = true;
+    track('first_go', { auto: 1, ab: 'b' });
+    onBorn();
+  }, [auto, left, busy, onBorn]);
+  if (scene && base) return <FirstScene c={base} onRoll={() => roll()} onBorn={onBorn} busy={busy} invite={invite} />;
   return (
     <>
       <section className="panel la-so">
@@ -145,9 +167,22 @@ export function GachaPanel({ phuc, onChange, onBorn, busy, lifeNo, barNote, simp
           {tr("Gieo lại", "Reroll")}
           <small>{cost ? tr(`-${cost} phúc`, `-${cost} Fortune`) : tr('miễn phí', "free")}</small>
         </button>
-        <button className="btn btn-red btn-big" onClick={onBorn} disabled={busy || !base}>
+        <button
+          className="btn btn-red btn-big"
+          style={auto ? { position: 'relative', overflow: 'hidden' } : undefined}
+          onClick={() => {
+            if (simple) {
+              if (went.current) return;
+              went.current = true;
+              track('first_go', { auto: 0, ab: 'b' });
+            }
+            onBorn();
+          }}
+          disabled={busy || !base}
+        >
           <span>{simple ? tr('Vào kiếp đầu ▶', 'Start life 1 ▶') : tr("Đầu thai ▶", "Be reborn ▶")}</span>
-          {simple ? <small>{tr('năm tháng tự trôi', 'the years roll by')}</small> : barNote && <small>{barNote}</small>}
+          {simple ? <small>{auto ? tr(`tự vào sau ${Math.max(0, left)} giây`, `starting in ${Math.max(0, left)}s`) : tr('năm tháng tự trôi', 'the years roll by')}</small> : barNote && <small>{barNote}</small>}
+          {auto && <i key={flip} className="auto-bar" aria-hidden />}
         </button>
       </div>
     </>
@@ -509,6 +544,8 @@ export function ShareCard({ c, ending, epitaph, isNew = false }: { c: Character;
   const [msg, setMsg] = useState<string | null>(null);
   const [sheet, setSheet] = useState<ShareOut | null>(null);
   const { grade } = gradeOf(c, ending, isNew);
+  const [hasAcc, setHasAcc] = useState(false);
+  useEffect(() => setHasAcc(!!currentPlayer()), []);
   const urlRef = useRef<string | null>(null);
   urlRef.current = url;
   useEffect(() => () => void (urlRef.current && URL.revokeObjectURL(urlRef.current)), []);
@@ -561,6 +598,7 @@ export function ShareCard({ c, ending, epitaph, isNew = false }: { c: Character;
         {busy ? tr('Đang tạo link...', "Creating link...") : tr('Khoe đời này', "Show off this life")}
         <small>Threads · Facebook · Messenger · Zalo</small>
       </button>
+      {c.lifeNo <= 2 && hasAcc && <small className="note">{tr('Bạn bè vào qua link này sẽ thành đệ tử của ngươi. Đệ tử chơi đủ 10 kiếp thì cả hai cùng có quà.', 'Friends who join through this link become your disciples. When a disciple finishes 10 lives, you both get a gift.')}</small>}
       {msg && <small className="note">{msg}</small>}
       {sheet && <ShareSheet out={sheet} kind="life" onClose={() => setSheet(null)} />}
     </div>

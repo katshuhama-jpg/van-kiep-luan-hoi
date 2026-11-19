@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef } from 'react';
-import { flush, track } from '@/lib/track';
+import { flush, loadHints, track } from '@/lib/track';
 
 /**
  * 17/11 (tăng trưởng): 30 giờ qua có ~200 phiên rộng đúng 411px, không nguồn, ẩn sau dưới 10 giây, chỉ ~3% vào kiếp
@@ -54,6 +54,7 @@ export default function Tracker() {
         ret,
         q: location.search.slice(0, 200), // 14/11: 60 ký tự cắt mất utm_content, không phân biệt được mẫu quảng cáo
         ...openHints(),
+        ...loadHints(),
       });
     } else track('page');
   }, [path]);
@@ -86,3 +87,4 @@ export default function Tracker() {
 
   return null;
 }
+

@@ -115,11 +115,17 @@ export function youthPace(c: { lifeNo: number; age: number; realm?: number; cosm
   if (c.lifeNo > 3) return 1;
   if (c.age < 16) return c.age < 12 ? CHILD_PACE : YOUTH_PACE;
   // khách mới hay bỏ ngang kiếp đầu quanh 50 tuổi (đo 29-31/10): hai kiếp đầu tuổi trưởng thành ở phàm nhân, Luyện Khí trôi nhanh hơn
-  if ((c.realm ?? 0) >= 2 || c.cosmos) return 1;
+  // Ngày 7 (19/11): kiếp 1 trung vị 11,5 phút tới khi khép (17-19/11), mục tiêu 3-5 phút. Chỉ đổi số năm trôi mỗi giây thật, luật theo năm giữ nguyên.
+  if (c.cosmos) return 1;
+  if (c.lifeNo === 1) return (c.realm ?? 0) >= 2 ? KIEP1_PACE_TU : KIEP1_PACE;
+  if ((c.realm ?? 0) >= 2) return 1;
   return c.lifeNo <= 2 ? ADULT_PACE_NEW : 1.5;
 }
 /** Nhịp tuổi trưởng thành ở hai kiếp đầu (trước Trúc Cơ) */
 export const ADULT_PACE_NEW = 2;
+/** Kiếp 1: tuổi trưởng thành trước Trúc Cơ, và từ Trúc Cơ (Ngày 7) */
+export const KIEP1_PACE = 3;
+export const KIEP1_PACE_TU = 2;
 /** Năm trôi nhanh hơn ở cảnh giới cao để mỗi kiếp vẫn gọn */
 export function yearSpeed(realm: number, cosmos?: unknown): number {
   if (cosmos || realm >= 8) return 2.5;

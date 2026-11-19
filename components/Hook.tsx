@@ -220,6 +220,13 @@ export function CheckinRow({ meta, onClaim }: { meta: Meta; onClaim: () => void 
           })}
         </ol>
       </div>
+      {/* Ngày 7 (19/11): người mới thấy sẵn quà ngày mai bị khóa, để có lý do quay lại */}
+      {claimed && day < CHECKIN.length && meta.lives <= 20 && (
+        <p className="ci-mai">
+          <span className="ci-lock" aria-hidden />
+          {tr(`Quà ngày mai: ${labelOf(day)}. Mở lúc 5:00 sáng.`, `Tomorrow's gift: ${labelOf(day)}. Unlocks at 5:00.`)}
+        </p>
+      )}
       <div className="ci-line">
         <details className="ci-q">
           <summary>

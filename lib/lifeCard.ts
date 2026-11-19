@@ -11,6 +11,7 @@ import type { Character } from '@/lib/game/types';
 import { supabase } from '@/lib/supabase';
 import { CH, CW, OH, OW, P, SITE, blk, box, canvas, copyText, deliver, hero, paper, seal, txt, wrapTxt, type ShareOut } from '@/lib/shareCard';
 import { tr } from './i18n';
+import { currentPlayer } from './auth';
 
 export type Grade = 'S' | 'A' | 'B' | 'C' | 'D';
 export const GRADE_COL: Record<Grade, string> = { S: '#d0202e', A: '#d9822b', B: '#8a3ad0', C: '#3d6fb0', D: '#6a5a44' };
@@ -137,7 +138,11 @@ export async function shareLife(c: Character, ending: Ending, isNew: boolean, ep
   const { grade } = gradeOf(c, ending, isNew);
   const title = tr(`${c.name}, kiếp ${c.lifeNo}: ${ending.name} · Xếp loại ${grade}`, `${c.name}, life ${c.lifeNo}: ${ending.name} · Grade ${grade}`);
   const desc = tr(`${Math.floor(c.age)} tuổi, ${realmOf(c)}${c.path ? ', ' + PATHS[c.path].name : ''}.${pct !== null ? tr(` Vượt ${pct}% các kiếp trong giang hồ.`, ` Beat ${pct}% of all lives in the jianghu.`) : ''} ${(memorable(c)[0] ?? '').replace(/([^.!?])$/, '$1.')} Đầu thai thử một kiếp ở Vạn Kiếp Luân Hồi.`, `Age ${Math.floor(c.age)}, ${realmOf(c)}${c.path ? ', ' + PATHS[c.path].name : ''}.${pct !== null ? tr(` Vượt ${pct}% các kiếp trong giang hồ.`, ` Beat ${pct}% of all lives in the jianghu.`) : ''} ${(memorable(c)[0] ?? '').replace(/([^.!?])$/, '$1.')} Try a life of your own in Ten Thousand Rebirths.`).replace(/\s+/g, ' ').trim();
-  return deliver(cv, og, 'life', `kiep-${c.lifeNo}-${c.name.replace(/\s+/g, '-')}`, title, desc, lifeText(c, ending, grade, pct).split('\n')[0]);
+  const out = await deliver(cv, og, 'life', `kiep-${c.lifeNo}-${c.name.replace(/\s+/g, '-')}`, title, desc, lifeText(c, ending, grade, pct).split('\n')[0]);
+  // Ngày 7 (19/11): link thẻ Một đời mang tên người khoe (?su=), người đến qua link thành đệ tử khi tạo chân thân, đo nguồn bằng r=life
+  const me = currentPlayer()?.username;
+  if (out.link && me) out.link += `${out.link.includes('?') ? '&' : '?'}su=${encodeURIComponent(me)}&r=life`;
+  return out;
 }
 
 export async function copyLife(c: Character, ending: Ending, isNew: boolean, pct: number | null): Promise<boolean> {

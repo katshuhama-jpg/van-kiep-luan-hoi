@@ -37,3 +37,16 @@ export const SU_DO_ON = process.env.NEXT_PUBLIC_SU_DO !== '0';
  * Bật mặc định, KHÔNG phụ thuộc SON_MON_ON. Tắt gấp: `NEXT_PUBLIC_TAB=0` rồi build lại, trang đầu về menu cũ.
  */
 export const TAB_ON = process.env.NEXT_PUBLIC_TAB !== '0';
+
+/**
+ * FIRST_AUTO_ON (Ngày 7, 19/11): người chưa có kiếp nào không dừng ở màn chờ bấm, nút vào kiếp tự đếm 4 giây rồi vào.
+ * Lý do: 13-19/11, 60% người mới vào thẳng /choi rời màn "Kiếp đầu tiên" sau trung vị 4,5 giây mà chưa bấm. Tắt: `NEXT_PUBLIC_FIRST_AUTO=0`.
+ */
+export const FIRST_AUTO_ON = process.env.NEXT_PUBLIC_FIRST_AUTO !== '0';
+
+/**
+ * FIRST_AB_ON (Ngày 7, 19/11): thử A/B màn đầu. Nhóm 'a' thấy "Cảnh sống" (components/FirstScene.tsx), nhóm 'b' thấy màn gọn cũ.
+ * Chia 50/50 theo máy (lưu `vkl.ab.first`), ghi `ab` vào first_simple, first_go, life_start. Tắt (mọi người về màn cũ): `NEXT_PUBLIC_FIRST_AB=0`.
+ * Ép cả nhóm về A: `NEXT_PUBLIC_FIRST_AB=a`.
+ */
+export const FIRST_AB = process.env.NEXT_PUBLIC_FIRST_AB ?? '1';

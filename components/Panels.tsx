@@ -34,13 +34,14 @@ import { FUSE_COST, TQ_SHOP_YEAR, tqShopLeft, tqShopList, tqShopPrice } from '@/
 import BagDoll from './BagDoll';
 import { HanhTrang } from './HanhTrang';
 import { buryPlan } from '@/lib/game/ruong';
-import { track } from '@/lib/track';
+import { abFirst, loadHints, track } from '@/lib/track';
+import { catchSmRef, smInviteLine } from '@/lib/smRef';
 import { FORGE_CHANCE, FORGE_COST, FORGE_MAX, FORGE_PER, canSmelt, forgeLevel, smeltValue } from '@/lib/game/forge';
 import { ArenaNudge } from './LoiDaiButton';
 import { useAuth } from '@/lib/useAuth';
 import { addFeedback } from '@/lib/storage';
 import { tr } from '@/lib/i18n';
-import { CHAN_THAN_ON, FIRST_SIMPLE_ON, SON_MON_ON } from '@/lib/flags';
+import { CHAN_THAN_ON, FIRST_AB, FIRST_SIMPLE_ON, SON_MON_ON } from '@/lib/flags';
 import { CtFarewell } from './TamTai';
 import { SmFarewell } from './sonmon/SmFarewell';
 import { BREAK_EVENT_ID } from '@/lib/game/events';
@@ -1002,9 +1003,18 @@ export function BirthPanel({
   const go = (d: boolean) => onBorn(picked, yearSec, gifts, gSpent, base, d);
   // 14/11: kiếp đầu của người mới chỉ còn một màn gọn (xem FIRST_SIMPLE_ON trong lib/flags.ts)
   const simple = first && FIRST_SIMPLE_ON;
+  // Ngày 7: nhóm A thấy "Cảnh sống", nhóm B màn gọn cũ (đặt sau khi gắn vào máy để không lệch lúc dựng trang)
+  const [ab, setAb] = useState<'a' | 'b' | null>(null);
+  const [inv, setInv] = useState<string | null>(null);
   useEffect(() => {
-    if (simple) track('first_simple', {});
+    if (!simple) return;
+    const v = abFirst(FIRST_AB);
+    setAb(v);
+    catchSmRef(0);
+    setInv(smInviteLine());
+    track('first_simple', { ab: v, ...loadHints() });
   }, [simple]);
+  const scene = simple && ab === 'a';
   return (
     <div className="birth-flow">
       {simple ? (
@@ -1063,6 +1073,8 @@ export function BirthPanel({
         lifeNo={meta.lives + 1}
         barNote={barNote}
         simple={simple}
+        scene={scene}
+        invite={simple ? inv : null}
         onBorn={() => (lhOn ? setBridge(true) : go(false))}
         onChange={(g, s, b) => {
           setGifts(g);

@@ -93,3 +93,31 @@ export function flush(beacon = false) {
   }
   if (queue.length) timer = setTimeout(() => flush(), 1000);
 }
+
+/** 19/11 (Ngày 7): số ms từ lúc điều hướng tới lúc ghi, và kiểu mạng nếu trình duyệt cho biết, để tách "tải chậm" với "không muốn chơi" */
+export function loadHints(): { navMs?: number; net?: string } {
+  try {
+    const net = (navigator as Navigator & { connection?: { effectiveType?: string } }).connection?.effectiveType;
+    return { navMs: Math.round(performance.now()), ...(net ? { net } : {}) };
+  } catch {
+    return {};
+  }
+}
+
+/** Ngày 7: nhóm A/B màn đầu, chia theo sid lần đầu rồi giữ theo máy */
+export function abFirst(mode: string): 'a' | 'b' {
+  if (mode === '0') return 'b';
+  if (mode === 'a' || mode === 'b') return mode;
+  try {
+    const old = localStorage.getItem('vkl.ab.first');
+    if (old === 'a' || old === 'b') return old;
+    const sid = sessionId();
+    let h = 0;
+    for (let i = 0; i < sid.length; i++) h = (h * 31 + sid.charCodeAt(i)) | 0;
+    const v = (Math.abs(h) % 2 === 0 ? 'a' : 'b') as 'a' | 'b';
+    localStorage.setItem('vkl.ab.first', v);
+    return v;
+  } catch {
+    return 'b';
+  }
+}
