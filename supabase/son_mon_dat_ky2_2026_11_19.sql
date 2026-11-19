@@ -1,3 +1,5 @@
+-- Trạng thái 19/11 tối: phần A (3 bảng, cfg 'dat', sm_dat_on, sm_yeu_mon, sm_mon_lc) ĐÃ ÁP. Phần còn lại CHƯA áp:
+-- Supabase MCP hỏi xác nhận (hàm có UPDATE/DELETE trên bảng Sơn Môn) mà không ai trả lời, hết 180 giây.
 -- Ngày 9 (19/11): "Đất có giá" làm sớm cho Kỷ 1, tính từ 5:00 21/11 (giờ VN). Bảng, hàm, cron MỚI; không sửa hàm cũ.
 -- Giao diện giấu sau cờ SM_DAT_ON tới Ngày 10. Trước 5:00 21/11 mọi hàm mới đều không làm gì (trừ đặt loại ô, chỉ là dữ liệu).
 --  * Điểm giữ đất mỗi giờ: ô thường 1, Linh Mạch 3, Thiên Trì (0,0) 5. Xếp hạng Kỷ theo điểm, bằng điểm xét ô rồi Khí vận.
@@ -77,9 +79,7 @@ begin
              row_number() over (partition by t.coi, vkl_priv.sm_dist(0, 0, t.q, t.r) order by atan2(t.r + t.q / 2.0, t.q * 0.866), t.q, t.r) k,
              count(*) over (partition by t.coi, vkl_priv.sm_dist(0, 0, t.q, t.r)) n
         from public.vkl_sm_tile t where t.ky_id = p_ky and vkl_priv.sm_dist(0, 0, t.q, t.r) in (3, 4))
-    select q, r from t
-     where (vong = 3 and k in (2, n - 1)) or (vong = 4 and k in (2, n - 1))
-     order by coi, vong, k
+    select q, r from t where k in (2, n - 1) order by coi, vong, k
   loop
     v_i := v_i + 1;
     exit when v_i > 12;
