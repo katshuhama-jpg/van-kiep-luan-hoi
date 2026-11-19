@@ -148,6 +148,9 @@ export type SmMoiNguoi = { ten: string; phap_danh: string | null; kiep: number; 
 export type SmMoiTim = { day: boolean; ds: SmMoiNguoi[] };
 /** lời mời vào môn đang chờ gửi tới ta */
 export type SmMoiThu = { id: number; mon: number; ten_mon: string; huy_hieu: number; n: number; nguoi: string; phap_danh: string | null; luc: string; du_dk: boolean; dk_kiep: number; dk_ngay: number };
+/** 19/11: nhờ đạo hữu ký cùng lập môn trong game */
+export type SmKyNguoi = { ten: string; phap_danh: string | null; kiep: number; choi_luc: string | null; da_nho: boolean };
+export type SmKyThu = { id: number; mon: number; ten_mon: string; huy_hieu: number; so_ky: number; het_han: string; nguoi: string; phap_danh: string | null; luc: string };
 export type SmRankRow = { id: number; ten: string; huy_hieu: number; o: number; kv: number; n: number };
 
 // ---------- Lỗi ----------
@@ -185,6 +188,7 @@ const LOI_THEM: Record<string, string> = {
   SM_MOI_CO_MON: tr('Người này đã có môn hoặc vừa rời môn, chưa mời được.', 'This player is already in a sect or just left one.'),
   SM_MOI_NHIEU: tr('Mỗi ngày gửi tối đa 10 lời mời. Mai mời tiếp nhé.', 'At most 10 invites a day. Try again tomorrow.'),
   SM_DA_MOI: tr('Môn đã mời người này rồi, đang chờ trả lời.', 'Your sect already invited this player.'),
+  SM_DA_KY_NGUOI: tr('Người này đã ký môn ta rồi.', 'This player already signed for us.'),
   SM_MOI_HET: tr('Lời mời này đã hết hạn hoặc đã được trả lời.', 'This invite expired or was already answered.'),
   SM_NET: tr('Không kết nối được máy chủ, thử lại sau.', "Can't reach the server, try again later."),
 };
@@ -208,7 +212,8 @@ export type SmAct =
   | { fn: 'pick_tile' | 'guard' | 'scout' | 'march' | 'march_tt' | 'khai_hoang'; q: number; r: number }
   | { fn: 'follow' | 'unfollow' | 'rut_quan'; chinh: number }
   | { fn: 'accept'; don: number; nhan: boolean }
-  | { fn: 'moi_gui'; ten: string }
+  | { fn: 'moi_gui' | 'ky_nho'; ten: string }
+  | { fn: 'ky_tra'; id: number; ky: boolean }
   | { fn: 'moi_tra'; id: number; nhan: boolean }
   | { fn: 'kick' | 'bau_bo'; tk: string }
   | { fn: 'xep'; tk: string; q: number; r: number }
@@ -248,6 +253,8 @@ export interface SmApi {
   /** 19/11: tìm người chưa có môn để mời, và lời mời đang chờ gửi tới ta */
   moiTim(q: string): Promise<SmMoiTim>;
   moiDs(): Promise<SmMoiThu[]>;
+  kyTim(q: string): Promise<SmKyNguoi[]>;
+  kyDs(): Promise<SmKyThu[]>;
   act(a: SmAct): Promise<Record<string, unknown>>;
 }
 
@@ -273,7 +280,10 @@ function args(a: SmAct): Record<string, unknown> {
     case 'accept':
       return { p_don: a.don, p_nhan: a.nhan };
     case 'moi_gui':
+    case 'ky_nho':
       return { p_ten: a.ten };
+    case 'ky_tra':
+      return { p_id: a.id, p_ky: a.ky };
     case 'moi_tra':
       return { p_id: a.id, p_nhan: a.nhan };
     case 'kick':
@@ -369,6 +379,8 @@ export function realApi(): SmApi {
     congBang: () => rpc<SmCongBang>('vkl_sm_cong_bang', {}, true, true).catch(() => null),
     moiTim: (q) => rpc<SmMoiTim>('vkl_sm_moi_tim', { p_q: q }, true, true),
     moiDs: () => rpc<SmMoiThu[]>('vkl_sm_moi_ds', {}, true, true).catch(() => []),
+    kyTim: (q) => rpc<SmKyNguoi[]>('vkl_sm_ky_tim', { p_q: q }, true, true),
+    kyDs: () => rpc<SmKyThu[]>('vkl_sm_ky_ds', {}, true, true).catch(() => []),
     act: (a) => rpc<Record<string, unknown>>(`vkl_sm_${a.fn}`, args(a)),
   };
 }

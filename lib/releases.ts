@@ -57,7 +57,7 @@ export const RELEASES: Release[] = [
       {
         h: tr('Sửa lỗi 20/11', 'Fixes on Nov 20'),
         items: [
-          tr('Sơn Môn: nút "Mời người chưa có môn" giờ mời ngay trong game. Tìm đạo hữu theo tên, bấm Mời; người đó thấy lời mời ở tab Sơn Môn và trong Thư, bấm Nhận là vào môn.', 'Sects: "Invite someone without a sect" now invites in the game. Search by name and tap Invite; they see it in the Sects tab and in Mail, and join with Accept.'),
+          tr('Sơn Môn: nút "Mời người chưa có môn" giờ mời ngay trong game. Tìm đạo hữu theo tên, bấm Mời; người đó thấy lời mời ở tab Sơn Môn và trong Thư, bấm Nhận là vào môn. Môn chờ ký cũng nhờ đạo hữu ký ngay trong game như vậy.', 'Sects: "Invite someone without a sect" now invites in the game. Search by name and tap Invite; they see it in the Sects tab and in Mail, and join with Accept. Sects waiting for signatures can ask for co-signs the same way.'),
           tr('Lôi đài: danh sách chọn bóng xếp theo sức mạnh thật (Huyết, Công, Thủ) chứ không theo cảnh giới, kiếp đang ra đài luôn nằm trong danh sách, và sang ngày mới giữ nguyên bóng đạo hữu đã chọn. Cảm ơn Phan Anh Tuấn.', 'Arena: the shadow list is ranked by real strength (HP, Attack, Defense) instead of realm, your fielded life always stays in the list, and your pick carries over to the next day. Thanks to Phan Anh Tuan.'),
         ],
       },

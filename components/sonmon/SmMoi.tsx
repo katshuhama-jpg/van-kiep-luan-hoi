@@ -9,7 +9,7 @@
 import { useEffect, useState } from 'react';
 import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
-import { smLoi, type SmMoiThu, type SmMoiTim } from '@/lib/sonmon/api';
+import { smLoi, type SmKyNguoi, type SmKyThu, type SmMoiThu, type SmMoiTim } from '@/lib/sonmon/api';
 import { HuyHieu } from './Pixel';
 import { fmtN, Msg, truoc, type SmCtx } from './ui';
 
@@ -176,6 +176,168 @@ export function SmMoiThuCard({ c }: { c: SmCtx }) {
           <div className="sm-moi-act">
             <button className="sm-btn small dark" disabled={busy !== null || !t.du_dk} onClick={() => tra(t, true)}>
               {busy === t.id ? '...' : tr('Nhận', 'Accept')}
+            </button>
+            <button className="sm-btn small" disabled={busy !== null} onClick={() => tra(t, false)}>
+              {tr('Từ chối', 'Decline')}
+            </button>
+          </div>
+        </div>
+      ))}
+    </section>
+  );
+}
+
+/** 19/11 (Tyler): nhờ đạo hữu ký cùng lập môn ngay trong game (trước chỉ có gửi link) */
+export function SmNhoKySheet({ c, onClose }: { c: SmCtx; onClose: () => void }) {
+  const [q, setQ] = useState('');
+  const [d, setD] = useState<SmKyNguoi[] | null | 'loi'>(null);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+  const [ok, setOk] = useState<string | null>(null);
+  const [lan, setLan] = useState(0);
+  const [cho, setCho] = useState(0);
+  useEffect(() => {
+    track('sm_nho_ky_open');
+  }, []);
+  useEffect(() => {
+    if (cho <= 0) return;
+    const t = setTimeout(() => setCho((x) => x - 1), 1000);
+    return () => clearTimeout(t);
+  }, [cho]);
+  useEffect(() => {
+    let live = true;
+    const id = setTimeout(
+      () =>
+        c.api.kyTim(q.trim()).then(
+          (x) => live && setD(x),
+          (e) => {
+            if (!live) return;
+            setD('loi');
+            setErr(smLoi(e));
+          },
+        ),
+      q ? 300 : 0,
+    );
+    return () => {
+      live = false;
+      clearTimeout(id);
+    };
+  }, [c.api, q, lan]);
+  const lamMoi = () => {
+    if (cho > 0) return;
+    setD(null);
+    setLan((x) => x + 1);
+    setCho(15);
+  };
+  const nho = async (ten: string, ten2: string) => {
+    setBusy(ten);
+    setErr(null);
+    setOk(null);
+    try {
+      await c.api.act({ fn: 'ky_nho', ten });
+      track('sm_nho_ky_gui', {});
+      setOk(tr(`Đã nhờ ${ten2} ký. Người đó bấm Ký ở tab Sơn Môn là xong.`, `Asked ${ten2} to sign.`));
+      if (Array.isArray(d)) setD(d.map((x) => (x.ten === ten ? { ...x, da_nho: true } : x)));
+    } catch (e) {
+      setErr(smLoi(e));
+    } finally {
+      setBusy(null);
+    }
+  };
+  const ds = Array.isArray(d) ? d : [];
+  return (
+    <div className="sm-sheet" role="dialog" aria-modal="true" aria-label={tr('Nhờ đạo hữu ký', 'Ask friends to sign')} onClick={onClose}>
+      <div onClick={(e) => e.stopPropagation()} style={{ maxHeight: '88vh' }}>
+        <h2>{tr('Nhờ đạo hữu ký cùng lập', 'Ask friends to co-sign')}</h2>
+        <p className="sm-note">{tr('Ai có chân thân, chơi trong 7 ngày qua và chưa ký đủ 2 môn Kỷ này đều ký được, kể cả người đã có môn. Ký không phải vào môn.', 'Anyone with a True Body, active in 7 days, who has not signed 2 sects this era. Signing does not mean joining.')}</p>
+        <form className="sm-chat-form" onSubmit={(e) => e.preventDefault()}>
+          <label htmlFor="sm-ky-q">{tr('Tìm theo tên', 'Search by name')}</label>
+          <div className="sm-moi-tim">
+            <input id="sm-ky-q" type="search" value={q} maxLength={30} autoComplete="off" placeholder={tr('Pháp danh hoặc tên đăng nhập', 'True name or username')} onChange={(e) => setQ(e.target.value)} />
+            <button type="button" className="sm-btn small" disabled={cho > 0 || d === null} onClick={lamMoi} aria-label={tr('Làm mới danh sách', 'Refresh list')}>
+              {cho > 0 ? `${cho}s` : tr('Làm mới', 'Refresh')}
+            </button>
+          </div>
+        </form>
+        <Msg err={err} ok={ok} />
+        <div className="sm-cuon sm-moi-ds">
+          {d === null && <p className="sm-note">{tr('Đang tìm...', 'Searching...')}</p>}
+          {Array.isArray(d) && ds.length === 0 && <p className="sm-note">{q ? tr('Không có ai khớp tên này.', 'Nobody matches that name.') : tr('Lúc này chưa thấy ai ký được.', 'No one available right now.')}</p>}
+          {ds.map((x) => {
+            const ten2 = x.phap_danh ?? x.ten;
+            return (
+              <div key={x.ten} className="sm-moi-row">
+                <div className="sm-grow">
+                  <b className="sm-clip" style={{ display: 'block' }}>
+                    {ten2} <small className="sm-note">@{x.ten}</small>
+                  </b>
+                  <span className="sm-note">
+                    {tr(`${fmtN(x.kiep)} kiếp`, `${fmtN(x.kiep)} lives`)}
+                    {x.choi_luc ? tr(` · chơi ${truoc(x.choi_luc)}`, ` · played ${truoc(x.choi_luc)}`) : ''}
+                  </span>
+                </div>
+                <button className="sm-btn small dark" disabled={!!busy || x.da_nho} onClick={() => nho(x.ten, ten2)}>
+                  {busy === x.ten ? '...' : x.da_nho ? tr('Đã nhờ', 'Asked') : tr('Nhờ ký', 'Ask')}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+        <p className="sm-note">{tr('Mỗi người gửi tối đa 10 lời nhờ mỗi ngày.', 'Up to 10 requests a day.')}</p>
+        <button className="sm-btn sm-ghost wide" onClick={onClose}>
+          {tr('Đóng', 'Close')}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/** Lời nhờ ký cùng lập gửi tới ta (ai cũng có thể nhận, kể cả người đã có môn) */
+export function SmKyThuCard({ c }: { c: SmCtx }) {
+  const [ds, setDs] = useState<SmKyThu[]>([]);
+  const [busy, setBusy] = useState<number | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+  const [ok, setOk] = useState<string | null>(null);
+  useEffect(() => {
+    let live = true;
+    c.api.kyDs().then((x) => live && setDs(x), () => {});
+    return () => {
+      live = false;
+    };
+  }, [c.api]);
+  if (ds.length === 0 && !err && !ok) return null;
+  const tra = async (t: SmKyThu, ky: boolean) => {
+    setBusy(t.id);
+    setErr(null);
+    try {
+      const r = await c.api.act({ fn: 'ky_tra', id: t.id, ky });
+      track('sm_nho_ky_tra', { ky });
+      setDs((a) => a.filter((x) => x.id !== t.id));
+      if (ky) setOk(r.du_ky ? tr(`Đã ký. ${t.ten_mon} đủ chữ ký, môn đã lập.`, `Signed. ${t.ten_mon} is founded.`) : tr(`Đã ký cùng lập ${t.ten_mon}.`, `Signed for ${t.ten_mon}.`));
+      c.reload(['list']);
+    } catch (e) {
+      setErr(smLoi(e));
+    } finally {
+      setBusy(null);
+    }
+  };
+  return (
+    <section className="sm-card sm-moi-thu" aria-label={tr('Nhờ ký cùng lập', 'Co-sign requests')}>
+      <h3>{tr(`Nhờ ký cùng lập (${ds.length})`, `Co-sign requests (${ds.length})`)}</h3>
+      <Msg err={err} ok={ok} />
+      {ds.map((t) => (
+        <div key={t.id} className="sm-moi-row">
+          <HuyHieu id={t.huy_hieu} size={36} />
+          <div className="sm-grow">
+            <b className="sm-clip" style={{ display: 'block' }}>
+              {t.ten_mon}
+            </b>
+            <span className="sm-note">{tr(`${t.phap_danh ?? t.nguoi} nhờ ngươi ký · đã có ${t.so_ky} chữ ký · ${truoc(t.luc)}`, `${t.phap_danh ?? t.nguoi} asks you to sign · ${t.so_ky} signed`)}</span>
+            <span className="sm-note" style={{ display: 'block' }}>{tr('Ký không phải vào môn. Mỗi Kỷ ký tối đa 2 môn.', 'Signing does not mean joining. Max 2 per era.')}</span>
+          </div>
+          <div className="sm-moi-act">
+            <button className="sm-btn small dark" disabled={busy !== null} onClick={() => tra(t, true)}>
+              {busy === t.id ? '...' : tr('Ký', 'Sign')}
             </button>
             <button className="sm-btn small" disabled={busy !== null} onClick={() => tra(t, false)}>
               {tr('Từ chối', 'Decline')}

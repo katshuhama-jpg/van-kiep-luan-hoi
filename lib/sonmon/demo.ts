@@ -262,6 +262,15 @@ export function demoApi(vaiIn: string): SmApi {
           { ten: 'hoangca', phap_danh: null, kiep: 3, lc: 420, choi_luc: at(-600), da_moi: false, du_dk: false },
         ].filter((x) => !q || x.ten.includes(q.toLowerCase()) || (x.phap_danh ?? '').toLowerCase().includes(q.toLowerCase())),
       }),
+    kyTim: (q) =>
+      wait(
+        [
+          { ten: 'lamphong', phap_danh: 'Lâm Phong', kiep: 34, choi_luc: at(-20), da_nho: false },
+          { ten: 'tuyetnhi', phap_danh: 'Tuyết Nhi', kiep: 12, choi_luc: at(-95), da_nho: true },
+        ].filter((x) => !q || x.ten.includes(q.toLowerCase()) || (x.phap_danh ?? '').toLowerCase().includes(q.toLowerCase())),
+      ),
+    kyDs: () =>
+      wait(vai === 'chua' || vai === 'chu' ? [{ id: 7, mon: 12, ten_mon: 'Thanh Linh Cung', huy_hieu: 5, so_ky: 1, het_han: at(600), nguoi: 'tieuho', phap_danh: 'Tiểu Hổ', luc: at(-15) }] : []),
     moiDs: () =>
       wait(
         vai === 'chua' || vai === 'trong'
@@ -291,7 +300,10 @@ export function demoApi(vaiIn: string): SmApi {
           if (st.chinh?.length) throw new SmErr('SM_DANG_CHINH');
           return { id: 8, tu_trinh: a.fn === 'march_tt' ? at(10) : undefined };
         case 'moi_gui':
+        case 'ky_nho':
           return { ok: true, vao: false };
+        case 'ky_tra':
+          return { ok: true, so_ky: 2, du_ky: true };
         case 'moi_tra':
           return { ok: true, mon: 2 };
         case 'rut_quan':

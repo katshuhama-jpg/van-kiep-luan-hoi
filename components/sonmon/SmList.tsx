@@ -9,7 +9,7 @@ import { SM_CFG } from '@/lib/sonmon/data';
 import { HuyHieu } from './Pixel';
 import { NguoiList, NguoiSheet } from './SmNguoi';
 import { SmBaCau } from './SmLuat';
-import { SmMoiThuCard } from './SmMoi';
+import { SmKyThuCard, SmMoiThuCard } from './SmMoi';
 import { chucTen, clock, fmtN, mocGio, Msg, useNow, type SmCtx } from './ui';
 
 const BAO_KEY = 'vkl.sm.baoMo';
@@ -91,6 +91,7 @@ export function SmList({ c }: { c: SmCtx }) {
   return (
     <>
       <SmMoiThuCard c={c} />
+      <SmKyThuCard c={c} />
       <section className="sm-card dark">
         <p>
           <b style={{ color: 'var(--gold-l)' }}>{tr('Ngươi chưa có sơn môn.', 'You have no sect yet.')}</b>{' '}

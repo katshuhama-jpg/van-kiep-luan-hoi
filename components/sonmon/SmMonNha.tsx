@@ -4,6 +4,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { tr } from '@/lib/i18n';
+import { SmKyThuCard, SmNhoKySheet } from './SmMoi';
 import { track } from '@/lib/track';
 import { nvChu, SM_CFG } from '@/lib/sonmon/data';
 import { ChinhDien, ChuoiO, HuyHieu } from './Pixel';
@@ -43,6 +44,7 @@ export function SmMonNha({ c }: { c: SmCtx }) {
     if (e) setErr(e);
   };
   const chuNv = nv ? nvChu(nv.bac) : null;
+  const [nhoMo, setNhoMo] = useState(false);
   const nhoKy = async () => {
     const url = `${location.origin}/son-mon?ky=${m.id}`;
     const text = tr(`Ký giúp ta lập ${m.ten} trong Vạn Kiếp Luân Hồi, chỉ một nút bấm`, `Help me found ${m.ten} in Ten Thousand Rebirths, one tap`);
@@ -61,6 +63,7 @@ export function SmMonNha({ c }: { c: SmCtx }) {
 
   return (
     <>
+      <SmKyThuCard c={c} />
       <BaBuoc c={c} diemDanh={diemDanh} />
       <section className="sm-card dark">
         <div className="sm-row">
@@ -109,9 +112,13 @@ export function SmMonNha({ c }: { c: SmCtx }) {
             {tr(`Còn ${clock(new Date(m.het_han_ky).getTime() - now)}. Hết giờ chưa đủ thì môn tự giải tán. Ai có chân thân và tài khoản cũng ký được, không cần đủ kiếp.`, `${clock(new Date(m.het_han_ky).getTime() - now)} left, or the sect disbands. Anyone with a true self and an account can sign.`)}
           </p>
           {/* 17/11 (Tyler: 2 người ký có vẻ khó): gửi link, người bấm link thấy môn này ghim đầu danh sách với nút Ký cùng lập */}
-          <button className="sm-btn main wide" onClick={() => nhoKy()}>
-            {tr('Gửi link nhờ đạo hữu ký', 'Send a co-sign link')}
+          <button className="sm-btn main wide" onClick={() => setNhoMo(true)}>
+            {tr('Nhờ đạo hữu ký trong game', 'Ask players in the game')}
           </button>
+          <button className="sm-btn sm-ghost wide" onClick={() => nhoKy()}>
+            {tr('Gửi link cho bạn ngoài game', 'Send a link outside the game')}
+          </button>
+          {nhoMo && <SmNhoKySheet c={c} onClose={() => setNhoMo(false)} />}
         </section>
       )}
       {!m.cam_co && m.chuc !== 'de' && (
