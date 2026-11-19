@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A - Cảnh sống</title>
+<!-- Hướng A "Cảnh sống": vào là thấy kiếp đang chạy. Tham chiếu: màn mở JRPG (Octopath, Chrono Trigger) - cảnh, nhân vật đi, hộp thoại gõ chữ. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Protest+Revolution&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1f160d;--paper:#f3e6c4;--paper3:#fff8e6;--gold:#c9962e;--goldl:#ffcf6e;--red:#b8432f;--redd:#8f2f20;--jade:#2f6b5a}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--ink)}
+body{font-family:'Barlow Semi Condensed',system-ui,sans-serif;color:var(--ink);display:flex;flex-direction:column;height:100dvh;overflow:hidden}
+.scene{position:relative;flex:1 1 auto;overflow:hidden;background:#cfe6dc;image-rendering:pixelated}
+.bg{position:absolute;inset:0;background:url(img/tu_luyen-0.png) 0 100%/auto 100% repeat-x;animation:pan 26s linear infinite}
+@keyframes pan{to{background-position:-768px 100%}}
+.hero{position:absolute;left:50%;bottom:9%;width:64px;height:64px;transform:translateX(-50%) scale(3.4);transform-origin:50% 100%;background:url(img/nu_walk.png) 0 -128px;animation:walk .9s steps(8) infinite}
+@keyframes walk{from{background-position:-64px -128px}to{background-position:-576px -128px}}
+.shadow{position:absolute;left:50%;bottom:8.4%;width:86px;height:14px;transform:translateX(-50%);background:rgba(0,0,0,.22);border-radius:50%}
+.hud{position:absolute;left:12px;right:12px;top:12px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.tag{background:rgba(31,22,13,.82);color:var(--paper3);border:2px solid var(--gold);padding:6px 10px;font-weight:700;font-size:15px;line-height:1.1;box-shadow:3px 3px 0 rgba(0,0,0,.35)}
+.tag small{display:block;font-weight:500;font-size:12px;color:var(--goldl)}
+.age b{font-size:22px;color:var(--goldl)}
+.logo{position:absolute;left:0;right:0;top:64px;text-align:center;font-family:'Protest Revolution';font-size:40px;color:#fff3dc;text-shadow:3px 3px 0 var(--redd),0 0 18px rgba(0,0,0,.35);letter-spacing:.5px}
+.box{position:relative;margin:-26px 10px 0;background:var(--paper3);border:3px solid var(--ink);box-shadow:inset 0 0 0 3px var(--gold),5px 5px 0 rgba(0,0,0,.45);padding:14px 16px 12px;z-index:2}
+.who{display:flex;align-items:baseline;gap:8px;margin-bottom:6px}
+.who b{font-size:20px;color:var(--redd)}
+.who span{font-size:14px;color:#6b5233}
+.say{font-size:18px;line-height:1.45;min-height:78px;margin:0;font-weight:500}
+.say::after{content:'▼';font-size:11px;color:var(--red);margin-left:6px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font-size:13px;font-weight:600;padding:3px 8px;background:#eadbb4;border:2px solid #c9b07a}
+.chip.huyen{background:#3d2a5e;color:#e9d9ff;border-color:#8b6bd1}
+.bar{padding:12px 10px calc(12px + env(safe-area-inset-bottom));display:flex;gap:10px;background:var(--ink)}
+.ghost{flex:0 0 108px;min-height:56px;background:#3a2a18;color:var(--paper);border:3px solid #6b5233;font:inherit;font-weight:700;font-size:16px}
+.go{position:relative;flex:1;min-height:56px;background:var(--red);color:#fff3dc;border:3px solid #2a0f08;box-shadow:inset 0 -5px 0 var(--redd);font:inherit;font-weight:700;font-size:21px;overflow:hidden}
+.go small{display:block;font-size:13px;font-weight:500;opacity:.9}
+.go i{position:absolute;left:0;bottom:0;height:5px;background:var(--goldl);animation:fill 4s linear forwards}
+@keyframes fill{from{width:0}to{width:100%}}
+@media (prefers-reduced-motion:reduce){.bg,.hero,.go i{animation:none}}
+</style></head><body>
+<div class="scene">
+  <div class="bg"></div>
+  <div class="logo">Vạn Kiếp Luân Hồi</div>
+  <div class="hud">
+    <div class="tag age">Năm <b id="yr">1</b><small>Kiếp thứ nhất</small></div>
+    <div class="tag">Tuổi <b id="age" style="color:var(--goldl)">0</b><small>thọ khoảng 67</small></div>
+  </div>
+  <div class="shadow"></div>
+  <div class="hero" role="img" aria-label="Chu Mộng Thường đang đi"></div>
+</div>
+<div class="box">
+  <div class="who"><b>Chu Mộng Thường</b><span>con nhà nông, Thanh Thủy thôn</span></div>
+  <p class="say" id="say"></p>
+  <div class="chips"><span class="chip huyen">Huyền linh căn</span><span class="chip">Mệnh Hỏa</span><span class="chip">Nhà khá giả</span></div>
+</div>
+<div class="bar">
+  <button class="ghost">Gieo lại</button>
+  <button class="go">Sống kiếp này<small id="cd">tự vào sau 4 giây</small><i></i></button>
+</div>
+<script>
+const t='Năm ấy một bé gái chào đời bên bờ suối Thanh Thủy. Bà đỡ bảo: con bé này khóc to như sấm, sau này không ở yên được đâu.';
+let i=0;const el=document.getElementById('say');const ty=setInterval(()=>{el.textContent=t.slice(0,++i);if(i>=t.length)clearInterval(ty)},28);
+let a=0;setInterval(()=>{a++;document.getElementById('age').textContent=a;document.getElementById('yr').textContent=a||1},1200);
+let c=4;const cd=document.getElementById('cd');const ci=setInterval(()=>{c--;cd.textContent=c>0?`tự vào sau ${c} giây`:'đang vào...';if(c<=0)clearInterval(ci)},1000);
+</script>
+</body></html>

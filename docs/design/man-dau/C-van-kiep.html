@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>C - Vạn kiếp</title>
+<!-- Hướng C "Vạn kiếp": nối thẳng với quảng cáo anh40 (nền tối, chữ vàng, "nhớ lại chân thân"). Một lưới 40 bóng người là các kiếp sẽ sống, kiếp 1 sáng lên. Tham chiếu: màn mở Hades / Loop Hero - vòng lặp chết đi sống lại là chính câu chuyện. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Protest+Revolution&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0b0806;--gold:#c9962e;--goldl:#ffcf6e;--paper3:#fff8e6;--red:#b8432f;--redd:#8f2f20}
+*{box-sizing:border-box}html,body{margin:0;height:100%}
+body{font-family:'Barlow Semi Condensed',system-ui,sans-serif;background:var(--ink);color:var(--paper3);height:100dvh;overflow:hidden;display:flex;flex-direction:column;image-rendering:pixelated}
+.head{padding:26px 20px 6px}
+.k{font-size:14px;letter-spacing:3px;color:var(--goldl);font-weight:600;text-transform:uppercase}
+h1{margin:8px 0 6px;font-family:'Protest Revolution';font-weight:400;font-size:33px;line-height:1.12;color:#fff3dc;text-wrap:balance}
+h1 em{font-style:normal;color:var(--goldl)}
+.sub{margin:0;font-size:18px;line-height:1.4;color:#d9c39a;text-wrap:pretty}
+.grid{flex:1;display:grid;grid-template-columns:repeat(8,1fr);gap:2px;padding:14px 14px 6px;align-content:center;position:relative}
+.g{aspect-ratio:1;background:url(img/nu_walk.png) 0 66.667%/900% 400%;filter:grayscale(1) brightness(.35);opacity:.55}
+.g:nth-child(3n){background-image:url(img/nam_walk.png)}
+.g:nth-child(odd){opacity:.4}
+.g.on{filter:none;opacity:1;background-color:rgba(255,207,110,.18);outline:2px solid var(--goldl);animation:pulse 1.4s ease-in-out infinite;position:relative}
+@keyframes pulse{50%{background-color:rgba(255,207,110,.38)}}
+.lbl{position:absolute;left:14px;top:2px;font-size:13px;color:var(--goldl);font-weight:600}
+.lbl2{position:absolute;right:14px;bottom:-12px;font-size:13px;color:#7d6a4c}
+.me{margin:16px 14px 0;border:2px solid #3a2a18;background:#15100a;padding:12px 14px;display:flex;gap:12px;align-items:center}
+.me .sp{flex:0 0 64px;height:64px;background:url(img/nu_walk.png) 0 -128px;animation:walk .9s steps(8) infinite;transform:scale(1.2)}
+@keyframes walk{from{background-position:-64px -128px}to{background-position:-576px -128px}}
+.me b{display:block;font-size:20px;color:#fff3dc}
+.me span{font-size:15px;color:#b89b6a}
+.me i{font-style:normal;color:#cbb6ff;font-weight:700}
+.bar{padding:12px 14px calc(14px + env(safe-area-inset-bottom));display:flex;gap:10px}
+.ghost{flex:0 0 100px;min-height:56px;background:transparent;color:#d9c39a;border:2px solid #4a3620;font:inherit;font-weight:700;font-size:16px}
+.go{flex:1;min-height:56px;background:linear-gradient(#e2b04a,#c9962e);color:#1f160d;border:3px solid #000;box-shadow:inset 0 -5px 0 #8a6520;font:inherit;font-weight:700;font-size:21px}
+.go small{display:block;font-size:13px;font-weight:600;color:#3b2a1a}
+@media (prefers-reduced-motion:reduce){.g.on,.me .sp{animation:none}}
+</style></head><body>
+<div class="head">
+  <div class="k">Vạn Kiếp Luân Hồi</div>
+  <h1>Ngươi đã chết <em>40 lần</em>.<br>Mà chưa nhớ ra mình là ai.</h1>
+  <p class="sub">Mỗi kiếp là một giấc mộng: lớn lên, tu luyện, rồi chết. Mộng tan, chân thân còn.</p>
+</div>
+<div class="grid" aria-hidden="true">
+  
+  <div class="g on"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div>
+  <div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div>
+  <div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div>
+  <div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div>
+  <div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div>
+  <span class="lbl2">... kiếp 40</span>
+</div>
+<div class="me">
+  <div class="sp" role="img" aria-label="Chu Mộng Thường"></div>
+  <div><b>Kiếp 1: Chu Mộng Thường</b><span>Con nhà nông · <i>Huyền linh căn</i> · mệnh Hỏa</span></div>
+</div>
+<div class="bar"><button class="ghost">Gieo lại</button><button class="go">Bắt đầu kiếp 1<small>năm tháng tự trôi</small></button></div>
+</body></html>
