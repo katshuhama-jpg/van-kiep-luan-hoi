@@ -4,7 +4,7 @@
 --  * Điểm giữ đất mỗi giờ: ô thường 1, Linh Mạch 3, Thiên Trì (0,0) 5. Xếp hạng Kỷ theo điểm, bằng điểm xét ô rồi Khí vận.
 --  * Linh Mạch: 12 ô (4 mỗi cõi, vòng 3-4). Giữ lúc 5:00: +2 Khí vận mỗi ô cho môn hôm đó.
 --  * Thiên Trì: người đứng giữ +10% lực giữ.
---  * Yêu thú: mỗi 5:00 tối đa 8 ô trống ở vòng 5-6 bị chiếm, lực giữ cố định (vòng 5: 1.500-3.000, vòng 6: 3.000-6.000).
+--  * Yêu thú: mỗi 5:00 tối đa 8 ô trống ở vòng 5-6 bị chiếm, lực giữ cố định theo cfg (sau mô phỏng 19/11: vòng 5 10.000-18.000, vòng 6 18.000-30.000).
 --    Ô yêu thú do một "môn" hệ thống (đã giải tán, không hiện ở danh sách, xếp hạng) giữ, bảo hộ rất xa: hàm cũ không khai hoang
 --    hay xuất chinh được vào ô này; chỉ vkl_sm_march2 mới đánh được. Thắng: ô về môn, mỗi người đi theo +10 phúc. Hết ngày: ô về trống.
 --  * Dải sức mạnh: chỉ đánh ô của môn có tổng Lực chiến (có trần) từ 1/3 môn mình. Linh Mạch, Thiên Trì, yêu thú ai cũng đánh.
@@ -148,7 +148,8 @@ begin
      order by random() limit (c ->> 'yeu_n')::int
   loop
     insert into public.vkl_sm_dat (ky_id, q, r, loai, yeu_luc, yeu_luc_dat)
-    values (v_ky, x.q, x.r, 'yeu_thu', case when x.vong = 5 then 1500 + floor(random() * 6) * 300 else 3000 + floor(random() * 11) * 300 end, now());
+    values (v_ky, x.q, x.r, 'yeu_thu', case when x.vong = 5 then (c ->> 'y5_lo')::int + floor(random() * (((c ->> 'y5_hi')::int - (c ->> 'y5_lo')::int) / 500 + 1)) * 500
+                                    else (c ->> 'y6_lo')::int + floor(random() * (((c ->> 'y6_hi')::int - (c ->> 'y6_lo')::int) / 500 + 1)) * 500 end, now());
     update public.vkl_sm_tile set mon_id = v_yeu, chinh_dien = false, chiem_luc = now(), bao_ho_toi = now() + interval '100 years'
      where ky_id = v_ky and q = x.q and r = x.r;
     v_n_yeu := v_n_yeu + 1;
@@ -390,3 +391,7 @@ revoke all on function vkl_priv.sm_tick2() from public;
 select cron.schedule('vkl_sm_diem_gio', '0 * * * *', 'select vkl_priv.sm_diem_gio()');
 select cron.schedule('vkl_sm_dat_5h', '0 22 * * *', 'select vkl_priv.sm_dat_5h()');
 select cron.schedule('vkl_sm_tick2', '* * * * *', 'select vkl_priv.sm_tick2()');
+
+-- Chỉnh sau mô phỏng 19/11 (người trong môn trung vị 6.357 Lực chiến có trần, mỗi đoàn trước giờ chỉ 1 người theo):
+-- lực yêu thú 1.500-6.000 thì một người cũng thắng. Đổi sang cần 2-5 người.
+update public.vkl_sm_cfg set v = v || '{"y5_lo":10000,"y5_hi":18000,"y6_lo":18000,"y6_hi":30000}' where k = 'dat';

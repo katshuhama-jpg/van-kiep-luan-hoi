@@ -136,13 +136,20 @@ Claude chốt (vai chủ game):
 - **Dải sức mạnh:** chỉ xuất chinh vào ô của môn có tổng Lực chiến (có trần) từ 1/3 môn mình trở lên. Ngoại lệ: Linh Mạch và Thiên Trì ai cũng đánh được (không trốn trên đất quý).
 - **Thù 12 giờ:** môn vừa chiếm ô của môn khác thì 12 giờ sau mới đánh tiếp ô khác của môn đó (chống dồn đánh một môn).
 - **Môn bỏ hoang:** môn 72 giờ không ai trong môn chơi kiếp hay mở Sơn Môn thì mọi ô trừ chính điện về trống (báo trong chiến báo).
-- [ ] Bảng/cột MỚI: `vkl_sm_tile.loai` ('thuong','linh_mach','thien_tri','yeu_thu') + `yeu_luc`; bảng `vkl_sm_diem` (ky_id, mon_id, diem, cap_nhat). Hàm MỚI `vkl_priv.sm_diem_gio()` (cron mỗi giờ), `vkl_priv.sm_yeu_thu_5h()` (cron 5:00), `vkl_priv.sm_bo_hoang()`; đặt 12 Linh Mạch + Thiên Trì cho Kỷ 1 (chỉ ô đang trống; ô đã có chủ thì giữ nguyên chủ, đổi loại).
-- [ ] Tính trận với ô yêu thú: hàm MỚI thay thế (không sửa `sm_tran` cũ) và gọi từ tick mới, hoặc nhánh trong hàm mới `vkl_sm_march2` + `sm_tran2`; giữ đúng luật trận cũ cho ô môn khác.
-- [ ] Dải sức mạnh + thù 12 giờ: trong `vkl_sm_march2` (hàm mới), giao diện gọi hàm mới khi cờ bật.
-- [ ] `vkl_sm_rank2`, `vkl_sm_map2` (trả loại ô, điểm), `vkl_sm_state` thêm điểm Kỷ (hàm mới `vkl_sm_state2` nếu cần).
-- [ ] Mô phỏng `scripts/sim-son-mon.ts` thêm điểm giữ đất, Linh Mạch, yêu thú: môn 15 người / 8 người / 3 người cuối Kỷ được bao nhiêu điểm, môn 3 người giữ 1 Linh Mạch có vượt môn 15 người toàn ô thường không (mục tiêu: có, nếu giữ đủ lâu). Ghi số vào Ghi chú.
-- [ ] Thử SQL trong giao dịch rồi hủy (như Khai hoang 18/11), cron chạy 2 lần không hỏng.
+- [x] Bảng/cột MỚI: `vkl_sm_tile.loai` ('thuong','linh_mach','thien_tri','yeu_thu') + `yeu_luc`; bảng `vkl_sm_diem` (ky_id, mon_id, diem, cap_nhat). Hàm MỚI `vkl_priv.sm_diem_gio()` (cron mỗi giờ), `vkl_priv.sm_yeu_thu_5h()` (cron 5:00), `vkl_priv.sm_bo_hoang()`; đặt 12 Linh Mạch + Thiên Trì cho Kỷ 1 (chỉ ô đang trống; ô đã có chủ thì giữ nguyên chủ, đổi loại).
+- [x] Tính trận với ô yêu thú: hàm MỚI thay thế (không sửa `sm_tran` cũ) và gọi từ tick mới, hoặc nhánh trong hàm mới `vkl_sm_march2` + `sm_tran2`; giữ đúng luật trận cũ cho ô môn khác.
+- [x] Dải sức mạnh + thù 12 giờ: trong `vkl_sm_march2` (hàm mới), giao diện gọi hàm mới khi cờ bật.
+- [x] `vkl_sm_rank2`, `vkl_sm_map2` (trả loại ô, điểm), `vkl_sm_state` thêm điểm Kỷ (hàm mới `vkl_sm_state2` nếu cần).
+- [x] Mô phỏng `scripts/sim-son-mon.ts` thêm điểm giữ đất, Linh Mạch, yêu thú: môn 15 người / 8 người / 3 người cuối Kỷ được bao nhiêu điểm, môn 3 người giữ 1 Linh Mạch có vượt môn 15 người toàn ô thường không (mục tiêu: có, nếu giữ đủ lâu). Ghi số vào Ghi chú.
+- [x] Thử SQL trong giao dịch rồi hủy (như Khai hoang 18/11), cron chạy 2 lần không hỏng.
+- Xong: 2026-11-19 (máy chủ; giao diện ở Ngày 10)
 - Ghi chú:
+  - SQL: `supabase/son_mon_dat_ky2_2026_11_19.sql`. Không thêm cột vào bảng cũ: loại ô ở bảng MỚI `vkl_sm_dat` (q, r, loai, ten_rieng, yeu_luc), điểm ở `vkl_sm_diem`, thù ở `vkl_sm_thu`, cấu hình ở `vkl_sm_cfg` khóa 'dat' (bat_dau 2026-11-20T22:00Z, mọi hàm mới chỉ chạy từ đó). Cron MỚI: `vkl_sm_diem_gio` (phút 0), `vkl_sm_dat_5h` (22:00 UTC), `vkl_sm_tick2` (mỗi phút).
+  - Yêu thú do một môn hệ thống "Yêu Thú" giữ (giải tán sẵn nên không hiện ở danh sách, xếp hạng), ô có bảo hộ 100 năm: hàm cũ không khai hoang, không xuất chinh vào được; chỉ `vkl_sm_march2` đánh được. `sm_tick2` tính trước đoàn sắp tới nơi (70 giây) bằng `sm_tran2` (bản sao `sm_tran` + yêu thú + Thiên Trì x1,1 + ghi thù), tick cũ thấy đoàn đã xong thì bỏ qua.
+  - Áp: phần bảng qua MCP; phần hàm Supabase MCP hỏi xác nhận không ai trả lời nên Tyler chạy trong SQL Editor (3 lần, có 2 lỗi bắt được khi thử: cột `ten` là cột sinh; biến vòng lặp `r` trùng cột `r`).
+  - Thử trong giao dịch rồi hủy (dời bat_dau về trước): 5:00 lần 1 = 12 Linh Mạch + Thiên Trì, 8 yêu thú, 3 ô Linh Mạch đang có chủ được cộng Khí vận, 0 môn bỏ hoang; lần 2 = 'da_chay'. Điểm giờ lần 1 ghi 14 môn, lần 2 = 0. Xếp hạng 2: Vô Hư Cốc và Thái Đỉnh Đạo Viện 10 điểm/giờ (có Linh Mạch hoặc Thiên Trì), Cửu Kiếm Phái 6. Đánh ô yêu thú: môn đủ ô thì hủy 'du_o' đúng luật; môn 9 (6 người, 32.606 lực) đánh ô yêu 5.000 thì thắng, ô về môn, 6 người nhận +10 phúc.
+  - Mô phỏng (số thật 19/11): người trong môn trung vị 6.357 Lực chiến có trần; môn 15 người 77.000-123.000, môn 6 người 32.600, môn 1 người 6.300-7.700. Lực yêu thú 1.500-6.000 trong kế hoạch thì một người cũng thắng, nên Claude chốt vòng 5: 10.000-18.000, vòng 6: 18.000-30.000 (cần 2-5 người theo; môn 6 người thắng vòng 5 với 2-3 người theo). Điểm tới hết Kỷ 1 (280 giờ): môn 15 người giữ 6 ô thường 1.680 điểm; môn 3 người (2 ô) giữ Thiên Trì + 1 Linh Mạch 8/giờ = 2.240, vượt môn 15 người nếu giữ đủ lâu (đúng mục tiêu). Dải 1/3: môn 15 người (80.000+) không đánh được môn 1 người (dưới 27.000), môn nhỏ vẫn đánh được môn lớn.
+  - Đợi Tyler chạy đoạn chỉnh lực yêu thú (cfg y5/y6 + `sm_dat_5h` đọc cfg). Chưa chạy thì yêu thú vẫn sinh nhưng lỗi đọc cfg (thiếu khóa) làm việc 5:00 hỏng: PHẢI chạy trước 5:00 21/11.
 
 ## Ngày 10 - Kỷ 2 làm sớm: giao diện, bật cờ
 Lên bản: 2026-11-21. Bật cờ `SM_DAT_ON` lúc 5:00 21/11 (điểm bắt đầu tính). Có cáo thị 4.6.1 (bản mới): "Đất có giá": Linh Mạch, Thiên Trì, yêu thú, điểm giữ đất, luật dải sức mạnh.
