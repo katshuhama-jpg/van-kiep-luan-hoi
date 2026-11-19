@@ -19,9 +19,24 @@ export function SmMoiSheet({ c, onClose }: { c: SmCtx; onClose: () => void }) {
   const [busy, setBusy] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [ok, setOk] = useState<string | null>(null);
+  // 19/11 (Tyler): nút Làm mới danh sách, mỗi lượt cách nhau 15 giây cho đỡ gọi máy chủ
+  const [lan, setLan] = useState(0);
+  const [cho, setCho] = useState(0);
   useEffect(() => {
     track('sm_moi_open');
   }, []);
+  useEffect(() => {
+    if (cho <= 0) return;
+    const t = setTimeout(() => setCho((x) => x - 1), 1000);
+    return () => clearTimeout(t);
+  }, [cho]);
+  const lamMoi = () => {
+    if (cho > 0) return;
+    track('sm_moi_lam_moi');
+    setD(null);
+    setLan((x) => x + 1);
+    setCho(15);
+  };
   useEffect(() => {
     let live = true;
     const id = setTimeout(
@@ -40,7 +55,7 @@ export function SmMoiSheet({ c, onClose }: { c: SmCtx; onClose: () => void }) {
       live = false;
       clearTimeout(id);
     };
-  }, [c.api, q]);
+  }, [c.api, q, lan]);
 
   const moi = async (ten: string, ten2: string) => {
     setBusy(ten);
@@ -70,7 +85,12 @@ export function SmMoiSheet({ c, onClose }: { c: SmCtx; onClose: () => void }) {
         <p className="sm-note">{tr('Người có chân thân, chơi trong 7 ngày qua, chưa vào môn nào. Bấm Mời, người đó thấy lời mời ở tab Sơn Môn và trong Thư, bấm Nhận là vào môn.', 'Players with a True Body, active in the last 7 days, in no sect. Tap Invite; they see it in the Sects tab and in Mail.')}</p>
         <form className="sm-chat-form" onSubmit={(e) => e.preventDefault()}>
           <label htmlFor="sm-moi-q">{tr('Tìm theo tên', 'Search by name')}</label>
-          <input id="sm-moi-q" type="search" value={q} maxLength={30} autoComplete="off" placeholder={tr('Pháp danh hoặc tên đăng nhập', 'True name or username')} onChange={(e) => setQ(e.target.value)} />
+          <div className="sm-moi-tim">
+            <input id="sm-moi-q" type="search" value={q} maxLength={30} autoComplete="off" placeholder={tr('Pháp danh hoặc tên đăng nhập', 'True name or username')} onChange={(e) => setQ(e.target.value)} />
+            <button type="button" className="sm-btn small" disabled={cho > 0 || d === null} onClick={lamMoi} aria-label={tr('Làm mới danh sách', 'Refresh list')}>
+              {cho > 0 ? `${cho}s` : tr('Làm mới', 'Refresh')}
+            </button>
+          </div>
         </form>
         <Msg err={err} ok={ok} />
         {d && d !== 'loi' && d.day && <p className="sm-why">{tr('Môn đã đủ 15 người, chưa mời thêm được.', 'The sect is full.')}</p>}

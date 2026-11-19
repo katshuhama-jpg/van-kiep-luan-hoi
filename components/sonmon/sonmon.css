@@ -358,3 +358,6 @@ p.sm-card { display: block; }
 .sm-moi-row .sm-grow { flex: 1 1 auto; }
 .sm-moi-row > .sm-btn, .sm-moi-act { flex: 0 0 auto; margin-left: auto; }
 .sm-moi-row > .sm-btn, .sm-moi-act .sm-btn { min-width: 92px; }
+.sm-moi-tim { display: flex; gap: 8px; align-items: stretch; }
+.sm-moi-tim input { flex: 1 1 auto; }
+.sm-moi-tim .sm-btn { flex: 0 0 auto; min-width: 92px; }
