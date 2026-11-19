@@ -91,7 +91,7 @@ export function SmXuatChinh({ c }: { c: SmCtx }) {
     if (bhTa && chuO != null && !hoiBh) return setHoiBh(true);
     setHoiBh(false);
     setErr(null);
-    const e = await c.run({ fn: 'march', q: toi[0], r: toi[1] }, () => track('sm_march', { trong: chuO == null, mu: 1 }));
+    const e = await c.run({ fn: 'march3', q: toi[0], r: toi[1] }, () => track('sm_march', { trong: chuO == null, mu: 1 }));
     setErr(e);
     c.reload(['map']);
   };
@@ -285,7 +285,7 @@ function baoCau(b: SmBao, mine: number): { tag: string; cls: string; chu: string
   const thangA = b.nd?.kq === 'thang';
   if (danh)
     return thangA
-      ? { tag: tr('Thắng', 'Won'), cls: 'win', chu: tr(`Chiếm ${o} của ${b.ten_b ?? '?'}`, `Took ${o} from ${b.ten_b ?? '?'}`) }
+      ? { tag: tr('Thắng', 'Won'), cls: 'win', chu: tr(`Chiếm ${o} của ${b.ten_b ?? '?'}${b.nd?.bo_o ? `, bỏ lại ${b.nd.bo_o}` : ''}`, `Took ${o} from ${b.ten_b ?? '?'}${b.nd?.bo_o ? `, left ${b.nd.bo_o}` : ''}`) }
       : { tag: tr('Thua', 'Lost'), cls: 'lose', chu: tr(`Đánh ${o} của ${b.ten_b ?? '?'} không được, người đi theo nghỉ 2 giờ`, `Failed to take ${o} from ${b.ten_b ?? '?'}, marchers rest 2 h`) };
   return thangA
     ? { tag: tr('Thua', 'Lost'), cls: 'lose', chu: tr(`${b.ten_a ?? '?'} chiếm ${o}`, `${b.ten_a ?? '?'} took ${o}`) }

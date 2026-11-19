@@ -9,7 +9,7 @@ import { track } from '@/lib/track';
 import { nvChu, SM_CFG } from '@/lib/sonmon/data';
 import { ChinhDien, ChuoiO, HuyHieu } from './Pixel';
 import { SmBaCau } from './SmLuat';
-import { duOCau, khaiDuoc } from './SmMap';
+import { duOCau, khaiDuoc, oDanhDuoc } from './SmMap';
 import { useBau } from './SmMembers';
 import { SmCongDong } from './SmThuong';
 import { chucTen, clock, DongMinh, fmtN, mocGio, Msg, useNow, type SmCtx } from './ui';
@@ -273,10 +273,35 @@ function LanhTho({ c }: { c: SmCtx }) {
           </button>
         </>
       ) : (
-        <p style={{ fontSize: 15 }}>{duOCau(c.st)}</p>
+        <>
+          <p style={{ fontSize: 15 }}>{duOCau(c.st)}</p>
+          <OKeDanh c={c} />
+        </>
       )}
       <SmCongDong c={c} />
     </section>
+  );
+}
+
+/** 19/11 23h (Ngày 7c): môn đủ ô thì liệt kê ô của môn khác đang kề lãnh thổ, hết bảo hộ, một chạm mở ô trên bản đồ */
+function OKeDanh({ c }: { c: SmCtx }) {
+  const ds = oDanhDuoc(c.st, c.map, Date.now());
+  if (!ds.length) return null;
+  return (
+    <div className="sm-danh-tip">
+      <b>{tr('Ô kề có thể đánh', 'Tiles we can attack')}</b>
+      <div className="sm-chips">
+        {ds.slice(0, 3).map((o) => (
+          <button
+            key={`${o[0]},${o[1]}`}
+            className="sm-btn small"
+            onClick={() => (track('sm_danh_tip', { tu: 'mon_nha' }), c.go('ban-do', { target: [o[0], o[1]] }))}
+          >
+            {o[2]} · {c.map?.mon[String(o[4])]?.ten ?? '?'}
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
 

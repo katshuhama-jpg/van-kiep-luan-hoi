@@ -314,8 +314,32 @@ export function duOCau(st: SmState): string {
   const m = st.mon!;
   const can = SM_CFG.mon.toiDa > m.n ? 3 * m.o_max - m.n : 0;
   return can > 0
-    ? tr(`Môn đã giữ đủ ${m.o_max} ô. Thêm ${can} người vào môn là mở thêm 1 ô.`, `Your sect holds its limit of ${m.o_max}. ${can} more members open one more tile.`)
-    : tr(`Môn đã giữ đủ ${m.o_max} ô, tối đa của môn 15 người. Muốn đất tốt hơn thì giành ô của môn khác.`, `Your sect holds the maximum ${m.o_max} tiles.`);
+    ? tr(`Môn đã giữ đủ ${m.o_max} ô: thêm ${can} người vào môn là mở thêm 1 ô. Vẫn xuất chinh giành ô kề của môn khác được, thắng thì bỏ lại ô xa nhất.`, `Your sect holds its limit of ${m.o_max}: ${can} more members open one more tile. You can still march on a neighbouring sect's tile; win and you leave your farthest one.`)
+    : tr(`Môn đã giữ đủ ${m.o_max} ô, tối đa của môn 15 người. Muốn đất tốt hơn thì xuất chinh giành ô kề của môn khác, thắng thì bỏ lại ô xa nhất.`, `Your sect holds the maximum ${m.o_max} tiles. For better land, march on a neighbouring sect's tile; win and you leave your farthest one.`);
+}
+
+/** 19/11 23h (Ngày 7c): ô môn ta sẽ bỏ nếu đang đủ ô mà thắng một ô có chủ: ô xa chính điện nhất, trừ chính điện và ô định chiếm */
+export function oBoKhiThang(st: SmState, q: number, r: number): string | null {
+  const m = st.mon;
+  if (!m || m.o < m.o_max) return null;
+  const cd = m.tiles.find((t) => t.cd);
+  const ds = m.tiles.filter((t) => !t.cd && !(t.q === q && t.r === r));
+  if (!ds.length) return null;
+  ds.sort((a, b) => (cd ? hexDist(b, cd) - hexDist(a, cd) : 0));
+  return ds[0].ten;
+}
+
+/** 19/11 23h (Ngày 7c): ô của môn khác đang kề lãnh thổ, hết bảo hộ: đánh được ngay cả khi môn đủ ô */
+export function oDanhDuoc(st: SmState, map: SmMap | null, now: number): SmMapO[] {
+  const m = st.mon;
+  if (!m || !map || !m.tiles.length) return [];
+  const dangToi = new Set(map.di.map((d) => `${d.toi[0]},${d.toi[1]}`));
+  return map.o.filter(
+    (o) =>
+      o[4] != null && o[4] !== m.id && !dangToi.has(`${o[0]},${o[1]}`) &&
+      !(o[6] && new Date(o[6]).getTime() > now) &&
+      m.tiles.some((t) => hexDist(t, { q: o[0], r: o[1] }) === 1),
+  );
 }
 
 /** lý do nút Xuất chinh bị khóa (null = bấm được) */
@@ -323,7 +347,8 @@ export function chinhKhoa(st: SmState, o: SmMapO, now: number): string | null {
   const m = st.mon!;
   if (m.chuc === 'de') return tr('Chỉ môn chủ hoặc trưởng lão phát lệnh xuất chinh.', 'Only the master or elders can order a march.');
   if (!m.tiles.length) return tr('Môn chưa cắm cờ ô nào.', 'Your sect has no tile yet.');
-  if (m.o >= m.o_max) return duOCau(st);
+  // 19/11 23h (Ngày 7c): đủ ô chỉ chặn ô trống; ô có chủ của môn khác vẫn đánh được (thắng thì bỏ ô xa nhất)
+  if (m.o >= m.o_max && o[4] == null) return duOCau(st);
   if (gan(st, o[0], o[1]) !== 1) return tr('Chỉ xuất chinh tới ô kề lãnh thổ.', 'You can only march to a tile next to your land.');
   if (o[6] && o[4] != null && new Date(o[6]).getTime() > now) return tr(`Ô đang được bảo hộ tới ${mocGio(o[6], now)}.`, `Protected until ${mocGio(o[6], now)}.`);
   if ((st.chinh ?? []).length) return tr('Môn đang có một lệnh xuất chinh.', 'Your sect already has a march under way.');
@@ -454,8 +479,15 @@ function SmBanDoMon({ c }: { c: SmCtx }) {
   const [err, setErr] = useState<string | null>(null);
   const [ok, setOk] = useState<string | null>(null);
   const now = useNow();
+  // 19/11 23h: mở bản đồ từ thẻ "Ô kề có thể đánh" thì chọn sẵn ô đó
+  useEffect(() => {
+    if (!c.target || !map) return;
+    const o = map.o.find((x) => x[0] === c.target![0] && x[1] === c.target![1]);
+    if (o) setSel(o);
+  }, [c.target, map]);
   if (!map) return <p className="sm-note">{tr('Đang mở bản đồ...', 'Opening the map...')}</p>;
   const nTile = map.o.length;
+  const danh = m.o >= m.o_max ? oDanhDuoc(st, map, now) : [];
   const kh = khaiDuoc(st, map);
   // ô đang chọn lấy bản mới nhất từ bản đồ (vừa khai hoang xong thì ô đổi chủ)
   const cur = sel ? map.o.find((x) => x[0] === sel[0] && x[1] === sel[1]) ?? sel : null;
@@ -475,6 +507,18 @@ function SmBanDoMon({ c }: { c: SmCtx }) {
               : tr(`Môn giữ ${m.o}/${m.o_max} ô. Quanh lãnh thổ hết đất trống, muốn thêm ô thì phải giành của môn khác.`, `We hold ${m.o}/${m.o_max} tiles. No empty land next to ours; take tiles from other sects to grow.`)
             : duOCau(st)}
         </p>
+      )}
+      {danh.length > 0 && (
+        <div className="sm-card sm-danh-tip">
+          <b>{tr('Ô kề có thể đánh', 'Tiles we can attack')}</b>
+          <div className="sm-chips">
+            {danh.slice(0, 4).map((o) => (
+              <button key={`${o[0]},${o[1]}`} className="sm-btn small" onClick={() => (setSel(o), setErr(null), setOk(null), track('sm_danh_tip', { tu: 'ban_do' }))}>
+                {o[2]} · {map.mon[String(o[4])]?.ten ?? '?'}
+              </button>
+            ))}
+          </div>
+        </div>
       )}
       <HexMap map={map} mine={m.id} sel={sel ? [sel[0], sel[1]] : null} onPick={(o) => {
           setSel(o);
@@ -628,6 +672,9 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
             </button>
           </div>
           {khoa && <p className="sm-why">{khoa}</p>}
+          {!khoa && oBoKhiThang(c.st, q, r) && (
+            <p className="sm-note">{tr(`Môn đang giữ đủ ${m.o_max} ô: thắng thì ô này về tay ta, môn bỏ lại ${oBoKhiThang(c.st, q, r)} (ô xa chính điện nhất).`, `We hold our ${m.o_max}-tile limit: win and this tile is ours, we leave ${oBoKhiThang(c.st, q, r)} (farthest from the main hall).`)}</p>
+          )}
           {!khoa && chu != null && m.moi_bh_toi && new Date(m.moi_bh_toi).getTime() > now && (
             <p className="sm-why">{tr('Môn ta đang được bảo hộ môn mới. Xuất chinh vào ô có chủ thì mất bảo hộ ngay.', 'Our sect is under new-sect protection. Marching on an owned tile ends it at once.')}</p>
           )}

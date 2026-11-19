@@ -87,7 +87,7 @@ function monState(vai: string): SmState {
     mon: {
       id: 1, ten: 'Thanh Hư Tông', ten1: 'Thanh', ten2: 'Hư', ten3: 'Tông', huy_hieu: 15, chinh_dien_hinh: 0,
       dk_kiep: 5, dk_tuoi_dao: 2, mo_cua: true, du_ky: !cho, het_han_ky: at(cho ? 1100 : -5000), cam_co: !cho, so_ky: cho ? 1 : 2, moi_bh_toi: cho ? null : at(30 * 60), di_toi: null,
-      n: cho ? 2 : 12, o: tiles.length, o_max: cho ? 1 : 5, kv_hom_nay: cho ? 3 : 24, kv_hom_qua: cho ? 0 : 33, kv_bonus: cho ? 0 : 0.1,
+      n: cho ? 2 : 12, o: tiles.length, o_max: cho ? 1 : typeof window !== 'undefined' && window.location.search.includes('du=1') ? tiles.length : 5, kv_hom_nay: cho ? 3 : 24, kv_hom_qua: cho ? 0 : 33, kv_bonus: cho ? 0 : 0.1,
       chuc: vai === 'de' ? 'de' : 'chu', dung: cho ? null : [1, 0], tiles, don_cho: vai === 'de' ? null : cho ? 0 : 2,
     },
     diem_danh: { hom_nay: false, chuoi: cho ? 0 : 5, da_thuong: false },
@@ -297,8 +297,10 @@ export function demoApi(vaiIn: string): SmApi {
           return { xong_luc: at(10) };
         case 'march':
         case 'march_tt':
+        case 'march3':
+        case 'march_tt3':
           if (st.chinh?.length) throw new SmErr('SM_DANG_CHINH');
-          return { id: 8, tu_trinh: a.fn === 'march_tt' ? at(10) : undefined };
+          return { id: 8, tu_trinh: a.fn === 'march_tt' || a.fn === 'march_tt3' ? at(10) : undefined };
         case 'moi_gui':
         case 'ky_nho':
           return { ok: true, vao: false };

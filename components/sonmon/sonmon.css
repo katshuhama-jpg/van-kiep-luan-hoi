@@ -367,3 +367,8 @@ p.sm-card { display: block; }
 .sm-keo li::before { content: counter(keo); width: 18px; font-weight: 700; }
 .sm-keo li.me { background: #f6e7b8; }
 .sm-keo li b { margin-left: auto; white-space: nowrap; }
+/* 19/11 23h (Ngày 7c): ô kề có thể đánh */
+.sm-danh-tip { display: grid; gap: 8px; margin-top: 10px; padding: 10px 12px; border: 3px solid #8f2f20; background: #fbe9e2; }
+.sm-card.sm-danh-tip { margin-top: 0; }
+.sm-danh-tip b { color: #8f2f20; font-size: 15px; }
+.sm-danh-tip .sm-btn.small { min-height: 44px; }
