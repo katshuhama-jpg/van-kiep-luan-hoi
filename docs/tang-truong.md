@@ -12,6 +12,13 @@ Từ 19/11 (Tyler: tốn token): file này chỉ giữ 2 đêm gần nhất + C�
 - Người tự đến cùng tuần cũng chỉ quay lại khoảng 11-12%, nên chỗ rò là phiên đầu trong game, không phải tệp người quảng cáo.
 - Lần chạy sau: chỉ ảnh tĩnh kiểu anh40 (thử 2-3 ảnh mới cùng kiểu), không video, không manhua chữ dày. Chỉ chạy lại khi người mới tự đến quay lại hôm sau từ 20% trở lên 3 ngày liền. Việc đêm trước đó: giảm 50% người vào mà không bắt đầu kiếp, và kéo tỉ lệ xong kiếp 1.
 
+## Lên bản 5:00 sáng 20/11: thần binh chưa rút vẫn chờ kiếp sau (Tyler duyệt 23:08 19/11)
+
+Aurora Vonka hỏi: kiếp sau chết sớm hay không rút kiếm thì thần binh có mất không. Trước đây mất (chỉ truyền món đang cầm lúc khép kiếp).
+- `lib/game/types.ts` thêm `legendClaimed`; `lib/game/hookEvents.ts` đặt cờ khi bấm "Rút thần binh lên".
+- `app/choi/page.tsx` (finishLife): kiếp chưa rút và không giữ món đó thì giữ nguyên `meta.legend` (cùng bậc). Vẫn mất khi "Để nó yên nghỉ" hoặc uống canh Mạnh Bà.
+- Cáo thị "Sửa lỗi 20/11". Page báo lại Aurora sau khi lên bản.
+
 ## Lên bản 5:00 sáng 20/11: lôi đài giữ bóng (Tyler duyệt 11:28 19/11)
 
 Phan Anh Tuấn báo: kiếp Chuẩn Thánh mạnh nhất có thể rơi khỏi danh sách khi chơi thêm kiếp Khai Thiên, và mỗi ngày lôi đài tự đổi sang bóng yếu.

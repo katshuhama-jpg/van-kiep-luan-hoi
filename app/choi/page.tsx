@@ -1873,7 +1873,11 @@ export default function PlayPage() {
     // thần binh truyền kiếp: đời nào cũng truyền thì mạnh dần
     const w = c.equipped.vu_khi;
     // #118: sau phi thăng chết vẫn truyền được thần binh
-    const legend = extra.legendName && w ? { item: w, name: extra.legendName.slice(0, 40), lv: c.legend?.item === w ? c.legend.lv + 1 : 1 } : null;
+    // 19/11 (Aurora Vonka, Tyler duyệt): kiếp này chưa kịp rút thần binh (chết trước 12 tuổi...) thì thần binh vẫn chờ kiếp sau,
+    // giữ nguyên bậc. Chỉ mất khi chọn "Để nó yên nghỉ", uống canh Mạnh Bà, hay đã rút lên rồi mà không cầm lúc khép kiếp.
+    const owned = (id: string) => c.inventory.includes(id) || Object.values(c.equipped).includes(id);
+    const waiting = c.legend && !c.legendClaimed && !owned(c.legend.item) ? c.legend : null;
+    const legend = extra.legendName && w ? { item: w, name: extra.legendName.slice(0, 40), lv: c.legend?.item === w ? c.legend.lv + 1 : 1 } : waiting;
     // #168: gộp mọi loài đã nuôi trong kiếp (thú bỏ đi, thả về rừng vẫn được ghi sổ)
     const seenKinds = [...(c.petSeen ?? []), ...(c.pet && c.petKind ? [c.petKind] : [])];
     const newKinds = seenKinds.filter((k, i) => seenKinds.indexOf(k) === i && !(meta.petBook ?? []).includes(k));

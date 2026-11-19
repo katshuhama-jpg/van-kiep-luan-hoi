@@ -141,6 +141,7 @@ export interface Character {
   cpHeirPick?: string | null; // chiêu chọn truyền cho kiếp sau
   lookSeed?: number; // nét riêng của ngoại hình: da, khuôn mặt, râu, trang sức
   legend?: Legend | null; // thần binh truyền kiếp đang mang
+  legendClaimed?: boolean; // 19/11: kiếp này đã rút thần binh lên (chưa rút thì chết vẫn giữ thần binh cho kiếp sau)
   vendettas?: Vendetta[];
   hunt?: { rival: RivalChar; at: number } | null;
   loreDone?: boolean; // đã gom đủ Thiên thư: kiếp này sẽ gặp lại chính mình

@@ -229,6 +229,7 @@ export const HOOK_EVENTS: GameEvent[] = [
         run: (ch, ctx) => {
           const L = ch.legend!;
           giveItem(ch, L.item, true);
+          ch.legendClaimed = true;
           ctx.fx('layer', L.name);
           return tr(`${L.name} nhận ra chủ cũ, kiếm khí bao trùm cả sân. Mỗi kiếp truyền qua, nó lại mạnh thêm (công +${Math.min(10, L.lv) * 8}%).`, `${L.name} recognises its old master, and sword qi floods the whole yard. With every life it passes through, it grows stronger (attack +${Math.min(10, L.lv) * 8}%).`);
         },
