@@ -32,6 +32,14 @@ Luật hiệu năng và chi phí (Tyler chốt 18/11, MỖI ĐÊM, kể cả đ�
 3. Việc lớn hơn (đổi gói, đổi kiến trúc, tắt tính năng) thì KHÔNG tự làm, ghi đề xuất kèm số tiền tiết kiệm ước tính.
 4. Ghi một dòng vào `docs/so-lieu.md` mục "Hiệu năng và chi phí" (ngày, chi phí 24h, 3 câu tốn nhất, đã sửa gì, số trước/sau) và gửi Tyler trong báo cáo sáng.
 
+## Ngày 7c - Mở khóa đánh ô của môn khác (Tyler 19/11 23:09; phiên dự phòng 01:30 20/11 LÀM KHỐI NÀY)
+Lên bản: 2026-11-20. Có cáo thị: thêm dòng vào bản 20/11 "Môn đã đủ ô vẫn xuất chinh đánh ô của môn khác được; thắng thì bỏ bớt một ô xa nhất".
+Lý do (số 19/11 23h): 11 lần xuất chinh từ 18/11 đều là cắm cờ ô trống, 0 lần đánh ô có chủ, dù có 67 lần trinh sát. Cả 14 môn đều đang giữ đúng trần ô (8 môn 15 người giữ 6/6, Huyền Hư Cung 6/5), nên `SM_DU_O` khóa Xuất chinh với MỌI môn: không ai đánh được ai. Lượt mở bản đồ tụt 37 → 9, xuất chinh 17 → 0 trong một ngày. Không phải người chơi "không biết", mà là luật đang chặn.
+- [ ] Luật mới: trần ô chỉ chặn cắm cờ/khai hoang ô TRỐNG. Xuất chinh vào ô CÓ CHỦ luôn được (vẫn phải kề lãnh thổ, vẫn tôn trọng bảo hộ). Thắng mà vượt trần: môn thắng tự bỏ ô xa chính điện nhất (không bỏ chính điện, không bỏ ô vừa chiếm), ô đó thành ô trống; chiến báo "X chiếm Y, bỏ lại Z". Hàm MỚI (vd `vkl_sm_march_v2` + helper `vkl_priv.sm_tha_o_xa`), client gọi hàm mới; không sửa hàm cũ. Khối 9 (Kỷ 2, `son_mon_dat_ky2_2026_11_19.sql`) cũng có dòng raise SM_DU_O trong hàm xuất chinh: áp cùng luật cho đường gọi đang dùng (tạo hàm mới, chuyển client).
+- [ ] Giao diện: trên ô của môn khác, khi kề lãnh thổ và hết bảo hộ, nút rõ "Xuất chinh đánh ô này" (không còn khóa vì đủ ô); khi đủ ô ghi một dòng nhỏ ngay trên nút "Thắng thì môn bỏ ô <tên ô xa nhất>". Ô trống khi đủ ô vẫn khóa, ghi lý do như cũ.
+- [ ] Gợi ý: thẻ "Ô kề có thể đánh" ở Môn nhà/Bản đồ liệt kê 1-3 ô của môn khác đang kề và hết bảo hộ (lực giữ "???" nếu chưa trinh sát), một chạm mở ô. Thư một lần cho môn chủ và trưởng lão mọi môn: "Từ nay môn đủ ô vẫn đánh được ô của môn khác". Đo: sm_march vào ô có chủ/ngày, sm_xem_ban_do.
+- [ ] Thử: smoke-son-mon + ca SQL giả lập trong transaction rollback (môn A 6/6 đánh ô môn B kề, thắng → A vẫn 6 ô, ô xa nhất thành trống); demo `?demo=` theo luật mới.
+
 ## Ngày 8f - Chọn thế giới khởi đầu khi đầu thai (giấu sau cờ)
 Lên bản: 2026-11-22 (làm 20-21/11, mỗi đêm một phần, giấu sau cờ `KHOI_DAU_ON`). Có cáo thị khi bật. Nguồn: `docs/thiet-ke-hau-ky.md` mục 3 (Phàm, Tu chân, Tiên, Hồng Hoang; mở khi đạt mốc 5 lần; phúc duyên x0,8 / x0,6 / x0,5; ô khóa ghi lý do ngay trên ô).
 - [ ] Máy: đếm số lần đạt Kim Đan / phi thăng / Khai Thiên qua các kiếp (Meta), màn chọn ở bước đầu thai (mặc định Phàm giới, người mới không thấy ô khác).
