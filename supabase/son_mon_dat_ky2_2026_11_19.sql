@@ -1,4 +1,4 @@
--- Đã áp hết 19/11 tối (phần bảng qua MCP, phần hàm Tyler chạy trong SQL Editor). Sửa sau: sm_dat_5h không ghi cột ten (cột sinh tự động).
+-- Đã áp hết 19/11 tối (phần bảng qua MCP, phần hàm Tyler chạy trong SQL Editor). Sửa sau: sm_dat_5h không ghi cột ten (cột sinh tự động); sm_dat_dat và sm_dat_5h đổi biến vòng lặp r thành x (trùng tên cột r).
 -- Ngày 9 (19/11): "Đất có giá" làm sớm cho Kỷ 1, tính từ 5:00 21/11 (giờ VN). Bảng, hàm, cron MỚI; không sửa hàm cũ.
 -- Giao diện giấu sau cờ SM_DAT_ON tới Ngày 10. Trước 5:00 21/11 mọi hàm mới đều không làm gì (trừ đặt loại ô, chỉ là dữ liệu).
 --  * Điểm giữ đất mỗi giờ: ô thường 1, Linh Mạch 3, Thiên Trì (0,0) 5. Xếp hạng Kỷ theo điểm, bằng điểm xét ô rồi Khí vận.
@@ -68,11 +68,11 @@ $$;
 create or replace function vkl_priv.sm_dat_dat(p_ky int)
 returns int language plpgsql security definer set search_path = '' as $$
 declare v_ten text[] := array['Thanh Ngọc Mạch', 'Bích Lạc Mạch', 'Tử Vân Mạch', 'Kim Tuyền Mạch', 'Hồng Liên Mạch', 'Xích Hà Mạch',
-  'Lưu Ly Mạch', 'Thúy Trúc Mạch', 'U Tuyền Mạch', 'Huyền Âm Mạch', 'Minh Hà Mạch', 'Hắc Thủy Mạch']; v_i int := 0; r record;
+  'Lưu Ly Mạch', 'Thúy Trúc Mạch', 'U Tuyền Mạch', 'Huyền Âm Mạch', 'Minh Hà Mạch', 'Hắc Thủy Mạch']; v_i int := 0; x record;
 begin
   insert into public.vkl_sm_dat (ky_id, q, r, loai, ten_rieng) values (p_ky, 0, 0, 'thien_tri', 'Thiên Trì')
   on conflict (ky_id, q, r) do update set loai = 'thien_tri', ten_rieng = 'Thiên Trì';
-  for r in
+  for x in
     with t as (
       select t.q, t.r, t.coi, vkl_priv.sm_dist(0, 0, t.q, t.r) vong,
              row_number() over (partition by t.coi, vkl_priv.sm_dist(0, 0, t.q, t.r) order by atan2(t.r + t.q / 2.0, t.q * 0.866), t.q, t.r) k,
@@ -82,7 +82,7 @@ begin
   loop
     v_i := v_i + 1;
     exit when v_i > 12;
-    insert into public.vkl_sm_dat (ky_id, q, r, loai, ten_rieng) values (p_ky, r.q, r.r, 'linh_mach', v_ten[v_i])
+    insert into public.vkl_sm_dat (ky_id, q, r, loai, ten_rieng) values (p_ky, x.q, x.r, 'linh_mach', v_ten[v_i])
     on conflict (ky_id, q, r) do update set loai = 'linh_mach', ten_rieng = excluded.ten_rieng, yeu_luc = null;
   end loop;
   return v_i;
@@ -115,7 +115,7 @@ $$;
 -- 5:00 mỗi ngày: Khí vận Linh Mạch, yêu thú cũ về trống, yêu thú mới, môn bỏ hoang.
 create or replace function vkl_priv.sm_dat_5h()
 returns jsonb language plpgsql security definer set search_path = '' as $$
-declare v_ky int := vkl_priv.sm_ky_now(); c jsonb; v_yeu bigint; v_day text := vkl_priv.sm_day()::text; r record; v_n_yeu int := 0; v_n_bh int := 0; v_lm int := 0;
+declare v_ky int := vkl_priv.sm_ky_now(); c jsonb; v_yeu bigint; v_day text := vkl_priv.sm_day()::text; x record; v_n_yeu int := 0; v_n_bh int := 0; v_lm int := 0;
 begin
   if v_ky is null or not vkl_priv.sm_dat_on() then return jsonb_build_object('bo_qua', true); end if;
   select v into c from public.vkl_sm_cfg where k = 'dat' for update;
@@ -129,18 +129,18 @@ begin
   end if;
   if not exists (select 1 from public.vkl_sm_dat where ky_id = v_ky and loai = 'linh_mach') then perform vkl_priv.sm_dat_dat(v_ky); end if;
   -- Linh Mạch: +2 Khí vận mỗi ô cho môn đang giữ
-  for r in select t.mon_id, count(*) n from public.vkl_sm_dat d join public.vkl_sm_tile t on t.ky_id = d.ky_id and t.q = d.q and t.r = d.r
+  for x in select t.mon_id, count(*) n from public.vkl_sm_dat d join public.vkl_sm_tile t on t.ky_id = d.ky_id and t.q = d.q and t.r = d.r
             join public.vkl_sm_mon m on m.id = t.mon_id and m.giai_tan_luc is null
            where d.ky_id = v_ky and d.loai = 'linh_mach' group by t.mon_id loop
-    perform vkl_priv.sm_add_kv(r.mon_id, (c ->> 'lm_kv')::int * r.n::int);
-    v_lm := v_lm + r.n::int;
+    perform vkl_priv.sm_add_kv(x.mon_id, (c ->> 'lm_kv')::int * x.n::int);
+    v_lm := v_lm + x.n::int;
   end loop;
   -- yêu thú hôm qua chưa ai đánh: ô về trống
   update public.vkl_sm_tile t set mon_id = null, chinh_dien = false, bao_ho_toi = null, chiem_luc = null
     from public.vkl_sm_dat d where d.ky_id = t.ky_id and d.q = t.q and d.r = t.r and d.loai = 'yeu_thu' and t.ky_id = v_ky and t.mon_id = v_yeu;
   delete from public.vkl_sm_dat where ky_id = v_ky and loai = 'yeu_thu';
   -- yêu thú mới: ô trống vòng 5-6, không có đoàn nào đang tới
-  for r in
+  for x in
     select t.q, t.r, vkl_priv.sm_dist(0, 0, t.q, t.r) vong from public.vkl_sm_tile t
      where t.ky_id = v_ky and t.mon_id is null and vkl_priv.sm_dist(0, 0, t.q, t.r) in (5, 6)
        and not exists (select 1 from public.vkl_sm_dat d where d.ky_id = t.ky_id and d.q = t.q and d.r = t.r)
@@ -148,13 +148,13 @@ begin
      order by random() limit (c ->> 'yeu_n')::int
   loop
     insert into public.vkl_sm_dat (ky_id, q, r, loai, yeu_luc, yeu_luc_dat)
-    values (v_ky, r.q, r.r, 'yeu_thu', case when r.vong = 5 then 1500 + floor(random() * 6) * 300 else 3000 + floor(random() * 11) * 300 end, now());
+    values (v_ky, x.q, x.r, 'yeu_thu', case when x.vong = 5 then 1500 + floor(random() * 6) * 300 else 3000 + floor(random() * 11) * 300 end, now());
     update public.vkl_sm_tile set mon_id = v_yeu, chinh_dien = false, chiem_luc = now(), bao_ho_toi = now() + interval '100 years'
-     where ky_id = v_ky and q = r.q and r = r.r;
+     where ky_id = v_ky and q = x.q and r = x.r;
     v_n_yeu := v_n_yeu + 1;
   end loop;
   -- môn bỏ hoang 72 giờ
-  for r in
+  for x in
     select m.id from public.vkl_sm_mon m
      where m.ky_lap = v_ky and m.giai_tan_luc is null and m.cam_co_luc is not null
        and exists (select 1 from public.vkl_sm_tile t where t.ky_id = v_ky and t.mon_id = m.id and not t.chinh_dien)
@@ -162,9 +162,9 @@ begin
                        coalesce((select max(l.created_at) from public.vkl_lives l where l.player_id = mb.player_id and l.created_at > now() - interval '4 days'), '-infinity')))
                        from public.vkl_sm_member mb where mb.mon_id = m.id), '-infinity') < now() - make_interval(hours => (c ->> 'bo_hoang_gio')::int)
   loop
-    update public.vkl_sm_member set dung_q = null, dung_r = null where mon_id = r.id;
-    update public.vkl_sm_tile set mon_id = null, bao_ho_toi = null, chiem_luc = null where ky_id = v_ky and mon_id = r.id and not chinh_dien;
-    insert into public.vkl_sm_bao (ky_id, loai, mon_a, noi_dung) values (v_ky, 'bo_hoang', r.id, jsonb_build_object('gio', (c ->> 'bo_hoang_gio')::int));
+    update public.vkl_sm_member set dung_q = null, dung_r = null where mon_id = x.id;
+    update public.vkl_sm_tile set mon_id = null, bao_ho_toi = null, chiem_luc = null where ky_id = v_ky and mon_id = x.id and not chinh_dien;
+    insert into public.vkl_sm_bao (ky_id, loai, mon_a, noi_dung) values (v_ky, 'bo_hoang', x.id, jsonb_build_object('gio', (c ->> 'bo_hoang_gio')::int));
     v_n_bh := v_n_bh + 1;
   end loop;
   update public.vkl_sm_cfg set v = v || jsonb_build_object('ngay_cuoi', v_day) where k = 'dat';
