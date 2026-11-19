@@ -57,10 +57,17 @@ Ghi chú: không chạy quảng cáo tới khi người mới tự đến quay l
 ## Ngày 7b - Sơn Môn kéo người mới (Tyler 19/11 tối, làm ngay sau Ngày 7)
 Lên bản: cùng hoặc ngay sau Ngày 7.
 Lý do: người đến qua link mời quay lại hôm sau ~29%, gấp đôi rưỡi mọi nguồn khác; người trong môn quay lại 74-91%.
-- [ ] Link mời của thành viên (nút "Gửi link cho bạn chưa chơi" + thẻ chia sẻ) mang mã môn và người mời (?sm=<mon>&tu=<ten>). Người mới vào qua link: màn đầu ghi "<tên> ở <môn> mời bạn", chơi xong kiếp 1 + tạo chân thân thì được mời vào môn đó (một chạm).
-- [ ] Quà: người mới đó quay lại ngày thứ 2 thì người mời và cả môn nhận quà (phúc duyên cho người mời, Khí vận nhỏ cho môn), có thư báo và chiến báo "X kéo được Y nhập môn". Hàm MỚI, chống tự mời (cùng thiết bị/sid, tài khoản mới tạo cùng ngày của chính người mời không tính), trần 5 người/ngày/người mời.
-- [ ] Bảng "Môn kéo người" trong tab Sơn Môn (tuần này). Đo: sm_ref_click, sm_ref_join, sm_ref_d2.
+- [x] Link mời của thành viên (nút "Gửi link cho bạn chưa chơi" + thẻ chia sẻ) mang mã môn và người mời (?sm=<mon>&tu=<ten>). Người mới vào qua link: màn đầu ghi "<tên> ở <môn> mời bạn", chơi xong kiếp 1 + tạo chân thân thì được mời vào môn đó (một chạm).
+- [x] Quà: người mới đó quay lại ngày thứ 2 thì người mời và cả môn nhận quà (phúc duyên cho người mời, Khí vận nhỏ cho môn), có thư báo và chiến báo "X kéo được Y nhập môn". Hàm MỚI, chống tự mời (cùng thiết bị/sid, tài khoản mới tạo cùng ngày của chính người mời không tính), trần 5 người/ngày/người mời.
+- [x] Bảng "Môn kéo người" trong tab Sơn Môn (tuần này). Đo: sm_ref_click, sm_ref_join, sm_ref_d2.
 Ghi chú: Kỷ 2 (Ngày 9-11) vẫn làm theo kế hoạch ngay sau, Tyler muốn làm luôn.
+- Xong: 2026-11-19 (commit "Ngày 7b")
+- Ghi chú đêm 19/11:
+  - Máy chủ (đã áp, `supabase/son_mon_keo_nguoi_2026_11_19.sql`): bảng MỚI `vkl_sm_ref` (một dòng mỗi người mới), hàm MỚI `vkl_sm_ref_nhan` (ghi + gửi lời mời vào `vkl_sm_moi` + thư), `vkl_priv.sm_ref_tick` (cron `vkl_sm_ref_tick` phút 7 mỗi giờ: ghi vào môn, ngày 2, phát thưởng +20 phúc qua vkl_gift, +3 Khí vận môn, thư, chiến báo `keo_nguoi`), `vkl_sm_keo_bang` (tuần từ thứ Hai 5:00). Thử trong giao dịch rồi hủy: lần 1 ok + có lời mời, lần 2 'da_co', giả vào môn + ngày 2 thì thưởng 1 và bảng có môn.
+  - Chống tự mời: sid của người mới trùng sid người mời trong 7 ngày thì ghi `ly_do = cung_may`, không thưởng; tài khoản người mới phải tạo trong 7 ngày; mỗi người một dòng; trần 5 người thưởng mỗi ngày mỗi người mời. Thưởng cần CẢ vào môn VÀ quay lại ngày 2.
+  - Máy: `lib/smRef.ts` (bắt ?sm/tu/mn khi máy chưa chơi kiếp nào, nhớ 7 ngày, đo `sm_ref_click`), màn đầu ghi "<tên> ở <môn> mời bạn", có chân thân + tài khoản thì gọi `vkl_sm_ref_nhan` (đo `sm_ref_moi`). Nút "Gửi link cho bạn chưa chơi" dùng link mới. Chiến báo "X kéo được Y nhập môn". Bảng "Môn kéo người tuần này" ở màn Kỷ.
+  - Đo: sm_ref_click (sự kiện), sm_ref_join = `vkl_sm_ref.vao_luc`, sm_ref_d2 = `d2_luc`, thưởng = `thuong_luc`.
+  - Giới hạn: người mới vẫn phải đủ điều kiện vào môn (từ X kiếp) do môn chủ đặt; môn đặt điều kiện cao thì người mới chưa Nhận được tới khi đủ kiếp (lời mời giữ 3 ngày). Đêm sau xem số, nếu nhiều lời mời hết hạn vì điều kiện thì cho lời mời qua link bỏ qua điều kiện kiếp (hàm mới).
 
 ## Ngày 8 - Khai hoang, bản đồ to, hướng dẫn người trong môn
 Lên bản: 2026-11-19. Cáo thị: thêm dòng vào 4.6.0 (đã có dòng Khai hoang + bản đồ).

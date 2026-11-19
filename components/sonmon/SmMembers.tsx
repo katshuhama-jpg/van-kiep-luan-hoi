@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { tr } from '@/lib/i18n';
 import { SmMoiSheet } from './SmMoi';
 import { track } from '@/lib/track';
+import { smRefLink } from '@/lib/smRef';
 import type { SmBau, SmMember, SmMonNguoi } from '@/lib/sonmon/api';
 import { hexDist, oToiDa, SM_CFG } from '@/lib/sonmon/data';
 import { DkForm } from './SmFound';
@@ -58,8 +59,8 @@ export function SmThanhVien({ c }: { c: SmCtx }) {
   };
   const [moiMo, setMoiMo] = useState(false);
   const moi = async () => {
-    // 19/11: link ngoài game dẫn thẳng vào Sơn Môn (trước đây dùng nhầm link Sư Đồ ?su=)
-    const url = `${location.origin}/son-mon`;
+    // Ngày 7b: link mang mã môn và người mời; người chưa chơi vào /choi thấy "<tên> ở <môn> mời bạn", tạo chân thân xong được mời vào môn
+    const url = toi ? smRefLink(location.origin, m.id, toi, m.ten) : `${location.origin}/son-mon`;
     const text = tr(`Vào ${m.ten} cùng ta trong Vạn Kiếp Luân Hồi`, `Join ${m.ten} with me in Ten Thousand Rebirths`);
     track('sm_invite', { n: m.n });
     try {

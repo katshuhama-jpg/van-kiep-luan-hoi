@@ -44,6 +44,7 @@ import { addCult, addPill, dao, fatal, fmt, giveItem, money, reward, stat, wealt
 import type { Character, Element, Focus, Fx, Meta, PendingEvent } from '@/lib/game/types';
 import DuelWarning from '@/components/Duel';
 import { buyTq, GAUGE_NAME, act as cpAct, equip as cpEquip, fuse as cpFuse, unequip as cpUnequip, upgrade as cpUpgrade, swapTq as cpSwapTq, heirChoices, loadoutOf, newSide, npcLoadout, rivalCp, skipTurn, takeHit, type FightSide, type Loadout } from '@/lib/game/congPhap';
+import { smRefNhan } from '@/lib/smRef';
 import { trackMiles } from '@/lib/game/miles';
 import { ELEMENTS, elemHitTag, elemMul, elemRel, elementOf } from '@/lib/game/nguhanh';
 import { DUEL_INFO, DUEL_PER_YEAR, DUEL_TURNS, finishDuel, foeChar, foeStats, pickDuel, teaTrap, toRival, type DuelFoe } from '@/lib/game/duel';
@@ -113,6 +114,12 @@ export default function PlayPage() {
   const [meta, setMeta] = useState<Meta | null>(null);
   const metaRef = useRef<Meta | null>(null);
   metaRef.current = meta;
+  // Ngày 7b: người mới đến qua link mời Sơn Môn, có chân thân và tài khoản thì báo máy chủ (mời vào môn, một lần)
+  const hasCt = !!meta?.chanThan;
+  useEffect(() => {
+    if (!hasCt || !user) return;
+    smRefNhan().then((r) => r && track('sm_ref_moi', { ok: r.ok, moi: !!r.moi, ly_do: r.ly_do ?? null }), () => {});
+  }, [hasCt, user]);
   const [find, setFind] = useState<{ id: string; name: string; n: number; rare: number } | null>(null); // vừa có đồ ẩn mới
   const [bagTab, setBagTab] = useState<'tui' | 'kho'>('tui');
   const [, setFrame] = useState(0);

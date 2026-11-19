@@ -34,13 +34,13 @@ export type SmTrinh = { id: number; o: [number, number]; xong_luc: string; ket_q
 export type SmBao = {
   id: number;
   luc: string;
-  loai: 'tran' | 'cam_co' | 'huy' | 'mat_het';
+  loai: 'tran' | 'cam_co' | 'huy' | 'mat_het' | 'keo_nguoi';
   a: number | null;
   b: number | null;
   ten_a: string | null;
   ten_b: string | null;
   o: [number, number];
-  nd: { kq?: string; ten_o?: string; atk?: number; def?: number; n_atk?: number; n_def?: number; dau?: boolean; ly_do?: string; khai_hoang?: boolean; nguoi?: string } | null;
+  nd: { kq?: string; ten_o?: string; atk?: number; def?: number; n_atk?: number; n_def?: number; dau?: boolean; ly_do?: string; khai_hoang?: boolean; nguoi?: string; moi?: string } | null;
 };
 export type SmLcPhan = {
   nam: number; kiep: number; canh: number; ket_cuc: number; ngay: number; huyet: number; vien_man: number;

@@ -279,6 +279,7 @@ function baoCau(b: SmBao, mine: number): { tag: string; cls: string; chu: string
   if (b.loai === 'cam_co') return { tag: tr('Cờ', 'Flag'), cls: 'flag', chu: tr(`Cắm cờ ${o}${b.nd?.dau ? ', ô đầu tiên của môn' : ''}`, `Planted the flag on ${o}`) };
   if (b.loai === 'huy' && b.nd?.ly_do === 'rut_quan') return { tag: tr('Rút', 'Off'), cls: 'lose', chu: tr(`${b.nd?.nguoi ?? 'Môn chủ'} rút quân, hủy lệnh đánh ${o}`, `${b.nd?.nguoi ?? 'The leader'} called off the march on ${o}`) };
   if (b.loai === 'huy') return { tag: tr('Hủy', 'Off'), cls: 'lose', chu: tr(`Lệnh xuất chinh tới ${o} bị hủy vì không ai theo`, `March to ${o} called off, nobody joined`) };
+  if (b.loai === 'keo_nguoi') return { tag: tr('Người', 'Recruit'), cls: 'win', chu: tr(`${b.nd?.nguoi ?? 'Đạo hữu'} kéo được ${b.nd?.moi ?? 'một người mới'} nhập môn`, `${b.nd?.nguoi ?? 'A member'} brought ${b.nd?.moi ?? 'a newcomer'} into the sect`) };
   if (b.loai === 'mat_het') return { tag: tr('Mất', 'Lost'), cls: 'lose', chu: tr('Môn mất hết ô. Cắm cờ lại một ô trống bất kỳ, bảo hộ 12 giờ.', 'The sect lost all tiles. Plant again anywhere, protected 12 h.') };
   const danh = b.a === mine;
   const thangA = b.nd?.kq === 'thang';

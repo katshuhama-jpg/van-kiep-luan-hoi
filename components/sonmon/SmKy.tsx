@@ -4,6 +4,8 @@
 import Link from 'next/link';
 import { tr } from '@/lib/i18n';
 import { capLc, SM_CFG } from '@/lib/sonmon/data';
+import { useEffect, useState } from 'react';
+import { keoBang, type KeoRow } from '@/lib/smRef';
 import { HuyHieu } from './Pixel';
 import { fmtN, ngayThang, useNow, type SmCtx } from './ui';
 
@@ -86,6 +88,7 @@ export function SmKy({ c }: { c: SmCtx }) {
           {tr('Xếp theo số ô giữ lúc hết Kỷ, bằng nhau thì xét tổng Khí vận cả Kỷ.', 'Ranked by tiles held at the end, ties broken by total fortune.')}
         </p>
       </section>
+      <SmKeoBang mine={mine} />
       <section className="sm-card">
         <h3>{tr('Thưởng cuối Kỷ (chỉ đồ trang trí)', 'End-of-era rewards (cosmetic)')}</h3>
         <p style={{ fontSize: 15 }}>{tr('Hạng 1: hào quang chân thân, tên môn khắc vào Sổ Sinh Tử.', 'Rank 1: a true-self aura, sect name carved in the Book of Life and Death.')}</p>
@@ -177,5 +180,38 @@ export function SmLucChien({ c }: { c: SmCtx }) {
         {tr('Vào kiếp mới', 'Start a new life')}
       </Link>
     </>
+  );
+}
+
+/** Ngày 7b: bảng "Môn kéo người" tuần này (người mới vào qua link mời, vào môn và quay lại ngày thứ hai) */
+function SmKeoBang({ mine }: { mine: number | null }) {
+  const [ds, setDs] = useState<KeoRow[] | null>(null);
+  useEffect(() => {
+    let live = true;
+    keoBang().then((x) => live && setDs(x));
+    return () => {
+      live = false;
+    };
+  }, []);
+  return (
+    <section className="sm-card">
+      <h3>{tr('Môn kéo người tuần này', 'Top recruiters this week')}</h3>
+      {!ds ? (
+        <p className="sm-note">{tr('Đang xem...', 'Loading...')}</p>
+      ) : ds.length === 0 ? (
+        <p className="sm-note">{tr('Tuần này chưa môn nào kéo được người mới. Gửi link mời ở mục Thành viên.', 'No sect has brought in a newcomer this week. Send an invite link from Members.')}</p>
+      ) : (
+        <ol className="sm-keo">
+          {ds.map((r) => (
+            <li key={r.mon} className={r.mon === mine ? 'me' : ''}>
+              <HuyHieu id={r.huy_hieu} size={22} label="" />
+              <span className="sm-clip">{r.ten}</span>
+              <b>{tr(`${r.n} người`, `${r.n}`)}</b>
+            </li>
+          ))}
+        </ol>
+      )}
+      <p className="sm-note">{tr('Người mới vào qua link mời của môn, nhập môn và quay lại ngày thứ hai: người mời +20 phúc duyên, môn +3 Khí vận.', 'A newcomer who joins through your link and returns on day two: +20 Fortune for the inviter, +3 fortune for the sect.')}</p>
+    </section>
   );
 }

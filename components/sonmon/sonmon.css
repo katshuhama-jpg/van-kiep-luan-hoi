@@ -361,3 +361,9 @@ p.sm-card { display: block; }
 .sm-moi-tim { display: flex; gap: 8px; align-items: stretch; }
 .sm-moi-tim input { flex: 1 1 auto; }
 .sm-moi-tim .sm-btn { flex: 0 0 auto; min-width: 92px; }
+/* Ngày 7b: bảng Môn kéo người */
+.sm-keo { list-style: none; margin: 4px 0; padding: 0; display: flex; flex-direction: column; gap: 4px; counter-reset: keo; }
+.sm-keo li { display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 2px 6px; border-top: 1px solid #d9c493; counter-increment: keo; }
+.sm-keo li::before { content: counter(keo); width: 18px; font-weight: 700; }
+.sm-keo li.me { background: #f6e7b8; }
+.sm-keo li b { margin-left: auto; white-space: nowrap; }

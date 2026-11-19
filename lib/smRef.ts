@@ -4,6 +4,9 @@
  * Màn đầu ghi "<tên> ở <môn> mời bạn"; tạo chân thân xong thì Sơn Môn mời vào môn đó (một chạm).
  */
 import { tr } from './i18n';
+import { currentPlayer } from './auth';
+import { supabase } from './supabase';
+import { sessionId, track } from './track';
 
 export type SmRef = { sm: string; tu: string; mn: string; at: number };
 const KEY = 'vkl.smRef';
@@ -35,6 +38,7 @@ export function catchSmRef(lives: number | null): SmRef | null {
     if (sm && /^[0-9a-zA-Z-]{1,40}$/.test(sm) && !readSmRef() && (lives ?? 0) === 0) {
       const r: SmRef = { sm, tu: (q.get('tu') ?? '').slice(0, 24), mn: (q.get('mn') ?? '').slice(0, 40), at: Date.now() };
       localStorage.setItem(KEY, JSON.stringify(r));
+      track('sm_ref_click', { sm: r.sm });
       return r;
     }
   } catch {}
@@ -50,4 +54,29 @@ export function smInviteLine(): string | null {
 export function smRefLink(origin: string, monId: string | number, tu: string, mn: string) {
   const e = encodeURIComponent;
   return `${origin}/choi?sm=${e(String(monId))}&tu=${e(tu)}&mn=${e(mn)}`;
+}
+
+export type KeoRow = { mon: number; ten: string; huy_hieu: number; n: number };
+
+/** gọi một lần khi người mới đã có chân thân và tài khoản: máy chủ ghi và gửi lời mời vào môn */
+export async function smRefNhan(): Promise<{ ok: boolean; moi?: boolean; ten_mon?: string; ly_do?: string } | null> {
+  const r = readSmRef();
+  const tok = currentPlayer()?.token;
+  const sb = supabase();
+  if (!r || !tok || !sb || !/^\d+$/.test(r.sm)) return null;
+  const res = await sb.rpc('vkl_sm_ref_nhan', { p_token: tok, p_mon: Number(r.sm), p_tu: r.tu, p_sid: sessionId() });
+  if (res.error) {
+    // chưa có chân thân: thử lại lần sau; lỗi khác thì bỏ
+    if (!/SM_NO_CT|SM_AUTH/.test(res.error.message)) clearSmRef();
+    return null;
+  }
+  clearSmRef();
+  return res.data as { ok: boolean; moi?: boolean; ten_mon?: string; ly_do?: string };
+}
+
+export async function keoBang(): Promise<KeoRow[]> {
+  const sb = supabase();
+  if (!sb) return [];
+  const res = await sb.rpc('vkl_sm_keo_bang');
+  return res.error ? [] : ((res.data as KeoRow[]) ?? []);
 }
