@@ -6,6 +6,12 @@ Mốc so sánh: còn chơi sau 7 ngày (D7) 11-14% (`docs/so-lieu.md`, mốc tr�
 
 Từ 19/11 (Tyler: tốn token): file này chỉ giữ 2 đêm gần nhất + Câu SQL + Sổ cải thiện + Tính năng đã ẩn. Mỗi đêm ghi nhật ký mới lên trên cùng, rồi chuyển đêm cũ hơn 2 đêm sang `docs/luu-tru/tang-truong-cu.md` (dán vào đầu file đó). Cần số cũ thì grep file lưu trữ.
 
+## Kết quả quảng cáo đợt Chân Thân 13-19/11 (chốt 19/11 tối)
+- Chi 264.847đ, 986 click (269đ/click, gấp đôi đợt 1-8/11 là 124đ). 862 người mới từ quảng cáo: 50% vào kiếp, 24% xong kiếp 1, 22% tạo chân thân, khoảng 12% quay lại hôm sau. Cả hai ngưỡng dừng (60% tạo chân thân, 25% còn chơi sau 1 ngày) đều không đạt.
+- Theo mẫu (người quay lại hôm sau / tiền): anh40 ~82 người / 128.870đ (~1.600đ một người), Địa Phủ 6 / 52.047đ, manhua1 5 / 55.440đ, Bụi Vàng 1 / 28.490đ. Chỉ anh40 đáng tiền. Từ 16/11 anh40 gần như hết được phân tiền, tiền dồn sang video và manhua nên ngày 16-19 tốn một nửa ngân sách mà gần như không ra người ở lại.
+- Người tự đến cùng tuần cũng chỉ quay lại khoảng 11-12%, nên chỗ rò là phiên đầu trong game, không phải tệp người quảng cáo.
+- Lần chạy sau: chỉ ảnh tĩnh kiểu anh40 (thử 2-3 ảnh mới cùng kiểu), không video, không manhua chữ dày. Chỉ chạy lại khi người mới tự đến quay lại hôm sau từ 20% trở lên 3 ngày liền. Việc đêm trước đó: giảm 50% người vào mà không bắt đầu kiếp, và kéo tỉ lệ xong kiếp 1.
+
 ## Lên bản 5:00 sáng 20/11: lôi đài giữ bóng (Tyler duyệt 11:28 19/11)
 
 Phan Anh Tuấn báo: kiếp Chuẩn Thánh mạnh nhất có thể rơi khỏi danh sách khi chơi thêm kiếp Khai Thiên, và mỗi ngày lôi đài tự đổi sang bóng yếu.
