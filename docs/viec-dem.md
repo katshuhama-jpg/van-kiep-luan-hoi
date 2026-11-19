@@ -41,6 +41,14 @@ Lý do (số 13-19/11, xem tang-truong.md mục quảng cáo Chân Thân): ngư�
 - [ ] Vòng mời: sau kết cục kiếp 1-2 và ở màn chân thân, nút chia sẻ thẻ kết cục / mời Sư Đồ rõ hơn (link mang ?su= hoặc ref), đo `share` và người đến qua link.
 Ghi chú: không chạy quảng cáo tới khi người mới tự đến quay lại hôm sau từ 20% trở lên 3 ngày liền.
 
+## Ngày 7b - Sơn Môn kéo người mới (Tyler 19/11 tối, làm ngay sau Ngày 7)
+Lên bản: cùng hoặc ngay sau Ngày 7.
+Lý do: người đến qua link mời quay lại hôm sau ~29%, gấp đôi rưỡi mọi nguồn khác; người trong môn quay lại 74-91%.
+- [ ] Link mời của thành viên (nút "Gửi link cho bạn chưa chơi" + thẻ chia sẻ) mang mã môn và người mời (?sm=<mon>&tu=<ten>). Người mới vào qua link: màn đầu ghi "<tên> ở <môn> mời bạn", chơi xong kiếp 1 + tạo chân thân thì được mời vào môn đó (một chạm).
+- [ ] Quà: người mới đó quay lại ngày thứ 2 thì người mời và cả môn nhận quà (phúc duyên cho người mời, Khí vận nhỏ cho môn), có thư báo và chiến báo "X kéo được Y nhập môn". Hàm MỚI, chống tự mời (cùng thiết bị/sid, tài khoản mới tạo cùng ngày của chính người mời không tính), trần 5 người/ngày/người mời.
+- [ ] Bảng "Môn kéo người" trong tab Sơn Môn (tuần này). Đo: sm_ref_click, sm_ref_join, sm_ref_d2.
+Ghi chú: Kỷ 2 (Ngày 9-11) vẫn làm theo kế hoạch ngay sau, Tyler muốn làm luôn.
+
 ## Ngày 8 - Khai hoang, bản đồ to, hướng dẫn người trong môn
 Lên bản: 2026-11-19. Cáo thị: thêm dòng vào 4.6.0 (đã có dòng Khai hoang + bản đồ).
 Lý do (số 18/11 chiều): 11 môn, 69 người, 18/127 ô có chủ, 8 xuất chinh đều tới ô trống, 0 trận giữa môn; 2 môn 15 người chỉ giữ 1 ô vì tưởng mở rộng là phải đánh. Chi tiết: docs/brainstorm-son-mon-ky1.md.
