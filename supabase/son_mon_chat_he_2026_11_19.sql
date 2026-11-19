@@ -1,3 +1,4 @@
+-- 19/11 tối: thêm câu cho trận yêu thú (Ngày 9). Chạy được nhiều lần.
 -- Ngày 8 (lên bản 19/11): tin hệ thống trong Truyền âm (dòng riêng, không tên người gửi).
 --   "X vừa khai hoang Y (3/6 ô)", "Z phát lệnh đánh Y, quân tới lúc hh:mm", "Môn ta thắng/thua trận ở Y".
 -- Bảng MỚI vkl_sm_chat_he dùng CHUNG dãy số id với vkl_sm_chat để tin người và tin hệ thống xếp đúng thứ tự và con trỏ
@@ -32,6 +33,13 @@ begin
         format('%s claimed %s (%s/%s tiles).', coalesce(new.noi_dung ->> 'nguoi', 'Someone'), v_ten_o, v_n, v_max));
     elsif new.loai = 'cam_co' then
       perform vkl_priv.sm_he(new.mon_a, format('Môn ta cắm cờ ở %s.', v_ten_o), format('We planted our flag on %s.', v_ten_o));
+    elsif new.loai = 'tran' and coalesce((new.noi_dung ->> 'yeu')::boolean, false) then
+      -- Ngày 9: trận với yêu thú (không có môn bên kia)
+      perform vkl_priv.sm_he(new.mon_a,
+        case when new.noi_dung ->> 'kq' = 'thang' then format('Môn ta trừ được yêu thú ở %s, ô về tay môn. Mỗi người đi theo +10 phúc duyên.', v_ten_o)
+             else format('Môn ta đánh yêu thú ở %s không nổi. Người đi theo nghỉ 2 giờ.', v_ten_o) end,
+        case when new.noi_dung ->> 'kq' = 'thang' then format('We slew the beast at %s and took the tile. Each marcher gets +10 Fortune.', v_ten_o)
+             else format('We could not beat the beast at %s. Those who marched rest 2 hours.', v_ten_o) end);
     elsif new.loai = 'tran' then
       v_kq := new.noi_dung ->> 'kq';
       select ten into v_a from public.vkl_sm_mon where id = new.mon_a;
