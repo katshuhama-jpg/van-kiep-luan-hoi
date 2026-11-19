@@ -52,6 +52,13 @@ Nội dung soạn sẵn (Tyler tự đăng, Claude không đăng):
 
 Quảng cáo Facebook: chưa nên chạy thêm tới khi tách xong nhóm 411px (đo 19-20/11). Giữ đề xuất đợt Sơn Môn 20-26/11 (50.000đ/ngày, 17h-24h, Việt Nam 18-40, Lưu lượng truy cập), thêm mẫu thứ ba: ảnh 7 vũ khí Thần phẩm với chữ "Nhìn vũ khí là biết ai đứng thứ mấy". Dừng mẫu nào trên 2.000đ mỗi người xong kiếp 1 sau 2 tối, hoặc D1 nhóm quảng cáo dưới 20%. Chỉ tính phiên có trường `vis` (bỏ nhóm 411px không có trường mới).
 
+## Lên bản 5:00 sáng 20/11: lôi đài giữ bóng (Tyler duyệt 11:28 19/11)
+
+Phan Anh Tuấn báo: kiếp Chuẩn Thánh mạnh nhất có thể rơi khỏi danh sách khi chơi thêm kiếp Khai Thiên, và mỗi ngày lôi đài tự đổi sang bóng yếu.
+- Máy chủ (đã áp 19/11, `supabase/loi_dai_giu_bong_2026_11_19.sql`): `vkl_arena_candidates2` lấy 40 kiếp + kiếp ra đài gần nhất; `vkl_arena_state2` trả `me.lastLife`.
+- Client: `rankCands`/`arenaPower` trong `lib/social.ts` (Huyết x (Công + nửa Thủ)), hiện 12 + giữ kiếp đang ra đài; `components/Arena.tsx` sang ngày mới giữ bóng hôm qua.
+- Cáo thị "Sửa lỗi 20/11". Page đã hứa với Tuấn bản 5:00 sáng 20/11.
+
 ## Việc Tyler giao 18/11 tối - lên bản 5:00 sáng 19/11
 
 **Chữ biến chiêu Nhu - ĐÃ LÀM 18/11 tối** (sót ở bản 18/11; Tyler chốt sửa và hứa với Nguyễn Quang).

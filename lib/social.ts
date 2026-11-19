@@ -5,6 +5,7 @@ import { supabase } from './supabase';
 import { SOCIAL, emptySocial, type SocialState } from './game/social';
 import type { RivalChar } from './game/types';
 import { toRival } from './rival';
+import { foeStats } from './game/duel';
 
 /** Quan hệ giang hồ với người chơi khác: tải từ máy chủ, giữ trong SOCIAL để logic trận đấu dùng */
 
@@ -263,7 +264,7 @@ export { toRival };
 
 // ---------- Lôi đài 2: điểm tuần, bóng xuất chiến, báo thù ----------
 export interface Arena2State {
-  me: { username: string; pts: number; used: number; wins: number; losses: number; winRun: number; champ: unknown | null } | null;
+  me: { username: string; pts: number; used: number; wins: number; losses: number; winRun: number; champ: unknown | null; /** 19/11: kiếp ra đài gần nhất (kể cả hôm trước), 0 là nhân vật đang chơi */ lastLife?: number | null } | null;
   opps: { username: string; pts: number }[];
   revenge: { id: number; target: string; at: string }[];
   top: { username: string; pts: number; wins: number; losses: number; winRun: number }[];
@@ -300,6 +301,25 @@ export async function arenaCandidates2(user: Player | null): Promise<RivalChar[]
   const { data, error } = await sb.rpc('vkl_arena_candidates2', { p_token: user.token });
   if (error || !Array.isArray(data)) return arenaCandidates(user);
   return data.map((d) => toRival(user.username, d)).filter((x): x is RivalChar => !!x);
+}
+
+/**
+ * 19/11 (Phan Anh Tuấn): xếp bóng theo sức mạnh thật chứ không theo cảnh giới, hiện tối đa `n` kiếp
+ * và luôn giữ kiếp đang ra đài (`keep`) dù nó không lọt top. Sức mạnh = Huyết x (Công + nửa Thủ),
+ * vì mỗi đòn trừ nửa Thủ của bên kia.
+ */
+export function arenaPower(r: RivalChar): number {
+  const s = foeStats(r);
+  return s.hp * (s.atk + s.def * 0.5);
+}
+export function rankCands(list: RivalChar[], keep?: number | null, n = 12): RivalChar[] {
+  const sorted = [...list].sort((a, b) => arenaPower(b) - arenaPower(a));
+  const top = sorted.slice(0, n);
+  if (keep != null && !top.some((x) => (x.lifeId ?? 0) === keep)) {
+    const k = sorted.find((x) => (x.lifeId ?? 0) === keep);
+    if (k) top.push(k);
+  }
+  return top;
 }
 
 /** Đổi bóng xuất chiến bất cứ lúc nào, trừ khi đang có trận đã rút đối thủ (lỗi PENDING) */

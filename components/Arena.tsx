@@ -13,7 +13,7 @@ import type { RivalChar } from '@/lib/game/types';
 import { fitsRule, ruleOf, vnDate, type ArenaRule } from '@/lib/game/arena';
 import { ARENA_TIERS, tierOfPts } from '@/lib/game/phiKiem';
 import { track } from '@/lib/track';
-import { arena2State, arenaCandidates2, arenaDraw, arenaPick2, arenaShadow, toRival, type Arena2State } from '@/lib/social';
+import { arena2State, arenaCandidates2, arenaDraw, arenaPick2, arenaShadow, rankCands, toRival, type Arena2State } from '@/lib/social';
 import { Sheet } from '@/components/Panels';
 import { tr } from '@/lib/i18n';
 
@@ -114,17 +114,19 @@ export default function Arena({ user }: { user: Player | null }) {
   if (champ) champRef.current.c = champ;
   if (st?.me) usedRef.current.n = Math.max(usedRef.current.n, st.me.used);
   useEffect(() => {
-    if (user && st?.me && cands === null) arenaCandidates2(user).then(setCands);
+    if (user && st?.me && cands === null) arenaCandidates2(user).then((l) => setCands(rankCands(l, st.me?.lastLife)));
   }, [user, st, cands]);
 
-  /** Khóa một bóng cho cả ngày; không chỉ định thì lấy kiếp mạnh nhất */
+  /** Khóa một bóng cho cả ngày; không chỉ định thì giữ bóng hôm trước, không có thì lấy kiếp mạnh nhất */
   async function lockChamp(c?: RivalChar): Promise<RivalChar | null> {
     if (!user) return null;
     let target = c;
     if (!target) {
-      const list = cands ?? (await arenaCandidates2(user));
+      const list = cands ?? rankCands(await arenaCandidates2(user), st?.me?.lastLife);
       if (!cands) setCands(list);
-      target = list[0];
+      // 19/11 (Phan Anh Tuấn): sang ngày mới giữ bóng hôm qua, không có thì lấy kiếp mạnh nhất
+      const last = st?.me?.lastLife;
+      target = (last != null ? list.find((x) => (x.lifeId ?? 0) === last) : undefined) ?? list[0];
     }
     if (!target) {
       setErr(tr('Bạn chưa có kiếp nào. Sống trọn một kiếp rồi quay lại lôi đài.', "You have no lives yet. Live a full life, then come back to the arena."));
