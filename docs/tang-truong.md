@@ -19,6 +19,38 @@ Phan Anh Tuấn báo: kiếp Chuẩn Thánh mạnh nhất có thể rơi khỏi 
 - Client: `rankCands`/`arenaPower` trong `lib/social.ts` (Huyết x (Công + nửa Thủ)), hiện 12 + giữ kiếp đang ra đài; `components/Arena.tsx` sang ngày mới giữ bóng hôm qua.
 - Cáo thị "Sửa lỗi 20/11". Page đã hứa với Tuấn bản 5:00 sáng 20/11.
 
+## Đêm 19/11/2026 (lên bản 20/11)
+
+Kế hoạch: làm hết 4 khối tới hạn theo thứ tự Tyler dặn: Ngày 7 (màn đầu Cảnh sống A/B, tự vào kiếp, kiếp 1 trôi nhanh, quà ngày mai, link thẻ Một đời mời đệ tử), Ngày 7b (Sơn Môn kéo người mới), Ngày 9 (máy chủ Kỷ 2 đất có giá, tính từ 5:00 21/11), Ngày 8e (Thiên thư quyển III chặng 1). Chi tiết ở Ghi chú từng khối trong viec-dem.md. Supabase MCP hỏi xác nhận với SQL có UPDATE/DELETE, Tyler chạy tay phần đó trong SQL Editor.
+
+Số chính (đọc 19/11 tối, tài khoản mới theo ngày tạo, giờ VN):
+- Tài khoản mới: 16/11 76, 17/11 49, 18/11 61, 19/11 103 (chưa hết ngày).
+- Có kiếp ngày hôm sau (tài khoản): 15/11 37,0%, 16/11 36,8%, 17/11 26,5%, 18/11 47,5%.
+- Màn đầu: phiên thấy `first_simple` rồi có life_start kiếp 1 cùng ngày: 17/11 113/409 (28%), 18/11 119/265 (45%), 19/11 145/222 (65%, chưa hết ngày). Đây là mốc TRƯỚC bản 20/11 (tự vào + A/B).
+- Lỗi Vercel 24 giờ: không có. Chi phí Vercel khoảng $1,00/ngày.
+
+Góp ý mới #295-#302 (đã xem hết):
+- #297 (godwhale99): danh sách Trừ yêu không xếp theo cấp. Sửa trong đêm: xếp theo cấp tăng dần (không đổi luật, không cần mô phỏng). Câu trả lời ở Ghi chú Ngày 10 (gửi 5:00 kèm 10 phúc).
+- #298 (khí vận khởi đầu đa dạng hơn, công đức sau thành thánh), #299 (cân sát thương chiêu có khống chế), #300 (chế độ không bị lột đồ cho người mới), #302 (kênh chat thế giới): ghi lại, chưa có lịch nên chưa trả lời. #300 đáng làm sớm vì chạm người mới: đề xuất khối sau "người dưới 10 kiếp không bị lột đồ khi gặp người chơi khác" (cần mô phỏng duel).
+- #295, #296, #301: đánh giá 5 sao, không cần trả lời.
+- Không đọc được Fanpage/Group: phiên này không có Claude in Chrome.
+
+Nhận định:
+1. Tỉ lệ vào kiếp ở màn đầu đã tăng dần trong 3 ngày (28% -> 65%) trước cả bản này, nhờ các lần sửa 14-18/11. Bản 20/11 thêm tự vào sau 4 giây, nên kỳ vọng nhóm B (màn cũ + tự vào) lên trên 80%; nhóm A đo thêm tác động của cảnh.
+2. Vòng mời hiện là kênh tốt nhất (quay lại ~29%); đêm nay có thêm 2 đường link mang tên người mời (thẻ Một đời và link Sơn Môn).
+
+Việc đêm nay và cách đo:
+- A/B màn đầu: `first_simple.ab`, `first_go` (auto, ms), life_start, quay lại hôm sau theo nhóm. Đọc sau 3 ngày (23/11).
+- Kiếp 1 nhanh hơn (x3 trước Trúc Cơ, x2 sau): đo trung vị phút từ life_start tới life_end kiếp 1 (mốc 11,5 phút).
+- Mời: `open.q` có `r=life` hoặc `sm=`, `sm_ref_click`, `vkl_sm_ref`.
+- Thiên thư III: `tt3_mo`, `tt3_tab`.
+
+Tiến độ việc nhiều đêm: Ngày 10 (giao diện Kỷ 2, bật cờ 5:00 21/11) làm đêm 20/11. Ngày 8f (chọn thế giới khởi đầu) đêm 20-21/11. Ngày 8 còn một ô: tin hệ thống Truyền âm chờ Tyler chạy `supabase/son_mon_chat_he_2026_11_19.sql`.
+
+Quyết định lớn đã tự chốt: lực yêu thú 10.000-30.000 (kế hoạch ghi 1.500-6.000, một người đã thắng); thưởng kéo người cần cả vào môn và quay lại ngày 2; quyển III bật luôn (thử sạch).
+
+Marketing: chưa nên chạy quảng cáo (điều kiện: người tự đến quay lại hôm sau từ 20% ba ngày liền theo cách đo phiên). Có thứ đáng khoe từ 21/11: "Đất có giá" (Ngày 10 soạn bài).
+
 ## Đêm 18/11/2026 (lên bản 19/11)
 
 Kế hoạch: 4.6.0 Ngày 8a xong (Phần thưởng Kỷ, 2be814c), Ngày 8 xong 4/5 việc còn lại (dded81d; tin hệ thống Truyền âm chờ áp SQL), Ngày 8c đo và mô phỏng (d813930), Ngày 8d số liệu + thiết kế (dbe6cbf; code quyển III chuyển Ngày 8e). Chi tiết ở Ghi chú từng khối trong plan-4.6.0.

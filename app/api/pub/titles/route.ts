@@ -2,6 +2,7 @@
  * 14/11: danh hiệu tuần (vkl_titles_char) qua bộ đệm Vercel 5 phút.
  * Hàm này giống nhau với mọi người chơi nhưng mất ~600 ms mỗi lần và được gọi ~3.000 lần/ngày
  * (đứng thứ ba về thời gian chạy trong pg_stat_statements). Giờ cả server chỉ tính lại 5 phút một lần.
+ * 19/11: danh hiệu đổi theo tuần nên đệm 30 phút (vẫn đứng thứ hai: 348 lần x 942 ms).
  */
 import { createClient } from '@supabase/supabase-js';
 
@@ -14,5 +15,5 @@ export async function GET() {
   const sb = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
   const { data, error } = await sb.rpc('vkl_titles_char');
   if (error) return Response.json({ error: 'db' }, { status: 502, headers: { 'Cache-Control': 'public, s-maxage=15' } });
-  return Response.json(data ?? [], { headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=900' } });
+  return Response.json(data ?? [], { headers: { 'Cache-Control': 'public, s-maxage=1800, stale-while-revalidate=3600' } });
 }

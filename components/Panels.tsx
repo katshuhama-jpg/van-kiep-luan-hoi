@@ -1711,7 +1711,8 @@ export function HuntSheet({ c, onPick, onToggleFlee, onClose }: { c: Character; 
   const me = playerStats(c);
   const cur = MONSTERS.find((m) => m.id === c.huntTarget);
   const [ha, setHa] = useState(!!c.cosmos && !!cur && !cur.cosmos);
-  const list = c.cosmos && ha ? haPhamMonsters() : monstersFor(c, sectSide(c));
+  // 19/11 (góp ý #297): xếp quái theo cấp tăng dần
+  const list = [...(c.cosmos && ha ? haPhamMonsters() : monstersFor(c, sectSide(c)))].sort((a, b) => effLv(c, a) - effLv(c, b));
   return (
     <Sheet title={tr("Trừ yêu luyện công", "Hunt demons, train")} onClose={onClose}>
       {c.cosmos && (
