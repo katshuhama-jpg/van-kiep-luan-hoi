@@ -10,7 +10,7 @@ Tạo 19/11/2026 (Tyler: bản 4.5, 4.6 đã lên, đọc cả file plan cũ m�
 DUYỆT: Tyler 14/11/2026 (các khối trong file này coi như đã duyệt; khối mới Tyler giao trong chat cũng đã duyệt).
 
 ## Mục tiêu Kỷ 2 (Tyler 20/11 18:30)
-Mọi khối trong sổ này phải lên trang trước 5:00 ngày 1/12, để Kỷ 2 (kết Kỷ 1 lúc 21:00 1/12, mở 2/12) bắt đầu đủ tính năng. Mỗi lần chạy (phiên đêm 21:17 và phiên ngày 13:17) làm mọi khối có "Lên bản" bằng hoặc trước ngày lên bản kế tiếp, KHỐI QUÁ HẠN LÀM TRƯỚC. Số liệu chỉ để đo, không chặn lịch. Khối nào tới đêm 30/11 vẫn chưa thể làm sạch thì để sau cờ, ghi lý do và báo Tyler trong tin cuối phiên.
+Mọi khối trong sổ này phải lên trang trước 5:00 ngày 1/12, để Kỷ 2 (kết Kỷ 1 lúc 21:00 1/12, mở 2/12) bắt đầu đủ tính năng. Mỗi lần chạy (phiên đêm 21:17, và phiên ban ngày nếu Tyler bật) làm mọi khối có "Lên bản" bằng hoặc trước ngày lên bản kế tiếp, KHỐI QUÁ HẠN LÀM TRƯỚC. Số liệu chỉ để đo, không chặn lịch. Khối nào tới đêm 30/11 vẫn chưa thể làm sạch thì để sau cờ, ghi lý do và báo Tyler trong tin cuối phiên.
 
 ## Luật thường trực
 
