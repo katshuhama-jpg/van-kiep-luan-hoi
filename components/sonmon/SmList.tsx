@@ -110,6 +110,10 @@ export function SmList({ c }: { c: SmCtx }) {
         </section>
       )}
       <SmBaCau c={c} />
+      <BangXepHang c={c} onXem={(id) => {
+        const m = (list ?? []).find((x) => x.id === id);
+        if (m) moXem(m);
+      }} />
       {(khoa || khoaVao) && (
         <section className="sm-card warn">
           <p>{tr('Ngươi vừa tự rời môn đã cắm cờ.', 'You just left a flagged sect.')}</p>
@@ -222,6 +226,43 @@ function lyDo(m: SmMonRow, st: SmCtx['st']): string | null {
   if (!m.du_dk) return tr(`Cần ${m.dk_kiep} kiếp, ${m.dk_tuoi_dao} ngày chơi`, `Needs ${m.dk_kiep} lives, ${m.dk_tuoi_dao} days`);
   if (st.don.some((d) => d.mon === m.id)) return tr('Đang chờ duyệt', 'Awaiting review');
   return null;
+}
+
+/** 20/11 (Tyler): bảng xếp hạng Sơn Môn ngay ở danh sách môn, để người chưa có môn thấy môn nào mạnh rồi chọn */
+function BangXepHang({ c, onXem }: { c: SmCtx; onXem: (id: number) => void }) {
+  const rank = c.rank;
+  if (!rank || !rank.length) return null;
+  const coDiem = rank.some((r) => (r.diem ?? 0) > 0);
+  return (
+    <section className="sm-card sm-bxh">
+      <header className="sm-bxh-dau">
+        <h3>{tr('Bảng xếp hạng Sơn Môn', 'Sect ranking')}</h3>
+        <span>{tr(`${rank.length} môn`, `${rank.length} sects`)}</span>
+      </header>
+      <div className="sm-bxh-cot" aria-hidden="true">
+        <span>{tr('Hạng · Môn', 'Rank · Sect')}</span>
+        <span>{coDiem ? tr('Điểm Kỷ', 'Era pts') : tr('Số ô', 'Tiles')}</span>
+      </div>
+      <ol className="sm-bxh-ds">
+        {rank.slice(0, 5).map((r, i) => (
+          <li key={r.id}>
+            <button className={`sm-bxh-row${i === 0 ? ' top' : ''}`} onClick={() => (track('sm_bxh_xem', { hang: i + 1 }), onXem(r.id))}>
+              <b className={`sm-bxh-h h${i + 1}`}>{i + 1}</b>
+              <HuyHieu id={r.huy_hieu} size={28} label="" />
+              <span className="sm-bxh-ten">
+                <b>{r.ten}</b>
+                <small>{coDiem ? tr(`${r.o} ô · ${r.n} người`, `${r.o} tiles · ${r.n} members`) : tr(`${r.n} người`, `${r.n} members`)}</small>
+              </span>
+              <span className="sm-bxh-so">{coDiem ? fmtN(r.diem ?? 0) : r.o}</span>
+            </button>
+          </li>
+        ))}
+      </ol>
+      <button className="sm-btn small sm-bxh-het" onClick={() => (track('sm_bxh_du', { tu: 'list' }), c.go('ky'))}>
+        {tr('Xem đủ bảng và phần thưởng Kỷ', 'Full ranking and era rewards')}
+      </button>
+    </section>
+  );
 }
 
 function MonRow({ m, st, busy, onVao, onXem, su }: { m: SmMonRow; st: SmCtx['st']; busy: boolean; onVao: () => void; onXem: () => void; su?: boolean }) {

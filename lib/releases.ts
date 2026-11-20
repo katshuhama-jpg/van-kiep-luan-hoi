@@ -39,6 +39,7 @@ export const RELEASES: Release[] = [
           tr('Điểm giữ đất: mỗi giờ ô thường +1, Linh Mạch +3, Thiên Trì (ô giữa) +5. Hết Kỷ, môn nhiều điểm nhất thắng. Điểm cộng dồn, mất ô không mất điểm.', 'Land points: each hour +1 per tile, +3 per Spirit Vein, +5 for the Heaven Pool (centre). Most points at the end wins. Points add up and are never lost.'),
           tr('Linh Mạch còn cho môn giữ +2 Khí vận mỗi sáng. Thiên Trì cho người đứng giữ mạnh thêm 10%.', 'Spirit Veins also give +2 fortune each morning. The Heaven Pool makes its guards 10% stronger.'),
           tr('Không bắt nạt: môn yếu hơn 1/3 môn ta thì không đánh được, trừ ở Linh Mạch và Thiên Trì. Vừa thắng môn nào thì 12 giờ sau mới đánh tiếp môn đó.', 'No bullying: you cannot attack a sect under a third of your strength, except on Spirit Veins and the Heaven Pool. After beating a sect, wait 12 hours to attack it again.'),
+          tr('Danh sách Sơn Môn có Bảng xếp hạng: 5 môn dẫn đầu theo Điểm Kỷ, bấm vào môn để xem người trong môn.', 'The Sect list now has a ranking: the top 5 sects by era points, tap one to see its members.'),
           tr('Môn bỏ hoang 72 giờ (không ai chơi kiếp hay mở Sơn Môn) thì mọi ô trừ chính điện về trống.', 'A sect idle for 72 hours (no lives played, Sects not opened) loses every tile except its main hall.'),
         ],
       },
