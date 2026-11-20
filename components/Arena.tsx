@@ -86,8 +86,18 @@ const STAGE_BGS = ['tien', 'ma', 'hu'].flatMap((c) => ['kim', 'moc', 'thuy', 'ho
  * Lôi đài Phi Kiếm (3.2.0): một chạm "Ra đài" là tự lấy bóng mạnh nhất, rút đối thủ, vào trận 25 giây.
  * Mỗi ngày 3 lượt. Thắng +3 điểm, thua +1. Điểm tính lại mỗi thứ Hai, top 3 lên bục.
  */
+/** 21/11 (Tyler: chuyển tab Lôi đài bị lag): giữ trạng thái lôi đài lần trước theo tài khoản, vào lại tab là vẽ ngay rồi tải mới đè lên */
+let arenaNho: { u: string; st: Arena2State } | null = null;
+
 export default function Arena({ user }: { user: Player | null }) {
-  const [st, setSt] = useState<Arena2State | null>(null);
+  const [st, setStRaw] = useState<Arena2State | null>(() => (arenaNho && arenaNho.u === (user?.username ?? '') ? arenaNho.st : null));
+  const setSt = useCallback(
+    (v: Arena2State | null) => {
+      if (v) arenaNho = { u: user?.username ?? '', st: v };
+      setStRaw(v);
+    },
+    [user],
+  );
   const [cands, setCands] = useState<RivalChar[] | null>(null);
   const [pick, setPick] = useState<number | null>(null);
   const [picking, setPicking] = useState(false);
@@ -98,9 +108,9 @@ export default function Arena({ user }: { user: Player | null }) {
   const rule = ruleOf();
   const load = useCallback(() => {
     arena2State(user)
-      .then(setSt)
-      .catch(() => setSt(null));
-  }, [user]);
+      .then((v) => (v ? setSt(v) : setStRaw((x) => x)))
+      .catch(() => setStRaw((x) => x));
+  }, [user, setSt]);
   useEffect(() => {
     load();
   }, [load]);

@@ -70,6 +70,13 @@ export function SonMonHome({ embedded = false }: { embedded?: boolean }) {
 }
 export default SonMonHome;
 
+/**
+ * 21/11 (Tyler: chuyển tab Sơn Môn bị lag): mỗi lần vào tab đều đợi tải lại trạng thái môn rồi mới vẽ.
+ * Giữ lần tải gần nhất trong bộ nhớ (theo tài khoản): vào lại tab là vẽ ngay bản cũ, rồi tải bản mới đè lên.
+ */
+type SmNho = { u: string; st?: SmState | null; list?: SmMonRow[] | null; map?: SmMap | null; members?: SmMembers | null; rank?: SmRankRow[] | null; dai?: SmDai | null; d30?: SmD30 | null };
+let smNho: SmNho | null = null;
+
 function SonMonInner({ embedded }: { embedded: boolean }) {
   const api = useSmApi();
   const [view, setView] = useState<SmView>(() => {
@@ -89,6 +96,7 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
   const [busy, setBusy] = useState(false);
   const [chatMoi, setChatMoi] = useState(0);
   const opened = useRef(false);
+  const moi = useRef(new Set<string>());
 
   const loadState = useCallback(async () => {
     if (!api) return;
@@ -122,8 +130,24 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
   useEffect(() => {
     if (!api) return;
     if (!api.linked) setErr('SM_AUTH');
-    else reload(['state']);
+    else {
+      const n = !api.demo && api.username && smNho?.u === api.username ? smNho : null;
+      if (n) {
+        if (n.st) setSt(n.st);
+        if (n.list) setList(n.list);
+        if (n.map) setMap(n.map);
+        if (n.members) setMembers(n.members);
+        if (n.rank) setRank(n.rank);
+        if (n.dai) setDai(n.dai);
+        if (n.d30) setD30(n.d30);
+      }
+      reload(['state']);
+    }
   }, [api, reload]);
+  useEffect(() => {
+    if (!api || api.demo || !api.username || !st) return;
+    smNho = { u: api.username, st, list, map, members, rank, dai, d30 };
+  }, [api, st, list, map, members, rank, dai, d30]);
 
   // màn hiện tại theo trạng thái (chưa có môn thì không vào được các màn trong môn)
   const coMon = !!st?.mon;
@@ -138,11 +162,14 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
   // nạp dữ liệu phụ theo màn
   useEffect(() => {
     if (!st || !st.ky) return;
+    // 21/11: dữ liệu lấy từ bộ nhớ lần trước vẫn tải lại một lần trong lần vào tab này (moi)
+    const can = (k: 'list' | 'map' | 'members' | 'rank', co: unknown) => !co || !moi.current.has(k);
     const need: ('list' | 'map' | 'members' | 'rank')[] = [];
-    if ((v === 'list' || (v === 'ban-do' && !coMon)) && !list) need.push('list');
-    if (['chon-o', 'ban-do', 'xuat-chinh', 'chien-su', 'mon'].includes(v) && !map) need.push('map');
-    if (['thanh-vien', 'chien-su', 'xuat-chinh', 'ban-do'].includes(v) && coMon && !members) need.push('members');
-    if (['ky', 'mon', 'list'].includes(v) && !rank) need.push('rank');
+    if ((v === 'list' || (v === 'ban-do' && !coMon)) && can('list', list)) need.push('list');
+    if (['chon-o', 'ban-do', 'xuat-chinh', 'chien-su', 'mon'].includes(v) && can('map', map)) need.push('map');
+    if (['thanh-vien', 'chien-su', 'xuat-chinh', 'ban-do'].includes(v) && coMon && can('members', members)) need.push('members');
+    if (['ky', 'mon', 'list'].includes(v) && can('rank', rank)) need.push('rank');
+    need.forEach((k) => moi.current.add(k));
     if (need.length) reload(need);
   }, [v, st, coMon, list, map, members, rank, reload]);
 
