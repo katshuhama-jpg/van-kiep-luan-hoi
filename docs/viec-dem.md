@@ -10,7 +10,9 @@ Tạo 19/11/2026 (Tyler: bản 4.5, 4.6 đã lên, đọc cả file plan cũ m�
 DUYỆT: Tyler 14/11/2026 (các khối trong file này coi như đã duyệt; khối mới Tyler giao trong chat cũng đã duyệt).
 
 ## Mục tiêu Kỷ 2 (Tyler 20/11 18:30)
-Mọi khối trong sổ này phải lên trang trước 5:00 ngày 1/12, để Kỷ 2 (kết Kỷ 1 lúc 21:00 1/12, mở 2/12) bắt đầu đủ tính năng. Mỗi lần chạy (phiên đêm 21:17, và phiên ban ngày nếu Tyler bật) làm mọi khối có "Lên bản" bằng hoặc trước ngày lên bản kế tiếp, KHỐI QUÁ HẠN LÀM TRƯỚC. Số liệu chỉ để đo, không chặn lịch. Khối nào tới đêm 30/11 vẫn chưa thể làm sạch thì để sau cờ, ghi lý do và báo Tyler trong tin cuối phiên.
+Mọi khối trong sổ này phải lên trang trước 5:00 ngày 1/12, để Kỷ 2 (kết Kỷ 1 lúc 21:00 1/12, mở 2/12) bắt đầu đủ tính năng. Chỉ có phiên đêm 21:17, không có phiên ban ngày (Tyler chốt 20/11). Mỗi đêm làm mọi khối có "Lên bản" bằng hoặc trước ngày lên bản kế tiếp, KHỐI QUÁ HẠN LÀM TRƯỚC. Số liệu chỉ để đo, không chặn lịch. Khối nào tới đêm 30/11 vẫn chưa thể làm sạch thì để sau cờ, ghi lý do và báo Tyler trong tin cuối phiên.
+
+Đêm nào không kịp hết thì làm theo thứ tự: (1) khối quá hạn; (2) khối Kỷ 2 cần để mở đúng 2/12: luật Sơn Môn Ngày 30, vòng cày chân thân Ngày 22-24, đồ chân thân Ngày 26 + 31, đi cảnh Ngày 27-29; (3) Thiên thư III Ngày 8g; (4) đường tu Võ/Nho Ngày 33-34 và công pháp chân thân Ngày 32a/32b; (5) Nhóm CWS Ngày 13-21; (6) cốt truyện Ngày 35, tối thiểu 5 mỗi đêm. Khối bị đẩy lùi thì ghi rõ ngày lên bản mới vào tin cuối phiên.
 
 ## Luật thường trực
 
