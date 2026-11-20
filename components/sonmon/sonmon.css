@@ -373,7 +373,7 @@ p.sm-card { display: block; }
 .sm-danh-tip b { color: #8f2f20; font-size: 15px; }
 .sm-danh-tip .sm-btn.small { min-height: 44px; }
 /* 20/11: cảnh tông môn (Cultivation World Simulator, CC BY-NC-SA 4.0) */
-.sm-canh { display: block; width: calc(100% + 24px); margin: -10px -12px 0; height: 150px; object-fit: cover; object-position: 50% 40%; border-bottom: 3px solid var(--ink-dark); }
+.sm-canh { display: block; width: calc(100% + 24px); max-width: none; margin: -10px -12px 0; height: 150px; object-fit: cover; object-position: 50% 40%; border-bottom: 3px solid var(--ink-dark); }
 .sm-canh-t { position: relative; flex: none; display: inline-block; border: 2px solid var(--ink); background: #1e1a2e; }
 .sm-canh-t img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .sm-canh-hh { position: absolute; right: -6px; bottom: -6px; line-height: 0; }
