@@ -69,10 +69,10 @@ Luật chung cho các khối Ngày 13-21:
 - Mỗi việc giấu sau cờ riêng, bật trong cùng đêm khi thử sạch. Có cáo thị ngắn theo luật cáo thị. Thêm dòng vào "Sổ cải thiện tính năng" (tang-truong.md) với chỉ số đo ghi trong khối.
 - Chữ mới: story-writing + script-writing + humanizer, tra bảng thuật ngữ Project `claude/glossary-tu-tien-cws.csv`; thuật ngữ game đã dùng thì giữ.
 - Thưởng mới phải nhỏ; đụng phúc duyên hay đồ thì chạy `sim-farm`/`sim-do-kho` trước/sau.
-- Mục tiêu chung: còn chơi nhóm 2-3 kiếp 1% → 5%, nhóm 4-10 kiếp 6% → 12%, D1 người mới 26-30% → 35%. Xem lại 30/11 và 7/12, ghi vào tang-truong.md.
+- Lịch dời 20/11 17:15 để chen vòng tu vi chân thân (Ngày 22-24) lên trước; nhóm A từ 24/11. Mục tiêu chung: còn chơi nhóm 2-3 kiếp 1% → 5%, nhóm 4-10 kiếp 6% → 12%, D1 người mới 26-30% → 35%. Xem lại 30/11 và 7/12, ghi vào tang-truong.md.
 
 ## Ngày 13 - A1 Kiếp nạn duyên nợ + D phần 1
-Lên bản: 2026-11-23. Cờ `KN_DUYEN_ON`. Có cáo thị.
+Lên bản: 2026-11-24. Cờ `KN_DUYEN_ON`. Có cáo thị.
 - [ ] Lúc độ kiếp lớn (Trúc Cơ trở lên), nếu kiếp này có quan hệ thì kiếp nạn đổi loại: có đạo lữ/kết duyên → Tình kiếp (đạo lữ bị bắt, bị tâm ma nhập, hoặc chọn giữa đạo lữ và đạo); có kẻ thù (ghi thù, truy nã, giết người có thân nhân) → Báo thù tìm tới đúng lúc độ kiếp; có sư đồ (Sư Đồ, đồ đệ phản sư hay bị bỏ) → Đồ đệ quay về (trợ lực hoặc tâm ma). Nhiều loại thì chọn loại có quan hệ gần nhất. Không có quan hệ thì kiếp nạn như cũ.
 - [ ] Mỗi loại 4 lựa chọn như sự kiện thường; đầu màn dòng "vì sao" có tên người. Tỉ lệ sống chết GIỮ NGUYÊN như kiếp nạn hiện tại (chỉ đổi lời và lựa chọn); lựa chọn đúng với quan hệ (cứu đạo lữ, hóa giải thù) cho thưởng nhỏ hoặc mở kết cục mới. Người liên quan đã chết → bản "di nguyện"/"hồn ma".
 - [ ] Chữ: 3 loại × 4 giới (phàm, tiên, ma, hư) × 2 nhánh (qua, không qua) = 24 đoạn + 12 câu lựa chọn, mỗi đoạn tối đa 3 câu. Có thể thêm 1-3 kết cục Sổ Sinh Tử ("Vì tình mà tan", "Nợ máu trả bằng máu"...), tìm trùng trước.
@@ -82,7 +82,7 @@ Lên bản: 2026-11-23. Cờ `KN_DUYEN_ON`. Có cáo thị.
 - Ghi chú:
 
 ## Ngày 14 - A3 Ý nguyện kiếp này + D phần 2
-Lên bản: 2026-11-24. Cờ `Y_NGUYEN_ON`. Có cáo thị.
+Lên bản: 2026-11-25. Cờ `Y_NGUYEN_ON`. Có cáo thị.
 - [ ] Từ kiếp 2, màn đầu thai có 3 ý nguyện bốc ngẫu nhiên từ khoảng 12 cái (vd Tìm một đạo lữ, Lọt bảng xếp hạng tuần, Báo thù kiếp trước, Sống qua 500 tuổi, Vào Kim Đan trước 100 tuổi, Lập môn phái, Nuôi linh thú tới bậc cao, Không giết ai...) và nút "Tùy duyên" bỏ qua. Một lần bấm, không thêm màn. Người mới (kiếp 1) không thấy.
 - [ ] "Báo thù kiếp trước" chỉ hiện khi kiếp trước có kẻ thù thật. Sự kiện trong kiếp nghiêng nhẹ theo ý nguyện (tăng trọng số loại sự kiện liên quan, không ép).
 - [ ] Toại nguyện: thưởng nhỏ phúc duyên, bia mộ thêm "Đã toại nguyện: ..."; không xong: bia ghi "Ôm hận: ...". Đủ 10 ý nguyện khác nhau toại nguyện thì mở một danh hiệu (nối vào hệ danh hiệu sưu tầm đang có).
@@ -92,7 +92,7 @@ Lên bản: 2026-11-24. Cờ `Y_NGUYEN_ON`. Có cáo thị.
 - Ghi chú:
 
 ## Ngày 15 - A2 Cơ duyên có manh mối + D phần 3
-Lên bản: 2026-11-25. Cờ `DIEM_CO_DUYEN_ON`. Có cáo thị. Bật cả kiếp 1 (chỉ một dòng chữ, dùng lại nút trọng tâm năm sẵn có).
+Lên bản: 2026-11-26. Cờ `DIEM_CO_DUYEN_ON`. Có cáo thị. Bật cả kiếp 1 (chỉ một dòng chữ, dùng lại nút trọng tâm năm sẵn có).
 - [ ] Một số kỳ ngộ để lại "điềm" (vd "Phía Tây Nam có ánh tử khí bốc lên ba đêm liền"), hiện ở góc màn 3-5 năm game, mỗi điềm gắn với một trọng tâm năm. Năm nào người chơi chọn trọng tâm khớp thì cơ duyên mở. Mỗi kiếp tối đa 2 điềm.
 - [ ] Kết quả: khoảng 35% đồ, 35% phúc (tu vi, tuổi thọ), 20% tay trắng (lời dẫn hài, không tức), 10% bị thương nhẹ. Hết hạn chưa đuổi: điềm tan, một dòng "Cơ duyên đã lỡ". Đồ và phúc theo dải cảnh giới, không lạm phát.
 - [ ] Chữ: 12 điềm × 4 kết quả = 48 đoạn ngắn.
@@ -101,7 +101,7 @@ Lên bản: 2026-11-25. Cờ `DIEM_CO_DUYEN_ON`. Có cáo thị. Bật cả ki�
 - Ghi chú:
 
 ## Ngày 16 - A4 Lời sấm đầu kiếp, A5 Biệt hiệu tự sinh + D phần 4
-Lên bản: 2026-11-26. Cờ `SAM_DAU_KIEP_ON`, `BIET_HIEU_ON`. Có cáo thị (A5; A4 đang thử thì chưa báo).
+Lên bản: 2026-11-27. Cờ `SAM_DAU_KIEP_ON`, `BIET_HIEU_ON`. Có cáo thị (A5; A4 đang thử thì chưa báo).
 - [ ] A4: kiếp 1 và kiếp đầu tiên mỗi ngày mở bằng một câu sấm mơ hồ (vd "Kẻ mặc áo trắng sẽ cứu ngươi hai lần"), gắn với một loại sự kiện có sẵn để ứng nghiệm NGAY trong kiếp đó; lúc ứng hiện lại câu sấm kèm dấu đỏ. Chỉ là chữ, không đổi chỉ số. Khác lời tiên tri cuối kiếp đang có (hook.ts, ứng ở kiếp sau), không đụng cái cũ. 20 câu sấm.
 - [ ] A4 chạy A/B 50/50 theo sid ở người mới, ghi nhóm vào vkl_events; sau 3 ngày (29/11) so tỉ lệ xong kiếp 1 và D1, nhóm tốt hơn thắng, ghi kết luận vào Sổ cải thiện.
 - [ ] A5: kiếp đủ khoảng 3 chuyện lớn và 20 chuyện nhỏ thì được biệt hiệu ghép từ danh sách: tiền tố theo hành vi nổi nhất (giết nhiều, sống lâu, nhiều đạo lữ, chết lãng xẹt, giàu...) + hậu tố theo đường tu (vd "Độc Thủ Thư Sinh", "Kiếm Si", "Lão Quái Ngàn Năm"). Hiện ở bia, nghĩa trang, thẻ Lôi Đài. Không gõ tự do. Nối vào hệ danh hiệu đang có (danh hiệu tuần `vkl_titles_char`, danh hiệu sưu tầm), không làm hệ thứ hai.
@@ -110,14 +110,14 @@ Lên bản: 2026-11-26. Cờ `SAM_DAU_KIEP_ON`, `BIET_HIEU_ON`. Có cáo thị (
 - Ghi chú:
 
 ## Ngày 17 - B1 Nhân/Địa/Thiên bảng theo dải cảnh giới
-Lên bản: 2026-11-27. Cờ `BANG_DAI_ON`. Có cáo thị.
+Lên bản: 2026-11-30. Cờ `BANG_DAI_ON`. Có cáo thị.
 - [ ] `/bang-xep-hang` thêm 3 tab bảng tuần: Nhân bảng (Luyện Khí tới Kim Đan), Địa bảng (Nguyên Anh tới Độ Kiếp), Thiên bảng (sau phi thăng và Hồng Hoang). Mỗi bảng top 10, xếp theo thành tích tốt nhất trong tuần ở dải đó. Một người đứng được nhiều bảng.
 - [ ] Thưởng chỉ mỹ quan (khung tên, danh hiệu tuần), không chỉ số. RPC mới, không sửa vkl_leaderboard cũ.
 - [ ] Đo: số người mở tab bảng mỗi ngày; còn chơi ở người từng lọt Nhân bảng.
 - Ghi chú:
 
 ## Ngày 18 - B5 Thẻ "Một đời" và "Ân oán hai ta"
-Lên bản: 2026-11-28. Cờ `THE_MOT_DOI_ON`. Có cáo thị.
+Lên bản: 2026-12-03. Cờ `THE_MOT_DOI_ON`. Có cáo thị.
 - [ ] Một đời: hết kiếp có nút "Lưu thẻ" ra ảnh dọc pixel (tên, biệt hiệu, cảnh giới, 3 chuyện lớn nhất, cách chết, câu sấm hay ý nguyện nếu có, link game kèm mã mời). Dùng lại hạ tầng Thất Nhật Lục (`lib/wrapCard.ts`, link `/k/<mã>`), không làm hạ tầng mới.
 - [ ] Ân oán hai ta: hai người chơi thật đã chạm mặt nhau từ 3 lần trở lên (đồng đạo, địch thủ, kết nghĩa, truy nã, Oan gia) thì mở được thẻ tóm tắt các lần gặp, gửi link cho đối phương.
 - [ ] Không lộ tên đăng nhập; người tắt hiện mình trong kiếp người khác thì không lên thẻ Ân oán. Người mới vào qua link thẻ tính như kênh mời.
@@ -125,7 +125,7 @@ Lên bản: 2026-11-28. Cờ `THE_MOT_DOI_ON`. Có cáo thị.
 - Ghi chú:
 
 ## Ngày 19 - B2 Di vật trong mộ
-Lên bản: 2026-11-29. Cờ `DI_VAT_ON`. Có cáo thị.
+Lên bản: 2026-12-05. Cờ `DI_VAT_ON`. Có cáo thị.
 - [ ] Mỗi bia giữ một "di vật" là BẢN SAO một món đồ của kiếp đó, yếu hơn bản gốc một bậc. Kiếp người khác có thể gặp kỳ ngộ "Cúng mộ tiền bối" (bóng người chơi thật): chọn cúng thì nhận di vật. Chủ mộ không mất gì, nhận thư "Có hậu nhân kế thừa di vật của ngươi" và một ít phúc duyên. Mỗi mộ cho tối đa 3 người nhận.
 - [ ] Chỉ hành động tích cực: KHÔNG có đào trộm lấy đồ người thật.
 - [ ] `sim-farm` trước/sau để di vật không thành nguồn đồ dễ.
@@ -141,10 +141,74 @@ Lên bản: 2026-12-02. Cờ `PHIEU_THIEN_TUONG_ON`. Có cáo thị.
 - Ghi chú:
 
 ## Ngày 21 - B3 Thiên cơ theo Kỷ
-Lên bản: 2026-12-03. Cờ `THIEN_CO_ON`. Có cáo thị (chỉ gợi ý có "chân tướng", không lộ nội dung).
+Lên bản: 2026-12-04. Cờ `THIEN_CO_ON`. Có cáo thị (chỉ gợi ý có "chân tướng", không lộ nội dung).
 - [ ] Mỗi Kỷ Sơn Môn có một "chân tướng" bí ẩn (vd "Bầu trời là một tấm lưới"). Mảnh rơi ngẫu nhiên, hiếm, trong kiếp. Ai gom đủ 7 mảnh đầu tiên được chọn: Công bố (cả server buff một ngày, tên lên trang chủ và Biên niên) hoặc Giữ kín (mở một kết cục ẩn chỉ người đó có). Quyết xong thì mảnh ngừng rơi tới Kỷ sau.
 - [ ] Viết thành nhánh phụ của Thiên thư (dùng chỗ hiển thị Sổ Sinh Tử / Thiên thư), không làm hệ mới. Chân tướng Kỷ 2 viết bằng story-writing, nối với mạch Vạn Kiếp Chân Nhân.
 - [ ] Đo: số người có ít nhất 1 mảnh; số người nhắc tới chân tướng trên Fanpage và Group (nếu đọc được).
+- Ghi chú:
+
+## Vòng tu vi chân thân - Cửu Chuyển, Mộng thạch, Luyện lô, đi cảnh (Tyler duyệt 20/11 17:14, "áp dụng từ hôm nay")
+Thiết kế đầy đủ và mọi con số: doc Project `claude/vong-cay-chan-than.md` (Projects tool, project_read). Đọc mục cần trước khi làm từng khối, đừng đọc lại cả file mỗi lần.
+Đã chốt (không hỏi lại):
+- Ba vòng ba vai: giờ thật → tu vi → Cửu Chuyển; kiếp (nhập mộng) → Mộng thạch = số lượng đồ; đi cảnh → bậc Luyện lô = chất lượng đồ. Kiếp KHÔNG rơi đồ thẳng.
+- Cửu Chuyển: Tỉnh Mộng, Ngưng Thần, Định Tâm, Quy Nguyên, Thông Huyền, Kiến Tính, Siêu Kiếp, Vô Lượng, Luân Hồi Chủ. Mỗi Chuyển 4 tầng Sơ / Trung / Cao / Viên mãn (36 bậc). Lên tầng tự động khi đầy (+10% Lực chiến của Chuyển). Viên mãn đầy mới hiện nút Đột phá sang Chuyển mới (+60% × (1 + căn cơ)).
+- Thanh tầng (tu vi): C1 1000/1200/1300/1500; C2 1700/2000/2300/2700; C3 3100/3500/4000/4700; C4 5400/6200/7100/8100; C5 9400/11000/12000/14000; C6 16000/19000/22000/25000; C7 29000/33000/38000/44000; C8 50000/58000/66000/76000; C9 88000/100000/120000/130000. Lực chiến cả Chuyển: 300, 400, 500, 700, 900, 1100, 1400, 1700, 2000. Mục tiêu nhịp: chơi đều tới C9 Viên mãn khoảng ngày 139, chỉ offline khoảng ngày 286.
+- Tu vi: offline 100/giờ (giờ 0-12), 50/giờ (giờ 12-24), dừng sau 24 giờ; mỗi kiếp khép 25 × √năm sống (chết trước 16 tuổi = 0); 5 kiếp đầu mỗi ngày đủ, kiếp 6-10 50%, từ kiếp 11 20%. Tốc độ tu luyện +15% mỗi Chuyển. KHÔNG thưởng theo giờ mở tab.
+- Đột phá (chỉ ở Viên mãn): người chơi tự chọn bấm hay áp cảnh. Ngưỡng = 100% thanh Viên mãn, bình cảnh = 200% (tu vi dừng tăng). Tỉ lệ ở ngưỡng: C1-3 100%, C4-6 85%, C7-9 75%, tăng đều tới 100% ở bình cảnh. Căn cơ +0% tới +20% tăng đều. Trượt: mất 50% phần dư trên ngưỡng, +10% lần sau, lần thứ 3 chắc chắn; không bắt chờ; trượt đúng ở 100% không mất gì. Lời dẫn trượt "tâm ma quấy nhiễu".
+- Mộng dẫn chân: vào Chuyển 3 cần từng tới Kim Đan, Chuyển 6 cần từng tới Độ Kiếp, Chuyển 9 cần từng vào Hồng Hoang trong một kiếp nào đó (đọc từ vkl_lives). Nút đột phá ghi lý do ngay trên đó.
+- Đổi tên: số "Tu vi" hiện ở tab Nhân vật (ctPower) → "Lực chiến"; thẻ pháp bảo "Tu vi +X" → "Lực chiến +X"; câu giải thích đổi theo. Thêm "Tổng tu vi đã tu" (chỉ tăng). Chữ "Tu vi" từ nay chỉ dùng cho thanh tiến độ.
+- Sơn Môn: cảnh giới chân thân cộng +1%/Chuyển vào Lực chiến Sơn Môn, sau trần 6.000, chung trần +25% với pháp bảo, CHỈ từ Kỷ 3 (không đụng Kỷ 2). Đồ lò luyện không vào trận Sơn Môn.
+- Tất cả tính ở MÁY CHỦ: lưu tu vi + giờ chốt, tính khi mở hoặc khi tiêu (không cron mỗi phút); roll lò ở máy chủ. Toàn bộ ẩn tới khi người chơi có chân thân; lúc tạo chân thân tặng sẵn đủ tu vi để lên tầng đầu ngay.
+- Lịch: Ngày 22 lên 21/11, Ngày 23 lên 22/11, Ngày 24 bật cho người chơi 23/11. Lát 2 (Ngày 25-26) chỉ làm nếu 3 ngày đầu có số: ít nhất 40% người có chân thân đã lên ít nhất 1 tầng; không đạt thì ghi lý do, sửa lát 1 trước. Lát 3 (Ngày 27-29) tương tự với số lát 2.
+
+## Ngày 22 - Chân thân lát 1a: đổi tên Lực chiến + nền máy chủ tu vi (giấu sau cờ)
+Lên bản: 2026-11-21. Làm SAU Ngày 10 và Ngày 12. Cờ `CT_TU_VI_ON` (tắt). Cáo thị một dòng cho phần đổi tên.
+- [ ] Đổi tên ở tab Nhân vật, thẻ pháp bảo Sơn Môn (`components/sonmon/BaoVat.tsx` và chỗ hiện "Tu vi +"), câu giải thích: "Tu vi" → "Lực chiến" (tr VI/EN). Grep toàn repo chữ "Tu vi" dùng cho ctPower, không đổi chữ tu vi trong kiếp.
+- [ ] Bảng mới (apply_migration, file trong supabase/): tu vi chân thân (player, tu_vi, chuyen, tang, can_co theo từng Chuyển, giờ chốt, tổng tu vi, số lần trượt hiện tại, số kiếp tính trong ngày). RLS chỉ đọc của mình; ghi chỉ qua hàm SECURITY DEFINER.
+- [ ] Hàm mới: `ct_tv_get` (chốt offline theo luật 12h + 12h/50%, dừng ở 24 giờ và ở bình cảnh, tự lên tầng khi đầy, trả trạng thái), `ct_tv_life` (gọi từ chỗ ghi kiếp, cộng 25×√năm theo bậc kiếp trong ngày, tốc độ theo Chuyển), `ct_tv_dot_pha` (kiểm Mộng dẫn chân, tung tỉ lệ ở máy chủ, áp luật trượt/căn cơ). Hàm cũ không sửa: nối `ct_tv_life` bằng hàm mới hoặc gọi thêm từ client sau vkl_add_life, miễn là máy chủ tự đọc năm sống từ vkl_lives chứ không tin số client gửi.
+- [ ] Test SQL: offline 6h, 18h, 40h; kiếp thứ 1, 6, 11 trong ngày; đột phá ở 100%, 150%, 200%; trượt 3 lần; thiếu chìa Kim Đan.
+- [ ] `scripts/sim-tu-vi.ts` mới: mô phỏng 3 kiểu người chơi (chơi đều 5 kiếp + 2 lần/ngày, chỉ offline 2 lần, chỉ offline 1 lần) ra ngày đạt từng Chuyển; phải gần mốc trong doc (C9 Viên mãn khoảng ngày 139 / 286). Lệch quá 15% thì ghi vào Ghi chú.
+- Ghi chú:
+
+## Ngày 23 - Chân thân lát 1b: màn tu vi, đột phá, áp cảnh (giấu sau cờ)
+Lên bản: 2026-11-22. Làm SAU Ngày 8f. Cờ `CT_TU_VI_ON` vẫn tắt.
+- [ ] Màn chân thân: chân thân ngồi thiền ở giữa (LPC), dưới là thanh tu vi có 2 mốc vạch (Ngưỡng, Bình cảnh) ở tầng Viên mãn; dòng "Chuyển 3 - Định Tâm · Trung tầng"; tốc độ tu luyện mỗi giờ; giờ còn lại tới khi đầy 12 giờ.
+- [ ] Mở màn: gọi `ct_tv_get`, hiện "Trong lúc vắng, ngươi đã tu được +X tu vi" (một dòng, không popup dồn dập). Lên tầng tự động thì hiện một dòng "Lên Trung tầng, Lực chiến +Y".
+- [ ] Nút Đột phá (chỉ khi Viên mãn đủ ngưỡng): ghi tỉ lệ và căn cơ hiện tại ngay trên nút ("Đột phá - 85% thành, căn cơ +0%"). Bên cạnh một dòng nhỏ "Tu thêm để chắc hơn: tới bình cảnh 100% và căn cơ +20%". Thiếu chìa Mộng dẫn chân thì nút khóa, ghi lý do ngay trên nút.
+- [ ] Kết quả đột phá: thành → hào quang/hiệu ứng pixel ngắn + "Tu vi đã hóa thành cảnh giới, Lực chiến +Z"; trượt → "Tâm ma quấy nhiễu..." + số tu vi còn lại + tỉ lệ lần sau. Lời dẫn qua story-writing + humanizer, tra glossary.
+- [ ] Hồ sơ chân thân: dòng "Tổng tu vi đã tu", và danh sách căn cơ từng Chuyển.
+- [ ] Thử: Playwright 390x844 các trạng thái (mới tạo, đang tu, đủ ngưỡng, bình cảnh, thiếu chìa, trượt); chấm 5 mặt huashu-design; uiux-pro-max. Chỉ pixel/LPC, không gradient.
+- Ghi chú:
+
+## Ngày 24 - Chân thân lát 1c: bật cho người chơi
+Lên bản: 2026-11-23. Bật `CT_TU_VI_ON`. Có cáo thị (ngắn, không số chi tiết): "Chân thân bắt đầu tu luyện: tu vi tăng theo giờ và theo mỗi giấc mộng, đủ thì tự chọn đột phá hay áp cảnh. Cửu Chuyển có 36 tầng."
+- [ ] Tặng mọi người đang có chân thân đủ tu vi để lên Sơ tầng ngay lần mở đầu (quà mở màn), kể cả người cũ. Người tạo chân thân mới cũng nhận.
+- [ ] Ghi sự kiện vkl_events: ct_tv_open, ct_tv_tang, ct_dot_pha (kết quả, % lúc bấm, căn cơ), ct_tv_gate (bị chìa chặn).
+- [ ] Thêm vào "Sổ cải thiện tính năng": % người có chân thân lên ≥1 tầng trong 24 giờ, % ngày có 2 phiên, D1/D7 nhóm có chân thân, % đột phá có áp cảnh, quay lại của nhóm Khai Thiên. Ghi số mốc hôm trước khi bật.
+- [ ] Ngày 26/11 (đêm đó, bước a): đọc số 3 ngày, quyết làm tiếp lát 2 hay sửa lát 1 theo luật ở đầu mục.
+- Ghi chú:
+
+## Ngày 25 - Chân thân lát 2a: Mộng thạch, Luyện lô bậc 1-2 (giấu sau cờ)
+Lên bản: 2026-11-28. Cờ `CT_LO_ON`. Chỉ làm khi đạt điều kiện ở đầu mục.
+- [ ] Mộng thạch mỗi kiếp khép: 10 + 2 × bậc cảnh giới cao nhất + 1 mỗi 50 năm (tối đa +10) + 15 nếu kết cục mới; cùng bậc giảm theo số kiếp trong ngày như tu vi. Máy chủ tính từ vkl_lives.
+- [ ] Mộng thạch offline: 1/giờ, cùng luật trần như tu vi (phần +1 mỗi 10 ải để lát 3).
+- [ ] Bật CT_GEAR thành 4 ô có chỉ số: Vũ khí (mở ở C1), Mũ (C2), Phụ kiện (C4), Cánh (C5). Hình CT_GEAR giữ là "bộ da" mở theo thành tựu như cũ; chỉ số đến từ lò. Pháp bảo Sơn Môn vẫn là nguồn riêng, tự so với đồ lò ở ô Vũ khí/Phụ kiện. Thần binh truyền kiếp không đụng.
+- [ ] Luyện lô: 10 Mộng thạch một lượt, roll ở máy chủ; bậc 1 (C1): Phàm 90 / Bảo 10; bậc 2 (C3): Phàm 70 / Bảo 27 / Linh 3. Lực chiến mỗi món ±20%: Phàm 60, Bảo 150, Linh 350, Tiên 800, Thần 1.800. Món mạnh hơn tự lắp; nút "Luyện hết" một chạm.
+- Ghi chú:
+
+## Ngày 26 - Chân thân lát 2b: dung luyện 3→1, Chân soi mộng, bật
+Lên bản: 2026-11-29. Bật `CT_LO_ON`. Có cáo thị.
+- [ ] Túi đồ chân thân: 3 món cùng phẩm dung thành 1 món phẩm trên, nút "Dung hết" một chạm.
+- [ ] Chân soi mộng: mỗi Chuyển cho kiếp mới một khởi đầu nhỏ (gợi ý +1 năm tuổi thọ mỗi Chuyển, hoặc tỉ lệ linh căn tốt +0,5%/Chuyển; tự chọn sau khi chạy `sim-do-kho 3000` trước/sau, tỉ lệ phi thăng không được tăng quá 1 điểm %).
+- [ ] `sim-farm` và `sim-tu-vi` cho kinh tế Mộng thạch: chơi đều khoảng 12-15 lượt luyện/ngày; tỉ lệ kiếp chết trước 16 tuổi không được tăng.
+- [ ] Đo: % người chơi trong ngày có luyện; số kiếp/ngày nhóm 4-10 kiếp; tỉ lệ kiếp chết nhanh.
+- Ghi chú:
+
+## Ngày 27-29 - Chân thân lát 3: đi cảnh, boss, Luyện lô bậc 3-6 (giấu sau cờ, bật 8/12)
+Lên bản: 2026-12-08 (làm 3 đêm 5-7/12, mỗi đêm một phần). Cờ `CT_DI_CANH_ON`. Chỉ làm khi lát 2 có số.
+- [ ] Đêm 1: 3 chương ải (mở ở C3, C6, C8), boss mỗi 5 ải; thắng thua theo Lực chiến so với yêu cầu ải, chút ngẫu nhiên, tính ở máy chủ; lần đầu thắng boss chắc rơi 1 món; Luyện lô bậc 3 (boss ải 10), 4 (ải 20), 5 (ải 30), 6 (ải 45) theo bảng trong doc. Mộng thạch offline +1/giờ mỗi 10 ải đã qua.
+- [ ] Đêm 2: trận nhìn nghiêng kiểu Fire Emblem (chân thân LPC vs yêu thú pixel, 3-6 lượt, thanh máu) CHỈ ở lần đầu đánh boss, có nút Bỏ qua; mọi lần khác là thẻ kết quả. Quét 1 chạm ải đã qua (mở ở C6).
+- [ ] Đêm 3: thử đủ, cáo thị, bật cờ 8/12. Đo phân bố ải cao nhất, % kẹt một boss quá 3 ngày, độ dài phiên ngắn (mục tiêu trung vị 2-5 phút).
 - Ghi chú:
 
 ## Ngoài game (Tyler tự làm)
