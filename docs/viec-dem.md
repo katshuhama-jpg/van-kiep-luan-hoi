@@ -204,7 +204,7 @@ Lên bản: 2026-11-23. Bật `CT_TU_VI_ON`. Có cáo thị (ngắn, không số
 Lên bản: 2026-11-29. Cờ `CT_LO_ON`. Chỉ làm khi đạt điều kiện ở đầu mục.
 - [ ] Mộng thạch mỗi kiếp khép: 10 + 2 × bậc cảnh giới cao nhất + 1 mỗi 50 năm (tối đa +10) + 15 nếu kết cục mới; cùng bậc giảm theo số kiếp trong ngày như tu vi. Máy chủ tính từ vkl_lives.
 - [ ] Mộng thạch offline: 1/giờ, cùng luật trần như tu vi (phần +1 mỗi 10 ải để lát 3).
-- [ ] Dùng danh mục 100 món của Ngày 31 (5 ô: Vũ khí mở ở C1, Quần áo C1, Mũ C2, Phụ kiện C4, Cánh C5). Lò chọn ô ngẫu nhiên đều trong các ô đã mở, rồi chọn 1 trong 4 món của phẩm vừa ra. Pháp bảo Sơn Môn vẫn là nguồn riêng, tự so với đồ lò ở ô Vũ khí/Phụ kiện. Thần binh truyền kiếp không đụng.
+- [ ] Dùng danh mục 100 món của Ngày 31 (5 ô: Vũ khí mở ở C1, Quần áo C1, Mũ C2, Phụ kiện C4, Lưng C5). Lò chọn ô ngẫu nhiên đều trong các ô đã mở, rồi chọn 1 trong 4 món của phẩm vừa ra. Pháp bảo Sơn Môn vẫn là nguồn riêng, tự so với đồ lò ở ô Vũ khí/Phụ kiện. Thần binh truyền kiếp không đụng.
 - [ ] Luyện lô: 10 Mộng thạch một lượt, roll ở máy chủ; bậc 1 (C1): Phàm 90 / Bảo 10; bậc 2 (C3): Phàm 70 / Bảo 27 / Linh 3. Lực chiến mỗi món ±20%: Phàm 60, Bảo 150, Linh 350, Tiên 800, Thần 1.800. Món mạnh hơn tự lắp; nút "Luyện hết" một chạm.
 - Ghi chú:
 
@@ -228,10 +228,11 @@ Thiết kế đầy đủ, danh mục 100 món, bảng tên cảnh giới, công
 
 ## Ngày 31 - 100 món đồ chân thân, ô Quần áo, Bảo khố (giấu sau cờ)
 Lên bản: 2026-11-28. Cờ `CT_LO_ON` (chưa bật).
-- [ ] Danh mục 100 món theo doc (5 ô × 5 phẩm × 4 món), id, tên tr VI/EN, lớp LPC + tint, icon (icon có sẵn; thiếu thì icon Cultivation World Simulator, ghi nguồn), phẩm, Lực chiến gốc (Phàm 60, Bảo 150, Linh 350, Tiên 800, Thần 1.800, ±20% khi roll). Tìm trùng tên với đồ trong kiếp; món CT_GEAR/CT_AO cũ nằm trong 100 món, ai đã mở bằng thành tựu thì có sẵn.
+- [ ] 100 món PHẢI KHÁC HÌNH NHAU, KHÔNG tính đổi màu (Tyler chốt 20/11 18:03): mỗi món một dáng LPC hoặc tổ hợp dáng riêng theo bảng trong doc. Tải lớp còn thiếu từ https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator (thư mục `spritesheets/...` ghi trong doc; clone nông, sparse), cắt khung như lớp đang có, ghi nguồn/tác giả vào `public/lpc/sources.json` và trang Credits. Dáng không hợp chất phương Đông thì thay bằng dáng dự phòng khác hình, không bao giờ thay bằng bản đổi màu. Viết script kiểm: không có 2 món cùng ô dùng chung lớp dáng chính.
+- [ ] Danh mục 100 món theo doc (5 ô × 5 phẩm × 4 món), id, tên tr VI/EN, lớp LPC, icon (icon có sẵn; thiếu thì icon Cultivation World Simulator, ghi nguồn), phẩm, Lực chiến gốc (Phàm 60, Bảo 150, Linh 350, Tiên 800, Thần 1.800, ±20% khi roll). Tìm trùng tên với đồ trong kiếp; món CT_GEAR/CT_AO cũ nằm trong 100 món, ai đã mở bằng thành tựu thì có sẵn.
 - [ ] Ô Quần áo có chỉ số (dùng spec CT_AO), mở ở Chuyển 1 cùng Vũ khí.
 - [ ] Món Tiên, Thần có hào quang PixelFx nhỏ trên chân thân; kiểm 390x844 không rối, không vỡ pixel.
-- [ ] Cánh: thử lấy thêm dáng cánh từ bộ LPC gốc (ghi `public/lpc/sources.json`); không lấy được thì phân biệt bằng màu và hào quang, ghi vào Ghi chú.
+- [ ] Ô Lưng thay ô Cánh: cánh (7 dáng LPC), đuôi (4), áo choàng (2), giỏ tre, và 6 pháp tướng sau lưng bằng PixelFx (vòng Phật quang, vạn kiếm trận, pháp luân hỏa, bát quái đồ, tam muội hỏa hoàn, hỗn độn pháp tướng). Kiểm pháp tướng ở cỡ chân thân trên 390x844 không rối.
 - [ ] Bảo khố 0/100: sổ món đã từng có, danh hiệu khi đủ 20 món một ô, khung tên khi đủ 100.
 - Ghi chú:
 
