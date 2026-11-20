@@ -817,6 +817,14 @@ const PREFETCH: [Anim, number][] = [
   ['walk', 3],
 ];
 
+/** Hệ số phóng nhân vật: làm tròn về số nguyên nếu lệch không quá 20%, còn lại giữ như cũ */
+function spriteScale(k: number): number {
+  if (k < 1) return k;
+  const n = Math.round(k);
+  const r = n / k;
+  return r >= 0.8 && r <= 1.2 ? n : k;
+}
+
 export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Character; size?: number; focus?: string; anim?: Anim; dir?: number }) {
   const l = lookOf(c);
   const def = animFor(c, focus);
@@ -856,7 +864,9 @@ export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Charact
   const aura = hg ? '#ffc8ff' : cos ? COS_AURA[cos] : auraColor(l);
   const scale = l.stage === 'baby' ? 0.75 : 1;
   const box = size;
-  const cell = box * 2 * scale; // khung 128 = gấp đôi khung người 64
+  // khung ghép 128 = gấp đôi khung người 64; phóng theo hệ số nguyên để hạt pixel đều (Tyler 20/11),
+  // chỉ khi to/nhỏ đi không quá 20% so với cỡ đặt (cỡ lẻ như 96 = x1,5 giữ nguyên để khỏi vỡ bố cục)
+  const cell = 128 * spriteScale((box * 2 * scale) / 128);
   // đang ghép hình mới thì giữ tạm hình đã có (đứng yên ở khung đầu), không hiện bản vẽ cũ
   const ready = strip?.key === key ? strip : null;
   const shown = ready ?? strip ?? LAST_SHOWN.get(lkey) ?? null;
@@ -867,8 +877,8 @@ export default function Sprite({ c, size = 140, focus, anim, dir }: { c: Charact
   const style: CSSProperties = {
     width: cell,
     height: cell,
-    left: (box - cell) / 2,
-    top: box - cell * 0.82,
+    left: Math.round((box - cell) / 2),
+    top: Math.round(box - cell * 0.82),
     backgroundImage: url ? `url(${url})` : undefined,
     backgroundSize: `${frames * cell}px ${cell}px`,
     // chạy một lần (ngã xuống) thì dừng ở khung cuối, không trượt ra ô trống
