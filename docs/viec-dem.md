@@ -223,9 +223,9 @@ Lên bản: 2026-11-28. Bật `CT_LO_ON`. Có cáo thị.
 
 ## Ngày 27-29 - Chân thân lát 3: đi cảnh, boss, Luyện lô bậc 3-6 (giấu sau cờ, bật 1/12)
 Lên bản: 2026-12-01 (làm 2 đêm 29-30/11, bật 1/12). Cờ `CT_DI_CANH_ON`. KHÔNG chờ số lát 2 (Tyler 20/11 18:30: phải đủ hết trước Kỷ 2).
-- [ ] Đêm 1: 3 chương ải (mở ở C3, C6, C8), boss mỗi 5 ải; thắng thua theo Lực chiến so với yêu cầu ải, chút ngẫu nhiên, tính ở máy chủ; lần đầu thắng boss chắc rơi 1 món; Luyện lô bậc 3 (boss ải 10), 4 (ải 20), 5 (ải 30), 6 (ải 45) theo bảng trong doc. Mộng thạch offline +1/giờ mỗi 10 ải đã qua.
-- [ ] Đêm 2: trận nhìn nghiêng kiểu Fire Emblem (chân thân LPC vs yêu thú pixel, 3-6 lượt, thanh máu) CHỈ ở lần đầu đánh boss, có nút Bỏ qua; mọi lần khác là thẻ kết quả. Quét 1 chạm ải đã qua (mở ở C6).
-- [ ] Đêm 3: thử đủ, cáo thị, bật cờ 8/12. Đo phân bố ải cao nhất, % kẹt một boss quá 3 ngày, độ dài phiên ngắn (mục tiêu trung vị 2-5 phút).
+- [ ] Đêm 29/11: 3 chương ải (mở ở C3, C6, C8), boss mỗi 5 ải; thắng thua theo Lực chiến so với yêu cầu ải, chút ngẫu nhiên, tính ở máy chủ; lần đầu thắng boss chắc rơi 1 món; Luyện lô bậc 3 (boss ải 10), 4 (ải 20), 5 (ải 30), 6 (ải 45) theo bảng trong doc. Mộng thạch offline +1/giờ mỗi 10 ải đã qua.
+- [ ] Đêm 30/11: trận nhìn nghiêng kiểu Fire Emblem (chân thân LPC vs yêu thú pixel, 3-6 lượt, thanh máu) CHỈ ở lần đầu đánh boss, có nút Bỏ qua; mọi lần khác là thẻ kết quả. Quét 1 chạm ải đã qua (mở ở C6).
+- [ ] Cuối đêm 30/11: thử đủ, cáo thị, bật cờ 1/12. Đo phân bố ải cao nhất, % kẹt một boss quá 3 ngày, độ dài phiên ngắn (mục tiêu trung vị 2-5 phút).
 - Ghi chú:
 
 ## Võ tu, Nho tu, đồ chân thân, công pháp chân thân (Tyler giao 20/11 17:51)
@@ -285,7 +285,7 @@ Lên bản: 2026-11-29. Bật `NHO_TU_ON`. Có cáo thị.
 - [ ] Đo: % kiếp chọn Nho tu 7 ngày; số người Nho tu có đồ đệ thật. Không đường nào trên 35% số kiếp mới.
 - Ghi chú:
 
-Lát 3 chân thân (Ngày 27-29) thêm: đêm 3 (7/12) đưa chiêu công pháp chân thân vào trận đi cảnh, tuyệt kỹ khi đủ tâm pháp và 2 chiêu cùng đạo ở Viên dung.
+Lát 3 chân thân (Ngày 27-29) thêm, cuối đêm 30/11: đưa chiêu công pháp chân thân vào trận đi cảnh, tuyệt kỹ khi đủ tâm pháp và 2 chiêu cùng đạo ở Viên dung.
 
 ## Ngày 8g - Thiên thư quyển III: chặng 2, 3, 4 (bỏ sót, xếp lại 20/11)
 Lên bản: 2026-11-24 (mỗi ô có ngày riêng: chặng 2 lên 24/11, chặng 3 lên 26/11, chặng 4 lên 29/11; khối cắt sang lưu trữ khi xong cả 3 ô).
