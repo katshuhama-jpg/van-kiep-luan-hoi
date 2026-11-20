@@ -24,6 +24,39 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '4.6.4',
+    date: '21/11/2026',
+    title: tr('Kênh Thế giới mở, quái lớn có báu vật', 'World chat opens, great beasts carry treasures'),
+    lead: tr('Giờ nói chuyện được với đạo hữu khắp thiên hạ. Quái Độ Kiếp và Hồng Hoang có món riêng, Sơn Môn thêm luật đất liền.', 'You can now talk with fellow cultivators everywhere. Tribulation and Honghuang beasts drop their own treasures, and sects must keep their land connected.'),
+    asked: [
+      { who: 'linhly', short: tr('Kênh Thế giới', 'World chat'), text: tr('Nút bong bóng ở thanh trên màn chơi, cạnh nút thư.', 'The speech-bubble button on the top bar, next to the mail button.') },
+      { who: 'Huy Phạm, juno199x', short: tr('Hết bị cướp bên bờ sông ở giới trên', 'No more riverside robbers in the upper realms'), text: tr('Kiếm tiền quá sức ở Tiên giới, Ma giới, Hư không, Hồng Hoang giờ gặp tai họa đúng cõi đó.', 'Overworking for money in the upper realms now brings that realm\'s own disaster.') },
+      { who: 'Phan Anh Tuấn', short: tr('Quái lớn có báu vật riêng', 'Great beasts drop treasures'), text: tr('Tứ hung, Tất Phương, Ứng Long và quái Hồng Hoang mỗi con một món. Lôi Đài ghi rõ cách tính chỉ số bóng.', 'The Four Fiends, Bifang, Yinglong and Honghuang beasts each drop their own item. The arena now explains shadow stats.') },
+      { who: 'Chí Triệu Kiên', short: tr('Chú giải Linh Mạch rõ hơn', 'Clearer Spirit Vein notes'), text: tr('Linh Mạch, Thiên Trì ghi rõ: môn nào cũng đánh được, nhưng phải có đất kề bên.', 'Spirit Veins and the Heaven Pool now say it plainly: any sect may attack, but it needs land next to them.') },
+      { who: 'Nguyễn Vũ', short: tr('Treo máy không chết già', 'No dying of old age while idle'), text: tr('Thọ sắp cạn thì thời gian tự dừng để bạn kịp xoay xở.', 'When your lifespan is nearly spent, time pauses so you can act.') },
+    ],
+    more: [tr('10 cốt truyện mới', '10 new stories'), tr('Quái trong trận nét hơn', 'Sharper beasts in battle'), tr('Tu vi chân thân giờ gọi là Lực chiến', 'True body power is now called Power')],
+    groups: [
+      {
+        h: tr('Mới 21/11', 'New on Nov 21'),
+        hot: true,
+        items: [
+          tr('Kênh Thế giới: nói chuyện với đạo hữu khắp thiên hạ. Bấm nút bong bóng ở thanh trên màn chơi.', 'World chat: talk with fellow cultivators everywhere. Tap the speech bubble on the top bar.'),
+          tr('Quái Độ Kiếp và quái Hồng Hoang giờ có báu vật riêng. Xem con nào rơi gì trong Sổ đồ rơi ở Phường thị.', 'Tribulation and Honghuang beasts now drop their own treasures. See who drops what in the Drop Book at the Market.'),
+          tr('Sơn Môn: đánh thua liên tiếp sẽ trọng thương; môn tự bỏ ô được; đất phải liền với chính điện; Linh Mạch giờ phải trinh sát mới thấy.', 'Sects: losing again and again leaves you wounded; sects can drop tiles; land must connect to the main hall; new Spirit Veins must be scouted to be seen.'),
+        ],
+      },
+      {
+        h: tr('Sửa và thêm', 'Fixes and more'),
+        items: [
+          tr('Kiếm tiền quá sức ở giới trên không còn bị cướp giết bên bờ sông, mỗi cõi có tai họa riêng.', 'Overworking for money in the upper realms no longer ends with riverside robbers; each realm has its own disaster.'),
+          tr('Thọ sắp cạn thì thời gian tự dừng. Thêm 10 cốt truyện mới, có chuyện nối Thiên thư.', 'Time pauses when your lifespan is nearly spent. 10 new stories, some tied to the Heavenly Book.'),
+          tr('Lôi Đài ghi rõ cách tính chỉ số bóng ngay ở màn chọn kiếp. Chỉ số chân thân ở tab Nhân vật giờ gọi là Lực chiến.', 'The arena explains shadow stats on the life picker. True body power on the Character tab is now called Power.'),
+        ],
+      },
+    ],
+  },
+  {
     v: '4.6.3',
     date: '20/11/2026',
     title: tr('Yêu tộc nổi dậy, Linh Mạch biết cạn', 'The beasts rise, Spirit Veins run dry'),
