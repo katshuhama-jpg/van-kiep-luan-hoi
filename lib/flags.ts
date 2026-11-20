@@ -56,3 +56,9 @@ export const FIRST_AB = process.env.NEXT_PUBLIC_FIRST_AB ?? '1';
  * Tắt gấp: `NEXT_PUBLIC_TT3=0` rồi build lại (không ghi kết cục mới, ẩn tab quyển III; kết cục đã ghi vẫn giữ).
  */
 export const TT3_ON = process.env.NEXT_PUBLIC_TT3 !== '0';
+
+/**
+ * CT_TU_VI_ON (Ngày 22, 21/11): tu vi chân thân - Cửu Chuyển, 4 tầng, đột phá / áp cảnh, tính ở máy chủ (supabase/ct_tu_vi_2026_11_21.sql).
+ * TẮT mặc định tới Ngày 24: khi tắt, client không gọi ct_tv_get / ct_tv_life / ct_tv_dot_pha. Bật thử: `NEXT_PUBLIC_CT_TU_VI=1`.
+ */
+export const CT_TU_VI_ON = process.env.NEXT_PUBLIC_CT_TU_VI === '1';

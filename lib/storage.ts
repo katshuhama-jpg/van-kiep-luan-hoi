@@ -6,6 +6,8 @@ import { emptyMeta } from './game/engine';
 import type { Character, Grave, Meta, PendingEvent, WorldEcho, RivalChar } from './game/types';
 import { REALMS, realmLabel } from './game/data';
 import { supabase } from './supabase';
+import { CT_TU_VI_ON } from './flags';
+import { ctTvLife } from './ctTuVi';
 import { tr } from './i18n';
 import { nameOf, pinyinize } from './hanviet';
 
@@ -174,6 +176,8 @@ export async function addMemorial(user: Player | null, m: Omit<Memorial, 'id' | 
   if (user && sb) {
     const { error } = await sb.rpc('vkl_add_life', { p_token: user.token, p_life: m });
     if (error) throw error;
+    // 21/11 (Ngày 22): tu vi chân thân theo kiếp, máy chủ tự đọc vkl_lives. Sau cờ; lỗi (chưa có chân thân) thì bỏ qua.
+    if (CT_TU_VI_ON) ctTvLife(user).catch(() => {});
     dropRetry(m.life_no);
     flushRetry(user).catch(() => {});
     return;
