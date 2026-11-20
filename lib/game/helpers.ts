@@ -375,7 +375,7 @@ const COSMOS_EPI: Record<'tien' | 'ma' | 'hu' | 'hg', string> = {
   hu: tr('Thân thể tan vào hư không, như chưa từng tồn tại.', "Your body dissolved into the void, as if you had never existed."),
 };
 export function cosmosCause(c: Character, cause: string): string {
-  if (!c.cosmos || /tiên giới|Tiên Ma|Trảm Tiên|Thiên Đình|Ma giới|huyết hải|hư không|Lôi Bộ|tiên quang|immortal realm|demon realm|heavenly court|blood sea|sea of blood|the void|thunder ministry|immortal light/i.test(cause)) return cause;
+  if (!c.cosmos || /Thao Thiết|Taotie|tiên giới|Tiên Ma|Trảm Tiên|Thiên Đình|Ma giới|huyết hải|hư không|Lôi Bộ|tiên quang|immortal realm|demon realm|heavenly court|blood sea|sea of blood|the void|thunder ministry|immortal light/i.test(cause)) return cause;
   return `${cause} ${COSMOS_EPI[c.cosmos]}`;
 }
 

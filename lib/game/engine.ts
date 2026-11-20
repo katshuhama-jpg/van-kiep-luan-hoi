@@ -1674,6 +1674,36 @@ const OVERWORK: Record<string, { warn: string; hits: { p: number; run: (c: Chara
       {
         p: 1,
         run: (c, ctx) => {
+          // Ngày 12 (Huy Phạm, juno199x 20/11): ở giới trên không còn cướp phàm tục bên bờ sông, mỗi giới một kiểu tai họa riêng
+          if (c.cosmos) {
+            const lost = Math.round(c.linhThach * 0.35);
+            const K = {
+              hg: {
+                mo: tr('Lại thêm một chuyến đổi chác...', 'Another trading run...'),
+                chet: tr('Năm này qua năm khác bạn ôm linh bảo đi đổi chác, mùi linh thạch bay tới tận Câu Ngô Sơn. Thao Thiết thức giấc. Hung thú tham nhất tứ hung không cần biết bạn là thánh hay phàm: nó nuốt túi càn khôn, rồi nuốt luôn cả chủ.', 'Year after year you haul treasures around to trade, and the smell of spirit stones drifts all the way to Gouwu Mountain. The Taotie wakes. The greediest of the Four Fiends does not care whether you are a saint or a mortal: it swallows your qiankun pouch, then swallows its owner.'),
+                thoat: tr(`Thao Thiết đánh hơi thấy túi linh thạch của bạn, đuổi theo suốt ba ngàn dặm. Bạn vứt lại ${lost} linh thạch cho nó nhai rồi thoát thân.`, `The Taotie catches the scent of your spirit stones and chases you for three thousand li. You toss it ${lost} spirit stones to chew on and escape.`),
+              },
+              tien: {
+                mo: tr('Lại thêm một mẻ tiên đan...', 'Another batch of immortal pills...'),
+                chet: tr('Mấy chục năm bạn buôn tiên đan không nghỉ, sổ sách dày tới mức lọt vào mắt Thiên Đình. Lôi Bộ gán tội buôn lậu tiên vật, ba đạo thiên lôi giáng xuống trước khi bạn kịp kêu oan.', "For decades you traded immortal pills without rest, until your ledgers grew thick enough to catch the Heavenly Court's eye. The Thunder Ministry charges you with smuggling immortal goods, and three bolts of heavenly lightning fall before you can plead your case."),
+                thoat: tr(`Lôi Bộ tới xét nhà, tịch thu ${lost} linh thạch vì tội buôn lậu tiên vật. Bạn lĩnh một đạo lôi rồi được tha.`, `The Thunder Ministry searches your home and seizes ${lost} spirit stones for smuggling immortal goods. You take one bolt of lightning and are let go.`),
+              },
+              ma: {
+                mo: tr('Lại thêm một đêm đếm của...', 'Another night counting the hoard...'),
+                chet: tr('Ở Ma giới, giàu mà sống lâu là chuyện lạ. Tên thuộc hạ đếm linh thạch cho bạn mấy chục năm, một đêm đếm xong thì đâm dao vào lưng bạn, ôm cả kho chạy vào huyết hải.', 'In the Demon Realm, the rich rarely live long. The underling who counted your spirit stones for decades finishes counting one night, plants a knife in your back and runs into the blood sea with the whole hoard.'),
+                thoat: tr(`Tên thuộc hạ giữ kho trở mặt, cuỗm ${lost} linh thạch trốn vào huyết hải. Bạn giữ được mạng, mất của.`, `The underling who kept your vault turns on you and flees into the blood sea with ${lost} spirit stones. You keep your life but lose the money.`),
+              },
+              hu: {
+                mo: tr('Lại thêm một năm tích của...', 'Another year of hoarding...'),
+                chet: tr('Trong hư không, của cải là thứ duy nhất còn có hình. Bạn tích mãi không nghỉ, tới khi hư không ăn mòn từ đống linh thạch lan sang người. Lúc bạn nhận ra thì nửa thân đã không còn.', 'In the void, wealth is the only thing that keeps its shape. You hoard without rest until the void eats from your pile of spirit stones into your body. By the time you notice, half of you is gone.'),
+                thoat: tr(`Hư không nuốt mất một góc kho, ${lost} linh thạch tan đi không một tiếng động.`, `The void swallows a corner of your vault, and ${lost} spirit stones vanish without a sound.`),
+              },
+            }[c.cosmos];
+            const f = fatal(c, ctx, 0.25, K.chet);
+            if (f) return `${K.mo}${f}`;
+            money(c, -lost);
+            return K.thoat + hurt(c, 25, ctx);
+          }
           // đã Độ Kiếp: không còn là cướp phàm tục mà là bọn tán tu chuyên đoạt đồ của người sắp độ kiếp
           if (c.realm >= DO_KIEP_REALM && !c.cosmos) {
             const f = fatal(c, ctx, 0.25, tr('Đoạt Kiếp Minh liên thủ bày Khốn Long Trận. Kiếp chưa kịp độ, bạn đã bị luyện thành tro giữa trận.', "The Tribulation Plunderers' League joins hands in a Dragon-Binding Array. Before you can face your tribulation, you are refined to ash inside it."));
