@@ -67,7 +67,7 @@ export function SmMonNha({ c }: { c: SmCtx }) {
       <SmKyThuCard c={c} />
       <BaBuoc c={c} diemDanh={diemDanh} />
       <section className="sm-card dark">
-        <CanhBanner id={m.id} />
+        <CanhBanner hinh={m.chinh_dien_hinh} />
         <div className="sm-row">
           <ChinhDien id={m.chinh_dien_hinh} size={64} />
           <div className="sm-grow">
