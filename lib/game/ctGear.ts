@@ -102,7 +102,7 @@ export function ctPower(m: Meta, ext: DaoExt = {}): { total: number; parts: { na
     { name: tr('Kiếp đã sống', 'Lives lived'), n: Math.min(lives(m), 1000), each: 20 },
     { name: tr('Đệ tử thành tài', 'Graduated disciples'), n: ext.disciples ?? 0, each: 300 },
   ];
-  // 19/11: pháp bảo Sơn Môn đang lắp: mỗi điểm % chỉ số = 100 Tu vi
+  // 19/11: pháp bảo Sơn Môn đang lắp: mỗi điểm % chỉ số = 100 Lực chiến
   const sm = (ext.smBv ?? []).filter((b) => b.mac).reduce((s, b) => s + bvDiem(b.loai, b.pham), 0);
   if (sm > 0) parts.push({ name: tr('Pháp bảo Sơn Môn (điểm chỉ số)', 'Sect treasures (stat points)'), n: sm, each: BV_TU_VI });
   return { total: 1000 + parts.reduce((s, p) => s + p.n * p.each, 0), parts };

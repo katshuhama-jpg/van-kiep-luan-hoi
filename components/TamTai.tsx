@@ -101,7 +101,7 @@ export function useCtExt(user: Player | null, on = true): DaoExt {
       suCount(user)
         .then((n) => live && n !== null && setExt((e) => ({ ...e, disciples: n })))
         .catch(() => {});
-    // 19/11: pháp bảo Sơn Môn (lắp vào chân thân, cộng Tu vi); đổi đồ ở túi thì cập nhật qua sự kiện vkl-sm-bv
+    // 19/11: pháp bảo Sơn Môn (lắp vào chân thân, cộng Lực chiến); đổi đồ ở túi thì cập nhật qua sự kiện vkl-sm-bv
     if (SON_MON_ON)
       baoVatDs().then((ds) => live && ds && setExt((e) => ({ ...e, smBv: ds })));
     const onBv = (ev: Event) => live && setExt((e) => ({ ...e, smBv: (ev as CustomEvent).detail }));

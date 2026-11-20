@@ -148,8 +148,8 @@ export function SmThuong({ c }: { c: SmCtx }) {
         </div>
         <p className="sm-note">
           {tr(
-            'Phẩm càng cao chỉ số càng lớn: Thần gấp 5 lần Phàm. Pháp bảo không mất tác dụng: lắp vào ô Vũ khí, Phụ kiện của chân thân (tab Nhân vật) để cộng Tu vi.',
-            'Higher grades carry bigger stats: Divine is 5x Mortal. Treasures never expire: equip them in your true self’s Weapon and Trinket slots (Character tab) to raise cultivation.',
+            'Phẩm càng cao chỉ số càng lớn: Thần gấp 5 lần Phàm. Pháp bảo không mất tác dụng: lắp vào ô Vũ khí, Phụ kiện của chân thân (tab Nhân vật) để cộng Lực chiến chân thân.',
+            'Higher grades carry bigger stats: Divine is 5x Mortal. Treasures never expire: equip them in your true self’s Weapon and Trinket slots (Character tab) to raise your power.',
           )}
         </p>
       </section>

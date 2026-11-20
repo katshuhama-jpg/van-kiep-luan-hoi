@@ -133,7 +133,7 @@ export function SmLucChien({ c }: { c: SmCtx }) {
         <p className="sm-note">{tr('Lực chiến của ngươi', 'Your power')}</p>
         <p className="sm-big">{fmtN(lc)}</p>
         <p className="sm-note">{tr('Tăng mỗi kiếp ngươi chơi xong. Kiếp chết trước 16 tuổi không tính.', 'Grows with every life you finish. Lives ending before 16 do not count.')}</p>
-        <p className="sm-note">{tr('Khác với Tu vi ở tab Nhân vật (tính theo huyệt, đạo, đồ). Trong Sơn Môn chỉ dùng Lực chiến này.', 'Not the same as Cultivation on the Character tab. Sect battles use this number only.')}</p>
+        <p className="sm-note">{tr('Khác với Lực chiến chân thân ở tab Nhân vật (tính theo huyệt, đạo, đồ). Trong Sơn Môn chỉ dùng Lực chiến này.', 'Not the same as the true self power on the Character tab. Sect battles use this number only.')}</p>
       </section>
       <section className="sm-card">
         <h3>{tr('Từng phần', 'Breakdown')}</h3>
