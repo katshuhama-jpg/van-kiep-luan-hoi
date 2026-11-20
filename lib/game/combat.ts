@@ -710,6 +710,12 @@ const cultNote = (n: number) => (n > 0 ? tr(`+${n} tu vi`, `+${n} cultivation`) 
 
 /** Hệ số rơi đồ chung (26/10: giảm 25% vì người chơi nhặt đồ quá dễ) */
 export const DROP_MUL = 0.75;
+/**
+ * 21/11 (Fanpage): đồ riêng của quái Độ Kiếp và Hồng Hoang đắt hơn đồ riêng thường nhiều lần,
+ * nên rơi thưa hơn để tiền bán đồ trùng không lạm phát (đo bằng scripts/sim-farm.ts).
+ */
+export const RIENG_DROP = { doKiep: 0.3, hg: 0.2 };
+const riengDrop = (m: Monster) => (m.doKiep ? RIENG_DROP.doKiep : m.cosmos === 'hg' ? RIENG_DROP.hg : 1);
 
 export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance = 0.12): string[] {
   const notes: string[] = [];
@@ -753,7 +759,7 @@ export function killReward(c: Character, m: Monster, ctx: EffectCtx, lootChance 
   const df = dropFactor(c, m);
   if (drops.length && df > 0) {
     const g = gearFx(c.equipped);
-    const p = (0.05 + (c.stats.khiVan - 50) / 2500) * (1 + tierOf(c, m) * 0.5) * (1 + g.drop / 100) * df * DROP_MUL * ksDrop(c) * petDropMul(c);
+    const p = (0.05 + (c.stats.khiVan - 50) / 2500) * (1 + tierOf(c, m) * 0.5) * (1 + g.drop / 100) * df * DROP_MUL * ksDrop(c) * petDropMul(c) * riengDrop(m);
     if (ctx.rnd() < p) {
       const it = drops[Math.floor(ctx.rnd() * drops.length)];
       if (c.inventory.includes(it.id)) {
@@ -839,6 +845,8 @@ export function dropFactor(c: Character, m: Monster): number {
 const RARE_NAME = [tr('Phàm', "Common"), tr('Tốt', "Fine"), tr('Hiếm', "Rare"), tr('Cực phẩm', "Supreme")];
 /** đồ chỉ rơi từ quái thí luyện trong tông môn, không rơi ngẫu nhiên ngoài giang hồ */
 const SECT_ONLY = new Set(ITEMS.filter((i) => i.from?.length && i.from.every((id) => MONSTERS.find((m) => m.id === id)?.sect)).map((i) => i.id));
+/** 21/11: đồ riêng của quái Độ Kiếp và Hồng Hoang chỉ rơi từ đúng loài đó, không lẫn vào chiến lợi phẩm ngẫu nhiên */
+const MON_ONLY = new Set(ITEMS.filter((i) => i.from?.length && i.from.every((id) => { const m = MONSTERS.find((x) => x.id === id); return !!m && (!!m.doKiep || m.cosmos === 'hg'); })).map((i) => i.id));
 
 /**
  * Chiến lợi phẩm ngẫu nhiên khi hạ quái: phần lớn là đồ lởm, thỉnh thoảng ra đồ xịn.
@@ -857,7 +865,7 @@ export function lootDrop(c: Character, m: Monster, ctx: EffectCtx): string | nul
   // đồ theo cấp của quái chứ không theo cảnh giới người chơi
   const mr = ha ? Math.min(7, monsterRealm(effLv(c, m))) : Math.min(c.realm, monsterRealm(effLv(c, m)));
   const lo = Math.max(0, mr - 2);
-  const ok = (i: (typeof ITEMS)[number]) => i.src !== 'event' && !SECT_ONLY.has(i.id) && (i.rare ?? 0) === rare && i.minRealm <= mr;
+  const ok = (i: (typeof ITEMS)[number]) => i.src !== 'event' && !SECT_ONLY.has(i.id) && !MON_ONLY.has(i.id) && (i.rare ?? 0) === rare && i.minRealm <= mr;
   let pool = ITEMS.filter((i) => ok(i) && i.minRealm >= lo);
   if (!pool.length) pool = ITEMS.filter(ok);
   if (!pool.length) return null;

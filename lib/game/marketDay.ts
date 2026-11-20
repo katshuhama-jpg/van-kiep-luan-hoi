@@ -10,7 +10,7 @@ function hash(s: string): number {
 function vnDay(d: Date = new Date()): string {
   return new Date(d.getTime() + 7 * 3600 * 1000).toISOString().slice(0, 10);
 }
-type PriceItem = { price: number; minRealm: number; rare?: 0 | 1 | 2 | 3 };
+type PriceItem = { price: number; minRealm: number; rare?: 0 | 1 | 2 | 3; val?: number };
 
 // ---------------- Bảng giá ----------------
 /** Giá trị gốc của một món phàm theo cảnh giới của món (khớp giá phường thị cũ khi mua đúng cảnh giới) */
@@ -20,6 +20,7 @@ export const SELL_RATE = 0.12;
 
 /** Giá trị một món: đồ phường thị theo giá niêm yết ở đúng cảnh giới của nó, đồ rơi theo bảng cảnh giới × phẩm */
 export function itemValue(it: PriceItem): number {
+  if (it.val) return it.val;
   if (it.price > 0) return Math.round(it.price * (1 + 0.25 * it.minRealm));
   return Math.round((VAL_REALM[Math.min(it.minRealm, VAL_REALM.length - 1)] ?? 60) * (RARE_MUL[it.rare ?? 0] ?? 1));
 }
