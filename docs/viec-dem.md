@@ -224,7 +224,7 @@ Lên bản: 2026-12-08 (làm 3 đêm 5-7/12, mỗi đêm một phần). Cờ `CT
 - Ghi chú:
 
 ## Võ tu, Nho tu, đồ chân thân, công pháp chân thân (Tyler giao 20/11 17:51)
-Thiết kế đầy đủ, danh mục 100 món, bảng tên cảnh giới, công pháp: doc Project `claude/ke-hoach-dao-do-cong-phap.md` (Projects tool, project_read). Đọc mục cần trước khi làm từng khối. Ngày 31, 32 chỉ làm khi đạt điều kiện lát 2 của chân thân (26/11, ít nhất 40% người có chân thân lên ít nhất 1 tầng); Ngày 33, 34 không phụ thuộc. Dùng gamedev + game-design; chữ mới qua story-writing + humanizer, tra glossary; hình chỉ LPC có sẵn và PixelFx, không phóng to ảnh, không vẽ pixel bằng code.
+Thiết kế đầy đủ, danh mục đồ định sẵn, bảng tên cảnh giới, công pháp: doc Project `claude/ke-hoach-dao-do-cong-phap.md` (Projects tool, project_read). Đọc mục cần trước khi làm từng khối. Ngày 31, 32 chỉ làm khi đạt điều kiện lát 2 của chân thân (26/11, ít nhất 40% người có chân thân lên ít nhất 1 tầng); Ngày 33, 34 không phụ thuộc. Dùng gamedev + game-design; chữ mới qua story-writing + humanizer, tra glossary; hình chỉ LPC có sẵn và PixelFx, không phóng to ảnh, không vẽ pixel bằng code.
 
 ## Ngày 31 - Đồ chân thân từ toàn bộ dáng LPC, ô Quần áo, ô Lưng, Bảo khố (giấu sau cờ)
 Lên bản: 2026-11-28. Cờ `CT_LO_ON` (chưa bật).
