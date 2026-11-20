@@ -204,3 +204,7 @@ export function ctSuggestName(gender: Gender, rnd: () => number = Math.random): 
 
 /** Đổi pháp danh: lần đầu miễn phí, từ lần thứ hai tốn chừng này phúc duyên */
 export const CT_RENAME_COST = 100;
+
+/** Danh hiệu chân thân. 16/11 (Tyler chốt): mọi người đều là Phàm Nhân cho tới khi mở tu luyện chân thân.
+ *  21/11: kênh chat dùng chung hàm này để tên trong chat khớp danh hiệu ở tab Nhân vật. */
+export const ctTitle = (): string => tr('Phàm Nhân', 'Mortal');

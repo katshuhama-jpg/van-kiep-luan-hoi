@@ -20,7 +20,7 @@ import { LpcCropIcon } from './ItemIcon';
 import { BaoVatHinh } from './sonmon/BaoVat';
 import { baoVatMac } from '@/lib/sonmon/api';
 import { bvFxText, bvTen, smGearId, smGearParse, BV_TU_VI, bvDiem } from '@/lib/sonmon/baoVat';
-import { ctLayers } from '@/lib/game/chanThan';
+import { ctLayers, ctTitle } from '@/lib/game/chanThan';
 
 type NvTab = 'ao' | 'ngoai' | CtGearSlot;
 const TABS: { id: NvTab; vi: string; en: string }[] = [
@@ -119,7 +119,7 @@ export function NhanVatStage({ ct, meta, ext, onSlot, active }: { ct: ChanThanLo
     );
   };
   // 16/11 (Tyler chốt): chân thân mọi người hiện là Phàm Nhân. Cách tăng cấp, có đồ, công pháp chân thân làm sau Sơn Môn.
-  const title = tr('Phàm Nhân', 'Mortal');
+  const title = ctTitle();
   return (
     <>
       <div className="nv-stage">

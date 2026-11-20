@@ -8,7 +8,8 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
-import { realmName, PATHS, type Cosmos } from '@/lib/game/data';
+import { PATHS } from '@/lib/game/data';
+import { ctTitle } from '@/lib/game/chanThan';
 import type { PathId } from '@/lib/game/types';
 import { WC_DONG_MS, WC_MAX, WC_MO_MS, WcErr, wcLastSeen, wcList, wcLoi, wcN, wcOff, wcReport, wcSeen, wcSend, type WcLy, type WcTin } from '@/lib/theGioi';
 import { ChatPane, type ChatNut } from './chat/ChatPane';
@@ -198,7 +199,7 @@ function WcPane({ onLink, moi }: { onLink: () => void; moi: number }) {
               <>
                 <span className="sm-tin-ai">
                   <b>{x.ta ? tr('Ta', 'Me') : x.ten}</b>
-                  {typeof x.rn === 'number' && <i>{realmName(x.rn, (x.co ?? null) as Cosmos | null)}</i>}
+                  <i>{ctTitle()}</i>
                   <small>{hhmm(x.luc)}</small>
                 </span>
                 {phu && <span className="wc-tin-phu">{phu}</span>}
