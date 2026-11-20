@@ -147,6 +147,7 @@ export interface Character {
   loreDone?: boolean; // đã gom đủ Thiên thư: kiếp này sẽ gặp lại chính mình
   quyNhat?: boolean; // tài khoản đã từng đạt Vạn Kiếp Quy Nhất: không gặp lại, đeo chuông vàng
   lore2?: number; // số mảnh Quyển II đã mở lúc đầu thai
+  loreIds?: string[]; // Ngày 35: id các mảnh Thiên thư quyển I, II đã mở lúc đầu thai (cốt truyện nối Thiên thư chỉ hiện cho người đã mở)
   tt3?: number; // Ngày 8e: số kết cục mạch chính Thiên thư quyển III đã có lúc đầu thai (không có = quyển III chưa mở)
   tt3Nhanh?: 'go' | 'dap'; // nhánh quyển II đã chọn (gõ hay đập chuông)
   bell?: number; // Kẻ Gõ Chuông: 1 đã đánh bại (cầm dùi chuông), 2 đã chọn gõ hay đập
@@ -191,6 +192,7 @@ export interface Character {
   maTon?: boolean; // ma tôn chuyển thế: tu nhanh hơn
   grace16?: boolean; // được trời thương đến 16 tuổi
   hpWarnAt?: number; // năm gần nhất đã cảnh báo sức khỏe
+  thoWarn?: number; // Ngày 35: mức thọ nguyên đã nhắc sắp cạn (thọ tăng thì nhắc lại khi gần cạn lần nữa)
   ambushSeen?: string[]; // mấy loài quái chặn đường gần nhất, để không lặp lại
   timid?: number; // số lựa chọn an toàn liên tiếp gần đây: hiền quá dễ bị bắt nạt
   kiepBonus?: number; // thưởng/phạt từ mini-game thiên kiếp

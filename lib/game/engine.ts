@@ -73,6 +73,9 @@ export function emptyMeta(): Meta {
   return { phucDuyen: 0, nghiep: 0, lives: 0, talents: [], enemy: null };
 }
 
+/** Ngày 35: còn bao nhiêu năm thọ thì nhắc và tạm dừng (5% thọ, trong khoảng 5-30 năm) */
+export const thoWarnYears = (lifespan: number) => Math.max(5, Math.min(30, Math.round(lifespan * 0.05)));
+
 function lifeMult(c: Character, talents: string[] = []) {
   let m = c.lifeMul ?? 1;
   if (talents.includes('tho')) m *= 1.2;
@@ -226,6 +229,7 @@ export function newCharacter(meta: Meta, gifts: string[] = [], base?: Character)
   c.loreDone = loreDone(meta);
   c.quyNhat = quyNhatDone(meta);
   c.lore2 = lore2Count(meta);
+  c.loreIds = [...(meta.lore ?? [])];
   tt3Born(c, meta);
   c.kiepSo = ksOf(meta);
   c.kiepTich = meta.kiepTich ?? 0;
@@ -897,11 +901,16 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
     if (rnd() < risk) {
       const causes = [
         tr(`Một trận sốt cao cướp đi bạn khi mới ${age} tuổi.`, `A high fever takes you at just ${age} years old.`),
-        tr('Bạn trượt chân ngã xuống giếng sau nhà.', "You slip and fall into the well behind the house."),
         tr(`Dịch tả tràn qua làng. Bạn mất năm ${age} tuổi.`, `Cholera sweeps through the village. You die at age ${age}.`),
-        tr('Bạn bị rắn độc cắn khi đi chăn trâu, không kịp cứu.', "A venomous snake bites you while you're herding buffalo, and there's no saving you."),
-        tr('Bạn đuối nước ở khúc sông đầu làng.', "You drown in the river bend at the edge of the village."),
-        tr('Bạn ngã từ trên cây cao xuống, không bao giờ tỉnh lại.', "You fall from a tall tree and never wake up."),
+        // Ngày 35 soát 20/11: chết yểu theo đúng tuổi (trước có ca 1 tuổi ngã từ cây cao, 2 tuổi tự ra giếng)
+        ...(age >= 4 ? [tr('Bạn trượt chân ngã xuống giếng sau nhà.', "You slip and fall into the well behind the house.")] : []),
+        ...(age >= 6
+          ? [
+              tr('Bạn bị rắn độc cắn khi đi chăn trâu, không kịp cứu.', "A venomous snake bites you while you're herding buffalo, and there's no saving you."),
+              tr('Bạn đuối nước ở khúc sông đầu làng.', "You drown in the river bend at the edge of the village."),
+              tr('Bạn ngã từ trên cây cao xuống, không bao giờ tỉnh lại.', "You fall from a tall tree and never wake up."),
+            ]
+          : []),
         ...(tier.id === 0 ? [tr('Năm mất mùa, bạn chết đói khi chưa kịp lớn.', "In a year of famine, you starve before you can grow up."), tr('Mùa đông rét đậm, bạn không qua khỏi vì không có áo ấm.', "A bitter winter comes, and without warm clothes you don't make it.")] : []),
         ...(c.originId === 'the_gia' ? [tr('Thích khách của chi trưởng đột nhập, bạn chết trong giấc ngủ.', "An assassin sent by the elder branch slips in, and you die in your sleep."), tr('Có kẻ bỏ độc vào bát chè sen của bạn.', "Someone poisons your bowl of lotus-seed soup.")] : []),
         ...(c.race === 'yeu' ? [tr('Thợ săn yêu bắt được bạn, lột da bán ở phường thị.', "A demon hunter catches you, skins you, and sells the hide at the market.")] : []),
@@ -945,6 +954,15 @@ export function yearTick(c: Character, ctx: EffectCtx, opts: TickOpts = {}): Pen
     const pill = (c.pills.hoi_xuan ?? 0) > 0 ? tr('uống Hồi Xuân Đan trong Túi đồ', "drink a Spring Return Pill from your Inventory") : tr('mua Hồi Xuân Đan ở Phường thị', "buy a Spring Return Pill at the Market");
     ctx.log(tr(`⚠ Sức khỏe chỉ còn ${Math.round(c.stats.sucKhoe)}. Thêm một vết thương nữa có thể mất mạng: nên chuyển sang Du ngoạn để nghỉ dưỡng, ${pill}, tránh trừ yêu và bế quan.`, `⚠ Health is down to ${Math.round(c.stats.sucKhoe)}. One more wound could kill you: switch to Wander to rest, ${pill}, and avoid hunting demons and seclusion.`), 'bad');
     ctx.fx('hurt', tr('Sức khỏe nguy kịch', "Health critical"));
+  }
+  // Ngày 35 soát 20/11 (góp ý Group: "lỡ treo xíu bị quá năm chết mất"): thời gian tự trôi khi để máy, trước đây không có gì dừng lại
+  // trước lúc hết thọ (trừ đại hạn Độ Kiếp). Nay thọ còn ít thì nhắc một lần cho mỗi mức thọ, và /choi tạm dừng như cảnh báo sức khỏe.
+  const thoLeft = c.lifespan - c.age;
+  if (age >= 16 && thoLeft > 0 && thoLeft <= thoWarnYears(c.lifespan) && c.thoWarn !== c.lifespan) {
+    c.thoWarn = c.lifespan;
+    const tip = c.cosmos ? tr('đột phá cảnh giới hoặc dùng đồ thêm thọ', 'break through or use something that adds lifespan') : tr('đột phá cảnh giới, uống Diên Thọ Đan (Phường thị) hoặc lo việc hậu sự', 'break through, take a Longevity Pill (Market) or settle your affairs');
+    ctx.log(tr(`⚠ Thọ nguyên chỉ còn khoảng ${Math.max(1, Math.ceil(thoLeft))} năm. Thời gian đã tạm dừng: nên ${tip}.`, `⚠ Only about ${Math.max(1, Math.ceil(thoLeft))} years of lifespan remain. Time is paused: ${tip}.`), 'bad');
+    ctx.fx('hurt', tr('Thọ sắp cạn', 'Lifespan running out'));
   }
   const gf = gearFx(c.equipped);
   if (gf.tamMa) stat(c, 'tamMa', gf.tamMa);
@@ -1457,8 +1475,11 @@ export function closedDoor(c: Character, years: number, ctx: EffectCtx, talents:
   for (let i = 0; i < years; i++) {
     c.age = Math.floor(c.age) + 1;
     done++;
+    const t0 = c.thoWarn;
     pending = yearTick(c, ctx, { closed: true, talents });
     if (c.dead) break;
+    // Ngày 35: thọ sắp cạn thì xuất quan sớm, để còn kịp lo (không bế quan tới chết già)
+    if (c.thoWarn !== t0) break;
     // tẩu hỏa nhập ma khi bế quan, càng lâu càng dễ, bế quan dồn dập càng nguy
     // 4.3.1 (góp ý: bế quan mà chết): tâm ma dưới 40 thì chỉ bị thương, không chết
     if (c.stats.tamMa < 40) {

@@ -5,6 +5,7 @@ import { addCult, addLife, addPill, dao, fatal, giveItem, hurt, luck, money, nha
 import type { Character, Choice, EffectCtx, GameEvent, Grave } from './types';
 import { tr } from '../i18n';
 import { htBind } from './heThong';
+import { ctArc, ctNext, ctSet, hasLore } from './ctArc';
 
 const itemName = (id: string | null) => (id ? (ITEMS.find((i) => i.id === id)?.name ?? id) : null);
 const arc = (c: Character, k: string) => c.arcs?.[k];
@@ -165,7 +166,8 @@ export const EVENTS2: GameEvent[] = [
       },
       {
         label: tr('Ra tay trước', "Strike first"),
-        hint: tr('nguy hiểm', "dangerous"),
+        // Ngày 35 soát 20/11: nói rõ hắn mạnh cỡ nào (trước chỉ ghi "nguy hiểm", người Luyện Khí 1 vẫn lao vào kẻ Kim Đan)
+        hint: Math.max(1, c.past!.realm - 1) > c.realm ? tr(`hắn cỡ ${realmName(Math.max(1, c.past!.realm - 1))}, mạnh hơn bạn: dễ chết`, `he is around ${realmName(Math.max(1, c.past!.realm - 1))}, stronger than you: likely death`) : tr('nguy hiểm', "dangerous"),
         lean: 'ta',
         run: (ch, ctx) => {
           dao(ch, -10);
@@ -1096,6 +1098,568 @@ export const EVENTS2: GameEvent[] = [
           dao(c, 8);
           stat(c, 'tamCanh', 15);
           return tr('Có những bí ẩn để dành mới đẹp.', "Some mysteries are more beautiful kept.");
+        },
+      },
+    ],
+  },
+  // ================= Ngày 35, đêm 20/11/2026: cốt truyện mới ở phàm giới =================
+  // ct_20261120_1 Lò đúc chuông (2 bước). Nối Thiên thư quyển I, mảnh I "Tiếng chuông": chỉ hiện cho người đã mở mảnh ấy.
+  {
+    id: 'ct_20261120_1',
+    minAge: 16,
+    maxAge: 120,
+    once: true,
+    weight: 8,
+    when: (c) => hasLore(c, 'chuong') && !ctArc(c, 'ct20261120_1'),
+    title: tr('Lò đúc chuông', 'The bell foundry'),
+    text: () =>
+      tr(
+        'Lão Đồng, thợ đúc chuông ở trấn Hạ Khê, thuê bạn kéo bễ. Lão bảo năm mươi năm nay, đêm nào trong trấn có người chết thì chuông trong lò tự ngân một tiếng. Đêm đầu tiên lão hỏi: "Ngươi có bao giờ nghe tiếng chuông lúc chết không?"',
+        'Old Dong, the bell-founder of Ha Khe town, hires you to work his bellows. He says that for fifty years, whenever someone in town dies at night, a bell in his workshop rings once on its own. On your first night he asks: "Have you ever heard a bell when you died?"',
+      ),
+    choices: () => [
+      {
+        label: tr('Kể thật: lần nào chết cũng nghe', 'Tell the truth: you hear one every time you die'),
+        hint: tr('tâm cảnh +, ở lại học nghề', 'Mind +, stay as his apprentice'),
+        lean: 'chinh',
+        run: (c) => {
+          stat(c, 'tamCanh', 6);
+          ctSet(c, 'ct20261120_1', 1, 'ke');
+          return tr('Lão nhìn bạn rất lâu rồi gật đầu, không hỏi thêm. Từ hôm đó lão dạy bạn cách nghe tiếng đồng nguội.', 'He looks at you for a long time, then nods and asks nothing more. From that day he teaches you how to listen to cooling bronze.');
+        },
+      },
+      {
+        label: tr('Im lặng kéo bễ, nghe lão kể', 'Keep pumping the bellows and listen'),
+        hint: tr('ngộ tính +, ở lại làm', 'Insight +, stay on'),
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'ngoTinh', 4);
+          ctSet(c, 'ct20261120_1', 1, 'nghe');
+          return tr('Bạn không đáp. Lão cũng không cần câu trả lời, cứ kể về từng quả chuông lão đúc, quả nào đang treo ở đâu.', 'You say nothing. He does not need an answer either, and tells you about every bell he has cast and where each one hangs now.');
+        },
+      },
+      {
+        label: tr('Cười: "Chết rồi thì nghe gì nữa"', 'Laugh: "The dead don\'t hear anything"'),
+        hint: tr('+linh thạch, thôi việc', '+spirit stones, quit the job'),
+        lean: 'trung',
+        run: (c, ctx) => {
+          money(c, 30);
+          ctx.fx('coin', '+30');
+          ctSet(c, 'ct20261120_1', 9);
+          return tr('Lão cũng cười, trả đủ tiền công một tháng rồi thôi. Lúc bạn ra khỏi trấn, trong lò có tiếng ngân rất khẽ.', 'He laughs too, pays you a full month and lets you go. As you leave town, something in the workshop hums very softly.');
+        },
+      },
+      {
+        label: tr('Đòi gấp đôi tiền công', 'Demand double wages'),
+        hint: tr('+linh thạch, nghiêng tà', '+spirit stones, leans Evil'),
+        lean: 'ta',
+        run: (c, ctx) => {
+          money(c, 60);
+          dao(c, -3);
+          ctx.fx('coin', '+60');
+          ctSet(c, 'ct20261120_1', 9);
+          return tr('Lão trả, không mặc cả câu nào. Bạn làm hết mùa rồi đi, không bao giờ biết quả chuông cuối của lão kêu thế nào.', 'He pays without haggling. You work out the season and leave, never learning how his last bell sounded.');
+        },
+      },
+    ],
+  },
+  {
+    id: 'ct_20261120_1b',
+    once: true,
+    weight: 60,
+    when: (c) => ctNext(c, 'ct20261120_1', 1, 3),
+    title: tr('Quả chuông cuối đời', 'The last bell'),
+    text: () =>
+      tr(
+        'Ba năm sau, lão Đồng đúc xong quả chuông cuối cùng, to bằng cái chum. Lão ho ra máu mà vẫn cười: "Chuông này chưa ai gõ. Ta muốn tiếng đầu tiên của nó tiễn ta." Đêm ấy lão nằm cạnh lò, hơi thở mỏng dần.',
+        'Three years later, Old Dong finishes his last bell, as big as a water jar. He coughs blood and still smiles: "No one has struck this bell yet. I want its first sound to see me off." That night he lies by the furnace, his breath growing thin.',
+      ),
+    choices: (c) => [
+      {
+        label: tr('Gõ một tiếng lúc lão nhắm mắt', 'Strike it once as he closes his eyes'),
+        hint: tr('tâm ma -, đạo tâm +', 'Heart Demon -, Dao Heart +'),
+        lean: 'chinh',
+        run: (ch) => {
+          stat(ch, 'tamCanh', 8);
+          stat(ch, 'tamMa', -6);
+          dao(ch, 4);
+          ctSet(ch, 'ct20261120_1', 2);
+          return tr('Tiếng chuông lan ra tới tận bến sông. Lúc dư âm tắt, bạn nghe thêm một tiếng rất xa, như có ai đó đếm theo.', 'The toll spreads all the way to the river landing. As it fades, you hear one more, very far away, as if someone were counting along.');
+        },
+      },
+      {
+        label: tr(`Gõ đủ ${c.lifeNo} tiếng, mỗi kiếp một tiếng`, `Strike it ${c.lifeNo} times, once for each life`),
+        hint: tr('ngộ tính +, tu vi +', 'Insight +, cultivation +'),
+        lean: 'trung',
+        run: (ch, ctx) => {
+          stat(ch, 'ngoTinh', 6);
+          const g = Math.round(addCult(ch, reward(ch, 0.4)));
+          ctx.fx('layer', tr('Đếm chuông', 'Counting tolls'));
+          ctSet(ch, 'ct20261120_1', 2);
+          return tr(`Lão đếm theo bằng mấy ngón tay run run. Tới tiếng cuối, lão thở ra: "Hóa ra có người còn đếm nhiều hơn ta." (+${g} tu vi)`, `He counts along on trembling fingers. At the last toll he breathes out: "So someone has counted even more than I have." (+${g} cultivation)`);
+        },
+      },
+      {
+        label: tr('Không gõ, ngồi nắm tay lão tới sáng', 'Leave the bell, hold his hand till dawn'),
+        hint: tr('tâm cảnh ++', 'Mind ++'),
+        lean: 'chinh',
+        run: (ch) => {
+          stat(ch, 'tamCanh', 10);
+          ctSet(ch, 'ct20261120_1', 2);
+          return tr('Lão đi rất êm, không ai gõ gì cả. Sáng ra, quả chuông chưa ai chạm vào tự ngân một tiếng khẽ.', 'He goes quietly, and no one strikes anything. In the morning, the untouched bell hums once on its own.');
+        },
+      },
+      {
+        label: tr('Bán quả chuông cho chùa trên núi', 'Sell the bell to the mountain temple'),
+        hint: tr('+linh thạch, nghiêng tà', '+spirit stones, leans Evil'),
+        lean: 'ta',
+        run: (ch, ctx) => {
+          const m = 80 + 40 * Math.min(ch.realm, 6);
+          money(ch, m);
+          dao(ch, -4);
+          ctx.fx('coin', `+${m}`);
+          ctSet(ch, 'ct20261120_1', 2);
+          return tr(`Sư trụ trì trả ${m} linh thạch. Lão Đồng không kịp nghe quả chuông cuối đời mình kêu thế nào.`, `The abbot pays ${m} spirit stones. Old Dong never gets to hear how his last bell sounds.`);
+        },
+      },
+    ],
+  },
+
+  // ct_20261120_2 Đan có vân chữ (2 bước). Nối Thiên thư quyển I, mảnh III "Viên đan có vân": chỉ hiện cho người đã mở mảnh ấy.
+  {
+    id: 'ct_20261120_2',
+    minRealm: 3,
+    maxRealm: 7,
+    once: true,
+    weight: 8,
+    when: (c) => hasLore(c, 'kim_dan') && !ctArc(c, 'ct20261120_2'),
+    title: tr('Đan có vân chữ', 'Pills with writing'),
+    text: () =>
+      tr(
+        'Ở phường thị, gã tán tu Lạc Tam rao bán "Vân Văn Đan", mỗi viên ba trăm linh thạch. Gã thề trên vỏ đan có chữ do một vị đại năng để lại, ai đọc được thì tu vi tăng vọt. Bạn nhìn viên đan, và Kim Đan trong người bạn khẽ nóng lên.',
+        'At the market, a rogue cultivator named Lac Tam is selling "Veined Script Pills" at three hundred spirit stones each. He swears the shells bear writing left by a great power, and whoever reads it will soar in cultivation. You look at a pill, and the Golden Core inside you grows faintly warm.',
+      ),
+    choices: (c) => [
+      {
+        label: tr('Nhìn vào trong, so với vân trên Kim Đan của mình', 'Look inward and compare it with the veins on your own core'),
+        hint: tr('ngộ tính +', 'Insight +'),
+        lean: 'trung',
+        run: (ch) => {
+          stat(ch, 'ngoTinh', 4);
+          ctSet(ch, 'ct20261120_2', 1, 'so');
+          return tr('Vân trên đan là vết kim khắc, nét nào cũng giống vân trên Kim Đan của bạn, chỉ khắc vụng hơn. Kẻ khắc thứ này phải từng thấy chữ thật.', 'The veins on the pill are needle scratches, and every stroke matches the veins on your Golden Core, only clumsier. Whoever carved this must have seen the real writing.');
+        },
+      },
+      {
+        label: tr('Vạch mặt gã trước đám đông', 'Expose him in front of the crowd'),
+        hint: tr('đạo tâm +', 'Dao Heart +'),
+        lean: 'chinh',
+        run: (ch) => {
+          dao(ch, 4);
+          stat(ch, 'khiVan', 2);
+          ctSet(ch, 'ct20261120_2', 1, 'vach');
+          return tr('Bạn bóp vỡ một viên, bên trong chỉ là bột gạo. Lạc Tam ôm sạp bỏ chạy, làm rơi lại một tờ giấy vẽ kín vân chữ.', 'You crush one pill and find only rice flour inside. Lac Tam grabs his stall and runs, dropping a sheet of paper covered in veined script.');
+        },
+      },
+      {
+        label: tr('Lặng lẽ mua một viên rồi theo gã về', 'Quietly buy one and follow him home'),
+        hint: c.linhThach < 150 ? tr('cần 150 linh thạch', 'needs 150 spirit stones') : tr('-150 linh thạch (đã trả giá)', '-150 spirit stones (after haggling)'),
+        lean: 'trung',
+        off: c.linhThach < 150,
+        run: (ch) => {
+          money(ch, -150);
+          ctSet(ch, 'ct20261120_2', 1, 'theo');
+          return tr('Bạn trả giá còn một nửa, cầm viên đan rồi đi cách gã ba con phố. Gã rẽ vào một căn nhà dột ở cuối ngõ.', 'You haggle him down to half, take the pill and follow three streets behind. He turns into a leaky house at the end of an alley.');
+        },
+      },
+      {
+        label: tr('Đòi chia lời để giữ im lặng', 'Demand a cut to keep quiet'),
+        hint: tr('+linh thạch, nghiêng tà', '+spirit stones, leans Evil'),
+        lean: 'ta',
+        run: (ch, ctx) => {
+          money(ch, 80);
+          dao(ch, -6);
+          ctx.fx('coin', '+80');
+          ctSet(ch, 'ct20261120_2', 9);
+          return tr('Gã nghiến răng đưa bạn tám mươi linh thạch. Bạn không bao giờ hỏi gã lấy mẫu vân ở đâu.', 'He grinds his teeth and hands you eighty spirit stones. You never ask where he got the pattern.');
+        },
+      },
+    ],
+  },
+  {
+    id: 'ct_20261120_2b',
+    once: true,
+    weight: 60,
+    when: (c) => ctNext(c, 'ct20261120_2', 1, 2),
+    title: tr('Đứa em vẽ vân', 'The brother who draws'),
+    text: () =>
+      tr(
+        'Bạn tìm tới nhà Lạc Tam. Người vẽ mẫu vân là em trai gã, một thằng bé ốm yếu không biết chữ. Nó bảo đêm nào cũng mơ thấy dòng vân ấy nên vẽ lại, rồi hỏi bạn: "Chú đọc được không? Nó viết gì vậy?"',
+        'You track down Lac Tam\'s home. The one drawing the patterns is his younger brother, a sickly boy who cannot read. He says he dreams of that line every night and copies it, then asks you: "Can you read it? What does it say?"',
+      ),
+    choices: (c) => [
+      {
+        label: tr('Đọc cho nó nghe', 'Read it to him'),
+        hint: tr('tâm cảnh +', 'Mind +'),
+        lean: 'chinh',
+        run: (ch) => {
+          stat(ch, 'tamCanh', 6);
+          ctSet(ch, 'ct20261120_2', 2);
+          return tr('"Ta đã chia mình làm vạn mảnh." Thằng bé im một lúc rồi hỏi nhỏ: "Vậy con có phải một mảnh không?" Bạn không biết trả lời sao.', '"I have split myself into ten thousand pieces." The boy is quiet for a while, then asks softly: "So am I one of the pieces?" You don\'t know how to answer.');
+        },
+      },
+      {
+        label: tr('Nhường viên Trúc Cơ Đan của mình cho nó chữa bệnh', 'Give him your Foundation Pill to heal him'),
+        hint: (c.pills.truc_co ?? 0) > 0 ? tr('mất 1 Trúc Cơ Đan, khí vận +', 'lose 1 Foundation Pill, Luck +') : tr('không có đan thì bù 100 linh thạch, khí vận +', 'no pill: pay 100 spirit stones instead, Luck +'),
+        lean: 'chinh',
+        run: (ch) => {
+          if ((ch.pills.truc_co ?? 0) > 0) ch.pills.truc_co -= 1;
+          else money(ch, -100);
+          dao(ch, 8);
+          stat(ch, 'khiVan', 6);
+          ctSet(ch, 'ct20261120_2', 2);
+          return tr('Thằng bé hồng hào trở lại sau một mùa. Lạc Tam dẹp sạp, đi làm thuê ở bến. Tết nào hai anh em cũng gửi cho bạn một gói chè.', 'The boy\'s color comes back within a season. Lac Tam packs up his stall and finds work at the docks. Every New Year, the two brothers send you a packet of tea.');
+        },
+      },
+      {
+        label: tr('Dặn nó đừng vẽ dòng ấy cho ai nữa', 'Tell him never to draw that line for anyone again'),
+        hint: tr('tâm ma -', 'Heart Demon -'),
+        lean: 'trung',
+        run: (ch) => {
+          stat(ch, 'tamMa', -6);
+          ctSet(ch, 'ct20261120_2', 2);
+          return tr('Nó gật đầu, xé hết bản vẽ bỏ vào bếp. Lúc giấy cháy, Kim Đan trong người bạn thôi nóng.', 'He nods and feeds every drawing to the stove. As the paper burns, the Golden Core inside you cools.');
+        },
+      },
+      {
+        label: tr('Mua hết bản vẽ đem bán lại', 'Buy all the drawings to resell'),
+        hint: tr('+linh thạch, nghiêng tà', '+spirit stones, leans Evil'),
+        lean: 'ta',
+        run: (ch, ctx) => {
+          money(ch, 150);
+          dao(ch, -8);
+          ctx.fx('coin', '+150');
+          ctSet(ch, 'ct20261120_2', 2);
+          return tr('Bạn bán cho mấy tông môn hiếu kỳ, lời một trăm năm mươi linh thạch. Không ai trong số họ đọc được chữ.', 'You sell them to a few curious sects for a hundred and fifty spirit stones profit. None of them can read the writing.');
+        },
+      },
+    ],
+  },
+  // ct_20261120_7 Hồ ly gửi con (3 bước). Ưu tiên kiếp 2-10.
+  {
+    id: 'ct_20261120_7',
+    minAge: 10,
+    maxAge: 80,
+    maxRealm: 4,
+    once: true,
+    weight: 8,
+    when: (c) => c.lifeNo >= 2 && c.lifeNo <= 10 && !ctArc(c, 'ct20261120_7'),
+    title: tr('Hồ ly gửi con', 'The fox\'s cub'),
+    text: () =>
+      tr(
+        'Đêm mưa, một con hồ ly cái máu me đầy mình cào cửa nhà bạn. Nó nhả xuống một con hồ ly con còn nhắm mắt, nói tiếng người đứt quãng: "Thợ săn đang tìm mẹ con ta. Giữ nó ba năm, ta sẽ quay lại."',
+        'On a rainy night, a vixen covered in blood scratches at your door. She sets down a cub whose eyes are still closed and speaks in broken human words: "Hunters are after us. Keep him three years. I will come back."',
+      ),
+    choices: () => [
+      {
+        label: tr('Nhận giữ, giấu trong buồng', 'Take him in and hide him in your room'),
+        hint: tr('đạo tâm +, bắt đầu một chuyện dài', 'Dao Heart +, the start of a long story'),
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 3);
+          ctSet(c, 'ct20261120_7', 1, 'giu');
+          return tr('Hồ ly mẹ liếm con một lần rồi lao vào màn mưa. Đêm đó bạn ngủ ngồi, tay đặt lên cái giỏ.', 'The vixen licks her cub once, then dashes into the rain. That night you sleep sitting up, one hand on the basket.');
+        },
+      },
+      {
+        label: tr('Giao kèo: giữ được, nhưng ngươi nợ ta một lời hứa', 'Strike a deal: I\'ll keep him, but you owe me a promise'),
+        hint: tr('giao kèo với yêu', 'a pact with a yao'),
+        lean: 'trung',
+        run: (c) => {
+          ctSet(c, 'ct20261120_7', 1, 'hua');
+          return tr('Hồ ly mẹ nhìn bạn, rồi gật đầu: "Yêu không thất hứa." Nó đi rồi, bạn mới thấy tay mình run.', 'The vixen looks at you, then nods: "Yao do not break promises." Only after she is gone do you notice your hands shaking.');
+        },
+      },
+      {
+        label: tr('Ôm hồ ly con đi nộp cho thợ săn', 'Carry the cub to the hunters'),
+        hint: tr('+linh thạch, nghiêng tà', '+spirit stones, leans Evil'),
+        lean: 'ta',
+        run: (c, ctx) => {
+          money(c, 50);
+          dao(c, -8);
+          ctx.fx('coin', '+50');
+          ctSet(c, 'ct20261120_7', 9);
+          return tr('Thợ săn trả năm mươi linh thạch. Suốt mùa mưa năm ấy, đêm nào cũng có tiếng cào rất khẽ ngoài cửa.', 'The hunters pay fifty spirit stones. All that rainy season, every night, there is a very soft scratching at your door.');
+        },
+      },
+      {
+        label: tr('Đóng cửa, không dính vào', 'Shut the door and stay out of it'),
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'tamMa', 2);
+          ctSet(c, 'ct20261120_7', 9);
+          return tr('Bạn cài then cửa. Sáng ra trước hiên chỉ còn vệt máu bị mưa rửa nhạt.', 'You bolt the door. In the morning only a rain-washed streak of blood is left on the porch.');
+        },
+      },
+    ],
+  },
+  {
+    id: 'ct_20261120_7b',
+    once: true,
+    weight: 60,
+    when: (c) => ctNext(c, 'ct20261120_7', 1, 1),
+    title: tr('Chó săn trước cửa buồng', 'A hound at your door'),
+    text: () =>
+      tr(
+        'Thợ săn họ Triệu dắt chó đi lục từng nhà trong làng. Con chó dừng ngay trước cửa buồng bạn, sủa không ngớt. Trong buồng, hồ ly con im thin thít.',
+        'The hunter Trieu leads his hound from house to house through the village. The dog stops right at your door and will not stop barking. Inside, the cub is dead silent.',
+      ),
+    choices: (c) => [
+      {
+        label: tr('Giấu nó dưới chum gạo, mời thợ săn vào khám', 'Hide him under the rice jar and invite the hunter in'),
+        hint: tr('may rủi, lộ thì mất tiền', 'chancy; if found, it costs you'),
+        lean: 'trung',
+        run: (ch, ctx) => {
+          ctSet(ch, 'ct20261120_7', 2);
+          if (ctx.rnd() < luck(ch, 0.65)) {
+            stat(ch, 'tamCanh', 4);
+            return tr('Thợ săn lật tung buồng, gõ cả vào chum gạo, rồi chửi con chó ngu. Hồ ly con không động đậy suốt một canh giờ.', 'The hunter turns the room upside down, even raps on the rice jar, then curses his dog for a fool. The cub does not stir for a full hour.');
+          }
+          money(ch, -60);
+          return tr('Con chó húc đổ chum gạo. Bạn phải dúi sáu mươi linh thạch vào tay thợ săn, hắn mới giả như không thấy gì.', 'The hound knocks over the rice jar. You have to press sixty spirit stones into the hunter\'s hand before he pretends he saw nothing.');
+        },
+      },
+      {
+        label: tr('Đứng chắn cửa, im lặng nhìn thẳng mặt hắn', 'Block the door and stare him down in silence'),
+        hint: c.realm >= 1 ? tr('linh áp người tu đạo', 'a cultivator\'s presence') : tr('phàm nhân: có thể bị xô ngã', 'mortal: you may get shoved'),
+        lean: 'chinh',
+        run: (ch, ctx) => {
+          ctSet(ch, 'ct20261120_7', 2);
+          if (ch.realm >= 1) return tr('Linh áp của người tu đạo đè xuống, con chó cụp đuôi trước. Thợ săn lùi một bước, rồi kéo chó đi.', 'A cultivator\'s pressure settles over them and the hound tucks its tail first. The hunter steps back, then drags the dog away.');
+          return tr('Thợ săn xô bạn ngã vào khung cửa, nhưng thấy cả xóm kéo ra xem thì đành bỏ đi.', 'The hunter shoves you into the doorframe, but with the whole street watching he gives up and leaves.') + hurt(ch, 10, ctx);
+        },
+      },
+      {
+        label: tr('Dúi tiền cho hắn sang nhà khác', 'Slip him money to try elsewhere'),
+        hint: c.linhThach < 40 ? tr('cần 40 linh thạch', 'needs 40 spirit stones') : tr('-40 linh thạch', '-40 spirit stones'),
+        lean: 'trung',
+        off: c.linhThach < 40,
+        run: (ch) => {
+          money(ch, -40);
+          ctSet(ch, 'ct20261120_7', 2);
+          return tr('Thợ săn đút tiền vào áo, huýt chó sang nhà bên. Hắn đi rồi, bạn mới dám thở.', 'The hunter tucks the money away and whistles his dog next door. Only after he is gone do you dare breathe.');
+        },
+      },
+      {
+        label: tr('Thôi, giao nó ra', 'Give the cub up'),
+        hint: tr('+linh thạch, nghiêng tà', '+spirit stones, leans Evil'),
+        lean: 'ta',
+        run: (ch, ctx) => {
+          money(ch, 50);
+          dao(ch, -8);
+          ctx.fx('coin', '+50');
+          ctSet(ch, 'ct20261120_7', 9);
+          return tr('Bạn đưa cái giỏ ra. Hồ ly con mở mắt lần đầu tiên, đúng lúc nhìn thấy bạn.', 'You hand over the basket. The cub opens its eyes for the first time, just in time to see you.');
+        },
+      },
+    ],
+  },
+  {
+    id: 'ct_20261120_7c',
+    once: true,
+    weight: 60,
+    when: (c) => ctNext(c, 'ct20261120_7', 2, 2),
+    title: tr('Ba năm đúng hẹn', 'Three years, as promised'),
+    text: (c) =>
+      tr(
+        `Ba năm đúng hẹn, hồ ly mẹ quay lại, vết thương đã thành sẹo. Hồ ly con giờ chạy theo bạn khắp nhà, nghe tiếng mẹ thì đứng sững.${ctArc(c, 'ct20261120_7')?.v === 'hua' ? ' Hồ ly mẹ cúi đầu: "Ta nợ ngươi một lời hứa. Ngươi muốn gì?"' : ''}`,
+        `Three years to the day, the vixen returns, her wounds now scars. The cub follows you all over the house these days, and freezes at the sound of his mother.${ctArc(c, 'ct20261120_7')?.v === 'hua' ? ' The vixen bows her head: "I owe you a promise. What do you want?"' : ''}`,
+      ),
+    choices: (c) => [
+      {
+        label: tr('Trả con cho mẹ, không đòi gì', 'Return the cub and ask for nothing'),
+        hint: tr('đạo tâm +, khí vận ++', 'Dao Heart +, Luck ++'),
+        lean: 'chinh',
+        run: (ch) => {
+          dao(ch, 6);
+          stat(ch, 'khiVan', 8);
+          ctSet(ch, 'ct20261120_7', 3);
+          return tr('Hai mẹ con đi tới bìa rừng thì hồ ly con quay lại nhìn bạn ba lần. Từ đó, năm nào trước cửa cũng có một bó nấm rừng.', 'At the edge of the forest the cub turns back to look at you three times. Every year after that, a bundle of wild mushrooms appears at your door.');
+        },
+      },
+      ctArc(c, 'ct20261120_7')?.v === 'hua'
+        ? {
+            label: tr('Đòi lời hứa: truyền cho ta một hơi yêu khí', 'Claim the promise: breathe a little yao qi into me'),
+            hint: tr('tu vi +', 'cultivation +'),
+            lean: 'trung' as const,
+            run: (ch: Character, ctx: EffectCtx) => {
+              const g = Math.round(addCult(ch, reward(ch, 0.8)));
+              ctx.fx('layer', tr('Yêu khí', 'Yao qi'));
+              ctSet(ch, 'ct20261120_7', 3);
+              return tr(`Hồ ly mẹ thổi vào trán bạn một hơi ấm. Kinh mạch như có suối chảy qua (+${g} tu vi). "Hết nợ," nó nói, và đi.`, `The vixen breathes warmth onto your brow. Your meridians feel like a stream runs through them (+${g} cultivation). "Debt paid," she says, and leaves.`);
+            },
+          }
+        : {
+            label: tr('Xin nó dạy một câu tiếng yêu', 'Ask her to teach you one word of yao speech'),
+            hint: tr('ngộ tính +', 'Insight +'),
+            lean: 'trung' as const,
+            run: (ch: Character) => {
+              stat(ch, 'ngoTinh', 6);
+              ctSet(ch, 'ct20261120_7', 3);
+              return tr('Nó dạy bạn câu "cảm ơn" của loài hồ. Nghe như tiếng gió lùa qua khe cửa.', 'She teaches you the fox word for "thank you". It sounds like wind slipping through a crack in the door.');
+            },
+          },
+      {
+        label: tr('Khuyên hai mẹ con đi thật xa khỏi vùng này', 'Urge them both to go far from these parts'),
+        hint: tr('tâm cảnh +, khí vận +', 'Mind +, Luck +'),
+        lean: 'chinh',
+        run: (ch) => {
+          stat(ch, 'tamCanh', 5);
+          stat(ch, 'khiVan', 3);
+          ctSet(ch, 'ct20261120_7', 3);
+          return tr('Hồ ly mẹ nghe lời. Mùa sau thợ săn họ Triệu lùng khắp núi cũng không thấy một sợi lông hồ nào.', 'The vixen listens. Next season the hunter Trieu combs the whole mountain and finds not a single fox hair.');
+        },
+      },
+      {
+        label: tr('Xin giữ hồ ly con ở lại', 'Ask to keep the cub'),
+        hint: tr('tâm cảnh -', 'Mind -'),
+        lean: 'trung',
+        run: (ch) => {
+          stat(ch, 'tamCanh', -3);
+          ctSet(ch, 'ct20261120_7', 3);
+          return tr('Hồ ly mẹ không giận, chỉ để hồ ly con tự chọn. Nó đứng giữa hai bên rất lâu, rồi chạy theo mẹ.', 'The vixen is not angry; she lets the cub choose. He stands between you for a long time, then runs after his mother.');
+        },
+      },
+    ],
+  },
+
+  // ct_20261120_10 Huynh đệ kết nghĩa sa ngã (2 bước, một nhánh chết ở bước 2: chỉ khi đi một mình đòi nợ máu, sau khi hắn đã giết người và hẹn "một mình thôi").
+  {
+    id: 'ct_20261120_10',
+    minAge: 18,
+    maxAge: 150,
+    minRealm: 1,
+    maxRealm: 5,
+    once: true,
+    weight: 6,
+    when: (c) => !ctArc(c, 'ct20261120_10'),
+    title: tr('Huynh đệ về làng', 'Your sworn brother comes home'),
+    text: () =>
+      tr(
+        'Lục Phong, người cùng bạn kết nghĩa từ năm mười tuổi, về làng với đôi mắt đỏ và một cái túi bốc mùi tanh. Hắn cười: "Ta tìm được đường tắt. Ma công này luyện một năm bằng người khác mười năm. Đệ có muốn không?"',
+        'Luc Phong, your sworn brother since you were ten, comes back to the village with red eyes and a bag that reeks of blood. He grins: "I found a shortcut. One year of this demonic art is worth ten of anyone else\'s. Want it?"',
+      ),
+    choices: () => [
+      {
+        label: tr('Khuyên hắn bỏ ma công', 'Urge him to give up the art'),
+        hint: tr('đạo tâm +', 'Dao Heart +'),
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 4);
+          ctSet(c, 'ct20261120_10', 1, 'khuyen');
+          return tr('Hắn nghe hết, gật đầu, rồi vẫn đi. Trước khi đi hắn để lại bình rượu hai người chôn dưới gốc đa năm mười tuổi.', 'He hears you out, nods, and leaves anyway. Before going he leaves behind the jar of wine you two buried under the banyan when you were ten.');
+        },
+      },
+      {
+        label: tr('Học thử một chiêu', 'Try one move'),
+        hint: tr('tu vi +, tâm ma +, nghiêng tà', 'cultivation +, Heart Demon +, leans Evil'),
+        lean: 'ta',
+        run: (c, ctx) => {
+          const g = Math.round(addCult(c, reward(c, 0.6)));
+          dao(c, -8);
+          stat(c, 'tamMa', 6);
+          ctx.fx('evil', tr('Ma công', 'Demonic art'));
+          ctSet(c, 'ct20261120_10', 1, 'hoc');
+          return tr(`Chân khí chạy nhanh như lửa bén rơm (+${g} tu vi). Đêm đó bạn mơ thấy một đứa trẻ khóc mà không biết vì sao.`, `Your qi races like fire through straw (+${g} cultivation). That night you dream of a child crying and don't know why.`);
+        },
+      },
+      {
+        label: tr('Im lặng uống rượu với hắn, không hỏi gì', 'Drink with him in silence and ask nothing'),
+        hint: tr('tâm cảnh +', 'Mind +'),
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'tamCanh', 3);
+          ctSet(c, 'ct20261120_10', 1, 'im');
+          return tr('Hai người uống tới khuya, nói chuyện bắt cá, chăn trâu. Lúc say, hắn khóc một lần rồi thôi.', 'You drink until late, talking about fishing and herding buffalo. Once drunk, he cries one time, then stops.');
+        },
+      },
+      {
+        label: tr('Báo cho tông môn chính phái gần nhất', 'Report him to the nearest righteous sect'),
+        hint: tr('đạo tâm ++', 'Dao Heart ++'),
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 6);
+          ctSet(c, 'ct20261120_10', 1, 'bao');
+          return tr('Tông môn cử người đi bắt, nhưng hắn đã trốn trước một đêm. Trên tường nhà bạn có một vết cào sâu.', 'The sect sends people to arrest him, but he slipped away the night before. On your wall there is one deep claw mark.');
+        },
+      },
+    ],
+  },
+  {
+    id: 'ct_20261120_10b',
+    once: true,
+    weight: 60,
+    when: (c) => ctNext(c, 'ct20261120_10', 1, 4) && !c.cosmos,
+    title: tr('Hẹn ở miếu hoang', 'A meeting at the ruined shrine'),
+    text: (c) =>
+      tr(
+        `Bốn năm sau, làng bên mất ba đứa trẻ. Ai cũng biết là Lục Phong, giờ ma công của hắn đã thành. ${ctArc(c, 'ct20261120_10')?.v === 'bao' ? 'Hắn nhắn bạn: "Đệ bán ta một lần rồi. Tới miếu hoang, một mình thôi."' : 'Hắn nhắn bạn tới miếu hoang đầu núi: "Một mình thôi."'}`,
+        `Four years later, three children vanish from the next village. Everyone knows it was Luc Phong, whose demonic art is now complete. ${ctArc(c, 'ct20261120_10')?.v === 'bao' ? 'He sends word: "You sold me out once. Come to the ruined shrine. Alone."' : 'He sends word to meet at the ruined shrine on the hill: "Alone."'}`,
+      ),
+    choices: (c) => [
+      {
+        label: tr('Đi một mình, mang theo bình rượu cũ', 'Go alone and bring the old wine'),
+        hint: tr('may rủi: khuyên được hay không', 'chancy: can you reach him?'),
+        lean: 'chinh',
+        run: (ch, ctx) => {
+          ctSet(ch, 'ct20261120_10', 2, 'ruou');
+          const v = ctArc(c, 'ct20261120_10')?.v;
+          if (v !== 'bao' && ctx.rnd() < luck(ch, 0.55)) {
+            dao(ch, 8);
+            stat(ch, 'tamCanh', 6);
+            return tr('Hắn uống một ngụm, rồi tự phế ma công trước mặt bạn. Ba đứa trẻ được thả về lúc trời sáng, còn hắn đi tu ở một ngôi chùa không tên.', 'He takes one sip, then cripples his own demonic art in front of you. The three children are sent home at dawn, and he goes off to a nameless temple.');
+          }
+          stat(ch, 'tamMa', 5);
+          return tr('Hắn đập vỡ bình rượu, bỏ đi vào màn đêm. Sáng ra người ta tìm thấy ba đứa trẻ ngủ trong miếu, còn hắn thì biệt tích.', 'He smashes the jar and walks off into the night. At dawn the three children are found asleep in the shrine, and he is gone without a trace.');
+        },
+      },
+      {
+        label: tr('Dẫn người chính phái theo vây miếu', 'Bring righteous cultivators to surround the shrine'),
+        hint: tr('+linh thạch, tâm ma +', '+spirit stones, Heart Demon +'),
+        lean: 'trung',
+        run: (ch, ctx) => {
+          money(ch, 100);
+          stat(ch, 'tamMa', 4);
+          ctx.fx('coin', '+100');
+          ctSet(ch, 'ct20261120_10', 2, 'vay');
+          return tr('Lục Phong bị bắt sống. Lúc bị giải đi, hắn chỉ nhìn bạn, không chửi câu nào. Ba đứa trẻ về nhà an toàn.', 'Luc Phong is taken alive. As they lead him away he only looks at you, without a single curse. The three children go home safe.');
+        },
+      },
+      {
+        label: tr('Đi một mình, rút kiếm đòi nợ cho ba đứa trẻ', 'Go alone and draw your sword for the children'),
+        hint: tr('ma công đã thành, có thể chết', 'his art is complete, you may die'),
+        lean: 'chinh',
+        run: (ch, ctx) => {
+          ctSet(ch, 'ct20261120_10', 2, 'danh');
+          if (ctx.rnd() < luck(ch, 0.5 + Math.min(0.2, ch.realm * 0.04))) {
+            dao(ch, 6);
+            const g = Math.round(addCult(ch, reward(ch, 0.8)));
+            ctx.fx('breakthrough', tr('Trảm ma', 'Demon slain'));
+            return tr(`Ba trăm chiêu, kiếm bạn xuyên qua ngực hắn. Hắn cười: "Đệ lớn rồi." Bạn chôn hắn dưới gốc đa, cạnh chỗ chôn bình rượu năm xưa (+${g} tu vi).`, `Three hundred exchanges, and your sword runs him through. He smiles: "You've grown up." You bury him under the banyan, beside where the wine jar was buried long ago (+${g} cultivation).`);
+          }
+          const f = fatal(ch, ctx, 0.4, tr('Bạn đi một mình tới miếu hoang đòi nợ cho ba đứa trẻ. Ma công của Lục Phong đã thành, người huynh đệ kết nghĩa bẻ gãy kiếm và tim bạn cùng một lúc.', 'You went alone to the ruined shrine to settle the children\'s debt. Luc Phong\'s demonic art was complete, and your sworn brother broke your sword and your heart in the same moment.'));
+          if (ch.dead) return tr('Kiếm vừa chạm ma khí đã gãy làm đôi...', 'Your sword snaps the moment it meets his demonic qi...') + (f ?? '');
+          return tr('Bạn thua, gãy kiếm, nhưng hắn không giết. Hắn để ba đứa trẻ lại bên bạn rồi bỏ đi.', 'You lose and your sword breaks, but he does not kill you. He leaves the three children beside you and walks away.') + (f ?? '') + hurt(ch, 25, ctx);
+        },
+      },
+      {
+        label: tr('Không đến, cắt đứt nghĩa huynh đệ', 'Stay home and cut the bond'),
+        hint: tr('tâm ma +', 'Heart Demon +'),
+        lean: 'trung',
+        run: (ch) => {
+          stat(ch, 'tamMa', 3);
+          ctSet(ch, 'ct20261120_10', 9);
+          return tr('Bạn đốt tờ giấy kết nghĩa. Ba ngày sau, ba đứa trẻ tự tìm về làng, không nhớ gì cả.', 'You burn the brotherhood pact. Three days later the three children find their own way home, remembering nothing.');
         },
       },
     ],

@@ -1152,14 +1152,15 @@ export default function PlayPage() {
           for (let y = before + 1; y <= after; y++) {
             c.age = y;
             const w0 = c.hpWarnAt;
+            const t0 = c.thoWarn;
             const p = yearTick(c, ctx, { talents: talentsRef.current });
             if (p || c.dead) {
               pendingRef.current = p;
               stopped = true;
               break;
             }
-            // vừa cảnh báo sức khỏe nguy kịch: tạm dừng để người chơi kịp xử lý
-            if (c.hpWarnAt !== w0) {
+            // vừa cảnh báo sức khỏe nguy kịch hay thọ sắp cạn (Ngày 35: để máy treo không tự trôi tới chết già): tạm dừng để người chơi kịp xử lý
+            if (c.hpWarnAt !== w0 || c.thoWarn !== t0) {
               setRunning(false);
               stopped = true;
               break;
@@ -1461,15 +1462,22 @@ export default function PlayPage() {
   const skipAhead = () =>
     act((c, out) => {
       const ctx = makeCtx(c, out);
+      let warned = false;
       for (let i = 0; i < 40 && !c.dead; i++) {
         c.age = Math.floor(c.age) + 1;
+        const t0 = c.thoWarn;
         const p = yearTick(c, ctx, { talents: talentsRef.current });
         if (p) {
           pendingRef.current = p;
           break;
         }
+        // Ngày 35: thọ sắp cạn thì dừng tua, để thời gian đứng yên
+        if (c.thoWarn !== t0) {
+          warned = true;
+          break;
+        }
       }
-      setRunning(true);
+      setRunning(!warned);
     });
 
   const pickFocus = (f: Focus) => {
@@ -1535,8 +1543,11 @@ export default function PlayPage() {
   const beQuan = (years: number) => {
     setSheet(null);
     act((c, out) => {
+      const t0 = c.thoWarn;
       const { pending } = closedDoor(c, years, makeCtx(c, out), talentsRef.current);
       pendingRef.current = pending;
+      // Ngày 35: xuất quan sớm vì thọ sắp cạn thì thời gian đứng yên
+      if (c.thoWarn !== t0) setRunning(false);
     });
   };
 
