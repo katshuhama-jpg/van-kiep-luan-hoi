@@ -62,3 +62,12 @@ export const TT3_ON = process.env.NEXT_PUBLIC_TT3 !== '0';
  * TẮT mặc định tới Ngày 24: khi tắt, client không gọi ct_tv_get / ct_tv_life / ct_tv_dot_pha. Bật thử: `NEXT_PUBLIC_CT_TU_VI=1`.
  */
 export const CT_TU_VI_ON = process.env.NEXT_PUBLIC_CT_TU_VI === '1';
+
+/**
+ * WC_ON (Ngày 38, lên 21/11): kênh chat Thế giới - nút "Thế giới" ở màn chơi chính, tấm trượt dùng chung khung với Truyền âm.
+ * Máy chủ: supabase/the_gioi_chat_2026_11_21.sql (thử: supabase/the_gioi_chat_thu_2026_11_21.sql).
+ * ĐANG TẮT (20/11 đêm): SQL chưa áp lên Supabase (lệnh áp chờ Tyler duyệt), 52 ca thử SQL mới chạy sạch trên Postgres 16 cục bộ.
+ * Bật: áp the_gioi_chat_2026_11_21.sql, chạy file thử thấy 52/52 OK, rồi đổi dòng dưới thành `process.env.NEXT_PUBLIC_WC !== '0'`
+ * (hoặc đặt `NEXT_PUBLIC_WC=1` rồi build lại). Tắt gấp sau khi bật: `NEXT_PUBLIC_WC=0`. Lỡ bật khi máy chủ chưa có hàm thì nút tự ẩn.
+ */
+export const WC_ON = process.env.NEXT_PUBLIC_WC === '1';

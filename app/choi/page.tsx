@@ -19,7 +19,9 @@ import { HG_GATE_ID, HG_TURNS, HG_VAN_THIEN_ID, VT_TOTAL, finishHgFight, vanThie
 import { hgFoe } from '@/lib/game/hongHoangFight';
 import { ENDINGS, alsoEndings, endingOf } from '@/lib/game/endings';
 import { buyCharm, buyTinh, forge, sell, smelt } from '@/lib/game/forge';
-import { CHAN_THAN_ON, KIEP1_CN_GON } from '@/lib/flags';
+import { CHAN_THAN_ON, KIEP1_CN_GON, WC_ON } from '@/lib/flags';
+import { WcIcon, WcSheet, useWcMoi } from '@/components/WcSheet';
+import { wcOff } from '@/lib/theGioi';
 import { CtFlow } from '@/components/ChanThan';
 import { khaiAfterLife, khaiCheck } from '@/lib/game/khaiMach';
 import { HuyetChip, TamTaiLine, TamTaiSheet, ThucTinh } from '@/components/TamTai';
@@ -78,7 +80,7 @@ import { wearSet } from '@/lib/game/gearSets';
 const SPEEDS = [1, 2, 4, 8, 16];
 const BEAST_TURNS = 6; // 4.2.0: trận thu phục linh thú tối đa 6 hiệp
 /** màu chưởng lực theo con đường tu luyện */
-type SheetName = null | 'shop' | 'bag' | 'bequan' | 'menu' | 'hunt' | 'info' | 'today' | 'mail' | 'kho' | 'thu' | 'congphap';
+type SheetName = null | 'shop' | 'bag' | 'bequan' | 'menu' | 'hunt' | 'info' | 'today' | 'mail' | 'kho' | 'thu' | 'congphap' | 'wc';
 
 type Battle = BattleView & { t: number; rest: number; ps: Fighter; ms: Fighter; fsP?: FightSide; fsM?: FightSide; loP?: Loadout; loM?: Loadout };
 
@@ -200,6 +202,8 @@ export default function PlayPage() {
   const duelOpen = useRef(false);
   const [mail, setMail] = useState<Mail[] | null>(null); // hộp thư giang hồ
   const [unread, setUnread] = useState(0);
+  // Ngày 38: kênh Thế giới, chấm đỏ khi có tin mới (đếm 90 giây một lần khi tấm đóng, tab ẩn thì dừng)
+  const [wcMoi, wcXoa] = useWcMoi(WC_ON && !!user, sheet === 'wc');
   const [titles, setTitles] = useState<Record<string, string[]>>({});
   const [questNews, setQuestNews] = useState<string[]>([]); // nhiệm vụ vừa xong ở đời trước
   const [achNews, setAchNews] = useState<string[]>([]); // thành tựu vừa đạt
@@ -2265,6 +2269,17 @@ export default function PlayPage() {
                 ✉{unread > 0 && <span className="dot">{unread}</span>}
               </button>
             )}
+            {WC_ON && user && !wcOff() && (
+              <button
+                className="icon-btn wc-btn"
+                onClick={() => setSheet('wc')}
+                aria-label={tr(`Kênh Thế giới${wcMoi ? `, ${wcMoi} tin mới` : ''}`, `World chat${wcMoi ? `, ${wcMoi} new` : ''}`)}
+              >
+                <WcIcon />
+                {/* đang trong trận hoặc đang đọc sự kiện thì chấm đứng yên, không nhấp nháy */}
+                {wcMoi > 0 && <span className={`dot${pending || duelRef.current || ambushRef.current ? '' : ' nhay'}`} aria-hidden="true" />}
+              </button>
+            )}
             <MusicToggle battle={!!duelRef.current || !!ambushRef.current || (c.focus === 'tru_yeu' && c.age >= 10 && !!c.huntTarget && !c.dead)} />
             <button className="icon-btn menu-btn" onClick={() => setSheet('menu')} aria-label={tr(`Mở menu${newBook ? tr(', có mục mới trong Sổ Sinh Tử hoặc Bảo khố', ", new entries in the Book of Life and Death or Treasury") : ''}`, `Open menu${newBook ? tr(', có mục mới trong Sổ Sinh Tử hoặc Bảo khố', ", new entries in the Book of Life and Death or Treasury") : ''}`)}>
               ≡{newBook && <span className="dot" aria-hidden="true" />}
@@ -2467,6 +2482,17 @@ export default function PlayPage() {
       )}
       {sheet === 'today' && <HookSheet meta={meta} onClose={() => setSheet(null)} />}
       {sheet === 'mail' && mail && giangHo() && <GiangHoSheet mail={mail} api={giangHo()!} onClose={() => setSheet(null)} />}
+      {sheet === 'wc' && (
+        <WcSheet
+          moi={wcMoi}
+          onClose={() => (setSheet(null), wcXoa())}
+          onLink={() => {
+            setSheet(null);
+            wcXoa();
+            setProtectOpen(true);
+          }}
+        />
+      )}
         {ciOpen && meta && <CheckinPop meta={meta} realm={charRef.current && !charRef.current.dead ? charRef.current.realm : 0} got={ciGot} onClaim={checkin} onClose={() => setCiOpen(false)} />}
       {sheet === 'thu' && (
         <LinhThuSheet
