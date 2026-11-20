@@ -51,6 +51,10 @@ const SPECS: Spec[] = [
   { key: 'ct20261120_4', steps: [{ id: 'ct_20261120_4', wait: 0 }, { id: 'ct_20261120_4b', wait: 5 }], setup: (c) => { c.age = 500; c.realm = 8; c.cosmos = 'hu'; c.tt3 = 1; c.tt3Nhanh = 'dap'; }, noLore: (c) => { c.tt3 = undefined; }, deaths: [] },
   { key: 'ct20261120_5', steps: [{ id: 'ct_20261120_5', wait: 0 }, { id: 'ct_20261120_5b', wait: 20 }], setup: (c) => { c.age = 3000; c.realm = 12; c.cosmos = 'hg'; c.lifespan = 9000; c.hong = { from: 'tien', cd: 0, deTu: 2 }; c.partner = 'Lâm Nguyệt'; }, deaths: [] },
   { key: 'ct20261120_6', steps: [{ id: 'ct_20261120_6', wait: 0 }, { id: 'ct_20261120_6b', wait: 6 }], setup: (c) => { c.age = 500; c.realm = 8; c.cosmos = 'tien'; c.loreIds = ['chien_thu']; }, noLore: (c) => { c.loreIds = []; }, deaths: [] },
+  { key: 'ct20261120_7', steps: [{ id: 'ct_20261120_7', wait: 0 }, { id: 'ct_20261120_7b', wait: 1 }, { id: 'ct_20261120_7c', wait: 2 }], setup: (c) => { c.age = 20; c.realm = 1; c.lifeNo = 4; c.linhThach = 200; }, noLore: (c) => { c.lifeNo = 12; }, deaths: [] },
+  { key: 'ct20261120_8', steps: [{ id: 'ct_20261120_8', wait: 0 }, { id: 'ct_20261120_8b', wait: 5 }], setup: (c) => { c.age = 500; c.realm = 8; c.cosmos = 'tien'; c.loreIds = ['hoa_than']; }, noLore: (c) => { c.loreIds = ['chuong', 'kim_dan']; }, deaths: [] },
+  { key: 'ct20261120_9', steps: [{ id: 'ct_20261120_9', wait: 0 }, { id: 'ct_20261120_9b', wait: 5 }], setup: (c) => { c.age = 500; c.realm = 8; c.cosmos = 'ma'; c.loreIds = ['loi_vieng']; c.linhThach = 1000; }, noLore: (c) => { c.loreIds = []; }, deaths: [] },
+  { key: 'ct20261120_10', steps: [{ id: 'ct_20261120_10', wait: 0 }, { id: 'ct_20261120_10b', wait: 4 }], setup: (c) => { c.age = 30; c.realm = 2; }, deaths: ['ct_20261120_10b#2'] },
 ];
 
 function fresh(spec: Spec) {

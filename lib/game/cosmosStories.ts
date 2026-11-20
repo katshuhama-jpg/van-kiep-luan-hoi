@@ -858,8 +858,8 @@ export const COSMOS_STORIES: GameEvent[] = [
     title: tr('Con quạ ba mắt', 'The three-eyed crow'),
     text: () =>
       tr(
-        'Một con quạ ba mắt đậu xuống vai bạn, con mắt giữa trán nhắm nghiền. Nó nói tiếng người: "Cho ta mượn ba mươi năm thọ, ta cho ngươi mượn con mắt thứ ba. Ma giới giấu gì, ngươi thấy nấy." Nó còn nói thêm: hết hạn mà không trả thì nó tự đến lấy.',
-        'A three-eyed crow lands on your shoulder, the eye in its forehead shut tight. It speaks like a person: "Lend me thirty years of life and I will lend you my third eye. Whatever the Demon Realm hides, you will see." It adds that if the debt is not paid when due, it will come to collect.',
+        'Một con quạ ba mắt đậu xuống vai bạn, con mắt giữa trán nhắm nghiền. Nó nói tiếng người: "Cho ta mượn ba mươi năm thọ, ta cho ngươi mượn con mắt thứ ba, Ma giới giấu gì ngươi thấy nấy." Rồi nó nói thêm, giọng lạnh hẳn: "Mười năm sau ta tới đòi. Không trả thì ta tự lấy."',
+        'A three-eyed crow lands on your shoulder, the eye in its forehead shut tight. It speaks like a person: "Lend me thirty years of life and I will lend you my third eye, and whatever the Demon Realm hides, you will see." Then it adds, its voice gone cold: "In ten years I come to collect. Don\'t pay, and I take it myself."',
       ),
     choices: () => [
       {
@@ -1155,6 +1155,244 @@ export const COSMOS_STORIES: GameEvent[] = [
           ctx.fx('layer', tr('Tiên đan', 'Immortal pill'));
           ctSet(c, 'ct20261120_6', 2, 'dan');
           return tr(`Đan tan trong bụng, ấm như nắng chiều (+${g} tu vi). Mạc Thừa cúi chào rồi đi, không nói thêm câu nào.`, `The pill melts inside you, warm as evening sun (+${g} cultivation). Mac Thua bows and leaves without another word.`);
+        },
+      },
+    ],
+  },
+  // ct_20261120_8 Bức họa núi tuyết (Tiên giới, 2 bước). Nối Thiên thư quyển I, mảnh VI "Người trên núi tuyết": chỉ hiện cho người đã mở mảnh ấy.
+  // Chỉ dùng sự thật của mảnh VI: người quay lưng trên núi tuyết, tên Vạn Kiếp Chân Nhân, đã vỡ ra. Không nói ai vẽ, không nói ông quay mặt.
+  {
+    id: 'ct_20261120_8',
+    cosmos: 'tien',
+    once: true,
+    weight: 30,
+    when: (c) => hasLore(c, 'hoa_than') && !ctArc(c, 'ct20261120_8'),
+    title: tr('Bức họa núi tuyết', 'The painting of the snowy peak'),
+    text: () =>
+      tr(
+        'Trong Tàng Kinh Các của Thiên Đình treo một bức họa không ai nhớ treo từ bao giờ: một người ngồi quay lưng trên núi tuyết. Văn Khúc Tinh Quân, người giữ các, bảo tranh có trước cả Thiên Đình. Bạn nhìn tranh, và nhớ ra giọng nói trên đỉnh núi trong mơ.',
+        'In the Scripture Pavilion of the Heavenly Court hangs a painting no one remembers hanging: a figure sitting with their back turned atop a snowy peak. Wenqu Star Lord, keeper of the pavilion, says it is older than the Heavenly Court itself. You look at it, and remember the voice on the peak in your dreams.',
+      ),
+    choices: () => [
+      {
+        label: tr('Ngồi xem tới khi đèn tắt', 'Sit and look until the lamps go out'),
+        hint: tr('tâm cảnh +', 'Mind +'),
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'tamCanh', 6);
+          ctSet(c, 'ct20261120_8', 1, 'xem');
+          return tr('Bạn ngồi tới khuya. Gió trong tranh không thổi, tuyết không rơi, chỉ có người ngồi đó là như đang thở.', 'You sit until late. The wind in the painting does not blow and the snow does not fall; only the seated figure seems to breathe.');
+        },
+      },
+      {
+        label: tr('Xin chép lại một bản mang về', 'Ask to make a copy to take home'),
+        hint: tr('ngộ tính +', 'Insight +'),
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'ngoTinh', 4);
+          ctSet(c, 'ct20261120_8', 1, 'chep');
+          return tr('Bạn chép mất ba tháng. Bản chép giống hệt, chỉ có tấm lưng là bạn vẽ mãi không ra.', 'Copying it takes three months. Your copy is exact, except for the back, which you can never get right.');
+        },
+      },
+      {
+        label: tr('Hỏi Văn Khúc Tinh Quân ai vẽ', 'Ask Wenqu who painted it'),
+        lean: 'chinh',
+        run: (c) => {
+          stat(c, 'tamCanh', 2);
+          ctSet(c, 'ct20261120_8', 1, 'hoi');
+          return tr('Ông lắc đầu, lật mép tranh cho bạn xem. Không có tên người vẽ, chỉ có một dòng chữ nhỏ ở góc: "Vẽ lúc chưa vỡ."', 'He shakes his head and turns up the edge of the painting. There is no painter\'s name, only a small line in the corner: "Painted before the breaking."');
+        },
+      },
+      {
+        label: tr('Lén cuộn tranh mang đi', 'Roll it up and sneak it out'),
+        hint: tr('nghiêng tà', 'leans Evil'),
+        lean: 'ta',
+        run: (c) => {
+          dao(c, -6);
+          ctSet(c, 'ct20261120_8', 1, 'trom');
+          return tr('Không ai đuổi theo. Văn Khúc Tinh Quân chỉ nhìn chỗ tường trống, như thể biết trước bức tranh sẽ đi đâu.', 'No one gives chase. Wenqu only looks at the empty wall, as if he knew where the painting would end up.');
+        },
+      },
+    ],
+  },
+  {
+    id: 'ct_20261120_8b',
+    cosmos: 'tien',
+    once: true,
+    weight: 300,
+    when: (c) => ctNext(c, 'ct20261120_8', 1, 5),
+    title: tr('Ba bước chân', 'Three steps short'),
+    text: (c) => {
+      const v = ctArc(c, 'ct20261120_8')?.v;
+      const where = v === 'trom' ? tr('Bức tranh treo trong động phủ bạn', 'The painting in your abode') : v === 'chep' ? tr('Bản chép trong động phủ bạn', 'The copy in your abode') : tr('Văn Khúc Tinh Quân cho người gọi bạn tới. Bức họa', 'Wenqu sends for you. The painting');
+      return tr(
+        `Năm năm sau. ${where} đã đổi: tuyết dày thêm một lớp, và trên tuyết có một dãy dấu chân đi lên núi, dừng lại cách người ngồi đúng ba bước.`,
+        `Five years later. ${where} has changed: the snow lies one layer deeper, and on it a line of footprints climbs the peak, stopping exactly three steps from the seated figure.`,
+      );
+    },
+    choices: () => [
+      {
+        label: tr('Chạm tay vào tranh, đi nốt ba bước', 'Touch the painting and take the last three steps'),
+        hint: tr('ngộ tính +, tu vi +', 'Insight +, cultivation +'),
+        lean: 'trung',
+        run: (c, ctx) => {
+          stat(c, 'ngoTinh', 5);
+          const g = Math.round(addCult(c, reward(c, 0.6)));
+          ctx.fx('layer', tr('Núi tuyết', 'Snowy peak'));
+          ctSet(c, 'ct20261120_8', 2, 'buoc');
+          return tr(`Bạn nhắm mắt bước ba bước. Mở mắt ra vẫn ở chỗ cũ, nhưng tay lạnh buốt như vừa chạm tuyết (+${g} tu vi). Người trong tranh vẫn quay lưng.`, `You close your eyes and take three steps. When you open them you are where you were, but your hand is icy, as if it just touched snow (+${g} cultivation). The figure still has their back to you.`);
+        },
+      },
+      {
+        label: tr('Để nguyên, ba bước ấy để dành', 'Leave it; save those three steps'),
+        hint: tr('tâm cảnh +, tâm ma -', 'Mind +, Heart Demon -'),
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'tamCanh', 8);
+          stat(c, 'tamMa', -6);
+          ctSet(c, 'ct20261120_8', 2, 'de');
+          return tr('Có những con đường không cần đi hết hôm nay. Bạn quay đi, lòng nhẹ như tuyết.', 'Some roads don\'t need to be finished today. You turn away, your heart light as snow.');
+        },
+      },
+      {
+        label: tr('Thắp một nén hương trước tranh', 'Light a stick of incense before it'),
+        hint: tr('đạo tâm +, khí vận +', 'Dao Heart +, Luck +'),
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 4);
+          stat(c, 'khiVan', 4);
+          ctSet(c, 'ct20261120_8', 2, 'huong');
+          return tr('Khói hương bay thẳng vào tranh rồi tan trên núi tuyết. Bạn không biết mình đang thắp cho ai, chỉ biết nên thắp.', 'The smoke drifts straight into the painting and fades over the snowy peak. You don\'t know who you are burning it for, only that you should.');
+        },
+      },
+      {
+        label: tr('Bán tranh cho một tiên quân sưu tầm', 'Sell it to an immortal collector'),
+        hint: tr('+linh thạch, nghiêng tà', '+spirit stones, leans Evil'),
+        lean: 'ta',
+        run: (c, ctx) => {
+          const m = 500 * tier(c);
+          money(c, m);
+          dao(c, -4);
+          ctx.fx('coin', `+${m}`);
+          ctSet(c, 'ct20261120_8', 2, 'ban');
+          return tr(`Tiên quân trả ${m} linh thạch. Ba hôm sau ông ta đem trả, bảo đêm nào cũng nghe tiếng bước chân trên tuyết.`, `The collector pays ${m} spirit stones. Three days later he brings it back, saying he hears footsteps on snow every night.`);
+        },
+      },
+    ],
+  },
+
+  // ct_20261120_9 Bãi mộ không bia (Ma giới, 2 bước). Nối Thiên thư quyển II, mảnh XIV "Lời viếng": chỉ hiện cho người đã mở mảnh ấy.
+  {
+    id: 'ct_20261120_9',
+    cosmos: 'ma',
+    once: true,
+    weight: 30,
+    when: (c) => hasLore(c, 'loi_vieng') && !ctArc(c, 'ct20261120_9'),
+    title: tr('Bãi mộ không bia', 'The graves without stones'),
+    text: () =>
+      tr(
+        'Trên một doi cát giữa Huyết Hải có hàng trăm nấm mộ không bia. Ma tu đi qua đều nhổ nước bọt. Bạn đứng lại, vì ở đây tiếng chuông quen bỗng ngập ngừng, y như lần bạn thắp hương ở nghĩa trang.',
+        'On a sandbar in the Sea of Blood lie hundreds of graves without headstones. Demonic cultivators spit as they pass. You stop, because here the familiar bell suddenly falters, just as it did when you burned incense in the cemetery.',
+      ),
+    choices: (c) => [
+      {
+        label: tr('Khắc bia cho từng nấm mộ', 'Carve a stone for every grave'),
+        hint: tr('đạo tâm +, mất nhiều năm', 'Dao Heart +, takes years'),
+        lean: 'chinh',
+        run: (ch) => {
+          dao(ch, 6);
+          ctSet(ch, 'ct20261120_9', 1, 'khac');
+          return tr('Không biết tên, bạn khắc lên mỗi bia một dòng giống nhau: "Người từng hỏi." Tới tấm thứ một trăm, tiếng chuông thôi ngập ngừng.', 'Not knowing their names, you carve the same line on every stone: "One who asked." By the hundredth, the bell stops faltering.');
+        },
+      },
+      {
+        label: tr('Thắp một nén hương chung rồi đi', 'Burn one stick of incense for them all, then go'),
+        hint: tr('tâm cảnh +', 'Mind +'),
+        lean: 'trung',
+        run: (ch) => {
+          stat(ch, 'tamCanh', 5);
+          ctSet(ch, 'ct20261120_9', 1, 'huong');
+          return tr('Khói hương bay ngang, không lên. Ở Huyết Hải, khói cũng mỏi.', 'The smoke drifts sideways, not up. In the Sea of Blood, even smoke grows tired.');
+        },
+      },
+      {
+        label: tr('Mua lời kể của lão giữ mộ', 'Pay the old gravekeeper for his story'),
+        hint: c.linhThach < 100 * tier(c) ? tr(`cần ${100 * tier(c)} linh thạch`, `needs ${100 * tier(c)} spirit stones`) : tr(`-${100 * tier(c)} linh thạch, ngộ tính +`, `-${100 * tier(c)} spirit stones, Insight +`),
+        lean: 'trung',
+        off: c.linhThach < 100 * tier(c),
+        run: (x) => {
+          money(x, -100 * tier(x));
+          stat(x, 'ngoTinh', 6);
+          ctSet(x, 'ct20261120_9', 1, 'mua');
+          return tr('Lão đếm tiền xong mới nói: "Ma tu ở đây chết đủ kiểu, nhưng trước khi nhắm mắt ai cũng hỏi cùng một câu: sống để làm gì." Lão không trả lời được, nên không khắc bia.', 'Only after counting does he speak: "Demons here died every kind of death, but before closing their eyes they all asked the same thing: what is living for." He couldn\'t answer, so he carved no stones.');
+        },
+      },
+      {
+        label: tr('Đào một nấm lên xem là ai', 'Dig one up to see who it is'),
+        hint: tr('nghiêng tà, ngộ tính +', 'leans Evil, Insight +'),
+        lean: 'ta',
+        run: (x) => {
+          dao(x, -5);
+          stat(x, 'ngoTinh', 3);
+          ctSet(x, 'ct20261120_9', 1, 'dao');
+          return tr('Dưới cát là một bộ xương ôm thanh kiếm gãy, không có gì khác. Bạn lấp lại, thấy mình vừa làm một việc vô ích nhất đời.', 'Under the sand lies a skeleton hugging a broken sword, and nothing else. You fill it back in, feeling you have done the most useless thing of your life.');
+        },
+      },
+    ],
+  },
+  {
+    id: 'ct_20261120_9b',
+    cosmos: 'ma',
+    once: true,
+    weight: 300,
+    when: (c) => ctNext(c, 'ct20261120_9', 1, 5),
+    title: tr('Người đi tìm mộ cha', 'Looking for a father\'s grave'),
+    text: (c) =>
+      tr(
+        `Năm năm sau, một ma tu trẻ tên Diêm Tứ quỳ trước doi cát${ctArc(c, 'ct20261120_9')?.v === 'khac' ? ', giữa những tấm bia bạn khắc' : ''}. Hắn hỏi bạn có biết mộ cha hắn là nấm nào không. Hắn chỉ biết cha chết ở Huyết Hải, không bia.`,
+        `Five years later, a young demonic cultivator named Diem Tu kneels before the sandbar${ctArc(c, 'ct20261120_9')?.v === 'khac' ? ', among the stones you carved' : ''}. He asks if you know which grave is his father's. All he knows is that his father died in the Sea of Blood, with no stone.`,
+      ),
+    choices: () => [
+      {
+        label: tr('Nói thật: không ai biết', 'Tell the truth: no one knows'),
+        hint: tr('tâm cảnh +', 'Mind +'),
+        lean: 'chinh',
+        run: (c) => {
+          stat(c, 'tamCanh', 4);
+          ctSet(c, 'ct20261120_9', 2, 'that');
+          return tr('Hắn ngồi lặng rất lâu, rồi lạy cả bãi mộ ba lạy. "Vậy cả bãi này là cha ta."', 'He sits in silence for a long time, then bows three times to the whole field. "Then all of these are my father."');
+        },
+      },
+      {
+        label: tr('Chỉ đại một nấm cho hắn yên lòng', 'Point at any grave so he can be at peace'),
+        hint: tr('khí vận +, tâm ma +', 'Luck +, Heart Demon +'),
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'khiVan', 3);
+          stat(c, 'tamMa', 3);
+          ctSet(c, 'ct20261120_9', 2, 'chi');
+          return tr('Hắn ôm nấm mộ khóc tới sáng. Bạn đứng cạnh, không dám nhìn vào mắt hắn.', 'He hugs the grave and weeps until dawn. You stand beside him and cannot look him in the eye.');
+        },
+      },
+      {
+        label: tr('Cùng hắn dựng một tấm bia chung cho cả bãi', 'Raise one shared stone for the whole field with him'),
+        hint: tr('đạo tâm +, khí vận +', 'Dao Heart +, Luck +'),
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 6);
+          stat(c, 'khiVan', 5);
+          ctSet(c, 'ct20261120_9', 2, 'bia');
+          return tr('Hai người dựng tấm bia lớn ở đầu doi cát, không khắc tên ai. Từ đó ma tu đi qua không nhổ nước bọt nữa.', 'Together you raise a great stone at the head of the sandbar, with no names on it. From then on, demons who pass no longer spit.');
+        },
+      },
+      {
+        label: tr('Bảo hắn đứng đây, nghe xem chuông có ngập ngừng không', 'Tell him to stand here and listen for the bell to falter'),
+        hint: tr('ngộ tính +', 'Insight +'),
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'ngoTinh', 5);
+          ctSet(c, 'ct20261120_9', 2, 'nghe');
+          return tr('Hắn đứng nghe cả đêm, không nghe thấy gì. Nhưng đó là đêm đầu tiên sau nhiều năm hắn ngủ được.', 'He listens all night and hears nothing. But it is the first night in years that he manages to sleep.');
         },
       },
     ],
