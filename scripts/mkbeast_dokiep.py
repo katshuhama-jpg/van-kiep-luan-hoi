@@ -3,6 +3,7 @@ from PIL import Image
 N='newbeasts/'
 OUT='/home/claude/vkl/public/lpc/beasts/'
 def strip(name, src, boxes, cell, flip=False, bottom=True):
+    if not __import__('os').path.exists(src): return  # không có tấm gốc (chạy riêng bước làm sạch)
     im=Image.open(src).convert('RGBA')
     o=Image.new('RGBA',(cell*len(boxes),cell))
     for i,(x,y,w,h) in enumerate(boxes):
@@ -57,3 +58,37 @@ def clean(name, cell, ncol=12, outline=(30,20,16,255)):
 if __name__=='__main__' and len(__import__('sys').argv)>1 and __import__('sys').argv[1]=='clean':
     OUT=__import__('sys').argv[2]
     for n,c in (('dk_tiger',64),('dk_monkey',64),('dk_toad',48)): clean(n,c)
+
+# 20/11 đêm (khối Ngày 36): soát quái trong trận.
+# - dk_dieu: khung cắt cao 47 lấy cả mấy hạt đầu con kền kền hàng dưới, lên trận thành mẩu lạ dưới chân -> bỏ mẩu nhỏ chạm mép khung.
+# - whale: viền bán trong suốt (alpha mềm) -> phóng nguyên lần thành viền mờ, cắt alpha cứng.
+def drop_edge_bits(name, cell, frac=0.05):
+    p=OUT+name+'.png'; im=_I.open(p).convert('RGBA'); W,H=im.size; A=im.load()
+    for f in range(W//cell):
+        x0=f*cell; seen=set(); comps=[]
+        for y in range(H):
+            for x in range(x0,x0+cell):
+                if A[x,y][3] and (x,y) not in seen:
+                    st=[(x,y)];seen.add((x,y));c=[]
+                    while st:
+                        cx,cy=st.pop();c.append((cx,cy))
+                        for dx in(-1,0,1):
+                            for dy in(-1,0,1):
+                                q=(cx+dx,cy+dy)
+                                if x0<=q[0]<x0+cell and 0<=q[1]<H and A[q][3] and q not in seen: seen.add(q);st.append(q)
+                    comps.append(c)
+        if not comps: continue
+        big=max(len(c) for c in comps)
+        for c in comps:
+            if len(c)<frac*big and any(q[0] in(x0,x0+cell-1) or q[1] in(0,H-1) for q in c):
+                for q in c: A[q]=(0,0,0,0)
+    im.save(p)
+def hard_alpha(name, cut=128):
+    p=OUT+name+'.png'; im=_I.open(p).convert('RGBA'); px=im.load()
+    for y in range(im.height):
+        for x in range(im.width):
+            r,g,b,a=px[x,y]; px[x,y]=(r,g,b,255) if a>=cut else (0,0,0,0)
+    im.save(p)
+if __name__=='__main__' and len(__import__('sys').argv)>1 and __import__('sys').argv[1]=='fix36':
+    OUT=__import__('sys').argv[2]
+    drop_edge_bits('dk_dieu',64); hard_alpha('whale')
