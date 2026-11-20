@@ -92,7 +92,7 @@ export function SmXuatChinh({ c }: { c: SmCtx }) {
     if (bhTa && chuO != null && !hoiBh) return setHoiBh(true);
     setHoiBh(false);
     setErr(null);
-    const e = await c.run({ fn: 'march3', q: toi[0], r: toi[1] }, () => track('sm_march', { trong: chuO == null, mu: 1 }));
+    const e = await c.run({ fn: 'march4', q: toi[0], r: toi[1] }, () => track('sm_march', { trong: chuO == null, mu: 1 }));
     setErr(e);
     c.reload(['map']);
   };

@@ -488,10 +488,12 @@ export function oDanhDuoc(st: SmState, map: SmMap | null, now: number): SmMapO[]
 export function chinhKhoa(st: SmState, o: SmMapO, now: number, map?: SmMap | null, dai?: SmDai | null): string | null {
   const m = st.mon!;
   const yeu = laYeu(map, o[4]);
-  if (m.chuc === 'de') return tr('Chỉ môn chủ hoặc trưởng lão phát lệnh xuất chinh.', 'Only the master or elders can order a march.');
+  // 20/11: đệ tử cũng phát lệnh đánh ô yêu thú, Linh Mạch / Thiên Trì của môn khác; môn đủ ô vẫn đánh yêu thú được
+  const dacBiet = yeu || (o[4] != null && o[4] !== m.id && !!datOf(map, o[0], o[1]));
+  if (m.chuc === 'de' && !dacBiet) return tr('Đệ tử chỉ phát lệnh đánh ô yêu thú, Linh Mạch, Thiên Trì. Ô thường của môn khác thì môn chủ hoặc trưởng lão ra lệnh.', 'Disciples may order marches on beasts, Spirit Veins and the Heaven Pool. Ordinary tiles need the master or an elder.');
   if (!m.tiles.length) return tr('Môn chưa cắm cờ ô nào.', 'Your sect has no tile yet.');
-  // 19/11 23h (Ngày 7c): đủ ô chỉ chặn ô trống (và ô yêu thú); ô có chủ của môn khác vẫn đánh được (thắng thì bỏ ô xa nhất)
-  if (m.o >= m.o_max && (o[4] == null || yeu)) return duOCau(st);
+  // 19/11 23h (Ngày 7c): đủ ô chỉ chặn ô trống; ô có chủ của môn khác và ô yêu thú vẫn đánh được (thắng thì bỏ ô xa nhất)
+  if (m.o >= m.o_max && o[4] == null) return duOCau(st);
   if (gan(st, o[0], o[1]) !== 1) return tr('Chỉ xuất chinh tới ô kề lãnh thổ.', 'You can only march to a tile next to your land.');
   if (!yeu && o[6] && o[4] != null && new Date(o[6]).getTime() > now) return tr(`Ô đang được bảo hộ tới ${mocGio(o[6], now)}.`, `Protected until ${mocGio(o[6], now)}.`);
   // 20/11 Kỷ 2: thù 12 giờ và dải sức mạnh (Linh Mạch, Thiên Trì không xét dải)
@@ -849,7 +851,7 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
             </button>
           </div>
           {khoa && <p className="sm-why">{khoa}</p>}
-          {!khoa && !yeu && oBoKhiThang(c.st, q, r) && (
+          {!khoa && oBoKhiThang(c.st, q, r) && (
             <p className="sm-note">{tr(`Môn đang giữ đủ ${m.o_max} ô: thắng thì ô này về tay ta, môn bỏ lại ${oBoKhiThang(c.st, q, r)} (ô xa chính điện nhất).`, `We hold our ${m.o_max}-tile limit: win and this tile is ours, we leave ${oBoKhiThang(c.st, q, r)} (farthest from the main hall).`)}</p>
           )}
           {!khoa && chu != null && !yeu && m.moi_bh_toi && new Date(m.moi_bh_toi).getTime() > now && (

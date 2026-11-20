@@ -223,7 +223,7 @@ const codeOf = (msg: string) => (msg.match(/SM_[A-Z_]+/) ?? ['SM_NET'])[0];
 export type SmAct =
   | { fn: 'found'; ten: [string, string, string]; huy: number; cd: number; dkKiep: number; dkNgay: number; moCua: boolean }
   | { fn: 'cosign' | 'join' | 'apply'; mon: number }
-  | { fn: 'pick_tile' | 'guard' | 'scout' | 'march' | 'march_tt' | 'march3' | 'march_tt3' | 'khai_hoang'; q: number; r: number }
+  | { fn: 'pick_tile' | 'guard' | 'scout' | 'march' | 'march_tt' | 'march3' | 'march_tt3' | 'march4' | 'khai_hoang'; q: number; r: number }
   | { fn: 'follow' | 'unfollow' | 'rut_quan'; chinh: number }
   | { fn: 'accept'; don: number; nhan: boolean }
   | { fn: 'moi_gui' | 'ky_nho'; ten: string }
@@ -288,6 +288,7 @@ function args(a: SmAct): Record<string, unknown> {
     case 'march_tt':
     case 'march3':
     case 'march_tt3':
+    case 'march4':
     case 'khai_hoang':
       return { p_q: a.q, p_r: a.r };
     case 'follow':
@@ -400,7 +401,12 @@ export function realApi(): SmApi {
     moiDs: () => rpc<SmMoiThu[]>('vkl_sm_moi_ds', {}, true, true).catch(() => []),
     kyTim: (q) => rpc<SmKyNguoi[]>('vkl_sm_ky_tim', { p_q: q }, true, true),
     kyDs: () => rpc<SmKyThu[]>('vkl_sm_ky_ds', {}, true, true).catch(() => []),
-    act: (a) => rpc<Record<string, unknown>>(`vkl_sm_${a.fn}`, args(a)),
+    // 20/11: march4 (đệ tử đánh yêu thú, Linh Mạch) chưa có trên máy chủ thì quay về march3
+    act: (a) =>
+      rpc<Record<string, unknown>>(`vkl_sm_${a.fn}`, args(a)).catch((e) => {
+        if (a.fn === 'march4' && e instanceof SmErr && e.code === 'SM_NET') return rpc<Record<string, unknown>>('vkl_sm_march3', args(a));
+        throw e;
+      }),
   };
 }
 
