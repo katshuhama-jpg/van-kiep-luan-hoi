@@ -11,7 +11,7 @@ import { hexDist, oToiDa, SM_CFG } from '@/lib/sonmon/data';
 import { DkForm } from './SmFound';
 import { NguoiList, NguoiSheet } from './SmNguoi';
 import { SmCongDs } from './SmThuong';
-import { chucTen, clock, fmtN, hhmm, Msg, smCo, useNow, type SmCtx, type SmDraft } from './ui';
+import { chucTen, clock, fmtN, hhmm, Msg, smCo, thuongCau, useNow, type SmCtx, type SmDraft } from './ui';
 
 export function SmThanhVien({ c }: { c: SmCtx }) {
   const { st, members } = c;
@@ -111,7 +111,14 @@ export function SmThanhVien({ c }: { c: SmCtx }) {
             onPick={(x) => setXem(x)}
             extra={(x) => {
               const mb = members.ds.find((y) => y.tk === x.tk);
-              return mb ? <span className="sm-ng-s">{tr(`Góp ${mb.kv} Khí vận hôm nay · ${tenO(mb)}`, `Gave ${mb.kv} fortune today · ${tenO(mb)}`)}</span> : null;
+              if (!mb) return null;
+              const tt = thuongCau(c.d30?.mon?.[mb.tk]);
+              return (
+                <>
+                  <span className="sm-ng-s">{tr(`Góp ${mb.kv} Khí vận hôm nay · ${tenO(mb)}`, `Gave ${mb.kv} fortune today · ${tenO(mb)}`)}</span>
+                  {tt && <span className="sm-ng-s sm-thuong">{tt}</span>}
+                </>
+              );
             }}
           />
         )}

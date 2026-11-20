@@ -5,7 +5,7 @@
  * trong (ngày đầu, chưa môn nào mở), khach (chưa liên kết), noct (chưa có chân thân), chuamo (Kỷ chưa mở).
  */
 import { banDo, coiCua, O_A, O_B } from './data';
-import { SmErr, type SmBvNhan, type SmAct, type SmApi, type SmChat, type SmMap, type SmMapO, type SmMembers, type SmMonNguoi, type SmMonRow, type SmRankRow, type SmState } from './api';
+import { SmErr, type SmBvNhan, type SmAct, type SmApi, type SmChat, type SmD30, type SmMap, type SmMapO, type SmMembers, type SmMonNguoi, type SmMonRow, type SmRankRow, type SmState } from './api';
 
 const now = Date.now();
 const at = (min: number) => new Date(now + min * 60_000).toISOString();
@@ -15,12 +15,15 @@ const TEN_DAT: Record<string, string> = {
   '3,-1': 'Vọng Nguyệt Phong', '4,-1': 'Thiết Huyết Nhai', '3,-2': 'Xích Diễm Động',
   '0,2': 'Bích Thủy Hồ', '-1,2': 'Lưu Vân Xuyên', '0,3': 'Bạch Lộc Nguyên',
   '-3,0': 'Huyền Băng Lĩnh', '-4,1': 'Phi Tuyết Khâu', '2,3': 'Hồng Liên Tuyền', '3,2': 'Cổ Tùng Lâm',
+  '1,2': 'Lưu Ly Pha', '1,-1': 'Hàn Nguyệt Đàm', '2,1': 'Tử Vân Cốc',
 };
 const CHU: Record<string, number> = {
   '1,0': 1, '2,0': 1, '1,1': 1, '2,-1': 1,
   '3,-1': 2, '4,-1': 2, '3,-2': 2,
   '0,2': 3, '-1,2': 3, '0,3': 3,
   '-3,0': 4, '-4,1': 4, '2,3': 5, '3,2': 5,
+  // Ngày 30: ô 1,2 của môn ta chỉ nối qua 1,1 (bỏ 1,1 thì đứt mạch); 1,-1 của môn yếu ngoài dải
+  '1,2': 1, '1,-1': 6,
 };
 const MON: SmMap['mon'] = {
   '1': { ten: 'Thanh Hư Tông', huy_hieu: 15 },
@@ -28,6 +31,7 @@ const MON: SmMap['mon'] = {
   '3': { ten: 'Vân Hà Các', huy_hieu: 11 },
   '4': { ten: 'Tử Lôi Phái', huy_hieu: 22 },
   '5': { ten: 'Kim Long Điện', huy_hieu: 7 },
+  '6': { ten: 'Huyền Nguyệt Môn', huy_hieu: 27 },
 };
 
 function map(withMine: boolean): SmMap {
@@ -35,10 +39,10 @@ function map(withMine: boolean): SmMap {
     const k = `${h.q},${h.r}`;
     let chu: number | null = CHU[k] ?? null;
     // 20/11 Kỷ 2: hai ô yêu thú cho demo (môn hệ thống 99)
-    if (k === '3,0' || k === '5,0') chu = 99;
+    if (k === '3,0' || k === '5,0' || k === '-1,3') chu = 99;
     if (!withMine && chu === 1) chu = null;
     const ten = TEN_DAT[k] ?? `${O_A[(i * 7) % O_A.length]} ${O_B[(i * 5) % O_B.length]}`;
-    const cd = ['1,0', '3,-1', '0,2', '-3,0', '2,3'].includes(k);
+    const cd = ['1,0', '3,-1', '0,2', '-3,0', '2,3', '1,-1'].includes(k);
     // 18/11: môn 4 (Tử Lôi Phái) là môn mới, đang bảo hộ 41 giờ; ô -4,1 bảo hộ 3 giờ sau khi bị chiếm
     return [h.q, h.r, ten, coiCua(h), chu, cd, chu === 4 ? at(41 * 60) : k === '-4,1' ? at(200) : null];
   });
@@ -46,11 +50,13 @@ function map(withMine: boolean): SmMap {
     ky: { id: 1, bat_dau: at(-8 * 1440), ket_thuc: at(6 * 1440 + 200), ban_kinh: 6 },
     o,
     mon: withMine ? MON : Object.fromEntries(Object.entries(MON).filter(([k]) => k !== '1')),
-    dat: [[0, 0, 'thien_tri', 'Thiên Trì', null], [3, 1, 'linh_mach', 'Thanh Ngọc Mạch', null, 54], [-1, 3, 'linh_mach', 'Bích Lạc Mạch', null, 117], [3, 0, 'yeu_thu', null, 14500], [5, 0, 'yeu_thu', null, 26000]],
+    // Ngày 30: Bích Lạc Mạch có yêu thú canh; Linh Mạch mới sinh ẩn (lm_an), môn ta đã trinh sát thấy Tử Vân Mạch ở 2,1 (vkl_sm_d30)
+    dat: [[0, 0, 'thien_tri', 'Thiên Trì', null], [3, 1, 'linh_mach', 'Thanh Ngọc Mạch', null, 54], [-1, 3, 'linh_mach', 'Bích Lạc Mạch', 12000, 117], [3, 0, 'yeu_thu', null, 14500], [5, 0, 'yeu_thu', null, 26000]],
+    lm_an: true,
     yeu_mon: 99,
     dat_tu: at(-60),
     // 20/11 Yêu tộc: ổ yêu ở 3,0 báo đánh ô 1,1 của môn ta; thú triều mai
-    yeu_cong: withMine ? [{ id: 7, tu: [3, 0], o: [1, 1], mon: 1, luc: 14500, toi: at(47), trieu: false }, { id: 8, tu: [5, 0], o: [3, 2], mon: 5, luc: 26000, toi: at(47), trieu: false }] : [],
+    yeu_cong: withMine ? [{ id: 7, tu: [3, 0], o: [2, 0], mon: 1, luc: 14500, toi: at(47), trieu: false }, { id: 8, tu: [5, 0], o: [3, 2], mon: 5, luc: 26000, toi: at(47), trieu: false }] : [],
     trieu: { hom_nay: false, mai: true, he: 1.3 },
     lm_tru: 120,
     di: withMine ? [{ mon: 2, tu: [3, -1], toi: [2, 0], toi_noi_luc: at(42), trang_thai: 'di' }, { mon: 1, tu: [1, 1], toi: [0, 2], toi_noi_luc: at(38), trang_thai: 'tap_hop' }] : [],
@@ -90,13 +96,14 @@ function monState(vai: string): SmState {
         { q: 2, r: 0, ten: 'Lạc Hà Cốc', cd: false, bao_ho_toi: null },
         { q: 1, r: 1, ten: 'Tử Trúc Lâm', cd: false, bao_ho_toi: null },
         { q: 2, r: -1, ten: 'Kim Ô Đài', cd: false, bao_ho_toi: at(150) },
+        { q: 1, r: 2, ten: 'Lưu Ly Pha', cd: false, bao_ho_toi: null },
       ];
   return {
     ...s,
     mon: {
       id: 1, ten: 'Thanh Hư Tông', ten1: 'Thanh', ten2: 'Hư', ten3: 'Tông', huy_hieu: 15, chinh_dien_hinh: 0,
       dk_kiep: 5, dk_tuoi_dao: 2, mo_cua: true, du_ky: !cho, het_han_ky: at(cho ? 1100 : -5000), cam_co: !cho, so_ky: cho ? 1 : 2, moi_bh_toi: cho ? null : at(30 * 60), di_toi: null,
-      n: cho ? 2 : 12, o: tiles.length, o_max: cho ? 1 : typeof window !== 'undefined' && window.location.search.includes('du=1') ? tiles.length : 5, kv_hom_nay: cho ? 3 : 24, kv_hom_qua: cho ? 0 : 33, kv_bonus: cho ? 0 : 0.1,
+      n: cho ? 2 : 15, o: tiles.length, o_max: cho ? 1 : typeof window !== 'undefined' && window.location.search.includes('du=1') ? tiles.length : 6, kv_hom_nay: cho ? 3 : 24, kv_hom_qua: cho ? 0 : 33, kv_bonus: cho ? 0 : 0.1,
       chuc: vai === 'de' ? 'de' : 'chu', dung: cho ? null : [1, 0], tiles, don_cho: vai === 'de' ? null : cho ? 0 : 2,
     },
     diem_danh: { hom_nay: false, chuoi: cho ? 0 : 5, da_thuong: false },
@@ -111,12 +118,16 @@ function monState(vai: string): SmState {
     trinh: cho
       ? []
       : [
+          { id: 4, o: [2, 1], xong_luc: at(-20), ket_qua: { trong: true, ten_o: 'Tử Vân Cốc', lm: 'Tử Vân Mạch' } },
           { id: 3, o: [0, 2], xong_luc: at(-60), ket_qua: { trong: false, ten_o: 'Bích Thủy Hồ', mon: 3, n: 4, lc: 9800 } },
           { id: 2, o: [3, -1], xong_luc: at(-300), ket_qua: { trong: false, ten_o: 'Vọng Nguyệt Phong', mon: 2, n: 7, lc: 21400 } },
         ],
     bao: cho
       ? []
       : [
+          { id: 33, luc: at(-40), loai: 'dut_mach', a: 1, b: null, ten_a: 'Thanh Hư Tông', ten_b: null, o: [0, 0], nd: { n: 1, ds: ['Thanh Trúc Khê'] } },
+          { id: 32, luc: at(-41), loai: 'bo_o', a: 1, b: null, ten_a: 'Thanh Hư Tông', ten_b: null, o: [0, 1], nd: { ten_o: 'Vọng Hà Đình', nguoi: 'Vân Nhi' } },
+          { id: 31, luc: at(-200), loai: 'lm_doi', a: null, b: null, ten_a: null, ten_b: null, o: [3, 1], nd: { lm: 'Huyền Âm Mạch', ten_o: 'Cổ Tùng Lâm', an: true } },
           { id: 30, luc: at(-900), loai: 'tran', a: 3, b: 1, ten_a: 'Vân Hà Các', ten_b: 'Thanh Hư Tông', o: [1, 1], nd: { kq: 'thua', ten_o: 'Tử Trúc Lâm', atk: 12900, def: 15200 } },
           { id: 25, luc: at(-2800), loai: 'cam_co', a: 1, b: null, ten_a: 'Thanh Hư Tông', ten_b: null, o: [2, -1], nd: { kq: 'cam_co', ten_o: 'Kim Ô Đài' } },
           { id: 21, luc: at(-4300), loai: 'tran', a: 1, b: 3, ten_a: 'Thanh Hư Tông', ten_b: 'Vân Hà Các', o: [0, 2], nd: { kq: 'thua', ten_o: 'Bích Thủy Hồ', atk: 8800, def: 11300, n_atk: 6 } },
@@ -171,6 +182,13 @@ const CHAT: SmChat[] = [
   { id: 5, luc: at(-5), nd: '30 Khí vận rồi, mai cả môn +10% nhé các vị.', ta: false, tk: 'vannhi', ten: 'Vân Nhi', chuc: 'lao' },
 ];
 
+/** 5:00 sáng kế tiếp giờ VN */
+function sang5() {
+  const vn = new Date(now + 7 * 3600e3);
+  const t = Date.UTC(vn.getUTCFullYear(), vn.getUTCMonth(), vn.getUTCDate(), 5) - 7 * 3600e3;
+  return new Date(t > now ? t : t + 86400e3).toISOString();
+}
+
 const wait = <T,>(v: T) => new Promise<T>((ok) => setTimeout(() => ok(structuredClone(v)), 120));
 
 export function demoApi(vaiIn: string): SmApi {
@@ -188,6 +206,18 @@ export function demoApi(vaiIn: string): SmApi {
     map: () => wait(map(coMon && vai !== 'cho')),
     rank: () => wait(RANK.map((r, i) => ({ ...r, diem: 120 - i * 15, gio: r.o + (i === 0 ? 4 : 0) }))),
     dai: () => wait({ lc: 4833, dai: 0.3333, ngoai: [6], thu: { '3': at(300) } }),
+    // Ngày 30: ta thua 3 trận hôm nay (trọng thương tới 5:00), Tiểu Hổ thua 2; môn ta đã trinh sát thấy Tử Vân Mạch
+    d30: () =>
+      wait<SmD30>(
+        coMon && vai !== 'cho'
+          ? {
+              ta: { pct: 0.5, het: sang5(), lan: 3, goc: 4833 },
+              lan_hom_nay: 3,
+              mon: { lacpham: { pct: 0.5, het: sang5(), lan: 3 }, tieuho: { pct: 0.3, het: at(140), lan: 2 } },
+              lm: [[2, 1, 'linh_mach', 'Tử Vân Mạch', null, 120]] as NonNullable<SmMap['dat']>,
+            }
+          : { ta: null, lan_hom_nay: 0, mon: {}, lm: [] },
+      ),
     suMon: () => wait(vai === 'su' ? (LIST[1]?.id ?? null) : null),
     chatList: (sau) => wait(chat.filter((x) => x.id > sau)),
     chatSend: async (nd) => {
@@ -346,6 +376,9 @@ export function demoApi(vaiIn: string): SmApi {
           return { ok: true };
         case 'xep':
           return { ok: true, di_toi: at(20) };
+        case 'bo_o':
+          if (m) st = { ...st, mon: { ...m, o: m.o - 1, tiles: m.tiles.filter((t) => !(t.q === a.q && t.r === a.r)) } };
+          return { ok: true, dut: 0 };
         default:
           return { ok: true };
       }

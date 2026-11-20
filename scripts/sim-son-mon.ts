@@ -26,10 +26,15 @@ const SO_MON = env('SO_MON', 25);
 const NGAY = env('NGAY', 14);
 const LIEU = env('LIEU', 0.2); // môn chủ liều: vẫn đánh khi ước tính bên giữ hơn ta tới 20%
 const RUNS = Number(process.argv[2] ?? 20);
+// Ngày 30: PHAT=1 trọng thương sau trận thua (lần 1 -10% thêm 1 giờ, lần 2 -30% thêm 3 giờ, từ lần 3 -50% tới hết ngày),
+// LIEN=1 đất phải liền chính điện (ô đứt về trống). PHAT=0 LIEN=0 là luật trước 21/11.
+const PHAT = env('PHAT', 1);
+const LIEN = env('LIEN', 1);
+const MUC_PHAT = [[0.1, 1], [0.3, 3], [0.5, 99]];
 const cap = (lc: number) => Math.min(lc, TRAN) + Math.max(lc - TRAN, 0) / 2;
 void capLc;
 
-type P = { lc: number; kiep: number; ngay: number; d7: number; gio: number[]; mon: number; chuc: 'chu' | 'lao' | 'de'; dung: string | null; nghi: number };
+type P = { lc: number; kiep: number; ngay: number; d7: number; gio: number[]; mon: number; chuc: 'chu' | 'lao' | 'de'; dung: string | null; nghi: number; thua: number; thuongPct: number; thuongToi: number };
 type Mon = { id: number; nguoi: number[]; kv: number[]; o: Set<string> };
 
 const raw = fs.readFileSync(path.join(__dirname, 'fixtures/sm-nguoi-choi.txt'), 'utf8')
@@ -121,8 +126,10 @@ function run(seed: number) {
   const R = rng(seed);
   const ps: P[] = raw.map(([lc, kiep, ngay, d7, m]) => ({
     lc, kiep, ngay, d7, gio: Array.from({ length: 24 }, (_, h) => h).filter((h) => (m >> h) & 1),
-    mon: -1, chuc: 'de', dung: null, nghi: -1,
+    mon: -1, chuc: 'de', dung: null, nghi: -1, thua: 0, thuongPct: 0, thuongToi: -1,
   }));
+  // Lực chiến (có trần) lúc t, đã trừ trọng thương
+  const luc = (i: number, t: number) => cap(ps[i].lc) * (PHAT && ps[i].thuongToi > t ? 1 - ps[i].thuongPct : 1);
   // người mạnh lập môn: đủ 50 kiếp + 5 ngày, Lực chiến cao trước; thiếu thì hạ còn 30 + 4 (van an toàn)
   const order = ps.map((_, i) => i).sort((a, b) => ps[b].lc - ps[a].lc);
   let lap = order.filter((i) => ps[i].kiep >= SM_CFG.lap.kiep && ps[i].ngay >= SM_CFG.lap.ngay);
@@ -154,9 +161,26 @@ function run(seed: number) {
   }
   // nửa số người chọn ô đứng giữ (chia đều), nửa kia đứng ở chính điện
   const chonGiu = new Set(ps.map((_, i) => i).filter(() => R() < 0.5));
-  const stats = { tranCoNguoi: 0, thangCoNguoi: 0, tranTrong: 0, camCo: 0 };
+  const stats = { tranCoNguoi: 0, thangCoNguoi: 0, tranTrong: 0, camCo: 0, dut: 0, thuong: 0 };
+  // đất liền: bỏ các ô của môn b không còn nối với chính điện
+  const lien = (b: number) => {
+    const mb = mons[b];
+    const c0 = cd.get(b);
+    if (!c0 || !mb.o.has(c0)) return;
+    const thay = new Set([c0]);
+    const hang = [c0];
+    while (hang.length) {
+      const k = hang.pop()!;
+      for (const n of hexKe(unkey(k))) {
+        const nk = key(n);
+        if (mb.o.has(nk) && !thay.has(nk)) { thay.add(nk); hang.push(nk); }
+      }
+    }
+    for (const k of [...mb.o]) if (!thay.has(k)) { mb.o.delete(k); owner.delete(k); stats.dut++; }
+  };
 
   for (let d = 0; d < NGAY; d++) {
+    for (const p of ps) p.thua = 0; // 5:00 đếm lại
     // ai chơi hôm nay, online giờ nào
     const choi = ps.map((p) => R() < p.d7 / 7);
     const online: Set<number>[] = Array.from({ length: 24 }, () => new Set());
@@ -196,7 +220,7 @@ function run(seed: number) {
         for (const k of m.o) for (const n of hexKe(unkey(k))) if (trongBanDo(n, banKinh) && !m.o.has(key(n))) ke.add(key(n));
         const theo = m.nguoi.filter((i) => online[h].has(i) && ps[i].nghi <= t);
         if (!theo.length) continue;
-        const atk = theo.reduce((s, i) => s + cap(ps[i].lc), 0) * (1 + kvBonus(kvQua[m.id]));
+        const atk = theo.reduce((s, i) => s + luc(i, t), 0) * (1 + kvBonus(kvQua[m.id]));
         const trong = [...ke].filter((k) => !owner.has(k));
         // tới nơi sau 50 phút: giờ kế tiếp
         const toiH = (h + 1) % 24;
@@ -214,7 +238,7 @@ function run(seed: number) {
           const mb = mons[b];
           const giu = mb.nguoi.filter((i) => giuO(i) === k && ps[i].nghi <= t);
           const motO = mb.o.size === 1;
-          const def = giu.reduce((s, i) => s + cap(ps[i].lc), 0) * SAN_NHA * (1 + kvBonus(kvQua[b])) * (dem ? DEM : 1) * (motO ? MOT_O : 1);
+          const def = giu.reduce((s, i) => s + luc(i, t), 0) * SAN_NHA * (1 + kvBonus(kvQua[b])) * (dem ? DEM : 1) * (motO ? MOT_O : 1);
           const est = def * (0.85 + R() * 0.3);
           if (est < atk * (1 + LIEU * R()) && (!best || est < best.est)) best = { k, est };
         }
@@ -223,7 +247,7 @@ function run(seed: number) {
         // bên bị đánh: ai online thì 70% dồn sang ô bị đánh
         const giu = mb.nguoi.filter((i) => ps[i].nghi <= t && (giuO(i) === k || ((online[h].has(i) || online[toiH].has(i)) && R() < 0.7)));
         const motO = mb.o.size === 1;
-        const def = giu.reduce((s, i) => s + cap(ps[i].lc), 0) * SAN_NHA * (1 + kvBonus(kvQua[b])) * (dem ? DEM : 1) * (motO ? MOT_O : 1);
+        const def = giu.reduce((s, i) => s + luc(i, t), 0) * SAN_NHA * (1 + kvBonus(kvQua[b])) * (dem ? DEM : 1) * (motO ? MOT_O : 1);
         const co = giu.length > 0;
         if (co) stats.tranCoNguoi++; else stats.tranTrong++;
         if (atk > def) {
@@ -238,8 +262,17 @@ function run(seed: number) {
               if (nk) { owner.set(nk, b); mb.o.add(nk); cd.set(b, nk); baoHo.set(nk, t + SM_CFG.gio.baoHoMatHetGio); }
             }
           }
+          if (LIEN) lien(b);
         } else {
-          for (const i of theo) ps[i].nghi = t + SM_CFG.gio.nghiGio;
+          for (const i of theo) {
+            ps[i].nghi = t + SM_CFG.gio.nghiGio;
+            if (!PHAT) continue;
+            const [pct, gio] = MUC_PHAT[Math.min(ps[i].thua, 2)];
+            ps[i].thua++;
+            ps[i].thuongPct = pct;
+            ps[i].thuongToi = Math.min(d * 24 + 24, ps[i].nghi + gio);
+            stats.thuong++;
+          }
         }
       }
     }
@@ -251,6 +284,7 @@ function run(seed: number) {
   const kvDays = mons.flatMap((m) => m.kv);
   return {
     pct: stats.tranCoNguoi ? stats.thangCoNguoi / stats.tranCoNguoi : NaN,
+    dut: stats.dut, thuong: stats.thuong,
     tranCoNguoi: stats.tranCoNguoi, thang: stats.thangCoNguoi, duLap: ps.filter((p) => p.kiep >= SM_CFG.lap.kiep && p.ngay >= SM_CFG.lap.ngay).length, tranTrong: stats.tranTrong, camCo: stats.camCo,
     tiLeO: oS[oS.length - 1] / Math.max(1, med), oMax: oS[oS.length - 1], oMed: med,
     kv30Med: medMon.kv.filter((x) => x >= 30).length / medMon.kv.length,
@@ -271,6 +305,7 @@ console.log(`Người chơi thật: ${raw.length}. Môn: ${SO_MON}. Vào môn: $
 console.log(`Hệ số: sân nhà ${SAN_NHA}, trần ${TRAN}, đêm x${DEM}, một ô x${MOT_O}`);
 const tong = rs.reduce((s, r) => s + r.tranCoNguoi, 0), thang = rs.reduce((s, r) => s + r.thang, 0);
 console.log(`Môn chủ đủ điều kiện lập (50 kiếp + 5 ngày): ${rs[0].duLap}. Trận đánh ô có người giữ: ${avg((r) => r.tranCoNguoi).toFixed(0)}/Kỷ, bên đánh thắng ${pc(thang / Math.max(1, tong))} (mục tiêu 35-65%). Trận vào ô không người: ${avg((r) => r.tranTrong).toFixed(0)}. Cắm cờ ô trống: ${avg((r) => r.camCo).toFixed(0)}`);
+console.log(`Thủ thành công: ${pc(1 - thang / Math.max(1, tong))} (Điều kiện dừng 20-80%). Trọng thương PHAT=${PHAT}: ${avg((r) => r.thuong).toFixed(0)} lượt/Kỷ. Đất liền LIEN=${LIEN}: ô đứt ${avg((r) => r.dut).toFixed(1)}/Kỷ`);
 console.log(`Ô cuối Kỷ: môn nhất ${avg((r) => r.oMax).toFixed(1)}, trung vị ${avg((r) => r.oMed).toFixed(1)}, tỉ lệ ${avg((r) => r.tiLeO).toFixed(2)} lần (mục tiêu <= 3)`);
 console.log(`Khí vận môn trung vị (${avg((r) => r.nguoiMed).toFixed(1)} người): đạt 30 ${pc(avg((r) => r.kv30Med))} ngày (50-80%), đạt mốc 2 (${SM_CFG.tran.moc2}) ${pc(avg((r) => r.kv60Med))} ngày (10-40%); nếu mốc 2 là 50: ${pc(avg((r) => r.kv50Med))}, 45: ${pc(avg((r) => r.kv45Med))}`);
 console.log(`Khí vận mọi môn: đạt 30 ${pc(avg((r) => r.kv30All))}, đạt mốc 2 ${pc(avg((r) => r.kv60All))}`);
