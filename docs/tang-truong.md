@@ -26,6 +26,41 @@ Phan Anh Tuấn báo: kiếp Chuẩn Thánh mạnh nhất có thể rơi khỏi 
 - Client: `rankCands`/`arenaPower` trong `lib/social.ts` (Huyết x (Công + nửa Thủ)), hiện 12 + giữ kiếp đang ra đài; `components/Arena.tsx` sang ngày mới giữ bóng hôm qua.
 - Cáo thị "Sửa lỗi 20/11". Page đã hứa với Tuấn bản 5:00 sáng 20/11.
 
+## Đêm 20/11/2026 (lên bản 21/11, bản 4.6.4)
+
+Kế hoạch: làm 7 khối tới hạn, chia cho 6 agent chạy song song trong worktree riêng, phiên chính ghép và thử lại toàn bộ. Ngày 12 (góp ý Fanpage, 4 mục), Ngày 36 (soát 143 quái), Ngày 38 (kênh Thế giới, đã bật), Ngày 30 (luật Sơn Môn mới, chạy từ 5:00 21/11), Ngày 22 (đổi tên Lực chiến + nền tu vi sau cờ), Ngày 10 (2 ô còn lại), Ngày 35 (10 cốt truyện). apply_migration của phiên phải chờ người duyệt nên hết giờ 3 lần; Tyler tự dán 3 file SQL vào Supabase lúc ~22:40.
+
+Số chính: CHƯA ĐỌC ĐÊM NAY. Sau lần chờ duyệt bị hết giờ, công cụ execute_sql không cho gọi lại trong lượt này, nên không chạy được các câu SQL đếm người mới, D1, phễu. Đêm 21/11 đọc bù 2 ngày.
+- Lỗi Vercel 24 giờ: không có. Chi phí Vercel 18-19/11: $1,91 cho 2 ngày (~$0,96/ngày; gói Pro $0,67/ngày, build $0,14/ngày, bộ nhớ hàm $0,06/ngày).
+
+Góp ý (Ngày 37): trong game 13 dòng `moi` (#295-#308), sổ mọi kênh 6 dòng (Fanpage 4, Group 2). Không có Claude in Chrome nên không đọc trực tiếp Fanpage/Group.
+- Chết vô lý khi kiếm tiền ở giới trên: 2 người (Huy Phạm trên Fanpage, juno199x #304 #306, rất có thể cùng một người). Đã sửa (Ngày 12 mục 1), bù juno199x 30 phúc.
+- Treo máy hết thọ: 1 người (Nguyễn Vũ). Đã sửa: thọ còn khoảng 5% thì game tự dừng thời gian.
+- Đồ rơi quái cao cấp, Lôi Đài Khai Thiên: 1 người (Phan Anh Tuấn). Đã thêm đồ rơi. Lôi Đài không phải lỗi, đã ghi luật trên màn.
+- Chú giải Linh Mạch: 1 người. Đã sửa. Kênh chat Thế giới: 1 người, 3 phiếu (#302). Đã làm.
+- Tỉ lệ đột phá 90% + 35% vẫn hỏng: 1 người (#303). Do trần 97%, đã ghi trên màn.
+- Việc lớn sang khối Ngày 39 (lên 25/11): tìm ô yêu thú (#307), người mới bị đánh liên tục (#300 và Gia Phuc Nguyen, 2 người), số liệu buff rõ (#298), hệ đồ và hợp luyện (#305, #308), cân bằng chiêu khống chế (#299).
+
+Nhận định: 3/6 góp ý mới là "chết hay thiệt mà không hiểu vì sao" (bờ sông, treo máy, 97%). Lỗi kiểu này làm người kiếp 2-10 bỏ game nhiều nhất, nên đêm nay ưu tiên nói rõ lý do ngay trên màn, không đổi tỉ lệ.
+
+Việc đêm nay và cách đo:
+- Kênh Thế giới: `wc_open`, `wc_send`, `wc_report` (vkl_events), số tin/24 giờ trong vkl_wc_chat, số tin ẩn, số người bị cấm. Mục tiêu tuần đầu: 10% người chơi mỗi ngày mở kênh.
+- Thọ sắp cạn tự dừng: đếm kiếp chết vì hết thọ khi đang chạy tự động (cause hết thọ, trước 24 giờ / sau 24 giờ).
+- Đồ rơi Độ Kiếp, Hồng Hoang: tổng linh thạch nhóm Hồng Hoang theo ngày; tăng hơn 30%/tuần thì hạ `RIENG_DROP.hg`.
+- Sơn Môn Ngày 30: trọng thương/ngày, số lần bỏ ô, ô đứt mạch, tỉ lệ thủ thành công (giữ trong 20-80%).
+
+Tiến độ việc nhiều đêm: Ngày 8f (chọn thế giới khởi đầu, lên 22/11) chưa bắt đầu, đêm 21/11 phải làm cả máy lẫn giao diện. Ngày 23 (màn tu vi) lên 22/11. Ngày 22 sim lệch so với doc (C9 ngày 113 so với 139), cần quyết tốc độ trước khi bật 23/11.
+
+Quyết định lớn đã tự chốt: bật kênh Thế giới khi file thử SQL mới chạy trên Postgres cục bộ, máy chủ thật chỉ kiểm RPC đọc (cờ `NEXT_PUBLIC_WC=0` tắt ngay được). Trọng thương Sơn Môn tính từ lúc hết 2 giờ nghỉ. Yêu thú canh mạch mới 50%. Món riêng Hồng Hoang 35 món, boss giữ linh bảo cũ.
+
+Marketing (soạn sẵn cho Tyler tự đăng, đã qua humanizer):
+- Page, sáng 21/11: "Vạn Kiếp Luân Hồi có kênh Thế giới rồi. Bấm nút bong bóng trên màn chơi là nói chuyện được với đạo hữu khắp thiên hạ: hỏi ai vừa phi thăng, môn nào đang tuyển đệ tử, hay kể kiếp này chết lãng xẹt ra sao. Có chân thân và liên kết Google là gửi tin được. Ai Khai Thiên hay mở kết cục hiếm đầu tiên, kênh tự báo cho cả thiên hạ biết."
+- Group người chơi (Ngày 10 + 30), "Từ hôm nay đất có giá": "Sơn Môn có luật mới từ 5:00 sáng nay. Đánh thua thì người đi theo bị trọng thương, thua càng nhiều trận trong ngày càng nặng, 5:00 sáng hồi hết. Môn chủ, trưởng lão bỏ được ô không cần. Đất phải liền với chính điện: mất ô nối thì các ô bị tách cũng mất theo, nên mở đất thành khối. Linh Mạch mới sinh nằm ẩn, phải trinh sát mới thấy, có mạch còn có yêu thú canh. Chi tiết ở mục Luật trong Sơn Môn."
+- Video 9:16 (15 giây): cảnh 1 chữ "Kiếp này chết lãng xẹt quá" gõ vào kênh Thế giới; cảnh 2 tin hệ thống chữ nghiêng "Hàn Lập vừa phi thăng lần đầu"; cảnh 3 Thao Thiết nuốt túi linh thạch; chữ cuối "Vạn Kiếp Luân Hồi, chơi miễn phí trên web".
+- Quảng cáo: chưa nên chạy, chưa có số D1 đêm nay để so mốc (điều kiện cũ: người tự đến quay lại hôm sau từ 20% ba ngày liền).
+
+Kỹ năng: gamedev, game-design, uiux-pro-max, huashu-design (chấm 5 mặt), humanizer, story-writing, script-writing, the-fool, supabase-postgres-best-practices (qua các agent).
+
 ## Đêm 19/11/2026 (lên bản 20/11)
 
 Kế hoạch: làm hết 4 khối tới hạn theo thứ tự Tyler dặn: Ngày 7 (màn đầu Cảnh sống A/B, tự vào kiếp, kiếp 1 trôi nhanh, quà ngày mai, link thẻ Một đời mời đệ tử), Ngày 7b (Sơn Môn kéo người mới), Ngày 9 (máy chủ Kỷ 2 đất có giá, tính từ 5:00 21/11), Ngày 8e (Thiên thư quyển III chặng 1). Chi tiết ở Ghi chú từng khối trong viec-dem.md. Supabase MCP hỏi xác nhận với SQL có UPDATE/DELETE, Tyler chạy tay phần đó trong SQL Editor.
@@ -57,54 +92,6 @@ Tiến độ việc nhiều đêm: Ngày 10 (giao diện Kỷ 2, bật cờ 5:00
 Quyết định lớn đã tự chốt: lực yêu thú 10.000-30.000 (kế hoạch ghi 1.500-6.000, một người đã thắng); thưởng kéo người cần cả vào môn và quay lại ngày 2; quyển III bật luôn (thử sạch).
 
 Marketing: chưa nên chạy quảng cáo (điều kiện: người tự đến quay lại hôm sau từ 20% ba ngày liền theo cách đo phiên). Có thứ đáng khoe từ 21/11: "Đất có giá" (Ngày 10 soạn bài).
-
-## Đêm 18/11/2026 (lên bản 19/11)
-
-Kế hoạch: 4.6.0 Ngày 8a xong (Phần thưởng Kỷ, 2be814c), Ngày 8 xong 4/5 việc còn lại (dded81d; tin hệ thống Truyền âm chờ áp SQL), Ngày 8c đo và mô phỏng (d813930), Ngày 8d số liệu + thiết kế (dbe6cbf; code quyển III chuyển Ngày 8e). Chi tiết ở Ghi chú từng khối trong plan-4.6.0.
-
-Số chính (đọc khoảng 22:30 18/11):
-- Tài khoản mới: 15/11 165, 16/11 76, 17/11 49, 18/11 50 (chưa hết ngày). Phiên mỗi ngày (vkl_daily): 15/11 1.639, 16/11 1.329, 17/11 1.252.
-- D1: nhóm 14/11 29,5%, 15/11 29,7%, 16/11 26,2% (đầu tháng 34-43%). D7: nhóm 9/11 10,4%, 10/11 5,9% (dưới mốc 11-14%).
-- Phễu đủ 2 / đủ 10 kiếp trên số tài khoản: 15/11 96/48 trên 165, 16/11 53/18 trên 76.
-- Màn rời nhiều nhất 17/11: đầu thai 611, đang chơi 365, chưa rõ 263, sự kiện 260, chết 103.
-- Sơn Môn ngày đầu (24 giờ, số phiên): mở 248, điểm danh 82, vào môn 78, nhiệm vụ xong 45, xem bản đồ 21, Truyền âm 21, trinh sát 29, khai hoang 6, xuất chinh 7, lập môn 16, ký cùng lập 21. Sư Đồ: mời đệ tử 117 lần (12 phiên), tìm đệ tử 22, tìm sư phụ 15.
-- Nhóm 411px: 114/394 phiên `open` không có trường mới (`vis`, `iab`) là 411px, nhóm có trường mới chỉ 24 phiên 411px. Nghĩa là phần lớn nhóm này chạy JS cũ (bản lưu sẵn) hoặc không phải trình duyệt thật. Facebook trong app có trường mới: 93 phiên (iab=fb), Zalo 24.
-- Lỗi Vercel 24 giờ: không có.
-- Người "full" (Ngày 8d): 22 người xong quyển II (73% chơi hôm nay), 191 người đã Khai Thiên.
-
-Góp ý (12 góp ý mới #283-#294, cộng 85 góp ý tồn từ 31/10-12/11 chưa ai trả lời, đã xem hết):
-- #135, #283 (khe nứt không gian khép kiếp mà không báo): sửa trong đêm, nút "Bước vào" ghi rõ "Bước qua là kiếp này khép lại". Không đổi luật, không cần mô phỏng (chỉ đổi chữ gợi ý). Tặng 10 phúc mỗi người (tác vụ 5:00 gửi kèm trả lời). Dòng mới trong cáo thị 4.6.0 nhóm "Sửa lỗi 19/11".
-- Ý lớn ghi lại cho hậu kỳ: góp ý "[Sau chứng đạo]" (24 góp ý) gom vào `docs/thiet-ke-hau-ky.md` (quyển III, chọn thế giới khởi đầu). Cân bằng ghi lại, chưa làm: Cương/Nhu theo hồi chiêu (#284), Tụ Khí Đan theo % (#285), thiên phú tím yếu (#286), linh căn (#287), tự dừng khi săn yêu sắp chết (#291), đồ theo đạo (#292), tên Trúc Cơ Đan ở cảnh giới cao (#289), giới hạn 500 chữ (#288, cần hàm máy chủ mới).
-- Câu trả lời đã soạn ở Ghi chú Ngày 8a (plan-4.6.0), gồm cả nhóm góp ý tồn.
-- Không đọc được bình luận Facebook: phiên này không có Claude in Chrome. Bình luận Hoang Le (Tyler chuyển) đã xử lý ở Ngày 8d.
-
-Nhận định:
-1. D1 của nhóm 14-16/11 thấp hơn đầu tháng khoảng 10 điểm, trùng lúc quảng cáo Chân Thân chạy và nhóm 411px tăng. Phải tách được phiên thật trước khi kết luận kiếp đầu xấu đi.
-2. Sơn Môn kéo người cũ: 248 phiên mở ngày đầu. Thứ người trong môn còn thiếu là lý do làm việc mỗi ngày ngoài Khí vận; Công đóng góp và pháp bảo theo hạng Công (8a) là lý do đó, đo bằng `sm_thuong_mo` và số người đủ 10 Công mỗi ngày.
-3. Người full ít nhưng rất trung thành và là người viết bình luận công khai. Quyển III và chọn thế giới khởi đầu đáng làm sớm (8e, 8f).
-
-Việc tăng trưởng đêm nay:
-1. Sửa #135/#283 (ở trên). Giả thuyết: người chơi bỏ game sau khi mất một kiếp đang mạnh vì bấm thử. Đo: số lần chọn "Bước vào" trên số lần gặp sự kiện `xuyen_khong` trước/sau bản 19/11 (sự kiện `ev` theo id). Cải thiện tiếp: nếu tỉ lệ bước vào vẫn cao ở kiếp trên 10 thì thêm hỏi lại một lần.
-   - Đối chiếu: không trùng với plan-4.5.0 (xong), plan-4.6.0 (Sơn Môn, hậu kỳ), không có docs/yeu-cau-lam-tinh-nang.md.
-2. Không thêm việc mới khác: đêm nay ba khối Sơn Môn + thiết kế hậu kỳ đã là phần người chơi thấy nhiều nhất; thêm việc nữa sẽ không thử kịp.
-
-Quyết định tự chốt:
-- Công tính lại từ dữ liệu có sẵn thay cho bảng `vkl_sm_cong` (ít chỗ hỏng hơn, đúng ngay từ 18/11); hạng môn chọn phẩm chỉ xét môn đủ điều kiện.
-- Không code quyển III đêm nay, chuyển thành khối 8e (20/11) và 8f chọn thế giới khởi đầu (22/11); tên cảnh giới mới là Chân Nhân.
-- Trả lời cả 85 góp ý tồn theo nhóm thay vì để mãi ở 'moi'.
-
-Tiến độ việc nhiều đêm:
-- Kiếp đầu gọn lần 2: vẫn chờ tách nhóm 411px (đo tiếp 19-20/11).
-- Sơn Môn: tin hệ thống Truyền âm chờ Tyler chạy `supabase/son_mon_chat_he_2026_11_19.sql`.
-- Hậu kỳ: 8e (quyển III chặng 1) 20/11, 8f (chọn thế giới) 22/11, chặng 2-4 sau đó.
-
-Nội dung soạn sẵn (Tyler tự đăng, Claude không đăng):
-- Bài Page "Phần thưởng Kỷ 1": "Sơn Môn có phần thưởng rồi. Hết Kỷ 1 (21:00 ngày 1/12), môn hạng 1 nhận pháp bảo Thần phẩm, hạng 2 Tiên phẩm, hạng 3 Linh phẩm. Trong mỗi môn, 7 người góp công nhiều nhất nhận vũ khí, mỗi hạng một loại: kiếm, đao, thương, quạt, phất trần, cung, song chùy. Môn chủ nhận thêm Chưởng Môn Ấn. Công có từ điểm danh, nhiệm vụ trong kiếp, khai hoang, theo xuất chinh và đứng giữ ô. Mở Sơn Môn, bấm Phần thưởng trên thẻ môn để xem nếu Kỷ kết thúc bây giờ ngươi nhận gì. van-kiep-luan-hoi.vercel.app"
-- Caption ngắn: "Bảy hạng, bảy món vũ khí. Nhìn vũ khí là biết ai đứng thứ mấy trong môn."
-- Kịch bản video 9:16 (15 giây): 0-3s cận 7 vũ khí Thần phẩm nhấp lửa, chữ "Kỷ 1 kết thúc 1/12"; 3-8s màn "Nếu Kỷ kết thúc bây giờ, ngươi nhận: Thần phẩm Đao"; 8-12s bảng Công trong môn, dòng "Ngươi" sáng lên; 12-15s chữ "Vào môn, góp công, giành vũ khí" + link. Quay bằng `?demo=chu&m=thuong` như video Sơn Môn.
-- Trả lời Hoang Le: ở `docs/thiet-ke-hau-ky.md` mục 5.
-
-Quảng cáo Facebook: chưa nên chạy thêm tới khi tách xong nhóm 411px (đo 19-20/11). Giữ đề xuất đợt Sơn Môn 20-26/11 (50.000đ/ngày, 17h-24h, Việt Nam 18-40, Lưu lượng truy cập), thêm mẫu thứ ba: ảnh 7 vũ khí Thần phẩm với chữ "Nhìn vũ khí là biết ai đứng thứ mấy". Dừng mẫu nào trên 2.000đ mỗi người xong kiếp 1 sau 2 tối, hoặc D1 nhóm quảng cáo dưới 20%. Chỉ tính phiên có trường `vis` (bỏ nhóm 411px không có trường mới).
 
 ## Câu SQL dùng mỗi đêm
 
@@ -148,6 +135,10 @@ group by 1 order by 1;
 - Lột đồ khi thua trận (`robGear`), lần 1 (13/11, góp ý #236 #229): không lột thần binh truyền kiếp. Số trước: 2 góp ý báo mất thần binh trong 2 ngày. Sau: đếm góp ý báo mất thần binh từ 14/11.
 
 - Khe nứt không gian (sự kiện `xuyen_khong`), lần 1 (18/11): ghi rõ "bước qua là kiếp này khép lại" trên nút. Số trước: 2 góp ý than mất kiếp (#135, #283). Đo sau 3 ngày: tỉ lệ chọn Bước vào.
+
+- Kênh Thế giới, lần 0 (bật 21/11, Ngày 38): đo % người chơi mỗi ngày mở kênh (`wc_open`), số người gửi, số tin bị ẩn. Mốc: 0.
+- Kiếm tiền quá độ ở giới trên, lần 1 (21/11, góp ý Huy Phạm, juno199x): lời dẫn đúng cõi, tỉ lệ giữ nguyên. Số trước: 2 góp ý "chết vớ vẩn" trong 1 ngày. Đo: góp ý cùng loại 7 ngày sau.
+- Tự chạy thời gian, lần 1 (21/11, Nguyễn Vũ): thọ còn khoảng 5% thì tự dừng. Đo: kiếp chết vì hết thọ lúc thời gian đang tự trôi.
 
 ## Tính năng đã ẩn
 

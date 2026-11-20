@@ -46,50 +46,6 @@ Lên bản: 2026-11-22 (làm 20-21/11, mỗi đêm một phần, giấu sau cờ
 - [ ] uiux-pro-max + huashu-design (2 vai) + humanizer, rồi bật cờ.
 - Ghi chú:
 
-## Ngày 10 - Kỷ 2 làm sớm: giao diện, bật cờ
-Lên bản: 2026-11-21. Bật cờ `SM_DAT_ON` lúc 5:00 21/11 (điểm bắt đầu tính). Có cáo thị 4.6.2 (bản mới; 4.6.1 đã dùng cho 20/11): "Đất có giá": Linh Mạch, Thiên Trì, yêu thú, điểm giữ đất, luật dải sức mạnh.
-- [x] Bản đồ: biểu tượng pixel Linh Mạch (mạch ngọc xanh), Thiên Trì (hồ sen vàng), yêu thú (đầu thú đỏ, ghi lực giữ); chú thích; chạm ô ghi "+3 điểm mỗi giờ, +2 Khí vận mỗi sáng".
-- [x] Yêu thú dùng icon có sẵn ở `public/cws/thu/a1..a11.webp` (128px, Cultivation World Simulator, CC BY-NC-SA 4.0; Tyler duyệt 20/11): thỏ trắng a1, trâu lửa a2, xà băng a3, sói đen a4, hươu ngọc a5... (xem ảnh để chọn); mỗi ô yêu thú một con cố định theo tọa độ. Không phóng to quá 128px; ô nhỏ hơn thì để trình duyệt thu nhỏ (không image-rendering pixelated khi thu không nguyên lần). Thêm dòng "Biểu tượng yêu thú" vào mục Cảnh sơn môn ở /tac-gia.
-- [x] Môn nhà: thẻ Lãnh thổ thêm "Điểm Kỷ: 1.240 · +9 mỗi giờ"; Xếp hạng Kỷ theo điểm (vẫn ghi số ô).
-- [x] Xuất chinh: ô ngoài dải ghi lý do "Môn này yếu hơn 1/3 môn ta, đánh không được trừ ở Linh Mạch và Thiên Trì"; ô yêu thú ghi "Đánh máy, thắng mỗi người +10 phúc duyên".
-- [x] Luật Sơn Môn: thêm câu hỏi "Điểm giữ đất là gì?", "Yêu thú là gì?", "Sao không đánh được môn kia?"; thẻ 3 câu đổi câu 3: "Hết Kỷ, môn nhiều Điểm giữ đất nhất thắng".
-- [ ] uiux-pro-max + humanizer cho mọi màn mới; `smoke-son-mon` thêm màn Linh Mạch, yêu thú, ô ngoài dải.
-- [ ] Bài đăng Page + Group cho Tyler tự đăng (không tự đăng): "Từ hôm nay đất có giá".
-- Ghi chú:
-  - 20/11 ~8h (Tyler: "cho ô yêu thú lên luôn", chọn bật cả Kỷ 2 ngay): bật cờ sớm (cfg dat.bat_dau = lúc bật), chạy sm_dat_5h tay: 8 yêu thú, 12 Linh Mạch, Thiên Trì; điểm tính từ giờ chẵn kế tiếp. Cáo thị 4.6.2 làm luôn; dòng "Từ 5:00 21/11" ở 4.6.1 đã bỏ. Còn: thêm màn Linh Mạch/yêu thú/ngoài dải vào smoke-son-mon, bài đăng Page + Group.
-  - Trả lời góp ý cho tác vụ 5:00 gửi (đêm 19/11, kèm 10 phúc, `vkl_gift.to_player` là username):
-    - #297 (godwhale99), reply_ver '4.6.0': "Cảm ơn bạn đã báo. Từ bản sáng 20/11, danh sách Trừ yêu xếp theo cấp quái từ thấp tới cao rồi nhé. Mình gửi bạn 10 phúc duyên."
-
-## Ngày 12 - Góp ý Fanpage 20/11: chết vô lý ở giới trên, đồ rơi quái cao cấp, Lôi Đài Khai Thiên, chú giải Thiên Trì
-Lên bản: 2026-11-21. LÀM KHỐI NÀY TRƯỚC (Tyler giao trong chat 20/11 ~12h). Có cáo thị: thêm vào bản 4.6.4 (hoặc bản mới nhất chưa lên), mục `asked` ghi tên người góp ý: Huy Phạm (mục 1), Phan Anh Tuấn (mục 2, 3), Chí Triệu Kiên (mục 4).
-- [ ] 1. Kiếm tiền quá lâu ở giới trên (Huy Phạm, Khai Thiên Hậu kỳ ở Hồng Hoang chết vì "bị cướp giết bên bờ sông"). Chỗ sửa: `OVERWORK.kiem_tien` hit p:1 trong `lib/game/engine.ts` (~1655). Hiện nhánh Độ Kiếp có `!c.cosmos` nên người ở giới trên rơi xuống câu cướp phàm tục. Thêm nhánh `if (c.cosmos)` đứng TRƯỚC nhánh Độ Kiếp, mỗi giới một câu; giữ cơ chế cũ (fatal 0,25; thoát thì mất 35% linh thạch + hurt(c, 25, ctx)). Lời dẫn viết theo lệnh Tyler 20/11 (story-writing + humanizer), dùng đúng từng chữ:
-  - hg, mở đầu: "Lại thêm một chuyến đổi chác..." / "Another trading run..."
-    - chết: "Năm này qua năm khác bạn ôm linh bảo đi đổi chác, mùi linh thạch bay tới tận Câu Ngô Sơn. Thao Thiết thức giấc. Hung thú tham nhất tứ hung không cần biết bạn là thánh hay phàm: nó nuốt túi càn khôn, rồi nuốt luôn cả chủ." / "Year after year you haul treasures around to trade, and the smell of spirit stones drifts all the way to Gouwu Mountain. The Taotie wakes. The greediest of the Four Fiends does not care whether you are a saint or a mortal: it swallows your qiankun pouch, then swallows its owner."
-    - thoát: "Thao Thiết đánh hơi thấy túi linh thạch của bạn, đuổi theo suốt ba ngàn dặm. Bạn vứt lại ${lost} linh thạch cho nó nhai rồi thoát thân." / "The Taotie catches the scent of your spirit stones and chases you for three thousand li. You toss it ${lost} spirit stones to chew on and escape."
-    - Câu chết này KHÔNG nối COSMOS_EPI của hg ("thêm một bộ xương...") vì bị nuốt thì không còn xương: thêm "Thao Thiết|Taotie" vào regex của `cosmosCause` hoặc gán cause trực tiếp.
-  - tien, mở đầu: "Lại thêm một mẻ tiên đan..." / "Another batch of immortal pills..."
-    - chết: "Mấy chục năm bạn buôn tiên đan không nghỉ, sổ sách dày tới mức lọt vào mắt Thiên Đình. Lôi Bộ gán tội buôn lậu tiên vật, ba đạo thiên lôi giáng xuống trước khi bạn kịp kêu oan." / "For decades you traded immortal pills without rest, until your ledgers grew thick enough to catch the Heavenly Court's eye. The Thunder Ministry charges you with smuggling immortal goods, and three bolts of heavenly lightning fall before you can plead your case."
-    - thoát: "Lôi Bộ tới xét nhà, tịch thu ${lost} linh thạch vì tội buôn lậu tiên vật. Bạn lĩnh một đạo lôi rồi được tha." / "The Thunder Ministry searches your home and seizes ${lost} spirit stones for smuggling immortal goods. You take one bolt of lightning and are let go."
-  - ma, mở đầu: "Lại thêm một đêm đếm của..." / "Another night counting the hoard..."
-    - chết: "Ở Ma giới, giàu mà sống lâu là chuyện lạ. Tên thuộc hạ đếm linh thạch cho bạn mấy chục năm, một đêm đếm xong thì đâm dao vào lưng bạn, ôm cả kho chạy vào huyết hải." / "In the Demon Realm, the rich rarely live long. The underling who counted your spirit stones for decades finishes counting one night, plants a knife in your back and runs into the blood sea with the whole hoard."
-    - thoát: "Tên thuộc hạ giữ kho trở mặt, cuỗm ${lost} linh thạch trốn vào huyết hải. Bạn giữ được mạng, mất của." / "The underling who kept your vault turns on you and flees into the blood sea with ${lost} spirit stones. You keep your life but lose the money."
-  - hu, mở đầu: "Lại thêm một năm tích của..." / "Another year of hoarding..."
-    - chết: "Trong hư không, của cải là thứ duy nhất còn có hình. Bạn tích mãi không nghỉ, tới khi hư không ăn mòn từ đống linh thạch lan sang người. Lúc bạn nhận ra thì nửa thân đã không còn." / "In the void, wealth is the only thing that keeps its shape. You hoard without rest until the void eats from your pile of spirit stones into your body. By the time you notice, half of you is gone."
-    - thoát: "Hư không nuốt mất một góc kho, ${lost} linh thạch tan đi không một tiếng động." / "The void swallows a corner of your vault, and ${lost} spirit stones vanish without a sound."
-  - Thử: `scripts/sim-do-kho.ts` không đổi tỉ lệ chết (chỉ đổi lời); viết test nhỏ ép rnd để mỗi giới ra đúng câu, cả hai nhánh.
-- [ ] 2. Đồ rơi riêng cho quái cao cấp (Phan Anh Tuấn: Tất Phương, Cùng Kỳ chỉ rơi đồ trắng xanh, quái Hồng Hoang rơi vài trăm linh thạch, trong khi Bích Nhãn Kim Thiềm có Kim thiềm bảo châu). Đã kiểm 20/11: KHÔNG quái Độ Kiếp (doKiep) nào và KHÔNG quái Hồng Hoang (`hg_*`) nào có món `from` riêng (Phỉ Thú, Tất Phương, Đào Ngột, Cùng Kỳ, Thao Thiết, Ứng Long, Lục Nhĩ Mi Hầu, Huyền Vũ Cự Quy, ... và toàn bộ hg_ như Quỳ Ngưu, Bạch Trạch, Côn Bằng, Kim Ô, Đế Giang, Hỗn Độn). Dùng skill game-design (balance-review, economy) trước khi code:
-  - Mỗi quái doKiep một món riêng (tứ hung trước: Đào Ngột, Cùng Kỳ, Thao Thiết, cùng Tất Phương, Ứng Long). Mỗi quái Hồng Hoang một món riêng, hoặc gom theo nhóm (tam thi, thần thú, tứ hung Hồng Hoang) nếu quá nhiều. Tên lấy từ thần thoại có sẵn (luật A6), tìm trùng id/tên trước (A5).
-  - Giá bán và chỉ số tăng dần theo cấp quái, món Độ Kiếp đắt hơn Kim thiềm bảo châu; món Hồng Hoang đáng công đánh hơn ngồi tu luyện. Giữ `dropFactor` (quái yếu hơn 6 cấp không rơi) để chống farm.
-  - Mô phỏng `scripts/sim-farm.ts 200 <cảnh giới>` trước/sau cho Độ Kiếp và Hồng Hoang, ghi linh thạch/năm; không để lạm phát (luật C17).
-  - Món mới có dòng "Rơi từ: <quái>" ở chỗ xem đồ như món from cũ.
-- [ ] 3. Lôi Đài: chỉ số Khai Thiên ai cũng như nhau (Phan Anh Tuấn, ảnh màn "Chọn kiếp ra đài" có nhiều kiếp Khai Thiên chỉ số giống nhau, hỏi "không tính stat của đồ sao", "thắng thiên đạo khai thiên còn yếu hơn chuẩn thánh chết yểu"). XEM TỐI NAY: đọc `lib/game/arena.ts` (ARENA_RULES, cách tính chỉ số bóng), `components/Arena.tsx` (ShadowCard), `app/api/loi-dai/route.ts`, và dữ liệu thật (bảng bóng lôi đài trên Supabase, chỉ SELECT) của vài kiếp Khai Thiên và Chuẩn Thánh. Nếu đúng là lỗi (đồ hay cảnh giới không được tính, hoặc bị chặn trần làm Khai Thiên ngang nhau, hoặc Khai Thiên yếu hơn Chuẩn Thánh) thì sửa trong đêm, mô phỏng tỉ lệ thắng trước/sau. Nếu là luật cố ý (cân bằng chỉ số) thì KHÔNG đổi luật, chỉ ghi rõ luật ngay trên màn chọn kiếp (luật B7, C26). Ghi kết luận một câu vào "Ghi chú:" để Tyler/page trả lời người chơi.
-- [ ] 4. Chú giải ô đặc biệt trên bản đồ Sơn Môn (Chí Triệu Kiên hiểu "Môn nào cũng đánh được ô này" là không cần đất kề). `components/sonmon/SmMap.tsx` ~164 và ~169. Đã qua humanizer, dùng đúng từng chữ:
-  - Thiên Trì: "Thiên Trì: môn giữ được +5 điểm mỗi giờ, người đứng giữ mạnh thêm 10%. Môn mạnh yếu gì cũng đánh được ô này, đệ tử cũng ra lệnh được. Muốn xuất chinh thì môn phải có đất kề bên." / "Heaven Pool: +5 points per hour, guards 10% stronger. Any sect may attack it whatever its strength, and disciples can order the march. You still need land next to it to march."
-  - Linh Mạch: thay câu cuối "Môn nào cũng đánh được ô này." bằng "Môn mạnh yếu gì cũng đánh được ô này, đệ tử cũng ra lệnh được. Muốn xuất chinh thì môn phải có đất kề bên." / "Any sect may attack it whatever its strength, and disciples can order the march. You still need land next to it to march."
-  - Soát `components/sonmon/SmLuat.tsx` và `docs/son-mon-luat.md` xem còn câu nào nói "môn nào cũng đánh được" mà không nhắc đất kề thì sửa theo cùng ý.
-- Ghi chú:
-  - Người chơi báo qua Fanpage, không có trong vkl_feedback: sau khi lên bản, Tyler hoặc tác vụ page trả lời trên Fanpage/Messenger (Huy Phạm, Phan Anh Tuấn, Chí Triệu Kiên), kèm số bản.
-
 ## Ngày 11 - Pháp bảo Sơn Môn có tác dụng trong trận (Kỷ 2)
 Lên bản: 2026-12-01. Không cáo thị riêng (đã báo ở 8a).
 - [ ] Nối `vkl_priv.sm_lc_bv` vào tính trận và lực giữ (hàm mới thay thế cho Kỷ 2, Kỷ 1 đã kết giữ nguyên). Chạy `sm_phat_thuong(1)` lúc kết Kỷ 1 (21:00 1/12) và kiểm tra ai nhận gì, gửi Tyler danh sách.
@@ -183,17 +139,6 @@ Lên bản: 2026-11-29. Cờ `THIEN_CO_ON`. Có cáo thị (chỉ gợi ý có "
 - [ ] Đo: số người có ít nhất 1 mảnh; số người nhắc tới chân tướng trên Fanpage và Group (nếu đọc được).
 - Ghi chú:
 
-## Ngày 30 - Sơn Môn: phạt đánh thua, bỏ ô, đất liền, yêu thú ngẫu nhiên, Linh Mạch ẩn
-Lên bản: 2026-11-21. Tyler giao 20/11 17:32. Làm SAU Ngày 12, TRƯỚC Ngày 22. Có cáo thị (vào bản 4.6.4 hoặc bản mới nhất chưa lên). Đọc `docs/son-mon-luat.md` trước; sửa luật trong file đó và màn Luật Sơn Môn (`components/sonmon/SmLuat.tsx`) cho khớp. Hàm và cron mới bằng apply_migration, không sửa hàm cũ (tạo hàm mới thay thế, đổi chỗ gọi).
-- [ ] 1. Phạt bên công khi đánh thua: mọi người theo xuất chinh của trận thua bị giảm Lực chiến Sơn Môn theo số trận thua trong ngày: lần 1 -10% trong 1 giờ, lần 2 -30% trong 3 giờ, từ lần 3 -50% tới 5:00. Đếm và hồi hết lúc 5:00 mỗi ngày. Giữ luật "nghỉ 2 giờ" đang có. Hiện ngay trên thẻ người chơi và màn xuất chinh: "Trọng thương: Lực chiến -30%, hồi lúc 14:20" (không tooltip). Mục đích: chặn đánh liều liên tục.
-- [ ] 2. Nút "Bỏ ô" cho môn: chưởng môn (và người có quyền phát lệnh xuất chinh) bỏ được một ô của môn, trừ chính điện và ô đang có quân đi tới. Hỏi xác nhận một lần. Ô về trống, người đứng giữ ở đó tự về chính điện, ghi vào chiến báo môn. Luật cũ "đủ ô thì tự bỏ ô xa nhất khi chiếm thêm" giữ nguyên.
-- [ ] 3. Đất phải liền nhau: sau mỗi lần môn mất ô hoặc bỏ ô, tính các ô còn nối với chính điện (kề nhau trên lưới lục giác). Ô bị đứt khỏi chính điện về trống, người đứng giữ ở đó tự về chính điện, chiến báo ghi "Đất đứt mạch, mất N ô". Áp cho cả ô Linh Mạch, Thiên Trì, yêu thú đã chiếm. Kiểm trường hợp chính điện bị vây.
-- [ ] 4. Linh Mạch và Thiên Trì mới xuất hiện: ngẫu nhiên có hoặc không có yêu thú giữ (gợi ý 50%, ghi số chọn vào Ghi chú). Có yêu thú thì đánh như ô yêu thú hiện tại; không có thì môn đầu tiên tới chiếm được ngay.
-- [ ] 5. Linh Mạch ẩn: Linh Mạch mới sinh không hiện trên bản đồ, phải trinh sát ô đó mới thấy (kết quả trinh sát thêm dòng "Có Linh Mạch"); môn đã trinh sát thấy thì giữ thấy tới hết Kỷ. Linh Mạch không sinh ở ô đã có chủ, và một ô không có Linh Mạch 2 lần trong một Kỷ (lưu ô đã từng có). Linh Mạch đang hiện từ 20/11 giữ nguyên tới khi bị chiếm hoặc đổi lượt sinh; từ lượt sinh kế tiếp mới ẩn. Thiên Trì vẫn hiện.
-- [ ] Thử: `sim-son-mon` trước/sau (tỉ lệ thủ thành công phải còn trong 20-80% như Điều kiện dừng); `SMOKE_URL=http://localhost:3314 node scripts/smoke-son-mon.cjs` thêm: bỏ ô, đứt mạch, trinh sát thấy Linh Mạch, phạt thua 3 lần trong ngày; test SQL cho đứt mạch (ô cách 2-3 bước, nhánh vòng).
-- [ ] Cáo thị ngắn, không lộ tỉ lệ: "Sơn Môn: đánh thua liên tiếp sẽ trọng thương; môn tự bỏ ô được; đất phải liền với chính điện; Linh Mạch giờ phải trinh sát mới thấy." Soạn bài cho Tyler tự đăng Group người chơi.
-- Ghi chú:
-
 ## Vòng tu vi chân thân - Cửu Chuyển, Mộng thạch, Luyện lô, đi cảnh (Tyler duyệt 20/11 17:14, "áp dụng từ hôm nay")
 Thiết kế đầy đủ và mọi con số: doc Project `claude/vong-cay-chan-than.md` (Projects tool, project_read). Đọc mục cần trước khi làm từng khối, đừng đọc lại cả file mỗi lần.
 Đã chốt (không hỏi lại):
@@ -207,15 +152,6 @@ Thiết kế đầy đủ và mọi con số: doc Project `claude/vong-cay-chan-
 - Sơn Môn: cảnh giới chân thân cộng +1%/Chuyển vào Lực chiến Sơn Môn, sau trần 6.000, chung trần +25% với pháp bảo, CHỈ từ Kỷ 3 (không đụng Kỷ 2). Đồ lò luyện không vào trận Sơn Môn.
 - Tất cả tính ở MÁY CHỦ: lưu tu vi + giờ chốt, tính khi mở hoặc khi tiêu (không cron mỗi phút); roll lò ở máy chủ. Toàn bộ ẩn tới khi người chơi có chân thân; lúc tạo chân thân tặng sẵn đủ tu vi để lên tầng đầu ngay.
 - Lịch: Ngày 22 lên 21/11, Ngày 23 lên 22/11, Ngày 24 bật cho người chơi 23/11. Tyler 20/11 18:30: mọi khối phải lên trước 5:00 1/12 để Kỷ 2 bắt đầu đủ tính năng. Các con số (40% người lên tầng...) chỉ để ĐO và cải thiện, KHÔNG chặn lịch.
-
-## Ngày 22 - Chân thân lát 1a: đổi tên Lực chiến + nền máy chủ tu vi (giấu sau cờ)
-Lên bản: 2026-11-21. Làm SAU Ngày 10 và Ngày 12. Cờ `CT_TU_VI_ON` (tắt). Cáo thị một dòng cho phần đổi tên.
-- [ ] Đổi tên ở tab Nhân vật, thẻ pháp bảo Sơn Môn (`components/sonmon/BaoVat.tsx` và chỗ hiện "Tu vi +"), câu giải thích: "Tu vi" → "Lực chiến" (tr VI/EN). Grep toàn repo chữ "Tu vi" dùng cho ctPower, không đổi chữ tu vi trong kiếp.
-- [ ] Bảng mới (apply_migration, file trong supabase/): tu vi chân thân (player, tu_vi, chuyen, tang, can_co theo từng Chuyển, giờ chốt, tổng tu vi, số lần trượt hiện tại, số kiếp tính trong ngày). RLS chỉ đọc của mình; ghi chỉ qua hàm SECURITY DEFINER.
-- [ ] Hàm mới: `ct_tv_get` (chốt offline theo luật 12h + 12h/50%, dừng ở 24 giờ và ở bình cảnh, tự lên tầng khi đầy, trả trạng thái), `ct_tv_life` (gọi từ chỗ ghi kiếp, cộng 25×√năm theo bậc kiếp trong ngày, tốc độ theo Chuyển), `ct_tv_dot_pha` (kiểm Mộng dẫn chân, tung tỉ lệ ở máy chủ, áp luật trượt/căn cơ). Hàm cũ không sửa: nối `ct_tv_life` bằng hàm mới hoặc gọi thêm từ client sau vkl_add_life, miễn là máy chủ tự đọc năm sống từ vkl_lives chứ không tin số client gửi.
-- [ ] Test SQL: offline 6h, 18h, 40h; kiếp thứ 1, 6, 11 trong ngày; đột phá ở 100%, 150%, 200%; trượt 3 lần; thiếu chìa Kim Đan.
-- [ ] `scripts/sim-tu-vi.ts` mới: mô phỏng 3 kiểu người chơi (chơi đều 5 kiếp + 2 lần/ngày, chỉ offline 2 lần, chỉ offline 1 lần) ra ngày đạt từng Chuyển; phải gần mốc trong doc (C9 Viên mãn khoảng ngày 139 / 286). Lệch quá 15% thì ghi vào Ghi chú.
-- Ghi chú:
 
 ## Ngày 23 - Chân thân lát 1b: màn tu vi, đột phá, áp cảnh (giấu sau cờ)
 Lên bản: 2026-11-22. Làm SAU Ngày 8f. Cờ `CT_TU_VI_ON` vẫn tắt.
@@ -345,13 +281,6 @@ Làm sau các khối tới hạn của lịch Kỷ 2. Đêm quá tải: tới 3:
 - Cáo thị: mỗi tuần một dòng chung ("Thêm N cốt truyện mới, có chuyện nối Thiên thư"), không liệt kê chi tiết.
 - Báo Tyler trong tin cuối phiên: 10 tên cốt truyện (một dòng mỗi cái, ghi quyển liên kết nếu có), số sự kiện cũ đã soát và đã sửa.
 
-## Ngày 36 - Soát quái vỡ hạt trong trận (Tyler báo 20/11 20:18, con Hổ)
-Lên bản: 2026-11-21. Đã sửa sẵn ở commit 12be60c (phóng ảnh pixel theo hệ số nguyên trong `components/MonsterLpc.tsx` và `PetPic`; làm sạch `dk_tiger`, `dk_monkey`, `dk_toad` bằng `scripts/mkbeast_dokiep.py`). Đêm nay chỉ kiểm và làm nốt.
-- [ ] Playwright 390x844, deviceScaleFactor 2: vào trận với từng quái có ngoại hình LPC (MONSTER_LOOK, thần thú petLegend, linh thú trận thu phục), chụp khung 1-2. Soi: hạt không đều, khung lấn sang khung bên, viền mờ, mẩu hình lạ ở mép. Ghi tên quái còn lỗi vào Ghi chú và sửa luôn (cùng cách: làm sạch ảnh gốc, không vẽ mới, không phóng to ảnh nguồn).
-- [ ] So cỡ quái trước/sau (đổi hệ số nguyên làm quái người nhỏ đi khoảng 6%): nếu quái nào nhỏ quá so với nhân vật thì tăng `scale` của quái đó tới bậc nguyên kế tiếp.
-- [ ] Không đổi nhân vật người chơi (`components/Sprite.tsx`) trong khối này; nếu thấy vỡ hạt ở nhân vật thì ghi vào Ghi chú và báo Tyler.
-- Ghi chú:
-
 ## Ngày 37 - MỖI ĐÊM: tổng hợp góp ý mọi kênh để cải thiện game (khối lặp, Tyler giao 20/11 20:28)
 Lên bản: 2026-11-21 (LẶP LẠI MỖI ĐÊM. Không đánh [x] cả khối, không cắt sang lưu trữ.)
 Làm ĐẦU TIÊN mỗi đêm, trước các khối tính năng (chỉ là đọc và phân loại, khoảng 15-20 phút). Phần sửa thì xếp theo thứ tự ưu tiên ở đầu sổ.
@@ -369,23 +298,41 @@ Làm ĐẦU TIÊN mỗi đêm, trước các khối tính năng (chỉ là đọ
 - Trả lời người chơi: góp ý trong game thì soạn câu trả lời vào "Ghi chú:" như luật cũ (tác vụ 5:00 gửi). Góp ý Fanpage thì ghi câu trả lời vào cột Xử lý để tác vụ page dùng khi bản đã lên; KHÔNG tự trả lời trên Facebook.
 - Chủ nhật: viết mục "Tổng hợp theo tuần" trong sổ góp ý (3 chủ đề lặp nhiều nhất, đã sửa gì, còn treo gì).
 - Tin cuối phiên: một mục "Góp ý" gồm số góp ý mới theo kênh, các chủ đề chính (kèm số người), đã sửa gì đêm nay, khối mới đã thêm.
+- Ghi chú:
+  - Đêm 20/11 - trả lời góp ý trong game cho tác vụ 5:00 gửi (kèm phúc duyên qua vkl_gift, to_player là USERNAME), reply_ver '4.6.4', status da_xong:
+    - #302 (linhly): "Chào bạn, kênh chat Thế giới có từ bản 4.6.4 sáng 21/11 rồi nhé. Bạn bấm nút bong bóng chat ở thanh trên màn chơi, cạnh nút thư, là mở được. Ai đăng nhập cũng đọc được; muốn gửi tin thì cần có chân thân và đã liên kết Google. Cảm ơn bạn đã góp ý, mình gửi bạn 10 phúc duyên." (10 phúc)
+    - #304 (juno199x): "Cảm ơn bạn đã báo, và xin lỗi vì kiếp Khai Thiên vừa rồi. Từ bản 4.6.4 sáng 21/11, làm ăn quá sức ở Hồng Hoang hay các cõi trên không còn bị cướp giết bên bờ sông nữa, mỗi cõi có tai họa riêng. Game vẫn nhắc trước khi bạn làm một việc quá lâu, thấy nhắc thì đổi việc vài năm là yên. Mình gửi bạn 30 phúc duyên coi như đền kiếp ấy." (30 phúc: 10 thường lệ + 20 bù vì chết do lời dẫn sai cõi)
+    - #306 (juno199x, cùng chuyện #304): "Chuyện này mình sửa ở bản 4.6.4 sáng 21/11 rồi nhé, như câu trả lời ở góp ý kia của bạn. Lần bị chặn mà thoát được thì bạn chỉ mất một phần linh thạch và bị thương, không mất mạng." (10 phúc)
+    - #303 (godwhale99): "Cảm ơn bạn hỏi kỹ. Tỉ lệ đột phá dù cộng thêm cách nào cũng chỉ cao nhất 97%, nên 90% cộng Huyết tế 35% vẫn còn 3% hỏng. Từ bản 4.6.4 sáng 21/11, màn độ kiếp ghi rõ mức trần này ngay dưới tỉ lệ. Mình gửi bạn 10 phúc duyên." (10 phúc)
+  - Góp ý giữ `moi` (chưa làm, chưa có ngày): #307 tìm yêu thú, #308 hệ đồ rơi, #305 hợp luyện sau chuyển tu, #300 người mới bị đánh, #299 cân bằng công pháp khống chế, #298 khí vận khởi đầu và số liệu. Đã đưa vào khối Ngày 39.
+## Ngày 39 - Góp ý 20/11: tìm yêu thú, người mới bị đánh liên tục, số liệu rõ (thêm đêm 20/11)
+Lên bản: 2026-11-25. Ghi tên vào `asked` cáo thị: ton (#307), nonameplayer (#300), Gia Phuc Nguyen (group), godwhale99 (#298, #305, #308), trieunhac (#299).
+- [ ] 1. Sơn Môn: hàng chip "Ô yêu thú" ở màn Bản đồ (tên ô, lực, cách mấy ô; chạm thì chọn và cuộn tới), như thẻ "Ô kề có thể đánh". Không đổi luật yêu thú dời chỗ (#307).
+- [ ] 2. Người mới bị đánh liên tục (#300, Gia Phuc Nguyen "dí đánh liên tục"): đọc vkl_events/vkl_lives xem kiếp 1-3 gặp trận bắt buộc (oan gia, truy sát, bóng người thật) bao nhiêu lần mỗi kiếp; nếu quá dày thì giảm tần suất cho 3 kiếp đầu hoặc người chưa Trúc Cơ, mô phỏng sim-do-kho trước/sau. Không làm "chế độ offline".
+- [ ] 3. Số liệu rõ (#298): màn nhân vật ghi tốc độ tu luyện đang được cộng bao nhiêu và còn mấy lần hộ thể thoát chết; giải thích công đức lúc thành thánh dùng để làm gì (một dòng ngay chỗ hiện công đức).
+- [ ] 4. Xem lại #308 (đồ rơi luôn chồng một hệ) và #305 (chuyển tu vẫn hợp luyện tuyệt chiêu hệ cũ): là lỗi thì sửa, là luật thì ghi rõ trên màn.
+- [ ] 5. #299 cân bằng chiêu khống chế/khiên: chạy `scripts/sim-tuyet-ky.ts` xem 3 chiêu khống chế có thắng quá nhiều khi bị khắc hệ không; lệch thì chỉnh nhẹ (game-design balance-review), ghi số trước/sau.
+- Ghi chú:
 
 ## Ngày 38 - Kênh chat Thế giới (Tyler giao 20/11 21:00, lên sáng 21/11)
 Lên bản: 2026-11-21. LÀM KHỐI NÀY TRƯỚC các khối tính năng khác (sau Ngày 37 góp ý, Ngày 36 soát quái, Ngày 12). Có cáo thị. Cờ `WC_ON` (bật khi thử sạch; tắt được ngay bằng cờ nếu có chuyện).
 Làm lại từ Truyền âm của Sơn Môn, KHÔNG làm hệ thứ hai: `components/sonmon/SmChat.tsx`, `supabase/son_mon_chat_2026_11_18.sql` (hàm làm sạch `vkl_priv.sm_chat_sach` gọi lại được, không sửa). Dùng gamedev (game-ui-ux), uiux-pro-max, huashu-design, humanizer.
-- [ ] Máy chủ (apply_migration, file `supabase/the_gioi_chat_2026_11_21.sql`, chỉ bảng và hàm MỚI): bảng `vkl_wc_chat` (id, player_id, noi_dung tối đa 512 ký tự (Tyler chốt 21:04), luc, an, loai 'nguoi'/'he'), `vkl_wc_bao` (báo xấu), `vkl_wc_cam` (cấm chat tới lúc nào). RLS bật, không policy, chỉ đi qua hàm SECURITY DEFINER: `vkl_wc_list(p_token, p_sau)` (50 tin mới nhất hoặc tin sau id), `vkl_wc_n(p_token, p_sau)` (đếm tin mới), `vkl_wc_send(p_token, p_nd)`, `vkl_wc_report(p_token, p_id)`.
+- [x] Máy chủ (apply_migration, file `supabase/the_gioi_chat_2026_11_21.sql`, chỉ bảng và hàm MỚI): bảng `vkl_wc_chat` (id, player_id, noi_dung tối đa 512 ký tự (Tyler chốt 21:04), luc, an, loai 'nguoi'/'he'), `vkl_wc_bao` (báo xấu), `vkl_wc_cam` (cấm chat tới lúc nào). RLS bật, không policy, chỉ đi qua hàm SECURITY DEFINER: `vkl_wc_list(p_token, p_sau)` (50 tin mới nhất hoặc tin sau id), `vkl_wc_n(p_token, p_sau)` (đếm tin mới), `vkl_wc_send(p_token, p_nd)`, `vkl_wc_report(p_token, p_id)`.
   - Ai gửi được: người đã có chân thân VÀ đã liên kết tài khoản (Google), để chặn tài khoản rác. Người chưa đủ vẫn đọc được, ô nhập thay bằng dòng ghi rõ lý do ngay trên đó ("Liên kết tài khoản để nói chuyện với thiên hạ").
   - Chống phá: làm sạch bằng `vkl_priv.sm_chat_sach` (che từ tục, ẩn link và số điện thoại); 1 tin mỗi 10 giây, tối đa 20 tin mỗi 5 phút (Tyler chốt 21:04); tin trùng y hệt tin trước của chính mình trong 2 phút thì chặn; 3 người báo thì tin tự ẩn; một người bị ẩn từ 3 tin trong 24 giờ thì tự cấm chat 24 giờ (ghi `vkl_wc_cam`). Không có nhắn riêng.
   - Mỗi tin trả kèm tên chân thân, cảnh giới cao nhất từng đạt, con đường của kiếp gần nhất, tên môn (nếu có). Không lộ email hay id.
   - Dọn: hàm + pg_cron MỚI xóa tin quá 7 ngày, chạy lúc 3:30.
-- [ ] Tin hệ thống (loai 'he', ít, để kênh có chuyện cả khi vắng): ghi khi có người phi thăng lần đầu, đạt Khai Thiên, mở kết cục hiếm lần đầu trên toàn máy chủ, môn chiếm Linh Mạch hoặc Thiên Trì. Tối đa 1 tin hệ thống mỗi 3 phút (gom lại nếu dồn). Gọi từ chỗ đang ghi các sự kiện đó bằng hàm MỚI; nguồn là dữ liệu máy chủ, không tin số client gửi. Lời dẫn ngắn qua story-writing + humanizer, tra glossary.
-- [ ] Giao diện: nút "Thế giới" nhỏ ở màn chơi chính (cạnh các nút sẵn có, không thêm popup tự bật), chấm đỏ khi có tin mới. Bấm mở tấm trượt từ dưới lên giống Truyền âm: vùng tin role=log, tin mình bên phải, tin hệ thống chữ nghiêng màu khác, 4 câu nhanh ("Chào đạo hữu!", "Có ai vừa phi thăng không?", "Môn nào đang tuyển đệ tử?", "Kiếp này chết lãng xẹt quá"), ô nhập chữ 16px nhiều dòng có đếm ký tự (x/512), nút 48px, nút Báo xấu trên mỗi tin của người khác. Khi đang trong trận hoặc đang đọc sự kiện thì không hiện chấm đỏ nhấp nháy.
-- [ ] Chi phí: KHÔNG dùng kênh realtime. Tấm đang mở và tab đang hiện thì hỏi tin mới 8 giây một lần; tấm đóng thì chỉ hỏi `vkl_wc_n` 90 giây một lần khi tab đang hiện; tab ẩn thì dừng. Đo số lần gọi mỗi giờ sau khi lên (a1 hiệu năng).
-- [ ] Thử: SQL (gửi hợp lệ, đúng 512 ký tự, 513 ký tự, tin thứ 21 trong 5 phút, quá nhanh dưới 10 giây, trùng, có link, có số điện thoại, từ tục, chưa liên kết, bị cấm, 3 báo xấu); Playwright 390x844 (mở, gửi, nhận tin của tài khoản thứ hai, báo xấu, trạng thái chưa đủ điều kiện); chấm 5 mặt huashu-design; smoke.cjs, smoke-login, smoke-son-mon (không hỏng Truyền âm).
-- [ ] Cáo thị một dòng: "Kênh Thế giới: nói chuyện với đạo hữu khắp thiên hạ." Sự kiện đo: wc_open, wc_send, wc_report. Ghi vào Sổ cải thiện: % người chơi mỗi ngày mở kênh, số người gửi, số tin bị ẩn.
+- [x] Tin hệ thống (loai 'he', ít, để kênh có chuyện cả khi vắng): ghi khi có người phi thăng lần đầu, đạt Khai Thiên, mở kết cục hiếm lần đầu trên toàn máy chủ, môn chiếm Linh Mạch hoặc Thiên Trì. Tối đa 1 tin hệ thống mỗi 3 phút (gom lại nếu dồn). Gọi từ chỗ đang ghi các sự kiện đó bằng hàm MỚI; nguồn là dữ liệu máy chủ, không tin số client gửi. Lời dẫn ngắn qua story-writing + humanizer, tra glossary.
+- [x] Giao diện: nút "Thế giới" nhỏ ở màn chơi chính (cạnh các nút sẵn có, không thêm popup tự bật), chấm đỏ khi có tin mới. Bấm mở tấm trượt từ dưới lên giống Truyền âm: vùng tin role=log, tin mình bên phải, tin hệ thống chữ nghiêng màu khác, 4 câu nhanh ("Chào đạo hữu!", "Có ai vừa phi thăng không?", "Môn nào đang tuyển đệ tử?", "Kiếp này chết lãng xẹt quá"), ô nhập chữ 16px nhiều dòng có đếm ký tự (x/512), nút 48px, nút Báo xấu trên mỗi tin của người khác. Khi đang trong trận hoặc đang đọc sự kiện thì không hiện chấm đỏ nhấp nháy.
+- [x] Chi phí: KHÔNG dùng kênh realtime. Tấm đang mở và tab đang hiện thì hỏi tin mới 8 giây một lần; tấm đóng thì chỉ hỏi `vkl_wc_n` 90 giây một lần khi tab đang hiện; tab ẩn thì dừng. Đo số lần gọi mỗi giờ sau khi lên (a1 hiệu năng).
+- [x] Thử: SQL (gửi hợp lệ, đúng 512 ký tự, 513 ký tự, tin thứ 21 trong 5 phút, quá nhanh dưới 10 giây, trùng, có link, có số điện thoại, từ tục, chưa liên kết, bị cấm, 3 báo xấu); Playwright 390x844 (mở, gửi, nhận tin của tài khoản thứ hai, báo xấu, trạng thái chưa đủ điều kiện); chấm 5 mặt huashu-design; smoke.cjs, smoke-login, smoke-son-mon (không hỏng Truyền âm).
+- [x] Cáo thị một dòng: "Kênh Thế giới: nói chuyện với đạo hữu khắp thiên hạ." Sự kiện đo: wc_open, wc_send, wc_report. Ghi vào Sổ cải thiện: % người chơi mỗi ngày mở kênh, số người gửi, số tin bị ẩn.
 - [ ] Tin cuối phiên cho Tyler mỗi đêm sau khi lên: số tin 24 giờ, số tin bị báo hoặc tự ẩn, ai bị cấm (tên chân thân), có cần chỉnh luật không.
 - Ghi chú:
-
+  - Xong: 2026-11-20 4aa2f66, 50010e5 (merge d3d0e6d), bật cờ ở 761dd0a. SQL `supabase/the_gioi_chat_2026_11_21.sql` Tyler tự áp ~22:40 (cron `vkl_wc_don` 3:30 VN, `vkl_wc_he` mỗi phút). Bảng phụ: `vkl_wc_cho` (hàng chờ tin hệ thống), `vkl_wc_moc`, `vkl_wc_ket` (danh sách trắng 101 mã kết cục: thêm kết cục mới thì thêm dòng). Điều kiện gửi: meta.chanThan là object VÀ google_sub có (531 tài khoản đủ). Khung chat chung `components/chat/ChatPane.tsx`.
+  - Thử: 52/52 SQL trên Postgres 16 cục bộ; trên Supabase thật chỉ gọi RPC đọc (token lạ trả WC_AUTH đúng), file thử `supabase/the_gioi_chat_thu_2026_11_21.sql` chưa chạy trên máy chủ vì execute_sql cần duyệt. smoke-the-gioi 43/43 (390 và 360px), smoke, smoke-truyen-am, smoke-son-mon OK. Chấm 5 mặt 8/7/7/8/5.
+  - Còn: nút ở thanh trên 30x28 như 4 nút sẵn có (chưa đạt 44px, làm to riêng thì vỡ hàng); ở 360px dòng nơi sinh xuống 3 dòng.
+  - Ô cuối (tin mỗi đêm) bắt đầu từ đêm 21/11.
 ## Ngoài game (Tyler tự làm)
 - Đăng "Biên niên Kỷ" mỗi tuần và lúc kết Kỷ (Claude soạn khi Tyler hỏi): môn giữ nhiều ô nhất, trận lớn, môn lật ngược thế cờ.
 
