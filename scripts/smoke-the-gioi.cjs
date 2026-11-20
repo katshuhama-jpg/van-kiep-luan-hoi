@@ -74,7 +74,7 @@ function rpc(fn, a) {
 }
 
 async function vao(b, tok, tag) {
-  const ctx = await b.newContext({ viewport: { width: 390, height: 844 } });
+  const ctx = await b.newContext({ viewport: { width: Number(process.env.VW) || 390, height: 844 } });
   await ctx.route('**/accounts.google.com/**', (r) => r.fulfill({ status: 200, contentType: 'application/javascript', body: 'window.google={accounts:{id:{initialize(){},renderButton(el){el.innerHTML="<div class=fake-gg>Google</div>"},cancel(){}}}}' }));
   await ctx.route('**/rest/v1/rpc/**', async (route) => {
     const fn = route.request().url().split('/rpc/')[1].split('?')[0];
