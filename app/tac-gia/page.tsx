@@ -63,6 +63,12 @@ export default function TacGia() {
         </p>
       </section>
       <section className="panel">
+        <h2>{tr("Cảnh sơn môn", "Sect scenery")}</h2>
+        <p style={{ margin: 0 }}>
+          {tr("Ảnh cảnh tông môn trong Sơn Môn lấy từ ", "Sect scenery images in Sects come from ")}<a href="https://github.com/4thfever/cultivation-world-simulator">Cultivation World Simulator</a>{tr(" của 4thfever, giấy phép ", " by 4thfever, licensed ")}<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>{tr(". Ảnh giữ nguyên nội dung, chỉ đổi sang định dạng webp và thu nhỏ bản xem trước cho nhẹ; các bản này chia sẻ theo cùng giấy phép. Game miễn phí, không bán vật phẩm, không dùng các ảnh này để thu tiền.", ". Content is unchanged; images are only converted to webp with smaller previews, and these copies are shared under the same license. The game is free, sells nothing, and these images are not used to make money.")}
+        </p>
+      </section>
+      <section className="panel">
         <h2>{tr("Font chữ", "Fonts")}</h2>
         <p style={{ margin: 0 }}>{tr("Barlow Semi Condensed (Jeremy Tribby) cho chữ trong game, Protest Revolution (Octavio Pardo) cho logo. Cả hai theo giấy phép SIL Open Font License.", "Barlow Semi Condensed (Jeremy Tribby) for in-game text, Protest Revolution (Octavio Pardo) for the logo. Both under the SIL Open Font License.")}</p>
       </section>

@@ -42,6 +42,7 @@ export const RELEASES: Release[] = [
         items: [
           tr('Thiên thư có thêm quyển III "Cơm Chiều" cho ai đã xong quyển II. Chặng đầu có 5 trang, xem ở Sổ Sinh Tử, mục Thiên thư.', 'The Heavenly Tome has a Volume III, "Evening Rice", for anyone who finished Volume II. The first part has 5 pages; find them in the Book of Life and Death, Heavenly Tome section.'),
           tr('Sơn Môn: môn đã giữ đủ ô vẫn xuất chinh đánh ô của môn khác được. Thắng thì ô về tay môn ta, môn tự bỏ lại ô xa chính điện nhất. Ở Môn nhà và Bản đồ có thẻ "Ô kề có thể đánh", chạm là mở ô đó.', 'Sects: a sect at its tile limit can still march on another sect\'s tile. Win and the tile is ours; the sect leaves its tile farthest from the main hall. The Home and Map tabs show "Tiles we can attack"; tap one to open it.'),
+          tr('Mỗi sơn môn có ảnh cảnh riêng ở đầu Môn nhà và trong danh sách môn. Ảnh từ Cultivation World Simulator, ghi công ở trang Tác giả.', 'Each sect now has its own scenery at the top of Home and in the sect list. Images from Cultivation World Simulator, credited on the Credits page.'),
           tr('Từ 5:00 sáng 21/11, hạng Kỷ tính theo Điểm giữ đất: giữ ô càng lâu càng nhiều điểm, ô quý được nhiều hơn ô thường. Mọi môn bắt đầu từ 0.', 'From 5:00 AM on Nov 21, the era ranking counts Land Points: the longer you hold a tile, the more points, and rare tiles give more than plain ones. Every sect starts from 0.'),
         ],
       },

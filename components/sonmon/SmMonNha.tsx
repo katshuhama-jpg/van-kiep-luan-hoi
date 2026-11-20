@@ -10,6 +10,7 @@ import { nvChu, SM_CFG } from '@/lib/sonmon/data';
 import { ChinhDien, ChuoiO, HuyHieu } from './Pixel';
 import { SmBaCau } from './SmLuat';
 import { duOCau, khaiDuoc, oDanhDuoc } from './SmMap';
+import { CanhBanner } from './CanhMon';
 import { useBau } from './SmMembers';
 import { SmCongDong } from './SmThuong';
 import { chucTen, clock, DongMinh, fmtN, mocGio, Msg, useNow, type SmCtx } from './ui';
@@ -66,6 +67,7 @@ export function SmMonNha({ c }: { c: SmCtx }) {
       <SmKyThuCard c={c} />
       <BaBuoc c={c} diemDanh={diemDanh} />
       <section className="sm-card dark">
+        <CanhBanner id={m.id} />
         <div className="sm-row">
           <ChinhDien id={m.chinh_dien_hinh} size={64} />
           <div className="sm-grow">

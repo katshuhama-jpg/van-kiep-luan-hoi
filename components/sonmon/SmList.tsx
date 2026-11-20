@@ -11,6 +11,7 @@ import { NguoiList, NguoiSheet } from './SmNguoi';
 import { SmBaCau } from './SmLuat';
 import { SmKyThuCard, SmMoiThuCard } from './SmMoi';
 import { chucTen, clock, fmtN, mocGio, Msg, useNow, type SmCtx } from './ui';
+import { CanhThumb } from './CanhMon';
 
 const BAO_KEY = 'vkl.sm.baoMo';
 
@@ -229,7 +230,7 @@ function MonRow({ m, st, busy, onVao, onXem, su }: { m: SmMonRow; st: SmCtx['st'
   const dk = [m.dk_kiep > 0 && tr(`từ ${m.dk_kiep} kiếp`, `${m.dk_kiep}+ lives`), m.dk_tuoi_dao > 0 && tr(`${m.dk_tuoi_dao} ngày chơi`, `${m.dk_tuoi_dao}+ days`)].filter(Boolean).join(', ');
   return (
     <section className={`sm-mon${su ? ' su' : ''}`}>
-      <HuyHieu id={m.huy_hieu} size={44} />
+      <CanhThumb id={m.id} huy={m.huy_hieu} />
       <div className="sm-mon-t">
         {su && <span className="sm-su-tag">{tr('Môn của sư phụ ngươi', "Your master's sect")}</span>}
         <b>{m.ten}</b>
