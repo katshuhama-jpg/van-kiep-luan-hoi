@@ -1,7 +1,7 @@
 'use client';
 /** 4.2.0 Màn linh thú: rank, thân thiết, tiến hóa, tác dụng, huyết mạch, sổ linh thú theo rank */
 import { useState, type CSSProperties } from 'react';
-import MonsterLpc from './MonsterLpc';
+import MonsterLpc, { pxScale } from './MonsterLpc';
 import { PETS } from '@/lib/game/pets';
 import { LEGEND_PETS } from '@/lib/game/petLegend';
 import {
@@ -44,7 +44,7 @@ export function PetPic({ id, box, still, dark, evo = 0, dir = 1 }: { id: string;
     );
   const p = PETS[id];
   if (!p) return null;
-  const k = (box / 64) * (p.w <= 32 ? 1.6 : p.w >= 80 ? 0.8 : 1) * (1 + 0.1 * evo);
+  const k = pxScale((box / 64) * (p.w <= 32 ? 1.6 : p.w >= 80 ? 0.8 : 1) * (1 + 0.1 * evo));
   const w = p.w * k;
   const h = p.h * k;
   return (

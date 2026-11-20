@@ -8,6 +8,12 @@ import type { MonsterLook } from '@/lib/game/monsterLook';
 const TIER_FX = ['', 'saturate(1.3) drop-shadow(0 0 3px #ff2a3a)', 'saturate(1.4) hue-rotate(-20deg) drop-shadow(0 0 4px #b040ff)', 'saturate(1.5) brightness(1.15) drop-shadow(0 0 6px #ffd36b)'];
 const TIER_SCALE = [1, 1.08, 1.16, 1.25];
 
+/** Hệ số phóng của ảnh pixel: phóng to thì làm tròn về số nguyên, thu nhỏ thì về 1/2, 1/3...
+ *  để mỗi điểm ảnh gốc thành một khối vuông đều, khung hình không lấn sang khung bên cạnh (không vỡ hạt). */
+export function pxScale(k: number) {
+  return k >= 1 ? Math.max(1, Math.round(k)) : 1 / Math.max(1, Math.round(1 / k));
+}
+
 function HumanStrip({ layers, anim, size, scale }: { layers: Layer[]; anim: Anim; size: number; scale: number }) {
   const dir = 1; // quay mặt sang trái, về phía nhân vật
   const key = JSON.stringify([layers, anim, dir]);
@@ -21,13 +27,13 @@ function HumanStrip({ layers, anim, size, scale }: { layers: Layer[]; anim: Anim
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
   const meta = ANIM[anim];
-  const cell = size * 2 * scale;
+  const cell = 128 * pxScale((size * 2 * scale) / 128); // khung ghép 128px
   const once = anim === 'hurt';
   const style: CSSProperties = {
     width: cell,
     height: cell,
-    left: (size - cell) / 2,
-    top: size - cell * 0.82,
+    left: Math.round((size - cell) / 2),
+    top: Math.round(size - cell * 0.82),
     backgroundImage: url ? `url(${url})` : undefined,
     backgroundSize: `${meta.frames * cell}px ${cell}px`,
     ['--lpc-end' as string]: `-${(once ? meta.frames - 1 : meta.frames) * cell}px`,
@@ -37,14 +43,14 @@ function HumanStrip({ layers, anim, size, scale }: { layers: Layer[]; anim: Anim
 }
 
 function BeastStrip({ look, size, dead }: { look: Extract<MonsterLook, { kind: 'beast' }>; size: number; dead?: boolean }) {
-  const cell = look.cell * (size / 64) * look.scale;
+  const cell = look.cell * pxScale((size / 64) * look.scale);
   const cols = look.frames + (look.sheet === 'slime' ? 1 : 0);
   const fps = look.fps ?? 8;
   const style: CSSProperties = {
     width: cell,
     height: cell,
-    left: (size - cell) / 2,
-    top: size - cell * 0.9,
+    left: Math.round((size - cell) / 2),
+    top: Math.round(size - cell * 0.9),
     backgroundImage: `url(/lpc/beasts/${look.sheet}.png)`,
     backgroundSize: `${cols * cell}px ${look.strip ? cell : cell * 4}px`,
     backgroundPositionY: look.strip ? 0 : `-${cell}px`,
