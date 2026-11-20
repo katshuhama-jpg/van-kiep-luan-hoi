@@ -1,6 +1,7 @@
 import { addCult, dao, fatal, money, reward, stat } from './helpers';
 import type { GameEvent } from './types';
 import { tr } from '../i18n';
+import { ctArc, ctNext, ctSet } from './ctArc';
 
 /** Sự kiện Thái Hư giới: cõi của người trung lập, giữa tiên giới và ma giới */
 export const HU_EVENTS: GameEvent[] = [
@@ -159,6 +160,123 @@ export const HU_EVENTS: GameEvent[] = [
           money(c, 3000);
           dao(c, -8);
           return tr('Bạn nhận cả hai phần lễ vật, hứa với cả hai. Thái Hư rộng lớn, đợi họ phát hiện ra thì bạn đã đi xa.', "You accept both sets of gifts and promise both sides. The Great Void is vast - by the time they catch on, you're long gone.");
+        },
+      },
+    ],
+  },
+  // ================= Ngày 35, đêm 20/11/2026 =================
+  // ct_20261120_4 Người nhặt tiếng vọng (Thái Hư giới, 2 bước). Nối Thiên thư quyển III, trang XXI "Dư Âm": chỉ hiện khi đã có trang ấy (c.tt3 >= 1).
+  // Chỉ dùng sự thật của XXI: tiếng leng keng nhỏ mỗi chiều, không đếm ai, nó gọi, vọng về từ phía núi tuyết. Không lộ chuông nhỏ, làng, Mạnh Bà.
+  {
+    id: 'ct_20261120_4',
+    cosmos: 'hu',
+    once: true,
+    weight: 40,
+    when: (c) => (c.tt3 ?? 0) >= 1 && !ctArc(c, 'ct20261120_4'),
+    title: tr('Người nhặt tiếng vọng', 'The echo gatherer'),
+    text: (c) =>
+      tr(
+        `Thái Hư giới không có chiều tối. Vậy mà đúng giờ mặt trời lặn dưới phàm gian, bạn lại nghe tiếng leng keng nhỏ ấy${c.tt3Nhanh === 'dap' ? ', dù chuông lớn đã vỡ từ lâu' : ', chen giữa hai tiếng chuông lớn bạn vẫn gõ'}. Một thiếu nữ ôm chiếc bình rỗng đứng bên, thì thầm: "Ta là Thu Âm, chuyên nhặt tiếng vọng lạc vào hư không. Riêng tiếng này ta nhặt mãi không được."`,
+        `The Great Void has no evening. Yet right when the sun sets in the mortal world below, you hear that faint chime again${c.tt3Nhanh === 'dap' ? ', though the great bell broke long ago' : ', slipping between the strokes of the great bell you still ring'}. A girl holding an empty jar stands beside you and whispers: "I am Thu Am. I gather echoes that stray into the void. This one I have never managed to catch."`,
+      ),
+    choices: () => [
+      {
+        label: tr('Đi theo tiếng ấy', 'Follow the sound'),
+        hint: tr('tu vi +', 'cultivation +'),
+        lean: 'trung',
+        run: (c) => {
+          const g = Math.round(addCult(c, reward(c, 0.5)));
+          ctSet(c, 'ct20261120_4', 1, 'theo');
+          return tr(`Bạn đi suốt mấy năm hư không, Thu Âm lẽo đẽo theo sau (+${g} tu vi). Lạ là tiếng ấy không ở phía trên, nơi chuông lớn ${c.tt3Nhanh === 'dap' ? 'từng treo' : 'đang treo'}.`, `You walk the void for years with Thu Am trailing behind (+${g} cultivation). Strangely, the sound is not coming from above, where the great bell ${c.tt3Nhanh === 'dap' ? 'once hung' : 'hangs'}.`);
+        },
+      },
+      {
+        label: tr('Ngồi im, đợi nó vang lần nữa', 'Sit still and wait for it to ring again'),
+        hint: tr('tâm cảnh +', 'Mind +'),
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'tamCanh', 8);
+          ctSet(c, 'ct20261120_4', 1, 'cho');
+          return tr('Bạn ngồi đếm từng chiều dưới phàm gian. Tới chiều thứ một trăm, bạn đã biết tiếng ấy vọng lên từ hướng nào.', 'You sit and count the evenings in the mortal world. By the hundredth, you know which way the sound rises from.');
+        },
+      },
+      {
+        label: tr('Đổi cho Thu Âm một ký ức kiếp trước để nàng giúp', 'Trade Thu Am a memory from a past life for her help'),
+        hint: tr('ngộ tính -, tâm ma -', 'Insight -, Heart Demon -'),
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'ngoTinh', -3);
+          stat(c, 'tamMa', -8);
+          ctSet(c, 'ct20261120_4', 1, 'doi');
+          return tr('Bạn đưa nàng ký ức về một lần chết đau đớn. Nàng cất vào bình, đổi lại chỉ cho bạn hướng tiếng ấy. Lòng bạn nhẹ đi một chút.', 'You give her the memory of one painful death. She seals it in her jar and in return points you toward the sound. Your heart feels a little lighter.');
+        },
+      },
+      {
+        label: tr('Bảo nàng: tiếng ấy không thuộc về hư không, đừng nhặt', 'Tell her: that sound does not belong to the void, leave it'),
+        hint: tr('đạo tâm +', 'Dao Heart +'),
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 3);
+          stat(c, 'tamCanh', 3);
+          ctSet(c, 'ct20261120_4', 9);
+          return tr('Thu Âm ngẩn ra rồi gật đầu, ôm bình đi nhặt tiếng khác. Chiều hôm sau tiếng leng keng vẫn vang, chỉ có bạn nghe.', 'Thu Am blinks, then nods and goes off to gather other sounds. The next evening the chime still rings, and only you hear it.');
+        },
+      },
+    ],
+  },
+  {
+    id: 'ct_20261120_4b',
+    cosmos: 'hu',
+    once: true,
+    weight: 300,
+    when: (c) => ctNext(c, 'ct20261120_4', 1, 5),
+    title: tr('Rìa Thái Hư', 'The edge of the Void'),
+    text: () =>
+      tr(
+        'Bạn và Thu Âm tới rìa Thái Hư, nơi nhìn xuống thấy được cả phàm gian. Tiếng leng keng ở đây rõ nhất, và nó vọng lên từ dưới kia, từ phía núi tuyết. Thu Âm giơ bình hứng, lần đầu tiên tiếng ấy chịu vào bình.',
+        'You and Thu Am reach the edge of the Great Void, where the whole mortal world can be seen below. The chime is clearest here, and it rises from down there, from the direction of the snowy peak. Thu Am holds up her jar, and for the first time the sound lets itself be caught.',
+      ),
+    choices: () => [
+      {
+        label: tr('Xin cái bình, nghe lại mỗi khi tâm loạn', 'Ask for the jar, to listen whenever your mind is troubled'),
+        hint: tr('tâm ma --', 'Heart Demon --'),
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'tamMa', -12);
+          stat(c, 'tamCanh', 4);
+          ctSet(c, 'ct20261120_4', 2, 'binh');
+          return tr('Thu Âm đưa bình. Mỗi lần tâm ma trỗi dậy, bạn mở nắp, nghe một tiếng leng keng, rồi đóng lại.', 'Thu Am hands it over. Whenever your heart demon stirs, you lift the lid, hear one chime, and close it again.');
+        },
+      },
+      {
+        label: tr('Để Thu Âm giữ, nàng đã tìm nó lâu hơn bạn', 'Let Thu Am keep it; she sought it longer than you'),
+        hint: tr('nhường cơ duyên: đạo tâm +, khí vận +', 'give up the chance: Dao Heart +, Luck +'),
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 6);
+          stat(c, 'khiVan', 6);
+          ctSet(c, 'ct20261120_4', 2, 'nhuong');
+          return tr('Nàng ôm bình, cười lần đầu tiên. Từ đó, đi đâu trong hư không bạn cũng gặp người chỉ đường, ai cũng bảo Thu Âm dặn.', 'She hugs the jar and smiles for the first time. From then on, wherever you go in the void, someone shows you the way, saying Thu Am asked them to.');
+        },
+      },
+      {
+        label: tr('Mở nắp, thả tiếng ấy về đường cũ', 'Open the lid and let the sound go back its way'),
+        hint: tr('tâm cảnh ++', 'Mind ++'),
+        lean: 'chinh',
+        run: (c) => {
+          stat(c, 'tamCanh', 10);
+          ctSet(c, 'ct20261120_4', 2, 'tha');
+          return tr('Tiếng leng keng không bay lên. Nó rơi xuống, chậm rãi, về phía núi tuyết, như biết đường về hơn bạn.', 'The chime does not rise. It falls, slowly, toward the snowy peak, as if it knows the way home better than you do.');
+        },
+      },
+      {
+        label: tr('Hỏi Thu Âm: trong tiếng ấy có tên ai không', 'Ask Thu Am: is there a name inside that sound?'),
+        hint: tr('ngộ tính +', 'Insight +'),
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'ngoTinh', 6);
+          ctSet(c, 'ct20261120_4', 2, 'hoi');
+          return tr('Nàng áp tai vào bình rất lâu. "Không có tên nào. Tiếng chuông lớn thì đếm. Tiếng này chỉ gọi."', 'She presses her ear to the jar a long time. "There is no name. The great bell counts. This one only calls."');
         },
       },
     ],

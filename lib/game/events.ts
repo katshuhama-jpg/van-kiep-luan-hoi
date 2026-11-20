@@ -622,7 +622,7 @@ export const EVENTS: GameEvent[] = [
   {
     id: 'mat_mua',
     pham: 2, // 4.1.0 Q2: tai họa phàm tục, từ Trúc Cơ chỉ bị thương
-    minAge: 3,
+    minAge: 6, // Ngày 35 soát 20/11: đứa trẻ 3 tuổi không tự lẻn vào kho lương hay nhường phần ăn
     maxAge: 13,
     once: true,
     weight: 14,
@@ -1034,7 +1034,7 @@ export const EVENTS: GameEvent[] = [
       },
       {
         label: tr('Kết liễu lão, hút tu vi', "Finish him, absorb his cultivation"),
-        hint: tr('tà công', "evil technique"),
+        hint: tr('tà công, lão còn sức phản đòn', "evil technique, he may still strike back"),
         lean: 'ta',
         run: (c, ctx) => {
           dao(c, -20);

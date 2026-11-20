@@ -121,7 +121,7 @@ export const EVENTS3: GameEvent[] = [
     weight: 6,
     title: tr('Cầu treo Vạn Trượng', "Wanzhang Bridge"),
     text: () => tr('Cây cầu dây duy nhất bắc qua vực Vạn Trượng đã mục nát. Đi đường vòng mất ba tháng.', "The only rope bridge across the Wanzhang Chasm has rotted. The detour takes three months."),
-    choices: () => [
+    choices: (c) => [
       {
         label: tr('Chạy thật nhanh qua cầu', "Sprint across the bridge"),
         hint: tr('liều', "risky"),
@@ -134,7 +134,8 @@ export const EVENTS3: GameEvent[] = [
       },
       {
         label: tr('Ngự khí bay qua', "Ride the qi across"),
-        hint: tr('cần tu vi', "needs cultivation"),
+        // Ngày 35 soát 20/11: chưa Trúc Cơ thì ghi rõ là liều mạng (trước chỉ ghi "cần tu vi", người Luyện Khí 1 vẫn bấm)
+        hint: c.realm >= 2 ? tr('cần tu vi', "needs cultivation") : tr('chưa tới Trúc Cơ: dễ rơi xuống vực', "below Foundation: you may fall"),
         lean: 'trung',
         run: (c, ctx) => {
           if (c.realm >= 2) return tr('Bạn nhẹ nhàng lướt qua vực sâu. Tu sĩ thì cần gì cầu.', "You glide lightly over the abyss. What does a cultivator need a bridge for?");
@@ -322,7 +323,7 @@ export const EVENTS3: GameEvent[] = [
     weight: 5,
     title: tr('Mãng xà ngàn năm', "Thousand-year python"),
     text: () => tr('Đang đi đường núi, bạn nhận ra khúc gỗ mình vừa ngồi lên nghỉ chân... đang thở.', "On a mountain trail you realise the log you sat on to rest is... breathing."),
-    choices: () => [
+    choices: (c) => [
       {
         label: tr('Đâm vào mắt nó', "Stab it in the eye"),
         hint: tr('liều, thưởng lớn', "risky, big reward"),
@@ -336,6 +337,7 @@ export const EVENTS3: GameEvent[] = [
       },
       {
         label: tr('Nằm im giả chết', "Lie still and play dead"),
+        hint: tr('liều', "risky"),
         lean: 'trung',
         run: (c, ctx) => gamble(c, ctx, 0.15, tr('Mãng xà không quan tâm bạn chết hay sống. Nó nuốt luôn.', "The python doesn't care if you're dead or alive. It swallows you anyway."), [tr('Bạn nín thở...', "You hold your breath..."), tr('Mãng xà há miệng đớp tới.', "The python's jaws come down on you.")], () => tr('Nó trườn đi. Bạn nằm im thêm một canh giờ mới dám đứng dậy.', "It slithers away. You lie still for another hour before you dare stand up.")),
       },
@@ -350,7 +352,7 @@ export const EVENTS3: GameEvent[] = [
       },
       {
         label: tr('Thì thầm với nó', "Whisper to it"),
-        hint: tr('yêu tộc?', "yao race?"),
+        hint: c.race === 'yeu' ? tr('yêu tộc?', "yao race?") : tr('không phải yêu tộc thì rất liều', "very risky if you're not yao"),
         lean: 'trung',
         run: (c, ctx) => {
           if (c.race === 'yeu') {
@@ -373,7 +375,7 @@ export const EVENTS3: GameEvent[] = [
     choices: () => [
       {
         label: tr('Giơ kiếm lên trời lĩnh ngộ lôi pháp', "Raise your sword to comprehend thunder law"),
-        hint: tr('cực liều', "insanely risky"),
+        hint: tr('cực liều, có thể chết', "insanely risky, may die"),
         lean: 'trung',
         run: (c, ctx) => {
           ctx.fx('lightning');

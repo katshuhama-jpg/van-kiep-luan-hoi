@@ -6,6 +6,7 @@ import { addCd, giveHg, loseDeTu } from './hongHoang';
 import { addCult, dao, hurt, reward, stat } from './helpers';
 import type { Character, EffectCtx, GameEvent } from './types';
 import { tr } from '../i18n';
+import { ctArc, ctNext, ctSet } from './ctArc';
 
 const s = (c: Character) => (c.hong ??= { from: 'tien', cd: 0, deTu: 0 });
 const CT = 12;
@@ -467,6 +468,131 @@ export const HG_EVENTS: GameEvent[] = [
         const g = gain(c, 1);
         return tr(`Bạn lạy ba lạy. Trong đầu vang lên tiếng rìu bổ hỗn độn (+${g} tu vi).`, `You bow three times. In your head echoes the sound of an axe splitting chaos (+${g} cultivation).`);
       } },
+    ],
+  },
+  // ================= Ngày 35, đêm 20/11/2026 =================
+  // ct_20261120_5 Hình nhân chưa có mặt (Hồng Hoang, 2 bước). Nữ Oa là tên thần thoại có sẵn trong game.
+  {
+    id: 'ct_20261120_5',
+    cosmos: 'hg',
+    minRealm: CT,
+    once: true,
+    weight: 25,
+    when: (c) => !ctArc(c, 'ct20261120_5'),
+    title: tr('Hình nhân chưa có mặt', 'The faceless clay figure'),
+    text: () =>
+      tr(
+        'Bên một con sông thượng cổ, bạn gặp một hình nhân đất sét bị nặn dở: có tay, có chân, nhưng mặt còn trơn. Nó lấy ngón tay viết lên cát: "Người nặn ta đi vá trời rồi, chưa về. Ngài cho ta một khuôn mặt được không?"',
+        'Beside an ancient river you find a half-made clay figure: it has arms and legs, but its face is still smooth. It writes in the sand with one finger: "The one who shaped me went to mend the sky and has not come back. Would you give me a face?"',
+      ),
+    choices: (c) => [
+      {
+        label: tr('Nặn cho nó khuôn mặt của chính mình', 'Give it your own face'),
+        hint: tr('công đức +', 'Merit +'),
+        lean: 'trung',
+        run: (ch) => {
+          addCd(ch, 4);
+          ctSet(ch, 'ct20261120_5', 1, 'minh');
+          return tr('Hình nhân sờ lên mặt mới, rồi cúi nhìn bóng mình dưới nước rất lâu. Nó viết: "Thì ra ngài trông như thế này."', 'The figure touches its new face, then studies its reflection in the water for a long time. It writes: "So this is what you look like."');
+        },
+      },
+      {
+        label: c.partner ? tr(`Nặn khuôn mặt của ${c.partner}`, `Give it the face of ${c.partner}`) : tr('Nặn khuôn mặt của người mình nhớ nhất', 'Give it the face of the one you miss most'),
+        hint: tr('tâm cảnh +', 'Mind +'),
+        lean: 'chinh',
+        run: (ch) => {
+          stat(ch, 'tamCanh', 8);
+          ctSet(ch, 'ct20261120_5', 1, 'thuong');
+          return tr('Tay bạn nặn chậm, sợ sai một nét. Xong rồi, bạn phải quay đi một lúc mới nhìn lại được.', 'Your hands move slowly, afraid of getting a single line wrong. When it is done, you have to look away for a moment before you can look again.');
+        },
+      },
+      {
+        label: tr('Dẫn nó đi tìm Nữ Oa, để bà nặn nốt', 'Take it to find Nüwa so she can finish it'),
+        hint: tr('nhường việc cho người nặn: công đức ++', 'leave it to its maker: Merit ++'),
+        lean: 'chinh',
+        run: (ch) => {
+          addCd(ch, 8);
+          ctSet(ch, 'ct20261120_5', 1, 'nu_oa');
+          return tr('Hai bạn đi tới chân cột trời đang vá. Nữ Oa không ngừng tay, chỉ liếc xuống: "Để nó ở đó. Vá xong ta nặn." Hình nhân ngồi đợi, rất ngoan.', 'You both reach the foot of the sky-pillar being mended. Nüwa does not stop working, only glances down: "Leave it there. I will finish it when the sky is done." The figure sits and waits, very well-behaved.');
+        },
+      },
+      {
+        label: tr('Để mặt trơn, bảo nó tự chọn lấy', 'Leave the face blank and let it choose'),
+        hint: tr('ngộ tính +', 'Insight +'),
+        lean: 'trung',
+        run: (ch) => {
+          stat(ch, 'ngoTinh', 5);
+          ctSet(ch, 'ct20261120_5', 1, 'trong');
+          return tr('Nó ngẫm nghĩ, rồi viết: "Vậy ta đi xem đã." Nó bước vào bãi lau, mặt trơn, không sợ gì.', 'It thinks, then writes: "Then I will go and look first." It walks into the reeds, face blank, unafraid.');
+        },
+      },
+    ],
+  },
+  {
+    id: 'ct_20261120_5b',
+    cosmos: 'hg',
+    once: true,
+    weight: 300,
+    when: (c) => ctNext(c, 'ct20261120_5', 1, 20),
+    title: tr('Hình nhân trở lại', 'The clay figure returns'),
+    text: (c) => {
+      const v = ctArc(c, 'ct20261120_5')?.v;
+      const face =
+        v === 'minh' ? tr('mang khuôn mặt của bạn', 'wearing your face')
+        : v === 'thuong' ? tr('mang khuôn mặt người bạn nhớ nhất', 'wearing the face of the one you miss most')
+        : v === 'nu_oa' ? tr('mang khuôn mặt Nữ Oa nặn nốt', 'wearing the face Nüwa finished')
+        : tr('đã tự có khuôn mặt, chẳng giống ai', 'with a face of its own, like no one else');
+      return tr(
+        `Hai mươi năm sau, hình nhân đất sét quay lại, ${face}. Sau lưng nó có mấy chục người đất nhỏ hơn đang học đi. Nó viết lên cát: "Bọn nhỏ hỏi ta làm sao để sống. Ta không biết, nên dẫn tới hỏi ngài."`,
+        `Twenty years later the clay figure comes back, ${face}. Behind it, dozens of smaller clay people are learning to walk. It writes in the sand: "The little ones asked me how to live. I did not know, so I brought them to ask you."`,
+      );
+    },
+    choices: (c) => [
+      {
+        label: tr('Nhận nó làm đồ đệ', 'Take it as a disciple'),
+        hint: (c.hong?.deTu ?? 0) >= 10 ? tr('giáo đã đủ 10 đồ đệ', 'your teaching already has 10 disciples') : tr('+1 đồ đệ', '+1 disciple'),
+        lean: 'chinh',
+        off: (c.hong?.deTu ?? 0) >= 10,
+        run: (c) => {
+          const st = s(c);
+          st.deTu += 1;
+          st.deTuMax = Math.max(st.deTuMax ?? 0, st.deTu);
+          ctSet(c, 'ct20261120_5', 2, 'de_tu');
+          return tr('Nó quỳ xuống, đất sét lún thành hai vết đầu gối. Giáo của bạn có thêm một đồ đệ không biết nói mà viết chữ rất đẹp.', 'It kneels, the clay pressing two knee-prints into the ground. Your teaching gains a disciple who cannot speak but writes beautifully.');
+        },
+      },
+      {
+        label: tr('Bảo nó: đi theo loài người mà học', 'Tell it: go and learn from humankind'),
+        hint: tr('công đức ++', 'Merit ++'),
+        lean: 'chinh',
+        run: (c) => {
+          addCd(c, 10);
+          ctSet(c, 'ct20261120_5', 2, 'nguoi');
+          return tr('Nó dẫn đàn người đất xuống đồng bằng, nơi khói bếp đầu tiên đang bốc lên. Trời cũ ghi cho bạn một phần công đức.', 'It leads the clay folk down to the plains, where the first cooking smoke is rising. The old heaven credits you with a share of merit.');
+        },
+      },
+      {
+        label: tr('Kể cho bọn nhỏ nghe một kiếp người của mình', 'Tell the little ones about one of your mortal lives'),
+        hint: tr('tâm cảnh +, ngộ tính +', 'Mind +, Insight +'),
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'tamCanh', 6);
+          stat(c, 'ngoTinh', 4);
+          ctSet(c, 'ct20261120_5', 2, 'ke');
+          return tr('Bạn kể về một kiếp sống ngắn, nghèo, có một bữa cơm rất ngon. Bọn nhỏ nghe xong không hỏi gì nữa, chỉ ngồi gần nhau hơn.', 'You tell them of one short, poor life that had one very good meal in it. When you finish they ask nothing more, only sit closer together.');
+        },
+      },
+      {
+        label: tr('Xin một nắm đất trên người nó để luyện bảo', 'Ask for a handful of its clay to forge a treasure'),
+        hint: tr('tu vi +, nghiêng tà', 'cultivation +, leans Evil'),
+        lean: 'ta',
+        run: (c) => {
+          const g = gain(c, 1.2);
+          dao(c, -6);
+          ctSet(c, 'ct20261120_5', 2, 'dat');
+          return tr(`Nó tự bẻ một ngón tay đưa bạn, không oán gì. Đất ấy còn hơi ấm của tay người nặn (+${g} tu vi).`, `It snaps off one of its own fingers and hands it to you without complaint. The clay is still warm from its maker's hands (+${g} cultivation).`);
+        },
+      },
     ],
   },
 ];

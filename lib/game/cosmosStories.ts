@@ -1,6 +1,7 @@
 import { addCult, addLife, addPill, dao, fatal, hurt, luck, money, reward, stat } from './helpers';
 import type { Character, EffectCtx, GameEvent } from './types';
 import { tr } from '../i18n';
+import { ctArc, ctNext, ctSet, cutLife, hasLore } from './ctArc';
 
 /**
  * 3.1.0: 10 cốt truyện mới sau phi thăng, để người chơi cũ ở tiên giới, ma giới, Thái Hư giới có thêm chuyện để đi.
@@ -845,5 +846,317 @@ export const COSMOS_STORIES: GameEvent[] = [
         },
       ];
     },
+  },
+  // ================= Ngày 35, đêm 20/11/2026 =================
+  // ct_20261120_3 Giao kèo với quạ ba mắt (Ma giới, 3 bước, một nhánh chết ở bước 3: chỉ khi bội ước, đánh vào tổ quạ đã được báo trước).
+  {
+    id: 'ct_20261120_3',
+    cosmos: 'ma',
+    once: true,
+    weight: 30,
+    when: (c) => !ctArc(c, 'ct20261120_3'),
+    title: tr('Con quạ ba mắt', 'The three-eyed crow'),
+    text: () =>
+      tr(
+        'Một con quạ ba mắt đậu xuống vai bạn, con mắt giữa trán nhắm nghiền. Nó nói tiếng người: "Cho ta mượn ba mươi năm thọ, ta cho ngươi mượn con mắt thứ ba. Ma giới giấu gì, ngươi thấy nấy." Nó còn nói thêm: hết hạn mà không trả thì nó tự đến lấy.',
+        'A three-eyed crow lands on your shoulder, the eye in its forehead shut tight. It speaks like a person: "Lend me thirty years of life and I will lend you my third eye. Whatever the Demon Realm hides, you will see." It adds that if the debt is not paid when due, it will come to collect.',
+      ),
+    choices: () => [
+      {
+        label: tr('Giao kèo: đổi ba mươi năm thọ lấy con mắt', 'Make the deal: thirty years of life for the eye'),
+        hint: tr('-30 năm thọ, bắt đầu một chuyện dài', '-30 years of lifespan, the start of a long story'),
+        lean: 'trung',
+        run: (c) => {
+          const n = cutLife(c, 30);
+          ctSet(c, 'ct20261120_3', 1, 'giao');
+          return tr(`Con mắt giữa trán quạ mở ra, và trán bạn nhói lên (-${n} năm thọ). Từ đêm đó bạn thấy những sợi khí đen nối kẻ này với kẻ khác.`, `The eye in the crow's forehead opens, and your own brow throbs (-${n} years of lifespan). From that night on you see threads of black qi tying one being to another.`);
+        },
+      },
+      {
+        label: tr('Hỏi nó cần thọ của người khác làm gì', 'Ask what it needs other people\'s years for'),
+        hint: tr('ngộ tính +', 'Insight +'),
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'ngoTinh', 4);
+          ctSet(c, 'ct20261120_3', 9);
+          return tr('Nó nghiêng đầu: "Chủ ta mù đã ba nghìn năm, sắp đi rồi." Rồi nó bay đi tìm người khác, không chờ bạn trả lời.', 'It tilts its head: "My master has been blind for three thousand years and is nearly gone." Then it flies off to find someone else without waiting for your answer.');
+        },
+      },
+      {
+        label: tr('Phẩy tay đuổi nó đi', 'Wave it away'),
+        lean: 'trung',
+        run: (c) => {
+          stat(c, 'tamMa', -3);
+          ctSet(c, 'ct20261120_3', 9);
+          return tr('Nó kêu một tiếng khàn rồi bay mất. Ở Ma giới, không biết gì đôi khi lại sống lâu hơn.', 'It gives one hoarse caw and is gone. In the Demon Realm, knowing nothing sometimes means living longer.');
+        },
+      },
+      {
+        label: tr('Chộp lấy nó luyện thành ma sủng', 'Grab it and refine it into a familiar'),
+        hint: tr('nghiêng tà, có thể bị mổ', 'leans Evil, it may peck you'),
+        lean: 'ta',
+        run: (c, ctx) => {
+          dao(c, -6);
+          ctSet(c, 'ct20261120_3', 9);
+          if (fight(c, ctx, 0.55)) {
+            const g = Math.round(addCult(c, reward(c, 0.5)));
+            return tr(`Bạn bóp nát nó trong tay, luyện lấy chút ma khí (+${g} tu vi). Con mắt thứ ba nhắm lại, không bao giờ mở cho bạn.`, `You crush it in your fist and draw out a little demonic qi (+${g} cultivation). The third eye shuts and never opens for you.`);
+          }
+          return tr('Nó mổ một nhát vào mu bàn tay bạn rồi vụt mất.', 'It pecks the back of your hand and darts away.') + hurt(c, 12, ctx);
+        },
+      },
+    ],
+  },
+  {
+    id: 'ct_20261120_3b',
+    cosmos: 'ma',
+    once: true,
+    weight: 300,
+    when: (c) => ctNext(c, 'ct20261120_3', 1, 4),
+    title: tr('Con mắt thứ ba', 'The third eye'),
+    text: () =>
+      tr(
+        'Bốn năm qua, con mắt mượn chưa nhìn sai lần nào. Hôm nay nó cho bạn thấy hai thứ cùng lúc: một mạch ma thạch nằm dưới đáy huyết hồ, và một toán Huyết Ma đang nằm phục bên đường một đoàn tán tu.',
+        'For four years the borrowed eye has never been wrong. Today it shows you two things at once: a vein of demon stones under a blood lake, and a band of Blood Demons lying in ambush along a group of rogue cultivators\' road.',
+      ),
+    choices: (c) => [
+      {
+        label: tr('Lặn xuống huyết hồ đào ma thạch', 'Dive into the blood lake for the stones'),
+        hint: tr('+linh thạch', '+spirit stones'),
+        lean: 'trung',
+        run: (ch, ctx) => {
+          const m = 300 * tier(ch);
+          money(ch, m);
+          ctx.fx('coin', `+${m}`);
+          ctSet(ch, 'ct20261120_3', 2, 'dao');
+          return tr(`Bạn đào được ${m} linh thạch. Lúc lên bờ, đằng xa vọng lại tiếng đao kiếm, rồi tắt.`, `You dig out ${m} spirit stones. As you climb ashore, the sound of blades echoes in the distance, then stops.`);
+        },
+      },
+      {
+        label: tr('Chạy tới báo cho đoàn tán tu', 'Run to warn the rogue cultivators'),
+        hint: tr('đạo tâm +, khí vận +', 'Dao Heart +, Luck +'),
+        lean: 'chinh',
+        run: (ch) => {
+          dao(ch, 6);
+          stat(ch, 'khiVan', 5);
+          ctSet(ch, 'ct20261120_3', 2, 'cuu');
+          return tr('Đoàn tán tu đổi đường kịp lúc. Người dẫn đầu khắc tên bạn lên chuôi đao: "Nợ một mạng."', 'The rogue cultivators change course in time. Their leader carves your name on his saber hilt: "Owe you a life."');
+        },
+      },
+      {
+        label: tr('Nhắm con mắt lại, không nhìn nữa', 'Close the eye and stop looking'),
+        hint: tr('tâm cảnh +, tâm ma -', 'Mind +, Heart Demon -'),
+        lean: 'trung',
+        run: (ch) => {
+          stat(ch, 'tamCanh', 6);
+          stat(ch, 'tamMa', -6);
+          ctSet(ch, 'ct20261120_3', 2, 'nham');
+          return tr('Thấy hết mọi thứ cũng là một gánh nặng. Bạn ngồi thiền ba ngày, để Ma giới tự lo chuyện của nó.', 'Seeing everything is its own burden. You meditate for three days and let the Demon Realm handle its own affairs.');
+        },
+      },
+      {
+        label: tr('Bán tin phục kích cho Huyết Ma', 'Sell word of the ambush to the Blood Demons'),
+        hint: tr('+linh thạch, nghiêng tà mạnh', '+spirit stones, strongly Evil'),
+        lean: 'ta',
+        run: (ch, ctx) => {
+          const m = 200 * tier(ch);
+          money(ch, m);
+          dao(ch, -12);
+          stat(ch, 'tamMa', 6);
+          ctx.fx('coin', `+${m}`);
+          ctSet(ch, 'ct20261120_3', 2, 'ban');
+          return tr(`Toán Huyết Ma trả ${m} linh thạch để biết đoàn tán tu đi mấy người, mang gì. Đêm đó con mắt mượn chảy ra một giọt máu.`, `The Blood Demons pay ${m} spirit stones to learn how many travel and what they carry. That night the borrowed eye weeps a drop of blood.`);
+        },
+      },
+    ],
+  },
+  {
+    id: 'ct_20261120_3c',
+    cosmos: 'ma',
+    once: true,
+    weight: 300,
+    when: (c) => ctNext(c, 'ct20261120_3', 2, 6),
+    title: tr('Quạ tới đòi nợ', 'The crow comes to collect'),
+    text: () =>
+      tr(
+        'Mười năm kể từ giao kèo, trời Ma giới đen kịt vì cánh quạ. Con quạ ba mắt đậu trên đầu cả đàn, giọng lạnh tanh: "Tới hạn. Trả mắt, hoặc trả thêm ba mươi năm. Bội ước thì cả đàn này mổ cho tới khi hết thứ để mổ."',
+        'Ten years after the deal, the Demon Realm sky is black with crow wings. The three-eyed crow sits atop the whole flock, its voice flat: "It is due. Return the eye, or pay thirty more years. Break the deal and this flock will peck until there is nothing left to peck."',
+      ),
+    choices: (c) => [
+      {
+        label: tr('Trả lại con mắt', 'Return the eye'),
+        hint: tr('ngộ tính -, xong nợ', 'Insight -, debt cleared'),
+        lean: 'chinh',
+        run: (ch) => {
+          stat(ch, 'ngoTinh', -3);
+          dao(ch, 3);
+          ctSet(ch, 'ct20261120_3', 3, 'tra');
+          return tr('Trán bạn nguội đi. Con quạ gật đầu một cái rồi bay đi cùng đàn, để lại một sợi lông đen trên vai bạn.', 'Your brow cools. The crow nods once and flies off with the flock, leaving a single black feather on your shoulder.');
+        },
+      },
+      {
+        label: tr('Trả thêm ba mươi năm, giữ con mắt mãi', 'Pay thirty more years and keep the eye for good'),
+        hint: tr('-30 năm thọ, ngộ tính ++, khí vận +', '-30 years of lifespan, Insight ++, Luck +'),
+        lean: 'trung',
+        run: (ch) => {
+          const n = cutLife(ch, 30);
+          stat(ch, 'ngoTinh', 8);
+          stat(ch, 'khiVan', 5);
+          ctSet(ch, 'ct20261120_3', 3, 'giu');
+          return tr(`Con quạ nhận thọ (-${n} năm), rồi nói: "Chủ ta sống thêm được một mùa. Mắt ấy là của ngươi." Nó không đến nữa.`, `The crow takes the years (-${n}), then says: "My master lives one more season. The eye is yours." It never returns.`);
+        },
+      },
+      {
+        label: tr('Trả bằng ma thạch thay cho thọ', 'Pay in demon stones instead of years'),
+        hint: c.linhThach < 400 * tier(c) ? tr(`cần ${400 * tier(c)} linh thạch`, `needs ${400 * tier(c)} spirit stones`) : tr(`-${400 * tier(c)} linh thạch`, `-${400 * tier(c)} spirit stones`),
+        lean: 'trung',
+        off: c.linhThach < 400 * tier(c),
+        run: (ch) => {
+          money(ch, -400 * tier(ch));
+          ctSet(ch, 'ct20261120_3', 3, 'mua');
+          return tr('Con quạ mổ từng viên, đếm đủ mới thôi. "Chủ ta không ăn được đá," nó nói, "nhưng ta sẽ đổi được thứ khác." Bạn giữ con mắt.', 'The crow pecks at each stone until the count is right. "My master can\'t eat stones," it says, "but I can trade them for something." You keep the eye.');
+        },
+      },
+      {
+        label: tr('Bội ước, đánh thẳng vào tổ quạ', 'Break the deal and attack the nest'),
+        hint: tr('cả đàn quạ, có thể chết', 'the whole flock, you may die'),
+        lean: 'ta',
+        run: (ch, ctx) => {
+          dao(ch, -8);
+          ctSet(ch, 'ct20261120_3', 3, 'danh');
+          if (fight(ch, ctx, 0.5)) {
+            const g = Math.round(addCult(ch, reward(ch, 1.2)));
+            ctx.fx('breakthrough', tr('Phá tổ quạ', 'Nest broken'));
+            return tr(`Bạn đốt tổ, cánh quạ rơi như mưa tro. Con quạ ba mắt chết trong tay bạn, con mắt nó thành của bạn (+${g} tu vi).`, `You burn the nest and wings fall like ash. The three-eyed crow dies in your hand, and its eye is yours (+${g} cultivation).`);
+          }
+          const f = fatal(ch, ctx, 0.5, tr('Bạn bội ước với con quạ ba mắt. Cả đàn quạ phủ kín người bạn, khi chúng bay đi thì không còn gì để mổ nữa.', 'You broke your deal with the three-eyed crow. The flock covered you completely, and when they flew away there was nothing left to peck.'));
+          if (ch.dead) return tr('Trời tối sầm vì cánh quạ...', 'The sky goes dark with wings...') + (f ?? '');
+          return tr('Đàn quạ mổ nát vai bạn rồi bỏ đi, mang theo con mắt.', 'The flock tears your shoulders bloody and leaves, taking the eye with it.') + (f ?? '') + hurt(ch, 30, ctx);
+        },
+      },
+    ],
+  },
+
+  // ct_20261120_6 Tiếng chuông giữa hai lưỡi kiếm (Tiên giới, 2 bước). Nối Thiên thư quyển II, mảnh XV "Lôi đài": chỉ hiện cho người đã mở mảnh ấy.
+  {
+    id: 'ct_20261120_6',
+    cosmos: 'tien',
+    once: true,
+    weight: 30,
+    when: (c) => hasLore(c, 'chien_thu') && !ctArc(c, 'ct20261120_6'),
+    title: tr('Chuông giữa hai lưỡi kiếm', 'A bell between two blades'),
+    text: () =>
+      tr(
+        'Trước Nam Thiên Môn, hai tiên tướng tỷ thí tranh chức thống lĩnh. Kiếm vừa chạm nhau, bạn nghe một tiếng chuông vang đúng giữa hai lưỡi thép, y như ở lôi đài năm nào. Quanh đó trăm tiên quan đứng xem, không ai giật mình.',
+        'Before the Southern Heavenly Gate, two immortal generals duel for command. The moment their swords meet, you hear a bell ring right between the two blades, just as it once did in the Arena. A hundred immortal officials stand watching, and none of them flinches.',
+      ),
+    choices: (c) => [
+      {
+        label: tr('Chen vào giữa, tách hai lưỡi kiếm', 'Step between them and part the blades'),
+        hint: tr('có thể bị thương', 'may get hurt'),
+        lean: 'chinh',
+        run: (ch, ctx) => {
+          ctSet(ch, 'ct20261120_6', 1, 'tach');
+          if (fight(ch, ctx, 0.6)) {
+            stat(ch, 'khiVan', 5);
+            return tr('Bạn kẹp hai lưỡi kiếm giữa hai ngón tay. Tiếng chuông tắt ngay. Hai tiên tướng nhìn bạn như nhìn một kẻ điên.', 'You pinch both blades between two fingers. The bell stops at once. Both generals stare at you as if you were mad.');
+          }
+          return tr('Một lưỡi kiếm trượt qua vai bạn. Tiếng chuông vẫn còn, nhỏ dần.', 'One blade slides across your shoulder. The bell keeps ringing, fainter and fainter.') + hurt(ch, 15, ctx);
+        },
+      },
+      {
+        label: tr('Đứng im, đếm xem chuông vang mấy lần', 'Stand still and count how many times it rings'),
+        hint: tr('ngộ tính +', 'Insight +'),
+        lean: 'trung',
+        run: (ch) => {
+          stat(ch, 'ngoTinh', 5);
+          ctSet(ch, 'ct20261120_6', 1, 'dem');
+          return tr('Bảy lần, mỗi lần đúng lúc hai lưỡi kiếm sắp chạm vào người. Trận kết thúc, người thua là kẻ đã run tay ở tiếng thứ bảy.', 'Seven times, each one just as a blade is about to land. When it ends, the loser is the one whose hand shook at the seventh toll.');
+        },
+      },
+      {
+        label: tr('Hỏi nhỏ hai người: có nghe thấy gì không', 'Quietly ask both: did you hear anything?'),
+        lean: 'trung',
+        run: (ch) => {
+          stat(ch, 'tamCanh', 3);
+          ctSet(ch, 'ct20261120_6', 1, 'hoi');
+          return tr('Người thắng lắc đầu. Người thua không đáp, chỉ nhìn bạn rất lâu rồi cúi xuống nhặt kiếm.', 'The winner shakes his head. The loser does not answer, only looks at you a long time, then bends to pick up his sword.');
+        },
+      },
+      {
+        label: tr('Đặt cược vào người mạnh hơn', 'Bet on the stronger one'),
+        hint: tr('+linh thạch, nghiêng tà', '+spirit stones, leans Evil'),
+        lean: 'ta',
+        run: (ch, ctx) => {
+          const m = 150 * tier(ch);
+          money(ch, m);
+          dao(ch, -3);
+          ctx.fx('coin', `+${m}`);
+          ctSet(ch, 'ct20261120_6', 9);
+          return tr(`Bạn thắng cược ${m} linh thạch. Tiếng chuông kia vẫn ngân trong tai suốt đêm.`, `You win ${m} spirit stones on the bet. That bell keeps ringing in your ears all night.`);
+        },
+      },
+    ],
+  },
+  {
+    id: 'ct_20261120_6b',
+    cosmos: 'tien',
+    once: true,
+    weight: 300,
+    when: (c) => ctNext(c, 'ct20261120_6', 1, 6),
+    title: tr('Tiên tướng thua trận', 'The defeated general'),
+    text: () =>
+      tr(
+        'Sáu năm sau, tiên tướng thua trận năm ấy, Mạc Thừa, tìm đến động phủ bạn. Hắn đặt xuống một viên tiên đan và một phong thư tiến cử: "Ta xin rút khỏi quân ngũ. Hôm ấy ta thua vì một tiếng chuông, tay ta run. Chỗ này nên để cho người không run."',
+        'Six years later, the general who lost that day, Mac Thua, comes to your abode. He sets down an immortal pill and a letter of recommendation: "I am leaving the army. That day I lost to the sound of a bell; my hand shook. This place should go to someone whose hand does not."',
+      ),
+    choices: () => [
+      {
+        label: tr('Nói thật: ta cũng nghe tiếng chuông ấy', 'Tell the truth: you heard that bell too'),
+        hint: tr('ngộ tính +, tâm cảnh +', 'Insight +, Mind +'),
+        lean: 'chinh',
+        run: (c) => {
+          stat(c, 'ngoTinh', 5);
+          stat(c, 'tamCanh', 5);
+          ctSet(c, 'ct20261120_6', 2, 'that');
+          return tr('Mạc Thừa ngồi phịch xuống, cười như vừa trút được gánh đá: "Vậy là ta không điên." Hai người uống tới sáng mà không ai nhắc tới chức thống lĩnh.', 'Mac Thua drops onto a seat and laughs like a man setting down a load of stone: "So I\'m not mad." You drink until dawn and neither of you mentions the command.');
+        },
+      },
+      {
+        label: tr('Trả lại cả đan lẫn thư, khuyên hắn ở lại', 'Return both pill and letter, urge him to stay'),
+        hint: tr('nhường cơ duyên: đạo tâm +, khí vận +', 'give up the chance: Dao Heart +, Luck +'),
+        lean: 'chinh',
+        run: (c) => {
+          dao(c, 6);
+          stat(c, 'khiVan', 6);
+          ctSet(c, 'ct20261120_6', 2, 'nhuong');
+          return tr('Hắn ở lại. Lần tỷ thí sau hắn thắng, và trước khi rút kiếm hắn nhìn về phía bạn, như để chắc rằng có người đang nghe cùng.', 'He stays. He wins the next duel, and before drawing his sword he glances your way, as if to make sure someone is listening with him.');
+        },
+      },
+      {
+        label: tr('Nhận thư tiến cử, ra mắt Thiên Binh Ty', 'Take the letter and present yourself to the Heavenly Soldiers Bureau'),
+        hint: tr('+linh thạch, khí vận +', '+spirit stones, Luck +'),
+        lean: 'trung',
+        run: (c, ctx) => {
+          const m = 300 * tier(c);
+          money(c, m);
+          stat(c, 'khiVan', 3);
+          ctx.fx('coin', `+${m}`);
+          ctSet(c, 'ct20261120_6', 2, 'nhan');
+          return tr(`Thiên Binh Ty cho bạn một chức phó thống lĩnh, bổng lộc ${m} linh thạch. Mạc Thừa xuống trần làm thầy dạy kiếm cho một làng chài.`, `The Bureau grants you a vice-commander's post with a stipend of ${m} spirit stones. Mac Thua goes down to the mortal world to teach swordplay in a fishing village.`);
+        },
+      },
+      {
+        label: tr('Nhận viên tiên đan, uống ngay', 'Take the immortal pill and swallow it'),
+        hint: tr('tu vi +', 'cultivation +'),
+        lean: 'trung',
+        run: (c, ctx) => {
+          const g = Math.round(addCult(c, reward(c, 0.8)));
+          ctx.fx('layer', tr('Tiên đan', 'Immortal pill'));
+          ctSet(c, 'ct20261120_6', 2, 'dan');
+          return tr(`Đan tan trong bụng, ấm như nắng chiều (+${g} tu vi). Mạc Thừa cúi chào rồi đi, không nói thêm câu nào.`, `The pill melts inside you, warm as evening sun (+${g} cultivation). Mac Thua bows and leaves without another word.`);
+        },
+      },
+    ],
   },
 ];
