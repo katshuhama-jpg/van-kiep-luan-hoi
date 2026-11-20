@@ -480,11 +480,13 @@ function SmBanDoXem({ c }: { c: SmCtx }) {
   const giu = new Map<number, number>();
   for (const o of map.o) if (o[4] != null) giu.set(o[4], (giu.get(o[4]) ?? 0) + 1);
   const chu = sel?.[4] ?? null;
+  const yeuX = laYeu(map, chu);
+  const datX = sel ? datOf(map, sel[0], sel[1]) : null;
   return (
     <>
       {back}
       <div className="sm-between">
-        <span className="sm-note">{tr(`Kéo để xem cả ${map.o.length} ô · ${giu.size} môn đã cắm cờ`, `Drag to see all ${map.o.length} tiles · ${giu.size} sects flagged`)}</span>
+        <span className="sm-note">{tr(`Kéo để xem cả ${map.o.length} ô · ${giu.size - (map.yeu_mon != null && giu.has(map.yeu_mon) ? 1 : 0)} môn đã cắm cờ`, `Drag to see all ${map.o.length} tiles · ${giu.size - (map.yeu_mon != null && giu.has(map.yeu_mon) ? 1 : 0)} sects flagged`)}</span>
         <button className="sm-btn small" onClick={() => setRc(rc + 1)}>
           {tr('Về giữa', 'Center')}
         </button>
@@ -510,25 +512,35 @@ function SmBanDoXem({ c }: { c: SmCtx }) {
         <div className="sm-sheet" role="dialog" aria-modal="true" aria-label={sel[2]} onClick={() => setSel(null)}>
         <div onClick={(e) => e.stopPropagation()}>
           <div className="sm-row">
-            {chu != null ? <HuyHieu id={map.mon[String(chu)]?.huy_hieu ?? 0} size={40} /> : <span style={{ width: 40 }} />}
+            {yeuX ? <img src={yeuIcon(sel[0], sel[1])} width={40} height={40} alt="" /> : chu != null ? <HuyHieu id={map.mon[String(chu)]?.huy_hieu ?? 0} size={40} /> : <span style={{ width: 40 }} />}
             <div className="sm-grow">
               <h3 className="sm-clip">
-                {sel[2]} · {chu == null ? tr('Còn trống', 'Empty') : (map.mon[String(chu)]?.ten ?? '?')}
+                {datX?.[3] ?? sel[2]} · {chu == null ? tr('Còn trống', 'Empty') : yeuX ? tr('Yêu thú', 'Demon beast') : (map.mon[String(chu)]?.ten ?? '?')}
               </h3>
               <p className="sm-note">
                 {tr(`Cõi ${COI[sel[3]].name}`, `${COI[sel[3]].name} realm`)}
-                {chu != null ? tr(` · môn này giữ ${giu.get(chu) ?? 0} ô`, ` · this sect holds ${giu.get(chu) ?? 0} tiles`) : ''}
+                {chu != null && !yeuX ? tr(` · môn này giữ ${giu.get(chu) ?? 0} ô`, ` · this sect holds ${giu.get(chu) ?? 0} tiles`) : ''}
               </p>
             </div>
           </div>
-          {chu != null && sel[6] && new Date(sel[6]).getTime() > now && (
+          <DatInfo map={map} dat={datX} />
+          {yeuX && (
+            <div className="sm-giu la">
+              <div className="sm-between">
+                <b>{tr('Lực giữ của yêu thú', 'Beast defence')}</b>
+                <b className="sm-giu-n">{fmtN(datX?.[4] ?? 0)}</b>
+              </div>
+              <p className="sm-note">{tr('Môn nào đánh thắng thì ô về tay môn đó, mỗi người đi theo +10 phúc duyên. Vào một môn để cùng đi săn.', 'The sect that beats it takes the tile and each marcher gets +10 blessing. Join a sect to hunt.')}</p>
+            </div>
+          )}
+          {chu != null && !yeuX && sel[6] && new Date(sel[6]).getTime() > now && (
             <p className="sm-bh-o">
               <b>{tr('Đang được bảo hộ', 'Protected')}</b> · {bhConDu(sel[6], now)}
               <br />
               {tr(`Tới ${mocGio(sel[6], now)}, chưa môn nào đánh được ô này.`, `Until ${mocGio(sel[6], now)}; no sect can attack it.`)}
             </p>
           )}
-          {chu != null && (
+          {chu != null && !yeuX && (
             <div className="sm-giu la">
               <div className="sm-between">
                 <b>{tr('Lực giữ ô', 'Tile defence')}</b>
@@ -537,7 +549,7 @@ function SmBanDoXem({ c }: { c: SmCtx }) {
               <p className="sm-note">{tr('Phải trinh sát mới biết. Vào một môn để trinh sát.', 'Scout to find out. Join a sect to scout.')}</p>
             </div>
           )}
-          {chu != null && (() => {
+          {chu != null && !yeuX && (() => {
             const row = (c.list ?? []).find((x) => x.id === chu);
             return row ? (
               <p className="sm-note">
@@ -545,7 +557,7 @@ function SmBanDoXem({ c }: { c: SmCtx }) {
               </p>
             ) : null;
           })()}
-          {chu != null && (
+          {chu != null && !yeuX && (
             <button className="sm-btn main wide" onClick={() => (setXem(chu), track('sm_xem_mon', { tu: 'ban_do' }))}>
               {tr(`Xem người trong ${map.mon[String(chu)]?.ten ?? 'môn này'}`, `See members of ${map.mon[String(chu)]?.ten ?? 'this sect'}`)}
             </button>
