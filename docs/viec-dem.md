@@ -42,14 +42,15 @@ Lên bản: 2026-11-22 (làm 20-21/11, mỗi đêm một phần, giấu sau cờ
 
 ## Ngày 10 - Kỷ 2 làm sớm: giao diện, bật cờ
 Lên bản: 2026-11-21. Bật cờ `SM_DAT_ON` lúc 5:00 21/11 (điểm bắt đầu tính). Có cáo thị 4.6.2 (bản mới; 4.6.1 đã dùng cho 20/11): "Đất có giá": Linh Mạch, Thiên Trì, yêu thú, điểm giữ đất, luật dải sức mạnh.
-- [ ] Bản đồ: biểu tượng pixel Linh Mạch (mạch ngọc xanh), Thiên Trì (hồ sen vàng), yêu thú (đầu thú đỏ, ghi lực giữ); chú thích; chạm ô ghi "+3 điểm mỗi giờ, +2 Khí vận mỗi sáng".
-- [ ] Yêu thú dùng icon có sẵn ở `public/cws/thu/a1..a11.webp` (128px, Cultivation World Simulator, CC BY-NC-SA 4.0; Tyler duyệt 20/11): thỏ trắng a1, trâu lửa a2, xà băng a3, sói đen a4, hươu ngọc a5... (xem ảnh để chọn); mỗi ô yêu thú một con cố định theo tọa độ. Không phóng to quá 128px; ô nhỏ hơn thì để trình duyệt thu nhỏ (không image-rendering pixelated khi thu không nguyên lần). Thêm dòng "Biểu tượng yêu thú" vào mục Cảnh sơn môn ở /tac-gia.
-- [ ] Môn nhà: thẻ Lãnh thổ thêm "Điểm Kỷ: 1.240 · +9 mỗi giờ"; Xếp hạng Kỷ theo điểm (vẫn ghi số ô).
-- [ ] Xuất chinh: ô ngoài dải ghi lý do "Môn này yếu hơn 1/3 môn ta, đánh không được trừ ở Linh Mạch và Thiên Trì"; ô yêu thú ghi "Đánh máy, thắng mỗi người +10 phúc duyên".
-- [ ] Luật Sơn Môn: thêm câu hỏi "Điểm giữ đất là gì?", "Yêu thú là gì?", "Sao không đánh được môn kia?"; thẻ 3 câu đổi câu 3: "Hết Kỷ, môn nhiều Điểm giữ đất nhất thắng".
+- [x] Bản đồ: biểu tượng pixel Linh Mạch (mạch ngọc xanh), Thiên Trì (hồ sen vàng), yêu thú (đầu thú đỏ, ghi lực giữ); chú thích; chạm ô ghi "+3 điểm mỗi giờ, +2 Khí vận mỗi sáng".
+- [x] Yêu thú dùng icon có sẵn ở `public/cws/thu/a1..a11.webp` (128px, Cultivation World Simulator, CC BY-NC-SA 4.0; Tyler duyệt 20/11): thỏ trắng a1, trâu lửa a2, xà băng a3, sói đen a4, hươu ngọc a5... (xem ảnh để chọn); mỗi ô yêu thú một con cố định theo tọa độ. Không phóng to quá 128px; ô nhỏ hơn thì để trình duyệt thu nhỏ (không image-rendering pixelated khi thu không nguyên lần). Thêm dòng "Biểu tượng yêu thú" vào mục Cảnh sơn môn ở /tac-gia.
+- [x] Môn nhà: thẻ Lãnh thổ thêm "Điểm Kỷ: 1.240 · +9 mỗi giờ"; Xếp hạng Kỷ theo điểm (vẫn ghi số ô).
+- [x] Xuất chinh: ô ngoài dải ghi lý do "Môn này yếu hơn 1/3 môn ta, đánh không được trừ ở Linh Mạch và Thiên Trì"; ô yêu thú ghi "Đánh máy, thắng mỗi người +10 phúc duyên".
+- [x] Luật Sơn Môn: thêm câu hỏi "Điểm giữ đất là gì?", "Yêu thú là gì?", "Sao không đánh được môn kia?"; thẻ 3 câu đổi câu 3: "Hết Kỷ, môn nhiều Điểm giữ đất nhất thắng".
 - [ ] uiux-pro-max + humanizer cho mọi màn mới; `smoke-son-mon` thêm màn Linh Mạch, yêu thú, ô ngoài dải.
 - [ ] Bài đăng Page + Group cho Tyler tự đăng (không tự đăng): "Từ hôm nay đất có giá".
 - Ghi chú:
+  - 20/11 ~8h (Tyler: "cho ô yêu thú lên luôn", chọn bật cả Kỷ 2 ngay): bật cờ sớm (cfg dat.bat_dau = lúc bật), chạy sm_dat_5h tay: 8 yêu thú, 12 Linh Mạch, Thiên Trì; điểm tính từ giờ chẵn kế tiếp. Cáo thị 4.6.2 làm luôn; dòng "Từ 5:00 21/11" ở 4.6.1 đã bỏ. Còn: thêm màn Linh Mạch/yêu thú/ngoài dải vào smoke-son-mon, bài đăng Page + Group.
   - Trả lời góp ý cho tác vụ 5:00 gửi (đêm 19/11, kèm 10 phúc, `vkl_gift.to_player` là username):
     - #297 (godwhale99), reply_ver '4.6.0': "Cảm ơn bạn đã báo. Từ bản sáng 20/11, danh sách Trừ yêu xếp theo cấp quái từ thấp tới cao rồi nhé. Mình gửi bạn 10 phúc duyên."
 

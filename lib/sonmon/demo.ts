@@ -34,6 +34,8 @@ function map(withMine: boolean): SmMap {
   const o: SmMapO[] = banDo(6).map((h, i) => {
     const k = `${h.q},${h.r}`;
     let chu: number | null = CHU[k] ?? null;
+    // 20/11 Kỷ 2: hai ô yêu thú cho demo (môn hệ thống 99)
+    if (k === '3,0' || k === '5,0') chu = 99;
     if (!withMine && chu === 1) chu = null;
     const ten = TEN_DAT[k] ?? `${O_A[(i * 7) % O_A.length]} ${O_B[(i * 5) % O_B.length]}`;
     const cd = ['1,0', '3,-1', '0,2', '-3,0', '2,3'].includes(k);
@@ -44,6 +46,9 @@ function map(withMine: boolean): SmMap {
     ky: { id: 1, bat_dau: at(-8 * 1440), ket_thuc: at(6 * 1440 + 200), ban_kinh: 6 },
     o,
     mon: withMine ? MON : Object.fromEntries(Object.entries(MON).filter(([k]) => k !== '1')),
+    dat: [[0, 0, 'thien_tri', 'Thiên Trì', null], [3, 1, 'linh_mach', 'Thanh Ngọc Mạch', null], [-1, 3, 'linh_mach', 'Bích Lạc Mạch', null], [3, 0, 'yeu_thu', null, 14500], [5, 0, 'yeu_thu', null, 26000]],
+    yeu_mon: 99,
+    dat_tu: at(-60),
     di: withMine ? [{ mon: 2, tu: [3, -1], toi: [2, 0], toi_noi_luc: at(42), trang_thai: 'di' }, { mon: 1, tu: [1, 1], toi: [0, 2], toi_noi_luc: at(38), trang_thai: 'tap_hop' }] : [],
   };
 }
@@ -177,7 +182,8 @@ export function demoApi(vaiIn: string): SmApi {
     state: () => (vai === 'noct' ? Promise.reject(new SmErr('SM_NO_CT')) : wait(st)),
     list: () => wait(list),
     map: () => wait(map(coMon && vai !== 'cho')),
-    rank: () => wait(RANK),
+    rank: () => wait(RANK.map((r, i) => ({ ...r, diem: 120 - i * 15, gio: r.o + (i === 0 ? 4 : 0) }))),
+    dai: () => wait({ lc: 4833, dai: 0.3333, ngoai: [6], thu: { '3': at(300) } }),
     suMon: () => wait(vai === 'su' ? (LIST[1]?.id ?? null) : null),
     chatList: (sau) => wait(chat.filter((x) => x.id > sau)),
     chatSend: async (nd) => {

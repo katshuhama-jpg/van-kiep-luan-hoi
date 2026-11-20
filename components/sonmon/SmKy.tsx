@@ -21,6 +21,8 @@ function demNguoc(ms: number) {
 
 export function SmKy({ c }: { c: SmCtx }) {
   const { st, rank } = c;
+  // 20/11 Kỷ 2: có Điểm giữ đất thì xếp và hiện theo điểm
+  const coDiem = !!rank?.some((r) => r.diem != null) && (!!c.map?.dat?.length || !!rank?.some((r) => (r.diem ?? 0) > 0));
   const ky = st.ky!;
   const now = useNow();
   const mine = st.mon?.id ?? null;
@@ -63,8 +65,9 @@ export function SmKy({ c }: { c: SmCtx }) {
               <tr>
                 <th>#</th>
                 <th>{tr('Sơn môn', 'Sect')}</th>
+                {coDiem && <th className="num">{tr('Điểm', 'Points')}</th>}
                 <th className="num">{tr('Ô', 'Tiles')}</th>
-                <th className="num">{tr('Khí vận', 'Fortune')}</th>
+                {!coDiem && <th className="num">{tr('Khí vận', 'Fortune')}</th>}
               </tr>
             </thead>
             <tbody>
@@ -77,15 +80,18 @@ export function SmKy({ c }: { c: SmCtx }) {
                       <span className="sm-clip">{r.ten}</span>
                     </span>
                   </td>
+                  {coDiem && <td className="num">{fmtN(r.diem ?? 0)}</td>}
                   <td className="num">{r.o}</td>
-                  <td className="num">{fmtN(r.kv)}</td>
+                  {!coDiem && <td className="num">{fmtN(r.kv)}</td>}
                 </tr>
               ))}
             </tbody>
           </table>
         )}
         <p className="sm-note" style={{ padding: '4px 4px 0' }}>
-          {tr('Xếp theo số ô giữ lúc hết Kỷ, bằng nhau thì xét tổng Khí vận cả Kỷ.', 'Ranked by tiles held at the end, ties broken by total fortune.')}
+          {coDiem
+            ? tr('Xếp theo Điểm giữ đất: mỗi giờ ô thường +1, Linh Mạch +3, Thiên Trì +5. Bằng điểm thì xét số ô rồi Khí vận.', 'Ranked by land points: each hour +1 per tile, +3 Spirit Vein, +5 Heaven Pool. Ties: tiles, then fortune.')
+            : tr('Xếp theo số ô giữ lúc hết Kỷ, bằng nhau thì xét tổng Khí vận cả Kỷ.', 'Ranked by tiles held at the end, ties broken by total fortune.')}
         </p>
       </section>
       <SmKeoBang mine={mine} />

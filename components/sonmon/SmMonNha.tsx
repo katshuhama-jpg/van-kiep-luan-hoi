@@ -255,6 +255,12 @@ function LanhTho({ c }: { c: SmCtx }) {
     <section className={con && kh.size ? 'sm-card sm-kh-tip' : 'sm-card'}>
       <div className="sm-between">
         <h3>{tr(`Lãnh thổ ${m.o}/${m.o_max} ô`, `Land ${m.o}/${m.o_max} tiles`)}</h3>
+        {(() => {
+          // 20/11 Kỷ 2: Điểm giữ đất của môn
+          const r = c.rank?.find((x) => x.id === m.id);
+          if (!c.map?.dat?.length || r?.diem == null) return null;
+          return <p className="sm-diem">{tr(`Điểm Kỷ: ${fmtN(r.diem)} · +${r.gio ?? 0} mỗi giờ`, `Era points: ${fmtN(r.diem)} · +${r.gio ?? 0}/hour`)}</p>;
+        })()}
         <span className="sm-o-pips" aria-hidden>
           {Array.from({ length: m.o_max }, (_, i) => (
             <i key={i} className={i < m.o ? 'on' : ''} />

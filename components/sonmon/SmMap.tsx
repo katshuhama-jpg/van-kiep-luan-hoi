@@ -4,7 +4,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
-import type { SmMap, SmMapO, SmMember, SmState } from '@/lib/sonmon/api';
+import type { SmDai, SmMap, SmMapO, SmMember, SmState } from '@/lib/sonmon/api';
 import { capLc, COI, HUY_MAU, hexDist, khDan, SM_CFG } from '@/lib/sonmon/data';
 import { HuyHieu } from './Pixel';
 import { XemMon } from './SmList';
@@ -66,6 +66,73 @@ function fromPx(x: number, y: number) {
 /** Ngày 8 (game-feel): ô vừa khai hoang - cờ pixel dựng lên 0,6 giây, ô sáng nhấp 3 lần (trong 4 giây sau khi cắm) */
 let coMoi: { k: string; t: number } | null = null;
 
+/** 20/11 Kỷ 2 "Đất có giá": loại ô (Linh Mạch, Thiên Trì, yêu thú) */
+export type DatO = NonNullable<SmMap['dat']>[number];
+export function datOf(map: SmMap | null | undefined, q: number, r: number): DatO | null {
+  return map?.dat?.find((d) => d[0] === q && d[1] === r) ?? null;
+}
+export const laYeu = (map: SmMap | null | undefined, chu: number | null) => chu != null && map?.yeu_mon != null && chu === map.yeu_mon;
+/** icon yêu thú cố định theo tọa độ (Cultivation World Simulator, CC BY-NC-SA 4.0) */
+export const yeuIcon = (q: number, r: number) => `/cws/thu/a${((((q * 7 + r * 13) % 11) + 11) % 11) + 1}.webp`;
+const kN = (n: number) => (n >= 1000 ? `${Math.round(n / 100) / 10}k` : String(n));
+
+/** dấu Linh Mạch: viên ngọc xanh; Thiên Trì: hồ sen vàng (vẽ pixel) */
+function DauDat({ loai, at = [-17, -19] }: { loai: DatO[2]; at?: [number, number] }) {
+  if (loai === 'linh_mach')
+    return (
+      <g transform={`translate(${at[0]},${at[1]})`} shapeRendering="crispEdges">
+        <rect x={3} y={0} width={4} height={2} fill="#bff5e2" />
+        <rect x={1} y={2} width={8} height={4} fill="#3fd0a0" />
+        <rect x={3} y={6} width={4} height={3} fill="#1f8a68" />
+        <rect x={0} y={2} width={1} height={4} fill="#0f3a2c" /><rect x={9} y={2} width={1} height={4} fill="#0f3a2c" />
+        <rect x={2} y={2} width={2} height={2} fill="#e8fff6" />
+      </g>
+    );
+  if (loai === 'thien_tri')
+    return (
+      <g transform={`translate(${at[0]},${at[1]})`} shapeRendering="crispEdges">
+        <rect x={0} y={5} width={12} height={4} fill="#3f7fd0" stroke="#10233f" strokeWidth={0.8} />
+        <rect x={4} y={1} width={4} height={4} fill="#f2c14e" />
+        <rect x={2} y={3} width={2} height={2} fill="#f6a6c8" /><rect x={8} y={3} width={2} height={2} fill="#f6a6c8" />
+      </g>
+    );
+  return null;
+}
+
+/** 20/11 Kỷ 2: chú giải Linh Mạch, Thiên Trì, yêu thú */
+function DatChuGiai({ map }: { map: SmMap | null }) {
+  if (!map?.dat?.length) return null;
+  return (
+    <>
+      <span>
+        <svg width="16" height="16" viewBox="-17 -19 12 12" aria-hidden><DauDat loai="linh_mach" /></svg>
+        {tr('Linh Mạch: +3 điểm mỗi giờ', 'Spirit Vein: +3 pts/hour')}
+      </span>
+      <span>
+        <svg width="16" height="16" viewBox="-6 -22 12 12" aria-hidden><DauDat loai="thien_tri" at={[-6, -22]} /></svg>
+        {tr('Thiên Trì: +5 điểm mỗi giờ', 'Heaven Pool: +5 pts/hour')}
+      </span>
+      <span>
+        <img src="/cws/thu/a1.webp" width={16} height={16} alt="" />
+        {tr('yêu thú (số là lực giữ)', 'demon beast (defence shown)')}
+      </span>
+    </>
+  );
+}
+
+/** 20/11 Kỷ 2: ô này đáng giá gì */
+function DatInfo({ map, dat }: { map: SmMap | null; dat: DatO | null }) {
+  if (!map?.dat?.length) return null;
+  const chu = !dat
+    ? tr('Ô thường: môn giữ được +1 điểm mỗi giờ.', 'Ordinary tile: +1 point per hour for the holder.')
+    : dat[2] === 'linh_mach'
+      ? tr('Linh Mạch: môn giữ được +3 điểm mỗi giờ và +2 Khí vận mỗi sáng 5:00. Môn nào cũng đánh được ô này.', 'Spirit Vein: +3 points per hour and +2 fortune each 5:00 for the holder. Any sect may attack it.')
+      : dat[2] === 'thien_tri'
+        ? tr('Thiên Trì: môn giữ được +5 điểm mỗi giờ, người đứng giữ mạnh thêm 10%. Môn nào cũng đánh được ô này.', 'Heaven Pool: +5 points per hour, guards +10% stronger. Any sect may attack it.')
+        : tr('Yêu thú chiếm ô này. Đánh thắng thì ô về môn ta, +1 điểm mỗi giờ như ô thường.', 'A demon beast holds this tile. Beat it and the tile is ours, +1 point per hour.');
+  return <p className={`sm-dat-info ${dat?.[2] ?? 'thuong'}`}>{chu}</p>;
+}
+
 export function HexMap({
   map,
   mine,
@@ -122,7 +189,7 @@ export function HexMap({
   }, [center[0], center[1], recenter]);
   const pan = (dx: number, dy: number) => setOff((o) => ({ x: o.x + dx, y: o.y + dy }));
 
-  const mau = (id: number | null) => (id == null ? VIEN_TRONG : HUY_MAU[Math.floor((map.mon[String(id)]?.huy_hieu ?? 0) / 5) % 6].hex);
+  const mau = (id: number | null) => (id == null ? VIEN_TRONG : laYeu(map, id) ? '#7a2a2a' : HUY_MAU[Math.floor((map.mon[String(id)]?.huy_hieu ?? 0) / 5) % 6].hex);
   // viền ô có chủ: màu huy hiệu làm sáng lên (Đen huyền thì dùng xám bạc để không chìm vào nền)
   const vien = (id: number) => {
     const m = mau(id);
@@ -203,10 +270,32 @@ export function HexMap({
             <g key={`${q},${r}`} transform={`translate(${p.x},${p.y})`} opacity={pickEmpty && !trong ? 0.45 : 1}>
               <polygon points={HEX} fill={trong ? NEN[coi] : tron(mau(chu), '#f3e6c4', 0.72)} stroke={stroke} strokeWidth={isSel || ta ? 3.5 : trong ? 1.5 : 3} />
               {ta && !isSel && <polygon points={HEX_IN} fill="none" stroke="#f2c14e" strokeWidth={2.5} />}
-              {bhCon(bh) && !trong && <polygon points={HEX_IN} fill="none" stroke="#2f8a5a" strokeWidth={2.5} strokeDasharray="4 2" />}
-              {!trong && <HuyHieu id={map.mon[String(chu)]?.huy_hieu ?? 0} size={30} x={-15} y={bhCon(bh) ? -17 : -14} label="" />}
+              {bhCon(bh) && !trong && !laYeu(map, chu) && <polygon points={HEX_IN} fill="none" stroke="#2f8a5a" strokeWidth={2.5} strokeDasharray="4 2" />}
+              {!trong && !laYeu(map, chu) && <HuyHieu id={map.mon[String(chu)]?.huy_hieu ?? 0} size={30} x={-15} y={bhCon(bh) ? -17 : -14} label="" />}
+              {/* 20/11 Kỷ 2: ô yêu thú: hình yêu thú và lực giữ */}
+              {laYeu(map, chu) && (
+                <g>
+                  <image href={yeuIcon(q, r)} x={-16} y={-21} width={32} height={32} />
+                  <rect x={-15} y={8} width={30} height={10} fill="#7a2a2a" stroke="#1f0a0a" strokeWidth={1} />
+                  <text x={0} y={16} textAnchor="middle" fontSize={8.5} fontWeight={700} fill="#ffe3d6" fontFamily="inherit">
+                    {kN(datOf(map, q, r)?.[4] ?? 0)}
+                  </text>
+                </g>
+              )}
+              {(() => {
+                // 20/11: Linh Mạch viền ngọc xanh, Thiên Trì viền vàng; dấu nằm trong ô (giữa dưới khi ô trống, mép trái khi có chủ)
+                const d = datOf(map, q, r);
+                if (!d || d[2] === 'yeu_thu') return null;
+                const lm = d[2] === 'linh_mach';
+                return (
+                  <>
+                    <polygon points={HEX_IN} fill="none" stroke={lm ? '#3fd0a0' : '#f2c14e'} strokeWidth={2.5} />
+                    <DauDat loai={d[2]} at={trong ? (lm ? [-5, 4] : [-6, 2]) : lm ? [-22, -5] : [-6, 9]} />
+                  </>
+                );
+              })()}
               {/* 18/11: ô đang bảo hộ: nhãn xanh có khiên và thời gian còn lại */}
-              {bhCon(bh) && !trong && (
+              {bhCon(bh) && !trong && !laYeu(map, chu) && (
                 <g transform="translate(0, 12)">
                   <rect x={-15} y={-5} width={30} height={11} fill="#2f6b4a" stroke="#0f2a1c" strokeWidth={1} />
                   <path d="M-12 -3h5v3l-2.5 2l-2.5 -2z" fill="#c8f0d4" />
@@ -343,14 +432,21 @@ export function oDanhDuoc(st: SmState, map: SmMap | null, now: number): SmMapO[]
 }
 
 /** lý do nút Xuất chinh bị khóa (null = bấm được) */
-export function chinhKhoa(st: SmState, o: SmMapO, now: number): string | null {
+export function chinhKhoa(st: SmState, o: SmMapO, now: number, map?: SmMap | null, dai?: SmDai | null): string | null {
   const m = st.mon!;
+  const yeu = laYeu(map, o[4]);
   if (m.chuc === 'de') return tr('Chỉ môn chủ hoặc trưởng lão phát lệnh xuất chinh.', 'Only the master or elders can order a march.');
   if (!m.tiles.length) return tr('Môn chưa cắm cờ ô nào.', 'Your sect has no tile yet.');
-  // 19/11 23h (Ngày 7c): đủ ô chỉ chặn ô trống; ô có chủ của môn khác vẫn đánh được (thắng thì bỏ ô xa nhất)
-  if (m.o >= m.o_max && o[4] == null) return duOCau(st);
+  // 19/11 23h (Ngày 7c): đủ ô chỉ chặn ô trống (và ô yêu thú); ô có chủ của môn khác vẫn đánh được (thắng thì bỏ ô xa nhất)
+  if (m.o >= m.o_max && (o[4] == null || yeu)) return duOCau(st);
   if (gan(st, o[0], o[1]) !== 1) return tr('Chỉ xuất chinh tới ô kề lãnh thổ.', 'You can only march to a tile next to your land.');
-  if (o[6] && o[4] != null && new Date(o[6]).getTime() > now) return tr(`Ô đang được bảo hộ tới ${mocGio(o[6], now)}.`, `Protected until ${mocGio(o[6], now)}.`);
+  if (!yeu && o[6] && o[4] != null && new Date(o[6]).getTime() > now) return tr(`Ô đang được bảo hộ tới ${mocGio(o[6], now)}.`, `Protected until ${mocGio(o[6], now)}.`);
+  // 20/11 Kỷ 2: thù 12 giờ và dải sức mạnh (Linh Mạch, Thiên Trì không xét dải)
+  if (o[4] != null && !yeu && map?.dat?.length) {
+    const thu = dai?.thu?.[String(o[4])];
+    if (thu && new Date(thu).getTime() > now) return tr(`Môn ta vừa thắng môn này, tới ${mocGio(thu, now)} mới đánh tiếp họ được.`, `We just beat this sect; attack them again after ${mocGio(thu, now)}.`);
+    if (dai?.ngoai?.includes(o[4]) && !datOf(map, o[0], o[1])) return tr('Môn này yếu hơn 1/3 môn ta, đánh không được, trừ ở Linh Mạch và Thiên Trì.', 'This sect is under a third of our strength; only Spirit Veins and the Heaven Pool can be attacked.');
+  }
   if ((st.chinh ?? []).length) return tr('Môn đang có một lệnh xuất chinh.', 'Your sect already has a march under way.');
   if (st.nghi_toi && new Date(st.nghi_toi).getTime() > now) return tr(`Ngươi đang nghỉ sau trận thua tới ${hhmm(st.nghi_toi)}.`, `You rest after a defeat until ${hhmm(st.nghi_toi)}.`);
   return null;
@@ -407,6 +503,7 @@ function SmBanDoXem({ c }: { c: SmCtx }) {
           <i className="sm-sw" style={{ borderColor: '#2f8a5a', borderStyle: 'dashed', background: '#2f6b4a' }} />
           {tr('đang bảo hộ (số giờ còn lại)', 'protected (hours left)')}
         </span>
+        <DatChuGiai map={map} />
       </div>
       {/* 19/11 (Tyler: chạm ô không thấy gì vì thẻ nằm dưới bản đồ cao): thông tin ô và môn hiện ở bottom sheet */}
       {sel && xem == null ? (
@@ -550,6 +647,7 @@ function SmBanDoMon({ c }: { c: SmCtx }) {
           <i className="sm-sw" style={{ borderColor: '#2f8a5a', borderStyle: 'dashed', background: '#2f6b4a' }} />
           {tr('đang bảo hộ (số giờ còn lại)', 'protected (hours left)')}
         </span>
+        <DatChuGiai map={map} />
       </div>
       <Msg err={err} ok={ok} />
       {cur ? <OInfo key={`${cur[0]},${cur[1]},${cur[4]}`} c={c} o={cur} now={now} setErr={setErr} setOk={setOk} /> : <p className="sm-card">{tr('Chạm một ô để xem tên, chủ ô. Ô có dấu + thì khai hoang được ngay.', 'Tap a tile to see its name and owner. Tiles marked + can be claimed now.')}</p>}
@@ -564,12 +662,14 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
   const [q, r, ten, coi, chu, , bh] = o;
   const ta = chu === m.id;
   const d = gan(st, q, r);
-  const chuTen = chu == null ? tr('Còn trống', 'Empty') : ta ? m.ten : map?.mon[String(chu)]?.ten ?? '?';
+  const yeu = laYeu(map, chu);
+  const dat = datOf(map, q, r);
+  const chuTen = chu == null ? tr('Còn trống', 'Empty') : ta ? m.ten : yeu ? tr('Yêu thú', 'Demon beast') : map?.mon[String(chu)]?.ten ?? '?';
   const [xemMon, setXemMon] = useState(false);
   const trinh = (st.trinh ?? []).find((t) => t.o[0] === q && t.o[1] === r);
   const dangTrinh = trinh && !trinh.ket_qua;
   const phut = SM_CFG.gio.trinhPhut * Math.max(1, d ?? 1);
-  const khoa = ta ? null : chinhKhoa(st, o, now);
+  const khoa = ta ? null : chinhKhoa(st, o, now, map, c.dai);
   const dangDung = m.dung ? m.dung[0] === q && m.dung[1] === r : !!m.tiles.find((t) => t.cd && t.q === q && t.r === r);
   // 18/11: sang ô khác mất 20 phút mỗi ô, tính từ ô đang đứng (chưa chọn: chính điện)
   const cdT = m.tiles.find((t) => t.cd) ?? m.tiles[0];
@@ -580,10 +680,10 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
   return (
     <section className="sm-card sm-o-card">
       <div className="sm-row">
-        {chu != null ? <HuyHieu id={map?.mon[String(chu)]?.huy_hieu ?? 0} size={40} /> : <span style={{ width: 40 }} />}
+        {yeu ? <img src={yeuIcon(q, r)} width={40} height={40} alt="" /> : chu != null ? <HuyHieu id={map?.mon[String(chu)]?.huy_hieu ?? 0} size={40} /> : <span style={{ width: 40 }} />}
         <div className="sm-grow">
           <h3 className="sm-clip">
-            {ten} · {chuTen}
+            {dat?.[3] ?? ten} · {chuTen}
           </h3>
           <p className="sm-note">
             {tr(`Cõi ${COI[coi].name}`, `${COI[coi].name} realm`)}
@@ -592,20 +692,32 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
           </p>
         </div>
       </div>
-      {bh && chu != null && new Date(bh).getTime() > now && (
+      <DatInfo map={map} dat={dat} />
+      {bh && chu != null && !yeu && new Date(bh).getTime() > now && (
         <p className="sm-bh-o">
           <b>{tr('Đang được bảo hộ', 'Protected')}</b> · {bhConDu(bh, now)}
           <br />
           {tr(`Tới ${mocGio(bh, now)}, chưa môn nào đánh được ô này.`, `Until ${mocGio(bh, now)}; no sect can attack this tile.`)}
         </p>
       )}
-      {!ta && chu != null && (
+      {!ta && chu != null && !yeu && (
         <button className="sm-btn small" style={{ alignSelf: 'flex-start' }} onClick={() => (setXemMon(true), track('sm_xem_mon', { tu: 'ban_do_mon' }))}>
           {tr(`Xem người ${chuTen}`, `View ${chuTen}`)}
         </button>
       )}
       {xemMon && chu != null && <XemMon c={c} id={chu} ten={chuTen} huy={map?.mon[String(chu)]?.huy_hieu ?? 0} onDong={() => setXemMon(false)} />}
-      {!ta && chu != null && (
+      {yeu && (
+        <div className="sm-giu la">
+          <div className="sm-between">
+            <b>{tr('Lực giữ của yêu thú', 'Beast defence')}</b>
+            <b className="sm-giu-n">{fmtN(dat?.[4] ?? 0)}</b>
+          </div>
+          <p className="sm-note">
+            {tr('Lực giữ cố định, không cần trinh sát. Thắng thì ô về tay môn, mỗi người đi theo +10 phúc duyên. Sáng mai 5:00 ô yêu thú chưa ai đánh sẽ về trống, yêu thú mới hiện ở chỗ khác.', 'Fixed defence, no scouting needed. Win and the tile is ours, each marcher gets +10 blessing. At 5:00 tomorrow unbeaten beasts leave and new ones appear elsewhere.')}
+          </p>
+        </div>
+      )}
+      {!ta && chu != null && !yeu && (
         <div className="sm-giu la">
           <div className="sm-between">
             <b>{tr('Lực giữ ô', 'Tile defence')}</b>
@@ -655,8 +767,8 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
         <KhaiHoang c={c} o={o} d={d} now={now} setErr={setErr} setOk={setOk} />
       ) : (
         <>
-          <div className="sm-grid2">
-            <button
+          <div className={yeu ? 'sm-grid1' : 'sm-grid2'}>
+            {!yeu && <button
               className="sm-btn"
               disabled={c.busy || !!dangTrinh || d == null}
               onClick={async () => {
@@ -666,16 +778,16 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
               }}
             >
               {tr(`Trinh sát · ${phut} phút`, `Scout · ${phut} min`)}
-            </button>
+            </button>}
             <button className="sm-btn main" disabled={!!khoa} onClick={() => c.go('xuat-chinh', { target: [q, r] })}>
               {tr('Xuất chinh', 'March')}
             </button>
           </div>
           {khoa && <p className="sm-why">{khoa}</p>}
-          {!khoa && oBoKhiThang(c.st, q, r) && (
+          {!khoa && !yeu && oBoKhiThang(c.st, q, r) && (
             <p className="sm-note">{tr(`Môn đang giữ đủ ${m.o_max} ô: thắng thì ô này về tay ta, môn bỏ lại ${oBoKhiThang(c.st, q, r)} (ô xa chính điện nhất).`, `We hold our ${m.o_max}-tile limit: win and this tile is ours, we leave ${oBoKhiThang(c.st, q, r)} (farthest from the main hall).`)}</p>
           )}
-          {!khoa && chu != null && m.moi_bh_toi && new Date(m.moi_bh_toi).getTime() > now && (
+          {!khoa && chu != null && !yeu && m.moi_bh_toi && new Date(m.moi_bh_toi).getTime() > now && (
             <p className="sm-why">{tr('Môn ta đang được bảo hộ môn mới. Xuất chinh vào ô có chủ thì mất bảo hộ ngay.', 'Our sect is under new-sect protection. Marching on an owned tile ends it at once.')}</p>
           )}
         </>

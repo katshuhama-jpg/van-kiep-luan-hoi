@@ -24,6 +24,27 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '4.6.2',
+    date: '20/11/2026',
+    title: tr('Đất có giá: yêu thú, Linh Mạch, Thiên Trì', 'Land has value: demon beasts, Spirit Veins, Heaven Pool'),
+    lead: tr('Sơn Môn bật luật đất có giá từ sáng nay, sớm hơn một ngày. Mọi môn bắt đầu từ 0 điểm.', 'Land-value rules for Sects start this morning, a day early. Every sect starts at 0 points.'),
+    more: [tr('Yêu thú ở rìa bản đồ', 'Demon beasts on the map edge'), tr('Linh Mạch, Thiên Trì', 'Spirit Veins, Heaven Pool'), tr('Xếp hạng theo Điểm giữ đất', 'Ranked by land points')],
+    cta: { label: tr('Mở bản đồ Sơn Môn', 'Open the Sect map'), go: 'sonmon' },
+    groups: [
+      {
+        h: tr('Mới 20/11', 'New on Nov 20'),
+        hot: true,
+        items: [
+          tr('Yêu thú: mỗi sáng 5:00 yêu thú chiếm vài ô trống ở rìa bản đồ, trên ô ghi lực giữ. Đánh thắng thì ô về tay môn, mỗi người đi theo +10 phúc duyên. Ô chưa ai đánh sẽ về trống sáng hôm sau.', 'Demon beasts: each 5:00 they take a few empty tiles on the map edge, defence shown on the tile. Beat one and the tile is ours, each marcher gets +10 blessing. Unbeaten tiles empty out the next morning.'),
+          tr('Điểm giữ đất: mỗi giờ ô thường +1, Linh Mạch +3, Thiên Trì (ô giữa) +5. Hết Kỷ, môn nhiều điểm nhất thắng. Điểm cộng dồn, mất ô không mất điểm.', 'Land points: each hour +1 per tile, +3 per Spirit Vein, +5 for the Heaven Pool (centre). Most points at the end wins. Points add up and are never lost.'),
+          tr('Linh Mạch còn cho môn giữ +2 Khí vận mỗi sáng. Thiên Trì cho người đứng giữ mạnh thêm 10%.', 'Spirit Veins also give +2 fortune each morning. The Heaven Pool makes its guards 10% stronger.'),
+          tr('Không bắt nạt: môn yếu hơn 1/3 môn ta thì không đánh được, trừ ở Linh Mạch và Thiên Trì. Vừa thắng môn nào thì 12 giờ sau mới đánh tiếp môn đó.', 'No bullying: you cannot attack a sect under a third of your strength, except on Spirit Veins and the Heaven Pool. After beating a sect, wait 12 hours to attack it again.'),
+          tr('Môn bỏ hoang 72 giờ (không ai chơi kiếp hay mở Sơn Môn) thì mọi ô trừ chính điện về trống.', 'A sect idle for 72 hours (no lives played, Sects not opened) loses every tile except its main hall.'),
+        ],
+      },
+    ],
+  },
+  {
     v: '4.6.1',
     date: '20/11/2026',
     title: tr('Đánh ô môn khác, Thiên thư quyển III', "Attack other sects' tiles, Heavenly Tome Volume III"),
@@ -43,7 +64,6 @@ export const RELEASES: Release[] = [
           tr('Thiên thư có thêm quyển III "Cơm Chiều" cho ai đã xong quyển II. Chặng đầu có 5 trang, xem ở Sổ Sinh Tử, mục Thiên thư.', 'The Heavenly Tome has a Volume III, "Evening Rice", for anyone who finished Volume II. The first part has 5 pages; find them in the Book of Life and Death, Heavenly Tome section.'),
           tr('Sơn Môn: môn đã giữ đủ ô vẫn xuất chinh đánh ô của môn khác được. Thắng thì ô về tay môn ta, môn tự bỏ lại ô xa chính điện nhất. Ở Môn nhà và Bản đồ có thẻ "Ô kề có thể đánh", chạm là mở ô đó.', 'Sects: a sect at its tile limit can still march on another sect\'s tile. Win and the tile is ours; the sect leaves its tile farthest from the main hall. The Home and Map tabs show "Tiles we can attack"; tap one to open it.'),
           tr('Mỗi sơn môn có ảnh cảnh riêng ở đầu Môn nhà và trong danh sách môn. Ảnh từ Cultivation World Simulator, ghi công ở trang Tác giả.', 'Each sect now has its own scenery at the top of Home and in the sect list. Images from Cultivation World Simulator, credited on the Credits page.'),
-          tr('Từ 5:00 sáng 21/11, hạng Kỷ tính theo Điểm giữ đất: giữ ô càng lâu càng nhiều điểm, ô quý được nhiều hơn ô thường. Mọi môn bắt đầu từ 0.', 'From 5:00 AM on Nov 21, the era ranking counts Land Points: the longer you hold a tile, the more points, and rare tiles give more than plain ones. Every sect starts from 0.'),
         ],
       },
       {

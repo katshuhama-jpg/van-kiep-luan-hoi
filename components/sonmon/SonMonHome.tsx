@@ -13,7 +13,7 @@ import { SON_MON_ON } from '@/lib/flags';
 import { SmWait } from './SmWait';
 import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
-import { realApi, SmErr, smLoi, type SmAct, type SmApi, type SmMap, type SmMembers, type SmMonRow, type SmRankRow, type SmState } from '@/lib/sonmon/api';
+import { realApi, SmErr, smLoi, type SmAct, type SmApi, type SmMap, type SmMembers, type SmMonRow, type SmRankRow, type SmState, type SmDai } from '@/lib/sonmon/api';
 import { smNgay } from '@/lib/sonmon/data';
 import { SmLuat } from './SmLuat';
 import { lastSeenChat, SmChat } from './SmChat';
@@ -84,6 +84,7 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
   const [map, setMap] = useState<SmMap | null>(null);
   const [members, setMembers] = useState<SmMembers | null>(null);
   const [rank, setRank] = useState<SmRankRow[] | null>(null);
+  const [dai, setDai] = useState<SmDai | null>(null);
   const [busy, setBusy] = useState(false);
   const [chatMoi, setChatMoi] = useState(0);
   const opened = useRef(false);
@@ -105,7 +106,10 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
       if (!api || !api.linked) return;
       if (what.includes('state')) loadState();
       if (what.includes('list')) api.list().then(setList, () => setList((x) => x ?? []));
-      if (what.includes('map')) api.map().then(setMap, () => {});
+      if (what.includes('map')) {
+        api.map().then(setMap, () => {});
+        api.dai?.().then(setDai, () => {});
+      }
       if (what.includes('members')) api.members().then(setMembers, () => {});
       if (what.includes('rank')) api.rank().then(setRank, () => setRank((x) => x ?? []));
     },
@@ -267,7 +271,7 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
     );
   else if (!st.ky || !st.ky_chay) body = <SmChuaMo st={st} />;
   else {
-    const ctx: SmCtx = { api, st, list, map, members, rank, go, target, draft, setDraft, run, busy, reload };
+    const ctx: SmCtx = { api, st, list, map, members, rank, dai, go, target, draft, setDraft, run, busy, reload };
     body = (
       <>
         {coMon && IN_MON.includes(v) && <SmNav v={v} go={go} st={st} chatMoi={chatMoi} />}

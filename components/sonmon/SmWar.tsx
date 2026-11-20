@@ -7,7 +7,7 @@ import { track } from '@/lib/track';
 import type { SmBao, SmMember, SmState } from '@/lib/sonmon/api';
 import { capLc, SM_CFG, tranCau } from '@/lib/sonmon/data';
 import { HuyHieu } from './Pixel';
-import { chinhKhoa } from './SmMap';
+import { chinhKhoa, datOf, laYeu } from './SmMap';
 import { clock, fmtN, hhmm, mocGio, Msg, truoc, useNow, type SmCtx } from './ui';
 
 const vnGio = (t: number) => new Date(t + 7 * 3600e3).getUTCHours();
@@ -60,7 +60,8 @@ export function SmXuatChinh({ c }: { c: SmCtx }) {
   const o = map?.o.find((x) => x[0] === toi[0] && x[1] === toi[1]) ?? null;
   const tenO = chinh?.ten_o ?? o?.[2] ?? '?';
   const chuO = o?.[4] ?? null;
-  const chuTen = chuO == null ? null : map?.mon[String(chuO)]?.ten ?? null;
+  const yeuO = laYeu(map, chuO);
+  const chuTen = chuO == null ? null : yeuO ? tr('Yêu thú', 'Demon beast') : map?.mon[String(chuO)]?.ten ?? null;
   const trinh = (st.trinh ?? []).find((t) => t.o[0] === toi[0] && t.o[1] === toi[1] && t.ket_qua);
   const tapHop = chinh ? new Date(chinh.tap_hop_toi).getTime() : now + SM_CFG.gio.tapHopPhut * 60e3;
   const toiNoi = chinh ? new Date(chinh.toi_noi_luc).getTime() : tapHop + SM_CFG.gio.diPhut * 60e3;
@@ -74,16 +75,16 @@ export function SmXuatChinh({ c }: { c: SmCtx }) {
   const ta = goc * (1 + m.kv_bonus);
   // Họ: số trinh sát (đã gồm sân nhà, sai số ±15%), đêm 0-7h nhân đôi, môn chỉ còn 1 ô thêm 15%
   const motO = chuO != null && (map?.o.filter((x) => x[4] === chuO).length ?? 0) === 1;
-  const ho = trinh?.ket_qua && !trinh.ket_qua.trong ? (trinh.ket_qua.lc ?? 0) * (laDem(toiNoi) ? SM_CFG.tran.dem : 1) * (motO ? SM_CFG.tran.motO : 1) : 0;
+  const ho = yeuO ? (datOf(map, toi[0], toi[1])?.[4] ?? 0) : trinh?.ket_qua && !trinh.ket_qua.trong ? (trinh.ket_qua.lc ?? 0) * (laDem(toiNoi) ? SM_CFG.tran.dem : 1) * (motO ? SM_CFG.tran.motO : 1) : 0;
   const cau =
     chuO == null
       ? tr('Ô trống: tới nơi là cắm cờ.', 'Empty tile: arrive and plant the flag.')
-      : !trinh
+      : !trinh && !yeuO
         ? tr('Chưa trinh sát ô này nên chưa ước tính được. Nên trinh sát trước.', 'Not scouted yet, so no estimate. Scout first.')
         : ta > ho
           ? tr(`Đang hơn khoảng ${fmtN(ta - ho)} - nhiều khả năng thắng.`, `Ahead by about ${fmtN(ta - ho)} - likely to win.`)
           : tranCau(ta, ho, lcTa);
-  const khoa = !chinh && o ? chinhKhoa(st, o, now) : null;
+  const khoa = !chinh && o ? chinhKhoa(st, o, now, c.map, c.dai) : null;
 
   // 18/11: môn ta đang bảo hộ môn mới mà đánh ô có chủ thì mất bảo hộ: hỏi lại trước
   const bhTa = st.mon?.moi_bh_toi && new Date(st.mon.moi_bh_toi).getTime() > now ? st.mon.moi_bh_toi : null;

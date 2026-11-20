@@ -105,7 +105,14 @@ export type SmMap = {
   o: SmMapO[];
   mon: Record<string, { ten: string; huy_hieu: number }>;
   di: { mon: number; tu: [number, number]; toi: [number, number]; toi_noi_luc: string; trang_thai: string }[];
+  /** 20/11 Kỷ 2 "Đất có giá" (vkl_sm_map2): [q, r, loại, tên riêng, lực yêu thú] */
+  dat?: [number, number, 'linh_mach' | 'thien_tri' | 'yeu_thu', string | null, number | null][];
+  yeu_mon?: number | null;
+  /** giờ bắt đầu tính Điểm giữ đất */
+  dat_tu?: string | null;
 };
+/** 20/11 Kỷ 2: dải sức mạnh và thù của môn ta (vkl_sm_dai) */
+export type SmDai = { lc?: number; dai?: number; ngoai?: number[]; thu?: Record<string, string> };
 export type SmMember = { ten: string; tk: string; chuc: SmChuc; lc: number; dung: [number, number] | null; nghi: boolean; kv: number; di_toi?: string | null };
 /** 18/11: người trong một môn, cho người chưa vào môn xem trước (vkl_sm_mon_ds) */
 export type SmMonNguoi = {
@@ -151,7 +158,7 @@ export type SmMoiThu = { id: number; mon: number; ten_mon: string; huy_hieu: num
 /** 19/11: nhờ đạo hữu ký cùng lập môn trong game */
 export type SmKyNguoi = { ten: string; phap_danh: string | null; kiep: number; choi_luc: string | null; da_nho: boolean };
 export type SmKyThu = { id: number; mon: number; ten_mon: string; huy_hieu: number; so_ky: number; het_han: string; nguoi: string; phap_danh: string | null; luc: string };
-export type SmRankRow = { id: number; ten: string; huy_hieu: number; o: number; kv: number; n: number };
+export type SmRankRow = { id: number; ten: string; huy_hieu: number; o: number; kv: number; n: number; diem?: number; gio?: number };
 
 // ---------- Lỗi ----------
 /** Mã lỗi có trong SM_LOI (lib/sonmon/data.ts) dùng câu ở đó; các mã còn lại ở đây. */
@@ -233,6 +240,7 @@ export interface SmApi {
   list(): Promise<SmMonRow[]>;
   map(): Promise<SmMap>;
   rank(): Promise<SmRankRow[]>;
+  dai(): Promise<SmDai | null>;
   members(): Promise<SmMembers>;
   /** 18/11: xem người trong một môn trước khi vào */
   monDs(mon: number): Promise<SmMonNguoi[]>;
@@ -345,7 +353,9 @@ export function realApi(): SmApi {
     list: () => rpc<SmMonRow[]>('vkl_sm_list', {}, true, true),
     members: () => rpc<SmMembers>('vkl_sm_members', {}, true, true),
     monDs: (mon) => rpc<SmMonNguoi[]>('vkl_sm_mon_ds', { p_mon: mon }, true, true),
-    rank: () => rpc<SmRankRow[]>('vkl_sm_rank', {}, false, true),
+    // 20/11 Kỷ 2: xếp theo Điểm giữ đất (vkl_sm_rank2), máy chủ chưa có thì dùng hàm cũ
+    rank: () => rpc<SmRankRow[]>('vkl_sm_rank2', { p_ky: null }, false, true).catch(() => rpc<SmRankRow[]>('vkl_sm_rank', {}, false, true)),
+    dai: () => rpc<SmDai>('vkl_sm_dai', {}, true, true).catch(() => null),
     // Ngày 8: vkl_sm_chat_list2 có thêm tin hệ thống; máy chủ chưa có hàm thì dùng hàm cũ (thử một lần mỗi lần mở trang)
     chatList: async (sau) => {
       if (!list2Off) {

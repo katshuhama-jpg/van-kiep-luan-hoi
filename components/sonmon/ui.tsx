@@ -3,7 +3,7 @@
 /** 4.6.0 Sơn Môn: phần dùng chung giữa các màn (đồng hồ, số, ngữ cảnh). */
 import { useEffect, useState } from 'react';
 import { tr } from '@/lib/i18n';
-import type { SmAct, SmApi, SmMap, SmMembers, SmMonRow, SmRankRow, SmState } from '@/lib/sonmon/api';
+import type { SmAct, SmApi, SmDai, SmMap, SmMembers, SmMonRow, SmRankRow, SmState } from '@/lib/sonmon/api';
 
 export type SmView = 'list' | 'lap' | 'chon-o' | 'mon' | 'ban-do' | 'xuat-chinh' | 'chien-su' | 'thanh-vien' | 'ky' | 'luc-chien' | 'luat' | 'chat' | 'thuong';
 export const SM_VIEWS: SmView[] = ['list', 'lap', 'chon-o', 'mon', 'ban-do', 'xuat-chinh', 'chien-su', 'thanh-vien', 'ky', 'luc-chien', 'luat', 'chat', 'thuong'];
@@ -18,6 +18,8 @@ export type SmCtx = {
   map: SmMap | null;
   members: SmMembers | null;
   rank: SmRankRow[] | null;
+  /** 20/11 Kỷ 2: dải sức mạnh và thù của môn ta (nạp cùng bản đồ) */
+  dai?: SmDai | null;
   go: (v: SmView, o?: { target?: [number, number] }) => void;
   /** ô đang chọn trên bản đồ (để mở M6 xem trước khi phát lệnh) */
   target: [number, number] | null;
