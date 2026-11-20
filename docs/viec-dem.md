@@ -204,7 +204,7 @@ Lên bản: 2026-11-23. Bật `CT_TU_VI_ON`. Có cáo thị (ngắn, không số
 Lên bản: 2026-11-29. Cờ `CT_LO_ON`. Chỉ làm khi đạt điều kiện ở đầu mục.
 - [ ] Mộng thạch mỗi kiếp khép: 10 + 2 × bậc cảnh giới cao nhất + 1 mỗi 50 năm (tối đa +10) + 15 nếu kết cục mới; cùng bậc giảm theo số kiếp trong ngày như tu vi. Máy chủ tính từ vkl_lives.
 - [ ] Mộng thạch offline: 1/giờ, cùng luật trần như tu vi (phần +1 mỗi 10 ải để lát 3).
-- [ ] Dùng danh mục 100 món của Ngày 31 (5 ô: Vũ khí mở ở C1, Quần áo C1, Mũ C2, Phụ kiện C4, Lưng C5). Lò chọn ô ngẫu nhiên đều trong các ô đã mở, rồi chọn 1 trong 4 món của phẩm vừa ra. Pháp bảo Sơn Môn vẫn là nguồn riêng, tự so với đồ lò ở ô Vũ khí/Phụ kiện. Thần binh truyền kiếp không đụng.
+- [ ] Dùng danh mục đồ chân thân của Ngày 31 (5 ô: Vũ khí mở ở C1, Quần áo C1, Mũ C2, Phụ kiện C4, Lưng C5). Lò chọn ô ngẫu nhiên đều trong các ô đã mở, rồi chọn 1 trong 4 món của phẩm vừa ra. Pháp bảo Sơn Môn vẫn là nguồn riêng, tự so với đồ lò ở ô Vũ khí/Phụ kiện. Thần binh truyền kiếp không đụng.
 - [ ] Luyện lô: 10 Mộng thạch một lượt, roll ở máy chủ; bậc 1 (C1): Phàm 90 / Bảo 10; bậc 2 (C3): Phàm 70 / Bảo 27 / Linh 3. Lực chiến mỗi món ±20%: Phàm 60, Bảo 150, Linh 350, Tiên 800, Thần 1.800. Món mạnh hơn tự lắp; nút "Luyện hết" một chạm.
 - Ghi chú:
 
@@ -223,17 +223,17 @@ Lên bản: 2026-12-08 (làm 3 đêm 5-7/12, mỗi đêm một phần). Cờ `CT
 - [ ] Đêm 3: thử đủ, cáo thị, bật cờ 8/12. Đo phân bố ải cao nhất, % kẹt một boss quá 3 ngày, độ dài phiên ngắn (mục tiêu trung vị 2-5 phút).
 - Ghi chú:
 
-## Võ tu, Nho tu, 100 món đồ chân thân, công pháp chân thân (Tyler giao 20/11 17:51)
+## Võ tu, Nho tu, đồ chân thân, công pháp chân thân (Tyler giao 20/11 17:51)
 Thiết kế đầy đủ, danh mục 100 món, bảng tên cảnh giới, công pháp: doc Project `claude/ke-hoach-dao-do-cong-phap.md` (Projects tool, project_read). Đọc mục cần trước khi làm từng khối. Ngày 31, 32 chỉ làm khi đạt điều kiện lát 2 của chân thân (26/11, ít nhất 40% người có chân thân lên ít nhất 1 tầng); Ngày 33, 34 không phụ thuộc. Dùng gamedev + game-design; chữ mới qua story-writing + humanizer, tra glossary; hình chỉ LPC có sẵn và PixelFx, không phóng to ảnh, không vẽ pixel bằng code.
 
-## Ngày 31 - 100 món đồ chân thân, ô Quần áo, Bảo khố (giấu sau cờ)
+## Ngày 31 - Đồ chân thân từ toàn bộ dáng LPC, ô Quần áo, ô Lưng, Bảo khố (giấu sau cờ)
 Lên bản: 2026-11-28. Cờ `CT_LO_ON` (chưa bật).
-- [ ] 100 món PHẢI KHÁC HÌNH NHAU, KHÔNG tính đổi màu (Tyler chốt 20/11 18:03): mỗi món một dáng LPC hoặc tổ hợp dáng riêng theo bảng trong doc. Tải lớp còn thiếu từ https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator (thư mục `spritesheets/...` ghi trong doc; clone nông, sparse), cắt khung như lớp đang có, ghi nguồn/tác giả vào `public/lpc/sources.json` và trang Credits. Dáng không hợp chất phương Đông thì thay bằng dáng dự phòng khác hình, không bao giờ thay bằng bản đổi màu. Viết script kiểm: không có 2 món cùng ô dùng chung lớp dáng chính.
-- [ ] Danh mục 100 món theo doc (5 ô × 5 phẩm × 4 món), id, tên tr VI/EN, lớp LPC, icon (icon có sẵn; thiếu thì icon Cultivation World Simulator, ghi nguồn), phẩm, Lực chiến gốc (Phàm 60, Bảo 150, Linh 350, Tiên 800, Thần 1.800, ±20% khi roll). Tìm trùng tên với đồ trong kiếp; món CT_GEAR/CT_AO cũ nằm trong 100 món, ai đã mở bằng thành tựu thì có sẵn.
-- [ ] Ô Quần áo có chỉ số (dùng spec CT_AO), mở ở Chuyển 1 cùng Vũ khí.
-- [ ] Món Tiên, Thần có hào quang PixelFx nhỏ trên chân thân; kiểm 390x844 không rối, không vỡ pixel.
-- [ ] Ô Lưng thay ô Cánh: cánh (7 dáng LPC), đuôi (4), áo choàng (2), giỏ tre, và 6 pháp tướng sau lưng bằng PixelFx (vòng Phật quang, vạn kiếm trận, pháp luân hỏa, bát quái đồ, tam muội hỏa hoàn, hỗn độn pháp tướng). Kiểm pháp tướng ở cỡ chân thân trên 390x844 không rối.
-- [ ] Bảo khố 0/100: sổ món đã từng có, danh hiệu khi đủ 20 món một ô, khung tên khi đủ 100.
+- [ ] LẤY HẾT DÁNG LPC TRƯỚC (Tyler chốt 20/11 18:21): mỗi dáng LPC dùng được là một món, KHÔNG đổi màu thay dáng (chốt 18:03). Không cần đủ 20 món mỗi ô hay đủ 100 món; ước tính khoảng 170 món (Vũ khí ~40, Mũ ~60, Phụ kiện ~32, Quần áo ~30, Lưng ~13). Nguồn: https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator (clone nông, sparse `spritesheets/weapon hat neck arms backpack quiver cape torso dress shoulders tools body/wings body/tail`). Bỏ dáng hiện đại/lễ hội (mũ Noel, elf, chóp cao, bowler, cà vạt, jabot, jetpack...). Cắt khung như lớp đang có trong `public/lpc`, ghi nguồn/tác giả vào `public/lpc/sources.json` và trang Credits. Script kiểm: không có 2 món cùng ô dùng chung dáng chính.
+- [ ] Danh mục: dùng các món đặt tên sẵn trong doc làm khung phẩm, thêm mọi dáng còn lại, đặt tên kiểu phương Đông (story-writing + glossary, tìm trùng với 472 món trong kiếp), chia vào 5 phẩm (phẩm cao ít món hơn). Lực chiến gốc Phàm 60, Bảo 150, Linh 350, Tiên 800, Thần 1.800 (±20% khi roll). Món CT_GEAR/CT_AO cũ trùng dáng thì gộp, ai đã mở bằng thành tựu giữ nguyên. Icon túi đồ: icon có sẵn, thiếu thì icon Cultivation World Simulator (ghi nguồn).
+- [ ] Ô Quần áo có chỉ số (mở C1). Ô Lưng thay ô Cánh: 7 dáng cánh, 4 dáng đuôi, 2 dáng áo choàng (mở C5). Pháp tướng bằng hiệu ứng để đợt sau.
+- [ ] Món Tiên, Thần có hào quang PixelFx nhỏ; kiểm 390x844 không rối, không vỡ pixel.
+- [ ] Bảo khố (0/tổng số món): sổ món đã từng có, danh hiệu khi đủ hết món một ô, khung tên khi đủ hết.
+- [ ] Nhiều món: một đêm không kịp thì làm theo thứ tự Vũ khí, Quần áo, Mũ, Phụ kiện, Lưng; bật với số món đã xong, phần còn lại thêm ở đêm sau (ghi vào Ghi chú).
 - Ghi chú:
 
 ## Ngày 32a - Công pháp chân thân: Tàng Kinh Các chân thân, khắc công pháp (giấu sau cờ)
