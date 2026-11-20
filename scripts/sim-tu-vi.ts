@@ -2,13 +2,13 @@
 /**
  * 21/11 (Ngày 22): mô phỏng tu vi chân thân (Cửu Chuyển) - ngày đạt từng Chuyển cho 3 kiểu người chơi.
  * Luật chép đúng supabase/ct_tu_vi_2026_11_21.sql (máy chủ): thanh tầng, offline 12h đủ + 12h 50% rồi dừng ở giờ 24,
- * kiếp 25 x căn(năm sống) với bậc 5/10 kiếp mỗi ngày, tốc độ x1,15 mỗi Chuyển, bình cảnh, đột phá theo Chuyển đích,
+ * kiếp 25 x căn(năm sống) với bậc 5/10 kiếp mỗi ngày, tốc độ x1,11 mỗi Chuyển, bình cảnh, đột phá theo Chuyển đích,
  * trượt (+10% lần sau, lần 3 chắc, mất nửa phần dư). Mỗi lần nhận (mở màn) hoặc khép kiếp là một lần "chốt" ở máy chủ.
  * Giả định có đủ chìa Mộng dẫn chân, bấm Đột phá ngay khi Viên mãn đủ ngưỡng (không áp cảnh) - giống bảng trong doc.
  *
  * Chạy: npx tsx scripts/sim-tu-vi.ts [số lần chạy=300]
  * Đổi: TV_KIEP=262 (tu vi trung bình một kiếp ở Chuyển 1; doc giả định ~260, số thật 14 ngày tới 20/11: 315)
- *      AP_CANH=1 (đợi tới bình cảnh rồi mới bấm), TOC=1.15 (tốc độ tu luyện mỗi Chuyển, chỉ để thử)
+ *      AP_CANH=1 (đợi tới bình cảnh rồi mới bấm), TOC=1.11 (tốc độ tu luyện mỗi Chuyển, chỉ để thử)
  * Mốc trong doc (claude/vong-cay-chan-than.md): C9 Viên mãn khoảng ngày 139 (chơi đều) / 286 (chỉ offline).
  */
 const BAR = [
@@ -21,7 +21,7 @@ const RUNS = Number(process.argv[2] ?? 300);
 const TV_KIEP = Number(process.env.TV_KIEP ?? 262);
 const AP_CANH = process.env.AP_CANH === '1';
 
-const TOC = Number(process.env.TOC ?? 1.15); // tốc độ tu luyện mỗi Chuyển (luật chốt: 1.15)
+const TOC = Number(process.env.TOC ?? 1.11); // tốc độ tu luyện mỗi Chuyển (Tyler chốt 20/11: 1.11 để C9 Viên mãn khoảng ngày 139)
 const toc = (c: number) => Math.pow(TOC, c - 1);
 const tran = (c: number) => BAR[c - 1][3] * (c >= 9 ? 1 : 2);
 const offline = (h: number) => 100 * Math.min(Math.max(h, 0), 12) + 50 * Math.min(Math.max(h - 12, 0), 12);
