@@ -12,7 +12,7 @@ DUYỆT: Tyler 14/11/2026 (các khối trong file này coi như đã duyệt; kh
 ## Mục tiêu Kỷ 2 (Tyler 20/11 18:30)
 Mọi khối trong sổ này phải lên trang trước 5:00 ngày 1/12, để Kỷ 2 (kết Kỷ 1 lúc 21:00 1/12, mở 2/12) bắt đầu đủ tính năng. Chỉ có phiên đêm 21:17, không có phiên ban ngày (Tyler chốt 20/11). Mỗi đêm làm mọi khối có "Lên bản" bằng hoặc trước ngày lên bản kế tiếp, KHỐI QUÁ HẠN LÀM TRƯỚC. Số liệu chỉ để đo, không chặn lịch. Khối nào tới đêm 30/11 vẫn chưa thể làm sạch thì để sau cờ, ghi lý do và báo Tyler trong tin cuối phiên.
 
-Mỗi đêm làm khối Ngày 37 (tổng hợp góp ý mọi kênh) đầu tiên. Đêm nào không kịp hết thì làm theo thứ tự: (0) lỗi người chơi báo làm chết vô lý, mất dữ liệu hoặc kẹt; (1) khối quá hạn; (2) khối Kỷ 2 cần để mở đúng 2/12: luật Sơn Môn Ngày 30, vòng cày chân thân Ngày 22-24, đồ chân thân Ngày 26 + 31, đi cảnh Ngày 27-29; (3) Thiên thư III Ngày 8g; (4) đường tu Võ/Nho Ngày 33-34 và công pháp chân thân Ngày 32a/32b; (5) Nhóm CWS Ngày 13-21; (6) cốt truyện Ngày 35, tối thiểu 5 mỗi đêm. Khối bị đẩy lùi thì ghi rõ ngày lên bản mới vào tin cuối phiên.
+Mỗi đêm làm khối Ngày 37 (tổng hợp góp ý mọi kênh) đầu tiên. Đêm nào không kịp hết thì làm theo thứ tự: (0) lỗi người chơi báo làm chết vô lý, mất dữ liệu hoặc kẹt; (0b) khối Tyler giao lên sáng hôm sau (Ngày 36 soát quái, Ngày 12, Ngày 38 chat Thế giới); (1) khối quá hạn; (2) khối Kỷ 2 cần để mở đúng 2/12: luật Sơn Môn Ngày 30, vòng cày chân thân Ngày 22-24, đồ chân thân Ngày 26 + 31, đi cảnh Ngày 27-29; (3) Thiên thư III Ngày 8g; (4) đường tu Võ/Nho Ngày 33-34 và công pháp chân thân Ngày 32a/32b; (5) Nhóm CWS Ngày 13-21; (6) cốt truyện Ngày 35, tối thiểu 5 mỗi đêm. Khối bị đẩy lùi thì ghi rõ ngày lên bản mới vào tin cuối phiên.
 
 ## Luật thường trực
 
@@ -340,13 +340,28 @@ Làm ĐẦU TIÊN mỗi đêm, trước các khối tính năng (chỉ là đọ
 - Chủ nhật: viết mục "Tổng hợp theo tuần" trong sổ góp ý (3 chủ đề lặp nhiều nhất, đã sửa gì, còn treo gì).
 - Tin cuối phiên: một mục "Góp ý" gồm số góp ý mới theo kênh, các chủ đề chính (kèm số người), đã sửa gì đêm nay, khối mới đã thêm.
 
+## Ngày 38 - Kênh chat Thế giới (Tyler giao 20/11 21:00, lên sáng 21/11)
+Lên bản: 2026-11-21. LÀM KHỐI NÀY TRƯỚC các khối tính năng khác (sau Ngày 37 góp ý, Ngày 36 soát quái, Ngày 12). Có cáo thị. Cờ `WC_ON` (bật khi thử sạch; tắt được ngay bằng cờ nếu có chuyện).
+Làm lại từ Truyền âm của Sơn Môn, KHÔNG làm hệ thứ hai: `components/sonmon/SmChat.tsx`, `supabase/son_mon_chat_2026_11_18.sql` (hàm làm sạch `vkl_priv.sm_chat_sach` gọi lại được, không sửa). Dùng gamedev (game-ui-ux), uiux-pro-max, huashu-design, humanizer.
+- [ ] Máy chủ (apply_migration, file `supabase/the_gioi_chat_2026_11_21.sql`, chỉ bảng và hàm MỚI): bảng `vkl_wc_chat` (id, player_id, noi_dung tối đa 150 ký tự, luc, an, loai 'nguoi'/'he'), `vkl_wc_bao` (báo xấu), `vkl_wc_cam` (cấm chat tới lúc nào). RLS bật, không policy, chỉ đi qua hàm SECURITY DEFINER: `vkl_wc_list(p_token, p_sau)` (50 tin mới nhất hoặc tin sau id), `vkl_wc_n(p_token, p_sau)` (đếm tin mới), `vkl_wc_send(p_token, p_nd)`, `vkl_wc_report(p_token, p_id)`.
+  - Ai gửi được: người đã có chân thân VÀ đã liên kết tài khoản (Google), để chặn tài khoản rác. Người chưa đủ vẫn đọc được, ô nhập thay bằng dòng ghi rõ lý do ngay trên đó ("Liên kết tài khoản để nói chuyện với thiên hạ").
+  - Chống phá: làm sạch bằng `vkl_priv.sm_chat_sach` (che từ tục, ẩn link và số điện thoại); 1 tin mỗi 10 giây, 8 tin mỗi 5 phút; tin trùng y hệt tin trước của chính mình trong 2 phút thì chặn; 3 người báo thì tin tự ẩn; một người bị ẩn từ 3 tin trong 24 giờ thì tự cấm chat 24 giờ (ghi `vkl_wc_cam`). Không có nhắn riêng.
+  - Mỗi tin trả kèm tên chân thân, cảnh giới cao nhất từng đạt, con đường của kiếp gần nhất, tên môn (nếu có). Không lộ email hay id.
+  - Dọn: hàm + pg_cron MỚI xóa tin quá 7 ngày, chạy lúc 3:30.
+- [ ] Tin hệ thống (loai 'he', ít, để kênh có chuyện cả khi vắng): ghi khi có người phi thăng lần đầu, đạt Khai Thiên, mở kết cục hiếm lần đầu trên toàn máy chủ, môn chiếm Linh Mạch hoặc Thiên Trì. Tối đa 1 tin hệ thống mỗi 3 phút (gom lại nếu dồn). Gọi từ chỗ đang ghi các sự kiện đó bằng hàm MỚI; nguồn là dữ liệu máy chủ, không tin số client gửi. Lời dẫn ngắn qua story-writing + humanizer, tra glossary.
+- [ ] Giao diện: nút "Thế giới" nhỏ ở màn chơi chính (cạnh các nút sẵn có, không thêm popup tự bật), chấm đỏ khi có tin mới. Bấm mở tấm trượt từ dưới lên giống Truyền âm: vùng tin role=log, tin mình bên phải, tin hệ thống chữ nghiêng màu khác, 4 câu nhanh ("Chào đạo hữu!", "Có ai vừa phi thăng không?", "Môn nào đang tuyển đệ tử?", "Kiếp này chết lãng xẹt quá"), ô nhập chữ 16px, nút 48px, nút Báo xấu trên mỗi tin của người khác. Khi đang trong trận hoặc đang đọc sự kiện thì không hiện chấm đỏ nhấp nháy.
+- [ ] Chi phí: KHÔNG dùng kênh realtime. Tấm đang mở và tab đang hiện thì hỏi tin mới 8 giây một lần; tấm đóng thì chỉ hỏi `vkl_wc_n` 90 giây một lần khi tab đang hiện; tab ẩn thì dừng. Đo số lần gọi mỗi giờ sau khi lên (a1 hiệu năng).
+- [ ] Thử: SQL (gửi hợp lệ, quá nhanh, quá dài, trùng, có link, có số điện thoại, từ tục, chưa liên kết, bị cấm, 3 báo xấu); Playwright 390x844 (mở, gửi, nhận tin của tài khoản thứ hai, báo xấu, trạng thái chưa đủ điều kiện); chấm 5 mặt huashu-design; smoke.cjs, smoke-login, smoke-son-mon (không hỏng Truyền âm).
+- [ ] Cáo thị một dòng: "Kênh Thế giới: nói chuyện với đạo hữu khắp thiên hạ." Sự kiện đo: wc_open, wc_send, wc_report. Ghi vào Sổ cải thiện: % người chơi mỗi ngày mở kênh, số người gửi, số tin bị ẩn.
+- [ ] Tin cuối phiên cho Tyler mỗi đêm sau khi lên: số tin 24 giờ, số tin bị báo hoặc tự ẩn, ai bị cấm (tên chân thân), có cần chỉnh luật không.
+- Ghi chú:
+
 ## Ngoài game (Tyler tự làm)
 - Đăng "Biên niên Kỷ" mỗi tuần và lúc kết Kỷ (Claude soạn khi Tyler hỏi): môn giữ nhiều ô nhất, trận lớn, môn lật ngược thế cờ.
 
 ## Để sau
 - Đồng minh (kết minh giữa các môn).
 - Tài nguyên, công trình, cấp môn (bản 10/11) nếu Kỷ 1 cho thấy người chơi muốn thêm chiều sâu.
-- Chat tự do trong môn (cần kiểm duyệt).
 - Thông báo đẩy khi bị đánh.
 
 ## Điều kiện dừng
