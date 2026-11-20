@@ -100,7 +100,7 @@ export function SmKy({ c }: { c: SmCtx }) {
         )}
         <p className="sm-note" style={{ padding: '4px 4px 0' }}>
           {coDiem
-            ? tr('Xếp theo Điểm giữ đất: mỗi giờ ô thường +1, Linh Mạch +3, Thiên Trì +5. Bằng điểm thì xét số ô rồi tổng Khí vận cả Kỷ. Số xanh dưới Điểm: môn đang được bao nhiêu điểm mỗi giờ.', 'Ranked by land points: each hour +1 per tile, +3 Spirit Vein, +5 Heaven Pool. Ties: tiles, then total fortune. Green number: points earned per hour right now.')
+            ? tr('Xếp theo Điểm giữ đất: mỗi giờ ô thường +1, Linh Mạch +3, Thiên Trì +5. Xuất chinh thắng lấy được ô của môn khác hay yêu thú: +2 ngay (tối đa +10 mỗi ngày). Bằng điểm thì xét số ô rồi tổng Khí vận cả Kỷ. Số xanh dưới Điểm: môn đang được bao nhiêu điểm mỗi giờ.', 'Ranked by land points: each hour +1 per tile, +3 Spirit Vein, +5 Heaven Pool. Winning a march that takes a tile from a sect or beast: +2 at once (up to +10 a day). Ties: tiles, then total fortune. Green number: points earned per hour right now.')
             : tr('Xếp theo số ô giữ lúc hết Kỷ, bằng nhau thì xét tổng Khí vận cả Kỷ.', 'Ranked by tiles held at the end, ties broken by total fortune.')}
         </p>
       </section>

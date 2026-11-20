@@ -35,7 +35,7 @@ export const RELEASES: Release[] = [
       { who: 'Chí Triệu Kiên', short: tr('Chú giải Linh Mạch rõ hơn', 'Clearer Spirit Vein notes'), text: tr('Linh Mạch, Thiên Trì ghi rõ: môn nào cũng đánh được, nhưng phải có đất kề bên.', 'Spirit Veins and the Heaven Pool now say it plainly: any sect may attack, but it needs land next to them.') },
       { who: 'Nguyễn Vũ', short: tr('Treo máy không chết già', 'No dying of old age while idle'), text: tr('Thọ sắp cạn thì thời gian tự dừng để bạn kịp xoay xở.', 'When your lifespan is nearly spent, time pauses so you can act.') },
     ],
-    more: [tr('10 cốt truyện mới', '10 new stories'), tr('Quái trong trận nét hơn', 'Sharper beasts in battle'), tr('Tu vi chân thân giờ gọi là Lực chiến', 'True body power is now called Power')],
+    more: [tr('10 cốt truyện mới', '10 new stories'), tr('Quái trong trận nét hơn', 'Sharper beasts in battle'), tr('Sơn Môn: chiếm ô thắng +2 điểm ngay', 'Sects: +2 points for each tile won'), tr('Tu vi chân thân giờ gọi là Lực chiến', 'True body power is now called Power')],
     groups: [
       {
         h: tr('Mới 21/11', 'New on Nov 21'),

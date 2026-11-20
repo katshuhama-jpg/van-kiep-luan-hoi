@@ -58,6 +58,10 @@ Chơi kiếp như thường → kiếp đạt mốc thì xong nhiệm vụ ngày
 - Mỗi chân thân một việc một lúc: đi đánh, đứng giữ, hoặc đang nghỉ.
 - Màn trận KHÔNG hiện phép nhân: chỉ thanh Ta/Họ và một câu kết luận ("Đang thiếu khoảng 1.650 - thêm 1 người như ngươi là đủ"). Công thức nằm ở màn Lực chiến.
 
+### Điểm chiếm ô (Tyler 20/11 23:49, từ 5:00 21/11)
+- Xuất chinh THẮNG mà lấy được ô từ môn khác hoặc từ yêu thú: môn đánh +2 Điểm giữ đất ngay lúc tính trận. Khai hoang ô trống không tính (chặn Bỏ ô rồi khai hoang lại để cày). Trần +10 mỗi môn mỗi ngày (5 trận). Thù 12 giờ giữ nguyên.
+- Máy chủ: trigger `vkl_sm_diem_chiem` trên `vkl_sm_chinh`, sổ `vkl_sm_diem_chiem` (mỗi trận cộng một lần), cfg `diem_chiem` (bat_dau, diem, tran_ngay). File `supabase/son_mon_diem_chiem_2026_11_21.sql`.
+
 ### Linh Mạch, Thiên Trì, yêu thú (Kỷ 2 "Đất có giá", bổ sung Ngày 30)
 - Linh Mạch và Thiên Trì MỚI xuất hiện (mạch cạn dời chỗ, Kỷ mới) có 50% có yêu thú canh (cfg `d30.yeu_dat`), lực như yêu thú vòng 5. Có yêu thú thì đánh như ô yêu thú (đệ tử cũng phát lệnh được, thắng +10 phúc mỗi người). Yêu thú canh mạch không tự về lúc 5:00, không làm ổ đánh ô khác. Không có yêu thú thì môn đầu tiên tới chiếm ngay.
 - **Linh Mạch ẩn:** mạch mới sinh không hiện trên bản đồ công khai (`vkl_sm_map4`). Môn trinh sát ô đó thì kết quả có dòng "Có Linh Mạch" và môn thấy mạch tới hết Kỷ (`vkl_sm_lm_thay`); môn đang giữ ô mạch luôn thấy. Mạch ẩn có yêu thú canh thì bản đồ chung chỉ hiện như ô yêu thú. Chiến báo mạch dời không ghi chỗ mới. Một ô không có Linh Mạch hai lần trong một Kỷ (`vkl_sm_lm_su`), mạch không sinh ở ô đã có chủ. Mạch đang hiện từ 20/11 giữ nguyên tới khi cạn dời. Thiên Trì luôn hiện.

@@ -28,7 +28,7 @@ export function SmBaCau({ c, anDuoc = false }: { c: SmCtx; anDuoc?: boolean }) {
       <ol>
         <li>{tr('Khai hoang đất trống kề lãnh thổ: cắm cờ ngay, không phải đánh ai. Môn càng đông giữ được càng nhiều ô.', 'Claim empty land next to yours at once, no fighting. Bigger sects can hold more tiles.')}</li>
         <li>{tr('Chơi kiếp, điểm danh, làm nhiệm vụ góp Khí vận: môn mạnh hơn khi giữ đất và khi giành ô của môn khác.', 'Lives, check-ins and tasks add Fortune: stronger defence, and strength to take tiles from others.')}</li>
-        <li>{tr('Giữ đất mỗi giờ được điểm, Linh Mạch và Thiên Trì được nhiều hơn. Hết Kỷ (21:00 ngày 1/12), môn nhiều Điểm giữ đất nhất thắng.', 'Each hour held land earns points, more on Spirit Veins and the Heaven Pool. When the era ends (Dec 1, 9 PM), the sect with the most land points wins.')}</li>
+        <li>{tr('Giữ đất mỗi giờ được điểm, Linh Mạch và Thiên Trì được nhiều hơn. Xuất chinh thắng, lấy được ô của môn khác hay của yêu thú: +2 điểm ngay (tối đa +10 mỗi ngày; khai hoang ô trống không tính). Hết Kỷ (21:00 ngày 1/12), môn nhiều Điểm giữ đất nhất thắng.', 'Each hour held land earns points, more on Spirit Veins and the Heaven Pool. Win a march and take a tile from another sect or a beast: +2 points at once (up to +10 a day; claiming empty land does not count). When the era ends (Dec 1, 9 PM), the sect with the most land points wins.')}</li>
       </ol>
       <div className="sm-row">
         <button
