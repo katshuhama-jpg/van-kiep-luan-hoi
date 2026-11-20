@@ -56,3 +56,10 @@ export const FIRST_AB = process.env.NEXT_PUBLIC_FIRST_AB ?? '1';
  * Tắt gấp: `NEXT_PUBLIC_TT3=0` rồi build lại (không ghi kết cục mới, ẩn tab quyển III; kết cục đã ghi vẫn giữ).
  */
 export const TT3_ON = process.env.NEXT_PUBLIC_TT3 !== '0';
+
+/**
+ * WC_ON (Ngày 38, lên 21/11): kênh chat Thế giới - nút "Thế giới" ở màn chơi chính, tấm trượt dùng chung khung với Truyền âm.
+ * Máy chủ: supabase/the_gioi_chat_2026_11_21.sql (thử: supabase/the_gioi_chat_thu_2026_11_21.sql).
+ * Tắt gấp: `NEXT_PUBLIC_WC=0` rồi build lại (ẩn nút, không hỏi máy chủ nữa; tin cũ vẫn trên máy chủ, tự dọn sau 7 ngày).
+ */
+export const WC_ON = process.env.NEXT_PUBLIC_WC !== '0';
