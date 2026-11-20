@@ -27,7 +27,8 @@ export async function GET() {
       .order('created_at', { ascending: false })
       .limit(30),
     // 20/11: tin Sơn Môn (môn lập, mở rộng, đánh ô, yêu thú), cùng bộ đệm 60 giây nên không thêm tải
-    sb.rpc('vkl_sm_tin_live'),
+    // 20/11 Yêu tộc: bản 2 thêm yêu thú đánh ô, môn giữ được ô, Linh Mạch dời; lỗi thì quay về bản 1
+    sb.rpc('vkl_sm_tin_live2').then((x) => (x.error ? sb.rpc('vkl_sm_tin_live') : x)),
   ]);
   const body = {
     online: typeof online.data === 'number' ? online.data : null,

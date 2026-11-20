@@ -7,7 +7,7 @@ import { track } from '@/lib/track';
 import type { SmBao, SmMember, SmState } from '@/lib/sonmon/api';
 import { capLc, SM_CFG, tranCau } from '@/lib/sonmon/data';
 import { HuyHieu } from './Pixel';
-import { chinhKhoa, datOf, laYeu, yeuTen } from './SmMap';
+import { chinhKhoa, datOf, laYeu, yeuBi, yeuTen } from './SmMap';
 import { clock, fmtN, hhmm, mocGio, Msg, truoc, useNow, type SmCtx } from './ui';
 
 const vnGio = (t: number) => new Date(t + 7 * 3600e3).getUTCHours();
@@ -274,8 +274,16 @@ function dungO(st: SmState, ds: SmMember[], q: number, r: number) {
   return ds.filter((x) => !x.nghi && (x.dung ? x.dung[0] === q && x.dung[1] === r : laCd));
 }
 
+const SM_YEU_PHUC = 5;
+
 function baoCau(b: SmBao, mine: number): { tag: string; cls: string; chu: string } {
   const o = b.nd?.ten_o ?? '';
+  if (b.loai === 'lm_doi')
+    return { tag: tr('Mạch', 'Vein'), cls: 'flag', chu: b.nd?.moi_o ? tr(`${b.nd?.lm ?? 'Linh Mạch'} ở ${o} đã cạn, dời về ${b.nd.moi_o}`, `${b.nd?.lm ?? 'The Spirit Vein'} at ${o} ran dry, moved to ${b.nd.moi_o}`) : tr(`${b.nd?.lm ?? 'Linh Mạch'} ở ${o} đã cạn`, `${b.nd?.lm ?? 'The Spirit Vein'} at ${o} ran dry`) };
+  if (b.nd?.yeu_cong)
+    return b.nd?.kq === 'thang'
+      ? { tag: tr('Mất', 'Lost'), cls: 'lose', chu: tr(`Yêu thú tràn vào ${o} (lực ${fmtN(Number(b.nd?.atk ?? 0))}, ta giữ ${fmtN(Number(b.nd?.def ?? 0))})`, `Beasts overran ${o} (${fmtN(Number(b.nd?.atk ?? 0))} vs our ${fmtN(Number(b.nd?.def ?? 0))})`) }
+      : { tag: tr('Giữ', 'Held'), cls: 'win', chu: tr(`Đẩy lui yêu thú ở ${o}, người đứng giữ +${SM_YEU_PHUC} phúc duyên`, `Drove the beasts from ${o}, guards +${SM_YEU_PHUC} blessing`) };
   if (b.loai === 'cam_co' && b.nd?.khai_hoang) return { tag: tr('Cờ', 'Flag'), cls: 'flag', chu: tr(`${b.nd?.nguoi ?? 'Đạo hữu'} khai hoang ${o}`, `${b.nd?.nguoi ?? 'A member'} claimed ${o}`) };
   if (b.loai === 'cam_co') return { tag: tr('Cờ', 'Flag'), cls: 'flag', chu: tr(`Cắm cờ ${o}${b.nd?.dau ? ', ô đầu tiên của môn' : ''}`, `Planted the flag on ${o}`) };
   if (b.loai === 'huy' && b.nd?.ly_do === 'rut_quan') return { tag: tr('Rút', 'Off'), cls: 'lose', chu: tr(`${b.nd?.nguoi ?? 'Môn chủ'} rút quân, hủy lệnh đánh ${o}`, `${b.nd?.nguoi ?? 'The leader'} called off the march on ${o}`) };
@@ -300,7 +308,7 @@ export function SmChienSu({ c }: { c: SmCtx }) {
   const [doi, setDoi] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [ok, setOk] = useState<string | null>(null);
-  const bi = st.bi_danh ?? [];
+  const bi = [...(st.bi_danh ?? []), ...yeuBi(c.map, m.id)];
   const cd = m.tiles.find((t) => t.cd);
   const dangDung = m.dung ?? (cd ? [cd.q, cd.r] : null);
   const oDung = dangDung ? m.tiles.find((t) => t.q === dangDung[0] && t.r === dangDung[1]) : null;
@@ -334,10 +342,16 @@ export function SmChienSu({ c }: { c: SmCtx }) {
                 <b style={{ fontSize: 17 }}>{tr(`${b.tu_mon} đánh ${b.ten_o}`, `${b.tu_mon} attacks ${b.ten_o}`)}</b>
                 <b className="sm-clock" style={{ fontSize: 20 }}>{clock(toi - now)}</b>
               </div>
+              {b.yeu ? (
+                <p className="sm-note">
+                  {tr(`Lực yêu thú ${fmtN(b.yeu)}, tới lúc ${hhmm(b.toi_noi_luc)}. Sức giữ ô lớn hơn thì yêu thú bị đẩy lui, yếu đi 1/4, mỗi người đứng giữ +${SM_YEU_PHUC} phúc duyên. Thua thì ô thành ô yêu thú, đánh lại được. Diệt ổ yêu trước giờ thì đợt này tan.`, `Beast power ${fmtN(b.yeu)}, arrives at ${hhmm(b.toi_noi_luc)}. Out-defend it and it retreats a quarter weaker, each guard gets +${SM_YEU_PHUC} blessing. Lose and the tile becomes a beast tile you can retake. Destroy the den first and the raid is off.`)}
+                </p>
+              ) : (
               <p className="sm-note">
                 {b.trang_thai === 'tap_hop' ? tr('Họ đang tập hợp.', 'They are gathering.') : tr('Họ đang trên đường.', 'They are on the way.')} {tr(`Tới nơi lúc ${hhmm(b.toi_noi_luc)}.`, `Arrives at ${hhmm(b.toi_noi_luc)}.`)}
                 {laDem(toi) ? tr(' Tới lúc đêm: bên giữ mạnh gấp đôi.', ' Night arrival: defence doubled.') : ''}
               </p>
+              )}
             </section>
             <section className="sm-card">
               <div className="sm-between">

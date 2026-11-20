@@ -9,7 +9,7 @@ import { track } from '@/lib/track';
 import { nvChu, SM_CFG } from '@/lib/sonmon/data';
 import { ChinhDien, ChuoiO, HuyHieu } from './Pixel';
 import { SmBaCau } from './SmLuat';
-import { duOCau, khaiDuoc, oDanhDuoc } from './SmMap';
+import { duOCau, khaiDuoc, oDanhDuoc, yeuBi } from './SmMap';
 import { CanhBanner } from './CanhMon';
 import { useBau } from './SmMembers';
 import { SmCongDong } from './SmThuong';
@@ -30,7 +30,7 @@ export function SmMonNha({ c }: { c: SmCtx }) {
   const dd = st.diem_danh ?? { hom_nay: false, chuoi: 0, da_thuong: false };
   const nv = st.nv;
   const hang = c.rank ? c.rank.findIndex((x) => x.id === m.id) + 1 : 0;
-  const bi = st.bi_danh ?? [];
+  const bi = [...(st.bi_danh ?? []), ...yeuBi(c.map, m.id)];
   const chinh = (st.chinh ?? [])[0];
   const moc1 = SM_CFG.tran.moc1, moc2 = SM_CFG.tran.moc2;
   const kv = m.kv_hom_nay;
@@ -134,10 +134,24 @@ export function SmMonNha({ c }: { c: SmCtx }) {
       )}
 
       <SmBaCau c={c} anDuoc />
+      {c.map?.trieu?.hom_nay ? (
+        <section className="sm-card warn">
+          <b>{tr('Hôm nay thú triều', 'Beast tide today')}</b>
+          <p style={{ fontSize: 15 }}>
+            {tr(`Từ 8 giờ tới 22 giờ, cứ 2 giờ yêu thú đánh một đợt, mạnh thêm ${Math.round(((c.map.trieu.he ?? 1.3) - 1) * 100)}%. Mỗi đợt báo trước 1 giờ trên bản đồ (dấu !). Cử người sang đứng giữ ô bị nhắm, hoặc diệt ổ yêu trước giờ đánh.`, `From 8:00 to 22:00, beasts raid every 2 hours, ${Math.round(((c.map.trieu.he ?? 1.3) - 1) * 100)}% stronger. Each raid is announced 1 hour ahead on the map (!). Send guards to the target tile, or destroy the den first.`)}
+          </p>
+        </section>
+      ) : c.map?.trieu?.mai ? (
+        <p className="sm-note">{tr('Mai thú triều: yêu thú đánh 2 giờ một đợt từ 8 giờ tới 22 giờ.', 'Beast tide tomorrow: raids every 2 hours from 8:00 to 22:00.')}</p>
+      ) : null}
       {bi.map((b) => (
         <button key={b.id} className="sm-card alert" style={{ textAlign: 'left', font: 'inherit', cursor: 'pointer', minHeight: 44 }} onClick={() => c.go('chien-su')}>
           <span className="sm-between" style={{ width: '100%' }}>
-            <b>{tr(`${b.tu_mon} đang tới ${b.ten_o}`, `${b.tu_mon} is marching on ${b.ten_o}`)}</b>
+            <b>
+              {b.yeu
+                ? tr(`${b.tu_mon} sắp đánh ${b.ten_o}`, `${b.tu_mon} will raid ${b.ten_o}`)
+                : tr(`${b.tu_mon} đang tới ${b.ten_o}`, `${b.tu_mon} is marching on ${b.ten_o}`)}
+            </b>
             <b className="sm-clock">{clock(new Date(b.toi_noi_luc).getTime() - now)} ›</b>
           </span>
         </button>

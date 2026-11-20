@@ -24,6 +24,27 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    v: '4.6.3',
+    date: '20/11/2026',
+    title: tr('Yêu tộc nổi dậy, Linh Mạch biết cạn', 'The beasts rise, Spirit Veins run dry'),
+    lead: tr('Yêu thú không còn đứng yên: chúng tự đánh ô của các môn mạnh, thứ Tư và thứ Bảy có thú triều. Linh Mạch giữ lâu sẽ cạn rồi dời chỗ.', 'Beasts no longer sit still: they raid strong sects, with a beast tide on Wednesdays and Saturdays. Spirit Veins run dry and move.'),
+    asked: [{ who: 'Chí Triệu Kiên', short: tr('Yêu thú tự đánh, Linh Mạch cạn', 'Beasts raid, veins run dry'), text: tr('Linh Mạch có trữ lượng, cạn thì dời chỗ; yêu thú thành thế lực tự đánh ô, có ngày thú triều.', 'Spirit Veins have a reserve and move when dry; beasts become a faction that raids tiles, with tide days.') }],
+    more: [tr('Báo trước 1 giờ trên bản đồ', 'Raids announced 1 hour ahead'), tr('Không đánh môn yếu', 'Weak sects are left alone'), tr('Giữ được ô: +5 phúc duyên', 'Hold a tile: +5 blessing')],
+    cta: { label: tr('Mở bản đồ Sơn Môn', 'Open the Sect map'), go: 'sonmon' },
+    groups: [
+      {
+        h: tr('Mới 20/11', 'New on Nov 20'),
+        hot: true,
+        items: [
+          tr('Yêu thú tự đánh: ban ngày theo đợt 9, 12, 15, 18, 21 giờ. Trước mỗi đợt 1 giờ, ô bị nhắm có dấu ! đỏ trên bản đồ và hiện ở Chiến sự của môn. Sang đứng giữ: đẩy lui được thì mỗi người giữ +5 phúc duyên và yêu thú yếu đi 1/4. Thua thì ô thành ô yêu thú, đánh lại được. Diệt ổ yêu trước giờ thì đợt đó tan.', 'Beasts raid by day in waves at 9, 12, 15, 18, 21. An hour before, the target tile shows a red ! on the map and under War. Guard it: hold and each guard gets +5 blessing while the beast weakens by a quarter. Lose and the tile becomes a beast tile you can retake. Destroy the den first and the raid is off.'),
+          tr('Thú triều thứ Tư và thứ Bảy: 8 giờ tới 22 giờ, 2 giờ một đợt, yêu thú mạnh thêm 30%.', 'Beast tide on Wednesdays and Saturdays: 8:00 to 22:00, every 2 hours, beasts 30% stronger.'),
+          tr('Không bắt nạt: yêu thú chỉ đánh môn có từ 4 ô và Lực chiến từ một nửa môn mạnh nhất, mỗi môn cách 6 giờ mới bị đánh lại. Không đánh chính điện, Linh Mạch, Thiên Trì, ô đang bảo hộ.', 'No bullying: beasts only hit sects with 4+ tiles and at least half the top sect power, once per 6 hours at most. Never main halls, Spirit Veins, the Heaven Pool or protected tiles.'),
+          tr('Linh Mạch có trữ lượng 120 điểm, giữ liền chừng 40 giờ là cạn. Cạn thì ô thành ô thường, linh khí dời tới một ô trống khác. Chạm ô để xem còn bao nhiêu.', 'Each Spirit Vein holds 120 points, about 40 hours of holding. Then the tile turns ordinary and the vein moves to another empty tile. Tap it to see what is left.'),
+        ],
+      },
+    ],
+  },
+  {
     v: '4.6.2',
     date: '20/11/2026',
     title: tr('Đất có giá: yêu thú, Linh Mạch, Thiên Trì', 'Land has value: demon beasts, Spirit Veins, Heaven Pool'),

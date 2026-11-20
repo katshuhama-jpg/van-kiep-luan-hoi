@@ -28,19 +28,19 @@ export type SmChinh = {
   theo?: SmTheo[];
   nguoi_phat?: string;
 };
-export type SmBiDanh = { id: number; o: [number, number]; ten_o: string; tu_mon: string; huy_hieu: number; toi_noi_luc: string; trang_thai: 'tap_hop' | 'di' };
+export type SmBiDanh = { id: number; o: [number, number]; ten_o: string; tu_mon: string; huy_hieu: number; toi_noi_luc: string; trang_thai: 'tap_hop' | 'di'; /** 20/11: đợt yêu thú, lực cố định */ yeu?: number };
 export type SmTrinhKq = { trong: boolean; ten_o: string; mon?: number; n?: number; lc?: number; bao_ho_toi?: string | null };
 export type SmTrinh = { id: number; o: [number, number]; xong_luc: string; ket_qua: SmTrinhKq | null };
 export type SmBao = {
   id: number;
   luc: string;
-  loai: 'tran' | 'cam_co' | 'huy' | 'mat_het' | 'keo_nguoi';
+  loai: 'tran' | 'cam_co' | 'huy' | 'mat_het' | 'keo_nguoi' | 'lm_doi';
   a: number | null;
   b: number | null;
   ten_a: string | null;
   ten_b: string | null;
   o: [number, number];
-  nd: { kq?: string; ten_o?: string; atk?: number; def?: number; n_atk?: number; n_def?: number; dau?: boolean; ly_do?: string; khai_hoang?: boolean; nguoi?: string; moi?: string; bo_o?: string } | null;
+  nd: { kq?: string; ten_o?: string; atk?: number; def?: number; n_atk?: number; n_def?: number; dau?: boolean; ly_do?: string; khai_hoang?: boolean; nguoi?: string; moi?: string; bo_o?: string; yeu_cong?: boolean; lm?: string; moi_o?: string | null } | null;
 };
 export type SmLcPhan = {
   nam: number; kiep: number; canh: number; ket_cuc: number; ngay: number; huyet: number; vien_man: number;
@@ -106,11 +106,18 @@ export type SmMap = {
   mon: Record<string, { ten: string; huy_hieu: number }>;
   di: { mon: number; tu: [number, number]; toi: [number, number]; toi_noi_luc: string; trang_thai: string }[];
   /** 20/11 Kỷ 2 "Đất có giá" (vkl_sm_map2): [q, r, loại, tên riêng, lực yêu thú] */
-  dat?: [number, number, 'linh_mach' | 'thien_tri' | 'yeu_thu', string | null, number | null][];
+  dat?: [number, number, 'linh_mach' | 'thien_tri' | 'yeu_thu', string | null, number | null, (number | null)?][];
   yeu_mon?: number | null;
   /** giờ bắt đầu tính Điểm giữ đất */
   dat_tu?: string | null;
+  /** 20/11 Yêu tộc (vkl_sm_map3): đợt yêu thú đã báo, sắp tới */
+  yeu_cong?: SmYeuCong[];
+  /** thú triều hôm nay / ngày mai, hệ số lực */
+  trieu?: { hom_nay: boolean; mai: boolean; he: number };
+  /** trữ lượng đầy của một Linh Mạch */
+  lm_tru?: number;
 };
+export type SmYeuCong = { id: number; tu: [number, number]; o: [number, number]; mon: number; luc: number; toi: string; trieu: boolean };
 /** 20/11 Kỷ 2: dải sức mạnh và thù của môn ta (vkl_sm_dai) */
 export type SmDai = { lc?: number; dai?: number; ngoai?: number[]; thu?: Record<string, string> };
 export type SmMember = { ten: string; tk: string; chuc: SmChuc; lc: number; dung: [number, number] | null; nghi: boolean; kv: number; di_toi?: string | null };

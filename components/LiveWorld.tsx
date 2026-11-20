@@ -39,7 +39,7 @@ function lineOf(l: Life): string {
 export type FeedItem = {
   k: 'play' | 'born' | 'up' | 'end1' | 'vandao' | 'arena' | 'sm'; who?: string; at: string; name?: string; age?: number; realm?: number; layer?: number; cosmos?: string | null; life?: number; ids?: string; foe?: string; win?: boolean;
   /** 20/11 tin Sơn Môn: t loại tin, a môn, b môn kia, o tên ô, dat Linh Mạch/Thiên Trì, n số yêu thú */
-  t?: 'lap' | 'mo' | 'chiem' | 'thua' | 'diet' | 'yeu_thua' | 'yeu' | 'mat'; a?: string; b?: string | null; o?: string | null; dat?: 'linh_mach' | 'thien_tri' | null; bo?: string | null; n?: number;
+  t?: 'lap' | 'mo' | 'chiem' | 'thua' | 'diet' | 'yeu_thua' | 'yeu' | 'mat' | 'yeu_chiem' | 'yeu_giu' | 'lm_doi'; a?: string; b?: string | null; o?: string | null; dat?: 'linh_mach' | 'thien_tri' | null; bo?: string | null; n?: number; moi?: string | null;
 };
 export type LiveData = { online: number | null; total: number | null; today: number | null; lives: Life[]; feed: FeedItem[] };
 
@@ -167,6 +167,14 @@ export function feedLine(f: FeedItem): string {
           return tr(`${f.n} yêu thú vừa xuất hiện ở rìa bản đồ Sơn Môn`, `${f.n} demon beasts just appeared on the Sect map edge`);
         case 'mat':
           return tr(`${f.a} vừa mất hết đất vào tay ${f.b}`, `${f.a} just lost all its land to ${f.b}`);
+        case 'yeu_chiem':
+          return tr(`Yêu thú tràn vào ${f.o} của ${f.a}`, `Demon beasts overran ${f.o} of ${f.a}`);
+        case 'yeu_giu':
+          return tr(`${f.a} đẩy lui yêu thú, giữ vững ${f.o}`, `${f.a} drove the beasts back and held ${f.o}`);
+        case 'lm_doi':
+          return f.moi
+            ? tr(`${f.bo ?? 'Linh Mạch'} ở ${f.o} đã cạn, linh khí dời về ${f.moi}`, `${f.bo ?? 'A Spirit Vein'} at ${f.o} ran dry and moved to ${f.moi}`)
+            : tr(`${f.bo ?? 'Linh Mạch'} ở ${f.o} đã cạn`, `${f.bo ?? 'A Spirit Vein'} at ${f.o} ran dry`);
       }
       return '';
     }

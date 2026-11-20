@@ -46,9 +46,13 @@ function map(withMine: boolean): SmMap {
     ky: { id: 1, bat_dau: at(-8 * 1440), ket_thuc: at(6 * 1440 + 200), ban_kinh: 6 },
     o,
     mon: withMine ? MON : Object.fromEntries(Object.entries(MON).filter(([k]) => k !== '1')),
-    dat: [[0, 0, 'thien_tri', 'Thiên Trì', null], [3, 1, 'linh_mach', 'Thanh Ngọc Mạch', null], [-1, 3, 'linh_mach', 'Bích Lạc Mạch', null], [3, 0, 'yeu_thu', null, 14500], [5, 0, 'yeu_thu', null, 26000]],
+    dat: [[0, 0, 'thien_tri', 'Thiên Trì', null], [3, 1, 'linh_mach', 'Thanh Ngọc Mạch', null, 54], [-1, 3, 'linh_mach', 'Bích Lạc Mạch', null, 117], [3, 0, 'yeu_thu', null, 14500], [5, 0, 'yeu_thu', null, 26000]],
     yeu_mon: 99,
     dat_tu: at(-60),
+    // 20/11 Yêu tộc: ổ yêu ở 3,0 báo đánh ô 1,1 của môn ta; thú triều mai
+    yeu_cong: withMine ? [{ id: 7, tu: [3, 0], o: [1, 1], mon: 1, luc: 14500, toi: at(47), trieu: false }, { id: 8, tu: [5, 0], o: [3, 2], mon: 5, luc: 26000, toi: at(47), trieu: false }] : [],
+    trieu: { hom_nay: false, mai: true, he: 1.3 },
+    lm_tru: 120,
     di: withMine ? [{ mon: 2, tu: [3, -1], toi: [2, 0], toi_noi_luc: at(42), trang_thai: 'di' }, { mon: 1, tu: [1, 1], toi: [0, 2], toi_noi_luc: at(38), trang_thai: 'tap_hop' }] : [],
   };
 }

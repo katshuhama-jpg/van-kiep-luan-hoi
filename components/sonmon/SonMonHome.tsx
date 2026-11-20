@@ -27,7 +27,7 @@ import { SmChienSu, SmXuatChinh } from './SmWar';
 import { SmThanhVien } from './SmMembers';
 import { SmKy, SmLucChien } from './SmKy';
 import { SmThuong } from './SmThuong';
-import { khaiDuoc } from './SmMap';
+import { khaiDuoc, yeuBi } from './SmMap';
 import { VIEC_KEY, VIEC_SEEN } from '@/components/TabBar';
 
 const IN_MON: SmView[] = ['mon', 'chat', 'ban-do', 'chien-su', 'thanh-vien', 'ky'];
@@ -274,7 +274,7 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
     const ctx: SmCtx = { api, st, list, map, members, rank, dai, go, target, draft, setDraft, run, busy, reload };
     body = (
       <>
-        {coMon && IN_MON.includes(v) && <SmNav v={v} go={go} st={st} chatMoi={chatMoi} />}
+        {coMon && IN_MON.includes(v) && <SmNav v={v} go={go} st={st} chatMoi={chatMoi} map={map} />}
         {v === 'list' && <SmList c={ctx} />}
         {v === 'lap' && <SmLap c={ctx} />}
         {v === 'chon-o' && <SmChonO c={ctx} />}
@@ -317,8 +317,8 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
   );
 }
 
-function SmNav({ v, go, st, chatMoi }: { v: SmView; go: SmCtx['go']; st: SmState; chatMoi: number }) {
-  const biDanh = (st.bi_danh?.length ?? 0) > 0;
+function SmNav({ v, go, st, chatMoi, map }: { v: SmView; go: SmCtx['go']; st: SmState; chatMoi: number; map?: SmMap | null }) {
+  const biDanh = (st.bi_danh?.length ?? 0) > 0 || yeuBi(map, st.mon?.id).length > 0;
   const donCho = (st.mon?.don_cho ?? 0) > 0;
   return (
     <nav className="sm-nav" aria-label={tr('Mục Sơn Môn', 'Sect sections')}>

@@ -4,7 +4,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
-import type { SmDai, SmMap, SmMapO, SmMember, SmState } from '@/lib/sonmon/api';
+import type { SmBiDanh, SmDai, SmMap, SmMapO, SmMember, SmState } from '@/lib/sonmon/api';
 import { capLc, COI, HUY_MAU, hexDist, khDan, SM_CFG } from '@/lib/sonmon/data';
 import { HuyHieu } from './Pixel';
 import { XemMon } from './SmList';
@@ -72,6 +72,22 @@ export function datOf(map: SmMap | null | undefined, q: number, r: number): DatO
   return map?.dat?.find((d) => d[0] === q && d[1] === r) ?? null;
 }
 export const laYeu = (map: SmMap | null | undefined, chu: number | null) => chu != null && map?.yeu_mon != null && chu === map.yeu_mon;
+/** 20/11 Yêu tộc: các đợt yêu thú đã báo sẽ đánh ô của môn ta, đổi về dạng "bị đánh" để màn Chiến sự hiện chung */
+export function yeuBi(map: SmMap | null | undefined, mine: number | null | undefined): SmBiDanh[] {
+  if (!map?.yeu_cong?.length || mine == null) return [];
+  return map.yeu_cong
+    .filter((y) => y.mon === mine && new Date(y.toi).getTime() > Date.now() - 60_000)
+    .map((y) => ({
+      id: -y.id,
+      o: y.o,
+      ten_o: map.o.find((o) => o[0] === y.o[0] && o[1] === y.o[1])?.[2] ?? `${y.o[0]},${y.o[1]}`,
+      tu_mon: y.trieu ? tr('Thú triều', 'Beast tide') : tr('Yêu thú', 'Demon beasts'),
+      huy_hieu: 0,
+      toi_noi_luc: y.toi,
+      trang_thai: 'di' as const,
+      yeu: y.luc,
+    }));
+}
 /**
  * 20/11 8:13 (Tyler: chỉ số quái không logic, thỏ trắng 17k bằng rùa): yêu thú chọn theo lực giữ, yếu tới mạnh,
  * để nhìn hình là đoán được độ khó. Icon từ Cultivation World Simulator (CC BY-NC-SA 4.0), tên dịch từ bản gốc.
@@ -145,10 +161,13 @@ function DatInfo({ map, dat }: { map: SmMap | null; dat: DatO | null }) {
   const chu = !dat
     ? tr('Ô thường: môn giữ được +1 điểm mỗi giờ.', 'Ordinary tile: +1 point per hour for the holder.')
     : dat[2] === 'linh_mach'
-      ? tr('Linh Mạch: môn giữ được +3 điểm mỗi giờ và +2 Khí vận mỗi sáng 5:00. Môn nào cũng đánh được ô này.', 'Spirit Vein: +3 points per hour and +2 fortune each 5:00 for the holder. Any sect may attack it.')
+      ? tr('Linh Mạch: môn giữ được +3 điểm mỗi giờ và +2 Khí vận mỗi sáng 5:00. Môn nào cũng đánh được ô này.', 'Spirit Vein: +3 points per hour and +2 fortune each 5:00 for the holder. Any sect may attack it.') +
+        (dat[5] != null
+          ? tr(` Trữ lượng còn ${Math.max(0, dat[5])}/${map.lm_tru ?? 120} điểm (khoảng ${Math.max(0, Math.ceil(dat[5] / 3))} giờ giữ). Cạn thì mạch dời sang một ô trống khác, ô này thành ô thường.`, ` Reserve ${Math.max(0, dat[5])}/${map.lm_tru ?? 120} points (about ${Math.max(0, Math.ceil(dat[5] / 3))} hours held). When dry it moves to another empty tile.`)
+          : '')
       : dat[2] === 'thien_tri'
         ? tr('Thiên Trì: môn giữ được +5 điểm mỗi giờ, người đứng giữ mạnh thêm 10%. Môn nào cũng đánh được ô này.', 'Heaven Pool: +5 points per hour, guards +10% stronger. Any sect may attack it.')
-        : tr('Yêu thú chiếm ô này. Đánh thắng thì ô về môn ta, +1 điểm mỗi giờ như ô thường.', 'A demon beast holds this tile. Beat it and the tile is ours, +1 point per hour.');
+        : tr('Yêu thú chiếm ô này. Đánh thắng thì ô về môn ta, +1 điểm mỗi giờ như ô thường. Ổ yêu thú có thể đánh ô của môn mạnh trong vòng 2 ô quanh nó; diệt ổ trước giờ đánh thì đợt đó tan.', 'A demon beast holds this tile. Beat it and the tile is ours, +1 point per hour. A beast den may attack strong sects within 2 tiles; destroy it first and that raid is off.');
   return <p className={`sm-dat-info ${dat?.[2] ?? 'thuong'}`}>{chu}</p>;
 }
 
@@ -353,6 +372,21 @@ export function HexMap({
         {map.di.map((d, i) => {
           const a = px(d.tu[0], d.tu[1]), b = px(d.toi[0], d.toi[1]);
           return <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke={d.mon === mine ? '#6a8fd9' : '#e5483a'} strokeWidth={3} strokeDasharray="5 3" />;
+        })}
+        {/* 20/11 Yêu tộc: đợt yêu thú đã báo: vệt đỏ sẫm từ ổ yêu tới ô bị nhắm, dấu ! nhấp nháy trên ô */}
+        {(map.yeu_cong ?? []).map((y) => {
+          const a = px(y.tu[0], y.tu[1]), b = px(y.o[0], y.o[1]);
+          const ta = y.mon === mine;
+          return (
+            <g key={`yc${y.id}`} pointerEvents="none">
+              <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="#8f1f3a" strokeWidth={3.5} strokeDasharray="7 4" opacity={0.9} />
+              <g className="sm-yeu-bao" transform={`translate(${b.x + S * 0.38}, ${b.y - S * 0.62})`}>
+                <circle r={7.5} fill={ta ? '#d1293a' : '#8f1f3a'} stroke="#1f0a0a" strokeWidth={1.5} />
+                <rect x={-1.3} y={-4.5} width={2.6} height={5.5} fill="#fff3dc" />
+                <rect x={-1.3} y={2.2} width={2.6} height={2.4} fill="#fff3dc" />
+              </g>
+            </g>
+          );
         })}
       </svg>
     </div>
