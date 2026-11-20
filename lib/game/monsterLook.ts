@@ -2,7 +2,7 @@ import type { Layer } from '@/lib/lpc';
 
 /** Ngoại hình LPC của quái: hình người ghép lớp, hoặc thú lấy từ bộ LPC Monsters */
 export type MonsterLook =
-  { kind: 'human'; layers: Layer[]; scale?: number; weapon?: boolean } | { kind: 'beast'; sheet: string; frames: number; cell: number; scale: number; filter?: string; strip?: boolean; fps?: number };
+  { kind: 'human'; layers: Layer[]; scale?: number; weapon?: boolean } | { kind: 'beast'; sheet: string; frames: number; cell: number; scale: number; filter?: string; strip?: boolean; fps?: number; cols?: number };
 
 /** Thú LPC Animals đã cắt sẵn thành 1 hàng khung 64x64 (xem scripts/mkbeast.py) */
 const B = (sheet: string, frames: number, scale: number, filter?: string, fps = 8): MonsterLook => ({ kind: 'beast', sheet, frames, cell: 64, scale, filter, strip: true, fps });
@@ -90,7 +90,7 @@ export const MONSTER_LOOK: Record<string, MonsterLook> = {
   xich_long: M({ key: 'body_musc', tint: '*#e0603a' }, { key: 'mh_lizard', tint: '#e8603a' }, [{ key: 'bwings_bg', tint: '#ff9a4a' }, { key: 'pants_m', tint: '#5a1a10' }, { key: 'plate_m', tint: '#8a2a14' }], 1.2),
   kim_thiem: { kind: 'beast', sheet: 'slime', frames: 7, cell: 64, scale: 1.5, filter: 'sepia(1) saturate(3) hue-rotate(5deg) brightness(1.15) drop-shadow(0 0 4px #ffd36b)' },
   dong_nhan: M({ key: 'body_musc', tint: '*#d09048' }, { key: 'head_m', tint: '*#d09048' }, [{ key: 'pants_m', tint: '#8a5a2a' }, { key: 'plate_m', tint: '#b07a3a' }, { key: 'w_staff', tint: '#8a5a2a' }], 1.1),
-  tien_hac: B('eagle', 3, 1.6, 'grayscale(1) brightness(1.9) drop-shadow(0 0 3px #ffffff)', 6),
+  tien_hac: B('eagle', 3, 1.8, 'grayscale(1) brightness(1.9) drop-shadow(0 0 3px #ffffff)', 6),
   kiem_linh: M({ key: 'body_adult', tint: '*#a8d8ff' }, 'head_m', [{ key: 'hair_long_tied_bg', tint: '#e6f4ff' }, { key: 'eyes_blue' }, ...kim('#d9ecff', '#3d6fb0'), { key: 'hair_long_tied_fg', tint: '#e6f4ff' }, { key: 'w_sword', tint: '#d9e6ff' }]),
   toa_yeu_giao: M('body_musc', { key: 'mh_lizard', tint: '#3a8a9a' }, [{ key: 'pants_m', tint: '#1e3a4a' }, { key: 'chainmail', tint: '#8a9aaa' }, { key: 'pauldrons', tint: '#3a5a6a' }, { key: 'w_spear' }], 1.2),
   huyet_khoi: M({ key: 'body_zombie', tint: '*#d06060' }, 'mh_zombieh', [{ key: 'pants_m', tint: '#3a0a10' }, { key: 'leather_m', tint: '#7a1420' }]),
@@ -101,13 +101,14 @@ export const MONSTER_LOOK: Record<string, MonsterLook> = {
   kinh_anh: M({ key: 'body_adult', tint: '*#9aa8d8' }, 'head_m', [{ key: 'hair_shoulderl_bg', tint: '#c8d0f0' }, { key: 'eyes_c' }, ...kim('#c8d0f0', '#6a7ab0'), { key: 'hair_shoulderl_fg', tint: '#c8d0f0' }, { key: 'w_katana', tint: '#e8eeff' }]),
   tran_linh: { kind: 'beast', sheet: 'ghost', frames: 6, cell: 64, scale: 1.3, filter: 'sepia(1) saturate(3) hue-rotate(10deg) brightness(1.2) drop-shadow(0 0 5px #ffd36b)' },
   thien_co_thach: M({ key: 'body_musc', tint: '#a8a49a' }, { key: 'mh_troll', tint: '#a8a49a' }, [{ key: 'pants_m', tint: '#6a665e' }, { key: 'band_thick', tint: '#c9962e' }], 1.35),
-  hu_khong_thu: B('lion', 5, 1.15, 'grayscale(1) brightness(0.45) drop-shadow(0 0 5px #9a6aff)', 6),
+  hu_khong_thu: B('lion', 5, 1.2, 'grayscale(1) brightness(0.45) drop-shadow(0 0 5px #9a6aff)', 6),
   // cá voi bơi giữa sông sao: ảnh 'swimming whale' (You're Perfect Studio, CC-BY 4.0), nhuộm xanh sao
   tinh_ha_kinh: { kind: 'beast', sheet: 'whale', frames: 7, cell: 112, scale: 0.75, strip: true, fps: 5, filter: 'invert(0.15) sepia(1) hue-rotate(175deg) saturate(3.5) brightness(1.25) drop-shadow(0 0 6px #9fd8ff)' },
-  hon_don_linh: { kind: 'beast', sheet: 'eyeball', frames: 7, cell: 64, scale: 1.5, filter: 'hue-rotate(250deg) saturate(1.6) drop-shadow(0 0 6px #c88aff)' },
+  // mắt quỷ: chỉ lấy 4 khung bay, khung 5-7 là đòn bắn tia (khung 7 mất thân, chỉ còn tia) nên trong trận nháy mẩu lạ
+  hon_don_linh: { kind: 'beast', sheet: 'eyeball', frames: 4, cols: 7, cell: 64, scale: 1.5, filter: 'hue-rotate(250deg) saturate(1.6) drop-shadow(0 0 6px #c88aff)' },
   thon_thien_thu: B('bear', 5, 1.35, 'grayscale(0.4) hue-rotate(250deg) saturate(2) brightness(0.7) drop-shadow(0 0 5px #6a3aff)', 5),
   thien_binh: M('body_male', 'head_m', [{ key: 'eyes_brown' }, { key: 'capet_bg', tint: '#f2f2f6' }, { key: 'pants_m', tint: '#e8dcc0' }, { key: 'plate_m', tint: '#e8c060' }, { key: 'pauldrons', tint: '#ffd36b' }, { key: 'hairc_relm_short', tint: '#3a2a1a' }, { key: 'headband', tint: '#ffd36b' }, { key: 'capet_fg', tint: '#f2f2f6' }, { key: 'w_spear', tint: '#fff6d0' }]),
-  loi_thu: B('lion', 5, 1.15, 'hue-rotate(190deg) saturate(2.2) brightness(1.15) drop-shadow(0 0 5px #9fd8ff)', 7),
+  loi_thu: B('lion', 5, 1.2, 'hue-rotate(190deg) saturate(2.2) brightness(1.15) drop-shadow(0 0 5px #9fd8ff)', 7),
   thien_bang: B('eagle', 3, 2.1, 'hue-rotate(170deg) saturate(1.5) drop-shadow(0 0 4px #9fd8ff)', 5),
   kim_long: M({ key: 'body_musc', tint: '*#f0c860' }, { key: 'mh_lizard', tint: '#f0c050' }, [{ key: 'bwings_bg', tint: '#ffe08a' }, { key: 'pants_m', tint: '#8a6a1a' }, { key: 'plate_m', tint: '#c9962e' }, { key: 'crown_gold' }], 1.4),
   ma_binh: M('body_musc', 'mh_orc', [{ key: 'eyes_red' }, { key: 'pants_m', tint: '#1e1a24' }, { key: 'plate_m', tint: '#7a0a1e' }, { key: 'pauldrons', tint: '#3a0a10' }, { key: 'w_scythe', tint: '#c0c0c8' }]),
@@ -198,7 +199,7 @@ export const MONSTER_LOOK: Record<string, MonsterLook> = {
   hg_khai_minh: { kind: 'beast', sheet: 'dk_qilin', frames: 3, cell: 85, scale: 1.1, strip: true, fps: 5, filter: 'sepia(1) saturate(2.6) brightness(1.15) drop-shadow(0 0 6px #ffe27a)' },
   hg_bach_trach: B('fox', 4, 1.35, 'grayscale(1) brightness(1.9) drop-shadow(0 0 5px #9fd8ff)', 6),
   hg_con_ngu: { kind: 'beast', sheet: 'whale', frames: 7, cell: 112, scale: 0.8, strip: true, fps: 5, filter: 'hue-rotate(10deg) saturate(1.4) brightness(0.9) drop-shadow(0 0 5px #9fd8ff)' },
-  hg_huyen_quy: { kind: 'beast', sheet: 'tl_quy', frames: 4, cell: 80, scale: 1.15, strip: true, fps: 3, filter: 'grayscale(0.5) brightness(0.7) drop-shadow(0 0 5px #5a8a7a)' },
+  hg_huyen_quy: { kind: 'beast', sheet: 'tl_quy', frames: 4, cell: 80, scale: 1.2, strip: true, fps: 3, filter: 'grayscale(0.5) brightness(0.7) drop-shadow(0 0 5px #5a8a7a)' },
   hg_bang_tam: { kind: 'beast', sheet: 'big_worm', frames: 6, cell: 64, scale: 1.5, filter: 'grayscale(1) brightness(1.6) hue-rotate(180deg) drop-shadow(0 0 4px #c8e0ff)' },
   hg_kim_o: { kind: 'beast', sheet: 'tl_phuong', frames: 4, cell: 96, scale: 1.0, strip: true, fps: 5, filter: 'sepia(1) saturate(3) hue-rotate(10deg) brightness(1.2) drop-shadow(0 0 6px #ffb02a)' },
   hg_hoa_nha: { kind: 'beast', sheet: 'bat', frames: 7, cell: 64, scale: 1.7, filter: 'sepia(1) saturate(5) hue-rotate(-40deg) brightness(0.9) drop-shadow(0 0 4px #ff3a1a)' },
@@ -212,7 +213,7 @@ export const MONSTER_LOOK: Record<string, MonsterLook> = {
   hg_phan_do: M('body_male', 'head_m', [{ key: 'eyes_red' }, ...kim('#3a3a4a', '#7a2a1a'), { key: 'hairc_relm_short', tint: '#1a1a1a' }, { key: 'w_katana', tint: '#c0c0c8' }]),
   hg_su_gia: M({ key: 'body_adult', tint: '*#c8c8d8' }, { key: 'head_m', tint: '#c8c8d8' }, [{ key: 'bwings_bg', tint: '#14141c' }, ...kim('#14141c', '#c8c8d8'), { key: 'mask', tint: '#e8e8f0' }, { key: 'bwings_fg', tint: '#14141c' }, { key: 'w_sword', tint: '#e8e8f0' }], 1.2),
   hg_de_giang: { kind: 'beast', sheet: 'slime', frames: 7, cell: 64, scale: 2.4, filter: 'sepia(1) saturate(4) hue-rotate(5deg) brightness(1.15) drop-shadow(0 0 6px #ff6a2a)' },
-  hg_thien_dao: { kind: 'beast', sheet: 'eyeball', frames: 7, cell: 64, scale: 2.6, filter: 'sepia(1) saturate(3) hue-rotate(5deg) brightness(1.3) drop-shadow(0 0 8px #ffd36b)' },
+  hg_thien_dao: { kind: 'beast', sheet: 'eyeball', frames: 4, cols: 7, cell: 64, scale: 2.6, filter: 'sepia(1) saturate(3) hue-rotate(5deg) brightness(1.3) drop-shadow(0 0 8px #ffd36b)' },
   hg_thi_thien: M({ key: 'body_adult', tint: '*#f2eee0' }, 'head_m', [{ key: 'eyes_blue' }, ...kim('#f2eee0', '#ffd36b'), { key: 'hair_xlong_bg', tint: '#f2f2f6' }, { key: 'hair_xlong_fg', tint: '#f2f2f6' }, { key: 'w_sword', tint: '#fff4c0' }]),
   hg_thi_ac: M({ key: 'body_adult', tint: '*#9a6a6a' }, 'head_m', [{ key: 'eyes_red' }, ...kim('#3a0a14', '#ff2a3a'), { key: 'hair_xlong_bg', tint: '#1a0a0a' }, { key: 'hair_xlong_fg', tint: '#1a0a0a' }, { key: 'w_katana', tint: '#ff6a6a' }]),
   hg_thi_chap: M({ key: 'body_adult', tint: '*#9aa8c8' }, 'head_m', [{ key: 'eyes_gray' }, ...kim('#5a5a6a', '#c8b0ff'), { key: 'hair_xlong_bg', tint: '#8a8aa0' }, { key: 'hair_xlong_fg', tint: '#8a8aa0' }, { key: 'w_sword', tint: '#c8b0ff' }]),

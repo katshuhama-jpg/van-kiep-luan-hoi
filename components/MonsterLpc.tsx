@@ -44,7 +44,7 @@ function HumanStrip({ layers, anim, size, scale }: { layers: Layer[]; anim: Anim
 
 function BeastStrip({ look, size, dead }: { look: Extract<MonsterLook, { kind: 'beast' }>; size: number; dead?: boolean }) {
   const cell = look.cell * pxScale((size / 64) * look.scale);
-  const cols = look.frames + (look.sheet === 'slime' ? 1 : 0);
+  const cols = look.cols ?? look.frames + (look.sheet === 'slime' ? 1 : 0); // số cột của tấm (khi chỉ dùng vài khung đầu)
   const fps = look.fps ?? 8;
   const style: CSSProperties = {
     width: cell,
