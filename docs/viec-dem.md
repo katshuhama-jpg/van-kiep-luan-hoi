@@ -285,6 +285,28 @@ Lên bản: 2026-11-29. Bật `NHO_TU_ON`. Có cáo thị.
 
 Lát 3 chân thân (Ngày 27-29) thêm: đêm 3 (7/12) đưa chiêu công pháp chân thân vào trận đi cảnh, tuyệt kỹ khi đủ tâm pháp và 2 chiêu cùng đạo ở Viên dung.
 
+## Ngày 8g - Thiên thư quyển III: chặng 2, 3, 4 (bỏ sót, xếp lại 20/11)
+Lên bản: 2026-11-24 (mỗi ô có ngày riêng: chặng 2 lên 24/11, chặng 3 lên 26/11, chặng 4 lên 29/11; khối cắt sang lưu trữ khi xong cả 3 ô).
+Hiện code mới có chặng 1 quyển III (6 kết cục `tt3_*` trong `lib/game/tt3.ts`). Chặng 2-4 theo `docs/thien-thu-3.md` mục 5, 8, 9 chưa có khối nên chưa làm. Phải xong trước Kỷ 2. Dùng story-writing + script-writing + humanizer, giữ đúng chữ trong `docs/thien-thu-3.md`; kiểm sổ liền mạch (mục 3) và chỗ chưa kiểm (mục 10). Có cáo thị khi mở từng chặng.
+- [ ] Chặng 2 (5 kết cục mạch chính). Lên bản: 2026-11-24.
+- [ ] Chặng 3 (5 kết cục). Lên bản: 2026-11-26.
+- [ ] Chặng 4 (5 kết cục, gồm Cơm Chiều) + 6 kết cục gắn hệ thống có thể làm ngay (Sơn Môn, Sư Đồ, chân thân, Lôi đài, chọn thế giới khởi đầu; kết cục cảnh giới Chân Nhân để khi có Chân Nhân) + 4 kết cục bí ẩn. Lên bản: 2026-11-29.
+- Ghi chú:
+
+## Ngày 35 - MỖI ĐÊM: 10 cốt truyện mới nối 3 quyển Thiên thư + soát logic (khối lặp, Tyler giao 20/11 18:54)
+Lên bản: 2026-11-21 (LẶP LẠI MỖI ĐÊM từ 20/11. Không đánh [x] cả khối, không cắt khối này sang lưu trữ; mỗi đêm ghi một dòng nhật ký vào `docs/cot-truyen-moi.md`.)
+Làm sau các khối tới hạn của lịch Kỷ 2. Đêm quá tải: tới 3:00 chưa bắt đầu thì làm ít nhất 5 cốt truyện, ghi nợ, đêm sau bù.
+- Mỗi đêm viết 10 cốt truyện mới. Một cốt truyện = chuỗi 2-4 bước sự kiện, mỗi bước 4 lựa chọn, có ít nhất một lựa chọn kiểu mới chưa dùng trong game (vd im lặng chờ thời, đổi tuổi thọ lấy tin, giao kèo với yêu, nhường cơ duyên cho người khác). Rải đều: phàm giới, Tiên/Ma giới, Hư, Hồng Hoang; đủ con đường (cả Võ tu, Nho tu khi đã bật); ưu tiên kiếp 2-10.
+- Nguồn ý: cơ chế Cultivation World Simulator đã tổng hợp ở Project `claude/hoc-tu-cultivation-world-simulator.md` (bí mật thế giới, kiếp nạn theo quan hệ, đấu giá, bí cảnh, mệnh cách, ý chí tông môn, phàm nhân nền, thiên tượng). CHỈ lấy ý, KHÔNG chép chữ của CWS.
+- Nối 3 quyển: ít nhất 4/10 cốt truyện mỗi đêm có liên kết với Quyển I (Vạn Kiếp Chân Nhân, mảnh ký ức), Quyển II (Vạn Mảnh, Kẻ Gõ Chuông, chiến thư) hoặc Quyển III (Mạnh Bà, Khấu, Vong Xuyên, Cơm Chiều): một vang vọng, một nhân vật phụ, một manh mối. Chỉ hiện cho người đã mở quyển đó (đọc tiến độ Thiên thư), KHÔNG lộ trước nội dung quyển chưa mở, KHÔNG trái với `lib/game/lore.ts` và `docs/thien-thu-3.md`. Ghi mọi tên, địa danh, sự thật mới vào sổ liền mạch trong `docs/cot-truyen-moi.md`.
+- Quy trình mỗi cốt truyện: `anthropic-skills:story-writing` (ý, mạch, móc) → `anthropic-skills:script-writing` (nhịp từng bước, lựa chọn, hậu quả) → `anthropic-skills:humanizer` (chữ, mỗi đoạn tối đa 3 câu) → tra glossary `claude/glossary-tu-tien-cws.csv` → `anthropic-skills:the-fool` (pre-mortem, red team) soát: nhân quả có hợp lý không, có trái tuổi, cảnh giới, quan hệ, người đã chết không, có chết nhảm không. Sửa xong mới code.
+- Luật chết: KHÔNG chết nhảm. Một lựa chọn chỉ được dẫn tới chết khi bước trước đã có dấu hiệu nguy hiểm rõ và người chơi chọn liều; câu chết nói rõ vì sao. Mỗi cốt truyện tối đa 1 nhánh chết. `sim-do-kho 3000` trước/sau mỗi đêm: tỉ lệ chết và phi thăng không lệch quá 1 điểm %.
+- Soát cũ mỗi đêm (the-fool): lấy 10 sự kiện hoặc nguyên nhân chết đáng ngờ nhất (từ vkl_lives 24 giờ qua: chết trẻ, chết đột ngột không có sự kiện báo trước, nguyên nhân lạ so với giới/cảnh giới; và góp ý có chữ "vô lý", "chết nhảm", "không hiểu"). Mỗi cái: lỗi logic thì sửa (thêm điều kiện, thêm bước báo trước, đổi lời), ổn thì ghi lý do. Ghi vào nhật ký.
+- Code: thêm vào bộ sự kiện sẵn có (đúng file theo giới/loại), id tiền tố `ct_<YYYYMMDD>_<n>`; chữ tr('VI','EN'); không thêm màn mới. Bật luôn khi thử sạch (không cần cờ riêng).
+- Đo: vkl_events lượt gặp mỗi cốt truyện, phân bố lựa chọn, tỉ lệ chết mỗi chuỗi. Chuỗi có hơn 40% người chơi chết hoặc hơn 80% chọn cùng một lựa chọn thì sửa ở đêm sau.
+- Cáo thị: mỗi tuần một dòng chung ("Thêm N cốt truyện mới, có chuyện nối Thiên thư"), không liệt kê chi tiết.
+- Báo Tyler trong tin cuối phiên: 10 tên cốt truyện (một dòng mỗi cái, ghi quyển liên kết nếu có), số sự kiện cũ đã soát và đã sửa.
+
 ## Ngoài game (Tyler tự làm)
 - Đăng "Biên niên Kỷ" mỗi tuần và lúc kết Kỷ (Claude soạn khi Tyler hỏi): môn giữ nhiều ô nhất, trận lớn, môn lật ngược thế cờ.
 
