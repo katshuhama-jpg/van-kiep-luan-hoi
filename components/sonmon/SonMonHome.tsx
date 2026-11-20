@@ -13,7 +13,7 @@ import { SON_MON_ON } from '@/lib/flags';
 import { SmWait } from './SmWait';
 import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
-import { realApi, SmErr, smLoi, type SmAct, type SmApi, type SmMap, type SmMembers, type SmMonRow, type SmRankRow, type SmState, type SmDai } from '@/lib/sonmon/api';
+import { realApi, SmErr, smLoi, type SmAct, type SmApi, type SmMap, type SmMembers, type SmMonRow, type SmRankRow, type SmState, type SmDai, type SmD30 } from '@/lib/sonmon/api';
 import { smNgay } from '@/lib/sonmon/data';
 import { SmLuat } from './SmLuat';
 import { lastSeenChat, SmChat } from './SmChat';
@@ -85,6 +85,7 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
   const [members, setMembers] = useState<SmMembers | null>(null);
   const [rank, setRank] = useState<SmRankRow[] | null>(null);
   const [dai, setDai] = useState<SmDai | null>(null);
+  const [d30, setD30] = useState<SmD30 | null>(null);
   const [busy, setBusy] = useState(false);
   const [chatMoi, setChatMoi] = useState(0);
   const opened = useRef(false);
@@ -105,6 +106,8 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
     (what: ('state' | 'list' | 'map' | 'members' | 'rank')[] = ['state']) => {
       if (!api || !api.linked) return;
       if (what.includes('state')) loadState();
+      // Ngày 30: trọng thương và Linh Mạch ẩn môn ta đã thấy (nhẹ, nạp cùng trạng thái)
+      if (what.includes('state') || what.includes('map') || what.includes('members')) api.d30?.().then(setD30, () => {});
       if (what.includes('list')) api.list().then(setList, () => setList((x) => x ?? []));
       if (what.includes('map')) {
         api.map().then(setMap, () => {});
@@ -271,7 +274,11 @@ function SonMonInner({ embedded }: { embedded: boolean }) {
     );
   else if (!st.ky || !st.ky_chay) body = <SmChuaMo st={st} />;
   else {
-    const ctx: SmCtx = { api, st, list, map, members, rank, dai, go, target, draft, setDraft, run, busy, reload };
+    // Ngày 30: Linh Mạch ẩn môn ta đã trinh sát thấy (hoặc đang giữ) ghép vào bản đồ chung
+    const mapX: SmMap | null = map && d30?.lm?.length
+      ? { ...map, dat: [...(map.dat ?? []).filter((x) => !d30.lm.some((y) => y[0] === x[0] && y[1] === x[1])), ...d30.lm] }
+      : map;
+    const ctx: SmCtx = { api, st, list, map: mapX, members, rank, dai, d30, go, target, draft, setDraft, run, busy, reload };
     body = (
       <>
         {coMon && IN_MON.includes(v) && <SmNav v={v} go={go} st={st} chatMoi={chatMoi} map={map} />}

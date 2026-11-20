@@ -29,18 +29,18 @@ export type SmChinh = {
   nguoi_phat?: string;
 };
 export type SmBiDanh = { id: number; o: [number, number]; ten_o: string; tu_mon: string; huy_hieu: number; toi_noi_luc: string; trang_thai: 'tap_hop' | 'di'; /** 20/11: đợt yêu thú, lực cố định */ yeu?: number };
-export type SmTrinhKq = { trong: boolean; ten_o: string; mon?: number; n?: number; lc?: number; bao_ho_toi?: string | null };
+export type SmTrinhKq = { trong: boolean; ten_o: string; mon?: number; n?: number; lc?: number; bao_ho_toi?: string | null; /** Ngày 30: ô có Linh Mạch (tên mạch) */ lm?: string | null };
 export type SmTrinh = { id: number; o: [number, number]; xong_luc: string; ket_qua: SmTrinhKq | null };
 export type SmBao = {
   id: number;
   luc: string;
-  loai: 'tran' | 'cam_co' | 'huy' | 'mat_het' | 'keo_nguoi' | 'lm_doi';
+  loai: 'tran' | 'cam_co' | 'huy' | 'mat_het' | 'keo_nguoi' | 'lm_doi' | 'bo_o' | 'dut_mach';
   a: number | null;
   b: number | null;
   ten_a: string | null;
   ten_b: string | null;
   o: [number, number];
-  nd: { kq?: string; ten_o?: string; atk?: number; def?: number; n_atk?: number; n_def?: number; dau?: boolean; ly_do?: string; khai_hoang?: boolean; nguoi?: string; moi?: string; bo_o?: string; yeu_cong?: boolean; lm?: string; moi_o?: string | null } | null;
+  nd: { kq?: string; ten_o?: string; atk?: number; def?: number; n_atk?: number; n_def?: number; dau?: boolean; ly_do?: string; khai_hoang?: boolean; nguoi?: string; moi?: string; bo_o?: string; yeu_cong?: boolean; lm?: string; moi_o?: string | null; /** Ngày 30 đứt mạch: số ô mất, tên các ô */ n?: number; ds?: string[]; /** Linh Mạch dời đi chỗ ẩn */ an?: boolean } | null;
 };
 export type SmLcPhan = {
   nam: number; kiep: number; canh: number; ket_cuc: number; ngay: number; huyet: number; vien_man: number;
@@ -116,8 +116,13 @@ export type SmMap = {
   trieu?: { hom_nay: boolean; mai: boolean; he: number };
   /** trữ lượng đầy của một Linh Mạch */
   lm_tru?: number;
+  /** Ngày 30 (vkl_sm_map4): Linh Mạch mới sinh ẩn, phải trinh sát mới thấy */
+  lm_an?: boolean;
 };
 export type SmYeuCong = { id: number; tu: [number, number]; o: [number, number]; mon: number; luc: number; toi: string; trieu: boolean };
+/** Ngày 30 (vkl_sm_d30): trọng thương sau trận thua, Linh Mạch ẩn môn ta đã thấy */
+export type SmThuong = { pct: number; het: string; lan: number; goc?: number | null };
+export type SmD30 = { ta: SmThuong | null; lan_hom_nay: number; mon: Record<string, SmThuong>; lm: NonNullable<SmMap['dat']> };
 /** 20/11 Kỷ 2: dải sức mạnh và thù của môn ta (vkl_sm_dai) */
 export type SmDai = { lc?: number; dai?: number; ngoai?: number[]; thu?: Record<string, string> };
 export type SmMember = { ten: string; tk: string; chuc: SmChuc; lc: number; dung: [number, number] | null; nghi: boolean; kv: number; di_toi?: string | null };
@@ -183,6 +188,8 @@ const LOI_THEM: Record<string, string> = {
   SM_O: tr('Không có ô này.', 'No such tile.'),
   SM_O_CO_CHU: tr('Ô này đã có chủ. Chọn ô trống khác.', 'This tile is taken. Pick an empty one.'),
   SM_O_DANG_BI_TOI: tr('Có môn đang tới ô này. Chọn ô khác.', 'A sect is marching on this tile. Pick another.'),
+  SM_BO_CD: tr('Không bỏ được chính điện.', 'You cannot give up the main hall.'),
+  SM_KHONG_CUA_TA: tr('Ô này không còn là của môn ta.', 'This tile is no longer ours.'),
   SM_MO_CUA: tr('Môn này mở cửa, vào ngay được.', 'This sect is open, join directly.'),
   SM_DON_NHIEU: tr('Ngươi đã có 3 đơn đang chờ.', 'You already have 3 pending applications.'),
   SM_DON: tr('Đơn này đã được xử lý.', 'This application was already handled.'),
@@ -223,7 +230,7 @@ const codeOf = (msg: string) => (msg.match(/SM_[A-Z_]+/) ?? ['SM_NET'])[0];
 export type SmAct =
   | { fn: 'found'; ten: [string, string, string]; huy: number; cd: number; dkKiep: number; dkNgay: number; moCua: boolean }
   | { fn: 'cosign' | 'join' | 'apply'; mon: number }
-  | { fn: 'pick_tile' | 'guard' | 'scout' | 'march' | 'march_tt' | 'march3' | 'march_tt3' | 'march4' | 'khai_hoang'; q: number; r: number }
+  | { fn: 'pick_tile' | 'guard' | 'scout' | 'march' | 'march_tt' | 'march3' | 'march_tt3' | 'march4' | 'khai_hoang' | 'bo_o'; q: number; r: number }
   | { fn: 'follow' | 'unfollow' | 'rut_quan'; chinh: number }
   | { fn: 'accept'; don: number; nhan: boolean }
   | { fn: 'moi_gui' | 'ky_nho'; ten: string }
@@ -248,6 +255,8 @@ export interface SmApi {
   map(): Promise<SmMap>;
   rank(): Promise<SmRankRow[]>;
   dai(): Promise<SmDai | null>;
+  /** Ngày 30: trọng thương, Linh Mạch ẩn đã thấy (null nếu máy chủ chưa có hàm) */
+  d30?(): Promise<SmD30 | null>;
   members(): Promise<SmMembers>;
   /** 18/11: xem người trong một môn trước khi vào */
   monDs(mon: number): Promise<SmMonNguoi[]>;
@@ -290,6 +299,7 @@ function args(a: SmAct): Record<string, unknown> {
     case 'march_tt3':
     case 'march4':
     case 'khai_hoang':
+    case 'bo_o':
       return { p_q: a.q, p_r: a.r };
     case 'follow':
     case 'unfollow':
@@ -364,6 +374,7 @@ export function realApi(): SmApi {
     // 20/11 Kỷ 2: xếp theo Điểm giữ đất (vkl_sm_rank2), máy chủ chưa có thì dùng hàm cũ
     rank: () => rpc<SmRankRow[]>('vkl_sm_rank2', { p_ky: null }, false, true).catch(() => rpc<SmRankRow[]>('vkl_sm_rank', {}, false, true)),
     dai: () => rpc<SmDai>('vkl_sm_dai', {}, true, true).catch(() => null),
+    d30: () => rpc<SmD30>('vkl_sm_d30', {}, true, true).catch(() => null),
     // Ngày 8: vkl_sm_chat_list2 có thêm tin hệ thống; máy chủ chưa có hàm thì dùng hàm cũ (thử một lần mỗi lần mở trang)
     chatList: async (sau) => {
       if (!list2Off) {

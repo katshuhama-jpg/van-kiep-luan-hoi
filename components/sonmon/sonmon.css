@@ -427,3 +427,10 @@ p.sm-card { display: block; }
 .wc-btn .dot { position: absolute; top: 2px; right: 2px; width: 8px; height: 8px; background: #e0302e; box-shadow: 0 0 0 2px #1f160d; }
 .game .top-icons:has(.wc-btn) { grid-template-columns: repeat(5, 30px); }
 .sheet:has(> .wc) .sheet-head .btn { min-height: 44px; }
+/* Ngày 30: trọng thương sau trận thua (ghi thẳng trên thẻ, không tooltip) */
+.sm-ng-s.sm-thuong, .sm-thuong { color: var(--red-d); font-weight: 700; }
+.sm-card.dark .sm-thuong { color: #ffb3a0; }
+.sm-thuong-the { border: 2px solid var(--red-d); background: #f6dfd6; padding: 8px 10px; font-size: 15px; line-height: 1.35; color: #5a1e14; }
+.sm-thuong-the b { color: var(--red-d); }
+/* Ngày 30: hỏi xác nhận bỏ ô */
+.sm-bo-o { border: 2px dashed var(--red-d); padding: 10px; display: flex; flex-direction: column; gap: 8px; }

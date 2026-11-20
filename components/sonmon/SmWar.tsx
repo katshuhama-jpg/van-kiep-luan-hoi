@@ -8,7 +8,7 @@ import type { SmBao, SmMember, SmState } from '@/lib/sonmon/api';
 import { capLc, SM_CFG, tranCau } from '@/lib/sonmon/data';
 import { HuyHieu } from './Pixel';
 import { chinhKhoa, datOf, laYeu, yeuBi, yeuTen } from './SmMap';
-import { clock, fmtN, hhmm, mocGio, Msg, truoc, useNow, type SmCtx } from './ui';
+import { clock, fmtN, hhmm, mocGio, Msg, thuongCau, truoc, useNow, type SmCtx } from './ui';
 
 const vnGio = (t: number) => new Date(t + 7 * 3600e3).getUTCHours();
 const laDem = (t: number) => vnGio(t) >= SM_CFG.demTu && vnGio(t) < SM_CFG.demToi;
@@ -105,6 +105,7 @@ export function SmXuatChinh({ c }: { c: SmCtx }) {
     c.reload(['map']);
   };
   const quyen = m.chuc === 'chu' || m.chuc === 'lao';
+  const thuongTa = thuongCau(c.d30?.ta, now);
   const theo = async (on: boolean) => {
     if (!chinh) return;
     setErr(null);
@@ -130,6 +131,15 @@ export function SmXuatChinh({ c }: { c: SmCtx }) {
         <Step ten={tr('Di chuyển', 'Move')} chu={dangDi ? tr(`còn ${clock(toiNoi - now)}`, `${clock(toiNoi - now)} left`) : tr(`${SM_CFG.gio.diPhut} phút`, `${SM_CFG.gio.diPhut} min`)} kieu={dangDi ? 'now' : ''} />
         <Step ten={tr('Giao tranh', 'Battle')} chu={hhmm(new Date(toiNoi).toISOString())} kieu="" />
       </div>
+      {thuongTa && (
+        <p className="sm-thuong-the">
+          <b>{thuongTa}</b>
+          <br />
+          {(c.d30?.ta?.lan ?? 1) >= 3
+            ? tr('Ngươi đã thua 3 trận hôm nay. Đi theo lúc này thì lực ngươi chỉ còn một nửa, thua nữa vẫn giữ mức này tới 5:00.', 'You lost 3 battles today. Marching now you fight at half power until 5:00.')
+            : tr('Đi theo lúc này thì lực ngươi bị giảm. Thua thêm trận nữa hôm nay thì thương nặng hơn.', 'Marching now you fight weaker. Another loss today makes the wound worse.')}
+        </p>
+      )}
       {dangTap && (
         <section className="sm-tap" aria-live="polite">
           <div className="sm-tap-dong">
@@ -260,7 +270,7 @@ export function SmXuatChinh({ c }: { c: SmCtx }) {
           {tr(`Lực ta lúc này: ${fmtN(ta)}${chinh ? ` (${chinh.n} người theo)` : ''}, đã tính Khí vận. Bên giữ có lợi thế sân nhà, 0-7h còn mạnh gấp đôi.`, `Our power now: ${fmtN(ta)}${chinh ? ` (${chinh.n} joined)` : ''}, fortune included. Defenders get a home bonus, doubled 0-7h.`)}
         </p>
         <p className="sm-note">
-          {tr(`Thắng: ô về tay môn ta, bảo hộ ${SM_CFG.gio.baoHoGio} giờ. Thua: người đi theo nghỉ ${SM_CFG.gio.nghiGio} giờ, không mất gì khác.`, `Win: the tile is ours, protected ${SM_CFG.gio.baoHoGio} h. Lose: marchers rest ${SM_CFG.gio.nghiGio} h, nothing else lost.`)}
+          {tr(`Thắng: ô về tay môn ta, bảo hộ ${SM_CFG.gio.baoHoGio} giờ. Thua: người đi theo nghỉ ${SM_CFG.gio.nghiGio} giờ, rồi bị trọng thương. Thua lần đầu trong ngày Lực chiến -10% thêm 1 giờ, lần 2 -30% thêm 3 giờ, từ lần 3 -50% tới 5:00.`, `Win: the tile is ours, protected ${SM_CFG.gio.baoHoGio} h. Lose: marchers rest ${SM_CFG.gio.nghiGio} h, then are wounded: first loss of the day -10% power for 1 more hour, second -30% for 3 hours, third and later -50% until 5:00.`)}
         </p>
       </section>
     </>
@@ -279,7 +289,9 @@ const SM_YEU_PHUC = 5;
 function baoCau(b: SmBao, mine: number): { tag: string; cls: string; chu: string } {
   const o = b.nd?.ten_o ?? '';
   if (b.loai === 'lm_doi')
-    return { tag: tr('Mạch', 'Vein'), cls: 'flag', chu: b.nd?.moi_o ? tr(`${b.nd?.lm ?? 'Linh Mạch'} ở ${o} đã cạn, dời về ${b.nd.moi_o}`, `${b.nd?.lm ?? 'The Spirit Vein'} at ${o} ran dry, moved to ${b.nd.moi_o}`) : tr(`${b.nd?.lm ?? 'Linh Mạch'} ở ${o} đã cạn`, `${b.nd?.lm ?? 'The Spirit Vein'} at ${o} ran dry`) };
+    return { tag: tr('Mạch', 'Vein'), cls: 'flag', chu: b.nd?.moi_o ? tr(`${b.nd?.lm ?? 'Linh Mạch'} ở ${o} đã cạn, dời về ${b.nd.moi_o}`, `${b.nd?.lm ?? 'The Spirit Vein'} at ${o} ran dry, moved to ${b.nd.moi_o}`) : b.nd?.an
+          ? tr(`${b.nd?.lm ?? 'Linh Mạch'} ở ${o} đã cạn, linh khí dời đi nơi khác, phải trinh sát mới thấy`, `${b.nd?.lm ?? 'The Spirit Vein'} at ${o} ran dry and moved somewhere hidden; scout to find it`)
+          : tr(`${b.nd?.lm ?? 'Linh Mạch'} ở ${o} đã cạn`, `${b.nd?.lm ?? 'The Spirit Vein'} at ${o} ran dry`) };
   if (b.nd?.yeu_cong)
     return b.nd?.kq === 'thang'
       ? { tag: tr('Mất', 'Lost'), cls: 'lose', chu: tr(`Yêu thú tràn vào ${o} (lực ${fmtN(Number(b.nd?.atk ?? 0))}, ta giữ ${fmtN(Number(b.nd?.def ?? 0))})`, `Beasts overran ${o} (${fmtN(Number(b.nd?.atk ?? 0))} vs our ${fmtN(Number(b.nd?.def ?? 0))})`) }
@@ -289,13 +301,16 @@ function baoCau(b: SmBao, mine: number): { tag: string; cls: string; chu: string
   if (b.loai === 'huy' && b.nd?.ly_do === 'rut_quan') return { tag: tr('Rút', 'Off'), cls: 'lose', chu: tr(`${b.nd?.nguoi ?? 'Môn chủ'} rút quân, hủy lệnh đánh ${o}`, `${b.nd?.nguoi ?? 'The leader'} called off the march on ${o}`) };
   if (b.loai === 'huy') return { tag: tr('Hủy', 'Off'), cls: 'lose', chu: tr(`Lệnh xuất chinh tới ${o} bị hủy vì không ai theo`, `March to ${o} called off, nobody joined`) };
   if (b.loai === 'keo_nguoi') return { tag: tr('Người', 'Recruit'), cls: 'win', chu: tr(`${b.nd?.nguoi ?? 'Đạo hữu'} kéo được ${b.nd?.moi ?? 'một người mới'} nhập môn`, `${b.nd?.nguoi ?? 'A member'} brought ${b.nd?.moi ?? 'a newcomer'} into the sect`) };
+  if (b.loai === 'bo_o') return { tag: tr('Bỏ', 'Left'), cls: 'lose', chu: tr(`${b.nd?.nguoi ?? 'Môn chủ'} bỏ ô ${o}`, `${b.nd?.nguoi ?? 'The leader'} gave up ${o}`) };
+  if (b.loai === 'dut_mach')
+    return { tag: tr('Đứt', 'Cut'), cls: 'lose', chu: tr(`Đất đứt mạch, mất ${b.nd?.n ?? '?'} ô${b.nd?.ds?.length ? `: ${b.nd.ds.join(', ')}` : ''}`, `Land cut off from the hall, lost ${b.nd?.n ?? '?'} tiles${b.nd?.ds?.length ? `: ${b.nd.ds.join(', ')}` : ''}`) };
   if (b.loai === 'mat_het') return { tag: tr('Mất', 'Lost'), cls: 'lose', chu: tr('Môn mất hết ô. Cắm cờ lại một ô trống bất kỳ, bảo hộ 12 giờ.', 'The sect lost all tiles. Plant again anywhere, protected 12 h.') };
   const danh = b.a === mine;
   const thangA = b.nd?.kq === 'thang';
   if (danh)
     return thangA
       ? { tag: tr('Thắng', 'Won'), cls: 'win', chu: tr(`Chiếm ${o} của ${b.ten_b ?? '?'}${b.nd?.bo_o ? `, bỏ lại ${b.nd.bo_o}` : ''}`, `Took ${o} from ${b.ten_b ?? '?'}${b.nd?.bo_o ? `, left ${b.nd.bo_o}` : ''}`) }
-      : { tag: tr('Thua', 'Lost'), cls: 'lose', chu: tr(`Đánh ${o} của ${b.ten_b ?? '?'} không được, người đi theo nghỉ 2 giờ`, `Failed to take ${o} from ${b.ten_b ?? '?'}, marchers rest 2 h`) };
+      : { tag: tr('Thua', 'Lost'), cls: 'lose', chu: tr(`Đánh ${o} của ${b.ten_b ?? '?'} không được, người đi theo nghỉ 2 giờ rồi trọng thương`, `Failed to take ${o} from ${b.ten_b ?? '?'}, marchers rest 2 h, then wounded`) };
   return thangA
     ? { tag: tr('Thua', 'Lost'), cls: 'lose', chu: tr(`${b.ten_a ?? '?'} chiếm ${o}`, `${b.ten_a ?? '?'} took ${o}`) }
     : { tag: tr('Thắng', 'Won'), cls: 'win', chu: tr(`Giữ ${o} trước ${b.ten_a ?? '?'}`, `Held ${o} against ${b.ten_a ?? '?'}`) };

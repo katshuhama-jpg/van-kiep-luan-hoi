@@ -42,6 +42,8 @@ Chơi kiếp như thường → kiếp đạt mốc thì xong nhiệm vụ ngày
 - Ô có huy hiệu môn chủ ô, ô của môn ta viền vàng, ô trống tối.
 - Mỗi môn giữ tối đa 1 + (số người / 3) ô (15 người = 6 ô). Đủ ô thì nút Xuất chinh khóa, ghi "Cần thêm 3 người mới đánh được ô mới". Không có luật giữ tạm.
 - Kiểm tra số: 25 môn x tối đa 6 ô = 150 > 127 ô → đủ chỗ cho mọi môn cắm cờ, không đủ để tất cả cùng giữ tối đa, nên phải tranh.
+- **Bỏ ô (Ngày 30):** môn chủ, trưởng lão bỏ được một ô của môn (`vkl_sm_bo_o`), trừ chính điện và ô đang có quân hay yêu thú kéo tới. Hỏi xác nhận một lần (màn xác nhận báo trước nếu bỏ ô làm đứt mạch). Ô về trống, người đứng giữ về chính điện, chiến báo 'bo_o'. Luật cũ "đủ ô mà chiếm thêm thì tự bỏ ô xa chính điện nhất" giữ nguyên.
+- **Đất liền (Ngày 30):** đất của môn phải nối với chính điện qua ô kề (lưới lục giác). Sau mỗi lần môn mất ô (bị chiếm, yêu thú tràn, bỏ ô, tự bỏ ô xa) máy chủ tính lại; ô đứt về trống, người đứng ở đó về chính điện, chiến báo 'dut_mach' "Đất đứt mạch, mất N ô". Áp cả cho Linh Mạch, Thiên Trì, ô yêu thú đã chiếm. Mất chính điện thì chọn chính điện mới (ô chiếm sớm nhất) rồi mới tính. Thử: `supabase/son_mon_dem30_thu_2026_11_20.sql`.
 
 ### Đánh nhau
 - **Đứng giữ (Claude chốt 13/11, Tyler duyệt 14/11):** mỗi người chọn sẵn một ô của môn để đứng giữ; offline vẫn tính. Chưa chọn thì đứng ở ô cắm cờ đầu tiên (ô chính điện).
@@ -49,11 +51,17 @@ Chơi kiếp như thường → kiếp đạt mốc thì xong nhiệm vụ ngày
 - **Xuất chinh:** môn chủ hoặc trưởng lão chọn một ô kề lãnh thổ. 30 phút tập hợp, thành viên bấm "Theo" (rút lại được trước khi hết giờ). Rồi đi 20 phút mỗi ô. Môn bị đánh thấy ngay lúc xuất phát; ai đang online có thể dồn sang ô bị đánh trong thời gian đó.
 - **Tính trận** khi tới nơi (pg_cron mỗi phút): tổng Lực chiến bên đánh (có trần) x (1 + Khí vận) so với tổng Lực chiến người đứng giữ (có trần) x 1,25 sân nhà x (1 + Khí vận của họ) x 2 nếu tới nơi lúc 0-7h. Bên lớn hơn thắng, không ngẫu nhiên. Bằng nhau thì bên giữ thắng.
 - Ô trống: tới nơi là cắm cờ.
-- Thắng: ô đổi chủ, được bảo hộ 6 giờ. Người đứng giữ ô vừa mất tự về ô chính điện. Thua: người đi theo nghỉ 2 giờ (không theo, không giữ được), không mất gì khác.
+- Thắng: ô đổi chủ, được bảo hộ 6 giờ. Người đứng giữ ô vừa mất tự về ô chính điện. Thua: người đi theo nghỉ 2 giờ (không theo, không giữ được), không mất đồ.
+- **Trọng thương (Ngày 30, từ 5:00 21/11):** hết 2 giờ nghỉ, người theo đoàn thua (cả đánh yêu thú) còn bị giảm Lực chiến Sơn Môn theo số trận thua trong ngày: lần 1 -10% thêm 1 giờ, lần 2 -30% thêm 3 giờ, từ lần 3 -50% tới 5:00. 5:00 hồi hết và đếm lại. Giảm cả khi đánh lẫn khi đứng giữ (máy chủ: trigger trên `vkl_sm_luc_chien`, số gốc ở `phan.lc_goc`). Thẻ người (Thành viên), thẻ môn nhà và màn Xuất chinh ghi "Trọng thương: Lực chiến -30%, hồi lúc 14:20". Mục đích: chặn đánh liều liên tục. Giờ tính từ lúc hết nghỉ vì trong 2 giờ nghỉ người đó vốn không đánh, không giữ được.
 - **Mất ô chính điện:** môn chọn lại ô chính điện trong số ô còn giữ. Mất hết ô thì môn còn nguyên người, được cắm cờ một ô trống bất kỳ (không cần kề), bảo hộ 12 giờ.
 - **Chống lăn cầu tuyết (mới, sau review 14/11):** môn đang giữ 1 ô được +15% khi giữ ô đó.
 - Mỗi chân thân một việc một lúc: đi đánh, đứng giữ, hoặc đang nghỉ.
 - Màn trận KHÔNG hiện phép nhân: chỉ thanh Ta/Họ và một câu kết luận ("Đang thiếu khoảng 1.650 - thêm 1 người như ngươi là đủ"). Công thức nằm ở màn Lực chiến.
+
+### Linh Mạch, Thiên Trì, yêu thú (Kỷ 2 "Đất có giá", bổ sung Ngày 30)
+- Linh Mạch và Thiên Trì MỚI xuất hiện (mạch cạn dời chỗ, Kỷ mới) có 50% có yêu thú canh (cfg `d30.yeu_dat`), lực như yêu thú vòng 5. Có yêu thú thì đánh như ô yêu thú (đệ tử cũng phát lệnh được, thắng +10 phúc mỗi người). Yêu thú canh mạch không tự về lúc 5:00, không làm ổ đánh ô khác. Không có yêu thú thì môn đầu tiên tới chiếm ngay.
+- **Linh Mạch ẩn:** mạch mới sinh không hiện trên bản đồ công khai (`vkl_sm_map4`). Môn trinh sát ô đó thì kết quả có dòng "Có Linh Mạch" và môn thấy mạch tới hết Kỷ (`vkl_sm_lm_thay`); môn đang giữ ô mạch luôn thấy. Mạch ẩn có yêu thú canh thì bản đồ chung chỉ hiện như ô yêu thú. Chiến báo mạch dời không ghi chỗ mới. Một ô không có Linh Mạch hai lần trong một Kỷ (`vkl_sm_lm_su`), mạch không sinh ở ô đã có chủ. Mạch đang hiện từ 20/11 giữ nguyên tới khi cạn dời. Thiên Trì luôn hiện.
+- Yêu thú thường (vòng 5-6) vẫn về trống mỗi 5:00 và hiện ở chỗ mới; ổ yêu có thể lan hoặc chiếm ô khi đánh thắng (Yêu tộc 20/11).
 
 ### Sư Đồ (thêm 14/11, Claude chốt theo vai đồng sở hữu)
 - Bản gọn 13/11 lỡ bỏ Sư Đồ; thêm lại vì đây là đường mời bạn duy nhất của game và là điều kiện của đạo Truyền Đạo (20 đệ tử).

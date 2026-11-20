@@ -35,6 +35,21 @@ const SCREENS = [
   ['M13-thuong-chua', 'chua', 'thuong'],
 ];
 
+// Ngày 10 + Ngày 30: chạm ô trên bản đồ (tâm là chính điện 1,0, phóng 1,25) rồi kiểm chữ phải có.
+// hex: ô cần chạm; bam: nút bấm thêm sau khi chạm; co: chữ phải thấy trên màn.
+const THEM = [
+  { name: 'M5-linh-mach', vai: 'chu', m: 'ban-do', hex: [3, 1], co: /Linh Mạch: môn giữ được/ },
+  { name: 'M5-yeu-thu', vai: 'chu', m: 'ban-do', hex: [3, 0], co: /Lực giữ của yêu thú/ },
+  { name: 'M5-mach-yeu', vai: 'chu', m: 'ban-do', hex: [-1, 3], co: /Yêu thú canh mạch đất này/ },
+  { name: 'M5-ngoai-dai', vai: 'chu', m: 'ban-do', hex: [1, -1], co: /yếu hơn 1\/3 môn ta/ },
+  { name: 'M5-tim-mach', vai: 'chu', m: 'ban-do', hex: [2, 1], co: /Có Linh Mạch \(Tử Vân Mạch\)/ },
+  { name: 'M5-bo-o', vai: 'chu', m: 'ban-do', hex: [1, 1], bam: /^Bỏ ô Tử Trúc Lâm$/, co: /Đất sẽ đứt mạch, mất thêm 1 ô: Lưu Ly Pha/ },
+  { name: 'M5-bo-o-de', vai: 'de', m: 'ban-do', hex: [1, 1], khong: /Bỏ ô Tử Trúc Lâm/ },
+  { name: 'M6-trong-thuong', vai: 'chu', m: 'xuat-chinh', co: /Trọng thương: Lực chiến -50%, hồi lúc 05:00/ },
+  { name: 'M7-dut-mach', vai: 'chu', m: 'chien-su', co: /Đất đứt mạch, mất 1 ô: Thanh Trúc Khê[\s\S]*bỏ ô Vọng Hà Đình/ },
+  { name: 'M8-trong-thuong', vai: 'chu', m: 'thanh-vien', co: /Trọng thương: Lực chiến -30%/ },
+];
+
 let fail = 0;
 const ok = (c, m) => {
   console.log((c ? 'OK  ' : 'HỎNG') + ' ' + m);
@@ -121,6 +136,42 @@ async function check(p, name) {
       await p.getByRole('button', { name: 'Về lãnh thổ' }).click();
       await p.waitForTimeout(200);
       ok((await tf()) === t0, `${name}: nút Về lãnh thổ về chỗ cũ`);
+    }
+    await ctx.close();
+  }
+  for (const t of THEM) {
+    const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, hasTouch: true });
+    const p = await ctx.newPage();
+    await p.route(/vkl_track/, (r) => r.fulfill({ status: 200, body: 'null', contentType: 'application/json' }));
+    const errs = [];
+    p.on('pageerror', (e) => {
+      if (!/Hydration|#418/.test(e.message)) errs.push(e.message.slice(0, 160));
+    });
+    await p.goto(`${URL}/son-mon?demo=${t.vai}&m=${t.m}`);
+    await p.waitForTimeout(1800);
+    if (t.hex) {
+      const box = await p.locator('.sm-map').boundingBox();
+      if (box) {
+        const S = 24, W = Math.sqrt(3) * S, Z = 1.25;
+        const [q, r] = t.hex;
+        const dx = (W * (q + r / 2) - W * 1) * Z, dy = 1.5 * S * r * Z;
+        await p.mouse.click(box.x + box.width / 2 + dx, box.y + box.height / 2 + dy);
+      }
+      await p.waitForTimeout(400);
+    }
+    if (t.bam) {
+      await p.getByRole('button', { name: t.bam }).click();
+      await p.waitForTimeout(300);
+    }
+    await p.addStyleTag({ content: 'nextjs-portal{display:none!important}' });
+    await check(p, t.name);
+    const chu = await p.evaluate(() => document.querySelector('main')?.innerText ?? '');
+    if (t.co) ok(t.co.test(chu), `${t.name}: có chữ ${t.co}`);
+    if (t.khong) ok(!t.khong.test(chu), `${t.name}: không có ${t.khong}`);
+    ok(errs.length === 0, `${t.name}: không lỗi trang ${errs.join(' | ')}`);
+    if (DIR) {
+      await p.evaluate(() => document.querySelector('.sm-o-card, .sm-thuong-the')?.scrollIntoView({ block: 'center' }));
+      await p.screenshot({ path: path.join(DIR, t.name + '.png'), fullPage: true });
     }
     await ctx.close();
   }

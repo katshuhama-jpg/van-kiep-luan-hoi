@@ -18,7 +18,9 @@ export async function GET(req: Request) {
   const sb = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
   // 20/11 Kỷ 2: bản đồ kèm Linh Mạch, Thiên Trì, yêu thú (vkl_sm_map2); lỗi thì quay về bản cũ
   // 20/11 Yêu tộc: vkl_sm_map3 thêm trữ lượng Linh Mạch, đợt yêu thú sắp đánh, thú triều
-  let { data, error } = await sb.rpc('vkl_sm_map3', { p_ky: ky });
+  // Ngày 30: vkl_sm_map4 giấu Linh Mạch mới sinh (phải trinh sát mới thấy)
+  let { data, error } = await sb.rpc('vkl_sm_map4', { p_ky: ky });
+  if (error) ({ data, error } = await sb.rpc('vkl_sm_map3', { p_ky: ky }));
   if (error) ({ data, error } = await sb.rpc('vkl_sm_map2', { p_ky: ky }));
   if (error) ({ data, error } = await sb.rpc('vkl_sm_map', { p_ky: ky }));
   if (error) return Response.json({ error: 'db' }, { status: 502, headers: { 'Cache-Control': 'public, s-maxage=10' } });

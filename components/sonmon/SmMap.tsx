@@ -780,7 +780,9 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
             <b className="sm-giu-n">{fmtN(dat?.[4] ?? 0)}</b>
           </div>
           <p className="sm-note">
-            {tr('Lực giữ cố định, không cần trinh sát. Thắng thì ô về tay môn, mỗi người đi theo +10 phúc duyên. Sáng mai 5:00 ô yêu thú chưa ai đánh sẽ về trống, yêu thú mới hiện ở chỗ khác.', 'Fixed defence, no scouting needed. Win and the tile is ours, each marcher gets +10 blessing. At 5:00 tomorrow unbeaten beasts leave and new ones appear elsewhere.')}
+            {dat && dat[2] !== 'yeu_thu'
+              ? tr('Yêu thú canh mạch đất này, lực giữ cố định, không tự bỏ đi lúc 5:00. Thắng thì ô về tay môn, mỗi người đi theo +10 phúc duyên.', 'A beast guards this land with fixed defence and does not leave at 5:00. Win and the tile is ours, each marcher gets +10 blessing.')
+              : tr('Lực giữ cố định, không cần trinh sát. Thắng thì ô về tay môn, mỗi người đi theo +10 phúc duyên. Sáng mai 5:00 ô yêu thú chưa ai đánh sẽ về trống, yêu thú mới hiện ở chỗ khác.', 'Fixed defence, no scouting needed. Win and the tile is ours, each marcher gets +10 blessing. At 5:00 tomorrow unbeaten beasts leave and new ones appear elsewhere.')}
           </p>
         </div>
       )}
@@ -796,13 +798,16 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
               : trinh?.ket_qua
                 ? trinh.ket_qua.trong
                   ? tr(`Trinh sát ${truoc(trinh.xong_luc, now)}: ô trống.`, `Scouted ${truoc(trinh.xong_luc, now)}: empty.`)
-                  : tr(`Trinh sát ${truoc(trinh.xong_luc, now)}: ${trinh.ket_qua.n} người đứng giữ (chưa tính sân nhà). Người giữ có thể đã đổi, trinh sát lại trước khi đánh.`, `Scouted ${truoc(trinh.xong_luc, now)}: ${trinh.ket_qua.n} guards (before home bonus).`)
+                  : tr(`Trinh sát ${truoc(trinh.xong_luc, now)}: ${trinh.ket_qua.n} người đứng giữ (chưa tính sân nhà).${trinh.ket_qua.lm ? ` Có Linh Mạch (${trinh.ket_qua.lm}).` : ''} Người giữ có thể đã đổi, trinh sát lại trước khi đánh.`, `Scouted ${truoc(trinh.xong_luc, now)}: ${trinh.ket_qua.n} guards (before home bonus).${trinh.ket_qua.lm ? ` Spirit Vein here (${trinh.ket_qua.lm}).` : ''}`)
                 : tr('Phải trinh sát mới biết ô này có bao nhiêu người giữ, Lực chiến bao nhiêu.', 'Scout to learn how many guard this tile and their power.')}
           </p>
         </div>
       )}
       {!ta && chu == null && (
         <p style={{ fontSize: 15 }}>{tr('Đất trống, chưa môn nào giữ.', 'Empty land, held by no sect.')}</p>
+      )}
+      {!ta && (chu == null || yeu) && map?.lm_an && ((dat?.[2] !== 'linh_mach' && dat?.[2] !== 'thien_tri') || !!trinh?.ket_qua?.lm) && (
+        <TimMach c={c} q={q} r={r} d={d} phut={phut} now={now} setErr={setErr} setOk={setOk} />
       )}
       {ta && <GiuO c={c} q={q} r={r} />}
       {ta ? (
@@ -858,6 +863,9 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
             <p className="sm-why">{tr('Môn ta đang được bảo hộ môn mới. Xuất chinh vào ô có chủ thì mất bảo hộ ngay.', 'Our sect is under new-sect protection. Marching on an owned tile ends it at once.')}</p>
           )}
         </>
+      )}
+      {ta && (m.chuc === 'chu' || m.chuc === 'lao') && !m.tiles.find((t) => t.cd && t.q === q && t.r === r) && (
+        <BoO c={c} o={o} now={now} setErr={setErr} setOk={setOk} />
       )}
     </section>
   );
@@ -917,6 +925,110 @@ function KhaiHoang({ c, o, d, now, setErr, setOk }: { c: SmCtx; o: SmMapO; d: nu
         <p className="sm-note">{tr('Cắm cờ ngay, không phải đánh ai. Ai trong môn cũng khai hoang được.', 'Plant the flag right away, no fighting. Any member can claim.')}</p>
       )}
     </>
+  );
+}
+
+/** Ngày 30: các ô của môn sẽ đứt khỏi chính điện nếu bỏ ô (bo) - tính trên lưới lục giác như máy chủ */
+export function oDut(tiles: { q: number; r: number; ten: string; cd: boolean }[], bo: [number, number]): string[] {
+  const con = tiles.filter((t) => !(t.q === bo[0] && t.r === bo[1]));
+  const cd = con.find((t) => t.cd);
+  if (!cd) return [];
+  const thay = new Set([`${cd.q},${cd.r}`]);
+  const hang = [cd];
+  while (hang.length) {
+    const x = hang.pop()!;
+    for (const t of con) {
+      if (thay.has(`${t.q},${t.r}`) || hexDist(x, t) !== 1) continue;
+      thay.add(`${t.q},${t.r}`);
+      hang.push(t);
+    }
+  }
+  return con.filter((t) => !thay.has(`${t.q},${t.r}`)).map((t) => t.ten);
+}
+
+/** Ngày 30: môn chủ, trưởng lão bỏ một ô của môn (trừ chính điện, ô đang có quân hay yêu thú kéo tới). Hỏi lại một lần. */
+function BoO({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number; setErr: (s: string | null) => void; setOk: (s: string | null) => void }) {
+  const { st, map } = c;
+  const m = st.mon!;
+  const [q, r, ten] = o;
+  const [hoi, setHoi] = useState(false);
+  const dangToi =
+    !!map?.di.some((x) => x.toi[0] === q && x.toi[1] === r) ||
+    (st.bi_danh ?? []).some((b) => b.o[0] === q && b.o[1] === r) ||
+    (map?.yeu_cong ?? []).some((y) => y.o[0] === q && y.o[1] === r && new Date(y.toi).getTime() > now);
+  const dut = oDut(m.tiles, [q, r]);
+  return (
+    <div className="sm-bo-o">
+      {!hoi ? (
+        <button className="sm-btn wide" disabled={c.busy || dangToi} onClick={() => (setHoi(true), setErr(null), setOk(null))}>
+          {tr(`Bỏ ô ${ten}`, `Give up ${ten}`)}
+        </button>
+      ) : (
+        <>
+          <p style={{ fontSize: 15 }}>
+            <b>{tr(`Bỏ ${ten}?`, `Give up ${ten}?`)}</b>{' '}
+            {tr('Ô về trống, người đứng giữ ở đó về chính điện.', 'The tile becomes empty and its guards return to the main hall.')}
+            {dut.length > 0 && <b className="sm-thuong">{tr(` Đất sẽ đứt mạch, mất thêm ${dut.length} ô: ${dut.join(', ')}.`, ` Land gets cut off, losing ${dut.length} more: ${dut.join(', ')}.`)}</b>}
+          </p>
+          <div className="sm-grid2">
+            <button
+              className="sm-btn main"
+              disabled={c.busy}
+              onClick={async () => {
+                const e = await c.run({ fn: 'bo_o', q, r }, () => track('sm_bo_o', { dut: dut.length, o: m.o }));
+                setErr(e);
+                setHoi(false);
+                if (!e) {
+                  setOk(tr(`Đã bỏ ${ten}.`, `Gave up ${ten}.`));
+                  c.reload(['state', 'map', 'members']);
+                }
+              }}
+            >
+              {tr('Bỏ ô', 'Give up')}
+            </button>
+            <button className="sm-btn sm-ghost" onClick={() => setHoi(false)}>
+              {tr('Thôi, giữ lại', 'Keep it')}
+            </button>
+          </div>
+        </>
+      )}
+      {dangToi ? (
+        <p className="sm-why">{tr('Đang có quân hoặc yêu thú kéo tới ô này, chưa bỏ được.', 'Troops or beasts are heading here; you cannot give it up now.')}</p>
+      ) : (
+        !hoi && <p className="sm-note">{tr('Môn chủ và trưởng lão bỏ được ô không cần, để môn gọn lại hoặc nhường chỗ chiếm ô khác. Chính điện không bỏ được.', 'Master and elders can drop a tile the sect no longer needs. The main hall cannot be dropped.')}</p>
+      )}
+    </div>
+  );
+}
+
+/** Ngày 30: Linh Mạch mới sinh ẩn; trinh sát ô trống hay ô yêu thú để tìm */
+function TimMach({ c, q, r, d, phut, now, setErr, setOk }: { c: SmCtx; q: number; r: number; d: number | null; phut: number; now: number; setErr: (s: string | null) => void; setOk: (s: string | null) => void }) {
+  const trinh = (c.st.trinh ?? []).find((t) => t.o[0] === q && t.o[1] === r);
+  const dang = trinh && !trinh.ket_qua;
+  return (
+    <div className="sm-giu la">
+      <p className="sm-note">
+        {dang
+          ? tr(`Đang trinh sát, có tin lúc ${hhmm(trinh!.xong_luc)}.`, `Scouting, back at ${hhmm(trinh!.xong_luc)}.`)
+          : trinh?.ket_qua
+            ? trinh.ket_qua.lm
+              ? tr(`Trinh sát ${truoc(trinh.xong_luc, now)}: Có Linh Mạch (${trinh.ket_qua.lm}).`, `Scouted ${truoc(trinh.xong_luc, now)}: Spirit Vein here (${trinh.ket_qua.lm}).`)
+              : tr(`Trinh sát ${truoc(trinh.xong_luc, now)}: không có Linh Mạch.`, `Scouted ${truoc(trinh.xong_luc, now)}: no Spirit Vein.`)
+            : tr('Linh Mạch mới sinh nằm ẩn. Trinh sát mới biết ô này có mạch hay không.', 'New Spirit Veins are hidden. Scout to learn if this tile has one.')}
+      </p>
+      {!trinh?.ket_qua?.lm && <button
+        className="sm-btn wide"
+        disabled={c.busy || !!dang || d == null}
+        onClick={async () => {
+          const e = await c.run({ fn: 'scout', q, r }, () => track('sm_scout', { d, tim_mach: 1 }));
+          setErr(e);
+          if (!e) setOk(tr(`Đã cử người trinh sát, ${phut} phút nữa có tin.`, `Scout sent, news in ${phut} min.`));
+        }}
+      >
+        {tr(`Trinh sát tìm mạch · ${phut} phút`, `Scout for a vein · ${phut} min`)}
+      </button>}
+      {trinh?.ket_qua?.lm && <p className="sm-note">{tr('Môn ta thấy mạch này tới hết Kỷ. Môn khác chưa trinh sát thì không thấy.', 'Our sect sees this vein until the era ends. Sects that have not scouted it cannot.')}</p>}
+    </div>
   );
 }
 

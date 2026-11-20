@@ -3,7 +3,7 @@
 /** 4.6.0 Sơn Môn: phần dùng chung giữa các màn (đồng hồ, số, ngữ cảnh). */
 import { useEffect, useState } from 'react';
 import { tr } from '@/lib/i18n';
-import type { SmAct, SmApi, SmDai, SmMap, SmMembers, SmMonRow, SmRankRow, SmState } from '@/lib/sonmon/api';
+import type { SmAct, SmApi, SmD30, SmDai, SmMap, SmMembers, SmMonRow, SmRankRow, SmState, SmThuong } from '@/lib/sonmon/api';
 
 export type SmView = 'list' | 'lap' | 'chon-o' | 'mon' | 'ban-do' | 'xuat-chinh' | 'chien-su' | 'thanh-vien' | 'ky' | 'luc-chien' | 'luat' | 'chat' | 'thuong';
 export const SM_VIEWS: SmView[] = ['list', 'lap', 'chon-o', 'mon', 'ban-do', 'xuat-chinh', 'chien-su', 'thanh-vien', 'ky', 'luc-chien', 'luat', 'chat', 'thuong'];
@@ -20,6 +20,8 @@ export type SmCtx = {
   rank: SmRankRow[] | null;
   /** 20/11 Kỷ 2: dải sức mạnh và thù của môn ta (nạp cùng bản đồ) */
   dai?: SmDai | null;
+  /** Ngày 30: trọng thương, Linh Mạch ẩn đã thấy */
+  d30?: SmD30 | null;
   go: (v: SmView, o?: { target?: [number, number] }) => void;
   /** ô đang chọn trên bản đồ (để mở M6 xem trước khi phát lệnh) */
   target: [number, number] | null;
@@ -58,6 +60,14 @@ export function clock(ms: number) {
 export function hhmm(iso: string) {
   const d = new Date(new Date(iso).getTime() + 7 * 3600e3);
   return `${String(d.getUTCHours()).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')}`;
+}
+/** Ngày 30: một dòng trọng thương, ghi thẳng trên thẻ (không tooltip) */
+export function thuongCau(t: SmThuong | null | undefined, now = Date.now()): string | null {
+  if (!t || new Date(t.het).getTime() <= now) return null;
+  const pct = Math.round(t.pct * 100);
+  const ngay = (x: number) => Math.floor((x + 7 * 3600e3) / 86400e3);
+  const luc = ngay(new Date(t.het).getTime()) === ngay(now) ? hhmm(t.het) : tr(`${hhmm(t.het)} mai`, `${hhmm(t.het)} tomorrow`);
+  return tr(`Trọng thương: Lực chiến -${pct}%, hồi lúc ${luc}`, `Wounded: power -${pct}%, heals at ${luc}`);
 }
 /** ngày VN dạng 1/12 */
 export function ngayThang(iso: string) {
