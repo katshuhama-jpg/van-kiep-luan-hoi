@@ -407,7 +407,11 @@ export function realApi(): SmApi {
     },
     coHoi: (q, r) => rpc<SmCoHoi>('vkl_sm_co_hoi', { p_q: q, p_r: r }, true, true).catch(() => null),
     bau: () => rpc<SmBau>('vkl_sm_bau', {}, true, true).catch(() => null),
-    congBang: () => rpc<SmCongBang>('vkl_sm_cong_bang', {}, true, true).catch(() => null),
+    // 20/11: bản 2 xếp hạng môn để tính phẩm pháp bảo theo Điểm giữ đất (như bảng Kỷ); lỗi thì về bản cũ
+    congBang: () =>
+      rpc<SmCongBang>('vkl_sm_cong_bang2', {}, true, true)
+        .catch(() => rpc<SmCongBang>('vkl_sm_cong_bang', {}, true, true))
+        .catch(() => null),
     moiTim: (q) => rpc<SmMoiTim>('vkl_sm_moi_tim', { p_q: q }, true, true),
     moiDs: () => rpc<SmMoiThu[]>('vkl_sm_moi_ds', {}, true, true).catch(() => []),
     kyTim: (q) => rpc<SmKyNguoi[]>('vkl_sm_ky_tim', { p_q: q }, true, true),

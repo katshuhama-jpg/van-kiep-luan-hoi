@@ -251,9 +251,15 @@ function BangXepHang({ c, onXem }: { c: SmCtx; onXem: (id: number) => void }) {
               <HuyHieu id={r.huy_hieu} size={28} label="" />
               <span className="sm-bxh-ten">
                 <b>{r.ten}</b>
-                <small>{coDiem ? tr(`${r.o} ô · ${r.n} người`, `${r.o} tiles · ${r.n} members`) : tr(`${r.n} người`, `${r.n} members`)}</small>
+                <small>
+                  {coDiem ? tr(`${r.o} ô · `, `${r.o} tiles · `) : tr(`${r.n} người · `, `${r.n} members · `)}
+                  <span className="sm-kv">{tr(`Khí vận ${fmtN(r.kv)}`, `Fortune ${fmtN(r.kv)}`)}</span>
+                </small>
               </span>
-              <span className="sm-bxh-so">{coDiem ? fmtN(r.diem ?? 0) : r.o}</span>
+              <span className="sm-bxh-so sm-diem-o">
+                <b>{coDiem ? fmtN(r.diem ?? 0) : r.o}</b>
+                {coDiem && <small>{tr(`+${r.gio ?? 0}/giờ`, `+${r.gio ?? 0}/h`)}</small>}
+              </span>
             </button>
           </li>
         ))}

@@ -56,10 +56,10 @@ export function SmKy({ c }: { c: SmCtx }) {
         ) : (
           <table className="sm-table">
             <colgroup>
-              <col style={{ width: '12%' }} />
-              <col style={{ width: '54%' }} />
-              <col style={{ width: '12%' }} />
-              <col style={{ width: '22%' }} />
+              <col style={{ width: '10%' }} />
+              <col style={{ width: coDiem ? '52%' : '54%' }} />
+              <col style={{ width: coDiem ? '24%' : '12%' }} />
+              <col style={{ width: coDiem ? '14%' : '22%' }} />
             </colgroup>
             <thead>
               <tr>
@@ -79,15 +79,18 @@ export function SmKy({ c }: { c: SmCtx }) {
                       <HuyHieu id={r.huy_hieu} size={22} label="" />
                       <span style={{ display: 'flex', flexDirection: 'column', minWidth: 0, lineHeight: 1.15 }}>
                         <span className="sm-clip">{r.ten}</span>
-                        {coDiem && (
-                          <small style={{ fontSize: 12, color: '#6b5233', fontVariantNumeric: 'tabular-nums' }}>
-                            {tr(`+${r.gio ?? 0}/giờ · Khí vận ${fmtN(r.kv)}`, `+${r.gio ?? 0}/h · Fortune ${fmtN(r.kv)}`)}
-                          </small>
-                        )}
+                        {coDiem && <small className="sm-kv">{tr(`Khí vận ${fmtN(r.kv)}`, `Fortune ${fmtN(r.kv)}`)}</small>}
                       </span>
                     </span>
                   </td>
-                  {coDiem && <td className="num">{fmtN(r.diem ?? 0)}</td>}
+                  {coDiem && (
+                    <td className="num">
+                      <span className="sm-diem-o">
+                        <b>{fmtN(r.diem ?? 0)}</b>
+                        <small>{tr(`+${r.gio ?? 0}/giờ`, `+${r.gio ?? 0}/h`)}</small>
+                      </span>
+                    </td>
+                  )}
                   <td className="num">{r.o}</td>
                   {!coDiem && <td className="num">{fmtN(r.kv)}</td>}
                 </tr>
@@ -97,7 +100,7 @@ export function SmKy({ c }: { c: SmCtx }) {
         )}
         <p className="sm-note" style={{ padding: '4px 4px 0' }}>
           {coDiem
-            ? tr('Xếp theo Điểm giữ đất: mỗi giờ ô thường +1, Linh Mạch +3, Thiên Trì +5. Bằng điểm thì xét số ô rồi tổng Khí vận cả Kỷ. Dòng nhỏ dưới tên: điểm môn đang được mỗi giờ và tổng Khí vận.', 'Ranked by land points: each hour +1 per tile, +3 Spirit Vein, +5 Heaven Pool. Ties: tiles, then fortune.')
+            ? tr('Xếp theo Điểm giữ đất: mỗi giờ ô thường +1, Linh Mạch +3, Thiên Trì +5. Bằng điểm thì xét số ô rồi tổng Khí vận cả Kỷ. Số xanh dưới Điểm: môn đang được bao nhiêu điểm mỗi giờ.', 'Ranked by land points: each hour +1 per tile, +3 Spirit Vein, +5 Heaven Pool. Ties: tiles, then total fortune. Green number: points earned per hour right now.')
             : tr('Xếp theo số ô giữ lúc hết Kỷ, bằng nhau thì xét tổng Khí vận cả Kỷ.', 'Ranked by tiles held at the end, ties broken by total fortune.')}
         </p>
       </section>
