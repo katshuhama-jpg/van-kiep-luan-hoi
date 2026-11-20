@@ -12,7 +12,7 @@ DUYỆT: Tyler 14/11/2026 (các khối trong file này coi như đã duyệt; kh
 ## Mục tiêu Kỷ 2 (Tyler 20/11 18:30)
 Mọi khối trong sổ này phải lên trang trước 5:00 ngày 1/12, để Kỷ 2 (kết Kỷ 1 lúc 21:00 1/12, mở 2/12) bắt đầu đủ tính năng. Chỉ có phiên đêm 21:17, không có phiên ban ngày (Tyler chốt 20/11). Mỗi đêm làm mọi khối có "Lên bản" bằng hoặc trước ngày lên bản kế tiếp, KHỐI QUÁ HẠN LÀM TRƯỚC. Số liệu chỉ để đo, không chặn lịch. Khối nào tới đêm 30/11 vẫn chưa thể làm sạch thì để sau cờ, ghi lý do và báo Tyler trong tin cuối phiên.
 
-Đêm nào không kịp hết thì làm theo thứ tự: (1) khối quá hạn; (2) khối Kỷ 2 cần để mở đúng 2/12: luật Sơn Môn Ngày 30, vòng cày chân thân Ngày 22-24, đồ chân thân Ngày 26 + 31, đi cảnh Ngày 27-29; (3) Thiên thư III Ngày 8g; (4) đường tu Võ/Nho Ngày 33-34 và công pháp chân thân Ngày 32a/32b; (5) Nhóm CWS Ngày 13-21; (6) cốt truyện Ngày 35, tối thiểu 5 mỗi đêm. Khối bị đẩy lùi thì ghi rõ ngày lên bản mới vào tin cuối phiên.
+Mỗi đêm làm khối Ngày 37 (tổng hợp góp ý mọi kênh) đầu tiên. Đêm nào không kịp hết thì làm theo thứ tự: (0) lỗi người chơi báo làm chết vô lý, mất dữ liệu hoặc kẹt; (1) khối quá hạn; (2) khối Kỷ 2 cần để mở đúng 2/12: luật Sơn Môn Ngày 30, vòng cày chân thân Ngày 22-24, đồ chân thân Ngày 26 + 31, đi cảnh Ngày 27-29; (3) Thiên thư III Ngày 8g; (4) đường tu Võ/Nho Ngày 33-34 và công pháp chân thân Ngày 32a/32b; (5) Nhóm CWS Ngày 13-21; (6) cốt truyện Ngày 35, tối thiểu 5 mỗi đêm. Khối bị đẩy lùi thì ghi rõ ngày lên bản mới vào tin cuối phiên.
 
 ## Luật thường trực
 
@@ -315,6 +315,24 @@ Lên bản: 2026-11-21. Đã sửa sẵn ở commit 12be60c (phóng ảnh pixel 
 - [ ] So cỡ quái trước/sau (đổi hệ số nguyên làm quái người nhỏ đi khoảng 6%): nếu quái nào nhỏ quá so với nhân vật thì tăng `scale` của quái đó tới bậc nguyên kế tiếp.
 - [ ] Không đổi nhân vật người chơi (`components/Sprite.tsx`) trong khối này; nếu thấy vỡ hạt ở nhân vật thì ghi vào Ghi chú và báo Tyler.
 - Ghi chú:
+
+## Ngày 37 - MỖI ĐÊM: tổng hợp góp ý mọi kênh để cải thiện game (khối lặp, Tyler giao 20/11 20:28)
+Lên bản: 2026-11-21 (LẶP LẠI MỖI ĐÊM. Không đánh [x] cả khối, không cắt sang lưu trữ.)
+Làm ĐẦU TIÊN mỗi đêm, trước các khối tính năng (chỉ là đọc và phân loại, khoảng 15-20 phút). Phần sửa thì xếp theo thứ tự ưu tiên ở đầu sổ.
+- Nguồn, đọc đủ cả 4:
+  1. Trong game: `vkl_feedback` status 'moi' (Supabase, chỉ SELECT).
+  2. Sổ góp ý mọi kênh: doc Project `claude/vklh-gop-y-kenh.md` (Projects tool), các dòng trạng thái `moi`. Tác vụ trả lời page và Messenger ghi vào đây.
+  3. Group đã đăng bài: mục "Phản hồi người chơi thu được từ bình luận" trong doc Project `claude/vklh-group-ledger.md`. Dòng nào chưa có trong sổ góp ý thì chép sang.
+  4. Nếu có Claude in Chrome trên máy Windows (list_connected_browsers): đọc nhanh (chỉ đọc, KHÔNG trả lời, KHÔNG đăng) group "Hội những người chơi Vạn Kiếp Luân Hồi" facebook.com/groups/1445836123636855 (bài và bình luận 24 giờ qua) và bình luận bài quảng cáo đang chạy. Góp ý mới thì thêm dòng vào sổ. Không có Chrome thì bỏ qua, ghi một dòng trong tin cuối phiên.
+- Gom chủ đề (game-design: player-experience, balance-review): cùng một vấn đề từ nhiều người hay nhiều kênh thì gộp, đếm số người. Mỗi chủ đề chọn một trong bốn:
+  - Lỗi, chết vô lý, người chơi mất dữ liệu hoặc kẹt: sửa NGAY đêm nay (luật bước 2 của tác vụ). Chết vô lý thì soát bằng the-fool như khối Ngày 35.
+  - Việc nhỏ (chữ khó hiểu, chú giải, một con số): sửa đêm nay nếu dưới 30 phút, có thử.
+  - Việc lớn (cân bằng, tính năng mới): thêm khối "## Ngày N - Góp ý ..." vào sổ, có "Lên bản", ghi tên người góp ý để đưa vào mục `asked` của cáo thị. Ưu tiên chủ đề nhiều người nói và chủ đề chạm kiếp 2-10.
+  - Không làm (trái hướng game, game miễn phí không trả tiền, xin chat tự do...): ghi lý do một câu.
+- Cập nhật sổ góp ý: đổi trạng thái từng dòng (`da_xem`, `vao_plan` + số Ngày, `da_sua` + sha, `khong_lam` + lý do, `trung`). Ghi lại doc bằng project_write (đọc bản mới nhất ngay trước khi ghi để không đè dòng tác vụ page vừa thêm).
+- Trả lời người chơi: góp ý trong game thì soạn câu trả lời vào "Ghi chú:" như luật cũ (tác vụ 5:00 gửi). Góp ý Fanpage thì ghi câu trả lời vào cột Xử lý để tác vụ page dùng khi bản đã lên; KHÔNG tự trả lời trên Facebook.
+- Chủ nhật: viết mục "Tổng hợp theo tuần" trong sổ góp ý (3 chủ đề lặp nhiều nhất, đã sửa gì, còn treo gì).
+- Tin cuối phiên: một mục "Góp ý" gồm số góp ý mới theo kênh, các chủ đề chính (kèm số người), đã sửa gì đêm nay, khối mới đã thêm.
 
 ## Ngoài game (Tyler tự làm)
 - Đăng "Biên niên Kỷ" mỗi tuần và lúc kết Kỷ (Claude soạn khi Tyler hỏi): môn giữ nhiều ô nhất, trận lớn, môn lật ngược thế cờ.
