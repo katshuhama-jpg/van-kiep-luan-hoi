@@ -1,4 +1,5 @@
 'use client';
+import { track } from '@/lib/track';
 
 /**
  * Trang đầu "giang hồ đang sống" (học từ 1in8b): bộ đếm đạo hữu đang luân hồi, dòng tin vừa xảy ra,
@@ -37,7 +38,7 @@ function lineOf(l: Life): string {
 }
 
 export type FeedItem = {
-  k: 'play' | 'born' | 'up' | 'end1' | 'vandao' | 'arena' | 'sm'; who?: string; at: string; name?: string; age?: number; realm?: number; layer?: number; cosmos?: string | null; life?: number; ids?: string; foe?: string; win?: boolean;
+  k: 'play' | 'born' | 'up' | 'end1' | 'vandao' | 'arena' | 'sm' | 'wc'; who?: string; nd?: string; at: string; name?: string; age?: number; realm?: number; layer?: number; cosmos?: string | null; life?: number; ids?: string; foe?: string; win?: boolean;
   /** 20/11 tin Sơn Môn: t loại tin, a môn, b môn kia, o tên ô, dat Linh Mạch/Thiên Trì, n số yêu thú */
   t?: 'lap' | 'mo' | 'chiem' | 'thua' | 'diet' | 'yeu_thua' | 'yeu' | 'mat' | 'yeu_chiem' | 'yeu_giu' | 'lm_doi'; a?: string; b?: string | null; o?: string | null; dat?: 'linh_mach' | 'thien_tri' | null; bo?: string | null; n?: number; moi?: string | null;
 };
@@ -130,6 +131,7 @@ export function feedOk(f: FeedItem): boolean {
   if (f.k === 'play') return !!f.name && f.age != null && f.life != null;
   if (f.k === 'born') return f.life != null;
   if (f.k === 'arena') return !!f.foe;
+  if (f.k === 'wc') return !!f.nd;
   return true;
 }
 
@@ -146,6 +148,9 @@ export function feedLine(f: FeedItem): string {
       const names = (f.ids ?? '').split(',').map((id) => ENDINGS.find((e) => e.id === id)?.name).filter(Boolean).join(', ');
       return tr(`${who} vừa mở kết cục mới: ${names}`, `${who} unlocked a new ending: ${names}`);
     }
+    case 'wc':
+      // 21/11: tin kênh Thế giới, tên chân thân (không lộ tài khoản); bấm toast để mở kênh
+      return tr(`Thế giới · ${f.who}: ${f.nd}`, `World · ${f.who}: ${f.nd}`);
     case 'vandao':
       return tr(`${who} đang bước lên đỉnh lôi, vấn đạo Chứng Đạo`, `${who} is climbing the thunder peak to attain the Dao`);
     case 'sm': {
@@ -183,7 +188,7 @@ export function feedLine(f: FeedItem): string {
   }
 }
 
-type Toast = { id: string; at: string; text: string; now?: boolean };
+type Toast = { id: string; at: string; text: string; now?: boolean; wc?: boolean };
 
 /**
  * Tin giang hồ hiện ra rồi tắt, nổi ngay trên thanh Đầu thai: ai đang tu, ai vừa đầu thai, đột phá,
@@ -195,7 +200,7 @@ export function NewsToast({ d }: { d: LiveData }) {
     const now = Date.now();
     const deaths: Toast[] = d.lives.map((l) => ({ id: `l${l.id}`, at: l.created_at, text: lineOf(l) }));
     // bản lưu giữa hai kiếp (chưa đầu thai) không có nhân vật: bỏ, khỏi hiện null
-    const feed: Toast[] = d.feed.filter(feedOk).map((f, k) => ({ id: `f${k}-${f.k}-${f.who}-${f.at}`, at: f.at, text: feedLine(f), now: f.k === "play" }));
+    const feed: Toast[] = d.feed.filter(feedOk).map((f, k) => ({ id: `f${k}-${f.k}-${f.who}-${f.at}`, at: f.at, text: feedLine(f), now: f.k === "play", wc: f.k === 'wc' }));
     const fresh = [...feed, ...deaths.filter((x) => now - new Date(x.at).getTime() < 2 * 3600_000)];
     const list = fresh.length >= 3 ? fresh : [...fresh, ...deaths.filter((x) => now - new Date(x.at).getTime() < 86400_000)];
     // gộp trùng, mới trước, xen kẽ người đang chơi với tin vừa xảy ra
@@ -232,6 +237,14 @@ export function NewsToast({ d }: { d: LiveData }) {
   }, [items]);
   const n = i >= 0 ? items[i] : null;
   if (!n) return null;
+  if (n.wc)
+    return (
+      <button key={n.id} type="button" className="lw-toast lw-toast-wc" onClick={() => (track('wc_open', { from: 'toast' }), window.dispatchEvent(new Event('vkl:wc-mo')))}>
+        <i aria-hidden="true" className="wc" />
+        <small>{ago(n.at)}</small> {n.text}
+        <b className="lw-toast-go">{tr('Vào kênh ›', 'Join ›')}</b>
+      </button>
+    );
   return (
     <p key={n.id} className="lw-toast" role="status">
       <i aria-hidden="true" className={n.now ? 'live' : ''} />

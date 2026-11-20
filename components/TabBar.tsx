@@ -18,7 +18,10 @@ import { useAuth } from '@/lib/useAuth';
 import { displayName } from '@/lib/storage';
 import { tr } from '@/lib/i18n';
 import { track } from '@/lib/track';
-import { SON_MON_ON } from '@/lib/flags';
+import { SON_MON_ON, WC_ON } from '@/lib/flags';
+import { wcOff } from '@/lib/theGioi';
+import { useWcMoi, WcIcon, WcSheet } from './WcSheet';
+import { ProtectGate } from './GoogleAuth';
 import { supabase } from '@/lib/supabase';
 import { SmCanhBao, useSmCanh } from './SmCanhBao';
 
@@ -196,6 +199,16 @@ export function TabBar({ cur }: { cur: TabId }) {
 export function TopMenu({ at }: { at: TabId }) {
   const [open, setOpen] = useState(false);
   const { user, ready, enabled } = useAuth();
+  // 21/11 (Tyler chọn cách 2 + 3): nút kênh Thế giới ở thanh trên mọi tab; toast tin Thế giới ở trang chủ bắn 'vkl:wc-mo' để mở
+  const [wc, setWc] = useState(false);
+  const [baoVe, setBaoVe] = useState(false);
+  const coWc = WC_ON && !!user && !wcOff();
+  const [wcMoi, wcXoa] = useWcMoi(coWc, wc);
+  useEffect(() => {
+    const mo = () => setWc(true);
+    window.addEventListener('vkl:wc-mo', mo);
+    return () => window.removeEventListener('vkl:wc-mo', mo);
+  }, []);
   useEffect(() => {
     if (!open) return;
     const esc = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
@@ -204,6 +217,17 @@ export function TopMenu({ at }: { at: TabId }) {
   }, [open]);
   return (
     <div className="top-menu">
+      {coWc && (
+        <button
+          className="btn top-wc"
+          onClick={() => (setWc(true), track('wc_open', { from: `top_${at}` }))}
+          aria-label={tr(`Kênh Thế giới${wcMoi ? `, ${wcMoi} tin mới` : ''}`, `World chat${wcMoi ? `, ${wcMoi} new` : ''}`)}
+        >
+          <WcIcon />
+          <span>{tr('Thế giới', 'World')}</span>
+          {wcMoi > 0 && <i className="top-wc-dot" aria-hidden="true" />}
+        </button>
+      )}
       <Link href="/moi-tra" className="btn top-tra" onClick={() => track('tra_open', { from: `top_${at}` })}>
         {tr('Mời trà', 'Buy tea')}
       </Link>
@@ -255,6 +279,14 @@ export function TopMenu({ at }: { at: TabId }) {
           </nav>
         </div>
       )}
+      {wc && (
+        <WcSheet
+          moi={wcMoi}
+          onClose={() => (setWc(false), wcXoa())}
+          onLink={() => (setWc(false), wcXoa(), setBaoVe(true))}
+        />
+      )}
+      {user && baoVe && <ProtectGate mode="manage" onDone={() => setBaoVe(false)} />}
     </div>
   );
 }
