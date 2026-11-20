@@ -1130,8 +1130,8 @@ function breakEvent(c: Character): GameEvent {
       usesVanDao(c)
         ? tr('Bầu trời im lặng lạ thường. Đây là bước cuối cùng: bốn kiếp vấn đạo, rồi mười ba đạo lôi. Hụt từ bốn đạo, những kiếp trước của bạn sẽ hiện về đỡ thay.', "The sky is strangely silent. This is the final step: four trials of the Dao, then thirteen bolts of lightning. Miss four or more, and your past lives will return to take them for you.")
         : kiep
-        ? tr(`Mây đen kéo tới che kín trời. Lôi kiếp đang chờ. Tỉ lệ ước tính khoảng ${Math.round(breakChance(c) * 100)}%.`, `Dark clouds gather and blot out the sky. The lightning tribulation awaits. Estimated chance about ${Math.round(breakChance(c) * 100)}%.`)
-        : tr(`Tu vi đã đến đỉnh, bình cảnh rung động. Tỉ lệ ước tính khoảng ${Math.round(breakChance(c) * 100)}%.`, `Your cultivation has peaked and the bottleneck trembles. Estimated chance about ${Math.round(breakChance(c) * 100)}%.`),
+        ? tr(`Mây đen kéo tới che kín trời. Lôi kiếp đang chờ. Tỉ lệ ước tính khoảng ${Math.round(breakChance(c) * 100)}%. Cộng thêm cách nào thì cao nhất cũng chỉ 97%, trời luôn chừa lại một phần bất trắc.`, `Dark clouds gather and blot out the sky. The lightning tribulation awaits. Estimated chance about ${Math.round(breakChance(c) * 100)}%. Whatever you add, the best is 97%: heaven always keeps a little uncertainty.`)
+        : tr(`Tu vi đã đến đỉnh, bình cảnh rung động. Tỉ lệ ước tính khoảng ${Math.round(breakChance(c) * 100)}%. Cộng thêm cách nào thì cao nhất cũng chỉ 97%, trời luôn chừa lại một phần bất trắc.`, `Your cultivation has peaked and the bottleneck trembles. Estimated chance about ${Math.round(breakChance(c) * 100)}%. Whatever you add, the best is 97%: heaven always keeps a little uncertainty.`),
     choices: breakChoices,
   };
 }
