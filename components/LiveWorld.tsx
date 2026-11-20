@@ -36,7 +36,11 @@ function lineOf(l: Life): string {
   return tr(`${who} vừa khép lại một kiếp, ${l.age} tuổi, ${realm}.`, `${who} ended a life at ${l.age}, ${realm}.`);
 }
 
-export type FeedItem = { k: 'play' | 'born' | 'up' | 'end1' | 'vandao' | 'arena'; who: string; at: string; name?: string; age?: number; realm?: number; layer?: number; cosmos?: string | null; life?: number; ids?: string; foe?: string; win?: boolean };
+export type FeedItem = {
+  k: 'play' | 'born' | 'up' | 'end1' | 'vandao' | 'arena' | 'sm'; who?: string; at: string; name?: string; age?: number; realm?: number; layer?: number; cosmos?: string | null; life?: number; ids?: string; foe?: string; win?: boolean;
+  /** 20/11 tin Sơn Môn: t loại tin, a môn, b môn kia, o tên ô, dat Linh Mạch/Thiên Trì, n số yêu thú */
+  t?: 'lap' | 'mo' | 'chiem' | 'thua' | 'diet' | 'yeu_thua' | 'yeu' | 'mat'; a?: string; b?: string | null; o?: string | null; dat?: 'linh_mach' | 'thien_tri' | null; bo?: string | null; n?: number;
+};
 export type LiveData = { online: number | null; total: number | null; today: number | null; lives: Life[]; feed: FeedItem[] };
 
 /** Số liệu giang hồ cho trang đầu: tải một lần, làm mới mỗi phút */
@@ -120,7 +124,8 @@ export function LiveStrip({ d }: { d: LiveData }) {
 
 const realmOf = (realm?: number, layer?: number, cosmos?: string | null) => (!realm ? tr('phàm nhân', 'a mortal') : realmLabel(realm, layer ?? 1, (cosmos as 'tien' | 'ma' | 'hu' | null) ?? null));
 
-function feedOk(f: FeedItem): boolean {
+export function feedOk(f: FeedItem): boolean {
+  if (f.k === 'sm') return f.t === 'yeu' ? (f.n ?? 0) > 0 : !!f.a;
   if (!f.who || isTest(f.who)) return false;
   if (f.k === 'play') return !!f.name && f.age != null && f.life != null;
   if (f.k === 'born') return f.life != null;
@@ -128,7 +133,7 @@ function feedOk(f: FeedItem): boolean {
   return true;
 }
 
-function feedLine(f: FeedItem): string {
+export function feedLine(f: FeedItem): string {
   const who = `@${f.who}`;
   switch (f.k) {
     case 'play':
@@ -143,6 +148,28 @@ function feedLine(f: FeedItem): string {
     }
     case 'vandao':
       return tr(`${who} đang bước lên đỉnh lôi, vấn đạo Chứng Đạo`, `${who} is climbing the thunder peak to attain the Dao`);
+    case 'sm': {
+      const dat = f.dat === 'linh_mach' ? tr(' (Linh Mạch)', ' (Spirit Vein)') : f.dat === 'thien_tri' ? tr(' (Thiên Trì)', ' (Heaven Pool)') : '';
+      switch (f.t) {
+        case 'lap':
+          return tr(`Sơn môn ${f.a} vừa lập, đang nhận đệ tử`, `The sect ${f.a} was just founded and is taking disciples`);
+        case 'mo':
+          return tr(`${f.a} mở rộng đất tới ${f.o}${dat}`, `${f.a} expanded to ${f.o}${dat}`);
+        case 'chiem':
+          return tr(`${f.a} vừa đánh chiếm ${f.o}${dat} của ${f.b}`, `${f.a} just took ${f.o}${dat} from ${f.b}`);
+        case 'thua':
+          return tr(`${f.a} xuất chinh đánh ${f.o}${dat} của ${f.b} nhưng bị đẩy lui`, `${f.a} marched on ${f.o}${dat} of ${f.b} but was driven back`);
+        case 'diet':
+          return tr(`${f.a} vừa diệt yêu thú, giành ô ${f.o}`, `${f.a} slew a demon beast and took ${f.o}`);
+        case 'yeu_thua':
+          return tr(`Yêu thú ở ${f.o} đánh lui ${f.a}`, `The beast at ${f.o} drove back ${f.a}`);
+        case 'yeu':
+          return tr(`${f.n} yêu thú vừa xuất hiện ở rìa bản đồ Sơn Môn`, `${f.n} demon beasts just appeared on the Sect map edge`);
+        case 'mat':
+          return tr(`${f.a} vừa mất hết đất vào tay ${f.b}`, `${f.a} just lost all its land to ${f.b}`);
+      }
+      return '';
+    }
     case 'arena':
       return f.win ? tr(`${who} vừa hạ @${f.foe} trên lôi đài`, `${who} just beat @${f.foe} in the arena`) : tr(`@${f.foe} vừa đánh bại ${who} trên lôi đài`, `@${f.foe} just beat ${who} in the arena`);
   }

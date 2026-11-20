@@ -72,8 +72,27 @@ export function datOf(map: SmMap | null | undefined, q: number, r: number): DatO
   return map?.dat?.find((d) => d[0] === q && d[1] === r) ?? null;
 }
 export const laYeu = (map: SmMap | null | undefined, chu: number | null) => chu != null && map?.yeu_mon != null && chu === map.yeu_mon;
-/** icon yêu thú cố định theo tọa độ (Cultivation World Simulator, CC BY-NC-SA 4.0) */
-export const yeuIcon = (q: number, r: number) => `/cws/thu/a${((((q * 7 + r * 13) % 11) + 11) % 11) + 1}.webp`;
+/**
+ * 20/11 8:13 (Tyler: chỉ số quái không logic, thỏ trắng 17k bằng rùa): yêu thú chọn theo lực giữ, yếu tới mạnh,
+ * để nhìn hình là đoán được độ khó. Icon từ Cultivation World Simulator (CC BY-NC-SA 4.0), tên dịch từ bản gốc.
+ * Lực máy chủ cho trong khoảng 10.000-30.000 (vòng 5: 10-18k, vòng 6: 18-30k).
+ */
+const YEU_THU: [number, string, string][] = [
+  [1, 'Linh Thố', 'Spirit Hare'],
+  [3, 'Thanh Vân Lộc', 'Azure Cloud Deer'],
+  [7, 'Phong Tốc Mã', 'Wind Steed'],
+  [9, 'Độc Chướng Oa', 'Miasma Toad'],
+  [2, 'Ma Lang', 'Demon Wolf'],
+  [4, 'Ám Ảnh Báo', 'Shadow Panther'],
+  [6, 'Thạch Giáp Sơn Hùng', 'Stone-armour Bear'],
+  [5, 'Bích Hải Long Quy', 'Jade Sea Dragon Turtle'],
+  [8, 'Dung Nham Tích Dịch', 'Lava Lizard'],
+  [11, 'Băng Phách Cốt Xà', 'Frost Bone Serpent'],
+  [10, 'Hám Địa Thần Ngưu', 'Earthshaker Ox'],
+];
+const yeuThu = (luc: number | null | undefined) => YEU_THU[Math.max(0, Math.min(YEU_THU.length - 1, Math.floor(((luc ?? 10000) - 10000) / (20000 / YEU_THU.length))))];
+export const yeuIcon = (luc: number | null | undefined) => `/cws/thu/a${yeuThu(luc)[0]}.webp`;
+export const yeuTen = (luc: number | null | undefined) => tr(yeuThu(luc)[1], yeuThu(luc)[2]);
 const kN = (n: number) => (n >= 1000 ? `${Math.round(n / 100) / 10}k` : String(n));
 
 /** dấu Linh Mạch: viên ngọc xanh; Thiên Trì: hồ sen vàng (vẽ pixel) */
@@ -275,7 +294,7 @@ export function HexMap({
               {/* 20/11 Kỷ 2: ô yêu thú: hình yêu thú và lực giữ */}
               {laYeu(map, chu) && (
                 <g>
-                  <image href={yeuIcon(q, r)} x={-16} y={-21} width={32} height={32} />
+                  <image href={yeuIcon(datOf(map, q, r)?.[4])} x={-16} y={-21} width={32} height={32} />
                   <rect x={-15} y={8} width={30} height={10} fill="#7a2a2a" stroke="#1f0a0a" strokeWidth={1} />
                   <text x={0} y={16} textAnchor="middle" fontSize={8.5} fontWeight={700} fill="#ffe3d6" fontFamily="inherit">
                     {kN(datOf(map, q, r)?.[4] ?? 0)}
@@ -512,10 +531,10 @@ function SmBanDoXem({ c }: { c: SmCtx }) {
         <div className="sm-sheet" role="dialog" aria-modal="true" aria-label={sel[2]} onClick={() => setSel(null)}>
         <div onClick={(e) => e.stopPropagation()}>
           <div className="sm-row">
-            {yeuX ? <img src={yeuIcon(sel[0], sel[1])} width={40} height={40} alt="" /> : chu != null ? <HuyHieu id={map.mon[String(chu)]?.huy_hieu ?? 0} size={40} /> : <span style={{ width: 40 }} />}
+            {yeuX ? <img src={yeuIcon(datX?.[4])} width={40} height={40} alt="" /> : chu != null ? <HuyHieu id={map.mon[String(chu)]?.huy_hieu ?? 0} size={40} /> : <span style={{ width: 40 }} />}
             <div className="sm-grow">
               <h3 className="sm-clip">
-                {datX?.[3] ?? sel[2]} · {chu == null ? tr('Còn trống', 'Empty') : yeuX ? tr('Yêu thú', 'Demon beast') : (map.mon[String(chu)]?.ten ?? '?')}
+                {datX?.[3] ?? sel[2]} · {chu == null ? tr('Còn trống', 'Empty') : yeuX ? yeuTen(datX?.[4]) : (map.mon[String(chu)]?.ten ?? '?')}
               </h3>
               <p className="sm-note">
                 {tr(`Cõi ${COI[sel[3]].name}`, `${COI[sel[3]].name} realm`)}
@@ -676,7 +695,7 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
   const d = gan(st, q, r);
   const yeu = laYeu(map, chu);
   const dat = datOf(map, q, r);
-  const chuTen = chu == null ? tr('Còn trống', 'Empty') : ta ? m.ten : yeu ? tr('Yêu thú', 'Demon beast') : map?.mon[String(chu)]?.ten ?? '?';
+  const chuTen = chu == null ? tr('Còn trống', 'Empty') : ta ? m.ten : yeu ? yeuTen(dat?.[4]) : map?.mon[String(chu)]?.ten ?? '?';
   const [xemMon, setXemMon] = useState(false);
   const trinh = (st.trinh ?? []).find((t) => t.o[0] === q && t.o[1] === r);
   const dangTrinh = trinh && !trinh.ket_qua;
@@ -692,7 +711,7 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
   return (
     <section className="sm-card sm-o-card">
       <div className="sm-row">
-        {yeu ? <img src={yeuIcon(q, r)} width={40} height={40} alt="" /> : chu != null ? <HuyHieu id={map?.mon[String(chu)]?.huy_hieu ?? 0} size={40} /> : <span style={{ width: 40 }} />}
+        {yeu ? <img src={yeuIcon(dat?.[4])} width={40} height={40} alt="" /> : chu != null ? <HuyHieu id={map?.mon[String(chu)]?.huy_hieu ?? 0} size={40} /> : <span style={{ width: 40 }} />}
         <div className="sm-grow">
           <h3 className="sm-clip">
             {dat?.[3] ?? ten} · {chuTen}

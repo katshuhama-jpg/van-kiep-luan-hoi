@@ -7,7 +7,7 @@ import { track } from '@/lib/track';
 import type { SmBao, SmMember, SmState } from '@/lib/sonmon/api';
 import { capLc, SM_CFG, tranCau } from '@/lib/sonmon/data';
 import { HuyHieu } from './Pixel';
-import { chinhKhoa, datOf, laYeu } from './SmMap';
+import { chinhKhoa, datOf, laYeu, yeuTen } from './SmMap';
 import { clock, fmtN, hhmm, mocGio, Msg, truoc, useNow, type SmCtx } from './ui';
 
 const vnGio = (t: number) => new Date(t + 7 * 3600e3).getUTCHours();
@@ -61,7 +61,7 @@ export function SmXuatChinh({ c }: { c: SmCtx }) {
   const tenO = chinh?.ten_o ?? o?.[2] ?? '?';
   const chuO = o?.[4] ?? null;
   const yeuO = laYeu(map, chuO);
-  const chuTen = chuO == null ? null : yeuO ? tr('Yêu thú', 'Demon beast') : map?.mon[String(chuO)]?.ten ?? null;
+  const chuTen = chuO == null ? null : yeuO ? yeuTen(datOf(map, toi[0], toi[1])?.[4]) : map?.mon[String(chuO)]?.ten ?? null;
   const trinh = (st.trinh ?? []).find((t) => t.o[0] === toi[0] && t.o[1] === toi[1] && t.ket_qua);
   const tapHop = chinh ? new Date(chinh.tap_hop_toi).getTime() : now + SM_CFG.gio.tapHopPhut * 60e3;
   const toiNoi = chinh ? new Date(chinh.toi_noi_luc).getTime() : tapHop + SM_CFG.gio.diPhut * 60e3;

@@ -16,7 +16,7 @@ export async function GET() {
   // nửa đêm giờ Việt Nam
   const vn = new Date(Date.now() + 7 * 3600_000);
   const midnight = new Date(Date.UTC(vn.getUTCFullYear(), vn.getUTCMonth(), vn.getUTCDate()) - 7 * 3600_000);
-  const [online, feed, total, today, lives] = await Promise.all([
+  const [online, feed, total, today, lives, sm] = await Promise.all([
     sb.rpc('vkl_online_now7'),
     sb.rpc('vkl_live_feed'),
     sb.from('vkl_lives').select('id', { count: 'estimated', head: true }),
@@ -26,10 +26,12 @@ export async function GET() {
       .select('id, player_name, char_name, life_no, age, realm, realm_no, layer_no, ascended, cause, epitaph, incense, created_at, look')
       .order('created_at', { ascending: false })
       .limit(30),
+    // 20/11: tin Sơn Môn (môn lập, mở rộng, đánh ô, yêu thú), cùng bộ đệm 60 giây nên không thêm tải
+    sb.rpc('vkl_sm_tin_live'),
   ]);
   const body = {
     online: typeof online.data === 'number' ? online.data : null,
-    feed: Array.isArray(feed.data) ? feed.data : [],
+    feed: [...(Array.isArray(feed.data) ? feed.data : []), ...(Array.isArray(sm.data) ? sm.data : [])],
     total: total.count ?? null,
     today: today.data ? new Set((today.data as { player_name: string }[]).map((r) => r.player_name).filter((n) => !isTest(n))).size : null,
     lives: ((lives.data as { player_name: string }[] | null) ?? []).filter((l) => !isTest(l.player_name)),
