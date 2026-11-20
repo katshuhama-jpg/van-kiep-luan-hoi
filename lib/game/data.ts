@@ -3,6 +3,7 @@ import { GEAR } from './gear';
 import { EXTRA_ITEMS } from './items2';
 import { TIEN_GEAR } from './gearTien';
 import { HH_GEAR } from './gearHH';
+import { CAO_GEAR } from './gearCao';
 import type { Focus, PathId, Slot, Talent } from './types';
 import { tr } from '../i18n';
 
@@ -230,6 +231,7 @@ export interface Item {
   deco?: RobeDeco;
   wpn?: { k: WeaponKind; a: string; b: string }; // dáng vũ khí + 2 màu
   icon?: boolean; // có ảnh /icons/<id>.png
+  val?: number; // 21/11: giá trị riêng (đồ rơi riêng quái Độ Kiếp, Hồng Hoang), thay bảng cảnh giới × phẩm
 }
 
 export const ITEMS: Item[] = [
@@ -867,6 +869,7 @@ export const ITEMS: Item[] = [
   ...EXTRA_ITEMS,
   ...TIEN_GEAR,
   ...HH_GEAR,
+  ...CAO_GEAR,
 ];
 
 /** Tổng chỉ số từ đồ đang mặc */

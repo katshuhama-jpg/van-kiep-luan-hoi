@@ -30,6 +30,10 @@ export function itemHint(i: Item): string {
   const lo = REALMS[i.minRealm]?.name ?? tr('Phàm Nhân', "Mortal");
   const hi = REALMS[Math.min(REALMS.length - 1, i.minRealm + 2)]?.name;
   const names = (i.from ?? []).map((id) => MONSTERS.find((m) => m.id === id)?.name).filter(Boolean) as string[];
+  // 21/11: đồ riêng quái Độ Kiếp, Hồng Hoang chỉ rơi từ đúng loài đó (không lẫn vào chiến lợi phẩm ngẫu nhiên)
+  const own = (i.from ?? []).map((id) => MONSTERS.find((m) => m.id === id));
+  if (names.length && own.every((m) => m && (m.doKiep || m.cosmos === 'hg')))
+    return tr(`Chỉ ${names.join(', ')} mới rơi món này, từ ${lo} trở lên, rất hiếm. Đánh con yếu hơn mình nhiều thì không rơi. Khí vận cao và đồ tăng rơi đồ giúp dễ rơi hơn.`, `Only ${names.join(', ')} drops this, from ${lo} on, and very rarely. Kill one far weaker than you and it never drops. High Luck and drop-boosting gear raise the chance.`);
   return tr(`Rơi khi trừ yêu lúc bạn ở ${lo}${hi && hi !== lo ? tr(` đến ${hi}`, ` to ${hi}`) : ''}, ${RARE_ODDS[i.rare ?? 0]} hạ quái.${names.length ? tr(` Hay thấy trên ${names.slice(0, 2).join(', ')}.`, ` Often seen on ${names.slice(0, 2).join(', ')}.`) : ''} Khí vận cao, đồ tăng rơi đồ, đánh quái mạnh hơn mình và ngày Cát tinh chiếu mệnh thì dễ rơi hơn.`, `Drops from demon hunting while you're at ${lo}${hi && hi !== lo ? tr(` đến ${hi}`, ` to ${hi}`) : ''} (${RARE_ODDS[i.rare ?? 0]}).${names.length ? tr(` Hay thấy trên ${names.slice(0, 2).join(', ')}.`, ` Often seen on ${names.slice(0, 2).join(', ')}.`) : ''} High Luck, drop-boosting gear, monsters stronger than you and Lucky Star days all raise the drop rate.`);
 }
 
