@@ -413,7 +413,7 @@ p.sm-card { display: block; }
 .sm-chat-form textarea:focus-visible { outline: 3px solid var(--gold); outline-offset: 1px; }
 .sm-chat-form .sm-row:has(textarea) { align-items: flex-end; }
 .sm-chat-dem { font-variant-numeric: tabular-nums; font-weight: 700; }
-.wc .sm-chat-log { height: calc(86dvh - 360px); min-height: 200px; }
+.wc .sm-chat-log { height: calc(100dvh - 250px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); min-height: 200px; }
 .wc .sm-tin-he { font-style: italic; background: #1f3a33; border-color: #2f6b5a; color: #e6f2da; }
 .wc .sm-tin-he small { font-style: normal; color: #b9d3c0; }
 .wc-tin-phu { font-size: 12px; color: #6a5a44; }

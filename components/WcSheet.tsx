@@ -13,15 +13,13 @@ import type { PathId } from '@/lib/game/types';
 import { WC_DONG_MS, WC_MAX, WC_MO_MS, WcErr, wcLastSeen, wcList, wcLoi, wcN, wcOff, wcReport, wcSeen, wcSend, type WcLy, type WcTin } from '@/lib/theGioi';
 import { ChatPane, type ChatNut } from './chat/ChatPane';
 import { Sheet } from './Panels';
+import Link from 'next/link';
+import { realApi, type SmApi, type SmState } from '@/lib/sonmon/api';
+import { SmChat, lastSeenChat } from './sonmon/SmChat';
+import type { SmCtx } from './sonmon/ui';
 import { hhmm } from './sonmon/ui';
 import './sonmon/sonmon.css';
 
-const NHANH = [
-  ['Chào đạo hữu!', 'Greetings, fellow Daoists!'],
-  ['Có ai vừa phi thăng không?', 'Did anyone just ascend?'],
-  ['Môn nào đang tuyển đệ tử?', 'Which sect is recruiting?'],
-  ['Kiếp này chết lãng xẹt quá', 'Died for nothing this life'],
-] as const;
 
 const code = (e: unknown) => (e instanceof WcErr ? e.code : 'WC_NET');
 
@@ -65,7 +63,7 @@ export function useWcMoi(on: boolean, open: boolean): [number, () => void] {
   return [n, () => setN(0)];
 }
 
-export function WcSheet({ onClose, onLink, moi }: { onClose: () => void; onLink: () => void; moi: number }) {
+function WcPane({ onLink, moi }: { onLink: () => void; moi: number }) {
   const [tin, setTin] = useState<WcTin[] | null>(null);
   const [gui, setGui] = useState(false);
   const [ly, setLy] = useState<WcLy | null>(null);
@@ -133,7 +131,7 @@ export function WcSheet({ onClose, onLink, moi }: { onClose: () => void; onLink:
     try {
       const x = await wcSend(t);
       them([x]);
-      track('wc_send', { len: t.length, nhanh: NHANH.some(([vi, en]) => vi === t || en === t) || undefined });
+      track('wc_send', { len: t.length });
       return true;
     } catch (e) {
       const c = code(e);
@@ -189,8 +187,7 @@ export function WcSheet({ onClose, onLink, moi }: { onClose: () => void; onLink:
   }
 
   return (
-    <Sheet title={tr('Thế giới', 'World')} onClose={onClose}>
-      <div className="sm wc">
+    <div className="sm wc">
         <ChatPane
           inputId="wc-in"
           tin={tin}
@@ -209,7 +206,7 @@ export function WcSheet({ onClose, onLink, moi }: { onClose: () => void; onLink:
             );
           }}
           nut={nut}
-          nhanh={NHANH}
+          nhanh={[]}
           onSend={send}
           maxLen={WC_MAX}
           multiline
@@ -225,7 +222,6 @@ export function WcSheet({ onClose, onLink, moi }: { onClose: () => void; onLink:
           logLabel={tr('Tin kênh Thế giới', 'World chat messages')}
         />
       </div>
-    </Sheet>
   );
 }
 
@@ -242,5 +238,83 @@ export function WcIcon() {
       <rect x="4" y="3" width="1" height="1" fill="#1f160d" />
       <rect x="6" y="3" width="1" height="1" fill="#1f160d" />
     </svg>
+  );
+}
+
+/**
+ * 21/11 (Tyler): tấm chat full màn, 2 tab tách bạch.
+ * - Thế giới: mọi người đọc được, không có tin Sơn Môn (đã tắt trigger đẩy tin môn sang Thế giới).
+ * - Sơn Môn: Truyền âm của môn mình, chỉ người trong môn đọc được (dùng lại SmChat).
+ * Nhớ tab lần trước; chấm số tin mới trên từng tab.
+ */
+type ChatTab = 'tg' | 'sm';
+const TAB_KEY = 'vkl.chatTab';
+
+export function WcSheet({ onClose, onLink, moi, dau }: { onClose: () => void; onLink: () => void; moi: number; dau?: ChatTab }) {
+  const [tab, setTab] = useState<ChatTab>(() => {
+    if (dau) return dau;
+    try {
+      return localStorage.getItem(TAB_KEY) === 'sm' ? 'sm' : 'tg';
+    } catch {
+      return 'tg';
+    }
+  });
+  const [sm, setSm] = useState<{ api: SmApi; st: SmState | null } | null>(null);
+  const [smMoi, setSmMoi] = useState(0);
+  useEffect(() => {
+    const api = realApi();
+    if (!api.linked) return setSm({ api, st: null });
+    api.state().then(
+      (st) => {
+        setSm({ api, st });
+        if (st?.mon) api.chatN(lastSeenChat()).then((n) => setSmMoi(n), () => {});
+      },
+      () => setSm({ api, st: null }),
+    );
+  }, []);
+  const chon = (t: ChatTab) => {
+    setTab(t);
+    if (t === 'sm') setSmMoi(0);
+    try {
+      localStorage.setItem(TAB_KEY, t);
+    } catch {}
+    track('chat_tab', { tab: t });
+  };
+  const nutTab = (t: ChatTab, vi: string, en: string, n: number) => (
+    <button role="tab" aria-selected={tab === t} className={`chat-tab${tab === t ? ' on' : ''}`} onClick={() => chon(t)}>
+      <span>{tr(vi, en)}</span>
+      {n > 0 && tab !== t && <i className="chat-tab-n">{n > 99 ? '99+' : n}</i>}
+    </button>
+  );
+  return (
+    <Sheet
+      title={tr('Kênh chat', 'Chat')}
+      onClose={onClose}
+      full
+      head={
+        <div className="chat-tabs" role="tablist" aria-label={tr('Kênh chat', 'Chat channels')}>
+          {nutTab('tg', 'Thế giới', 'World', tab === 'tg' ? 0 : moi)}
+          {nutTab('sm', 'Sơn Môn', 'Sect', smMoi)}
+        </div>
+      }
+    >
+      {tab === 'tg' ? (
+        <WcPane onLink={onLink} moi={moi} />
+      ) : !sm ? (
+        <p className="sm-note">{tr('Đang mở Truyền âm...', 'Opening sect chat...')}</p>
+      ) : sm.st?.mon ? (
+        <div className="sm wc">
+          <SmChat c={{ api: sm.api, st: sm.st } as unknown as SmCtx} />
+        </div>
+      ) : (
+        <div className="wc-khoa" role="note">
+          <p className="wc-khoa-ly">{tr('Bạn chưa vào sơn môn nào.', 'You are not in a sect yet.')}</p>
+          <p className="sm-note">{tr('Vào một sơn môn là có kênh Truyền âm riêng, chỉ người trong môn đọc được.', 'Join a sect to get its private chat, only members can read it.')}</p>
+          <Link href="/son-mon" className="sm-btn main wide" onClick={onClose}>
+            {tr('Tìm sơn môn', 'Find a sect')}
+          </Link>
+        </div>
+      )}
+    </Sheet>
   );
 }

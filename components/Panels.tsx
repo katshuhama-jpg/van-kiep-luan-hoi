@@ -48,12 +48,12 @@ import { BREAK_EVENT_ID } from '@/lib/game/events';
 import { setOf, wornSet, SET_MAX } from '@/lib/game/gearSets';
 
 /* ---------------- Khung hộp thoại ---------------- */
-export function Sheet({ title, onClose, children }: { title: string; onClose?: () => void; children: ReactNode }) {
+export function Sheet({ title, onClose, children, full = false, head }: { title: string; onClose?: () => void; children: ReactNode; full?: boolean; head?: ReactNode }) {
   return (
     <div className="sheet-backdrop" onClick={onClose} role="presentation">
-      <div className="sheet" role="dialog" aria-modal="true" aria-label={title} onClick={(e) => e.stopPropagation()}>
+      <div className={`sheet${full ? ' sheet-full' : ''}`} role="dialog" aria-modal="true" aria-label={title} onClick={(e) => e.stopPropagation()}>
         <div className="sheet-head">
-          <h2>{title}</h2>
+          {head ?? <h2>{title}</h2>}
           {onClose && (
             <button className="btn" onClick={onClose} aria-label={tr("Đóng", "Close")}>
               

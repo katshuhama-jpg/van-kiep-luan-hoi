@@ -17,12 +17,6 @@ import { ChatPane, type ChatNut } from '@/components/chat/ChatPane';
 import { chucTen, hhmm, type SmCtx } from './ui';
 
 export const CHAT_SEEN = 'vkl.sm.chatSeen';
-const NHANH = [
-  ['Chào cả môn!', 'Hello, everyone!'],
-  ['Đã điểm danh.', 'Checked in.'],
-  ['Ai rảnh sang giữ ô với!', 'Anyone free to help guard?'],
-  ['Tối nay đánh ô nào?', 'Which tile tonight?'],
-] as const;
 
 export function seenChat(id: number) {
   try {
@@ -82,7 +76,7 @@ export function SmChat({ c }: { c: SmCtx }) {
     try {
       const x = await c.api.chatSend(t);
       them([x]);
-      track('sm_chat', { len: t.length, nhanh: NHANH.some(([vi, en]) => vi === t || en === t) || undefined });
+      track('sm_chat', { len: t.length });
       return true;
     } catch (e) {
       setErr(loi(e));
@@ -128,7 +122,7 @@ export function SmChat({ c }: { c: SmCtx }) {
         </span>
       )}
       nut={nut}
-      nhanh={NHANH}
+      nhanh={[]}
       onSend={send}
       maxLen={200}
       demTu={150}

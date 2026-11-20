@@ -221,10 +221,10 @@ export function TopMenu({ at }: { at: TabId }) {
         <button
           className="btn top-wc"
           onClick={() => (setWc(true), track('wc_open', { from: `top_${at}` }))}
-          aria-label={tr(`Kênh Thế giới${wcMoi ? `, ${wcMoi} tin mới` : ''}`, `World chat${wcMoi ? `, ${wcMoi} new` : ''}`)}
+          aria-label={tr(`Kênh chat${wcMoi ? `, ${wcMoi} tin mới ở Thế giới` : ''}`, `Chat${wcMoi ? `, ${wcMoi} new in World` : ''}`)}
         >
           <WcIcon />
-          <span>{tr('Thế giới', 'World')}</span>
+          <span>{tr('Chat', 'Chat')}</span>
           {wcMoi > 0 && <i className="top-wc-dot" aria-hidden="true" />}
         </button>
       )}

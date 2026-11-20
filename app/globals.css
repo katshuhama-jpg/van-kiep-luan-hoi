@@ -5691,3 +5691,13 @@ body[data-ctflow='1'] { overflow: hidden; }
 .top-wc svg { width: 20px; height: 20px; }
 .top-wc-dot { position: absolute; top: -4px; right: -4px; width: 12px; height: 12px; background: #d1293a; border: 2px solid var(--ink-dark); animation: kpBlink 1s steps(2) infinite; }
 @media (prefers-reduced-motion: reduce) { .top-wc-dot { animation: none; } }
+/* 21/11 (Tyler): kênh Thế giới là tấm full màn */
+.sheet.sheet-full { height: calc(var(--vh1, 1vh) * 100); height: 100dvh; max-height: none; border-top: none; padding-top: calc(10px + env(safe-area-inset-top)); }
+/* 21/11: hai tab của tấm chat - Thế giới / Sơn Môn */
+.chat-tabs { flex: 1 1 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 3px solid var(--ink); background: var(--paper-2, #eadbb4); min-width: 0; }
+.chat-tab { position: relative; min-height: 46px; margin: 0; padding: 0 8px; border: 0; background: transparent; font: inherit; font-size: 17px; font-weight: 700; color: #6b5233; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.chat-tab + .chat-tab { border-left: 3px solid var(--ink); }
+.chat-tab.on { background: var(--ink); color: var(--gold-l, #ffcf6e); }
+.chat-tab:focus-visible { outline: 3px solid var(--red, #b8432f); outline-offset: -3px; }
+.chat-tab-n { font-style: normal; min-width: 20px; height: 20px; padding: 0 5px; display: inline-grid; place-items: center; font-size: 12px; background: #d1293a; color: #fff3dc; border: 2px solid var(--ink-dark, #1f160d); font-variant-numeric: tabular-nums; }
+.sheet-full .wc-khoa { margin-top: 12px; }

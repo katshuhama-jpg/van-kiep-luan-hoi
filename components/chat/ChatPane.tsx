@@ -123,13 +123,15 @@ export function ChatPane<T extends ChatTin>(p: Props<T>) {
         </>
       ) : (
         <>
-          <div className="sm-chat-nhanh" role="group" aria-label={tr('Câu nhanh', 'Quick lines')}>
-            {p.nhanh.map(([vi, en]) => (
-              <button key={vi} className="sm-chip" disabled={gui} onClick={() => send(tr(vi, en))}>
-                {tr(vi, en)}
-              </button>
-            ))}
-          </div>
+          {p.nhanh.length > 0 && (
+            <div className="sm-chat-nhanh" role="group" aria-label={tr('Câu nhanh', 'Quick lines')}>
+              {p.nhanh.map(([vi, en]) => (
+                <button key={vi} className="sm-chip" disabled={gui} onClick={() => send(tr(vi, en))}>
+                  {tr(vi, en)}
+                </button>
+              ))}
+            </div>
+          )}
           <Msg err={p.err} ok={p.err ? null : p.ok} />
           <form
             className="sm-chat-form"
