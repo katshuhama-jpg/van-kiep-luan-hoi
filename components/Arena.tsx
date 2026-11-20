@@ -264,6 +264,7 @@ export default function Arena({ user }: { user: Player | null }) {
       {picking && cands && cands.length > 0 && (
         <Sheet title={tr('Chọn kiếp ra đài', 'Choose a life for the arena')} onClose={() => { setPicking(false); setPick(null); }}>
           <p className="note ar-pick-note">{tr('Đổi qua lại bao nhiêu lần cũng được, giữa các trận. Kiếp đang ra đài cũng là bóng người khác gặp khi rút trúng bạn.', 'Switch as often as you like between matches. The life you field is also the shadow others meet when they draw you.')}</p>
+          <p className="note ar-pick-note">{tr('Chỉ số bóng tính từ cảnh giới, con đường và đồ đang mặc lúc kiếp khép lại, không tính tu luyện riêng hay công pháp. Hai kiếp cùng cảnh giới, cùng đồ thì chỉ số như nhau. Vào trận, đối thủ được kéo về cùng cảnh giới với bạn, nên đồ và thế đánh mới quyết thắng thua.', 'Shadow stats come from realm, path and the gear worn when the life ended, not personal training or techniques. Two lives with the same realm and gear have the same stats. In a match your opponent is pulled to your realm, so gear and stance decide it.')}</p>
           <div className="shadow-pick" id="ar-pick">
             {cands.map((c, i) => {
               const cur = !!hero && (c.lifeId ?? 0) === (hero.lifeId ?? 0);
