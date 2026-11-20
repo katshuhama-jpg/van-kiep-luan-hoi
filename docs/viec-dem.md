@@ -13,7 +13,7 @@ DUYỆT: Tyler 14/11/2026 (các khối trong file này coi như đã duyệt; kh
 
 Lên bản: mỗi đêm làm mọi khối còn ô trống có "Lên bản" bằng hoặc trước ngày lên bản, đẩy `next` khi xong; đánh dấu bằng NHÁNH `len-ban-<YYYY-MM-DD>` (máy chủ chặn tag), chỉ khi thử sạch; tác vụ 5:00 đẩy `main`. Khối ghi "giấu sau cờ" thì tắt mặc định tới khối bật cờ.
 
-Trả lời góp ý (Tyler 31/10): việc chưa làm, chưa có trong plan có ngày thì KHÔNG trả lời, để status `moi`. Chỉ trả lời khi đã làm xong, hoặc đã có lịch thì nêu ngày và bản. Không viết "bản sau", "đang làm", "vài ngày tới", "đã ghi nhận". Mỗi lần trả lời một góp ý tặng 10 phúc (Tyler 6/11); `vkl_gift.to_player` là USERNAME, không phải player_id.
+Trả lời góp ý (Tyler 31/10): việc chưa làm, chưa có trong plan có ngày thì KHÔNG trả lời, để status `moi`. Chỉ trả lời khi đã làm xong, hoặc đã có lịch thì nêu ngày và bản. Không viết "bản sau", "đang làm", "vài ngày tới", "đã ghi nhận". Mỗi lần trả lời một góp ý tặng 10 phúc (Tyler 6/11); `vkl_gift.to_player` là USERNAME, không phải player_id. Góp ý đã làm xong thì ghi kèm status `da_xong` để tác vụ 5:00 đổi luôn (Tyler 20/11: #297 có trả lời mà vẫn nằm ở mục chưa giải quyết); reply_ver là đúng số bản cáo thị chứa việc đó.
 
 Cáo thị (Tyler 2/11, 4/11): mỗi ý một câu ngắn nói CÓ GÌ MỚI và GỢI Ý CHỖ TÌM; không số tỉ lệ, công thức, bảng giá, % buff, danh sách tên đầy đủ; mỗi nhóm tối đa 3 ý. Bản lớn có `hero`, `lead` 2-3 câu, `features` 3-4 thẻ, `cta` (mẫu: mục 4.2.0 trong lib/releases.ts); `more` chỉ cho bản nhỏ.
 
