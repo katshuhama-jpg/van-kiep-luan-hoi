@@ -76,7 +76,7 @@ export function SmMonNha({ c }: { c: SmCtx }) {
               <h2 className="sm-clip">{m.ten}</h2>
             </div>
             <p style={{ fontSize: 15 }}>
-              {tr(`${m.n}/${SM_CFG.mon.toiDa} người · giữ ${m.o}/${m.o_max} ô`, `${m.n}/${SM_CFG.mon.toiDa} members · ${m.o}/${m.o_max} tiles`)}
+              {m.o > m.o_max ? tr(`${m.n}/${SM_CFG.mon.toiDa} người · giữ ${m.o} ô`, `${m.n}/${SM_CFG.mon.toiDa} members · ${m.o} tiles`) : tr(`${m.n}/${SM_CFG.mon.toiDa} người · giữ ${m.o}/${m.o_max} ô`, `${m.n}/${SM_CFG.mon.toiDa} members · ${m.o}/${m.o_max} tiles`)}
               {hang > 0 && tr(` · hạng ${hang}`, ` · rank ${hang}`)}
             </p>
             <p className="sm-note">
@@ -269,9 +269,9 @@ function LanhTho({ c }: { c: SmCtx }) {
   return (
     <section className={con && kh.size ? 'sm-card sm-kh-tip' : 'sm-card'}>
       <div className="sm-between">
-        <h3>{tr(`Lãnh thổ ${m.o}/${m.o_max} ô`, `Land ${m.o}/${m.o_max} tiles`)}</h3>
+        <h3>{m.o > m.o_max ? tr(`Lãnh thổ ${m.o} ô`, `Land ${m.o} tiles`) : tr(`Lãnh thổ ${m.o}/${m.o_max} ô`, `Land ${m.o}/${m.o_max} tiles`)}</h3>
         <span className="sm-o-pips" aria-hidden>
-          {Array.from({ length: m.o_max }, (_, i) => (
+          {Array.from({ length: Math.max(m.o, m.o_max) }, (_, i) => (
             <i key={i} className={i < m.o ? 'on' : ''} />
           ))}
         </span>

@@ -41,6 +41,7 @@ export const RELEASES: Release[] = [
         h: tr('Mới 21/11', 'New on Nov 21'),
         hot: true,
         items: [
+          tr('Sơn Môn: chiếm là chiếm. Đất giành bằng xuất chinh giữ luôn, tới gấp đôi mức khai hoang (môn 15 người giữ được 12 ô); vượt nữa mới bỏ ô xa chính điện nhất. Cảm ơn Hoang Le.', 'Sect War: what you take, you keep. Land won by marching stays yours, up to double your free-claim limit (12 tiles for a 15-member sect); only beyond that do you leave the farthest tile. Thanks to Hoang Le.'),
           tr('Kênh Thế giới: nói chuyện với đạo hữu khắp thiên hạ. Bấm nút bong bóng ở thanh trên màn chơi.', 'World chat: talk with fellow cultivators everywhere. Tap the speech bubble on the top bar.'),
           tr('Quái Độ Kiếp và quái Hồng Hoang giờ có báu vật riêng. Xem con nào rơi gì trong Sổ đồ rơi ở Phường thị.', 'Tribulation and Honghuang beasts now drop their own treasures. See who drops what in the Drop Book at the Market.'),
           tr('Sơn Môn: đánh thua liên tiếp sẽ trọng thương; môn tự bỏ ô được; đất phải liền với chính điện; Linh Mạch giờ phải trinh sát mới thấy.', 'Sects: losing again and again leaves you wounded; sects can drop tiles; land must connect to the main hall; new Spirit Veins must be scouted to be seen.'),

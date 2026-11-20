@@ -456,14 +456,17 @@ export function duOCau(st: SmState): string {
   const m = st.mon!;
   const can = SM_CFG.mon.toiDa > m.n ? 3 * m.o_max - m.n : 0;
   return can > 0
-    ? tr(`Môn đã giữ đủ ${m.o_max} ô: thêm ${can} người vào môn là mở thêm 1 ô. Vẫn xuất chinh giành ô kề của môn khác được, thắng thì bỏ lại ô xa nhất.`, `Your sect holds its limit of ${m.o_max}: ${can} more members open one more tile. You can still march on a neighbouring sect's tile; win and you leave your farthest one.`)
-    : tr(`Môn đã giữ đủ ${m.o_max} ô, tối đa của môn 15 người. Muốn đất tốt hơn thì xuất chinh giành ô kề của môn khác, thắng thì bỏ lại ô xa nhất.`, `Your sect holds the maximum ${m.o_max} tiles. For better land, march on a neighbouring sect's tile; win and you leave your farthest one.`);
+    ? tr(`Môn đã khai hoang đủ ${m.o_max} ô: thêm ${can} người vào môn là khai hoang thêm 1 ô. Đất giành được bằng xuất chinh thì giữ luôn, tới ${oTran(m)} ô.`, `Your sect has claimed its ${m.o_max} free tiles: ${can} more members open one more. Land won by marching is yours to keep, up to ${oTran(m)} tiles.`)
+    : tr(`Môn đã khai hoang đủ ${m.o_max} ô, tối đa của môn 15 người. Muốn thêm đất thì xuất chinh giành ô kề của môn khác: thắng là ô về tay ta, giữ được tới ${oTran(m)} ô.`, `Your sect has claimed the maximum ${m.o_max} free tiles. For more land, march on a neighbouring sect's tile: win and it is yours, up to ${oTran(m)} tiles.`);
 }
 
 /** 19/11 23h (Ngày 7c): ô môn ta sẽ bỏ nếu đang đủ ô mà thắng một ô có chủ: ô xa chính điện nhất, trừ chính điện và ô định chiếm */
+/** 21/11 (Tyler: "chiếm là chiếm"): đất giành bằng xuất chinh giữ được tới gấp đôi trần khai hoang (máy chủ vkl_priv.sm_o_tran). */
+export const oTran = (m: { o_max: number }) => m.o_max * 2;
+
 export function oBoKhiThang(st: SmState, q: number, r: number): string | null {
   const m = st.mon;
-  if (!m || m.o < m.o_max) return null;
+  if (!m || m.o < oTran(m)) return null;
   const cd = m.tiles.find((t) => t.cd);
   const ds = m.tiles.filter((t) => !t.cd && !(t.q === q && t.r === r));
   if (!ds.length) return null;
@@ -857,7 +860,7 @@ function OInfo({ c, o, now, setErr, setOk }: { c: SmCtx; o: SmMapO; now: number;
           </div>
           {khoa && <p className="sm-why">{khoa}</p>}
           {!khoa && oBoKhiThang(c.st, q, r) && (
-            <p className="sm-note">{tr(`Môn đang giữ đủ ${m.o_max} ô: thắng thì ô này về tay ta, môn bỏ lại ${oBoKhiThang(c.st, q, r)} (ô xa chính điện nhất).`, `We hold our ${m.o_max}-tile limit: win and this tile is ours, we leave ${oBoKhiThang(c.st, q, r)} (farthest from the main hall).`)}</p>
+            <p className="sm-note">{tr(`Môn đang giữ đủ ${oTran(m)} ô: thắng thì ô này về tay ta, môn bỏ lại ${oBoKhiThang(c.st, q, r)} (ô xa chính điện nhất).`, `We hold our ${oTran(m)}-tile limit: win and this tile is ours, we leave ${oBoKhiThang(c.st, q, r)} (farthest from the main hall).`)}</p>
           )}
           {!khoa && chu != null && !yeu && m.moi_bh_toi && new Date(m.moi_bh_toi).getTime() > now && (
             <p className="sm-why">{tr('Môn ta đang được bảo hộ môn mới. Xuất chinh vào ô có chủ thì mất bảo hộ ngay.', 'Our sect is under new-sect protection. Marching on an owned tile ends it at once.')}</p>
