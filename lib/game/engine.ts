@@ -1558,7 +1558,7 @@ function closedDoorLosses(c: Character, ctx: EffectCtx, years: number, rushed: b
 }
 
 /** Hậu quả khi làm một việc quá nhiều năm liền */
-const OVERWORK: Record<string, { warn: string; hits: { p: number; run: (c: Character, ctx: EffectCtx) => string }[] }> = {
+export const OVERWORK: Record<string, { warn: string; hits: { p: number; run: (c: Character, ctx: EffectCtx) => string }[] }> = {
   tu_luyen: {
     warn: tr('Bạn khổ tu liền mấy năm không nghỉ. Kinh mạch bắt đầu căng như dây đàn.', "You've cultivated nonstop for years. Your meridians are starting to stretch taut as zither strings."),
     hits: [
