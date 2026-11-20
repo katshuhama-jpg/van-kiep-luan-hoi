@@ -60,6 +60,93 @@ Lên bản: 2026-12-01. Không cáo thị riêng (đã báo ở 8a).
 - [ ] Tạo Kỷ 2 (từ 2/12) theo luật đã chốt ở Ngày 9-10.
 - Ghi chú:
 
+## Kế hoạch học từ Cultivation World Simulator - nhóm A, B, D (Tyler duyệt 20/11 13:47)
+Nguồn chi tiết: doc Docs "Kế hoạch VKLH học từ CWS (A-B-C-D)" (container {"kind":"project","id":"8d528041-e043-4ee5-9220-1323e6324b5b"}), báo cáo Project `claude/hoc-tu-cultivation-world-simulator.md`. Nhóm C CHƯA làm (chờ D7 sau Kỷ 2, xem lại từ 8/12).
+Luật chung cho các khối Ngày 13-21:
+- Kiếp 1 không nặng thêm: việc thêm màn, thêm hệ thống, thêm chữ chỉ bật từ kiếp 2 (trừ A2, A4 ghi rõ).
+- Mỗi hệ quả có một dòng "vì sao" ngay trên màn, nêu tên người hoặc việc gây ra (vd "Tình kiếp - vì ngươi đã kết đạo lữ với Lâm Nhi").
+- Kiểm trạng thái trước khi bật sự kiện: người đã chết, đã đổi kiếp, quan hệ đã đứt thì không kéo vào như người sống. Viết test ép từng trường hợp.
+- Mỗi việc giấu sau cờ riêng, bật trong cùng đêm khi thử sạch. Có cáo thị ngắn theo luật cáo thị. Thêm dòng vào "Sổ cải thiện tính năng" (tang-truong.md) với chỉ số đo ghi trong khối.
+- Chữ mới: story-writing + script-writing + humanizer, tra bảng thuật ngữ Project `claude/glossary-tu-tien-cws.csv`; thuật ngữ game đã dùng thì giữ.
+- Thưởng mới phải nhỏ; đụng phúc duyên hay đồ thì chạy `sim-farm`/`sim-do-kho` trước/sau.
+- Mục tiêu chung: còn chơi nhóm 2-3 kiếp 1% → 5%, nhóm 4-10 kiếp 6% → 12%, D1 người mới 26-30% → 35%. Xem lại 30/11 và 7/12, ghi vào tang-truong.md.
+
+## Ngày 13 - A1 Kiếp nạn duyên nợ + D phần 1
+Lên bản: 2026-11-23. Cờ `KN_DUYEN_ON`. Có cáo thị.
+- [ ] Lúc độ kiếp lớn (Trúc Cơ trở lên), nếu kiếp này có quan hệ thì kiếp nạn đổi loại: có đạo lữ/kết duyên → Tình kiếp (đạo lữ bị bắt, bị tâm ma nhập, hoặc chọn giữa đạo lữ và đạo); có kẻ thù (ghi thù, truy nã, giết người có thân nhân) → Báo thù tìm tới đúng lúc độ kiếp; có sư đồ (Sư Đồ, đồ đệ phản sư hay bị bỏ) → Đồ đệ quay về (trợ lực hoặc tâm ma). Nhiều loại thì chọn loại có quan hệ gần nhất. Không có quan hệ thì kiếp nạn như cũ.
+- [ ] Mỗi loại 4 lựa chọn như sự kiện thường; đầu màn dòng "vì sao" có tên người. Tỉ lệ sống chết GIỮ NGUYÊN như kiếp nạn hiện tại (chỉ đổi lời và lựa chọn); lựa chọn đúng với quan hệ (cứu đạo lữ, hóa giải thù) cho thưởng nhỏ hoặc mở kết cục mới. Người liên quan đã chết → bản "di nguyện"/"hồn ma".
+- [ ] Chữ: 3 loại × 4 giới (phàm, tiên, ma, hư) × 2 nhánh (qua, không qua) = 24 đoạn + 12 câu lựa chọn, mỗi đoạn tối đa 3 câu. Có thể thêm 1-3 kết cục Sổ Sinh Tử ("Vì tình mà tan", "Nợ máu trả bằng máu"...), tìm trùng trước.
+- [ ] Thử: `sim-do-kho 3000` không đổi tỉ lệ chết; test ép rnd cho cả 3 loại, cả người liên quan còn sống và đã chết.
+- [ ] D phần 1: lấy 20 sự kiện người chơi gặp nhiều nhất ở kiếp 2-10 từ vkl_events (ghi danh sách vào Ghi chú khối này để các đêm sau dùng). Viết 5 sự kiện đầu × 3 giọng: sử ký (trang trọng), chợ búa (người qua đường kể, hơi hài), thơ (câu ngắn, vần nhẹ). Luật: kiếp 1 luôn giọng gốc; từ kiếp 2, gặp lại sự kiện cũ có khoảng 30% ra giọng khác. Cờ `GIONG_VAN_ON`.
+- [ ] Đo: tỉ lệ người gặp kiếp nạn duyên nợ chơi tiếp kiếp kế so với kiếp nạn thường; số kết cục mới mở.
+- Ghi chú:
+
+## Ngày 14 - A3 Ý nguyện kiếp này + D phần 2
+Lên bản: 2026-11-24. Cờ `Y_NGUYEN_ON`. Có cáo thị.
+- [ ] Từ kiếp 2, màn đầu thai có 3 ý nguyện bốc ngẫu nhiên từ khoảng 12 cái (vd Tìm một đạo lữ, Lọt bảng xếp hạng tuần, Báo thù kiếp trước, Sống qua 500 tuổi, Vào Kim Đan trước 100 tuổi, Lập môn phái, Nuôi linh thú tới bậc cao, Không giết ai...) và nút "Tùy duyên" bỏ qua. Một lần bấm, không thêm màn. Người mới (kiếp 1) không thấy.
+- [ ] "Báo thù kiếp trước" chỉ hiện khi kiếp trước có kẻ thù thật. Sự kiện trong kiếp nghiêng nhẹ theo ý nguyện (tăng trọng số loại sự kiện liên quan, không ép).
+- [ ] Toại nguyện: thưởng nhỏ phúc duyên, bia mộ thêm "Đã toại nguyện: ..."; không xong: bia ghi "Ôm hận: ...". Đủ 10 ý nguyện khác nhau toại nguyện thì mở một danh hiệu (nối vào hệ danh hiệu sưu tầm đang có).
+- [ ] Chữ: 12 ý nguyện × (câu mở, câu toại nguyện, câu ôm hận).
+- [ ] D phần 2: sự kiện 6-10 × 3 giọng.
+- [ ] Đo: tỉ lệ chọn ý nguyện thay vì Tùy duyên, tỉ lệ toại nguyện, còn chơi nhóm 2-3 và 4-10 kiếp.
+- Ghi chú:
+
+## Ngày 15 - A2 Cơ duyên có manh mối + D phần 3
+Lên bản: 2026-11-25. Cờ `DIEM_CO_DUYEN_ON`. Có cáo thị. Bật cả kiếp 1 (chỉ một dòng chữ, dùng lại nút trọng tâm năm sẵn có).
+- [ ] Một số kỳ ngộ để lại "điềm" (vd "Phía Tây Nam có ánh tử khí bốc lên ba đêm liền"), hiện ở góc màn 3-5 năm game, mỗi điềm gắn với một trọng tâm năm. Năm nào người chơi chọn trọng tâm khớp thì cơ duyên mở. Mỗi kiếp tối đa 2 điềm.
+- [ ] Kết quả: khoảng 35% đồ, 35% phúc (tu vi, tuổi thọ), 20% tay trắng (lời dẫn hài, không tức), 10% bị thương nhẹ. Hết hạn chưa đuổi: điềm tan, một dòng "Cơ duyên đã lỡ". Đồ và phúc theo dải cảnh giới, không lạm phát.
+- [ ] Chữ: 12 điềm × 4 kết quả = 48 đoạn ngắn.
+- [ ] D phần 3: sự kiện 11-15 × 3 giọng.
+- [ ] Đo: tỉ lệ đuổi theo điềm; tỉ lệ xong kiếp 1 ở người có điềm so với không có.
+- Ghi chú:
+
+## Ngày 16 - A4 Lời sấm đầu kiếp, A5 Biệt hiệu tự sinh + D phần 4
+Lên bản: 2026-11-26. Cờ `SAM_DAU_KIEP_ON`, `BIET_HIEU_ON`. Có cáo thị (A5; A4 đang thử thì chưa báo).
+- [ ] A4: kiếp 1 và kiếp đầu tiên mỗi ngày mở bằng một câu sấm mơ hồ (vd "Kẻ mặc áo trắng sẽ cứu ngươi hai lần"), gắn với một loại sự kiện có sẵn để ứng nghiệm NGAY trong kiếp đó; lúc ứng hiện lại câu sấm kèm dấu đỏ. Chỉ là chữ, không đổi chỉ số. Khác lời tiên tri cuối kiếp đang có (hook.ts, ứng ở kiếp sau), không đụng cái cũ. 20 câu sấm.
+- [ ] A4 chạy A/B 50/50 theo sid ở người mới, ghi nhóm vào vkl_events; sau 3 ngày (29/11) so tỉ lệ xong kiếp 1 và D1, nhóm tốt hơn thắng, ghi kết luận vào Sổ cải thiện.
+- [ ] A5: kiếp đủ khoảng 3 chuyện lớn và 20 chuyện nhỏ thì được biệt hiệu ghép từ danh sách: tiền tố theo hành vi nổi nhất (giết nhiều, sống lâu, nhiều đạo lữ, chết lãng xẹt, giàu...) + hậu tố theo đường tu (vd "Độc Thủ Thư Sinh", "Kiếm Si", "Lão Quái Ngàn Năm"). Hiện ở bia, nghĩa trang, thẻ Lôi Đài. Không gõ tự do. Nối vào hệ danh hiệu đang có (danh hiệu tuần `vkl_titles_char`, danh hiệu sưu tầm), không làm hệ thứ hai.
+- [ ] D phần 4: sự kiện 16-20 × 3 giọng, rồi bật hẳn `GIONG_VAN_ON` nếu chưa bật.
+- [ ] Đo: A4 theo A/B; A5 số lượt xem nghĩa trang và bia có biệt hiệu.
+- Ghi chú:
+
+## Ngày 17 - B1 Nhân/Địa/Thiên bảng theo dải cảnh giới
+Lên bản: 2026-11-27. Cờ `BANG_DAI_ON`. Có cáo thị.
+- [ ] `/bang-xep-hang` thêm 3 tab bảng tuần: Nhân bảng (Luyện Khí tới Kim Đan), Địa bảng (Nguyên Anh tới Độ Kiếp), Thiên bảng (sau phi thăng và Hồng Hoang). Mỗi bảng top 10, xếp theo thành tích tốt nhất trong tuần ở dải đó. Một người đứng được nhiều bảng.
+- [ ] Thưởng chỉ mỹ quan (khung tên, danh hiệu tuần), không chỉ số. RPC mới, không sửa vkl_leaderboard cũ.
+- [ ] Đo: số người mở tab bảng mỗi ngày; còn chơi ở người từng lọt Nhân bảng.
+- Ghi chú:
+
+## Ngày 18 - B5 Thẻ "Một đời" và "Ân oán hai ta"
+Lên bản: 2026-11-28. Cờ `THE_MOT_DOI_ON`. Có cáo thị.
+- [ ] Một đời: hết kiếp có nút "Lưu thẻ" ra ảnh dọc pixel (tên, biệt hiệu, cảnh giới, 3 chuyện lớn nhất, cách chết, câu sấm hay ý nguyện nếu có, link game kèm mã mời). Dùng lại hạ tầng Thất Nhật Lục (`lib/wrapCard.ts`, link `/k/<mã>`), không làm hạ tầng mới.
+- [ ] Ân oán hai ta: hai người chơi thật đã chạm mặt nhau từ 3 lần trở lên (đồng đạo, địch thủ, kết nghĩa, truy nã, Oan gia) thì mở được thẻ tóm tắt các lần gặp, gửi link cho đối phương.
+- [ ] Không lộ tên đăng nhập; người tắt hiện mình trong kiếp người khác thì không lên thẻ Ân oán. Người mới vào qua link thẻ tính như kênh mời.
+- [ ] Đo: số thẻ lưu mỗi ngày, lượt mở link thẻ, người mới và D1 từ link thẻ (kênh mời hiện giữ chân khoảng 29%).
+- Ghi chú:
+
+## Ngày 19 - B2 Di vật trong mộ
+Lên bản: 2026-11-29. Cờ `DI_VAT_ON`. Có cáo thị.
+- [ ] Mỗi bia giữ một "di vật" là BẢN SAO một món đồ của kiếp đó, yếu hơn bản gốc một bậc. Kiếp người khác có thể gặp kỳ ngộ "Cúng mộ tiền bối" (bóng người chơi thật): chọn cúng thì nhận di vật. Chủ mộ không mất gì, nhận thư "Có hậu nhân kế thừa di vật của ngươi" và một ít phúc duyên. Mỗi mộ cho tối đa 3 người nhận.
+- [ ] Chỉ hành động tích cực: KHÔNG có đào trộm lấy đồ người thật.
+- [ ] `sim-farm` trước/sau để di vật không thành nguồn đồ dễ.
+- [ ] Đo: số lượt cúng mộ; tỉ lệ chủ mộ quay lại sau khi nhận thư.
+- Ghi chú:
+
+## Ngày 20 - B4 Người Hồng Hoang chọn thiên tượng ngày mai
+Lên bản: 2026-12-02. Cờ `PHIEU_THIEN_TUONG_ON`. Có cáo thị.
+- [ ] Mỗi tối người đã Khai Thiên (hoặc Chân Nhân nếu đã có) bỏ phiếu 1 trong 3 thiên tượng cho cả server ngày hôm sau; thiên tượng thắng thay cho thiên tượng ngẫu nhiên. Trang chủ ghi "Thiên tượng hôm nay do X và N người khác định" (X = người bỏ phiếu sớm nhất cho thiên tượng thắng). Một phiếu mỗi ngày.
+- [ ] Làm như bản cả-server của tầng "Gọi Tên" trong Chân Nhân (`docs/thiet-ke-hau-ky.md`), dùng chung chỗ hiển thị, không làm hệ riêng. Nếu Chân Nhân chưa có thì mở cho người Khai Thiên trước, sau gắn vào Gọi Tên.
+- [ ] Chốt phiếu bằng pg_cron trước 5:00, tránh đè giờ phát thưởng Kỷ 1 (21:00 1/12).
+- [ ] Đo: tỉ lệ người Hồng Hoang bỏ phiếu mỗi ngày; còn chơi nhóm Khai Thiên.
+- Ghi chú:
+
+## Ngày 21 - B3 Thiên cơ theo Kỷ
+Lên bản: 2026-12-03. Cờ `THIEN_CO_ON`. Có cáo thị (chỉ gợi ý có "chân tướng", không lộ nội dung).
+- [ ] Mỗi Kỷ Sơn Môn có một "chân tướng" bí ẩn (vd "Bầu trời là một tấm lưới"). Mảnh rơi ngẫu nhiên, hiếm, trong kiếp. Ai gom đủ 7 mảnh đầu tiên được chọn: Công bố (cả server buff một ngày, tên lên trang chủ và Biên niên) hoặc Giữ kín (mở một kết cục ẩn chỉ người đó có). Quyết xong thì mảnh ngừng rơi tới Kỷ sau.
+- [ ] Viết thành nhánh phụ của Thiên thư (dùng chỗ hiển thị Sổ Sinh Tử / Thiên thư), không làm hệ mới. Chân tướng Kỷ 2 viết bằng story-writing, nối với mạch Vạn Kiếp Chân Nhân.
+- [ ] Đo: số người có ít nhất 1 mảnh; số người nhắc tới chân tướng trên Fanpage và Group (nếu đọc được).
+- Ghi chú:
+
 ## Ngoài game (Tyler tự làm)
 - Đăng "Biên niên Kỷ" mỗi tuần và lúc kết Kỷ (Claude soạn khi Tyler hỏi): môn giữ nhiều ô nhất, trận lớn, môn lật ngược thế cờ.
 
