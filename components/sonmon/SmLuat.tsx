@@ -95,7 +95,7 @@ export function SmLuat({ c }: { c: SmCtx }) {
       </button>
       <section className="sm-card dark">
         <h2>{tr('Luật Sơn Môn', 'Sect rules')}</h2>
-        <p>{tr('Chơi kiếp góp Khí vận. Khí vận làm môn mạnh. Môn mạnh thì giữ được đất. Hết Kỷ, môn nhiều đất nhất thắng.', 'Play lives to add Fortune. Fortune makes the sect strong. A strong sect holds land. Most land wins the era.')}</p>
+        <p>{tr('Chơi kiếp góp Khí vận. Khí vận làm môn mạnh. Môn mạnh thì giữ được đất. Giữ đất mỗi giờ được Điểm. Hết Kỷ, môn nhiều Điểm nhất thắng.', 'Play lives to add Fortune. Fortune makes the sect strong. A strong sect holds land. Land earns points every hour. Most points wins the era.')}</p>
       </section>
       {HOI.filter(([h]) => (h !== 'Môn mới có bị đánh ngay không?' || smCo(c.st).bh) && (h !== 'Giữ ô thế nào?' || smCo(c.st).di)).map(([h, d, he, de], i) => (
         <section key={h} className="sm-card sm-hoi">

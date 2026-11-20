@@ -77,7 +77,14 @@ export function SmKy({ c }: { c: SmCtx }) {
                   <td>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
                       <HuyHieu id={r.huy_hieu} size={22} label="" />
-                      <span className="sm-clip">{r.ten}</span>
+                      <span style={{ display: 'flex', flexDirection: 'column', minWidth: 0, lineHeight: 1.15 }}>
+                        <span className="sm-clip">{r.ten}</span>
+                        {coDiem && (
+                          <small style={{ fontSize: 12, color: '#6b5233', fontVariantNumeric: 'tabular-nums' }}>
+                            {tr(`+${r.gio ?? 0}/giờ · Khí vận ${fmtN(r.kv)}`, `+${r.gio ?? 0}/h · Fortune ${fmtN(r.kv)}`)}
+                          </small>
+                        )}
+                      </span>
                     </span>
                   </td>
                   {coDiem && <td className="num">{fmtN(r.diem ?? 0)}</td>}
@@ -90,17 +97,17 @@ export function SmKy({ c }: { c: SmCtx }) {
         )}
         <p className="sm-note" style={{ padding: '4px 4px 0' }}>
           {coDiem
-            ? tr('Xếp theo Điểm giữ đất: mỗi giờ ô thường +1, Linh Mạch +3, Thiên Trì +5. Bằng điểm thì xét số ô rồi Khí vận.', 'Ranked by land points: each hour +1 per tile, +3 Spirit Vein, +5 Heaven Pool. Ties: tiles, then fortune.')
+            ? tr('Xếp theo Điểm giữ đất: mỗi giờ ô thường +1, Linh Mạch +3, Thiên Trì +5. Bằng điểm thì xét số ô rồi tổng Khí vận cả Kỷ. Dòng nhỏ dưới tên: điểm môn đang được mỗi giờ và tổng Khí vận.', 'Ranked by land points: each hour +1 per tile, +3 Spirit Vein, +5 Heaven Pool. Ties: tiles, then fortune.')
             : tr('Xếp theo số ô giữ lúc hết Kỷ, bằng nhau thì xét tổng Khí vận cả Kỷ.', 'Ranked by tiles held at the end, ties broken by total fortune.')}
         </p>
       </section>
       <SmKeoBang mine={mine} />
       <section className="sm-card">
-        <h3>{tr('Thưởng cuối Kỷ (chỉ đồ trang trí)', 'End-of-era rewards (cosmetic)')}</h3>
-        <p style={{ fontSize: 15 }}>{tr('Hạng 1: hào quang chân thân, tên môn khắc vào Sổ Sinh Tử.', 'Rank 1: a true-self aura, sect name carved in the Book of Life and Death.')}</p>
-        <p style={{ fontSize: 15 }}>{tr('Hạng 2-3: khung tên môn vàng.', 'Ranks 2-3: a golden sect name frame.')}</p>
+        <h3>{tr('Thưởng cuối Kỷ', 'End-of-era rewards')}</h3>
+        <p style={{ fontSize: 15 }}>{tr('Hạng 1: tên môn khắc vào Sổ Sinh Tử, hào quang chân thân. Hạng 2-3: khung tên môn vàng.', 'Rank 1: sect name carved in the Book of Life and Death, a true-self aura. Ranks 2-3: a golden sect name frame.')}</p>
+        <p style={{ fontSize: 15 }}>{tr('Ba môn đầu nhận pháp bảo phẩm cao; bảy người nhiều Công nhất mỗi môn nhận vũ khí, môn chủ thêm ấn. Pháp bảo có chỉ số, dùng mãi.', 'Top three sects get high-grade treasures; the 7 members with most merit in each sect get weapons, the leader a seal. Treasures carry stats and last forever.')}</p>
         <p style={{ fontSize: 15 }}>{tr('Ai đủ 7 ngày điểm danh liền: một ngoại trang.', '7 check-ins in a row: an outfit.')}</p>
-        <p className="sm-note">{tr('Không thưởng chỉ số, để người vào Kỷ sau không bị bỏ xa.', 'No stat rewards, so newcomers next era are not left behind.')}</p>
+        <button className="sm-btn small" onClick={() => c.go('thuong')}>{tr('Xem đủ phần thưởng Kỷ', 'See all era rewards')}</button>
       </section>
       <section className="sm-card warn">
         <h3>{tr('Khi hết Kỷ', 'When the era ends')}</h3>
