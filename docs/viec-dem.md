@@ -309,6 +309,13 @@ Làm sau các khối tới hạn của lịch Kỷ 2. Đêm quá tải: tới 3:
 - Cáo thị: mỗi tuần một dòng chung ("Thêm N cốt truyện mới, có chuyện nối Thiên thư"), không liệt kê chi tiết.
 - Báo Tyler trong tin cuối phiên: 10 tên cốt truyện (một dòng mỗi cái, ghi quyển liên kết nếu có), số sự kiện cũ đã soát và đã sửa.
 
+## Ngày 36 - Soát quái vỡ hạt trong trận (Tyler báo 20/11 20:18, con Hổ)
+Lên bản: 2026-11-21. Đã sửa sẵn ở commit 12be60c (phóng ảnh pixel theo hệ số nguyên trong `components/MonsterLpc.tsx` và `PetPic`; làm sạch `dk_tiger`, `dk_monkey`, `dk_toad` bằng `scripts/mkbeast_dokiep.py`). Đêm nay chỉ kiểm và làm nốt.
+- [ ] Playwright 390x844, deviceScaleFactor 2: vào trận với từng quái có ngoại hình LPC (MONSTER_LOOK, thần thú petLegend, linh thú trận thu phục), chụp khung 1-2. Soi: hạt không đều, khung lấn sang khung bên, viền mờ, mẩu hình lạ ở mép. Ghi tên quái còn lỗi vào Ghi chú và sửa luôn (cùng cách: làm sạch ảnh gốc, không vẽ mới, không phóng to ảnh nguồn).
+- [ ] So cỡ quái trước/sau (đổi hệ số nguyên làm quái người nhỏ đi khoảng 6%): nếu quái nào nhỏ quá so với nhân vật thì tăng `scale` của quái đó tới bậc nguyên kế tiếp.
+- [ ] Không đổi nhân vật người chơi (`components/Sprite.tsx`) trong khối này; nếu thấy vỡ hạt ở nhân vật thì ghi vào Ghi chú và báo Tyler.
+- Ghi chú:
+
 ## Ngoài game (Tyler tự làm)
 - Đăng "Biên niên Kỷ" mỗi tuần và lúc kết Kỷ (Claude soạn khi Tyler hỏi): môn giữ nhiều ô nhất, trận lớn, môn lật ngược thế cờ.
 
