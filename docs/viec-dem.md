@@ -147,6 +147,17 @@ Lên bản: 2026-12-04. Cờ `THIEN_CO_ON`. Có cáo thị (chỉ gợi ý có "
 - [ ] Đo: số người có ít nhất 1 mảnh; số người nhắc tới chân tướng trên Fanpage và Group (nếu đọc được).
 - Ghi chú:
 
+## Ngày 30 - Sơn Môn: phạt đánh thua, bỏ ô, đất liền, yêu thú ngẫu nhiên, Linh Mạch ẩn
+Lên bản: 2026-11-21. Tyler giao 20/11 17:32. Làm SAU Ngày 12, TRƯỚC Ngày 22. Có cáo thị (vào bản 4.6.4 hoặc bản mới nhất chưa lên). Đọc `docs/son-mon-luat.md` trước; sửa luật trong file đó và màn Luật Sơn Môn (`components/sonmon/SmLuat.tsx`) cho khớp. Hàm và cron mới bằng apply_migration, không sửa hàm cũ (tạo hàm mới thay thế, đổi chỗ gọi).
+- [ ] 1. Phạt bên công khi đánh thua: mọi người theo xuất chinh của trận thua bị giảm Lực chiến Sơn Môn theo số trận thua trong ngày: lần 1 -10% trong 1 giờ, lần 2 -30% trong 3 giờ, từ lần 3 -50% tới 5:00. Đếm và hồi hết lúc 5:00 mỗi ngày. Giữ luật "nghỉ 2 giờ" đang có. Hiện ngay trên thẻ người chơi và màn xuất chinh: "Trọng thương: Lực chiến -30%, hồi lúc 14:20" (không tooltip). Mục đích: chặn đánh liều liên tục.
+- [ ] 2. Nút "Bỏ ô" cho môn: chưởng môn (và người có quyền phát lệnh xuất chinh) bỏ được một ô của môn, trừ chính điện và ô đang có quân đi tới. Hỏi xác nhận một lần. Ô về trống, người đứng giữ ở đó tự về chính điện, ghi vào chiến báo môn. Luật cũ "đủ ô thì tự bỏ ô xa nhất khi chiếm thêm" giữ nguyên.
+- [ ] 3. Đất phải liền nhau: sau mỗi lần môn mất ô hoặc bỏ ô, tính các ô còn nối với chính điện (kề nhau trên lưới lục giác). Ô bị đứt khỏi chính điện về trống, người đứng giữ ở đó tự về chính điện, chiến báo ghi "Đất đứt mạch, mất N ô". Áp cho cả ô Linh Mạch, Thiên Trì, yêu thú đã chiếm. Kiểm trường hợp chính điện bị vây.
+- [ ] 4. Linh Mạch và Thiên Trì mới xuất hiện: ngẫu nhiên có hoặc không có yêu thú giữ (gợi ý 50%, ghi số chọn vào Ghi chú). Có yêu thú thì đánh như ô yêu thú hiện tại; không có thì môn đầu tiên tới chiếm được ngay.
+- [ ] 5. Linh Mạch ẩn: Linh Mạch mới sinh không hiện trên bản đồ, phải trinh sát ô đó mới thấy (kết quả trinh sát thêm dòng "Có Linh Mạch"); môn đã trinh sát thấy thì giữ thấy tới hết Kỷ. Linh Mạch không sinh ở ô đã có chủ, và một ô không có Linh Mạch 2 lần trong một Kỷ (lưu ô đã từng có). Linh Mạch đang hiện từ 20/11 giữ nguyên tới khi bị chiếm hoặc đổi lượt sinh; từ lượt sinh kế tiếp mới ẩn. Thiên Trì vẫn hiện.
+- [ ] Thử: `sim-son-mon` trước/sau (tỉ lệ thủ thành công phải còn trong 20-80% như Điều kiện dừng); `SMOKE_URL=http://localhost:3314 node scripts/smoke-son-mon.cjs` thêm: bỏ ô, đứt mạch, trinh sát thấy Linh Mạch, phạt thua 3 lần trong ngày; test SQL cho đứt mạch (ô cách 2-3 bước, nhánh vòng).
+- [ ] Cáo thị ngắn, không lộ tỉ lệ: "Sơn Môn: đánh thua liên tiếp sẽ trọng thương; môn tự bỏ ô được; đất phải liền với chính điện; Linh Mạch giờ phải trinh sát mới thấy." Soạn bài cho Tyler tự đăng Group người chơi.
+- Ghi chú:
+
 ## Vòng tu vi chân thân - Cửu Chuyển, Mộng thạch, Luyện lô, đi cảnh (Tyler duyệt 20/11 17:14, "áp dụng từ hôm nay")
 Thiết kế đầy đủ và mọi con số: doc Project `claude/vong-cay-chan-than.md` (Projects tool, project_read). Đọc mục cần trước khi làm từng khối, đừng đọc lại cả file mỗi lần.
 Đã chốt (không hỏi lại):
