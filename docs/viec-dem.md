@@ -111,7 +111,7 @@ Lên bản: 2026-11-27. Cờ `SAM_DAU_KIEP_ON`, `BIET_HIEU_ON`. Có cáo thị (
 - Ghi chú:
 
 ## Ngày 17 - B1 Nhân/Địa/Thiên bảng theo dải cảnh giới
-Lên bản: 2026-11-30. Cờ `BANG_DAI_ON`. Có cáo thị.
+Lên bản: 2026-12-03. Cờ `BANG_DAI_ON`. Có cáo thị.
 - [ ] `/bang-xep-hang` thêm 3 tab bảng tuần: Nhân bảng (Luyện Khí tới Kim Đan), Địa bảng (Nguyên Anh tới Độ Kiếp), Thiên bảng (sau phi thăng và Hồng Hoang). Mỗi bảng top 10, xếp theo thành tích tốt nhất trong tuần ở dải đó. Một người đứng được nhiều bảng.
 - [ ] Thưởng chỉ mỹ quan (khung tên, danh hiệu tuần), không chỉ số. RPC mới, không sửa vkl_leaderboard cũ.
 - [ ] Đo: số người mở tab bảng mỗi ngày; còn chơi ở người từng lọt Nhân bảng.
@@ -201,15 +201,15 @@ Lên bản: 2026-11-23. Bật `CT_TU_VI_ON`. Có cáo thị (ngắn, không số
 - Ghi chú:
 
 ## Ngày 25 - Chân thân lát 2a: Mộng thạch, Luyện lô bậc 1-2 (giấu sau cờ)
-Lên bản: 2026-11-28. Cờ `CT_LO_ON`. Chỉ làm khi đạt điều kiện ở đầu mục.
+Lên bản: 2026-11-29. Cờ `CT_LO_ON`. Chỉ làm khi đạt điều kiện ở đầu mục.
 - [ ] Mộng thạch mỗi kiếp khép: 10 + 2 × bậc cảnh giới cao nhất + 1 mỗi 50 năm (tối đa +10) + 15 nếu kết cục mới; cùng bậc giảm theo số kiếp trong ngày như tu vi. Máy chủ tính từ vkl_lives.
 - [ ] Mộng thạch offline: 1/giờ, cùng luật trần như tu vi (phần +1 mỗi 10 ải để lát 3).
-- [ ] Bật CT_GEAR thành 4 ô có chỉ số: Vũ khí (mở ở C1), Mũ (C2), Phụ kiện (C4), Cánh (C5). Hình CT_GEAR giữ là "bộ da" mở theo thành tựu như cũ; chỉ số đến từ lò. Pháp bảo Sơn Môn vẫn là nguồn riêng, tự so với đồ lò ở ô Vũ khí/Phụ kiện. Thần binh truyền kiếp không đụng.
+- [ ] Dùng danh mục 100 món của Ngày 31 (5 ô: Vũ khí mở ở C1, Quần áo C1, Mũ C2, Phụ kiện C4, Cánh C5). Lò chọn ô ngẫu nhiên đều trong các ô đã mở, rồi chọn 1 trong 4 món của phẩm vừa ra. Pháp bảo Sơn Môn vẫn là nguồn riêng, tự so với đồ lò ở ô Vũ khí/Phụ kiện. Thần binh truyền kiếp không đụng.
 - [ ] Luyện lô: 10 Mộng thạch một lượt, roll ở máy chủ; bậc 1 (C1): Phàm 90 / Bảo 10; bậc 2 (C3): Phàm 70 / Bảo 27 / Linh 3. Lực chiến mỗi món ±20%: Phàm 60, Bảo 150, Linh 350, Tiên 800, Thần 1.800. Món mạnh hơn tự lắp; nút "Luyện hết" một chạm.
 - Ghi chú:
 
 ## Ngày 26 - Chân thân lát 2b: dung luyện 3→1, Chân soi mộng, bật
-Lên bản: 2026-11-29. Bật `CT_LO_ON`. Có cáo thị.
+Lên bản: 2026-11-30. Bật `CT_LO_ON`. Có cáo thị.
 - [ ] Túi đồ chân thân: 3 món cùng phẩm dung thành 1 món phẩm trên, nút "Dung hết" một chạm.
 - [ ] Chân soi mộng: mỗi Chuyển cho kiếp mới một khởi đầu nhỏ (gợi ý +1 năm tuổi thọ mỗi Chuyển, hoặc tỉ lệ linh căn tốt +0,5%/Chuyển; tự chọn sau khi chạy `sim-do-kho 3000` trước/sau, tỉ lệ phi thăng không được tăng quá 1 điểm %).
 - [ ] `sim-farm` và `sim-tu-vi` cho kinh tế Mộng thạch: chơi đều khoảng 12-15 lượt luyện/ngày; tỉ lệ kiếp chết trước 16 tuổi không được tăng.
@@ -222,6 +222,64 @@ Lên bản: 2026-12-08 (làm 3 đêm 5-7/12, mỗi đêm một phần). Cờ `CT
 - [ ] Đêm 2: trận nhìn nghiêng kiểu Fire Emblem (chân thân LPC vs yêu thú pixel, 3-6 lượt, thanh máu) CHỈ ở lần đầu đánh boss, có nút Bỏ qua; mọi lần khác là thẻ kết quả. Quét 1 chạm ải đã qua (mở ở C6).
 - [ ] Đêm 3: thử đủ, cáo thị, bật cờ 8/12. Đo phân bố ải cao nhất, % kẹt một boss quá 3 ngày, độ dài phiên ngắn (mục tiêu trung vị 2-5 phút).
 - Ghi chú:
+
+## Võ tu, Nho tu, 100 món đồ chân thân, công pháp chân thân (Tyler giao 20/11 17:51)
+Thiết kế đầy đủ, danh mục 100 món, bảng tên cảnh giới, công pháp: doc Project `claude/ke-hoach-dao-do-cong-phap.md` (Projects tool, project_read). Đọc mục cần trước khi làm từng khối. Ngày 31, 32 chỉ làm khi đạt điều kiện lát 2 của chân thân (26/11, ít nhất 40% người có chân thân lên ít nhất 1 tầng); Ngày 33, 34 không phụ thuộc. Dùng gamedev + game-design; chữ mới qua story-writing + humanizer, tra glossary; hình chỉ LPC có sẵn và PixelFx, không phóng to ảnh, không vẽ pixel bằng code.
+
+## Ngày 31 - 100 món đồ chân thân, ô Quần áo, Bảo khố (giấu sau cờ)
+Lên bản: 2026-11-28. Cờ `CT_LO_ON` (chưa bật).
+- [ ] Danh mục 100 món theo doc (5 ô × 5 phẩm × 4 món), id, tên tr VI/EN, lớp LPC + tint, icon (icon có sẵn; thiếu thì icon Cultivation World Simulator, ghi nguồn), phẩm, Lực chiến gốc (Phàm 60, Bảo 150, Linh 350, Tiên 800, Thần 1.800, ±20% khi roll). Tìm trùng tên với đồ trong kiếp; món CT_GEAR/CT_AO cũ nằm trong 100 món, ai đã mở bằng thành tựu thì có sẵn.
+- [ ] Ô Quần áo có chỉ số (dùng spec CT_AO), mở ở Chuyển 1 cùng Vũ khí.
+- [ ] Món Tiên, Thần có hào quang PixelFx nhỏ trên chân thân; kiểm 390x844 không rối, không vỡ pixel.
+- [ ] Cánh: thử lấy thêm dáng cánh từ bộ LPC gốc (ghi `public/lpc/sources.json`); không lấy được thì phân biệt bằng màu và hào quang, ghi vào Ghi chú.
+- [ ] Bảo khố 0/100: sổ món đã từng có, danh hiệu khi đủ 20 món một ô, khung tên khi đủ 100.
+- Ghi chú:
+
+## Ngày 32a - Công pháp chân thân: Tàng Kinh Các chân thân, khắc công pháp (giấu sau cờ)
+Lên bản: 2026-11-29. Cờ `CT_CP_ON` (tắt).
+- [ ] Kiếp khép có công pháp tầng 9 thì khắc vào chân thân (máy chủ ghi, đọc từ dữ liệu kiếp đã gửi; kiểm hợp lý như lives_guard). Lại tầng 9 ở kiếp khác thì +1 tầng chân (Sơ ngộ → Viên dung, 5 tầng).
+- [ ] Khắc sẵn cho người cũ từ sổ công pháp 4.2.0 (công pháp từng tầng 9). Ghi số người được khắc vào Ghi chú.
+- [ ] Ba ô: Tâm pháp (C1), Chiêu 1 (C1), Chiêu 2 (C4). Tâm pháp tăng tốc tu vi chân thân Hoàng +2% / Huyền +4% / Địa +6% / Thiên +10% × tầng chân/5. Lực chiến công pháp: Hoàng 100, Huyền 250, Địa 500, Thiên 1.000 ở Viên dung, tầng thấp theo tỉ lệ. Chạy `sim-tu-vi` trước/sau, nhịp C9 Viên mãn không được nhanh hơn 10%.
+- [ ] Tab Nhân vật: ô công pháp đang trống thành 3 ô; bấm mở Tàng Kinh Các chân thân, dùng lại giao diện vòng ấn của `components/TangKinhCac.tsx`.
+- Ghi chú:
+
+## Ngày 32b - Bật công pháp chân thân
+Lên bản: 2026-11-30. Bật `CT_CP_ON` cùng lúc `CT_LO_ON` (Ngày 26). Có cáo thị chung với đồ chân thân.
+- [ ] Thử Playwright 390x844, chấm 5 mặt huashu-design; sự kiện ct_cp_khac, ct_cp_tang, ct_cp_lap.
+- [ ] Đo: % người có chân thân đã khắc ít nhất 1 công pháp; ghi Sổ cải thiện.
+- Ghi chú:
+
+## Ngày 33a - Võ tu (giấu sau cờ)
+Lên bản: 2026-12-01. Cờ `VO_TU_ON` (tắt). Làm sau Ngày 11.
+- [ ] Con đường Võ tu theo doc: chọn ở Trúc Cơ, mọi linh căn kể cả phế linh căn; hệ số 0,95; máu +30%, đột phá +10%, thọ -10%. Thanh Khí huyết trong trận.
+- [ ] Công pháp Võ tu vào bộ CP 4.2.0: Thái Cổ Luyện Thể Quyết; Băng Sơn Quyền, Thiết Sơn Kháo, Long Tượng Bàn Nhược Công, Bát Cực Băng; tuyệt kỹ Phá Thiên Nhất Quyền. Hiệu ứng PixelFx sẵn có.
+- [ ] Khoảng 20 sự kiện riêng và 3 kết cục (doc). Ngoại hình LPC: body_musc, band_thick, gloves.
+- [ ] `sim-do-kho 3000` có Võ tu: tỉ lệ phi thăng Võ tu nằm giữa Kiếm tu và Trận tu.
+- Ghi chú:
+
+## Ngày 33b - Bật Võ tu, tên cảnh giới Võ tu
+Lên bản: 2026-12-02. Bật `VO_TU_ON`. Có cáo thị.
+- [ ] Tên cảnh giới phàm giới cho Võ tu (Luyện Bì, Dịch Cân, Tẩy Tủy, Kim Cương Thể, Pháp Tướng, Bất Diệt Thể, Thánh Thể), kèm chữ nhỏ cảnh giới chung bên cạnh ở bảng xếp hạng và bia mộ.
+- [ ] Thêm Võ tu vào bộ lọc bảng xếp hạng, 8f (chọn đường khi khởi đầu), Lôi Đài.
+- [ ] Đo: % kiếp chọn Võ tu 7 ngày; còn chơi nhóm phế linh căn.
+- Ghi chú:
+
+## Ngày 34a - Nho tu (giấu sau cờ)
+Lên bản: 2026-12-03. Cờ `NHO_TU_ON` (tắt).
+- [ ] Con đường Nho tu theo doc: đạo tâm từ 0 trở lên; hệ số 0,90; tâm ma rất thấp, thọ dài; có đồ đệ thật (Sư Đồ) thì +10% tu mỗi người, tối đa +20%. Thanh Hạo nhiên trong trận.
+- [ ] Công pháp: Hạo Nhiên Chính Khí Quyết; Bút Lạc Kinh Phong, Xuân Thu Bút Pháp, Thiên Địa Chính Khí, Văn Tâm Điêu Long; tuyệt kỹ Văn Thánh Lâm Thế.
+- [ ] Khoảng 20 sự kiện riêng (tư thục, khoa cử, làm quan, văn bảo, văn tự ngục) và 3 kết cục. Ngoại hình: kimono dài tay, hairtie, w_cane tạm làm bút/quạt.
+- [ ] `sim-do-kho 3000` có Nho tu.
+- Ghi chú:
+
+## Ngày 34b - Bật Nho tu, tên cảnh giới Nho tu và Phật tu, Bát đạo
+Lên bản: 2026-12-04. Bật `NHO_TU_ON`. Có cáo thị.
+- [ ] Tên cảnh giới phàm giới cho Nho tu (Đồng Sinh, Tú Tài, Cử Nhân, Tiến Sĩ, Hàn Lâm, Đại Nho, Bán Thánh) và Phật tu (Sa Di, Tỳ Kheo, Thiền Sư, La Hán, Bồ Tát, Đại Bồ Tát, Phật Đà), cùng cách hiện như Võ tu.
+- [ ] Thành tựu "Bát đạo" (đủ 8 con đường); "Lục đạo luân hồi" giữ ở 6. Thêm Nho tu vào bộ lọc, 8f, Lôi Đài.
+- [ ] Đo: % kiếp chọn Nho tu 7 ngày; số người Nho tu có đồ đệ thật. Không đường nào trên 35% số kiếp mới.
+- Ghi chú:
+
+Lát 3 chân thân (Ngày 27-29) thêm: đêm 3 (7/12) đưa chiêu công pháp chân thân vào trận đi cảnh, tuyệt kỹ khi đủ tâm pháp và 2 chiêu cùng đạo ở Viên dung.
 
 ## Ngoài game (Tyler tự làm)
 - Đăng "Biên niên Kỷ" mỗi tuần và lúc kết Kỷ (Claude soạn khi Tyler hỏi): môn giữ nhiều ô nhất, trận lớn, môn lật ngược thế cờ.
