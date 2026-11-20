@@ -200,12 +200,12 @@ function WcPane({ onLink, moi }: { onLink: () => void; moi: number }) {
                 <span className="sm-tin-ai">
                   <b>{x.ta ? tr('Ta', 'Me') : x.ten}</b>
                   <i>{ctTitle()}</i>
-                  <small>{hhmm(x.luc)}</small>
                 </span>
                 {phu && <span className="wc-tin-phu">{phu}</span>}
               </>
             );
           }}
+          ten={(x) => x.ten ?? ''}
           nut={nut}
           nhanh={[]}
           onSend={send}

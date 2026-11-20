@@ -149,16 +149,32 @@ p.sm-card { display: block; }
 /* 17/11: Truyền âm (chat trong môn) */
 .sm-chat { display: flex; flex-direction: column; gap: 8px; }
 .sm-chat-head { margin: 0; }
-.sm-chat-log { display: flex; flex-direction: column; gap: 6px; min-height: 220px; height: calc(100dvh - 430px); overflow-y: auto; overscroll-behavior: contain; padding: 8px; background: var(--paper); border: 2px solid var(--ink); }
+/* 21/11 Tyler: bong bóng chat mới - viền pixel cắt góc, đuôi bậc thang, ô chữ đầu, gộp tin liền nhau, giờ nằm góc dưới */
+.sm-chat-log { --bub: #fffaf0; --bub-ta: #ffd98a; display: flex; flex-direction: column; gap: 12px; min-height: 220px; height: calc(100dvh - 430px); overflow-y: auto; overscroll-behavior: contain; padding: 14px 10px; background-color: #efe0b8; background-image: radial-gradient(rgba(59, 42, 26, 0.09) 1px, transparent 1.4px); background-size: 14px 14px; border: 2px solid var(--ink); }
 .sm-chat-empty { margin: auto; text-align: center; font-size: 15px; color: #6a5a44; padding: 16px; }
-.sm-tin { display: flex; flex-direction: column; align-items: flex-start; max-width: 86%; }
-.sm-tin.ta { align-self: flex-end; align-items: flex-end; }
-.sm-tin-b { display: flex; flex-direction: column; gap: 2px; min-height: 44px; padding: 6px 10px; text-align: left; font: inherit; color: var(--ink); background: #fff8e6; border: 2px solid var(--ink); cursor: pointer; }
-.sm-tin.ta .sm-tin-b { background: #ffe3a3; }
-.sm-tin-ai { display: flex; align-items: baseline; gap: 6px; font-size: 13px; }
-.sm-tin-ai b { color: #8a1a1a; }
-.sm-tin-ai i { font-style: normal; font-size: 12px; font-weight: 700; color: var(--gold-l); background: var(--ink); padding: 0 4px; }
+.sm-tin { display: flex; align-items: flex-start; gap: 10px; max-width: 94%; }
+.sm-tin.lien { margin-top: -8px; }
+.sm-tin.ta { align-self: flex-end; flex-direction: row-reverse; max-width: 88%; }
+.sm-tin-cot { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+.sm-tin.ta .sm-tin-cot { align-items: flex-end; }
+.sm-tin-av { flex: none; width: 34px; height: 34px; margin: 2px; display: grid; place-items: center; background: var(--av, #8a1a1a); color: #fff6dc; font-size: 16px; font-weight: 800; line-height: 1; box-shadow: 0 -2px 0 var(--ink), 0 2px 0 var(--ink), -2px 0 0 var(--ink), 2px 0 0 var(--ink), inset 0 -3px 0 rgba(0, 0, 0, 0.22); }
+.sm-tin.lien .sm-tin-av { height: 0; margin-block: 0; box-shadow: none; background: none; }
+.sm-tin-b { position: relative; display: flex; flex-direction: column; gap: 2px; min-width: 64px; min-height: 44px; margin: 2px; padding: 7px 12px 7px; text-align: left; font: inherit; color: var(--ink); background: var(--bub); border: 0; cursor: pointer; box-shadow: 0 -2px 0 var(--ink), 0 2px 0 var(--ink), -2px 0 0 var(--ink), 2px 0 0 var(--ink), 2px 6px 0 rgba(59, 42, 26, 0.18); }
+.sm-tin.ta .sm-tin-b { background: var(--bub-ta); }
+.sm-tin-b:active { transform: translateY(1px); }
+.sm-tin-b[aria-expanded='true'] { outline: 3px solid var(--gold); outline-offset: 3px; }
+/* đuôi bong bóng: bậc thang pixel 2px, nối liền viền trên */
+.sm-tin:not(.lien) .sm-tin-b::before { content: ''; position: absolute; top: -2px; left: -8px; width: 2px; height: 2px; background: var(--ink); pointer-events: none;
+  box-shadow: 2px 0 var(--ink), 4px 0 var(--ink), 6px 0 var(--ink), 2px 2px var(--ink), 4px 2px var(--bub), 6px 2px var(--bub), 4px 4px var(--ink), 6px 4px var(--bub), 6px 6px var(--ink); }
+.sm-tin.ta:not(.lien) .sm-tin-b::before { left: calc(100% + 6px);
+  box-shadow: -2px 0 var(--ink), -4px 0 var(--ink), -6px 0 var(--ink), -2px 2px var(--ink), -4px 2px var(--bub-ta), -6px 2px var(--bub-ta), -4px 4px var(--ink), -6px 4px var(--bub-ta), -6px 6px var(--ink); }
+.sm-tin-ai { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; font-size: 13px; line-height: 1.2; }
+.sm-tin-ai b { color: #8a1a1a; font-size: 14px; }
+.sm-tin-ai i { font-style: normal; font-size: 11px; font-weight: 700; letter-spacing: 0.02em; color: #6e4c10; background: #f7e4ae; padding: 1px 5px; box-shadow: inset 0 0 0 1px #c9962e; }
 .sm-tin-ai small { font-size: 12px; color: #6a5a44; }
+.sm-tin-nd::after { content: ''; display: inline-block; width: 38px; }
+.sm-tin-gio { position: absolute; right: 9px; bottom: 6px; font-size: 11px; line-height: 1; color: #86704f; font-variant-numeric: tabular-nums; }
+.sm-tin.ta .sm-tin-gio { color: #7a5a1e; }
 .sm-tin-nd { font-size: 16px; line-height: 1.35; overflow-wrap: anywhere; white-space: pre-wrap; }
 .sm-tin-act { display: flex; gap: 6px; margin-top: 4px; }
 .sm-chat-nhanh { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }

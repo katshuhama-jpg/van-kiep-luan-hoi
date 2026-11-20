@@ -14,7 +14,7 @@ import { track } from '@/lib/track';
 import { SmErr, type SmChat as Tin } from '@/lib/sonmon/api';
 import { SM_LOI } from '@/lib/sonmon/data';
 import { ChatPane, type ChatNut } from '@/components/chat/ChatPane';
-import { chucTen, hhmm, type SmCtx } from './ui';
+import { chucTen, type SmCtx } from './ui';
 
 export const CHAT_SEEN = 'vkl.sm.chatSeen';
 
@@ -118,9 +118,9 @@ export function SmChat({ c }: { c: SmCtx }) {
         <span className="sm-tin-ai">
           <b>{x.ta ? tr('Ta', 'Me') : x.ten}</b>
           {x.chuc && x.chuc !== 'de' && <i>{chucTen(x.chuc)}</i>}
-          <small>{hhmm(x.luc)}</small>
         </span>
       )}
+      ten={(x) => x.ten ?? ''}
       nut={nut}
       nhanh={[]}
       onSend={send}

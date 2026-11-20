@@ -18,8 +18,10 @@ type Props<T extends ChatTin> = {
   /** id của ô nhập (nhãn trỏ vào) */
   inputId: string;
   tin: T[] | null;
-  /** tên người gửi và dòng phụ trong bong bóng tin */
+  /** tên người gửi và dòng phụ trong bong bóng tin (tin của mình không hiện dòng này) */
   ai: (x: T) => ReactNode;
+  /** tên người gửi dạng chữ: vẽ ô chữ cái đầu và gộp các tin liền nhau của cùng một người */
+  ten?: (x: T) => string;
   /** các nút hiện khi chạm vào một tin (rỗng thì chạm không mở gì) */
   nut: (x: T) => ChatNut[];
   nhanh: readonly (readonly [string, string])[];
@@ -42,6 +44,15 @@ type Props<T extends ChatTin> = {
   logLabel: string;
   className?: string;
 };
+
+/** màu nền ô chữ đầu, đủ tương phản với chữ trắng */
+const AV = ['#8a1a1a', '#1f5a4a', '#3b3f8f', '#7a4a12', '#5c2a6e', '#2a5c7a', '#6b6b1f', '#9a3b5a'];
+const hash = (s: string) => {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+  return Math.abs(h);
+};
+const chuDau = (s: string) => (s.trim().split(/\s+/).pop() ?? '?').charAt(0).toUpperCase() || '?';
 
 export function ChatPane<T extends ChatTin>(p: Props<T>) {
   const [nd, setNd] = useState('');
@@ -88,7 +99,7 @@ export function ChatPane<T extends ChatTin>(p: Props<T>) {
       >
         {p.tin === null && <p className="sm-note">{p.dangTai}</p>}
         {p.tin !== null && p.tin.length === 0 && <p className="sm-chat-empty">{p.rong}</p>}
-        {(p.tin ?? []).map((x) => {
+        {(p.tin ?? []).map((x, i, all) => {
           if (x.he)
             return (
               <p key={x.id} className="sm-tin-he">
@@ -96,11 +107,22 @@ export function ChatPane<T extends ChatTin>(p: Props<T>) {
               </p>
             );
           const nut = p.nut(x);
+          // 21/11: tin liền sau của cùng một người trong 3 phút thì gộp: không lặp ô chữ và dòng tên
+          const truoc = all[i - 1];
+          const ten = p.ten?.(x) ?? '';
+          const lien = !!truoc && !truoc.he && !!truoc.ta === !!x.ta && (x.ta || (!!ten && p.ten?.(truoc) === ten)) && Math.abs(new Date(x.luc).getTime() - new Date(truoc.luc).getTime()) < 180_000;
           return (
-            <div key={x.id} className={`sm-tin${x.ta ? ' ta' : ''}`}>
+            <div key={x.id} className={`sm-tin${x.ta ? ' ta' : ''}${lien ? ' lien' : ''}`}>
+              {!x.ta && p.ten && (
+                <span className="sm-tin-av" style={{ ['--av' as string]: AV[hash(ten) % AV.length] }} aria-hidden="true">
+                  {lien ? '' : chuDau(ten)}
+                </span>
+              )}
+              <div className="sm-tin-cot">
               <button className="sm-tin-b" aria-expanded={nut.length ? mo === x.id : undefined} onClick={() => nut.length && setMo(mo === x.id ? null : x.id)}>
-                {p.ai(x)}
+                {!x.ta && !lien && p.ai(x)}
                 <span className="sm-tin-nd">{x.nd}</span>
+                <small className="sm-tin-gio">{hhmm(x.luc)}</small>
               </button>
               {mo === x.id && nut.length > 0 && (
                 <span className="sm-tin-act">
@@ -111,6 +133,7 @@ export function ChatPane<T extends ChatTin>(p: Props<T>) {
                   ))}
                 </span>
               )}
+              </div>
             </div>
           );
         })}
