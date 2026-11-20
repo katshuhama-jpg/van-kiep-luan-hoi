@@ -65,13 +65,13 @@ export function GearIcon({ g, size }: { g: CtGearItem; size: number }) {
   return <LpcCropIcon id={`ct-g-${g.id}`} layers={[...(g.back ?? []), ...(g.front ?? [])]} size={size} crop={g.crop ?? GEAR_CROP[g.slot]} />;
 }
 
-/** 18/11: Lực chiến Sơn Môn (máy chủ tính, dùng trong trận Sơn Môn) để người chơi khỏi nhầm với Tu vi */
+/** 18/11: Lực chiến Sơn Môn (máy chủ tính, dùng trong trận Sơn Môn) để người chơi khỏi nhầm với Lực chiến chân thân */
 function SmLcLine() {
   const [lc, setLc] = useState<number | null>(null);
   useEffect(() => {
     let live = true;
     const api = realApi();
-    if (api.linked) api.state().then((s) => live && setLc(s.lc ?? 0), () => {});
+    if (api.linked) api.state().then((s) => live && setLc(s?.lc ?? 0), () => {});
     return () => {
       live = false;
     };
@@ -86,7 +86,7 @@ function SmLcLine() {
   );
 }
 
-/** ngọn lửa pixel 13x13 cạnh số tu vi */
+/** ngọn lửa pixel 13x13 cạnh số Lực chiến (22/11: đổi tên từ Tu vi; chữ tu vi để cho thanh tu luyện chân thân) */
 const pxPath = (rows: string[]) => rows.flatMap((r, y) => [...r].map((c, x) => (c === '#' ? `M${x} ${y}h1v1h-1z` : ''))).join('');
 const FLAME_OUT = pxPath(['......#......', '.....##......', '.....###.....', '....####.....', '...######.#..', '..#########..', '..##########.', '.###########.', '.###########.', '.###########.', '..#########..', '...#######...', '.....###.....']);
 const FLAME_IN = pxPath(['.............', '.............', '.............', '.............', '......#......', '.....###.....', '....####.....', '....#####....', '...#######...', '...#######...', '....#####....', '.....###.....', '.............']);
@@ -148,13 +148,13 @@ export function NhanVatStage({ ct, meta, ext, onSlot, active }: { ct: ChanThanLo
           </div>
         )}
       </div>
-      <button className="nv-power" onClick={() => (setTt(false), setWhy((v) => !v), track('ct_power_open', { lc: p.total }))} aria-expanded={why} aria-label={tr(`Tu vi ${fmt(p.total)}, chạm xem cách tính`, `Cultivation ${fmt(p.total)}, tap to see how it is counted`)}>
+      <button className="nv-power" onClick={() => (setTt(false), setWhy((v) => !v), track('ct_power_open', { lc: p.total }))} aria-expanded={why} aria-label={tr(`Lực chiến ${fmt(p.total)}, chạm xem cách tính`, `Power ${fmt(p.total)}, tap to see how it is counted`)}>
         <span className="nv-pw-in">
           <svg className="nv-pw-ic" width="26" height="26" viewBox="0 0 13 13" aria-hidden="true" shapeRendering="crispEdges">
             <path d={FLAME_OUT} fill="#a8202a" />
             <path d={FLAME_IN} fill="#ffd36b" />
           </svg>
-          <small className="nv-pw-lbl">{tr('Tu vi', 'Cultivation')}</small>
+          <small className="nv-pw-lbl">{tr('Lực chiến', 'Power')}</small>
           <b className="nv-pw-n">{fmt(p.total)}</b>
           <i className={`nv-pw-go${why ? ' up' : ''}`} aria-hidden="true">
             <svg width="24" height="24" viewBox="0 0 9 9" shapeRendering="crispEdges">
@@ -164,7 +164,7 @@ export function NhanVatStage({ ct, meta, ext, onSlot, active }: { ct: ChanThanLo
         </span>
       </button>
       {why && (
-        <div className="nv-why2" role="region" aria-label={tr('Tu vi tính thế nào', 'How cultivation is counted')}>
+        <div className="nv-why2" role="region" aria-label={tr('Lực chiến tính thế nào', 'How power is counted')}>
           <ul>
             <li>
               <span>{tr('Gốc', 'Base')}</span>
@@ -179,7 +179,7 @@ export function NhanVatStage({ ct, meta, ext, onSlot, active }: { ct: ChanThanLo
               </li>
             ))}
           </ul>
-          <small>{tr('Tu vi tăng khi khai huyệt, ngộ đạo, mở thêm đồ và sống thêm kiếp. Chưa dùng trong Lôi đài.', 'Cultivation grows as you open points, attain Daos, unlock gear and live more lives. Not used in the Arena yet.')}</small>
+          <small>{tr('Lực chiến tăng khi khai huyệt, ngộ đạo, mở thêm đồ và sống thêm kiếp. Chưa dùng trong Lôi đài.', 'Power grows as you open points, attain Daos, unlock gear and live more lives. Not used in the Arena yet.')}</small>
           {SON_MON_ON && <SmLcLine />}
         </div>
       )}
@@ -231,7 +231,7 @@ export function NhanVatBag({ ct, meta, ext, tab, setTab, onWear }: { ct: ChanTha
                       icon: <BaoVatHinh loai={b.loai} pham={b.pham} size={27} />,
                       wear: () => put(tab, b.mac ? null : gid),
                       sm: b.id,
-                      fx: `${bvFxText(b.loai, b.pham)} · ${tr(`Tu vi +${fmt(bvDiem(b.loai, b.pham) * BV_TU_VI)}`, `Cultivation +${fmt(bvDiem(b.loai, b.pham) * BV_TU_VI)}`)}${b.khac ? ` · ${b.khac}` : ''}`,
+                      fx: `${bvFxText(b.loai, b.pham)} · ${tr(`Lực chiến +${fmt(bvDiem(b.loai, b.pham) * BV_TU_VI)}`, `Power +${fmt(bvDiem(b.loai, b.pham) * BV_TU_VI)}`)}${b.khac ? ` · ${b.khac}` : ''}`,
                     };
                   })
               : []),
@@ -251,8 +251,8 @@ export function NhanVatBag({ ct, meta, ext, tab, setTab, onWear }: { ct: ChanTha
       {list.length === 0 && smTab ? (
         <p className="nv-empty">
           {tr(
-            `Chưa có ${tab === 'vu_khi' ? 'vũ khí' : 'phụ kiện'}. Pháp bảo Sơn Môn phát lúc kết Kỷ 1 (21:00 1/12): 7 người nhiều Công nhất mỗi môn nhận vũ khí, môn chủ nhận thêm ấn. Lắp vào đây để cộng Tu vi chân thân.`,
-            `No ${tab === 'vu_khi' ? 'weapons' : 'trinkets'} yet. Sect treasures are handed out when Era 1 ends (Dec 1, 9 PM): the top 7 by merit in each sect get weapons, the leader also gets a seal. Equip them here to raise cultivation.`,
+            `Chưa có ${tab === 'vu_khi' ? 'vũ khí' : 'phụ kiện'}. Pháp bảo Sơn Môn phát lúc kết Kỷ 1 (21:00 1/12): 7 người nhiều Công nhất mỗi môn nhận vũ khí, môn chủ nhận thêm ấn. Lắp vào đây để cộng Lực chiến chân thân.`,
+            `No ${tab === 'vu_khi' ? 'weapons' : 'trinkets'} yet. Sect treasures are handed out when Era 1 ends (Dec 1, 9 PM): the top 7 by merit in each sect get weapons, the leader also gets a seal. Equip them here to raise your power.`,
           )}
         </p>
       ) : list.length === 0 ? (
@@ -305,7 +305,7 @@ export function NhanVatBag({ ct, meta, ext, tab, setTab, onWear }: { ct: ChanTha
         {say ?? tr('Chạm món đã có để mặc, chạm lần nữa để cởi. Chạm món khóa để xem cách mở.', 'Tap an owned item to wear it, tap again to take it off. Tap a locked item to see how to unlock it.')}
       </p>
       )}
-      {smTab && <small className="ct-note">{tr('Pháp bảo Sơn Môn có chỉ số như đồ trong Mộng và không mất tác dụng. Lắp vào thì cộng Tu vi chân thân; chưa đổi trận trong kiếp.', 'Sect treasures carry stats like dream gear and never expire. Equipped, they add to your cultivation; lives are not affected yet.')}</small>}
+      {smTab && <small className="ct-note">{tr('Pháp bảo Sơn Môn có chỉ số như đồ trong Mộng và không mất tác dụng. Lắp vào thì cộng Lực chiến chân thân; chưa đổi trận trong kiếp.', 'Sect treasures carry stats like dream gear and never expire. Equipped, they add to your power; lives are not affected yet.')}</small>}
       {!smTab && <small className="ct-note">{tr('Đồ chỉ để ngắm, không đổi sức mạnh trong kiếp. Không mặc ngoại trang thì chân thân mặc bộ khởi đầu (đổi ở Đổi ngoại hình).', 'Gear is cosmetic only. Without a costume your true self wears its starting outfit (change it in Change appearance).')}</small>}
     </section>
   );

@@ -1,7 +1,7 @@
 /**
  * Pháp bảo Sơn Môn: dữ liệu thuần (tên, phẩm, chỉ số, cách lắp vào chân thân). Hình vẽ ở components/sonmon/BaoVat.tsx.
  * Tyler 19/11: đồ thưởng xếp hạng KHÔNG mất tác dụng. Có chỉ số như đồ trong Mộng (Công, Thủ, Máu, Bạo kích),
- * lắp vào ô Vũ khí / Phụ kiện của chân thân, cộng vào Tu vi chân thân. Chưa đổi trận trong kiếp (để làm nền cho tính năng sau).
+ * lắp vào ô Vũ khí / Phụ kiện của chân thân, cộng vào Lực chiến chân thân. Chưa đổi trận trong kiếp (để làm nền cho tính năng sau).
  */
 import { tr } from '../i18n';
 import type { Layer } from '../lpc';
@@ -74,7 +74,7 @@ export function bvFxText(loai: string, pham: string, ngan = false): string {
     .map(([k, vi, en, viNgan]) => `${tr(ngan ? viNgan : vi, en)} +${f[k]}%`)
     .join(' · ');
 }
-/** Tu vi chân thân cộng thêm khi lắp: mỗi điểm % chỉ số = 100 Tu vi */
+/** Lực chiến chân thân cộng thêm khi lắp: mỗi điểm % chỉ số = 100 Lực chiến (tên hằng giữ BV_TU_VI cho đỡ sửa nhiều chỗ) */
 export const BV_TU_VI = 100;
 export const bvDiem = (loai: string, pham: string) => {
   const f = bvFx(loai, pham);
