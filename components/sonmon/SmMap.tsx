@@ -161,12 +161,12 @@ function DatInfo({ map, dat }: { map: SmMap | null; dat: DatO | null }) {
   const chu = !dat
     ? tr('Ô thường: môn giữ được +1 điểm mỗi giờ.', 'Ordinary tile: +1 point per hour for the holder.')
     : dat[2] === 'linh_mach'
-      ? tr('Linh Mạch: môn giữ được +3 điểm mỗi giờ và +2 Khí vận mỗi sáng 5:00. Môn nào cũng đánh được ô này.', 'Spirit Vein: +3 points per hour and +2 fortune each 5:00 for the holder. Any sect may attack it.') +
+      ? tr('Linh Mạch: môn giữ được +3 điểm mỗi giờ và +2 Khí vận mỗi sáng 5:00. Môn mạnh yếu gì cũng đánh được ô này, đệ tử cũng ra lệnh được. Muốn xuất chinh thì môn phải có đất kề bên.', 'Spirit Vein: +3 points per hour and +2 fortune each 5:00 for the holder. Any sect may attack it whatever its strength, and disciples can order the march. You still need land next to it to march.') +
         (dat[5] != null
           ? tr(` Trữ lượng còn ${Math.max(0, dat[5])}/${map.lm_tru ?? 120} điểm (khoảng ${Math.max(0, Math.ceil(dat[5] / 3))} giờ giữ). Cạn thì mạch dời sang một ô trống khác, ô này thành ô thường.`, ` Reserve ${Math.max(0, dat[5])}/${map.lm_tru ?? 120} points (about ${Math.max(0, Math.ceil(dat[5] / 3))} hours held). When dry it moves to another empty tile.`)
           : '')
       : dat[2] === 'thien_tri'
-        ? tr('Thiên Trì: môn giữ được +5 điểm mỗi giờ, người đứng giữ mạnh thêm 10%. Môn nào cũng đánh được ô này.', 'Heaven Pool: +5 points per hour, guards +10% stronger. Any sect may attack it.')
+        ? tr('Thiên Trì: môn giữ được +5 điểm mỗi giờ, người đứng giữ mạnh thêm 10%. Môn mạnh yếu gì cũng đánh được ô này, đệ tử cũng ra lệnh được. Muốn xuất chinh thì môn phải có đất kề bên.', 'Heaven Pool: +5 points per hour, guards 10% stronger. Any sect may attack it whatever its strength, and disciples can order the march. You still need land next to it to march.')
         : tr('Yêu thú chiếm ô này. Đánh thắng thì ô về môn ta, +1 điểm mỗi giờ như ô thường. Ổ yêu thú có thể đánh ô của môn mạnh trong vòng 2 ô quanh nó; diệt ổ trước giờ đánh thì đợt đó tan.', 'A demon beast holds this tile. Beat it and the tile is ours, +1 point per hour. A beast den may attack strong sects within 2 tiles; destroy it first and that raid is off.');
   return <p className={`sm-dat-info ${dat?.[2] ?? 'thuong'}`}>{chu}</p>;
 }
