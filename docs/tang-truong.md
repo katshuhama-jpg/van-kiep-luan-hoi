@@ -30,7 +30,12 @@ Phan Anh Tuấn báo: kiếp Chuẩn Thánh mạnh nhất có thể rơi khỏi 
 
 Kế hoạch: làm 7 khối tới hạn, chia cho 6 agent chạy song song trong worktree riêng, phiên chính ghép và thử lại toàn bộ. Ngày 12 (góp ý Fanpage, 4 mục), Ngày 36 (soát 143 quái), Ngày 38 (kênh Thế giới, đã bật), Ngày 30 (luật Sơn Môn mới, chạy từ 5:00 21/11), Ngày 22 (đổi tên Lực chiến + nền tu vi sau cờ), Ngày 10 (2 ô còn lại), Ngày 35 (10 cốt truyện). apply_migration của phiên phải chờ người duyệt nên hết giờ 3 lần; Tyler tự dán 3 file SQL vào Supabase lúc ~22:40.
 
-Số chính: CHƯA ĐỌC ĐÊM NAY. Sau lần chờ duyệt bị hết giờ, công cụ execute_sql không cho gọi lại trong lượt này, nên không chạy được các câu SQL đếm người mới, D1, phễu. Đêm 21/11 đọc bù 2 ngày.
+Số chính (đọc bù lúc ~23:50 sau khi Tyler cho phép, tài khoản theo ngày tạo giờ VN):
+- Tài khoản mới: 17/11 49, 18/11 61, 19/11 112, 20/11 58 (chưa hết ngày).
+- D1 (có kiếp từ ngày hôm sau): 15/11 31,5%, 16/11 31,6%, 17/11 20,4%, 18/11 37,0% (cao nhất từ 11/11; bản 19/11 có màn đầu gọn và kiếp 1 nhanh). D7: 5/11 12,5%, 8/11 13,0%, 10/11 5,2%, 12/11 5,7% (2 ngày thấp là ngày ít người mới, 39-58 người).
+- Đủ 10 kiếp: 18/11 22/61 (36%), 19/11 25/112 (22%, còn đang chơi).
+- Phiên 19/11: 1.256 sid, trung vị chơi 5,2 phút (17/11 2,3; 18/11 3,3). Màn rời nhiều nhất 19/11: đầu thai 477, chơi 406, ? 452, sự kiện 279, chết 119.
+- 24 giờ: life_start 445 phiên, sm_open 312, first_simple 153 → first_go 117 (76%), ct_create 79, tt3_mo 11.
 - Lỗi Vercel 24 giờ: không có. Chi phí Vercel 18-19/11: $1,91 cho 2 ngày (~$0,96/ngày; gói Pro $0,67/ngày, build $0,14/ngày, bộ nhớ hàm $0,06/ngày).
 
 Góp ý (Ngày 37): trong game 13 dòng `moi` (#295-#308), sổ mọi kênh 6 dòng (Fanpage 4, Group 2). Không có Claude in Chrome nên không đọc trực tiếp Fanpage/Group.
@@ -57,7 +62,7 @@ Marketing (soạn sẵn cho Tyler tự đăng, đã qua humanizer):
 - Page, sáng 21/11: "Vạn Kiếp Luân Hồi có kênh Thế giới rồi. Bấm nút bong bóng trên màn chơi là nói chuyện được với đạo hữu khắp thiên hạ: hỏi ai vừa phi thăng, môn nào đang tuyển đệ tử, hay kể kiếp này chết lãng xẹt ra sao. Có chân thân và liên kết Google là gửi tin được. Ai Khai Thiên hay mở kết cục hiếm đầu tiên, kênh tự báo cho cả thiên hạ biết."
 - Group người chơi (Ngày 10 + 30), "Từ hôm nay đất có giá": "Sơn Môn có luật mới từ 5:00 sáng nay. Đánh thua thì người đi theo bị trọng thương, thua càng nhiều trận trong ngày càng nặng, 5:00 sáng hồi hết. Môn chủ, trưởng lão bỏ được ô không cần. Đất phải liền với chính điện: mất ô nối thì các ô bị tách cũng mất theo, nên mở đất thành khối. Linh Mạch mới sinh nằm ẩn, phải trinh sát mới thấy, có mạch còn có yêu thú canh. Chi tiết ở mục Luật trong Sơn Môn."
 - Video 9:16 (15 giây): cảnh 1 chữ "Kiếp này chết lãng xẹt quá" gõ vào kênh Thế giới; cảnh 2 tin hệ thống chữ nghiêng "Hàn Lập vừa phi thăng lần đầu"; cảnh 3 Thao Thiết nuốt túi linh thạch; chữ cuối "Vạn Kiếp Luân Hồi, chơi miễn phí trên web".
-- Quảng cáo: chưa nên chạy, chưa có số D1 đêm nay để so mốc (điều kiện cũ: người tự đến quay lại hôm sau từ 20% ba ngày liền).
+- Quảng cáo: chưa nên chạy. D1 18/11 37% là tín hiệu tốt nhưng mới 1 ngày; chờ D1 19/11 và 20/11 (đọc đêm 21-22/11). Nếu cả hai từ 33% trở lên thì đề xuất chạy lại đợt nhỏ 3 ngày nhắm kênh Thế giới + Sơn Môn.
 
 Kỹ năng: gamedev, game-design, uiux-pro-max, huashu-design (chấm 5 mặt), humanizer, story-writing, script-writing, the-fool, supabase-postgres-best-practices (qua các agent).
 
