@@ -381,6 +381,20 @@ Lên bản: 2026-11-27. Có cáo thị (một dòng). Phiên đêm KHÔNG đăng
 - [ ] Đo: người mới theo utm `ky2_*` từ 28/11 tới 5/12, tỉ lệ vào Sơn Môn của nhóm này.
 - Ghi chú:
 
+## Ngày 43a - Mời cài game ra màn hình chính (Tyler 21/11 16:10: "làm luôn cho ngày mai")
+Lên bản: 2026-11-22. Làm ngay sau Ngày 18a. Cờ `PWA_ON`, bật nếu thử sạch. Có cáo thị một dòng.
+Đã kiểm 21/11: game chưa có manifest, service worker hay lời mời cài đặt nào.
+- [ ] `app/manifest.ts` (tên "Vạn Kiếp Luân Hồi", tên ngắn "Vạn Kiếp", display standalone, start_url `/choi?utm_source=pwa`, màu nền theo game), biểu tượng 192, 512 và maskable từ hình pixel có sẵn (phóng hệ số nguyên, không vẽ mới), apple-touch-icon. Service worker tối thiểu (`public/sw.js`): chỉ để cài được; KHÔNG cache trang hay dữ liệu game (tránh người chơi kẹt bản cũ).
+- [ ] Lời mời, do người chơi chủ động bấm: KHÔNG popup. Một dòng nhỏ có nút ở màn Chân thân, hiện lần đầu ngay sau khi tạo chân thân và sau đó nằm ở tab Nhân vật: "Thêm Vạn Kiếp ra màn hình chính - mở game bằng một chạm". Android/Chrome: giữ sự kiện `beforeinstallprompt`, bấm nút mới gọi `prompt()`. iPhone/Safari: bấm nút hiện 2 bước bằng hình (Chia sẻ → Thêm vào MH chính). Đã cài (display-mode standalone) hoặc đã bấm "Để sau" 2 lần thì ẩn hẳn. Trình duyệt trong Facebook/Zalo (không cài được): thay bằng dòng "Mở bằng Chrome/Safari để cài".
+- [ ] Đo: `pwa_show`, `pwa_click`, `pwa_installed` (appinstalled), số phiên có utm_source=pwa, D7 nhóm đã cài so với chưa cài. Ghi Sổ cải thiện.
+- [ ] Thử: Playwright 390x844 (Android giả lập thấy nút, iPhone giả lập thấy hướng dẫn), smoke.cjs và smoke-login không hỏng, bản dựng qua.
+- Ghi chú:
+
+## Ngày 43b - Thông báo nhắc quay lại (sau 43a, CHỜ Tyler)
+Lên bản: chưa đặt ngày. KHÔNG làm cho tới khi Tyler xác nhận trong chat và tự thêm khóa gửi thông báo (VAPID) vào biến môi trường Vercel. Phiên đêm không tự tạo khóa, không đụng cấu hình Vercel.
+Phác thảo để Tyler duyệt: nút "Báo cho ta khi thanh tu vi đầy" trên màn tu vi và "Báo khi môn bị đánh" ở Sơn Môn, chỉ xin quyền trình duyệt khi người chơi bấm nút; tối đa 1 thông báo mỗi người mỗi ngày, không gửi 22:00-7:00; tắt được bằng một nút ở tab Nhân vật; đo số người bật, tỉ lệ bấm, D7 nhóm bật so với không bật.
+- Ghi chú:
+
 ## Ngoài game (Tyler tự làm)
 - Đăng "Biên niên Kỷ" mỗi tuần và lúc kết Kỷ (Claude soạn khi Tyler hỏi): môn giữ nhiều ô nhất, trận lớn, môn lật ngược thế cờ.
 
