@@ -67,7 +67,20 @@ export function displayName(user: Player | null): string {
 }
 
 /** Tải hồ sơ + bản lưu. Người chơi khách dùng dữ liệu trên máy. */
-export async function loadAll(user: Player | null): Promise<{ meta: Meta; save: SaveState | null }> {
+/** 21/11: trang đầu có 3-4 thẻ cùng gọi loadAll một lúc (Sổ Sinh Tử, chân thân, đệ tử...): gộp các lần gọi đang chạy dở
+ *  thành một lần vkl_me để đỡ tải máy chủ lúc đông. Mỗi người gọi nhận bản sao nông của meta. */
+const dangTai = new Map<string, Promise<{ meta: Meta; save: SaveState | null }>>();
+export function loadAll(user: Player | null): Promise<{ meta: Meta; save: SaveState | null }> {
+  const k = user?.token ?? 'khach';
+  let p = dangTai.get(k);
+  if (!p) {
+    p = loadAllMot(user).finally(() => dangTai.delete(k));
+    dangTai.set(k, p);
+  }
+  return p.then((r) => ({ meta: { ...r.meta }, save: r.save }));
+}
+
+async function loadAllMot(user: Player | null): Promise<{ meta: Meta; save: SaveState | null }> {
   const sb = supabase();
   if (user && sb) {
     // máy chủ chậm hoặc lỗi: thử lại, KHÔNG được rơi về dữ liệu khách trên máy rồi ghi đè hồ sơ thật (31/10: nhiều tài khoản mất số kiếp vì vậy)
