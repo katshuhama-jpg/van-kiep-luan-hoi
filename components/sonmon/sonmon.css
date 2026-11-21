@@ -50,6 +50,7 @@ p.sm-card { display: block; }
 .sm-card.alert .sm-why { color: #ffe08a; }
 .sm-err { background: #f8d9d0; border: 2px solid var(--red-d); color: var(--red-d); padding: 6px 10px; font-size: 15px; }
 .sm-ok { background: #dff0d8; border: 2px solid var(--jade); color: #1d4a3d; padding: 6px 10px; font-size: 15px; }
+.sm-warn { background: #fbecc4; border: 2px solid #b07a1a; color: #5c3d06; padding: 6px 10px; font-size: 15px; margin: 0; }
 
 /* chip lọc */
 .sm-chips { display: flex; gap: 6px; flex-wrap: wrap; }

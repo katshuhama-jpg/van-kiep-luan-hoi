@@ -270,7 +270,7 @@ export function SmXuatChinh({ c }: { c: SmCtx }) {
           {tr(`Lực ta lúc này: ${fmtN(ta)}${chinh ? ` (${chinh.n} người theo)` : ''}, đã tính Khí vận. Bên giữ có lợi thế sân nhà, 0-7h còn mạnh gấp đôi.`, `Our power now: ${fmtN(ta)}${chinh ? ` (${chinh.n} joined)` : ''}, fortune included. Defenders get a home bonus, doubled 0-7h.`)}
         </p>
         <p className="sm-note">
-          {tr(`Thắng: ô về tay môn ta, bảo hộ ${SM_CFG.gio.baoHoGio} giờ. Thua: người đi theo nghỉ ${SM_CFG.gio.nghiGio} giờ, rồi bị trọng thương. Thua lần đầu trong ngày Lực chiến -10% thêm 1 giờ, lần 2 -30% thêm 3 giờ, từ lần 3 -50% tới 5:00.`, `Win: the tile is ours, protected ${SM_CFG.gio.baoHoGio} h. Lose: marchers rest ${SM_CFG.gio.nghiGio} h, then are wounded: first loss of the day -10% power for 1 more hour, second -30% for 3 hours, third and later -50% until 5:00.`)}
+          {tr(`Ô nào cũng có hộ sơn trận bằng 1,5 người cỡ trung bình của môn giữ. Thắng: ô về tay môn ta, bảo hộ ${SM_CFG.gio.baoHoGio} giờ (môn kia yếu hơn nửa môn ta thì ô chỉ về trống). Thua: người đi theo nghỉ ${SM_CFG.gio.nghiGio} giờ, rồi bị trọng thương. Thua lần đầu trong ngày Lực chiến -10% thêm 1 giờ, lần 2 -30% thêm 3 giờ, từ lần 3 -50% tới 5:00.`, `Every tile has a sect ward worth 1.5 of the holder's average members. Win: the tile is ours, protected ${SM_CFG.gio.baoHoGio} h (if they are under half our strength, it only becomes empty). Lose: marchers rest ${SM_CFG.gio.nghiGio} h, then are wounded: first loss of the day -10% power for 1 more hour, second -30% for 3 hours, third and later -50% until 5:00.`)}
         </p>
       </section>
     </>
@@ -305,6 +305,11 @@ function baoCau(b: SmBao, mine: number): { tag: string; cls: string; chu: string
   if (b.loai === 'dut_mach')
     return { tag: tr('Đứt', 'Cut'), cls: 'lose', chu: tr(`Đất đứt mạch, mất ${b.nd?.n ?? '?'} ô${b.nd?.ds?.length ? `: ${b.nd.ds.join(', ')}` : ''}`, `Land cut off from the hall, lost ${b.nd?.n ?? '?'} tiles${b.nd?.ds?.length ? `: ${b.nd.ds.join(', ')}` : ''}`) };
   if (b.loai === 'mat_het') return { tag: tr('Mất', 'Lost'), cls: 'lose', chu: tr('Môn mất hết ô. Cắm cờ lại một ô trống bất kỳ, bảo hộ 12 giờ.', 'The sect lost all tiles. Plant again anywhere, protected 12 h.') };
+  // 21/11: đánh thắng môn yếu thế: đuổi người giữ, ô về trống
+  if (b.loai === 'duoi')
+    return b.a === mine
+      ? { tag: tr('Đuổi', 'Drove'), cls: 'flag', chu: tr(`Đuổi người giữ ${o} của ${b.ten_b ?? '?'}. Môn họ yếu thế nên ô về trống, không về tay ta`, `Drove ${b.ten_b ?? '?'} from ${o}. They are far weaker, so the tile is now empty, not ours`) }
+      : { tag: tr('Mất', 'Lost'), cls: 'lose', chu: tr(`${b.ten_a ?? '?'} đuổi người giữ ${o}, ô về trống. Khai hoang lại được ngay`, `${b.ten_a ?? '?'} drove us from ${o}; it is empty now, claim it back`) };
   const danh = b.a === mine;
   const thangA = b.nd?.kq === 'thang';
   if (danh)

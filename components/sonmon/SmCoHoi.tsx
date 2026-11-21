@@ -62,6 +62,12 @@ export function useCoHoi(c: SmCtx, q: number | null, r: number | null, khoa: str
   return x;
 }
 
+/** 21/11: môn bị đánh có tổng Lực chiến dưới nửa môn ta thì thắng chỉ đuổi người giữ, ô về trống */
+function TheYeu({ x }: { x: SmCoHoi }) {
+  if (!x.the_yeu) return null;
+  return <p className="sm-warn">{tr('Môn này yếu hơn ta nhiều (Lực chiến cả môn dưới một nửa). Thắng chỉ đuổi được người giữ, ô về trống, không về tay ta và không có điểm chiếm.', 'This sect is far weaker than ours. Winning only drives off the guards: the tile becomes empty, not ours, and gives no capture points.')}</p>;
+}
+
 /** thẻ "Cơ hội thắng" ở màn xuất chinh */
 export function CoHoiThe({ x, dangTap }: { x: SmCoHoi | null; dangTap: boolean }) {
   if (!x) return <p className="sm-note">{tr('Đang tính cơ hội thắng...', 'Working out the odds...')}</p>;
@@ -94,7 +100,9 @@ export function CoHoiThe({ x, dangTap }: { x: SmCoHoi | null; dangTap: boolean }
             ? tr(`Đang trinh sát, có tin lúc ${hhmm(x.trinh_ve)}${dangTap ? '. Tin về trước khi hết giờ tập hợp thì vẫn kịp gọi thêm người' : ''}.`, `Scouting, back at ${hhmm(x.trinh_ve)}.`)
             : tr('Chưa trinh sát nên chưa biết lực giữ. Trinh sát ô này để biết cần bao nhiêu người.', 'Not scouted yet. Scout this tile to know how many you need.')}
           {x.dem ? tr(' Tới nơi lúc 0-7h: bên giữ mạnh gấp đôi.', ' Night arrival doubles the defence.') : ''}
+          {tr(' Ô không ai đứng giữ vẫn có hộ sơn trận, khoảng 1,5 người cỡ trung bình của họ.', ' Unguarded tiles still have a sect ward worth about 1.5 of their average members.')}
         </p>
+        <TheYeu x={x} />
       </div>
     );
   const nac = nacCoHoi(x);
@@ -140,8 +148,9 @@ export function CoHoiThe({ x, dangTap }: { x: SmCoHoi | null; dangTap: boolean }
         </p>
       )}
       <p className="sm-note">
-        {tr(`Theo trinh sát lúc ${hhmm(x.trinh_luc!)}: ${x.n ?? 0} người giữ, sai số khoảng 15%. Đã tính sân nhà, Khí vận của họ${x.dem ? ', đêm gấp đôi' : ''}. Họ có thể gọi thêm người trong 20 phút đi đường.`, `From the scout at ${hhmm(x.trinh_luc!)}: ${x.n ?? 0} guards, about 15% error. They may reinforce while we march.`)}
+        {tr(`Theo trinh sát lúc ${hhmm(x.trinh_luc!)}: ${x.n ?? 0} người giữ, sai số khoảng 15%. Đã tính sân nhà, Khí vận của họ${x.nen ? `, hộ sơn trận ${fmtN(x.nen)}` : ''}${x.dem ? ', đêm gấp đôi' : ''}. Họ có thể gọi thêm người trong 20 phút đi đường.`, `From the scout at ${hhmm(x.trinh_luc!)}: ${x.n ?? 0} guards, about 15% error${x.nen ? `, sect ward ${fmtN(x.nen)}` : ''}. They may reinforce while we march.`)}
       </p>
+      <TheYeu x={x} />
     </div>
   );
 }

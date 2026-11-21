@@ -34,7 +34,7 @@ export type SmTrinh = { id: number; o: [number, number]; xong_luc: string; ket_q
 export type SmBao = {
   id: number;
   luc: string;
-  loai: 'tran' | 'cam_co' | 'huy' | 'mat_het' | 'keo_nguoi' | 'lm_doi' | 'bo_o' | 'dut_mach';
+  loai: 'tran' | 'cam_co' | 'huy' | 'mat_het' | 'keo_nguoi' | 'lm_doi' | 'bo_o' | 'dut_mach' | 'duoi';
   a: number | null;
   b: number | null;
   ten_a: string | null;
@@ -146,6 +146,8 @@ export type SmCoHoi = {
   giu?: number; lo?: number; hi?: number | null; n?: number; trinh_luc?: string;
   muc?: number; n_muc?: number; trinh_ve?: string | null;
   dem?: boolean; toi?: string;
+  /** 21/11 bản 2: sức hộ sơn trận đã cộng vào giu/lo/hi; môn kia yếu hơn ta nhiều (thắng chỉ làm ô về trống) */
+  nen?: number; the_yeu?: boolean;
 };
 /** Ngày 8a: bảng Công trong môn + "nếu Kỷ kết thúc bây giờ" (vkl_sm_cong_bang) */
 export type SmBvNhan = { o: 'vu_khi' | 'phu_kien'; loai: string; pham: string; pct?: number; ten?: string; hang_cong?: number };
@@ -405,7 +407,11 @@ export function realApi(): SmApi {
       if (!r.ok) throw new SmErr(r.status === 404 ? 'SM_CHUA_MO' : 'SM_NET');
       return (await r.json()) as SmMap;
     },
-    coHoi: (q, r) => rpc<SmCoHoi>('vkl_sm_co_hoi', { p_q: q, p_r: r }, true, true).catch(() => null),
+    // 21/11: bản 2 cộng hộ sơn trận và báo thế yếu; lỗi thì về bản cũ
+    coHoi: (q, r) =>
+      rpc<SmCoHoi>('vkl_sm_co_hoi2', { p_q: q, p_r: r }, true, true)
+        .catch(() => rpc<SmCoHoi>('vkl_sm_co_hoi', { p_q: q, p_r: r }, true, true))
+        .catch(() => null),
     bau: () => rpc<SmBau>('vkl_sm_bau', {}, true, true).catch(() => null),
     // 20/11: bản 2 xếp hạng môn để tính phẩm pháp bảo theo Điểm giữ đất (như bảng Kỷ); lỗi thì về bản cũ
     congBang: () =>
