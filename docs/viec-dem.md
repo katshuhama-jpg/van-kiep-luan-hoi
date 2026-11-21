@@ -305,6 +305,29 @@ Làm ĐẦU TIÊN mỗi đêm, trước các khối tính năng (chỉ là đọ
     - #306 (juno199x, cùng chuyện #304): "Chuyện này mình sửa ở bản 4.6.4 sáng 21/11 rồi nhé, như câu trả lời ở góp ý kia của bạn. Lần bị chặn mà thoát được thì bạn chỉ mất một phần linh thạch và bị thương, không mất mạng." (10 phúc)
     - #303 (godwhale99): "Cảm ơn bạn hỏi kỹ. Tỉ lệ đột phá dù cộng thêm cách nào cũng chỉ cao nhất 97%, nên 90% cộng Huyết tế 35% vẫn còn 3% hỏng. Từ bản 4.6.4 sáng 21/11, màn độ kiếp ghi rõ mức trần này ngay dưới tỉ lệ. Mình gửi bạn 10 phúc duyên." (10 phúc)
   - Góp ý giữ `moi` (chưa làm, chưa có ngày): #307 tìm yêu thú, #308 hệ đồ rơi, #305 hợp luyện sau chuyển tu, #300 người mới bị đánh, #299 cân bằng công pháp khống chế, #298 khí vận khởi đầu và số liệu. Đã đưa vào khối Ngày 39.
+
+## Ngày 38 - MỖI ĐÊM: 4-5 kết cục mới mỗi quyển Thiên thư + cân bằng đường tu (khối lặp, Tyler giao 21/11 13:14)
+Lên bản: 2026-11-22 (LẶP LẠI MỖI ĐÊM từ đêm 21/11. Không đánh [x] cả khối, không cắt sang lưu trữ; mỗi đêm ghi một dòng nhật ký vào `docs/cot-truyen-moi.md` (kết cục) và `docs/so-lieu.md` mục "Cân bằng đường tu".)
+Làm sau Ngày 37 (góp ý) và các khối tới hạn, cùng lúc với Ngày 35 (cốt truyện có thể dẫn tới kết cục mới). Đêm quá tải: tới 3:00 chưa bắt đầu thì làm ít nhất 2 kết cục mỗi quyển, ghi nợ, đêm sau bù.
+
+A. KẾT CỤC MỚI: mỗi đêm 4-5 kết cục cho MỖI quyển (tổng 12-15/đêm).
+- Quyển I (Vạn Kiếp Chân Nhân, mảnh ký ức, phàm giới tới phi thăng): kết cục ở phàm giới, Tu chân, Tiên/Ma giới, cho người chưa mở Quyển II. Ưu tiên kiếp 1-10 và đường tu đang ít kết cục riêng (đếm trong `lib/game/endings.ts`).
+- Quyển II (Vạn Mảnh, Kẻ Gõ Chuông, chiến thư, ba cõi, Hồng Hoang): kết cục chỉ mở được sau Vạn Kiếp Quy Nhất (điều kiện đọc tiến độ Thiên thư như `tt3Open`/`quyNhatDone`), nhiều cái ở Hồng Hoang và cảnh giới cao cho 191+ người đã Khai Thiên.
+- Quyển III (Mạnh Bà, Khấu, Vong Xuyên, Cơm Chiều): lấy đúng danh sách và chữ đã viết trong `docs/thien-thu-3.md` theo thứ tự chặng (làm thay và sớm hơn lịch khối Ngày 8g: chặng 2, rồi 3, rồi 4, rồi 6 kết cục gắn hệ thống, rồi 4 kết cục bí ẩn). Hết danh sách đã viết thì viết thêm theo đúng sổ liền mạch (mục 3 của file đó). Tick ô tương ứng của khối Ngày 8g khi xong chặng.
+- Mỗi kết cục: id không trùng (grep), name/desc/hint/how bằng tr('VI','EN'), `rare` 1-5, test rõ ràng có thể đạt trong một kiếp. Kết cục bí ẩn (không có how) tối đa 1/quyển/đêm. Quyển III: KHÔNG lộ cách giải ở bất kỳ màn nào (Tyler 21/11: "hiện sổ 3 nhưng không để cách giải"): `hint` để mơ hồ, không có how hiện cho người chơi.
+- Quy trình như Ngày 35: story-writing → script-writing → humanizer → glossary `claude/glossary-tu-tien-cws.csv` → the-fool (kết cục có đạt được không, có trái lore `lib/game/lore.ts`, `docs/thien-thu-3.md` không, có chết nhảm không). Kết cục cần sự kiện mới thì viết sự kiện (gộp vào 10 cốt truyện của Ngày 35 nếu hợp).
+- Thử: mỗi kết cục mới một test ép (rnd/char giả) cho ra đúng `test`; `scripts/sim-do-kho.ts 3000` trước/sau, đếm số kết cục mới thật sự xuất hiện (mục tiêu: mỗi kết cục không bí ẩn gặp được trong mô phỏng hoặc có đường đi rõ); tỉ lệ chết và phi thăng không lệch quá 1 điểm %. Sổ Sinh Tử và thẻ trang đầu (x/tổng) tự cập nhật tổng.
+- Cáo thị: mỗi tuần một dòng chung ("Thêm N kết cục mới: I x, II y, III z").
+
+B. CÂN BẰNG ĐƯỜNG TU (mỗi đêm đo, chỉ sửa khi cần).
+- Đo (Supabase, chỉ SELECT), kiếp 3 ngày gần nhất, theo `path` (Kiếm, Ma, Phật, Yêu, Đan, Trận, và Võ, Nho khi đã bật): số kiếp, % phi thăng, tuổi thọ trung bình, cảnh giới trung bình, % chết trước 100 tuổi; Lôi đài: tỉ lệ thắng theo đường tu (bảng trận lôi đài); Sơn Môn: Lực chiến trung bình theo đường tu.
+- Ngưỡng cần sửa: % phi thăng của một đường tu ngoài khoảng 0,6-1,4 lần trung bình tất cả đường tu, hoặc tuổi thọ trung bình dưới 0,6 lần trung bình, hoặc tỉ lệ thắng Lôi đài ngoài 42-58% (từ 200 trận trở lên). Trong ngưỡng thì chỉ ghi số, không đổi gì.
+- Số đo lúc giao việc (21/11, 3 ngày): Ma tu 945 kiếp, phi thăng 7,8%, tuổi TB 140 (đông người chọn nhất mà thấp nhất); Kiếm 25,1% / 323; Phật 31,4% / 376; Yêu 21,4% / 355; Đan 13,5% / 309; Trận 16,9% / 344. Trung bình khoảng 19%: Ma tu (0,4 lần) và có thể Phật tu (1,65 lần) đang ngoài ngưỡng, Đan tu sát ngưỡng dưới. Còn 2 dòng `path` = 'Buddhist Cultivator' (tên tiếng Anh lọt vào cột): tìm chỗ ghi và sửa để luôn lưu tên tiếng Việt.
+- Cách sửa (game-design balance-review, mỗi đêm tối đa một đường tu, đổi nhỏ từng bước, tối đa 3 điểm % phi thăng mỗi đêm): ưu tiên giữ bản sắc (Ma tu nhanh và liều, Phật tu chậm và vững): chỉnh tỉ lệ tẩu hỏa, sự kiện chết, tốc độ tu, phần thưởng; không làm các đường giống nhau. Không đổi Lực chiến Sơn Môn và Lôi đài nếu chưa đo trận. Mô phỏng `scripts/sim-do-kho.ts 3000` theo từng đường tu trước/sau, ghi số. Thay đổi người chơi thấy được thì một dòng cáo thị ("Cân bằng: Ma tu bớt tẩu hỏa...").
+- Ghi `docs/so-lieu.md` mục "Cân bằng đường tu": ngày, bảng số, đã đổi gì (hay "trong ngưỡng"). Đo lại sau 3 ngày mới chỉnh tiếp cùng đường tu đó.
+
+- Tin cuối phiên: mục "Kết cục mới" (tên từng kết cục theo quyển, số gặp được trong mô phỏng) và mục "Cân bằng" (bảng % phi thăng theo đường tu, đã đổi gì).
+
 ## Ngày 39 - Góp ý 20/11: tìm yêu thú, người mới bị đánh liên tục, số liệu rõ (thêm đêm 20/11)
 Lên bản: 2026-11-25. Ghi tên vào `asked` cáo thị: ton (#307), nonameplayer (#300), Gia Phuc Nguyen (group), godwhale99 (#298, #305, #308), trieunhac (#299).
 - [ ] 1. Sơn Môn: hàng chip "Ô yêu thú" ở màn Bản đồ (tên ô, lực, cách mấy ô; chạm thì chọn và cuộn tới), như thẻ "Ô kề có thể đánh". Không đổi luật yêu thú dời chỗ (#307).
