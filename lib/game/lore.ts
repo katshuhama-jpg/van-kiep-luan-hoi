@@ -14,6 +14,8 @@ export interface LoreFragment {
   hint: string; // cách mở, hiện khi chưa có
   text: string;
   check: (m: Meta, c: Character, k: Career, s: LoreSocial | null) => boolean;
+  /** 21/11: tiến độ đo được từ hồ sơ [đã có, cần] để Thiên thư hiện "24/30" thay vì chỉ có lời gợi ý */
+  tien?: (m: Meta) => [number, number];
 }
 
 /** Số liệu giang hồ (lấy từ máy chủ) để mở các mảnh Quyển II */
@@ -34,6 +36,7 @@ export const LORE: LoreFragment[] = [
     hint: tr('Sống trọn một kiếp người.', "Live one full life."),
     text: tr('Mỗi lần chết đi, bạn nghe một tiếng chuông. Không phải chuông chùa, không phải chuông Diêm La. Nó vang lên từ một nơi rất xa, rất cũ, như thể ai đó đang đếm. Lần này, bạn đếm cùng nó: một.', "Each time you die, you hear a bell. Not a temple bell, not the bell of Yama. It rings from somewhere very far and very old, as if someone were counting. This time, you count along with it: one."),
     check: (m) => m.lives >= 1,
+    tien: (m) => [m.lives ?? 0, 1],
   },
   {
     id: 'mat',
@@ -41,6 +44,7 @@ export const LORE: LoreFragment[] = [
     hint: tr('Trải qua 5 kiếp.', "Live through 5 lives."),
     text: tr('Năm kiếp, năm khuôn mặt khác nhau. Nhưng trong giấc mơ nào bạn cũng thấy một người đứng quay lưng trên đỉnh núi tuyết. Người đó không bao giờ quay lại. Bạn bắt đầu ngờ rằng người đó cũng đang chờ bạn.', "Five lives, five different faces. Yet in every dream you see someone standing with their back to you atop a snowy peak. They never turn around. You begin to suspect they are waiting for you, too."),
     check: (m) => m.lives >= 5,
+    tien: (m) => [m.lives ?? 0, 5],
   },
   {
     id: 'kim_dan',
@@ -55,6 +59,7 @@ export const LORE: LoreFragment[] = [
     hint: tr('Mở 5 kết cục trong Sổ Sinh Tử.', "Unlock 5 endings in the Book of Life and Death."),
     text: tr('Chết vì kiếm, vì độc, vì đói, vì già. Mỗi cái chết là một câu trả lời sai cho cùng một câu hỏi. Bạn vẫn chưa biết câu hỏi là gì, nhưng đã biết nó không nằm ở cái chết.', "Death by sword, by poison, by hunger, by old age. Each death is a wrong answer to the same question. You still don't know what the question is, but you know it does not lie in death."),
     check: (m) => nEnd(m) >= 5,
+    tien: (m) => [nEnd(m), 5],
   },
   {
     id: 'an_oan',
@@ -90,6 +95,7 @@ export const LORE: LoreFragment[] = [
     hint: tr('Mở 13 kết cục trong Sổ Sinh Tử.', "Unlock 13 endings in the Book of Life and Death."),
     text: tr('Mạnh Bà đưa chén canh, bạn đẩy ra. Bà không ép, chỉ nói: "Ngươi đã chết đủ nhiều để nhớ. Lần sau, đừng tìm câu trả lời nữa. Hãy nhìn lại những người đã đi cùng ngươi."', "Meng Po offers you the bowl of soup, and you push it away. She does not insist, only says: \"You have died enough times to remember. Next time, stop searching for the answer. Look back at those who walked beside you.\""),
     check: (m) => nEnd(m) >= 13,
+    tien: (m) => [nEnd(m), 13],
   },
   {
     id: 'dinh',
@@ -162,14 +168,16 @@ export const LORE: LoreFragment[] = [
     hint: tr('Mở 30 kết cục trong Sổ Sinh Tử.', "Unlock 30 endings in the Book of Life and Death."),
     text: tr('Sổ Sinh Tử đã kín ba mươi trang. Mạnh Bà gấp sổ lại, lần đầu tiên nhìn thẳng vào bạn: "Ta chép sổ thay cho kẻ ấy. Hắn ở trên đỉnh cao nhất của các cõi, gõ chuông mỗi khi một mảnh chết. Ngươi đủ sức gặp hắn rồi."', "Thirty pages of the Book of Life and Death are filled. Meng Po closes it and, for the first time, looks you straight in the eye: \"I keep this book on behalf of another. He sits on the highest peak of all the realms and strikes the bell each time a piece dies. You are strong enough to face him now.\""),
     check: (m) => nEnd(m) >= 30,
+    tien: (m) => [nEnd(m), 30],
   },
   {
     id: 'ke_go_chuong',
     book: 2,
     title: tr('XIX. Kẻ Gõ Chuông', "XIX. The Bell Ringer"),
-    hint: tr('Ở cảnh giới cuối của một cõi, đánh bại kẻ đang gõ chuông.', "At the final realm of a world, defeat the one who rings the bell."),
+    hint: tr('Mở đủ 7 mảnh Quyển II, rồi tu tới cảnh giới cuối của Tiên giới, Ma giới hay Thái Hư giới: Kẻ Gõ Chuông sẽ hiện ra. Đỡ được ba tiếng chuông là thắng (tâm cảnh, khí vận cao thì dễ hơn).', "Unlock 7 Volume II shards, then reach the top realm of the Immortal, Demon or Void world: the Bell Ringer appears. Withstand three tolls to win (higher Mind and Luck help)."),
     text: tr('Kẻ Gõ Chuông không có mặt. Hắn chỉ là một bàn tay cầm dùi và một giọng nói: "Không có ta, các ngươi đã quên nhau từ vạn kiếp trước. Ta đếm để các ngươi còn nhớ mình từng là một." Dùi chuông rơi xuống chân bạn.', "The Bell Ringer has no face. He is only a hand holding a mallet, and a voice: \"Without me, you would have forgotten each other ten thousand lives ago. I count so you remember that you were once one.\" The mallet falls at your feet."),
     check: (m) => !!m.chuongWin,
+    tien: (m) => [Math.min(lore2Count(m), 7), 7],
   },
   {
     id: 'chuong_vo',

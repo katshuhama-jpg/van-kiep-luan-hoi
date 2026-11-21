@@ -18,6 +18,7 @@ import { ContinueBar, LiveStrip, NewGraves, NewsToast, useLive } from '@/compone
 import { HomeVanKiep } from '@/components/TangKiep';
 import { HomeCt } from '@/components/TamTai';
 import { SuDoHome } from '@/components/SuTim';
+import { HomeTienDo } from '@/components/HomeTienDo';
 import { CHAN_THAN_ON, TAB_ON } from '@/lib/flags';
 import { TabBar, TopMenu } from '@/components/TabBar';
 
@@ -49,6 +50,7 @@ export default function Home() {
 
       <LiveStrip d={live} />
       <HomeVanKiep user={user} ready={ready} noWeek={CHAN_THAN_ON} />
+      <HomeTienDo user={user} ready={ready} />
       <HomeCt user={user} ready={ready} on={CHAN_THAN_ON} />
       <SuDoHome user={user} ready={ready} />
 

@@ -186,12 +186,68 @@ export default function SoSinhTu() {
   );
 }
 
+/** 21/11: thanh tiến độ "24/30" cho mảnh chưa mở, đo được từ hồ sơ */
+function TtTien({ v: [co, can] }: { v: [number, number] }) {
+  const x = Math.min(co, can);
+  return (
+    <span className="tt-tien" role="progressbar" aria-valuemin={0} aria-valuemax={can} aria-valuenow={x} aria-label={tr(`Đã có ${x} trên ${can}`, `${x} of ${can}`)}>
+      <i style={{ width: `${(x / can) * 100}%` }} />
+      <b>
+        {x}/{can}
+      </b>
+    </span>
+  );
+}
+
+/** 21/11 (Tyler: người chơi không biết mình đang có bao nhiêu, cần làm gì tiếp): thẻ "Bước tiếp theo" đầu mỗi quyển.
+ *  Số liệu: 300 người đạt Quy Nhất nhưng 185 người đứng ở 3-5/10 mảnh quyển II, chỉ 24 người xong. */
+function TtBuocTiep({ meta, tab, open2, open3 }: { meta: Meta | null; tab: 1 | 2 | 3; open2: boolean; open3: boolean }) {
+  if (!meta) return null;
+  let ten = '';
+  let cach = '';
+  let tien: [number, number] | null = null;
+  if (tab === 2 && !open2) {
+    const n1 = lore1Count(meta);
+    ten = tr('Mở phong ấn Quyển II', 'Break the seal of Volume II');
+    cach = n1 < LORE_TOTAL
+      ? tr(`Gom đủ ${LORE_TOTAL} mảnh Quyển I trước, rồi kiếp sau chọn buông bỏ khi gặp lại chính mình (kết cục Vạn Kiếp Quy Nhất).`, `Collect all ${LORE_TOTAL} Volume I shards first, then in the next life choose to let go when you meet yourself (Ten Thousand Lives Become One).`)
+      : tr('Đủ 10 mảnh rồi. Kiếp sau bạn sẽ gặp lại chính mình: chọn buông bỏ để đạt Vạn Kiếp Quy Nhất.', 'All 10 shards found. Next life you will meet yourself: choose to let go to reach Ten Thousand Lives Become One.');
+    tien = [Math.min(n1, LORE_TOTAL), LORE_TOTAL];
+  } else if (tab === 3 && !open3) {
+    ten = tr('Mở Quyển III', 'Open Volume III');
+    // 21/11 (Tyler): hiện quyển III nhưng không để cách giải
+    cach = tr('Đi hết Quyển II thì quyển này tự mở.', 'Finish Volume II and this volume opens.');
+    tien = open2 ? [lore2Count(meta), LORE2_TOTAL] : null;
+  } else if (tab === 3) {
+    const i = TT3_PAGES.findIndex((p) => !meta.endings?.[p.id]);
+    if (i < 0) return null;
+    ten = TT3_PAGES[i].title.split('.')[0] + '. ???';
+    cach = tr('Quyển này không có lời gợi ý. Cứ sống, trang sau sẽ tự tìm tới.', 'This volume gives no hints. Keep living; the next page will find you.');
+  } else {
+    const list = tab === 1 ? LORE1 : LORE2;
+    const f = list.find((x) => !meta.lore?.includes(x.id));
+    if (!f) return null;
+    ten = f.title.split('.')[0] + '. ???';
+    cach = f.hint;
+    tien = f.tien ? f.tien(meta) : null;
+  }
+  return (
+    <div className="tt-buoc">
+      <small>{tr('Bước tiếp theo', 'Next step')}</small>
+      <b>{ten}</b>
+      <p>{cach}</p>
+      {tien && <TtTien v={tien} />}
+      <small className="tt-buoc-chu">{tr('Mảnh mới mở khi một kiếp khép lại.', 'New shards unlock when a life closes.')}</small>
+    </div>
+  );
+}
+
 /** Thiên thư hai quyển: Quyển II bị phong ấn tới khi đạt Vạn Kiếp Quy Nhất */
 function ThienThu({ meta }: { meta: Meta | null }) {
   const open2 = quyNhatDone(meta);
   const [tab, setTab] = useState<1 | 2 | 3>(1);
-  // Ngày 8e: quyển III chỉ hiện tab cho người đã mở quyển II; mở khi xong quyển II (gõ hay đập chuông)
-  const show3 = TT3_ON && open2;
+  // 21/11: tab quyển III luôn hiện (khóa) để người chơi biết còn đường đi tiếp; mở khi xong quyển II (gõ hay đập chuông)
+  const show3 = TT3_ON;
   const open3 = tt3Open(meta);
   useEffect(() => {
     if (open3) setTab(3);
@@ -215,10 +271,11 @@ function ThienThu({ meta }: { meta: Meta | null }) {
         </button>
         {show3 && (
           <button role="tab" aria-selected={tab === 3} className={tab === 3 ? 'on' : ''} onClick={() => (setTab(3), track('tt3_tab', { open: open3 }))}>
-            {open3 ? tr('Quyển III · Cơm Chiều', 'Volume III · Evening Rice') : tr('Quyển III', 'Volume III')} <small>{open3 ? `${n3}/${TT3_PAGES.length}` : tr('Xong quyển II để mở', 'Finish Volume II to open')}</small>
+            {open3 ? tr('Quyển III · Cơm Chiều', 'Volume III · Evening Rice') : tr('🔒 Quyển III', '🔒 Volume III')} <small>{open3 ? `${n3}/${TT3_PAGES.length}` : tr('phong ấn', 'sealed')}</small>
           </button>
         )}
       </div>
+      <TtBuocTiep meta={meta} tab={tab} open2={open2} open3={open3} />
       {tab === 3 ? (
         open3 ? (
           <>
@@ -240,7 +297,7 @@ function ThienThu({ meta }: { meta: Meta | null }) {
                       </details>
                     ) : (
                       <>
-                        <b>{p.title.split('.')[0] + '. ???'}</b> <small>{ke ? p.hint : tr('Mở trang trước đã.', 'Open the page before first.')}</small>
+                        <b>{p.title.split('.')[0] + '. ???'}</b> <small>{ke ? tr('Trang kế tiếp.', 'Next page.') : tr('Mở trang trước đã.', 'Open the page before first.')}</small>
                       </>
                     )}
                   </li>
@@ -252,8 +309,8 @@ function ThienThu({ meta }: { meta: Meta | null }) {
             </ol>
           </>
         ) : (
-          <p className="note tt-seal" style={{ marginTop: 0 }}>
-            {tr('Quyển này mở khi bạn xong quyển II: cầm dùi chuông rồi chọn gõ tiếp hay đập vỡ.', 'This volume opens when you finish Volume II: take the bell striker and choose to ring on or shatter it.')}
+          <p className="note tt-phong" style={{ marginTop: 0 }}>
+            {tr('Quyển III "Cơm Chiều" đang bị phong ấn: 20 trang (XXI-XL), chưa ai biết cách mở trang nào. Đi hết Quyển II thì phong ấn tự tan.', 'Volume III "Evening Rice" is sealed: 20 pages (XXI-XL), and no one knows how each opens. Finish Volume II and the seal breaks.')}
           </p>
         )
       ) : tab === 1 ? (
@@ -269,7 +326,7 @@ function ThienThu({ meta }: { meta: Meta | null }) {
           {tr("Chân Nhân không chỉ vỡ làm một mảnh là bạn. Những đạo hữu trên giang hồ cũng là mảnh vỡ, và có kẻ vẫn đang đếm. Mảnh mới mở khi một kiếp khép lại. Đã mở ", "The True One did not shatter into just one shard that is you. The fellow Daoists of the jianghu are shards too, and someone is still counting. A new shard unlocks when a life closes. Unlocked ")}{n2}/{LORE2_TOTAL}.
         </p>
       ) : (
-        <p className="note tt-seal" style={{ marginTop: 0 }}>
+        <p className="note tt-phong" style={{ marginTop: 0 }}>
           
           {tr("Quyển sách bị niêm bằng một sợi chỉ vàng. Gom đủ 10 mảnh Quyển I và đạt kết cục Vạn Kiếp Quy Nhất để mở phong ấn.", "The book is sealed with a golden thread. Collect all 10 shards of Volume I and reach the ending Ten Thousand Lives Become One to break the seal.")}
         </p>
@@ -289,6 +346,7 @@ function ThienThu({ meta }: { meta: Meta | null }) {
                 ) : (
                   <>
                     <b>{f.title.split('.')[0] + '. ???'}</b> <small>{f.hint}</small>
+                    {meta && f.tien && <TtTien v={f.tien(meta)} />}
                   </>
                 )}
               </li>
