@@ -326,6 +326,19 @@ function SmBauCard({ c }: { c: SmCtx }) {
   const [ok, setOk] = useState<string | null>(null);
   if (!bau) return null;
   const { dang, gan_nhat: gn } = bau;
+  // 21/11: môn chủ còn ≤12 giờ trước khi môn được bầu thay (đồng hồ chỉ tính việc môn)
+  const canh =
+    bau.canh_con != null && !dang ? (
+      <section className="sm-card sm-warn-card">
+        <h3>{tr(`Còn ${bau.canh_con} giờ giữ ghế môn chủ`, `${bau.canh_con} hours left as leader`)}</h3>
+        <p className="sm-note">
+          {tr(
+            'Đã gần 2 ngày ngươi chưa làm việc môn. Hết giờ thì ai trong môn cũng mở được cuộc bầu môn chủ mới. Làm một việc là đủ: phát lệnh xuất chinh, xếp người giữ ô, bổ nhiệm trưởng lão hay duyệt người vào. Chơi kiếp, điểm danh, chat không tính.',
+            'You have done almost 2 days without sect work. When time runs out anyone may start a leader vote. One action is enough: an order, a guard assignment, an appointment or an approval. Playing lives, check-ins and chat do not count.',
+          )}
+        </p>
+      </section>
+    ) : null;
   const sau = (e: string | null, msg: string) => {
     setErr(e);
     if (!e) setOk(msg);
@@ -334,19 +347,26 @@ function SmBauCard({ c }: { c: SmCtx }) {
   };
   if (dang) {
     const can = Math.floor(dang.n / 2) + 1;
+    const btn = dang.loai === 'btn';
     const so = (tk: string) => dang.phieu.find((p) => p.tk === tk)?.n ?? 0;
-    const ds = (c.members?.ds ?? []).filter((x) => x.chuc !== 'chu').sort((a, b) => so(b.tk) - so(a.tk) || b.lc - a.lc);
+    // bầu bất tín nhiệm: môn chủ hiện tại cũng là ứng viên (bầu giữ)
+    const ds = (c.members?.ds ?? []).filter((x) => btn || x.chuc !== 'chu').sort((a, b) => so(b.tk) - so(a.tk) || b.lc - a.lc);
     return (
       <section className="sm-card">
         <div className="sm-between">
-          <h3>{tr('Bầu môn chủ mới', 'Leader vote')}</h3>
+          <h3>{btn ? tr('Bầu bất tín nhiệm', 'No-confidence vote') : tr('Bầu môn chủ mới', 'Leader vote')}</h3>
           <b>{tr(`còn ${clock(new Date(dang.het_luc).getTime() - now)}`, `${clock(new Date(dang.het_luc).getTime() - now)} left`)}</b>
         </div>
         <p className="sm-note">
-          {tr(
-            `${dang.mo_boi ?? 'Một đạo hữu'} mở bầu vì môn chủ vắng mặt. Mỗi người 1 phiếu, đổi được. Ai được ${can}/${dang.n} phiếu thì lên ngay, hết giờ thì người nhiều phiếu nhất lên. Môn chủ quay lại thì bầu hủy.`,
-            `${dang.mo_boi ?? 'Someone'} started a vote because the leader is away. One vote each, changeable. ${can}/${dang.n} votes wins at once; otherwise the most votes win when time is up. If the leader returns, the vote is cancelled.`,
-          )}
+          {btn
+            ? tr(
+                `Đơn bất tín nhiệm đã đủ chữ ký. Mỗi người 1 phiếu, đổi được: bầu cho môn chủ hiện tại là giữ ghế, bầu người khác là thay. Ai được ${can}/${dang.n} phiếu thì xong ngay, hết giờ thì người nhiều phiếu nhất lên (bằng phiếu thì môn chủ giữ ghế).`,
+                `The no-confidence petition passed. One vote each, changeable: vote for the current leader to keep them, anyone else to replace. ${can}/${dang.n} votes ends it at once; otherwise the most votes win when time is up (ties keep the leader).`,
+              )
+            : tr(
+                `${dang.mo_boi ?? 'Một đạo hữu'} mở bầu vì môn chủ hơn 2 ngày không làm việc môn. Mỗi người 1 phiếu, đổi được. Ai được ${can}/${dang.n} phiếu thì lên ngay, hết giờ thì người nhiều phiếu nhất lên. Môn chủ làm việc môn trở lại thì bầu hủy.`,
+                `${dang.mo_boi ?? 'Someone'} started a vote because the leader did no sect work for over 2 days. One vote each, changeable. ${can}/${dang.n} votes wins at once; otherwise the most votes win when time is up. If the leader resumes sect work, the vote is cancelled.`,
+              )}
         </p>
         {ds.map((x) => {
           const chon = dang.ta_chon === x.tk;
@@ -382,11 +402,11 @@ function SmBauCard({ c }: { c: SmCtx }) {
   if (bau.mo_duoc) {
     return (
       <section className="sm-card">
-        <h3>{tr('Môn chủ đang vắng mặt', 'The leader is away')}</h3>
+        <h3>{tr('Môn chủ không làm việc môn', 'The leader does no sect work')}</h3>
         <p className="sm-note">
           {tr(
-            `Môn chủ đã vắng hơn ${ngayVang(bau.chu_hd)} ngày. Ai trong môn cũng mở được cuộc bầu môn chủ mới, bầu trong 24 giờ.`,
-            `The leader has been away for over ${ngayVang(bau.chu_hd)} days. Anyone in the sect can start a 24-hour vote for a new leader.`,
+            `Đã hơn ${ngayVang(bau.chu_viec ?? bau.chu_hd)} ngày môn chủ không phát lệnh, không xếp người, không bổ nhiệm hay duyệt người vào. Ai trong môn cũng mở được cuộc bầu môn chủ mới, bầu trong 24 giờ.`,
+            `For over ${ngayVang(bau.chu_viec ?? bau.chu_hd)} days the leader has issued no orders, assignments, appointments or approvals. Anyone in the sect can start a 24-hour vote for a new leader.`,
           )}
         </p>
         <button
@@ -403,6 +423,62 @@ function SmBauCard({ c }: { c: SmCtx }) {
       </section>
     );
   }
+  const btn = bau.btn;
+  const btnThe =
+    btn && btn.ly_do !== 'la_chu' && btn.ly_do !== 'khong_chu' ? (
+      <section className="sm-card">
+        <div className="sm-between">
+          <h3>{tr('Đơn bất tín nhiệm', 'No-confidence petition')}</h3>
+          <b>{tr(`${btn.n}/${btn.can} chữ ký`, `${btn.n}/${btn.can} signed`)}</b>
+        </div>
+        <p className="sm-note">
+          {tr(
+            `Không hài lòng với môn chủ thì ký đơn. Đủ ${btn.can} chữ ký trong 24 giờ (quá nửa người đang chơi) thì cả môn bầu: giữ môn chủ hay chọn người khác. Mỗi môn tối đa một cuộc bầu mỗi 3 ngày.`,
+            `Unhappy with the leader? Sign. ${btn.can} signatures within 24 hours (over half of active members) start a vote: keep the leader or pick another. At most one vote per sect every 3 days.`,
+          )}
+        </p>
+        {btn.ly_do ? (
+          <p className="sm-note">
+            {btn.ly_do === 'moi_vao'
+              ? tr('Ngươi vào môn chưa đủ 24 giờ nên chưa ký được.', 'You need 24 hours in the sect to sign.')
+              : btn.ly_do === 'vua_bau'
+                ? tr('Môn vừa bầu trong 3 ngày qua, chưa ký được.', 'The sect voted in the last 3 days.')
+                : btn.ly_do === 'chu_moi'
+                  ? tr('Môn chủ vừa được bầu lên chưa đủ 24 giờ.', 'The leader was elected less than 24 hours ago.')
+                  : tr('Môn đang có một cuộc bầu.', 'A vote is already running.')}
+          </p>
+        ) : (
+          <div className="sm-row" style={{ justifyContent: 'flex-end' }}>
+            <button
+              className={`sm-btn small ${btn.ta_ky ? '' : 'dark'}`}
+              disabled={c.busy}
+              onClick={async () => {
+                const e = await c.run({ fn: 'btn_ky', ky: !btn.ta_ky }, () => track('sm_btn_ky', { ky: !btn.ta_ky, n: btn.n }));
+                sau(e, btn.ta_ky ? tr('Đã rút chữ ký.', 'Signature withdrawn.') : tr('Đã ký đơn.', 'Signed.'));
+              }}
+            >
+              {btn.ta_ky ? tr('Rút chữ ký', 'Withdraw') : tr('Ký đơn', 'Sign')}
+            </button>
+          </div>
+        )}
+        <Msg err={err} ok={ok} />
+      </section>
+    ) : null;
+  if (canh || btnThe) {
+    return (
+      <>
+        {canh}
+        {btnThe}
+      </>
+    );
+  }
+  if (gn && gn.ket_qua === 'giu') {
+    return (
+      <section className="sm-card">
+        <p className="sm-note">{tr(`Cả môn bầu giữ ${gn.chu_moi ?? 'môn chủ'} làm môn chủ (${hhmm(gn.xong_luc)}).`, `The sect voted to keep ${gn.chu_moi ?? 'the leader'} (${hhmm(gn.xong_luc)}).`)}</p>
+      </section>
+    );
+  }
   if (gn && gn.ket_qua !== 'huy_doi') {
     return (
       <section className="sm-card">
@@ -410,7 +486,7 @@ function SmBauCard({ c }: { c: SmCtx }) {
           {gn.ket_qua === 'thang'
             ? tr(`${gn.chu_moi ?? 'Một đạo hữu'} được bầu làm môn chủ mới (${hhmm(gn.xong_luc)}).`, `${gn.chu_moi ?? 'Someone'} was voted in as the new leader.`)
             : gn.ket_qua === 'huy_ve'
-              ? tr('Môn chủ đã quay lại nên cuộc bầu môn chủ hủy.', 'The leader came back, so the vote was cancelled.')
+              ? tr('Môn chủ đã làm việc môn trở lại nên cuộc bầu môn chủ hủy.', 'The leader resumed sect work, so the vote was cancelled.')
               : tr('Hết giờ mà không ai bỏ phiếu nên cuộc bầu môn chủ hủy.', 'Nobody voted, so the leader vote was cancelled.')}
         </p>
       </section>

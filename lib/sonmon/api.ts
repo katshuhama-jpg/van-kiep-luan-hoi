@@ -97,8 +97,13 @@ export type SmBau = {
   vang_gio: number;
   chu_hd: string | null;
   mo_duoc: boolean;
-  dang: { id: number; het_luc: string; mo_boi: string | null; n: number; bau_duoc: boolean; ta_chon: string | null; phieu: { tk: string; ten: string; n: number }[] } | null;
-  gan_nhat: { ket_qua: 'thang' | 'huy_ve' | 'huy_trong' | 'huy_doi'; xong_luc: string; chu_moi: string | null } | null;
+  dang: { id: number; het_luc: string; mo_boi: string | null; loai?: 'vang' | 'btn'; chu?: string; n: number; bau_duoc: boolean; ta_chon: string | null; phieu: { tk: string; ten: string; n: number }[] } | null;
+  gan_nhat: { ket_qua: 'thang' | 'huy_ve' | 'huy_trong' | 'huy_doi' | 'giu'; xong_luc: string; chu_moi: string | null; loai?: 'vang' | 'btn' } | null;
+  /** 21/11 bản 2 (vkl_sm_bau2): lần cuối môn chủ làm việc môn; còn mấy giờ (chỉ gửi cho môn chủ khi còn ≤12 giờ) */
+  chu_viec?: string | null;
+  canh_con?: number | null;
+  /** đơn bất tín nhiệm: số chữ ký trong 24 giờ, số cần, lý do chưa ký được */
+  btn?: { n: number; can: number; ly_do: string | null; ta_ky: boolean } | null;
 };
 export type SmMap = {
   ky: SmKy | null;
@@ -204,7 +209,12 @@ const LOI_THEM: Record<string, string> = {
   SM_O_CUA_TA: tr('Ô này đã là của môn ta.', 'This tile is already ours.'),
   SM_TEN_O_THIEU: tr('Máy chủ thiếu tên ô.', 'Server is missing tile names.'),
   SM_BAU_DANG: tr('Môn đang có một cuộc bầu môn chủ.', 'A leader vote is already running.'),
-  SM_CHU_CON: tr('Môn chủ vẫn còn ghé môn, chưa bầu được.', 'The leader is still active, no vote yet.'),
+  SM_CHU_CON: tr('Môn chủ vẫn làm việc môn trong 48 giờ qua, chưa bầu được.', 'The leader has done sect work in the last 48 hours, no vote yet.'),
+  SM_BTN_MOI_VAO: tr('Vào môn chưa đủ 24 giờ nên chưa ký đơn được.', 'You need 24 hours in the sect to sign.'),
+  SM_BTN_DANG_BAU: tr('Môn đang có một cuộc bầu.', 'A vote is already running.'),
+  SM_BTN_VUA_BAU: tr('Môn vừa bầu trong 3 ngày qua, chưa ký đơn được.', 'The sect voted in the last 3 days.'),
+  SM_BTN_CHU_MOI: tr('Môn chủ vừa được bầu lên chưa đủ 24 giờ.', 'The leader was elected less than 24 hours ago.'),
+  SM_BTN_LA_CHU: tr('Môn chủ không ký đơn này.', 'The leader cannot sign this.'),
   SM_BAU_HET: tr('Cuộc bầu đã xong.', 'The vote has ended.'),
   SM_BAU_AI: tr('Chỉ bầu được người trong môn, trừ môn chủ cũ.', 'Vote for a sect member other than the old leader.'),
   SM_MOI_KHONG_NGUOI: tr('Không tìm thấy người này, hoặc người này chưa có chân thân.', 'Player not found or has no True Body yet.'),
@@ -242,10 +252,14 @@ export type SmAct =
   | { fn: 'xep'; tk: string; q: number; r: number }
   | { fn: 'role'; tk: string; chuc: 'lao' | 'de' }
   | { fn: 'set_dk'; dkKiep: number; dkNgay: number; moCua: boolean }
+  | { fn: 'btn_ky'; ky: boolean }
   | { fn: 'leave' | 'checkin' | 'bau_mo' };
 
 /** một tin Truyền âm; nd đã được máy chủ che từ tục, ẩn link và số điện thoại */
 export type SmChat = { id: number; luc: string; nd: string; ta: boolean; tk: string; ten: string; chuc: 'chu' | 'lao' | 'de' | null; he?: boolean; nd_en?: string | null };
+
+/** 21/11: hành động có bản 2 trên máy chủ (ghi việc môn / luật vắng việc môn) */
+const BAN2 = new Set(['role', 'xep', 'accept', 'kick', 'set_dk', 'bau_mo', 'bau_bo']);
 
 export interface SmApi {
   demo: boolean;
@@ -315,6 +329,8 @@ function args(a: SmAct): Record<string, unknown> {
       return { p_ten: a.ten };
     case 'ky_tra':
       return { p_id: a.id, p_ky: a.ky };
+    case 'btn_ky':
+      return { p_ky: a.ky };
     case 'moi_tra':
       return { p_id: a.id, p_nhan: a.nhan };
     case 'kick':
@@ -413,7 +429,10 @@ export function realApi(): SmApi {
       rpc<SmCoHoi>('vkl_sm_co_hoi2', { p_q: q, p_r: r }, true, true)
         .catch(() => rpc<SmCoHoi>('vkl_sm_co_hoi', { p_q: q, p_r: r }, true, true))
         .catch(() => null),
-    bau: () => rpc<SmBau>('vkl_sm_bau', {}, true, true).catch(() => null),
+    bau: () =>
+      rpc<SmBau>('vkl_sm_bau2', {}, true, true)
+        .catch(() => rpc<SmBau>('vkl_sm_bau', {}, true, true))
+        .catch(() => null),
     // 20/11: bản 2 xếp hạng môn để tính phẩm pháp bảo theo Điểm giữ đất (như bảng Kỷ); lỗi thì về bản cũ
     congBang: () =>
       rpc<SmCongBang>('vkl_sm_cong_bang2', {}, true, true)
@@ -425,7 +444,14 @@ export function realApi(): SmApi {
     kyDs: () => rpc<SmKyThu[]>('vkl_sm_ky_ds', {}, true, true).catch(() => []),
     // 20/11: march4 (đệ tử đánh yêu thú, Linh Mạch) chưa có trên máy chủ thì quay về march3
     act: (a) =>
-      rpc<Record<string, unknown>>(`vkl_sm_${a.fn}`, args(a)).catch((e) => {
+      // 21/11: việc của môn chủ/trưởng lão đi qua bản 2 để ghi "việc môn" (đồng hồ vắng 48 giờ); chưa có thì về bản cũ
+      (BAN2.has(a.fn)
+        ? rpc<Record<string, unknown>>(`vkl_sm_${a.fn}2`, args(a)).catch((e) => {
+            if (e instanceof SmErr && e.code === 'SM_NET') return rpc<Record<string, unknown>>(`vkl_sm_${a.fn}`, args(a));
+            throw e;
+          })
+        : rpc<Record<string, unknown>>(`vkl_sm_${a.fn}`, args(a))
+      ).catch((e) => {
         // 21/11: march5 = march4 + chặn đánh chính điện; chưa có thì về march4
         if (a.fn === 'march5' && e instanceof SmErr && e.code === 'SM_NET')
           return rpc<Record<string, unknown>>('vkl_sm_march4', args(a)).catch((e2) => {
