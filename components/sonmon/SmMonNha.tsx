@@ -139,11 +139,11 @@ export function SmMonNha({ c }: { c: SmCtx }) {
         <section className="sm-card warn">
           <b>{tr('Hôm nay thú triều', 'Beast tide today')}</b>
           <p style={{ fontSize: 15 }}>
-            {tr(`Từ 8 giờ tới 22 giờ, cứ 2 giờ yêu thú đánh một đợt, mạnh thêm ${Math.round(((c.map.trieu.he ?? 1.3) - 1) * 100)}%. Mỗi đợt báo trước 1 giờ trên bản đồ (dấu !). Cử người sang đứng giữ ô bị nhắm, hoặc diệt ổ yêu trước giờ đánh.`, `From 8:00 to 22:00, beasts raid every 2 hours, ${Math.round(((c.map.trieu.he ?? 1.3) - 1) * 100)}% stronger. Each raid is announced 1 hour ahead on the map (!). Send guards to the target tile, or destroy the den first.`)}
+            {tr(`Từ 8 giờ cứ 2 giờ yêu thú đánh một đợt, 20-23 giờ đánh mỗi giờ, mạnh thêm ${Math.round(((c.map.trieu.he ?? 1.3) - 1) * 100)}%. Mỗi đợt báo trước 1 giờ trên bản đồ (dấu !). Cử người sang đứng giữ ô bị nhắm, hoặc diệt ổ yêu trước giờ đánh.`, `Raids every 2 hours from 8:00, hourly 20:00-23:00, ${Math.round(((c.map.trieu.he ?? 1.3) - 1) * 100)}% stronger. Each raid is announced 1 hour ahead on the map (!). Send guards to the target tile, or destroy the den first.`)}
           </p>
         </section>
       ) : c.map?.trieu?.mai ? (
-        <p className="sm-note">{tr('Mai thú triều: yêu thú đánh 2 giờ một đợt từ 8 giờ tới 22 giờ.', 'Beast tide tomorrow: raids every 2 hours from 8:00 to 22:00.')}</p>
+        <p className="sm-note">{tr('Mai thú triều: yêu thú đánh 2 giờ một đợt từ 8 giờ, tối 20-23 giờ đánh mỗi giờ.', 'Beast tide tomorrow: raids every 2 hours from 8:00, hourly 20:00-23:00.')}</p>
       ) : null}
       {bi.map((b) => (
         <button key={b.id} className="sm-card alert" style={{ textAlign: 'left', font: 'inherit', cursor: 'pointer', minHeight: 44 }} onClick={() => c.go('chien-su')}>
