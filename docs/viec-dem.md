@@ -381,6 +381,20 @@ Lên bản: 2026-11-27. Có cáo thị (một dòng). Phiên đêm KHÔNG đăng
 - [ ] Đo: người mới theo utm `ky2_*` từ 28/11 tới 5/12, tỉ lệ vào Sơn Môn của nhóm này.
 - Ghi chú:
 
+## Ngày 44 - Chiến sự: thông báo đoàn môn ta đang tập kết và tiến đánh (Tyler 21/11 18:03)
+Lên bản: 2026-11-22. Làm trong đêm 21/11 (sau Ngày 37 góp ý và các khối tới hạn). Bật luôn nếu thử sạch. Có cáo thị một dòng.
+Vấn đề: mục Chiến sự đã có thẻ cảnh báo khi môn ta BỊ đánh (yêu thú và môn khác: `components/sonmon/SmWar.tsx` ~373, dải `components/SmCanhBao.tsx`, RPC `vkl_sm_canh`), nhưng đoàn của CHÍNH môn ta đang tập kết hay đang đi đánh thì đệ tử không thấy ở đâu ngoài tin chat lúc phát lệnh. Người vào muộn không biết để bấm Theo hay sang giữ ô.
+- [ ] Thẻ "Môn ta đang xuất chinh" ở đầu mục Chiến sự, cùng kiểu và cùng chỗ với thẻ bị tấn công (cùng khung, khác màu: phe ta). Mỗi đoàn đang `tap_hop` hoặc `di` của môn (cả đánh yêu thú lẫn đánh môn khác) một dòng:
+  - Đích: tên ô, đánh ai (Yêu thú lực N / tên môn), loại ô (Linh Mạch, Thiên Trì nếu có).
+  - Trạng thái và giờ: "Đang tập kết, lên đường lúc HH:MM" (đếm ngược) hoặc "Đang trên đường, tới nơi lúc HH:MM".
+  - Lực: số người đã theo, tổng lực đoàn so với lực giữ ước tính (yêu thú: lực trên ô; môn khác: theo trinh sát/`vkl_sm_co_hoi2` nếu có, không có thì "chưa trinh sát").
+  - Nút: đang tập kết và mình chưa theo thì "Theo" (dùng đúng hành động Theo hiện có); đã theo thì nhãn "Ta đã theo"; nút "Xem" nhảy tới ô trên bản đồ.
+- [ ] Dải `SmCanhBao` (trên thanh tab, mọi trang): thêm loại phe ta khi môn có đoàn đang tập kết mà người chơi CHƯA theo: "Môn đang tập kết đánh <ô>, lên đường HH:MM" + nút "Theo". Ưu tiên hiện cảnh báo bị đánh trước nếu có cả hai. Đã theo thì không hiện. Ẩn được bằng x như hiện nay.
+- [ ] Máy chủ: tạo RPC MỚI `vkl_sm_canh2(token)` = dữ liệu của `vkl_sm_canh` + các đoàn của môn ta (k 'ta', id, o, doi_tuong yeu|mon, ten_mon, trang_thai, tap_hop_toi, toi_noi_luc, n_theo, luc, da_theo). Không sửa `vkl_sm_canh` cũ; client gọi canh2, lỗi thì về canh.
+- [ ] Tin chat hệ thống (`vkl_sm_chat_he`): thêm nhắc khi còn 10 phút hết tập kết mà đoàn còn ít người ("Còn 10 phút tập kết đánh <ô>, mới N người theo"), mỗi đoàn tối đa một lần; hàm và cron MỚI.
+- [ ] Thử: Playwright 390x844 có đoàn yêu thú và đoàn đánh môn (giả dữ liệu ở trình duyệt), cả hai trạng thái; `smoke-son-mon.cjs` sạch; chụp ảnh gửi Tyler. uiux-pro-max + huashu-design (chấm 5 mặt), humanizer cho chữ.
+- Ghi chú:
+
 ## Ngày 43a - Mời cài game ra màn hình chính (Tyler 21/11 16:10: "làm luôn cho ngày mai")
 Lên bản: 2026-11-22. Làm ngay sau Ngày 18a. Cờ `PWA_ON`, bật nếu thử sạch. Có cáo thị một dòng.
 Đã kiểm 21/11: game chưa có manifest, service worker hay lời mời cài đặt nào.
