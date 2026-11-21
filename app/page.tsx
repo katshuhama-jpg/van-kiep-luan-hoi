@@ -49,10 +49,13 @@ export default function Home() {
       </h1>
 
       <LiveStrip d={live} />
-      <HomeVanKiep user={user} ready={ready} noWeek={CHAN_THAN_ON} />
-      <HomeTienDo user={user} ready={ready} />
-      <HomeCt user={user} ready={ready} on={CHAN_THAN_ON} />
-      <SuDoHome user={user} ready={ready} />
+      {/* 21/11 (Tyler: trang đầu bắt đầu loạn): gom các thẻ "của riêng bạn" vào một khối, cùng bề ngang, cùng khoảng cách */}
+      <div className="home-stack">
+        <HomeVanKiep user={user} ready={ready} noWeek={CHAN_THAN_ON} />
+        <HomeTienDo user={user} ready={ready} />
+        <HomeCt user={user} ready={ready} on={CHAN_THAN_ON} />
+        <SuDoHome user={user} ready={ready} />
+      </div>
 
       <nav className="menu home-menu" aria-label={tr('Các tính năng', 'Features')}>
         <LoiDaiButton />
@@ -84,9 +87,34 @@ export default function Home() {
             </Link>
           )}
         </div>
-        <Link href="/moi-tra" className="btn home-tra" style={link} onClick={() => track('tra_open', { from: 'home' })}>
-          {tr('Mời tác giả chén trà', 'Buy the author a tea')}
-          <small>{tr('game miễn phí, không quảng cáo', 'free, no ads')}</small>
+        {/* 21/11: Mời trà nổi bật: thẻ riêng có chén trà pixel bốc khói, không còn là một nút xanh mờ cuối trang */}
+        <Link href="/moi-tra" className="home-tra" onClick={() => track('tra_open', { from: 'home' })}>
+          <span className="home-tra-ic" aria-hidden="true">
+            <i className="khoi k1" />
+            <i className="khoi k2" />
+            <svg width="48" height="40" viewBox="0 0 12 10" shapeRendering="crispEdges">
+              {/* viền */}
+              <path d="M1 2h9v1h-9zM0 3h1v4h-1zM10 3h1v1h-1zM11 3h1v3h-1zM10 6h1v1h-1zM1 7h1v1h-1zM9 7h1v1h-1zM2 8h7v1h-7z" fill="#1f160d" />
+              {/* thân chén sứ */}
+              <path d="M1 3h9v4h-8v1h-1zM9 7h-7v1h7z" fill="#fff3dc" />
+              <path d="M7 4h2v3h-2z" fill="#e6d3ae" />
+              {/* quai */}
+              <path d="M10 4h1v2h-1z" fill="#fff3dc" />
+              {/* nước trà */}
+              <path d="M1 3h9v1h-9z" fill="#b8742c" />
+              {/* hoa văn xanh */}
+              <path d="M3 5h1v1h-1zM5 5h1v1h-1z" fill="#2f6b5a" />
+              {/* đĩa */}
+              <path d="M0 9h12v1h-12z" fill="#e6d3ae" />
+            </svg>
+          </span>
+          <span className="home-tra-chu">
+            <b>{tr('Mời tác giả chén trà', 'Buy the author a tea')}</b>
+            <small>{tr('Game miễn phí, không quảng cáo. Một chén trà giúp game sống lâu hơn.', 'Free, no ads. A cup of tea keeps the game alive.')}</small>
+          </span>
+          <span className="home-tra-di" aria-hidden="true">
+            ›
+          </span>
         </Link>
         {!TAB_ON && <a href={FB_PAGE} target="_blank" rel="noopener noreferrer" className="btn home-fb" style={link} onClick={() => track('fb_open', { from: 'home' })}>
           {tr('Theo dõi trang Facebook', 'Follow us on Facebook')}
