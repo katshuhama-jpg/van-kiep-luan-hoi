@@ -114,6 +114,20 @@ export default function SuDoPanel({ user, meta, onGain }: { user: Player | null;
   const [hop, setHop] = useState<SuHop | null>(null);
   const [timDe, setTimDe] = useState(false);
   const laSu = (meta.lives ?? 0) >= 20 && !!meta.chanThan;
+  // 21/11: trang đầu bấm "Thu nhận đệ tử" sang /chan-than#su-moi: chờ bảng hiện rồi cuộn tới chỗ mời, nháy viền
+  const cuon = useRef(false);
+  useEffect(() => {
+    if (cuon.current || typeof location === 'undefined' || location.hash !== '#su-moi') return;
+    cuon.current = true;
+    const t = setTimeout(() => {
+      const el = document.getElementById('su-moi');
+      const box = document.getElementById('su-do');
+      el?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
+      box?.classList.add('su-do-nhay');
+      setTimeout(() => box?.classList.remove('su-do-nhay'), 1800);
+    }, 350);
+    return () => clearTimeout(t);
+  }, []);
   useEffect(() => {
     let live = true;
     suHop(user).then((x) => live && setHop(x));
@@ -199,6 +213,7 @@ export default function SuDoPanel({ user, meta, onGain }: { user: Player | null;
         </>
       )}
       {ds && ds.length > 0 && <SuDeList ds={ds} />}
+      <span id="su-moi" className="su-moi-neo" aria-hidden="true" />
       {user && <SuLinkMoi user={user} from="nhan_vat" />}
       {user && laSu && (
         <button className="btn su-invite" style={{ marginBottom: 8 }} onClick={() => setTimDe(true)}>

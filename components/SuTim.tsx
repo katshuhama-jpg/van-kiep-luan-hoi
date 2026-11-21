@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 import type { Player } from '@/lib/auth';
 import { SU_DO_ON } from '@/lib/flags';
 import { SU_BOUND_EV, suGui, suHop, suInfo, suTim, suTimSu, type SuHop, type SuSuUng } from '@/lib/suDo';
-import { SU_LOI, SuHopList, SuTimDeSheet, SuTimO, suLuc, useTim } from './SuMoi';
+import { SU_LOI, SuHopList, SuTimO, suLuc, useTim } from './SuMoi';
 import { loadAll } from '@/lib/storage';
 import { track } from '@/lib/track';
 import { tr } from '@/lib/i18n';
@@ -128,7 +128,6 @@ export function SuDoHome({ user, ready }: { user: Player | null; ready: boolean 
   const [done, setDone] = useState<string | null>(null);
   // 18/11: số lời mời (người mới) / lời xin bái sư (sư phụ) đang chờ
   const [nCho, setNCho] = useState(0);
-  const [timDe, setTimDe] = useState(false);
   useEffect(() => {
     if (!mode || !user) return;
     let live = true;
@@ -136,7 +135,7 @@ export function SuDoHome({ user, ready }: { user: Player | null; ready: boolean 
     return () => {
       live = false;
     };
-  }, [mode, user, open, timDe]);
+  }, [mode, user, open]);
   useEffect(() => {
     if (!SU_DO_ON || !ready) return;
     let live = true;
@@ -160,40 +159,38 @@ export function SuDoHome({ user, ready }: { user: Player | null; ready: boolean 
     };
   }, [user, ready]);
   if (!mode) return null;
+  // 21/11 (Tyler): thu nhận đệ tử chiếm chỗ quá ở trang đầu: thu gọn một dòng như nút Mời trà, bấm sang tab Nhân vật,
+  // tự cuộn tới chỗ mời đệ tử (#su-moi)
+  if (mode === 'moi')
+    return (
+      <Link href="/chan-than#su-moi" className="btn su-home-nho" onClick={() => track('su_home_tap', { mode, cho: nCho, nho: 1 })}>
+        <span className="su-home-ic" aria-hidden="true" />
+        <span>
+          {nCho > 0 ? tr(`${nCho} người xin bái ngươi làm sư phụ`, `${nCho} want you as their master`) : tr('Thu nhận đệ tử', 'Take disciples')}
+          <small>{tr('thầy trò mỗi người +20 phúc duyên', '+20 Fortune each')}</small>
+        </span>
+        <b aria-hidden="true">›</b>
+      </Link>
+    );
   return (
     <section className="su-home" aria-label={tr('Sư Đồ', 'Master and Disciple')}>
       <span className="su-home-ic" aria-hidden="true" />
       <span className="su-home-t">
         <b>
-          {mode === 'moi'
-            ? nCho > 0
-              ? tr(`${nCho} người xin bái ngươi làm sư phụ`, `${nCho} want you as their master`)
-              : tr('Thu nhận đệ tử', 'Take disciples')
-            : done
-              ? tr(`Đã bái ${done} làm sư phụ`, `${done} is now your master`)
-              : nCho > 0
-                ? tr(`${nCho} sư phụ mời ngươi làm đệ tử`, `${nCho} masters invite you`)
-                : tr('Bái sư học đạo', 'Find a master')}
+          {done
+            ? tr(`Đã bái ${done} làm sư phụ`, `${done} is now your master`)
+            : nCho > 0
+              ? tr(`${nCho} sư phụ mời ngươi làm đệ tử`, `${nCho} masters invite you`)
+              : tr('Bái sư học đạo', 'Find a master')}
         </b>
-        <small>
-          {mode === 'moi'
-            ? tr('Bấm Mời đệ tử để chép link gửi bạn bè, hoặc tìm người mới theo tên. Đệ tử chơi đủ 10 kiếp trong 7 ngày: thầy trò mỗi người +20 phúc duyên.', 'Tap Invite to copy your link for friends, or search new players. When a disciple finishes 10 lives in 7 days, you both get +20 Fortune.')
-            : tr('Người mới chọn một sư phụ đang chơi. Đủ 10 kiếp trong 7 ngày: thầy trò mỗi người +20 phúc duyên.', 'New players pick an active master. Finish 10 lives in 7 days: you both get +20 Fortune.')}
-        </small>
+        <small>{tr('Người mới chọn một sư phụ đang chơi. Đủ 10 kiếp trong 7 ngày: thầy trò mỗi người +20 phúc duyên.', 'New players pick an active master. Finish 10 lives in 7 days: you both get +20 Fortune.')}</small>
       </span>
-      {mode === 'moi' ? (
-        <button className="btn su-home-go" onClick={() => (setTimDe(true), track('su_home_tap', { mode, cho: nCho }))}>
-          {nCho > 0 ? tr('Xem', 'View') : tr('Mời đệ tử', 'Invite')}
+      {!done && (
+        <button className="btn su-home-go" onClick={() => (setOpen(true), track('su_home_tap', { mode }))}>
+          {nCho > 0 ? tr('Xem lời mời', 'View') : tr('Tìm sư phụ', 'Find master')}
         </button>
-      ) : (
-        !done && (
-          <button className="btn su-home-go" onClick={() => (setOpen(true), track('su_home_tap', { mode }))}>
-            {nCho > 0 ? tr('Xem lời mời', 'View') : tr('Tìm sư phụ', 'Find master')}
-          </button>
-        )
       )}
       {open && <SuTimSheet user={user} onClose={() => setOpen(false)} onDone={setDone} />}
-      {timDe && <SuTimDeSheet user={user} onClose={() => setTimDe(false)} />}
     </section>
   );
 }

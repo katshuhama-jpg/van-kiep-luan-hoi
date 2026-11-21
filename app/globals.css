@@ -5726,3 +5726,14 @@ body[data-ctflow='1'] { overflow: hidden; }
 .home-td-tt em.khoa { color: #c8b8dc; background: #3a2e4a; }
 .home-td-di { flex: none; font-size: 22px; color: #ffd36b; }
 .tt-phong { padding: 10px; border: 2px dashed #6a5a3a; text-align: center; line-height: 1.45; }
+
+/* 21/11 thu nhận đệ tử ở trang đầu: một dòng gọn cỡ nút Mời trà */
+.su-home-nho { display: flex !important; align-items: center; gap: 8px; min-height: 44px; margin: 8px 0; padding: 4px 10px; text-align: left; text-decoration: none; background: #1f160d; color: #fff3dc; border-color: #a8862e; font-weight: 700; }
+.su-home-nho .su-home-ic { width: 22px; height: 22px; }
+.su-home-nho > span:nth-child(2) { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.15; font-size: 15px; color: #ffd36b; }
+.su-home-nho small { font-size: 12px; font-weight: 500; color: #e6dcc4; }
+.su-home-nho > b { flex: none; font-size: 20px; color: #ffd36b; }
+.su-moi-neo { display: block; height: 0; }
+.su-do.su-do-nhay { animation: su-nhay 0.6s steps(2) 3; }
+@keyframes su-nhay { 50% { box-shadow: 0 0 0 3px #ffd36b; } }
+@media (prefers-reduced-motion: reduce) { .su-do.su-do-nhay { animation: none; box-shadow: 0 0 0 3px #ffd36b; } }
