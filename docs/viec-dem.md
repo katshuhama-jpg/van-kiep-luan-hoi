@@ -306,7 +306,7 @@ Làm ĐẦU TIÊN mỗi đêm, trước các khối tính năng (chỉ là đọ
     - #303 (godwhale99): "Cảm ơn bạn hỏi kỹ. Tỉ lệ đột phá dù cộng thêm cách nào cũng chỉ cao nhất 97%, nên 90% cộng Huyết tế 35% vẫn còn 3% hỏng. Từ bản 4.6.4 sáng 21/11, màn độ kiếp ghi rõ mức trần này ngay dưới tỉ lệ. Mình gửi bạn 10 phúc duyên." (10 phúc)
   - Góp ý giữ `moi` (chưa làm, chưa có ngày): #307 tìm yêu thú, #308 hệ đồ rơi, #305 hợp luyện sau chuyển tu, #300 người mới bị đánh, #299 cân bằng công pháp khống chế, #298 khí vận khởi đầu và số liệu. Đã đưa vào khối Ngày 39.
 
-## Ngày 38 - MỖI ĐÊM: 4-5 kết cục mới mỗi quyển Thiên thư + cân bằng đường tu (khối lặp, Tyler giao 21/11 13:14)
+## Ngày 40 - MỖI ĐÊM: 4-5 kết cục mới mỗi quyển Thiên thư + cân bằng đường tu (khối lặp, Tyler giao 21/11 13:14)
 Lên bản: 2026-11-22 (LẶP LẠI MỖI ĐÊM từ đêm 21/11. Không đánh [x] cả khối, không cắt sang lưu trữ; mỗi đêm ghi một dòng nhật ký vào `docs/cot-truyen-moi.md` (kết cục) và `docs/so-lieu.md` mục "Cân bằng đường tu".)
 Làm sau Ngày 37 (góp ý) và các khối tới hạn, cùng lúc với Ngày 35 (cốt truyện có thể dẫn tới kết cục mới). Đêm quá tải: tới 3:00 chưa bắt đầu thì làm ít nhất 2 kết cục mỗi quyển, ghi nợ, đêm sau bù.
 
