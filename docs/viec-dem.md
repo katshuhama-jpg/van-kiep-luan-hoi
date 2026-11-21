@@ -108,12 +108,21 @@ Lên bản: 2026-11-25. Cờ `BANG_DAI_ON`. Có cáo thị.
 - [ ] Đo: số người mở tab bảng mỗi ngày; còn chơi ở người từng lọt Nhân bảng.
 - Ghi chú:
 
-## Ngày 18 - B5 Thẻ "Một đời" và "Ân oán hai ta"
-Lên bản: 2026-11-26. Cờ `THE_MOT_DOI_ON`. Có cáo thị.
-- [ ] Một đời: hết kiếp có nút "Lưu thẻ" ra ảnh dọc pixel (tên, biệt hiệu, cảnh giới, 3 chuyện lớn nhất, cách chết, câu sấm hay ý nguyện nếu có, link game kèm mã mời). Dùng lại hạ tầng Thất Nhật Lục (`lib/wrapCard.ts`, link `/k/<mã>`), không làm hạ tầng mới.
+## Ngày 18a - Thẻ "Một đời": cái chết để khoe (Tyler 21/11 16:01 kéo lên, lên 22/11)
+Lên bản: 2026-11-22. LÀM KHỐI NÀY TRƯỚC các khối tính năng khác đêm 21/11. Cờ `THE_MOT_DOI_ON`, bật luôn nếu thử sạch. Có cáo thị.
+Vì sao: 7 ngày tới 21/11 có 9.396 kiếp khép nhưng chỉ 78 lần bấm chia sẻ (66 phiên, dưới 1%) và 53 lần chọn nơi gửi. Game đã có chia sẻ kiếp (`components/ShareSheet.tsx`, `lib/shareCard.ts`, sự kiện `share`, `share_to`): NÂNG CẤP cái đang có, không làm hệ thứ hai.
+- [ ] Thẻ: ảnh dọc pixel 1080x1920 (và bản vuông cho Facebook) dựng từ hạ tầng Thất Nhật Lục (`lib/wrapCard.ts`, link `/k/<mã>`): chân thân hoặc nhân vật kiếp đó, tên, cảnh giới, tuổi, cách chết làm dòng to nhất, tối đa 3 chuyện lớn nhất của kiếp, một câu thách ("Ngươi sống qua được tuổi 40 không?" - viết 8-10 câu theo loại kết cục, humanizer), link game kèm mã mời. Không lộ tên đăng nhập. Chỉ pixel/LPC, không gradient, hệ số phóng nguyên.
+- [ ] Chỗ đặt: nút "Khoe kiếp này" nằm NGAY trên màn chết/kết cục, to ngang nút "Kiếp sau" (hiện nút chia sẻ nằm sâu). Kết cục hiếm, chết lãng xẹt, phi thăng, kiếp dài kỷ lục của mình thì nút nổi hơn kèm một dòng lý do ("Chưa tới 3% người chơi chết kiểu này"). Không tự bật hộp thoại, không ép.
+- [ ] Người bấm link thẻ: trang `/k/<mã>` hiện thẻ + nút "Thử một kiếp" vào thẳng kiếp 1 (không màn phụ), tính là kênh mời (sư đồ như link `?su=`).
+- [ ] Đo (vkl_events): `card_show` (màn kết có nút), `share`, `share_to`, `card_open` (mở link), người mới và D1 từ link thẻ. Mốc: tỉ lệ chia sẻ trên kiếp khép từ dưới 1% lên 3% sau 3 ngày. Ghi Sổ cải thiện.
+- [ ] Thử: Playwright 390x844 chụp thẻ của 4 loại kết cục (chết trẻ, chết lãng xẹt, phi thăng, hết thọ), mở link thẻ bằng phiên mới và vào được kiếp 1; chấm 5 mặt huashu-design.
+- Ghi chú:
+
+## Ngày 18b - Thẻ "Ân oán hai ta"
+Lên bản: 2026-11-26. Cùng cờ và hạ tầng với Ngày 18a.
 - [ ] Ân oán hai ta: hai người chơi thật đã chạm mặt nhau từ 3 lần trở lên (đồng đạo, địch thủ, kết nghĩa, truy nã, Oan gia) thì mở được thẻ tóm tắt các lần gặp, gửi link cho đối phương.
-- [ ] Không lộ tên đăng nhập; người tắt hiện mình trong kiếp người khác thì không lên thẻ Ân oán. Người mới vào qua link thẻ tính như kênh mời.
-- [ ] Đo: số thẻ lưu mỗi ngày, lượt mở link thẻ, người mới và D1 từ link thẻ (kênh mời hiện giữ chân khoảng 29%).
+- [ ] Người tắt hiện mình trong kiếp người khác thì không lên thẻ Ân oán. Không lộ tên đăng nhập.
+- [ ] Đo: số thẻ Ân oán mở, lượt mở link.
 - Ghi chú:
 
 ## Ngày 19 - B2 Di vật trong mộ
@@ -356,6 +365,22 @@ Làm lại từ Truyền âm của Sơn Môn, KHÔNG làm hệ thứ hai: `compo
   - Thử: 52/52 SQL trên Postgres 16 cục bộ; trên Supabase thật chỉ gọi RPC đọc (token lạ trả WC_AUTH đúng), file thử `supabase/the_gioi_chat_thu_2026_11_21.sql` chưa chạy trên máy chủ vì execute_sql cần duyệt. smoke-the-gioi 43/43 (390 và 360px), smoke, smoke-truyen-am, smoke-son-mon OK. Chấm 5 mặt 8/7/7/8/5.
   - Còn: nút ở thanh trên 30x28 như 4 nút sẵn có (chưa đạt 44px, làm to riêng thì vỡ hàng); ở 360px dòng nơi sinh xuống 3 dòng.
   - Ô cuối (tin mỗi đêm) bắt đầu từ đêm 21/11.
+## Ngày 41 - Kiếp 1: người đã bắt đầu mà không chơi hết (Tyler hỏi 21/11 "có cần cải thiện gì không")
+Lên bản: 2026-11-23. Không có cáo thị (chỉ thêm một dòng nếu người chơi thấy khác).
+Số theo ngày người mới thấy màn đầu (first_simple, theo sid): tỉ lệ bắt đầu kiếp 17/11 31% → 18/11 49% → 19/11 72% → 20/11 90% (139/154). Màn đầu đã ổn, KHÔNG sửa nữa. Chỗ rò còn lại: bắt đầu rồi nhưng không khép kiếp 1: 20/11 chỉ 75/139 (54%), tạo chân thân 60, chơi xong kiếp 2 là 42.
+- [ ] Tìm đúng chỗ rời (chỉ SELECT): với phiên mới 19-21/11 có life_start mà không có life_end, sự kiện cuối cùng là gì, ở tuổi nào, sau bao nhiêu lựa chọn, bao nhiêu giây; so người bấm tự chạy với người bấm tay; so điện thoại với máy tính nếu có dữ liệu. Ghi 3 chỗ rời lớn nhất vào Ghi chú kèm số.
+- [ ] Sửa đúng chỗ rời lớn nhất (game-design: player-experience; không đổi luật ngoài kiếp 1): ví dụ đoạn tuổi nhỏ dài không có lựa chọn, màn chữ quá dày, trận đầu thua khó hiểu, không biết bấm gì tiếp. Kiếp 1 nên khép trong khoảng 3-4 phút và luôn kết bằng màn tạo chân thân.
+- [ ] Đo lại sau 2 ngày: tỉ lệ khép kiếp 1 trên người bắt đầu, mốc từ 54% lên 65%. Ghi Sổ cải thiện.
+- Ghi chú:
+
+## Ngày 42 - Chiến dịch "Kỷ 2 khai mở" 28/11 - 2/12 (Tyler 21/11 16:01)
+Lên bản: 2026-11-27. Có cáo thị (một dòng). Phiên đêm KHÔNG đăng bài; chỉ làm phần trong game và soạn sẵn.
+- [ ] Trong game: dải đếm ngược nhỏ ở trang chủ và màn Sơn Môn từ 28/11 ("Kỷ 2 khai mở sau N ngày: đất về trống, môn nào cũng làm lại từ đầu"), tự ẩn sau 5:00 3/12. Chữ pixel, không popup. 2/12: dòng "Kỷ 2 đã mở" trong 48 giờ.
+- [ ] Soạn 5 bài Fanpage cho Tyler tự đăng (28/11, 29/11, 30/11, 1/12 tối kết Kỷ 1 kèm bảng vàng môn thắng, 2/12 mở Kỷ 2), mỗi bài một ảnh chụp thật từ game 1080x1350 và caption dưới 60 chữ, móc "mở server mới, ai cũng bắt đầu ngang nhau" (humanizer). Lưu `docs/tang-truong.md` mục Marketing và gửi ảnh trong tin cuối phiên đêm 26/11.
+- [ ] Bài cho group: phần hướng dẫn nằm ở doc Project `claude/vklh-group-ledger.md` mục "Chiến dịch Kỷ 2" (tác vụ đăng group đọc doc đó mỗi lần chạy). Phiên đêm 26/11 chụp 4 ảnh thật (bản đồ Sơn Môn, bảng xếp hạng Kỷ 1, màn lập môn, chân thân có đồ) và lưu vào `public/mkt/ky2/` để tác vụ group lấy qua link trang.
+- [ ] Đo: người mới theo utm `ky2_*` từ 28/11 tới 5/12, tỉ lệ vào Sơn Môn của nhóm này.
+- Ghi chú:
+
 ## Ngoài game (Tyler tự làm)
 - Đăng "Biên niên Kỷ" mỗi tuần và lúc kết Kỷ (Claude soạn khi Tyler hỏi): môn giữ nhiều ô nhất, trận lớn, môn lật ngược thế cờ.
 
