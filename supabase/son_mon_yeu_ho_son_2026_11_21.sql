@@ -1,0 +1,5 @@
+-- 21/11 (Tyler: "Cộng hộ sơn trận đi"): hộ sơn trận (1,5 người trung bình của môn, cfg tran.nen) cũng giữ ô trước đòn yêu thú.
+-- Hàm mới sm_yeu_danh2 (bản sao sm_yeu_danh + v_nen) và sm_yeu_tinh2 (cron mỗi phút, xử đòn tới trong 90 giây,
+-- trước sm_yeu_tick). Đã áp bằng apply_migration son_mon_yeu_ho_son_2026_11_21.
+-- Thử khô 5 đòn thú triều 8:00 ngày 21/11 (đã hoàn tác): 3 vẫn thắng, 2 bị đẩy lui (ô có 4 người giữ).
+-- Gỡ: cron.unschedule('vkl_sm_yeu_tinh2') là đòn yêu thú lại đi qua sm_yeu_danh như cũ.
