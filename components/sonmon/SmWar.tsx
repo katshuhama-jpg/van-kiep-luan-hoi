@@ -92,7 +92,7 @@ export function SmXuatChinh({ c }: { c: SmCtx }) {
     if (bhTa && chuO != null && !hoiBh) return setHoiBh(true);
     setHoiBh(false);
     setErr(null);
-    const e = await c.run({ fn: 'march4', q: toi[0], r: toi[1] }, () => track('sm_march', { trong: chuO == null, mu: 1 }));
+    const e = await c.run({ fn: 'march5', q: toi[0], r: toi[1] }, () => track('sm_march', { trong: chuO == null, mu: 1 }));
     setErr(e);
     c.reload(['map']);
   };
@@ -299,6 +299,8 @@ function baoCau(b: SmBao, mine: number): { tag: string; cls: string; chu: string
   if (b.loai === 'cam_co' && b.nd?.khai_hoang) return { tag: tr('Cờ', 'Flag'), cls: 'flag', chu: tr(`${b.nd?.nguoi ?? 'Đạo hữu'} khai hoang ${o}`, `${b.nd?.nguoi ?? 'A member'} claimed ${o}`) };
   if (b.loai === 'cam_co') return { tag: tr('Cờ', 'Flag'), cls: 'flag', chu: tr(`Cắm cờ ${o}${b.nd?.dau ? ', ô đầu tiên của môn' : ''}`, `Planted the flag on ${o}`) };
   if (b.loai === 'huy' && b.nd?.ly_do === 'rut_quan') return { tag: tr('Rút', 'Off'), cls: 'lose', chu: tr(`${b.nd?.nguoi ?? 'Môn chủ'} rút quân, hủy lệnh đánh ${o}`, `${b.nd?.nguoi ?? 'The leader'} called off the march on ${o}`) };
+  if (b.loai === 'huy' && b.nd?.ly_do === 'chinh_dien') return { tag: tr('Hủy', 'Off'), cls: 'lose', chu: tr(`Đoàn tới ${o} thì đó đã là chính điện, không đánh được`, `${o} is a main hall now and cannot be attacked`) };
+  if (b.loai === 'huy' && b.nd?.ly_do === 'bao_ho') return { tag: tr('Hủy', 'Off'), cls: 'lose', chu: tr(`Đoàn tới ${o} thì ô đang được bảo hộ, quân quay về`, `${o} was protected when we arrived`) };
   if (b.loai === 'huy') return { tag: tr('Hủy', 'Off'), cls: 'lose', chu: tr(`Lệnh xuất chinh tới ${o} bị hủy vì không ai theo`, `March to ${o} called off, nobody joined`) };
   if (b.loai === 'keo_nguoi') return { tag: tr('Người', 'Recruit'), cls: 'win', chu: tr(`${b.nd?.nguoi ?? 'Đạo hữu'} kéo được ${b.nd?.moi ?? 'một người mới'} nhập môn`, `${b.nd?.nguoi ?? 'A member'} brought ${b.nd?.moi ?? 'a newcomer'} into the sect`) };
   if (b.loai === 'bo_o') return { tag: tr('Bỏ', 'Left'), cls: 'lose', chu: tr(`${b.nd?.nguoi ?? 'Môn chủ'} bỏ ô ${o}`, `${b.nd?.nguoi ?? 'The leader'} gave up ${o}`) };
@@ -317,7 +319,7 @@ function baoCau(b: SmBao, mine: number): { tag: string; cls: string; chu: string
       ? { tag: tr('Thắng', 'Won'), cls: 'win', chu: tr(`Chiếm ${o} của ${b.ten_b ?? '?'}${b.nd?.bo_o ? `, bỏ lại ${b.nd.bo_o}` : ''}`, `Took ${o} from ${b.ten_b ?? '?'}${b.nd?.bo_o ? `, left ${b.nd.bo_o}` : ''}`) }
       : { tag: tr('Thua', 'Lost'), cls: 'lose', chu: tr(`Đánh ${o} của ${b.ten_b ?? '?'} không được, người đi theo nghỉ 2 giờ rồi trọng thương`, `Failed to take ${o} from ${b.ten_b ?? '?'}, marchers rest 2 h, then wounded`) };
   return thangA
-    ? { tag: tr('Thua', 'Lost'), cls: 'lose', chu: tr(`${b.ten_a ?? '?'} chiếm ${o}`, `${b.ten_a ?? '?'} took ${o}`) }
+    ? { tag: tr('Thua', 'Lost'), cls: 'lose', chu: tr(`${b.ten_a ?? '?'} chiếm ${o}${(b.nd?.mat_o ?? 0) > 1 ? `, đứt mạch mất thêm ${(b.nd?.mat_o ?? 1) - 1} ô` : ''}${b.nd?.bi_vay ? '. Môn bị vây: các ô còn lại được bảo hộ 6 giờ' : ''}`, `${b.ten_a ?? '?'} took ${o}${b.nd?.bi_vay ? '. Under siege: our other tiles are protected for 6 hours' : ''}`) }
     : { tag: tr('Thắng', 'Won'), cls: 'win', chu: tr(`Giữ ${o} trước ${b.ten_a ?? '?'}`, `Held ${o} against ${b.ten_a ?? '?'}`) };
 }
 

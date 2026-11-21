@@ -481,7 +481,7 @@ export function oDanhDuoc(st: SmState, map: SmMap | null, now: number): SmMapO[]
   const dangToi = new Set(map.di.map((d) => `${d.toi[0]},${d.toi[1]}`));
   return map.o.filter(
     (o) =>
-      o[4] != null && o[4] !== m.id && !dangToi.has(`${o[0]},${o[1]}`) &&
+      o[4] != null && o[4] !== m.id && !dangToi.has(`${o[0]},${o[1]}`) && !(o[5] && !laYeu(map, o[4])) &&
       !(o[6] && new Date(o[6]).getTime() > now) &&
       m.tiles.some((t) => hexDist(t, { q: o[0], r: o[1] }) === 1),
   );
@@ -498,6 +498,8 @@ export function chinhKhoa(st: SmState, o: SmMapO, now: number, map?: SmMap | nul
   // 19/11 23h (Ngày 7c): đủ ô chỉ chặn ô trống; ô có chủ của môn khác và ô yêu thú vẫn đánh được (thắng thì bỏ ô xa nhất)
   if (m.o >= m.o_max && o[4] == null) return duOCau(st);
   if (gan(st, o[0], o[1]) !== 1) return tr('Chỉ xuất chinh tới ô kề lãnh thổ.', 'You can only march to a tile next to your land.');
+  // 21/11: chính điện môn khác không đánh được (mất chính điện từng kéo đứt mạch nửa môn)
+  if (o[5] && o[4] != null && o[4] !== m.id && !yeu) return tr('Chính điện của môn khác không đánh được. Đánh các ô quanh nó.', "Another sect's main hall cannot be attacked. Take the tiles around it.");
   if (!yeu && o[6] && o[4] != null && new Date(o[6]).getTime() > now) return tr(`Ô đang được bảo hộ tới ${mocGio(o[6], now)}.`, `Protected until ${mocGio(o[6], now)}.`);
   // 20/11 Kỷ 2: thù 12 giờ và dải sức mạnh (Linh Mạch, Thiên Trì không xét dải)
   if (o[4] != null && !yeu && map?.dat?.length) {

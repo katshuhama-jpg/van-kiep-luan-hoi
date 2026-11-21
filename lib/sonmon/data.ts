@@ -193,6 +193,7 @@ export const SM_LOI: Record<string, string> = {
   SM_QUYEN: tr('Việc này cần môn chủ hoặc trưởng lão.', 'Only the master or elders can do this.'),
   SM_DU_O: tr('Môn đã giữ đủ ô. Mỗi 3 người thêm vào môn mở thêm 1 ô.', 'Your sect holds its limit. Every 3 more members open one more tile.'),
   SM_KHONG_KE: tr('Chỉ mở rộng sang ô kề lãnh thổ.', 'You can only expand to a tile next to your land.'),
+  SM_CHINH_DIEN: tr('Chính điện của môn khác không đánh được. Đánh các ô quanh nó.', 'Another sect\'s main hall cannot be attacked. Take the tiles around it.'),
   SM_THU: tr('Môn ta vừa thắng môn này, 12 giờ sau mới đánh tiếp họ được.', 'We just beat this sect; wait 12 hours before attacking them again.'),
   SM_NGOAI_DAI: tr('Môn này yếu hơn môn ta quá nhiều, không đánh được. Chọn môn ngang sức hơn.', 'This sect is far weaker than ours. Pick a closer match.'),
   SM_BAO_HO: tr('Ô này đang được bảo hộ, chưa đánh được. Chạm ô trên bản đồ để xem còn bao lâu.', 'This tile is protected. Tap it on the map to see how long.'),

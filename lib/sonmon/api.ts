@@ -40,7 +40,7 @@ export type SmBao = {
   ten_a: string | null;
   ten_b: string | null;
   o: [number, number];
-  nd: { kq?: string; ten_o?: string; atk?: number; def?: number; n_atk?: number; n_def?: number; dau?: boolean; ly_do?: string; khai_hoang?: boolean; nguoi?: string; moi?: string; bo_o?: string; yeu_cong?: boolean; lm?: string; moi_o?: string | null; /** Ngày 30 đứt mạch: số ô mất, tên các ô */ n?: number; ds?: string[]; /** Linh Mạch dời đi chỗ ẩn */ an?: boolean } | null;
+  nd: { kq?: string; ten_o?: string; atk?: number; def?: number; n_atk?: number; n_def?: number; dau?: boolean; ly_do?: string; khai_hoang?: boolean; nguoi?: string; moi?: string; bo_o?: string; yeu_cong?: boolean; lm?: string; moi_o?: string | null; /** Ngày 30 đứt mạch: số ô mất, tên các ô */ n?: number; ds?: string[]; /** Linh Mạch dời đi chỗ ẩn */ an?: boolean; /** 21/11: số ô môn bị đánh mất trong trận (kể cả đứt mạch), bị vây */ mat_o?: number; bi_vay?: boolean } | null;
 };
 export type SmLcPhan = {
   nam: number; kiep: number; canh: number; ket_cuc: number; ngay: number; huyet: number; vien_man: number;
@@ -232,7 +232,7 @@ const codeOf = (msg: string) => (msg.match(/SM_[A-Z_]+/) ?? ['SM_NET'])[0];
 export type SmAct =
   | { fn: 'found'; ten: [string, string, string]; huy: number; cd: number; dkKiep: number; dkNgay: number; moCua: boolean }
   | { fn: 'cosign' | 'join' | 'apply'; mon: number }
-  | { fn: 'pick_tile' | 'guard' | 'scout' | 'march' | 'march_tt' | 'march3' | 'march_tt3' | 'march4' | 'khai_hoang' | 'bo_o'; q: number; r: number }
+  | { fn: 'pick_tile' | 'guard' | 'scout' | 'march' | 'march_tt' | 'march3' | 'march_tt3' | 'march4' | 'march5' | 'khai_hoang' | 'bo_o'; q: number; r: number }
   | { fn: 'follow' | 'unfollow' | 'rut_quan'; chinh: number }
   | { fn: 'accept'; don: number; nhan: boolean }
   | { fn: 'moi_gui' | 'ky_nho'; ten: string }
@@ -300,6 +300,7 @@ function args(a: SmAct): Record<string, unknown> {
     case 'march3':
     case 'march_tt3':
     case 'march4':
+    case 'march5':
     case 'khai_hoang':
     case 'bo_o':
       return { p_q: a.q, p_r: a.r };
@@ -425,6 +426,12 @@ export function realApi(): SmApi {
     // 20/11: march4 (đệ tử đánh yêu thú, Linh Mạch) chưa có trên máy chủ thì quay về march3
     act: (a) =>
       rpc<Record<string, unknown>>(`vkl_sm_${a.fn}`, args(a)).catch((e) => {
+        // 21/11: march5 = march4 + chặn đánh chính điện; chưa có thì về march4
+        if (a.fn === 'march5' && e instanceof SmErr && e.code === 'SM_NET')
+          return rpc<Record<string, unknown>>('vkl_sm_march4', args(a)).catch((e2) => {
+            if (e2 instanceof SmErr && e2.code === 'SM_NET') return rpc<Record<string, unknown>>('vkl_sm_march3', args(a));
+            throw e2;
+          });
         if (a.fn === 'march4' && e instanceof SmErr && e.code === 'SM_NET') return rpc<Record<string, unknown>>('vkl_sm_march3', args(a));
         throw e;
       }),
